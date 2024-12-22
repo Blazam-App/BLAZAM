@@ -43,6 +43,8 @@ namespace BLAZAM.Update.Services
 
         private void CleanDirectories(object? state)
         {
+            using var context = factory.CreateDbContext();
+
             var oldUpdateFiles = ApplicationUpdate.UpdateDownloadDirectory.Files;
             foreach (var file in oldUpdateFiles)
             {
@@ -62,7 +64,7 @@ namespace BLAZAM.Update.Services
                         {
                             Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file: " + file);
 
-                            var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
+                            var impersonation = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
                             if (impersonation != null && !impersonation.Run(() =>
                             {
                                 if (file.Writable)
@@ -73,7 +75,7 @@ namespace BLAZAM.Update.Services
                                 return false;
                             }))
                             {
-                                impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+                                impersonation = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
                                 if (impersonation != null && !impersonation.Run(() =>
                                 {
                                     if (file.Writable)
@@ -128,7 +130,7 @@ namespace BLAZAM.Update.Services
                             {
                                 Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old staging files");
 
-                                var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
+                                var impersonation = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
                                 if (impersonation != null && !impersonation.Run(() =>
                                 {
                                     if (dir.Writable)
@@ -141,7 +143,7 @@ namespace BLAZAM.Update.Services
                                     return false;
                                 }))
                                 {
-                                    impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+                                    impersonation = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
                                     if (impersonation != null && !impersonation.Run(() =>
                                     {
                                         if (dir.Writable)
@@ -181,12 +183,13 @@ namespace BLAZAM.Update.Services
 
         private async void CheckForUpdate(object? state)
         {
+            using var context = factory.CreateDbContext();
             IJob updateCheckJob = new Job("Check for Update");
             IJobStep checkForUpdateStep = new JobStep("Execute", async (step) =>
             {
                 try
                 {
-                    var appSettings = (await factory.CreateDbContextAsync()).AppSettings.FirstOrDefault();
+                    var appSettings = context.AppSettings.FirstOrDefault();
                     if (appSettings != null)
                     {
                         Loggers.UpdateLogger.Information("Checking for automatic update");

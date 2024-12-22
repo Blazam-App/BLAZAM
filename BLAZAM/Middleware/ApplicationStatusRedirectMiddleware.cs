@@ -22,7 +22,7 @@ namespace BLAZAM.Server.Middleware
             _monitor = monitor;
         }
 
-        public async Task InvokeAsync(HttpContext context, IAppDatabaseFactory factory)
+        public async Task InvokeAsync(HttpContext context, IUserDatabaseFactory factory)
         {
             intendedUri = context.Request.Path.ToUriComponent();
             if (!InIgnoreList(intendedUri))

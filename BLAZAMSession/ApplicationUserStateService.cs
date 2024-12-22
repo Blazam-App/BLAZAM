@@ -74,7 +74,8 @@ namespace BLAZAM.Server.Data.Services
             t = new Timer(Tick, UserStates, 60000, 60000);
             Task.Run(async () =>
             {
-                Timeout = (await factory.CreateDbContextAsync()).AuthenticationSettings.FirstOrDefault()?.SessionTimeout;
+            using var context = await factory.CreateDbContextAsync();
+                Timeout = context.AuthenticationSettings.FirstOrDefault()?.SessionTimeout;
 
             });
         }

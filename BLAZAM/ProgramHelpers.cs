@@ -227,6 +227,7 @@ namespace BLAZAM.Server
 
 
             builder.Services.AddSingleton<IAppDatabaseFactory, AppDatabaseFactory>();
+            builder.Services.AddScoped<IUserDatabaseFactory, UserDatabaseFactory>();
 
             //Provide an Http client as a service with custom construction via api service class
             builder.Services.AddHttpClient();
@@ -407,7 +408,7 @@ namespace BLAZAM.Server
         //Setup Seq logging if allowed by admin
         try
         {
-            var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
+            using var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
             if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
             {
                 Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
