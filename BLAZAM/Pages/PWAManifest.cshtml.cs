@@ -27,9 +27,9 @@ namespace BLAZAM.Pages
     [Produces("application/json")]
     public class PWAManifestModel : PageModel
     {
-        private readonly IAppDatabaseFactory _factory;
+        private readonly IUserDatabaseFactory _factory;
 
-        public PWAManifestModel(IAppDatabaseFactory factory)
+        public PWAManifestModel(IUserDatabaseFactory factory)
         {
             _factory = factory;
         }

@@ -56,7 +56,7 @@ namespace BLAZAM.Database.Context
         /// <exception cref="NotImplementedException"></exception>
         private void SeedData()
         {
-            var seedContext = this.CreateDbContext();
+            using var seedContext = this.CreateDbContext();
 
 
             SetupDenyAll(seedContext);
@@ -177,7 +177,10 @@ namespace BLAZAM.Database.Context
         /// Async call to <see cref="CreateDbContext"/>
         /// </summary>
         /// <returns></returns>
-        public async Task<IDatabaseContext> CreateDbContextAsync() => await Task.Run(() => { return CreateDbContext(); });
+        public async Task<IDatabaseContext> CreateDbContextAsync()
+        {
+            return await Task.Run(() => { return CreateDbContext(); });
+        }
         public DatabaseType DatabaseType
         {
             get
@@ -190,7 +193,7 @@ namespace BLAZAM.Database.Context
                 {
 
                     case "sql":
-                       return DatabaseType.SQL;
+                        return DatabaseType.SQL;
                     case "sqlite":
 
                         return DatabaseType.SQLite;
@@ -217,7 +220,7 @@ namespace BLAZAM.Database.Context
         /// <exception cref="Exception">Thrown for unexpected exceptions</exception>
         public IDatabaseContext CreateDbContext()
         {
-           
+
             IDatabaseContext? databaseContext = null;
             switch (DatabaseType)
             {

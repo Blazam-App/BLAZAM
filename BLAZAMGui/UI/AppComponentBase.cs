@@ -90,7 +90,7 @@ namespace BLAZAM.Gui.UI
         }
         //protected IDatabaseContext? Context;
         [Inject]
-        protected IAppDatabaseFactory DbFactory { get; set; }
+        protected IUserDatabaseFactory DbFactory { get; set; }
 
 
         protected override void OnInitialized()

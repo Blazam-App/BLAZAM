@@ -29,12 +29,12 @@ namespace BLAZAM.Pages.API.v1
     /// </summary>
     public class Templates : ApiController
     {
-        private IAppDatabaseFactory _appDatabaseFactory;
+        private IUserDatabaseFactory _appDatabaseFactory;
         private IStringLocalizer<AppLocalization> AppLocalization;
         private EmailService EmailService;
         private NotificationGenerationService OUNotificationService;
 
-        public Templates(NotificationGenerationService ouNotificationService, EmailService email, IApplicationUserStateService applicationUserStateService, IStringLocalizer<AppLocalization> localizer, AuditLogger audit, IAppDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
+        public Templates(NotificationGenerationService ouNotificationService, EmailService email, IApplicationUserStateService applicationUserStateService, IStringLocalizer<AppLocalization> localizer, AuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
         {
             AppLocalization = localizer;
             EmailService = email;

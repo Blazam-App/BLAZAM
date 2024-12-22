@@ -21,7 +21,7 @@ namespace BLAZAM.Server.Pages
         protected IDatabaseContext Context { get; private set; }
 
 
-        public StaticModel(IAppDatabaseFactory factory)
+        public StaticModel(IUserDatabaseFactory factory)
         {
             Context = factory.CreateDbContext();
 

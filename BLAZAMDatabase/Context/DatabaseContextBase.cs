@@ -24,6 +24,13 @@ namespace BLAZAM.Database.Context
     public class DatabaseContextBase : DbContext, IDatabaseContext
     {
 
+        public override void Dispose()
+        {
+            ApplicationStatistics.RemoveDBContext();
+
+            base.Dispose();
+        }
+
 
 
 
@@ -76,12 +83,15 @@ namespace BLAZAM.Database.Context
         public DatabaseContextBase()
         {
             ConnectionString = new("");
+            ApplicationStatistics.AddDBContext();
+
         }
 
 
         public DatabaseContextBase(DatabaseConnectionString databaseConnectionString) : base()
         {
             ConnectionString = databaseConnectionString;
+            ApplicationStatistics.AddDBContext();
 
         }
 
@@ -93,6 +103,8 @@ namespace BLAZAM.Database.Context
 
         public DatabaseContextBase(DbContextOptions options) : base(options)
         {
+            ApplicationStatistics.AddDBContext();
+
         }
 
         //App Settings

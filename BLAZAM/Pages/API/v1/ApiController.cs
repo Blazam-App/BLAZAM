@@ -30,7 +30,7 @@ namespace BLAZAM.Pages.API.v1
         /// <summary>
         /// A factory for <see cref="IDatabaseContext"/> connections
         /// </summary>
-        protected readonly IAppDatabaseFactory DbFactory;
+        protected readonly IUserDatabaseFactory DbFactory;
         /// <summary>
         /// The API audit logger
         /// </summary>
@@ -45,7 +45,7 @@ namespace BLAZAM.Pages.API.v1
         /// </summary>
         protected IApplicationUserState? CurrentUserState { get; }
 
-        public ApiController(IApplicationUserStateService applicationUserStateService, AuditLogger audit, IAppDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
+        public ApiController(IApplicationUserStateService applicationUserStateService, AuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
         {
             //User = httpContextAccessor.HttpContext.User;
             AuditLogger = audit;

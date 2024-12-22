@@ -214,7 +214,7 @@ namespace BLAZAM
         {
 
             var _programDbFactory = new AppDatabaseFactory(Configuration);
-            var kestrelContext = _programDbFactory.CreateDbContext();
+            using var kestrelContext = _programDbFactory.CreateDbContext();
 
 
             if (!ApplicationInfo.isUnderIIS && !Debugger.IsAttached)
