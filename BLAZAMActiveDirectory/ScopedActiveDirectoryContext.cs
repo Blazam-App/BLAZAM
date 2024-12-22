@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.ActiveDirectory
@@ -6,7 +7,7 @@ namespace BLAZAM.ActiveDirectory
     /// <summary>
     /// An <see cref="IActiveDirectoryContext"/> intended for each web user connection
     /// </summary>
-    public class ScopedActiveDirectoryContext
+    public class ScopedActiveDirectoryContext: IDisposable
     {
         private IActiveDirectoryContextFactory _contextFactory;
 
@@ -21,6 +22,15 @@ namespace BLAZAM.ActiveDirectory
         {
             _contextFactory = contextFactory;
             Context = _contextFactory.CreateActiveDirectoryContext(currentUser);
+            ApplicationStatistics.AddADContext();
+
+        }
+
+        public void Dispose()
+        {
+            ApplicationStatistics.RemoveADContext();
+
+            Context.Dispose();
         }
     }
 }

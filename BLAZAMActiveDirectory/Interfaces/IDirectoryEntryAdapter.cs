@@ -367,5 +367,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         void SetCustomProperty(string propertyName, object? value);
         void EnsureDirectoryEntry();
         void SetCurrentUser(IApplicationUserState user);
+        Task<IDirectoryEntryAdapter?> GetParentAsync();
     }
 }

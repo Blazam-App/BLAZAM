@@ -477,6 +477,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual string? OU { get => DN.DnToOu() ?? ADSPath.DnToOu(); }
 
+        public Task<IDirectoryEntryAdapter?> GetParentAsync() => Task.Run(() => {
+            return GetParent();
+        });
+
         public IDirectoryEntryAdapter? GetParent()
         {
             if (DirectoryEntry == null || DirectoryEntry.Parent == null) return null;
@@ -615,8 +619,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (_appliedPermissionMappings == null)
                 {
-
-                    _appliedPermissionMappings = DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
+                    using var context = DbFactory.CreateDbContext();
+                    _appliedPermissionMappings =context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
                 }
                 return _appliedPermissionMappings;
             }
@@ -628,8 +632,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (_offspringPermissionMappings == null)
                 {
-
-                    _offspringPermissionMappings = DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
+                    using var context = DbFactory.CreateDbContext();
+                    _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
                 }
                 return _offspringPermissionMappings;
             }
