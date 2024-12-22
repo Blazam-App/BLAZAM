@@ -45,7 +45,7 @@ namespace BLAZAM.ActiveDirectory
             get
             {
                 AuthenticationTypes _authType = AuthenticationTypes.Secure;
-                var context = Factory.CreateDbContext();
+                using var context = Factory.CreateDbContext();
                 ADSettings? ad = context?.ActiveDirectorySettings.FirstOrDefault();
 
                 if (ad != null)
@@ -257,6 +257,7 @@ namespace BLAZAM.ActiveDirectory
             Printers = new ADPrinterSearcher(this);
             BitLocker = new ADBitLockerSearcher(this);
             Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
+
         }
         private DirectoryContext DirectoryContext => new DirectoryContext(
             DirectoryContextType.Domain,
@@ -548,6 +549,7 @@ namespace BLAZAM.ActiveDirectory
         public void Dispose()
         {
             _keepAlive = false;
+            Context.Dispose();
         }
 
         public IADUser? Authenticate_Alt(LoginRequest loginReq)

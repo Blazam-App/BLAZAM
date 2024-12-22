@@ -225,7 +225,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// Directory.
         /// </summary>
         /// <param name="containerName">The name of the new ou</param>
-        /// <returns>An uncommited organizational unit</returns>
+        /// <returns>An uncommitted organizational unit</returns>
         public IADOrganizationalUnit CreateOU(string containerName)
         {
             EnsureDirectoryEntry();
@@ -287,7 +287,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// Directory.
         /// </summary>
         /// <param name="containerName">The container name of the new printer</param>
-        /// <returns>An uncommited printer</returns>
+        /// <returns>An uncommitted printer</returns>
         public IADPrinter CreatePrinter(string containerName, string uncPath, string shortServerName)
         {
 
