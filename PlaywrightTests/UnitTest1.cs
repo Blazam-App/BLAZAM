@@ -52,6 +52,107 @@ namespace PlaywrightTests
             // Expects the URL to contain intro.
             //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
         }
+        [Test]
+        public async Task CreateObjectPageViewTest()
+        {
+            await LogIn();
+
+            await Page.GetByLabel("Toggle Create").ClickAsync();
+            await Page.GetByRole(AriaRole.Link, new() { Name = "Create User" }).ClickAsync();
+            await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Custom" })).ToBeVisibleAsync();
+            await Page.GetByRole(AriaRole.Link, new() { Name = "Create Group" }).ClickAsync();
+            await Expect(Page.GetByLabel("Group Name")).ToBeVisibleAsync();
+            await Page.GetByRole(AriaRole.Link, new() { Name = "Create OU" }).ClickAsync();
+            await Expect(Page.GetByLabel("Organizational Unit Name")).ToBeVisibleAsync();
+
+            // Expects the URL to contain intro.
+            //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
+        }
+        [Test]
+        public async Task AuditPagesTest()
+        {
+            await LogIn();
+            await Page.GetByRole(AriaRole.Link, new() { Name = "Audit" }).ClickAsync();
+            await Expect(Page.GetByText("BeforeAction")).ToBeVisibleAsync();
+            await Expect(Page.GetByText("AfterAction")).ToBeVisibleAsync();
+            await Page.GetByText("Logins").ClickAsync();
+            await Expect(Page.GetByText("Daily Logins")).ToBeVisibleAsync();
+            await Expect(Page.GetByText("Action")).ToBeVisibleAsync();
+            await Page.GetByText("System").ClickAsync();
+            await Expect(Page.GetByText("Disabled in demo")).ToBeVisibleAsync();
+            await Page.GetByText("Webhooks").Nth(1).ClickAsync();
+            await Expect(Page.GetByText("Last Attempt Timestamp")).ToBeVisibleAsync();
+
+            // Expects the URL to contain intro.
+            //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
+        }
+
+        [Test]
+        public async Task NewMenuTest()
+        {
+            await LogIn();
+            await Page.GetByRole(AriaRole.Toolbar).GetByRole(AriaRole.Button).Nth(3).ClickAsync();
+            await Page.GetByLabel("Show read").CheckAsync();
+            await Expect(Page.GetByLabel("Show read")).ToBeCheckedAsync();
+            await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Blazam News" })).ToBeVisibleAsync();
+            await Page.Locator(".mud-overlay").ClickAsync();
+
+            // Expects the URL to contain intro.
+            //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
+        }
+
+        
+
+        [Test]
+        public async Task NotificationsPanelTest()
+        {
+            await LogIn();
+            await Page.GetByRole(AriaRole.Toolbar).GetByRole(AriaRole.Button).Nth(4).ClickAsync();
+            await Page.GetByText("Read Notifications", new() { Exact = true }).ClickAsync();
+            await Page.GetByText("Read Notifications", new() { Exact = true }).ClickAsync();
+            await Page.Locator("aside").Filter(new() { HasText = "Notifications" }).GetByRole(AriaRole.Button).Nth(2).ClickAsync();
+
+            // Expects the URL to contain intro.
+            //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
+        }
+
+        
+
+        [Test]
+        public async Task SearchFilterTest()
+        {
+            await LogIn();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "All" }).ClickAsync();
+            await Page.Locator("p").Filter(new() { HasTextRegex = new Regex("^User$") }).ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "User" }).ClickAsync();
+            await Page.GetByText("Group", new() { Exact = true }).ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Group" }).ClickAsync();
+            await Page.GetByText("OU", new() { Exact = true }).ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "OU" }).ClickAsync();
+            await Page.GetByText("Computer").ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Computer" }).ClickAsync();
+            await Page.GetByText("Printer", new() { Exact = true }).ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Printer" }).ClickAsync();
+            await Page.GetByText("BitLocker").ClickAsync();
+            // Expects the URL to contain intro.
+            //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
+        }
+
+
+
+        [Test]
+        public async Task AboutTest()
+        {
+            await LogIn();
+            await Page.GetByText("BLAZAM™").ClickAsync();
+            await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "About Blazam" })).ToBeVisibleAsync();
+            await Expect(Page.GetByText("Dedicated To Maggie")).ToBeVisibleAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Close", Exact = true }).ClickAsync();
+
+            // Expects the URL to contain intro.
+            //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
+        }
+
 
         private async Task CloseDialog()
         {
