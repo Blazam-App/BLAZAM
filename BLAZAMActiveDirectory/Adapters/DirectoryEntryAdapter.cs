@@ -594,14 +594,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
 
 
-        public List<PermissionMapping> InheritedPermissionMappings
+        public IList<PermissionMapping> InheritedPermissionMappings
         {
             get
             {
                 return AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
             }
         }
-        public List<PermissionMapping> DirectPermissionMappings
+        public IList<PermissionMapping> DirectPermissionMappings
         {
             get
             {
@@ -611,29 +611,29 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        private IQueryable<PermissionMapping> _appliedPermissionMappings;
+        private IList<PermissionMapping> _appliedPermissionMappings;
 
-        public IQueryable<PermissionMapping> AppliedPermissionMappings
+        public IList<PermissionMapping> AppliedPermissionMappings
         {
             get
             {
                 if (_appliedPermissionMappings == null)
                 {
                     using var context = DbFactory.CreateDbContext();
-                    _appliedPermissionMappings =context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
+                    _appliedPermissionMappings =context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
                 }
                 return _appliedPermissionMappings;
             }
         }
-        private IQueryable<PermissionMapping> _offspringPermissionMappings;
-        public IQueryable<PermissionMapping> OffspringPermissionMappings
+        private IList<PermissionMapping> _offspringPermissionMappings;
+        public IList<PermissionMapping> OffspringPermissionMappings
         {
             get
             {
                 if (_offspringPermissionMappings == null)
                 {
                     using var context = DbFactory.CreateDbContext();
-                    _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
+                    _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length).ToList();
                 }
                 return _offspringPermissionMappings;
             }
