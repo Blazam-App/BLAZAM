@@ -29,7 +29,7 @@
 <NotificationList @ref=_notificationList UserState="@UserState" />
 
 <AppModal @ref=notificationsModal
-          Title="Notification Settings"
+          Title=@AppLocalization["Notification Settings"]
           Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
         <NotificaionSubscriptionEditor User="UserState.Preferences" />
 </AppModal>

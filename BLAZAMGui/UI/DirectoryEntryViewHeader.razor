@@ -41,7 +41,10 @@ else
             }
             @if (DirectoryEntry.OU!=null)
             {
-                <MudLink Typo="Typo.caption" Color="Color.Tertiary" Class="align-middle" Href="@_parentOU?.SearchUri">@DirectoryEntry.OU.ToPrettyOu()</MudLink>
+                <MudLink Typo="Typo.caption"
+                Color="Color.Tertiary"
+                Class="align-middle"
+                Href="@_parentOU?.SearchUri">@DirectoryEntry.OU.ToPrettyOu()</MudLink>
 
             }
 

@@ -121,9 +121,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-
+    
         public Dictionary<string, object> NewEntryProperties { get; set; } = new();
         private IActiveDirectoryContext _directory;
+
         public IActiveDirectoryContext Directory
         {
             get => _directory;
@@ -135,7 +136,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         private bool hasUnsavedChanges = false;
-
 
 
 
@@ -166,6 +166,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return false;
         }
 
+
         public DirectoryEntry? DirectoryEntry
         {
             get
@@ -177,6 +178,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 directoryEntry = value;
             }
         }
+
         public void EnsureDirectoryEntry()
         {
             if (DirectoryEntry is null)
@@ -221,26 +223,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return ActiveDirectoryObjectType.OU;
             }
         }
-
-        public Type ModelType
-        {
-            get
-            {
-                switch (ObjectType)
-                {
-                    case ActiveDirectoryObjectType.User:
-                        return typeof(ADUser);
-                    case ActiveDirectoryObjectType.Group:
-                        return typeof(ADGroup);
-                    case ActiveDirectoryObjectType.Computer:
-                        return typeof(ADComputer);
-                    case ActiveDirectoryObjectType.OU:
-                        return typeof(ADOrganizationalUnit);
-                    default:
-                        return typeof(DirectoryEntryAdapter);
-                }
-            }
-        }
+     
 
         protected SearchResult? SearchResult
         {
