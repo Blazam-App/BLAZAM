@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Tests.Updates
 {
+   
     public class VersionTests
     {
         private ApplicationVersion basicLow = new ApplicationVersion("0.5.1");

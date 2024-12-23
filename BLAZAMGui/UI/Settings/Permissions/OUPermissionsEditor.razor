@@ -51,8 +51,8 @@
     public EventCallback MappingsChanged{ get; set; }
 
     private PermissionMapping? NewMapping;
-    List<PermissionMapping> appliedMappings { get; set; } = new List<PermissionMapping>();
-    List<PermissionMapping> inheritedMappings { get; set; } = new List<PermissionMapping>();
+    IList<PermissionMapping> appliedMappings { get; set; } = new List<PermissionMapping>();
+    IList<PermissionMapping> inheritedMappings { get; set; } = new List<PermissionMapping>();
 
     protected override async Task OnInitializedAsync()
     {
