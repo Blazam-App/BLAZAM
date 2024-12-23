@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Tests.FileSystem
 {
-    public class JobTests
+    public class FileSystemTests
     {
         [Fact]
         public void Constructor_ThrowsArgumentException_WhenPathIsNull()
@@ -64,33 +64,32 @@ namespace BLAZAM.Tests.FileSystem
             // Clean up
             File.Delete(path);
         }
-        /// <summary>
-        /// This test fails in Github actions.
-        /// </summary>
-        //[Fact]
-        //public void Writable_ReturnsFalse_WhenFileHasNoWritePermission()
-        //{
-        //    // Arrange
-        //    string path = Path.GetTempFileName();
-        //    var fileSystemBase = new FileSystemBase("C:\\Windows\\setuperr.log");
+
+        [Fact]
+        public void Writable_ReturnsFalse_WhenFileHasNoWritePermission()
+        {
+            // Arrange
+            string path = Path.GetTempFileName();
+            var fileSystemBase = new FileSystemBase("C:\\Windows\\System32\\config\\SYSTEM.LOG1");
 
 
 
-        //    // Act
-        //    bool writable = fileSystemBase.Writable;
+            // Act
+            bool writable = fileSystemBase.Writable;
 
-        //    // Assert
-        //    Assert.False(writable);
+            // Assert
+            Assert.False(writable);
 
-        //    // Clean up
-        //    File.Delete(path);
-        //}
+            // Clean up
+            File.Delete(path);
+        }
+
         [Fact]
         public void Writable_ReturnsTrue_WhenDirHasWritePermission()
         {
             // Arrange
             string path = Path.GetTempFileName();
-            var fileSystemBase = new FileSystemBase(System.IO.Path.GetDirectoryName(path));
+            var fileSystemBase = new FileSystemBase(Path.GetDirectoryName(path));
 
 
             // Act
@@ -103,27 +102,24 @@ namespace BLAZAM.Tests.FileSystem
             File.Delete(path);
         }
 
-        /// <summary>
-        /// This test fails in Github actions.
-        /// </summary>
-        //[Fact]
-        //public void Writable_ReturnsFalse_WhenDirHasNoWritePermission()
-        //{
-        //    // Arrange
-        //    string path = Path.GetTempFileName();
-        //    var fileSystemBase = new FileSystemBase("C:\\Windows\\");
+        [Fact]
+        public void Writable_ReturnsFalse_WhenDirHasNoWritePermission()
+        {
+            // Arrange
+            string path = Path.GetTempFileName();
+            var fileSystemBase = new FileSystemBase("C:\\Windows\\System32\\config");
 
 
 
-        //    // Act
-        //    bool writable = fileSystemBase.Writable;
+            // Act
+            bool writable = fileSystemBase.Writable;
 
-        //    // Assert
-        //    Assert.False(writable);
+            // Assert
+            Assert.False(writable);
 
-        //    // Clean up
-        //    File.Delete(path);
-        //}
+            // Clean up
+            File.Delete(path);
+        }
 
         [Fact]
         public void GetHashCode_ReturnsPathHashCode()

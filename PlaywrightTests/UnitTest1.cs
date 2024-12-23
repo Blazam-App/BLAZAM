@@ -36,17 +36,17 @@ namespace PlaywrightTests
 
             await OpenRecycleBin();
 
-            //await OpenConfigureSubMenu();
+            await OpenConfigureSubMenu();
 
-            //await OpenSettingsPages();
+            await OpenSettingsPages();
 
-            //await OpenManageNotifications();
+            await OpenManageNotifications();
 
-            //await OpenPermissions();
+            await OpenPermissions();
 
-            //await OpenFields();
+            await OpenFields();
 
-            //await OpenTemplates();
+            await OpenTemplates();
 
 
             // Expects the URL to contain intro.
@@ -64,7 +64,7 @@ namespace PlaywrightTests
         }
         private async Task OpenRecycleBin()
         {
-            var recycleButton = Page.Locator("text=Recycle Bin");
+            var recycleButton = Page.GetByRole(AriaRole.Link, new() { Name = "Recycle Bin" });
 
             await Expect(recycleButton).ToBeVisibleAsync();
             await Expect(recycleButton).ToBeEnabledAsync();
@@ -76,7 +76,7 @@ namespace PlaywrightTests
         }
         private async Task OpenConfigureSubMenu()
         {
-            var recycleButton = Page.Locator("text=Configure");
+            var recycleButton =  Page.GetByLabel("Toggle Configure");
 
             await Expect(recycleButton).ToBeVisibleAsync();
             await Expect(recycleButton).ToBeEnabledAsync();
@@ -89,7 +89,7 @@ namespace PlaywrightTests
 
         private async Task OpenManageNotifications()
         {
-            var recycleButton = Page.Locator("text=Notifications");
+            var recycleButton = Page.GetByRole(AriaRole.Link, new() { Name = "Notifications" });
 
             await Expect(recycleButton).ToBeVisibleAsync();
             await Expect(recycleButton).ToBeEnabledAsync();
@@ -104,7 +104,7 @@ namespace PlaywrightTests
         }
         private async Task OpenFields()
         {
-            var button = Page.Locator("text=Fields");
+            var button = Page.GetByRole(AriaRole.Link, new() { Name = "Fields" });
 
             await Expect(button).ToBeVisibleAsync();
             await Expect(button).ToBeEnabledAsync();
@@ -121,7 +121,7 @@ namespace PlaywrightTests
         }
         private async Task OpenTemplates()
         {
-            var button = Page.Locator("text=Templates");
+            var button = Page.GetByRole(AriaRole.Link, new() { Name = "Templates" });
 
             await Expect(button).ToBeVisibleAsync();
             await Expect(button).ToBeEnabledAsync();
@@ -151,7 +151,7 @@ namespace PlaywrightTests
         }
         private async Task OpenPermissions()
         {
-            var button = Page.Locator("text=Permissions");
+            var button = Page.GetByRole(AriaRole.Link, new() { Name = "Permissions" });
 
             await Expect(button).ToBeVisibleAsync();
             await Expect(button).ToBeEnabledAsync();
@@ -201,7 +201,7 @@ namespace PlaywrightTests
         }
         private async Task OpenSettingsPages()
         {
-            var button = Page.Locator("text=Settings");
+            var button = Page.GetByRole(AriaRole.Link, new() { Name = "Settings" });
 
             await Expect(button).ToBeVisibleAsync();
             await Expect(button).ToBeEnabledAsync();
@@ -367,7 +367,7 @@ namespace PlaywrightTests
             await Expect(Page).ToHaveTitleAsync(new Regex("Login"));
 
             // create a locator
-            var loginButton = Page.Locator("text=LOG IN TO DEMO");
+            var loginButton = Page.GetByRole(AriaRole.Button, new() { Name = "Log In To Demo" });
 
             // Expect an attribute "to be strictly equal" to the value.
             //await Expect(getStarted).ToHaveAttributeAsync("href", "/docs/intro");
