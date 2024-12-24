@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About" xml:space="preserve">
+    <value>약</value>
+  </data>
   <data name="Access Levels" xml:space="preserve">
     <value>액세스 수준</value>
   </data>
@@ -156,6 +159,9 @@
   <data name="Add" xml:space="preserve">
     <value>더하다</value>
   </data>
+  <data name="Add Category" xml:space="preserve">
+    <value>카테고리 추가</value>
+  </data>
   <data name="Add Members" xml:space="preserve">
     <value>구성원 추가</value>
   </data>
@@ -192,8 +198,14 @@
   <data name="Allow Disabled User Access" xml:space="preserve">
     <value>비활성화된 사용자 액세스 허용</value>
   </data>
+  <data name="Allow Username Override" xml:space="preserve">
+    <value>Allow Username Override(사용자 이름 재정의 허용)</value>
+  </data>
   <data name="An error has occurred while trying to create the template user" xml:space="preserve">
     <value>템플릿 사용자를 만드는 동안 오류가 발생했습니다.</value>
+  </data>
+  <data name="API Tokens" xml:space="preserve">
+    <value>API 토큰</value>
   </data>
   <data name="App Chat" xml:space="preserve">
     <value>앱 채팅</value>
@@ -216,8 +228,14 @@
   <data name="ApplicationStarting" xml:space="preserve">
     <value>응용 프로그램이 시작됩니다 ... 기다리세요...</value>
   </data>
+  <data name="Apply Update" xml:space="preserve">
+    <value>업데이트 적용</value>
+  </data>
   <data name="Are you sure you want to navigate away?" xml:space="preserve">
     <value>다른 곳으로 이동하시겠습니까?</value>
+  </data>
+  <data name="Ask For Alternate Email" xml:space="preserve">
+    <value>암호 확인용 이메일 요청</value>
   </data>
   <data name="Assign" xml:space="preserve">
     <value>할당하다</value>
@@ -243,6 +261,12 @@
   <data name="Authentication Settings" xml:space="preserve">
     <value>인증 설정</value>
   </data>
+  <data name="Authorization Token" xml:space="preserve">
+    <value>권한 부여 토큰</value>
+  </data>
+  <data name="Authorization Type" xml:space="preserve">
+    <value>권한 부여 유형</value>
+  </data>
   <data name="Auto Update Time" xml:space="preserve">
     <value>자동 업데이트 시간</value>
   </data>
@@ -254,6 +278,15 @@
   </data>
   <data name="BaseDN" xml:space="preserve">
     <value>기본 DN</value>
+  </data>
+  <data name="Basic" xml:space="preserve">
+    <value>기초의</value>
+  </data>
+  <data name="Bearer" xml:space="preserve">
+    <value>무기명</value>
+  </data>
+  <data name="BitLocker" xml:space="preserve">
+    <value>BitLocker(영문)</value>
   </data>
   <data name="Block" xml:space="preserve">
     <value>차단</value>
@@ -284,6 +317,12 @@
   </data>
   <data name="Change Password" xml:space="preserve">
     <value>비밀번호 변경</value>
+  </data>
+  <data name="Changed" xml:space="preserve">
+    <value>변경</value>
+  </data>
+  <data name="Changes have been saved" xml:space="preserve">
+    <value>변경 사항이 저장되었습니다.</value>
   </data>
   <data name="Chat" xml:space="preserve">
     <value>잡담</value>
@@ -348,6 +387,9 @@
   <data name="Create New Delegation Target" xml:space="preserve">
     <value>새 위임 대상 만들기</value>
   </data>
+  <data name="Create new token" xml:space="preserve">
+    <value>새 토큰 만들기</value>
+  </data>
   <data name="Create OU" xml:space="preserve">
     <value>OU 만들기</value>
   </data>
@@ -381,8 +423,14 @@
   <data name="Database Status" xml:space="preserve">
     <value>데이터베이스 상태</value>
   </data>
+  <data name="days" xml:space="preserve">
+    <value>일</value>
+  </data>
   <data name="DB Type" xml:space="preserve">
     <value>DB 유형</value>
+  </data>
+  <data name="Dedicated To" xml:space="preserve">
+    <value>전용 대상</value>
   </data>
   <data name="Delegates" xml:space="preserve">
     <value>대리자</value>
@@ -393,8 +441,14 @@
   <data name="Delete Access Level" xml:space="preserve">
     <value>액세스 수준 삭제</value>
   </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>삭제</value>
+  </data>
   <data name="Delgate Name" xml:space="preserve">
     <value>Delgate 이름</value>
+  </data>
+  <data name="Delivered" xml:space="preserve">
+    <value>배달</value>
   </data>
   <data name="Deny" xml:space="preserve">
     <value>거절하다</value>
@@ -411,11 +465,17 @@
   <data name="Developer Analytics" xml:space="preserve">
     <value>개발자 분석</value>
   </data>
+  <data name="Disable" xml:space="preserve">
+    <value>비활성화</value>
+  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>변경 내용 취소</value>
   </data>
   <data name="Display Name" xml:space="preserve">
     <value>표시 이름</value>
+  </data>
+  <data name="Display Name Format" xml:space="preserve">
+    <value>표시 이름 형식</value>
   </data>
   <data name="Documentation" xml:space="preserve">
     <value>문서조사</value>
@@ -453,6 +513,9 @@
   <data name="Editable" xml:space="preserve">
     <value>편집</value>
   </data>
+  <data name="Effective Permissions" xml:space="preserve">
+    <value>유효 사용 권한</value>
+  </data>
   <data name="Elapsed Time" xml:space="preserve">
     <value>경과 시간</value>
   </data>
@@ -471,6 +534,9 @@
   <data name="Employee Id" xml:space="preserve">
     <value>직원 ID</value>
   </data>
+  <data name="Enable" xml:space="preserve">
+    <value>사용</value>
+  </data>
   <data name="Enable Auto Update" xml:space="preserve">
     <value>자동 업데이트 사용</value>
   </data>
@@ -479,6 +545,15 @@
   </data>
   <data name="Encryption Seed String" xml:space="preserve">
     <value>암호화 시드 문자열</value>
+  </data>
+  <data name="Error Message" xml:space="preserve">
+    <value>오류 메시지</value>
+  </data>
+  <data name="Event Timestamp" xml:space="preserve">
+    <value>이벤트 타임스탬프</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>만료</value>
   </data>
   <data name="Export Data" xml:space="preserve">
     <value>데이터 내보내기</value>
@@ -510,6 +585,15 @@
   <data name="Force Https" xml:space="preserve">
     <value>Https 강제 적용</value>
   </data>
+  <data name="Formula sim" xml:space="preserve">
+    <value>포뮬러 시뮬레이션</value>
+  </data>
+  <data name="Founded" xml:space="preserve">
+    <value>설립</value>
+  </data>
+  <data name="Founder" xml:space="preserve">
+    <value>시조</value>
+  </data>
   <data name="FQDN" xml:space="preserve">
     <value>FQDN을</value>
   </data>
@@ -519,17 +603,32 @@
   <data name="From Display Name" xml:space="preserve">
     <value>표시 이름에서</value>
   </data>
+  <data name="Generate New API Token" xml:space="preserve">
+    <value>새 API 토큰 생성</value>
+  </data>
   <data name="Google Analytics ID" xml:space="preserve">
     <value>Google 애널리틱스 ID</value>
   </data>
   <data name="Group" xml:space="preserve">
     <value>그룹</value>
   </data>
+  <data name="Group Member Added" xml:space="preserve">
+    <value>그룹 구성원이 추가됨</value>
+  </data>
+  <data name="Group Member Removed" xml:space="preserve">
+    <value>그룹 구성원이 제거됨</value>
+  </data>
   <data name="Group Name" xml:space="preserve">
     <value>그룹 이름</value>
   </data>
+  <data name="Group Searched" xml:space="preserve">
+    <value>검색된 그룹</value>
+  </data>
   <data name="Groups" xml:space="preserve">
     <value>그룹</value>
+  </data>
+  <data name="Hide Previous Updates" xml:space="preserve">
+    <value>이전 업데이트 숨기기</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>집</value>
@@ -546,8 +645,20 @@
   <data name="Homepage Message" xml:space="preserve">
     <value>홈페이지 메시지</value>
   </data>
+  <data name="HTTP Method" xml:space="preserve">
+    <value>HTTP 메소드</value>
+  </data>
+  <data name="Ignore SSL Verification" xml:space="preserve">
+    <value>SSL 확인 무시</value>
+  </data>
   <data name="Impersonate User" xml:space="preserve">
     <value>사용자 가장</value>
+  </data>
+  <data name="In Loving Memory" xml:space="preserve">
+    <value>사랑의 기억 속에</value>
+  </data>
+  <data name="Include Disabled" xml:space="preserve">
+    <value>사용 안 함 포함</value>
   </data>
   <data name="Info" xml:space="preserve">
     <value>정보</value>
@@ -564,11 +675,20 @@
   <data name="Installation Id" xml:space="preserve">
     <value>설치 ID</value>
   </data>
+  <data name="IP Address" xml:space="preserve">
+    <value>IP 주소</value>
+  </data>
+  <data name="Is Revoked" xml:space="preserve">
+    <value>취소됨</value>
+  </data>
   <data name="Job Title" xml:space="preserve">
     <value>직책</value>
   </data>
   <data name="Jobs Monitor" xml:space="preserve">
     <value>작업 모니터</value>
+  </data>
+  <data name="Last Attempt Timestamp" xml:space="preserve">
+    <value>마지막 시도 타임스탬프</value>
   </data>
   <data name="Last Change" xml:space="preserve">
     <value>마지막 변경</value>
@@ -579,8 +699,14 @@
   <data name="Last Logon" xml:space="preserve">
     <value>마지막 로그온</value>
   </data>
+  <data name="Last Message Status" xml:space="preserve">
+    <value>마지막 메시지 상태</value>
+  </data>
   <data name="Last Name" xml:space="preserve">
     <value>성</value>
+  </data>
+  <data name="Last Used" xml:space="preserve">
+    <value>마지막 사용 날짜</value>
   </data>
   <data name="Live Stats" xml:space="preserve">
     <value>실시간 통계</value>
@@ -590,6 +716,9 @@
   </data>
   <data name="Location" xml:space="preserve">
     <value>위치</value>
+  </data>
+  <data name="Locked Out" xml:space="preserve">
+    <value>잠김</value>
   </data>
   <data name="Locked Out Users" xml:space="preserve">
     <value>잠긴 사용자</value>
@@ -630,11 +759,17 @@
   <data name="Memory" xml:space="preserve">
     <value>기억</value>
   </data>
+  <data name="Message Id" xml:space="preserve">
+    <value>메시지 ID</value>
+  </data>
   <data name="Middle Initial" xml:space="preserve">
     <value>중간 이니셜</value>
   </data>
   <data name="Middle Name" xml:space="preserve">
     <value>중간 이름</value>
+  </data>
+  <data name="Modify" xml:space="preserve">
+    <value>수정하다</value>
   </data>
   <data name="Move" xml:space="preserve">
     <value>움직이다</value>
@@ -657,6 +792,9 @@
   <data name="Next" xml:space="preserve">
     <value>다음</value>
   </data>
+  <data name="None" xml:space="preserve">
+    <value>없음</value>
+  </data>
   <data name="Not a member of any groups" xml:space="preserve">
     <value>어떤 그룹에도 속하지 않음</value>
   </data>
@@ -668,6 +806,9 @@
   </data>
   <data name="Not started" xml:space="preserve">
     <value>시작되지 않음</value>
+  </data>
+  <data name="Notification Settings" xml:space="preserve">
+    <value>알림 설정</value>
   </data>
   <data name="Notifications" xml:space="preserve">
     <value>알림을</value>
@@ -699,11 +840,20 @@
   <data name="OU" xml:space="preserve">
     <value>또는</value>
   </data>
+  <data name="OU Searched" xml:space="preserve">
+    <value>OU 검색됨</value>
+  </data>
+  <data name="Parent Template" xml:space="preserve">
+    <value>부모 템플릿</value>
+  </data>
   <data name="Pass Change" xml:space="preserve">
     <value>패스 변경</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>암호</value>
+  </data>
+  <data name="PasswordChange" xml:space="preserve">
+    <value>비밀번호 변경</value>
   </data>
   <data name="Permissions" xml:space="preserve">
     <value>권한을</value>
@@ -753,6 +903,12 @@
   <data name="Recycle Bin" xml:space="preserve">
     <value>휴지통</value>
   </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>리프레쉬</value>
+  </data>
+  <data name="Refresh Session" xml:space="preserve">
+    <value>세션 새로 고침</value>
+  </data>
   <data name="Register" xml:space="preserve">
     <value>등록기</value>
   </data>
@@ -764,6 +920,9 @@
   </data>
   <data name="Release Notes" xml:space="preserve">
     <value>릴리즈 노트</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>제거하다</value>
   </data>
   <data name="Remove field" xml:space="preserve">
     <value>필드 제거</value>
@@ -798,8 +957,14 @@
   <data name="Reply-To Display Name" xml:space="preserve">
     <value>회신 표시 이름</value>
   </data>
+  <data name="Request Access" xml:space="preserve">
+    <value>액세스 요청</value>
+  </data>
   <data name="Require change" xml:space="preserve">
     <value>변경 필요</value>
+  </data>
+  <data name="Require Password Change" xml:space="preserve">
+    <value>Require Password Change(비밀번호 변경 필요)</value>
   </data>
   <data name="Require the user to change their password at next logon" xml:space="preserve">
     <value>사용자가 다음 로그온 시 암호를 변경하도록 요구</value>
@@ -812,6 +977,9 @@
   </data>
   <data name="Resource Usage" xml:space="preserve">
     <value>리소스 사용량</value>
+  </data>
+  <data name="Response Code" xml:space="preserve">
+    <value>응답 코드</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>복원</value>
@@ -827,6 +995,9 @@
   </data>
   <data name="Results" xml:space="preserve">
     <value>결과</value>
+  </data>
+  <data name="Retry Count" xml:space="preserve">
+    <value>재시도 횟수</value>
   </data>
   <data name="Revert to inherited value" xml:space="preserve">
     <value>상속된 값으로 되돌리기</value>
@@ -846,6 +1017,9 @@
   <data name="Script Path" xml:space="preserve">
     <value>스크립트 경로</value>
   </data>
+  <data name="Send  Welcome Email" xml:space="preserve">
+    <value>환영 이메일 보내기</value>
+  </data>
   <data name="Send logs to developer" xml:space="preserve">
     <value>개발자에게 로그 보내기</value>
   </data>
@@ -854,6 +1028,12 @@
   </data>
   <data name="Services" xml:space="preserve">
     <value>서비스</value>
+  </data>
+  <data name="Session Expired" xml:space="preserve">
+    <value>세션 만료됨</value>
+  </data>
+  <data name="Session expires in" xml:space="preserve">
+    <value>세션이 다음 날짜에 만료됩니다.</value>
   </data>
   <data name="Session Timeout" xml:space="preserve">
     <value>세션 시간 초과</value>
@@ -866,6 +1046,9 @@
   </data>
   <data name="Show more" xml:space="preserve">
     <value>더 보기</value>
+  </data>
+  <data name="Show Previous Updates" xml:space="preserve">
+    <value>이전 업데이트 표시</value>
   </data>
   <data name="Sign Out" xml:space="preserve">
     <value>로그아웃</value>
@@ -885,8 +1068,17 @@
   <data name="SMTP Username" xml:space="preserve">
     <value>SMTP 사용자 이름</value>
   </data>
+  <data name="Source Code" xml:space="preserve">
+    <value>소스 코드</value>
+  </data>
   <data name="SSL Certificate" xml:space="preserve">
     <value>SSL 인증서</value>
+  </data>
+  <data name="Stale computers" xml:space="preserve">
+    <value>부실한 컴퓨터</value>
+  </data>
+  <data name="Stale users" xml:space="preserve">
+    <value>부실 사용자</value>
   </data>
   <data name="Start Time" xml:space="preserve">
     <value>시작 시간</value>
@@ -915,6 +1107,9 @@
   <data name="Template Category" xml:space="preserve">
     <value>템플릿 범주</value>
   </data>
+  <data name="Template Id" xml:space="preserve">
+    <value>템플릿 ID</value>
+  </data>
   <data name="Template Name" xml:space="preserve">
     <value>템플릿 이름</value>
   </data>
@@ -933,11 +1128,26 @@
   <data name="Time in minutes" xml:space="preserve">
     <value>시간(분)</value>
   </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>타임 스탬프</value>
+  </data>
+  <data name="Toggle Fields" xml:space="preserve">
+    <value>필드 전환</value>
+  </data>
+  <data name="Token" xml:space="preserve">
+    <value>토큰</value>
+  </data>
+  <data name="Token Lifetime" xml:space="preserve">
+    <value>토큰 수명</value>
+  </data>
   <data name="Type" xml:space="preserve">
     <value>형</value>
   </data>
   <data name="Unable to read" xml:space="preserve">
     <value>읽을 수 없음</value>
+  </data>
+  <data name="Unassign" xml:space="preserve">
+    <value>할당 취소</value>
   </data>
   <data name="UNC Path" xml:space="preserve">
     <value>UNC 경로</value>
@@ -990,6 +1200,9 @@
   <data name="Upload Thumbnail Photo" xml:space="preserve">
     <value>썸네일 사진 업로드</value>
   </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL (영문)</value>
+  </data>
   <data name="Use Custom Credentials" xml:space="preserve">
     <value>사용자 지정 자격 증명 사용</value>
   </data>
@@ -1005,11 +1218,26 @@
   <data name="User" xml:space="preserve">
     <value>사용자</value>
   </data>
+  <data name="User Activity" xml:space="preserve">
+    <value>사용자 활동</value>
+  </data>
+  <data name="User Assigned" xml:space="preserve">
+    <value>사용자 할당</value>
+  </data>
   <data name="User Helpdesk URL" xml:space="preserve">
     <value>사용자 헬프데스크 URL</value>
   </data>
+  <data name="User Searched" xml:space="preserve">
+    <value>검색된 사용자</value>
+  </data>
+  <data name="User Unassigned" xml:space="preserve">
+    <value>사용자 할당되지 않음</value>
+  </data>
   <data name="Username" xml:space="preserve">
     <value>사용자 이름</value>
+  </data>
+  <data name="Username Format" xml:space="preserve">
+    <value>사용자 이름 형식</value>
   </data>
   <data name="Users" xml:space="preserve">
     <value>사용자</value>
@@ -1017,8 +1245,17 @@
   <data name="UseTLS" xml:space="preserve">
     <value>TLS 사용</value>
   </data>
+  <data name="Value" xml:space="preserve">
+    <value>값</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>변수</value>
+  </data>
   <data name="Visible" xml:space="preserve">
     <value>보이는</value>
+  </data>
+  <data name="Webhooks" xml:space="preserve">
+    <value>웹훅</value>
   </data>
   <data name="Website FQDN" xml:space="preserve">
     <value>웹 사이트 FQDN</value>
@@ -1028,6 +1265,12 @@
   </data>
   <data name="You have unsaved changes" xml:space="preserve">
     <value>저장하지 않은 변경 사항이 있습니다.</value>
+  </data>
+  <data name="Your session has expired." xml:space="preserve">
+    <value>세션이 만료되었습니다.</value>
+  </data>
+  <data name="Your session is about to expire" xml:space="preserve">
+    <value>세션이 곧 만료됩니다.</value>
   </data>
   <data name="Zip Code" xml:space="preserve">
     <value>우편번호</value>
