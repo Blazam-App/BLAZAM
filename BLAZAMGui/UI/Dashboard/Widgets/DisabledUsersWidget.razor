@@ -38,12 +38,4 @@
         LoadingData = false;
 
     }
-    public override void Dispose()
-    {
-        base.Dispose();
-        foreach (var entry in DisabledUsers)
-        {
-            entry.Dispose();
-        }
-    }
 }

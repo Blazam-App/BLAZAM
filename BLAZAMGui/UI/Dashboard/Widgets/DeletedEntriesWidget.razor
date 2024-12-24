@@ -67,13 +67,5 @@
         await InvokeAsync(StateHasChanged);
 
     }
-    public override void Dispose()
-    {
-        base.Dispose();
-        foreach (var entry in deletedObjects)
-        {
-            entry.Dispose();
-        }
-    }
 
 }

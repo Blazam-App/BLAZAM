@@ -95,12 +95,4 @@
             GoTo(args.Item);
         }
     }
-    public override void Dispose()
-    {
-        base.Dispose();
-        foreach (var entry in FavoriteEntries)
-        {
-            entry.Dispose();
-        }
-    }
 }

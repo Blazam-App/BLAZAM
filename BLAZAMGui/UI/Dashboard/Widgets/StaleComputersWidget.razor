@@ -36,12 +36,4 @@
     {
         Nav.NavigateTo(args.Item.SearchUri);
     }
-    public override void Dispose()
-    {
-        base.Dispose();
-        foreach (var entry in StaleComputers)
-        {
-            entry.Dispose();
-        }
-    }
 }
