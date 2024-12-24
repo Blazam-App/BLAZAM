@@ -107,7 +107,7 @@ namespace BLAZAM.Tests.FileSystem
         {
             // Arrange
             string path = Path.GetTempFileName();
-            var fileSystemBase = new FileSystemBase("C:\\Windows\\System32\\config");
+            var fileSystemBase = new FileSystemBase("C:\\Program Files");
 
 
 
