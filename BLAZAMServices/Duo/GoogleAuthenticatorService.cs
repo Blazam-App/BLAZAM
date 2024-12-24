@@ -23,7 +23,7 @@ namespace BLAZAM.Services.Duo
 
         public bool ValidateTwoFactorPIN(string accountSecretKey, string twoFactorCodeFromClient)
         {
-            return _authenticator.ValidateTwoFactorPIN(accountSecretKey, twoFactorCodeFromClient);
+            return _authenticator.ValidateTwoFactorPIN(accountSecretKey, twoFactorCodeFromClient,TimeSpan.FromMinutes(1));
         }
     }
 }

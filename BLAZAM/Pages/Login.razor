@@ -22,11 +22,11 @@
     @* <GoogleAuthenticatorModal @ref=googleAuthenticatorModal /> *@
     @if (!googleAuthSecret.IsNullOrEmpty())
     {
-    <MudText Align="Align.Center">@AppLocalization["Google Authenticator Token"]</MudText>
+    <MudText Align="Align.Center">@AppLocalization["Google Authenticator Passcode"]</MudText>
         <GoogleAuthenticatorInput @bind-Passcode=passcode
                                   AuthSecret="@googleAuthSecret"
         OnAuthenticated="@(async()=>{AttemptSignIn(passcode);})" />
-
+        <MudButton Color="Color.Primary" OnClick="@(()=>{googleAuthSecret=null; LoginRequest.MFAToken=null;})">@AppLocalization["Back"]</MudButton>
 
     }else{
 
