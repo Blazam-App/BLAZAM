@@ -38,11 +38,9 @@ namespace PlaywrightTests
 
             await OpenConfigureSubMenu();
 
-            await OpenSettingsPages();
 
             await OpenManageNotifications();
 
-            await OpenPermissions();
 
             await OpenFields();
 
@@ -88,7 +86,7 @@ namespace PlaywrightTests
         }
 
         [Test]
-        public async Task NewMenuTest()
+        public async Task NewsMenuTest()
         {
             await LogIn();
             await Page.GetByRole(AriaRole.Toolbar).GetByRole(AriaRole.Button).Nth(3).ClickAsync();
@@ -101,7 +99,7 @@ namespace PlaywrightTests
             //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
         }
 
-        
+
 
         //[Test]
         //public async Task NotificationsPanelTest()
@@ -116,7 +114,7 @@ namespace PlaywrightTests
         //    //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
         //}
 
-        
+
 
         //[Test]
         //public async Task SearchFilterTest()
@@ -177,7 +175,7 @@ namespace PlaywrightTests
         }
         private async Task OpenConfigureSubMenu()
         {
-            var recycleButton =  Page.GetByLabel("Toggle Configure");
+            var recycleButton = Page.GetByLabel("Toggle Configure");
 
             await Expect(recycleButton).ToBeVisibleAsync();
             await Expect(recycleButton).ToBeEnabledAsync();
@@ -250,8 +248,13 @@ namespace PlaywrightTests
 
 
         }
-        private async Task OpenPermissions()
+
+        [Test]
+        public async Task OpenPermissions()
         {
+            await LogIn();
+            await OpenConfigureSubMenu();
+
             var button = Page.GetByRole(AriaRole.Link, new() { Name = "Permissions" });
 
             await Expect(button).ToBeVisibleAsync();
@@ -300,8 +303,13 @@ namespace PlaywrightTests
 
 
         }
-        private async Task OpenSettingsPages()
+        [Test]
+        public async Task OpenSettingsPages()
         {
+            await LogIn();
+
+            await OpenConfigureSubMenu();
+
             var button = Page.GetByRole(AriaRole.Link, new() { Name = "Settings" });
 
             await Expect(button).ToBeVisibleAsync();
@@ -461,6 +469,11 @@ namespace PlaywrightTests
 
         private async Task LogIn()
         {
+            await using var context = await Browser.NewContextAsync(new()
+            {
+                IsMobile = false,
+                ViewportSize = new ViewportSize() { Width = 1280, Height = 1024 }
+            });
             await Page.GotoAsync("https://blazam.azurewebsites.net/home");
             await Page.GetByRole(AriaRole.Button, new() { Name = "Log In To Demo" }).ClickAsync();
 
@@ -477,7 +490,7 @@ namespace PlaywrightTests
             }
             return;
 
-           
+
         }
     }
 }
