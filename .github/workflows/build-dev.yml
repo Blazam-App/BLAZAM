@@ -21,6 +21,8 @@ jobs:
           dotnet-version: 8.x
       - name: Restore dependencies
         run: dotnet restore
+      - name: Build application (Debug)
+        run: dotnet build -c Debug
       - name: Setup Playwright
         shell: pwsh
         run: |
