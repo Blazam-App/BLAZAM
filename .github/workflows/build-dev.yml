@@ -43,9 +43,7 @@ jobs:
           dotnet-version: 8.x
       - name: Restore dependencies
         run: dotnet restore
-      - name: Build application (Debug)
-        run: dotnet build -c Debug
-
+   
       - name: Build application (Release)
         run: dotnet publish -c Release -o bin/publish BLAZAM/BLAZAM.csproj
       
