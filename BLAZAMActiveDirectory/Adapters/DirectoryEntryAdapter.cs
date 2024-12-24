@@ -609,6 +609,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         private IList<PermissionMapping> _offspringPermissionMappings;
+
+
         public IList<PermissionMapping> OffspringPermissionMappings
         {
             get
@@ -1410,6 +1412,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             directoryEntry?.Dispose();
             searchResult = null;
+
         }
 
         public override bool Equals(object? obj)

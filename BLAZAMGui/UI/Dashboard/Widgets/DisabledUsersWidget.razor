@@ -5,7 +5,7 @@
     <h3>Disabled users changed in the last 90 days</h3>
 
     <div Overflow="Overflow.Auto" Style="max-height:350px;">
-        @foreach (var user in LockedUsers)
+        @foreach (var user in DisabledUsers)
         {
 
             <MudCard @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
@@ -22,7 +22,7 @@
     </div>
 </div>
 @code {
-    List<IADUser> LockedUsers
+    List<IADUser> DisabledUsers
     {
         get => CurrentUser.State.Cache.Get<List<IADUser>>(this.GetType());
         set => CurrentUser.State.Cache.Set(this.GetType(), value);
@@ -33,9 +33,17 @@
     protected override async Task RefreshData()
     {
         LoadingData = true;
-        LockedUsers = (await Directory.Users.FindChangedUsersAsync(false)).Where(u => u.Disabled).ToList();
+        DisabledUsers = (await Directory.Users.FindChangedUsersAsync(false)).Where(u => u.Disabled).ToList();
 
         LoadingData = false;
 
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        foreach (var entry in DisabledUsers)
+        {
+            entry.Dispose();
+        }
     }
 }
