@@ -1,0 +1,88 @@
+﻿@using ApplicationNews
+@inherits AppComponentBase
+
+
+<MudDialog @ref=dialog>
+    <TitleContent>
+        <MudText Align="Align.Center">@AppLocalization["Google Authenticator Token"]</MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (!_authenticated)
+        {
+            <MudTextField T="string"
+            Mask=@(new PatternMask("000 000"))
+            Required="true"
+            AdornmentIcon="@Icons.Custom.Brands.Google"
+            Adornment="Adornment.Start"
+            Clearable="true"
+            InputMode="InputMode.numeric"
+            AutoFocus=true
+            Immediate="true"
+            TextChanged="@((key)=>{Authenticate();})"
+            @bind-Value="@authToken" />
+            <MudStack Row=true>
+                <MudButton Color="@Color.Primary"
+                Variant="Variant.Filled"
+                OnClick="@(()=>{dialog?.CloseAsync();})">@AppLocalization["Cancel"]</MudButton>
+                <MudButton Color="@Color.Primary"
+                Variant="Variant.Filled"
+                OnClick="@(()=>{Authenticate(true);})">@AppLocalization["OK"]</MudButton>
+
+            </MudStack>
+        }
+        else
+        {
+            <MudText Align="Align.Center">
+                <MudIcon Icon="@Icons.Material.Filled.ThumbUpAlt"
+                Color="Color.Success"
+                Size="Size.Large" />
+            </MudText>
+        }
+
+    </DialogContent>
+
+</MudDialog>
+
+@code {
+    private string? authToken;
+    private MudDialog? dialog;
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter]
+    public AppEvent? OnAuthenticated { get; set; }
+
+    private bool _authenticated;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _authenticated = false;
+    }
+    public async Task<bool> ShowAsync()
+    {
+        await (await dialog?.ShowAsync()).Result;
+        var result = _authenticated;
+
+        _authenticated = false;
+        authToken = null;
+        return result;
+    }
+    private async Task Authenticate(bool announce = false)
+    {
+        if (authToken != null)
+        {
+            var validToken = GoogleAuthenticatorService.ValidateTwoFactorPIN(CurrentUser.Username.GetAppHashCode().ToString(), authToken.Replace(" ", ""));
+            if (validToken)
+            {
+                _authenticated = true;
+                await InvokeAsync(StateHasChanged);
+
+                await Task.Delay(500);
+
+                dialog?.CloseAsync();
+            }
+            else if (announce)
+            {
+                SnackBarService.Warning(AppLocalization["The token entered is not valid"]);
+            }
+        }
+    }
+}

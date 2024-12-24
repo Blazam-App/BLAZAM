@@ -6,13 +6,13 @@
         <Base64Image Data="@CurrentUser.State.Preferences.ProfilePicture" />
     }
     <MudFileUpload T="IBrowserFile"
-                   FilesChanged="UploadProfilePicture">
+    FilesChanged="UploadProfilePicture">
         <ActivatorContent>
 
             <MudButton HtmlTag="label"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload">
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            StartIcon="@Icons.Material.Filled.CloudUpload">
                 @if (CurrentUser.State.Preferences.ProfilePicture == null)
                 {
                     <MudText>Upload Profile Icon</MudText>
@@ -29,9 +29,9 @@
                                     CurrentUser.State.Preferences.ProfilePicture=null;
 
                                     })"
-                           Variant="Variant.Filled"
-                           Color="Color.Error"
-                           StartIcon="@Icons.Material.Filled.Remove">
+                Variant="Variant.Filled"
+                Color="Color.Error"
+                StartIcon="@Icons.Material.Filled.Remove">
                     Remove
                 </MudButton>
 
@@ -48,22 +48,30 @@
             </MudButton>
         }
         <MudSwitch Value="@CurrentUser.State.Preferences.DarkMode"
-                   ValueChanged=@((state)=>{mainLayout.SetDarkMode(state);})
-                   Color="Color.Primary"
-                   Class="ma-4"
-                   T="bool"
-                   Label="Toggle Light/Dark Mode" />
+        ValueChanged=@((state)=>{mainLayout.SetDarkMode(state);})
+        Color="Color.Primary"
+        Class="ma-4"
+        T="bool"
+        Label="Toggle Light/Dark Mode" />
 
 
     </MudNavGroup>
     @* <AuthorizeView Roles="@UserRoles.SuperAdmin"> *@
-        
-        @* <MudTextField ReadOnly="true" T="string" Value="@("Bearer "+CurrentUser.State.Preferences.APIToken)" Label="@AppLocalization["API Token"]" /> *@
-        
+
+    @* <MudTextField ReadOnly="true" T="string" Value="@("Bearer "+CurrentUser.State.Preferences.APIToken)" Label="@AppLocalization["API Token"]" /> *@
+
     @* </AuthorizeView> *@
+    <MudImage Src="@qrCode"/>
+    <MudButton OnClick="GenerateGoogleAuthToken">@AppLocalization["Create Google Authenticator Token"]</MudButton>
+
     <LoadingData Loading=LoadingData />
 </MudStack>
+<GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
 @code {
+
+
+    GoogleAuthenticatorModal? googleAuthenticatorModal;
+    private string? qrCode;
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
     protected override void OnInitialized()
@@ -101,5 +109,13 @@
         {
             CurrentUser.State.Preferences.ProfilePicture = rawBytes.ReizeRawImage(100, true);
         }
+    }
+
+    async Task GenerateGoogleAuthToken(){
+      //var result  =  await googleAuthenticatorModal.ShowAsync();
+      
+      
+      var  setupcode  = GoogleAuthenticatorService.GenerateSetupCode(CurrentUser.Username, CurrentUser.Username.GetAppHashCode().ToString());
+       qrCode = setupcode.QrCodeSetupImageUrl;
     }
 }

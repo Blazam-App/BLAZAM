@@ -277,6 +277,8 @@ namespace BLAZAM.Server
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
 
+            builder.Services.AddScoped<GoogleAuthenticatorService>();
+
             //Provide a JwtTokens as a service
             builder.Services.AddScoped<JwtTokenService>();
 
