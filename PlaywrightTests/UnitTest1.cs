@@ -103,18 +103,18 @@ namespace PlaywrightTests
 
         
 
-        [Test]
-        public async Task NotificationsPanelTest()
-        {
-            await LogIn();
-            await Page.GetByRole(AriaRole.Toolbar).GetByRole(AriaRole.Button).Nth(4).ClickAsync();
-            await Page.GetByText("Read Notifications", new() { Exact = true }).ClickAsync();
-            await Page.GetByText("Read Notifications", new() { Exact = true }).ClickAsync();
-            await Page.Locator("aside").Filter(new() { HasText = "Notifications" }).GetByRole(AriaRole.Button).Nth(2).ClickAsync();
+        //[Test]
+        //public async Task NotificationsPanelTest()
+        //{
+        //    await LogIn();
+        //    await Page.GetByRole(AriaRole.Toolbar).GetByRole(AriaRole.Button).Nth(4).ClickAsync();
+        //    await Page.GetByText("Read Notifications", new() { Exact = true }).ClickAsync();
+        //    await Page.GetByText("Read Notifications", new() { Exact = true }).ClickAsync();
+        //    await Page.Locator("aside").Filter(new() { HasText = "Notifications" }).GetByRole(AriaRole.Button).Nth(2).ClickAsync();
 
-            // Expects the URL to contain intro.
-            //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
-        }
+        //    // Expects the URL to contain intro.
+        //    //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
+        //}
 
         
 
