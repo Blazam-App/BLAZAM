@@ -1,5 +1,6 @@
 ﻿@inherits AppModalContent
 @using BLAZAM.Helpers
+@using System.Security
 <MudStack>
     @if (CurrentUser.State.Preferences.ProfilePicture != null)
     {
@@ -56,27 +57,20 @@
 
 
     </MudNavGroup>
-    @* <AuthorizeView Roles="@UserRoles.SuperAdmin"> *@
-
-    @* <MudTextField ReadOnly="true" T="string" Value="@("Bearer "+CurrentUser.State.Preferences.APIToken)" Label="@AppLocalization["API Token"]" /> *@
-
-    @* </AuthorizeView> *@
-    <MudImage Src="@qrCode"/>
-    <MudButton OnClick="GenerateGoogleAuthToken">@AppLocalization["Create Google Authenticator Token"]</MudButton>
+    <CreateGoogleAuthenticationToken/>
+    
 
     <LoadingData Loading=LoadingData />
 </MudStack>
-<GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
 @code {
 
 
-    GoogleAuthenticatorModal? googleAuthenticatorModal;
-    private string? qrCode;
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
     protected override void OnInitialized()
     {
         base.OnInitialized();
+      
         Modal.SetYesText(AppLocalization["Save"]);
         Modal.OnYes += SaveSettings;
         Modal.YesEnabled = () => { return !LoadingData; };
@@ -111,11 +105,5 @@
         }
     }
 
-    async Task GenerateGoogleAuthToken(){
-      //var result  =  await googleAuthenticatorModal.ShowAsync();
-      
-      
-      var  setupcode  = GoogleAuthenticatorService.GenerateSetupCode(CurrentUser.Username, CurrentUser.Username.GetAppHashCode().ToString());
-       qrCode = setupcode.QrCodeSetupImageUrl;
-    }
+  
 }

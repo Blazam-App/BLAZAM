@@ -7,26 +7,28 @@
         <MudText Align="Align.Center">@AppLocalization["Google Authenticator Token"]</MudText>
     </TitleContent>
     <DialogContent>
+
         @if (!_authenticated)
         {
-            <MudTextField T="string"
-            Mask=@(new PatternMask("000 000"))
-            Required="true"
-            AdornmentIcon="@Icons.Custom.Brands.Google"
-            Adornment="Adornment.Start"
-            Clearable="true"
-            InputMode="InputMode.numeric"
-            AutoFocus=true
-            Immediate="true"
-            TextChanged="@((key)=>{Authenticate();})"
-            @bind-Value="@authToken" />
+            if (!registrationUri.IsNullOrEmpty())
+            {
+                <MudText Align="Align.Center">@AppLocalization["Scan the code below from your authenticator app"]</MudText>
+                <MudText Align="Align.Center"> <MudImage Src="@registrationUri" /></MudText>
+                <MudText Align="Align.Center">@AppLocalization["Then enter the passcode to activate"]</MudText>
+            }
+            <GoogleAuthenticatorInput @ref=googleAuthInput 
+                @bind-Authenticated="_authenticated" 
+                @bind-Passcode=authToken
+                                      AuthSecret="@authSecret"
+                OnAuthenticated="@(async()=>{await InvokeAsync(StateHasChanged);  await Task.Delay(1000); dialog?.CloseAsync();})" />
             <MudStack Row=true>
+                <MudSpacer/>
                 <MudButton Color="@Color.Primary"
-                Variant="Variant.Filled"
-                OnClick="@(()=>{dialog?.CloseAsync();})">@AppLocalization["Cancel"]</MudButton>
+                           Variant="Variant.Filled"
+                           OnClick="@(()=>{dialog?.CloseAsync();})">@AppLocalization["Cancel"]</MudButton>
                 <MudButton Color="@Color.Primary"
-                Variant="Variant.Filled"
-                OnClick="@(()=>{Authenticate(true);})">@AppLocalization["OK"]</MudButton>
+                           Variant="Variant.Filled"
+                           OnClick="@(()=>{googleAuthInput?.Authenticate(true);})">@AppLocalization["OK"]</MudButton>
 
             </MudStack>
         }
@@ -34,8 +36,8 @@
         {
             <MudText Align="Align.Center">
                 <MudIcon Icon="@Icons.Material.Filled.ThumbUpAlt"
-                Color="Color.Success"
-                Size="Size.Large" />
+                         Color="Color.Success"
+                         Size="Size.Large" />
             </MudText>
         }
 
@@ -44,8 +46,11 @@
 </MudDialog>
 
 @code {
+    GoogleAuthenticatorInput? googleAuthInput;
+    private string? registrationUri;
     private string? authToken;
     private MudDialog? dialog;
+    private string? authSecret;
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter]
     public AppEvent? OnAuthenticated { get; set; }
@@ -54,35 +59,30 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        authSecret = CurrentUser?.State?.Preferences?.AuthenticatorSecret?.Decrypt();
         _authenticated = false;
     }
-    public async Task<bool> ShowAsync()
+    public async Task<string?> ShowAsync(string? customSecret = null, string? customRegistrationUri = null)
     {
+        if (customSecret != null)
+        {
+            authSecret = customSecret;
+        }
+        registrationUri = customRegistrationUri;
         await (await dialog?.ShowAsync()).Result;
         var result = _authenticated;
 
         _authenticated = false;
+        var validToken = authToken?.Replace(" ", "");
         authToken = null;
-        return result;
-    }
-    private async Task Authenticate(bool announce = false)
-    {
-        if (authToken != null)
+        if (result)
         {
-            var validToken = GoogleAuthenticatorService.ValidateTwoFactorPIN(CurrentUser.Username.GetAppHashCode().ToString(), authToken.Replace(" ", ""));
-            if (validToken)
-            {
-                _authenticated = true;
-                await InvokeAsync(StateHasChanged);
-
-                await Task.Delay(500);
-
-                dialog?.CloseAsync();
-            }
-            else if (announce)
-            {
-                SnackBarService.Warning(AppLocalization["The token entered is not valid"]);
-            }
+            return validToken;
+        }
+        else
+        {
+            return null;
         }
     }
+   
 }

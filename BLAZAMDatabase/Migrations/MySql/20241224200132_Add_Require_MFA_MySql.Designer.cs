@@ -4,16 +4,19 @@ using BLAZAM.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BLAZAM.Common.Migrations.MySql
+namespace BLAZAM.Database.Migrations.MySql
 {
     [DbContext(typeof(MySqlDatabaseContext))]
-    partial class MySqlDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20241224200132_Add_Require_MFA_MySql")]
+    partial class Add_Require_MFA_MySql
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

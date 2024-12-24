@@ -6,7 +6,7 @@ namespace BLAZAM.Common.Data
     public enum LoginResultStatus
     {
         OK, BadCredentials, UnauthorizedImpersonation, NoData, NoUsername, NoPassword, UnknownFailure,
-        DeniedLogin, MFARequested
+        DeniedLogin, DuoRequested, GoogleAuthenticatorRequested
     }
     public class LoginResult
     {
@@ -19,14 +19,20 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-        public LoginResult MFARequested(AuthenticationState state)
+        public LoginResult DuoRequested(AuthenticationState state)
         {
             AuthenticationState = state;
-            Status = LoginResultStatus.MFARequested;
+            Status = LoginResultStatus.DuoRequested;
 
             return this;
         }
+        public LoginResult GoogleAuthenticatorRequested(AuthenticationState state)
+        {
+            AuthenticationState = state;
+            Status = LoginResultStatus.GoogleAuthenticatorRequested;
 
+            return this;
+        }
         public LoginResult BadCredentials()
         {
             Status = LoginResultStatus.BadCredentials;
