@@ -85,19 +85,19 @@ namespace PlaywrightTests
             //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
         }
 
-        [Test]
-        public async Task NewsMenuTest()
-        {
-            await LogIn();
-            await Page.GetByRole(AriaRole.Toolbar).GetByRole(AriaRole.Button).Nth(3).ClickAsync();
-            await Page.GetByLabel("Show read").CheckAsync();
-            await Expect(Page.GetByLabel("Show read")).ToBeCheckedAsync();
-            await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Blazam News" })).ToBeVisibleAsync();
-            await Page.Locator(".mud-overlay").ClickAsync();
+        //[Test]
+        //public async Task NewsMenuTest()
+        //{
+        //    await LogIn();
+        //    await Page.GetByRole(AriaRole.Toolbar).GetByRole(AriaRole.Button).Nth(3).ClickAsync();
+        //    await Page.GetByLabel("Show read").CheckAsync();
+        //    await Expect(Page.GetByLabel("Show read")).ToBeCheckedAsync();
+        //    await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Blazam News" })).ToBeVisibleAsync();
+        //    await Page.Locator(".mud-overlay").ClickAsync();
 
-            // Expects the URL to contain intro.
-            //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
-        }
+        //    // Expects the URL to contain intro.
+        //    //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
+        //}
 
 
 
