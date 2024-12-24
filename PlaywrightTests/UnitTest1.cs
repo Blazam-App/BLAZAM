@@ -145,7 +145,7 @@ namespace PlaywrightTests
         {
             await LogIn();
             await Page.GetByText("BLAZAM™").ClickAsync();
-            await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "About Blazam" })).ToBeVisibleAsync();
+            await Expect(Page.GetByText("Founder: Chris Jacobsen")).ToBeVisibleAsync();
             await Expect(Page.GetByText("Dedicated To Maggie")).ToBeVisibleAsync();
             await Page.GetByRole(AriaRole.Button, new() { Name = "Close", Exact = true }).ClickAsync();
 
@@ -461,6 +461,12 @@ namespace PlaywrightTests
 
         private async Task LogIn()
         {
+
+
+            await Page.GotoAsync("https://blazam.azurewebsites.net/home");
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Log In To Demo" }).ClickAsync();
+
+            return;
             await Page.GotoAsync("https://blazam.azurewebsites.net/");
             //await Page.GotoAsync("http://localhost/");
 
