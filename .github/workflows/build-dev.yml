@@ -8,6 +8,26 @@ on:
     
 
 jobs:
+  test:
+    runs-on: windows-latest
+    permissions: write-all
+        
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup .NET Core SDK 8
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 8.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Setup Playwright
+        shell: pwsh
+        run: |
+          PlaywrightTests/bin/Debug/net8.0/playwright.ps1 install; 
+          
+      - name: Test application
+        run: dotnet test -c Release
   build:
     runs-on: windows-latest
     permissions: write-all
@@ -23,13 +43,6 @@ jobs:
         run: dotnet restore
       - name: Build application (Debug)
         run: dotnet build -c Debug
-      - name: Setup Playwright
-        shell: pwsh
-        run: |
-          PlaywrightTests/bin/Debug/net8.0/playwright.ps1 install; 
-          
-      - name: Test application
-        run: dotnet test -c Release
 
       - name: Build application (Release)
         run: dotnet publish -c Release -o bin/publish BLAZAM/BLAZAM.csproj
