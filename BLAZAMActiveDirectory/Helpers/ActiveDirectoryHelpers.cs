@@ -21,7 +21,12 @@ namespace BLAZAM.Helpers
 {
     public static class ActiveDirectoryHelpers
     {
-
+        /// <summary>
+        /// Returns true if the domain controller is reachable by this web
+        /// server, otherwise returns false.
+        /// </summary>
+        /// <param name="dc">The Domain Controller to test</param>
+        /// <returns></returns>
         public static bool IsPingable(this DomainController dc)
         {
             return NetworkTools.PingHost(dc.IPAddress);
@@ -39,6 +44,7 @@ namespace BLAZAM.Helpers
 
             return services;
         }
+
         public static IEnumerable<IDirectoryEntryAdapter> MoveToTop(this IEnumerable<IDirectoryEntryAdapter> enumerable, Func<IDirectoryEntryAdapter, bool> matchingPredicate)
         {
             var list = enumerable.ToList();
@@ -64,7 +70,11 @@ namespace BLAZAM.Helpers
         }
 
 
-
+        /// <summary>
+        /// Converts a FQDN to it's DN equivalent
+        /// </summary>
+        /// <param name="fqdn"></param>
+        /// <returns></returns>
         public static string FqdnToDn(string fqdn)
         {
             // Split the FQDN into its domain components
@@ -266,7 +276,7 @@ namespace BLAZAM.Helpers
         /// Encapsulates a raw DirectoryEntry search's <see cref="DirectoryEntries"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
         /// </summary>
         /// <remarks>
-        /// This is used when getting child ojects from a OU
+        /// This is used when getting child objects from a OU
         /// </remarks>
         /// <param name="r"></param>
         /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>

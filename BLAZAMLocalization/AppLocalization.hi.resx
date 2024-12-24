@@ -204,9 +204,6 @@
   <data name="Application Credentials" xml:space="preserve">
     <value>आवेदन क्रेडेंशियल</value>
   </data>
-  <data name="Application logons" xml:space="preserve">
-    <value>अनुप्रयोग लॉगऑन</value>
-  </data>
   <data name="Application Name" xml:space="preserve">
     <value>आवेदन का नाम</value>
   </data>
@@ -255,9 +252,6 @@
   <data name="BaseDN" xml:space="preserve">
     <value>बेसेडन</value>
   </data>
-  <data name="Block" xml:space="preserve">
-    <value>रोक</value>
-  </data>
   <data name="Branch" xml:space="preserve">
     <value>शाखा</value>
   </data>
@@ -266,9 +260,6 @@
   </data>
   <data name="Browse" xml:space="preserve">
     <value>चरना</value>
-  </data>
-  <data name="Bypass" xml:space="preserve">
-    <value>बाइपास</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>रद्द करना</value>
@@ -293,9 +284,6 @@
   </data>
   <data name="City" xml:space="preserve">
     <value>शहर</value>
-  </data>
-  <data name="Click to view help documentation" xml:space="preserve">
-    <value>मदद दस्तावेज़ीकरण देखने के लिए क्लिक करें</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>बंद करना</value>
@@ -369,9 +357,6 @@
   <data name="Custom Login" xml:space="preserve">
     <value>कस्टम लॉगिन</value>
   </data>
-  <data name="Data Collection Settings" xml:space="preserve">
-    <value>डेटा संग्रह सेटिंग्स</value>
-  </data>
   <data name="Database" xml:space="preserve">
     <value>डाटाबेस</value>
   </data>
@@ -408,9 +393,6 @@
   <data name="Details" xml:space="preserve">
     <value>ब्यौरा</value>
   </data>
-  <data name="Developer Analytics" xml:space="preserve">
-    <value>डेवलपर एनालिटिक्स</value>
-  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>परिवर्तनों को छोड़ना</value>
   </data>
@@ -423,9 +405,6 @@
   <data name="Domain" xml:space="preserve">
     <value>डोमेन</value>
   </data>
-  <data name="Download Logs" xml:space="preserve">
-    <value>डाउनलोड लॉग</value>
-  </data>
   <data name="Drive Details" xml:space="preserve">
     <value>ड्राइव विवरण</value>
   </data>
@@ -434,18 +413,6 @@
   </data>
   <data name="Driver Version" xml:space="preserve">
     <value>ड्राइवर संस्करण</value>
-  </data>
-  <data name="Duo Enabled" xml:space="preserve">
-    <value>Duo सक्षम</value>
-  </data>
-  <data name="Duo Health Check" xml:space="preserve">
-    <value>डुओ स्वास्थ्य जांच</value>
-  </data>
-  <data name="Duo Security MFA (optional)" xml:space="preserve">
-    <value>डुओ सुरक्षा एमएफए (वैकल्पिक)</value>
-  </data>
-  <data name="Duo Unreachable Behavior" xml:space="preserve">
-    <value>Duo पहुँच योग्य व्यवहार</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>संपादित करें</value>
@@ -488,9 +455,6 @@
   </data>
   <data name="Failed" xml:space="preserve">
     <value>असफल</value>
-  </data>
-  <data name="Favorites" xml:space="preserve">
-    <value>पसंद</value>
   </data>
   <data name="Field Name" xml:space="preserve">
     <value>फील्ड नाम</value>
@@ -561,14 +525,8 @@
   <data name="Inherited Permissions" xml:space="preserve">
     <value>विरासत की अनुमति</value>
   </data>
-  <data name="Installation Id" xml:space="preserve">
-    <value>स्थापना आईडी</value>
-  </data>
   <data name="Job Title" xml:space="preserve">
     <value>नौकरी का नाम</value>
-  </data>
-  <data name="Jobs Monitor" xml:space="preserve">
-    <value>जॉब्स मॉनिटर</value>
   </data>
   <data name="Last Change" xml:space="preserve">
     <value>अंतिम परिवर्तन</value>
@@ -591,9 +549,6 @@
   <data name="Location" xml:space="preserve">
     <value>स्थान</value>
   </data>
-  <data name="Locked Out Users" xml:space="preserve">
-    <value>लॉक आउट किए गए उपयोगकर्ता</value>
-  </data>
   <data name="Lockout Time" xml:space="preserve">
     <value>तालाबंदी का समय</value>
   </data>
@@ -602,9 +557,6 @@
   </data>
   <data name="Log In To Demo" xml:space="preserve">
     <value>डेमो में लॉग इन करें</value>
-  </data>
-  <data name="Logging" xml:space="preserve">
-    <value>लॉगिंग</value>
   </data>
   <data name="Logins" xml:space="preserve">
     <value>लॉगिन</value>
@@ -668,9 +620,6 @@
   </data>
   <data name="Not started" xml:space="preserve">
     <value>शुरू नहीं हुआ</value>
-  </data>
-  <data name="Notifications" xml:space="preserve">
-    <value>सूचनाएँ</value>
   </data>
   <data name="Office" xml:space="preserve">
     <value>कार्यालय</value>
@@ -810,9 +759,6 @@
   <data name="Reset Password" xml:space="preserve">
     <value>पासवर्ड रीसेट करें</value>
   </data>
-  <data name="Resource Usage" xml:space="preserve">
-    <value>संसाधन उपयोग</value>
-  </data>
   <data name="Restore" xml:space="preserve">
     <value>पुनर्स्थापित करना</value>
   </data>
@@ -845,9 +791,6 @@
   </data>
   <data name="Script Path" xml:space="preserve">
     <value>स्क्रिप्ट पथ</value>
-  </data>
-  <data name="Send logs to developer" xml:space="preserve">
-    <value>डेवलपर को लॉग भेजें</value>
   </data>
   <data name="Server" xml:space="preserve">
     <value>सर्वर</value>
@@ -930,9 +873,6 @@
   <data name="There are no templates available" xml:space="preserve">
     <value>कोई टेम्पलेट उपलब्ध नहीं हैं</value>
   </data>
-  <data name="Time in minutes" xml:space="preserve">
-    <value>मिनटों में समय</value>
-  </data>
   <data name="Type" xml:space="preserve">
     <value>प्रकार</value>
   </data>
@@ -974,12 +914,6 @@
   </data>
   <data name="Upload" xml:space="preserve">
     <value>अपलोड</value>
-  </data>
-  <data name="Upload Certificate" xml:space="preserve">
-    <value>प्रमाणपत्र अपलोड करें</value>
-  </data>
-  <data name="Upload Icon" xml:space="preserve">
-    <value>अपलोड आइकन</value>
   </data>
   <data name="Upload SSL Certificate" xml:space="preserve">
     <value>एसएसएल प्रमाणपत्र अपलोड करें</value>
@@ -1031,5 +965,314 @@
   </data>
   <data name="Zip Code" xml:space="preserve">
     <value>ज़िप कोड</value>
+  </data>
+  <data name="Application logons" xml:space="preserve">
+    <value>अनुप्रयोग लॉगऑन</value>
+  </data>
+  <data name="Block" xml:space="preserve">
+    <value>रोक</value>
+  </data>
+  <data name="Bypass" xml:space="preserve">
+    <value>बाइपास</value>
+  </data>
+  <data name="Click to view help documentation" xml:space="preserve">
+    <value>मदद दस्तावेज़ीकरण देखने के लिए क्लिक करें</value>
+  </data>
+  <data name="Data Collection Settings" xml:space="preserve">
+    <value>डेटा संग्रह सेटिंग्स</value>
+  </data>
+  <data name="Developer Analytics" xml:space="preserve">
+    <value>डेवलपर एनालिटिक्स</value>
+  </data>
+  <data name="Download Logs" xml:space="preserve">
+    <value>डाउनलोड लॉग</value>
+  </data>
+  <data name="Duo Enabled" xml:space="preserve">
+    <value>Duo सक्षम</value>
+  </data>
+  <data name="Duo Health Check" xml:space="preserve">
+    <value>डुओ स्वास्थ्य जांच</value>
+  </data>
+  <data name="Duo Security MFA (optional)" xml:space="preserve">
+    <value>डुओ सुरक्षा एमएफए (वैकल्पिक)</value>
+  </data>
+  <data name="Duo Unreachable Behavior" xml:space="preserve">
+    <value>Duo पहुँच योग्य व्यवहार</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>पसंद</value>
+  </data>
+  <data name="Installation Id" xml:space="preserve">
+    <value>स्थापना आईडी</value>
+  </data>
+  <data name="Jobs Monitor" xml:space="preserve">
+    <value>जॉब्स मॉनिटर</value>
+  </data>
+  <data name="Locked Out Users" xml:space="preserve">
+    <value>लॉक आउट किए गए उपयोगकर्ता</value>
+  </data>
+  <data name="Logging" xml:space="preserve">
+    <value>लॉगिंग</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>सूचनाएँ</value>
+  </data>
+  <data name="Resource Usage" xml:space="preserve">
+    <value>संसाधन उपयोग</value>
+  </data>
+  <data name="Send logs to developer" xml:space="preserve">
+    <value>डेवलपर को लॉग भेजें</value>
+  </data>
+  <data name="Time in minutes" xml:space="preserve">
+    <value>मिनटों में समय</value>
+  </data>
+  <data name="Upload Certificate" xml:space="preserve">
+    <value>प्रमाणपत्र अपलोड करें</value>
+  </data>
+  <data name="Upload Icon" xml:space="preserve">
+    <value>अपलोड आइकन</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>करीबन</value>
+  </data>
+  <data name="Add Category" xml:space="preserve">
+    <value>श्रेणी जोड़ें</value>
+  </data>
+  <data name="Allow Username Override" xml:space="preserve">
+    <value>उपयोगकर्ता नाम ओवरराइड की अनुमति दें</value>
+  </data>
+  <data name="API Tokens" xml:space="preserve">
+    <value>एपीआई टोकन</value>
+  </data>
+  <data name="Apply Update" xml:space="preserve">
+    <value>अद्यतन लागू करें</value>
+  </data>
+  <data name="Ask For Alternate Email" xml:space="preserve">
+    <value>वैकल्पिक ईमेल के लिए पूछें</value>
+  </data>
+  <data name="Authorization Token" xml:space="preserve">
+    <value>प्राधिकरण टोकन</value>
+  </data>
+  <data name="Authorization Type" xml:space="preserve">
+    <value>प्राधिकरण प्रकार</value>
+  </data>
+  <data name="Basic" xml:space="preserve">
+    <value>मूलवर्ती</value>
+  </data>
+  <data name="Bearer" xml:space="preserve">
+    <value>वाहक</value>
+  </data>
+  <data name="BitLocker" xml:space="preserve">
+    <value>बिटलॉकर</value>
+  </data>
+  <data name="Changed" xml:space="preserve">
+    <value>बदल</value>
+  </data>
+  <data name="Changes have been saved" xml:space="preserve">
+    <value>परिवर्तन सहेजे गए हैं</value>
+  </data>
+  <data name="Create new token" xml:space="preserve">
+    <value>नया टोकन बनाएं</value>
+  </data>
+  <data name="days" xml:space="preserve">
+    <value>दिन</value>
+  </data>
+  <data name="Dedicated To" xml:space="preserve">
+    <value>को समर्पित</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>हटाए गए</value>
+  </data>
+  <data name="Delivered" xml:space="preserve">
+    <value>दिया गया</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>अक्षम</value>
+  </data>
+  <data name="Display Name Format" xml:space="preserve">
+    <value>प्रदर्शन नाम स्वरूप</value>
+  </data>
+  <data name="Effective Permissions" xml:space="preserve">
+    <value>प्रभावी अनुमतियाँ</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>योग्य बनाना</value>
+  </data>
+  <data name="Error Message" xml:space="preserve">
+    <value>त्रुटि संदेश</value>
+  </data>
+  <data name="Event Timestamp" xml:space="preserve">
+    <value>इवेंट टाइमस्टैम्प</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>समयसीमा समाप्त</value>
+  </data>
+  <data name="Formula sim" xml:space="preserve">
+    <value>फॉर्मूला सिम</value>
+  </data>
+  <data name="Founded" xml:space="preserve">
+    <value>स्थापित</value>
+  </data>
+  <data name="Founder" xml:space="preserve">
+    <value>संस्‍थापक</value>
+  </data>
+  <data name="Generate New API Token" xml:space="preserve">
+    <value>नया एपीआई टोकन जनरेट करें</value>
+  </data>
+  <data name="Group Member Added" xml:space="preserve">
+    <value>समूह सदस्य जोड़ा गया</value>
+  </data>
+  <data name="Group Member Removed" xml:space="preserve">
+    <value>समूह सदस्य को हटाया गया</value>
+  </data>
+  <data name="Group Searched" xml:space="preserve">
+    <value>समूह खोजा गया</value>
+  </data>
+  <data name="Hide Previous Updates" xml:space="preserve">
+    <value>पिछले अपडेट छुपाएं</value>
+  </data>
+  <data name="HTTP Method" xml:space="preserve">
+    <value>HTTP विधि</value>
+  </data>
+  <data name="Ignore SSL Verification" xml:space="preserve">
+    <value>SSL सत्यापन पर ध्यान न दें</value>
+  </data>
+  <data name="In Loving Memory" xml:space="preserve">
+    <value>प्यार भरी यादों में</value>
+  </data>
+  <data name="Include Disabled" xml:space="preserve">
+    <value>अक्षम शामिल करें</value>
+  </data>
+  <data name="IP Address" xml:space="preserve">
+    <value>IP पता</value>
+  </data>
+  <data name="Is Revoked" xml:space="preserve">
+    <value>निरस्त कर दिया गया है</value>
+  </data>
+  <data name="Last Attempt Timestamp" xml:space="preserve">
+    <value>अंतिम प्रयास टाइमस्टैम्प</value>
+  </data>
+  <data name="Last Message Status" xml:space="preserve">
+    <value>अंतिम संदेश स्थिति</value>
+  </data>
+  <data name="Last Used" xml:space="preserve">
+    <value>अंतिम बार उपयोग किया गया</value>
+  </data>
+  <data name="Locked Out" xml:space="preserve">
+    <value>ताला लगा दिया</value>
+  </data>
+  <data name="Message Id" xml:space="preserve">
+    <value>संदेश आईडी</value>
+  </data>
+  <data name="Modify" xml:space="preserve">
+    <value>सुधारना</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>कोई नहीं</value>
+  </data>
+  <data name="Notification Settings" xml:space="preserve">
+    <value>नोटिफ़िकेशन सेटिंग</value>
+  </data>
+  <data name="OU Searched" xml:space="preserve">
+    <value>OU खोजा गया</value>
+  </data>
+  <data name="Parent Template" xml:space="preserve">
+    <value>पैरेंट टेम्पलेट</value>
+  </data>
+  <data name="PasswordChange" xml:space="preserve">
+    <value>पासवर्ड बदलें</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>आराम देना</value>
+  </data>
+  <data name="Refresh Session" xml:space="preserve">
+    <value>सत्र ताज़ा करें</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>हटाना</value>
+  </data>
+  <data name="Request Access" xml:space="preserve">
+    <value>एक्सेस का अनुरोध करें</value>
+  </data>
+  <data name="Require Password Change" xml:space="preserve">
+    <value>पासवर्ड परिवर्तन आवश्यक है</value>
+  </data>
+  <data name="Response Code" xml:space="preserve">
+    <value>प्रतिक्रिया कोड</value>
+  </data>
+  <data name="Retry Count" xml:space="preserve">
+    <value>गणना पुनः प्रयास करें</value>
+  </data>
+  <data name="Send  Welcome Email" xml:space="preserve">
+    <value>स्वागत ईमेल भेजें</value>
+  </data>
+  <data name="Session Expired" xml:space="preserve">
+    <value>सत्र समाप्त हो गया</value>
+  </data>
+  <data name="Session expires in" xml:space="preserve">
+    <value>सत्र की समय सीमा समाप्त हो जाती है</value>
+  </data>
+  <data name="Show Previous Updates" xml:space="preserve">
+    <value>पिछले अपडेट दिखाएं</value>
+  </data>
+  <data name="Source Code" xml:space="preserve">
+    <value>सोर्स कोड</value>
+  </data>
+  <data name="Stale computers" xml:space="preserve">
+    <value>बासी कंप्यूटर</value>
+  </data>
+  <data name="Stale users" xml:space="preserve">
+    <value>बासी उपयोगकर्ता</value>
+  </data>
+  <data name="Template Id" xml:space="preserve">
+    <value>टेम्पलेट आईडी</value>
+  </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>टाइमस्टैम्प</value>
+  </data>
+  <data name="Toggle Fields" xml:space="preserve">
+    <value>टॉगल फ़ील्ड</value>
+  </data>
+  <data name="Token" xml:space="preserve">
+    <value>टोकन</value>
+  </data>
+  <data name="Token Lifetime" xml:space="preserve">
+    <value>टोकन लाइफटाइम</value>
+  </data>
+  <data name="Unassign" xml:space="preserve">
+    <value>असाइन रद्द करें</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>यूआरएल</value>
+  </data>
+  <data name="User Activity" xml:space="preserve">
+    <value>उपयोगकर्ता गतिविधि</value>
+  </data>
+  <data name="User Assigned" xml:space="preserve">
+    <value>उपयोगकर्ता असाइन किया गया</value>
+  </data>
+  <data name="User Searched" xml:space="preserve">
+    <value>उपयोगकर्ता खोजा गया</value>
+  </data>
+  <data name="User Unassigned" xml:space="preserve">
+    <value>उपयोगकर्ता असाइन नहीं किया गया</value>
+  </data>
+  <data name="Username Format" xml:space="preserve">
+    <value>उपयोगकर्ता नाम प्रारूप</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>मूल्य</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>चर</value>
+  </data>
+  <data name="Webhooks" xml:space="preserve">
+    <value>वेबहुक</value>
+  </data>
+  <data name="Your session has expired." xml:space="preserve">
+    <value>आपका सत्र समाप्त हो गया है।</value>
+  </data>
+  <data name="Your session is about to expire" xml:space="preserve">
+    <value>आपका सत्र समाप्त होने वाला है</value>
   </data>
 </root>

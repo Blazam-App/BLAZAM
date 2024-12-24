@@ -49,7 +49,7 @@
 
                 <MudSpacer />
                 <MudButton StartIcon="@Icons.Material.Filled.DriveFolderUpload"
-                           OnClick="@(()=>{Nav.NavigateTo(parentOU.SearchUri);})">@parentOU?.CanonicalName</MudButton>
+                Href="@parentOU?.SearchUri">@parentOU?.CanonicalName</MudButton>
 
             </ToolBarContent>
             <Columns>

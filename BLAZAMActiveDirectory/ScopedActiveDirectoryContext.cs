@@ -25,7 +25,9 @@ namespace BLAZAM.ActiveDirectory
             ApplicationStatistics.AddADContext();
 
         }
-
+        /// <summary>
+        /// Removes all created <see cref="IActiveDirectoryContext"/>'s created by this user's factory
+        /// </summary>
         public void Dispose()
         {
             ApplicationStatistics.RemoveADContext();

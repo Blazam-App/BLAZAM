@@ -12,6 +12,9 @@
 
 
 <AppPageTitle>@AppLocalization["Audit"]</AppPageTitle>
+<SetHeader>
+    <MudText>@AppLocalization["Audit"]</MudText>
+</SetHeader>
 <MudText Typo="Typo.h4">@AppLocalization["Audit"]</MudText>
 
 
@@ -37,8 +40,8 @@
                             </MudText>
                         </CellTemplate>
                     </TemplateColumn>
-                    <PropertyColumn Property="x => x.Username" Filterable="true" />
-                    <TemplateColumn Title=@AppLocalization["Ip Address"] Filterable="true">
+                    <PropertyColumn Property="x => x.Username" Filterable="true" Title="@AppLocalization["Username"]"/>
+                    <TemplateColumn Title=@AppLocalization["IP Address"] Filterable="true">
                         <CellTemplate>
                             @if (ApplicationInfo.InDemoMode && !CurrentUser.Username.Equals("admin", StringComparison.InvariantCultureIgnoreCase))
                             {
@@ -55,14 +58,18 @@
 
                         </CellTemplate>
                     </TemplateColumn>
-                    <PropertyColumn Property="x => x.Action" Filterable="true" />
-                    <TemplateColumn>
+                    <TemplateColumn Title="@AppLocalization["Action"]">
+                        <CellTemplate>
+                            <MudText>@AppLocalization[context.Item.Action]</MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="@AppLocalization["Target"]">
                         <CellTemplate>
                             <MudLink Href="@("/view/"+context.Item.Target)">@context.Item.Target</MudLink>
                         </CellTemplate>
                     </TemplateColumn>
-                    <PropertyColumn Property="x => x.BeforeAction" Filterable="true" />
-                    <PropertyColumn Property="x => x.AfterAction" Filterable="true" />
+                    <PropertyColumn Property="x => x.BeforeAction" Filterable="true" Title="@AppLocalization["Before Action"]" />
+                    <PropertyColumn Property="x => x.AfterAction" Filterable="true" Title="@AppLocalization["After Action"]" />
 
                 </Columns>
             </MudDataGrid>
@@ -98,9 +105,9 @@
                             </MudText>
                         </CellTemplate>
                     </TemplateColumn>
-                    <PropertyColumn Property="x => x.Username" />
+                    <PropertyColumn Property="x => x.Username" Title="@AppLocalization["Username"]" />
 
-                    <TemplateColumn Title=@AppLocalization["Ip Address"] Filterable="true">
+                    <TemplateColumn Title=@AppLocalization["IP Address"] Filterable="true">
                         <CellTemplate>
                             @if (ApplicationInfo.InDemoMode && !CurrentUser.Username.Equals("admin", StringComparison.InvariantCultureIgnoreCase))
                             {
@@ -117,7 +124,7 @@
                            
                         </CellTemplate>
                     </TemplateColumn>
-                    <PropertyColumn Property="x => x.Action" />
+                    <PropertyColumn Property="x => x.Action" Title="@AppLocalization["Action"]" />
 
                 </Columns>
             </MudDataGrid>

@@ -365,6 +365,9 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <returns></returns>
         DateTime? GetDateTimeProperty(string propertyName);
         void SetCustomProperty(string propertyName, object? value);
+        /// <summary>
+        /// Ensures that the <see cref="DirectoryEntry"/> property is not null.
+        /// </summary>
         void EnsureDirectoryEntry();
         void SetCurrentUser(IApplicationUserState user);
         Task<IDirectoryEntryAdapter?> GetParentAsync();

@@ -4,7 +4,9 @@
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 <AppPageTitle>@AppLocalization["Fields"]</AppPageTitle>
-
+<SetHeader>
+    <MudText>@AppLocalization["Fields"]</MudText>
+</SetHeader>
 <MudText Typo="Typo.h4">@AppLocalization["Fields"] <AppDocumentationButton Page="/admin/fields" /></MudText>
 <MudDataGrid @ref=fieldGrid
              T="CustomActiveDirectoryField"

@@ -32,7 +32,6 @@ namespace BLAZAM.ActiveDirectory
             }
             set => currentUser = value;
         }
-
         private WmiFactory _wmiFactory;
         private IEncryptionService _encryption;
         private INotificationPublisher _notificationPublisher;
@@ -549,7 +548,7 @@ namespace BLAZAM.ActiveDirectory
         public void Dispose()
         {
             _keepAlive = false;
-            Context.Dispose();
+            Context?.Dispose();
         }
 
         public IADUser? Authenticate_Alt(LoginRequest loginReq)
