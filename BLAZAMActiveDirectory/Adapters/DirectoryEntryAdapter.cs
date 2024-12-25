@@ -876,6 +876,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 IJobStep? propertyStep;
+                Job? propertyJob = new Job("Set AD attributes",commitJob.User);
                 if (!NewEntry)
                 {
                     //Existing Active Directory Entry
@@ -887,7 +888,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     foreach (var p in NewEntryProperties)
                     {
-                        propertyStep = new JobStep("Set AD attributes", (step) =>
+                        propertyStep = new JobStep("Set AD attribute ["+p.Key+"]", (step) =>
                          {
 
 
@@ -914,8 +915,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                              DirectoryEntry.CommitChanges();
                              return true;
                          });
-                        commitJob.AddStep(propertyStep);
+                        propertyJob.AddStep(propertyStep);
 
+                    }
+                    if (propertyJob.Steps.Count > 0)
+                    {
+                        commitJob.AddStep(propertyJob);
                     }
                     commitJob.AddStep(commitStep);
 
@@ -939,7 +944,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             DirectoryEntry.Properties[p.Key].Value = p.Value;
                             return true;
                         });
-                        commitJob.AddStep(propertyStep);
+                        propertyJob.AddStep(propertyStep);
+                    }
+                    if (propertyJob.Steps.Count > 0)
+                    {
+                        commitJob.AddStep(propertyJob);
                     }
                 }
 
