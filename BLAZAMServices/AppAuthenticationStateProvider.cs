@@ -33,10 +33,12 @@ namespace BLAZAM.Services
             IEncryptionService enc,
             AuditLogger audit,
             ApplicationInfo applicationInfo,
+            GoogleAuthenticatorService googleAuthenticatorService,
             NavigationManager nav)
         {
             _applicationInfo = applicationInfo;
             this._encryption = enc;
+            this._googleAuthenticatorService = googleAuthenticatorService;
             this._directory = directoy;
             this._factory = factory;
             this._permissionHandler = permissionHandler;
@@ -54,6 +56,7 @@ namespace BLAZAM.Services
         private readonly AuditLogger _audit;
         private readonly ApplicationInfo _applicationInfo;
         private readonly IEncryptionService _encryption;
+        private readonly GoogleAuthenticatorService _googleAuthenticatorService;
         private readonly NavigationManager _nav;
         private readonly IActiveDirectoryContext _directory;
         private readonly IUserDatabaseFactory _factory;
@@ -243,16 +246,31 @@ namespace BLAZAM.Services
                                     newUserState.User = userClaim;
                                     _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
                                     authenticationState = authResult;
-                                    return loginReq.MFARequested(authenticationState);
+                                    return loginReq.DuoRequested(authenticationState);
 
                                 }
-                                // var principal = await CreateDirectoryPrincipal(loginUser, user, loginReq);
-                                //return ;
-                                //Duo authentication requested
 
                             }
+                            else
+                            {
+                                var sid = userClaim.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                                var userSettings = context.UserSettings.FirstOrDefault(x => x.UserGUID == sid);
+                                if (userSettings != null && !loginReq.Impersonation && !userSettings.AuthenticatorSecret.IsNullOrEmpty())
+                                {
+                                    var passcode = loginReq.MFAToken;
+                                    loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
+                                    if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken, passcode))
+                                    {
+                                        var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
+                                        var authResult = await SetUser(twostepState);
+                                        newUserState.User = userClaim;
+                                        _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                                        authenticationState = authResult;
+                                        return loginReq.GoogleAuthenticatorRequested(authenticationState);
+                                    }
 
-
+                                }
+                            }
 
                             //If active directory login/impersonation succeeded the userClaim will be popluated
                             if (userClaim.Identity?.IsAuthenticated == true)

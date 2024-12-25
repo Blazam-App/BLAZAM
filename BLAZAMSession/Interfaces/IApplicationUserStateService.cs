@@ -12,7 +12,7 @@ namespace BLAZAM.Session.Interfaces
 
 
         IApplicationUserState CreateUserState(ClaimsPrincipal user);
-        MFARequest? GetMFARequest(string state);
+        MFARequest? GetMFARequest(string mfaToken);
         IApplicationUserState? GetUserState(ClaimsPrincipal userClaim);
 
         // IApplicationUserState? GetUserState(ClaimsPrincipal userClaim);

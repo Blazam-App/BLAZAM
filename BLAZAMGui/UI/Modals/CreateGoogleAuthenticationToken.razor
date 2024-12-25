@@ -1,0 +1,55 @@
+@inherits AppComponentBase
+<MudText>@AppLocalization["Google Authenticator Setup"]</MudText>
+<MudImage Src="@qrCode" />
+<MudButton Color="Color.Primary"
+Variant="Variant.Filled"
+OnClick="GenerateGoogleAuthToken">@AppLocalization["Create Google Authenticator Token"]</MudButton>
+
+
+<GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
+
+@code{
+    string _authenticatorSecret;
+    private string? qrCode;
+    GoogleAuthenticatorModal? googleAuthenticatorModal;
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        try
+        {
+            _authenticatorSecret = CurrentUser.State.Preferences.AuthenticatorSecret.Decrypt<string>();
+            if (!_authenticatorSecret.IsNullOrEmpty())
+            {
+                qrCode = GoogleAuthenticatorService.GenerateSetupCode(CurrentUser.Username, _authenticatorSecret.ToString()).QrCodeSetupImageUrl;
+            }
+        }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error("Error fetching users authentication secret {Error}", ex);
+        }
+    }
+
+    async Task GenerateGoogleAuthToken()
+    {
+        //var result  =  await googleAuthenticatorModal.ShowAsync();
+
+        if (qrCode == null || await MessageService.Confirm(AppLocalization["Generating a new authenticator token will invalidate the existing one!"]) == true)
+        {
+
+
+            var guid = Guid.NewGuid().ToString().Replace("-", "");
+
+            var setupcode = GoogleAuthenticatorService.GenerateSetupCode(CurrentUser.Username, guid.ToString());
+            var confirm = await googleAuthenticatorModal.ShowAsync(guid.ToString(), setupcode.QrCodeSetupImageUrl);
+            if (confirm != null)
+            {
+                qrCode = setupcode.QrCodeSetupImageUrl;
+                _authenticatorSecret = guid;
+                CurrentUser.State.Preferences.AuthenticatorSecret = guid.Encrypt();
+                CurrentUser.State.SaveBasicUserPreferences();
+            }
+        }
+    }
+}

@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.2.4</AssemblyVersion>
-		<Version>2024.12.24.1151</Version>
+		<Version>2024.12.24.2352</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -108,7 +108,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="..\BLAZAMGui\UI\Settings\WebHooks\NewWebHookModalContent.razor" Link="NewWebHookModalContent.razor" />
+	  <None Include="..\BLAZAMGui\UI\Modals\GoogleAuthenticatorInput.razor" Link="GoogleAuthenticatorInput.razor" />
 	</ItemGroup>
 
 	<ItemGroup>

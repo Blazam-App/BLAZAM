@@ -750,6 +750,9 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<int>("DuoUnreachableBehavior")
                         .HasColumnType("int");
 
+                    b.Property<bool>("RequireMFA")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("SessionTimeout")
                         .HasColumnType("int");
 
@@ -768,6 +771,7 @@ namespace BLAZAM.Common.Migrations.Sql
                             AdminPassword = "password",
                             DuoEnabled = false,
                             DuoUnreachableBehavior = 0,
+                            RequireMFA = false,
                             SessionTimeout = 15
                         });
                 });
@@ -1634,6 +1638,9 @@ namespace BLAZAM.Common.Migrations.Sql
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthenticatorSecret")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("DarkMode")
                         .HasColumnType("bit");
