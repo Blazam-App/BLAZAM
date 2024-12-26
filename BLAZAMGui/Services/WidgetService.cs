@@ -32,9 +32,12 @@ namespace BLAZAM.Gui.Services
                 if (applicationUser.IsSuperAdmin || applicationUser.CanUnlockUsers)
                     widgets.Add(new LockedOutUsers() { WidgetType = DashboardWidgetType.LockedOutUsers, Title = AppLocalization["Locked Out Users"] });
                 if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers))
+                {
 
                     widgets.Add(new NewUsersWidget() { WidgetType = DashboardWidgetType.NewUsers, Title = AppLocalization["Users created in the last 14 days"] });
+                    widgets.Add(new ChangedPasswordsWidget() { WidgetType = DashboardWidgetType.PasswordsChanged, Title = AppLocalization["Passwords changed in the last 90 days"] });
 
+                }
                 if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers)
                     || applicationUser.HasRole(UserRoles.SearchOUs)
                      || applicationUser.HasRole(UserRoles.SearchGroups)
@@ -59,7 +62,6 @@ namespace BLAZAM.Gui.Services
                     widgets.Add(new NewComputersWidget() { WidgetType = DashboardWidgetType.NewComputers, Title = AppLocalization["Computers created in the last 14 days"] });
                 if (applicationUser.IsSuperAdmin)
                 {
-                    widgets.Add(new ChangedPasswordsWidget() { WidgetType = DashboardWidgetType.PasswordsChanged, Title = AppLocalization["Passwords changed in the last 90 days"] });
                     widgets.Add(new DeletedEntriesWidget() { WidgetType = DashboardWidgetType.DeletedEntries, Title = AppLocalization["Entries deleted in the last 14 days"] });
                     widgets.Add(new AppLogonsWidget() { WidgetType = DashboardWidgetType.AppLogons, Title = AppLocalization["Application logons"] });
                     widgets.Add(new StaleUsersWidget() { WidgetType = DashboardWidgetType.StaleUsers, Title = AppLocalization["Stale users"] });

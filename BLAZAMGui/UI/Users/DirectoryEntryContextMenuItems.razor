@@ -1,9 +1,7 @@
-﻿@using BLAZAM.Common.Data.Database
-@inherits AppComponentBase
-@inject NotificationGenerationService NotificationGenerationService
-@if (Entry is IAccountDirectoryAdapter account)
+﻿@inherits AppComponentBase
+@if(Entry is IAccountDirectoryAdapter account)
 {
-    if (account.CanUnlock && account.LockedOut)
+    if(account.CanUnlock && account.LockedOut)
     {
         <MudMenuItem OnClick="(()=>{UnlockAccount(account);})" Icon="@Icons.Material.Outlined.LockOpen">
             @AppLocalization["Unlock"] @AppLocalization[account.ObjectType.ToString()]
@@ -26,7 +24,7 @@
 
 @code {
     [Parameter]
-    public IDirectoryEntryAdapter Entry { get; set; }
+    public IDirectoryEntryAdapter Entry{ get; set; }
 
     async void UnlockAccount(IAccountDirectoryAdapter userToUnlock)
     {
@@ -37,19 +35,10 @@
             var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
-
+            await AuditLogger.User.Changed(userToUnlock, changes);
             if (unlockJob.Result == JobResult.Passed)
             {
-                await AuditLogger.User.Changed(userToUnlock, changes);
-                if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                {
-                    await NotificationGenerationService.PostAsync(userToUnlock, NotificationType.Modify, CurrentUser.State);
 
-                }
-                else
-                {
-                    _ = NotificationGenerationService.PostAsync(userToUnlock, NotificationType.Modify, CurrentUser.State);
-                }
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" unlocked"]);
             }
             else
@@ -68,19 +57,10 @@
             var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
-           
+            await AuditLogger.User.Changed(userToUnlock, changes);
             if (unlockJob.Result == JobResult.Passed)
             {
- await AuditLogger.User.Changed(userToUnlock, changes);
-                if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                {
-                    await NotificationGenerationService.PostAsync(userToUnlock, NotificationType.Modify, CurrentUser.State);
 
-                }
-                else
-                {
-                    _ = NotificationGenerationService.PostAsync(userToUnlock, NotificationType.Modify, CurrentUser.State);
-                }
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" enabled"]);
             }
             else
@@ -99,19 +79,10 @@
             var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
-
+            await AuditLogger.User.Changed(userToUnlock, changes);
             if (unlockJob.Result == JobResult.Passed)
             {
-            await AuditLogger.User.Changed(userToUnlock, changes);
-                if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                {
-                    await NotificationGenerationService.PostAsync(userToUnlock, NotificationType.Modify, CurrentUser.State);
 
-                }
-                else
-                {
-                    _ = NotificationGenerationService.PostAsync(userToUnlock, NotificationType.Modify, CurrentUser.State);
-                }
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" disabled"]);
             }
             else

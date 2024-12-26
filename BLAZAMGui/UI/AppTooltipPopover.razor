@@ -2,11 +2,14 @@
 <MudElement @onmouseover="@(()=>{Show=true;})" @onmouseout="@(()=>{Show=false;})">
     @ActivatorContent
 </MudElement>
-<MudPopover Open="Show">
-    <MudElement @onmouseover="@(()=>{Show=true;})" @onmouseout="@(()=>{Show=false;})">
-        @PopoverContent
+<MudPopover AnchorOrigin=Origin.BottomCenter TransformOrigin=Origin.TopCenter  Class="pa-5" Open="Show">
+    @if (Show)
+    {
+        <MudElement @onmouseover="@(()=>{Show=true;})" Class
+        ="pa-5" @onmouseout="@(()=>{Show=false;})">
+            @PopoverContent
     </MudElement>
-
+    }
 </MudPopover>
 @code {
     private CancellationTokenSource showCancellationTokenSource = new();
@@ -25,7 +28,7 @@
                 }
                 showCancellationTokenSource = new();
                 _stagedShow=value;
-                Task.Delay(500).ContinueWith((state) =>
+                Task.Delay(250).ContinueWith((state) =>
                 {
 
                     _show = _stagedShow;

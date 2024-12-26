@@ -18,11 +18,9 @@
     protected override async Task RefreshData()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         NewPrinters = (await Directory.Printers.FindNewPrintersAsync(14, false)).Where(u => u.CanRead).ToList();
 
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
 
     }
     void GoTo(DataGridRowClickEventArgs<IADPrinter> args)
