@@ -1,7 +1,7 @@
 # BLAZAM
 Proudly serving
 
-[![image](https://github.com/user-attachments/assets/86820ef8-15e6-4f81-97c5-bdfe6e8acc37)](https://logs.blazam.org/#/dashboards?dashboardId=dashboard-14&range=90d&group=1d&theme=dark-theme)
+[![image](https://github.com/user-attachments/assets/86820ef8-15e6-4f81-97c5-bdfe6e8acc37)](https://logs.blazam.org/#/dashboards?dashboardId=dashboard-14&range=90d&group=1d&apiKey=EpKqcm4TkeEzMvIAxtnc&theme=dark-theme)
 
 Click the image for the latest statistics.
 
