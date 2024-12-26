@@ -27,7 +27,14 @@
                         <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                             <MudText>@context.Item?.CanonicalName</MudText>
                         </AppTooltip>
-
+                        <AppTooltipPopover>
+                            <ActivatorContent>
+                                <MudText>@context.Item?.CanonicalName</MudText>
+                            </ActivatorContent>
+                            <PopoverContent>
+                                <MudText> Popover test</MudText>
+                            </PopoverContent>
+                        </AppTooltipPopover>
                     </ChildContent>
                     <MenuContents>
 

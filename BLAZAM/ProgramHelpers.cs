@@ -243,10 +243,7 @@ namespace BLAZAM.Server
                       ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
                   });
 
-            //Also keeping this here for a possible future API, though this would be for internal use
-            //builder.Services.AddTransient<ApiService>();
-            //builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext.User);
-
+          
             //Provide a way to get the current HTTP userPrincipal as a service
             builder.Services.AddHttpContextAccessor();
 

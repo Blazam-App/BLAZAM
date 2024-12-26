@@ -1,0 +1,48 @@
+﻿@inherits AppComponentBase
+<MudElement @onmouseover="@(()=>{Show=true;})" @onmouseout="@(()=>{Show=false;})">
+    @ActivatorContent
+</MudElement>
+<MudPopover Open="Show">
+    <MudElement @onmouseover="@(()=>{Show=true;})" @onmouseout="@(()=>{Show=false;})">
+        @PopoverContent
+    </MudElement>
+
+</MudPopover>
+@code {
+    private CancellationTokenSource showCancellationTokenSource = new();
+    private bool _stagedShow;
+    private bool _show;
+    private bool Show
+    {
+        get => _show; set
+        {
+            if (_stagedShow == value) return;
+            if (!value)
+            {
+                if (!showCancellationTokenSource.IsCancellationRequested)
+                {
+                    showCancellationTokenSource.Cancel();
+                }
+                showCancellationTokenSource = new();
+                _stagedShow=value;
+                Task.Delay(500).ContinueWith((state) =>
+                {
+
+                    _show = _stagedShow;
+                    InvokeAsync(StateHasChanged);
+
+                }, showCancellationTokenSource.Token);
+            }
+            else
+            {
+                showCancellationTokenSource.Cancel();
+                _stagedShow = value;
+                _show = value;
+            }
+        }
+    }
+    [Parameter]
+    public RenderFragment ActivatorContent { get; set; }
+    [Parameter]
+    public RenderFragment PopoverContent { get; set; }
+}

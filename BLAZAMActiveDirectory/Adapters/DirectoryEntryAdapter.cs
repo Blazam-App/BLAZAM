@@ -21,7 +21,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
-using static MudBlazor.Colors;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -364,15 +363,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                     return _cachedHasChildren == true;
-                    //try{
-                    //    return cursor.Current != null;
-
-                    //}
-                    //catch (InvalidOperationException)
-                    //{
-                    //    return false;
-                    //}
-                    //CachedChildren = children.Encapsulate();
+                  
                 }
                 var hasChildren = CachedChildren.Count() > 0;
                 return hasChildren;
