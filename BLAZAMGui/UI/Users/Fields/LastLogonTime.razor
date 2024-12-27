@@ -23,7 +23,7 @@ else
         await Task.Run(() =>
          {
 
-             userLastLogonTime = DirectoryEntry.LastLogonTime;
+             userLastLogonTime = DirectoryEntry?.LastLogonTime;
              _loadingLogonTime = false;
 
              InvokeAsync(StateHasChanged);
