@@ -100,6 +100,7 @@ else
     </AppTooltip>
 
 }
+
 @code {
     private bool showRead;
     private List<NewsItem> unreadItems = new();
@@ -127,9 +128,9 @@ else
     {
         await base.OnInitializedAsync();
         ApplicationNewsService.OnNewItemsAvailable += RefreshItems;
+        
         RefreshItems();
-        await InvokeAsync(StateHasChanged);
-
+        
 
     }
 
@@ -148,7 +149,7 @@ else
         {
             try
             {
-                CurrentUser.State.ReadNewsItems.Add(new ReadNewsItem { NewsItemId = newsItem.Id, NewsItemUpdatedAt = newsItem.UpdatedAt, User = CurrentUser.State.Preferences });
+                CurrentUser.State.ReadNewsItems?.Add(new ReadNewsItem { NewsItemId = newsItem.Id, NewsItemUpdatedAt = newsItem.UpdatedAt, User = CurrentUser.State.Preferences });
             }
             catch
             {
@@ -157,11 +158,12 @@ else
         }
         await CurrentUser.State.SaveReadNewsItems();
         RefreshItems();
-        await InvokeAsync(StateHasChanged);
+        //await InvokeAsync(StateHasChanged);
 
     }
     private void RefreshItems()
     {
+
         RefreshUnreadItems();
         RefreshReadItems();
         if (!ApplicationInfo.InDebugMode)
@@ -170,7 +172,8 @@ else
             unreadItems.RemoveAll(x => x.DevOnly);
 
         }
-        InvokeAsync(StateHasChanged);
+        LoadingData = false;
+       // InvokeAsync(StateHasChanged);
 
     }
     private void RefreshUnreadItems()
@@ -183,9 +186,7 @@ else
             latestUpdate = UpdateService.LatestUpdate;
 
             if (appUpdateNewsItem != null &&
-                !CurrentUser.State.ReadNewsItems.Any(
-                    x => x.NewsItemId == appUpdateNewsItem.Id
-                ))
+                !CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id)==true)
             {
                 unreadItems.Insert(0, appUpdateNewsItem);
             }
@@ -196,10 +197,10 @@ else
     {
         readItems = ApplicationNewsService.GetReadNewsItems(CurrentUser.State);
 
-        if (appUpdateNewsItem != null && CurrentUser.State.ReadNewsItems.Any(x => x.NewsItemId == appUpdateNewsItem.Id))
+        if (appUpdateNewsItem != null && CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id)==true)
         {
             readItems.Insert(0, appUpdateNewsItem);
         }
     }
-
+ 
 }

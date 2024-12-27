@@ -21,7 +21,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
-using static MudBlazor.Colors;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -364,15 +363,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                     return _cachedHasChildren == true;
-                    //try{
-                    //    return cursor.Current != null;
-
-                    //}
-                    //catch (InvalidOperationException)
-                    //{
-                    //    return false;
-                    //}
-                    //CachedChildren = children.Encapsulate();
+                  
                 }
                 var hasChildren = CachedChildren.Count() > 0;
                 return hasChildren;
@@ -876,6 +867,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 IJobStep? propertyStep;
+                Job? propertyJob = new Job("Set AD attributes",commitJob.User);
                 if (!NewEntry)
                 {
                     //Existing Active Directory Entry
@@ -887,7 +879,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     foreach (var p in NewEntryProperties)
                     {
-                        propertyStep = new JobStep("Set AD attributes", (step) =>
+                        propertyStep = new JobStep("Set AD attribute ["+p.Key+"]", (step) =>
                          {
 
 
@@ -914,8 +906,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                              DirectoryEntry.CommitChanges();
                              return true;
                          });
-                        commitJob.AddStep(propertyStep);
+                        propertyJob.AddStep(propertyStep);
 
+                    }
+                    if (propertyJob.Steps.Count > 0)
+                    {
+                        commitJob.AddStep(propertyJob);
                     }
                     commitJob.AddStep(commitStep);
 
@@ -939,7 +935,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             DirectoryEntry.Properties[p.Key].Value = p.Value;
                             return true;
                         });
-                        commitJob.AddStep(propertyStep);
+                        propertyJob.AddStep(propertyStep);
+                    }
+                    if (propertyJob.Steps.Count > 0)
+                    {
+                        commitJob.AddStep(propertyJob);
                     }
                 }
 

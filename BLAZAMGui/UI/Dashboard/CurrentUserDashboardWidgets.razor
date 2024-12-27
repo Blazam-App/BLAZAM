@@ -3,7 +3,7 @@
 @using MudBlazor.Utilities;
 
 @inherits AppComponentBase
-@if (CurrentUser.State != null && CurrentUser.State.Preferences != null)
+@if (CurrentUser.State != null && CurrentUser.State.Preferences != null && allWidgets.Count>0)
 {
     if (_editMode)
     {
@@ -65,6 +65,8 @@
                     }
                     if (widget != null)
                     {
+                        
+                       // <WidgetContainer Widget="widget" Dashboard="this"/>
                         <MudCard Class="my-5 " Elevation="1">
                             <MudCardHeader>
                                 <MudText Typo="Typo.h6">@AppLocalization[widget.Title]</MudText>
@@ -117,11 +119,12 @@
         </MudAlert>
     }
     <MudStack Class="d-flex mt-5"
-              Style="justify-content: flex-end;" Row=true>
+              Style="justify-content: flex-end;" 
+              Row=true>
         <AppTooltip Text=@AppLocalization["Edit"]>
             <MudFab StartIcon="@(_editMode==false?Icons.Material.Filled.Edit:Icons.Material.Filled.EditOff)"
                     Color="@(_editMode==false?Color.Success:Color.Error)"
-                    OnClick="@(()=>{_editMode=!_editMode;  widgetContainer?.Refresh();})" />
+                    OnClick="@(()=>{_editMode=!_editMode; widgetContainer?.Refresh();})" />
         </AppTooltip>
         @if (_editMode)
         {
@@ -177,12 +180,15 @@
     MudDropContainer<UserDashboardWidget>? widgetContainer;
     List<Widget> allWidgets = new List<Widget>();
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
 
         allWidgets = new List<Widget>(WidgetService.Available());
         _currentUser = CurrentUser.State;
-        return base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+
     }
     bool ItemSelector(UserDashboardWidget item, string dropzone)
     {

@@ -14,9 +14,16 @@
     </SetHeader>
 
     <MudText Typo="Typo.h4">@AppLocalization["API Tokens"] <AppDocumentationButton Page="/admin/api" /></MudText>
-
+    <MudLink Href="/swagger" Target="_blank">
+        <MudAlert Severity="Severity.Info"
+                  Variant="Variant.Filled"
+                  Class="mb-5"
+                  Icon="@Icons.Material.Filled.BookOnline">
+            @AppLocalization["Click to view API documentation"].
+        </MudAlert>
+    </MudLink>
     <ApiTokenDataGrid ShowUser="true" OnTokenDeleted="@((token)=>{Delete(token);})" Tokens="@_tokens" />
-
+        <MudButton Color="Color.Primary" OnClick="@(Save)">@AppLocalization["Save"]</MudButton>
 </AuthorizeView>
 
 

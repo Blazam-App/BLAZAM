@@ -238,51 +238,60 @@ namespace BLAZAM.Update.Services
 
         public void ScheduleUpdate(TimeSpan updateTimeOfDay, ApplicationUpdate updateToInstall)
         {
-            IJob scheduleUpdatteJob = new Job("Schedule Update");
-            IJobStep scheduleStep = new JobStep("Execute", async (step) =>
+            try
             {
-                try
+                bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall;
+                if (ScheduledUpdate != updateToInstall)
                 {
-                    bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall;
-                    if (ScheduledUpdate != updateToInstall)
+                    IJob scheduleUpdatteJob = new Job("Schedule Update");
+                    IJobStep scheduleStep = new JobStep("Execute", async (step) =>
                     {
-                        Loggers.UpdateLogger.Information("New update found: " + updateToInstall.Version);
-
-                        //Update available
-                        var now = DateTime.Now;
-                        ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTimeOfDay.Hours, updateTimeOfDay.Minutes, updateTimeOfDay.Seconds);
-
-
-                        //Check if we're past the scheduled time this day
-                        if (ScheduledUpdateTime < now)
+                        try
                         {
-                            ScheduledUpdateTime = ScheduledUpdateTime.AddDays(1);
+
+                            Loggers.UpdateLogger.Information("New update found: " + updateToInstall.Version);
+
+                            //Update available
+                            var now = DateTime.Now;
+                            ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTimeOfDay.Hours, updateTimeOfDay.Minutes, updateTimeOfDay.Seconds);
+
+
+                            //Check if we're past the scheduled time this day
+                            if (ScheduledUpdateTime < now)
+                            {
+                                ScheduledUpdateTime = ScheduledUpdateTime.AddDays(1);
+                            }
+
+
+                            TimeSpan timeUntilUpdate = ScheduledUpdateTime - now;
+
+                            ScheduledUpdate = updateToInstall;
+
+                            autoUpdateApplyTimer = new Timer(Update, null, (int)timeUntilUpdate.TotalMilliseconds, Timeout.Infinite);
+                            Loggers.UpdateLogger.Information("Auto-update scheduled: " + timeUntilUpdate.TotalMinutes + "mins from now at " + ScheduledUpdateTime);
+                            if (justScheduled)
+                            {
+                                Loggers.UpdateLogger.Debug("Update just scheduled");
+                                OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
+
+                            }
+
+
                         }
-
-
-                        TimeSpan timeUntilUpdate = ScheduledUpdateTime - now;
-
-                        ScheduledUpdate = updateToInstall;
-
-                        autoUpdateApplyTimer = new Timer(Update, null, (int)timeUntilUpdate.TotalMilliseconds, Timeout.Infinite);
-                        Loggers.UpdateLogger.Information("Auto-update scheduled: " + timeUntilUpdate.TotalMinutes + "mins from now at " + ScheduledUpdateTime);
-                        if (justScheduled)
+                        catch (Exception ex)
                         {
-                            Loggers.UpdateLogger.Debug("Update just scheduled");
-                            OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
-
+                            Loggers.UpdateLogger.Error("Error during auto update scheduling {@Error}", ex);
                         }
-
-                    }
+                        return true;
+                    });
+                    scheduleUpdatteJob.AddStep(scheduleStep);
+                    scheduleUpdatteJob.Run();
                 }
-                catch (Exception ex)
-                {
-                    Loggers.UpdateLogger.Error("Error during auto update scheduling {@Error}", ex);
-                }
-                return true;
-            });
-            scheduleUpdatteJob.AddStep(scheduleStep);
-            scheduleUpdatteJob.Run();
+            }
+            catch (Exception ex)
+            {
+                Loggers.UpdateLogger.Error("Error during auto update scheduling {@Error}", ex);
+            }
         }
 
         private async void Update(object? state)

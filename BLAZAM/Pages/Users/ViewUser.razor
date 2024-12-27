@@ -146,7 +146,7 @@
 
                                 <MudText Typo="Typo.subtitle2">@AppLocalization["Last Logon"]:</MudText>
                                 <MudSpacer />
-                                <LastLogonTime DirectoryEntry="User" />
+                                    <LastLogonTime Typo=Typo.caption DirectoryEntry="User" />
                             </MudStack>
                             @if (User?.LockedOut == true)
                             {

@@ -114,8 +114,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             DriveType = (DriveType)driveType,
                             MediaType = mediaType
                         });
-                        //Console.WriteLine("Free space: " + freeSpace + " GB");
-                        //Console.WriteLine("Size: " + size + " GB");
+                        
                     }
                 }
                 catch (Exception ex)
@@ -138,7 +137,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         if ((bool)mo["Shared"])
                         {
-                            Console.WriteLine(mo["Name"]);
+                            
                             sharedPrinters.Add(new SharedPrinter(target, mo));
 
                         }

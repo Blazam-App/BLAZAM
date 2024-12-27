@@ -187,7 +187,7 @@ namespace BLAZAM.Database.Context
             {
                 var _dbType = _configuration.GetValue<string>("DatabaseType");
                 if (_dbType == null) throw new DatabaseException("DatabaseType missing in configuration file");
-                // Console.WriteLine("Database Type: " + _dbType);
+ 
                 IDatabaseContext? databaseContext = null;
                 switch (_dbType.ToLower())
                 {

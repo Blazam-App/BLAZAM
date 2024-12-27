@@ -70,21 +70,16 @@ namespace BLAZAM.Database.Context
         private static async Task<T> UpdateProperty<T>(T originalProperty, Func<IDatabaseContext, IQueryable<T>> value)
         {
 
-            //Console.WriteLine("Updating "+typeof(T).Name);
-
             using var _context = await dbContextFactory.CreateDbContextAsync();
             try
             {
                 var temp = await value.Invoke(_context).FirstOrDefaultAsync();
-                //Console.WriteLine("Finished " + typeof(T).Name);
-
                 return temp;
             }
             catch (Exception)
             {
 
             }
-            //Console.WriteLine("Finished " + typeof(T).Name);
 
             return originalProperty;
 

@@ -1,8 +1,9 @@
 # BLAZAM
 Proudly serving
 
-![image](https://github.com/user-attachments/assets/cae7fc08-2036-4f44-a948-11a8f74fa929)
+[![image](https://github.com/user-attachments/assets/86820ef8-15e6-4f81-97c5-bdfe6e8acc37)](https://logs.blazam.org/#/dashboards?dashboardId=dashboard-14&range=90d&group=1d&apiKey=EpKqcm4TkeEzMvIAxtnc&theme=dark-theme)
 
+Click the image for the latest statistics.
 
 ## Version 1.0.0 Release Notice
 Blazam has been officially released.

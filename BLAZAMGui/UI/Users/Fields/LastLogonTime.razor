@@ -2,7 +2,7 @@
 {
     <AppTooltip Text="@userLastLogonTime?.ToLocalTime().TimeOfDay.ToString()">
 
-        <MudText Style="text-align:end;" Typo="Typo.caption">@userLastLogonTime?.ToLocalTime().ToShortDateString()</MudText>
+        <MudText Style="text-align:end;" Typo="@Typo">@userLastLogonTime?.ToLocalTime().ToShortDateString()</MudText>
     </AppTooltip>
 }
 else
@@ -15,6 +15,8 @@ else
     DateTime? userLastLogonTime;
     [Parameter]
     public IAccountDirectoryAdapter DirectoryEntry { get; set; }
+    [Parameter]
+    public Typo Typo { get; set; }
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -23,7 +25,34 @@ else
         await Task.Run(() =>
          {
 
-             userLastLogonTime = DirectoryEntry.LastLogonTime;
+             var userLastLogon = DirectoryEntry?.LastLogonTime;
+             var userLastLogonTimestamp = DirectoryEntry?.LastLogonTimestamp;
+
+             if(userLastLogon!=null && userLastLogonTimestamp != null)
+             {
+                 if (userLastLogon > userLastLogonTimestamp)
+                 {
+                     userLastLogonTime = userLastLogon;
+                 }
+                 else
+                 {
+                     userLastLogonTime = userLastLogonTimestamp;
+
+                 }
+             }
+             else
+             {
+                 if (userLastLogon != null)
+                 {
+                     userLastLogonTime = userLastLogon;
+                 }
+                 else
+                 if (userLastLogonTimestamp != null)
+                 {
+                     userLastLogonTime = userLastLogonTimestamp;
+                 }
+             }
+
              _loadingLogonTime = false;
 
              InvokeAsync(StateHasChanged);

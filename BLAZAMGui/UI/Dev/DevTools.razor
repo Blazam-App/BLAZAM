@@ -142,6 +142,11 @@
             InvokeAsync(StateHasChanged);
         }, null, 500, 2000);
     }
+    public override void Dispose()
+    {
+        t.Dispose();
+        base.Dispose();
+    }
     [Parameter]
     public bool DrawerOpen { get; set; }
     [Parameter]

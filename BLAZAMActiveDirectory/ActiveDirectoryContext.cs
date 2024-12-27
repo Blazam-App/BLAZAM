@@ -550,7 +550,7 @@ namespace BLAZAM.ActiveDirectory
             _keepAlive = false;
             Context?.Dispose();
         }
-
+        [Obsolete]
         public IADUser? Authenticate_Alt(LoginRequest loginReq)
         {
             var startOfLogon = DateTime.Now;

@@ -24,6 +24,7 @@ using System.Security.Authentication;
 using Azure;
 using Polly;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Jobs;
 
 
 namespace BLAZAM.Notifications.Services
@@ -66,26 +67,44 @@ namespace BLAZAM.Notifications.Services
                             .Where(w => w.Delivered == false &&
                             w.RetryCount < 15)
                             .ToList();
-                        if (_appDatabaseFactory.DatabaseType == DatabaseType.SQLite)
+                        if (undeliveredWebhooks.Count > 0)
                         {
-                            foreach(var attempt in undeliveredWebhooks)
+                            IJob webhookAttemptJob = new Job("Webhook Retry");
+                            JobStep execStep = null;
+                            if (_appDatabaseFactory.DatabaseType == DatabaseType.SQLite)
                             {
-                                var attemptId = Guid.NewGuid();
 
-                                await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp, attempt.Body, attempt.EventType, attempt.Signature);
+                                foreach (var attempt in undeliveredWebhooks)
+                                {
+                                    execStep = new JobStep("Execute " + attempt.WebHookSubscription.URL, async (step) =>
+                                    {
+                                        var attemptId = Guid.NewGuid();
+
+                                        await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp, attempt.Body, attempt.EventType, attempt.Signature);
+                                        return true;
+
+                                    });
+                                    webhookAttemptJob.AddStep(execStep);
+                                }
                             }
-                        }
-                        else
-                        {
+                            else
+                            {
 
+                                execStep = new JobStep("Multi-threaded execute of " + undeliveredWebhooks.Count + " retries", async (step) =>
+                                {
+                                    Parallel.ForEachAsync(undeliveredWebhooks, async (attempt, cancel) =>
+                                            {
+                                                var attemptId = Guid.NewGuid();
 
-                            Parallel.ForEachAsync(undeliveredWebhooks, async (attempt, cancel) =>
-                        {
-                            var attemptId = Guid.NewGuid();
+                                                await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp, attempt.Body, attempt.EventType, attempt.Signature);
 
-                            await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp, attempt.Body, attempt.EventType, attempt.Signature);
+                                            });
+                                    return true;
+                                });
+                                webhookAttemptJob.AddStep(execStep);
 
-                        });
+                            }
+                            await webhookAttemptJob.RunAsync();
                         }
                     }
                     catch (Exception ex)
@@ -106,23 +125,25 @@ namespace BLAZAM.Notifications.Services
             IApplicationUserState? actor = null,
             IDirectoryEntryAdapter? target = null)
         {
+            IJob webhookAttemptJob = new Job("Publish Webhook");
+            JobStep execStep = new JobStep("Execute", async (step) =>
+            {
+                var msgId = Guid.NewGuid();
+                var eventTimestamp = DateTime.UtcNow;
 
-            var msgId = Guid.NewGuid();
-            var eventTimestamp = DateTime.UtcNow;
-
-            var eventType = source.ObjectType.ToString().ToLower() + "." + notificationType.ToString().ToLower();
+                var eventType = source.ObjectType.ToString().ToLower() + "." + notificationType.ToString().ToLower();
 
 
-            string? signature = null;
+                string? signature = null;
 
-            Dictionary<string, object?> payload = new()
+                Dictionary<string, object?> payload = new()
                 {
                     { "timestamp", eventTimestamp.ToString(webhookDateTimeFormat)},
 
                     { "type", eventType}
                 };
-            var attemptId = Guid.NewGuid();
-            Dictionary<string, object?> data = new()
+                var attemptId = Guid.NewGuid();
+                Dictionary<string, object?> data = new()
             {
                   { "id", msgId },
                   { "actor", actor?.Username }, // Use ?. to handle null actor
@@ -131,30 +152,35 @@ namespace BLAZAM.Notifications.Services
                     { "entryDN", source?.DN }, // Use ?. to handle null source
                     { "entryType", source?.ObjectType.ToString()}, // Use ?. to handle null source
             };
-            if (target != null)
-            {
-                data.Add("target", target.CanonicalName);
-                data.Add("targetOU", target.OU);
-                data.Add("targetDN", target.DN);
-                data.Add("targetType", target.ObjectType.ToString());
-            }
-            payload.Add("data", data);
-            var payloadString = System.Text.Json.JsonSerializer.Serialize(payload);
-            if (subscription.WebHookSignature == WebHookSignature.HMAC)
-            {
-                if (subscription.HmacKey.IsNullOrEmpty())
-                    throw new ApplicationException("HMAC Key not supplied to subscription set to use it.");
-                var key = subscription.HmacKey.Decrypt<string>();
-                if (key.StartsWith(prefix))
+                if (target != null)
                 {
-                    key = key.Substring(prefix.Length);
+                    data.Add("target", target.CanonicalName);
+                    data.Add("targetOU", target.OU);
+                    data.Add("targetDN", target.DN);
+                    data.Add("targetType", target.ObjectType.ToString());
                 }
-                var bytekey = Convert.FromBase64String(key);
-                signature = Sign(bytekey, msgId.ToString(), DateTime.UtcNow, payloadString);
+                payload.Add("data", data);
+                var payloadString = System.Text.Json.JsonSerializer.Serialize(payload);
+                if (subscription.WebHookSignature == WebHookSignature.HMAC)
+                {
+                    if (subscription.HmacKey.IsNullOrEmpty())
+                        throw new ApplicationException("HMAC Key not supplied to subscription set to use it.");
+                    var key = subscription.HmacKey.Decrypt<string>();
+                    if (key.StartsWith(prefix))
+                    {
+                        key = key.Substring(prefix.Length);
+                    }
+                    var bytekey = Convert.FromBase64String(key);
+                    signature = Sign(bytekey, msgId.ToString(), DateTime.UtcNow, payloadString);
 
-            }
+                }
 
-            await SendWebHook(subscription, msgId, attemptId, eventTimestamp, eventType, payloadString, signature);
+                await SendWebHook(subscription, msgId, attemptId, eventTimestamp, eventType, payloadString, signature);
+
+                return true;
+            });
+            webhookAttemptJob.AddStep(execStep);
+            var result = webhookAttemptJob.Run();
         }
 
         private async Task SendWebHook(WebHookSubscription subscription, Guid msgId, Guid attemptId, DateTime eventTimestamp, string eventType, string payloadString, string? signature)

@@ -11,7 +11,7 @@
              Loading=@Loading
              Square=true
              ColumnResizeMode="ResizeMode.Column"
-             Virtualize=true
+             Virtualize=false
              RowClass="cursor-pointer"
              RowClick=@RowClick
              RowsPerPageChanged="@RowsPerPageChanged"
@@ -24,9 +24,12 @@
 
                     <ChildContent>
 
-                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                        @* <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                             <MudText>@context.Item?.CanonicalName</MudText>
-                        </AppTooltip>
+                            </AppTooltip> *@
+                        <DirectoryEntryTooltipPopover Entry="context.Item">
+                            <MudText>@context.Item?.CanonicalName</MudText>
+                        </DirectoryEntryTooltipPopover>
 
                     </ChildContent>
                     <MenuContents>
@@ -41,7 +44,7 @@
             <CellTemplate>
                 @if (context.Item?.Created != null)
                 {
-    
+
                     <MudText>@context.Item.Created.Value.ToLocalTime()</MudText>
                 }
             </CellTemplate>
