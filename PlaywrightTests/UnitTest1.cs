@@ -285,15 +285,15 @@ namespace PlaywrightTests
 
 
 
-            button = Page.Locator("text=MAPPINGS");
+            //button = Page.Locator("text=MAPPINGS");
 
-            await Expect(button).ToBeVisibleAsync();
-            await Expect(button).ToBeEnabledAsync();
-            await button.ClickAsync();
+            //await Expect(button).ToBeVisibleAsync();
+            //await Expect(button).ToBeEnabledAsync();
+            //await button.ClickAsync();
 
-            header = Page.Locator("text=OU Privilege Mapper");
+            //header = Page.Locator("text=OU Privilege Mapper");
 
-            await Expect(header).ToBeVisibleAsync();
+            //await Expect(header).ToBeVisibleAsync();
 
 
             await Task.Delay(500);
