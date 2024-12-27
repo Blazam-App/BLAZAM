@@ -3,7 +3,7 @@
 @using MudBlazor.Utilities;
 
 @inherits AppComponentBase
-@if (CurrentUser.State != null && CurrentUser.State.Preferences != null)
+@if (CurrentUser.State != null && CurrentUser.State.Preferences != null && allWidgets.Count>0)
 {
     if (_editMode)
     {
@@ -180,12 +180,15 @@
     MudDropContainer<UserDashboardWidget>? widgetContainer;
     List<Widget> allWidgets = new List<Widget>();
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
 
         allWidgets = new List<Widget>(WidgetService.Available());
         _currentUser = CurrentUser.State;
-        return base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+
     }
     bool ItemSelector(UserDashboardWidget item, string dropzone)
     {

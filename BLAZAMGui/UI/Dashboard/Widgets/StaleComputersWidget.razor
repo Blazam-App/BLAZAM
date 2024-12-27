@@ -25,7 +25,7 @@
         searcher.EnabledOnly = true;
         searcher.MaxResults = 200;
         var results = await searcher.SearchAsync();
-        StaleComputers = results.Where(u => u.CanRead).OrderByDescending(u => u.Created).Cast<IADComputer>().ToList();
+        StaleComputers = results.Where(u => u.CanRead).Cast<IADComputer>().OrderByDescending(u => u.LastLogonTimestamp).ToList();
         LoadingData = false;
 
     }

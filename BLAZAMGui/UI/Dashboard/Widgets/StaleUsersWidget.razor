@@ -34,7 +34,7 @@
         searcher.EnabledOnly = true;
         searcher.MaxResults = 200;
         var results = await searcher.SearchAsync();
-        StaleUsers = results.Where(u => u.CanRead).OrderByDescending(u => u.Created).Cast<IADUser>().ToList();
+        StaleUsers = results.Where(u => u.CanRead).Cast<IADUser>().OrderByDescending(u => u.LastLogonTimestamp).ToList();
         LoadingData = false;
 
 

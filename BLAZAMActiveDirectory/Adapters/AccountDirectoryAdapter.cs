@@ -57,6 +57,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
+        public virtual DateTime? LastLogonTimestamp
+        {
+            get
+            {
+                return GetDateTimeProperty("lastLogonTimestamp");
+
+            }
+        }
+
         public DateTime? LastLogonTime
         {
             get
