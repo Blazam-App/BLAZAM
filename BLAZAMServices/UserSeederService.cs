@@ -3,36 +3,24 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using BLAZAM.Services.Background;
 
 namespace BLAZAM.Services
 {
     /// <summary>
     /// Prefills the user table with all users who have login access
     /// </summary>
-    public class UserSeederService
+    [AutoStartBackgroundService(60)]
+    public class UserSeederService:ActiveDirectoryBackgroundServiceBase
     {
         private readonly ApplicationInfo _applicationInfo;
-        private readonly IActiveDirectoryContext _activeDirectoryContext;
-        private readonly IAppDatabaseFactory _dbFactory;
 
-        public UserSeederService(IAppDatabaseFactory dbFactory,
-            IActiveDirectoryContextFactory adFactory,
-            ApplicationInfo applicationInfo)
+        public UserSeederService(ApplicationInfo applicationInfo,IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory) : base(activeDirectoryContextFactory, dbFactory)
         {
-            _applicationInfo = applicationInfo;
-            _activeDirectoryContext = adFactory.CreateActiveDirectoryContext();
-            _dbFactory = dbFactory;
-
-            //TODO Move ProgramEvents to Common
-            //ProgramEvents.PermissionsChanged += SeedUsers;
-            Task.Delay(30000).ContinueWith(task =>
-            {
-                SeedUsers();
-            });
-            //SeedUsers();
+            _applicationInfo= applicationInfo;
         }
 
-        private void SeedUsers(object obj = null)
+        protected override void Execute(object? obj = null)
         {
             try
             {
@@ -41,11 +29,12 @@ namespace BLAZAM.Services
 
                 if (_applicationInfo.InDemoMode)
                     EnsureDemoExists();
-                using var context = _dbFactory.CreateDbContext();
+                using var context = dbFactory.CreateDbContext();
+                using var activeDirectoryContext = activeDirectoryContextFactory.CreateActiveDirectoryContext();
                 if (context.Status != ServiceConnectionState.Up) return;
                 foreach (var deleg in context.PermissionDelegate.Where(x => x.DeletedAt == null).ToList())
                 {
-                    var entry = _activeDirectoryContext.FindEntryBySID(deleg.DelegateSid);
+                    var entry = activeDirectoryContext.FindEntryBySID(deleg.DelegateSid);
                     if (entry != null)
                     {
                         if (entry is IADUser user)
@@ -75,7 +64,7 @@ namespace BLAZAM.Services
         /// <param name="user"></param>
         private void EnsureUserExists(IADUser user)
         {
-            using var context = _dbFactory.CreateDbContext();
+            using var context = dbFactory.CreateDbContext();
             if (!context.UserSettings.Any(us => us.UserGUID == user.SID.ToSidString()))
             {
                 context.UserSettings.Add(new()
@@ -92,7 +81,7 @@ namespace BLAZAM.Services
         /// </summary>
         private void EnsureAdminExists()
         {
-            using var context = _dbFactory.CreateDbContext();
+            using var context = dbFactory.CreateDbContext();
             if (!context.UserSettings.Any(us => us.UserGUID == "1"))
             {
                 context.UserSettings.Add(new()
@@ -108,7 +97,7 @@ namespace BLAZAM.Services
         /// </summary>
         private void EnsureDemoExists()
         {
-            using var context = _dbFactory.CreateDbContext();
+            using var context = dbFactory.CreateDbContext();
             if (!context.UserSettings.Any(us => us.UserGUID == "2"))
             {
                 context.UserSettings.Add(new()
@@ -124,7 +113,7 @@ namespace BLAZAM.Services
         /// </summary>
         private void EnsureSelfExists()
         {
-            using var context = _dbFactory.CreateDbContext();
+            using var context = dbFactory.CreateDbContext();
             if (!context.UserSettings.Any(us => us.UserGUID == "3"))
             {
                 context.UserSettings.Add(new()

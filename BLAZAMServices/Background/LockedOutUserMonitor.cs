@@ -4,7 +4,6 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
-using BLAZAM.Services.Attributes;
 using System;
 using System.Collections.Generic;
 using System.IO;

@@ -19,7 +19,7 @@ namespace BLAZAM.Session
         private Timer? _pollingTimer;
         private bool _pollCompleted = false;
         private List<NewsItem> _allNewsItems = new List<NewsItem>();
-        private List<NewsItem> activeNewsItems => _allNewsItems.Where(x => x.DeletedAt == null && x.Published == true && (x.ScheduledAt == null || x.ScheduledAt < DateTime.Now) && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now)).ToList();
+        private List<NewsItem> _activeNewsItems => _allNewsItems.Where(x => x.DeletedAt == null && x.Published == true && (x.ScheduledAt == null || x.ScheduledAt < DateTime.Now) && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now)).ToList();
         public AppEvent OnNewItemsAvailable { get; set; }
         public ApplicationNewsService()
         {
@@ -89,7 +89,7 @@ namespace BLAZAM.Session
         {
             try
             {
-                var activeItems = activeNewsItems;
+                var activeItems = _activeNewsItems;
                 var unreadItems = new List<NewsItem>();
                 foreach (var item in activeItems)
                 {
@@ -131,16 +131,19 @@ namespace BLAZAM.Session
         {
             try
             {
-
-                var activeItems = activeNewsItems;
-                if (user.ReadNewsItems != null)
+                if (user != null)
                 {
-                    var readItems = activeItems.Where(x => user.ReadNewsItems.Any(r => r.NewsItemId == x.Id && r.NewsItemUpdatedAt >= x.UpdatedAt)).ToList();
+                    var activeItems = _activeNewsItems;
+                    if (user.ReadNewsItems != null)
+                    {
+                        var readItems = activeItems.Where(x => user.ReadNewsItems.Any(r => r.NewsItemId == x.Id && r.NewsItemUpdatedAt >= x.UpdatedAt)).ToList();
 
-                    return readItems;
+                        return readItems;
+                    }
+
+                    return new();
                 }
-
-                return new();
+              return new List<NewsItem>();
 
             }
             catch (Exception ex)
