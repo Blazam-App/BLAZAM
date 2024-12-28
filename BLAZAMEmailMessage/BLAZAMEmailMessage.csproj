@@ -28,6 +28,9 @@
     <Content Update="Email\Notifications\AccessRequestEmailMessage.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
+    <Content Update="Email\Notifications\LockedOutEmailMessage.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
   </ItemGroup>
 
 </Project>

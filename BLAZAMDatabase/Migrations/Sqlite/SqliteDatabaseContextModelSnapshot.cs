@@ -899,6 +899,24 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.ToTable("EmailTemplates");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.GenericSidList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Added")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Sid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LockedOutUsers");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
                 {
                     b.Property<int>("Id")

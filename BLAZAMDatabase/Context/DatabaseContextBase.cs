@@ -107,6 +107,9 @@ namespace BLAZAM.Database.Context
 
         }
 
+        //Data tables
+        public virtual DbSet<GenericSidList> LockedOutUsers { get; set; }
+
         //App Settings
         public virtual DbSet<AppSettings> AppSettings { get; set; }
         public virtual DbSet<ADSettings> ActiveDirectorySettings { get; set; }

@@ -218,6 +218,13 @@ namespace BLAZAM.Services.Background
                     passwordChangeMessage.EntryName = source.CanonicalName;
                     emailMessage = passwordChangeMessage;
                     break;
+                case NotificationType.LockedOut:
+                    notificationTitle += _appLocalization["User locked out"];
+                    notificationBody += _appLocalization["has been locked out at "] + time;
+                    var lockedOutMessage = NotificationType.LockedOut.ToNotification<LockedOutEmailMessage>();
+                    lockedOutMessage.EntryName = source.CanonicalName;
+                    emailMessage = lockedOutMessage;
+                    break;
 
             }
             if (actor != null)

@@ -6,6 +6,15 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Database.Models.Notifications
 {
-    public enum NotificationType { Create, Delete, Modify, Unassign, Assign, PasswordChange }
+    public enum NotificationType
+    {
+        Create,
+        Delete,
+        Modify,
+        Unassign,
+        Assign,
+        PasswordChange,
+        LockedOut
+    }
 
 }
