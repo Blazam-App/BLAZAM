@@ -10,9 +10,10 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace BLAZAM.Session
+namespace BLAZAM.Services.Background
 {
-    public class ApplicationNewsService : IApplicationNewsService
+    [AutoStartBackgroundService(15, true)]
+    public class ApplicationNewsService : BackgroundServiceBase, IApplicationNewsService
     {
         private HttpClient _httpClient;
         private HttpClient _secondaryHttpClient;
@@ -21,7 +22,8 @@ namespace BLAZAM.Session
         private List<NewsItem> _allNewsItems = new List<NewsItem>();
         private List<NewsItem> _activeNewsItems => _allNewsItems.Where(x => x.DeletedAt == null && x.Published == true && (x.ScheduledAt == null || x.ScheduledAt < DateTime.Now) && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now)).ToList();
         public AppEvent OnNewItemsAvailable { get; set; }
-        public ApplicationNewsService()
+
+        public ApplicationNewsService(IAppDatabaseFactory dbFactory) : base(dbFactory)
         {
             _httpClient = new HttpClient
             {
@@ -33,16 +35,12 @@ namespace BLAZAM.Session
                 BaseAddress = new Uri("https://blazam-news.azurewebsites.net/api/"),
                 Timeout = TimeSpan.FromSeconds(60)
             };
-            _pollingTimer = new Timer(Tick, null, 10, 1000 * 60 * 15);
+            //_pollingTimer = new Timer(Tick, null, 10, 1000 * 60 * 15);
             // GetAllNewsItems();
         }
 
-        private async void Tick(object? state)
-        {
-            await GetAllNewsItems();
-        }
 
-        private async Task GetAllNewsItems()
+        protected override async void Execute(object? obj = null)
         {
             try
             {
@@ -155,6 +153,7 @@ namespace BLAZAM.Session
         public void Dispose()
         {
             _httpClient.Dispose();
+            _secondaryHttpClient.Dispose();
             _pollingTimer?.Dispose();
         }
     }

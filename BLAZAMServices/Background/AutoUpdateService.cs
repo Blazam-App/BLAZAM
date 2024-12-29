@@ -4,14 +4,17 @@ using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
+using BLAZAM.Update;
+using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 using System.DirectoryServices.Protocols;
 
-namespace BLAZAM.Update.Services
+namespace BLAZAM.Services.Background
 {
-    public class AutoUpdateService
+    [AutoStartBackgroundService(60)]
+    public class AutoUpdateService : BackgroundServiceBase, IDisposable
     {
 
         public AppEvent<DateTime?> OnAutoUpdateQueued { get; set; }
@@ -32,13 +35,13 @@ namespace BLAZAM.Update.Services
 
         //private AuditLogger Audit;
 
-        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo)
+        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo):base(factory)
         {
             _applicationInfo = applicationInfo;
             this.factory = factory;
             this.updateService = updateService;
-            updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromSeconds(1).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
-            directoryCleaner = new Timer(CleanDirectories, null, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, (int)TimeSpan.FromHours(20).TotalMilliseconds);
+            //updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromSeconds(1).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
+            directoryCleaner = new Timer(CleanDirectories, null, TimeSpan.FromSeconds(30), TimeSpan.FromHours(20));
         }
 
         private void CleanDirectories(object? state)
@@ -181,7 +184,7 @@ namespace BLAZAM.Update.Services
 
         }
 
-        private async void CheckForUpdate(object? state)
+        protected override async void Execute(object? state)
         {
             using var context = factory.CreateDbContext();
             IJob updateCheckJob = new Job("Check for Update");
@@ -366,6 +369,13 @@ namespace BLAZAM.Update.Services
             }
 
 
+        }
+
+        public void Dispose()
+        {
+            autoUpdateApplyTimer?.Dispose();
+            updateCheckTimer?.Dispose();
+            directoryCleaner?.Dispose();
         }
     }
 }

@@ -268,9 +268,6 @@ namespace BLAZAM.Server
             //Provide a PermissionHandler as a service
             builder.Services.AddSingleton<PermissionApplicator>();
 
-            builder.Services.AddSingleton<UserSeederService>();
-
-            builder.Services.AddSingleton<IApplicationNewsService, ApplicationNewsService>();
 
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
@@ -410,58 +407,86 @@ namespace BLAZAM.Server
             Parallel.ForEach(assemblies, assembly =>
             {
                 var types = assembly.GetTypes()
-                    .Where(t => t.IsClass && !t.IsAbstract && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
+                    .Where(t => t.IsClass && !t.IsAbstract
+                    && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
 
                 foreach (var type in types)
                 {
-                    lock (_lock)
+                    var interfaceType = type.GetInterfaces()
+            .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
+            && i.Name != "IDisposable");
+
+                    if (interfaceType != null)
                     {
-                        builder.Services.AddSingleton(type);
+                        lock (_lock)
+                        {
+                            builder.Services.AddSingleton(interfaceType, type);
+                        }
+                    }
+                    else
+                    {
+                        lock (_lock)
+                        {
+                            builder.Services.AddSingleton(type);
+                        }
                     }
                 }
             });
-
-
-            //foreach (var assembly in assemblies)
-            //{
-            //    var types = assembly.GetTypes()
-            //        .Where(t => t.IsClass && !t.IsAbstract && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
-
-            //    foreach (var type in types)
-            //    {
-            //        builder.Services.AddSingleton(type);
-            //    }
-            //}
             return builder;
         }
 
+        /// <summary>
+        /// Auto-starts <see cref="AutoStartBackgroundService"/> adorned classes and
+        /// sets the Seq logging  opt-out, and other singleton services
+        /// </summary>
+        /// <param name="application"></param>
         public static void PreRun(this WebApplication application)
         {
             try
             {
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                
+
                 foreach (var assembly in assemblies)
                 {
                     var types = assembly.GetTypes()
-                        .Where(t => t.IsClass && !t.IsAbstract && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
+                        .Where(t => t.IsClass && !t.IsAbstract
+                        && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
 
                     foreach (var type in types)
                     {
-                        var service = application.Services.GetRequiredService(type) as BackgroundServiceBase;
                         try
                         {
-                            service.Start();
+                            var interfaceType = type.GetInterfaces()
+                                .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
+                                && i.Name != "IDisposable");
+                            BackgroundServiceBase? service;
+
+                            if (interfaceType != null)
+                            {
+                                service = application.Services.GetRequiredService(interfaceType) as BackgroundServiceBase;
+
+                            }
+                            else
+                            {
+                                service = application.Services.GetRequiredService(type) as BackgroundServiceBase;
+
+                            }
+
+
+                            var data = type.GetCustomAttribute<AutoStartBackgroundService>();
+                            service?.Start(data?.Immediate==true);
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            Loggers.SystemLogger.Error("Critical error starting up background service! {Error}", ex);
 
                         }
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Loggers.SystemLogger.Error("Critical error getting loaded assemblies! {Error}", ex);
 
             }
             //Setup Seq logging if allowed by admin

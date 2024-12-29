@@ -2,61 +2,70 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
+using BLAZAM.Jobs;
 using BLAZAM.Logger;
-using BLAZAM.Services.Background;
 
-namespace BLAZAM.Services
+namespace BLAZAM.Services.Background
 {
     /// <summary>
     /// Prefills the user table with all users who have login access
     /// </summary>
     [AutoStartBackgroundService(60)]
-    public class UserSeederService:ActiveDirectoryBackgroundServiceBase
+    public class UserSeederService : ActiveDirectoryBackgroundServiceBase
     {
         private readonly ApplicationInfo _applicationInfo;
 
-        public UserSeederService(ApplicationInfo applicationInfo,IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory) : base(activeDirectoryContextFactory, dbFactory)
+        public UserSeederService(ApplicationInfo applicationInfo, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory) : base(activeDirectoryContextFactory, dbFactory)
         {
-            _applicationInfo= applicationInfo;
+            _applicationInfo = applicationInfo;
         }
 
         protected override void Execute(object? obj = null)
         {
-            try
+            Job seedJob = new Job("Seed New Users");
+            JobStep step = new JobStep("Check for new users", (state) =>
             {
-                EnsureAdminExists();
-                EnsureSelfExists();
-
-                if (_applicationInfo.InDemoMode)
-                    EnsureDemoExists();
-                using var context = dbFactory.CreateDbContext();
-                using var activeDirectoryContext = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-                if (context.Status != ServiceConnectionState.Up) return;
-                foreach (var deleg in context.PermissionDelegate.Where(x => x.DeletedAt == null).ToList())
+                try
                 {
-                    var entry = activeDirectoryContext.FindEntryBySID(deleg.DelegateSid);
-                    if (entry != null)
+                    EnsureAdminExists();
+                    EnsureSelfExists();
+
+                    if (_applicationInfo.InDemoMode)
+                        EnsureDemoExists();
+                    using var context = dbFactory.CreateDbContext();
+                    using var activeDirectoryContext = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+                    if (context.Status != ServiceConnectionState.Up) return false;
+                    foreach (var deleg in context.PermissionDelegate.Where(x => x.DeletedAt == null).ToList())
                     {
-                        if (entry is IADUser user)
+                        var entry = activeDirectoryContext.FindEntryBySID(deleg.DelegateSid);
+                        if (entry != null)
                         {
-                            EnsureUserExists(user);
-                        }
-                        if (entry is IADGroup group)
-                        {
-                            foreach (var member in group.NestedMembers)
+                            if (entry is IADUser user)
                             {
-                                var type = member.GetType();
-                                if (member is IADUser aduser)
-                                    EnsureUserExists(aduser);
+                                EnsureUserExists(user);
+                            }
+                            if (entry is IADGroup group)
+                            {
+                                foreach (var member in group.NestedMembers)
+                                {
+                                    var type = member.GetType();
+                                    if (member is IADUser aduser)
+                                        EnsureUserExists(aduser);
+                                }
                             }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error("Error attempting to synchronize directory and application users. {@Error}", ex);
-            }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Error("Error attempting to synchronize directory and application users. {@Error}", ex);
+                    return false;
+                }
+                return true;
+            });
+            seedJob.AddStep(step);
+            var result = seedJob.Run();
+
         }
         /// <summary>
         /// Checks the database for this user, if not found they are added

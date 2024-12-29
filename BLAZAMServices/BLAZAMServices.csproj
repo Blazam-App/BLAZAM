@@ -23,6 +23,13 @@
     <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
     <ProjectReference Include="..\BLAZAMNav\BLAZAMNav.csproj" />
+    <ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ApplicationNews">
+      <HintPath>ApplicationNews.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -13,7 +13,7 @@ namespace BLAZAM.Services.Background
         protected virtual IAppDatabaseFactory dbFactory { get; }
         protected virtual Timer? Timer { get; set; }
         protected virtual TimeSpan Interval{ get; set; } = TimeSpan.FromMinutes(10);
-        protected static bool started { get; set; }
+        protected bool started { get; set; }
         public BackgroundServiceBase(IAppDatabaseFactory dbFactory)
         {
             this.dbFactory = dbFactory;
