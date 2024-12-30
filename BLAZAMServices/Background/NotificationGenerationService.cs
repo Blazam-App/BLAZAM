@@ -88,12 +88,12 @@ namespace BLAZAM.Services.Background
                 var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
                 var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
 
-                if (effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                if (effectiveInAppSubscriptions!=null && effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                 {
                     await _notificationPublisher.PublishNotification(user, notification);
                 }
 
-                if (effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                if (effectiveEmailSubscriptions!=null && effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                 {
                     if (emailMessage != null)
                     {
@@ -219,8 +219,10 @@ namespace BLAZAM.Services.Background
                     emailMessage = passwordChangeMessage;
                     break;
                 case NotificationType.LockedOut:
-                    notificationTitle += _appLocalization["User locked out"];
-                    notificationBody += _appLocalization["has been locked out at "] + time;
+                    var sourceUser = source as IADUser;
+                    if (sourceUser == null) return;
+                    notificationTitle += _appLocalization["Locked Out"];
+                    notificationBody += _appLocalization["has been locked out at "] + sourceUser.LockoutTime?.ToLocalTime();
                     var lockedOutMessage = NotificationType.LockedOut.ToNotification<LockedOutEmailMessage>();
                     lockedOutMessage.EntryName = source.CanonicalName;
                     emailMessage = lockedOutMessage;

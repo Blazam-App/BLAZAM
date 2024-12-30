@@ -104,7 +104,7 @@ namespace BLAZAM.Helpers
         /// <param name="template">This template</param>
         /// <param name="user">The user to set the template fields for</param>
         /// <param name="newUserName">The new user's name details</param>
-        public static void PopulateFields(this DirectoryTemplate template,IADUser user,NewUserName newUserName)
+        public static void PopulateFields(this DirectoryTemplate template, IADUser user, NewUserName newUserName)
         {
             foreach (var fieldValue in template.EffectiveFieldValues)
             {
@@ -190,10 +190,7 @@ namespace BLAZAM.Helpers
                         {
                             thisObject = new ADUser();
                         }
-                        else if (sr.Properties["objectClass"].Contains("organizationalUnit"))
-                        {
-                            thisObject = new ADOrganizationalUnit();
-                        }
+
                         else if (sr.Properties["objectClass"].Contains("group"))
                         {
                             thisObject = new ADGroup();
@@ -205,6 +202,10 @@ namespace BLAZAM.Helpers
                         else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
                         {
                             thisObject = new ADBitLockerRecovery();
+                        }
+                        else if (sr.Properties["objectClass"].Contains("organizationalUnit") || sr.Properties["objectClass"].Contains("container"))
+                        {
+                            thisObject = new ADOrganizationalUnit();
                         }
                         if (thisObject != null)
                         {
@@ -241,10 +242,7 @@ namespace BLAZAM.Helpers
                 {
                     thisObject = new ADUser();
                 }
-                else if (sr.Properties["objectClass"].Contains("organizationalUnit"))
-                {
-                    thisObject = new ADOrganizationalUnit();
-                }
+
                 else if (sr.Properties["objectClass"].Contains("group"))
                 {
                     thisObject = new ADGroup();
@@ -256,6 +254,10 @@ namespace BLAZAM.Helpers
                 else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
                 {
                     thisObject = new ADBitLockerRecovery();
+                }
+                else if (sr.Properties["objectClass"].Contains("organizationalUnit") || sr.Properties["objectClass"].Contains("container"))
+                {
+                    thisObject = new ADOrganizationalUnit();
                 }
                 if (thisObject != null)
                 {
@@ -301,7 +303,7 @@ namespace BLAZAM.Helpers
 
 
 
-       
+
 
     }
 }

@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.2.4</AssemblyVersion>
-		<Version>2024.12.30.2151</Version>
+		<Version>2024.12.30.1758</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -80,7 +80,7 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.1.0" />
 		<PackageReference Include="System.DirectoryServices" Version="9.0.0" />
 
-		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="8.0.1" />
+		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
