@@ -142,7 +142,7 @@ namespace PlaywrightTests
         public async Task AboutTest()
         {
             await LogIn();
-            await Page.GetByText("BLAZAM™").ClickAsync();
+            await Page.GetByText("BLAZAM "+DateTime.Now.Year).ClickAsync();
             await Expect(Page.GetByText("Founder: Chris Jacobsen")).ToBeVisibleAsync();
             await Expect(Page.GetByText("Dedicated To Maggie")).ToBeVisibleAsync();
             await Page.GetByRole(AriaRole.Button, new() { Name = "Close", Exact = true }).ClickAsync();
