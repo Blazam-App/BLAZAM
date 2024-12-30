@@ -540,7 +540,7 @@ namespace BLAZAM.ActiveDirectory
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Warning("Could not get domain controllers directly {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Information("Could not get domain controllers directly {@Error}", ex);
             }
 
         }

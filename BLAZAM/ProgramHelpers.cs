@@ -448,40 +448,49 @@ namespace BLAZAM.Server
 
                 foreach (var assembly in assemblies)
                 {
-                    var types = assembly.GetTypes()
+                    try
+                    {
+                        var types = assembly.GetTypes()
                         .Where(t => t.IsClass && !t.IsAbstract
                         && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
 
-                    foreach (var type in types)
-                    {
-                        try
+                        foreach (var type in types)
                         {
-                            var interfaceType = type.GetInterfaces()
-                                .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
-                                && i.Name != "IDisposable");
-                            BackgroundServiceBase? service;
-
-                            if (interfaceType != null)
+                            try
                             {
-                                service = application.Services.GetRequiredService(interfaceType) as BackgroundServiceBase;
+                                var interfaceType = type.GetInterfaces()
+                                    .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
+                                    && i.Name != "IDisposable");
+                                BackgroundServiceBase? service;
+
+                                if (interfaceType != null)
+                                {
+                                    service = application.Services.GetRequiredService(interfaceType) as BackgroundServiceBase;
+
+                                }
+                                else
+                                {
+                                    service = application.Services.GetRequiredService(type) as BackgroundServiceBase;
+
+                                }
+
+
+                                var data = type.GetCustomAttribute<AutoStartBackgroundService>();
+                                service?.Start(data?.Immediate == true);
+                            }
+                            catch (Exception ex)
+                            {
+                                Loggers.SystemLogger.Error("Critical error starting up background service! {Error}", ex);
 
                             }
-                            else
-                            {
-                                service = application.Services.GetRequiredService(type) as BackgroundServiceBase;
-
-                            }
-
-
-                            var data = type.GetCustomAttribute<AutoStartBackgroundService>();
-                            service?.Start(data?.Immediate==true);
-                        }
-                        catch (Exception ex)
-                        {
-                            Loggers.SystemLogger.Error("Critical error starting up background service! {Error}", ex);
-
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        Loggers.SystemLogger.Warning("Unexpected error starting up background service! {Error}", ex);
+
+                    }
+                    
                 }
             }
             catch (Exception ex)
