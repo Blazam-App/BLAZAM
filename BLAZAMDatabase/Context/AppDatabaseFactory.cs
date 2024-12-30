@@ -56,21 +56,21 @@ namespace BLAZAM.Database.Context
         /// <exception cref="NotImplementedException"></exception>
         private void SeedData()
         {
-            using var seedContext = this.CreateDbContext();
+            
+                SetupDenyAll();
+           
 
-
-            SetupDenyAll(seedContext);
-
-            //EnsureGlobalPermissionSettingsExists(seedContext);
 
         }
 
 
 
-        private void SetupDenyAll(IDatabaseContext seedContext)
+        private void SetupDenyAll()
         {
             Task.Run(() =>
             {
+                using var seedContext = this.CreateDbContext();
+
                 bool saveRequired = false;
                 try
                 {
@@ -187,7 +187,7 @@ namespace BLAZAM.Database.Context
             {
                 var _dbType = _configuration.GetValue<string>("DatabaseType");
                 if (_dbType == null) throw new DatabaseException("DatabaseType missing in configuration file");
- 
+
                 IDatabaseContext? databaseContext = null;
                 switch (_dbType.ToLower())
                 {
