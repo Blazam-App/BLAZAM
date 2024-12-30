@@ -221,7 +221,7 @@ namespace BLAZAM.Services.Background
                 case NotificationType.LockedOut:
                     var sourceUser = source as IADUser;
                     if (sourceUser == null) return;
-                    notificationTitle += _appLocalization["User locked out"];
+                    notificationTitle += _appLocalization["Locked Out"];
                     notificationBody += _appLocalization["has been locked out at "] + sourceUser.LockoutTime?.ToLocalTime();
                     var lockedOutMessage = NotificationType.LockedOut.ToNotification<LockedOutEmailMessage>();
                     lockedOutMessage.EntryName = source.CanonicalName;
