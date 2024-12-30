@@ -34,7 +34,7 @@ namespace BLAZAM.Services.Background
             Job executeJob = new Job("Monitor Locked Out Users");
             JobStep prepareStep = new JobStep("Prepare data", (state) =>
             {
-                usersInTable = context.LockedOutUsers.Take(500).ToList();
+                usersInTable = context.LockedOutUsers.ToList();
                 lockedOutUsers = directory.Users.FindLockedOutUsers();
                 return true;
             });
