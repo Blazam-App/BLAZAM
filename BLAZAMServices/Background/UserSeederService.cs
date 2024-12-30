@@ -2,72 +2,70 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
+using BLAZAM.Jobs;
 using BLAZAM.Logger;
 
-namespace BLAZAM.Services
+namespace BLAZAM.Services.Background
 {
     /// <summary>
     /// Prefills the user table with all users who have login access
     /// </summary>
-    public class UserSeederService
+    [AutoStartBackgroundService(60)]
+    public class UserSeederService : ActiveDirectoryBackgroundServiceBase
     {
         private readonly ApplicationInfo _applicationInfo;
-        private readonly IActiveDirectoryContext _activeDirectoryContext;
-        private readonly IAppDatabaseFactory _dbFactory;
 
-        public UserSeederService(IAppDatabaseFactory dbFactory,
-            IActiveDirectoryContextFactory adFactory,
-            ApplicationInfo applicationInfo)
+        public UserSeederService(ApplicationInfo applicationInfo, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory) : base(activeDirectoryContextFactory, dbFactory)
         {
             _applicationInfo = applicationInfo;
-            _activeDirectoryContext = adFactory.CreateActiveDirectoryContext();
-            _dbFactory = dbFactory;
-
-            //TODO Move ProgramEvents to Common
-            //ProgramEvents.PermissionsChanged += SeedUsers;
-            Task.Delay(30000).ContinueWith(task =>
-            {
-                SeedUsers();
-            });
-            //SeedUsers();
         }
 
-        private void SeedUsers(object obj = null)
+        protected override void Execute(object? obj = null)
         {
-            try
+            Job seedJob = new Job("Seed New Users");
+            JobStep step = new JobStep("Check for new users", (state) =>
             {
-                EnsureAdminExists();
-                EnsureSelfExists();
-
-                if (_applicationInfo.InDemoMode)
-                    EnsureDemoExists();
-                using var context = _dbFactory.CreateDbContext();
-                if (context.Status != ServiceConnectionState.Up) return;
-                foreach (var deleg in context.PermissionDelegate.Where(x => x.DeletedAt == null).ToList())
+                try
                 {
-                    var entry = _activeDirectoryContext.FindEntryBySID(deleg.DelegateSid);
-                    if (entry != null)
+                    EnsureAdminExists();
+                    EnsureSelfExists();
+
+                    if (_applicationInfo.InDemoMode)
+                        EnsureDemoExists();
+                    using var context = dbFactory.CreateDbContext();
+                    using var activeDirectoryContext = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+                    if (context.Status != ServiceConnectionState.Up) return false;
+                    foreach (var deleg in context.PermissionDelegate.Where(x => x.DeletedAt == null).ToList())
                     {
-                        if (entry is IADUser user)
+                        var entry = activeDirectoryContext.FindEntryBySID(deleg.DelegateSid);
+                        if (entry != null)
                         {
-                            EnsureUserExists(user);
-                        }
-                        if (entry is IADGroup group)
-                        {
-                            foreach (var member in group.NestedMembers)
+                            if (entry is IADUser user)
                             {
-                                var type = member.GetType();
-                                if (member is IADUser aduser)
-                                    EnsureUserExists(aduser);
+                                EnsureUserExists(user);
+                            }
+                            if (entry is IADGroup group)
+                            {
+                                foreach (var member in group.NestedMembers)
+                                {
+                                    var type = member.GetType();
+                                    if (member is IADUser aduser)
+                                        EnsureUserExists(aduser);
+                                }
                             }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error("Error attempting to synchronize directory and application users. {@Error}", ex);
-            }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Error("Error attempting to synchronize directory and application users. {@Error}", ex);
+                    return false;
+                }
+                return true;
+            });
+            seedJob.AddStep(step);
+            var result = seedJob.Run();
+
         }
         /// <summary>
         /// Checks the database for this user, if not found they are added
@@ -75,7 +73,7 @@ namespace BLAZAM.Services
         /// <param name="user"></param>
         private void EnsureUserExists(IADUser user)
         {
-            using var context = _dbFactory.CreateDbContext();
+            using var context = dbFactory.CreateDbContext();
             if (!context.UserSettings.Any(us => us.UserGUID == user.SID.ToSidString()))
             {
                 context.UserSettings.Add(new()
@@ -92,7 +90,7 @@ namespace BLAZAM.Services
         /// </summary>
         private void EnsureAdminExists()
         {
-            using var context = _dbFactory.CreateDbContext();
+            using var context = dbFactory.CreateDbContext();
             if (!context.UserSettings.Any(us => us.UserGUID == "1"))
             {
                 context.UserSettings.Add(new()
@@ -108,7 +106,7 @@ namespace BLAZAM.Services
         /// </summary>
         private void EnsureDemoExists()
         {
-            using var context = _dbFactory.CreateDbContext();
+            using var context = dbFactory.CreateDbContext();
             if (!context.UserSettings.Any(us => us.UserGUID == "2"))
             {
                 context.UserSettings.Add(new()
@@ -124,7 +122,7 @@ namespace BLAZAM.Services
         /// </summary>
         private void EnsureSelfExists()
         {
-            using var context = _dbFactory.CreateDbContext();
+            using var context = dbFactory.CreateDbContext();
             if (!context.UserSettings.Any(us => us.UserGUID == "3"))
             {
                 context.UserSettings.Add(new()

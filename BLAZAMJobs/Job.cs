@@ -1,5 +1,10 @@
 ﻿
 
+using BLAZAM.Helpers;
+using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
 namespace BLAZAM.Jobs
 {
 
@@ -38,6 +43,10 @@ namespace BLAZAM.Jobs
         {
             Name = title;
             User = requestingUser;
+            if (User.IsNullOrEmpty())
+            {
+                User = GetCallingClassName();
+            }
             if (externalCancellationToken != null)
             {
                 cancellationTokenSource = externalCancellationToken;
@@ -46,7 +55,34 @@ namespace BLAZAM.Jobs
             JobMonitor.AddJob(this);
         }
 
+        private string GetCallingClassName()
+        {
+            var stackTrace = new StackTrace();
+            MethodBase? method=null;
+            // Start from frame 2 to skip Job and GetCallingClassName
 
+
+            for (int i = 2; i < stackTrace.FrameCount; i++)
+            {
+                var frame = stackTrace.GetFrame(i);
+                method = frame?.GetMethod();
+
+                // Check for async methods and compiler-generated types
+                if (
+                    method?.DeclaringType?.Name.StartsWith("<") == true)
+                {
+                    // If async, skip this frame AND the next one
+                    i++; // Skip the next frame as well
+
+                    continue;
+                }
+
+                // Found a non-async, non-compiler-generated method
+                break;
+            }
+
+            return method?.DeclaringType?.Name ?? "System";
+        }
 
         /// <summary>
         /// Used for scheduled triggering

@@ -11,7 +11,7 @@
     </tr>
     <tr>
         
-        <th style="border-left:solid;border-right:solid;" colspan="5">
+        <th style="border-left:solid;border-right:solid;" colspan="6">
             @AppLocalization["Events"]
         </th>
         <th style="border-right:solid;" colspan="2">
@@ -133,16 +133,26 @@
     </tr>
 
     <tr>
+        <td>
+            <MudCheckBox Style="align-items:center;"
+                         Value="@(effectiveInAppSubscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==NotificationType.Assign)!=null)" />
+
+        </td>
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
+           
             var originalEnum = (NotificationType)type;
+            if (originalEnum == NotificationType.Unassign || originalEnum == NotificationType.Assign)
+            {
+                continue;
+            }
             <td>
                 @{
 
                 }
                 <MudCheckBox Style="align-items:center;"
                              Disabled=true
-                             Value="@(effectiveInAppSubscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)" />
+                             Value="@(effectiveInAppSubscription.NotificationTypes.Any(x=>x.NotificationType==originalEnum)==true)" />
 
 
             </td>
@@ -173,9 +183,18 @@
 
 
     <tr>
+        <td>
+            <MudCheckBox Style="align-items:center;"
+                         Value="@(effectiveByEmailSubscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==NotificationType.Assign)!=null)" />
+
+        </td>
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
             var originalEnum = (NotificationType)type;
+            if (originalEnum == NotificationType.Unassign || originalEnum == NotificationType.Assign)
+            {
+                continue;
+            }
             <td>
                 @{
 

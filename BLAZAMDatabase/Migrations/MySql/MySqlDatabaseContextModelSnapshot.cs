@@ -931,6 +931,26 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("EmailTemplates");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.GenericSidList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Added")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Sid")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LockedOutUsers");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
                 {
                     b.Property<int>("Id")
