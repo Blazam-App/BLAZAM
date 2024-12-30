@@ -161,6 +161,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        await RefreshComponents();
 
         if (Templates?.Count() < 1)
         {
