@@ -2,13 +2,15 @@
 <MudText>@AppLocalization["Google Authenticator Setup"]</MudText>
 <MudImage Src="@qrCode" />
 <MudButton Color="Color.Primary"
-           Variant="Variant.Filled"
-           OnClick="GenerateGoogleAuthToken">@AppLocalization["Create Google Authenticator Token"]</MudButton>
+Variant="Variant.Filled"
+OnClick="GenerateGoogleAuthToken">@AppLocalization["Create Google Authenticator Token"]</MudButton>
+@if (!qrCode.IsNullOrEmpty())
+{
+    <MudButton Color="Color.Error"
+    Variant="Variant.Filled"
+    OnClick="DeleteGoogleAuthToken">@AppLocalization["Disable Google Authenticator"]</MudButton>
 
-<MudButton Color="Color.Error"
-           Variant="Variant.Filled"
-           OnClick="DeleteGoogleAuthToken">@AppLocalization["Disable Google Authenticator"]</MudButton>
-
+}
 
 <GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
 
@@ -60,9 +62,10 @@
     {
         if (await MessageService.Confirm(AppLocalization["Are you sure you want to disable Google Authenticator MFA?"]) == true)
         {
+            qrCode = null;
             CurrentUser.State.Preferences.AuthenticatorSecret = null;
             CurrentUser.State.SaveBasicUserPreferences();
-        
+            await InvokeAsync(StateHasChanged);
         }
     }
 }
