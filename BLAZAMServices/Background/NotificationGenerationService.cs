@@ -56,7 +56,8 @@ namespace BLAZAM.Services.Background
                 NotificationTemplateComponent? emailMessage;
                 PackageNotification(source, notificationType, actor, target, out notification, out notificationTitle, out emailMessage);
                 var _emailConfigured = _emailService.IsConfigured;
-                var users = Context.UserSettings.Include(us => us.NotificationSubscriptions).ToList();
+                using var context = Context;
+                var users = context.UserSettings.Include(us => us.NotificationSubscriptions).ToList();
                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                 {
 
@@ -87,12 +88,12 @@ namespace BLAZAM.Services.Background
                 var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
                 var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
 
-                if (effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                if (effectiveInAppSubscriptions!=null && effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                 {
                     await _notificationPublisher.PublishNotification(user, notification);
                 }
 
-                if (effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                if (effectiveEmailSubscriptions!=null && effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                 {
                     if (emailMessage != null)
                     {
@@ -112,7 +113,8 @@ namespace BLAZAM.Services.Background
 
         private async Task PostWebHooks(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
         {
-            var webhooks = await Context.WebHookSubscriptions.Where(w => w.DeletedAt == null)
+            using var context = Context;
+            var webhooks = await context.WebHookSubscriptions.Where(w => w.DeletedAt == null)
                 .Include(w => w.NotificationTypes)
                 .Where(x => x.DeletedAt == null)
                 .ToListAsync();
@@ -216,6 +218,15 @@ namespace BLAZAM.Services.Background
                     passwordChangeMessage.EntryName = source.CanonicalName;
                     emailMessage = passwordChangeMessage;
                     break;
+                case NotificationType.LockedOut:
+                    var sourceUser = source as IADUser;
+                    if (sourceUser == null) return;
+                    notificationTitle += _appLocalization["Locked Out"];
+                    notificationBody += _appLocalization["has been locked out at "] + sourceUser.LockoutTime?.ToLocalTime();
+                    var lockedOutMessage = NotificationType.LockedOut.ToNotification<LockedOutEmailMessage>();
+                    lockedOutMessage.EntryName = source.CanonicalName;
+                    emailMessage = lockedOutMessage;
+                    break;
 
             }
             if (actor != null)
@@ -250,7 +261,7 @@ namespace BLAZAM.Services.Background
                 ou = ou.GetParent();
             if (ou is not IADOrganizationalUnit)
                 return default;
-            var context = Context;
+            using var context = Context;
             NotificationSubscription effectiveByEmailSubscription = new();
 
             effectiveByEmailSubscription = new();
@@ -309,7 +320,7 @@ namespace BLAZAM.Services.Background
                 ou = ou.GetParent();
             if (ou is not IADOrganizationalUnit)
                 return default;
-            var context = Context;
+            using var context = Context;
             NotificationSubscription effectiveInAppSubscription = new();
             effectiveInAppSubscription = new();
             effectiveInAppSubscription.OU = ou.DN;

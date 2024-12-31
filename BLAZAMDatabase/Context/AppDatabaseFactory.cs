@@ -56,21 +56,21 @@ namespace BLAZAM.Database.Context
         /// <exception cref="NotImplementedException"></exception>
         private void SeedData()
         {
-            var seedContext = this.CreateDbContext();
+            
+                SetupDenyAll();
+           
 
-
-            SetupDenyAll(seedContext);
-
-            //EnsureGlobalPermissionSettingsExists(seedContext);
 
         }
 
 
 
-        private void SetupDenyAll(IDatabaseContext seedContext)
+        private void SetupDenyAll()
         {
             Task.Run(() =>
             {
+                using var seedContext = this.CreateDbContext();
+
                 bool saveRequired = false;
                 try
                 {
@@ -177,20 +177,23 @@ namespace BLAZAM.Database.Context
         /// Async call to <see cref="CreateDbContext"/>
         /// </summary>
         /// <returns></returns>
-        public async Task<IDatabaseContext> CreateDbContextAsync() => await Task.Run(() => { return CreateDbContext(); });
+        public async Task<IDatabaseContext> CreateDbContextAsync()
+        {
+            return await Task.Run(() => { return CreateDbContext(); });
+        }
         public DatabaseType DatabaseType
         {
             get
             {
                 var _dbType = _configuration.GetValue<string>("DatabaseType");
                 if (_dbType == null) throw new DatabaseException("DatabaseType missing in configuration file");
-                // Console.WriteLine("Database Type: " + _dbType);
+
                 IDatabaseContext? databaseContext = null;
                 switch (_dbType.ToLower())
                 {
 
                     case "sql":
-                       return DatabaseType.SQL;
+                        return DatabaseType.SQL;
                     case "sqlite":
 
                         return DatabaseType.SQLite;
@@ -217,7 +220,7 @@ namespace BLAZAM.Database.Context
         /// <exception cref="Exception">Thrown for unexpected exceptions</exception>
         public IDatabaseContext CreateDbContext()
         {
-           
+
             IDatabaseContext? databaseContext = null;
             switch (DatabaseType)
             {

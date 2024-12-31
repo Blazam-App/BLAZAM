@@ -1,12 +1,11 @@
-﻿
-@inherits Widget
+﻿@inherits Widget
 @attribute [Authorize]
 <StaleEntriesWidgetDataGrid Items="@StaleUsers"
-                          RowsPerPage="@ItemsPerPage"
-                          RowsPerPageChanged="@SetRowsPerPage"
-                          RowClick=@GoTo
-                          T="IADUser"
-                          Loading=LoadingData />
+                            RowsPerPage="@ItemsPerPage"
+                            RowsPerPageChanged="@SetRowsPerPage"
+                            RowClick=@GoTo
+                            T="IADUser"
+                            Loading=LoadingData />
 
 @code {
     List<IADUser> StaleUsers
@@ -20,36 +19,29 @@
         await base.OnInitializedAsync();
 
 
-        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
-        {
-            if (widget.WidgetType.Equals(WidgetType))
-            {
-                _ = RefreshData();
-
-            }
-
-        };
 
         _ = RefreshData();
+        await InvokeAsync(StateHasChanged);
+
     }
     async Task RefreshData()
     {
+
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
-        var users= Directory.Users.FindUsersByString(null);
         ADSearch searcher = new ADSearch(Directory);
         searcher.Fields.LastLogonTime = (DateTime.UtcNow - TimeSpan.FromDays(180)).ToFileTimeUtc();
         searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
         searcher.EnabledOnly = true;
         searcher.MaxResults = 200;
         var results = await searcher.SearchAsync();
-        StaleUsers = results.Where(u => u.CanRead).OrderByDescending(u => u.Created).Cast<IADUser>().ToList();
+        StaleUsers = results.Where(u => u.CanRead).Cast<IADUser>().OrderByDescending(u => u.LastLogonTimestamp).ToList();
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
+
 
     }
     void GoTo(DataGridRowClickEventArgs<IADUser> args)
     {
         Nav.NavigateTo(args.Item.SearchUri);
     }
+
 }

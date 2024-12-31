@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
+using BLAZAM.Services.Duo;
 
 namespace BLAZAM.Gui.UI
 {
@@ -56,6 +57,8 @@ namespace BLAZAM.Gui.UI
 
         [Inject]
         protected AutoUpdateService AutoUpdateService { get; set; }
+        [Inject]
+        protected GoogleAuthenticatorService GoogleAuthenticatorService { get; set; }
 
         [Inject]
         protected EmailService EmailService { get; set; }
@@ -90,7 +93,7 @@ namespace BLAZAM.Gui.UI
         }
         //protected IDatabaseContext? Context;
         [Inject]
-        protected IAppDatabaseFactory DbFactory { get; set; }
+        protected IUserDatabaseFactory DbFactory { get; set; }
 
 
         protected override void OnInitialized()

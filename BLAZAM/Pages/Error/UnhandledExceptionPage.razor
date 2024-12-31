@@ -1,6 +1,6 @@
 @inject EmailService email
 @inject ApplicationInfo ApplicationInfo
-@inject IAppDatabaseFactory factory
+@inject IUserDatabaseFactory factory
 @inject NavigationManager Nav
 <PageTitle>Error</PageTitle>
 
@@ -70,7 +70,7 @@
             if (_error != null)
             {
                 try{
-                    Loggers.SystemLogger.Error("Unhandled exception {@Error}", _error);
+                    Loggers.SystemLogger.Fatal("Unhandled exception {@Error}", _error);
                 }
                 catch
                 {

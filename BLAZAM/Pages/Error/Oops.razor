@@ -47,5 +47,19 @@
         {
             Exception = AppDatabaseFactory.DatabaseCreationFailureReason;
         }
+        try{
+            if (Exception != null)
+            {
+                Loggers.SystemLogger.Fatal("Ooops shown!{Error}", Exception);
+            }
+            else
+            {
+                Loggers.SystemLogger.Fatal("Ooops shown! {Error}{Details}", ErrorMessage, DetailsMessage);
+
+            }
+        }catch{
+
+        }
+       
     }
 }

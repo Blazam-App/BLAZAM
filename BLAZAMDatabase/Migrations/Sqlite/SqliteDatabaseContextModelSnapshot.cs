@@ -728,6 +728,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<int>("DuoUnreachableBehavior")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("RequireMFA")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("SessionTimeout")
                         .HasColumnType("INTEGER");
 
@@ -745,6 +748,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                             AdminPassword = "password",
                             DuoEnabled = false,
                             DuoUnreachableBehavior = 0,
+                            RequireMFA = false,
                             SessionTimeout = 15
                         });
                 });
@@ -893,6 +897,24 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasKey("Id");
 
                     b.ToTable("EmailTemplates");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.GenericSidList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Added")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Sid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LockedOutUsers");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
@@ -1560,6 +1582,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("AuthenticatorSecret")
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("DarkMode")
                         .HasColumnType("INTEGER");

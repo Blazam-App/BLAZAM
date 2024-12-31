@@ -70,6 +70,7 @@ namespace BLAZAM.Database.Context
         DbSet<ApiToken> ApiTokens { get; set; }
         DbSet<WebHookSubscription> WebHookSubscriptions { get; set; }
         DbSet<WebHookAttempt> WebHookAttempts { get; set; }
+        DbSet<GenericSidList> LockedOutUsers { get; set; }
 
         void Export(string directory);
     }

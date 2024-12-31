@@ -20,7 +20,7 @@ namespace BLAZAM.Helpers
             //Provide Automatic Updates as a service
             //This service runs checks every 4 hours for an update and if found, schedules an
             //update at a time of day specified in the database
-            services.AddSingleton<AutoUpdateService>();
+            //services.AddSingleton<AutoUpdateService>();
             return services;
         }
     }

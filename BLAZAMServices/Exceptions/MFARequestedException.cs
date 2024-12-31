@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Runtime.Serialization;
 
-namespace BLAZAM.Services
+namespace BLAZAM.Services.Exceptions
 {
     [Serializable]
     internal class MFARequestedException : Exception

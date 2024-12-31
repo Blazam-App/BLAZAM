@@ -26,7 +26,10 @@ namespace BLAZAM.Database.Models.User
         public List<NotificationSubscription> NotificationSubscriptions { get; set; } = new();
         public byte[]? ProfilePicture { get; set; }
         public string? Email { get; set; }
-
+        /// <summary>
+        /// The authenticator secret for this user in encrypted form
+        /// </summary>
+        public string? AuthenticatorSecret { get; set; }
         public override string? ToString()
         {
             return Username

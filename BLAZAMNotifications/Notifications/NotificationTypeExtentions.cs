@@ -27,6 +27,9 @@ namespace BLAZAM.Notifications.Notifications
                 case NotificationType.Assign:
                     notificationTemplate = new EntryAssignedEmailMessage();
                     break;
+                case NotificationType.LockedOut:
+                    notificationTemplate = new LockedOutEmailMessage();
+                    break;
 
             }
             if (notificationTemplate != null)

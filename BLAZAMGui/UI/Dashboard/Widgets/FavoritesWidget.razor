@@ -72,7 +72,6 @@
     protected override async Task RefreshData()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         var favorites = new List<IDirectoryEntryAdapter>();
         foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
         {
@@ -85,7 +84,6 @@
         }
         FavoriteEntries = favorites;
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
 
     }
     void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
@@ -95,5 +93,4 @@
             GoTo(args.Item);
         }
     }
-
 }

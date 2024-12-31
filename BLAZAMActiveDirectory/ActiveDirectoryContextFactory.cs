@@ -8,18 +8,13 @@ namespace BLAZAM.ActiveDirectory
 {
     public class ActiveDirectoryContextFactory : IActiveDirectoryContextFactory
     {
-        //IAppDatabaseFactory _factory;
-        //IApplicationUserStateService _userStateService;
-        //IEncryptionService _encryptionService;
-        //INotificationPublisher _notificationPublisher;
+
         private ActiveDirectoryContext activeDirectoryContextSeed;
+       
 
         public ActiveDirectoryContextFactory(IAppDatabaseFactory factory, IApplicationUserStateService userStateService, IEncryptionService encryptionService, INotificationPublisher notificationPublisher)
         {
-            // _factory = factory;
-            //_userStateService = userStateService;
-            // _encryptionService = encryptionService;
-            // _notificationPublisher = notificationPublisher;
+
             activeDirectoryContextSeed = new ActiveDirectoryContext(factory, userStateService, encryptionService, notificationPublisher);
         }
 
@@ -28,8 +23,13 @@ namespace BLAZAM.ActiveDirectory
             var context = new ActiveDirectoryContext(activeDirectoryContextSeed);
             context.ConnectAsync();
             context.CurrentUser = currentUserStateService?.State;
-            return context;
+           return context;
 
         }
+
+
+
+
+
     }
 }

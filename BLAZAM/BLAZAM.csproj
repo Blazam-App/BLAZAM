@@ -5,8 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
-		<AssemblyVersion>1.2.3</AssemblyVersion>
-		<Version>2024.12.19.2303</Version>
+		<AssemblyVersion>1.2.4</AssemblyVersion>
+		<Version>2024.12.31.0054</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -80,7 +80,7 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.1.0" />
 		<PackageReference Include="System.DirectoryServices" Version="9.0.0" />
 
-		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="8.0.1" />
+		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -108,7 +108,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="..\BLAZAMGui\UI\Settings\WebHooks\NewWebHookModalContent.razor" Link="NewWebHookModalContent.razor" />
+	  <None Include="..\BLAZAMGui\UI\Dashboard\WidgetContainer.razor" Link="WidgetContainer.razor" />
+	  <None Include="..\BLAZAMGui\UI\Dashboard\Widgets\DirectoryEntryTooltipPopover.razor" Link="DirectoryEntryTooltipPopover.razor" />
+	  <None Include="..\BLAZAMGui\UI\Modals\GoogleAuthenticatorInput.razor" Link="GoogleAuthenticatorInput.razor" />
 	</ItemGroup>
 
 	<ItemGroup>

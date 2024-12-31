@@ -78,6 +78,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         SecureString? NewPassword { get; set; }
         bool PasswordNotRequired { get; set; }
         bool RequirePasswordChange { get; set; }
+        DateTime? LastLogonTimestamp { get; }
 
         /// <summary>
         /// Changes the password for this entry immediately

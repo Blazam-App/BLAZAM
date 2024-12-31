@@ -1,4 +1,4 @@
-﻿@inject IAppDatabaseFactory factory
+﻿@inject IUserDatabaseFactory factory
 @inject IActiveDirectoryContextFactory directoryFactory
 @inherits AppComponentBase
 @page "/benchmark"
@@ -52,7 +52,7 @@ s
                 DateTime start = DateTime.Now;
                 var dir = Directory as ActiveDirectoryContext;
 
-                var user = dir.Authenticate(new() { Username = "johnsoncontrols", Password = "bburg123" });
+                var user = dir.Authenticate(new() { Username = "testuse", Password = "1234" });
                 runs[cycle] = (DateTime.Now - start).TotalSeconds;
                 InvokeAsync(StateHasChanged);
 

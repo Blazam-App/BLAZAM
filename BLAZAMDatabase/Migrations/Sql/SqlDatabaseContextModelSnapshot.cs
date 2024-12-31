@@ -750,6 +750,9 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<int>("DuoUnreachableBehavior")
                         .HasColumnType("int");
 
+                    b.Property<bool>("RequireMFA")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("SessionTimeout")
                         .HasColumnType("int");
 
@@ -768,6 +771,7 @@ namespace BLAZAM.Common.Migrations.Sql
                             AdminPassword = "password",
                             DuoEnabled = false,
                             DuoUnreachableBehavior = 0,
+                            RequireMFA = false,
                             SessionTimeout = 15
                         });
                 });
@@ -925,6 +929,26 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.HasKey("Id");
 
                     b.ToTable("EmailTemplates");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.GenericSidList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Added")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Sid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LockedOutUsers");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
@@ -1634,6 +1658,9 @@ namespace BLAZAM.Common.Migrations.Sql
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthenticatorSecret")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("DarkMode")
                         .HasColumnType("bit");

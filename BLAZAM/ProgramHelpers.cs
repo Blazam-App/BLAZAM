@@ -31,6 +31,7 @@ using System.Management;
 using System.Reflection;
 using System.Text;
 using Polly.Contrib.WaitAndRetry;
+using BLAZAM.Services.Attributes;
 
 namespace BLAZAM.Server
 {
@@ -143,7 +144,7 @@ namespace BLAZAM.Server
             });
             /*
              * Uncomment this to force a language
-            
+           
 
             CultureInfo culture = new CultureInfo("zh-Hans");
             //CultureInfo culture = new CultureInfo("zh-Hans");
@@ -176,12 +177,12 @@ namespace BLAZAM.Server
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true, // Important: Validate the signing key
-                    IssuerSigningKey = new SymmetricSecurityKey (Encryption.Instance.Key),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encryption.Instance.Key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateActor = false,
                     ValidateLifetime = true,
-                     
+
                 };
                 options.Events = new JwtAuthenticationEventsHandler(
                     builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>(),
@@ -227,6 +228,7 @@ namespace BLAZAM.Server
 
 
             builder.Services.AddSingleton<IAppDatabaseFactory, AppDatabaseFactory>();
+            builder.Services.AddScoped<IUserDatabaseFactory, UserDatabaseFactory>();
 
             //Provide an Http client as a service with custom construction via api service class
             builder.Services.AddHttpClient();
@@ -242,9 +244,6 @@ namespace BLAZAM.Server
                       ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
                   });
 
-            //Also keeping this here for a possible future API, though this would be for internal use
-            //builder.Services.AddTransient<ApiService>();
-            //builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext.User);
 
             //Provide a way to get the current HTTP userPrincipal as a service
             builder.Services.AddHttpContextAccessor();
@@ -269,12 +268,11 @@ namespace BLAZAM.Server
             //Provide a PermissionHandler as a service
             builder.Services.AddSingleton<PermissionApplicator>();
 
-            builder.Services.AddSingleton<UserSeederService>();
-
-            builder.Services.AddSingleton<IApplicationNewsService, ApplicationNewsService>();
 
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
+
+            builder.Services.AddScoped<GoogleAuthenticatorService>();
 
             //Provide a JwtTokens as a service
             builder.Services.AddScoped<JwtTokenService>();
@@ -316,7 +314,7 @@ namespace BLAZAM.Server
             //Provide notification publishing as a service
             builder.Services.AddSingleton<INotificationPublisher, NotificationPublisher>();
 
-
+            builder.InjectBackgroundServices();
 
             builder.Services.AddSessionServices();
 
@@ -352,48 +350,48 @@ namespace BLAZAM.Server
 
             builder.Services.AddSwaggerGen(c =>
             {
-            c.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "Blazam API",
-                Version = "v1",
-                Description = "The official Blazam API documentation." +
-                "<br/>Authorization is required for API access." +
-                "<br/>The \"Authorization\" header value must be \"Bearer {token}\"",
-                License = new OpenApiLicense() { Name = "MIT License", Url = new Uri("https://github.com/Blazam-App/BLAZAM/blob/v1-Dev/LICENSE") },
-                Contact = new()
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Email = "support@blazam.org",
-                    Name = "Blazam Support",
-                    Url = new("https://blazam.org/support")
-                },
-                TermsOfService = new Uri("https://blazam.org/tos")
-            });
+                    Title = "Blazam API",
+                    Version = "v1",
+                    Description = "The official Blazam API documentation." +
+                    "<br/>Authorization is required for API access." +
+                    "<br/>The \"Authorization\" header value must be \"Bearer {token}\"",
+                    License = new OpenApiLicense() { Name = "MIT License", Url = new Uri("https://github.com/Blazam-App/BLAZAM/blob/v1-Dev/LICENSE") },
+                    Contact = new()
+                    {
+                        Email = "support@blazam.org",
+                        Name = "Blazam Support",
+                        Url = new("https://blazam.org/support")
+                    },
+                    TermsOfService = new Uri("https://blazam.org/tos")
+                });
 
-            // Add descriptions using XML comments
-            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+                // Add descriptions using XML comments
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
-            // Configure Swagger to use JWT Bearer authorization
-            var jwtSecurityScheme = new OpenApiSecurityScheme
-            {
-                Description = "Enter only the token supplied by Blazam",
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                BearerFormat = "JWT",
-                Reference = new OpenApiReference
+                // Configure Swagger to use JWT Bearer authorization
+                var jwtSecurityScheme = new OpenApiSecurityScheme
                 {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
-                }
-            };
+                    Description = "Enter only the token supplied by Blazam",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
 
                 c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
                     { jwtSecurityScheme,Array.Empty<string>() }
                 });
-        });
+            });
 
             builder.Host.UseWindowsService();
 
@@ -401,85 +399,181 @@ namespace BLAZAM.Server
 
             return builder;
         }
-
-    public static void PreRun(this WebApplication application)
-    {
-        //Setup Seq logging if allowed by admin
-        try
+        private static readonly object _lock = new object();
+        public static WebApplicationBuilder InjectBackgroundServices(this WebApplicationBuilder builder)
         {
-            var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
-            if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
-            {
-                Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
 
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            Parallel.ForEach(assemblies, assembly =>
+            {
+                var types = assembly.GetTypes()
+                    .Where(t => t.IsClass && !t.IsAbstract
+                    && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
+
+                foreach (var type in types)
+                {
+                    var interfaceType = type.GetInterfaces()
+            .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
+            && i.Name != "IDisposable");
+
+                    if (interfaceType != null)
+                    {
+                        lock (_lock)
+                        {
+                            builder.Services.AddSingleton(interfaceType, type);
+                        }
+                    }
+                    else
+                    {
+                        lock (_lock)
+                        {
+                            builder.Services.AddSingleton(type);
+                        }
+                    }
+                }
+            });
+            return builder;
+        }
+
+        /// <summary>
+        /// Auto-starts <see cref="AutoStartBackgroundService"/> adorned classes and
+        /// sets the Seq logging  opt-out, and other singleton services
+        /// </summary>
+        /// <param name="application"></param>
+        public static void PreRun(this WebApplication application)
+        {
+            try
+            {
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+                foreach (var assembly in assemblies)
+                {
+                    try
+                    {
+                        var types = assembly.GetTypes()
+                        .Where(t => t.IsClass && !t.IsAbstract
+                        && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
+
+                        foreach (var type in types)
+                        {
+                            try
+                            {
+                                var interfaceType = type.GetInterfaces()
+                                    .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
+                                    && i.Name != "IDisposable");
+                                BackgroundServiceBase? service;
+
+                                if (interfaceType != null)
+                                {
+                                    service = application.Services.GetRequiredService(interfaceType) as BackgroundServiceBase;
+
+                                }
+                                else
+                                {
+                                    service = application.Services.GetRequiredService(type) as BackgroundServiceBase;
+
+                                }
+
+
+                                var data = type.GetCustomAttribute<AutoStartBackgroundService>();
+                                service?.Start(data?.Immediate == true);
+                            }
+                            catch (Exception ex)
+                            {
+                                Loggers.SystemLogger.Error("Critical error starting up background service! {Error}", ex);
+
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.SystemLogger.Warning("Unexpected error starting up background service! {Error}", ex);
+
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error("Critical error getting loaded assemblies! {Error}", ex);
+
+            }
+            //Setup Seq logging if allowed by admin
+            try
+            {
+                using var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
+                if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
+                {
+                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+            PreloadServices();
+
+        }
+        static IAsyncPolicy<HttpResponseMessage> GetWebhookRetryPolicy()
+        {
+            var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 5);
+
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(delay);
+        }
+        private static void PreloadServices()
+        {
+            try
+            {
+                var context = Program.AppInstance.Services.GetRequiredService<NotificationGenerationService>();
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+            try
+            {
+                if (ApplicationInfo.installationCompleted)
+                {
+                    var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+            try
+            {
+                if (ApplicationInfo.installationCompleted)
+                {
+                    var context = Program.AppInstance.Services.GetRequiredService<UpdateService>();
+                    context.Initialize();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+            try
+            {
+                if (ApplicationInfo.installationCompleted)
+                {
+                    var context = Program.AppInstance.Services.GetRequiredService<WebHookPublisher>();
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
 
         }
-        catch (Exception ex)
-        {
-            Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-        }
-        PreloadServices();
-
     }
-    static IAsyncPolicy<HttpResponseMessage> GetWebhookRetryPolicy()
-    {
-        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 5);
-
-        return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-            .WaitAndRetryAsync(delay);
-    }
-    private static void PreloadServices()
-    {
-        try
-        {
-            var context = Program.AppInstance.Services.GetRequiredService<NotificationGenerationService>();
-        }
-        catch (Exception ex)
-        {
-            Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-        }
-        try
-        {
-            if (ApplicationInfo.installationCompleted)
-            {
-                var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
-            }
-
-        }
-        catch (Exception ex)
-        {
-            Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-        }
-        try
-        {
-            if (ApplicationInfo.installationCompleted)
-            {
-                var context = Program.AppInstance.Services.GetRequiredService<UpdateService>();
-                context.Initialize();
-            }
-
-        }
-        catch (Exception ex)
-        {
-            Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-        }
-        try
-        {
-            if (ApplicationInfo.installationCompleted)
-            {
-                var context = Program.AppInstance.Services.GetRequiredService<WebHookPublisher>();
-
-            }
-
-        }
-        catch (Exception ex)
-        {
-            Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-        }
-
-    }
-}
 }

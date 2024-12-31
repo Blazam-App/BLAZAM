@@ -1,4 +1,5 @@
-﻿using ApplicationNews;
+﻿
+using ApplicationNews;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Gui.UI.Modals;
 using Microsoft.AspNetCore.Components.Forms;

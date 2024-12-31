@@ -13,6 +13,8 @@ namespace BLAZAM.Database.Models.Audit
         public string? Subject { get; set; }
         public string? HtmlBody { get; set; }
         public bool IsRead { get; set; }
+        public DateTime LastAttemptTimestamp { get; set; }
+        public int Retries { get; set; }
         public DateTime? ReadTimestamp { get; set; }
         public string? ServerResponse { get; set; }
     }

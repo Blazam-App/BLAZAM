@@ -1,18 +1,19 @@
 ﻿@inherits AppModalContent
 @using BLAZAM.Helpers
+@using System.Security
 <MudStack>
     @if (CurrentUser.State.Preferences.ProfilePicture != null)
     {
         <Base64Image Data="@CurrentUser.State.Preferences.ProfilePicture" />
     }
     <MudFileUpload T="IBrowserFile"
-                   FilesChanged="UploadProfilePicture">
+    FilesChanged="UploadProfilePicture">
         <ActivatorContent>
 
             <MudButton HtmlTag="label"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload">
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            StartIcon="@Icons.Material.Filled.CloudUpload">
                 @if (CurrentUser.State.Preferences.ProfilePicture == null)
                 {
                     <MudText>Upload Profile Icon</MudText>
@@ -29,9 +30,9 @@
                                     CurrentUser.State.Preferences.ProfilePicture=null;
 
                                     })"
-                           Variant="Variant.Filled"
-                           Color="Color.Error"
-                           StartIcon="@Icons.Material.Filled.Remove">
+                Variant="Variant.Filled"
+                Color="Color.Error"
+                StartIcon="@Icons.Material.Filled.Remove">
                     Remove
                 </MudButton>
 
@@ -48,27 +49,28 @@
             </MudButton>
         }
         <MudSwitch Value="@CurrentUser.State.Preferences.DarkMode"
-                   ValueChanged=@((state)=>{mainLayout.SetDarkMode(state);})
-                   Color="Color.Primary"
-                   Class="ma-4"
-                   T="bool"
-                   Label="Toggle Light/Dark Mode" />
+        ValueChanged=@((state)=>{mainLayout.SetDarkMode(state);})
+        Color="Color.Primary"
+        Class="ma-4"
+        T="bool"
+        Label="Toggle Light/Dark Mode" />
 
 
     </MudNavGroup>
-    @* <AuthorizeView Roles="@UserRoles.SuperAdmin"> *@
-        
-        @* <MudTextField ReadOnly="true" T="string" Value="@("Bearer "+CurrentUser.State.Preferences.APIToken)" Label="@AppLocalization["API Token"]" /> *@
-        
-    @* </AuthorizeView> *@
+    <CreateGoogleAuthenticationToken/>
+    
+
     <LoadingData Loading=LoadingData />
 </MudStack>
 @code {
+
+
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
     protected override void OnInitialized()
     {
         base.OnInitialized();
+      
         Modal.SetYesText(AppLocalization["Save"]);
         Modal.OnYes += SaveSettings;
         Modal.YesEnabled = () => { return !LoadingData; };
@@ -102,4 +104,6 @@
             CurrentUser.State.Preferences.ProfilePicture = rawBytes.ReizeRawImage(100, true);
         }
     }
+
+  
 }

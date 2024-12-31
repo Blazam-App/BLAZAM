@@ -204,9 +204,6 @@
   <data name="Application Credentials" xml:space="preserve">
     <value>应用程序凭据</value>
   </data>
-  <data name="Application logons" xml:space="preserve">
-    <value>应用程序登录</value>
-  </data>
   <data name="Application Name" xml:space="preserve">
     <value>应用程序名称</value>
   </data>
@@ -255,9 +252,6 @@
   <data name="BaseDN" xml:space="preserve">
     <value>基本 DN</value>
   </data>
-  <data name="Block" xml:space="preserve">
-    <value>块</value>
-  </data>
   <data name="Branch" xml:space="preserve">
     <value>分支</value>
   </data>
@@ -266,9 +260,6 @@
   </data>
   <data name="Browse" xml:space="preserve">
     <value>浏览</value>
-  </data>
-  <data name="Bypass" xml:space="preserve">
-    <value>旁路</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
@@ -293,9 +284,6 @@
   </data>
   <data name="City" xml:space="preserve">
     <value>城市</value>
-  </data>
-  <data name="Click to view help documentation" xml:space="preserve">
-    <value>单击以查看帮助文档</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>关闭</value>
@@ -369,9 +357,6 @@
   <data name="Custom Login" xml:space="preserve">
     <value>自定义登录</value>
   </data>
-  <data name="Data Collection Settings" xml:space="preserve">
-    <value>数据收集设置</value>
-  </data>
   <data name="Database" xml:space="preserve">
     <value>数据库</value>
   </data>
@@ -408,9 +393,6 @@
   <data name="Details" xml:space="preserve">
     <value>详</value>
   </data>
-  <data name="Developer Analytics" xml:space="preserve">
-    <value>开发人员分析</value>
-  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>放弃更改</value>
   </data>
@@ -423,9 +405,6 @@
   <data name="Domain" xml:space="preserve">
     <value>域</value>
   </data>
-  <data name="Download Logs" xml:space="preserve">
-    <value>下载日志</value>
-  </data>
   <data name="Drive Details" xml:space="preserve">
     <value>驱动器详细信息</value>
   </data>
@@ -434,18 +413,6 @@
   </data>
   <data name="Driver Version" xml:space="preserve">
     <value>驱动程序版本</value>
-  </data>
-  <data name="Duo Enabled" xml:space="preserve">
-    <value>Duo 启用</value>
-  </data>
-  <data name="Duo Health Check" xml:space="preserve">
-    <value>Duo 运行状况检查</value>
-  </data>
-  <data name="Duo Security MFA (optional)" xml:space="preserve">
-    <value>Duo Security MFA（可选）</value>
-  </data>
-  <data name="Duo Unreachable Behavior" xml:space="preserve">
-    <value>Duo 无法访问行为</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>编辑</value>
@@ -488,9 +455,6 @@
   </data>
   <data name="Failed" xml:space="preserve">
     <value>失败</value>
-  </data>
-  <data name="Favorites" xml:space="preserve">
-    <value>收藏 夹</value>
   </data>
   <data name="Field Name" xml:space="preserve">
     <value>字段名称</value>
@@ -561,14 +525,8 @@
   <data name="Inherited Permissions" xml:space="preserve">
     <value>继承的权限</value>
   </data>
-  <data name="Installation Id" xml:space="preserve">
-    <value>安装 ID</value>
-  </data>
   <data name="Job Title" xml:space="preserve">
     <value>职称</value>
-  </data>
-  <data name="Jobs Monitor" xml:space="preserve">
-    <value>作业监视器</value>
   </data>
   <data name="Last Change" xml:space="preserve">
     <value>上次更改</value>
@@ -591,9 +549,6 @@
   <data name="Location" xml:space="preserve">
     <value>位置</value>
   </data>
-  <data name="Locked Out Users" xml:space="preserve">
-    <value>被锁定的用户</value>
-  </data>
   <data name="Lockout Time" xml:space="preserve">
     <value>锁定时间</value>
   </data>
@@ -602,9 +557,6 @@
   </data>
   <data name="Log In To Demo" xml:space="preserve">
     <value>登录演示</value>
-  </data>
-  <data name="Logging" xml:space="preserve">
-    <value>伐木</value>
   </data>
   <data name="Logins" xml:space="preserve">
     <value>登录</value>
@@ -668,9 +620,6 @@
   </data>
   <data name="Not started" xml:space="preserve">
     <value>未启动</value>
-  </data>
-  <data name="Notifications" xml:space="preserve">
-    <value>通知</value>
   </data>
   <data name="Office" xml:space="preserve">
     <value>办公室</value>
@@ -810,9 +759,6 @@
   <data name="Reset Password" xml:space="preserve">
     <value>重置密码</value>
   </data>
-  <data name="Resource Usage" xml:space="preserve">
-    <value>资源使用情况</value>
-  </data>
   <data name="Restore" xml:space="preserve">
     <value>恢复</value>
   </data>
@@ -845,9 +791,6 @@
   </data>
   <data name="Script Path" xml:space="preserve">
     <value>脚本路径</value>
-  </data>
-  <data name="Send logs to developer" xml:space="preserve">
-    <value>将日志发送给开发人员</value>
   </data>
   <data name="Server" xml:space="preserve">
     <value>服务器</value>
@@ -930,9 +873,6 @@
   <data name="There are no templates available" xml:space="preserve">
     <value>没有可用的模板</value>
   </data>
-  <data name="Time in minutes" xml:space="preserve">
-    <value>时间（分钟）</value>
-  </data>
   <data name="Type" xml:space="preserve">
     <value>类型</value>
   </data>
@@ -974,12 +914,6 @@
   </data>
   <data name="Upload" xml:space="preserve">
     <value>上传</value>
-  </data>
-  <data name="Upload Certificate" xml:space="preserve">
-    <value>上传证书</value>
-  </data>
-  <data name="Upload Icon" xml:space="preserve">
-    <value>上传图标</value>
   </data>
   <data name="Upload SSL Certificate" xml:space="preserve">
     <value>上传SSL证书</value>
@@ -1031,5 +965,314 @@
   </data>
   <data name="Zip Code" xml:space="preserve">
     <value>邮政编码</value>
+  </data>
+  <data name="Application logons" xml:space="preserve">
+    <value>应用程序登录</value>
+  </data>
+  <data name="Block" xml:space="preserve">
+    <value>块</value>
+  </data>
+  <data name="Bypass" xml:space="preserve">
+    <value>旁路</value>
+  </data>
+  <data name="Click to view help documentation" xml:space="preserve">
+    <value>单击以查看帮助文档</value>
+  </data>
+  <data name="Data Collection Settings" xml:space="preserve">
+    <value>数据收集设置</value>
+  </data>
+  <data name="Developer Analytics" xml:space="preserve">
+    <value>开发人员分析</value>
+  </data>
+  <data name="Download Logs" xml:space="preserve">
+    <value>下载日志</value>
+  </data>
+  <data name="Duo Enabled" xml:space="preserve">
+    <value>Duo 启用</value>
+  </data>
+  <data name="Duo Health Check" xml:space="preserve">
+    <value>Duo 运行状况检查</value>
+  </data>
+  <data name="Duo Security MFA (optional)" xml:space="preserve">
+    <value>Duo Security MFA（可选）</value>
+  </data>
+  <data name="Duo Unreachable Behavior" xml:space="preserve">
+    <value>Duo 无法访问行为</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>收藏 夹</value>
+  </data>
+  <data name="Installation Id" xml:space="preserve">
+    <value>安装 ID</value>
+  </data>
+  <data name="Jobs Monitor" xml:space="preserve">
+    <value>作业监视器</value>
+  </data>
+  <data name="Locked Out Users" xml:space="preserve">
+    <value>被锁定的用户</value>
+  </data>
+  <data name="Logging" xml:space="preserve">
+    <value>伐木</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>通知</value>
+  </data>
+  <data name="Resource Usage" xml:space="preserve">
+    <value>资源使用情况</value>
+  </data>
+  <data name="Send logs to developer" xml:space="preserve">
+    <value>将日志发送给开发人员</value>
+  </data>
+  <data name="Time in minutes" xml:space="preserve">
+    <value>时间（分钟）</value>
+  </data>
+  <data name="Upload Certificate" xml:space="preserve">
+    <value>上传证书</value>
+  </data>
+  <data name="Upload Icon" xml:space="preserve">
+    <value>上传图标</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>大约</value>
+  </data>
+  <data name="Add Category" xml:space="preserve">
+    <value>添加类别</value>
+  </data>
+  <data name="Allow Username Override" xml:space="preserve">
+    <value>允许用户名覆盖</value>
+  </data>
+  <data name="API Tokens" xml:space="preserve">
+    <value>API 令牌</value>
+  </data>
+  <data name="Apply Update" xml:space="preserve">
+    <value>应用更新</value>
+  </data>
+  <data name="Ask For Alternate Email" xml:space="preserve">
+    <value>请求备用电子邮件</value>
+  </data>
+  <data name="Authorization Token" xml:space="preserve">
+    <value>授权令牌</value>
+  </data>
+  <data name="Authorization Type" xml:space="preserve">
+    <value>授权类型</value>
+  </data>
+  <data name="Basic" xml:space="preserve">
+    <value>基本</value>
+  </data>
+  <data name="Bearer" xml:space="preserve">
+    <value>承载</value>
+  </data>
+  <data name="BitLocker" xml:space="preserve">
+    <value>BitLocker</value>
+  </data>
+  <data name="Changed" xml:space="preserve">
+    <value>改变</value>
+  </data>
+  <data name="Changes have been saved" xml:space="preserve">
+    <value>更改已保存</value>
+  </data>
+  <data name="Create new token" xml:space="preserve">
+    <value>创建新令牌</value>
+  </data>
+  <data name="days" xml:space="preserve">
+    <value>日</value>
+  </data>
+  <data name="Dedicated To" xml:space="preserve">
+    <value>献给</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="Delivered" xml:space="preserve">
+    <value>交付</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>禁用</value>
+  </data>
+  <data name="Display Name Format" xml:space="preserve">
+    <value>显示名称格式</value>
+  </data>
+  <data name="Effective Permissions" xml:space="preserve">
+    <value>有效权限</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>使</value>
+  </data>
+  <data name="Error Message" xml:space="preserve">
+    <value>错误信息</value>
+  </data>
+  <data name="Event Timestamp" xml:space="preserve">
+    <value>事件时间戳</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>到期</value>
+  </data>
+  <data name="Formula sim" xml:space="preserve">
+    <value>方程式模拟</value>
+  </data>
+  <data name="Founded" xml:space="preserve">
+    <value>成立</value>
+  </data>
+  <data name="Founder" xml:space="preserve">
+    <value>创始人</value>
+  </data>
+  <data name="Generate New API Token" xml:space="preserve">
+    <value>生成新的 API 令牌</value>
+  </data>
+  <data name="Group Member Added" xml:space="preserve">
+    <value>已添加组成员</value>
+  </data>
+  <data name="Group Member Removed" xml:space="preserve">
+    <value>已删除组成员</value>
+  </data>
+  <data name="Group Searched" xml:space="preserve">
+    <value>搜索组</value>
+  </data>
+  <data name="Hide Previous Updates" xml:space="preserve">
+    <value>隐藏以前的更新</value>
+  </data>
+  <data name="HTTP Method" xml:space="preserve">
+    <value>HTTP 方法</value>
+  </data>
+  <data name="Ignore SSL Verification" xml:space="preserve">
+    <value>忽略 SSL 验证</value>
+  </data>
+  <data name="In Loving Memory" xml:space="preserve">
+    <value>在爱的记忆中</value>
+  </data>
+  <data name="Include Disabled" xml:space="preserve">
+    <value>包括禁用的</value>
+  </data>
+  <data name="IP Address" xml:space="preserve">
+    <value>IP地址</value>
+  </data>
+  <data name="Is Revoked" xml:space="preserve">
+    <value>被撤销</value>
+  </data>
+  <data name="Last Attempt Timestamp" xml:space="preserve">
+    <value>上次尝试时间戳</value>
+  </data>
+  <data name="Last Message Status" xml:space="preserve">
+    <value>最后一条消息状态</value>
+  </data>
+  <data name="Last Used" xml:space="preserve">
+    <value>上次使用时间</value>
+  </data>
+  <data name="Locked Out" xml:space="preserve">
+    <value>已锁定</value>
+  </data>
+  <data name="Message Id" xml:space="preserve">
+    <value>消息 ID</value>
+  </data>
+  <data name="Modify" xml:space="preserve">
+    <value>修改</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>没有</value>
+  </data>
+  <data name="Notification Settings" xml:space="preserve">
+    <value>通知设置</value>
+  </data>
+  <data name="OU Searched" xml:space="preserve">
+    <value>已搜索的 OU</value>
+  </data>
+  <data name="Parent Template" xml:space="preserve">
+    <value>父模板</value>
+  </data>
+  <data name="PasswordChange" xml:space="preserve">
+    <value>密码更改</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="Refresh Session" xml:space="preserve">
+    <value>刷新会话</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="Request Access" xml:space="preserve">
+    <value>请求访问</value>
+  </data>
+  <data name="Require Password Change" xml:space="preserve">
+    <value>需要更改密码</value>
+  </data>
+  <data name="Response Code" xml:space="preserve">
+    <value>响应代码</value>
+  </data>
+  <data name="Retry Count" xml:space="preserve">
+    <value>重试计数</value>
+  </data>
+  <data name="Send  Welcome Email" xml:space="preserve">
+    <value>发送欢迎电子邮件</value>
+  </data>
+  <data name="Session Expired" xml:space="preserve">
+    <value>会话已过期</value>
+  </data>
+  <data name="Session expires in" xml:space="preserve">
+    <value>会话过期时间</value>
+  </data>
+  <data name="Show Previous Updates" xml:space="preserve">
+    <value>显示以前的更新</value>
+  </data>
+  <data name="Source Code" xml:space="preserve">
+    <value>源代码</value>
+  </data>
+  <data name="Stale computers" xml:space="preserve">
+    <value>过时的计算机</value>
+  </data>
+  <data name="Stale users" xml:space="preserve">
+    <value>过时的用户</value>
+  </data>
+  <data name="Template Id" xml:space="preserve">
+    <value>模板 ID</value>
+  </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>时间戳</value>
+  </data>
+  <data name="Toggle Fields" xml:space="preserve">
+    <value>Toggle Fields</value>
+  </data>
+  <data name="Token" xml:space="preserve">
+    <value>令 牌</value>
+  </data>
+  <data name="Token Lifetime" xml:space="preserve">
+    <value>令牌生命周期</value>
+  </data>
+  <data name="Unassign" xml:space="preserve">
+    <value>取消分配</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>网址</value>
+  </data>
+  <data name="User Activity" xml:space="preserve">
+    <value>用户活动</value>
+  </data>
+  <data name="User Assigned" xml:space="preserve">
+    <value>用户分配</value>
+  </data>
+  <data name="User Searched" xml:space="preserve">
+    <value>用户搜索</value>
+  </data>
+  <data name="User Unassigned" xml:space="preserve">
+    <value>用户未分配</value>
+  </data>
+  <data name="Username Format" xml:space="preserve">
+    <value>用户名格式</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>价值</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>变量</value>
+  </data>
+  <data name="Webhooks" xml:space="preserve">
+    <value>Webhook</value>
+  </data>
+  <data name="Your session has expired." xml:space="preserve">
+    <value>您的会话已过期。</value>
+  </data>
+  <data name="Your session is about to expire" xml:space="preserve">
+    <value>您的会话即将过期</value>
   </data>
 </root>

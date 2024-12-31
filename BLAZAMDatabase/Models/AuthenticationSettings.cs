@@ -27,5 +27,13 @@ namespace BLAZAM.Database.Models
         public string? DuoClientSecret { get; set; }
         public string? DuoApiHost { get; set; }
         public DuoUnreachableBehavior DuoUnreachableBehavior { get; set; } = DuoUnreachableBehavior.Block;
+
+        /// <summary>
+        /// Indicates that MFA must be used by all users other than admimn and demo
+        /// </summary>
+        /// <remarks>
+        /// If DUO is enabled this setting has no effect.
+        /// </remarks>
+        public bool RequireMFA { get; set; }
     }
 }

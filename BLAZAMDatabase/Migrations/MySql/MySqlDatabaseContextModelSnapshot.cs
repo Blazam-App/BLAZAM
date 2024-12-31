@@ -750,6 +750,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int>("DuoUnreachableBehavior")
                         .HasColumnType("int");
 
+                    b.Property<bool>("RequireMFA")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int?>("SessionTimeout")
                         .HasColumnType("int");
 
@@ -768,6 +771,7 @@ namespace BLAZAM.Common.Migrations.MySql
                             AdminPassword = "password",
                             DuoEnabled = false,
                             DuoUnreachableBehavior = 0,
+                            RequireMFA = false,
                             SessionTimeout = 15
                         });
                 });
@@ -925,6 +929,26 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.HasKey("Id");
 
                     b.ToTable("EmailTemplates");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.GenericSidList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Added")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Sid")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LockedOutUsers");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
@@ -1634,6 +1658,9 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthenticatorSecret")
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("DarkMode")
                         .HasColumnType("tinyint(1)");

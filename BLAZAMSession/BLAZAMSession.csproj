@@ -12,10 +12,4 @@
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="ApplicationNews">
-      <HintPath>ApplicationNews.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

@@ -77,10 +77,18 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-        public LoginRequest MFARequested(AuthenticationState state)
+        public LoginRequest DuoRequested(AuthenticationState state)
         {
             AuthenticationState = state;
-            AuthenticationResult = LoginResultStatus.MFARequested;
+            AuthenticationResult = LoginResultStatus.DuoRequested;
+
+            return this;
+        }
+        
+        public LoginRequest GoogleAuthenticatorRequested(AuthenticationState state)
+        {
+            AuthenticationState = state;
+            AuthenticationResult = LoginResultStatus.GoogleAuthenticatorRequested;
 
             return this;
         }

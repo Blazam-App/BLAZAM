@@ -41,7 +41,10 @@ else
             }
             @if (DirectoryEntry.OU!=null)
             {
-                <MudText Typo="Typo.caption" Class="align-middle mt">@DirectoryEntry.OU.ToPrettyOu() </MudText>
+                <MudLink Typo="Typo.caption"
+                Color="Color.Tertiary"
+                Class="align-middle"
+                Href="@_parentOU?.SearchUri">@DirectoryEntry.OU.ToPrettyOu()</MudLink>
 
             }
 
@@ -52,25 +55,25 @@ else
         @if (accountEntry?.LockedOut == true)
         {
             <MudIconButton Disabled=@(!accountEntry.CanUnlock)
-                           OnClick=Unlock
-                           Icon=@Icons.Material.Filled.Lock />
+            OnClick=Unlock
+            Icon=@Icons.Material.Filled.Lock />
         }
         <MudHidden Breakpoint="Breakpoint.Xs">
             <MudToolBar Class="align-middle"
-                        Style="height:32px"
-                        Gutters=false
-                        Dense=true>
+            Style="height:32px"
+            Gutters=false
+            Dense=true>
                 @if (accountEntry != null)
 
                 {
                     <AppTooltip Text="@AppLocalization[accountEntry.Enabled==true?"Disable":"Enable"]">
 
                         <MudToggleIconButton @bind-Toggled="@accountEntry.Enabled"
-                                             Icon="@Icons.Material.Filled.PersonOff"
-                                             Color="Color.Error"
-                                             Disabled=@(!(accountEntry.Enabled && accountEntry.CanDisable) && !(accountEntry.Disabled && accountEntry.CanEnable))
-                                             ToggledIcon="@Icons.Material.Filled.Person"
-                                             ToggledColor="Color.Success" />
+                        Icon="@Icons.Material.Filled.PersonOff"
+                        Color="Color.Error"
+                        Disabled=@(!(accountEntry.Enabled && accountEntry.CanDisable) && !(accountEntry.Disabled && accountEntry.CanEnable))
+                        ToggledIcon="@Icons.Material.Filled.Person"
+                        ToggledColor="Color.Success" />
                     </AppTooltip>
                 }
 
@@ -79,11 +82,11 @@ else
                 <AppTooltip Text="@(EditMode?AppLocalization["End Edit"]:AppLocalization["Edit"])">
 
                     <MudToggleIconButton Toggled=EditMode
-                                         ToggledChanged="@(async(state)=>{await ToggleEditMode(state);})"
-                                         Icon="@Icons.Material.Filled.Edit"
-                                         ToggledIcon="@Icons.Material.Filled.EditOff"
-                                         ToggledColor="Color.Error"
-                                         Disabled=@(!DirectoryEntry.CanEdit && (accountEntry!=null)) />
+                    ToggledChanged="@(async(state)=>{await ToggleEditMode(state);})"
+                    Icon="@Icons.Material.Filled.Edit"
+                    ToggledIcon="@Icons.Material.Filled.EditOff"
+                    ToggledColor="Color.Error"
+                    Disabled=@(!DirectoryEntry.CanEdit && (accountEntry!=null)) />
 
                 </AppTooltip>
 
@@ -92,9 +95,9 @@ else
                     <AppTooltip Text="@AppLocalization["Unlock"]">
 
                         <MudIconButton OnClick="Unlock"
-                                       Icon="@Icons.Material.Filled.LockOpen"
-                                       Disabled=@(!accountEntry.CanUnlock)
-                                       aria-label="unlock" />
+                        Icon="@Icons.Material.Filled.LockOpen"
+                        Disabled=@(!accountEntry.CanUnlock)
+                        aria-label="unlock" />
                     </AppTooltip>
                 }
                 @if (groupableEntry != null)
@@ -102,8 +105,8 @@ else
                     <AppTooltip Text="@AppLocalization["Assign To"]">
 
                         <MudIconButton OnClick="@Assign"
-                                       Icon="@Icons.Material.Filled.GroupAdd"
-                                       aria-label="assign to" />
+                        Icon="@Icons.Material.Filled.GroupAdd"
+                        aria-label="assign to" />
                     </AppTooltip>
 
                 }
@@ -111,34 +114,34 @@ else
                 {
                     <AppTooltip Text="@AppLocalization["Change Password"]">
                         <MudIconButton OnClick="@ResetPassword"
-                                       Disabled=@(!accountEntry.CanSetPassword)
-                                       Icon="@Icons.Material.Filled.Password"
-                                       aria-label="change password" />
+                        Disabled=@(!accountEntry.CanSetPassword)
+                        Icon="@Icons.Material.Filled.Password"
+                        aria-label="change password" />
                     </AppTooltip>
                 }
                 <AppTooltip Text="@AppLocalization["Rename"]">
 
                     <MudIconButton OnClick="@Rename"
-                                   Disabled=@(!DirectoryEntry.CanRename)
-                                   Icon="@Icons.Material.Filled.DriveFileRenameOutline"
-                                   aria-label="rename" />
+                    Disabled=@(!DirectoryEntry.CanRename)
+                    Icon="@Icons.Material.Filled.DriveFileRenameOutline"
+                    aria-label="rename" />
 
                 </AppTooltip>
 
                 <AppTooltip Text="@AppLocalization["Move"]">
 
                     <MudIconButton OnClick="@Move"
-                                   Disabled=@(!DirectoryEntry.CanMove)
-                                   Icon="@Icons.Material.Filled.DriveFileMove"
-                                   aria-label="move" />
+                    Disabled=@(!DirectoryEntry.CanMove)
+                    Icon="@Icons.Material.Filled.DriveFileMove"
+                    aria-label="move" />
                 </AppTooltip>
                 <AppTooltip Text="@AppLocalization["Delete"]">
 
                     <MudIconButton OnClick="@DeleteUser"
-                                   Color="Color.Error"
-                                   Disabled=@(!DirectoryEntry.CanDelete)
-                                   Icon="@Icons.Material.Filled.Delete"
-                                   aria-label="change password" />
+                    Color="Color.Error"
+                    Disabled=@(!DirectoryEntry.CanDelete)
+                    Icon="@Icons.Material.Filled.Delete"
+                    aria-label="change password" />
                 </AppTooltip>
 
                 @if (CurrentUser.State.IsSuperAdmin)
@@ -146,26 +149,26 @@ else
 
                     <AppTooltip Text="@AppLocalization["Change History"]">
                         <MudIconButton OnClick="@ShowHistory"
-                                       Disabled=@(!DirectoryEntry.CanEdit)
-                                       Icon="@Icons.Material.Filled.History" />
+                        Disabled=@(!DirectoryEntry.CanEdit)
+                        Icon="@Icons.Material.Filled.History" />
                     </AppTooltip>
 
                     <AppTooltip Text="@AppLocalization["Effective Permissions"]">
                         <MudIconButton OnClick="@ShowPermissions"
-                                       Icon="@Icons.Material.Filled.RunCircle" />
+                        Icon="@Icons.Material.Filled.RunCircle" />
                     </AppTooltip>
                 }
                 @if (_showRequestButton)
                 {
                     <AppTooltip Text="@AppLocalization["Request Access"]">
                         <MudIconButton OnClick="@(()=>{_requestAccessModal?.ShowAsync();})"
-                                       Icon="@Icons.Material.Filled.PlaylistAdd" />
+                        Icon="@Icons.Material.Filled.PlaylistAdd" />
                     </AppTooltip>
                 }
                 <AppTooltip Text="@(IsFavorite==true?AppLocalization["Remove from favorites"]:AppLocalization["Add to favorites"])">
                     <MudIconButton OnClick="@ToggleFavorite"
-                                   Icon="@(IsFavorite==true?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
-                                   Color="@(IsFavorite==true?Color.Warning:Color.Default)" />
+                    Icon="@(IsFavorite==true?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
+                    Color="@(IsFavorite==true?Color.Warning:Color.Default)" />
                 </AppTooltip>
             </MudToolBar>
         </MudHidden>
@@ -174,18 +177,18 @@ else
         <MudHidden Breakpoint="Breakpoint.SmAndUp">
 
             <MudMenu Class="align-self-end"
-                     IconColor="@Color.Tertiary"
-                     StartIcon="@Icons.Material.Filled.Settings">
+            IconColor="@Color.Tertiary"
+            StartIcon="@Icons.Material.Filled.Settings">
                 @if (accountEntry != null)
                 {
                     @if ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable))
                     {
                         <MudMenuItem>
                             <MudSwitch T=bool
-                                       Color=Color.Success
-                                       Label=@AppLocalization["Account Enabled"]
-                                       @bind-Value=@accountEntry.Enabled
-                                       Disabled=@((accountEntry.Disabled && !accountEntry.CanEnable)||(accountEntry.Enabled && !accountEntry.CanDisable)) />
+                            Color=Color.Success
+                            Label=@AppLocalization["Account Enabled"]
+                            @bind-Value=@accountEntry.Enabled
+                            Disabled=@((accountEntry.Disabled && !accountEntry.CanEnable)||(accountEntry.Enabled && !accountEntry.CanDisable)) />
 
                         </MudMenuItem>
                     }
@@ -238,6 +241,7 @@ else
 @code {
     private AppModal? _requestAccessModal;
     private bool _showRequestButton;
+    private IDirectoryEntryAdapter? _parentOU;
     [Parameter]
     public EventCallback OnDelete { get; set; }
     private async Task DeleteUser()
@@ -329,11 +333,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-       
+
         await base.OnInitializedAsync();
         LoadingData = true;
         _showRequestButton = Context.GlobalPermissionSettings.FirstOrDefault()?.AllowAccessRequest == true
         && Context.GlobalPermissionRequestActions.Count() > 0;
+        _parentOU =await DirectoryEntry.GetParentAsync();
     }
     protected override void OnAfterRender(bool firstRender)
     {

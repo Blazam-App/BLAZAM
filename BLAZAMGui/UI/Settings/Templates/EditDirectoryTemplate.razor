@@ -57,7 +57,7 @@ await ParentTemplateChanged(null);
                            UncheckedColor="Color.Warning"
                            Color="Color.Success"
                            @bind-Value=@DirectoryTemplate.Visible />
-                <MudExpansionPanel Text="Variables">
+                <MudExpansionPanel Text=@AppLocalization["Variables"]>
                     <MudStack>
                         <MudText Typo="Typo.h6">
                             @AppLocalization["Syntax"]
@@ -449,7 +449,9 @@ await ParentTemplateChanged(null);
                                 <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.RequirePasswordChange=null;}) />
                             }
                         </MudStack>
-                        <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@sendWelcomeEmailFromTemplate">
+                        <TemplateOverride Class="mud-width-full"
+                        BadgeClass="mud-width-full"
+                        SourceTemplate="@sendWelcomeEmailFromTemplate">
 
                             <MudSwitch Label="@AppLocalization["Send  Welcome Email"]"
                                        UncheckedColor="Color.Error"
@@ -595,11 +597,11 @@ await ParentTemplateChanged(null);
                                     <ToolBarContent>
                                         <MudButton Variant="Variant.Filled"
                                                    Color="Color.Secondary"
-                                                   OnClick="@(()=>{fieldDrawerOpen=!fieldDrawerOpen;})">Toggle Fields</MudButton>
+                                                   OnClick="@(()=>{fieldDrawerOpen=!fieldDrawerOpen;})">@AppLocalization["Toggle Fields"]</MudButton>
 
                                     </ToolBarContent>
                                     <Columns>
-                                        <TemplateColumn StickyLeft=true Title="Name">
+                                        <TemplateColumn StickyLeft=true Title=@AppLocalization["Name"]>
                                             <CellTemplate Context="cellContext">
                                                 @{
                                                     var fromTemplateName = dropdownTemplates.Where(ot => ot.FieldValues.Contains(cellContext.Item)).FirstOrDefault();

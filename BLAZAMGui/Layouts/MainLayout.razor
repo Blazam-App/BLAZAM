@@ -5,7 +5,7 @@
 @inject NavigationManager Nav
 @inject IActiveDirectoryContext directory
 @inject IApplicationUserStateService UserStateService
-@inject IAppDatabaseFactory DbFactory
+@inject IUserDatabaseFactory DbFactory
 @inject AppSnackBarService SnackBarService
 @inject ApplicationInfo ApplicationInfo
 @inject ConnMonitor monitor
@@ -15,13 +15,13 @@
 }
 
 <PageTitle>@DatabaseCache.ApplicationSettings.AppAbbreviation</PageTitle>
-<CascadingValue Value="this">
-    <MudLayout Style="min-height:98vh;">
-        <AuthorizeView Context="authContext">
-            <Authorized>
-                <MainAppBar />
+    <CascadingValue Value="this">
+        <MudLayout Style="min-height:98vh;">
+            <AuthorizeView Context="authContext">
+                <Authorized>
+                    <MainAppBar />
 
-                @if (ApplicationInfo.inDebugMode)
+                    @if (ApplicationInfo.inDebugMode)
                 {
 
                     <AuthorizeView Context="authorizedContext"
@@ -34,28 +34,31 @@
                                    Elevation="2"
                                    Class="mud-theme-dark">
                             <MudDrawerContainer>
-                                <DevTools />
+                                @if (_devDrawerOpen)
+                                {
+                                    <DevTools />
+                                }
                             </MudDrawerContainer>
                         </MudDrawer>
 
                     </AuthorizeView>
                 }
-                    <MudDrawer Width="350px"
-                               @bind-Open=@NotificationsOpen
-                               Anchor=Anchor.End
-                               ClipMode=DrawerClipMode.Always
-                               Overlay="false"
-                               Variant="@DrawerVariant.Temporary"
-                               Elevation="2"
-                               Class=" rounded-tl-lg">
-                        <MudDrawerContainer>
-                            @if (NotificationsOpen)
-                            {
-                                <UserNotificationPopover @bind-Open=@NotificationsOpen
-                                                         UserState="@CurrentUser.State" />
-                            }
-                        </MudDrawerContainer>
-                    </MudDrawer>
+                <MudDrawer Width="350px"
+                           @bind-Open=@NotificationsOpen
+                           Anchor=Anchor.End
+                           ClipMode=DrawerClipMode.Always
+                           Overlay="false"
+                           Variant="@DrawerVariant.Temporary"
+                           Elevation="2"
+                           Class=" rounded-tl-lg">
+                    <MudDrawerContainer>
+                        @if (NotificationsOpen)
+                        {
+                            <UserNotificationPopover @bind-Open=@NotificationsOpen
+                                                     UserState="@CurrentUser.State" />
+                        }
+                    </MudDrawerContainer>
+                </MudDrawer>
 
 
                 <MudBreakpointProvider @ref=_mudBreakPoint>
@@ -130,7 +133,7 @@
             </Authorized>
             <NotAuthorized>
                 <MudMainContent Style="height: 100vh;overflow: auto;">
-                        @Body
+                    @Body
 
                 </MudMainContent>
             </NotAuthorized>

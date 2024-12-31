@@ -17,11 +17,9 @@
     protected override async Task RefreshData()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         NewComputers = (await Directory.Computers.FindNewComputersAsync()).Where(u => u.CanRead).ToList();
 
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
 
     }
     void GoTo(DataGridRowClickEventArgs<IADComputer> args)

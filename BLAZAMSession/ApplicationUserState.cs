@@ -239,6 +239,7 @@ namespace BLAZAM.Server.Data.Services
                         dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers == true;
                         dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
                         dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries ?? new();
+                        dbUserSettings.AuthenticatorSecret = this.Preferences?.AuthenticatorSecret;
                         dbUserSettings.Email = this.Preferences?.Email;
                         await context.SaveChangesAsync();
 

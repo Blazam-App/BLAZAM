@@ -32,7 +32,6 @@ namespace BLAZAM.ActiveDirectory
             }
             set => currentUser = value;
         }
-
         private WmiFactory _wmiFactory;
         private IEncryptionService _encryption;
         private INotificationPublisher _notificationPublisher;
@@ -45,7 +44,7 @@ namespace BLAZAM.ActiveDirectory
             get
             {
                 AuthenticationTypes _authType = AuthenticationTypes.Secure;
-                var context = Factory.CreateDbContext();
+                using var context = Factory.CreateDbContext();
                 ADSettings? ad = context?.ActiveDirectorySettings.FirstOrDefault();
 
                 if (ad != null)
@@ -257,6 +256,7 @@ namespace BLAZAM.ActiveDirectory
             Printers = new ADPrinterSearcher(this);
             BitLocker = new ADBitLockerSearcher(this);
             Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
+
         }
         private DirectoryContext DirectoryContext => new DirectoryContext(
             DirectoryContextType.Domain,
@@ -540,7 +540,7 @@ namespace BLAZAM.ActiveDirectory
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Warning("Could not get domain controllers directly {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Information("Could not get domain controllers directly {@Error}", ex);
             }
 
         }
@@ -548,8 +548,9 @@ namespace BLAZAM.ActiveDirectory
         public void Dispose()
         {
             _keepAlive = false;
+            Context?.Dispose();
         }
-
+        [Obsolete]
         public IADUser? Authenticate_Alt(LoginRequest loginReq)
         {
             var startOfLogon = DateTime.Now;

@@ -204,9 +204,6 @@
   <data name="Application Credentials" xml:space="preserve">
     <value>Credenziali dell'applicazione</value>
   </data>
-  <data name="Application logons" xml:space="preserve">
-    <value>Accessi all'applicazione</value>
-  </data>
   <data name="Application Name" xml:space="preserve">
     <value>Nome dell'applicazione</value>
   </data>
@@ -255,9 +252,6 @@
   <data name="BaseDN" xml:space="preserve">
     <value>Base DN</value>
   </data>
-  <data name="Block" xml:space="preserve">
-    <value>Blocco</value>
-  </data>
   <data name="Branch" xml:space="preserve">
     <value>Ramo</value>
   </data>
@@ -266,9 +260,6 @@
   </data>
   <data name="Browse" xml:space="preserve">
     <value>Sfogliare</value>
-  </data>
-  <data name="Bypass" xml:space="preserve">
-    <value>Circonvallazione</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Annulla</value>
@@ -293,9 +284,6 @@
   </data>
   <data name="City" xml:space="preserve">
     <value>Città</value>
-  </data>
-  <data name="Click to view help documentation" xml:space="preserve">
-    <value>Fare clic per visualizzare la documentazione della guida</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Chiudere</value>
@@ -369,9 +357,6 @@
   <data name="Custom Login" xml:space="preserve">
     <value>Login personalizzato</value>
   </data>
-  <data name="Data Collection Settings" xml:space="preserve">
-    <value>Impostazioni di raccolta dati</value>
-  </data>
   <data name="Database" xml:space="preserve">
     <value>Banca dati</value>
   </data>
@@ -408,9 +393,6 @@
   <data name="Details" xml:space="preserve">
     <value>Dettagli</value>
   </data>
-  <data name="Developer Analytics" xml:space="preserve">
-    <value>Analisi degli sviluppatori</value>
-  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>Ignora modifiche</value>
   </data>
@@ -423,9 +405,6 @@
   <data name="Domain" xml:space="preserve">
     <value>Dominio</value>
   </data>
-  <data name="Download Logs" xml:space="preserve">
-    <value>Scarica i registri</value>
-  </data>
   <data name="Drive Details" xml:space="preserve">
     <value>Dettagli dell'unità</value>
   </data>
@@ -434,18 +413,6 @@
   </data>
   <data name="Driver Version" xml:space="preserve">
     <value>Versione del driver</value>
-  </data>
-  <data name="Duo Enabled" xml:space="preserve">
-    <value>Duo Abilitato</value>
-  </data>
-  <data name="Duo Health Check" xml:space="preserve">
-    <value>Controllo dello stato di salute di Duo</value>
-  </data>
-  <data name="Duo Security MFA (optional)" xml:space="preserve">
-    <value>Duo Security MFA (opzionale)</value>
-  </data>
-  <data name="Duo Unreachable Behavior" xml:space="preserve">
-    <value>Comportamento irraggiungibile del duo</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Redigere</value>
@@ -488,9 +455,6 @@
   </data>
   <data name="Failed" xml:space="preserve">
     <value>Fallito</value>
-  </data>
-  <data name="Favorites" xml:space="preserve">
-    <value>Preferiti</value>
   </data>
   <data name="Field Name" xml:space="preserve">
     <value>Nome campo</value>
@@ -561,14 +525,8 @@
   <data name="Inherited Permissions" xml:space="preserve">
     <value>Autorizzazioni ereditate</value>
   </data>
-  <data name="Installation Id" xml:space="preserve">
-    <value>ID installazione</value>
-  </data>
   <data name="Job Title" xml:space="preserve">
     <value>Titolo di lavoro</value>
-  </data>
-  <data name="Jobs Monitor" xml:space="preserve">
-    <value>Monitoraggio processi</value>
   </data>
   <data name="Last Change" xml:space="preserve">
     <value>Ultima modifica</value>
@@ -591,9 +549,6 @@
   <data name="Location" xml:space="preserve">
     <value>Ubicazione</value>
   </data>
-  <data name="Locked Out Users" xml:space="preserve">
-    <value>Utenti bloccati</value>
-  </data>
   <data name="Lockout Time" xml:space="preserve">
     <value>Tempo di blocco</value>
   </data>
@@ -602,9 +557,6 @@
   </data>
   <data name="Log In To Demo" xml:space="preserve">
     <value>Accedi alla demo</value>
-  </data>
-  <data name="Logging" xml:space="preserve">
-    <value>Registrazione</value>
   </data>
   <data name="Logins" xml:space="preserve">
     <value>Account</value>
@@ -668,9 +620,6 @@
   </data>
   <data name="Not started" xml:space="preserve">
     <value>Non iniziato</value>
-  </data>
-  <data name="Notifications" xml:space="preserve">
-    <value>Notifiche</value>
   </data>
   <data name="Office" xml:space="preserve">
     <value>Ufficio</value>
@@ -810,9 +759,6 @@
   <data name="Reset Password" xml:space="preserve">
     <value>Reimposta password</value>
   </data>
-  <data name="Resource Usage" xml:space="preserve">
-    <value>Utilizzo delle risorse</value>
-  </data>
   <data name="Restore" xml:space="preserve">
     <value>Restaurare</value>
   </data>
@@ -845,9 +791,6 @@
   </data>
   <data name="Script Path" xml:space="preserve">
     <value>Percorso di script</value>
-  </data>
-  <data name="Send logs to developer" xml:space="preserve">
-    <value>Invia log allo sviluppatore</value>
   </data>
   <data name="Server" xml:space="preserve">
     <value>Server</value>
@@ -930,9 +873,6 @@
   <data name="There are no templates available" xml:space="preserve">
     <value>Non ci sono modelli disponibili</value>
   </data>
-  <data name="Time in minutes" xml:space="preserve">
-    <value>Tempo in minuti</value>
-  </data>
   <data name="Type" xml:space="preserve">
     <value>Digitare</value>
   </data>
@@ -974,12 +914,6 @@
   </data>
   <data name="Upload" xml:space="preserve">
     <value>Caricare</value>
-  </data>
-  <data name="Upload Certificate" xml:space="preserve">
-    <value>Carica certificato</value>
-  </data>
-  <data name="Upload Icon" xml:space="preserve">
-    <value>Icona di caricamento</value>
   </data>
   <data name="Upload SSL Certificate" xml:space="preserve">
     <value>Carica certificato SSL</value>
@@ -1031,5 +965,314 @@
   </data>
   <data name="Zip Code" xml:space="preserve">
     <value>CAP</value>
+  </data>
+  <data name="Application logons" xml:space="preserve">
+    <value>Accessi all'applicazione</value>
+  </data>
+  <data name="Block" xml:space="preserve">
+    <value>Blocco</value>
+  </data>
+  <data name="Bypass" xml:space="preserve">
+    <value>Circonvallazione</value>
+  </data>
+  <data name="Click to view help documentation" xml:space="preserve">
+    <value>Fare clic per visualizzare la documentazione della guida</value>
+  </data>
+  <data name="Data Collection Settings" xml:space="preserve">
+    <value>Impostazioni di raccolta dati</value>
+  </data>
+  <data name="Developer Analytics" xml:space="preserve">
+    <value>Analisi degli sviluppatori</value>
+  </data>
+  <data name="Download Logs" xml:space="preserve">
+    <value>Scarica i registri</value>
+  </data>
+  <data name="Duo Enabled" xml:space="preserve">
+    <value>Duo Abilitato</value>
+  </data>
+  <data name="Duo Health Check" xml:space="preserve">
+    <value>Controllo dello stato di salute di Duo</value>
+  </data>
+  <data name="Duo Security MFA (optional)" xml:space="preserve">
+    <value>Duo Security MFA (opzionale)</value>
+  </data>
+  <data name="Duo Unreachable Behavior" xml:space="preserve">
+    <value>Comportamento irraggiungibile del duo</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Preferiti</value>
+  </data>
+  <data name="Installation Id" xml:space="preserve">
+    <value>ID installazione</value>
+  </data>
+  <data name="Jobs Monitor" xml:space="preserve">
+    <value>Monitoraggio processi</value>
+  </data>
+  <data name="Locked Out Users" xml:space="preserve">
+    <value>Utenti bloccati</value>
+  </data>
+  <data name="Logging" xml:space="preserve">
+    <value>Registrazione</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifiche</value>
+  </data>
+  <data name="Resource Usage" xml:space="preserve">
+    <value>Utilizzo delle risorse</value>
+  </data>
+  <data name="Send logs to developer" xml:space="preserve">
+    <value>Invia log allo sviluppatore</value>
+  </data>
+  <data name="Time in minutes" xml:space="preserve">
+    <value>Tempo in minuti</value>
+  </data>
+  <data name="Upload Certificate" xml:space="preserve">
+    <value>Carica certificato</value>
+  </data>
+  <data name="Upload Icon" xml:space="preserve">
+    <value>Icona di caricamento</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>Circa</value>
+  </data>
+  <data name="Add Category" xml:space="preserve">
+    <value>Aggiungi categoria</value>
+  </data>
+  <data name="Allow Username Override" xml:space="preserve">
+    <value>Consenti sostituzione nome utente</value>
+  </data>
+  <data name="API Tokens" xml:space="preserve">
+    <value>Token API</value>
+  </data>
+  <data name="Apply Update" xml:space="preserve">
+    <value>Applica aggiornamento</value>
+  </data>
+  <data name="Ask For Alternate Email" xml:space="preserve">
+    <value>Richiedi indirizzo e-mail alternativo</value>
+  </data>
+  <data name="Authorization Token" xml:space="preserve">
+    <value>Token di autorizzazione</value>
+  </data>
+  <data name="Authorization Type" xml:space="preserve">
+    <value>Tipo di autorizzazione</value>
+  </data>
+  <data name="Basic" xml:space="preserve">
+    <value>Basico</value>
+  </data>
+  <data name="Bearer" xml:space="preserve">
+    <value>Portatore</value>
+  </data>
+  <data name="BitLocker" xml:space="preserve">
+    <value>BitLocker</value>
+  </data>
+  <data name="Changed" xml:space="preserve">
+    <value>Cambiato</value>
+  </data>
+  <data name="Changes have been saved" xml:space="preserve">
+    <value>Le modifiche sono state salvate</value>
+  </data>
+  <data name="Create new token" xml:space="preserve">
+    <value>Creare un nuovo token</value>
+  </data>
+  <data name="days" xml:space="preserve">
+    <value>giorni</value>
+  </data>
+  <data name="Dedicated To" xml:space="preserve">
+    <value>Dedicato a</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Eliminato</value>
+  </data>
+  <data name="Delivered" xml:space="preserve">
+    <value>Consegnato</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>Disabilitare</value>
+  </data>
+  <data name="Display Name Format" xml:space="preserve">
+    <value>Formato nome visualizzato</value>
+  </data>
+  <data name="Effective Permissions" xml:space="preserve">
+    <value>Autorizzazioni valide</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Abilitare</value>
+  </data>
+  <data name="Error Message" xml:space="preserve">
+    <value>Messaggio di errore</value>
+  </data>
+  <data name="Event Timestamp" xml:space="preserve">
+    <value>Timestamp evento</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>Scade</value>
+  </data>
+  <data name="Formula sim" xml:space="preserve">
+    <value>Simulazione di formule</value>
+  </data>
+  <data name="Founded" xml:space="preserve">
+    <value>Fondate</value>
+  </data>
+  <data name="Founder" xml:space="preserve">
+    <value>Fondatore</value>
+  </data>
+  <data name="Generate New API Token" xml:space="preserve">
+    <value>Genera nuovo token API</value>
+  </data>
+  <data name="Group Member Added" xml:space="preserve">
+    <value>Membro del gruppo aggiunto</value>
+  </data>
+  <data name="Group Member Removed" xml:space="preserve">
+    <value>Membro del gruppo rimosso</value>
+  </data>
+  <data name="Group Searched" xml:space="preserve">
+    <value>Gruppo cercato</value>
+  </data>
+  <data name="Hide Previous Updates" xml:space="preserve">
+    <value>Nascondi gli aggiornamenti precedenti</value>
+  </data>
+  <data name="HTTP Method" xml:space="preserve">
+    <value>Metodo HTTP</value>
+  </data>
+  <data name="Ignore SSL Verification" xml:space="preserve">
+    <value>Ignora verifica SSL</value>
+  </data>
+  <data name="In Loving Memory" xml:space="preserve">
+    <value>In amorevole memoria</value>
+  </data>
+  <data name="Include Disabled" xml:space="preserve">
+    <value>Includi disabilitato</value>
+  </data>
+  <data name="IP Address" xml:space="preserve">
+    <value>Indirizzo IP</value>
+  </data>
+  <data name="Is Revoked" xml:space="preserve">
+    <value>è revocato</value>
+  </data>
+  <data name="Last Attempt Timestamp" xml:space="preserve">
+    <value>Timestamp ultimo tentativo</value>
+  </data>
+  <data name="Last Message Status" xml:space="preserve">
+    <value>Stato dell'ultimo messaggio</value>
+  </data>
+  <data name="Last Used" xml:space="preserve">
+    <value>Ultimo utilizzo</value>
+  </data>
+  <data name="Locked Out" xml:space="preserve">
+    <value>Bloccato</value>
+  </data>
+  <data name="Message Id" xml:space="preserve">
+    <value>ID messaggio</value>
+  </data>
+  <data name="Modify" xml:space="preserve">
+    <value>Modificare</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Nessuno</value>
+  </data>
+  <data name="Notification Settings" xml:space="preserve">
+    <value>Impostazioni di notifica</value>
+  </data>
+  <data name="OU Searched" xml:space="preserve">
+    <value>OU ricercato</value>
+  </data>
+  <data name="Parent Template" xml:space="preserve">
+    <value>Modello principale</value>
+  </data>
+  <data name="PasswordChange" xml:space="preserve">
+    <value>Cambio password</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Aggiornare</value>
+  </data>
+  <data name="Refresh Session" xml:space="preserve">
+    <value>Aggiorna sessione</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Togliere</value>
+  </data>
+  <data name="Request Access" xml:space="preserve">
+    <value>Richiedi l'accesso</value>
+  </data>
+  <data name="Require Password Change" xml:space="preserve">
+    <value>Richiedi modifica password</value>
+  </data>
+  <data name="Response Code" xml:space="preserve">
+    <value>Codice di risposta</value>
+  </data>
+  <data name="Retry Count" xml:space="preserve">
+    <value>Conteggio tentativi</value>
+  </data>
+  <data name="Send  Welcome Email" xml:space="preserve">
+    <value>Invia un'e-mail di benvenuto</value>
+  </data>
+  <data name="Session Expired" xml:space="preserve">
+    <value>Sessione scaduta</value>
+  </data>
+  <data name="Session expires in" xml:space="preserve">
+    <value>La sessione scade tra</value>
+  </data>
+  <data name="Show Previous Updates" xml:space="preserve">
+    <value>Mostra gli aggiornamenti precedenti</value>
+  </data>
+  <data name="Source Code" xml:space="preserve">
+    <value>Codice sorgente</value>
+  </data>
+  <data name="Stale computers" xml:space="preserve">
+    <value>Computer obsoleti</value>
+  </data>
+  <data name="Stale users" xml:space="preserve">
+    <value>Utenti obsoleti</value>
+  </data>
+  <data name="Template Id" xml:space="preserve">
+    <value>ID modello</value>
+  </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>Timestamp</value>
+  </data>
+  <data name="Toggle Fields" xml:space="preserve">
+    <value>Attiva/disattiva campi</value>
+  </data>
+  <data name="Token" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="Token Lifetime" xml:space="preserve">
+    <value>Durata del token</value>
+  </data>
+  <data name="Unassign" xml:space="preserve">
+    <value>Annulla assegnazione</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="User Activity" xml:space="preserve">
+    <value>Attività dell'utente</value>
+  </data>
+  <data name="User Assigned" xml:space="preserve">
+    <value>Assegnato dall'utente</value>
+  </data>
+  <data name="User Searched" xml:space="preserve">
+    <value>Utente cercato</value>
+  </data>
+  <data name="User Unassigned" xml:space="preserve">
+    <value>Utente non assegnato</value>
+  </data>
+  <data name="Username Format" xml:space="preserve">
+    <value>Formato nome utente</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Valore</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variabili</value>
+  </data>
+  <data name="Webhooks" xml:space="preserve">
+    <value>Webhook</value>
+  </data>
+  <data name="Your session has expired." xml:space="preserve">
+    <value>La sessione è scaduta.</value>
+  </data>
+  <data name="Your session is about to expire" xml:space="preserve">
+    <value>La tua sessione sta per scadere</value>
   </data>
 </root>

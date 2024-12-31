@@ -21,7 +21,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
-using static MudBlazor.Colors;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -121,9 +120,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-
+    
         public Dictionary<string, object> NewEntryProperties { get; set; } = new();
         private IActiveDirectoryContext _directory;
+
         public IActiveDirectoryContext Directory
         {
             get => _directory;
@@ -135,7 +135,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         private bool hasUnsavedChanges = false;
-
 
 
 
@@ -166,6 +165,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return false;
         }
 
+
         public DirectoryEntry? DirectoryEntry
         {
             get
@@ -177,6 +177,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 directoryEntry = value;
             }
         }
+
         public void EnsureDirectoryEntry()
         {
             if (DirectoryEntry is null)
@@ -221,26 +222,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return ActiveDirectoryObjectType.OU;
             }
         }
-
-        public Type ModelType
-        {
-            get
-            {
-                switch (ObjectType)
-                {
-                    case ActiveDirectoryObjectType.User:
-                        return typeof(ADUser);
-                    case ActiveDirectoryObjectType.Group:
-                        return typeof(ADGroup);
-                    case ActiveDirectoryObjectType.Computer:
-                        return typeof(ADComputer);
-                    case ActiveDirectoryObjectType.OU:
-                        return typeof(ADOrganizationalUnit);
-                    default:
-                        return typeof(DirectoryEntryAdapter);
-                }
-            }
-        }
+     
 
         protected SearchResult? SearchResult
         {
@@ -381,15 +363,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                     return _cachedHasChildren == true;
-                    //try{
-                    //    return cursor.Current != null;
-
-                    //}
-                    //catch (InvalidOperationException)
-                    //{
-                    //    return false;
-                    //}
-                    //CachedChildren = children.Encapsulate();
+                  
                 }
                 var hasChildren = CachedChildren.Count() > 0;
                 return hasChildren;
@@ -476,6 +450,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         public virtual string? OU { get => DN.DnToOu() ?? ADSPath.DnToOu(); }
+
+        public Task<IDirectoryEntryAdapter?> GetParentAsync() => Task.Run(() => {
+            return GetParent();
+        });
 
         public IDirectoryEntryAdapter? GetParent()
         {
@@ -590,14 +568,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
 
 
-        public List<PermissionMapping> InheritedPermissionMappings
+        public IList<PermissionMapping> InheritedPermissionMappings
         {
             get
             {
                 return AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
             }
         }
-        public List<PermissionMapping> DirectPermissionMappings
+        public IList<PermissionMapping> DirectPermissionMappings
         {
             get
             {
@@ -607,29 +585,31 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        private IQueryable<PermissionMapping> _appliedPermissionMappings;
+        private IList<PermissionMapping> _appliedPermissionMappings;
 
-        public IQueryable<PermissionMapping> AppliedPermissionMappings
+        public IList<PermissionMapping> AppliedPermissionMappings
         {
             get
             {
                 if (_appliedPermissionMappings == null)
                 {
-
-                    _appliedPermissionMappings = DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
+                    using var context = DbFactory.CreateDbContext();
+                    _appliedPermissionMappings =context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
                 }
                 return _appliedPermissionMappings;
             }
         }
-        private IQueryable<PermissionMapping> _offspringPermissionMappings;
-        public IQueryable<PermissionMapping> OffspringPermissionMappings
+        private IList<PermissionMapping> _offspringPermissionMappings;
+
+
+        public IList<PermissionMapping> OffspringPermissionMappings
         {
             get
             {
                 if (_offspringPermissionMappings == null)
                 {
-
-                    _offspringPermissionMappings = DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
+                    using var context = DbFactory.CreateDbContext();
+                    _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length).ToList();
                 }
                 return _offspringPermissionMappings;
             }
@@ -887,6 +867,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 IJobStep? propertyStep;
+                Job? propertyJob = new Job("Set AD attributes",commitJob.User);
                 if (!NewEntry)
                 {
                     //Existing Active Directory Entry
@@ -898,7 +879,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     foreach (var p in NewEntryProperties)
                     {
-                        propertyStep = new JobStep("Set AD attributes", (step) =>
+                        propertyStep = new JobStep("Set AD attribute ["+p.Key+"]", (step) =>
                          {
 
 
@@ -925,8 +906,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                              DirectoryEntry.CommitChanges();
                              return true;
                          });
-                        commitJob.AddStep(propertyStep);
+                        propertyJob.AddStep(propertyStep);
 
+                    }
+                    if (propertyJob.Steps.Count > 0)
+                    {
+                        commitJob.AddStep(propertyJob);
                     }
                     commitJob.AddStep(commitStep);
 
@@ -950,7 +935,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             DirectoryEntry.Properties[p.Key].Value = p.Value;
                             return true;
                         });
-                        commitJob.AddStep(propertyStep);
+                        propertyJob.AddStep(propertyStep);
+                    }
+                    if (propertyJob.Steps.Count > 0)
+                    {
+                        commitJob.AddStep(propertyJob);
                     }
                 }
 
@@ -1423,6 +1412,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             directoryEntry?.Dispose();
             searchResult = null;
+
         }
 
         public override bool Equals(object? obj)

@@ -4,14 +4,17 @@ using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
+using BLAZAM.Update;
+using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 using System.DirectoryServices.Protocols;
 
-namespace BLAZAM.Update.Services
+namespace BLAZAM.Services.Background
 {
-    public class AutoUpdateService
+    [AutoStartBackgroundService(60)]
+    public class AutoUpdateService : BackgroundServiceBase, IDisposable
     {
 
         public AppEvent<DateTime?> OnAutoUpdateQueued { get; set; }
@@ -32,17 +35,19 @@ namespace BLAZAM.Update.Services
 
         //private AuditLogger Audit;
 
-        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo)
+        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo):base(factory)
         {
             _applicationInfo = applicationInfo;
             this.factory = factory;
             this.updateService = updateService;
-            updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromSeconds(1).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
-            directoryCleaner = new Timer(CleanDirectories, null, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, (int)TimeSpan.FromHours(20).TotalMilliseconds);
+            //updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromSeconds(1).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
+            directoryCleaner = new Timer(CleanDirectories, null, TimeSpan.FromSeconds(30), TimeSpan.FromHours(20));
         }
 
         private void CleanDirectories(object? state)
         {
+            using var context = factory.CreateDbContext();
+
             var oldUpdateFiles = ApplicationUpdate.UpdateDownloadDirectory.Files;
             foreach (var file in oldUpdateFiles)
             {
@@ -62,7 +67,7 @@ namespace BLAZAM.Update.Services
                         {
                             Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file: " + file);
 
-                            var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
+                            var impersonation = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
                             if (impersonation != null && !impersonation.Run(() =>
                             {
                                 if (file.Writable)
@@ -73,7 +78,7 @@ namespace BLAZAM.Update.Services
                                 return false;
                             }))
                             {
-                                impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+                                impersonation = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
                                 if (impersonation != null && !impersonation.Run(() =>
                                 {
                                     if (file.Writable)
@@ -128,7 +133,7 @@ namespace BLAZAM.Update.Services
                             {
                                 Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old staging files");
 
-                                var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
+                                var impersonation = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
                                 if (impersonation != null && !impersonation.Run(() =>
                                 {
                                     if (dir.Writable)
@@ -141,7 +146,7 @@ namespace BLAZAM.Update.Services
                                     return false;
                                 }))
                                 {
-                                    impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+                                    impersonation = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
                                     if (impersonation != null && !impersonation.Run(() =>
                                     {
                                         if (dir.Writable)
@@ -179,14 +184,15 @@ namespace BLAZAM.Update.Services
 
         }
 
-        private async void CheckForUpdate(object? state)
+        protected override async void Execute(object? state)
         {
+            using var context = factory.CreateDbContext();
             IJob updateCheckJob = new Job("Check for Update");
             IJobStep checkForUpdateStep = new JobStep("Execute", async (step) =>
             {
                 try
                 {
-                    var appSettings = (await factory.CreateDbContextAsync()).AppSettings.FirstOrDefault();
+                    var appSettings = context.AppSettings.FirstOrDefault();
                     if (appSettings != null)
                     {
                         Loggers.UpdateLogger.Information("Checking for automatic update");
@@ -235,51 +241,60 @@ namespace BLAZAM.Update.Services
 
         public void ScheduleUpdate(TimeSpan updateTimeOfDay, ApplicationUpdate updateToInstall)
         {
-            IJob scheduleUpdatteJob = new Job("Schedule Update");
-            IJobStep scheduleStep = new JobStep("Execute", async (step) =>
+            try
             {
-                try
+                bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall;
+                if (ScheduledUpdate != updateToInstall)
                 {
-                    bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall;
-                    if (ScheduledUpdate != updateToInstall)
+                    IJob scheduleUpdatteJob = new Job("Schedule Update");
+                    IJobStep scheduleStep = new JobStep("Execute", async (step) =>
                     {
-                        Loggers.UpdateLogger.Information("New update found: " + updateToInstall.Version);
-
-                        //Update available
-                        var now = DateTime.Now;
-                        ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTimeOfDay.Hours, updateTimeOfDay.Minutes, updateTimeOfDay.Seconds);
-
-
-                        //Check if we're past the scheduled time this day
-                        if (ScheduledUpdateTime < now)
+                        try
                         {
-                            ScheduledUpdateTime = ScheduledUpdateTime.AddDays(1);
+
+                            Loggers.UpdateLogger.Information("New update found: " + updateToInstall.Version);
+
+                            //Update available
+                            var now = DateTime.Now;
+                            ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTimeOfDay.Hours, updateTimeOfDay.Minutes, updateTimeOfDay.Seconds);
+
+
+                            //Check if we're past the scheduled time this day
+                            if (ScheduledUpdateTime < now)
+                            {
+                                ScheduledUpdateTime = ScheduledUpdateTime.AddDays(1);
+                            }
+
+
+                            TimeSpan timeUntilUpdate = ScheduledUpdateTime - now;
+
+                            ScheduledUpdate = updateToInstall;
+
+                            autoUpdateApplyTimer = new Timer(Update, null, (int)timeUntilUpdate.TotalMilliseconds, Timeout.Infinite);
+                            Loggers.UpdateLogger.Information("Auto-update scheduled: " + timeUntilUpdate.TotalMinutes + "mins from now at " + ScheduledUpdateTime);
+                            if (justScheduled)
+                            {
+                                Loggers.UpdateLogger.Debug("Update just scheduled");
+                                OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
+
+                            }
+
+
                         }
-
-
-                        TimeSpan timeUntilUpdate = ScheduledUpdateTime - now;
-
-                        ScheduledUpdate = updateToInstall;
-
-                        autoUpdateApplyTimer = new Timer(Update, null, (int)timeUntilUpdate.TotalMilliseconds, Timeout.Infinite);
-                        Loggers.UpdateLogger.Information("Auto-update scheduled: " + timeUntilUpdate.TotalMinutes + "mins from now at " + ScheduledUpdateTime);
-                        if (justScheduled)
+                        catch (Exception ex)
                         {
-                            Loggers.UpdateLogger.Debug("Update just scheduled");
-                            OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
-
+                            Loggers.UpdateLogger.Error("Error during auto update scheduling {@Error}", ex);
                         }
-
-                    }
+                        return true;
+                    });
+                    scheduleUpdatteJob.AddStep(scheduleStep);
+                    scheduleUpdatteJob.Run();
                 }
-                catch (Exception ex)
-                {
-                    Loggers.UpdateLogger.Error("Error during auto update scheduling {@Error}", ex);
-                }
-                return true;
-            });
-            scheduleUpdatteJob.AddStep(scheduleStep);
-            scheduleUpdatteJob.Run();
+            }
+            catch (Exception ex)
+            {
+                Loggers.UpdateLogger.Error("Error during auto update scheduling {@Error}", ex);
+            }
         }
 
         private async void Update(object? state)
@@ -354,6 +369,13 @@ namespace BLAZAM.Update.Services
             }
 
 
+        }
+
+        public void Dispose()
+        {
+            autoUpdateApplyTimer?.Dispose();
+            updateCheckTimer?.Dispose();
+            directoryCleaner?.Dispose();
         }
     }
 }

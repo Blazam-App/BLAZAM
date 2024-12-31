@@ -244,10 +244,10 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         IEnumerable<IDirectoryEntryAdapter> Children { get; }
         IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
 
-        List<PermissionMapping> InheritedPermissionMappings { get; }
-        IQueryable<PermissionMapping> AppliedPermissionMappings { get; }
-        List<PermissionMapping> DirectPermissionMappings { get; }
-        IQueryable<PermissionMapping> OffspringPermissionMappings { get; }
+        IList<PermissionMapping> InheritedPermissionMappings { get; }
+        IList<PermissionMapping> AppliedPermissionMappings { get; }
+        IList<PermissionMapping> DirectPermissionMappings { get; }
+        IList<PermissionMapping> OffspringPermissionMappings { get; }
 
 
         /// <summary>
@@ -365,7 +365,11 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <returns></returns>
         DateTime? GetDateTimeProperty(string propertyName);
         void SetCustomProperty(string propertyName, object? value);
+        /// <summary>
+        /// Ensures that the <see cref="DirectoryEntry"/> property is not null.
+        /// </summary>
         void EnsureDirectoryEntry();
         void SetCurrentUser(IApplicationUserState user);
+        Task<IDirectoryEntryAdapter?> GetParentAsync();
     }
 }

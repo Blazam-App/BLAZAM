@@ -1,0 +1,67 @@
+@inherits AppComponentBase
+<MudTextField T="string"
+              Class="mb-8"
+              Mask=@(new PatternMask("000 000"))
+              Required="true"
+              AdornmentIcon="@Icons.Custom.Brands.Google"
+              Adornment="Adornment.Start"
+              Clearable="true"
+              InputMode="InputMode.numeric"
+              AutoFocus=true
+              Immediate="true"
+              TextChanged="@((key)=>{Authenticate();})"
+              @bind-Value="@Passcode" />
+
+@code {
+    private bool _authenticated;
+    [Parameter]
+    public string? AuthSecret { get; set; }
+    [Parameter]
+    public bool Authenticated
+    {
+        get => _authenticated; set
+        {
+            if (_authenticated == value) return;
+            _authenticated = value;
+            AuthenticatedChanged.InvokeAsync(value);
+            if (value)
+                OnAuthenticated.InvokeAsync();
+        }
+    }
+
+    [Parameter]
+    public EventCallback<bool> AuthenticatedChanged { get; set; }
+    private string? _passcode;
+
+    [Parameter]
+    public string? Passcode
+    {
+        get => _passcode; set
+        {
+            if (_passcode == value) return;
+            _passcode = value;
+            PasscodeChanged.InvokeAsync(value.Replace(" ", ""));
+        }
+    }
+    [Parameter]
+    public EventCallback<string?> PasscodeChanged { get; set; }
+    [Parameter]
+    public EventCallback OnAuthenticated { get; set; }
+    public async Task Authenticate(bool announce = false)
+    {
+        if (Passcode != null)
+        {
+            var validToken = GoogleAuthenticatorService.ValidateTwoFactorPIN(AuthSecret, Passcode.Replace(" ", ""));
+            if (validToken)
+            {
+                Authenticated = true;
+                await InvokeAsync(StateHasChanged);
+
+            }
+            else if (announce)
+            {
+                SnackBarService.Warning(AppLocalization["The token entered is not valid"]);
+            }
+        }
+    }
+}

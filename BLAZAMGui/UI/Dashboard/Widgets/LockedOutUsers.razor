@@ -64,10 +64,8 @@
     protected override async Task RefreshData()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         LockedUsers = (await Directory.Users.FindLockedOutUsersAsync()).OrderByDescending(u => u.LockoutTime).Where(u => u.CanRead).ToList();
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     void GoTo(DataGridRowClickEventArgs<IADUser> args)
@@ -94,6 +92,14 @@
             {
                 SnackBarService.Error("Could not unlock: " + unlockJob.Exception?.Message);
             }
+        }
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        foreach (var entry in LockedUsers)
+        {
+            entry.Dispose();
         }
     }
 }
