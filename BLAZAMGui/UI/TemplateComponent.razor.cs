@@ -124,23 +124,28 @@ namespace BLAZAM.Gui.UI
 
         protected async Task FetchTemplates()
         {
-            
-            var temp = await Context.DirectoryTemplates.Include(t => t.ParentTemplate).OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
-            if (temp != null)
-                Templates = temp;
-            var cats = await Context.DirectoryTemplates.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().ToListAsync();
-            if (cats != null)
+            try
             {
-                TemplateCategories = cats;
-                TemplateCategories = TemplateCategories.Prepend("All");
-                SelectedCategory = TemplateCategories.FirstOrDefault();
-            }
-            if (TemplateIdParameter != 0)
+                var temp = await Context.DirectoryTemplates.Include(t => t.ParentTemplate).OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
+                if (temp != null)
+                    Templates = temp;
+                var cats = await Context.DirectoryTemplates.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().ToListAsync();
+                if (cats != null)
+                {
+                    TemplateCategories = cats;
+                    TemplateCategories = TemplateCategories.Prepend("All");
+                    SelectedCategory = TemplateCategories.FirstOrDefault();
+                }
+                if (TemplateIdParameter != 0)
+                {
+                    SelectedTemplate = Templates.Where(t => t.Id == TemplateIdParameter).FirstOrDefault();
+                }
+                await InvokeAsync(StateHasChanged);
+                Header?.OnRefreshRequested?.Invoke();
+            }catch(Exception ex)
             {
-                SelectedTemplate = Templates.Where(t => t.Id == TemplateIdParameter).FirstOrDefault();
+                Loggers.SystemLogger.Error("Error fetching templates {Error}", ex);
             }
-            await InvokeAsync(StateHasChanged);
-            Header?.OnRefreshRequested?.Invoke();
         }
 
     }
