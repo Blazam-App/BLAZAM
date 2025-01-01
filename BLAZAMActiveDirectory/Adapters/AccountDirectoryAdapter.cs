@@ -1,4 +1,5 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Data;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
@@ -7,6 +8,7 @@ using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using System.Data;
 using System.Diagnostics;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Globalization;
 using System.Security;
@@ -184,6 +186,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 //  }));
             }
         }
+
+        protected DomainControllerEventLogReader? DomainControllerEventLogs;
+
+
+        public override void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
+        {
+            base.Parse(directory, directoryEntry, searchResult);
+            DomainControllerEventLogs = new DomainControllerEventLogReader(directory);
+        }
+
 
         /// <summary>
         /// Overridden CanRead to check that the application user has permission

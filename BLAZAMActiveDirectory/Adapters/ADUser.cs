@@ -7,6 +7,7 @@ using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Security.AccessControl;
 using System.Text;
 
@@ -131,6 +132,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty(ActiveDirectoryFields.EmployeeId.FieldName, value);
             }
         }
+        public List<EventLogEntry> LogonEvents => this.DomainControllerEventLogs.GetUserLogonEvents(SamAccountName, DateTime.UtcNow - TimeSpan.FromDays(90), DateTime.UtcNow);
+
         public string? HomeDirectory
         {
             get
