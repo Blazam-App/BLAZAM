@@ -20,7 +20,7 @@ namespace BLAZAM.Common.Data
             get
             {
                 //Use interactive logon
-                var domain = impersonationUser.FQDN != null ? impersonationUser.FQDN : "";
+                var domain = impersonationUser.FQDN ?? "";
                 var username = impersonationUser.Username;
                 var phPassword = Marshal.SecureStringToGlobalAllocUnicode(impersonationUser.Password);
                 bool returnValue = LogonUser(username,
