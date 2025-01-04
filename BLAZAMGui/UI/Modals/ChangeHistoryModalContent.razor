@@ -51,6 +51,10 @@
         Modal.Options.FullWidth = true;
         Modal.Options.CloseButton = true;
         await base.OnInitializedAsync();
+
+        AuditLogger.System.Analytics.ObjectHistoryViewed(Model.ObjectType);
+
+
         _events = await Context.DirectoryEntryAuditLogs.Where(l => l.Action != AuditActions.Computer_Searched
             && l.Action != AuditActions.User_Searched
             && l.Action != AuditActions.Group_Searched

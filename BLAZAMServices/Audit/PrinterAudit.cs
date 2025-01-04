@@ -1,17 +1,20 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
 using BLAZAM.Session.Interfaces;
+using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
     public class PrinterAudit : DirectoryAudit
     {
-        public PrinterAudit(IAppDatabaseFactory factory,
-            IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public PrinterAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
         {
         }
+
         public async Task<bool> Moved(IDirectoryEntryAdapter movedPrinter, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
+            Analytics.ObjectMoved(ActiveDirectoryObjectType.Printer);
+
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.Printer_Moved,
             movedPrinter,

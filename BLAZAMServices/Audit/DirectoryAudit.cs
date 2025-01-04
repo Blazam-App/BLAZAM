@@ -5,12 +5,13 @@ using BLAZAM.Database.Models.Audit;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
     public class DirectoryAudit : CommonAudit
     {
-        public DirectoryAudit(IAppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public DirectoryAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
         {
         }
 
@@ -53,7 +54,7 @@ namespace BLAZAM.Services.Audit
 
             try
             {
-                using var context = await Factory.CreateDbContextAsync();
+                using var context = await factory.CreateDbContextAsync();
                 var table = auditTable.Invoke(context);
                 var auditEntry = new T()
                 {

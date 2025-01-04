@@ -131,7 +131,11 @@
     }
     bool RestoreEntry(IDirectoryEntryAdapter entry)
     {
-        return (entry.LastKnownParent != null && Directory.RestoreTombstone(entry, entry.LastKnownParent));
+        var result = (entry.LastKnownParent != null && Directory.RestoreTombstone(entry, entry.LastKnownParent));
+        if(result){
+            AuditLogger.System.Analytics.ObjectRestored(entry.ObjectType);
+        }
+        return result;
     }
 
 }
