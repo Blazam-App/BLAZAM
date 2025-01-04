@@ -49,20 +49,38 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.server.js"></script>
-    @if (!ApplicationInfo.InDemoMode && !ApplicationInfo.InDebugMode && !Debugger.IsAttached && DatabaseCache.ApplicationSettings?.SendDeveloperAnalytics == true)
+    @if (DatabaseCache.ApplicationSettings?.SendDeveloperAnalytics == true)
     {
-        <!-- BLAZAM Dev Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-415DR9ZVBH"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() { dataLayer.push(arguments); }
-            gtag('js', new Date());
+        if (!ApplicationInfo.InDemoMode && !ApplicationInfo.InDebugMode && !Debugger.IsAttached)
+        {
+            <!-- BLAZAM Google tag (gtag.js) -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id=G-415DR9ZVBH"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag() { dataLayer.push(arguments); }
+                gtag('js', new Date());
 
-            gtag('config', 'G-415DR9ZVBH');
-            gtag('set', 'user_properties', {
-                app_version: '@ApplicationInfo.runningVersion'
-            });
-        </script>
+                gtag('config', 'G-415DR9ZVBH');
+                gtag('set', 'user_properties', {
+                    app_version: '@ApplicationInfo.runningVersion'
+                });
+            </script>
+        }
+        else if (ApplicationInfo.InDebugMode || Debugger.IsAttached)
+        {
+            <!-- BLAZAM Dev Google tag (gtag.js) -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id=G-P5LPG97RQR"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag() { dataLayer.push(arguments); }
+                gtag('js', new Date());
+
+                gtag('config', 'G-P5LPG97RQR');
+                gtag('set', 'user_properties', {
+                    app_version: '@ApplicationInfo.runningVersion'
+                });
+            </script>
+        }
     }
     @if (DatabaseCache.ApplicationSettings?.AnalyticsId.IsNullOrEmpty() == false)
     {
@@ -85,7 +103,7 @@
     <script src="~/lib/svg-gauge/dist/gauge.min.js"></script>
 
 
-   @*  <script type="text/javascript" src="https://blazam.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/g2slup/b/0/c95134bc67d3a521bb3f4331beb9b804/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=fe4d93e5"></script>
+    @*  <script type="text/javascript" src="https://blazam.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/g2slup/b/0/c95134bc67d3a521bb3f4331beb9b804/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=fe4d93e5"></script>
 
     <script type="text/javascript">
         console.log("register open feature request trigger");
