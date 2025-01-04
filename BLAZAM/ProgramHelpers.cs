@@ -442,62 +442,7 @@ namespace BLAZAM.Server
         /// <param name="application"></param>
         public static void PreRun(this WebApplication application)
         {
-            try
-            {
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-                foreach (var assembly in assemblies)
-                {
-                    try
-                    {
-                        var types = assembly.GetTypes()
-                        .Where(t => t.IsClass && !t.IsAbstract
-                        && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
-
-                        foreach (var type in types)
-                        {
-                            try
-                            {
-                                var interfaceType = type.GetInterfaces()
-                                    .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
-                                    && i.Name != "IDisposable");
-                                BackgroundServiceBase? service;
-
-                                if (interfaceType != null)
-                                {
-                                    service = application.Services.GetRequiredService(interfaceType) as BackgroundServiceBase;
-
-                                }
-                                else
-                                {
-                                    service = application.Services.GetRequiredService(type) as BackgroundServiceBase;
-
-                                }
-
-
-                                var data = type.GetCustomAttribute<AutoStartBackgroundService>();
-                                service?.Start(data?.Immediate == true);
-                            }
-                            catch (Exception ex)
-                            {
-                                Loggers.SystemLogger.Error("Critical error starting up background service! {Error}", ex);
-
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.SystemLogger.Warning("Unexpected error starting up background service! {Error}", ex);
-
-                    }
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error("Critical error getting loaded assemblies! {Error}", ex);
-
-            }
+      
             //Setup Seq logging if allowed by admin
             try
             {
@@ -513,7 +458,7 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
-            PreloadServices();
+            PreloadServices(application);
 
         }
         static IAsyncPolicy<HttpResponseMessage> GetWebhookRetryPolicy()
@@ -525,8 +470,68 @@ namespace BLAZAM.Server
                 .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
                 .WaitAndRetryAsync(delay);
         }
-        private static void PreloadServices()
+        private static void PreloadServices(WebApplication application)
         {
+
+            try
+            {
+                if (ApplicationInfo.installationCompleted)
+                {
+                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+                    foreach (var assembly in assemblies)
+                    {
+                        try
+                        {
+                            var types = assembly.GetTypes()
+                            .Where(t => t.IsClass && !t.IsAbstract
+                            && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
+
+                            foreach (var type in types)
+                            {
+                                try
+                                {
+                                    var interfaceType = type.GetInterfaces()
+                                        .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
+                                        && i.Name != "IDisposable");
+                                    BackgroundServiceBase? service;
+
+                                    if (interfaceType != null)
+                                    {
+                                        service = application.Services.GetRequiredService(interfaceType) as BackgroundServiceBase;
+
+                                    }
+                                    else
+                                    {
+                                        service = application.Services.GetRequiredService(type) as BackgroundServiceBase;
+
+                                    }
+
+
+                                    var data = type.GetCustomAttribute<AutoStartBackgroundService>();
+                                    service?.Start(data?.Immediate == true);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Loggers.SystemLogger.Error("Critical error starting up background service! {Error}", ex);
+
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Loggers.SystemLogger.Warning("Unexpected error starting up background service! {Error}", ex);
+
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error("Critical error getting loaded assemblies! {Error}", ex);
+
+            }
             try
             {
                 var context = Program.AppInstance.Services.GetRequiredService<NotificationGenerationService>();
@@ -535,18 +540,18 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
-            try
-            {
-                if (ApplicationInfo.installationCompleted)
-                {
-                    var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
-                }
+            //try
+            //{
+            //    if (ApplicationInfo.installationCompleted)
+            //    {
+            //        var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
+            //    }
 
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            //}
             try
             {
                 if (ApplicationInfo.installationCompleted)

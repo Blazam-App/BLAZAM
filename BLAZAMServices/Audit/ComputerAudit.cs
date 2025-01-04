@@ -5,17 +5,20 @@ using BLAZAM.Database.Models.Audit;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
+using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
     public class ComputerAudit : DirectoryAudit
     {
-        public ComputerAudit(IAppDatabaseFactory factory,
-            IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public ComputerAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
         {
         }
+
         public async Task<bool> Moved(IDirectoryEntryAdapter movedComputer, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
+            Analytics.ObjectMoved(ActiveDirectoryObjectType.Computer);
+
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.Computer_Moved,
             movedComputer,
@@ -30,11 +33,17 @@ namespace BLAZAM.Services.Audit
         }
 
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
-         => await Log(t => t.DirectoryEntryAuditLogs,
+        {
+            Analytics.ObjectDeleted(ActiveDirectoryObjectType.Computer);
+
+            return await Log(t => t.DirectoryEntryAuditLogs,
              AuditActions.Computer_Deleted, deletedEntry);
+        }
 
         public async Task<bool> Assigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
         {
+            Analytics.ObjectAssigned(ActiveDirectoryObjectType.Computer);
+
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.Computer_Assigned,
             member,
@@ -45,6 +54,8 @@ namespace BLAZAM.Services.Audit
         }
         public async Task<bool> Unassigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
         {
+            Analytics.ObjectUnassigned(ActiveDirectoryObjectType.Computer);
+
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.Computer_Unassigned,
             member,
@@ -61,7 +72,7 @@ namespace BLAZAM.Services.Audit
 
             try
             {
-                using var context = await Factory.CreateDbContextAsync();
+                using var context = await factory.CreateDbContextAsync();
                 context.DirectoryEntryAuditLogs.Add(new ComputerAuditLog
                 {
                     Sid = searchedComputer.SID.ToSidString(),

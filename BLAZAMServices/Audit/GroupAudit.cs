@@ -3,22 +3,29 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
+using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
     public class GroupAudit : DirectoryAudit
     {
-        public GroupAudit(IAppDatabaseFactory factory,
-            IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public GroupAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
         {
         }
+
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
-         => await Log(t => t.DirectoryEntryAuditLogs,
-             AuditActions.Group_Deleted, deletedEntry);
+        {
+            Analytics.ObjectDeleted(ActiveDirectoryObjectType.Group);
+
+            return await Log(t => t.DirectoryEntryAuditLogs,
+            AuditActions.Group_Deleted, deletedEntry);
+        }
         public override async Task<bool> Searched(IDirectoryEntryAdapter searchedGroup) => await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Group_Searched, searchedGroup);
 
         public async Task<bool> Assigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
         {
+            Analytics.ObjectAssigned(ActiveDirectoryObjectType.Group);
+
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.Group_Assigned,
             member,
@@ -51,6 +58,8 @@ namespace BLAZAM.Services.Audit
         }
         public async Task<bool> Moved(IDirectoryEntryAdapter movedGroup, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
+            Analytics.ObjectMoved(ActiveDirectoryObjectType.Group);
+
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.Group_Moved,
             movedGroup,
@@ -70,6 +79,8 @@ namespace BLAZAM.Services.Audit
         }
         public override async Task<bool> Created(IDirectoryEntryAdapter newGroup)
         {
+            Analytics.ObjectCreated(ActiveDirectoryObjectType.Group);
+
             var oldValues = "";
             var newValues = "";
             foreach (var c in newGroup.NewEntryProperties)

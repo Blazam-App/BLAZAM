@@ -1,12 +1,12 @@
 @inherits DatabaseComponentBase
 <ApiTokenDataGrid OnTokenDeleted="@((token)=>{Delete(token);})"
-                  Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
+Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
 
 
 <SettingsField Label="@AppLocalization["Create new token"]">
     <MudSelect @bind-Value="_apiValidDays"
-               Class="mb-3"
-               Label="@AppLocalization["Token Lifetime"]">
+    Class="mb-3"
+    Label="@AppLocalization["Token Lifetime"]">
         @if (ApplicationInfo.InDebugMode)
         {
             <MudSelectItem Value="TimeSpan.FromSeconds(30)">30 @AppLocalization["seconds"]</MudSelectItem>
@@ -24,8 +24,8 @@
 
     </MudSelect>
     <MudButton Variant="Variant.Filled"
-               Color="Color.Success"
-               OnClick="@GenerateToken">
+    Color="Color.Success"
+    OnClick="@GenerateToken">
         @AppLocalization["Generate New API Token"]
     </MudButton>
 </SettingsField>
@@ -58,9 +58,8 @@
             };
         Context.ApiTokens.Add(newToken);
         await Context.SaveChangesAsync();
+        AuditLogger.System.APITokenCreated(CurrentUser.Username);
         GetTokens();
-        //CurrentUser.State.Preferences.APIToken = token;
-        //CurrentUser.State.SaveBasicUserPreferences();
     }
     public async Task Save()
     {
