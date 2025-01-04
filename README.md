@@ -4,6 +4,10 @@ Proudly serving
 [![image](https://github.com/user-attachments/assets/86820ef8-15e6-4f81-97c5-bdfe6e8acc37)](https://logs.blazam.org/#/dashboards?dashboardId=dashboard-14&range=90d&group=1d&apiKey=EpKqcm4TkeEzMvIAxtnc&theme=dark-theme)
 
 Click the image for the latest statistics.
+## Screenshots
+![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)
+![image](https://github.com/user-attachments/assets/cfa35e1f-facb-4c64-8ad4-1a48de5f4a82)
+
 
 ## Who is it for?
 * Overworked system administrators: Blazam simplifies and automates many routine AD management tasks, freeing up your time for more critical projects.
