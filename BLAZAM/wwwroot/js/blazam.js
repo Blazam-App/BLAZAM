@@ -95,7 +95,9 @@ window.setGaugeValue = async (id, val, time) => {
 //    document.dispatchEvent(event);
 //}
 window.customAnalyticsEvent = async (eventName, jsonData) => {
-    gtag('event', eventName, jsonData);
+    gtag('event', eventName, {
+       jsonData
+    });
 };
 
 

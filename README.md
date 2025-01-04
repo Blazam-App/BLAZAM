@@ -4,32 +4,10 @@ Proudly serving
 [![image](https://github.com/user-attachments/assets/86820ef8-15e6-4f81-97c5-bdfe6e8acc37)](https://logs.blazam.org/#/dashboards?dashboardId=dashboard-14&range=90d&group=1d&apiKey=EpKqcm4TkeEzMvIAxtnc&theme=dark-theme)
 
 Click the image for the latest statistics.
+## Screenshots
+![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)
+![image](https://github.com/user-attachments/assets/cfa35e1f-facb-4c64-8ad4-1a48de5f4a82)
 
-## Version 1.0.0 Release Notice
-Blazam has been officially released.
-
-### Beta Installations:
-Please ensure .NET Core 8 Runtimes are installed for service-type installations,
-and .NET Core Web Hosting Bundle for IIS-type installations.
-
-[https://dotnet.microsoft.com/en-us/download/dotnet/8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-
-## Website
-[blazam.org](https://blazam.org)
-
-
-## Try the Live Demo
-[blazam.org/demo](https://blazam.org/demo)
-
-## Documentation
-[docs.blazam.org](https://docs.blazam.org)
-
-## Installation
-Blazam's Web Installer is the recommended installation method.
-
-[Web Installer](https://blazam.org/download)
-
-[Manual Installation](https://docs.blazam.org/install/manual)
 
 ## Who is it for?
 * Overworked system administrators: Blazam simplifies and automates many routine AD management tasks, freeing up your time for more critical projects.
@@ -66,3 +44,20 @@ Blazam's Web Installer is the recommended installation method.
 * Go beyond Microsoft's GUI: Blazam offers features that go beyond the capabilities of standard AD management tools, such as copying group memberships or managing user photos from the web.
 * Mobile accessibility: Manage your Active Directory from anywhere using your phone or tablet.
 * Open source and free: Blazam is community-driven and transparent, with no licensing costs.
+
+## Visit the Main Website
+[blazam.org](https://blazam.org)
+
+## Try the Live Demo
+[blazam.org/demo](https://blazam.org/demo)
+
+## View the Documentation
+[docs.blazam.org](https://docs.blazam.org)
+
+## Ready to Install?
+Blazam's Web Installer is the recommended installation method.
+
+[Web Installer](https://blazam.org/download)
+
+[Manual Installation](https://docs.blazam.org/install/manual)
+

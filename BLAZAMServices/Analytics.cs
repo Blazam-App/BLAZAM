@@ -104,7 +104,7 @@ namespace BLAZAM.Services
                 }
                 else
                 {
-                    await _jsRuntime.InvokeVoidAsync("customAnalyticsEvent", new object[] { eventName, JsonConvert.SerializeObject(data) });
+                    await _jsRuntime.InvokeVoidAsync("customAnalyticsEvent", new object[] { eventName, JsonConvert.SerializeObject(new object[] { data }) });
 
                 }
             }
