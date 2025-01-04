@@ -5,23 +5,6 @@ Proudly serving
 
 Click the image for the latest statistics.
 
-## Website
-[blazam.org](https://blazam.org)
-
-
-## Try the Live Demo
-[blazam.org/demo](https://blazam.org/demo)
-
-## Documentation
-[docs.blazam.org](https://docs.blazam.org)
-
-## Installation
-Blazam's Web Installer is the recommended installation method.
-
-[Web Installer](https://blazam.org/download)
-
-[Manual Installation](https://docs.blazam.org/install/manual)
-
 ## Who is it for?
 * Overworked system administrators: Blazam simplifies and automates many routine AD management tasks, freeing up your time for more critical projects.
 * Organizations with limited IT budgets: Blazam is a free and open-source solution that provides powerful features without the high costs of commercial software.
@@ -57,3 +40,20 @@ Blazam's Web Installer is the recommended installation method.
 * Go beyond Microsoft's GUI: Blazam offers features that go beyond the capabilities of standard AD management tools, such as copying group memberships or managing user photos from the web.
 * Mobile accessibility: Manage your Active Directory from anywhere using your phone or tablet.
 * Open source and free: Blazam is community-driven and transparent, with no licensing costs.
+
+## Visit the Main Website
+[blazam.org](https://blazam.org)
+
+## Try the Live Demo
+[blazam.org/demo](https://blazam.org/demo)
+
+## View the Documentation
+[docs.blazam.org](https://docs.blazam.org)
+
+## Ready to Install?
+Blazam's Web Installer is the recommended installation method.
+
+[Web Installer](https://blazam.org/download)
+
+[Manual Installation](https://docs.blazam.org/install/manual)
+
