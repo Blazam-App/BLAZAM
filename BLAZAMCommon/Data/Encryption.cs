@@ -89,9 +89,6 @@ namespace BLAZAM.Common.Data
         /// Generates a key of the configured key size, seeding the
         /// key from the appsettings configuration value "EncryptionKey"
         /// </summary>
-        /// <remarks>
-        /// Sets the local <see cref="Key"/> value to the newly generated key
-        /// </remarks>
         /// <returns>The key based on the <see cref="KeySeedString"/></returns>
         private byte[] GenerateKeyFromSeedString(byte[] salt)
         {
@@ -107,9 +104,6 @@ namespace BLAZAM.Common.Data
         /// Generates a key of the configured key size, seeding the
         /// key from the appsettings configuration value "EncryptionKey"
         /// </summary>
-        /// <remarks>
-        /// Sets the local <see cref="Key"/> value to the newly generated key
-        /// </remarks>
         /// <returns>The key based on the <see cref="KeySeedString"/></returns>
         private byte[] GenerateV2KeyFromSeedString(byte[] salt)
         {
