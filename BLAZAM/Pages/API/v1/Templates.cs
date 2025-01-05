@@ -230,23 +230,7 @@ namespace BLAZAM.Pages.API.v1
 
         }
 
-        private void Add(dynamic data, string title, string key)
-        {
-            var raw = User.Claims.FirstOrDefault(x => x.Type == key)?.Value;
-
-            var str = raw?.ToString();
-            data.Add(title, str);
-        }
-        private void AddDateTime(dynamic data, string title, string key)
-        {
-            var raw = User.Claims.FirstOrDefault(x => x.Type == key)?.Value;
-            var lng = long.Parse(raw);
-
-
-            var dt = DateTime.UnixEpoch.AddSeconds(lng); ;
-            var str = dt.ToString();
-            data.Add(title, str);
-        }
+       
 
         async Task SendWelcomeEmail(IADUser user, string to, SecureString password)
         {
@@ -256,7 +240,6 @@ namespace BLAZAM.Pages.API.v1
                 message.Domain = user.Directory.ConnectionSettings?.FQDN;
                 message.Username = user.SamAccountName;
                 message.Password = password;
-                var html = message.Render();
                 await EmailService.SendMessage(AppLocalization["New Account Details"], message, to);
 
             }
@@ -264,7 +247,6 @@ namespace BLAZAM.Pages.API.v1
             {
                 Loggers.SystemLogger.Error("Error sending welcome email {@Error}", ex);
             }
-            //emailPreview = EmailService.PrepareHTMLForEmail(html);
         }
     }
 }
