@@ -61,7 +61,7 @@
         globalPermissionRequestActions = await Context.GlobalPermissionRequestActions.ToListAsync();
         Modal.OnYes += Submit;
     }
-    public async void Submit()
+    public async Task Submit()
     {
         if (_selectedActions.Count > 0)
         {

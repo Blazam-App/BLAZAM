@@ -46,14 +46,14 @@
         // Modal.OnYes = SaveChanges;
         Modal.YesText = AppLocalization["Next"];
         Modal.Title = "Register Printers";
-        Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
+        Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
         base.OnInitialized();
 
 
     }
 
 
-    private void RegisterSelectedPrinters()
+    private async Task RegisterSelectedPrinters()
     {
 
         foreach (var printer in selectedPrinters.Where(p => p.ADPrinter == null))
@@ -69,7 +69,7 @@
             }
             else
             {
-                MessageService.ShowMessage<JobResultDialog>(registerJob.ToDialogParameters(), registerJob.Name);
+                await MessageService.ShowMessage<JobResultDialog>(registerJob.ToDialogParameters(), registerJob.Name);
                 return;
             }
 
@@ -99,7 +99,7 @@
             else
             {
                 Modal.YesText = AppLocalization["Next"];
-                Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
+                Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
                 Modal.RefreshView();
 
             }

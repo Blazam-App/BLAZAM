@@ -183,7 +183,7 @@
         additionalGroups.Add(additionalGroups.Count, null);
         await InvokeAsync(StateHasChanged);
     }
-    async void AssignToGroup()
+    async Task AssignToGroup()
     {
 
         if (Group is IADGroup group)

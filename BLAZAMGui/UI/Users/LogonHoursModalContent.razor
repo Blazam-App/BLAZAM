@@ -83,7 +83,7 @@
 
     }
 
-    public async void SaveChanges()
+    public async Task SaveChanges()
     {
         var rawSchedule = schedule.EncodeLogonHours();
         User.LogonHours = schedule;

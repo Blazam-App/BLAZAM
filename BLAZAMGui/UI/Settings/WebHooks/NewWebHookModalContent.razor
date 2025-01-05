@@ -94,11 +94,11 @@
 
     }
     protected override bool IsValid => _newSubscription.IsValid;
-    private void SaveSettings()
+    private async Task SaveSettings()
     {
         if (!_newSubscription.URL.IsNullOrEmpty() && _newSubscription.NotificationTypes.Count > 0)
         {
-            OnCreateNewSubscription.InvokeAsync(_newSubscription);
+           await OnCreateNewSubscription.InvokeAsync(_newSubscription);
             Modal.Close();
         }
 

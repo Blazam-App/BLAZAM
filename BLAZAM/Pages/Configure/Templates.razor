@@ -282,7 +282,7 @@
             await InvokeAsync(StateHasChanged);
         }
     }
-    private async void RestoreSelectedTemplates()
+    private async Task RestoreSelectedTemplates()
     {
         if (restoreDataGrid != null)
         {

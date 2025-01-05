@@ -17,7 +17,7 @@
         Modal.YesText = AppLocalization["Add"];
         Modal.RefreshView();
     }
-    private async void Submit()
+    private async Task Submit()
     {
         if (Categories.Contains(newCategory))
         {

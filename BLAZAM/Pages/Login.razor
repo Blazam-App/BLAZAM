@@ -164,7 +164,7 @@
 
 
     }
-    async void AttemptSignIn(string? otpCode = null)
+    async Task AttemptSignIn(string? otpCode = null)
     {
         attemptingSignIn = true;
         await InvokeAsync(StateHasChanged);

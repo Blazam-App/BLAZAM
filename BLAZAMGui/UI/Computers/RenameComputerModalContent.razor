@@ -51,7 +51,7 @@ else
         _privateComputerInstance.DisplayName = newName;
 
     }
-    async void SaveChanges()
+    async Task SaveChanges()
     {
         var possibleConflictingMatch ="";
         if (possibleConflictingMatch == null || possibleConflictingMatch.Equals(_privateComputerInstance))

@@ -153,7 +153,7 @@ namespace BLAZAM.Gui.UI
 
         }
 
-        protected void Refresh()
+        protected async Task Refresh()
         {
             Nav.NavigateTo(Nav.Uri, false);
         }
