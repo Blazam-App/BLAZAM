@@ -47,7 +47,6 @@ namespace BLAZAM.Pages.API.v1
 
         public ApiController(IApplicationUserStateService applicationUserStateService, AuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
         {
-            //User = httpContextAccessor.HttpContext.User;
             AuditLogger = audit;
             UserStateService = applicationUserStateService;
             CurrentUserState = UserStateService.CurrentUserState;

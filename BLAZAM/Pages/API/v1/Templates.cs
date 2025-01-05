@@ -29,10 +29,9 @@ namespace BLAZAM.Pages.API.v1
     /// </summary>
     public class Templates : ApiController
     {
-        private IUserDatabaseFactory _appDatabaseFactory;
-        private IStringLocalizer<AppLocalization> AppLocalization;
-        private EmailService EmailService;
-        private NotificationGenerationService OUNotificationService;
+        private readonly IStringLocalizer<AppLocalization> AppLocalization;
+        private readonly EmailService EmailService;
+        private readonly NotificationGenerationService OUNotificationService;
 
         public Templates(NotificationGenerationService ouNotificationService, EmailService email, IApplicationUserStateService applicationUserStateService, IStringLocalizer<AppLocalization> localizer, AuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
         {
@@ -75,7 +74,7 @@ namespace BLAZAM.Pages.API.v1
         /// <response code="403">Forbidden - The user does not have the required role.</response>
         /// <response code="422">Unprocessable - The creation request cannot be processed due to an internal error.</response>
         [HttpPost]
-        [Route("/api/v1/templates/execute/{templateId}")]
+        [Route("api/v1/templates/execute/{templateId}")]
 
         public async Task<IActionResult> Execute(int templateId, [FromBody] NewUserDetails newUserDetails)
         {
@@ -155,10 +154,6 @@ namespace BLAZAM.Pages.API.v1
                         if (group != null)
                         {
                             newUser.AssignTo(group);
-
-                        }
-                        else
-                        {
 
                         }
                     }
