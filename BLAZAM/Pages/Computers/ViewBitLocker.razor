@@ -26,7 +26,7 @@
         if (BitLocker != null)
         {
 
-            _computer = (IADComputer?)BitLocker.GetParent();
+            _computer = (IADComputer?)(await BitLocker.GetParentAsync());
 
 
             await AuditLogger.Searched(BitLocker);
