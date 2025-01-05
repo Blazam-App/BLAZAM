@@ -7,6 +7,9 @@ using System.Security;
 
 namespace BLAZAM.Helpers
 {
+    /// <summary>
+    /// Provides extension methods for templat creation
+    /// </summary>
     public static class Helpers
     {
         /// <summary>
@@ -27,8 +30,6 @@ namespace BLAZAM.Helpers
 
             newUser.SamAccountName = template.GenerateUsername(newUserName);
             newUser.DisplayName = displayName;
-            //newUser.SetPassword(template.GeneratePassword().ToSecureString(),false);
-            //newUser.CanonicalName = template.GenerateDisplayName(newUserName);
             newUser.StagePasswordChange(template.GeneratePassword(newUserName).ToSecureString());
             if (template.EffectiveRequirePasswordChange == true)
                 newUser.StageRequirePasswordChange(true);

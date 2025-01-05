@@ -12,19 +12,24 @@ namespace BLAZAM.Server.Middleware
     public class HttpsRedirectionMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ConnMonitor _monitor;
         private readonly ApplicationInfo _applicationInfo;
-
+        /// <summary>
+        /// Creates a new HTTPS redirect middleware to ensure users are using a secure connection
+        /// </summary>
+        /// <param name="next"></param>
+        /// <param name="applicationInfo"></param>
         public HttpsRedirectionMiddleware(
             RequestDelegate next,
-            ConnMonitor monitor,
             ApplicationInfo applicationInfo)
         {
             _next = next;
-            _monitor = monitor;
             _applicationInfo = applicationInfo;
         }
-
+        /// <summary>
+        /// Checks the database cache for a true ForceHTTPS and if so an request is HTTP redirect to HTTPS
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public async Task InvokeAsync(HttpContext context)
         {
             bool forceHttps;
