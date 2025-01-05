@@ -7,6 +7,8 @@ using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.DirectoryServices;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -32,11 +34,21 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// should be an exact match of the terms provided
         /// </summary>
         public bool ExactMatch { get; set; }
-
+        private string? _generalSearchTerm;
         /// <summary>
         /// A string to find in the common name and username fields
         /// </summary>
-        public string? GeneralSearchTerm { get; set; }
+        public string? GeneralSearchTerm
+        {
+            get => _generalSearchTerm;
+            set
+            {
+                // restrict to letters only
+               
+                    _generalSearchTerm = EscapeLdapSearchFilter(value);
+                
+            }
+        }
 
         /// <summary>
         /// The ldap query filter that filters by fields
@@ -75,7 +87,35 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             _currentUserActiveDirectoryContext = currentUserActiveDirectoryContext;
         }
-
+        private static string EscapeLdapSearchFilter(string input)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in input)
+            {
+                switch (c)
+                {
+                    case '\\':
+                        sb.Append("\\5c");
+                        break;
+                    case '*':
+                        sb.Append("\\2a");
+                        break;
+                    case '(':
+                        sb.Append("\\28");
+                        break;
+                    case ')':
+                        sb.Append("\\29");
+                        break;
+                    case '\0': // Null character
+                        sb.Append("\\00");
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+            }
+            return sb.ToString();
+        }
         public async Task<List<I>> SearchAsync<T, I>(CancellationToken? token = null) where T : I, IDirectoryEntryAdapter, new()
         {
             return await Task.Run(() =>
