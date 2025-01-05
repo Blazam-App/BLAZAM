@@ -57,6 +57,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
+
+      
         public override IJob CommitChanges(IJob? dcr = null)
         {
             //dcr ??= new DirectoryChangeResult();
@@ -103,7 +105,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             _groupMembersCache = new List<IADGroup>();
             _userMembersCache = new();
             base.DiscardChanges();
-
+            OnModelChanged?.Invoke();
 
         }
         public bool HasMembers => UserMembers.Count > 0 || GroupMembers.Count > 0;

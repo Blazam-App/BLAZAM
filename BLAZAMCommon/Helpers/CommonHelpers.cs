@@ -22,6 +22,12 @@ namespace BLAZAM.Helpers
 {
     public static class CommonHelpers
     {
+        /// <summary>
+        /// Rounds a number to the specified decimal places
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="decimalPlaces"></param>
+        /// <returns></returns>
         public static double Round(this double number, int decimalPlaces = 0)
         {
             return Math.Round(number, decimalPlaces);
@@ -157,7 +163,11 @@ namespace BLAZAM.Helpers
             }
         }
 
-
+        /// <summary>
+        /// Saves this memory stream to a filesystem file
+        /// </summary>
+        /// <param name="memoryStream"></param>
+        /// <param name="destinationFile"></param>
         public static void SaveTo(this MemoryStream memoryStream, SystemFile destinationFile)
         {
             if (destinationFile.Exists)
@@ -210,32 +220,32 @@ namespace BLAZAM.Helpers
                 }
             }
         }
-        public static PropertyInfo GetPropertyFromExpression<T>(this T obj, Expression<Func<T, object>> GetPropertyLambda)
-        {
-            MemberExpression Exp = null;
+        //public static PropertyInfo GetPropertyFromExpression<T>(this T obj, Expression<Func<T, object>> GetPropertyLambda)
+        //{
+        //    MemberExpression Exp = null;
 
-            //this line is necessary, because sometimes the expression comes in as Convert(originalexpression)
-            if (GetPropertyLambda.Body is UnaryExpression)
-            {
-                var UnExp = (UnaryExpression)GetPropertyLambda.Body;
-                if (UnExp.Operand is MemberExpression)
-                {
-                    Exp = (MemberExpression)UnExp.Operand;
-                }
-                else
-                    throw new ArgumentException();
-            }
-            else if (GetPropertyLambda.Body is MemberExpression)
-            {
-                Exp = (MemberExpression)GetPropertyLambda.Body;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
+        //    //this line is necessary, because sometimes the expression comes in as Convert(originalexpression)
+        //    if (GetPropertyLambda.Body is UnaryExpression)
+        //    {
+        //        var UnExp = (UnaryExpression)GetPropertyLambda.Body;
+        //        if (UnExp.Operand is MemberExpression)
+        //        {
+        //            Exp = (MemberExpression)UnExp.Operand;
+        //        }
+        //        else
+        //            throw new ArgumentException();
+        //    }
+        //    else if (GetPropertyLambda.Body is MemberExpression)
+        //    {
+        //        Exp = (MemberExpression)GetPropertyLambda.Body;
+        //    }
+        //    else
+        //    {
+        //        throw new ArgumentException();
+        //    }
 
-            return (PropertyInfo)Exp.Member;
-        }
+        //    return (PropertyInfo)Exp.Member;
+        //}
 
         public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
         {
@@ -275,13 +285,7 @@ namespace BLAZAM.Helpers
                 long? fileTime = value?.ToUniversalTime().ToFileTimeUtc();
                 if (fileTime == null) return null;
                 return fileTime;
-                //object fto = 0;
-                //IADsLargeInteger largeInt = new ADsLargeInteger();
-
-                //largeInt.HighPart = (int)(fileTime >> 32);
-                //largeInt.LowPart = (int)(fileTime & 0xFFFFFFFF);
-
-                //return largeInt;
+              
             }
             catch
             {
