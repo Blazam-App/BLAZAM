@@ -451,7 +451,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual string? OU { get => DN.DnToOu() ?? ADSPath.DnToOu(); }
 
-        public async Task<IDirectoryEntryAdapter?> GetParentAsync() => Task.Run(() => {
+        public async Task<IDirectoryEntryAdapter?> GetParentAsync() => await Task.Run(() => {
             return GetParent();
         });
 
