@@ -177,7 +177,7 @@ namespace BLAZAM.Server
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true, // Important: Validate the signing key
-                    IssuerSigningKey = new SymmetricSecurityKey(Encryption.Instance.Key),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encryption.Instance.APITokenKey),
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateActor = false,

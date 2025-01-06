@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Diagnostics.SymbolStore;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -12,14 +13,22 @@ namespace BLAZAM.Common.Data
         private const string OldSalt = "BLAZAM_SALT";
         public static Encryption Instance;
 
-        private void SetSalt(int maximumSaltLength = 32)
+        //private void SetSalt(int maximumSaltLength = 32)
+        //{
+
+
+
+        //    Salt = GenerateSalt();
+        //}
+
+        private byte[] GenerateSalt(int maximumSaltLength = 32)
         {
-            var salt = new byte[maximumSaltLength];
+            byte[] salt = new byte[maximumSaltLength];
 
             RandomNumberGenerator.Create().GetNonZeroBytes(salt);
 
 
-            Salt = salt;
+            return salt;
         }
 
         /// <summary>
@@ -34,13 +43,16 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// The size of the key in bits
         /// </summary>
-        private int KeySize { get; set; }
+        /// <remarks>
+        /// Defaults to 256 bits
+        /// </remarks>
+        private int KeySize { get; set; } = 256;
 
         /// <summary>
-        /// The key that is <see cref="KeySize"/> bits long and was 
+        /// The api encryption key that is <see cref="KeySize"/> bits long and was 
         /// generated from the <see cref="KeySeedString"/> 
         /// </summary>
-        public byte[] Key { get; set; }
+        public byte[] APITokenKey { get; set; }
         private byte[] Salt { get; set; }
 
 
@@ -62,9 +74,9 @@ namespace BLAZAM.Common.Data
             if (keySeedString == null || keySeedString == "") return;
             KeySeedString = keySeedString;
             KeySize = keySize;
-            SetSalt();
-            GenerateOldKeyFromSeedString();
-            GenerateKeyFromSeedString(Salt);
+            //SetSalt();
+            GenerateApiKeyFromSeedString();
+            //GenerateKeyFromSeedString(Salt);
         }
 
         /// <summary>
@@ -72,18 +84,16 @@ namespace BLAZAM.Common.Data
         /// key from the appsettings configuration value "EncryptionKey"
         /// </summary>
         /// <remarks>
-        /// Sets the local <see cref="Key"/> value to the newly generated key
+        /// Sets the local <see cref="APITokenKey"/> value to the newly generated key
         /// </remarks>
         /// <returns>The key based on the <see cref="KeySeedString"/></returns>
-        [Obsolete("This method uses the old static salt value, use the parametrized version instead.")]
-        private byte[] GenerateOldKeyFromSeedString()
+        private byte[] GenerateApiKeyFromSeedString()
         {
-            // Use a key derivation function to generate a repeatable key
-            // var salt = GetSalt(11);
+
             var salt = Encoding.UTF8.GetBytes(OldSalt);
             var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 1000);
-            Key = keyGenerator.GetBytes(KeySize / 8);
-            return Key;
+            APITokenKey = keyGenerator.GetBytes(KeySize / 8);
+            return APITokenKey;
         }
         /// <summary>
         /// Generates a key of the configured key size, seeding the
@@ -92,12 +102,11 @@ namespace BLAZAM.Common.Data
         /// <returns>The key based on the <see cref="KeySeedString"/></returns>
         private byte[] GenerateKeyFromSeedString(byte[] salt)
         {
-        
-                // Use a key derivation function to generate a repeatable key
-                var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 1000);
 
-                return keyGenerator.GetBytes(KeySize / 8); ;
-        
+            var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 1000);
+
+            return keyGenerator.GetBytes(KeySize / 8); ;
+
 
         }
         /// <summary>
@@ -105,17 +114,19 @@ namespace BLAZAM.Common.Data
         /// key from the appsettings configuration value "EncryptionKey"
         /// </summary>
         /// <returns>The key based on the <see cref="KeySeedString"/></returns>
-        private byte[] GenerateV2KeyFromSeedString(byte[] salt)
+        private byte[] GenerateV2KeyFromSeedString(byte[]? salt = null)
         {
-        
-                // Use a key derivation function to generate a repeatable key
-                var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 600000,HashAlgorithmName.SHA256);
+            if (salt == null)
+            {
+                salt = GenerateSalt();
+            }
+            var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 600000, HashAlgorithmName.SHA256);
 
-                return keyGenerator.GetBytes(KeySize / 8); ;
-        
+            return keyGenerator.GetBytes(KeySize / 8); ;
+
 
         }
-      
+
         /// <summary>
         /// Decrypts cipher-text
         /// </summary>
@@ -166,7 +177,7 @@ namespace BLAZAM.Common.Data
             throw new ApplicationException("Unable to decrypt cipherText");
 
         }
-      
+
         /// <summary>
         /// Decrypts cipher-text
         /// </summary>
@@ -258,7 +269,7 @@ namespace BLAZAM.Common.Data
                         byte[] iv = buffer.Take(16).ToArray<byte>();
                         buffer = buffer.Skip(16).ToArray<byte>();
                         using Aes aes = Aes.Create();
-                        aes.Key = Key;
+                        aes.Key = APITokenKey;
                         aes.IV = iv;
                         ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
                         using MemoryStream memoryStream = new MemoryStream(buffer);
@@ -299,8 +310,8 @@ namespace BLAZAM.Common.Data
 
             var salt = Encoding.UTF8.GetBytes(OldSalt);
 
-            var keyGenerator = new Rfc2898DeriveBytes(ivSeed.ToByteArray(), Salt, 600000, HashAlgorithmName.SHA256);
-            byte[] iv = keyGenerator.GetBytes(16);
+            var ivGenerator = new Rfc2898DeriveBytes(ivSeed.ToByteArray(), Salt, 600000, HashAlgorithmName.SHA256);
+            byte[] iv = ivGenerator.GetBytes(16);
             byte[] encryptedBytes;
             using Aes aes = Aes.Create();
 

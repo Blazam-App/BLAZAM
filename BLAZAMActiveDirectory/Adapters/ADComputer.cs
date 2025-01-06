@@ -175,6 +175,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     Task.Delay(1000).Wait();
                 }
+                cts.Dispose();
             }, cts.Token);
             // await Task.Delay(1000);
             // MonitorOnlineStatus();
@@ -238,8 +239,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override void Dispose()
         {
-            base.Dispose();
             cts.Cancel();
+            base.Dispose();
         }
     }
 }

@@ -130,7 +130,7 @@ namespace BLAZAM.Tests
             testSeedStrings.ForEach(seedString =>
             {
                 encryption = new Encryption(seedString);
-                generatedKeys.Add(encryption.Key);
+                generatedKeys.Add(encryption.APITokenKey);
             });
 
             List<int> lowestVariances = new List<int>();
@@ -161,7 +161,7 @@ namespace BLAZAM.Tests
             testSeedStrings.ForEach(seedString =>
             {
                 encryption = new Encryption(seedString);
-                generatedKeys.Add(encryption.Key);
+                generatedKeys.Add(encryption.APITokenKey);
                 var cipher = encryption.EncryptObject("jkrfdtnjkrdtn");
                 var test = encryption.DecryptObject<string>(cipher);
                 if (test != "jkrfdtnjkrdtn")
@@ -180,7 +180,7 @@ namespace BLAZAM.Tests
         {
 
             encryption = new Encryption(seedString);
-            Assert.Null(encryption.Key);
+            Assert.Null(encryption.APITokenKey);
 
         }
     }

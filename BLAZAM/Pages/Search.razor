@@ -158,23 +158,7 @@
     public ActiveDirectoryObjectType? SearchObjectType { get; set; }
 
     protected virtual List<IDirectoryEntryAdapter> results { get; set; } = new List<IDirectoryEntryAdapter>();
-    /// <summary>
-    /// Public search invokation.
-    /// </summary>
-    public void SubmitSearch() => SubmitSearch(null);
-    /// <summary>
-    /// Public search invokation.
-    /// </summary>
-    /// <param name="searchTerm"></param>
-    public void SubmitSearch(string? searchTerm = null)
-    {
-        if (searchTerm != null)
-            SearchService.SearchTerm = searchTerm;
-        Nav.NavigateTo("/search/" + SearchService.SearchTerm);
-
-
-    }
-
+   
 
     /// <summary>
     /// Called internally to start a search
@@ -215,7 +199,6 @@
         else
             Searcher.Cancel();
         SearchService.SearchTerm = SearchTermParameter;
-        //Searcher.EnabledOnly = !SearchService.IncludeDisabled;
         Searcher.GeneralSearchTerm = SearchService.SearchTerm;
         Searcher.ObjectTypeFilter = SearchService.SeachObjectType;
         Searcher.ExactMatch = true;
