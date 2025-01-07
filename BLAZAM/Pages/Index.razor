@@ -9,7 +9,7 @@
 <MudContainer Class="py-5">
 
     <FullAppName/>
-   
+
 
     <MudText>@AppLocalization["ApplicationStarting"]</MudText>
     <MudProgressLinear Color="Color.Info" Indeterminate=true />
@@ -30,24 +30,24 @@
 
 <style>
     body {
-        height: 98vh;
+    height: 98vh;
     }
 
     .brand-icon {
-        position: fixed;
-        left: 5px;
-        top: 5px;
+    position: fixed;
+    left: 5px;
+    top: 5px;
     }
 
-        .brand-icon img {
-            max-width: 65px;
-            max-height: 65px;
-        }
+    .brand-icon img {
+    max-width: 65px;
+    max-height: 65px;
+    }
 
     .login-form input {
-        max-width: 300px;
-        margin-left: auto;
-        margin-right: auto;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
     }
 </style>
 
@@ -113,6 +113,11 @@
         }
         oldStatus = newStatus;
 
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        waitingForLoadToComplete = false;
     }
 }
 
