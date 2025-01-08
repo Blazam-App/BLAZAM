@@ -22,13 +22,15 @@
     @* <GoogleAuthenticatorModal @ref=googleAuthenticatorModal /> *@
     @if (!googleAuthSecret.IsNullOrEmpty())
     {
-    <MudText Align="Align.Center">@AppLocalization["Google Authenticator Passcode"]</MudText>
+        <MudText Align="Align.Center">@AppLocalization["Google Authenticator Passcode"]</MudText>
         <GoogleAuthenticatorInput @bind-Passcode=passcode
                                   AuthSecret="@googleAuthSecret"
-        OnAuthenticated="@(async()=>{AttemptSignIn(passcode);})" />
+                                  OnAuthenticated="@(async()=>{AttemptSignIn(passcode);})" />
         <MudButton Color="Color.Primary" OnClick="@(()=>{googleAuthSecret=null; LoginRequest.MFAToken=null;})">@AppLocalization["Back"]</MudButton>
 
-    }else{
+    }
+    else
+    {
 
         <FullAppName />
 
@@ -46,16 +48,14 @@
 
 
 
-                    <MudTextField @ref=_usernameTextField
-                                  Disabled=@attemptingSignIn
+                    <MudTextField Disabled=@attemptingSignIn
                                   Class="justify-center"
                                   AutoFocus=true
                                   Label=@AppLocalization["Username"]
                                   name="Username"
                                   @bind-Value=LoginRequest.Username />
 
-                    <MudTextField @ref=_passwordTextField
-                                  Disabled=@attemptingSignIn
+                    <MudTextField Disabled=@attemptingSignIn
                                   Class="justify-center"
                                   Label=@AppLocalization["Password"]
                                   name="Password"
@@ -115,20 +115,20 @@
 </MudContainer>
 <style>
     .brand-icon {
-    position: fixed;
-    left: 5px;
-    top: 5px;
+        position: fixed;
+        left: 5px;
+        top: 5px;
     }
 
-    .brand-icon img {
-    max-width: 65px;
-    max-height: 65px;
-    }
+        .brand-icon img {
+            max-width: 65px;
+            max-height: 65px;
+        }
 
     .login-form input {
-    max-width: 300px;
-    margin-left: auto;
-    margin-right: auto;
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
     }
 </style>
 
@@ -138,10 +138,8 @@
     private string? passcode;
     private string? googleAuthSecret;
 
-    MudTextField<string?> _usernameTextField;
-    MudTextField<string?> _passwordTextField;
+
     bool attemptingSignIn = false;
-    bool collectAuthToken = false;
     string redirectUrl;
     bool DemoCustomLogin = false;
     LoginRequest LoginRequest = new();
@@ -226,17 +224,19 @@
                 case LoginResultStatus.GoogleAuthenticatorRequested:
                     //attemptingSignIn = true;
                     googleAuthSecret = authenticationResult.MFAToken;
-                    collectAuthToken = true;
-                    // var passcode = await googleAuthenticatorModal?.ShowAsync(authenticationResult.MFAToken);
-                    // if (passcode != null)
-                    // {
-                    //     AttemptSignIn(passcode);
-                    // }
-                    // else
-                    // {
-                    //     attemptingSignIn = false;
+                    if (googleAuthenticatorModal != null)
+                    {
+                        var passcode = await googleAuthenticatorModal.ShowAsync(authenticationResult.MFAToken);
+                        if (passcode != null)
+                        {
+                            AttemptSignIn(passcode);
+                        }
+                        else
+                        {
+                            attemptingSignIn = false;
 
-                    // }
+                        }
+                    }
                     break;
                 case LoginResultStatus.OK:
                     attemptingSignIn = true;

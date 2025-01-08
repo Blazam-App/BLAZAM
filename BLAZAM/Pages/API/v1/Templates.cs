@@ -78,139 +78,164 @@ namespace BLAZAM.Pages.API.v1
 
         public async Task<IActionResult> Execute(int templateId, [FromBody] NewUserDetails newUserDetails)
         {
-            
+
             var context = await DbFactory.CreateDbContextAsync();
             var template = await context.DirectoryTemplates.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id == templateId);
-            
-            if (template != null)
+
+            if (template == null) return new NotFoundObjectResult(templateId);
+
+            try
             {
-                //Check if the request has the required fields for this template
-                if (template.HasRequiredFields())
+                if (ValidateInput(newUserDetails, template))
                 {
-                    var requiredFields = template.EffectiveFieldValues.Where(fv => fv.Required).ToList();
-                    foreach (var field in requiredFields)
-                    {
-                        //If any are missing return an error with explanation
-                        if (!newUserDetails.Fields.Any(f => f.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase)))
-                        {
-                            return new BadRequestObjectResult(field.FieldName + " is a required field");
-                        }
 
-                    }
                 }
+            }
+            catch (BadHttpRequestException ex)
+            {
+                return new BadRequestObjectResult(ex.Message);
 
-                //Prepare new user name
-                var newUserName = new NewUserName()
-                {
-                    GivenName = newUserDetails.FirstName,
-                    MiddleName = newUserDetails.MiddleName,
-                    Surname = newUserDetails.LastName
-                };
-             
-                //Generate IADUser
-                var newUser = template.GenerateTemplateUser(newUserName, Directory);
+            }
 
-                //Override username if provided
-                if (!newUserDetails.Username.IsNullOrEmpty())
-                {
-                    newUser.SamAccountName = newUserDetails.Username;
-                }
 
-                //Store password in memory for later
-                var password = newUser.NewPassword.ToPlainText().ToSecureString();
+            //Prepare new user name
+            var newUserName = new NewUserName()
+            {
+                GivenName = newUserDetails.FirstName,
+                MiddleName = newUserDetails.MiddleName,
+                Surname = newUserDetails.LastName
+            };
 
-                //Set each field in template
-                template.PopulateFields(newUser, newUserName);
+            //Generate IADUser
+            var newUser = template.GenerateTemplateUser(newUserName, Directory);
 
-                //Set API provided fields
-                if (newUserDetails.Fields != null)
-                {
-                    foreach (var field in newUserDetails.Fields)
-                    {
-                        var json = field.FieldValue as JsonElement?;
-                        var kind = json.Value.ValueKind;
-                        object? value=null;
-                        switch (kind)
-                        {
-                            case JsonValueKind.String:
-                                value = json.Value.GetString(); break;
-                            case JsonValueKind.Number:
-                                value = json.Value.GetDouble(); break;
-                            case JsonValueKind.False:
-                            case JsonValueKind.True:
-                                value = json.Value.GetBoolean(); break;
-                           
-                        }
-                        newUser.SetCustomProperty(field.FieldName,value) ;
-                    }
-                }
+            //Override username if provided
+            if (!newUserDetails.Username.IsNullOrEmpty())
+            {
+                newUser.SamAccountName = newUserDetails.Username;
+            }
 
-                //Set API provided groups
-                if (newUserDetails.Groups != null)
-                {
-                    foreach (var groupSid in newUserDetails.Groups)
-                    {
-                        var group = (IADGroup)Directory.GetDirectoryEntryByDN(groupSid);
-                        if (group != null)
-                        {
-                            newUser.AssignTo(group);
+            //Store password in memory for later
+            var password = newUser.NewPassword.ToPlainText().ToSecureString();
 
-                        }
-                    }
-                }
-                
-                //Prepare commit job
-                IJob createUserJob = new Job(AppLocalization["Create User"]);
-                createUserJob.StopOnFailedStep = true;
+            //Set each field in template
+            template.PopulateFields(newUser, newUserName);
 
-                //Commmit
-                var result = await newUser.CommitChangesAsync(createUserJob);
-                if (result.FailedSteps.Count == 0)
-                {
-                    newUser = (IADUser)Directory.GetDirectoryEntryByDN(newUser.DN);
-                    await AuditLogger.User.Created(newUser);
-                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                    {
-                        await OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
+            //Set API provided fields
+            SetFields(newUserDetails, newUser);
 
-                    }
-                    else
-                    {
-                        _ = OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
+            //Set API provided groups
+            AssignGroups(newUserDetails, newUser);
 
-                    }
+            //Prepare commit job
+            IJob createUserJob = new Job(AppLocalization["Create User"]);
 
-                    try
-                    {
-                        if (template?.EffectiveSendWelcomeEmail == true)
-                        {
-                            if (template.EffectiveAskForAlternateEmail == true || newUser.Email.IsNullOrEmpty())
-                            {
+            createUserJob.StopOnFailedStep = true;
 
-                                await SendWelcomeEmail(newUser, newUserDetails.SendWelcomeEmailTo, password);
+            //Commmit
+            var result = await newUser.CommitChangesAsync(createUserJob);
 
-                            }
-                            else
-                            {
-                                await SendWelcomeEmail(newUser, newUser.Email, password);
-                            }
-                        }
-                    }
-                    catch
-                    {
+            if (result.FailedSteps.Count > 0)
+                return new UnprocessableEntityObjectResult(result.FailedSteps.Select(s => s.Exception?.InnerException != null ? s.Exception.InnerException.Message : s.Exception?.Message));
 
-                    }
-                    return new CreatedResult(newUser.OU, newUser.DN);
-                }
-                else
-                {
-                    return new UnprocessableEntityObjectResult(result.FailedSteps.Select(s => s.Exception.InnerException != null ? s.Exception.InnerException.Message : s.Exception.Message));
-                }
+
+            newUser = (IADUser)Directory.GetDirectoryEntryByDN(newUser.DN);
+
+            await AuditAndNotify(newUserDetails, template, newUser, password);
+
+            return new CreatedResult(newUser.OU, newUser.DN);
+
+
+        }
+
+        private async Task AuditAndNotify(NewUserDetails newUserDetails, DirectoryTemplate? template, IADUser? newUser, SecureString password)
+        {
+            await AuditLogger.User.Created(newUser);
+            if (DbFactory.DatabaseType == DatabaseType.SQLite)
+            {
+                await OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
+
             }
             else
             {
-                return new NotFoundObjectResult(templateId);
+                _ = OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
+
             }
+
+
+            if (template?.EffectiveSendWelcomeEmail == true)
+            {
+                if (template.EffectiveAskForAlternateEmail == true || newUser.Email.IsNullOrEmpty())
+                {
+
+                    await SendWelcomeEmail(newUser, newUserDetails.SendWelcomeEmailTo, password);
+
+                }
+                else
+                {
+                    await SendWelcomeEmail(newUser, newUser.Email, password);
+                }
+            }
+
+        }
+
+        private static void SetFields(NewUserDetails newUserDetails, IADUser? newUser)
+        {
+            if (newUserDetails.Fields != null)
+            {
+                foreach (var field in newUserDetails.Fields)
+                {
+                    var json = field.FieldValue as JsonElement?;
+                    var kind = json?.ValueKind;
+                    object? value = null;
+                    switch (kind)
+                    {
+                        case JsonValueKind.String:
+                            value = json.Value.GetString(); break;
+                        case JsonValueKind.Number:
+                            value = json.Value.GetDouble(); break;
+                        case JsonValueKind.False:
+                        case JsonValueKind.True:
+                            value = json.Value.GetBoolean(); break;
+
+                    }
+                    newUser?.SetCustomProperty(field.FieldName, value);
+                }
+            }
+        }
+
+        private void AssignGroups(NewUserDetails newUserDetails, IADUser? newUser)
+        {
+            if (newUserDetails.Groups != null)
+            {
+                foreach (var groupSid in newUserDetails.Groups)
+                {
+                    var group = (IADGroup)Directory.GetDirectoryEntryByDN(groupSid);
+                    if (group != null)
+                    {
+                        newUser?.AssignTo(group);
+
+                    }
+                }
+            }
+        }
+
+        private static bool ValidateInput(NewUserDetails newUserDetails, DirectoryTemplate? template)
+        {
+            //Check if the request has the required fields for this template
+            if (template?.HasRequiredFields()==true)
+            {
+                var requiredFields = template.EffectiveFieldValues.Where(fv => fv.Required).ToList();
+                foreach (var field in requiredFields)
+                {
+                    //If any are missing return an error with explanation
+                    if (!newUserDetails.Fields?.Any(f => f.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase))==true)
+                    {
+                        throw new BadHttpRequestException(field.FieldName + " is a required field");
+                    }
+                }
+            }
+            return true;
         }
 
 
@@ -230,7 +255,7 @@ namespace BLAZAM.Pages.API.v1
 
         }
 
-       
+
 
         async Task SendWelcomeEmail(IADUser user, string to, SecureString password)
         {

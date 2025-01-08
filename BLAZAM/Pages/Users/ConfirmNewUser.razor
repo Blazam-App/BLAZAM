@@ -187,7 +187,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
     @if (User.IsAGroupMember)
     {
         var deniedRead = false;
-        @foreach (ADGroup g in User.MemberOf.Where(g => g.CanRead))
+        @foreach (var g in User.MemberOf.Where(g => g.CanRead))
         {
             if (g.CanRead)
             {

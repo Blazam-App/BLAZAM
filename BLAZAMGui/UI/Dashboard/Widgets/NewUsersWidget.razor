@@ -17,9 +17,14 @@
     protected override async Task RefreshData()
     {
         LoadingData = true;
+        try
+        {
+            NewUsers = (await Directory.Users.FindNewUsersAsync(14, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
+        }catch(Exception ex)
+        {
 
-        NewUsers = (await Directory.Users.FindNewUsersAsync(14, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
-        LoadingData = false;
+        }
+    LoadingData = false;
 
     }
     void GoTo(DataGridRowClickEventArgs<IADUser> args)
