@@ -92,7 +92,6 @@ s
                 DateTime start = DateTime.Now;
 
                 var dir = Directory as ActiveDirectoryContext;
-                var user = dir.Authenticate_Alt(new() { Username = "johnsoncontrols", Password = "bburg123" });
 
                 runs[cycle] = (DateTime.Now - start).TotalSeconds;
 

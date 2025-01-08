@@ -25,14 +25,14 @@
 
     bool disableNext = true;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
         var status = Directory.Status;
         Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
         try
         {
-            currentSettings = Context.ActiveDirectorySettings.FirstOrDefault();
+            currentSettings = await Context.ActiveDirectorySettings.FirstOrDefaultAsync();
         }
         catch (InvalidOperationException)
         {

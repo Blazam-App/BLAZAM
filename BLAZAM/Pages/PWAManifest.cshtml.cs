@@ -3,6 +3,7 @@ using BLAZAM.Static;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
+using System.Data.Entity;
 
 namespace BLAZAM.Pages
 {
@@ -45,8 +46,12 @@ namespace BLAZAM.Pages
             manifest.icons.Add(icon);
             try
             {
-                manifest.short_name = context.AppSettings.FirstOrDefault()?.AppAbbreviation;
-                manifest.name = context.AppSettings.FirstOrDefault()?.AppName;
+                var appSettings = await context.AppSettings.FirstOrDefaultAsync();
+                if (appSettings != null)
+                {
+                    manifest.short_name = appSettings.AppAbbreviation;
+                    manifest.name = appSettings.AppName;
+                }
             }
             catch
             {

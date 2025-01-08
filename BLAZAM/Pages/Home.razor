@@ -10,7 +10,7 @@
 }
 <AppPageTitle>@AppLocalization["Home"]</AppPageTitle>
 
-    @if (MOTD.HasValue && MOTD.Value.ToString() != "")
+@if (MOTD.HasValue && MOTD.Value.ToString() != "")
 {
     <MudAlert Class="mb-6 mud-theme-info rounded-t-0"  ShowCloseIcon=false Elevation="3">
 
@@ -26,24 +26,26 @@
 
 @if (ApplicationInfo.InDebugMode)
 {
-   
+
     <MudButton Variant="Variant.Filled" OnClick="testJob">Run Test Job</MudButton>
 }
 
 @code {
     MarkupString? MOTD;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         try
         {
-            MOTD = (MarkupString)Context?.AppSettings.FirstOrDefault()?.MOTD;
+            MOTD = (MarkupString)(await Context?.AppSettings.FirstOrDefaultAsync())?.MOTD;
         }
         catch
         {
 
         }
-        return base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
     }
     private IJob TestJob
     {
