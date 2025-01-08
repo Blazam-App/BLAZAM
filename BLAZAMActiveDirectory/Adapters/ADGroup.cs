@@ -231,10 +231,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             MembersToRemove.Add(new GroupMembership(this, member));
             HasUnsavedChanges = true;
-            return;
-
-
-
         }
         /// <summary>
         /// Assigns a member to this group
@@ -245,10 +241,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             MembersToAdd.Add(new GroupMembership(this, member));
             HasUnsavedChanges = true;
-            return;
-
-
-
         }
         public int CompareTo(object? obj)
         {

@@ -64,7 +64,7 @@
                     <MudCheckBox T="bool"
                                  Label="@objectType.ToString()"
                                  Size="@Size.Small"
-                                 Value="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)"
+                                 Value="@(context.Item.ObjectTypes.Any(ot=>ot.ObjectType==objectType))"
                                  ValueChanged="@((val)=>{
                                  ToggleObjectType(context.Item,objectType,val);
                                 })" />
@@ -72,7 +72,7 @@
                 <CellTemplate>
                     <MudCheckBox Size="@Size.Small"
                                  ReadOnly=true
-                                 Value="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
+                                 Value="@(context.Item.ObjectTypes.Any(ot=>ot.ObjectType==objectType))" />
                 </CellTemplate>
             </TemplateColumn>
         }

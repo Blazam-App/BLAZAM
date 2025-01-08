@@ -90,7 +90,7 @@ namespace BLAZAM
 
             //Assign installation ID
             Loggers.InstallationId = ApplicationInfo.installationId.ToString();
-            Loggers.InstallationType = ApplicationInfo.isUnderIIS==true?"IIS":"Service";
+            Loggers.InstallationType = ApplicationInfo.isUnderIIS?"IIS":"Service";
             Loggers.DatabaseType = Configuration.GetValue<string>("DatabaseType");
 
             //Setup host logging so it can catch the earliest logs possible

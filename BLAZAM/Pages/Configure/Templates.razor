@@ -20,7 +20,7 @@
                        @bind-Value="@SelectedCategory" />
 
         <MudSelectList T="DirectoryTemplate"
-                       Disabled=@(Templates.Where(t=>t.DeletedAt==null).Count()<1)
+                       Disabled=@(Templates.Count(t=>t.DeletedAt==null)<1)
                        Label=@AppLocalization["Template"]
                        Values="@Templates.Where(t=>t.DeletedAt==null)"
                        Value="@SelectedTemplate"

@@ -94,12 +94,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// </summary>
         protected List<JobStep> PostCommitSteps { get; set; } = new();
 
-        /// <summary>
-        /// The .NET <see cref="DirectoryEntry"/>  underlying object
-        /// </summary>
-        private DirectoryEntry? directoryEntry;
 
-        protected SearchResult? searchResult;
+
 
         protected IAppDatabaseFactory DbFactory => Directory.Factory;
         public void SetCurrentUser(IApplicationUserState user)
@@ -109,18 +105,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected IApplicationUserState? _currentUser;
         protected IApplicationUserState? CurrentUser => _currentUser;
 
-        private bool _newEntry = false;
-        public bool NewEntry
-        {
-            get => _newEntry; set
-            {
-                _newEntry = value;
+        public bool NewEntry { get; set; }
 
-
-
-            }
-        }
-    
         public Dictionary<string, object> NewEntryProperties { get; set; } = new();
         private IActiveDirectoryContext _directory;
 
@@ -166,17 +152,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public DirectoryEntry? DirectoryEntry
-        {
-            get
-            {
-                return directoryEntry;
-            }
-            set
-            {
-                directoryEntry = value;
-            }
-        }
+        public DirectoryEntry? DirectoryEntry { get; set; }
 
         public void EnsureDirectoryEntry()
         {
@@ -222,13 +198,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return ActiveDirectoryObjectType.OU;
             }
         }
-     
 
-        protected SearchResult? SearchResult
-        {
-            get => searchResult;
-            set => searchResult = value;
-        }
+
+        protected SearchResult? SearchResult { get; set; }
 
         public virtual string? SamAccountName
         {
@@ -363,7 +335,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                     return _cachedHasChildren == true;
-                  
+
                 }
                 var hasChildren = CachedChildren.Count() > 0;
                 return hasChildren;
@@ -451,7 +423,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual string? OU { get => DN.DnToOu() ?? ADSPath.DnToOu(); }
 
-        public async Task<IDirectoryEntryAdapter?> GetParentAsync() => await Task.Run(() => {
+        public async Task<IDirectoryEntryAdapter?> GetParentAsync() => await Task.Run(() =>
+        {
             return GetParent();
         });
 
@@ -594,7 +567,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (_appliedPermissionMappings == null)
                 {
                     using var context = DbFactory.CreateDbContext();
-                    _appliedPermissionMappings =context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
+                    _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
                 }
                 return _appliedPermissionMappings;
             }
@@ -692,7 +665,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                         }
                     });
-                   
+
                     directoryEntries.OrderBy(x => x.CanonicalName).OrderBy(x => x.ObjectType);
                     CachedChildren = directoryEntries;
                 }
@@ -824,7 +797,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 IJobStep? propertyStep;
-                Job? propertyJob = new Job("Set AD attributes",commitJob.User);
+                Job? propertyJob = new Job("Set AD attributes", commitJob.User);
                 if (!NewEntry)
                 {
                     //Existing Active Directory Entry
@@ -836,7 +809,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     foreach (var p in NewEntryProperties)
                     {
-                        propertyStep = new JobStep("Set AD attribute ["+p.Key+"]", (step) =>
+                        propertyStep = new JobStep("Set AD attribute [" + p.Key + "]", (step) =>
                          {
 
 
@@ -909,30 +882,28 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 }
-                if (!NewEntry)
+                if (!NewEntry
+                    && PostCommitSteps.Count > 0)
                 {
-                    if (PostCommitSteps.Count > 0)
+                    foreach (var step in PostCommitSteps)
                     {
-                        foreach (var step in PostCommitSteps)
-                        {
-                            commitJob.AddStep(step);
-                        }
-
+                        commitJob.AddStep(step);
                     }
+
+
                 }
                 commitJob.AddStep(commitStep);
                 commitJob.AddStep(commitStep);
-                if (NewEntry)
+                if (NewEntry
+                    && PostCommitSteps.Count > 0)
                 {
-                    if (PostCommitSteps.Count > 0)
+                    foreach (var step in PostCommitSteps)
                     {
-                        foreach (var step in PostCommitSteps)
-                        {
-                            commitJob.AddStep(step);
-                        }
-                        commitJob.AddStep(commitStep);
-
+                        commitJob.AddStep(step);
                     }
+                    commitJob.AddStep(commitStep);
+
+
                 }
 
 
@@ -940,7 +911,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-                if (result == true)
+                if (result)
                 {
                     NewEntryProperties.Clear();
                     PostCommitSteps.Clear();
@@ -1045,7 +1016,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-       
+
 
         protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
         {
@@ -1305,7 +1276,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-               
+
                 DirectoryEntry?.Properties[propertyName].Remove(value);
 
                 HasUnsavedChanges = true;
@@ -1333,7 +1304,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual void Dispose()
         {
-            directoryEntry?.Dispose();
+            DirectoryEntry?.Dispose();
             searchResult = null;
 
         }

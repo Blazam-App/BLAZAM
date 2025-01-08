@@ -23,7 +23,7 @@
         </MudAlert>
     </MudLink>
     <ApiTokenDataGrid ShowUser="true" OnTokenDeleted="@((token)=>{Delete(token);})" Tokens="@_tokens" />
-        <MudButton Color="Color.Primary" OnClick="@(Save)">@AppLocalization["Save"]</MudButton>
+    <MudButton Color="Color.Primary" OnClick="@(Save)">@AppLocalization["Save"]</MudButton>
 </AuthorizeView>
 
 
@@ -37,20 +37,20 @@
         {
             if (_showDeleted == value) return;
             _showDeleted = value;
-            _=GetTokens();
+            _ = GetTokens();
 
         }
     }
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        _=GetTokens();
+        _ = GetTokens();
     }
     public async Task GetTokens()
     {
         LoadingData = true;
         if (_showDeleted)
-            _tokens = await Context.ApiTokens.Include(t=>t.User).ToListAsync();
+            _tokens = await Context.ApiTokens.Include(t => t.User).ToListAsync();
         else
             _tokens = await Context.ApiTokens.Where(t => t.DeletedAt == null).Include(t => t.User).ToListAsync();
         LoadingData = false;
@@ -64,14 +64,14 @@
 
     private async Task Delete(ApiToken? tokenToDelete)
     {
-        if (await MessageService.Confirm(AppLocalization["Are you sure you want to delete this API token?"], AppLocalization["Confirm delete"]))
+        if (tokenToDelete != null
+            && await MessageService.Confirm(AppLocalization["Are you sure you want to delete this API token?"]
+                                            , AppLocalization["Confirm delete"]))
         {
-            if (tokenToDelete != null)
-            {
-                tokenToDelete.DeletedAt = DateTime.UtcNow;
-                Context.SaveChangesAsync();
-            }
+            tokenToDelete.DeletedAt = DateTime.UtcNow;
+            Context.SaveChangesAsync();
         }
+
 
     }
 }
