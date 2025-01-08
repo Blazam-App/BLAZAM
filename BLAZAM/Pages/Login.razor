@@ -185,68 +185,7 @@
 
         attemptingSignIn = false;
 
-        if (authenticationResult != null)
-        {
-
-            switch (authenticationResult.AuthenticationResult)
-            {
-
-                case LoginResultStatus.NoUsername:
-                    SnackBarService.Info("Username is missing");
-                    break;
-                case LoginResultStatus.NoPassword:
-                    SnackBarService.Info("Password is missing");
-                    break;
-                case LoginResultStatus.NoData:
-                    SnackBarService.Warning("Login request is missing");
-
-                    break;
-                case LoginResultStatus.BadCredentials:
-                    SnackBarService.Warning("Username or password not correct");
-                    break;
-                case LoginResultStatus.UnauthorizedImpersonation:
-                    SnackBarService.Error("Unauthorized Impersonation Attempt");
-
-                    break;
-                case LoginResultStatus.DeniedLogin:
-                    SnackBarService.Error("You are not authorized to login");
-
-                    break;
-                case LoginResultStatus.UnknownFailure:
-                    SnackBarService.Error("Unknown error while attempting to log in");
-
-                    break;
-                case LoginResultStatus.DuoRequested:
-                    attemptingSignIn = true;
-                    if (authenticationResult != null && authenticationResult.MFARedirect != null)
-                        Nav.NavigateTo(authenticationResult.MFARedirect);
-                    break;
-                case LoginResultStatus.GoogleAuthenticatorRequested:
-                    //attemptingSignIn = true;
-                    googleAuthSecret = authenticationResult.MFAToken;
-                    if (googleAuthenticatorModal != null)
-                    {
-                        var passcode = await googleAuthenticatorModal.ShowAsync(authenticationResult.MFAToken);
-                        if (passcode != null)
-                        {
-                            AttemptSignIn(passcode);
-                        }
-                        else
-                        {
-                            attemptingSignIn = false;
-
-                        }
-                    }
-                    break;
-                case LoginResultStatus.OK:
-                    attemptingSignIn = true;
-
-                    Nav.NavigateTo(redirectUrl, true);
-
-                    break;
-            }
-
-        }
+        await ProcessAuthenticationResult(authenticationResult);
 
         await InvokeAsync(StateHasChanged);
     }
@@ -264,6 +203,74 @@
         if (LoginRequest.Username.IsNullOrEmpty())
             validationResult.AuthenticationResult = LoginResultStatus.NoUsername;
         return false;
+    }
+    async Task ProcessAuthenticationResult(LoginRequest? authenticationResult = null)
+    {
+        if (authenticationResult == null) return;
+
+
+        switch (authenticationResult.AuthenticationResult)
+        {
+
+            case LoginResultStatus.NoUsername:
+                SnackBarService.Info("Username is missing");
+                break;
+            case LoginResultStatus.NoPassword:
+                SnackBarService.Info("Password is missing");
+                break;
+            case LoginResultStatus.NoData:
+                SnackBarService.Warning("Login request is missing");
+
+                break;
+            case LoginResultStatus.BadCredentials:
+                SnackBarService.Warning("Username or password not correct");
+                break;
+            case LoginResultStatus.UnauthorizedImpersonation:
+                SnackBarService.Error("Unauthorized Impersonation Attempt");
+
+                break;
+            case LoginResultStatus.DeniedLogin:
+                SnackBarService.Error("You are not authorized to login");
+
+                break;
+            case LoginResultStatus.UnknownFailure:
+                SnackBarService.Error("Unknown error while attempting to log in");
+
+                break;
+            case LoginResultStatus.DuoRequested:
+                attemptingSignIn = true;
+                if (authenticationResult != null && authenticationResult.MFARedirect != null)
+                    Nav.NavigateTo(authenticationResult.MFARedirect);
+                break;
+            case LoginResultStatus.GoogleAuthenticatorRequested:
+                //attemptingSignIn = true;
+                googleAuthSecret = authenticationResult.MFAToken;
+                await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken);
+                break;
+            case LoginResultStatus.OK:
+                attemptingSignIn = true;
+
+                Nav.NavigateTo(redirectUrl, true);
+
+                break;
+        }
+
+    }
+    async Task PerformGoogleAuthenticatorValidation(string? mfaToken)
+    {
+        if (googleAuthenticatorModal != null)
+        {
+            var passcode = await googleAuthenticatorModal.ShowAsync(mfaToken);
+            if (passcode != null)
+            {
+                AttemptSignIn(passcode);
+            }
+            else
+            {
+                attemptingSignIn = false;
+
+            }
+        }
     }
 
 }
