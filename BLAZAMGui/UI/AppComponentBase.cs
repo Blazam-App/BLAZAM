@@ -91,7 +91,6 @@ namespace BLAZAM.Gui.UI
 
             }
         }
-        //protected IDatabaseContext? Context;
         [Inject]
         protected IUserDatabaseFactory DbFactory { get; set; }
 
@@ -99,14 +98,6 @@ namespace BLAZAM.Gui.UI
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            //try
-            //{
-            //    Context = DbFactory.CreateDbContext();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Loggers.DatabaseLogger.Error("Failed to connect to database {@Error}", ex);
-            //}
             try
             {
 
@@ -126,17 +117,6 @@ namespace BLAZAM.Gui.UI
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            //if (Context == null)
-            //{
-            //    try
-            //    {
-            //        Context = await DbFactory.CreateDbContextAsync();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Loggers.DatabaseLogger.Error("Failed to connect to database {@Error}", ex);
-            //    }
-            //}
             try
             {
 
@@ -162,15 +142,17 @@ namespace BLAZAM.Gui.UI
 
             await InvokeAsync(StateHasChanged);
         }
-        public virtual void Dispose()
-        {
-            //This object requires no further disposal
-        }
+     
 
         public async Task CopyToClipboard(string? text)
         {
             await JS.InvokeVoidAsync("navigator.clipboard.writeText", text);
             SnackBarService.Info("\"" + text + "\" copied to clipboard.");
+        }
+
+        public virtual void Dispose()
+        {
+            this.Directory?.Dispose();
         }
 
         /// <summary>
