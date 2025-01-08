@@ -1305,7 +1305,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual void Dispose()
         {
             DirectoryEntry?.Dispose();
-            searchResult = null;
+            SearchResult = null;
 
         }
 

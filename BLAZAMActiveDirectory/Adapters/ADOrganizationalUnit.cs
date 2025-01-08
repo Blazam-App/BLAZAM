@@ -273,7 +273,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             EnsureDirectoryEntry();
             IADGroup newGroup = new ADGroup();
             if (DirectoryEntry == null)
-                DirectoryEntry = searchResult?.GetDirectoryEntry();
+                DirectoryEntry = SearchResult?.GetDirectoryEntry();
             newGroup.Parse(directoryEntry: DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "group"), directory: Directory);
             newGroup.NewEntry = true;
             newGroup.SamAccountName = containerName.Trim();
@@ -293,7 +293,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             IADPrinter newPrinter = new ADPrinter();
             if (DirectoryEntry == null)
-                DirectoryEntry = searchResult?.GetDirectoryEntry();
+                DirectoryEntry = SearchResult?.GetDirectoryEntry();
             newPrinter.Parse(directoryEntry: DirectoryEntry.Children.Add("CN=" + shortServerName + "-" + containerName.Trim(), "printQueue"), directory: Directory);
             newPrinter.NewEntry = true;
             newPrinter.UncName = uncPath;
@@ -313,7 +313,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             IADPrinter newPrinter = new ADPrinter();
             if (DirectoryEntry == null)
-                DirectoryEntry = searchResult?.GetDirectoryEntry();
+                DirectoryEntry = SearchResult?.GetDirectoryEntry();
             newPrinter.Parse(directoryEntry: DirectoryEntry.Children.Add("CN=" + sharedPrinter.Host.CanonicalName + "-" + sharedPrinter.ShareName.Trim(), "printQueue"), directory: Directory);
             newPrinter.NewEntry = true;
             newPrinter.UncName = "\\\\" + sharedPrinter.Host.CanonicalName + "\\" + sharedPrinter.ShareName;
