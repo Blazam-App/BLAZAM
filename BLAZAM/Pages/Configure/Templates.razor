@@ -190,7 +190,7 @@
     }
     async Task RenameSelectedCategory()
     {
-        var temp = Context?.DirectoryTemplates.Where(t => t.Category == SelectedCategory).ToList();
+        var temp = await Context.DirectoryTemplates.Where(t => t.Category == SelectedCategory).ToListAsync();
         if (temp != null)
         {
             foreach (var template in temp)
@@ -206,7 +206,7 @@
             SnackBarService.Success(AppLocalization["Renamed category"] + ": " + SelectedCategory + " to " + newCategoryName);
             SelectedCategory = newCategoryName;
             await FetchTemplates();
-            RenameModal?.Close();
+            await RenameModal?.CloseAsync();
         }
         await RefreshComponents();
 
@@ -299,7 +299,7 @@
                 }
             }
             var result = await Context.SaveChangesAsync();
-            RestoreModal?.Close();
+            await RestoreModal?.CloseAsync();
             SnackBarService.Success(AppLocalization["Template(s) restored"]);
         }
         else

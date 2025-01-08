@@ -100,14 +100,14 @@ else
 
     async void UpdateStatuses()
     {
-        Context = DbFactory.CreateDbContext();
+        Context = await DbFactory.CreateDbContextAsync();
         completedSteps = 1;
         if (Context != null)
         {
             if (Context.Status == ServiceConnectionState.Up)
             {
 
-                if (!Context.Database.GetPendingMigrations().Any())
+                if (!(await Context.Database.GetPendingMigrationsAsync()).Any())
                 {
                     completedSteps = 2;
 
@@ -115,7 +115,8 @@ else
 
                     try
                     {
-                        if (Context.AuthenticationSettings.FirstOrDefault() != null && Context.AuthenticationSettings.FirstOrDefault()?.AdminPassword != "password")
+                        if (await Context.AuthenticationSettings.FirstOrDefaultAsync() != null
+                        && (await Context.AuthenticationSettings.FirstOrDefaultAsync())?.AdminPassword != "password")
                         {
                             completedSteps = 3;
 
@@ -123,7 +124,7 @@ else
 
 
                             //check directory
-                            if (Context.ActiveDirectorySettings.FirstOrDefault() != null)
+                            if (await Context.ActiveDirectorySettings.FirstOrDefaultAsync() != null)
                             {
                                 if (Directory.Status == DirectoryConnectionStatus.OK)
                                 {
@@ -166,12 +167,12 @@ else
     {
         try
         {
-            if (Context?.AppSettings.FirstOrDefault() == null)
+            if (await Context?.AppSettings.FirstOrDefaultAsync() == null)
             {
                 var settings = new AppSettings();
                 settings.Id = 1;
                 Context?.AppSettings.Add(settings);
-                Context?.SaveChanges();
+                await Context?.SaveChangesAsync();
                 DatabaseCache.ApplicationSettings = settings;
             }
             (await Context.AppSettings.FirstOrDefaultAsync()).InstallationCompleted = true;

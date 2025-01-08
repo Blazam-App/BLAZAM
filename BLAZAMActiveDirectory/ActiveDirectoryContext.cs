@@ -268,7 +268,7 @@ namespace BLAZAM.ActiveDirectory
         public List<DomainController> DomainControllers { get; private set; } = new();
 
 
-        private async void KeepAlive(object? state = null)
+        private async Task KeepAlive(object? state = null)
         {
             _keepAlive = true;
             while (_keepAlive)
@@ -282,7 +282,7 @@ namespace BLAZAM.ActiveDirectory
                     //Throw away query used to keep connection alive
                     try
                     {
-                        _keepAliveUser = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
+                        _keepAliveUser = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
 
                     }
                     catch (DirectoryServicesCOMException ex)
