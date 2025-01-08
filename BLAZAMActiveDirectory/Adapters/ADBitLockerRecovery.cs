@@ -33,6 +33,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        // public override ActiveDirectoryObjectType ObjectType =>  ActiveDirectoryObjectType.BitLocker;
+        
     }
 }

@@ -61,8 +61,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
       
         public override IJob CommitChanges(IJob? dcr = null)
         {
-            //dcr ??= new DirectoryChangeResult();
-            var newMembers = new List<string>(MembersAsStrings);
             if (MembersToAdd.Count > 0)
             {
                 CommitSteps.Add(new JobStep("Add group members", (JobStep? step) =>
@@ -70,7 +68,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     MembersToAdd.ForEach(g =>
                     {
                         g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
-                        //dcr.AssignedMembers.Add(g.Group);
 
                     });
                     return true;
@@ -85,7 +82,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     MembersToRemove.ForEach(g =>
                     {
                         g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
-                        //dcr.UnassignedMembers.Add(g.Group);
                     });
                     return true;
                 }));

@@ -10,10 +10,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
     public class ADGroupSearcher : ADSearcher, IADGroupSearcher
     {
-        /// <summary>
-        /// This might need to go, or at least be set to remove cached entries after some period of time
-        /// </summary>
-        private static Dictionary<string, IADGroup> GroupSIDCache = new Dictionary<string, IADGroup>();
+
 
 
         public ADGroupSearcher(IActiveDirectoryContext directory) : base(directory)
@@ -143,11 +140,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                     }.Search<ADGroup, IADGroup>().FirstOrDefault();
 
-                    // query = "(distinguishedName=" + groupDN + ")";
-                    // var group = SearchObjects(query, ActiveDirectoryObjectType.Group, 1);
+                 
                     if (group != null)
                     {
-                        // var adGroup = ConvertTo<ADGroup>(group);
+                      
                         foundGroups.Add(group);
                     }
                     else
@@ -163,15 +159,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         }
         public List<IADUser> GetDirectUserMembers(IADGroup group, bool ignoreDisabledUsers = true)
         {
-            /*
-            return new ADSearch()
-            {
-                ObjectTypeFilter = ActiveDirectoryObjectType.User,
-                MemberOf = group.DN,
-                EnabledOnly=ignoreDisabledUsers
-
-            }.Search<ADUser, IADUser>();
-            */
+          
             string UserSearchFieldsQuery = "(memberOf=" + group.DN + ")";
             return SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User, 500, ignoreDisabledUsers).Cast<IADUser>().ToList();
 
@@ -179,14 +167,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         }
         public List<IADGroup> GetGroupMembers(IADGroup group)
         {
-            /*
-            return new ADSearch()
-            {
-                ObjectTypeFilter = ActiveDirectoryObjectType.Group,
-                MemberOf = group.DN,
-
-            }.Search<ADGroup, IADGroup>();
-            */
+        
             string UserSearchFieldsQuery = "(memberOf=" + group.DN + ")";
             return SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.Group, 500).Cast<IADGroup>().ToList();
 

@@ -27,7 +27,6 @@ namespace BLAZAM.ActiveDirectory
             {
                 if (currentUser != null) return currentUser;
                 if (UserStateService.CurrentUserState != null) return UserStateService.CurrentUserState;
-                //throw new ApplicationException("Current User State was not provided to this directory entry");
                 return null;
             }
             set => currentUser = value;
@@ -164,7 +163,6 @@ namespace BLAZAM.ActiveDirectory
         }
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
         private IApplicationUserState? currentUser;
-        private IADUser? _keepAliveUser;
         private bool _keepAlive;
 
         public DirectoryConnectionStatus Status
@@ -265,7 +263,7 @@ namespace BLAZAM.ActiveDirectory
         public List<DomainController> DomainControllers { get; private set; } = new();
 
 
-        private async Task KeepAlive(object? state = null)
+        private async Task KeepAlive()
         {
             _keepAlive = true;
             while (_keepAlive)
@@ -279,7 +277,7 @@ namespace BLAZAM.ActiveDirectory
                     //Throw away query used to keep connection alive
                     try
                     {
-                        _keepAliveUser = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
+                        _ = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
 
                     }
                     catch (DirectoryServicesCOMException ex)
@@ -611,20 +609,12 @@ namespace BLAZAM.ActiveDirectory
                                 {
                                     Loggers.ActiveDirectoryLogger.Information("Authenticating Active Directory credentials");
 
-
-
-                                    NetworkCredential cred = new NetworkCredential()
-                                    {
-
-                                        UserName = loginReq.Username,
-                                        SecurePassword = loginReq.Password?.ToSecureString()
-                                    };
                                     var _authenticatedContext = new DirectoryEntry("LDAP://" + ConnectionSettings.ServerAddress + ":" + ConnectionSettings.ServerPort + "/" + ConnectionSettings.ApplicationBaseDN, loginReq.Username, loginReq.Password, AuthType);
-                                    var test = _authenticatedContext.AuthenticationType;
+                                    _ = _authenticatedContext.AuthenticationType;
                                     var test2 = _authenticatedContext.Children.GetEnumerator();
                                     test2.MoveNext();
                                     var test3 = test2.Current as DirectoryEntry;
-                                    var test4 = test3?.Parent;
+                                    _ = test3?.Parent;
 
                                     _authenticatedContext.Dispose();
                                     Loggers.ActiveDirectoryLogger.Debug("Authentication success: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
@@ -693,7 +683,6 @@ namespace BLAZAM.ActiveDirectory
 
             using (connection)
             {
-                string cn = string.Empty;
                 connection.Bind();
                 connection.SessionOptions.ProtocolVersion = 3;
                 DirectoryAttributeModification isDeleteAttributeMod = new DirectoryAttributeModification();

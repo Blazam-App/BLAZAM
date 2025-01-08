@@ -19,9 +19,9 @@ namespace BLAZAM.Pages.API.v1
     [ApiController]
     [Produces("application/json")]
     [Route("api/v1/[controller]")]
-    public class ApiController : Controller
+    public class ApiController : ControllerBase
     {
-        private DateTime _startTime = DateTime.Now;
+        private readonly DateTime _startTime = DateTime.Now;
 
         /// <summary>
         /// A string dictionary that contains the base of the response.

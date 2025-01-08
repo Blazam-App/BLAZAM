@@ -145,7 +145,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 EnsureDirectoryEntry();
                 if (DirectoryEntry != null)
                 {
-                    var changedDirectoryEntry = DirectoryEntry?.Invoke(method, args);
+                    DirectoryEntry?.Invoke(method, args);
 
                     return true;
                 }
@@ -692,48 +692,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                         }
                     });
-                    //foreach (DirectoryEntry child in children)
-                    //{
-
-                    //    if (child.Properties["objectClass"].Contains("top"))
-                    //    {
-                    //        var objectClass = child.Properties["objectClass"];
-                    //        if (objectClass.Contains("computer"))
-                    //        {
-                    //            thisObject = new ADComputer();
-                    //        }
-                    //        else if (objectClass.Contains("user"))
-                    //        {
-                    //            thisObject = new ADUser();
-                    //        }
-                    //        else if (objectClass.Contains("organizationalUnit"))
-                    //        {
-                    //            thisObject = new ADOrganizationalUnit();
-                    //        }
-                    //        else if (objectClass.Contains("group"))
-                    //        {
-                    //            thisObject = new ADGroup();
-                    //        }
-                    //        else if (objectClass.Contains("printQueue"))
-                    //        {
-                    //            thisObject = new ADPrinter();
-                    //        }
-
-                    //        else if (objectClass.Contains("msFVE-RecoveryInformation"))
-                    //        {
-                    //            thisObject = new ADBitLockerRecovery();
-                    //        }
-                    //        if (thisObject != null)
-                    //        {
-                    //            thisObject.Parse(directory: Directory, directoryEntry: child);
-                    //            directoryEntries.Add(thisObject);
-
-                    //        }
-
-                    //    }
-                    //    thisObject = null;
-
-                    //}
+                   
                     directoryEntries.OrderBy(x => x.CanonicalName).OrderBy(x => x.ObjectType);
                     CachedChildren = directoryEntries;
                 }
@@ -828,8 +787,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (directoryEntry != null)
             {
                 DirectoryEntry = directoryEntry;
-
-                //DirectoryEntry.UsePropertyCache = true;
             }
 
 
@@ -960,7 +917,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         {
                             commitJob.AddStep(step);
                         }
-                        //commitJob.Steps.Add(CommitStep);
 
                     }
                 }
@@ -1089,38 +1045,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        //protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
-        //{
-        //    var list = new List<T?>();
-        //    var dcs = new List<DomainController>(Directory.DomainControllers);
-        //    foreach (var dc in dcs)
-        //    {
-        //        try
-        //        {
-        //            if (dc.IsPingable())
-        //            {
-        //                var searcher = dc.GetDirectorySearcher();
-        //                searcher.Filter = "(distinguishedName=" + this.DN + ")";
-        //                searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
-        //                searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
-        //                var searchResult = searcher.FindOne();
-        //                if (searchResult != null)
-        //                {
-        //                    var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
-
-        //                    list.Add((T)value);
-        //                }
-
-        //            }
-        //        }
-        //        catch
-        //        {
-        //            //list.Add(default(T));
-        //        }
-        //    }
-        //    return list;
-        //}
-
+       
 
         protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
         {
@@ -1150,7 +1075,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch
                 {
-                    // Consider logging the exception or handling it appropriately.
                     lock (list)
                     {
                         list.Add(default(T));
@@ -1381,9 +1305,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                var before = DirectoryEntry?.Properties[propertyName].Value;
+               
                 DirectoryEntry?.Properties[propertyName].Remove(value);
-                var after = DirectoryEntry?.Properties[propertyName].Value;
 
                 HasUnsavedChanges = true;
 

@@ -79,21 +79,12 @@ window.createGauge = async (id, maxValue) => {
             }
         }
     });
-    //console.log(dialGauges);
 };
 
 window.setGaugeValue = async (id, val, time) => {
     dialGauges[id].setValueAnimated(val, time);
 };
 
-
-//window.openFeatureRequestDialog = async () => {
-//    // Create a new Event object
-//    const event = new Event('openFeatureRequestDialog');
-
-//    // Dispatch the event on the document object
-//    document.dispatchEvent(event);
-//}
 window.customAnalyticsEvent = async (eventName, jsonData) => {
     gtag('event', eventName, {
        jsonData

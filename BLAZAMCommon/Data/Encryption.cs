@@ -47,7 +47,6 @@ namespace BLAZAM.Common.Data
         /// generated from the <see cref="KeySeedString"/> 
         /// </summary>
         public byte[] APITokenKey { get; set; }
-        private byte[] Salt { get; set; }
 
 
 
@@ -79,13 +78,12 @@ namespace BLAZAM.Common.Data
         /// Sets the local <see cref="APITokenKey"/> value to the newly generated key
         /// </remarks>
         /// <returns>The key based on the <see cref="KeySeedString"/></returns>
-        private byte[] GenerateApiKeyFromSeedString()
+        private void GenerateApiKeyFromSeedString()
         {
 
             var salt = Encoding.UTF8.GetBytes(OldSalt);
             var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 1000);
             APITokenKey = keyGenerator.GetBytes(KeySize / 8);
-            return APITokenKey;
         }
         /// <summary>
         /// Generates a key of the configured key size, seeding the
@@ -97,7 +95,7 @@ namespace BLAZAM.Common.Data
 
             var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 1000);
 
-            return keyGenerator.GetBytes(KeySize / 8); ;
+            return keyGenerator.GetBytes(KeySize / 8); 
 
 
         }
@@ -130,8 +128,6 @@ namespace BLAZAM.Common.Data
         private T? DecryptSaltedObject<T>(string? cipherText)
         {
 
-            //try
-            //{
                 var saltCipherArray = cipherText.Split(',');
                 byte[] buffer = Convert.FromBase64String(saltCipherArray[1]);
                 byte[] cipherSalt = Convert.FromBase64String(saltCipherArray[0]);
@@ -155,17 +151,6 @@ namespace BLAZAM.Common.Data
 
 
 
-            //}
-            //catch (FormatException)
-            //{
-            //    //If any issues occur while creating
-            //    //the decrypted text, return the "encrypted"
-            //    //text
-            //    if (cipherText is T tText)
-            //    {
-            //        return tText;
-            //    }
-            //}
             throw new ApplicationException("Unable to decrypt cipherText");
 
         }
@@ -181,8 +166,7 @@ namespace BLAZAM.Common.Data
         private T? DecryptSaltedObjectV2<T>(string? cipherText)
         {
 
-            //try
-            //{
+           
                 var saltCipherArray = cipherText.Split(',');
                 byte[] buffer = Convert.FromBase64String(saltCipherArray[1]);
                 byte[] cipherSalt = Convert.FromBase64String(saltCipherArray[0]);
@@ -206,17 +190,7 @@ namespace BLAZAM.Common.Data
 
 
 
-            //}
-            //catch (FormatException)
-            //{
-            //    //If any issues occur while creating
-            //    //the decrypted text, return the "encrypted"
-            //    //text
-            //    if (cipherText is T tText)
-            //    {
-            //        return tText;
-            //    }
-            //}
+          
             throw new ApplicationException("Unable to decrypt cipherText");
 
         }

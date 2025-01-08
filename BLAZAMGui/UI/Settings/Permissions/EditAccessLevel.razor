@@ -7,8 +7,8 @@
     @if (!Self)
     {
         <MudTextField Disabled=@(WorkingModel.Id==1)
-        Label="@AppLocalization["Name"]"
-        @bind-Value=WorkingModel.Name />
+                      Label="@AppLocalization["Name"]"
+                      @bind-Value=WorkingModel.Name />
     }
     @if (!Self)
     {
@@ -35,7 +35,7 @@
                         var name = Enum.GetName(typeof(ActiveDirectoryObjectType), adObjectType);
 
                         <MudButton Disabled=buttonDisabled
-                        OnClick="()=>AddObjectTypeAccess(adObjectType)">
+                                   OnClick="()=>AddObjectTypeAccess(adObjectType)">
                             @AppLocalization[name]
                         </MudButton>
 
@@ -60,22 +60,22 @@
                 @if (!Self)
                 {
                     <MudSelect Disabled=@(WorkingModel.Id==1)
-                    T="int"
-                    ValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)"
-                    Value="objectMap.ObjectAccessLevelId">
+                               T="int"
+                               ValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)"
+                               Value="objectMap.ObjectAccessLevelId">
 
                         @foreach (ObjectAccessLevel levelValue in ObjectAccessLevels.Levels)
                         {
                             <MudSelectItem Disabled=@(WorkingModel.Id==1)
-                            Value="levelValue.Id">@AppLocalization[levelValue.Name]</MudSelectItem>
+                                           Value="levelValue.Id">@AppLocalization[levelValue.Name]</MudSelectItem>
 
                         }
                     </MudSelect>
 
 
                     <AppCloseButton Disabled=@(WorkingModel.Id==1)
-                    Tooltip=@AppLocalization["Remove"]
-                    OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
+                                    Tooltip=@AppLocalization["Remove"]
+                                    OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
                 }
             </MudCardHeader>
             <MudCardContent>
@@ -83,14 +83,14 @@
 
 
                 @if (objectMap.ObjectType == ActiveDirectoryObjectType.User
-             && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id
-             && !Self)
+               && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id
+               && !Self)
                 {
                     <MudSwitch T=bool
-                    UncheckedColor="Color.Error"
-                    Color="Color.Success"
-                    Label="@AppLocalization["Allow Disabled User Access"]"
-                    @bind-Value=objectMap.AllowDisabled />
+                               UncheckedColor="Color.Error"
+                               Color="Color.Success"
+                               Label="@AppLocalization["Allow Disabled User Access"]"
+                               @bind-Value=objectMap.AllowDisabled />
                 }
 
 
@@ -103,15 +103,15 @@
 
 
                     <MudDataGrid Items="@WorkingModel.ActionMap.Where(am=>am.ObjectType==objectMap.ObjectType)"
-                    Elevation="0">
+                                 Elevation="0">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">
                                 @AppLocalization[name] @AppLocalization["Actions"]
                             </MudText>
                             <MudSpacer />
                             <MudMenu MaxHeight="200"
-                            Color="Color.Success"
-                            Icon="@Icons.Material.Outlined.Add">
+                                     Color="Color.Success"
+                                     Icon="@Icons.Material.Outlined.Add">
                                 @foreach (var action in actions.OrderBy(f => f.Name))
                                 {
                                     if (action.IsActionAppropriateForObject(objectMap.ObjectType))
@@ -132,7 +132,7 @@
                         </ToolBarContent>
                         <Columns>
                             <PropertyColumn Property="x => x.ObjectAction.Name"
-                            Title=@AppLocalization["Action"] />
+                                            Title=@AppLocalization["Action"] />
                             <TemplateColumn Title=@AppLocalization["Access"]>
                                 <CellTemplate>
                                     <MudRadioGroup T="bool" @bind-Value=context.Item.AllowOrDeny>
@@ -145,8 +145,8 @@
                             <TemplateColumn Title=@AppLocalization["Remove"]>
                                 <CellTemplate>
                                     <MudIconButton Icon="@Icons.Material.Filled.Close"
-                                    Color="Color.Error"
-                                    OnClick="@(()=>{RemoveActionAccess(context.Item);})" />
+                                                   Color="Color.Error"
+                                                   OnClick="@(()=>{RemoveActionAccess(context.Item);})" />
                                 </CellTemplate>
                             </TemplateColumn>
                         </Columns>
@@ -156,16 +156,16 @@
 
 
                     <MudDataGrid T="FieldAccessMapping"
-                    Elevation="0"
-                    Items="@WorkingModel.FieldMap.Where(am=>am.ObjectType==objectMap.ObjectType)">
+                                 Elevation="0"
+                                 Items="@WorkingModel.FieldMap.Where(am=>am.ObjectType==objectMap.ObjectType)">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">
                                 @AppLocalization[name] @AppLocalization["Fields"]
                             </MudText>
                             <MudSpacer />
                             <MudMenu MaxHeight="200"
-                            Color="Color.Success"
-                            Icon="@Icons.Material.Outlined.Add">
+                                     Color="Color.Success"
+                                     Icon="@Icons.Material.Outlined.Add">
                                 @foreach (var field in fields.OrderBy(f => f.DisplayName))
                                 {
 
@@ -228,7 +228,7 @@
                             <TemplateColumn Title=@AppLocalization["Remove"]>
                                 <CellTemplate>
                                     <AppCloseButton Tooltip=@AppLocalization["Remove"]
-                                    OnClick="()=>RemoveFieldAccess(context.Item)" />
+                                                    OnClick="()=>RemoveFieldAccess(context.Item)" />
 
                                 </CellTemplate>
                             </TemplateColumn>
@@ -256,18 +256,18 @@
         buttonLabel = AppLocalization["Update Access Level"];
 }
 <MudButton Disabled=@(SaveDisabled || WorkingModel.Id==1)
-Color=Color.Success
-OnClick="SaveAccessLevel">@buttonLabel</MudButton>
+           Color=Color.Success
+           OnClick="SaveAccessLevel">@buttonLabel</MudButton>
 @if (WorkingModel.Id != 0 && !Self)
 {
     <MudButton Disabled=@(WorkingModel.Id==1)
-    Color=Color.Error
-    OnClick="@(()=>{_deleteModal.ShowAsync();})">@AppLocalization["Delete Access Level"]</MudButton>
+               Color=Color.Error
+               OnClick="@(()=>{_deleteModal.ShowAsync();})">@AppLocalization["Delete Access Level"]</MudButton>
     <AppModal Width="MaxWidth.Medium"
-    @ref=_deleteModal
-    Title="@AppLocalization["Confirm deletion"]">
+              @ref=_deleteModal
+              Title="@AppLocalization["Confirm deletion"]">
         <DeleteAccessLevelModalContent AccessLevel="Model"
-        OnConfirm="@(()=>{DeleteAccessLevel();})" />
+                                       OnConfirm="@(()=>{DeleteAccessLevel();})" />
     </AppModal>
 }
 
@@ -301,7 +301,7 @@ OnClick="SaveAccessLevel">@buttonLabel</MudButton>
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        LoadingData=true;
+        LoadingData = true;
         Context = await DbFactory.CreateDbContextAsync();
 
         fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
@@ -447,7 +447,8 @@ OnClick="SaveAccessLevel">@buttonLabel</MudButton>
     }
     async Task DeleteAccessLevel()
     {
-        await  MessageService.Confirm(AppLocalization["Are you sure you want to delete this access level?"]){
+        if (await MessageService.Confirm(AppLocalization["Are you sure you want to delete this access level?"]))
+        {
             WorkingModel.DeletedAt = DateTime.UtcNow;
             await Context.SaveChangesAsync();
             SnackBarService.Success(WorkingModel.Name + " has been deleted");
