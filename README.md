@@ -1,4 +1,14 @@
 # BLAZAM
+[![Release Date](https://img.shields.io/github/release-date-pre/Blazam-App/BLAZAM)](https://img.shields.io/github/release-date-pre/Blazam-App/BLAZAM)
+[![Build](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-stable.yml)](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-stable.yml)
+[![Last Commit](https://img.shields.io/github/last-commit/Blazam-App/Blazam/v1-Stable)](https://img.shields.io/github/last-commit/Blazam-App/Blazam/v1-Stable)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+
 Proudly serving
 
 [![image](https://github.com/user-attachments/assets/86820ef8-15e6-4f81-97c5-bdfe6e8acc37)](https://logs.blazam.org/#/dashboards?dashboardId=dashboard-14&range=90d&group=1d&apiKey=EpKqcm4TkeEzMvIAxtnc&theme=dark-theme)
