@@ -7,7 +7,7 @@ namespace BLAZAM.ActiveDirectory
     /// <summary>
     /// An <see cref="IActiveDirectoryContext"/> intended for each web user connection
     /// </summary>
-    public class ScopedActiveDirectoryContext: IDisposable
+    public class ScopedActiveDirectoryContext : IDisposable
     {
         private IActiveDirectoryContextFactory _contextFactory;
 

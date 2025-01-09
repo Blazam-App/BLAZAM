@@ -178,11 +178,7 @@
     string DelegateToString(PermissionDelegate deleg)
     {
         return deleg?.DelegateName;
-        if (deleg == null) return AppLocalization["Unknown delegate"];
-        if (deleg.DelegateSid != null)
-            return Directory.FindEntryBySID(deleg?.DelegateSid)?.CanonicalName ?? deleg.DelegateSid.ToSidString();
-        else
-            return "Loading...";
+       
     }
     new async Task Save()
     {

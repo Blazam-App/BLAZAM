@@ -16,7 +16,7 @@ namespace BLAZAM.Services.Audit
         protected IApplicationUserState? CurrentUser { get; set; }
 
 
-        public CommonAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory,jSRuntime)
+        public CommonAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime)
         {
             UserStateService = userStateService;
             CurrentUser = UserStateService.CurrentUserState;

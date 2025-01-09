@@ -58,7 +58,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-      
+
         public override IJob CommitChanges(IJob? dcr = null)
         {
             if (MembersToAdd.Count > 0)

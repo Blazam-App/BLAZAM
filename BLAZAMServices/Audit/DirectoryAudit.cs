@@ -19,7 +19,7 @@ namespace BLAZAM.Services.Audit
         {
             throw new NotImplementedException();
         }
-        public virtual async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
+        public virtual Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
         {
             throw new NotImplementedException();
 

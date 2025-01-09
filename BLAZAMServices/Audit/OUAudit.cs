@@ -26,7 +26,7 @@ namespace BLAZAM.Services.Audit
             Analytics.ObjectDeleted(ActiveDirectoryObjectType.OU);
             return await Log(t => t.DirectoryEntryAuditLogs,
              AuditActions.OU_Deleted, deletedEntry);
-            
+
         }
 
         public override async Task<bool> Searched(IDirectoryEntryAdapter searchedOU)

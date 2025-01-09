@@ -13,7 +13,7 @@ namespace BLAZAM.Common.Data
         private const string OldSalt = "BLAZAM_SALT";
         public static Encryption Instance;
 
-       
+
 
         private static byte[] GenerateSalt(int maximumSaltLength = 32)
         {
@@ -95,7 +95,7 @@ namespace BLAZAM.Common.Data
 
             var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 1000);
 
-            return keyGenerator.GetBytes(KeySize / 8); 
+            return keyGenerator.GetBytes(KeySize / 8);
 
 
         }
@@ -128,26 +128,26 @@ namespace BLAZAM.Common.Data
         private T? DecryptSaltedObject<T>(string? cipherText)
         {
 
-                var saltCipherArray = cipherText.Split(',');
-                byte[] buffer = Convert.FromBase64String(saltCipherArray[1]);
-                byte[] cipherSalt = Convert.FromBase64String(saltCipherArray[0]);
-                var key = GenerateKeyFromSeedString(cipherSalt);
+            var saltCipherArray = cipherText.Split(',');
+            byte[] buffer = Convert.FromBase64String(saltCipherArray[1]);
+            byte[] cipherSalt = Convert.FromBase64String(saltCipherArray[0]);
+            var key = GenerateKeyFromSeedString(cipherSalt);
 
 
-                byte[] iv = buffer.Take(16).ToArray<byte>();
-                buffer = buffer.Skip(16).ToArray<byte>();
-                using Aes aes = Aes.Create();
-                aes.Key = key;
-                aes.IV = iv;
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                using MemoryStream memoryStream = new MemoryStream(buffer);
+            byte[] iv = buffer.Take(16).ToArray<byte>();
+            buffer = buffer.Skip(16).ToArray<byte>();
+            using Aes aes = Aes.Create();
+            aes.Key = key;
+            aes.IV = iv;
+            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using MemoryStream memoryStream = new MemoryStream(buffer);
 
-                using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+            using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
 
-                using StreamReader streamReader = new StreamReader(cryptoStream);
+            using StreamReader streamReader = new StreamReader(cryptoStream);
 
-                var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
-                return decrypted;
+            var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+            return decrypted;
 
 
 
@@ -166,31 +166,31 @@ namespace BLAZAM.Common.Data
         private T? DecryptSaltedObjectV2<T>(string? cipherText)
         {
 
-           
-                var saltCipherArray = cipherText.Split(',');
-                byte[] buffer = Convert.FromBase64String(saltCipherArray[1]);
-                byte[] cipherSalt = Convert.FromBase64String(saltCipherArray[0]);
-                var keyPackage = GenerateV2KeyFromSeedString(cipherSalt);
+
+            var saltCipherArray = cipherText.Split(',');
+            byte[] buffer = Convert.FromBase64String(saltCipherArray[1]);
+            byte[] cipherSalt = Convert.FromBase64String(saltCipherArray[0]);
+            var keyPackage = GenerateV2KeyFromSeedString(cipherSalt);
 
 
-                byte[] iv = buffer.Take(16).ToArray<byte>();
-                buffer = buffer.Skip(16).ToArray<byte>();
-                using Aes aes = Aes.Create();
-                aes.Key = keyPackage.Key;
-                aes.IV = iv;
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                using MemoryStream memoryStream = new MemoryStream(buffer);
+            byte[] iv = buffer.Take(16).ToArray<byte>();
+            buffer = buffer.Skip(16).ToArray<byte>();
+            using Aes aes = Aes.Create();
+            aes.Key = keyPackage.Key;
+            aes.IV = iv;
+            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using MemoryStream memoryStream = new MemoryStream(buffer);
 
-                using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+            using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
 
-                using StreamReader streamReader = new StreamReader(cryptoStream);
+            using StreamReader streamReader = new StreamReader(cryptoStream);
 
-                var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
-                return decrypted;
+            var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+            return decrypted;
 
 
 
-          
+
             throw new ApplicationException("Unable to decrypt cipherText");
 
         }
@@ -248,27 +248,27 @@ namespace BLAZAM.Common.Data
 
         private T? DecryptOldUnsaltedObject<T>(string? cipherText)
         {
-            
-                byte[] buffer = Convert.FromBase64String(cipherText);
 
-                byte[] iv = buffer.Take(16).ToArray<byte>();
-                buffer = buffer.Skip(16).ToArray<byte>();
-                using Aes aes = Aes.Create();
-                aes.Key = APITokenKey;
-                aes.IV = iv;
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                using MemoryStream memoryStream = new MemoryStream(buffer);
+            byte[] buffer = Convert.FromBase64String(cipherText);
 
-                using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+            byte[] iv = buffer.Take(16).ToArray<byte>();
+            buffer = buffer.Skip(16).ToArray<byte>();
+            using Aes aes = Aes.Create();
+            aes.Key = APITokenKey;
+            aes.IV = iv;
+            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using MemoryStream memoryStream = new MemoryStream(buffer);
 
-                using StreamReader streamReader = new StreamReader(cryptoStream);
+            using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
 
-                return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+            using StreamReader streamReader = new StreamReader(cryptoStream);
 
-
+            return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
 
 
-           
+
+
+
         }
 
         /// <summary>

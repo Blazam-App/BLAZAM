@@ -36,7 +36,7 @@ namespace BLAZAM.ActiveDirectory.Data
 
         public LogonHours(byte[]? rawData) : this()
         {
-          
+
             if (rawData != null)
             {
                 DecodeLogonHours(rawData);

@@ -117,7 +117,7 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<EmailSettings> EmailSettings { get; set; }
         public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
         public virtual DbSet<WebHookSubscription> WebHookSubscriptions { get; set; }
-        public virtual DbSet<WebHookAttempt> WebHookAttempts{ get; set; }
+        public virtual DbSet<WebHookAttempt> WebHookAttempts { get; set; }
 
 
 

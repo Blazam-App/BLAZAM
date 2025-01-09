@@ -133,7 +133,7 @@ namespace BLAZAM.Gui.UI
 
         }
 
-               protected void Refresh(bool forceReload = false)
+        protected void Refresh(bool forceReload = false)
         {
             Nav.NavigateTo(Nav.Uri, forceReload);
         }
@@ -142,7 +142,7 @@ namespace BLAZAM.Gui.UI
 
             await InvokeAsync(StateHasChanged);
         }
-     
+
 
         public async Task CopyToClipboard(string? text)
         {

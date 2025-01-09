@@ -51,6 +51,6 @@ namespace BLAZAM.Helpers
             });
             return newUser;
         }
-        
+
     }
 }

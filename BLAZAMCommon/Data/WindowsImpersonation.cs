@@ -87,7 +87,7 @@ namespace BLAZAM.Common.Data
 
                 if (impersonatedToken == null) throw new ApplicationException("The impersonation user is invalid. Check settings.");
 
-                
+
                 // Check the identity.
                 Loggers.ActiveDirectoryLogger.Information("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
 

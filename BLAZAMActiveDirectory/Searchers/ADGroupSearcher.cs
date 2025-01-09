@@ -92,7 +92,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public List<IGroupableDirectoryAdapter>? GetAllNestedMembers(IADGroup group)
         {
             string UserSearchFieldsQuery = "(&(memberOf:1.2.840.113556.1.4.1941:=" + group.DN + "))";
-            return SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User).Cast<IGroupableDirectoryAdapter>().ToList();
+            return SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User)?.Cast<IGroupableDirectoryAdapter>().ToList();
 
         }
 
@@ -140,10 +140,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                     }.Search<ADGroup, IADGroup>().FirstOrDefault();
 
-                 
+
                     if (group != null)
                     {
-                      
+
                         foundGroups.Add(group);
                     }
                     else
@@ -159,7 +159,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         }
         public List<IADUser> GetDirectUserMembers(IADGroup group, bool ignoreDisabledUsers = true)
         {
-          
+
             string UserSearchFieldsQuery = "(memberOf=" + group.DN + ")";
             return SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User, 500, ignoreDisabledUsers).Cast<IADUser>().ToList();
 
@@ -167,7 +167,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         }
         public List<IADGroup> GetGroupMembers(IADGroup group)
         {
-        
+
             string UserSearchFieldsQuery = "(memberOf=" + group.DN + ")";
             return SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.Group, 500).Cast<IADGroup>().ToList();
 

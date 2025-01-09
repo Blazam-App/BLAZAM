@@ -285,7 +285,7 @@ namespace BLAZAM.Helpers
                 long? fileTime = value?.ToUniversalTime().ToFileTimeUtc();
                 if (fileTime == null) return null;
                 return fileTime;
-              
+
             }
             catch
             {

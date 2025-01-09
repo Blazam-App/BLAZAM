@@ -58,7 +58,7 @@
 
         foreach (var printer in selectedPrinters.Where(p => p.ADPrinter == null))
         {
-            IJob registerJob = new Job(AppLocalization["Register Printers"],CurrentUser.State.AuditUsername);
+            IJob registerJob = new Job(AppLocalization["Register Printers"], CurrentUser.State.AuditUsername);
             var newPrinter = destinationOU.CreatePrinter(printer);
             registerJob = newPrinter.CommitChanges(registerJob);
             if (registerJob.FailedSteps.Count == 0)

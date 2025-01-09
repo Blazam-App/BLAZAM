@@ -63,17 +63,17 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                     var firstSet = true;
                     if (_selectedEntry != null)
                         firstSet = false;
-                        
+
                     var cache = _selectedEntry;
 
                     _selectedEntry = value;
                     if (cache == null && RootOU.Count > 0 && value == RootOU.First()) return;
 
-                    
-                    InvokeAsync(() => { SelectedEntryChanged.InvokeAsync(value); });
-            
 
-                    
+                    InvokeAsync(() => { SelectedEntryChanged.InvokeAsync(value); });
+
+
+
                     //if (RootOU.Count > 0 && firstSet)
                     //    OpenToSelected();
 
@@ -81,7 +81,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             }
 
         }
-        protected Color GetIconColor(TreeItemData<IDirectoryEntryAdapter>context)
+        protected Color GetIconColor(TreeItemData<IDirectoryEntryAdapter> context)
         {
             return context.Selected == true ? Color.Primary : Color.Default;
         }
@@ -178,10 +178,10 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                     {
 
                         openThis.Expanded = true;
-                   
+
                         while (openThis != null)
                         {
-                            
+
                             openThis.Children = GetChildren(openThis);
                             var child = openThis.Children.Where(
                                 c => SelectedEntry.DN.Contains(c.Value.DN)
@@ -189,7 +189,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                                                             ).FirstOrDefault();
                             if (child != null)
                             {
-                                
+
                                 child.Expanded = true;
 
                                 openThis = child;

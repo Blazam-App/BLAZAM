@@ -88,12 +88,12 @@ namespace BLAZAM.Services.Background
                 var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
                 var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
 
-                if (effectiveInAppSubscriptions!=null && effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                if (effectiveInAppSubscriptions != null && effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                 {
                     await _notificationPublisher.PublishNotification(user, notification);
                 }
 
-                if (effectiveEmailSubscriptions!=null && effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                if (effectiveEmailSubscriptions != null && effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                 {
                     if (emailMessage != null)
                     {
@@ -123,14 +123,14 @@ namespace BLAZAM.Services.Background
                 var subscribedWebhooks = webhooks.Where(w => w.NotificationTypes.Any(nt => nt.NotificationType == notificationType));
                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                 {
-                    foreach(var webhook in subscribedWebhooks)
+                    foreach (var webhook in subscribedWebhooks)
                     {
                         _webHookPublisher.PublishWebhook(webhook, source, notificationType, actor, target);
                     }
                 }
                 else
                 {
-                    Parallel.ForEach(subscribedWebhooks, async webhook =>
+                    Parallel.ForEach(subscribedWebhooks, webhook =>
                     {
                         _webHookPublisher.PublishWebhook(webhook, source, notificationType, actor, target);
                     });

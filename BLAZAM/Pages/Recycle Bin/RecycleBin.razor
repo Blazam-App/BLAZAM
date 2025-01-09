@@ -95,10 +95,10 @@
     {
         if (await MessageService.Confirm("Are you sure you want to restore the selected entries", "Restore?"))
         {
-            IJob batchRestore = new Job(AppLocalization["Restore"]);
+            var batchRestore = new Job(AppLocalization["Restore"]);
             foreach (var entry in selectedEntries)
             {
-                IJobStep restoreEntryStep = new JobStep(AppLocalization["Restore: "] + entry.CanonicalName, (step) =>
+                var restoreEntryStep = new JobStep(AppLocalization["Restore: "] + entry.CanonicalName, (step) =>
                 {
                     if (RestoreEntry(entry))
                         return true;

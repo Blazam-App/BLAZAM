@@ -160,7 +160,7 @@ namespace BLAZAM.Services.Background
                 image.ContentId = MimeUtils.GenerateMessageId();
                 //Replace logo placeholder in template with referenced img tag
                 body = body.Replace("{{ApplicationLogo}}", "<img src=\"cid:" + image.ContentId + "\">");
-                body = body.Replace("{{TrackingImgLink}}", "<img src=\"/background/acknowlegeEmail/" + email.MessageId+ "\">");
+                body = body.Replace("{{TrackingImgLink}}", "<img src=\"/background/acknowlegeEmail/" + email.MessageId + "\">");
                 body = PrepareHTMLForEmail(body);
                 builder.HtmlBody = body;
                 //Compile body

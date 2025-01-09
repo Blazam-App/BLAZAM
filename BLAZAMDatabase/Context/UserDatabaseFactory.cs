@@ -27,7 +27,7 @@ namespace BLAZAM.Database.Context
 
         public IDatabaseContext CreateDbContext()
         {
-            var ctx= _appDatabaseFactory.CreateDbContext();
+            var ctx = _appDatabaseFactory.CreateDbContext();
             _userContexts.Add(ctx);
 
             return ctx;
@@ -43,7 +43,7 @@ namespace BLAZAM.Database.Context
 
         public void Dispose()
         {
-            foreach(var ctx in _userContexts)
+            foreach (var ctx in _userContexts)
             {
                 ctx.Dispose();
             }

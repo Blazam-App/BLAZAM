@@ -123,7 +123,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }.Search<ADUser, IADUser>();
             return results.OrderByDescending(u => u.PasswordLastSet).ToList();
 
-        
+
         }
 
         public async Task<List<IADUser>> FindChangedUsersAsync(bool? ignoreDisabledUsers = true)
@@ -141,7 +141,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             var tstamp = threeMonthsAgo.ToString("yyyyMMddHHmmss.fZ");
             string UserSearchFieldsQuery = "(whenChanged>=" + tstamp + ")";
 
-            return SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User, 1000, ignoreDisabledUsers).Cast<IADUser>().OrderByDescending(u => u.LastChanged).ToList();
+            return SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User, 1000, ignoreDisabledUsers)?.Cast<IADUser>().OrderByDescending(u => u.LastChanged).ToList();
 
         }
         public IADUser? FindUserBySID(string? sid)

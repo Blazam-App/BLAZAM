@@ -78,7 +78,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         times.Add(dt);
                     }
-                    else { 
+                    else
+                    {
                         times.Add(c.AdsValueToDateTime());
                     }
                 }

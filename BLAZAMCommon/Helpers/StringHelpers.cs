@@ -117,12 +117,12 @@ namespace BLAZAM.Helpers
                 .ToList();
             ouComponents.Reverse();
             return "/" + string.Join("/", ouComponents);
-        } 
-     /// <summary>
-     /// Converts this FQDN into it's equivalent Distinguished Name
-     /// </summary>
-     /// <param name="fqdn"></param>
-     /// <returns></returns>
+        }
+        /// <summary>
+        /// Converts this FQDN into it's equivalent Distinguished Name
+        /// </summary>
+        /// <param name="fqdn"></param>
+        /// <returns></returns>
         public static string FqdnToDN(this string fqdn)
         {
             // Split the FQDN into its domain components

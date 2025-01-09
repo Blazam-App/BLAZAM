@@ -30,7 +30,8 @@ namespace BLAZAM.Database.Context
             try
             {
                 return await base.SaveChangesAsync(cancellationToken);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return -1;
             }

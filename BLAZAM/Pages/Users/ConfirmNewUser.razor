@@ -271,7 +271,7 @@ OnClick="Print">@AppLocalization["Print"]</MudButton>
             disableCreateUserButton = true;
             await InvokeAsync(StateHasChanged);
 
-            IJob createUserJob = new Job(AppLocalization["Create User"]);
+            var createUserJob = new Job(AppLocalization["Create User"]);
             createUserJob.StopOnFailedStep = true;
             createUserJob.ShowJobDetailsDialog(MessageService);
 
@@ -310,7 +310,7 @@ OnClick="Print">@AppLocalization["Print"]</MudButton>
                         }
                         else
                         {
-                            await SendWelcomeEmail(User.Email);
+                            await SendWelcomeEmail(User.Email!);
                         }
                     }
                 }

@@ -35,7 +35,7 @@ namespace BLAZAM.Services.Background
 
         //private AuditLogger Audit;
 
-        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo):base(factory)
+        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo) : base(factory)
         {
             _applicationInfo = applicationInfo;
             this.factory = factory;
@@ -187,8 +187,8 @@ namespace BLAZAM.Services.Background
         protected override async void Execute(object? state)
         {
             using var context = factory.CreateDbContext();
-            IJob updateCheckJob = new Job("Check for Update");
-            IJobStep checkForUpdateStep = new JobStep("Execute", async (step) =>
+            Job updateCheckJob = new Job("Check for Update");
+            JobStep checkForUpdateStep = new JobStep("Execute", async (step) =>
             {
                 try
                 {
@@ -246,8 +246,8 @@ namespace BLAZAM.Services.Background
                 bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall;
                 if (ScheduledUpdate != updateToInstall)
                 {
-                    IJob scheduleUpdatteJob = new Job("Schedule Update");
-                    IJobStep scheduleStep = new JobStep("Execute", async (step) =>
+                    Job scheduleUpdatteJob = new Job("Schedule Update");
+                    JobStep scheduleStep = new JobStep("Execute", (step) =>
                     {
                         try
                         {

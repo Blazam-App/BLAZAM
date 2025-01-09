@@ -45,7 +45,7 @@ namespace BLAZAM.Pages.API.v1
             search.GeneralSearchTerm = query;
             var data = search.Search();
             var data2 = data.Where(de => de.CanRead).ToList();
-            var data3 = data2.Select(de => de.CanonicalName).ToList(); 
+            var data3 = data2.Select(de => de.CanonicalName).ToList();
             return FormatData(data3);
         }
     }

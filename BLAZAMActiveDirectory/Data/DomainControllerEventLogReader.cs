@@ -71,10 +71,11 @@ namespace BLAZAM.ActiveDirectory.Data
         public List<EventLogEntry> GetUserLogonEvents(string userName, DateTime startTime, DateTime endTime)
         {
             var events = new List<EventLogEntry>();
-            var dcNames = _directory.DomainControllers.Select(controller=>controller.Name).ToList();
+            var dcNames = _directory.DomainControllers.Select(controller => controller.Name).ToList();
             foreach (var domainController in dcNames)
             {
-                _directory.Impersonation.Run(() => {
+                _directory.Impersonation.Run(() =>
+                {
                     try
                     {
                         var eventLog = new EventLog("Security", domainController);
@@ -98,7 +99,7 @@ namespace BLAZAM.ActiveDirectory.Data
                         return false;
                     }
                 });
-                
+
             }
 
             return events;

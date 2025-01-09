@@ -69,22 +69,22 @@
 
         MemoryStream memoryStream = new MemoryStream();
 
-        IJob exportJob = new Job(AppLocalization["Export Database"], CurrentUser.Username);
-        IJobStep exportData = new JobStep(AppLocalization["Export Data"], (step) =>
-    {
-        Context.Export("export");
-        return true;
+        Job exportJob = new Job(AppLocalization["Export Database"], CurrentUser.Username);
+        JobStep exportData = new JobStep(AppLocalization["Export Data"], (step) =>
+            {
+                Context.Export("export");
+                return true;
 
-    });
-        IJobStep packageData = new JobStep(AppLocalization["Prepare Files"], (step) =>
-    {
-        ZipArchive exportZip = new ZipArchive(memoryStream, ZipArchiveMode.Create);
-        var exportDir = new SystemDirectory("export");
-        exportZip.AddToZip(exportDir, exportDir.FullPath);
-        memoryStream.SaveTo(new SystemFile("export/" + DatabaseCache.ApplicationSettings.AppName + "-" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".zip"));
-        return true;
+            });
+        JobStep packageData = new JobStep(AppLocalization["Prepare Files"], (step) =>
+            {
+                ZipArchive exportZip = new ZipArchive(memoryStream, ZipArchiveMode.Create);
+                var exportDir = new SystemDirectory("export");
+                exportZip.AddToZip(exportDir, exportDir.FullPath);
+                memoryStream.SaveTo(new SystemFile("export/" + DatabaseCache.ApplicationSettings.AppName + "-" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".zip"));
+                return true;
 
-    });
+            });
         exportJob.AddStep(exportData);
         exportJob.AddStep(packageData);
         exportJob.ShowJobDetailsDialog(MessageService);

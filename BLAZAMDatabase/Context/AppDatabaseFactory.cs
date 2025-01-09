@@ -56,9 +56,9 @@ namespace BLAZAM.Database.Context
         /// <exception cref="NotImplementedException"></exception>
         private void SeedData()
         {
-            
-                SetupDenyAll();
-           
+
+            SetupDenyAll();
+
 
 
         }

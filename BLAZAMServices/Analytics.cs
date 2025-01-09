@@ -36,12 +36,12 @@ namespace BLAZAM.Services
 
         public async void ObjectMoved(ActiveDirectoryObjectType objectType)
         {
-            await PostCustomEvent("object_moved",objectType.ToString());
+            await PostCustomEvent("object_moved", objectType.ToString());
         }
 
         public async void ObjectCreated(ActiveDirectoryObjectType objectType)
         {
-            await PostCustomEvent("object_created",objectType.ToString());
+            await PostCustomEvent("object_created", objectType.ToString());
         }
 
         public async void ObjectDeleted(ActiveDirectoryObjectType objectType)
@@ -94,7 +94,7 @@ namespace BLAZAM.Services
             await PostCustomEvent("object_password_reset", objectType.ToString());
         }
 
-        public async Task PostCustomEvent(string eventName,object? data=null)
+        public async Task PostCustomEvent(string eventName, object? data = null)
         {
             try
             {

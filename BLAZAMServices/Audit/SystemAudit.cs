@@ -10,7 +10,7 @@ namespace BLAZAM.Services.Audit
     public class SystemAudit : BaseAudit
     {
 
-        public SystemAudit(IAppDatabaseFactory factory,IJSRuntime jSRuntime) : base(factory,jSRuntime)
+        public SystemAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime) : base(factory, jSRuntime)
         {
         }
         public async Task<bool> LogMessage(string message)
@@ -33,10 +33,10 @@ namespace BLAZAM.Services.Audit
 
 
         private async Task<bool> Log(string action,
-            
+
             string? beforeAction = null,
-            string? afterAction = null, 
-            string username= "System")
+            string? afterAction = null,
+            string username = "System")
         {
             try
             {

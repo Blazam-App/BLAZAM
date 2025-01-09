@@ -1,25 +1,25 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
-using BLAZAM.Pages.API.Data;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore;
-using AngleSharp.Html.Construction;
+﻿using AngleSharp.Html.Construction;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using Octokit;
-using BLAZAM.EmailMessage.Email.Notifications;
-using MudBlazor;
-using System.Security;
-using Microsoft.Extensions.Localization;
-using BLAZAM.Localization;
+using BLAZAM.Common.Data.Database;
+using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Templates;
+using BLAZAM.EmailMessage.Email.Notifications;
 using BLAZAM.Jobs;
+using BLAZAM.Localization;
+using BLAZAM.Pages.API.Data;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+using MudBlazor;
+using Newtonsoft.Json;
+using Octokit;
+using System.Security;
 using System.Text.Json;
-using BLAZAM.Common.Data.Database;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -128,7 +128,7 @@ namespace BLAZAM.Pages.API.v1
             AssignGroups(newUserDetails, newUser);
 
             //Prepare commit job
-            IJob createUserJob = new Job(AppLocalization["Create User"]);
+            Job createUserJob = new Job(AppLocalization["Create User"]);
 
             createUserJob.StopOnFailedStep = true;
 
@@ -168,12 +168,12 @@ namespace BLAZAM.Pages.API.v1
                 if (template.EffectiveAskForAlternateEmail == true || newUser.Email.IsNullOrEmpty())
                 {
 
-                    await SendWelcomeEmail(newUser, newUserDetails.SendWelcomeEmailTo, password);
+                    await SendWelcomeEmail(newUser, newUserDetails.SendWelcomeEmailTo!, password);
 
                 }
                 else
                 {
-                    await SendWelcomeEmail(newUser, newUser.Email, password);
+                    await SendWelcomeEmail(newUser, newUser.Email!, password);
                 }
             }
 
@@ -223,13 +223,13 @@ namespace BLAZAM.Pages.API.v1
         private static bool ValidateInput(NewUserDetails newUserDetails, DirectoryTemplate? template)
         {
             //Check if the request has the required fields for this template
-            if (template?.HasRequiredFields()==true)
+            if (template?.HasRequiredFields() == true)
             {
                 var requiredFields = template.EffectiveFieldValues.Where(fv => fv.Required).ToList();
                 foreach (var field in requiredFields)
                 {
                     //If any are missing return an error with explanation
-                    if (!newUserDetails.Fields?.Any(f => f.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase))==true)
+                    if (!newUserDetails.Fields?.Any(f => f.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase)) == true)
                     {
                         throw new BadHttpRequestException(field.FieldName + " is a required field");
                     }
@@ -255,9 +255,7 @@ namespace BLAZAM.Pages.API.v1
 
         }
 
-
-
-        async Task SendWelcomeEmail(IADUser user, string to, SecureString password)
+        private async Task SendWelcomeEmail(IADUser user, string to, SecureString password)
         {
             try
             {

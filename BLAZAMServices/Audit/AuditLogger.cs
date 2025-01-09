@@ -22,9 +22,9 @@ namespace BLAZAM.Services.Audit
         public BitLockerAudit BitLocker;
         public EmailAudit Email;
 
-        public AuditLogger(IAppDatabaseFactory factory, IApplicationUserStateService userStateService,IJSRuntime jSRuntime)
+        public AuditLogger(IAppDatabaseFactory factory, IApplicationUserStateService userStateService, IJSRuntime jSRuntime)
         {
-            System = new SystemAudit(factory,jSRuntime);
+            System = new SystemAudit(factory, jSRuntime);
             User = new UserAudit(factory, jSRuntime, userStateService);
             Group = new GroupAudit(factory, jSRuntime, userStateService);
             Computer = new ComputerAudit(factory, jSRuntime, userStateService);

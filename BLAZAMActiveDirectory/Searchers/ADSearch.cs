@@ -44,9 +44,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
             set
             {
                 // restrict to letters only
-               
-                    _generalSearchTerm = EscapeLdapSearchFilter(value);
-                
+
+                _generalSearchTerm = EscapeLdapSearchFilter(value);
+
             }
         }
 

@@ -141,7 +141,7 @@ namespace BLAZAM.Services.Background
 
                     return new();
                 }
-              return new List<NewsItem>();
+                return new List<NewsItem>();
 
             }
             catch (Exception ex)

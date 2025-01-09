@@ -582,7 +582,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (_offspringPermissionMappings == null)
                 {
                     using var context = DbFactory.CreateDbContext();
-                    _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length).ToList();
+                    _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates)
+                                                                        .Where(m => m.OU.Contains(DN) && m.OU != DN)
+                                                                        .OrderByDescending(m => m.OU.Length).ToList();
                 }
                 return _offspringPermissionMappings;
             }
@@ -796,8 +798,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-                IJobStep? propertyStep;
-                Job? propertyJob = new Job("Set AD attributes", commitJob.User);
+                JobStep? propertyStep;
+                var propertyJob = new Job("Set AD attributes", commitJob.User);
                 if (!NewEntry)
                 {
                     //Existing Active Directory Entry

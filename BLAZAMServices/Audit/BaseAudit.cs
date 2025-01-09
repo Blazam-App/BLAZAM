@@ -7,7 +7,7 @@ namespace BLAZAM.Services.Audit
     {
         protected IAppDatabaseFactory factory { get; set; }
         public Analytics Analytics;
-        
+
 
         public BaseAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime)
         {
