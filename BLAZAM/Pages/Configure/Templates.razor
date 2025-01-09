@@ -206,7 +206,7 @@
             SnackBarService.Success(AppLocalization["Renamed category"] + ": " + SelectedCategory + " to " + newCategoryName);
             SelectedCategory = newCategoryName;
             await FetchTemplates();
-            await RenameModal?.CloseAsync();
+            await RenameModal!.CloseAsync();
         }
         await RefreshComponents();
 
@@ -299,7 +299,7 @@
                 }
             }
             var result = await Context.SaveChangesAsync();
-            await RestoreModal?.CloseAsync();
+            await RestoreModal!.CloseAsync();
             SnackBarService.Success(AppLocalization["Template(s) restored"]);
         }
         else

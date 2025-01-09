@@ -57,8 +57,13 @@ namespace BLAZAM.Helpers
             return values;
         }
 
-        public static List<AuditChangeLog> GetChanges(this object changed, object original)
+        public static List<AuditChangeLog> GetChanges(this object changed, object? original)
         {
+            if(original == null)
+            {
+                return new List<AuditChangeLog>();
+
+            }
             // Check if both objects are null or same reference
             if (ReferenceEquals(changed, original))
                 return new List<AuditChangeLog>();
@@ -356,7 +361,7 @@ namespace BLAZAM.Helpers
             }
         }
 
-        public static string ToSidString(this byte[] sid)
+        public static string ToSidString(this byte[]? sid)
         {
             if (null == sid) return "";
             // Create a SecurityIdentifier object from the input byte array

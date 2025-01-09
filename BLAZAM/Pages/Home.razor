@@ -82,7 +82,6 @@
     {
         var test = TestJob;
         test.ShowJobDetailsDialog(MessageService);
-        //await MessageService.ShowMessage<JobResultDialog>(test.ToDialogParameters(), "Test Job");
         var result = await test.RunAsync();
 
 
