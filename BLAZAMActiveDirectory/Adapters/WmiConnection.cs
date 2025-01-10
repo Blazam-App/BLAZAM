@@ -114,7 +114,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             DriveType = (DriveType)driveType,
                             MediaType = mediaType
                         });
-                        
+
                     }
                 }
                 catch (Exception ex)
@@ -137,7 +137,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         if ((bool)mo["Shared"])
                         {
-                            
+
                             sharedPrinters.Add(new SharedPrinter(target, mo));
 
                         }

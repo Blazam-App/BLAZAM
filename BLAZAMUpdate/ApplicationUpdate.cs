@@ -197,7 +197,7 @@ namespace BLAZAM.Update
                 cancellationTokenSource = new CancellationTokenSource();
 
 
-            IJob updateJob = new Job("Applying application update", "System", cancellationTokenSource);
+            Job updateJob = new Job("Applying application update", "System", cancellationTokenSource);
             updateJob.StopOnFailedStep = true;
             var cleanDownloadStep = new JobStep("Cleaning previous downloads", CleanDownload);
             var downloadStep = new JobStep("Download latest version", Download);

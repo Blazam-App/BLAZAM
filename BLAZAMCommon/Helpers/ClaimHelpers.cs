@@ -6,6 +6,10 @@ namespace BLAZAM.Server.Helpers
 {
     public static class ClaimHelpers
     {
+        /// <summary>
+        /// Adds the SuperAdmin <see cref="UserRoles"/>
+        /// </summary>
+        /// <param name="claims"></param>
         public static void AddSuperAdmin(this IList<Claim> claims)
         {
             claims.Add(new Claim(ClaimTypes.Role, UserRoles.SuperAdmin));

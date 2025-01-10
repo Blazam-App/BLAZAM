@@ -19,14 +19,14 @@ namespace BLAZAM.Tests.Jobs
         {
             get
             {
-                IJob job = new Job("Test Job");
-                IJob job2 = new Job("Nested Job");
-                IJobStep step1 = new JobStep("Regular Step Passes", (step) => { Task.Delay(200).Wait(); return true; });
-                IJobStep step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
-                IJobStep step3 = new JobStep("Regular Step Throws", (step) => { Task.Delay(200).Wait(); throw new ApplicationException("Test exception"); return false; });
-                IJobStep step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(200).Wait(); return true; });
-                IJobStep step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
-                IJobStep step6 = new JobStep("Nested Step Throws", (step) => { Task.Delay(200).Wait(); throw new ApplicationException("Test exception"); return false; });
+                var job = new Job("Test Job");
+                var job2 = new Job("Nested Job");
+                var step1 = new JobStep("Regular Step Passes", (step) => { Task.Delay(200).Wait(); return true; });
+                var step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
+                var step3 = new JobStep("Regular Step Throws", (step) => { Task.Delay(200).Wait(); throw new ApplicationException("Test exception"); return false; });
+                var step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(200).Wait(); return true; });
+                var step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
+                var step6 = new JobStep("Nested Step Throws", (step) => { Task.Delay(200).Wait(); throw new ApplicationException("Test exception"); return false; });
 
                 job.Steps.Add(step1);
                 job.Steps.Add(step2);
@@ -34,7 +34,7 @@ namespace BLAZAM.Tests.Jobs
                 job2.Steps.Add(step4);
                 job2.Steps.Add(step5);
                 job2.Steps.Add(step6);
-                job.Steps.Add((IJobStep)job2);
+                job.Steps.Add(job2);
                 return job;
             }
         }

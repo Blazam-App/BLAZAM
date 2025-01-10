@@ -14,7 +14,7 @@
 
 @code{
     [Parameter]
-    public string Class{ get; set; }
+    public string? Class { get; set; } = null;
 
     private IADComputer _computer;
     [Parameter]
@@ -33,8 +33,9 @@
 
 
     }
-    private async void GetRecoveries(){
-        var recs = await Computer?.GetBitLockerRecoveryAsync();
+    private async Task GetRecoveries(){
+        if (Computer == null) return;
+        var recs = await Computer.GetBitLockerRecoveryAsync();
         if (recs != null)
             _recoveries = recs;
 

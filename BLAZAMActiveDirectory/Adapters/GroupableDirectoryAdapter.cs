@@ -170,10 +170,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             ToAssignTo.Add(new GroupMembership(group, this));
             HasUnsavedChanges = true;
-
-            return;
-
-
         }
 
         public void UnassignFrom(IADGroup group)
@@ -181,14 +177,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             ToUnassignFrom.Add(new GroupMembership(group, this));
             HasUnsavedChanges = true;
-            return;
-
-
-
         }
-
-
-
 
     }
 }

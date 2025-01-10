@@ -18,7 +18,7 @@ namespace BLAZAM.Services.Audit
         /// The default value is the current web user from the <see cref="IApplicationUserStateService"/>
         /// </remarks>
         protected IApplicationUserState? CurrentUser { get; set; }
-        public EmailAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory,jSRuntime)
+        public EmailAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime)
         {
             UserStateService = userStateService;
             CurrentUser = UserStateService.CurrentUserState;

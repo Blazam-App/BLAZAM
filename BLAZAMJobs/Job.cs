@@ -58,7 +58,7 @@ namespace BLAZAM.Jobs
         private string GetCallingClassName()
         {
             var stackTrace = new StackTrace();
-            MethodBase? method=null;
+            MethodBase? method = null;
             // Start from frame 2 to skip Job and GetCallingClassName
 
 

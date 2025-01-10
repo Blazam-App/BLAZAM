@@ -142,7 +142,8 @@ namespace BLAZAM.Gui.UI
                 }
                 await InvokeAsync(StateHasChanged);
                 Header?.OnRefreshRequested?.Invoke();
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Loggers.SystemLogger.Error("Error fetching templates {Error}", ex);
             }

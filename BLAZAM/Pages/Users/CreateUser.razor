@@ -158,7 +158,7 @@
 
         </MudTabPanel>
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
-                     Disabled="@(newUser==null || usernameStepValid==false)">
+                     Disabled="@(newUser==null || !usernameStepValid)">
             <TabContent>
                 @AppLocalization["Fields"]
             </TabContent>
@@ -178,7 +178,7 @@
         </MudTabPanel>
 
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
-                     Disabled="@(newUser==null || usernameStepValid==false)">
+                     Disabled="@(newUser==null || !usernameStepValid)">
             <TabContent>
                 @AppLocalization["Groups"]
             </TabContent>
@@ -239,7 +239,7 @@
 
         </MudTabPanel>
         <MudTabPanel Class=@(custom==true?"":"d-none")
-                     Disabled="@(newUser==null || usernameStepValid==false)">
+                     Disabled="@(newUser==null || !usernameStepValid)">
             <TabContent>
                 @AppLocalization["Details"]
             </TabContent>
@@ -267,7 +267,7 @@
         </MudTabPanel>
 
 
-        <MudTabPanel Disabled=@(newUser==null || usernameStepValid==false)>
+        <MudTabPanel Disabled=@(newUser==null || !usernameStepValid)>
             <TabContent>
 
                 @AppLocalization["Confirm"]

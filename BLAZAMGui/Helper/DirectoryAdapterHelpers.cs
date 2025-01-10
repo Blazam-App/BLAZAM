@@ -6,6 +6,11 @@ namespace BLAZAM.Helpers
 {
     public static class DirectoryAdapterHelpers
     {
+        /// <summary>
+        /// Retuns a MudBlazor Icon that represents this <see cref="IDirectoryEntryAdapter"/>
+        /// </summary>
+        /// <param name="adapter"></param>
+        /// <returns></returns>
         public static string TypeIcon(this IDirectoryEntryAdapter adapter)
         {
             switch (adapter.ObjectType)

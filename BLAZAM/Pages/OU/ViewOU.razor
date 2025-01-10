@@ -93,7 +93,6 @@
                 var changes = OU?.Changes;
                 await OU.CommitChangesAsync();
                 EditMode = false;
-                //Nav.WarnOnNavigation = false;
                 await AuditLogger.OU.Changed(OU, changes);
                 if (DbFactory.DatabaseType == DatabaseType.SQLite)
                 {

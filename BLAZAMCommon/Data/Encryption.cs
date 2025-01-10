@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Diagnostics.SymbolStore;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -12,14 +13,16 @@ namespace BLAZAM.Common.Data
         private const string OldSalt = "BLAZAM_SALT";
         public static Encryption Instance;
 
-        private void SetSalt(int maximumSaltLength = 32)
+
+
+        private static byte[] GenerateSalt(int maximumSaltLength = 32)
         {
-            var salt = new byte[maximumSaltLength];
+            byte[] salt = new byte[maximumSaltLength];
 
             RandomNumberGenerator.Create().GetNonZeroBytes(salt);
 
 
-            Salt = salt;
+            return salt;
         }
 
         /// <summary>
@@ -34,14 +37,16 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// The size of the key in bits
         /// </summary>
-        private int KeySize { get; set; }
+        /// <remarks>
+        /// Defaults to 256 bits
+        /// </remarks>
+        private int KeySize { get; set; } = 256;
 
         /// <summary>
-        /// The key that is <see cref="KeySize"/> bits long and was 
+        /// The api encryption key that is <see cref="KeySize"/> bits long and was 
         /// generated from the <see cref="KeySeedString"/> 
         /// </summary>
-        public byte[] Key { get; set; }
-        private byte[] Salt { get; set; }
+        public byte[] APITokenKey { get; set; }
 
 
 
@@ -62,9 +67,7 @@ namespace BLAZAM.Common.Data
             if (keySeedString == null || keySeedString == "") return;
             KeySeedString = keySeedString;
             KeySize = keySize;
-            SetSalt();
-            GenerateOldKeyFromSeedString();
-            GenerateKeyFromSeedString(Salt);
+            GenerateApiKeyFromSeedString();
         }
 
         /// <summary>
@@ -72,55 +75,48 @@ namespace BLAZAM.Common.Data
         /// key from the appsettings configuration value "EncryptionKey"
         /// </summary>
         /// <remarks>
-        /// Sets the local <see cref="Key"/> value to the newly generated key
+        /// Sets the local <see cref="APITokenKey"/> value to the newly generated key
         /// </remarks>
         /// <returns>The key based on the <see cref="KeySeedString"/></returns>
-        [Obsolete("This method uses the old static salt value, use the parametrized version instead.")]
-        private byte[] GenerateOldKeyFromSeedString()
+        private void GenerateApiKeyFromSeedString()
         {
-            // Use a key derivation function to generate a repeatable key
-            // var salt = GetSalt(11);
+
             var salt = Encoding.UTF8.GetBytes(OldSalt);
             var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 1000);
-            Key = keyGenerator.GetBytes(KeySize / 8);
-            return Key;
+            APITokenKey = keyGenerator.GetBytes(KeySize / 8);
         }
         /// <summary>
         /// Generates a key of the configured key size, seeding the
         /// key from the appsettings configuration value "EncryptionKey"
         /// </summary>
-        /// <remarks>
-        /// Sets the local <see cref="Key"/> value to the newly generated key
-        /// </remarks>
         /// <returns>The key based on the <see cref="KeySeedString"/></returns>
         private byte[] GenerateKeyFromSeedString(byte[] salt)
         {
-        
-                // Use a key derivation function to generate a repeatable key
-                var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 1000);
 
-                return keyGenerator.GetBytes(KeySize / 8); ;
-        
+            var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 1000);
+
+            return keyGenerator.GetBytes(KeySize / 8);
+
 
         }
         /// <summary>
         /// Generates a key of the configured key size, seeding the
         /// key from the appsettings configuration value "EncryptionKey"
         /// </summary>
-        /// <remarks>
-        /// Sets the local <see cref="Key"/> value to the newly generated key
-        /// </remarks>
         /// <returns>The key based on the <see cref="KeySeedString"/></returns>
-        private static byte[] GenerateKeyFromSeedString(byte[] salt, string seedString,int keySize)
+        private KeyPackage GenerateV2KeyFromSeedString(byte[]? salt = null)
         {
+            if (salt == null)
+            {
+                salt = GenerateSalt();
+            }
+            var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 600000, HashAlgorithmName.SHA256);
+            KeyPackage keyPackage = new(keyGenerator.GetBytes(KeySize / 8), salt);
+            return keyPackage;
 
-                // Use a key derivation function to generate a repeatable key
-                var keyGenerator = new Rfc2898DeriveBytes(seedString, salt, 1000);
-
-                return keyGenerator.GetBytes(keySize / 8); ;
-            
 
         }
+
         /// <summary>
         /// Decrypts cipher-text
         /// </summary>
@@ -132,42 +128,69 @@ namespace BLAZAM.Common.Data
         private T? DecryptSaltedObject<T>(string? cipherText)
         {
 
-            try
-            {
-                var saltCipherArray = cipherText.Split(',');
-                byte[] buffer = Convert.FromBase64String(saltCipherArray[1]);
-                byte[] cipherSalt = Convert.FromBase64String(saltCipherArray[0]);
-                var key = GenerateKeyFromSeedString(cipherSalt);
+            var saltCipherArray = cipherText.Split(',');
+            byte[] buffer = Convert.FromBase64String(saltCipherArray[1]);
+            byte[] cipherSalt = Convert.FromBase64String(saltCipherArray[0]);
+            var key = GenerateKeyFromSeedString(cipherSalt);
 
 
-                byte[] iv = buffer.Take(16).ToArray<byte>();
-                buffer = buffer.Skip(16).ToArray<byte>();
-                using Aes aes = Aes.Create();
-                aes.Key = GenerateKeyFromSeedString(cipherSalt);
-                aes.IV = iv;
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                using MemoryStream memoryStream = new MemoryStream(buffer);
+            byte[] iv = buffer.Take(16).ToArray<byte>();
+            buffer = buffer.Skip(16).ToArray<byte>();
+            using Aes aes = Aes.Create();
+            aes.Key = key;
+            aes.IV = iv;
+            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using MemoryStream memoryStream = new MemoryStream(buffer);
 
-                using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+            using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
 
-                using StreamReader streamReader = new StreamReader(cryptoStream);
+            using StreamReader streamReader = new StreamReader(cryptoStream);
 
-                var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
-                return decrypted;
+            var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+            return decrypted;
 
 
 
-            }
-            catch (FormatException)
-            {
-                //If any issues occur while creating
-                //the decrypted text, return the "encrypted"
-                //text
-                if (cipherText is T tText)
-                {
-                    return tText;
-                }
-            }
+            throw new ApplicationException("Unable to decrypt cipherText");
+
+        }
+
+        /// <summary>
+        /// Decrypts cipher-text
+        /// </summary>
+        /// <typeparam name="T">The serializable type that should
+        /// represent the decrypted cipher object</typeparam>
+        /// <param name="cipherText"></param>
+        /// <returns></returns>
+        /// <exception cref="ApplicationException"></exception>
+        private T? DecryptSaltedObjectV2<T>(string? cipherText)
+        {
+
+
+            var saltCipherArray = cipherText.Split(',');
+            byte[] buffer = Convert.FromBase64String(saltCipherArray[1]);
+            byte[] cipherSalt = Convert.FromBase64String(saltCipherArray[0]);
+            var keyPackage = GenerateV2KeyFromSeedString(cipherSalt);
+
+
+            byte[] iv = buffer.Take(16).ToArray<byte>();
+            buffer = buffer.Skip(16).ToArray<byte>();
+            using Aes aes = Aes.Create();
+            aes.Key = keyPackage.Key;
+            aes.IV = iv;
+            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using MemoryStream memoryStream = new MemoryStream(buffer);
+
+            using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+
+            using StreamReader streamReader = new StreamReader(cryptoStream);
+
+            var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+            return decrypted;
+
+
+
+
             throw new ApplicationException("Unable to decrypt cipherText");
 
         }
@@ -183,13 +206,11 @@ namespace BLAZAM.Common.Data
         {
 
             if (cipherText == null) return default;
-
             try
             {
-                var newDecrypted = DecryptSaltedObject<T>(cipherText);
+                var newDecrypted = DecryptSaltedObjectV2<T>(cipherText);
                 return newDecrypted;
 
-                throw new ApplicationException("Unable to decrypt cipherText");
 
 
             }
@@ -197,40 +218,59 @@ namespace BLAZAM.Common.Data
             {
                 try
                 {
-                    byte[] buffer = Convert.FromBase64String(cipherText);
-
-                    byte[] iv = buffer.Take(16).ToArray<byte>();
-                    buffer = buffer.Skip(16).ToArray<byte>();
-                    using Aes aes = Aes.Create();
-                    aes.Key = Key;
-                    aes.IV = iv;
-                    ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                    using MemoryStream memoryStream = new MemoryStream(buffer);
-
-                    using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
-
-                    using StreamReader streamReader = new StreamReader(cryptoStream);
-
-                    return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
-
+                    var newDecrypted = DecryptSaltedObject<T>(cipherText);
+                    return newDecrypted;
 
 
 
                 }
-                catch (FormatException)
+                catch
                 {
-                    //If any issues occur while creating
-                    //the decrypted text, return the "encypted"
-                    //text
-                    if (cipherText is T tText)
+                    try
                     {
-                        return tText;
+                        return DecryptOldUnsaltedObject<T>(cipherText);
+                    }
+                    catch (FormatException)
+                    {
+                        //If any issues occur while creating
+                        //the decrypted object, return the "encypted"
+                        //text
+                        if (cipherText is T tText)
+                        {
+                            return tText;
+                        }
+                        return default;
                     }
                 }
             }
-
             throw new ApplicationException("Unable to decrypt cipherText");
         }
+
+        private T? DecryptOldUnsaltedObject<T>(string? cipherText)
+        {
+
+            byte[] buffer = Convert.FromBase64String(cipherText);
+
+            byte[] iv = buffer.Take(16).ToArray<byte>();
+            buffer = buffer.Skip(16).ToArray<byte>();
+            using Aes aes = Aes.Create();
+            aes.Key = APITokenKey;
+            aes.IV = iv;
+            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using MemoryStream memoryStream = new MemoryStream(buffer);
+
+            using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+
+            using StreamReader streamReader = new StreamReader(cryptoStream);
+
+            return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+
+
+
+
+
+        }
+
         /// <summary>
         /// Encrypt any serializable object
         /// </summary>
@@ -243,12 +283,12 @@ namespace BLAZAM.Common.Data
 
             var salt = Encoding.UTF8.GetBytes(OldSalt);
 
-            var keyGenerator = new Rfc2898DeriveBytes(ivSeed.ToByteArray(), salt, 1000);
-            byte[] iv = keyGenerator.GetBytes(16);
+            var ivGenerator = new Rfc2898DeriveBytes(ivSeed.ToByteArray(), salt, 600000, HashAlgorithmName.SHA256);
+            byte[] iv = ivGenerator.GetBytes(16);
             byte[] encryptedBytes;
             using Aes aes = Aes.Create();
-
-            aes.Key = GenerateKeyFromSeedString(Salt);
+            var keyPackage = GenerateV2KeyFromSeedString();
+            aes.Key = keyPackage.Key;
             aes.IV = iv;
             ICryptoTransform encryptor = aes.CreateEncryptor();
             using (MemoryStream memoryStream = new MemoryStream())
@@ -275,7 +315,7 @@ namespace BLAZAM.Common.Data
                         encryptedMessage = encryptedMessage.Append(encryptedBytes[i]).ToArray();
                     }
                     var cipherText = Convert.ToBase64String(encryptedMessage);
-                    cipherText = Convert.ToBase64String(Salt) + "," + cipherText;
+                    cipherText = Convert.ToBase64String(keyPackage.Salt) + "," + cipherText;
 
 
 
@@ -288,6 +328,15 @@ namespace BLAZAM.Common.Data
 
     }
 
+    internal class KeyPackage
+    {
+        public KeyPackage(byte[] bytes, byte[] salt)
+        {
+            Key = bytes;
+            Salt = salt;
+        }
 
-
+        public byte[] Key { get; }
+        public byte[] Salt { get; }
+    }
 }

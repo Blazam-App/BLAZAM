@@ -6,7 +6,11 @@ namespace BLAZAM.Helpers
 {
     public class NetworkTools
     {
-
+        /// <summary>
+        /// Attempts a single ping request
+        /// </summary>
+        /// <param name="hostNameOrAddress">The destination to ping</param>
+        /// <returns>True on a success response, otherwise false</returns>
         public static bool PingHost(string hostNameOrAddress)
         {
             bool pingable = false;
@@ -32,6 +36,12 @@ namespace BLAZAM.Helpers
         {
             return IsAnyPortOpen(hostNameOrAddress, new int[] { port });
         }
+        /// <summary>
+        /// Checks if any of the provided TCP ports is currently open and reachable by the host machine
+        /// </summary>
+        /// <param name="hostNameOrAddress">The hostname, FQDN, or IP of the host to check</param>
+        /// <param name="ports">The port numbers to check</param>
+        /// <returns>True if the port is open, otherwise false</returns>
         public static bool IsAnyPortOpen(string hostNameOrAddress, int[] ports)
         {
             bool portOpen = false;

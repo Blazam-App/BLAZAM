@@ -36,14 +36,7 @@ namespace BLAZAM.ActiveDirectory.Data
 
         public LogonHours(byte[]? rawData) : this()
         {
-            // Initialize schedule with default values (all true, meaning logon allowed)
-            //for (int day = 0; day < 7; day++)
-            //{
-            //    for (int hour = 0; hour < 24; hour++)
-            //    {
-            //        schedule[day, hour] = true;
-            //    }
-            //}
+
             if (rawData != null)
             {
                 DecodeLogonHours(rawData);

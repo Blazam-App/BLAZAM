@@ -18,10 +18,10 @@
     [Parameter]
     public EventCallback<string> OnSubmitEmail { get; set; }
 
-    private void OnSubmit()
+    private async Task OnSubmit()
     {
         
-        OnSubmitEmail.InvokeAsync(sendToEmail);
+       await OnSubmitEmail.InvokeAsync(sendToEmail);
 
     }
 }

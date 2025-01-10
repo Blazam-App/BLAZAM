@@ -16,7 +16,6 @@
 
 @code {
     IADBitLockerRecovery? BitLocker=> DirectoryEntry as IADBitLockerRecovery;
-    List<IADBitLockerRecovery> _recoveries = new();
     IADComputer? _computer;
     protected override async Task OnInitializedAsync()
     {
@@ -27,7 +26,7 @@
         if (BitLocker != null)
         {
 
-            _computer = (IADComputer?)BitLocker.GetParent();
+            _computer = (IADComputer?)(await BitLocker.GetParentAsync());
 
 
             await AuditLogger.Searched(BitLocker);

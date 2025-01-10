@@ -45,7 +45,6 @@
     [Parameter]
     public EventCallback OnApproved { get; set; }
 
-    private IADUser? _creator;
     private IDirectoryEntryAdapter? _target;
     private PermissionDelegate? _delegate;
     private AccessLevel? _accessLevel;
@@ -145,7 +144,7 @@
                     {
                         ActionMap = new List<ActionAccessMapping>() { actionMap },
                         ObjectMap = new List<ObjectAccessMapping>() { objectMap },
-                        Name = AppLocalization[Request.Notification.Action.ToString()] + " " + AppLocalization[_target.ObjectType.ToString()]
+                        Name = AppLocalization[Request.Notification.Action.ToString()!] + " " + AppLocalization[_target.ObjectType.ToString()]
                     };
             }
             else

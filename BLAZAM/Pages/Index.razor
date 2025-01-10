@@ -8,8 +8,8 @@
 
 <MudContainer Class="py-5">
 
-    <FullAppName/>
-   
+    <FullAppName />
+
 
     <MudText>@AppLocalization["ApplicationStarting"]</MudText>
     <MudProgressLinear Color="Color.Info" Indeterminate=true />
@@ -101,18 +101,22 @@
     }
     private void AppReady(ServiceConnectionState newStatus)
     {
-        if (newStatus == ServiceConnectionState.Up && oldStatus != newStatus)
+        if (newStatus == ServiceConnectionState.Up && oldStatus != newStatus
+            && ApplicationInfo.InstallationCompleted && Nav.ToBaseRelativePath(Nav.Uri) == "")
         {
-            if (ApplicationInfo.InstallationCompleted && Nav.ToBaseRelativePath(Nav.Uri) == "")
-            {
-                waitingForLoadToComplete = false;
+            waitingForLoadToComplete = false;
 
-                Nav.NavigateTo("/home");
+            Nav.NavigateTo("/home");
 
-            }
         }
+
         oldStatus = newStatus;
 
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        waitingForLoadToComplete = false;
     }
 }
 

@@ -84,7 +84,7 @@
             // Context.GlobalPermissionSettings.Add(settings);
 
         }
-        var dbSelfAccessLevel = Context.AccessLevels.FirstOrDefault(x => x.Name == AccessLevel.SelfAccessLevelName);
+        var dbSelfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
         if (dbSelfAccessLevel != null)
         {
             selfAccessLevel = dbSelfAccessLevel;
@@ -94,7 +94,6 @@
             selfAccessLevel.Name = AccessLevel.SelfAccessLevelName;
         }
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
 
     }
 

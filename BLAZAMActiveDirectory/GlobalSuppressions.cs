@@ -1,4 +1,5 @@
-﻿// This file is used by Code Analysis to maintain SuppressMessage
+﻿
+// This file is used by Code Analysis to maintain SuppressMessage
 // attributes that are applied to this project.
 // Project-level suppressions either have no target or are given
 // a specific target and scoped to a namespace, type, member, etc.
@@ -54,3 +55,5 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter.GetParent~BLAZAM.ActiveDirectory.Interfaces.IDirectoryEntryAdapter")]
 [assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:BLAZAM.Helpers.ActiveDirectoryHelpers.Encapsulate(System.DirectoryServices.SearchResultCollection,BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext)~System.Collections.Generic.List{BLAZAM.ActiveDirectory.Interfaces.IDirectoryEntryAdapter}")]
 [assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:BLAZAM.Helpers.ActiveDirectoryHelpers.Encapsulate(System.DirectoryServices.DirectoryEntry,BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext)~BLAZAM.ActiveDirectory.Interfaces.IDirectoryEntryAdapter")]
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:BLAZAM.ActiveDirectory.Searchers.ADOUSearcher.FindSubOusByDN(System.String)~System.Collections.Generic.List{BLAZAM.ActiveDirectory.Interfaces.IADOrganizationalUnit}")]
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:BLAZAM.ActiveDirectory.Searchers.ADOUSearcher.FindSubGroupsByDN(System.String)~System.Collections.Generic.List{BLAZAM.ActiveDirectory.Interfaces.IADGroup}")]

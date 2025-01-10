@@ -30,7 +30,7 @@
             var results = await OU.CommitChangesAsync();
             if (results.FailedSteps.Count == 0)
             {
-                OU = (IADOrganizationalUnit)Directory.OUs.FindOuByDN(OU.DN);
+                OU = Directory.OUs.FindOuByDN(OU.DN);
                 SnackBarService.Success(AppLocalization["OU created"]);
                 await AuditLogger.OU.Created(OU);
                 if (DbFactory.DatabaseType == DatabaseType.SQLite)

@@ -17,8 +17,8 @@
     protected override async Task RefreshData()
     {
         LoadingData = true;
-
         NewUsers = (await Directory.Users.FindNewUsersAsync(14, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
+
         LoadingData = false;
 
     }

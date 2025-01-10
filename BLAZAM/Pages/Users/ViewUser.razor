@@ -614,10 +614,10 @@
 
         if (Context != null)
         {
-            _globalPermissionSettings = Context.GlobalPermissionSettings.FirstOrDefault();
+            _globalPermissionSettings = await Context.GlobalPermissionSettings.FirstOrDefaultAsync();
 
         }
-        selfAccessLevel = Context.AccessLevels.FirstOrDefault(x => x.Name == AccessLevel.SelfAccessLevelName);
+        selfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
 
 
         if (User.HomeDirectory != null)
@@ -710,9 +710,7 @@
 
                         }
                     }
-
                     EditMode = false;
-                    //Nav.WarnOnNavigation = false;
                     SnackBarService.Success("The changes made to this user have been saved.");
                 }
                 else

@@ -136,7 +136,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
 
-                // Run.Process("netdom", "renamecomputer " + Name + " /newname:" + newName + " /userd:" + System.Security.Principal.WindowsIdentity.GetCurrent().Name + " /passwordd:* /securepasswordprompt /force", true);
                 return false;
 
             }
@@ -175,9 +174,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     Task.Delay(1000).Wait();
                 }
+                cts.Dispose();
             }, cts.Token);
-            // await Task.Delay(1000);
-            // MonitorOnlineStatus();
 
         }
         private void Ping(int timeout = 5000)
@@ -238,8 +236,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override void Dispose()
         {
-            base.Dispose();
             cts.Cancel();
+            base.Dispose();
         }
     }
 }

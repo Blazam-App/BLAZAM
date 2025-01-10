@@ -8,8 +8,8 @@ using MudBlazor;
 namespace BLAZAM.Gui.UI
 {
 
-    public delegate void OnYesEvent();
-    public delegate void OnCancelEvent();
+    public delegate Task OnYesEvent();
+    public delegate Task OnCancelEvent();
 
     public partial class AppModal
     {

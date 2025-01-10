@@ -178,8 +178,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             Rights = FileSystemRights.FullControl;
             bool modified;
-            InheritanceFlags none = new InheritanceFlags();
-            none = InheritanceFlags.None;
+            InheritanceFlags none = InheritanceFlags.None;
 
             //set on dir itself
             FileSystemAccessRule accessRule = new FileSystemAccessRule(SamAccountName, Rights, none, PropagationFlags.NoPropagateInherit, AccessControlType.Allow);
@@ -188,8 +187,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             dSecurity.ModifyAccessRule(AccessControlModification.Set, accessRule, out modified);
 
             //Always allow objects to inherit on a directory 
-            InheritanceFlags iFlags = new InheritanceFlags();
-            iFlags = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
+            InheritanceFlags iFlags = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
+
 
             //Add Access rule for the inheritance
             FileSystemAccessRule accessRule2 = new FileSystemAccessRule(SamAccountName, Rights, iFlags, PropagationFlags.InheritOnly, AccessControlType.Allow);

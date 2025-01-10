@@ -35,9 +35,9 @@ namespace BLAZAM.Services
         /// </summary>
         /// <param name="lifetime">The amount of time the token should be allowed to be used. Defaults to 365 days.</param>
         /// <returns>The newly generated <see cref="JwtSecurityToken"/></returns>
-        public string GenerateJwtToken(TimeSpan? lifetime=null)
+        public string GenerateJwtToken(TimeSpan? lifetime = null)
         {
-            if (lifetime == null) {lifetime = TimeSpan.FromDays(365); }
+            if (lifetime == null) { lifetime = TimeSpan.FromDays(365); }
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var currentUser = _currentUserStateService.State;
@@ -52,8 +52,8 @@ namespace BLAZAM.Services
                 Claims = claims,
                 IssuedAt = DateTime.UtcNow,
                 Issuer = DatabaseCache.ApplicationSettings.AppName,
-                Expires = (DateTime.UtcNow+lifetime.Value), // Set expiration
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encryption.Instance.Key), SecurityAlgorithms.HmacSha256Signature)
+                Expires = (DateTime.UtcNow + lifetime.Value), // Set expiration
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encryption.Instance.APITokenKey), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwtToken = tokenHandler.WriteToken(token);
@@ -74,7 +74,7 @@ namespace BLAZAM.Services
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encryption.Instance.Key),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encryption.Instance.APITokenKey),
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero // Set clock skew to zero

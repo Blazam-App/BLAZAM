@@ -78,7 +78,7 @@ namespace BLAZAM.Common.Data
         /// </summary>
         public static IServiceProvider services;
 
-      
+
         /// <summary>
         /// The running Blazam version
         /// </summary>
@@ -161,7 +161,7 @@ namespace BLAZAM.Common.Data
         /// Unique ID for this machine
         /// </summary>
         public Guid InstallationId { get => installationId; set => installationId = value; }
-  
+
 
         /// <summary>
         /// Use only for UnitTests

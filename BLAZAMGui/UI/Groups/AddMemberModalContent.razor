@@ -58,7 +58,7 @@
 
     IDirectoryEntryAdapter Entry { get; set; }
 
-    async void AssignToGroup()
+    async Task AssignToGroup()
     {
         if (Entry is IGroupableDirectoryAdapter groupableEntry)
         {

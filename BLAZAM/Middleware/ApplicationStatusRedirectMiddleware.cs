@@ -44,10 +44,6 @@ namespace BLAZAM.Server.Middleware
                                 SendTo(context, "/oops");
 
                             }
-                            //if (!ApplicationInfo.installationCompleted)
-                            //{
-                            //    SendTo(context, "/install");
-                            //}
                             break;
                         case ServiceConnectionState.Down:
                             SendTo(context, "/oops");
@@ -75,10 +71,7 @@ namespace BLAZAM.Server.Middleware
 
         private bool InIgnoreList(string intendedUri)
         {
-            foreach (var uri in _uriIgnoreList)
-            {
-                if (intendedUri.StartsWith(uri)) return true;
-            }
+            if (_uriIgnoreList.Any(x => intendedUri.StartsWith(x))) return true;
             return false;
         }
     }

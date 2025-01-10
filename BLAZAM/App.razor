@@ -2,9 +2,6 @@
 @inject IApplicationUserStateService userStateService
 @inject ICurrentUserStateService currentUser
 
-@{
-    var dsad = 3;
-}
 <CascadingAuthenticationState>
 
     <ErrorBoundary>
@@ -26,10 +23,6 @@
                             }
                             else
                             {
-                                @if (context != null)
-                                {
-
-                                }
                                 <p>You are not authorized to access this resource.</p>
                             }
                         </NotAuthorized>

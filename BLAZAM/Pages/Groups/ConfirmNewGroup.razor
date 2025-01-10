@@ -31,7 +31,7 @@
         {
             disableCreateGroupButton = true;
             await InvokeAsync(StateHasChanged);
-            IJob createGroupJob = new Job(AppLocalization["Create User"]);
+            var createGroupJob = new Job(AppLocalization["Create User"]);
             createGroupJob.StopOnFailedStep = true;
             createGroupJob.ShowJobDetailsDialog(MessageService);
             var result = await Group.CommitChangesAsync(createGroupJob);

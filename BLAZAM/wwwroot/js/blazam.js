@@ -3,7 +3,7 @@ window.updateCookieExpiration = async () => {
     const currentTime = Date.now();
     //Only upadte at least 500ms intervals
     if (currentTime - lastRequestTime > 500) {
-        var xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 // Check for expiration
@@ -26,8 +26,8 @@ window.attemptSignIn = async (loginReq) => {
         formData.append(key, loginReq[key]);
     }
 
-    var xhr = new XMLHttpRequest();
-    var response = await new Promise((resolve, reject) => {
+    let xhr = new XMLHttpRequest();
+    let response = await new Promise((resolve, reject) => {
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 resolve(xhr.response);
@@ -42,7 +42,7 @@ window.attemptSignIn = async (loginReq) => {
 };
 
 window.playAudio = async (path) => {
-    var audio = new Audio(path);
+    let audio = new Audio(path);
     audio.play();
 
 };
@@ -56,7 +56,7 @@ window.scrollToBottom = async (id) => {
     element.scrollTop = element.scrollHeight;
 };
 
-var dialGauges = {};
+const dialGauges = {};
 
 window.createGauge = async (id, maxValue) => {
     dialGauges[id] = Gauge(document.getElementById(id), {
@@ -79,21 +79,12 @@ window.createGauge = async (id, maxValue) => {
             }
         }
     });
-    //console.log(dialGauges);
 };
 
 window.setGaugeValue = async (id, val, time) => {
     dialGauges[id].setValueAnimated(val, time);
 };
 
-
-//window.openFeatureRequestDialog = async () => {
-//    // Create a new Event object
-//    const event = new Event('openFeatureRequestDialog');
-
-//    // Dispatch the event on the document object
-//    document.dispatchEvent(event);
-//}
 window.customAnalyticsEvent = async (eventName, jsonData) => {
     gtag('event', eventName, {
        jsonData

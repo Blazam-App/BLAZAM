@@ -10,7 +10,7 @@ namespace BLAZAM.ActiveDirectory
     {
 
         private ActiveDirectoryContext activeDirectoryContextSeed;
-       
+
 
         public ActiveDirectoryContextFactory(IAppDatabaseFactory factory, IApplicationUserStateService userStateService, IEncryptionService encryptionService, INotificationPublisher notificationPublisher)
         {
@@ -23,7 +23,7 @@ namespace BLAZAM.ActiveDirectory
             var context = new ActiveDirectoryContext(activeDirectoryContextSeed);
             context.ConnectAsync();
             context.CurrentUser = currentUserStateService?.State;
-           return context;
+            return context;
 
         }
 

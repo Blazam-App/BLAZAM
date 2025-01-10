@@ -12,22 +12,22 @@ namespace BLAZAM.Services.Background
     {
         protected virtual IAppDatabaseFactory dbFactory { get; }
         protected virtual Timer? Timer { get; set; }
-        protected virtual TimeSpan Interval{ get; set; } = TimeSpan.FromMinutes(10);
+        protected virtual TimeSpan Interval { get; set; } = TimeSpan.FromMinutes(10);
         protected bool started { get; set; }
         public BackgroundServiceBase(IAppDatabaseFactory dbFactory)
         {
             this.dbFactory = dbFactory;
 
         }
-        public virtual void Start(bool immediate=false)
+        public virtual void Start(bool immediate = false)
         {
             if (!started)
             {
-                int delay=0;
+                int delay = 0;
                 if (!immediate)
                 {
                     Random rand = new Random();
-                   int jitter = rand.Next(-15, 15);
+                    int jitter = rand.Next(-15, 15);
                     delay = 30 + jitter;
 
                 }
@@ -42,9 +42,9 @@ namespace BLAZAM.Services.Background
             started = false;
         }
 
-        protected virtual void Execute(object? state=null)
+        protected virtual void Execute(object? state = null)
         {
-            throw new NotImplementedException();    
+            throw new NotImplementedException();
         }
 
         public virtual void Dispose()

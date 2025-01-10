@@ -117,7 +117,8 @@ namespace BLAZAM.Server.Data.Services
                         return true;
                     }
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Loggers.SystemLogger.Error("Error trying to mark all notification read for user {Error}", ex);
             }
@@ -131,14 +132,15 @@ namespace BLAZAM.Server.Data.Services
                 using var context = await _dbFactory.CreateDbContextAsync();
 
                 var messages = await context.UserNotifications.Where(un => un.User.Id == Id && !un.IsRead && un.Notification.MessageType != MessageType.AccessRequest).ToListAsync();
-                foreach(var notification in messages) {
+                foreach (var notification in messages)
+                {
                     if (notification != null)
                     {
                         notification.IsRead = true;
-                       
+
 
                     }
-               
+
                 }
                 var result = await context.SaveChangesAsync();
 
@@ -153,7 +155,7 @@ namespace BLAZAM.Server.Data.Services
                     return true;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Loggers.SystemLogger.Error("Error trying to mark all notification read for user {Error}", ex);
             }

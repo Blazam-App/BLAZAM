@@ -10,6 +10,7 @@
           OnYes=@(()=>{
           JSRuntime.InvokeVoidAsync("updateCookieExpiration");
           ExpirationWarningModal?.Close();
+          return Task.CompletedTask;
           })>
 
     @if (ExpirationWarningModal?.IsShown == true)
@@ -52,7 +53,9 @@
 <AppModal Title=@AppLocalization["Session Expired"]
           @ref="ExpiredModal"
           YesText=@AppLocalization["Log In"]
-          OnYes="@(()=>{Refresh();})"
+          OnYes="@(()=>{Refresh();
+          return Task.CompletedTask;
+           })"
           Options=@(new DialogOptions{
           BackgroundClass="blur-background",
           CloseButton=false,
@@ -63,8 +66,8 @@
     <MudText>@AppLocalization["Your session has expired."]</MudText>
 
 
-    </AppModal>
-    @code {
+</AppModal>
+@code {
     private Timer? sessionTimeoutCheckTimer;
     AppModal? ExpirationWarningModal;
     AppModal? ExpiredModal;

@@ -126,7 +126,7 @@
         if (Context != null)
         {
             originalSettings = await Context.EmailSettings.AsNoTracking().FirstOrDefaultAsync();
-            var set = Context.EmailSettings.FirstOrDefault();
+            var set = await Context.EmailSettings.FirstOrDefaultAsync();
 
             if (set != null)
             {

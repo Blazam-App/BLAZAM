@@ -34,22 +34,13 @@ namespace BLAZAM.ActiveDirectory.Searchers
             string? searchBaseDN,
             string fieldQuery,
             ActiveDirectoryObjectType? searchType,
-
             int returnCount = 5,
-
             bool? enabledOnly = true,
             SearchScope searchScope = SearchScope.Subtree
             )
         {
-
-
-
             try
             {
-
-
-
-
                 ADSearch search = new ADSearch(Directory);
 
                 search.ObjectTypeFilter = searchType;
@@ -60,20 +51,12 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 search.EnabledOnly = enabledOnly;
                 var results = search.Search();
                 return results;
-
-
-
-
             }
             catch (Exception ex)
             {
                 Loggers.ActiveDirectoryLogger.Error("Search failed {@Error}", ex);
             }
             return null;
-            // Set the filter to look for a specific user
-
-
-
         }
 
 

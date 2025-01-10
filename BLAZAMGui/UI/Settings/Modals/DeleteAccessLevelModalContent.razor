@@ -43,7 +43,7 @@
     {
         Modal.Options.MaxWidth = MaxWidth.Medium;
         Modal.YesText = AppLocalization["Delete"];
-        Modal.OnYes += ()=>{ OnConfirm.InvokeAsync(); };
+        Modal.OnYes += ()=>{ OnConfirm.InvokeAsync(); return Task.CompletedTask; };
         await base.OnInitializedAsync();
         Modal.RefreshView();
 

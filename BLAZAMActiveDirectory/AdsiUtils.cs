@@ -8,7 +8,7 @@ namespace BLAZAM.ActiveDirectory
 
     public sealed class AdsiUtils
     {
-        private AdsiUtils() { }
+        public AdsiUtils() { }
 
         [
             ComImport,

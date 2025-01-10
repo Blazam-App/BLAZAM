@@ -6,6 +6,7 @@ using BLAZAM.Database.Context;
 using BLAZAM.Gui.Services;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Services;
+using BLAZAM.Services.Attributes;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Duo;
@@ -22,16 +23,15 @@ using Microsoft.OpenApi.Models;
 using MimeKit;
 using MudBlazor;
 using MudBlazor.Services;
-using Polly.Extensions.Http;
 using Polly;
+using Polly.Contrib.WaitAndRetry;
+using Polly.Extensions.Http;
 using Serilog;
 using System.Diagnostics;
 using System.Globalization;
 using System.Management;
 using System.Reflection;
 using System.Text;
-using Polly.Contrib.WaitAndRetry;
-using BLAZAM.Services.Attributes;
 
 namespace BLAZAM.Server
 {
@@ -177,7 +177,7 @@ namespace BLAZAM.Server
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true, // Important: Validate the signing key
-                    IssuerSigningKey = new SymmetricSecurityKey(Encryption.Instance.Key),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encryption.Instance.APITokenKey),
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateActor = false,
@@ -442,7 +442,7 @@ namespace BLAZAM.Server
         /// <param name="application"></param>
         public static void PreRun(this WebApplication application)
         {
-      
+
             //Setup Seq logging if allowed by admin
             try
             {
@@ -461,7 +461,8 @@ namespace BLAZAM.Server
             PreloadServices(application);
 
         }
-        static IAsyncPolicy<HttpResponseMessage> GetWebhookRetryPolicy()
+
+        private static IAsyncPolicy<HttpResponseMessage> GetWebhookRetryPolicy()
         {
             var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 5);
 
