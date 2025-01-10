@@ -45,6 +45,9 @@ namespace BLAZAM.Server
         /// <returns></returns>
         public static WebApplicationBuilder IntializeProperties(this WebApplicationBuilder builder)
         {
+
+            AppDomain.CurrentDomain.SetData("REGEX_DEFAULT_MATCH_TIMEOUT", TimeSpan.FromMilliseconds(100)); // process-wide setting
+
             //Set DebugMode flag from configuration
             ApplicationInfo ApplicationInfo = new(builder);
             ApplicationInfo.inDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
