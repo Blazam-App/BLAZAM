@@ -41,13 +41,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public string? GeneralSearchTerm
         {
             get => _generalSearchTerm;
-            set
-            {
-                // restrict to letters only
-
-                _generalSearchTerm = EscapeLdapSearchFilter(value);
-
-            }
+            set => _generalSearchTerm=value.EscapeLdapSearchFilter();
         }
 
         /// <summary>
@@ -87,35 +81,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             _currentUserActiveDirectoryContext = currentUserActiveDirectoryContext;
         }
-        private static string EscapeLdapSearchFilter(string input)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (char c in input)
-            {
-                switch (c)
-                {
-                    case '\\':
-                        sb.Append("\\5c");
-                        break;
-                    case '*':
-                        sb.Append("\\2a");
-                        break;
-                    case '(':
-                        sb.Append("\\28");
-                        break;
-                    case ')':
-                        sb.Append("\\29");
-                        break;
-                    case '\0': // Null character
-                        sb.Append("\\00");
-                        break;
-                    default:
-                        sb.Append(c);
-                        break;
-                }
-            }
-            return sb.ToString();
-        }
+
         public async Task<List<I>> SearchAsync<T, I>(CancellationToken? token = null) where T : I, IDirectoryEntryAdapter, new()
         {
             return await Task.Run(() =>
@@ -259,8 +225,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(memberOf:1.2.840.113556.1.4.1941:={Fields.NestedMemberOf.DN})";
                     if (Fields.BitLockerRecoveryId != null)
                         FilterQuery += $"(name=*{Fields.BitLockerRecoveryId}*)";
-                    if (!Fields.PasswordLastSet.IsNullOrEmpty())
-                        FilterQuery += $"(pwdLastSet>={Fields.PasswordLastSet})";
+                    if (Fields.PasswordLastSet != null)
+                        FilterQuery += $"(pwdLastSet>={Fields.PasswordLastSet.Value.ToFileTime().ToString()})";
 
 
                 }

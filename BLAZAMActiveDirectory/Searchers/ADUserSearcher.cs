@@ -117,7 +117,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 EnabledOnly = ignoreDisabledUsers,
                 Fields = new()
                 {
-                    PasswordLastSet = threeMonthsAgo.ToFileTimeUtc().ToString()
+                    PasswordLastSet = threeMonthsAgo
                 }
 
             }.Search<ADUser, IADUser>();
