@@ -272,13 +272,7 @@ namespace BLAZAM
 
         }
 
-        private static void ScheduleAutoLoad()
-        {
-            Task.Delay(5000).ContinueWith(t =>
-            {
-                new AutoLauncher(AppInstance.Services.GetService<IHttpClientFactory>(), AppInstance.Services.GetService<ApplicationInfo>());
-            });
-        }
+       
 
         private static void GetRunningWebServerConfiguration()
         {

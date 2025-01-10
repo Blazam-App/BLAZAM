@@ -39,7 +39,7 @@
 
         try
         {
-            MOTD = (MarkupString)(await Context?.AppSettings.FirstOrDefaultAsync())?.MOTD;
+            MOTD = (MarkupString)((await Context!.AppSettings.FirstOrDefaultAsync())!.MOTD)!;
         }
         catch
         {
@@ -81,7 +81,7 @@
     private async Task testJob()
     {
         var test = TestJob;
-        test.ShowJobDetailsDialog(MessageService);
+        await test.ShowJobDetailsDialogAsync(MessageService);
         var result = await test.RunAsync();
 
 

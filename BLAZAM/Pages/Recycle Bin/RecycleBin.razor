@@ -107,8 +107,9 @@
                 });
                 batchRestore.Steps.Add(restoreEntryStep);
             }
-            batchRestore.Run();
-            batchRestore.ShowJobDetailsDialog(MessageService);
+            await batchRestore.ShowJobDetailsDialogAsync(MessageService);
+            await batchRestore.RunAsync();
+
         }
     }
     async Task Restore(IDirectoryEntryAdapter entryToRestore)

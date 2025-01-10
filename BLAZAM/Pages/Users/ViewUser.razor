@@ -71,8 +71,8 @@
                     }
                 </AppModal>
                 <AppModal Title=@AppLocalization["Logon Hours"]
-                @ref=@LogonHoursModal
-                Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
+                          @ref=@LogonHoursModal
+                          Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
                     @if (LogonHoursModal?.IsShown == true)
                     {
                         <LogonHoursModalContent User="User" />
@@ -146,7 +146,7 @@
 
                                 <MudText Typo="Typo.subtitle2">@AppLocalization["Last Logon"]:</MudText>
                                 <MudSpacer />
-                                    <LastLogonTime Typo=Typo.caption DirectoryEntry="User" />
+                                <LastLogonTime Typo=Typo.caption DirectoryEntry="User" />
                             </MudStack>
                             @if (User?.LockedOut == true)
                             {
@@ -161,7 +161,7 @@
                                 <MudSpacer />
 
                                 <MudText Style="text-align:end;"
-                                Typo="Typo.caption">@User?.OU.ToPrettyOu()</MudText>
+                                         Typo="Typo.caption">@User?.OU.ToPrettyOu()</MudText>
                             </MudStack>
 
 
@@ -176,12 +176,12 @@
                             @if (User.Disabled)
                             {
                                 <MudAlert Severity="Severity.Error"
-                                Class="mud-width-full">@AppLocalization["User is disabled"]</MudAlert>
+                                          Class="mud-width-full">@AppLocalization["User is disabled"]</MudAlert>
                             }
                             @if (User.LockedOut)
                             {
                                 <MudAlert Severity="Severity.Warning"
-                                Class="mud-width-full">@AppLocalization["User is locked out"]</MudAlert>
+                                          Class="mud-width-full">@AppLocalization["User is locked out"]</MudAlert>
                             }
 
 
@@ -197,24 +197,24 @@
 
 
                                     <DynamicMudInput T=string
-                                        Label="@AppLocalization["First Name"]" 
-                                        @bind-Value="@User.GivenName"
-                                        Disabled=!User.NewEntry />
+                                                     Label="@AppLocalization["First Name"]"
+                                                     @bind-Value="@User.GivenName"
+                                                     Disabled=!User.NewEntry />
 
                                     <DynamicMudInput T=string
-                                        Label="@AppLocalization["Middle Name"]"
-                                        @bind-Value="@User.MiddleName"
-                                        Disabled=!User.NewEntry />
+                                                     Label="@AppLocalization["Middle Name"]"
+                                                     @bind-Value="@User.MiddleName"
+                                                     Disabled=!User.NewEntry />
 
                                     <DynamicMudInput T=string
-                                        Label="@AppLocalization["Last Name"]"
-                                        @bind-Value="@User.Surname"
-                                        Disabled=!User.NewEntry />
+                                                     Label="@AppLocalization["Last Name"]"
+                                                     @bind-Value="@User.Surname"
+                                                     Disabled=!User.NewEntry />
 
-                                    <DynamicMudInput T=string 
-                                        Label="@AppLocalization["Display Name"]"
-                                        @bind-Value="@User.DisplayName" 
-                                        Disabled=!User.NewEntry />
+                                    <DynamicMudInput T=string
+                                                     Label="@AppLocalization["Display Name"]"
+                                                     @bind-Value="@User.DisplayName"
+                                                     Disabled=!User.NewEntry />
 
 
                                 </MudStack>
@@ -307,7 +307,7 @@
                                         }
                                         @if (User.CanSetPassword)
                                         {
-                                            
+
                                             <MudSwitch T=bool
                                                        Color=Color.Success
                                                        ThumbIconColor="@(User.RequirePasswordChange==true?Color.Success:Color.Default)"
@@ -499,7 +499,7 @@
 
 
 @code {
-    #nullable disable warnings
+#nullable disable warnings
     string password;
 
     [Parameter]
@@ -575,7 +575,7 @@
         }
     }
 
-      private bool CanEditField(IActiveDirectoryField field)
+    private bool CanEditField(IActiveDirectoryField field)
     {
         if (!isSelf)
         {
@@ -615,9 +615,8 @@
         if (Context != null)
         {
             _globalPermissionSettings = await Context.GlobalPermissionSettings.FirstOrDefaultAsync();
-
+            selfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
         }
-        selfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
 
 
         if (User.HomeDirectory != null)
@@ -702,10 +701,13 @@
                         await AuditLogger.User.Changed(User, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
 
                         //Run synchronously if using sqlite
-                        if(DbFactory.DatabaseType == DatabaseType.SQLite){
+                        if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                        {
                             await NotificationGenerationService.PostAsync(User, NotificationType.Modify, CurrentUser.State);
 
-                        }else{
+                        }
+                        else
+                        {
                             _ = NotificationGenerationService.PostAsync(User, NotificationType.Modify, CurrentUser.State);
 
                         }
@@ -715,7 +717,7 @@
                 }
                 else
                 {
-                    jobResults.ShowJobDetailsDialog(MessageService);
+                   await jobResults.ShowJobDetailsDialogAsync(MessageService);
                 }
             }
             catch (ApplicationException ex)

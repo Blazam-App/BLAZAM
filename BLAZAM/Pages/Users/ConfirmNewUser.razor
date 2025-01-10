@@ -273,10 +273,13 @@ OnClick="Print">@AppLocalization["Print"]</MudButton>
 
             var createUserJob = new Job(AppLocalization["Create User"]);
             createUserJob.StopOnFailedStep = true;
-            createUserJob.ShowJobDetailsDialog(MessageService);
 
             _username = User.SamAccountName;
             _userPassword = User.NewPassword;
+
+
+            await createUserJob.ShowJobDetailsDialogAsync(MessageService);
+
 
             var result = await User.CommitChangesAsync(createUserJob);
 
@@ -285,7 +288,7 @@ OnClick="Print">@AppLocalization["Print"]</MudButton>
 
             if (result.FailedSteps.Count == 0)
             {
-                User = (IADUser)Directory.GetDirectoryEntryByDN(User.DN);
+                User = (IADUser?)Directory.GetDirectoryEntryByDN(User.DN)!;
 
                 SnackBarService.Success("User has been created");
                 confirmed = true;
@@ -306,7 +309,7 @@ OnClick="Print">@AppLocalization["Print"]</MudButton>
                     {
                         if (DirectoryTemplate.EffectiveAskForAlternateEmail == true || User.Email.IsNullOrEmpty())
                         {
-                            await SendWelcomeModal?.ShowAsync();
+                            await SendWelcomeModal!.ShowAsync();
                         }
                         else
                         {

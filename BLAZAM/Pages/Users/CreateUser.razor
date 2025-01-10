@@ -139,9 +139,9 @@
                 }
                 <MudTextField Class="mt-5"
                               Label="@AppLocalization["Username"]"
-                              Disabled=@(!CurrentUser.State.IsSuperAdmin && SelectedTemplate.EffectiveAllowUsernameOverride!=true)
+                              Disabled=@(!CurrentUser.State.IsSuperAdmin && SelectedTemplate?.EffectiveAllowUsernameOverride!=true)
                               T=string
-                              @bind-Value=@newUser.SamAccountName />
+                              @bind-Value=@newUser!.SamAccountName />
 
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
@@ -184,7 +184,7 @@
             </TabContent>
             <ChildContent>
                 <MemberOfList Target="_blank"
-                              AssignToClicked="@(async()=>{await _assignToModal?.ShowAsync();})"
+                              AssignToClicked="@(async()=>{await _assignToModal!.ShowAsync();})"
                               Disabled="@(SelectedTemplate?.EffectiveAllowCustomGroups!=true  && !CurrentUser.State.IsSuperAdmin)"
                               Model="@newUser" />
                 <AppModal @ref=_assignToModal>
