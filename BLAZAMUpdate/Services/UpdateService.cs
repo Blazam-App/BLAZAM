@@ -6,6 +6,7 @@ using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Update.Exceptions;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Octokit;
 using System.Diagnostics;
@@ -184,7 +185,8 @@ namespace BLAZAM.Update.Services
                 try
                 {
                     using var context = await _dbFactory.CreateDbContextAsync();
-                    SelectedBranch = context.AppSettings.FirstOrDefault()?.UpdateBranch;
+                    var settings = await context.AppSettings.FirstAsync();
+                    SelectedBranch = settings.UpdateBranch;
                     if (SelectedBranch.Equals(ApplicationReleaseBranches.Stable, StringComparison.InvariantCultureIgnoreCase))
                     {
                         return;
@@ -193,7 +195,7 @@ namespace BLAZAM.Update.Services
                     {
                         SelectedBranch = ApplicationReleaseBranches.Stable;
 
-                        context.AppSettings.FirstOrDefault().UpdateBranch = SelectedBranch;
+                        settings.UpdateBranch = SelectedBranch;
                         await context.SaveChangesAsync();
                     }
                 }

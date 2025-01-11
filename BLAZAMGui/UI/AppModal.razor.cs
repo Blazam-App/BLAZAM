@@ -50,7 +50,7 @@ namespace BLAZAM.Gui.UI
         /// <summary>
         /// A reference to this modal
         /// </summary>
-        protected MudDialog? Modal { get; set; }
+        protected MudDialog Modal { get; set; }
 
 
         private bool loadingData = false;
@@ -151,7 +151,7 @@ namespace BLAZAM.Gui.UI
 
             IsShown = true;
 
-            return await Modal?.ShowAsync(null, Options);
+            return await Modal.ShowAsync(null, Options);
         }
 
 
@@ -161,7 +161,7 @@ namespace BLAZAM.Gui.UI
         public void Close()
         {
             IsShown = false;
-            Modal?.CloseAsync();
+            Modal.CloseAsync();
         }
         private void YesClicked()
         {

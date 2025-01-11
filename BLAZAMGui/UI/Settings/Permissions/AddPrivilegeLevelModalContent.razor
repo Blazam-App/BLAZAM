@@ -46,7 +46,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
             await Context.SaveChangesAsync();
             NewPermissionDelegate = new PermissionDelegate();
             await DelegateAdded.InvokeAsync();
-            await Modal?.CloseAsync();
+            await Modal.CloseAsync();
 
             return;
         }
@@ -54,7 +54,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
         catch (Exception ex)
         {
 
-            Loggers.ActiveDirectoryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName + " {@Error}",ex);
+            Loggers.ActiveDirectoryLogger.Error("Error attempting to add delegate " + selectedDelegate?.CanonicalName + " {@Error}",ex);
             SnackBarService.Error("An unexpected error has occured.");
         }
     }
