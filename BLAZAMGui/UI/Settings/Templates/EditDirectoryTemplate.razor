@@ -450,8 +450,8 @@ await ParentTemplateChanged(null);
                             }
                         </MudStack>
                         <TemplateOverride Class="mud-width-full"
-                        BadgeClass="mud-width-full"
-                        SourceTemplate="@sendWelcomeEmailFromTemplate">
+                                          BadgeClass="mud-width-full"
+                                          SourceTemplate="@sendWelcomeEmailFromTemplate">
 
                             <MudSwitch Label="@AppLocalization["Send  Welcome Email"]"
                                        UncheckedColor="Color.Error"
@@ -575,7 +575,7 @@ await ParentTemplateChanged(null);
                                        DirectoryTemplate.FieldValues.Add(new(){ CustomField=customField});
                                        }
                                        })>
-                                                <MudText Color="Color.Tertiary">@field.DisplayName</MudText>
+                                            <MudText Color="Color.Tertiary">@field.DisplayName</MudText>
                                         </MudButton>
 
                                     }
@@ -597,7 +597,7 @@ await ParentTemplateChanged(null);
                                     <ToolBarContent>
                                         <MudButton Variant="Variant.Filled"
                                                    Color="Color.Secondary"
-                                                   OnClick="@(()=>{fieldDrawerOpen=!fieldDrawerOpen;})">@AppLocalization["Toggle Fields"]</MudButton>
+                                                   OnClick="@(()=>{fieldDrawerOpen = !fieldDrawerOpen;})">@AppLocalization["Toggle Fields"]</MudButton>
 
                                     </ToolBarContent>
                                     <Columns>
@@ -607,9 +607,9 @@ await ParentTemplateChanged(null);
                                                     var fromTemplateName = dropdownTemplates.Where(ot => ot.FieldValues.Contains(cellContext.Item)).FirstOrDefault();
                                                 }
                                                 <TemplateOverride SourceTemplate="@fromTemplateName">
-                                                     <AppTooltip Text="@cellContext.Item.FieldName">
+                                                    <AppTooltip Text="@cellContext.Item.FieldName">
 
-                                                            <MudText>@cellContext.Item.FieldDisplayName</MudText>
+                                                        <MudText>@cellContext.Item.FieldDisplayName</MudText>
                                                     </AppTooltip>
 
                                                 </TemplateOverride>
@@ -881,8 +881,6 @@ await ParentTemplateChanged(null);
         using (var dropdownContext = await DbFactory.CreateDbContextAsync())
         {
             dropdownTemplates = await dropdownContext.DirectoryTemplates.Where(t => !t.Equals(DirectoryTemplate) && t.DeletedAt == null).ToListAsync();
-            dropdownTemplates.Prepend(null);
-
         }
 
         if (DirectoryTemplate != null && Context != null && !Context.EntityIsTracked(DirectoryTemplate) == true)
@@ -1029,7 +1027,7 @@ await ParentTemplateChanged(null);
                 }
                 foreach (var field in DirectoryTemplate.FieldValues)
                 {
-                    field.Field = Context.ActiveDirectoryFields.FirstOrDefault(f => f.Id == field.Field.Id);
+                    field.Field = await Context.ActiveDirectoryFields.FirstOrDefaultAsync(f => f.Id == field.Field.Id);
                 }
                 DirectoryTemplate.AssignedGroupSids = trackedGroups;
                 await Context.DirectoryTemplates.AddAsync(DirectoryTemplate);

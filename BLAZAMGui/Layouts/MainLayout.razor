@@ -16,13 +16,13 @@
 }
 
 <PageTitle>@DatabaseCache.ApplicationSettings.AppAbbreviation</PageTitle>
-    <CascadingValue Value="this">
-        <MudLayout Style="min-height:98vh;">
-            <AuthorizeView Context="authContext">
-                <Authorized>
-                    <MainAppBar />
+<CascadingValue Value="this">
+    <MudLayout Style="min-height:98vh;">
+        <AuthorizeView Context="authContext">
+            <Authorized>
+                <MainAppBar />
 
-                    @if (ApplicationInfo.inDebugMode)
+                @if (ApplicationInfo.inDebugMode)
                 {
 
                     <AuthorizeView Context="authorizedContext"
@@ -80,7 +80,7 @@
                         {
                             <AuthorizeView Roles="@UserRoles.SuperAdmin">
                                 <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
-                                           OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
+                                           OnClick="@(()=>{_devDrawerOpen = !_devDrawerOpen; InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
 
                                 <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
                                            OnClick="@(()=>{dataBrowser?.ShowAsync();})">Data Browser</MudButton>
@@ -265,15 +265,7 @@
         {
             if (BrowseExpanded == false)
             {
-                if (_mudBreakPoint?.Breakpoint == Breakpoint.Sm ||
-                _mudBreakPoint?.Breakpoint == Breakpoint.Xs)
-                {
-                    return DrawerVariant.Responsive;
-                }
-                else
-                {
-                    return DrawerVariant.Responsive;
-                }
+                return DrawerVariant.Responsive;
             }
             else
             {

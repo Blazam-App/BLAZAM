@@ -61,12 +61,12 @@ namespace BLAZAM.Notifications.Services
                 {
                     try
                     {
-                        using var context = _appDatabaseFactory.CreateDbContext();
-                        var undeliveredWebhooks = context.WebHookAttempts
-                            .Include(w => w.WebHookSubscription)
-                            .Where(w => w.Delivered == false &&
-                            w.RetryCount < 15)
-                            .ToList();
+                        using var context = await _appDatabaseFactory.CreateDbContextAsync();
+                        var undeliveredWebhooks = await context.WebHookAttempts
+                                                                                .Include(w => w.WebHookSubscription)
+                                                                                .Where(w => w.Delivered == false &&
+                                                                                w.RetryCount < 15)
+                                                                                .ToListAsync();
                         if (undeliveredWebhooks.Count > 0)
                         {
                             IJob webhookAttemptJob = new Job("Webhook Retry");

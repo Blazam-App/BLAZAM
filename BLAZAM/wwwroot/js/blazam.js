@@ -10,7 +10,7 @@ window.updateCookieExpiration = async () => {
                 let response = JSON.parse(xhr.response);
                 if (response.expired == 'true') {
                     //refresh current page
-                    window.location.href = window.location.href;
+                    location.reload();
                 }
             }
         };

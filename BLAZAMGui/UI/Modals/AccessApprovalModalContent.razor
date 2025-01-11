@@ -74,8 +74,8 @@
         try
         {
             Context.SaveChangesAsync();
-            Modal.Close();
             OnApproved.InvokeAsync();
+            await Modal.CloseAsync();
 
             LoadingData = false;
         }catch(Exception ex)

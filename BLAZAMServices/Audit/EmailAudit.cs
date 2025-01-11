@@ -25,7 +25,7 @@ namespace BLAZAM.Services.Audit
 
         }
 
-        public async void EmailSent(string emailId, string? from, string? to, string? cc, string? bcc, string? subject, string? body, string? response)
+        public async Task EmailSent(string emailId, string? from, string? to, string? cc, string? bcc, string? subject, string? body, string? response)
         {
             await Log(emailId, from, to, cc, bcc, subject, body, response);
         }
@@ -48,7 +48,7 @@ namespace BLAZAM.Services.Audit
                 //    ServerResponse = response
                 //};
                 //table.Add(auditEntry);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 return true;
 
             }

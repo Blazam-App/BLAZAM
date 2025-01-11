@@ -14,7 +14,7 @@
                 <MudIconButton Icon="@Icons.Material.Filled.Menu"
                                Color="Color.Inherit"
                                Edge="Edge.Start"
-                               OnClick="@((e) => {mainLayout.DrawerOpen=!mainLayout.DrawerOpen; })" />
+                               OnClick="@((e) => {mainLayout.DrawerOpen = !mainLayout.DrawerOpen; })" />
             </MudHidden>
         }
         <MudLink Href="/">
@@ -24,12 +24,16 @@
             @if (DatabaseCache.ApplicationSettings?.AppName != DatabaseCache.ApplicationSettings?.AppAbbreviation)
             {
                 <AppTooltip Text="@DatabaseCache.ApplicationSettings?.AppName">
-                    <MudText Align="Align.Center" Class="px-3 align-middle">@DatabaseCache.ApplicationSettings?.AppAbbreviation</MudText>
+                    <MudText Align="Align.Center" Class="px-3 align-middle">
+                        @DatabaseCache.ApplicationSettings?.AppAbbreviation
+                    </MudText>
                 </AppTooltip>
             }
             else
             {
-                <MudText Align="Align.Center" Class="px-3 align-middle">@DatabaseCache.ApplicationSettings?.AppAbbreviation</MudText>
+                <MudText Align="Align.Center" Class="px-3 align-middle">
+                    @DatabaseCache.ApplicationSettings?.AppAbbreviation
+                </MudText>
             }
         </MudHidden>
 

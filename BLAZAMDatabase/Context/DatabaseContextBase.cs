@@ -17,6 +17,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using System.Data;
 
 namespace BLAZAM.Database.Context
@@ -683,7 +684,7 @@ namespace BLAZAM.Database.Context
 
         public bool EntityIsTracked<TEntry>(TEntry entry)
         {
-            if (entry == null) return false;
+            if (EqualityComparer<TEntry>.Default.Equals(entry, default)) return false;
             return base.Entry(entry).State != EntityState.Detached;
         }
 

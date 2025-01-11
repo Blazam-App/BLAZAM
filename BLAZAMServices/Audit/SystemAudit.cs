@@ -52,7 +52,7 @@ namespace BLAZAM.Services.Audit
 
 
                 });
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 return true;
 
             }

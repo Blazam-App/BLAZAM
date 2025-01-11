@@ -99,7 +99,7 @@
         if (!_newSubscription.URL.IsNullOrEmpty() && _newSubscription.NotificationTypes.Count > 0)
         {
            await OnCreateNewSubscription.InvokeAsync(_newSubscription);
-            Modal.Close();
+           await Modal.CloseAsync();
         }
 
     }

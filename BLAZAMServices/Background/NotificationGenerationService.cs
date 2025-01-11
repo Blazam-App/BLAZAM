@@ -57,7 +57,7 @@ namespace BLAZAM.Services.Background
                 PackageNotification(source, notificationType, actor, target, out notification, out notificationTitle, out emailMessage);
                 var _emailConfigured = _emailService.IsConfigured;
                 using var context = Context;
-                var users = context.UserSettings.Include(us => us.NotificationSubscriptions).ToList();
+                var users = await context.UserSettings.Include(us => us.NotificationSubscriptions).ToListAsync();
                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                 {
 

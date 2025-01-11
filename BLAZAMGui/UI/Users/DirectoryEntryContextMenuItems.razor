@@ -26,7 +26,7 @@
     [Parameter]
     public IDirectoryEntryAdapter Entry{ get; set; }
 
-    async void UnlockAccount(IAccountDirectoryAdapter userToUnlock)
+    async Task UnlockAccount(IAccountDirectoryAdapter userToUnlock)
     {
         if (userToUnlock.LockedOut)
         {
@@ -48,7 +48,7 @@
         }
     }
 
-    async void EnableAccount(IAccountDirectoryAdapter userToUnlock)
+    async Task EnableAccount(IAccountDirectoryAdapter userToUnlock)
     {
         if (userToUnlock.Disabled)
         {
@@ -70,7 +70,7 @@
         }
     }
 
-    async void DisableAccount(IAccountDirectoryAdapter userToUnlock)
+    async Task DisableAccount(IAccountDirectoryAdapter userToUnlock)
     {
         if (userToUnlock.Enabled)
         {

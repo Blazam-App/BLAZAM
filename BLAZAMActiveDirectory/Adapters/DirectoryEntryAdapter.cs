@@ -153,12 +153,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         public DirectoryEntry? DirectoryEntry { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="NullReferenceException">If the DirectoryEntry cannot be retrieved</exception>
         public void EnsureDirectoryEntry()
         {
             if (DirectoryEntry is null)
             {
                 FetchDirectoryEntry();
+                if (DirectoryEntry == null) throw new NullReferenceException("The DirectoryEntry for this object could not be retrieved");
+
             }
         }
 
@@ -667,9 +672,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                         }
                     });
-
-                    directoryEntries.OrderBy(x => x.CanonicalName).OrderBy(x => x.ObjectType);
-                    CachedChildren = directoryEntries;
+                    CachedChildren = directoryEntries.OrderBy(x => x.CanonicalName).OrderBy(x => x.ObjectType); 
                 }
                 return CachedChildren;
             }
@@ -978,8 +981,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             PostCommitSteps.Clear();
             if (SearchResult != null)
                 FetchDirectoryEntry();
-            else
-                DirectoryEntry?.RefreshCache();
 
             OnModelChanged?.Invoke();
 

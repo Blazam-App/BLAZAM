@@ -305,7 +305,10 @@
         Context = await DbFactory.CreateDbContextAsync();
 
         fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
-        fields.AddRange(Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToList());
+        fields.AddRange(await Context.CustomActiveDirectoryFields
+                                    .Where(cf => cf.DeletedAt == null)
+                                    .Cast<IActiveDirectoryField>()
+                                    .ToListAsync());
 
         actions = Context.ObjectActionFlag.AsEnumerable();
         if (Model.Id > 0)

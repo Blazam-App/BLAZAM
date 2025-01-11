@@ -227,11 +227,18 @@ namespace BLAZAM
                 try
                 {
                     dbSettings = kestrelContext.AppSettings.FirstOrDefault();
-
-                    var certBytes = dbSettings.SSLCertificateCipher.Decrypt<byte[]>();
-                    if (certBytes != null)
+                    if (dbSettings != null)
                     {
-                        cert = new X509Certificate2(certBytes);
+                        var certBytes = dbSettings.SSLCertificateCipher?.Decrypt<byte[]>();
+                        if (certBytes != null)
+                        {
+                            cert = new X509Certificate2(certBytes);
+
+                        }
+                    }
+                    else
+                    {
+                        Loggers.SystemLogger.Warning("Unable to connect to DB for SSL information");
 
                     }
 

@@ -80,7 +80,7 @@
 
 
                                 <MudButton Class="mx-6"
-                                           OnClick="(()=>{ShowAllUpdates=!ShowAllUpdates;})"
+                                           OnClick="(()=>{ShowAllUpdates = !ShowAllUpdates;})"
                                            Color="Color.Success">
                                     @(AppLocalization[ShowAllUpdates == false ? "Show Previous Updates" : "Hide Previous Updates"])
                                 </MudButton>
@@ -200,7 +200,7 @@
         }
     }
 
-    async void UpdateDownloadPercentage(FileProgress? progress)
+    async Task UpdateDownloadPercentage(FileProgress? progress)
     {
 
         DownladProgress = progress;

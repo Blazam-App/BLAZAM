@@ -11,10 +11,10 @@ Text="@_lastAttemp?.LastAttemptTimestamp.ToLocalTime().ToString()"/>
     {
         await base.OnInitializedAsync();
         using var dbContext = await DbFactory.CreateDbContextAsync();
-        var lastAttempt = dbContext.WebHookAttempts
-        .Where(x => x.WebHookSubscriptionId == Subscription.Id)
-        .OrderByDescending(x => x.LastAttemptTimestamp)
-        .FirstOrDefault();
+        var lastAttempt = await dbContext.WebHookAttempts
+                                        .Where(x => x.WebHookSubscriptionId == Subscription.Id)
+                                        .OrderByDescending(x => x.LastAttemptTimestamp)
+                                        .FirstOrDefaultAsync();
         if (lastAttempt != null)
         {
             _lastAttemp = lastAttempt;

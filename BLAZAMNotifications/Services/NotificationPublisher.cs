@@ -77,7 +77,7 @@ namespace BLAZAM.Notifications.Services
         {
             try
             {
-                using var context = _databaseFactory.CreateDbContext();
+                using var context = await _databaseFactory.CreateDbContextAsync();
                 var dbNotification = await context.NotificationMessages.FirstOrDefaultAsync(x => x.Id == notificationMessage.Id);
 
                 context.NotificationMessages.Remove(dbNotification);

@@ -247,7 +247,7 @@ namespace BLAZAM.Update
             var updateCredentials = _updateService.GetUpdateCredentials();
             if (updateCredentials != null)
             {
-                return updateCredentials.Run(() =>
+                return await updateCredentials.RunAsync(() =>
                 {
                     try
                     {

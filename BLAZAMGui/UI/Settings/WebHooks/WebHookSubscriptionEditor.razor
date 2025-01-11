@@ -1,7 +1,7 @@
 @inherits DatabaseComponentBase
 <MudDataGrid Items="_subscriptions"
              Virtualize=true
-             Dense="true" 
+             Dense="true"
              Breakpoint="Breakpoint.Md">
     <Columns>
 
@@ -62,7 +62,7 @@
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization["Last Message Status"]">
             <CellTemplate>
-                <LastMessageStatus Subscription="context.Item"/>
+                <LastMessageStatus Subscription="context.Item" />
                 @* <StatusCheck StatusFunc="(()=>{return GetLastMessageStatus(context.Item);})"/> *@
             </CellTemplate>
         </TemplateColumn>
@@ -133,17 +133,17 @@
     private async Task<bool> GetLastMessageStatus(WebHookSubscription sub)
     {
         using var dbContext = await DbFactory.CreateDbContextAsync();
-        var lastAttempt= dbContext.WebHookAttempts
-        .Where(x=>x.WebHookSubscriptionId==sub.Id)
-        .OrderByDescending(x=>x.LastAttemptTimestamp)
-        .FirstOrDefault();
+        var lastAttempt = await dbContext.WebHookAttempts
+                                        .Where(x => x.WebHookSubscriptionId == sub.Id)
+                                        .OrderByDescending(x => x.LastAttemptTimestamp)
+                                        .FirstOrDefaultAsync();
         if (lastAttempt != null)
         {
             return lastAttempt.Delivered;
         }
         return false;
     }
-        private async Task Save()
+    private async Task Save()
     {
         try
         {
@@ -189,7 +189,7 @@
         LoadingData = false;
     }
 
-    private async void ouChanged(IDirectoryEntryAdapter entry)
+    private async Task ouChanged(IDirectoryEntryAdapter entry)
     {
         var ou = (IADOrganizationalUnit)entry;
         if (ou != null)

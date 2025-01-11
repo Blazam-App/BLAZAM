@@ -72,7 +72,7 @@
     {
         Nav.NavigateTo(args.Item.SearchUri);
     }
-    async void UnlockAccount(IADUser userToUnlock)
+    async Task UnlockAccount(IADUser userToUnlock)
     {
         if (userToUnlock.LockedOut)
         {

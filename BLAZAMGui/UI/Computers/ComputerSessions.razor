@@ -107,7 +107,7 @@ else
         t = new Timer(RefreshSessions, null, 1000, 10000);
 
     }
-    async void LogoffSession(IRemoteSession session)
+    async Task LogoffSession(IRemoteSession session)
     {
 
         if (await MessageService.Confirm("Are you sure you want to log off " + session.User.ToString(), "Logoff User"))
@@ -119,7 +119,7 @@ else
         await InvokeAsync(StateHasChanged);
     }
 
-    async void DisconnectSession(IRemoteSession session)
+    async Task DisconnectSession(IRemoteSession session)
     {
         if (await MessageService.Confirm("Are you sure you want to disconnect " + session.User.ToString(), "Disconnect User"))
         {

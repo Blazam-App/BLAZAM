@@ -162,7 +162,7 @@ namespace BLAZAM.Common.Data
 
                 // Reading the standard output stream of the process
                 output = await process.StandardOutput.ReadToEndAsync();
-                process.WaitForExit();
+                await process.WaitForExitAsync();
 
 
             }
