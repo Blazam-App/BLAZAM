@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.2.5</AssemblyVersion>
-		<Version>2025.01.10.0149</Version>
+		<Version>2025.01.11.1238</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -105,12 +105,6 @@
 		<Content Include="static\img\default_logo5.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="..\BLAZAMGui\UI\Dashboard\WidgetContainer.razor" Link="WidgetContainer.razor" />
-	  <None Include="..\BLAZAMGui\UI\Dashboard\Widgets\DirectoryEntryTooltipPopover.razor" Link="DirectoryEntryTooltipPopover.razor" />
-	  <None Include="..\BLAZAMGui\UI\Modals\GoogleAuthenticatorInput.razor" Link="GoogleAuthenticatorInput.razor" />
 	</ItemGroup>
 
 	<ItemGroup>

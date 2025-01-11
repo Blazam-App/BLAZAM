@@ -24,7 +24,7 @@
         <MudSpacer />
         <MudButton Color="Color.Primary"
                    Variant="@Variant.Outlined"
-                   OnClick="@(()=>{RestoreSelected();})">
+                   OnClick="@(async()=>{await RestoreSelected();})">
             @AppLocalization["Restore Selected"]
         </MudButton>
 

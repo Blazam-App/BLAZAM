@@ -267,7 +267,7 @@
               @ref=_deleteModal
               Title="@AppLocalization["Confirm deletion"]">
         <DeleteAccessLevelModalContent AccessLevel="Model"
-                                       OnConfirm="@(()=>{DeleteAccessLevel();})" />
+                                       OnConfirm="@(async()=>{await DeleteAccessLevel();})" />
     </AppModal>
 }
 

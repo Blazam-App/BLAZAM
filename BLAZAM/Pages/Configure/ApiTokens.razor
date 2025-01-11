@@ -22,7 +22,7 @@
             @AppLocalization["Click to view API documentation"].
         </MudAlert>
     </MudLink>
-    <ApiTokenDataGrid ShowUser="true" OnTokenDeleted="@((token)=>{Delete(token);})" Tokens="@_tokens" />
+    <ApiTokenDataGrid ShowUser="true" OnTokenDeleted="@(async(token)=>{await Delete(token);})" Tokens="@_tokens" />
     <MudButton Color="Color.Primary" OnClick="@(Save)">@AppLocalization["Save"]</MudButton>
 </AuthorizeView>
 

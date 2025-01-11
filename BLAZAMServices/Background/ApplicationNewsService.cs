@@ -17,7 +17,6 @@ namespace BLAZAM.Services.Background
     {
         private HttpClient _httpClient;
         private HttpClient _secondaryHttpClient;
-        private Timer? _pollingTimer;
         private bool _pollCompleted = false;
         private List<NewsItem> _allNewsItems = new List<NewsItem>();
         private List<NewsItem> _activeNewsItems => _allNewsItems.Where(x => x.DeletedAt == null && x.Published == true && (x.ScheduledAt == null || x.ScheduledAt < DateTime.Now) && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now)).ToList();
@@ -35,8 +34,6 @@ namespace BLAZAM.Services.Background
                 BaseAddress = new Uri("https://blazam-news.azurewebsites.net/api/"),
                 Timeout = TimeSpan.FromSeconds(60)
             };
-            //_pollingTimer = new Timer(Tick, null, 10, 1000 * 60 * 15);
-            // GetAllNewsItems();
         }
 
 
@@ -154,7 +151,6 @@ namespace BLAZAM.Services.Background
         {
             _httpClient.Dispose();
             _secondaryHttpClient.Dispose();
-            _pollingTimer?.Dispose();
         }
     }
 }

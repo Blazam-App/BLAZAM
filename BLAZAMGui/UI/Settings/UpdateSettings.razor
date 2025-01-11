@@ -226,7 +226,7 @@
             }
         }
         await AuditLogger.System.SettingsChanged("Update", settings.GetChanges(originalSettings));
-        base.Save();
+        await base.Save();
         await InvokeAsync(StateHasChanged);
 
     }

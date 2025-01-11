@@ -68,21 +68,24 @@
         get => CurrentUser.State.Cache.Get<List<IDirectoryEntryAdapter>>(this.GetType());
         set => CurrentUser.State.Cache.Set(this.GetType(), value);
     }
-   
+
     protected override async Task RefreshData()
     {
         LoadingData = true;
-        var favorites = new List<IDirectoryEntryAdapter>();
-        foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
-        {
-            IDirectoryEntryAdapter match = Directory.GetDirectoryEntryByDN(entry.DN);
-            if (match != null && match.CanRead)
+        await Task.Run(() => { 
+            var favorites = new List<IDirectoryEntryAdapter>();
+            foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
             {
-                favorites.Add(match);
-            }
+                IDirectoryEntryAdapter match = Directory.GetDirectoryEntryByDN(entry.DN);
+                if (match != null && match.CanRead)
+                {
+                    favorites.Add(match);
+                }
 
-        }
-        FavoriteEntries = favorites;
+            }
+            FavoriteEntries = favorites;
+        });
+       
         LoadingData = false;
 
     }

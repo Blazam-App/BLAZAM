@@ -88,6 +88,6 @@
     public EventCallback<ApiToken?> OnTokenDeleted { get; set; }
     private async Task Delete(ApiToken? tokenToDelete)
     {
-        OnTokenDeleted.InvokeAsync(tokenToDelete);
+        await OnTokenDeleted.InvokeAsync(tokenToDelete);
     }
 }

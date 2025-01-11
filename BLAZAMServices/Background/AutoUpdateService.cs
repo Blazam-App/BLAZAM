@@ -25,7 +25,6 @@ namespace BLAZAM.Services.Background
 
         private readonly IAppDatabaseFactory factory;
         private UpdateService updateService;
-        private Timer? updateCheckTimer;
         private Timer? autoUpdateApplyTimer = null;
         private Timer? directoryCleaner = null;
         public bool IsUpdatedScheduled { get { return autoUpdateApplyTimer != null; } }
@@ -40,7 +39,6 @@ namespace BLAZAM.Services.Background
             _applicationInfo = applicationInfo;
             this.factory = factory;
             this.updateService = updateService;
-            //updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromSeconds(1).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
             directoryCleaner = new Timer(CleanDirectories, null, TimeSpan.FromSeconds(30), TimeSpan.FromHours(20));
         }
 
@@ -374,7 +372,6 @@ namespace BLAZAM.Services.Background
         public void Dispose()
         {
             autoUpdateApplyTimer?.Dispose();
-            updateCheckTimer?.Dispose();
             directoryCleaner?.Dispose();
         }
     }

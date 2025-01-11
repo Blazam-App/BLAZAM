@@ -139,7 +139,7 @@
         }
 
         await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
-        base.Save();
+        await base.Save();
         await InvokeAsync(StateHasChanged);
         DoDuoHealthCheck();
     }

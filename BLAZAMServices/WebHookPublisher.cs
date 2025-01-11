@@ -90,7 +90,7 @@ namespace BLAZAM.Notifications.Services
                             else
                             {
 
-                                execStep = new JobStep("Multi-threaded execute of " + undeliveredWebhooks.Count + " retries", async (step) =>
+                                execStep = new JobStep("Multi-threaded execute of " + undeliveredWebhooks.Count + " retries", (step) =>
                                 {
                                     Parallel.ForEachAsync(undeliveredWebhooks, async (attempt, cancel) =>
                                             {
@@ -180,7 +180,7 @@ namespace BLAZAM.Notifications.Services
                 return true;
             });
             webhookAttemptJob.AddStep(execStep);
-            var result = webhookAttemptJob.Run();
+            var result = await webhookAttemptJob.RunAsync();
         }
 
         private async Task SendWebHook(WebHookSubscription subscription, Guid msgId, Guid attemptId, DateTime eventTimestamp, string eventType, string payloadString, string? signature)

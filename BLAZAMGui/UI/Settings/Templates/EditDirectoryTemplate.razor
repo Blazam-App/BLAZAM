@@ -40,7 +40,7 @@ await ParentTemplateChanged(null);
                                Adornment="Adornment.End"
                                AdornmentIcon="@Icons.Material.Filled.Add"
                                AdornmentColor="@Color.Success"
-                               OnAdornmentClick="@(()=>{categoryModal.ShowAsync();})"
+                               OnAdornmentClick="@(()=>{_=categoryModal?.ShowAsync();})"
                                Values="@(categories.Count>0?categories:new List<string>())"
                                ValueChanged="@((value)=>{DirectoryTemplate.Category=value;})"
                                @bind-Text=DirectoryTemplate.Category

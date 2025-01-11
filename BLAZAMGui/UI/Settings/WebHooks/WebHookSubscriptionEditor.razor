@@ -73,7 +73,7 @@
                         Color="Color.Error"
                         Size="Size.Small"
                         IconSize="Size.Small"
-                        OnClick="@(()=>{Delete(context.Item);})" />
+                        OnClick="@(async()=>{await Delete(context.Item);})" />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization["Save"]">

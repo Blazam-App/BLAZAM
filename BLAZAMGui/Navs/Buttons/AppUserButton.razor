@@ -92,7 +92,7 @@ CloseButton=true
             UserState.OnSettingsChanged += async () =>
         {
 
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
         };
 
 

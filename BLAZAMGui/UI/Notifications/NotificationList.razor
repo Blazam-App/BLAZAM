@@ -66,15 +66,15 @@
         await base.OnInitializedAsync();
         RetrieveMessages();
 
-        UserState.OnSettingsChanged += async () =>
+        UserState.OnSettingsChanged +=  () =>
         {
             RetrieveMessages();
         };
-        NotificationPublisher.OnNotificationPublished += async (notification) =>
+        NotificationPublisher.OnNotificationPublished +=  (notification) =>
         {
             RetrieveMessages();
         };
-        NotificationPublisher.OnNotificationDeleted += async () =>
+        NotificationPublisher.OnNotificationDeleted +=  () =>
         {
             RetrieveMessages();
         };

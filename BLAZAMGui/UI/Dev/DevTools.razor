@@ -6,124 +6,117 @@
     <MudNavMenu Color="Color.Success" Bordered="true"> *@
 
 
-        <MudText Typo="Typo.h6">Dev Tools</MudText>
-        <MudText>Debugger Attached: @Debugger.IsAttached</MudText>
-        <MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>
+<MudText Typo="Typo.h6">Dev Tools</MudText>
+<MudText>Debugger Attached: @Debugger.IsAttached</MudText>
+<MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>
             {SnackBarService.Success("Test Notification " + Guid.NewGuid());
             })">Test Notification</MudButton>
-        <MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>{SnackbarBroadcastService.Success("Test Broadcast " + Guid.NewGuid(),"Test");})">Test Broadcast</MudButton>
-        <MudButton Color="Color.Primary" style="height:35px;" OnClick=TestNotificationBroadcast>Test Notification Broadcast</MudButton>
+<MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>{SnackbarBroadcastService.Success("Test Broadcast " + Guid.NewGuid(),"Test");})">Test Broadcast</MudButton>
+<MudButton Color="Color.Primary" style="height:35px;" OnClick=TestNotificationBroadcast>Test Notification Broadcast</MudButton>
 
-        <MudCard Class="mud-theme-dark">
-            <MudCardHeader>
-                Conn Monitor
-            </MudCardHeader>
-            <Row>Database Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DatabaseConnectionStatus)</Row>
-            <Row>ActiveDirectory Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DirectoryConnectionStatus)</Row>
-            <Row>App Ready Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.AppReady)</Row>
-            
-        </MudCard>
-       @*      <MudDataGrid Items="new List<IApplicationUserState>{CurrentUser.State}">
-            <Columns>
-                <PropertyColumn Property="s=>s.Username"/>
-                <PropertyColumn Property="s=>s.AuditUsername"/>
-                    <PropertyColumn Property="s=>s.User!=null && s.User.Identity==null?null:s.User.Identity.Name" />
-                    <PropertyColumn Property="s=>s.Ticket!=null && s.Ticket.Principal!=null  && s.Ticket.Principal.Identity!=null?s.Ticket.Principal.Identity.Name:null" />
-            </Columns>
-        </MudDataGrid> *@
-        <MudDataGrid Items="@UserStateService.UserStates">
-            <Columns>
-                <PropertyColumn Title="Username" Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
-                <PropertyColumn Title="IP Address" Property="x => x.IPAddress==null?null:x.IPAddress" />
+<MudCard Class="mud-theme-dark">
+    <MudCardHeader>
+        Conn Monitor
+    </MudCardHeader>
+    <MudText>Database Status: @Enum.GetName(typeof(ServiceConnectionState), Monitor.DatabaseConnectionStatus)</MudText>
+    <MudText>ActiveDirectory Status: @Enum.GetName(typeof(ServiceConnectionState), Monitor.DirectoryConnectionStatus)</MudText>
+    <MudText>App Ready Status: @Enum.GetName(typeof(ServiceConnectionState), Monitor.AppReady)</MudText>
 
-                <PropertyColumn Title="Auth Type" Property="x => x.User.Identity==null || x.User.Identity.AuthenticationType==null?null:x.User.Identity.AuthenticationType.ToString()" />
-                <PropertyColumn Title="Authenticated" Property="x => x.User.Identity==null?null:x.User.Identity.IsAuthenticated.ToString()" />
-                    <PropertyColumn Property="s=>s.Ticket!=null && s.Ticket.Principal!=null  && s.Ticket.Principal.Identity!=null?s.Ticket.Principal.Identity.Name:null" />
+</MudCard>
 
-                <PropertyColumn Title="Last URI" Property="x => x.LastUri" />
-                <PropertyColumn Title="Super Admin" Property="x => x.IsSuperAdmin" />
-                <TemplateColumn Title="Last Access">
-                    <CellTemplate>
-                        <MudText>@context.Item.LastAccessed.ToLocalTime()</MudText>
-                    </CellTemplate>
-                </TemplateColumn>
-                <TemplateColumn Title="Expires">
-                    <CellTemplate>
-                        @context.Item.Ticket?.Properties.ExpiresUtc?.LocalDateTime
-                    </CellTemplate>
-                </TemplateColumn>
-                <PropertyColumn Title="Session Expiration Time" Property="x => x.Ticket==null?null:(DateTimeOffset.UtcNow-x.Ticket.Properties.ExpiresUtc)" />
+<MudDataGrid Items="@UserStateService.UserStates">
+    <Columns>
+        <PropertyColumn Title="Username" Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
+        <PropertyColumn Title="IP Address" Property="x => x.IPAddress==null?null:x.IPAddress" />
+
+        <PropertyColumn Title="Auth Type" Property="x => x.User.Identity==null || x.User.Identity.AuthenticationType==null?null:x.User.Identity.AuthenticationType.ToString()" />
+        <PropertyColumn Title="Authenticated" Property="x => x.User.Identity==null?null:x.User.Identity.IsAuthenticated.ToString()" />
+        <PropertyColumn Property="s=>s.Ticket!=null && s.Ticket.Principal!=null  && s.Ticket.Principal.Identity!=null?s.Ticket.Principal.Identity.Name:null" />
+
+        <PropertyColumn Title="Last URI" Property="x => x.LastUri" />
+        <PropertyColumn Title="Super Admin" Property="x => x.IsSuperAdmin" />
+        <TemplateColumn Title="Last Access">
+            <CellTemplate>
+                <MudText>@context.Item.LastAccessed.ToLocalTime()</MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Expires">
+            <CellTemplate>
+                @context.Item.Ticket?.Properties.ExpiresUtc?.LocalDateTime
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Title="Session Expiration Time" Property="x => x.Ticket==null?null:(DateTimeOffset.UtcNow-x.Ticket.Properties.ExpiresUtc)" />
 
 
 
-                <TemplateColumn Title="Has User Priv">
-                    <CellTemplate>
-                        @context.Item.HasUserPrivilege
-                    </CellTemplate>
-                </TemplateColumn>
-                <TemplateColumn Title="Has Group Priv">
-                    <CellTemplate>
-                        @context.Item.HasGroupPrivilege
-                    </CellTemplate>
-                </TemplateColumn>
-                <TemplateColumn Title="Has OU Priv">
-                    <CellTemplate>
-                        @context.Item.HasOUPrivilege
-                    </CellTemplate>
-                </TemplateColumn>
-                <TemplateColumn Title="Has Computer Priv">
-                    <CellTemplate>
-                        @context.Item.HasComputerPrivilege
-                    </CellTemplate>
-                </TemplateColumn>
-            </Columns>
-        </MudDataGrid>
+        <TemplateColumn Title="Has User Priv">
+            <CellTemplate>
+                @context.Item.HasUserPrivilege
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Has Group Priv">
+            <CellTemplate>
+                @context.Item.HasGroupPrivilege
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Has OU Priv">
+            <CellTemplate>
+                @context.Item.HasOUPrivilege
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Has Computer Priv">
+            <CellTemplate>
+                @context.Item.HasComputerPrivilege
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
 
 
-        <MudCard Class="mud-theme-dark">
-            <MudCardHeader>
-                User
-            </MudCardHeader>
-            @{
-                var ids = ca.HttpContext?.User.Identities.ToList();
-            }
-            @if (ids != null)
+<MudCard Class="mud-theme-dark">
+    <MudCardHeader>
+        User
+    </MudCardHeader>
+    @{
+        var ids = ca.HttpContext?.User.Identities.ToList();
+    }
+    @if (ids != null)
+    {
+        @foreach (var id in ids)
+        {
+
+            var claims2 = @ca.HttpContext?.User.Claims.ToList();
+
+            <MudText>Name: @id.Name</MudText>
+            <MudText>Authenticated: @id.IsAuthenticated.ToString()</MudText>
+            <MudText>Type: @id.AuthenticationType</MudText>
+            @if (claims2 != null)
             {
-                @foreach (var id in ids)
+                @foreach (var claim in claims2)
                 {
+                    <MudText>@claim.Type: @claim.Value</MudText>
 
-                    var claims2 = @ca.HttpContext?.User.Claims.ToList();
-
-                    <Row>Name: @id.Name</Row>
-                    <Row>Authenticated: @id.IsAuthenticated.ToString()</Row>
-                    <Row>Type: @id.AuthenticationType</Row>
-                    @if (claims2 != null)
-                    {
-                        @foreach (var claim in claims2)
-                        {
-                            <Row>@claim.Type: @claim.Value</Row>
-
-                        }
-                    }
                 }
             }
-        </MudCard>
+        }
+    }
+</MudCard>
 
 
 
-        <MudCard Class="mud-theme-dark">
-            <MudCardHeader>
-                Active Directory
-            </MudCardHeader>
-            <Row>
-                <Row>ActiveDirectory Status: @DirectoryStatus</Row>
-                <Row>ActiveDirectory Server: @Directory.ConnectionSettings?.ServerAddress</Row>
+<MudCard Class="mud-theme-dark">
+    <MudCardHeader>
+        Active Directory
+    </MudCardHeader>
+    <MudStack Row="true">
+        <MudText>ActiveDirectory Status: @DirectoryStatus</MudText>
+        <MudText>ActiveDirectory Server: @Directory.ConnectionSettings?.ServerAddress</MudText>
 
-                <Row>ActiveDirectory Server Port: @Directory.ConnectionSettings?.ServerPort</Row>
-                <Row>ActiveDirectory Server Port Open: @DirectoryPortOpen</Row>
+        <MudText>ActiveDirectory Server Port: @Directory.ConnectionSettings?.ServerPort</MudText>
+        <MudText>ActiveDirectory Server Port Open: @DirectoryPortOpen</MudText>
 
-            </Row>
-        </MudCard>
+    </MudStack>
+</MudCard>
 
 @*     </MudNavMenu>
 </MudPaper> *@

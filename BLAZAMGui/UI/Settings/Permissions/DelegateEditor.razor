@@ -11,7 +11,7 @@
                   @bind-Value="@DelegateFilter" />
     <MudSpacer />
     <MudButton Color=Color.Secondary
-               OnClick="(()=>{trashModal.ShowAsync();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
+               OnClick="(()=>{_=trashModal?.ShowAsync();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
 </MudStack>
 
 

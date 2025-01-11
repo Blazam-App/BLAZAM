@@ -101,7 +101,7 @@
     private async void AddSubscription()
     {
         await Context.NotificationSubscriptions.AddAsync(Subscription);
-        OnAdded.InvokeAsync();
+        await OnAdded.InvokeAsync();
 
     }
 
