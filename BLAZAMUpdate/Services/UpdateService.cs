@@ -94,7 +94,6 @@ namespace BLAZAM.Update.Services
             //Create a GitHub client to get api data from repo
 
             Release? latestBranchRelease = null;
-            Release? latestStableRelease = null;
 
             var client = new GitHubClient(new ProductHeaderValue(Publisher_Name));
 
