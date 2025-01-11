@@ -528,12 +528,7 @@ namespace BLAZAM.Server.Data.Services
 
             }
 
-            if (baseSearch == null)
-            {
-                Loggers.ActiveDirectoryLogger.Error("The active user state for " + dnTarget + " could not" +
-                    "be found in the application cache." + " {@Error}", new ApplicationException());
-                return false;
-            }
+     
             try
             {
                 var possibleReads = allowSelector.Invoke(baseSearch).ToList();

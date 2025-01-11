@@ -87,7 +87,7 @@
             });
         exportJob.AddStep(exportData);
         exportJob.AddStep(packageData);
-        exportJob.ShowJobDetailsDialog(MessageService);
+        await exportJob.ShowJobDetailsDialogAsync(MessageService);
         await InvokeAsync(StateHasChanged);
         await exportJob.RunAsync();
 

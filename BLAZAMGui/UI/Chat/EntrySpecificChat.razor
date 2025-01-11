@@ -7,7 +7,7 @@
 @if (AlwaysShowChatButton || ChatMessages != null && ChatMessages.Count() > 0)
 {
     <ChatButton ChatRoom=ChatRoom 
-        OnClick="@(()=>{_chatOpen=!_chatOpen;})" />
+        OnClick="@(()=>{_chatOpen = !_chatOpen;})" />
 }
 @if (AlwaysShowPageViewersButton || (ShowPageViewersButton && Viewers.ContainsKey(ChatUri) && Viewers[ChatUri].Count > 1))
 {

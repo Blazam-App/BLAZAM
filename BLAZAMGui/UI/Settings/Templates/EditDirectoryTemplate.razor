@@ -890,9 +890,11 @@ await ParentTemplateChanged(null);
             await LoadParentOU();
         }
 
-
-        fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
-        fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
+        if (Context != null)
+        {
+            fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
+            fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
+        }
         RefreshGroups();
         await InvokeAsync(StateHasChanged);
     }
@@ -1093,8 +1095,11 @@ await ParentTemplateChanged(null);
             templateCursor = templateCursor.ParentTemplate;
 
             var templateCursorValue = valueSelector.Invoke(templateCursor);
-            if (templateCursorValue != null && templateCursorValue.Equals(value))
+            if (EqualityComparer<T?>.Default.Equals(templateCursorValue, default(T?)) && templateCursorValue.Equals(value))
+            {
                 return templateCursor;
+
+            }
         }
 
         return null;

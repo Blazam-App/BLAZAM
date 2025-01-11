@@ -69,7 +69,7 @@
             authSecret = customSecret;
         }
         registrationUri = customRegistrationUri;
-        await (await dialog?.ShowAsync()).Result;
+        await (await dialog!.ShowAsync()).Result;
         var result = _authenticated;
 
         _authenticated = false;

@@ -255,7 +255,7 @@ namespace BLAZAM.Services
                             else
                             {
                                 var sid = userClaim.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
-                                var userSettings = context.UserSettings.FirstOrDefault(x => x.UserGUID == sid);
+                                var userSettings = await context.UserSettings.FirstOrDefaultAsync(x => x.UserGUID == sid);
                                 if (userSettings != null && !loginReq.Impersonation && !userSettings.AuthenticatorSecret.IsNullOrEmpty())
                                 {
                                     var passcode = loginReq.MFAToken;

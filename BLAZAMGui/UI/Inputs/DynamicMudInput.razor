@@ -75,8 +75,13 @@
         get => objValue;
         set
         {
-            if (objValue?.Equals(value) == true || (objValue == null && value == null)) return;
-            if (objValue != null && ValueTransformer != null)
+            if (EqualityComparer<T?>.Default.Equals(objValue, default(T?))){
+
+            }
+            if (objValue?.Equals(value) == true 
+            || (EqualityComparer<T?>.Default.Equals(objValue, default(T?)) && EqualityComparer<T?>.Default.Equals(value, default(T?)))) return;
+            if (!EqualityComparer<T?>.Default.Equals(objValue, default(T?))
+                && ValueTransformer != null)
                 value = ValueTransformer.Invoke(value);
             objValue = value;
             //if (!value.Equals(initializedValue))
