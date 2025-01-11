@@ -1,5 +1,5 @@
 ﻿@page "/install"
-@page "/install/{selectedStep}"
+@page "/install/{selectedStep:int}"
 @layout InstallLayout
 @inherits DatabaseComponentBase
 @inject ApplicationManager ApplicationManager
@@ -166,15 +166,15 @@ else
     {
         try
         {
-            if (await Context?.AppSettings.FirstOrDefaultAsync() == null)
+            if (await Context?.AppSettings.FirstOrDefaultAsync()! == null)
             {
                 var settings = new AppSettings();
                 settings.Id = 1;
-                Context?.AppSettings.Add(settings);
-                await Context?.SaveChangesAsync();
+                Context.AppSettings.Add(settings);
+                await Context.SaveChangesAsync();
                 DatabaseCache.ApplicationSettings = settings;
             }
-            (await Context.AppSettings.FirstOrDefaultAsync()).InstallationCompleted = true;
+            (await Context.AppSettings.FirstOrDefaultAsync())!.InstallationCompleted = true;
             var result = await Context.SaveChangesAsync();
             ApplicationInfo.InstallationCompleted = true;
             Nav.NavigateTo("/home", true);

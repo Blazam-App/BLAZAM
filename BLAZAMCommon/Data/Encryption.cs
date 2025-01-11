@@ -278,8 +278,18 @@ namespace BLAZAM.Common.Data
         /// <returns></returns>
         public string EncryptObject(object obj)
         {
-            Random rand = new Random();
-            int ivSeed = rand.Next(0, 65535);
+            // Create a new instance of RandomNumberGenerator
+            var randomGenerator = RandomNumberGenerator.Create();
+
+            // Create a byte array to hold the random value
+            byte[] ivSeedBytes = new byte[4];
+
+            // Generate a random value and store it in the byte array
+            randomGenerator.GetBytes(ivSeedBytes);
+
+            // Convert the byte array to an integer (adjust as needed)
+            int ivSeed = BitConverter.ToInt32(ivSeedBytes, 0);
+
 
             var salt = Encoding.UTF8.GetBytes(OldSalt);
 

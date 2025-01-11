@@ -722,8 +722,9 @@ namespace BLAZAM.ActiveDirectory
             return result;
         }
 
-        public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string dn)
+        public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn)
         {
+            if(dn == null)return null;
             var searcher = new ADSearch(this);
             searcher.SearchRoot = RootDirectoryEntry;
             searcher.Fields.DN = dn;

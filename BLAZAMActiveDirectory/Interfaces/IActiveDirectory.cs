@@ -170,6 +170,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         /// <param name="dn">The DN to search for</param>
         /// <returns>The matching entry, otherwise null</returns>
-        IDirectoryEntryAdapter? GetDirectoryEntryByDN(string dn);
+        IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn);
     }
 }
