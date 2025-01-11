@@ -89,7 +89,8 @@
         LoadingData = false;
 
     }
-    void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
+    
+    protected override void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
     {
         if (args.Item != null)
         {

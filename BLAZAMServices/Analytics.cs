@@ -34,62 +34,62 @@ namespace BLAZAM.Services
             _jsRuntime = jSRuntime;
         }
 
-        public async void ObjectMoved(ActiveDirectoryObjectType objectType)
+        public async Task ObjectMoved(ActiveDirectoryObjectType objectType)
         {
             await PostCustomEvent("object_moved", objectType.ToString());
         }
 
-        public async void ObjectCreated(ActiveDirectoryObjectType objectType)
+        public async Task ObjectCreated(ActiveDirectoryObjectType objectType)
         {
             await PostCustomEvent("object_created", objectType.ToString());
         }
 
-        public async void ObjectDeleted(ActiveDirectoryObjectType objectType)
+        public async Task ObjectDeleted(ActiveDirectoryObjectType objectType)
         {
             await PostCustomEvent("object_deleted", objectType.ToString());
         }
 
-        public async void ObjectRenamed(ActiveDirectoryObjectType objectType)
+        public async Task ObjectRenamed(ActiveDirectoryObjectType objectType)
         {
             await PostCustomEvent("object_renamed", objectType.ToString());
         }
 
-        public async void ObjectEnabled(ActiveDirectoryObjectType objectType)
+        public async Task ObjectEnabled(ActiveDirectoryObjectType objectType)
         {
             await PostCustomEvent("object_enabled", objectType.ToString());
         }
 
-        public async void ObjectDisabled(ActiveDirectoryObjectType objectType)
+        public async Task ObjectDisabled(ActiveDirectoryObjectType objectType)
         {
             await PostCustomEvent("object_disabled", objectType.ToString());
         }
 
-        public async void ObjectUnlocked(ActiveDirectoryObjectType objectType)
+        public async Task ObjectUnlocked(ActiveDirectoryObjectType objectType)
         {
             await PostCustomEvent("object_unlocked", objectType.ToString());
         }
 
-        public async void ObjectAssigned(ActiveDirectoryObjectType objectType)
+        public async Task ObjectAssigned(ActiveDirectoryObjectType objectType)
         {
             await PostCustomEvent("object_assigned", objectType.ToString());
         }
 
-        public async void ObjectUnassigned(ActiveDirectoryObjectType objectType)
+        public async Task ObjectUnassigned(ActiveDirectoryObjectType objectType)
         {
             await PostCustomEvent("object_unassigned", objectType.ToString());
         }
 
-        public async void ObjectRestored(ActiveDirectoryObjectType objectType)
+        public async Task ObjectRestored(ActiveDirectoryObjectType objectType)
         {
             await PostCustomEvent("object_restored", objectType.ToString());
         }
 
-        public async void ObjectHistoryViewed(ActiveDirectoryObjectType objectType)
+        public async Task ObjectHistoryViewed(ActiveDirectoryObjectType objectType)
         {
             await PostCustomEvent("object_history_viewed", objectType.ToString());
         }
 
-        public async void ObjectPasswordReset(ActiveDirectoryObjectType objectType)
+        public async Task ObjectPasswordReset(ActiveDirectoryObjectType objectType)
         {
             await PostCustomEvent("object_password_reset", objectType.ToString());
         }

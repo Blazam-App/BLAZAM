@@ -31,9 +31,9 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
         try
         {
             if (Context == null) return;
-            if (selectedDelegate !=null && Context.PermissionDelegate.Any(pd => pd.DelegateSid == selectedDelegate.SID))
+            if (selectedDelegate !=null && await Context.PermissionDelegate.AnyAsync(pd => pd.DelegateSid == selectedDelegate.SID))
             {
-                var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
+                var confilctingDelegate = await Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefaultAsync();
                 if (confilctingDelegate != null)
                     if (confilctingDelegate.DeletedAt == null)
                         SnackBarService.Error("That delegate already exists.");
@@ -45,8 +45,9 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
             Context.PermissionDelegate.Add(NewPermissionDelegate);
             await Context.SaveChangesAsync();
             NewPermissionDelegate = new PermissionDelegate();
-            Modal?.Close();
             await DelegateAdded.InvokeAsync();
+            await Modal?.CloseAsync();
+
             return;
         }
         

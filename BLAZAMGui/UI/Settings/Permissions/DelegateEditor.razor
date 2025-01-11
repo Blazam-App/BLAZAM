@@ -97,7 +97,7 @@
         SnackBarService.Success(AppLocalization["Delegate restored"]);
     if (AllDelegates.Where(l => l.DeletedAt != null).Count() < 1)
         {
-            trashModal.Close();
+           await trashModal.CloseAsync();
         }
     }
     private async void DelegatesChanged()

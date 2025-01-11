@@ -82,7 +82,7 @@ namespace BLAZAM.Services.Audit
                     IpAddress = UserStateService?.CurrentUserState?.IPAddress
 
                 });
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)

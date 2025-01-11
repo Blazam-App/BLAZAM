@@ -184,13 +184,13 @@ namespace BLAZAM.Services.Background
 
         protected override async void Execute(object? state)
         {
-            using var context = factory.CreateDbContext();
+            using var context = await factory.CreateDbContextAsync();
             Job updateCheckJob = new Job("Check for Update");
             JobStep checkForUpdateStep = new JobStep("Execute", async (step) =>
             {
                 try
                 {
-                    var appSettings = context.AppSettings.FirstOrDefault();
+                    var appSettings = await context.AppSettings.FirstOrDefaultAsync();
                     if (appSettings != null)
                     {
                         Loggers.UpdateLogger.Information("Checking for automatic update");
@@ -301,7 +301,7 @@ namespace BLAZAM.Services.Background
             try
             {
                 using var context = await factory.CreateDbContextAsync();
-                var settings = context.AppSettings.FirstOrDefault();
+                var settings = await context.AppSettings.FirstOrDefaultAsync();
                 if (settings != null)
                 {
                     if (settings.AutoUpdate)
@@ -321,7 +321,7 @@ namespace BLAZAM.Services.Background
                                 var updateJob = latestUpdate.GetUpdateJob();
                                 if (updateJob != null)
                                 {
-                                    updateJob.Run();
+                                    await updateJob.RunAsync();
                                     if (updateJob.Result == JobResult.Passed)
                                         Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot.{@UpdateVersion}", latestUpdate.Version);
                                     else

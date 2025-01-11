@@ -184,7 +184,7 @@
     {
         if (Map.Id == 0)
             Context.PermissionMap.Add(Map);
-        var result = Context.SaveChanges();
+        var result = await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
         SnackBarService.Success("Mapping saved");
         await MappingsChanged.InvokeAsync();

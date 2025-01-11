@@ -115,9 +115,8 @@
             }
             SnackBarService.Success(AppLocalization["Access request sent"]);
         }
-        Modal.Close();
+        await Modal.CloseAsync();
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private bool IsActionDisabled(ActiveDirectoryObjectAction action)
