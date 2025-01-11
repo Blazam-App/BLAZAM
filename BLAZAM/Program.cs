@@ -292,7 +292,7 @@ namespace BLAZAM
 
                     foreach (var address in addressFeature.Addresses)
                     {
-                        ApplicationInfo.listeningAddresses.Append(address);
+                        ApplicationInfo.listeningAddresses = ApplicationInfo.listeningAddresses.Append(address);
                         Loggers.SystemLogger.Debug("Listening on: " + address);
                     }
                 }
