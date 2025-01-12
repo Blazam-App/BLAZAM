@@ -30,7 +30,7 @@ namespace BLAZAM.Services.Duo
         {
             using (var context = await DbFactory.CreateDbContextAsync())
             {
-                var auth = context.AuthenticationSettings.FirstOrDefault();
+                var auth = await context.AuthenticationSettings.FirstOrDefaultAsync();
                 if (auth != null)
                 {
 

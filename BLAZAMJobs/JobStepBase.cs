@@ -5,7 +5,7 @@ namespace BLAZAM.Jobs
     public class JobStepBase : IJobStepBase
     {
         protected CancellationTokenSource cancellationTokenSource = new();
-        private double? progress = null;
+        private double progress = 0;
 
         public virtual TimeSpan? ElapsedTime
         {
@@ -22,13 +22,15 @@ namespace BLAZAM.Jobs
         public virtual WindowsImpersonation Identity { get; set; }
 
         public virtual string? Name { get; set; }
-        public virtual AppEvent<double?> OnProgressUpdated { get; set; }
-        public virtual double? Progress
+        public virtual AppEvent<double> OnProgressUpdated { get; set; }
+        public virtual double Progress
         {
             get => progress; set
             {
-                if (value.Value == progress) return;
-                progress = value.Value;
+                if (Math.Abs(value - (float)progress)<0.1) return;
+                value = Math.Clamp(value, 0, 100);
+
+                progress = value;
                 OnProgressUpdated?.Invoke(progress);
             }
         }

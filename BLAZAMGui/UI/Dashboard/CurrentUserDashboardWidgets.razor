@@ -124,7 +124,7 @@
         <AppTooltip Text=@AppLocalization["Edit"]>
             <MudFab StartIcon="@(_editMode==false?Icons.Material.Filled.Edit:Icons.Material.Filled.EditOff)"
                     Color="@(_editMode==false?Color.Success:Color.Error)"
-                    OnClick="@(()=>{_editMode=!_editMode; widgetContainer?.Refresh();})" />
+                    OnClick="@(()=>{_editMode = !_editMode; widgetContainer?.Refresh();})" />
         </AppTooltip>
         @if (_editMode)
         {

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Database.Models.Permissions
 {
-    public class PermissionDelegate : RecoverableAppDbSetBase, IComparable
+    public class PermissionDelegate : RecoverableAppDbSetBase, IComparable, IEquatable<PermissionDelegate?>
     {
         public byte[] DelegateSid { get; set; }
         public bool IsSuperAdmin { get; set; }
@@ -18,6 +18,19 @@ namespace BLAZAM.Database.Models.Permissions
                 return DelegateSid.ToSidString().CompareTo(pl.DelegateSid.ToSidString());
             return 0;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as PermissionDelegate);
+        }
+
+        public bool Equals(PermissionDelegate? other)
+        {
+            return other is not null &&
+                   base.Equals(other) &&
+                   Id == other.Id;
+        }
+
         public override int GetHashCode()
         {
             return Id.ToString().GetHashCode();
@@ -31,6 +44,16 @@ namespace BLAZAM.Database.Models.Permissions
                 return DelegateName;
             }
             return base.ToString();
+        }
+
+        public static bool operator ==(PermissionDelegate? left, PermissionDelegate? right)
+        {
+            return EqualityComparer<PermissionDelegate>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(PermissionDelegate? left, PermissionDelegate? right)
+        {
+            return !(left == right);
         }
     }
 }
