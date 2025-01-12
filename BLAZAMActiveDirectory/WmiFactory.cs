@@ -55,7 +55,7 @@ namespace BLAZAM.Common.Data.Services
                 return managementScope;
             }
 
-            throw new WmiConnectionFailure();
+            throw new WmiConnectionException();
         }
 
         public IActiveDirectoryContext Directory { get; }
