@@ -185,7 +185,7 @@ namespace BLAZAM.Jobs
 
         public override void Cancel()
         {
-            if (Progress == null || Progress < 100)
+            if (Progress < 100)
             {
                 cancellationTokenSource.Cancel();
                 foreach (var step in Steps)
