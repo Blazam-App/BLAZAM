@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.2.5</AssemblyVersion>
-		<Version>2025.01.12.1711</Version>
+		<Version>2025.01.12.1815</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -93,7 +93,6 @@
 		<ProjectReference Include="..\BLAZAMJobs\BLAZAMJobs.csproj" />
 		<ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
 		<ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
-		<ProjectReference Include="..\BLAZAMNav\BLAZAMNav.csproj" />
 		<ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj" />
 		<ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
 		<ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />

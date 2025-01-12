@@ -6,7 +6,7 @@
         <JobDetails Job="Job" />
         @if (Job.Result == JobResult.Running)
         {
-            <MudProgressLinear Value=@(Job.Progress.HasValue==true?Job.Progress.Value:0) Max="100" />
+            <MudProgressLinear Value=@(Job.Progress) Max="100" />
         }
         <MudStack Row=true>
             <JobStartTime Step="Job as IJobStep" />
