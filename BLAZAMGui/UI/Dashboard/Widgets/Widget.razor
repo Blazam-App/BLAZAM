@@ -29,7 +29,7 @@
 
            };
         }
-        Task.Run(() => { 
+        _=Task.Run(() => { 
             _ = RefreshData();
 
         });
@@ -51,11 +51,11 @@
         Nav.NavigateTo(args.SearchUri);
     }
   
-    protected async void SetRowsPerPage(int rowPerPage)
+    protected async Task SetRowsPerPage(int rowPerPage)
     {
         try
         {
-            CurrentUser.State.Preferences.DashboardWidgets.FirstOrDefault(w => w.WidgetType.Equals(WidgetType)).ItemsPerPage = rowPerPage;
+            CurrentUser.State.Preferences.DashboardWidgets.First(w => w.WidgetType.Equals(WidgetType)).ItemsPerPage = rowPerPage;
             await CurrentUser.State.SaveDashboardWidgets();
         }catch (Exception ex)
         {

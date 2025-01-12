@@ -80,7 +80,7 @@
 
 
                                 <MudButton Class="mx-6"
-                                           OnClick="(()=>{ShowAllUpdates=!ShowAllUpdates;})"
+                                           OnClick="(()=>{ShowAllUpdates = !ShowAllUpdates;})"
                                            Color="Color.Success">
                                     @(AppLocalization[ShowAllUpdates == false ? "Show Previous Updates" : "Hide Previous Updates"])
                                 </MudButton>
@@ -192,7 +192,7 @@
             var output = LatestAvailableVersion.GetUpdateJob();
             if (output != null)
             {
-                MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization["Update"]);
+                _= MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization["Update"]);
                 await output.RunAsync();
 
             }
@@ -200,7 +200,7 @@
         }
     }
 
-    async void UpdateDownloadPercentage(FileProgress? progress)
+    async Task UpdateDownloadPercentage(FileProgress? progress)
     {
 
         DownladProgress = progress;

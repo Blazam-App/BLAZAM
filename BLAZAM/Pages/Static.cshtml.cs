@@ -33,8 +33,8 @@ namespace BLAZAM.Server.Pages
             return await Task.Run(() =>
             {
                 var expires = DateTime.UtcNow.AddDays(1);
-                Response.Headers.Add("Cache-Control", "public,max-age=86400");
-                Response.Headers.Add("Expires", expires.ToString("R"));
+                Response.Headers.Append("Cache-Control", "public,max-age=86400");
+                Response.Headers.Append("Expires", expires.ToString("R"));
 
                 switch (Method.ToLower())
                 {

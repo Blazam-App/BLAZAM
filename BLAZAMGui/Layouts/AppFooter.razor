@@ -2,7 +2,7 @@
 @inherits AppComponentBase
 <MudStack Row=true Class=@("relative mud-width-full "+Class)>
 
-    <Copyright OnClick="(()=>{aboutModal.ShowAsync();})" />
+    <Copyright OnClick="(()=>{_=aboutModal?.ShowAsync();})" />
     @if (AutoUpdateService.IsUpdatedScheduled)
     {
         <AuthorizeView Roles="@UserRoles.SuperAdmin">

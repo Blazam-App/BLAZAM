@@ -111,7 +111,7 @@
 
 
     }
-    private async void DoDuoHealthCheck()
+    private async Task DoDuoHealthCheck()
     {
         duoHealthCheckResult = null;
         await InvokeAsync(StateHasChanged);
@@ -139,7 +139,7 @@
         }
 
         await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
-        base.Save();
+        await base.Save();
         await InvokeAsync(StateHasChanged);
         DoDuoHealthCheck();
     }

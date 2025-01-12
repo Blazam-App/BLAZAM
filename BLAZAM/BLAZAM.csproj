@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.2.5</AssemblyVersion>
-		<Version>2025.01.10.0149</Version>
+		<Version>2025.01.12.1815</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -93,7 +93,6 @@
 		<ProjectReference Include="..\BLAZAMJobs\BLAZAMJobs.csproj" />
 		<ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
 		<ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
-		<ProjectReference Include="..\BLAZAMNav\BLAZAMNav.csproj" />
 		<ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj" />
 		<ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
 		<ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
@@ -105,12 +104,6 @@
 		<Content Include="static\img\default_logo5.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="..\BLAZAMGui\UI\Dashboard\WidgetContainer.razor" Link="WidgetContainer.razor" />
-	  <None Include="..\BLAZAMGui\UI\Dashboard\Widgets\DirectoryEntryTooltipPopover.razor" Link="DirectoryEntryTooltipPopover.razor" />
-	  <None Include="..\BLAZAMGui\UI\Modals\GoogleAuthenticatorInput.razor" Link="GoogleAuthenticatorInput.razor" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -127,9 +120,6 @@
 		</Content>
 		<Content Update="wwwroot\favicon.ico">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\jira\feature-request.html">
-		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 

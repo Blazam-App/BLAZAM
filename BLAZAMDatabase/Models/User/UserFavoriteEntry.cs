@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BLAZAM.Database.Models.User
 {
 
-    public class UserFavoriteEntry : AppDbSetBase
+    public class UserFavoriteEntry : AppDbSetBase, IEquatable<UserFavoriteEntry?>
     {
         public string DN { get; set; }
 
@@ -25,6 +25,29 @@ namespace BLAZAM.Database.Models.User
         public override bool Equals(AppDbSetBase? other)
         {
             return Equals((object)other);
+        }
+
+        public bool Equals(UserFavoriteEntry? other)
+        {
+            return other is not null &&
+                   base.Equals(other) &&
+                   DN == other.DN &&
+                   UserId == other.UserId;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(base.GetHashCode(), DN, UserId);
+        }
+
+        public static bool operator ==(UserFavoriteEntry? left, UserFavoriteEntry? right)
+        {
+            return EqualityComparer<UserFavoriteEntry>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(UserFavoriteEntry? left, UserFavoriteEntry? right)
+        {
+            return !(left == right);
         }
     }
 }

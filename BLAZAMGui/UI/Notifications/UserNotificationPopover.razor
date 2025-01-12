@@ -73,11 +73,11 @@
 
             await UserState.MarkRead(message);
         }
-        UserState.SaveAllUserSettings();
+        await UserState.SaveAllUserSettings();
         UserState.GetUserSettingFromDB();
 
         Open = false;
-        _notificationList?.UpdateState();
+        await _notificationList!.UpdateState();
         await InvokeAsync(StateHasChanged);
     }
 

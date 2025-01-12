@@ -4,13 +4,13 @@
 
     <tr>
         <th colspan="10" class="mb-6">
-            <MudText Typo="Typo.h5" Class="pb-6">@(AppLocalization["Notification Settings for "]+_ou?.CanonicalName)</MudText>
+            <MudText Typo="Typo.h5" Class="pb-6">@(AppLocalization["Notification Settings for "] + _ou?.CanonicalName)</MudText>
 
         </th>
 
     </tr>
     <tr>
-        
+
         <th style="border-left:solid;border-right:solid;" colspan="6">
             @AppLocalization["Events"]
         </th>
@@ -27,20 +27,20 @@
     <tr>
         <th style="border-left:solid;" class="align-self-center">
             @AppLocalization["Group Membership Changes"]
-            </th>
- 
+        </th>
+
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
-           
+
             var originalEnum = (NotificationType)type;
-             if (originalEnum == NotificationType.Unassign || originalEnum == NotificationType.Assign)
+            if (originalEnum == NotificationType.Unassign || originalEnum == NotificationType.Assign)
             {
                 continue;
             }
             <th class="align-self-center">
                 @originalEnum.ToString()
             </th>
-            
+
         }
         <th style="border-left:solid;">
             @AppLocalization["In App"]
@@ -65,7 +65,7 @@
             <EditNotificationSubscriptionRow Subscription="sub"
                                              Context="Context"
                                              OnSaved="SaveExisting"
-            OnDeleted="DeleteExisting" />
+                                             OnDeleted="DeleteExisting" />
 
         }
     }
@@ -80,7 +80,7 @@
     }
     <tr>
         <td colspan="10">
-            <MudDivider  Class="my-3"/>
+            <MudDivider Class="my-3" />
         </td>
     </tr>
     <EditNotificationSubscriptionRow @bind-Subscription="newSubscription"
@@ -94,14 +94,14 @@
 <MudSimpleTable>
     <tr>
         <th colspan="10">
-           <MudDivider Class="my-10"/>
+            <MudDivider Class="my-10" />
         </th>
 
     </tr>
     <tr>
         <th colspan="10" class="mb-6">
-            <MudText Typo="Typo.h5" Class="pb-6">@(AppLocalization["Effective Notification Settings for "]+_ou?.CanonicalName)</MudText>
-            
+            <MudText Typo="Typo.h5" Class="pb-6">@(AppLocalization["Effective Notification Settings for "] + _ou?.CanonicalName)</MudText>
+
         </th>
 
     </tr>
@@ -140,7 +140,7 @@
         </td>
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
-           
+
             var originalEnum = (NotificationType)type;
             if (originalEnum == NotificationType.Unassign || originalEnum == NotificationType.Assign)
             {
@@ -260,7 +260,7 @@
         UpdateSubscriptions();
     }
 
-    private async void ouChanged(IDirectoryEntryAdapter? entry)
+    private async Task ouChanged(IDirectoryEntryAdapter? entry)
     {
         var ou = (IADOrganizationalUnit?)entry;
         if (ou != null)
@@ -294,7 +294,7 @@
                 newSubscription.UserId = User.Id;
                 newSubscription.OU = OU?.DN;
                 SnackBarService.Success(AppLocalization["Saved notification subscription"]);
-                UpdateSubscriptions();
+                await UpdateSubscriptions();
 
 
             }
@@ -346,7 +346,10 @@
     {
         if (Context != null)
         {
-            subscriptions = Context.NotificationSubscriptions.Include(x => x.NotificationTypes).Where(x => x.DeletedAt == null && x.UserId == User.Id && x.OU.Equals(OU.DN)).ToList();
+            subscriptions = await Context.NotificationSubscriptions
+                                    .Include(x => x.NotificationTypes)
+                                    .Where(x => x.DeletedAt == null && x.UserId == User.Id && x.OU.Equals(OU.DN))
+                                    .ToListAsync();
 
 
             CalculateEffectiveSubscriptions();

@@ -31,9 +31,7 @@ namespace BLAZAM.Database.Models.User
         public AppUser User { get; set; }
         public int UserId { get; set; }
 
-        public override int GetHashCode()
-        {
-            return WidgetType.GetHashCode();
-        }
+        
+
     }
 }

@@ -70,9 +70,9 @@
             _searchBox.Clear();
         }
     }
-    private void AllowAll()
+    private async Task AllowAll()
     {
         allowedWorkstations = new();
-        SaveChanges();
+        await SaveChanges();
     }
 }

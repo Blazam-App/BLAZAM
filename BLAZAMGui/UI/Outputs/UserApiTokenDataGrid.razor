@@ -58,7 +58,7 @@ Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
             };
         Context.ApiTokens.Add(newToken);
         await Context.SaveChangesAsync();
-        AuditLogger.System.APITokenCreated(CurrentUser.Username);
+        await AuditLogger.System.APITokenCreated(CurrentUser.Username);
         GetTokens();
     }
     public async Task Save()

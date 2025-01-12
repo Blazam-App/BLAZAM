@@ -18,21 +18,7 @@ namespace BLAZAM.Services.Chat
 {
     public class ChatService : IChatService
     {
-        // private List<ChatRoom> chatRooms;
-
-        //private List<ChatRoom> ChatRooms
-        //{
-        //    get
-        //    {
-        //        if (chatRooms == null)
-        //        {
-        //            var context = Context;
-        //            chatRooms = context.ChatRooms.ToList();
-        //        }
-        //        return chatRooms;
-        //    }
-        //    set => chatRooms = value;
-        //}
+    
         public IQueryable<ChatRoom> ChatRooms => Context.ChatRooms.AsQueryable();
         public AppEvent<ChatMessage> OnMessagePosted { get; set; }
         public AppEvent<AppUser> OnMessageRead { get; set; }
@@ -104,7 +90,6 @@ namespace BLAZAM.Services.Chat
                     IsPublic = false,
                     Members = localParties
                 };
-                chat.Name = chat.Name;
                 context.ChatRooms.Add(chat);
                 try
                 {

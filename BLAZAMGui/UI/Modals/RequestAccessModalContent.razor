@@ -96,7 +96,7 @@
                 NotificationMessage notification;
                 notificationGenerationService.PackageRequest(Entry, action, CurrentUser.State,  out notification);
                
-                NotificationPublisher.PublishNotification(adminUsers, notification);
+                _=NotificationPublisher.PublishNotification(adminUsers, notification);
 
                 
                 var requestEmail = new AccessRequestEmailMessage(); 
@@ -115,9 +115,8 @@
             }
             SnackBarService.Success(AppLocalization["Access request sent"]);
         }
-        Modal.Close();
+        await Modal.CloseAsync();
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private bool IsActionDisabled(ActiveDirectoryObjectAction action)

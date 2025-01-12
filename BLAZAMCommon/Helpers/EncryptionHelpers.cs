@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Common.Data;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +19,10 @@ namespace BLAZAM.Helpers
         /// <typeparam name="T">The type expected to be decrypted</typeparam>
         /// <param name="input">The cipher text</param>
         /// <returns></returns>
-        public static T Decrypt<T>(this string input)
+        public static T? Decrypt<T>(this string input)
         {
-            var str = Encryption.Instance.DecryptObject<T>(input);
-            return str == null ? default : str;
+            return Encryption.Instance.DecryptObject<T>(input);
+           
         }
         public static string Decrypt(this string input)
         {

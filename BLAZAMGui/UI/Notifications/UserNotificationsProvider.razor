@@ -70,10 +70,9 @@
     private async Task LoadNotifications()
     {
         var context = await DbFactory.CreateDbContextAsync();
-        lock (Notifications)
-        {
-            Notifications = context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToList();
-        }
+        
+            Notifications = await context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+        
         await InvokeAsync(StateHasChanged);
     }
 }

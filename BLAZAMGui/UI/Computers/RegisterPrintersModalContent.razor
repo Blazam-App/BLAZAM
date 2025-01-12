@@ -60,7 +60,7 @@
         {
             IJob registerJob = new Job(AppLocalization["Register Printers"], CurrentUser.State.AuditUsername);
             var newPrinter = destinationOU.CreatePrinter(printer);
-            registerJob = newPrinter.CommitChanges(registerJob);
+            registerJob = await newPrinter.CommitChangesAsync(registerJob);
             if (registerJob.FailedSteps.Count == 0)
             {
                 SnackBarService.Success(AppLocalization["Printer(s) registered to Active Directory"]); 
@@ -94,13 +94,13 @@
                 validated = true;
                 Modal.YesText = AppLocalization["Register"];
                 Modal.OnYes = RegisterSelectedPrinters;
-                Modal.RefreshView();
+                _=Modal.RefreshView();
             }
             else
             {
                 Modal.YesText = AppLocalization["Next"];
                 Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
-                Modal.RefreshView();
+                _=Modal.RefreshView();
 
             }
         }

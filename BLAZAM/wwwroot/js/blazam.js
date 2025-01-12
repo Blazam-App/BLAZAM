@@ -10,7 +10,7 @@ window.updateCookieExpiration = async () => {
                 let response = JSON.parse(xhr.response);
                 if (response.expired == 'true') {
                     //refresh current page
-                    window.location.href = window.location.href;
+                    location.reload();
                 }
             }
         };
@@ -22,7 +22,7 @@ window.updateCookieExpiration = async () => {
 
 window.attemptSignIn = async (loginReq) => {
     let formData = new FormData();
-    for (var key in loginReq) {
+    for (let key in loginReq) {
         formData.append(key, loginReq[key]);
     }
 

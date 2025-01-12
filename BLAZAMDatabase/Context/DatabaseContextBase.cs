@@ -17,6 +17,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using System.Data;
 
 namespace BLAZAM.Database.Context
@@ -683,7 +684,7 @@ namespace BLAZAM.Database.Context
 
         public bool EntityIsTracked<TEntry>(TEntry entry)
         {
-            if (entry == null) return false;
+            if (EqualityComparer<TEntry>.Default.Equals(entry, default)) return false;
             return base.Entry(entry).State != EntityState.Detached;
         }
 
@@ -725,19 +726,11 @@ namespace BLAZAM.Database.Context
 
 
                         Database.OpenConnection();
-                        //Check for tables
 
-                        if (IsSeeded())
-                        {
-                            //Installation has been completed
 
-                            Database.CloseConnection();
-                        }
-                        else
-                        {
-                            Database.CloseConnection();
-                            // return DatabaseStatus.TablesMissing;
-                        }
+                        Database.CloseConnection();
+
+
                         return ServiceConnectionState.Up;
 
                     }

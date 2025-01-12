@@ -131,7 +131,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 EnsureDirectoryEntry();
                 if (DirectoryEntry != null)
                 {
-                    DirectoryEntry?.Invoke(method, args);
+                    DirectoryEntry.Invoke(method, args);
 
                     return true;
                 }
@@ -153,12 +153,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         public DirectoryEntry? DirectoryEntry { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="MissingDirectoryEntryException">If the DirectoryEntry cannot be retrieved</exception>
         public void EnsureDirectoryEntry()
         {
             if (DirectoryEntry is null)
             {
                 FetchDirectoryEntry();
+                if (DirectoryEntry == null) throw new MissingDirectoryEntryException("The DirectoryEntry for this object could not be retrieved");
+
             }
         }
 
@@ -225,7 +230,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (DirectoryEntry == null)
                     return GetStringProperty("adspath");
                 else
-                    return DirectoryEntry?.Path;
+                    return DirectoryEntry.Path;
             }
             set
             {
@@ -667,9 +672,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                         }
                     });
-
-                    directoryEntries.OrderBy(x => x.CanonicalName).OrderBy(x => x.ObjectType);
-                    CachedChildren = directoryEntries;
+                    CachedChildren = directoryEntries.OrderBy(x => x.CanonicalName).ThenBy(x => x.ObjectType); 
                 }
                 return CachedChildren;
             }
@@ -978,8 +981,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             PostCommitSteps.Clear();
             if (SearchResult != null)
                 FetchDirectoryEntry();
-            else
-                DirectoryEntry?.RefreshCache();
 
             OnModelChanged?.Invoke();
 
@@ -989,7 +990,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (SearchResult is null) throw new ArgumentNullException(nameof(SearchResult));
 
-            DirectoryEntry = SearchResult?.GetDirectoryEntry();
+            DirectoryEntry = SearchResult.GetDirectoryEntry();
         }
 
         public virtual T? GetCustomProperty<T>(string propertyName)
@@ -1105,7 +1106,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (DirectoryEntry == null)
             {
                 if (SearchResult != null && SearchResult.Properties.Contains(propertyName))
-                    return (T?)SearchResult?.Properties[propertyName][0];
+                    return (T?)SearchResult.Properties[propertyName][0];
                 else
                 {
                     FetchDirectoryEntry();
@@ -1130,7 +1131,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
                 if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
-                    return (T?)DirectoryEntry?.Properties[propertyName].Value;
+                    return (T?)DirectoryEntry.Properties[propertyName].Value;
             }
             catch (ArgumentException)
             {

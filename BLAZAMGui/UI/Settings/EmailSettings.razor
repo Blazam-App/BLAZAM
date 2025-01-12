@@ -168,7 +168,7 @@
             settings.Id = 1;
             Context.EmailSettings.Add(settings);
         }
-        AuditLogger.System.SettingsChanged("Email", settings.GetChanges(originalSettings));
+        await AuditLogger.System.SettingsChanged("Email", settings.GetChanges(originalSettings));
         await base.Save();
 
     }

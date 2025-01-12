@@ -10,7 +10,7 @@ namespace BLAZAM.Database.Models.User
     /// A notification message for the web user. These are
     /// placed under the user's notifications panel
     /// </summary>
-    public class NotificationMessage : AppDbSetBase
+    public class NotificationMessage : AppDbSetBase, IEquatable<NotificationMessage?>
     {
 
         /// <summary>
@@ -73,5 +73,26 @@ namespace BLAZAM.Database.Models.User
                    Id != 0 && Id == message.Id);
         }
 
+        public bool Equals(NotificationMessage? other)
+        {
+            return other is not null &&
+                   base.Equals(other) &&
+                   Id == other.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(base.GetHashCode(), Id);
+        }
+
+        public static bool operator ==(NotificationMessage? left, NotificationMessage? right)
+        {
+            return EqualityComparer<NotificationMessage>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(NotificationMessage? left, NotificationMessage? right)
+        {
+            return !(left == right);
+        }
     }
 }

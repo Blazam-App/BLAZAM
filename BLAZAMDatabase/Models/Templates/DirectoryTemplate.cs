@@ -2,6 +2,7 @@
 using BLAZAM.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -98,17 +99,15 @@ namespace BLAZAM.Database.Models.Templates
 
         private T? GetEffectiveValue<T>(Func<DirectoryTemplate, T?> localSelector, Func<DirectoryTemplate, T?> effectiveSelector)
         {
-            if (localSelector.Invoke(this) == null)
+            var localValue = localSelector.Invoke(this);
+            if (EqualityComparer<T>.Default.Equals(localValue, default))
             {
-                if (ParentTemplate == null) return default(T);
+                if (ParentTemplate == null) return default;
                 var effectiveValue = effectiveSelector.Invoke(ParentTemplate);
-                if (effectiveValue == null)
-                    return default(T);
-                else
-                    return effectiveValue;
+                return effectiveValue;
             }
             else
-                return localSelector(this);
+                return localValue;
         }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

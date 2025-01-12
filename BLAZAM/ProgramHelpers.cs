@@ -104,7 +104,14 @@ namespace BLAZAM.Server
 
                 foreach (ManagementObject WmiObject in Searcher.Get())
                 {
-                    return Guid.Parse(WmiObject["UUID"].ToString());
+                    try
+                    {
+                        return Guid.Parse(WmiObject["UUID"].ToString());
+                    }
+                    catch
+                    {
+                        continue;
+                    }
 
                 }
                 throw new ApplicationException("Searched but could not find a CSProduct UUID");
@@ -452,7 +459,7 @@ namespace BLAZAM.Server
                 using var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
                 if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
                 {
-                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
+                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper!=false;
 
                 }
 

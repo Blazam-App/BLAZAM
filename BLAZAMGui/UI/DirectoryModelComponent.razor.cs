@@ -128,9 +128,12 @@ namespace BLAZAM.Gui.UI
         {
 
             LoadingData = true;
-            if (User != null)
-                memberOfGroups = User.MemberOf;
+            await Task.Run(() => {
+                if (User != null)
+                    memberOfGroups = User.MemberOf;
 
+            });
+         
             LoadingData = false;
 
 
@@ -147,9 +150,11 @@ namespace BLAZAM.Gui.UI
         {
 
             LoadingData = true;
-
-            if (Group != null)
-                memberOfGroups = Group.MemberOf;
+            await Task.Run(() => {
+                if (Group != null)
+                    memberOfGroups = Group.MemberOf;
+            });
+       
             LoadingData = false;
 
 
@@ -158,10 +163,11 @@ namespace BLAZAM.Gui.UI
         {
 
             LoadingData = true;
-
-            if (Computer != null)
-                memberOfGroups = Computer.MemberOf;
-
+            await Task.Run(() =>
+            {
+                if (Computer != null)
+                    memberOfGroups = Computer.MemberOf;
+            });
 
             LoadingData = false;
 

@@ -4,7 +4,7 @@ using System.Security.Permissions;
 
 namespace BLAZAM.FileSystem
 {
-    public class FileSystemBase
+    public class FileSystemBase : IEquatable<FileSystemBase?>
     {
         public FileSystemBase(string path)
         {
@@ -84,15 +84,36 @@ namespace BLAZAM.FileSystem
             }
         }
 
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as FileSystemBase);
+        }
+
+        public bool Equals(FileSystemBase? other)
+        {
+            return other is not null &&
+                   FullPath == other.FullPath;
+        }
 
         public override int GetHashCode()
         {
             return FullPath.GetHashCode();
         }
 
+
         public override string? ToString()
         {
             return FullPath;
+        }
+
+        public static bool operator ==(FileSystemBase? left, FileSystemBase? right)
+        {
+            return EqualityComparer<FileSystemBase>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(FileSystemBase? left, FileSystemBase? right)
+        {
+            return !(left == right);
         }
     }
 }

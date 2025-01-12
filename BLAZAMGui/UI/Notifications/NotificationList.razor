@@ -30,10 +30,10 @@
 
     @if (messages.Where(m => m.IsRead).Count() > 0)
     {
-        <MudCard Class="py-3 cursor-pointer" Elevation="2" @onclick=@(()=>{_showRead=!_showRead; })>
+        <MudCard Class="py-3 cursor-pointer" Elevation="2" @onclick=@(()=>{_showRead = !_showRead; })>
             <MudStack Row=true Class="px-4">
                 <MudIcon Color="Color.Success"
-                         Icon="@(_showRead==true?Icons.Material.Filled.ArrowDropUp:Icons.Material.Filled.ArrowDropDown)" />
+                         Icon="@(_showRead == true ? Icons.Material.Filled.ArrowDropUp : Icons.Material.Filled.ArrowDropDown)" />
                 <MudText Typo="Typo.subtitle2">@AppLocalization["Read Notifications"]</MudText>
             </MudStack>
         </MudCard>
@@ -66,15 +66,15 @@
         await base.OnInitializedAsync();
         RetrieveMessages();
 
-        UserState.OnSettingsChanged += async () =>
+        UserState.OnSettingsChanged +=  () =>
         {
             RetrieveMessages();
         };
-        NotificationPublisher.OnNotificationPublished += async (notification) =>
+        NotificationPublisher.OnNotificationPublished +=  (notification) =>
         {
             RetrieveMessages();
         };
-        NotificationPublisher.OnNotificationDeleted += async () =>
+        NotificationPublisher.OnNotificationDeleted +=  () =>
         {
             RetrieveMessages();
         };

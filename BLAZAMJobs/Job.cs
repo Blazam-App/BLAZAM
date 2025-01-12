@@ -11,7 +11,7 @@ namespace BLAZAM.Jobs
     /// <summary>
     /// A flexible multi step Job that can have actions as trackable steps.
     /// </summary>
-    public class Job : JobStepBase, IJob, IJobStep, IEquatable<IJob?>
+    public class Job : JobStepBase, IJob, IJobStep, IEquatable<Job?>
     {
         private DateTime scheduledRunTime = DateTime.Now;
         private Timer? runScheduler;
@@ -120,14 +120,9 @@ namespace BLAZAM.Jobs
             FailedSteps.Clear();
             StartTime = DateTime.Now;
             Result = JobResult.Running;
-            if (Progress == 0)
-            {
-                OnProgressUpdated?.Invoke(0);
-            }
-            else
-            {
-                Progress = 0;
-            }
+
+            Progress = 0;
+
             if (cancelToken.IsCancellationRequested)
             {
                 Cancel();
@@ -174,15 +169,9 @@ namespace BLAZAM.Jobs
                 }
             }
             EndTime = DateTime.Now;
-            if (Progress == 100)
-            {
-                OnProgressUpdated?.Invoke(Progress);
 
-            }
-            else
-            {
-                Progress = 100;
-            }
+            Progress = 100;
+
             return FailedSteps.Count < 1;
         }
 
@@ -196,7 +185,7 @@ namespace BLAZAM.Jobs
 
         public override void Cancel()
         {
-            if (Progress == null || Progress < 100)
+            if (Progress < 100)
             {
                 cancellationTokenSource.Cancel();
                 foreach (var step in Steps)
@@ -210,15 +199,22 @@ namespace BLAZAM.Jobs
         }
 
 
-        public bool Equals(IJob? other)
-        {
-            return other is not null &&
-                   Id.Equals(other.Id);
-        }
+
 
         public override int GetHashCode()
         {
             return HashCode.Combine(Id);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as Job);
+        }
+
+        public bool Equals(Job? other)
+        {
+            return other is not null &&
+                   Id.Equals(other.Id);
         }
 
         public static bool operator ==(Job? left, IJob? right)
@@ -227,6 +223,16 @@ namespace BLAZAM.Jobs
         }
 
         public static bool operator !=(Job? left, IJob? right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator ==(Job? left, Job? right)
+        {
+            return EqualityComparer<Job>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Job? left, Job? right)
         {
             return !(left == right);
         }

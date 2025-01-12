@@ -44,17 +44,6 @@ namespace BLAZAM.Server.Data.Services
 
         public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries ?? new List<UserFavoriteEntry>();
 
-        //public IList<UserNotification>? Notifications
-        //{
-        //    get
-        //    {
-        //        if (User.Identity?.IsAuthenticated != true) return default;
-        //        if ((DateTime.Now - lastDataRefresh).TotalSeconds > 1)
-        //            GetUserSettingFromDB();
-        //        return userSettings?.Notifications.Where(m => !m.IsRead).ToList();
-
-        //    }
-        //}
         public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems ?? new();
 
         public int Id => Preferences != null ? Preferences.Id : 0;
@@ -100,7 +89,7 @@ namespace BLAZAM.Server.Data.Services
             {
                 notification.IsRead = true;
                 using var context = await _dbFactory.CreateDbContextAsync();
-                var message = context.UserNotifications.Where(un => un.Id == notification.Id).FirstOrDefault(); ;
+                var message = await context.UserNotifications.Where(un => un.Id == notification.Id).FirstOrDefaultAsync();
                 if (message != null)
                 {
                     message.IsRead = true;
@@ -539,12 +528,7 @@ namespace BLAZAM.Server.Data.Services
 
             }
 
-            if (baseSearch == null)
-            {
-                Loggers.ActiveDirectoryLogger.Error("The active user state for " + dnTarget + " could not" +
-                    "be found in the application cache." + " {@Error}", new ApplicationException());
-                return false;
-            }
+     
             try
             {
                 var possibleReads = allowSelector.Invoke(baseSearch).ToList();
