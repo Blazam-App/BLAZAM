@@ -726,19 +726,11 @@ namespace BLAZAM.Database.Context
 
 
                         Database.OpenConnection();
-                        //Check for tables
 
-                        if (IsSeeded())
-                        {
-                            //Installation has been completed
 
-                            Database.CloseConnection();
-                        }
-                        else
-                        {
-                            Database.CloseConnection();
-                            // return DatabaseStatus.TablesMissing;
-                        }
+                        Database.CloseConnection();
+
+
                         return ServiceConnectionState.Up;
 
                     }

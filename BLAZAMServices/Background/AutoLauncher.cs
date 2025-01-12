@@ -26,7 +26,7 @@ namespace BLAZAM.Services.Background
                 var result = await httpClient.GetAsync(address);
 
             }
-            t.Dispose();
+            await t.DisposeAsync();
         }
     }
 }

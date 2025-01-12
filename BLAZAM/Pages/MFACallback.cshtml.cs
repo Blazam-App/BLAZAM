@@ -54,24 +54,17 @@ namespace BLAZAM.Pages
             {
                 if (state == User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Rsa)?.Value)
                 {
-
                     //This is a valid callback for this user
                     var mFARequest = _userStateService.GetMFARequest(state);
                     if (mFARequest != null)
                     {
                         return await ProcessCallback(code, mFARequest);
-
                     }
-
-
-
-
                 }
                 else
                 {
                     throw new DuoException("Session state did not match the expected state");
                 }
-
             }
             return Page();
         }
@@ -95,9 +88,9 @@ namespace BLAZAM.Pages
                     return new RedirectResult(mFARequest.redirectUrl);
                 }
             }
-            catch
+            catch (Exception ex) 
             {
-
+                Loggers.SystemLogger.Warning("Error attempting to perform Duo MFA {Error}", ex);
             }
             return new RedirectResult("/");
 

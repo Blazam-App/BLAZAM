@@ -167,8 +167,8 @@
         <SettingsField>
 
             <MudButton Disabled="SaveDisabled"
-                ButtonType="ButtonType.Submit"
-                Color="Color.Success">
+                       ButtonType="ButtonType.Submit"
+                       Color="Color.Success">
                 @AppLocalization["Save Changes"]
             </MudButton>
 
@@ -216,17 +216,17 @@
         {
 
 
-            if (!newUpdatePassword.Equals(updatePasswordInDb))
+            if (settings != null && newUpdatePassword != null && !newUpdatePassword.Equals(updatePasswordInDb))
             {
 
                 settings.UpdatePassword = newUpdatePassword.Encrypt();
 
                 updatePasswordInDb = settings.UpdatePassword;
-
+                await AuditLogger.System.SettingsChanged("Update", settings.GetChanges(originalSettings));
+                await base.Save();
             }
         }
-        await AuditLogger.System.SettingsChanged("Update", settings.GetChanges(originalSettings));
-        await base.Save();
+
         await InvokeAsync(StateHasChanged);
 
     }

@@ -4,7 +4,7 @@ namespace BLAZAM.Server.Data.Services
 {
     public class MFARequest : IEquatable<MFARequest?>
     {
-        public string mfaToken;
+        public readonly string mfaToken;
         public string redirectUrl;
         public IApplicationUserState user;
 

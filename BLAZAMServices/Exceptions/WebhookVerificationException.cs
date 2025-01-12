@@ -2,7 +2,7 @@
 namespace BLAZAM.Notifications.Services
 {
     [Serializable]
-    public class WebhookVerificationException : Exception
+    public class WebhookVerificationException : ApplicationException
     {
         public WebhookVerificationException() : base() { }
         public WebhookVerificationException(string message) : base(message) { }

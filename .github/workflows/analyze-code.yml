@@ -33,22 +33,18 @@ jobs:
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+      - name: Install Coverlet
+        shell: powershell
+        run: |
+          dotnet tool install --global coverlet.console
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Blazam-App_BLAZAM" /o:"blazam-app" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Blazam-App_BLAZAM" /o:"blazam-app" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=coverage.xml
           dotnet build
-          coverlet .\BLAZAM.Tests\bin\Debug\net8.0\BLAZAM.Tests.dll
-            --target "dotnet" 
-            --targetargs "test --no-build"
-            -f=opencover 
-            -o="coverage.xml"
-          coverlet .\BLAZAMCommon.Tests\bin\Debug\net8.0\BLAZAMCommon.Tests.dll
-            --target "dotnet" 
-            --targetargs "test --no-build"
-            -f=opencover 
-            -o="coverage.xml"
+          coverlet .\BLAZAM.Tests\bin\Debug\net8.0\BLAZAM.Tests.dll -t "dotnet" -a "test --filter "FullyQualifiedName!~PlaywrightTests" --no-build" -f=opencover -o="coverage.xml"
+          coverlet .\BLAZAMCommon.Tests\bin\Debug\net8.0\BLAZAMCommon.Tests.dll -t "dotnet" -a "test --filter "FullyQualifiedName!~PlaywrightTests" --no-build" -f=opencover -o="coverage.xml"
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

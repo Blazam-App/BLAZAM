@@ -120,14 +120,9 @@ namespace BLAZAM.Jobs
             FailedSteps.Clear();
             StartTime = DateTime.Now;
             Result = JobResult.Running;
-            if (Progress == 0)
-            {
-                OnProgressUpdated?.Invoke(0);
-            }
-            else
-            {
-                Progress = 0;
-            }
+
+            Progress = 0;
+
             if (cancelToken.IsCancellationRequested)
             {
                 Cancel();
@@ -174,15 +169,9 @@ namespace BLAZAM.Jobs
                 }
             }
             EndTime = DateTime.Now;
-            if (Progress == 100)
-            {
-                OnProgressUpdated?.Invoke(Progress);
 
-            }
-            else
-            {
-                Progress = 100;
-            }
+            Progress = 100;
+
             return FailedSteps.Count < 1;
         }
 
@@ -196,7 +185,7 @@ namespace BLAZAM.Jobs
 
         public override void Cancel()
         {
-            if (Progress == null || Progress < 100)
+            if (Progress < 100)
             {
                 cancellationTokenSource.Cancel();
                 foreach (var step in Steps)
