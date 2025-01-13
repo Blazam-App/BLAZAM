@@ -1,7 +1,7 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Helpers;
 
-namespace BLAZAM.Tests
+namespace BLAZAMCommon.Tests
 {
     public class EncryptionTests
     {
