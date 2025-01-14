@@ -69,10 +69,16 @@ namespace BLAZAM.Jobs
 
                 // Check for async methods and compiler-generated types
                 if (
-                    method?.DeclaringType?.Name.StartsWith("<") == true)
+                    method?.DeclaringType?.Name.StartsWith("<") == true
+                    || method?.DeclaringType?.Name.StartsWith("AsyncStateMachineBox") == true
+                    || method?.DeclaringType?.Name.StartsWith("WorkerThread") == true
+                    || method?.DeclaringType?.Name.StartsWith("Task") == true
+                    || method?.DeclaringType?.Name.StartsWith("ExecutionContext") == true
+                    || method?.DeclaringType?.Name.StartsWith("AsyncTaskMethodBuilder") == true
+                    || method?.DeclaringType?.Name.StartsWith("ThreadPoolWorkQueue") == true
+                    || method?.DeclaringType?.Name.StartsWith("AwaitTaskContinuation") == true)
                 {
-                    // If async, skip this frame AND the next one
-                    i++; // Skip the next frame as well
+                    i++; 
 
                     continue;
                 }
@@ -185,7 +191,7 @@ namespace BLAZAM.Jobs
 
         public override void Cancel()
         {
-            if (Progress < 100)
+            if (Progress == null || Progress < 100)
             {
                 cancellationTokenSource.Cancel();
                 foreach (var step in Steps)

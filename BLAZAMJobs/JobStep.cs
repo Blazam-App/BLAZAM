@@ -45,7 +45,7 @@ namespace BLAZAM.Jobs
         }
         public override void Cancel()
         {
-            if (Progress < 100)
+            if (Progress == null || Progress < 100)
             {
                 cancellationTokenSource.Cancel();
                 EndTime = DateTime.Now;
