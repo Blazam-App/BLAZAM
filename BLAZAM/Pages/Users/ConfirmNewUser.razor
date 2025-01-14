@@ -226,7 +226,7 @@ else
     <MudButton Color="Color.Primary"
     OnClick="@(()=>{Nav.NavigateTo(User.SearchUri);})">@AppLocalization["Go To User"]</MudButton>
     <MudButton Color="Color.Success"
-    OnClick="@(()=>{Nav.NavigateTo("/create/user");})">@AppLocalization["Create Another"]</MudButton>
+    OnClick="@(()=>{Nav.NavigateTo("/create/user",true);})">@AppLocalization["Create Another"]</MudButton>
 
 }
 <MudButton StartIcon="@Icons.Material.Filled.Print"
