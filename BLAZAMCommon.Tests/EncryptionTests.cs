@@ -141,7 +141,7 @@ namespace BLAZAMCommon.Tests
                 generatedKeys.Where(k => !k.SequenceEqual(key)).ToList().ForEach(otherKey =>
                 {
                     //Calculate xor of the two 256 bit keys
-                    int variance = Helpers.ByteHelpers.BitDifference(key, otherKey);
+                    int variance =key.BitDifference(otherKey);
                     //Update lowestVariance if needed
                     if (variance < lowestVariance) lowestVariance = variance;
                 });
