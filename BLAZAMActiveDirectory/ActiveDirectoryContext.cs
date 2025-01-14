@@ -215,6 +215,8 @@ namespace BLAZAM.ActiveDirectory
             _notificationPublisher = notificationPublisher;
             Factory = factory;
             UserStateService = userStateService;
+            SystemInstance = this;
+
             //UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
             ConnectAsync();
 
@@ -233,7 +235,6 @@ namespace BLAZAM.ActiveDirectory
         {
             _encryption = activeDirectoryContextSeed._encryption;
             _notificationPublisher = activeDirectoryContextSeed._notificationPublisher;
-            SystemInstance = this;
             Factory = activeDirectoryContextSeed.Factory;
             UserStateService = activeDirectoryContextSeed.UserStateService;
             ConnectionSettings = activeDirectoryContextSeed.ConnectionSettings;
@@ -269,6 +270,8 @@ namespace BLAZAM.ActiveDirectory
             _keepAlive = true;
             while (_keepAlive)
             {
+                await Task.Delay(30000);
+
                 if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
                 {
                     await ConnectAsync();
@@ -295,7 +298,6 @@ namespace BLAZAM.ActiveDirectory
                         Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
                     }
                 }
-                await Task.Delay(30000);
             }
         }
 
