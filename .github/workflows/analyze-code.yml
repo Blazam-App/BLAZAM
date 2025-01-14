@@ -52,4 +52,4 @@ jobs:
           dotnet build 
           coverlet .\BLAZAM.Tests\bin\Debug\net8.0\BLAZAM.Tests.dll -t "dotnet" -a "test --filter FullyQualifiedName~BLAZAM.Tests --no-build" -f=opencover  --merge-with=".\coverage.opencover.xml"
           coverlet .\BLAZAMCommon.Tests\bin\Debug\net8.0\BLAZAMCommon.Tests.dll -t "dotnet" -a "test --filter FullyQualifiedName~BLAZAMCommon.Tests --no-build" -f=opencover --merge-with=".\coverage.opencover.xml"
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }} 
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}" 

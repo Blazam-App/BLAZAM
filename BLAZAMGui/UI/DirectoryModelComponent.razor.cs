@@ -55,6 +55,7 @@ namespace BLAZAM.Gui.UI
             {
                 if (_user == value) return;
                 _user = value;
+                UserChanged.InvokeAsync(_user);
                 if (_user != null)
                 {
                     //if (!_user.NewEntry)
@@ -64,6 +65,8 @@ namespace BLAZAM.Gui.UI
 
             }
         }
+        [Parameter]
+        public EventCallback<IADUser> UserChanged { get; set; }
         protected List<IADGroup> memberOfGroups = new();
 
         [Parameter]

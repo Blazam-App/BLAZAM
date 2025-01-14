@@ -2,7 +2,7 @@
 @inherits TemplateComponent
 @attribute [Authorize(Roles = UserRoles.CreateUsers)]
 
-@if (newUser != null)
+@if (newUser != null && !_userCreated)
 {
     <AppNavLock />
 }
@@ -113,7 +113,7 @@
 
         </MudTabPanel>
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
-                     Disabled="@(newUser==null)">
+                     Disabled="@(newUser==null || _userCreated)">
             <TabContent>
                 @AppLocalization["Username"]
             </TabContent>
@@ -123,15 +123,14 @@
                     var conflictingEntry = Directory.Users.FindUserByUsername(newUser?.SamAccountName, false);
                     if (conflictingEntry != null && conflictingEntry.SamAccountName?.Equals(newUser?.SamAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
                     {
-                        //newUser = null;
                         SnackBarService.Warning("An account with that name already exists! " + conflictingEntry.SamAccountName);
-                        usernameStepValid = false;
+                        _usernameStepValid = false;
                     }
                     else
                     {
                         if (newUser?.SamAccountName.IsNullOrEmpty() == false)
                         {
-                            usernameStepValid = true;
+                            _usernameStepValid = true;
                         }
 
                     }
@@ -158,7 +157,7 @@
 
         </MudTabPanel>
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
-                     Disabled="@(newUser==null || !usernameStepValid)">
+                     Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
             <TabContent>
                 @AppLocalization["Fields"]
             </TabContent>
@@ -178,7 +177,7 @@
         </MudTabPanel>
 
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
-                     Disabled="@(newUser==null || !usernameStepValid)">
+                     Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
             <TabContent>
                 @AppLocalization["Groups"]
             </TabContent>
@@ -207,7 +206,7 @@
         </MudTabPanel>
 
 
-        <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(custom==false)">
+        <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(custom==false || _userCreated)">
             <TabContent>
                 @AppLocalization["OU"]
             </TabContent>
@@ -239,7 +238,7 @@
 
         </MudTabPanel>
         <MudTabPanel Class=@(custom==true?"":"d-none")
-                     Disabled="@(newUser==null || !usernameStepValid)">
+                     Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
             <TabContent>
                 @AppLocalization["Details"]
             </TabContent>
@@ -252,7 +251,8 @@
                           @bind-Password=customPassword />
                 <MudButton Color=Color.Primary
                            OnClick="@(()=>{SelectedStep=4;})">
-                           @AppLocalization["Back"]</MudButton>
+                    @AppLocalization["Back"]
+                </MudButton>
                 <MudButton Color=Color.Success
                            OnClick="@(()=>{
                                             SelectedStep=7;
@@ -267,14 +267,16 @@
         </MudTabPanel>
 
 
-        <MudTabPanel Disabled=@(newUser==null || !usernameStepValid)>
+        <MudTabPanel Disabled=@(newUser==null || !_usernameStepValid)>
             <TabContent>
 
                 @AppLocalization["Confirm"]
             </TabContent>
             <ChildContent>
-                <ConfirmNewUser User="@newUser"
-                                DirectoryTemplate="SelectedTemplate" />
+                <ConfirmNewUser @bind-User="@newUser"
+                                Confirmed="_userCreated"
+                                DirectoryTemplate="SelectedTemplate"
+                                OnConfirmed="UserConfirmed"/>
 
             </ChildContent>
 
@@ -285,9 +287,10 @@
 
 
 @code {
+    bool _userCreated = false;
     string customConfirmPassword;
     string customPassword;
-    bool usernameStepValid = false;
+    bool _usernameStepValid = false;
     int _templateCarouselIndex = 0;
     int selectedStep;
     int SelectedStep
@@ -357,6 +360,7 @@
                 {
                     newUser.MoveTo(selectedOU);
                 }
+                _userCreated = false;
             }
         });
 
@@ -369,6 +373,8 @@
             LoadingData = true;
             await InvokeAsync(StateHasChanged);
             newUser = SelectedTemplate.GenerateTemplateUser(newUserName, Directory);
+            _userCreated = false;
+
             if (IsAdmin || SelectedTemplate.HasEditableFields())
             {
                 SelectedStep = 2;
@@ -379,6 +385,7 @@
                 SelectedStep = 7;
 
             }
+
         }
         catch (Exception ex)
         {
@@ -407,5 +414,10 @@
             if (ou.CanCreateUserInSubOUs) return true;
         }
         return false;
+    }
+    async Task UserConfirmed(){
+        newUserName=new();
+        _userCreated=true;
+        await InvokeAsync(StateHasChanged);
     }
 }
