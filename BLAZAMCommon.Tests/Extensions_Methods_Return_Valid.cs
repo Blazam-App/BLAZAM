@@ -2,7 +2,7 @@ using BLAZAM.Helpers;
 using System.Globalization;
 using static BLAZAM.Helpers.CommonHelpers;
 
-namespace BLAZAM.Tests
+namespace BLAZAMCommon.Tests
 {
     public class Extensions_Methods_Return_Valid
     {

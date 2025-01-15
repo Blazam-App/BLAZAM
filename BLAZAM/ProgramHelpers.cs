@@ -490,7 +490,7 @@ namespace BLAZAM.Server
                 {
                     var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-                    foreach (var assembly in assemblies)
+                    foreach (var assembly in assemblies.Where(a=>a.FullName?.Contains("BLAZAM")==true))
                     {
                         try
                         {
