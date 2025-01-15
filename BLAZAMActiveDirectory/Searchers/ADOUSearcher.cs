@@ -29,10 +29,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             var search = NewSearch;
             search.GeneralSearchTerm = searchTerm;
             return await search.SearchAsync<ADOrganizationalUnit, IADOrganizationalUnit>();
-            //  return await Task.Run(() =>
-            // {
-            //    return FindOuByString(searchTerm);
-            //});
+
         }
 
         public List<IADOrganizationalUnit> FindOuByString(string searchTerm)
@@ -60,7 +57,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
             var temp = search.Search<ADComputer, IADComputer>();
             return temp;
         }
-        // new List<IADComputer>(ConvertTo<ADComputer>(SearchObjects(searchBaseDN, "", ActiveDirectoryObjectType.Computer, 1000, true, SearchScope.OneLevel)));
 
         public List<IADGroup> FindSubGroupsByDN(string searchBaseDN) => SearchObjects(searchBaseDN, "", ActiveDirectoryObjectType.Group, 1000, true, SearchScope.OneLevel).Cast<IADGroup>().ToList();
 

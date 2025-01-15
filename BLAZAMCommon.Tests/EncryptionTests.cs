@@ -1,7 +1,7 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Helpers;
 
-namespace BLAZAM.Tests
+namespace BLAZAMCommon.Tests
 {
     public class EncryptionTests
     {
@@ -130,7 +130,7 @@ namespace BLAZAM.Tests
             testSeedStrings.ForEach(seedString =>
             {
                 encryption = new Encryption(seedString);
-                generatedKeys.Add(encryption.Key);
+                generatedKeys.Add(encryption.APITokenKey);
             });
 
             List<int> lowestVariances = new List<int>();
@@ -141,7 +141,7 @@ namespace BLAZAM.Tests
                 generatedKeys.Where(k => !k.SequenceEqual(key)).ToList().ForEach(otherKey =>
                 {
                     //Calculate xor of the two 256 bit keys
-                    int variance = Helpers.ByteHelpers.BitDifference(key, otherKey);
+                    int variance =key.BitDifference(otherKey);
                     //Update lowestVariance if needed
                     if (variance < lowestVariance) lowestVariance = variance;
                 });
@@ -161,7 +161,7 @@ namespace BLAZAM.Tests
             testSeedStrings.ForEach(seedString =>
             {
                 encryption = new Encryption(seedString);
-                generatedKeys.Add(encryption.Key);
+                generatedKeys.Add(encryption.APITokenKey);
                 var cipher = encryption.EncryptObject("jkrfdtnjkrdtn");
                 var test = encryption.DecryptObject<string>(cipher);
                 if (test != "jkrfdtnjkrdtn")
@@ -180,7 +180,7 @@ namespace BLAZAM.Tests
         {
 
             encryption = new Encryption(seedString);
-            Assert.Null(encryption.Key);
+            Assert.Null(encryption.APITokenKey);
 
         }
     }

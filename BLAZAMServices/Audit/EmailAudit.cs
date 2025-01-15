@@ -3,6 +3,7 @@ using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.JSInterop;
 using System.Web;
 
 namespace BLAZAM.Services.Audit
@@ -17,14 +18,14 @@ namespace BLAZAM.Services.Audit
         /// The default value is the current web user from the <see cref="IApplicationUserStateService"/>
         /// </remarks>
         protected IApplicationUserState? CurrentUser { get; set; }
-        public EmailAudit(IAppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory)
+        public EmailAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime)
         {
             UserStateService = userStateService;
             CurrentUser = UserStateService.CurrentUserState;
 
         }
 
-        public async void EmailSent(string emailId, string? from, string? to, string? cc, string? bcc, string? subject, string? body, string? response)
+        public async Task EmailSent(string emailId, string? from, string? to, string? cc, string? bcc, string? subject, string? body, string? response)
         {
             await Log(emailId, from, to, cc, bcc, subject, body, response);
         }
@@ -33,7 +34,7 @@ namespace BLAZAM.Services.Audit
 
             try
             {
-                using var context = await Factory.CreateDbContextAsync();
+                using var context = await factory.CreateDbContextAsync();
                 //var table = context.EmailAuditLog;
                 //var auditEntry = new EmailAuditLog()
                 //{
@@ -47,7 +48,7 @@ namespace BLAZAM.Services.Audit
                 //    ServerResponse = response
                 //};
                 //table.Add(auditEntry);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 return true;
 
             }

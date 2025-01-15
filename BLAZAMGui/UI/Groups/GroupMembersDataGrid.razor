@@ -2,15 +2,15 @@
 @if (Members != null)
 {
     <MudDataGrid Elevation=0
-                 Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
-                 Filterable="false"
-                 Dense=true
-                 Loading=@LoadingData
-                 Virtualize=true
-                 Height="300px"
-                 FixedHeader=true
-                 SortMode="@SortMode.None"
-                 Groupable="false">
+    Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
+    Filterable="false"
+    Dense=true
+    Loading=@LoadingData
+    Virtualize=true
+    Height="300px"
+    FixedHeader=true
+    SortMode="@SortMode.None"
+    Groupable="false">
         <Columns>
             <TemplateColumn Context="templateContext">
                 <HeaderTemplate>
@@ -19,7 +19,7 @@
                 <CellTemplate Context="cellContext">
                     @{
                         var account = cellContext.Item as IAccountDirectoryAdapter;
-                       
+
 
                     }
                     <AppTooltip Text="@cellContext.Item.ObjectType.ToString()">
@@ -54,12 +54,12 @@
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     <AppTooltip 
-                                ShowOnClick=@(!cellContext.Item.CanUnassign)
-                                ShowOnHover=@(!cellContext.Item.CanUnassign)
-                                Text=@AppLocalization["You don't have permission to remove this group member"]>
+                    ShowOnClick=@(!cellContext.Item.CanUnassign)
+                    ShowOnHover=@(!cellContext.Item.CanUnassign)
+                    Text=@AppLocalization["You don't have permission to remove this group member"]>
                         <MudButton Disabled=@(!Group.CanUnassign)
-                                   Color="Color.Error"
-                                   OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
+                        Color="Color.Error"
+                        OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
                             @AppLocalization["Remove"]
                         </MudButton>
                     </AppTooltip>
@@ -109,7 +109,7 @@
 
         <MudButton Color="Color.Primary" 
         StartIcon="@Icons.Material.Filled.GroupAdd" 
-        OnClick="@(()=>{AssignMemberModal.ShowAsync();})">@AppLocalization["Add Member..."]</MudButton>
+        OnClick="@(()=>{_=AssignMemberModal?.ShowAsync();})">@AppLocalization["Add Member..."]</MudButton>
     }
     <AppModal Color="Color.Dark" Title=@AppLocalization["Add Member..."] @ref=@AssignMemberModal>
         <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />
@@ -140,15 +140,21 @@ else
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _=Task.Run(() =>
-        {
-            Members = Group.Members;
-            LoadingData = false;
-            InvokeAsync(StateHasChanged);
-
-        });
+        RefreshData();
+        Group.OnModelChanged += () => { 
+            RefreshData();
+        };
         await InvokeAsync(StateHasChanged);
 
     }
-
+    private void RefreshData()
+    {
+        Task.Run(() =>
+        {
+            LoadingData = true;
+            Members = Group.Members;
+            LoadingData = false;
+        });
+   
+    }
 }

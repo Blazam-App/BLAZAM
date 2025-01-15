@@ -81,16 +81,9 @@
 
 
     string newGroupName = "";
-    List<DirectoryTemplate> templates = new();
     IADOrganizationalUnit? parentOU;
     IADGroup? newGroup;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        templates = await Context?.DirectoryTemplates.ToListAsync();
-        await InvokeAsync(StateHasChanged);
-    }
     async void OUSelected(IDirectoryEntryAdapter entry)
     {
         if (entry is IADOrganizationalUnit ou)

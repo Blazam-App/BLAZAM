@@ -82,7 +82,7 @@ else
         _privateUserInstance.DisplayName = newName;
 
     }
-    async void SaveChanges()
+    private async Task SaveChanges()
     {
         var possibleConflictingMatch = Directory.Users.FindUsersByContainerName(_privateUserInstance.DisplayName, false, false);
         if (possibleConflictingMatch == null || possibleConflictingMatch.Equals(_privateUserInstance))

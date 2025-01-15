@@ -90,7 +90,7 @@ namespace BLAZAM
 
             //Assign installation ID
             Loggers.InstallationId = ApplicationInfo.installationId.ToString();
-            Loggers.InstallationType = ApplicationInfo.isUnderIIS==true?"IIS":"Service";
+            Loggers.InstallationType = ApplicationInfo.isUnderIIS ? "IIS" : "Service";
             Loggers.DatabaseType = Configuration.GetValue<string>("DatabaseType");
 
             //Setup host logging so it can catch the earliest logs possible
@@ -165,7 +165,7 @@ namespace BLAZAM
             AppInstance.UseStaticFiles();
             AppInstance.UseRouting();
             AppInstance.MapControllers();
-            
+
             //AppInstance.UseCors(builder =>
             //      builder.AllowAnyOrigin()
             //      .SetIsOriginAllowed((host) => true)
@@ -227,11 +227,18 @@ namespace BLAZAM
                 try
                 {
                     dbSettings = kestrelContext.AppSettings.FirstOrDefault();
-
-                    var certBytes = dbSettings.SSLCertificateCipher.Decrypt<byte[]>();
-                    if (certBytes != null)
+                    if (dbSettings != null)
                     {
-                        cert = new X509Certificate2(certBytes);
+                        var certBytes = dbSettings.SSLCertificateCipher?.Decrypt<byte[]>();
+                        if (certBytes != null)
+                        {
+                            cert = new X509Certificate2(certBytes);
+
+                        }
+                    }
+                    else
+                    {
+                        Loggers.SystemLogger.Warning("Unable to connect to DB for SSL information");
 
                     }
 
@@ -272,13 +279,7 @@ namespace BLAZAM
 
         }
 
-        private static void ScheduleAutoLoad()
-        {
-            Task.Delay(5000).ContinueWith(t =>
-            {
-                new AutoLauncher(AppInstance.Services.GetService<IHttpClientFactory>(), AppInstance.Services.GetService<ApplicationInfo>());
-            });
-        }
+       
 
         private static void GetRunningWebServerConfiguration()
         {
@@ -291,7 +292,7 @@ namespace BLAZAM
 
                     foreach (var address in addressFeature.Addresses)
                     {
-                        ApplicationInfo.listeningAddresses.Append(address);
+                        ApplicationInfo.listeningAddresses = ApplicationInfo.listeningAddresses.Append(address);
                         Loggers.SystemLogger.Debug("Listening on: " + address);
                     }
                 }

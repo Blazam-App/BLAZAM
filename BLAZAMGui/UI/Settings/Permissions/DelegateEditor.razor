@@ -11,7 +11,7 @@
                   @bind-Value="@DelegateFilter" />
     <MudSpacer />
     <MudButton Color=Color.Secondary
-               OnClick="(()=>{trashModal.ShowAsync();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
+               OnClick="(()=>{_=trashModal?.ShowAsync();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
 </MudStack>
 
 
@@ -97,7 +97,7 @@
         SnackBarService.Success(AppLocalization["Delegate restored"]);
     if (AllDelegates.Where(l => l.DeletedAt != null).Count() < 1)
         {
-            trashModal.Close();
+           await trashModal.CloseAsync();
         }
     }
     private async void DelegatesChanged()

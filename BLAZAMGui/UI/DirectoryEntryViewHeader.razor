@@ -336,8 +336,8 @@ else
 
         await base.OnInitializedAsync();
         LoadingData = true;
-        _showRequestButton = Context.GlobalPermissionSettings.FirstOrDefault()?.AllowAccessRequest == true
-        && Context.GlobalPermissionRequestActions.Count() > 0;
+        _showRequestButton = (await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowAccessRequest == true
+        && await Context.GlobalPermissionRequestActions.CountAsync() > 0;
         _parentOU =await DirectoryEntry.GetParentAsync();
     }
     protected override void OnAfterRender(bool firstRender)

@@ -79,7 +79,7 @@
         await AuditLogger.Searched(OU);
         if (OU != null)
         {
-            parentOU = (IADOrganizationalUnit)OU.GetParent();
+            parentOU = (IADOrganizationalUnit?) await OU.GetParentAsync();
         }
         LoadingData = false;
         await RefreshEntryComponents();
@@ -91,9 +91,8 @@
             if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
             {
                 var changes = OU?.Changes;
-                await OU.CommitChangesAsync();
+                await OU!.CommitChangesAsync();
                 EditMode = false;
-                //Nav.WarnOnNavigation = false;
                 await AuditLogger.OU.Changed(OU, changes);
                 if (DbFactory.DatabaseType == DatabaseType.SQLite)
                 {

@@ -54,7 +54,7 @@ OnClick="GenerateGoogleAuthToken">@AppLocalization["Create Google Authenticator 
                 qrCode = setupcode.QrCodeSetupImageUrl;
                 _authenticatorSecret = guid;
                 CurrentUser.State.Preferences.AuthenticatorSecret = guid.Encrypt();
-                CurrentUser.State.SaveBasicUserPreferences();
+                await CurrentUser.State.SaveBasicUserPreferences();
             }
         }
     }

@@ -1,0 +1,78 @@
+@inherits DatabaseComponentBase
+@{
+    var notifs = Notifications.Where(n => !n.IsRead);
+}
+<MudBadge Color=Color.Error
+          Visible="@(notifs.Count() > 0)"
+          Overlap=true
+          BadgeClass="badge-repos cursor-pointer"
+          Content="@Notifications.Where(n=>!n.IsRead).Count()"
+          OnClick="@ToggleNotifications">
+    <AppTooltip Text=@(AppLocalization["Notifications"])>
+        <AppIconButton Size="Size.Large"
+                       OnClick="@ToggleNotifications"
+                       Icon="@(notifs.Count() > 0?Icons.Material.Filled.NotificationImportant:Icons.Material.Filled.Notifications)"
+                       Color="@(notifs.Count() > 0?Color.Warning:Color.Info)" />
+    </AppTooltip>
+</MudBadge>
+
+
+@code {
+
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+    IList<UserNotification> Notifications = new List<UserNotification>();
+    private IApplicationUserState UserState;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+        NotificationPublisher.OnNotificationPublished += (async (notifications) =>
+           {
+
+               if (notifications != null && notifications.Select(n => n.User).Contains(UserState.Preferences))
+               {
+                   await LoadNotifications();
+
+               }
+           });
+
+        NotificationPublisher.OnNotificationDeleted += async () =>
+            {
+                await LoadNotifications();
+            };
+
+        UserState = CurrentUser.State;
+        await InvokeAsync(StateHasChanged);
+        if (UserState != null)
+            UserState.OnSettingsChanged += async () =>
+        {
+            await LoadNotifications();
+        };
+
+        Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+
+        await InvokeAsync(StateHasChanged);
+
+
+    }
+    private void ToggleNotifications()
+    {
+        mainLayout.NotificationsOpen = !mainLayout.NotificationsOpen;
+        // _userMenu.Disabled = true;
+        // Task.Delay(500).ContinueWith((t) =>
+        // {
+        //     InvokeAsync(() => { _userMenu.Disabled = false; _userMenu?.CloseMenuAsync(); });
+
+        // });
+
+    }
+    private async Task LoadNotifications()
+    {
+        var context = await DbFactory.CreateDbContextAsync();
+        
+            Notifications = await context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+        
+        await InvokeAsync(StateHasChanged);
+    }
+}

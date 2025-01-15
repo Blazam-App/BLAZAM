@@ -45,8 +45,7 @@
     [Parameter]
     public EventCallback OnApproved { get; set; }
 
-    private IADUser? _creator;
-    private IDirectoryEntryAdapter? _target;
+    private IDirectoryEntryAdapter _target;
     private PermissionDelegate? _delegate;
     private AccessLevel? _accessLevel;
     private PermissionMapping? _permissionMapping;
@@ -75,8 +74,8 @@
         try
         {
             Context.SaveChangesAsync();
-            Modal.Close();
             OnApproved.InvokeAsync();
+            await Modal.CloseAsync();
 
             LoadingData = false;
         }catch(Exception ex)
@@ -115,12 +114,9 @@
             _delegate = _deleg;
 
             //Prepare target
-            if (!Request.Notification.TargetDN.IsNullOrEmpty())
-            {
-                var tgtDN = Request.Notification.TargetDN;
-                _target = Directory.GetDirectoryEntryByDN(tgtDN);
 
-            }
+            var tgtDN = Request.Notification.TargetDN;
+            _target = Directory.GetDirectoryEntryByDN(tgtDN)!;
 
             //Prepare Access Level
             var _accessLvl = await Context.AccessLevels.FirstOrDefaultAsync(x => x.ObjectMap.Count == 1
@@ -129,6 +125,7 @@
             if (_accessLvl == null)
             {
                 var objActions = await Context.ObjectActionFlag.ToListAsync();
+
                 var objectMap = new ObjectAccessMapping()
                     {
                         ObjectAccessLevelId = ObjectAccessLevels.Read.Id,
@@ -137,7 +134,7 @@
                     };
                 var actionMap = new ActionAccessMapping()
                     {
-                        ObjectActionId = objActions.FirstOrDefault(x => x.Action == Request.Notification.Action).Id,
+                        ObjectActionId = objActions.First(x => x.Action == Request.Notification.Action).Id,
                         AllowOrDeny = true,
                         ObjectType = _target != null ? _target.ObjectType : ActiveDirectoryObjectType.Group
                     };
@@ -145,7 +142,7 @@
                     {
                         ActionMap = new List<ActionAccessMapping>() { actionMap },
                         ObjectMap = new List<ObjectAccessMapping>() { objectMap },
-                        Name = AppLocalization[Request.Notification.Action.ToString()] + " " + AppLocalization[_target.ObjectType.ToString()]
+                        Name = AppLocalization[Request.Notification.Action.ToString()!] + " " + AppLocalization[_target!.ObjectType.ToString()]
                     };
             }
             else
@@ -165,7 +162,7 @@
                     {
                         AccessLevels = new List<AccessLevel>() { _accessLevel },
                         PermissionDelegates = new List<PermissionDelegate>() { _delegate },
-                        OU = _target.DN,
+                        OU = _target.DN!,
                     };
             }
             _permissionMapping = _permMap;

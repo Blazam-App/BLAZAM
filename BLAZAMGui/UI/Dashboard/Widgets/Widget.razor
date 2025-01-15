@@ -1,7 +1,7 @@
 ﻿@inherits DatabaseComponentBase
 
 @code {
-  
+
     [Parameter]
     public RenderFragment? WidgetContent { get; set; }
     [Parameter]
@@ -19,17 +19,20 @@
     {
         await base.OnInitializedAsync();
         if (CurrentUserDashboardWidgets?.OnRefreshWidget!=null){
-        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
-       {
-           if (widget.WidgetType.Equals(WidgetType))
+            CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
            {
-               _ = RefreshData();
+               if (widget.WidgetType.Equals(WidgetType))
+               {
+                   _ = RefreshData();
 
-           }
+               }
 
-       };
+           };
         }
-        _ = RefreshData();
+        _=Task.Run(() => { 
+            _ = RefreshData();
+
+        });
     }
 
     protected virtual async Task RefreshData()
@@ -48,11 +51,11 @@
         Nav.NavigateTo(args.SearchUri);
     }
   
-    protected async void SetRowsPerPage(int rowPerPage)
+    protected async Task SetRowsPerPage(int rowPerPage)
     {
         try
         {
-            CurrentUser.State.Preferences.DashboardWidgets.FirstOrDefault(w => w.WidgetType.Equals(WidgetType)).ItemsPerPage = rowPerPage;
+            CurrentUser.State.Preferences.DashboardWidgets.First(w => w.WidgetType.Equals(WidgetType)).ItemsPerPage = rowPerPage;
             await CurrentUser.State.SaveDashboardWidgets();
         }catch (Exception ex)
         {

@@ -3,33 +3,33 @@
     //TODO Finish custom disable
 }
 <MudAutocomplete Class="@Class"
-                 Style="@Style"
-                 Disabled=@Disabled
-                 T="IDirectoryEntryAdapter"
-                 Label="@Label"
-                 AnchorOrigin="@AnchorOrigin"
-                 TransformOrigin="@TransformOrigin"
-                 @bind-Value="SelectedResult"
-                 @bind-Text=@SearchTerm
-                 @ref=AutoComplete
-                 AutoFocus=@AutoFocus
-                 SearchFunc="@GetResults"
-                 DebounceInterval=500
-                 ResetValueOnEmptyText="true"
-                 Validation="@Validation"
-                 CoerceText="@(!AllowCustomInput)"
-                 CoerceValue="true"
-                 ItemDisabledFunc="@(CustomDisableFilter??((r)=>false))"
-                 MaxItems=@MaxResults
-                 Clearable=true
-                 Dense=true
-                 ShowProgressIndicator=true
-                 ToStringFunc="item=>item?.CanonicalName"
-                 AdornmentColor="Color.Tertiary"
-                 ProgressIndicatorColor="Color.Secondary"
-                 Adornment="Adornment.Start"
-                 AdornmentIcon="@AdornmentIcon"
-                 Variant="@Variant">
+Style="@Style"
+Disabled=@Disabled
+T="IDirectoryEntryAdapter"
+Label="@Label"
+AnchorOrigin="@AnchorOrigin"
+TransformOrigin="@TransformOrigin"
+@bind-Value="SelectedResult"
+@bind-Text=@SearchTerm
+@ref=AutoComplete
+AutoFocus=@AutoFocus
+SearchFunc="@GetResults"
+DebounceInterval=500
+ResetValueOnEmptyText="true"
+Validation="@Validation"
+CoerceText="@(!AllowCustomInput)"
+CoerceValue="true"
+ItemDisabledFunc="@(CustomDisableFilter??((r)=>false))"
+MaxItems=@MaxResults
+Clearable=true
+Dense=true
+ShowProgressIndicator=true
+ToStringFunc="item=>item?.CanonicalName"
+AdornmentColor="Color.Tertiary"
+ProgressIndicatorColor="Color.Secondary"
+Adornment="Adornment.Start"
+AdornmentIcon="@AdornmentIcon"
+Variant="@Variant">
     <ItemTemplate>
 
         <ADAutoCompleteResult Entry="context" />
@@ -47,14 +47,14 @@
         {
             <MudText>
 
-                Start typing to search...
+                @AppLocalization["Start typing to search..."]
             </MudText>
 
         }
         else
         {
             <MudText>
-                Sorry no result were found 😒
+                @AppLocalization["Sorry no result were found 😒"]
             </MudText>
 
         }
@@ -69,7 +69,7 @@
 </MudAutocomplete>
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
     [Parameter]
@@ -122,9 +122,7 @@
 
     [Parameter]
     public Func<IDirectoryEntryAdapter, bool>? CustomDisableFilter { get; set; }
-    @*
-    [Parameter]
-    public IFluentDisplay Display { get; set; }*@
+
 
     [CascadingParameter]
     public SearchService SearchParameters { get; set; }
@@ -211,10 +209,7 @@
     }
 
 
-    // public List<IDirectoryEntryAdapter> _selectedResults;
 
-
-    // List<string> SelectedResultNames = new();
 
 
 
@@ -225,7 +220,7 @@
         token = newSource.Token;
         foreach (var source in _cancellationList)
         {
-            source.Cancel();
+            await source.CancelAsync();
         }
 
         _cancellationList.Add(newSource);
@@ -233,17 +228,17 @@
         return await Task.Run(() =>
          {
 
-             if (!token.IsCancellationRequested && searchText != null)
-             {
-                 SearchResults = new List<IDirectoryEntryAdapter>();
+            if (!token.IsCancellationRequested && searchText != null)
+            {
+                SearchResults = new List<IDirectoryEntryAdapter>();
 
-                 var search = new ADSearch(Directory);
+                var search = new ADSearch(Directory);
 
-                 search.ObjectTypeFilter = SearchObjectType;
-                 search.GeneralSearchTerm = searchText.Replace(" ", "*");
-                 search.EnabledOnly = !SearchDisabled;
-                 search.MaxResults = MaxResults + 1;
-                 if (!search.GeneralSearchTerm.Equals(String.Empty))
+                search.ObjectTypeFilter = SearchObjectType;
+                search.GeneralSearchTerm = searchText.Replace(" ", "*");
+                search.EnabledOnly = !SearchDisabled;
+                search.MaxResults = MaxResults + 1;
+                if (!search.GeneralSearchTerm.IsNullOrEmpty())
                  {
 
                      var temp = (search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token)).Where(r => r.CanRead);

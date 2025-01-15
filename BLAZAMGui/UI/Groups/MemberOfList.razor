@@ -23,7 +23,12 @@
                                 @if (g.CanUnassign)
                                 {
                                     <MudSpacer />
-                                    <MudIconButton Disabled=@Disabled Size="Size.Small" OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
+                                    <MudIconButton Disabled=@Disabled
+                                                   Size="Size.Small"
+                                                   OnClick="@(()=>{Model.UnassignFrom(g);})"
+                                                   Class="align-end align-middle"
+                                                   Color=Color.Error
+                                                   Icon="@Icons.Material.Filled.Close" />
                                 }
                             </MudStack>
                         </ChildContent>

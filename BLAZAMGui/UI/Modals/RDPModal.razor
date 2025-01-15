@@ -16,13 +16,13 @@
         Modal.Options.MaxWidth = MaxWidth.ExtraExtraLarge;
         Modal.Options.FullWidth = true;
         base.OnInitialized();
-        baseRdpUrl = Context.AppSettings.FirstOrDefault().MyrtilleURL;
+        baseRdpUrl = Context.AppSettings.FirstOrDefault()?.MyrtilleURL??"";
         rdpUrl = baseRdpUrl;
     }
 
     protected async Task<string> GetPasswordHash()
     {
-        var plaintext = Context.ActiveDirectorySettings.FirstOrDefault().Password.Decrypt();
+        var plaintext = (await Context.ActiveDirectorySettings.FirstOrDefaultAsync())?.Password.Decrypt();
 
 
         var request = new HttpRequestMessage(HttpMethod.Get,
@@ -48,8 +48,7 @@
     protected async void Connect()
     {
         var hash = await GetPasswordHash();
-        rdpUrl = Context.AppSettings.FirstOrDefault().MyrtilleURL + "?__EVENTTARGET=&__EVENTARGUMENT=server=" + computerName + "&user=" + Context.ActiveDirectorySettings.FirstOrDefault().Username + "&passwordHash=" + hash + "&connect=Connect%21";
-        //rdpUrl = Context.AppSettings.FirstOrDefault().MyrtilleURL + "?__EVENTTARGET=&__EVENTARGUMENT=server=" + computerName + "&user=" + Context.ActiveDirectorySettings.FirstOrDefault().Username + "&password=" + hash;
+        rdpUrl = baseRdpUrl + "?__EVENTTARGET=&__EVENTARGUMENT=server=" + computerName + "&user=" + (await Context.ActiveDirectorySettings.FirstOrDefaultAsync())?.Username + "&passwordHash=" + hash + "&connect=Connect%21";
         await InvokeAsync(StateHasChanged);
     }
 }

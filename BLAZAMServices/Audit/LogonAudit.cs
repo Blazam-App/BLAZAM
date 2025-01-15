@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Session.Interfaces;
+using Microsoft.JSInterop;
 using System.Net;
 using System.Security.Claims;
 
@@ -8,10 +9,10 @@ namespace BLAZAM.Services.Audit
 {
     public class LogonAudit : CommonAudit
     {
-        public LogonAudit(IAppDatabaseFactory factory,
-            IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public LogonAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
         {
         }
+
         public async Task<bool> AttemptedPersonation(string? iPAddress = null)
         {
             CurrentUser = UserStateService.CurrentUserState;
@@ -41,7 +42,7 @@ namespace BLAZAM.Services.Audit
 
             try
             {
-                using var context = await Factory.CreateDbContextAsync();
+                using var context = await factory.CreateDbContextAsync();
                 var newAuditEntry = new LogonAuditLog
                 {
                     Action = action,

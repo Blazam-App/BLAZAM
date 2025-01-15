@@ -12,6 +12,11 @@ namespace BLAZAM.Helpers
 {
     public static class StringHelpers
     {
+        /// <summary>
+        /// Replaces new line characters with HTML break tags
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public static MarkupString ToMarkupString(this string input)
         {
             return (MarkupString)input.Replace("\r\n", "<br>").Replace("\n", "<br>");
@@ -43,7 +48,11 @@ namespace BLAZAM.Helpers
         {
             return str == null || str.Length < 1;
         }
-
+        /// <summary>
+        /// Checks if a url is a relative path or direct to localhost
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public static bool IsUrlLocalToHost(this string url)
         {
             if (url.StartsWith("https://localhost")) return true;
@@ -53,7 +62,11 @@ namespace BLAZAM.Helpers
                     url.Length > 1 &&
                      url[0] == '~' && url[1] == '/';   // "~/" or "~/foo"
         }
-
+        /// <summary>
+        /// Creates a consistent GUID based on a string input
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public static Guid ToGuid(this string input)
         {
             // Use MD5 hash to get a 16-byte hash of the string
@@ -64,7 +77,11 @@ namespace BLAZAM.Helpers
                 return new Guid(hash);
             }
         }
-
+        /// <summary>
+        /// Converts this <see cref="SecureString"/> to plain text
+        /// </summary>
+        /// <param name="secureString"></param>
+        /// <returns></returns>
         public static string ToPlainText(this SecureString? secureString)
         {
             if (secureString == null) return string.Empty;
@@ -82,6 +99,11 @@ namespace BLAZAM.Helpers
                 Marshal.ZeroFreeBSTR(bstrPtr);
             }
         }
+        /// <summary>
+        /// Converts this plain text to a <see cref="SecureString"/>
+        /// </summary>
+        /// <param name="plainText"></param>
+        /// <returns></returns>
         public static SecureString ToSecureString(this string plainText)
         {
             return new NetworkCredential("", plainText).SecurePassword;
@@ -95,8 +117,12 @@ namespace BLAZAM.Helpers
                 .ToList();
             ouComponents.Reverse();
             return "/" + string.Join("/", ouComponents);
-        } 
-     
+        }
+        /// <summary>
+        /// Converts this FQDN into it's equivalent Distinguished Name
+        /// </summary>
+        /// <param name="fqdn"></param>
+        /// <returns></returns>
         public static string FqdnToDN(this string fqdn)
         {
             // Split the FQDN into its domain components

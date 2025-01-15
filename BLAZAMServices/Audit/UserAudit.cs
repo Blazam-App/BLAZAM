@@ -3,19 +3,24 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
+using Microsoft.JSInterop;
 using System.Threading.Channels;
 
 namespace BLAZAM.Services.Audit
 {
     public class UserAudit : DirectoryAudit
     {
-        public UserAudit(IAppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public UserAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
         {
         }
 
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
-            => await Log(t => t.DirectoryEntryAuditLogs,
-                AuditActions.User_Deleted, deletedEntry);
+        {
+            Analytics.ObjectDeleted(ActiveDirectoryObjectType.User);
+
+            return await Log(t => t.DirectoryEntryAuditLogs,
+            AuditActions.User_Deleted, deletedEntry);
+        }
 
         public override async Task<bool> Searched(IDirectoryEntryAdapter searchedUser)
             => await Log(c => c.DirectoryEntryAuditLogs,
@@ -24,10 +29,16 @@ namespace BLAZAM.Services.Audit
 
         public async Task<bool> PasswordChanged(IDirectoryEntryAdapter searchedUser,
             bool requirePasswordChanged = false)
-            => await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Password_Changed, searchedUser, null, "requirePasswordChange=" + requirePasswordChanged);
+        {
+            Analytics.ObjectPasswordReset(ActiveDirectoryObjectType.User);
+
+            return await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Password_Changed, searchedUser, null, "requirePasswordChange=" + requirePasswordChanged);
+        }
 
         public async Task<bool> Assigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
         {
+            Analytics.ObjectAssigned(ActiveDirectoryObjectType.User);
+
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.User_Assigned,
             member,
@@ -38,6 +49,8 @@ namespace BLAZAM.Services.Audit
         }
         public async Task<bool> Unassigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
         {
+            Analytics.ObjectUnassigned(ActiveDirectoryObjectType.User);
+
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.User_Unassigned,
             member,
@@ -49,6 +62,8 @@ namespace BLAZAM.Services.Audit
 
         public override async Task<bool> Created(IDirectoryEntryAdapter newUser)
         {
+            Analytics.ObjectCreated(ActiveDirectoryObjectType.User);
+
             var oldValues = "";
             var newValues = "";
             foreach (var c in newUser.NewEntryProperties)
@@ -64,6 +79,8 @@ namespace BLAZAM.Services.Audit
         }
         public async Task<bool> Moved(IDirectoryEntryAdapter movedUser, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
+            Analytics.ObjectMoved(ActiveDirectoryObjectType.User);
+
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.User_Moved,
             movedUser,

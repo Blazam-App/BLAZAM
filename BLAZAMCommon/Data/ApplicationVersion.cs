@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Data
     /// [AssemblyVersion][Build Number]
     /// </para>
     /// </remarks>
-    public class ApplicationVersion : IComparable
+    public class ApplicationVersion : IComparable, IEquatable<ApplicationVersion?>
     {
         public Version AssemblyVersion { get; private set; }
         /// <summary>
@@ -217,5 +217,17 @@ namespace BLAZAM.Common.Data
             }
             return 1;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as ApplicationVersion);
+        }
+
+        public bool Equals(ApplicationVersion? other)
+        {
+            return other is not null &&
+                   Version == other.Version;
+        }
     }
+
 }

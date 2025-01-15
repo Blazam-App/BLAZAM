@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace BLAZAM.Services
@@ -191,14 +192,14 @@ namespace BLAZAM.Services
             }
             else
             {
-                if (loginReq == null) return loginReq.NoData();
+                
                 if (loginReq.Username.IsNullOrEmpty()) return loginReq.NoUsername();
             }
             //Pull the authentication settings from the database so we can check admin credentials
-            using (var context = _factory.CreateDbContext())
+            using (var context = await _factory.CreateDbContextAsync())
             {
 
-                var settings = context.AuthenticationSettings.FirstOrDefault();
+                var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
                 //Check admin credentials
                 if (settings != null
                     && loginReq.Username != null
@@ -254,7 +255,7 @@ namespace BLAZAM.Services
                             else
                             {
                                 var sid = userClaim.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
-                                var userSettings = context.UserSettings.FirstOrDefault(x => x.UserGUID == sid);
+                                var userSettings = await context.UserSettings.FirstOrDefaultAsync(x => x.UserGUID == sid);
                                 if (userSettings != null && !loginReq.Impersonation && !userSettings.AuthenticatorSecret.IsNullOrEmpty())
                                 {
                                     var passcode = loginReq.MFAToken;
@@ -326,7 +327,7 @@ namespace BLAZAM.Services
 
             }
             else
-                user = _directory.Users.FindUsersByString(loginReq.Username, true, true).FirstOrDefault();
+                user = (await _directory.Users.FindUsersByStringAsync(loginReq.Username, true, true)).FirstOrDefault();
 
 
             return await CreateDirectoryPrincipal(loginUser, user, loginReq);
@@ -336,10 +337,10 @@ namespace BLAZAM.Services
 
         private async Task<string> PerformDuoAuthentication(LoginRequest loginReq)
         {
-            using (var context = _factory.CreateDbContext())
+            using (var context = await _factory.CreateDbContextAsync())
             {
 
-                var settings = context.AuthenticationSettings.FirstOrDefault();
+                var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
                 if (settings == null) throw new ApplicationException("Could not get settings");
 
 

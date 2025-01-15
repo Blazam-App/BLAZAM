@@ -290,13 +290,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <returns>True if the current user can read the field, otherwise false</returns>
         bool CanReadField(IActiveDirectoryField field);
 
-
-
-        /// <summary>
-        /// Properly disposes of this entry from memory
-        /// </summary>
-        new void Dispose();
-
         /// <summary>
         /// Converts a raw <see cref="DirectoryEntry"/> or <see cref="SearchResult"/> into 
         /// an application <see cref="IDirectoryEntryAdapter"/>

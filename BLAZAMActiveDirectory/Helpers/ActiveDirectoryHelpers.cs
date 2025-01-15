@@ -301,7 +301,36 @@ namespace BLAZAM.Helpers
             return objects;
         }
 
-
+        public static string? EscapeLdapSearchFilter(this string? input)
+        {
+            if (input.IsNullOrEmpty()) return null;
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in input)
+            {
+                switch (c)
+                {
+                    case '\\':
+                        sb.Append("\\5c");
+                        break;
+                    case '*':
+                        sb.Append("\\2a");
+                        break;
+                    case '(':
+                        sb.Append("\\28");
+                        break;
+                    case ')':
+                        sb.Append("\\29");
+                        break;
+                    case '\0': // Null character
+                        sb.Append("\\00");
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+            }
+            return sb.ToString();
+        }
 
 
 

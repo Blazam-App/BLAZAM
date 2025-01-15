@@ -7,12 +7,12 @@ namespace BLAZAM.Services
     public class EncryptionService : IEncryptionService
     {
         private Encryption Encryption { get; set; }
-        public byte[] Key => Encryption.Key;
+        public byte[] Key => Encryption.APITokenKey;
         public ServiceConnectionState Status
         {
             get
             {
-                return Encryption.Key != null ? ServiceConnectionState.Up : ServiceConnectionState.Down;
+                return Encryption.APITokenKey != null ? ServiceConnectionState.Up : ServiceConnectionState.Down;
             }
         }
 

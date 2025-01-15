@@ -10,7 +10,7 @@
 }
 <AppPageTitle>@AppLocalization["Home"]</AppPageTitle>
 
-    @if (MOTD.HasValue && MOTD.Value.ToString() != "")
+@if (MOTD.HasValue && MOTD.Value.ToString() != "")
 {
     <MudAlert Class="mb-6 mud-theme-info rounded-t-0"  ShowCloseIcon=false Elevation="3">
 
@@ -26,32 +26,34 @@
 
 @if (ApplicationInfo.InDebugMode)
 {
-   
+
     <MudButton Variant="Variant.Filled" OnClick="testJob">Run Test Job</MudButton>
 }
 
 @code {
     MarkupString? MOTD;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         try
         {
-            MOTD = (MarkupString)Context?.AppSettings.FirstOrDefault()?.MOTD;
+            MOTD = (MarkupString)((await Context!.AppSettings.FirstOrDefaultAsync())!.MOTD)!;
         }
         catch
         {
 
         }
-        return base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
     }
     private IJob TestJob
     {
         get
         {
-            IJob job = new Job("Test Job",requestingUser:CurrentUser.State.Username);
-            IJob job2 = new Job("Nested Job");
-            IJobStep step1 = new JobStep("Regular Step Passes", (step) =>
+            var job = new Job("Test Job", requestingUser: CurrentUser.State.Username);
+            var job2 = new Job("Nested Job");
+            var step1 = new JobStep("Regular Step Passes", (step) =>
             {
                 for (int x = 1; x < 6; x++)
                 {
@@ -60,11 +62,11 @@
                 }
                 return true;
             });
-            IJobStep step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
-            IJobStep step3 = new JobStep("Regular Step Throws", bool(step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); });
-            IJobStep step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(2000).Wait(); return true; });
-            IJobStep step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
-            IJobStep step6 = new JobStep("Nested Step Throws", bool(step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); });
+            var step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
+            var step3 = new JobStep("Regular Step Throws", bool (step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); });
+            var step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(2000).Wait(); return true; });
+            var step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
+            var step6 = new JobStep("Nested Step Throws", bool (step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); });
 
             job.AddStep(step1);
             job.AddStep(step2);
@@ -79,8 +81,7 @@
     private async Task testJob()
     {
         var test = TestJob;
-        test.ShowJobDetailsDialog(MessageService);
-        //await MessageService.ShowMessage<JobResultDialog>(test.ToDialogParameters(), "Test Job");
+        await test.ShowJobDetailsDialogAsync(MessageService);
         var result = await test.RunAsync();
 
 

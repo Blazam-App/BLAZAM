@@ -51,8 +51,8 @@ namespace BLAZAM.Services
         }
 
 
-        public async Task Search() => await Search(null);
-        public async Task Search(string? searchTerm = null)
+        public async Task SearchAsync() => await Task.Run(() => { Search(null); });
+        public void Search(string? searchTerm = null)
         {
             if (searchTerm != null)
                 SearchTerm = searchTerm;

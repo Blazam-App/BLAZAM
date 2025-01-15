@@ -75,7 +75,7 @@
         Modal.OnYes += SaveSettings;
         Modal.YesEnabled = () => { return !LoadingData; };
     }
-    private async void SaveSettings()
+    private async Task SaveSettings()
     {
         LoadingData = true;
         await Modal.RefreshView();

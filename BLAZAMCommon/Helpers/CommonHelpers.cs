@@ -22,6 +22,12 @@ namespace BLAZAM.Helpers
 {
     public static class CommonHelpers
     {
+        /// <summary>
+        /// Rounds a number to the specified decimal places
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="decimalPlaces"></param>
+        /// <returns></returns>
         public static double Round(this double number, int decimalPlaces = 0)
         {
             return Math.Round(number, decimalPlaces);
@@ -51,8 +57,13 @@ namespace BLAZAM.Helpers
             return values;
         }
 
-        public static List<AuditChangeLog> GetChanges(this object changed, object original)
+        public static List<AuditChangeLog> GetChanges(this object changed, object? original)
         {
+            if(original == null)
+            {
+                return new List<AuditChangeLog>();
+
+            }
             // Check if both objects are null or same reference
             if (ReferenceEquals(changed, original))
                 return new List<AuditChangeLog>();
@@ -157,7 +168,11 @@ namespace BLAZAM.Helpers
             }
         }
 
-
+        /// <summary>
+        /// Saves this memory stream to a filesystem file
+        /// </summary>
+        /// <param name="memoryStream"></param>
+        /// <param name="destinationFile"></param>
         public static void SaveTo(this MemoryStream memoryStream, SystemFile destinationFile)
         {
             if (destinationFile.Exists)
@@ -210,32 +225,32 @@ namespace BLAZAM.Helpers
                 }
             }
         }
-        public static PropertyInfo GetPropertyFromExpression<T>(this T obj, Expression<Func<T, object>> GetPropertyLambda)
-        {
-            MemberExpression Exp = null;
+        //public static PropertyInfo GetPropertyFromExpression<T>(this T obj, Expression<Func<T, object>> GetPropertyLambda)
+        //{
+        //    MemberExpression Exp = null;
 
-            //this line is necessary, because sometimes the expression comes in as Convert(originalexpression)
-            if (GetPropertyLambda.Body is UnaryExpression)
-            {
-                var UnExp = (UnaryExpression)GetPropertyLambda.Body;
-                if (UnExp.Operand is MemberExpression)
-                {
-                    Exp = (MemberExpression)UnExp.Operand;
-                }
-                else
-                    throw new ArgumentException();
-            }
-            else if (GetPropertyLambda.Body is MemberExpression)
-            {
-                Exp = (MemberExpression)GetPropertyLambda.Body;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
+        //    //this line is necessary, because sometimes the expression comes in as Convert(originalexpression)
+        //    if (GetPropertyLambda.Body is UnaryExpression)
+        //    {
+        //        var UnExp = (UnaryExpression)GetPropertyLambda.Body;
+        //        if (UnExp.Operand is MemberExpression)
+        //        {
+        //            Exp = (MemberExpression)UnExp.Operand;
+        //        }
+        //        else
+        //            throw new ArgumentException();
+        //    }
+        //    else if (GetPropertyLambda.Body is MemberExpression)
+        //    {
+        //        Exp = (MemberExpression)GetPropertyLambda.Body;
+        //    }
+        //    else
+        //    {
+        //        throw new ArgumentException();
+        //    }
 
-            return (PropertyInfo)Exp.Member;
-        }
+        //    return (PropertyInfo)Exp.Member;
+        //}
 
         public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
         {
@@ -272,16 +287,9 @@ namespace BLAZAM.Helpers
             try
             {
 
-                long? fileTime = value?.ToUniversalTime().ToFileTimeUtc();
-                if (fileTime == null) return null;
+                long fileTime = value.Value.ToUniversalTime().ToFileTimeUtc();
                 return fileTime;
-                //object fto = 0;
-                //IADsLargeInteger largeInt = new ADsLargeInteger();
 
-                //largeInt.HighPart = (int)(fileTime >> 32);
-                //largeInt.LowPart = (int)(fileTime & 0xFFFFFFFF);
-
-                //return largeInt;
             }
             catch
             {
@@ -352,7 +360,7 @@ namespace BLAZAM.Helpers
             }
         }
 
-        public static string ToSidString(this byte[] sid)
+        public static string ToSidString(this byte[]? sid)
         {
             if (null == sid) return "";
             // Create a SecurityIdentifier object from the input byte array

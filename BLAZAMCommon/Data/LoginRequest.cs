@@ -84,7 +84,7 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-        
+
         public LoginRequest GoogleAuthenticatorRequested(AuthenticationState state)
         {
             AuthenticationState = state;

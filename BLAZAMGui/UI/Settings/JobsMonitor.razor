@@ -3,18 +3,23 @@
 {
 
     <MudDataGrid T="IJob"
+        Height="450px"
                  Dense=true
                  Virtualize="true"
-                 Items="JobMonitor.AllJobs.Where(x=>!x.NestedJob)"
+                 Items="JobMonitor.AllJobs.Where(x=>!x.NestedJob).OrderByDescending(x=>x.StartTime)"
                  RowClick="ShowJobDetails"
                  RowClass="cursor-pointer">
         <Columns>
-            <PropertyColumn Property="x=>x.Name" />
-            <PropertyColumn Property="x=>x.User" />
-            <PropertyColumn Property="x=>x.StartTime" />
-            <PropertyColumn Property="x=>x.Steps.Count" />
-            <PropertyColumn Property="x=>x.Progress" />
-            <PropertyColumn Property="x=>x.Result" />
+            <PropertyColumn Title="@AppLocalization["Name"]" Property="x=>x.Name" />
+            <PropertyColumn Title="@AppLocalization["User"]" Property="x=>x.User" />
+            <PropertyColumn Title="@AppLocalization["Start Time"]" Property="x=>x.StartTime" />
+            <PropertyColumn Title="@AppLocalization["Steps"]" Property="x=>x.Steps.Count" />
+            <PropertyColumn Title="@AppLocalization["Progress"]" Property="x=>x.Progress" />
+                <TemplateColumn Title="@AppLocalization["Result"]">
+                    <CellTemplate>
+                        <MudElement>@(context.Item.Result==JobResult.Passed?AppLocalization["No errors"]:context.Item.Result.ToString())</MudElement>
+                    </CellTemplate>
+                </TemplateColumn>
         </Columns>
     </MudDataGrid>
 

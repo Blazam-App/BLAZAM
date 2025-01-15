@@ -7,6 +7,7 @@ using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Security.AccessControl;
 using System.Text;
 
@@ -131,6 +132,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty(ActiveDirectoryFields.EmployeeId.FieldName, value);
             }
         }
+        public List<EventLogEntry> LogonEvents => this.DomainControllerEventLogs.GetUserLogonEvents(SamAccountName, DateTime.UtcNow - TimeSpan.FromDays(90), DateTime.UtcNow);
+
         public string? HomeDirectory
         {
             get
@@ -175,8 +178,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             Rights = FileSystemRights.FullControl;
             bool modified;
-            InheritanceFlags none = new InheritanceFlags();
-            none = InheritanceFlags.None;
+            InheritanceFlags none = InheritanceFlags.None;
 
             //set on dir itself
             FileSystemAccessRule accessRule = new FileSystemAccessRule(SamAccountName, Rights, none, PropagationFlags.NoPropagateInherit, AccessControlType.Allow);
@@ -185,8 +187,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             dSecurity.ModifyAccessRule(AccessControlModification.Set, accessRule, out modified);
 
             //Always allow objects to inherit on a directory 
-            InheritanceFlags iFlags = new InheritanceFlags();
-            iFlags = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
+            InheritanceFlags iFlags = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
+
 
             //Add Access rule for the inheritance
             FileSystemAccessRule accessRule2 = new FileSystemAccessRule(SamAccountName, Rights, iFlags, PropagationFlags.InheritOnly, AccessControlType.Allow);

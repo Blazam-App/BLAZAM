@@ -33,17 +33,7 @@
     string hmargin = "";
     string vspacing = "";
     string vmargin = "";
-    @if (SectionHeaderPosition == HeaderPosition.TopLeft || SectionHeaderPosition == HeaderPosition.TopRight)
-    {
-        //vspacing = " top: -25px";
-        // vmargin = "margin-bottom: -35px";
-    }
-    else
-    {
-        // vspacing = " bottom: -22px";
-        // vmargin = "margin-top: -50px";
-    }
-
+   
 
 
     @if (SectionHeaderPosition == HeaderPosition.TopLeft || SectionHeaderPosition == HeaderPosition.BottomLeft)
@@ -73,18 +63,13 @@
     @vmargin;
     @hspacing;
     @hmargin;
-        /*padding: 10px;*/
         max-width: fit-content;
     }
 
     .section-title-text {
         font-weight: bold;
-        /*  margin-left: 10px; */
     }
 
-    .section-content {
-        /*padding: 10px;*/
-    }
 </style>
 
 @code {

@@ -1,1 +1,3 @@
-﻿global using BLAZAM.Services.Attributes;
+﻿global using BLAZAM.Common.Data;
+global using BLAZAM.Services.Attributes;
+

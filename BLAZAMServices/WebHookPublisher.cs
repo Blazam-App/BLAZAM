@@ -1,30 +1,30 @@
-﻿using Azure.Core.Pipeline;
+﻿using Azure;
+using Azure.Core.Pipeline;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Common.Data.Database;
+using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Helpers;
+using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
+using Microsoft.Extensions.Http;
 using MudBlazor.Extensions;
+using Polly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using BLAZAM.Database.Context;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileSystemGlobbing.Internal;
-using System.Security.Authentication;
-using Azure;
-using Polly;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Jobs;
 
 
 namespace BLAZAM.Notifications.Services
@@ -61,12 +61,12 @@ namespace BLAZAM.Notifications.Services
                 {
                     try
                     {
-                        using var context = _appDatabaseFactory.CreateDbContext();
-                        var undeliveredWebhooks = context.WebHookAttempts
-                            .Include(w => w.WebHookSubscription)
-                            .Where(w => w.Delivered == false &&
-                            w.RetryCount < 15)
-                            .ToList();
+                        using var context = await _appDatabaseFactory.CreateDbContextAsync();
+                        var undeliveredWebhooks = await context.WebHookAttempts
+                                                                                .Include(w => w.WebHookSubscription)
+                                                                                .Where(w => w.Delivered == false &&
+                                                                                w.RetryCount < 15)
+                                                                                .ToListAsync();
                         if (undeliveredWebhooks.Count > 0)
                         {
                             IJob webhookAttemptJob = new Job("Webhook Retry");
@@ -90,7 +90,7 @@ namespace BLAZAM.Notifications.Services
                             else
                             {
 
-                                execStep = new JobStep("Multi-threaded execute of " + undeliveredWebhooks.Count + " retries", async (step) =>
+                                execStep = new JobStep("Multi-threaded execute of " + undeliveredWebhooks.Count + " retries", (step) =>
                                 {
                                     Parallel.ForEachAsync(undeliveredWebhooks, async (attempt, cancel) =>
                                             {
@@ -180,7 +180,7 @@ namespace BLAZAM.Notifications.Services
                 return true;
             });
             webhookAttemptJob.AddStep(execStep);
-            var result = webhookAttemptJob.Run();
+            var result = await webhookAttemptJob.RunAsync();
         }
 
         private async Task SendWebHook(WebHookSubscription subscription, Guid msgId, Guid attemptId, DateTime eventTimestamp, string eventType, string payloadString, string? signature)

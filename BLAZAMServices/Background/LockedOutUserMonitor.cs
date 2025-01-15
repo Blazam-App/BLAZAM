@@ -51,7 +51,7 @@ namespace BLAZAM.Services.Background
                             //add user to lockout table
                             context.LockedOutUsers.Add(new() { Sid = user.SID.ToSidString(), Added = DateTime.UtcNow });
 
-                            if(user.LockoutTime > DateTime.UtcNow.AddDays(-1))
+                            if (user.LockoutTime > DateTime.UtcNow.AddDays(-1))
                             {
                                 _notificationGenerationService.PostAsync(user, NotificationType.LockedOut);
                             }
@@ -63,7 +63,7 @@ namespace BLAZAM.Services.Background
                 {
                     if (user == null) continue;
                     var adUser = directory.GetDirectoryEntryBySid(user.Sid) as IADUser;
-                    if (adUser!=null && !adUser.LockedOut)
+                    if (adUser != null && !adUser.LockedOut)
                     {
                         var existing = context.LockedOutUsers.FirstOrDefault(x => x.Sid == user.Sid);
                         if (existing != null)

@@ -106,7 +106,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             Session = session;
             t = new Timer(Tick, null, 10000, 10000);
-            // Monitor();
 
 
         }
@@ -188,7 +187,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public bool Monitoring { get; private set; }
+        public bool Monitoring { get; }
 
         public void Logoff(bool synchronous = false)
         {
@@ -252,7 +251,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                             Task.Run(() => { Session = updated; OnSessionUpdated?.Invoke(this); });
 
-                        //session.Server.Close();
                     }
                     return true;
                 });

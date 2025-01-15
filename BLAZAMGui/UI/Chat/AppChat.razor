@@ -1,10 +1,14 @@
 @using Microsoft.AspNetCore.Components.Routing;
 @inherits ChatComponentBase
 
-<Audio Src="/audio/messagePop.mp3" @bind-Playing=@playingPop />
-<Audio Src="/audio/bell.wav" @bind-Playing=@playingBell />
+<Audio Src="/audio/messagePop.mp3"
+       @bind-Playing=@playingPop />
+<Audio Src="/audio/bell.wav"
+       @bind-Playing=@playingBell />
 
-<ChatButton Class="pa-0 mud-height-full" ChatRoom=AppChatRoom OnClick="@(()=>{_chatOpen=!_chatOpen;})" />
+<ChatButton Class="pa-0 mud-height-full"
+            ChatRoom=AppChatRoom
+            OnClick="@(()=>{_chatOpen = !_chatOpen;})" />
 
 
 
@@ -139,7 +143,7 @@
     </MudToolBar>
 
     <AppChatRoom Class="pr-16"
-                 OnCloseClicked=@(()=>{_chatOpen=!_chatOpen;})
+                 OnCloseClicked=@(()=>{_chatOpen = !_chatOpen;})
                  ChatRoom="selectedChatRoom" />
 
 

@@ -1,13 +1,13 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
+using BLAZAM.Services.Audit;
+using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
-using BLAZAM.Services.Audit;
-using BLAZAM.Session.Interfaces;
+using System.Security.Claims;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -19,9 +19,9 @@ namespace BLAZAM.Pages.API.v1
     [ApiController]
     [Produces("application/json")]
     [Route("api/v1/[controller]")]
-    public class ApiController : Controller
+    public class ApiController : ControllerBase
     {
-        private DateTime _startTime = DateTime.Now;
+        private readonly DateTime _startTime = DateTime.Now;
 
         /// <summary>
         /// A string dictionary that contains the base of the response.
@@ -47,7 +47,6 @@ namespace BLAZAM.Pages.API.v1
 
         public ApiController(IApplicationUserStateService applicationUserStateService, AuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
         {
-            //User = httpContextAccessor.HttpContext.User;
             AuditLogger = audit;
             UserStateService = applicationUserStateService;
             CurrentUserState = UserStateService.CurrentUserState;

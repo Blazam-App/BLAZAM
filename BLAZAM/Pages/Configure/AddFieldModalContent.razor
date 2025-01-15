@@ -30,7 +30,7 @@
     [Parameter]
     public EventCallback<CustomActiveDirectoryField> FieldCreated { get; set; }
 
-    async void Add()
+    async Task Add()
     {
         if (Context != null)
         {

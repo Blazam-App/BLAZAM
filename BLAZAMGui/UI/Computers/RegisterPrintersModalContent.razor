@@ -46,21 +46,21 @@
         // Modal.OnYes = SaveChanges;
         Modal.YesText = AppLocalization["Next"];
         Modal.Title = "Register Printers";
-        Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
+        Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
         base.OnInitialized();
 
 
     }
 
 
-    private void RegisterSelectedPrinters()
+    private async Task RegisterSelectedPrinters()
     {
 
         foreach (var printer in selectedPrinters.Where(p => p.ADPrinter == null))
         {
-            IJob registerJob = new Job(AppLocalization["Register Printers"],CurrentUser.State.AuditUsername);
+            IJob registerJob = new Job(AppLocalization["Register Printers"], CurrentUser.State.AuditUsername);
             var newPrinter = destinationOU.CreatePrinter(printer);
-            registerJob = newPrinter.CommitChanges(registerJob);
+            registerJob = await newPrinter.CommitChangesAsync(registerJob);
             if (registerJob.FailedSteps.Count == 0)
             {
                 SnackBarService.Success(AppLocalization["Printer(s) registered to Active Directory"]); 
@@ -69,7 +69,7 @@
             }
             else
             {
-                MessageService.ShowMessage<JobResultDialog>(registerJob.ToDialogParameters(), registerJob.Name);
+                await MessageService.ShowMessage<JobResultDialog>(registerJob.ToDialogParameters(), registerJob.Name);
                 return;
             }
 
@@ -94,13 +94,13 @@
                 validated = true;
                 Modal.YesText = AppLocalization["Register"];
                 Modal.OnYes = RegisterSelectedPrinters;
-                Modal.RefreshView();
+                _=Modal.RefreshView();
             }
             else
             {
                 Modal.YesText = AppLocalization["Next"];
-                Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
-                Modal.RefreshView();
+                Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
+                _=Modal.RefreshView();
 
             }
         }

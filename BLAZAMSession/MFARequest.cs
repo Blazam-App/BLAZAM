@@ -2,9 +2,9 @@
 
 namespace BLAZAM.Server.Data.Services
 {
-    public class MFARequest
+    public class MFARequest : IEquatable<MFARequest?>
     {
-        public string mfaToken;
+        public readonly string mfaToken;
         public string redirectUrl;
         public IApplicationUserState user;
 
@@ -24,6 +24,27 @@ namespace BLAZAM.Server.Data.Services
                 return other.mfaToken.Equals(mfaToken);
             }
             return false;
+        }
+
+        public bool Equals(MFARequest? other)
+        {
+            return other is not null &&
+                   mfaToken == other.mfaToken;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(mfaToken);
+        }
+
+        public static bool operator ==(MFARequest? left, MFARequest? right)
+        {
+            return EqualityComparer<MFARequest>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(MFARequest? left, MFARequest? right)
+        {
+            return !(left == right);
         }
     }
 }

@@ -25,7 +25,6 @@ namespace BLAZAM.Services.Background
 
         private readonly IAppDatabaseFactory factory;
         private UpdateService updateService;
-        private Timer? updateCheckTimer;
         private Timer? autoUpdateApplyTimer = null;
         private Timer? directoryCleaner = null;
         public bool IsUpdatedScheduled { get { return autoUpdateApplyTimer != null; } }
@@ -35,12 +34,11 @@ namespace BLAZAM.Services.Background
 
         //private AuditLogger Audit;
 
-        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo):base(factory)
+        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo) : base(factory)
         {
             _applicationInfo = applicationInfo;
             this.factory = factory;
             this.updateService = updateService;
-            //updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromSeconds(1).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
             directoryCleaner = new Timer(CleanDirectories, null, TimeSpan.FromSeconds(30), TimeSpan.FromHours(20));
         }
 
@@ -186,13 +184,13 @@ namespace BLAZAM.Services.Background
 
         protected override async void Execute(object? state)
         {
-            using var context = factory.CreateDbContext();
-            IJob updateCheckJob = new Job("Check for Update");
-            IJobStep checkForUpdateStep = new JobStep("Execute", async (step) =>
+            using var context = await factory.CreateDbContextAsync();
+            Job updateCheckJob = new Job("Check for Update");
+            JobStep checkForUpdateStep = new JobStep("Execute", async (step) =>
             {
                 try
                 {
-                    var appSettings = context.AppSettings.FirstOrDefault();
+                    var appSettings = await context.AppSettings.FirstOrDefaultAsync();
                     if (appSettings != null)
                     {
                         Loggers.UpdateLogger.Information("Checking for automatic update");
@@ -246,8 +244,8 @@ namespace BLAZAM.Services.Background
                 bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall;
                 if (ScheduledUpdate != updateToInstall)
                 {
-                    IJob scheduleUpdatteJob = new Job("Schedule Update");
-                    IJobStep scheduleStep = new JobStep("Execute", async (step) =>
+                    Job scheduleUpdatteJob = new Job("Schedule Update");
+                    JobStep scheduleStep = new JobStep("Execute", (step) =>
                     {
                         try
                         {
@@ -303,7 +301,7 @@ namespace BLAZAM.Services.Background
             try
             {
                 using var context = await factory.CreateDbContextAsync();
-                var settings = context.AppSettings.FirstOrDefault();
+                var settings = await context.AppSettings.FirstOrDefaultAsync();
                 if (settings != null)
                 {
                     if (settings.AutoUpdate)
@@ -323,7 +321,7 @@ namespace BLAZAM.Services.Background
                                 var updateJob = latestUpdate.GetUpdateJob();
                                 if (updateJob != null)
                                 {
-                                    updateJob.Run();
+                                    await updateJob.RunAsync();
                                     if (updateJob.Result == JobResult.Passed)
                                         Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot.{@UpdateVersion}", latestUpdate.Version);
                                     else
@@ -374,7 +372,6 @@ namespace BLAZAM.Services.Background
         public void Dispose()
         {
             autoUpdateApplyTimer?.Dispose();
-            updateCheckTimer?.Dispose();
             directoryCleaner?.Dispose();
         }
     }

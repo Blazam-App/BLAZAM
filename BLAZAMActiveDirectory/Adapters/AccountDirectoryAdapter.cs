@@ -1,4 +1,5 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Data;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
@@ -7,6 +8,7 @@ using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using System.Data;
 using System.Diagnostics;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Globalization;
 using System.Security;
@@ -40,8 +42,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                PermissionMapping map = new();
-
                 if (CurrentUser?.IsSuperAdmin == true) return true;
                 return CurrentUser?.PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == ObjectType && om.AllowDisabled))) == true;
 
@@ -78,7 +78,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         times.Add(dt);
                     }
-                    else { 
+                    else
+                    {
                         times.Add(c.AdsValueToDateTime());
                     }
                 }
@@ -177,13 +178,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                //  PostCommitSteps.Add(new("Set UAC", (step) => {
                 SetProperty("userAccountControl", value);
-
-                //    return true;
-                //  }));
             }
         }
+
+        protected DomainControllerEventLogReader? DomainControllerEventLogs;
+
+
+        public override void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
+        {
+            base.Parse(directory, directoryEntry, searchResult);
+            DomainControllerEventLogs = new DomainControllerEventLogReader(directory);
+        }
+
 
         /// <summary>
         /// Overridden CanRead to check that the application user has permission
@@ -259,7 +266,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                //var pwdLastSetRaw = GetProperty<long>("pwdLastSet");
                 if (PasswordLastSet == null) return true;
                 return PasswordLastSet == DateTime.MinValue;
             }
@@ -328,7 +334,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             try
             {
-                //var portOpen = NetworkTools.IsPortOpen(DirectorySettings.ServerAddress, 464);
                 try
                 {
                     Invoke("SetPassword", new[] { password.ToPlainText() });

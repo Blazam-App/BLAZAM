@@ -29,7 +29,7 @@
 
     }
 
-    async void MoveTo()
+    async Task MoveTo()
     {
         if (SelectedOU.DN.Equals(DirectoryModel.OU))
         {
@@ -42,7 +42,7 @@
 
           
 
-            var ouMovedFrom = DirectoryModel.GetParent() as IADOrganizationalUnit;
+            var ouMovedFrom = await DirectoryModel.GetParentAsync() as IADOrganizationalUnit;
             DirectoryModel.MoveTo(ouToMoveTo);
 
             SnackBarService.Warning(DirectoryModel.CanonicalName + " has been moved to " + ouToMoveTo.CanonicalName + ", but changes need to be saved.");

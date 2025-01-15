@@ -1,57 +1,73 @@
 # BLAZAM
+[![Release Date](https://img.shields.io/github/release-date-pre/Blazam-App/BLAZAM)](https://img.shields.io/github/release-date-pre/Blazam-App/BLAZAM)
+[![Build](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-stable.yml)](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-stable.yml)
+[![Last Commit](https://img.shields.io/github/last-commit/Blazam-App/Blazam/v1-Stable)](https://img.shields.io/github/last-commit/Blazam-App/Blazam/v1-Stable)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+
 Proudly serving
 
 [![image](https://github.com/user-attachments/assets/86820ef8-15e6-4f81-97c5-bdfe6e8acc37)](https://logs.blazam.org/#/dashboards?dashboardId=dashboard-14&range=90d&group=1d&apiKey=EpKqcm4TkeEzMvIAxtnc&theme=dark-theme)
 
 Click the image for the latest statistics.
+## Screenshots
+![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)
+![image](https://github.com/user-attachments/assets/cfa35e1f-facb-4c64-8ad4-1a48de5f4a82)
 
-## Version 1.0.0 Release Notice
-Blazam has been officially released.
 
-### Beta Installations:
-Please ensure .NET Core 8 Runtimes are installed for service-type installations,
-and .NET Core Web Hosting Bundle for IIS-type installations.
+## Who is it for?
+* Overworked system administrators: Blazam simplifies and automates many routine AD management tasks, freeing up your time for more critical projects.
+* Organizations with limited IT budgets: Blazam is a free and open-source solution that provides powerful features without the high costs of commercial software.
+* IT professionals seeking improved delegation: Blazam's flexible permission system allows you to grant granular control over specific AD objects and actions to individual users or groups.
+* Anyone needing remote AD management: Access Blazam's intuitive web interface from any device with a browser, allowing you to manage your directory from anywhere.
 
-[https://dotnet.microsoft.com/en-us/download/dotnet/8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+## What does Blazam offer?
+* Comprehensive AD Management: Perform essential tasks such as:
+  * User, group, computer, and printer management (enable/disable, unlock, assign to groups, move, rename, create, delete).
+  * Password resets, account unlocks, and group management.
+  * Modifying any Active Directory attribute.
+* Delegation and Control:
+  * Define reusable "Access Levels" with specific permissions for different AD object types.
+  * Apply these Access Levels to groups or individual users, controlling their access to specific OUs and objects within those OUs.
+  * Impersonate users to test and verify permissions.
+* User Creation and Management:
+  * Configure user creation templates to streamline onboarding and ensure data consistency.
+  * Manage user thumbnail photos.
+* Auditing and Security:
+  * Comprehensive audit logs track all user actions within Blazam.
+  * Secure your installation with optional two-factor authentication using Cisco DUO.
+* External Integrations
+  * REST API: Integrate Blazam with your existing IT tools and automate tasks.
+  * Webhooks: Receive real-time notifications about events in Blazam.
+* Additional Features:
+  * Access Active Directory's recycle bin to restore deleted objects.
+  * Real-time computer monitoring (CPU, memory usage, session list, service state, drive details).
+  * Automatic updates to keep your installation current.
+  
+## Why is Blazam a valuable tool?
+* Enable non-technical users: Delegate tasks like password resets or group assignments to help desk staff or other non-IT personnel, freeing up your team for more specialized work.
+* Improve IT efficiency: Streamline your AD management workflow with Blazam's user-friendly interface and powerful features.
+* Go beyond Microsoft's GUI: Blazam offers features that go beyond the capabilities of standard AD management tools, such as copying group memberships or managing user photos from the web.
+* Mobile accessibility: Manage your Active Directory from anywhere using your phone or tablet.
+* Open source and free: Blazam is community-driven and transparent, with no licensing costs.
 
-## Website
+## Visit the Main Website
 [blazam.org](https://blazam.org)
 
-
-## Demo
+## Try the Live Demo
 [blazam.org/demo](https://blazam.org/demo)
 
-## Documentation
+## View the Documentation
 [docs.blazam.org](https://docs.blazam.org)
 
-## Installation
+## Ready to Install?
 Blazam's Web Installer is the recommended installation method.
 
 [Web Installer](https://blazam.org/download)
 
 [Manual Installation](https://docs.blazam.org/install/manual)
 
-## Who is it for?
-* Do you manage an Active Directory environment?
-* Do you want easier delegation of basic account functions?
-* Do you want to easily unlock, or edit a user from your phone?
-* Setting up ACL's in active directory is complicated, and at the end of the day, you're still stuck with a desktop interface.
-* This app will help you enable your users.
-
-## What is Blazam?
-* Blazam is a flexible Active Directory management portal.
-* The key feature is it's permissions system which allows you to empower your users to manage the groups, users, ou's, and computers you allow them to.
-* Manage user group assignments, reset passwords, unlock, disable, and enable accounts.
-* Configurable user creation templates to share with your users to ensure the proper information is provided.
-* Manage user thumbnail photo.
-* Access Active Directory recycle bin from any web browser.
-
-## But why would I want this?
-* Blazam's target audience is the IT team that wants to enable non-IT users
-  to perform specific actions in Active Directory.
-* Even for experienced IT administrators, the tools provided by Blazam
-  not only replicate the functionality provided by Microsoft's GUI, but improve
-  upon them in addition to entirely new features and functionality (like copy group memberships from another user).
-* Being able to access these tools from a phone while assisting another user is another huge benefit provided. But that is
-  not particular to Blazam.
-* It's free.

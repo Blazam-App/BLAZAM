@@ -20,7 +20,7 @@ namespace BLAZAM.Common.Data
             get
             {
                 //Use interactive logon
-                var domain = impersonationUser.FQDN != null ? impersonationUser.FQDN : "";
+                var domain = impersonationUser.FQDN ?? "";
                 var username = impersonationUser.Username;
                 var phPassword = Marshal.SecureStringToGlobalAllocUnicode(impersonationUser.Password);
                 bool returnValue = LogonUser(username,
@@ -87,7 +87,7 @@ namespace BLAZAM.Common.Data
 
                 if (impersonatedToken == null) throw new ApplicationException("The impersonation user is invalid. Check settings.");
 
-                
+
                 // Check the identity.
                 Loggers.ActiveDirectoryLogger.Information("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
 
@@ -162,7 +162,7 @@ namespace BLAZAM.Common.Data
 
                 // Reading the standard output stream of the process
                 output = await process.StandardOutput.ReadToEndAsync();
-                process.WaitForExit();
+                await process.WaitForExitAsync();
 
 
             }

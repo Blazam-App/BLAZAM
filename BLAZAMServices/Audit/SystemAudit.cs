@@ -2,13 +2,15 @@
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Helpers;
+using Microsoft.JSInterop;
+using Octokit;
 
 namespace BLAZAM.Services.Audit
 {
     public class SystemAudit : BaseAudit
     {
 
-        public SystemAudit(IAppDatabaseFactory factory) : base(factory)
+        public SystemAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime) : base(factory, jSRuntime)
         {
         }
         public async Task<bool> LogMessage(string message)
@@ -16,7 +18,10 @@ namespace BLAZAM.Services.Audit
 
             return await Log(message);
         }
-
+        public async Task<bool> APITokenCreated(string username)
+        {
+            return await Log("API_Token_Created", null, null, username);
+        }
         public async Task<bool> SettingsChanged(string category, List<AuditChangeLog> changes)
         {
 
@@ -28,16 +33,18 @@ namespace BLAZAM.Services.Audit
 
 
         private async Task<bool> Log(string action,
+
             string? beforeAction = null,
-            string? afterAction = null)
+            string? afterAction = null,
+            string username = "System")
         {
             try
             {
-                using var context = await Factory.CreateDbContextAsync();
+                using var context = await factory.CreateDbContextAsync();
                 context.SystemAuditLog.Add(new SystemAuditLog
                 {
                     Action = action,
-                    Username = "System",
+                    Username = username,
                     BeforeAction = beforeAction,
                     AfterAction = afterAction,
                     Timestamp = DateTime.Now,
@@ -45,7 +52,7 @@ namespace BLAZAM.Services.Audit
 
 
                 });
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 return true;
 
             }

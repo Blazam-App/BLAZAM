@@ -1,7 +1,7 @@
 @inherits AppComponentBase
 @attribute [Authorize]
 
-<MudForm Style="width:100%" Class="mx-2" @onsubmit="(()=>{SearchService.Search();})">
+<MudForm Style="width:100%" Class="mx-2" @onsubmit="(()=>{SearchService.SearchAsync();})">
 
     <AuthorizeView Context="authContext">
 

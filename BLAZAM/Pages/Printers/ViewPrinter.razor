@@ -4,18 +4,18 @@
     string _fieldMudStackClasses = "flex-wrap gap-10";
 }
 <AppPageTitle>@Printer?.CanonicalName</AppPageTitle>
-    @if (Printer != null)
+@if (Printer != null)
 {
     <EditForm OnValidSubmit=SaveChanges Context="editContext" Model="Printer">
 
         <SetSubHeader>
 
             <DirectoryEntryViewHeader EditMode="@EditMode"
-                                      DirectoryEntry="@Printer"
-                                      OnDelete="@DeleteComputer"
-                                      OnMove="@(()=>{MoveToModal?.ShowAsync();})"
-                                      OnRename="@(()=>{RenameModal?.ShowAsync();})"
-                                      OnToggleEditMode="ToggleEditMode" />
+            DirectoryEntry="@Printer"
+            OnDelete="@DeleteComputer"
+            OnMove="@(()=>{MoveToModal?.ShowAsync();})"
+            OnRename="@(()=>{RenameModal?.ShowAsync();})"
+            OnToggleEditMode="ToggleEditMode" />
             <LoadingData Loading=SavingChanges />
 
 
@@ -145,13 +145,13 @@
             await RefreshEntryComponents();
         }
     }
-    async void SaveChanges()
+    async Task SaveChanges()
     {
+        if (Printer == null) return;
         if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
         {
-            await Printer?.CommitChangesAsync();
+            await Printer.CommitChangesAsync();
             EditMode = false;
-            //Nav.WarnOnNavigation = false;
             SnackBarService.Success("The changes made to this printer have been saved.");
             await RefreshEntryComponents();
 

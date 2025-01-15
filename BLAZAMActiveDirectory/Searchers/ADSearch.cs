@@ -7,6 +7,8 @@ using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.DirectoryServices;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -32,11 +34,15 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// should be an exact match of the terms provided
         /// </summary>
         public bool ExactMatch { get; set; }
-
+        private string? _generalSearchTerm;
         /// <summary>
         /// A string to find in the common name and username fields
         /// </summary>
-        public string? GeneralSearchTerm { get; set; }
+        public string? GeneralSearchTerm
+        {
+            get => _generalSearchTerm;
+            set => _generalSearchTerm=value.EscapeLdapSearchFilter();
+        }
 
         /// <summary>
         /// The ldap query filter that filters by fields
@@ -219,8 +225,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(memberOf:1.2.840.113556.1.4.1941:={Fields.NestedMemberOf.DN})";
                     if (Fields.BitLockerRecoveryId != null)
                         FilterQuery += $"(name=*{Fields.BitLockerRecoveryId}*)";
-                    if (!Fields.PasswordLastSet.IsNullOrEmpty())
-                        FilterQuery += $"(pwdLastSet>={Fields.PasswordLastSet})";
+                    if (Fields.PasswordLastSet != null)
+                        FilterQuery += $"(pwdLastSet>={Fields.PasswordLastSet.Value.ToFileTime().ToString()})";
 
 
                 }

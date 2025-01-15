@@ -59,7 +59,6 @@
     bool _portStatus;
     bool _credStatus;
     bool showProgress = true;
-    System.DirectoryServices.ActiveDirectory.Domain _domain;
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -85,7 +84,7 @@
     }
 
 
-    public async void UpdateStatus(object? state)
+    public async Task UpdateStatus(object? state)
     {
         await Task.Run(async () =>
         {

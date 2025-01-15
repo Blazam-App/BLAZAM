@@ -79,11 +79,11 @@
         Modal.YesText = AppLocalization["Save Changes"];
         Modal.Title = AppLocalization["Logon Hours"];
         schedule = User.LogonHours;
-        Modal.RefreshView();
+        _=Modal.RefreshView();
 
     }
 
-    public async void SaveChanges()
+    public async Task SaveChanges()
     {
         var rawSchedule = schedule.EncodeLogonHours();
         User.LogonHours = schedule;

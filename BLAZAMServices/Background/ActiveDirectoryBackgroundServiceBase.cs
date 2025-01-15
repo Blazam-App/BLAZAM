@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Services.Background
 {
-    public class ActiveDirectoryBackgroundServiceBase:BackgroundServiceBase
+    public class ActiveDirectoryBackgroundServiceBase : BackgroundServiceBase
     {
         protected readonly IActiveDirectoryContextFactory activeDirectoryContextFactory;
 

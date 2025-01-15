@@ -206,7 +206,7 @@
             _insert = false;
         }
         await AuditLogger.System.SettingsChanged("Active Directory", settings.GetChanges(originalSettings));
-        base.Save();
+        await base.Save();
         await SettingsSaved.InvokeAsync();
 
 

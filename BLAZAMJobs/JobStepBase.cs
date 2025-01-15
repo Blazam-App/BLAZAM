@@ -27,8 +27,13 @@ namespace BLAZAM.Jobs
         {
             get => progress; set
             {
-                if (value.Value == progress) return;
-                progress = value.Value;
+                if(value!=null && progress!=null && Math.Abs((value - (float)progress).Value) < 0.1) return;
+                if (value != null)
+                {
+                    value = Math.Clamp(value.Value, 0, 100);
+                }
+                progress = value;
+
                 OnProgressUpdated?.Invoke(progress);
             }
         }

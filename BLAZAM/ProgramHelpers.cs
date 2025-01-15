@@ -6,6 +6,7 @@ using BLAZAM.Database.Context;
 using BLAZAM.Gui.Services;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Services;
+using BLAZAM.Services.Attributes;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Duo;
@@ -22,16 +23,15 @@ using Microsoft.OpenApi.Models;
 using MimeKit;
 using MudBlazor;
 using MudBlazor.Services;
-using Polly.Extensions.Http;
 using Polly;
+using Polly.Contrib.WaitAndRetry;
+using Polly.Extensions.Http;
 using Serilog;
 using System.Diagnostics;
 using System.Globalization;
 using System.Management;
 using System.Reflection;
 using System.Text;
-using Polly.Contrib.WaitAndRetry;
-using BLAZAM.Services.Attributes;
 
 namespace BLAZAM.Server
 {
@@ -45,6 +45,9 @@ namespace BLAZAM.Server
         /// <returns></returns>
         public static WebApplicationBuilder IntializeProperties(this WebApplicationBuilder builder)
         {
+
+            AppDomain.CurrentDomain.SetData("REGEX_DEFAULT_MATCH_TIMEOUT", TimeSpan.FromMilliseconds(100)); // process-wide setting
+
             //Set DebugMode flag from configuration
             ApplicationInfo ApplicationInfo = new(builder);
             ApplicationInfo.inDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
@@ -101,7 +104,14 @@ namespace BLAZAM.Server
 
                 foreach (ManagementObject WmiObject in Searcher.Get())
                 {
-                    return Guid.Parse(WmiObject["UUID"].ToString());
+                    try
+                    {
+                        return Guid.Parse(WmiObject["UUID"].ToString());
+                    }
+                    catch
+                    {
+                        continue;
+                    }
 
                 }
                 throw new ApplicationException("Searched but could not find a CSProduct UUID");
@@ -177,7 +187,7 @@ namespace BLAZAM.Server
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true, // Important: Validate the signing key
-                    IssuerSigningKey = new SymmetricSecurityKey(Encryption.Instance.Key),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encryption.Instance.APITokenKey),
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateActor = false,
@@ -442,69 +452,14 @@ namespace BLAZAM.Server
         /// <param name="application"></param>
         public static void PreRun(this WebApplication application)
         {
-            try
-            {
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-                foreach (var assembly in assemblies)
-                {
-                    try
-                    {
-                        var types = assembly.GetTypes()
-                        .Where(t => t.IsClass && !t.IsAbstract
-                        && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
-
-                        foreach (var type in types)
-                        {
-                            try
-                            {
-                                var interfaceType = type.GetInterfaces()
-                                    .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
-                                    && i.Name != "IDisposable");
-                                BackgroundServiceBase? service;
-
-                                if (interfaceType != null)
-                                {
-                                    service = application.Services.GetRequiredService(interfaceType) as BackgroundServiceBase;
-
-                                }
-                                else
-                                {
-                                    service = application.Services.GetRequiredService(type) as BackgroundServiceBase;
-
-                                }
-
-
-                                var data = type.GetCustomAttribute<AutoStartBackgroundService>();
-                                service?.Start(data?.Immediate == true);
-                            }
-                            catch (Exception ex)
-                            {
-                                Loggers.SystemLogger.Error("Critical error starting up background service! {Error}", ex);
-
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.SystemLogger.Warning("Unexpected error starting up background service! {Error}", ex);
-
-                    }
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error("Critical error getting loaded assemblies! {Error}", ex);
-
-            }
             //Setup Seq logging if allowed by admin
             try
             {
                 using var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
                 if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
                 {
-                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
+                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper!=false;
 
                 }
 
@@ -513,10 +468,11 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
-            PreloadServices();
+            PreloadServices(application);
 
         }
-        static IAsyncPolicy<HttpResponseMessage> GetWebhookRetryPolicy()
+
+        private static IAsyncPolicy<HttpResponseMessage> GetWebhookRetryPolicy()
         {
             var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 5);
 
@@ -525,8 +481,68 @@ namespace BLAZAM.Server
                 .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
                 .WaitAndRetryAsync(delay);
         }
-        private static void PreloadServices()
+        private static void PreloadServices(WebApplication application)
         {
+
+            try
+            {
+                if (ApplicationInfo.installationCompleted)
+                {
+                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+                    foreach (var assembly in assemblies.Where(a=>a.FullName?.Contains("BLAZAM")==true))
+                    {
+                        try
+                        {
+                            var types = assembly.GetTypes()
+                            .Where(t => t.IsClass && !t.IsAbstract
+                            && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
+
+                            foreach (var type in types)
+                            {
+                                try
+                                {
+                                    var interfaceType = type.GetInterfaces()
+                                        .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
+                                        && i.Name != "IDisposable");
+                                    BackgroundServiceBase? service;
+
+                                    if (interfaceType != null)
+                                    {
+                                        service = application.Services.GetRequiredService(interfaceType) as BackgroundServiceBase;
+
+                                    }
+                                    else
+                                    {
+                                        service = application.Services.GetRequiredService(type) as BackgroundServiceBase;
+
+                                    }
+
+
+                                    var data = type.GetCustomAttribute<AutoStartBackgroundService>();
+                                    service?.Start(data?.Immediate == true);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Loggers.SystemLogger.Error("Critical error starting up background service! {Error}", ex);
+
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Loggers.SystemLogger.Warning("Unexpected error starting up background service! {Error}", ex);
+
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error("Critical error getting loaded assemblies! {Error}", ex);
+
+            }
             try
             {
                 var context = Program.AppInstance.Services.GetRequiredService<NotificationGenerationService>();
@@ -535,18 +551,18 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
-            try
-            {
-                if (ApplicationInfo.installationCompleted)
-                {
-                    var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
-                }
+            //try
+            //{
+            //    if (ApplicationInfo.installationCompleted)
+            //    {
+            //        var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
+            //    }
 
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            //}
             try
             {
                 if (ApplicationInfo.installationCompleted)

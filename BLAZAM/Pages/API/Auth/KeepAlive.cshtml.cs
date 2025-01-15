@@ -23,7 +23,6 @@ namespace BLAZAM.Server.Pages.API.Auth
             response.Add("expired", "false");
             return new JsonResult(response);
 
-            //return new OkResult();
 
         }
 

@@ -6,7 +6,7 @@
     <MudBadge Visible=@(SourceTemplate!=null)
               Icon="@Icons.Material.Filled.LowPriority"
               Class="@BadgeClass"
-              OnClick="@(()=>{_popoverOpen=!_popoverOpen;})"
+              OnClick="@(()=>{_popoverOpen = !_popoverOpen;})"
               Overlap=true
               Color="Color.Info">
         @ChildContent

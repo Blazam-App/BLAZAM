@@ -57,10 +57,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
+
+
         public override IJob CommitChanges(IJob? dcr = null)
         {
-            //dcr ??= new DirectoryChangeResult();
-            var newMembers = new List<string>(MembersAsStrings);
             if (MembersToAdd.Count > 0)
             {
                 CommitSteps.Add(new JobStep("Add group members", (JobStep? step) =>
@@ -68,7 +68,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     MembersToAdd.ForEach(g =>
                     {
                         g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
-                        //dcr.AssignedMembers.Add(g.Group);
 
                     });
                     return true;
@@ -83,7 +82,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     MembersToRemove.ForEach(g =>
                     {
                         g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
-                        //dcr.UnassignedMembers.Add(g.Group);
                     });
                     return true;
                 }));
@@ -103,7 +101,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             _groupMembersCache = new List<IADGroup>();
             _userMembersCache = new();
             base.DiscardChanges();
-
+            OnModelChanged?.Invoke();
 
         }
         public bool HasMembers => UserMembers.Count > 0 || GroupMembers.Count > 0;
@@ -233,10 +231,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             MembersToRemove.Add(new GroupMembership(this, member));
             HasUnsavedChanges = true;
-            return;
-
-
-
         }
         /// <summary>
         /// Assigns a member to this group
@@ -247,10 +241,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             MembersToAdd.Add(new GroupMembership(this, member));
             HasUnsavedChanges = true;
-            return;
-
-
-
         }
         public int CompareTo(object? obj)
         {

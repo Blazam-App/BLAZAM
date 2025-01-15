@@ -5,12 +5,13 @@ using BLAZAM.Database.Models.Audit;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
     public class DirectoryAudit : CommonAudit
     {
-        public DirectoryAudit(IAppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public DirectoryAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
         {
         }
 
@@ -18,7 +19,7 @@ namespace BLAZAM.Services.Audit
         {
             throw new NotImplementedException();
         }
-        public virtual async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
+        public virtual Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
         {
             throw new NotImplementedException();
 
@@ -53,7 +54,7 @@ namespace BLAZAM.Services.Audit
 
             try
             {
-                using var context = await Factory.CreateDbContextAsync();
+                using var context = await factory.CreateDbContextAsync();
                 var table = auditTable.Invoke(context);
                 var auditEntry = new T()
                 {
@@ -66,7 +67,7 @@ namespace BLAZAM.Services.Audit
                     IpAddress = CurrentUser.IPAddress,
                 };
                 table.Add(auditEntry);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 return true;
 
             }

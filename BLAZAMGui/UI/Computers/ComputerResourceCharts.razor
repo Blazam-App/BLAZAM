@@ -7,14 +7,14 @@
         <MudIconButton Style="width:75px;height:75px;"
                        Size="Size.Large"
                        Icon="@Icons.Material.Filled.History"
-                       OnClick="@(()=>{showCPUChart=!showCPUChart;})" />
+                       OnClick="@(()=>{showCPUChart = !showCPUChart;})" />
     </AppTooltip>
     <DialGuage Title="RAM"
                PollFunc="@(()=>{return Computer.MemoryUsedPercent;})" />
     <MudIconButton Style="width:75px;height:75px;"
                    Size="Size.Large"
                    Icon="@Icons.Material.Filled.History"
-                   OnClick="@(()=>{showRAMChart=!showRAMChart;})" />
+                   OnClick="@(()=>{showRAMChart = !showRAMChart;})" />
     @if (showCPUChart)
     {
         <LiveChart Enabled=@(Computer.IsOnline==true)

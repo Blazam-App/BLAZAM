@@ -26,7 +26,7 @@
         }
         else if(Step.Result != JobResult.NotRun)
         {
-            _refreshTimer?.Dispose();
+            await _refreshTimer!.DisposeAsync();
         }
     }
     private string ElapsedTime

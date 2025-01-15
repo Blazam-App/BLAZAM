@@ -17,6 +17,5 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         Task<List<IADGroup>> FindNewGroupsAsync(int maxAgeInDays = 14);
         List<IADGroup>? FindNewGroups(int maxAgeInDays = 14);
         List<IGroupableDirectoryAdapter>? GetAllNestedMembers(IADGroup group);
-        // List<IGroupableDirectoryModel> GetMembers (IADGroup aDGroup);
     }
 }

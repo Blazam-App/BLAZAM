@@ -1,10 +1,10 @@
 ﻿@inherits AppModalContent
 
 <MudStack Row=true>
-    
+
     <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
-                    @bind-SelectedResult=@selectedDelegate
-                    CustomResultsFilter="@((result)=>{
+    @bind-SelectedResult=@selectedDelegate
+    CustomResultsFilter="@((result)=>{
 return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group;
 })" />
 
@@ -12,9 +12,9 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
 
 
     <DynamicMudInput HelperText="Will have complete and total access to the application if enabled"
-                     Label="Super User"
-                     @bind-Value="@NewPermissionDelegate.IsSuperAdmin"
-                     Disabled=ApplicationInfo.InDemoMode />
+    Label="Super User"
+    @bind-Value="@NewPermissionDelegate.IsSuperAdmin"
+    Disabled=ApplicationInfo.InDemoMode />
 
 </MudStack>
 
@@ -26,34 +26,38 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
     public EventCallback DelegateAdded { get; set; }
 
     PermissionDelegate NewPermissionDelegate = new PermissionDelegate();
-    public async void AddGroup()
+    public async Task AddGroup()
     {
         try
         {
             if (Context == null) return;
-            if (selectedDelegate !=null && Context.PermissionDelegate.Any(pd => pd.DelegateSid == selectedDelegate.SID))
+            if (selectedDelegate != null)
             {
-                var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
-                if (confilctingDelegate != null)
-                    if (confilctingDelegate.DeletedAt == null)
-                        SnackBarService.Error("That delegate already exists.");
-                    else
-                        SnackBarService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
-                return;
+                if (await Context.PermissionDelegate.AnyAsync(pd => pd.DelegateSid == selectedDelegate.SID))
+                {
+                    var confilctingDelegate = await Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefaultAsync();
+                    if (confilctingDelegate != null)
+                        if (confilctingDelegate.DeletedAt == null)
+                            SnackBarService.Error("That delegate already exists.");
+                        else
+                            SnackBarService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
+                    return;
+                }
+                NewPermissionDelegate.DelegateSid = selectedDelegate.SID;
+                Context.PermissionDelegate.Add(NewPermissionDelegate);
+                await Context.SaveChangesAsync();
+                NewPermissionDelegate = new PermissionDelegate();
+                await DelegateAdded.InvokeAsync();
+
+                await Modal.CloseAsync();
             }
-            NewPermissionDelegate.DelegateSid = selectedDelegate.SID;
-            Context.PermissionDelegate.Add(NewPermissionDelegate);
-            await Context.SaveChangesAsync();
-            NewPermissionDelegate = new PermissionDelegate();
-            Modal?.Close();
-            await DelegateAdded.InvokeAsync();
             return;
         }
         
         catch (Exception ex)
         {
 
-            Loggers.ActiveDirectoryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName + " {@Error}",ex);
+            Loggers.ActiveDirectoryLogger.Error("Error attempting to add delegate " + selectedDelegate?.CanonicalName + " {@Error}",ex);
             SnackBarService.Error("An unexpected error has occured.");
         }
     }

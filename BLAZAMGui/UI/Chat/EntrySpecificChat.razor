@@ -1,10 +1,13 @@
 @inherits ChatComponentBase
 
-<Audio Src="/audio/messagePop.mp3" @bind-Playing=@playingPop />
-<Audio Src="/audio/bell.wav" @bind-Playing=@playingBell />
+<Audio Src="/audio/messagePop.mp3"
+@bind-Playing=@playingPop />
+<Audio Src="/audio/bell.wav"
+@bind-Playing=@playingBell />
 @if (AlwaysShowChatButton || ChatMessages != null && ChatMessages.Count() > 0)
 {
-    <ChatButton ChatRoom=ChatRoom OnClick="@(()=>{_chatOpen=!_chatOpen;})" />
+    <ChatButton ChatRoom=ChatRoom 
+        OnClick="@(()=>{_chatOpen = !_chatOpen;})" />
 }
 @if (AlwaysShowPageViewersButton || (ShowPageViewersButton && Viewers.ContainsKey(ChatUri) && Viewers[ChatUri].Count > 1))
 {
@@ -19,7 +22,7 @@
             Open="@_chatOpen"
             Fixed="true"
             Class="px-1 pt-4">
-    <AppChatRoom OnCloseClicked=@(()=>{_chatOpen=!_chatOpen;})
+    <AppChatRoom OnCloseClicked=@(()=>{_chatOpen = !_chatOpen;})
                  ChatRoom="ChatRoom" />
 </MudPopover>
 

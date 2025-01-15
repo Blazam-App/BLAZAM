@@ -120,7 +120,7 @@
             //await RefreshChatRooms();
             draftMessage = "";
             //messageTextField.Value = "";
-            await messageTextField?.Clear();
+            await messageTextField!.Clear();
             await InvokeAsync(StateHasChanged);
             ScrollToBottom();
 

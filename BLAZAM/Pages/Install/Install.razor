@@ -1,5 +1,5 @@
 ﻿@page "/install"
-@page "/install/{selectedStep}"
+@page "/install/{selectedStep:int}"
 @layout InstallLayout
 @inherits DatabaseComponentBase
 @inject ApplicationManager ApplicationManager
@@ -21,37 +21,37 @@
 else
 {
     <MudTabs Centered Elevation="1" ActivePanelIndex="@selectedStep" ActivePanelIndexChanged="@OnSelectedStepChanged">
-    <MudTabPanel Disabled=@(completedSteps<1) 
-        Icon="@(completedSteps>1?Icons.Material.Filled.CheckCircle:null)" 
-        ToolTip="Database" 
-        Text="1">
+        <MudTabPanel Disabled=@(completedSteps<1)
+                     Icon="@(completedSteps>1?Icons.Material.Filled.CheckCircle:null)"
+                     ToolTip="Database"
+                     Text="1">
             @if (completedSteps > 0)
             {
                 <InstallDatabase Completed=@(completedSteps>1) StepCompleted="UpdateStatuses" />
             }
         </MudTabPanel>
         <MudTabPanel Disabled=@(completedSteps<2)
-            Text="2" 
-            ToolTip="Authentication" 
-            Icon="@(completedSteps>2?Icons.Material.Filled.CheckCircle:null)">
+                     Text="2"
+                     ToolTip="Authentication"
+                     Icon="@(completedSteps>2?Icons.Material.Filled.CheckCircle:null)">
             @if (completedSteps > 1)
             {
                 <Authentication StepCompleted="UpdateStatuses" />
             }
 
         </MudTabPanel>
-        <MudTabPanel Disabled=@(completedSteps<3) 
-            Text="3"
-            ToolTip="Active Directory"
-            Icon="@(completedSteps>3?Icons.Material.Filled.CheckCircle:null)">
+        <MudTabPanel Disabled=@(completedSteps<3)
+                     Text="3"
+                     ToolTip="Active Directory"
+                     Icon="@(completedSteps>3?Icons.Material.Filled.CheckCircle:null)">
             @if (completedSteps > 2)
             {
                 <ADirectory StepCompleted="UpdateStatuses" />
             }
         </MudTabPanel>
-        <MudTabPanel Disabled=@(completedSteps<4) 
-            Icon="@Icons.Material.Filled.FlagCircle"
-            ToolTip="Finish">
+        <MudTabPanel Disabled=@(completedSteps<4)
+                     Icon="@Icons.Material.Filled.FlagCircle"
+                     ToolTip="Finish">
             <h2>Installation Complete</h2>
             <MudButton @onclick="FinalizeInstall" Color="Color.Success">Finalize Install</MudButton>
         </MudTabPanel>
@@ -75,7 +75,7 @@ else
         get => _completedSteps; set
         {
             _completedSteps = value;
-            selectedStep = value-1;
+            selectedStep = value - 1;
 
         }
     }
@@ -100,14 +100,14 @@ else
 
     async void UpdateStatuses()
     {
-        Context = DbFactory.CreateDbContext();
+        Context = await DbFactory.CreateDbContextAsync();
         completedSteps = 1;
         if (Context != null)
         {
             if (Context.Status == ServiceConnectionState.Up)
             {
 
-                if (!Context.Database.GetPendingMigrations().Any())
+                if (!(await Context.Database.GetPendingMigrationsAsync()).Any())
                 {
                     completedSteps = 2;
 
@@ -115,7 +115,8 @@ else
 
                     try
                     {
-                        if (Context.AuthenticationSettings.FirstOrDefault() != null && Context.AuthenticationSettings.FirstOrDefault()?.AdminPassword != "password")
+                        if (await Context.AuthenticationSettings.FirstOrDefaultAsync() != null
+                        && (await Context.AuthenticationSettings.FirstOrDefaultAsync())?.AdminPassword != "password")
                         {
                             completedSteps = 3;
 
@@ -123,18 +124,17 @@ else
 
 
                             //check directory
-                            if (Context.ActiveDirectorySettings.FirstOrDefault() != null)
+                            if (await Context.ActiveDirectorySettings.FirstOrDefaultAsync() != null
+                                && Directory.Status == DirectoryConnectionStatus.OK)
                             {
-                                if (Directory.Status == DirectoryConnectionStatus.OK)
-                                {
-                                    completedSteps = 4;
+                                completedSteps = 4;
 
-                                    await InvokeAsync(StateHasChanged);
-
-                                }
+                                await InvokeAsync(StateHasChanged);
 
                             }
+
                         }
+
                     }
                     catch (Exception)
                     {
@@ -166,15 +166,15 @@ else
     {
         try
         {
-            if (Context?.AppSettings.FirstOrDefault() == null)
+            if (await Context?.AppSettings.FirstOrDefaultAsync()! == null)
             {
                 var settings = new AppSettings();
                 settings.Id = 1;
-                Context?.AppSettings.Add(settings);
-                Context?.SaveChanges();
+                Context.AppSettings.Add(settings);
+                await Context.SaveChangesAsync();
                 DatabaseCache.ApplicationSettings = settings;
             }
-            (await Context.AppSettings.FirstOrDefaultAsync()).InstallationCompleted = true;
+            (await Context.AppSettings.FirstOrDefaultAsync())!.InstallationCompleted = true;
             var result = await Context.SaveChangesAsync();
             ApplicationInfo.InstallationCompleted = true;
             Nav.NavigateTo("/home", true);

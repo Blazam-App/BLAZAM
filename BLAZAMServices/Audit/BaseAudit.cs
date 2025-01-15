@@ -1,14 +1,19 @@
 ﻿using BLAZAM.Database.Context;
+using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
     public class BaseAudit
     {
-        protected IAppDatabaseFactory Factory { get; set; }
+        protected IAppDatabaseFactory factory { get; set; }
+        public Analytics Analytics;
 
-        public BaseAudit(IAppDatabaseFactory factory)
+
+        public BaseAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime)
         {
-            Factory = factory;
+            Analytics = new Analytics(factory, jSRuntime);
+
+            this.factory = factory;
         }
     }
 }
