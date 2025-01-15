@@ -32,7 +32,7 @@ namespace BLAZAM.Jobs
                 {
                     value = Math.Clamp(value.Value, 0, 100);
                 }
-                progress = value.Value;
+                progress = value;
 
                 OnProgressUpdated?.Invoke(progress);
             }
