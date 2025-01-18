@@ -1,9 +1,10 @@
-﻿using System.Runtime.Serialization;
+﻿using BLAZAM.Common.Exceptions;
+using System.Runtime.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Exceptions
 {
     [Serializable]
-    public class WmiConnectionException : ApplicationException
+    public class WmiConnectionException : AppException
     {
         public WmiConnectionException()
         {

@@ -58,12 +58,11 @@ namespace BLAZAM.Common.Data
         /// processed into a repeatable generated private key</param>
         /// <param name="keySize">How large a key to generate in bits</param>
         /// 
-        /// <exception cref="ApplicationException">Throws an exception when no keySeedString is provided.</exception>
+        /// <exception cref="AppException">Throws an exception when no keySeedString is provided.</exception>
         public Encryption(string? keySeedString, int keySize = 256)
         {
             Instance = this;
 
-            //if (keySeedString==null || keySeedString == "") throw new ApplicationException("An ecryption seedsting must be provided");
             if (keySeedString == null || keySeedString == "") return;
             KeySeedString = keySeedString;
             KeySize = keySize;
@@ -124,7 +123,7 @@ namespace BLAZAM.Common.Data
         /// represent the decrypted cipher object</typeparam>
         /// <param name="cipherText"></param>
         /// <returns></returns>
-        /// <exception cref="ApplicationException"></exception>
+        /// <exception cref="AppException"></exception>
         private T? DecryptSaltedObject<T>(string? cipherText)
         {
 
@@ -151,7 +150,7 @@ namespace BLAZAM.Common.Data
 
 
 
-            throw new ApplicationException("Unable to decrypt cipherText");
+            throw new AppException("Unable to decrypt cipherText");
 
         }
 
@@ -162,7 +161,7 @@ namespace BLAZAM.Common.Data
         /// represent the decrypted cipher object</typeparam>
         /// <param name="cipherText"></param>
         /// <returns></returns>
-        /// <exception cref="ApplicationException"></exception>
+        /// <exception cref="AppException"></exception>
         private T? DecryptSaltedObjectV2<T>(string? cipherText)
         {
 
@@ -191,7 +190,7 @@ namespace BLAZAM.Common.Data
 
 
 
-            throw new ApplicationException("Unable to decrypt cipherText");
+            throw new AppException("Unable to decrypt cipherText");
 
         }
         /// <summary>
@@ -201,7 +200,7 @@ namespace BLAZAM.Common.Data
         /// represent the decrypted cipher object</typeparam>
         /// <param name="cipherText"></param>
         /// <returns></returns>
-        /// <exception cref="ApplicationException"></exception>
+        /// <exception cref="AppException"></exception>
         public T? DecryptObject<T>(string? cipherText)
         {
 
@@ -243,7 +242,7 @@ namespace BLAZAM.Common.Data
                     }
                 }
             }
-            throw new ApplicationException("Unable to decrypt cipherText");
+            throw new AppException("Unable to decrypt cipherText");
         }
 
         private T? DecryptOldUnsaltedObject<T>(string? cipherText)

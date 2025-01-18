@@ -114,7 +114,7 @@
     }
     async Task Restore(IDirectoryEntryAdapter entryToRestore)
     {
-        if (entryToRestore.LastKnownParent == null) throw new ApplicationException("Tombstone item has no  LastKnownParent");
+        if (entryToRestore.LastKnownParent == null) throw new AppException("Tombstone item has no  LastKnownParent");
         if (await MessageService.Confirm("Are you sure you want to restore " + entryToRestore.CanonicalName + " to " + entryToRestore.LastKnownParent?.CanonicalName, "Restore?"))
         {
             if (RestoreEntry(entryToRestore))

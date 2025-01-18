@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.EmailMessage.Email.Notifications;
 using MudBlazor;
@@ -19,12 +20,12 @@ namespace BLAZAM.Helpers
         /// <param name="newUserName">The new user name</param>
         /// <param name="directory">The directory to create the use under</param>
         /// <returns></returns>
-        /// <exception cref="ApplicationException"></exception>
+        /// <exception cref="AppException"></exception>
         public static IADUser GenerateTemplateUser(this DirectoryTemplate template, NewUserName newUserName, IActiveDirectoryContext directory)
         {
             IADUser? newUser;
             var ou = directory.OUs.FindOuByString(template.EffectiveParentOU).FirstOrDefault();
-            if (ou == null) throw new ApplicationException("OU could not be found for new user");
+            if (ou == null) throw new AppException("OU could not be found for new user");
             var displayName = template.GenerateDisplayName(newUserName);
             newUser = ou.CreateUser(displayName);
 

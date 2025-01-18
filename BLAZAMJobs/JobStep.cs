@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Interfaces;
+using BLAZAM.Common.Exceptions;
 using Microsoft.AspNetCore.Components;
 using MudBlazor.Services;
 using System.Runtime.CompilerServices;
@@ -84,7 +85,7 @@ namespace BLAZAM.Jobs
                 }
                 else
                 {
-                    throw new ApplicationException("Step: " + Name + " had no action provided!");
+                    throw new AppException("Step: " + Name + " had no action provided!");
                 }
 
 

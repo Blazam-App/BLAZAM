@@ -60,10 +60,10 @@
                 return true;
             });
             var step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
-            var step3 = new JobStep("Regular Step Throws", bool (step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); });
+            var step3 = new JobStep("Regular Step Throws", bool (step) => { Task.Delay(2000).Wait(); throw new AppException("Test exception"); });
             var step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(2000).Wait(); return true; });
             var step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
-            var step6 = new JobStep("Nested Step Throws", bool (step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); });
+            var step6 = new JobStep("Nested Step Throws", bool (step) => { Task.Delay(2000).Wait(); throw new AppException("Test exception"); });
 
             job.AddStep(step1);
             job.AddStep(step2);

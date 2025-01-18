@@ -3,6 +3,7 @@ using Azure.Core.Pipeline;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Helpers;
@@ -164,7 +165,7 @@ namespace BLAZAM.Notifications.Services
                 if (subscription.WebHookSignature == WebHookSignature.HMAC)
                 {
                     if (subscription.HmacKey.IsNullOrEmpty())
-                        throw new ApplicationException("HMAC Key not supplied to subscription set to use it.");
+                        throw new AppException("HMAC Key not supplied to subscription set to use it.");
                     var key = subscription.HmacKey.Decrypt<string>();
                     if (key.StartsWith(prefix))
                     {

@@ -367,7 +367,7 @@
     }
     async void CreateTemplateUser()
     {
-        if (SelectedTemplate?.ParentOU == null) throw new ApplicationException("Parent OU for template user was not set on creation!");
+        if (SelectedTemplate?.ParentOU == null) throw new AppException("Parent OU for template user was not set on creation!");
         try
         {
             LoadingData = true;

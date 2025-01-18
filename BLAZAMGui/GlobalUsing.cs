@@ -15,4 +15,7 @@ global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.Localization;
 global using Microsoft.JSInterop;
 
-
+global using BLAZAM.Common.Exceptions;
+global using BLAZAM.Database.Models.Templates;
+global using Microsoft.Data.SqlClient;
+global using Microsoft.EntityFrameworkCore;

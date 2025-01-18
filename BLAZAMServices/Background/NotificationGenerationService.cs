@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
@@ -104,7 +105,7 @@ namespace BLAZAM.Services.Background
                     }
                     else
                     {
-                        var error = new ApplicationException();
+                        var error = new AppException();
                         Loggers.SystemLogger.Error("Email message template was not found! {@Error}", error);
                     }
                 }

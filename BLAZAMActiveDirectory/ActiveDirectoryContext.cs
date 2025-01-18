@@ -3,6 +3,7 @@ using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.User;
@@ -601,7 +602,7 @@ namespace BLAZAM.ActiveDirectory
                                 Loggers.ActiveDirectoryLogger.Debug("Authentication success: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
                                 return findUser;
                             }
-                            throw new ApplicationException("Local AD Auth Failed");
+                            throw new AppException("Local AD Auth Failed");
                         }
                         catch (Exception localAttemptEx)
                         {
@@ -666,11 +667,11 @@ namespace BLAZAM.ActiveDirectory
         /// <param name="model">The entry to be restored</param>
         /// <param name="newOU">The OU to restore to</param>
         /// <returns></returns>
-        /// <exception cref="ApplicationException"></exception>
+        /// <exception cref="AppException"></exception>
         public bool RestoreTombstone(IDirectoryEntryAdapter model, IADOrganizationalUnit newOU)
         {
-            if (!model.IsDeleted) throw new ApplicationException(model.CanonicalName + " is not deleted");
-            if (ConnectionSettings is null) throw new ApplicationException("Active Directory Connection Settings are missing for this enttry");
+            if (!model.IsDeleted) throw new AppException(model.CanonicalName + " is not deleted");
+            if (ConnectionSettings is null) throw new AppException("Active Directory Connection Settings are missing for this enttry");
             string newDN = "CN=" + model.CanonicalName + "," + newOU.DN;
 
             LdapConnection connection = new LdapConnection(

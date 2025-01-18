@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Common.Data;
+using BLAZAM.Common.Exceptions;
 
 namespace BLAZAM.Jobs
 {
@@ -51,7 +52,7 @@ namespace BLAZAM.Jobs
         }
         public virtual bool Run()
         {
-            throw new ApplicationException("This step contains no action.");
+            throw new AppException("This step contains no action.");
         }
 
         public virtual void Cancel()

@@ -290,7 +290,7 @@
 
 
             }
-            catch (ApplicationException ex)
+            catch (AppException ex)
             {
                 SnackBarService.Error(ex.Message);
             }
@@ -368,7 +368,7 @@
                     await jobResults.ShowJobDetailsDialogAsync(MessageService);
                 }
             }
-            catch (ApplicationException ex)
+            catch (AppException ex)
             {
                 SnackBarService.Error(ex.Message);
 

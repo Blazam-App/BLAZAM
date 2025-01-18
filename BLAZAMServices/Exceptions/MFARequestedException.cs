@@ -1,11 +1,12 @@
 ﻿using BLAZAM.Common.Data;
+using BLAZAM.Common.Exceptions;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Runtime.Serialization;
 
 namespace BLAZAM.Services.Exceptions
 {
     [Serializable]
-    public class MFARequestedException : ApplicationException
+    public class MFARequestedException : AppException
     {
         public LoginRequest LoginRequest { get; set; }
         public MFARequestedException(LoginRequest state)

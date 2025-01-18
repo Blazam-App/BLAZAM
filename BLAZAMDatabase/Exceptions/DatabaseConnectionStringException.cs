@@ -1,9 +1,10 @@
-﻿using System.Runtime.Serialization;
+﻿using BLAZAM.Common.Exceptions;
+using System.Runtime.Serialization;
 
 namespace BLAZAM.Database.Exceptions
 {
     [Serializable]
-    public class DatabaseConnectionStringException : ApplicationException
+    public class DatabaseConnectionStringException : AppException
     {
         public DatabaseConnectionStringException()
         {

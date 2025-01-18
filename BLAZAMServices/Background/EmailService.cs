@@ -75,7 +75,7 @@ namespace BLAZAM.Services.Background
         /// 
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="ApplicationException"></exception>
+        /// <exception cref="AppException"></exception>
         private async Task<SmtpClient> GetSmtpClientAsync()
         {
             var client = new SmtpClient();
@@ -107,11 +107,11 @@ namespace BLAZAM.Services.Background
                 }
                 catch (Exception ex)
                 {
-                    throw new ApplicationException("Unknown error building email client: " + ex.Message, ex);
+                    throw new AppException("Unknown error building email client: " + ex.Message, ex);
                 }
             }
 
-            throw new ApplicationException("Invalid email settings");
+            throw new AppException("Invalid email settings");
         }
 
         private EmailSettings? GetSettings()

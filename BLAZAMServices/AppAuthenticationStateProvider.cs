@@ -341,7 +341,7 @@ namespace BLAZAM.Services
             {
 
                 var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
-                if (settings == null) throw new ApplicationException("Could not get settings");
+                if (settings == null) throw new AppException("Could not get settings");
 
 
 
