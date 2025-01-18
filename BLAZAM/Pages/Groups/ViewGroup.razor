@@ -221,6 +221,10 @@
     {
         if (await MessageService.Confirm("Are you sure you want to delete " + Group.CanonicalName + "?", "Delete Group"))
         {
+
+
+            SavingChanges = true;
+            await InvokeAsync(StateHasChanged);
             try
             {
                 Group.Delete();
@@ -228,15 +232,15 @@
                 await AuditLogger.Group.Deleted(Group);
                 _ = NotificationGenerationService.PostAsync(Group, NotificationType.Delete, CurrentUser.State);
 
-                //Group = null;
-                Nav.NavigateTo("/groups/search");
 
             }
             catch (ApplicationException ex)
             {
                 SnackBarService.Error(ex.Message);
             }
-            await InvokeAsync(StateHasChanged);
+            SavingChanges = false;
+
+            await RefreshEntryComponents();
         }
     }
 }

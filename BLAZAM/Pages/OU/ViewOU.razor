@@ -123,6 +123,8 @@
     {
         if (await MessageService.Confirm("Are you sure you want to delete " + OU.CanonicalName + "?", "Delete OU"))
         {
+            SavingChanges = true;
+            await InvokeAsync(StateHasChanged);
             try
             {
                 OU.Delete();
@@ -131,7 +133,6 @@
                 _ = NotificationGenerationService.PostAsync(OU, NotificationType.Delete, CurrentUser.State);
 
 
-                Nav.NavigateTo("/ou/search");
 
             }
             catch (ApplicationException ex)
@@ -139,7 +140,9 @@
                 SnackBarService.Error(ex.Message);
             }
 
-            await InvokeAsync(StateHasChanged);
+            SavingChanges = false;
+
+            await RefreshEntryComponents();
         }
     }
 }

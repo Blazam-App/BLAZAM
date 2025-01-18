@@ -115,17 +115,7 @@
 
 
 
-    protected override async void DiscardChanges()
-    {
-        if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
-        {
-            Printer?.DiscardChanges();
-            EditMode = false;
-            await RefreshEntryComponents();
 
-        }
-
-    }
     async Task DeleteComputer()
     {
         if (await MessageService.Confirm("Are you sure you want to delete " + Printer?.CanonicalName + "?", "Delete Printer"))
