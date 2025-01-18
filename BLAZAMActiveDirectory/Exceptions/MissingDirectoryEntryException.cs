@@ -1,7 +1,7 @@
 ﻿namespace BLAZAM.ActiveDirectory.Exceptions
 {
     [Serializable]
-    internal class MissingDirectoryEntryException : ApplicationException
+    public class MissingDirectoryEntryException : ApplicationException
     {
         public MissingDirectoryEntryException()
         {

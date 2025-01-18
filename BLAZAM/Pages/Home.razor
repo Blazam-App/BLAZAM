@@ -4,10 +4,7 @@
 @using BLAZAM.Gui.UI.Dashboard
 @using BLAZAM.Gui.Helper
 @using BLAZAM.Gui.UI.Outputs.Jobs;
-@{
-    string testValue = "";
-    Type valueType = testValue.GetType();
-}
+
 <AppPageTitle>@AppLocalization["Home"]</AppPageTitle>
 
 @if (MOTD.HasValue && MOTD.Value.ToString() != "")
@@ -82,7 +79,7 @@
     {
         var test = TestJob;
         await test.ShowJobDetailsDialogAsync(MessageService);
-        var result = await test.RunAsync();
+        _ = await test.RunAsync();
 
 
     }

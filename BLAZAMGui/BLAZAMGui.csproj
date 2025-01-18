@@ -55,6 +55,9 @@
 	  <Content Update="UI\Dashboard\Widgets\StaleComputersWidget.razor">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	  </Content>
+	  <Content Update="UI\Outputs\BitLockerViewer.razor">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	  </Content>
 	</ItemGroup>
 
 	<ItemGroup>

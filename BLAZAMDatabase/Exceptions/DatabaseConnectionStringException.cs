@@ -3,7 +3,7 @@
 namespace BLAZAM.Database.Exceptions
 {
     [Serializable]
-    internal class DatabaseConnectionStringException : ApplicationException
+    public class DatabaseConnectionStringException : ApplicationException
     {
         public DatabaseConnectionStringException()
         {

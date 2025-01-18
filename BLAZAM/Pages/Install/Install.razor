@@ -156,11 +156,7 @@ else
 
         return Task.CompletedTask;
     }
-    private void ShowLastStep()
-    {
-        _completedSteps = 6;
-        UpdateStatuses();
-    }
+  
 
     private async void FinalizeInstall()
     {
@@ -175,7 +171,7 @@ else
                 DatabaseCache.ApplicationSettings = settings;
             }
             (await Context.AppSettings.FirstOrDefaultAsync())!.InstallationCompleted = true;
-            var result = await Context.SaveChangesAsync();
+            _ = await Context.SaveChangesAsync();
             ApplicationInfo.InstallationCompleted = true;
             Nav.NavigateTo("/home", true);
             ApplicationManager.Restart();

@@ -3,7 +3,7 @@
 namespace BLAZAM.ActiveDirectory.Exceptions
 {
     [Serializable]
-    internal class WmiConnectionException : ApplicationException
+    public class WmiConnectionException : ApplicationException
     {
         public WmiConnectionException()
         {

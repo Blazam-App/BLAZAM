@@ -257,7 +257,7 @@
                            OnClick="@(()=>{
                                             SelectedStep=7;
                                             if(newUser?.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
-                                            newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
+                                                newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
                                             })"
                            Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
                     @AppLocalization["Next"]

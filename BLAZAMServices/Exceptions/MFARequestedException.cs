@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace BLAZAM.Services.Exceptions
 {
     [Serializable]
-    internal class MFARequestedException : ApplicationException
+    public class MFARequestedException : ApplicationException
     {
         public LoginRequest LoginRequest { get; set; }
         public MFARequestedException(LoginRequest state)
