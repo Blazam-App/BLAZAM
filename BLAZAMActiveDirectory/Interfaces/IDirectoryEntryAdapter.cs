@@ -328,7 +328,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Deletes this entry from the directory
         /// </summary>
-        void Delete();
+        /// <param name="forceDeleteChildren">If true, child objects will be deleted as well</param>
+        void Delete(bool forceDeleteChildren = false);
 
         /// <summary>
         /// The string representation of this entry

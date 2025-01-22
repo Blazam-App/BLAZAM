@@ -283,7 +283,7 @@
             await InvokeAsync(StateHasChanged);
             try
             {
-                Computer.Delete();
+                Computer.Delete(true);
                 SnackBarService.Success(Computer.CanonicalName + " has been deleted.");
                 await AuditLogger.Computer.Deleted(Computer);
                 _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Delete, CurrentUser.State);

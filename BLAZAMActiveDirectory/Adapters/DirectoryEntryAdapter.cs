@@ -936,7 +936,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-        public virtual void Delete()
+        public virtual void Delete(bool forceDeleteChildren = false)
         {
             try
             {
@@ -949,6 +949,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     case ActiveDirectoryObjectType.Group:
                     case ActiveDirectoryObjectType.Printer:
                     case ActiveDirectoryObjectType.Computer:
+                        if (forceDeleteChildren)
+                        {
+                            var children = DirectoryEntry.Children;
+                            foreach(DirectoryEntry child in children)
+                            {
+                                DirectoryEntry?.Children.Remove(child);
+                            }
+                    
+                        }
                         DirectoryEntry?.Parent.Children.Remove(DirectoryEntry);
                         IsDeleted = true;
                         OnModelDeleted?.Invoke();
@@ -962,6 +971,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (UnauthorizedAccessException ex)
             {
+                throw new AppException("The application directory user does not " +
+                    "have permission to delete entries", ex);
+            }
+            catch (DirectoryServicesCOMException ex)
+            {
+                switch (ex.HResult)
+                {
+                    case -2147016683:
+                        throw new AppException("The object contains child objects.");
+                }
                 throw new AppException("The application directory user does not " +
                     "have permission to delete entries", ex);
             }
