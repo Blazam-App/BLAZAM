@@ -26,11 +26,11 @@ namespace BLAZAM.ActiveDirectory
         {
             get
             {
-                if (currentUser != null) return currentUser;
-                if (UserStateService.CurrentUserState != null) return UserStateService.CurrentUserState;
+                if (_currentUser != null) return _currentUser;
+                if (_userStateService.CurrentUserState != null) return _userStateService.CurrentUserState;
                 return null;
             }
-            set => currentUser = value;
+            set => _currentUser = value;
         }
         private WmiFactory _wmiFactory;
         private IEncryptionService _encryption;
@@ -106,31 +106,7 @@ namespace BLAZAM.ActiveDirectory
                 _encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 AuthenticationTypes.FastBind | AuthenticationTypes.Secure);
 
-        /// <summary>
-        /// Gets all deleted entries from Active Directory
-        /// </summary>
-        /// <returns></returns>
-        public List<IDirectoryEntryAdapter> GetDeletedObjects()
-        {
-            List<IDirectoryEntryAdapter> found = new List<IDirectoryEntryAdapter>();
-            var entry = GetDeleteObjectsEntry();
-
-            DirectorySearcher searcher = new DirectorySearcher(entry);
-            searcher.Filter = "(isDeleted=TRUE)";
-            searcher.SearchScope = System.DirectoryServices.SearchScope.OneLevel;
-            searcher.Tombstone = true;
-            var results = searcher.FindAll();
-
-            foreach (SearchResult result in results)
-            {
-                var model = new DirectoryEntryAdapter();
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                model.Parse(directory: this, searchResult: result);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                found.Add(model);
-            }
-            return found;
-        }
+      
 
 
 
@@ -146,11 +122,9 @@ namespace BLAZAM.ActiveDirectory
 
         public IADBitLockerSearcher BitLocker { get; }
 
-        public IDatabaseContext? Context { get; private set; }
+        private IDatabaseContext? _context { get; set; }
 
-        /// <summary>
 
-        /// </summary>
         public bool PortOpen
         {
             get
@@ -164,7 +138,7 @@ namespace BLAZAM.ActiveDirectory
             }
         }
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
-        private IApplicationUserState? currentUser;
+        private IApplicationUserState? _currentUser;
         private bool _keepAlive;
 
         public DirectoryConnectionStatus Status
@@ -178,17 +152,14 @@ namespace BLAZAM.ActiveDirectory
         }
         public AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
 
-        /// <summary>
-        /// Called when a new user login matches an Active Directory user
-        /// </summary>
-        public AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
+
 
 
         public IAppDatabaseFactory Factory { get; private set; }
 
         public ADSettings ConnectionSettings { get; private set; }
 
-        public IApplicationUserStateService UserStateService { get; set; }
+        private IApplicationUserStateService _userStateService { get; set; }
 
         public WindowsImpersonation? Impersonation
         {
@@ -215,7 +186,7 @@ namespace BLAZAM.ActiveDirectory
             _encryption = encryptionService;
             _notificationPublisher = notificationPublisher;
             Factory = factory;
-            UserStateService = userStateService;
+            _userStateService = userStateService;
             SystemInstance = this;
 
             //UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
@@ -237,7 +208,7 @@ namespace BLAZAM.ActiveDirectory
             _encryption = activeDirectoryContextSeed._encryption;
             _notificationPublisher = activeDirectoryContextSeed._notificationPublisher;
             Factory = activeDirectoryContextSeed.Factory;
-            UserStateService = activeDirectoryContextSeed.UserStateService;
+            _userStateService = activeDirectoryContextSeed._userStateService;
             ConnectionSettings = activeDirectoryContextSeed.ConnectionSettings;
             RootDirectoryEntry = activeDirectoryContextSeed.RootDirectoryEntry;
             AppRootDirectoryEntry = activeDirectoryContextSeed.AppRootDirectoryEntry;
@@ -325,12 +296,12 @@ namespace BLAZAM.ActiveDirectory
             try
             {
                 //We want the latest settings each connection attempt so we make a new database connection
-                Context = Factory.CreateDbContext();
+                _context = Factory.CreateDbContext();
 
                 Loggers.ActiveDirectoryLogger.Information("Connecting to settings database");
 
                 //Proceed no further if the DB is down
-                if (Context.Status == ServiceConnectionState.Up)
+                if (_context.Status == ServiceConnectionState.Up)
                 {
                     Loggers.ActiveDirectoryLogger.Information("Database connected");
                     //No reason connecting if we're already connected
@@ -338,7 +309,7 @@ namespace BLAZAM.ActiveDirectory
                     {
 
                         //Ok get the latest settings
-                        ADSettings? ad = Context?.ActiveDirectorySettings.FirstOrDefault();
+                        ADSettings? ad = _context?.ActiveDirectorySettings.FirstOrDefault();
 
                         if (ad != null)
                         {
@@ -538,7 +509,7 @@ namespace BLAZAM.ActiveDirectory
         public void Dispose()
         {
             _keepAlive = false;
-            Context?.Dispose();
+            _context?.Dispose();
         }
 
         public IADUser? Authenticate(LoginRequest loginReq)

@@ -29,7 +29,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         DirectoryConnectionStatus Status { get; }
 
         /// <summary>
-        /// How many time the connection has failed.
+        /// How many times the connection has failed.
         /// Max value should not exceed 10
         /// </summary>
         int FailedConnectionAttempts { get; set; }
@@ -63,7 +63,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         IADComputerSearcher Computers { get; }
         /// <summary>
-        /// Provides Computer search functions
+        /// Provides BitLocker search functions
         /// </summary>
         IADBitLockerSearcher BitLocker { get; }
 
@@ -78,10 +78,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         ADSettings? ConnectionSettings { get; }
 
-        /// <summary>
-        /// Called when a new user login matches an Active Directory user
-        /// </summary>
-        AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
 
         /// <summary>
         /// The current web user attached to this connection. If this is a system connection it will be null.

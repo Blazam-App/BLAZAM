@@ -82,12 +82,16 @@
     async Task GetDeletedEntries()
     {
 
-
-        var search = new ADSearch(Directory) { SearchRoot = Directory.GetDeleteObjectsEntry() };
-        search.SearchDeleted = true;
-        deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
-        LoadingData = false;
-        await InvokeAsync(StateHasChanged);
+        LoadingData = true;
+        await Task.Run(() => { 
+            var search = new ADSearch(Directory) { SearchRoot = Directory.GetDeleteObjectsEntry() };
+            search.SearchDeleted = true;
+            deletedObjects = search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
+            foreach(var del in deletedObjects){
+                _ = del.LastKnownParent;
+            }
+            LoadingData = false;
+        }); 
     }
 
     //TODO stop the confimation message on batch restore
