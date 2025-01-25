@@ -24,7 +24,7 @@
         await InvokeAsync(StateHasChanged);
 
     }
-    async Task RefreshData()
+    protected override async Task RefreshData()
     {
 
         LoadingData = true;
