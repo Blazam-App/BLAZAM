@@ -18,14 +18,14 @@
     <Columns>
         <TemplateColumn Style="width:100px;" Title=@AppLocalization["Type"]>
             <CellTemplate>
-                <AppTooltip Text="@AppLocalization[context.Item.ObjectType.ToString()]">
-                    <MudIcon Icon="@context.Item.TypeIcon()" />
-                </AppTooltip>
+                <DirectoryEntryTypeIcon Entry=context.Item />
+
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
-                <DirectoryEntryContextMenu Entry="@context.Item">
+                <DirectoryEntryContextMenu Entry="@context.Item"
+                                           OnChanged="RefreshData">
                     <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                         <MudText>@context.Item?.CanonicalName</MudText>
                     </AppTooltip>

@@ -5,6 +5,7 @@
                             RowsPerPageChanged="@SetRowsPerPage"
                             RowClick=@GoTo
                             T="IADUser"
+                            OnChanged="RefreshData"
                             Loading=LoadingData />
 
 @code {

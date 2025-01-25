@@ -30,7 +30,6 @@ namespace BLAZAM.Database.Models.User
         public bool Equals(UserFavoriteEntry? other)
         {
             return other is not null &&
-                   base.Equals(other) &&
                    DN == other.DN &&
                    UserId == other.UserId;
         }

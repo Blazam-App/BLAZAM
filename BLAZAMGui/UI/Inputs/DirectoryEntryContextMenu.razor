@@ -37,7 +37,8 @@
     public RenderFragment ChildContent { get; set; }
     [Parameter]
     public IDirectoryEntryAdapter Entry { get; set; }
-
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
     async Task UnlockAccount(IAccountDirectoryAdapter userToUnlock)
     {
         if (userToUnlock.LockedOut)
@@ -52,6 +53,7 @@
             {
 
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" unlocked"]);
+                OnChanged.InvokeAsync();
             }
             else
             {
@@ -74,6 +76,8 @@
             {
 
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" enabled"]);
+                OnChanged.InvokeAsync();
+
             }
             else
             {
@@ -96,6 +100,8 @@
             {
 
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" disabled"]);
+                OnChanged.InvokeAsync();
+
             }
             else
             {

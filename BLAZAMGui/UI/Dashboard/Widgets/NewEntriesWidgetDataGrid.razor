@@ -20,7 +20,8 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
-                <DirectoryEntryContextMenu Entry="@context.Item">
+                <DirectoryEntryContextMenu Entry="@context.Item"
+                OnChanged="OnChanged">
                     <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                         @if (context.Item is IADGroup group)
                         {
@@ -58,4 +59,7 @@
 
 @code {
 #nullable disable warnings
+
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
 }
