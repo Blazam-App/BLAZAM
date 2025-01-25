@@ -1,7 +1,4 @@
-﻿@using System.Text.RegularExpressions;
-@using BLAZAM.Database.Models.Templates;
-@using Microsoft.Data.SqlClient;
-@using Microsoft.EntityFrameworkCore;
+﻿
 @inherits ValidatedForm
 @attribute [Authorize]
 @if (DirectoryTemplate != null)
@@ -1009,7 +1006,7 @@ await ParentTemplateChanged(null);
     protected async Task SaveTemplate()
     {
         if (Context == null)
-            throw new ApplicationException("Database not available");
+            throw new AppException("Database not available");
         DirectoryTemplate.ParentOU = SelectedOU?.DN;
         if (DirectoryTemplate.ParentTemplate != null)
         {

@@ -1,26 +1,6 @@
 @layout InstallLayout
 @inherits DatabaseComponentBase
-@{
-    string? connString;
 
-    using (var context = DbFactory.CreateDbContext())
-    {
-        connString = context.Database.GetConnectionString();
-        if (connString != null && connString.Contains(";"))
-        {
-            // Censor Password
-            string[] keyValuePairs = connString.Split(';');
-
-            // Remove the key-value pair for the Password parameter
-            keyValuePairs = keyValuePairs.Where(x => !x.StartsWith("Password=")).ToArray();
-
-            // Join the list back into a single connection string
-            connString = string.Join(";", keyValuePairs);
-        }
-
-    }
-
-}
 <MudText Typo="Typo.h3">Database</MudText>
 @if (!Completed && Monitor.DatabaseUpdatePending)
 {

@@ -49,7 +49,7 @@ namespace BLAZAM.Common.Data
         /// <param name="shortVersion"></param>
         public ApplicationVersion(Assembly executingAssembly)
         {
-            string[]? assemblyVersion = (executingAssembly.GetName().Version?.ToString().Split(".")) ?? throw new ApplicationException("The assembly version of the running app could not be read.");
+            string[]? assemblyVersion = (executingAssembly.GetName().Version?.ToString().Split(".")) ?? throw new AppException("The assembly version of the running app could not be read.");
             AssemblyVersion = new Version(int.Parse(assemblyVersion[0]), int.Parse(assemblyVersion[1]), int.Parse(assemblyVersion[2]));
             var fileInfo = FileVersionInfo.GetVersionInfo(executingAssembly.Location);
             var productVersion = fileInfo.ProductVersion;

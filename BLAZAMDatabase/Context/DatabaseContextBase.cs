@@ -1,6 +1,7 @@
 ﻿
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Audit;
@@ -780,7 +781,7 @@ namespace BLAZAM.Database.Context
                     DownReason = new("The database connection string is malformed. " + ex.Message);
 
                 }
-                catch (ApplicationException ex)
+                catch (AppException ex)
                 {
 
                     DownReason = new("The database experienced a general error. " + ex.Message);

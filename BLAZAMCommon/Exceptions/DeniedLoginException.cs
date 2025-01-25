@@ -3,7 +3,7 @@
 namespace BLAZAM.Common.Exceptions
 {
     [Serializable]
-    public class DeniedLoginException : ApplicationException
+    public class DeniedLoginException : AppException
     {
         public DeniedLoginException()
         {

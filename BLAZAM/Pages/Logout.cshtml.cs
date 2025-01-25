@@ -13,33 +13,30 @@ namespace BLAZAM.Server.Pages
 {
     public class LogOutModel : PageModel
     {
-        public LogOutModel(AppAuthenticationStateProvider auth, NavigationManager _nav, AuditLogger logger, IApplicationUserStateService uss)
+        public LogOutModel(AppAuthenticationStateProvider auth, AuditLogger logger, IApplicationUserStateService uss)
         {
-            Auth = auth;
-            Nav = _nav;
-            AuditLogger = logger;
-            UserStateService = uss;
+            _auth = auth;
+            _auditLogger = logger;
+            _userStateService = uss;
         }
 
-        public bool _authenticating { get; set; }
-        public bool _directoryAvailable { get; set; }
-        public string _username { get; set; }
-        public string _password { get; set; }
-        public string RedirectUri { get; private set; }
-        public AppAuthenticationStateProvider Auth { get; }
-        public NavigationManager Nav { get; private set; }
-        public AuditLogger AuditLogger { get; private set; }
-        public IApplicationUserStateService UserStateService { get; private set; }
+        private readonly AppAuthenticationStateProvider _auth;
+        private readonly AuditLogger _auditLogger;
+        private readonly IApplicationUserStateService _userStateService;
 
+        /// <summary>
+        /// Logs out the currently logged on user
+        /// </summary>
+        /// <returns>A redirect to "/"</returns>
         public async Task<IActionResult> OnGet()
         {
             var user = this.User;
-            var state = UserStateService.GetUserState(user);
+            var state = _userStateService.GetUserState(user);
             if (state?.User.Identity?.IsAuthenticated == true)
             {
-                await AuditLogger.Logon.Logout();
+                await _auditLogger.Logon.Logout();
 
-                var result = Auth.Logout(User);
+                var result = await _auth.Logout(User);
                 if (result != null)
                 {
                     await HttpContext.SignOutAsync();

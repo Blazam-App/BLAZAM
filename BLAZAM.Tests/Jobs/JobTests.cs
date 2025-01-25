@@ -1,4 +1,5 @@
-﻿using BLAZAM.FileSystem;
+﻿using BLAZAM.Common.Exceptions;
+using BLAZAM.FileSystem;
 using BLAZAM.Gui.UI.Outputs;
 using BLAZAM.Jobs;
 using MudBlazor.Services;
@@ -23,10 +24,10 @@ namespace BLAZAM.Tests.Jobs
                 var job2 = new Job("Nested Job");
                 var step1 = new JobStep("Regular Step Passes", (step) => { Task.Delay(200).Wait(); return true; });
                 var step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
-                var step3 = new JobStep("Regular Step Throws", (step) => { Task.Delay(200).Wait(); throw new ApplicationException("Test exception"); return false; });
+                var step3 = new JobStep("Regular Step Throws", (step) => { Task.Delay(200).Wait(); throw new AppException("Test exception"); return false; });
                 var step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(200).Wait(); return true; });
                 var step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
-                var step6 = new JobStep("Nested Step Throws", (step) => { Task.Delay(200).Wait(); throw new ApplicationException("Test exception"); return false; });
+                var step6 = new JobStep("Nested Step Throws", (step) => { Task.Delay(200).Wait(); throw new AppException("Test exception"); return false; });
 
                 job.Steps.Add(step1);
                 job.Steps.Add(step2);

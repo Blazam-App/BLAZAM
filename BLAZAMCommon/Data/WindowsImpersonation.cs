@@ -85,7 +85,7 @@ namespace BLAZAM.Common.Data
                 var impersonatedToken = ImpersonatedToken;
 
 
-                if (impersonatedToken == null) throw new ApplicationException("The impersonation user is invalid. Check settings.");
+                if (impersonatedToken == null) throw new AppException("The impersonation user is invalid. Check settings.");
 
 
                 // Check the identity.
@@ -102,7 +102,7 @@ namespace BLAZAM.Common.Data
                           var impersonatedIdentity = WindowsIdentity.GetCurrent();
                           if (impersonationUser.Username != ApplicationIdentity.Name && impersonatedIdentity.Name.Equals(ApplicationIdentity.Name))
                           {
-                              var exception = new ApplicationException("Impersonation running as application identity");
+                              var exception = new AppException("Impersonation running as application identity");
                               ExceptionDispatchInfo.SetCurrentStackTrace(exception);
                               Loggers.ActiveDirectoryLogger.Error("Impersonation running as application identity  {@Error}", exception);
 

@@ -1,9 +1,10 @@
-﻿using System.Runtime.Serialization;
+﻿using BLAZAM.Common.Exceptions;
+using System.Runtime.Serialization;
 
 namespace BLAZAM.Update.Exceptions
 {
     [Serializable]
-    public class ApplicationUpdateCanceledException : ApplicationException
+    public class ApplicationUpdateCanceledException : AppException
     {
         public ApplicationUpdateCanceledException()
         {

@@ -86,7 +86,7 @@ namespace BLAZAM.Gui.UI
         /// </summary>
         protected virtual async void DiscardChanges()
         {
-            if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
+            if (DirectoryEntry != null && await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
             {
                 DirectoryEntry.DiscardChanges();
                 EditMode = false;

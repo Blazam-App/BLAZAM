@@ -1,5 +1,6 @@
 ﻿
 using BLAZAM.Common.Data;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Localization;
@@ -376,7 +377,7 @@ namespace BLAZAM.Update.Services
                    var impersonatedIdentity = WindowsIdentity.GetCurrent();
                    if (adSettings.Username != applicationIdentity.Name && impersonatedIdentity.Name.Equals(applicationIdentity.Name))
                    {
-                       var exception = new ApplicationException("Impersonation running as application identity");
+                       var exception = new AppException("Impersonation running as application identity");
                        ExceptionDispatchInfo.SetCurrentStackTrace(exception);
                        Loggers.ActiveDirectoryLogger.Error("Impersonation running as application identity  {@Error}", exception);
                        return false;
