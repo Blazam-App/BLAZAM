@@ -26,21 +26,11 @@
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
-                <MudContextMenu>
-
-                    <ChildContent>
-
-                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
-                            <MudText>@context.Item?.CanonicalName</MudText>
-                        </AppTooltip>
-
-                    </ChildContent>
-                    <MenuContents>
-
-                        <DirectoryEntryContextMenuItems Entry="@context.Item" />
-
-                    </MenuContents>
-                </MudContextMenu>
+                <DirectoryEntryContextMenu Entry="@context.Item">
+                    <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                        <MudText>@context.Item?.CanonicalName</MudText>
+                    </AppTooltip>
+                </DirectoryEntryContextMenu>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization["Changed"]>
@@ -72,7 +62,8 @@
     protected override async Task RefreshData()
     {
         LoadingData = true;
-        await Task.Run(() => { 
+        await Task.Run(() =>
+        {
             var favorites = new List<IDirectoryEntryAdapter>();
             foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
             {
@@ -85,11 +76,11 @@
             }
             FavoriteEntries = favorites;
         });
-       
+
         LoadingData = false;
 
     }
-    
+
     protected override void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
     {
         if (args.Item != null)
