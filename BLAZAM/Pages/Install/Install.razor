@@ -46,8 +46,8 @@ else
         Icon="@(completedSteps>3?Icons.Material.Filled.CheckCircle:null)">
             @if (completedSteps > 2)
             {
-                <ADirectory StepCompleted="UpdateStatuses" />
-            }
+                <ADirectory StepCompleted="(()=>{completedSteps++;})" />
+        }
         </MudTabPanel>
         <MudTabPanel Disabled=@(completedSteps<4)
         Icon="@Icons.Material.Filled.FlagCircle"
