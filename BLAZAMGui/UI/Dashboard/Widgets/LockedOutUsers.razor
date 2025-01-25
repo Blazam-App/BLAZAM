@@ -18,21 +18,11 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
-                <MudContextMenu>
-
-                    <ChildContent>
-
-                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
-                            <MudText>@context.Item?.CanonicalName</MudText>
-                        </AppTooltip>
-
-                    </ChildContent>
-                    <MenuContents>
-
-                     <DirectoryEntryContextMenuItems Entry="@context.Item"/>
-
-                    </MenuContents>
-                </MudContextMenu>
+                <DirectoryEntryContextMenu Entry="@context.Item">
+                    <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                        <MudText>@context.Item?.CanonicalName</MudText>
+                    </AppTooltip>
+                </DirectoryEntryContextMenu>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization["Locked Out"]>

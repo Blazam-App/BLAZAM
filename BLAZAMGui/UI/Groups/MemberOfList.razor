@@ -16,9 +16,10 @@
                             <MudStack Row=true>
 
                                 <MudLink Target="@Target"
+                                        Underline="Underline.None"
                                          Class="align-middle"
                                          Href="@g.SearchUri">
-                                    @g.CanonicalName
+                                    <GroupWithDescriptionTooltip Group="@g" />
                                 </MudLink>
                                 @if (g.CanUnassign)
                                 {
