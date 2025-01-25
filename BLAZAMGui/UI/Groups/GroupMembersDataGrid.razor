@@ -2,15 +2,15 @@
 @if (Members != null)
 {
     <MudDataGrid Elevation=0
-    Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
-    Filterable="false"
-    Dense=true
-    Loading=@LoadingData
-    Virtualize=true
-    Height="300px"
-    FixedHeader=true
-    SortMode="@SortMode.None"
-    Groupable="false">
+                 Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
+                 Filterable="false"
+                 Dense=true
+                 Loading=@LoadingData
+                 Virtualize=true
+                 Height="300px"
+                 FixedHeader=true
+                 SortMode="@SortMode.None"
+                 Groupable="false">
         <Columns>
             <TemplateColumn Context="templateContext">
                 <HeaderTemplate>
@@ -34,7 +34,16 @@
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     <MudLink Href="@cellContext.Item.SearchUri">
-                        @cellContext.Item.CanonicalName
+                        @if (cellContext.Item is IADGroup group)
+                        {
+                            <GroupWithDescriptionTooltip Group="group" />
+                        }
+                        else
+                        {
+                            <MudElement>
+                                @cellContext.Item.CanonicalName
+                            </MudElement>
+                        }
                     </MudLink>
                 </CellTemplate>
             </TemplateColumn>
@@ -53,13 +62,12 @@
                     @AppLocalization["Remove Member"]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
-                    <AppTooltip 
-                    ShowOnClick=@(!cellContext.Item.CanUnassign)
-                    ShowOnHover=@(!cellContext.Item.CanUnassign)
-                    Text=@AppLocalization["You don't have permission to remove this group member"]>
+                    <AppTooltip ShowOnClick=@(!cellContext.Item.CanUnassign)
+                                ShowOnHover=@(!cellContext.Item.CanUnassign)
+                                Text=@AppLocalization["You don't have permission to remove this group member"]>
                         <MudButton Disabled=@(!Group.CanUnassign)
-                        Color="Color.Error"
-                        OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
+                                   Color="Color.Error"
+                                   OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
                             @AppLocalization["Remove"]
                         </MudButton>
                     </AppTooltip>
@@ -70,28 +78,28 @@
     <MudText Align="Align.End">
         @AppLocalization["Members"]: @Members.Count
     </MudText>
-    @if(Members.Any(m=>m is IADGroup))
+    @if (Members.Any(m => m is IADGroup))
     {
 
         <MudText Align="Align.End">
-            @AppLocalization["Groups"]: @Members.Where(m=>m is IADGroup).Count()
+            @AppLocalization["Groups"]: @Members.Where(m => m is IADGroup).Count()
         </MudText>
     }
-    @if(Members.Any(m=>m is IADUser))
+    @if (Members.Any(m => m is IADUser))
     {
 
         <MudText Align="Align.End">
             @AppLocalization["Users"]: @Members.Where(m => m is IADUser).Count()
         </MudText>
     }
-    @if(Members.Any(m=>m is IADComputer))
+    @if (Members.Any(m => m is IADComputer))
     {
 
         <MudText Align="Align.End">
             @AppLocalization["Computers"]: @Members.Where(m => m is IADComputer).Count()
         </MudText>
     }
-    @if(Members.Any(m=>m is IADPrinter))
+    @if (Members.Any(m => m is IADPrinter))
     {
 
         <MudText Align="Align.End">
@@ -107,9 +115,9 @@
     @if (Group.CanAssign)
     {
 
-        <MudButton Color="Color.Primary" 
-        StartIcon="@Icons.Material.Filled.GroupAdd" 
-        OnClick="@(()=>{_=AssignMemberModal?.ShowAsync();})">@AppLocalization["Add Member..."]</MudButton>
+        <MudButton Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.GroupAdd"
+                   OnClick="@(()=>{_=AssignMemberModal?.ShowAsync();})">@AppLocalization["Add Member..."]</MudButton>
     }
     <AppModal Color="Color.Dark" Title=@AppLocalization["Add Member..."] @ref=@AssignMemberModal>
         <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />
@@ -133,7 +141,7 @@ else
     [Parameter]
     public int PageSize { get; set; } = 25;
 
-    List<IGroupableDirectoryAdapter> Members{ get; set; }
+    List<IGroupableDirectoryAdapter> Members { get; set; }
 
 
     AppModal AssignMemberModal;
@@ -141,7 +149,8 @@ else
     {
         await base.OnInitializedAsync();
         RefreshData();
-        Group.OnModelChanged += () => { 
+        Group.OnModelChanged += () =>
+        {
             RefreshData();
         };
         await InvokeAsync(StateHasChanged);
@@ -155,6 +164,6 @@ else
             Members = Group.Members;
             LoadingData = false;
         });
-   
+
     }
 }
