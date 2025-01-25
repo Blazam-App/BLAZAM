@@ -1,10 +1,11 @@
 ﻿
 
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 
 namespace BLAZAM.Database.Exceptions
 {
-    public class CriticalDatabaseException : ApplicationException
+    public class CriticalDatabaseException : AppException
     {
         public IDatabaseContext Context { get; }
         public override string Message { get; }

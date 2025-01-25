@@ -1,5 +1,6 @@
 
 using BLAZAM.Common.Data;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Server;
@@ -81,7 +82,7 @@ namespace BLAZAM
             });
 
             if (builder.Configuration is null)
-                throw new ApplicationException("The appsettings.json configuration file was not loaded");
+                throw new AppException("The appsettings.json configuration file was not loaded");
 
             builder.IntializeProperties();
 

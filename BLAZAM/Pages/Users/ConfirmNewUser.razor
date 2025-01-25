@@ -325,7 +325,7 @@ OnClick="Print">@AppLocalization["Print"]</MudButton>
             }
 
         }
-        catch (ApplicationException ex)
+        catch (AppException ex)
         {
             await MessageService.Error(ex.Message);
         }

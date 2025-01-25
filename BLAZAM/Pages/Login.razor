@@ -243,7 +243,6 @@
                     Nav.NavigateTo(authenticationResult.MFARedirect);
                 break;
             case LoginResultStatus.GoogleAuthenticatorRequested:
-                //attemptingSignIn = true;
                 googleAuthSecret = authenticationResult.MFAToken;
                 await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken);
                 break;

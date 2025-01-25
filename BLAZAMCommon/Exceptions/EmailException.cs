@@ -3,7 +3,7 @@
 namespace BLAZAM.Common.Exceptions
 {
     [Serializable]
-    public class EmailException : ApplicationException
+    public class EmailException : AppException
     {
         public EmailException()
         {

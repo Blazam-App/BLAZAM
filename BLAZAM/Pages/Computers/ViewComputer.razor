@@ -274,35 +274,28 @@
         }
 
     }
-    protected override async void DiscardChanges()
-    {
-        if (Computer != null && await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
-        {
-            Computer.DiscardChanges();
-            EditMode = false;
-            await RefreshEntryComponents();
 
-        }
-
-    }
     async Task DeleteComputer()
     {
         if (Computer != null && await MessageService.Confirm("Are you sure you want to delete " + Computer?.CanonicalName + "?", "Delete Computer"))
         {
+            SavingChanges = true;
+            await InvokeAsync(StateHasChanged);
             try
             {
-                Computer.Delete();
+                Computer.Delete(true);
                 SnackBarService.Success(Computer.CanonicalName + " has been deleted.");
                 await AuditLogger.Computer.Deleted(Computer);
                 _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Delete, CurrentUser.State);
 
-                Nav.NavigateTo("/users/search");
 
             }
-            catch (ApplicationException ex)
+            catch (AppException ex)
             {
                 SnackBarService.Error(ex.Message);
             }
+            SavingChanges = false;
+
             await RefreshEntryComponents();
         }
     }
@@ -375,7 +368,7 @@
                     await jobResults.ShowJobDetailsDialogAsync(MessageService);
                 }
             }
-            catch (ApplicationException ex)
+            catch (AppException ex)
             {
                 SnackBarService.Error(ex.Message);
 

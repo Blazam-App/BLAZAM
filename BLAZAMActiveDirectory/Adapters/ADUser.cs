@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
@@ -170,8 +171,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <remarks>Must be called under an identity context that has permission to make these changes</remarks>
         public void SetHomeDirectoryPermissions()
         {
-            if (SamAccountName == null) throw new ApplicationException("Samaccount name is null while setting home directory");
-            if (HomeDirectory == null) throw new ApplicationException("HomeDirectory is null while setting home directory");
+            if (SamAccountName == null) throw new AppException("Samaccount name is null while setting home directory");
+            if (HomeDirectory == null) throw new AppException("HomeDirectory is null while setting home directory");
             FileSystemRights Rights;
 
             //What rights are we setting?

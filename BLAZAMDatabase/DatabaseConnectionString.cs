@@ -1,4 +1,5 @@
-﻿using BLAZAM.Database.Exceptions;
+﻿using BLAZAM.Common.Exceptions;
+using BLAZAM.Database.Exceptions;
 using BLAZAM.FileSystem;
 
 namespace BLAZAM.Common.Data.Database
@@ -65,7 +66,7 @@ namespace BLAZAM.Common.Data.Database
                     }
 
                 }
-                throw new ApplicationException("Connection String missing a Server or Data Source parameter");
+                throw new AppException("Connection String missing a Server or Data Source parameter");
             }
         }
         /// <summary>
@@ -106,7 +107,7 @@ namespace BLAZAM.Common.Data.Database
                     }
 
                 }
-                throw new ApplicationException("Connection String missing a Database or Initial Catalog parameter");
+                throw new AppException("Connection String missing a Database or Initial Catalog parameter");
             }
         }
         /// <summary>
@@ -175,7 +176,7 @@ namespace BLAZAM.Common.Data.Database
                     }
                     else
                     {
-                        throw new ApplicationException("The server string has too many components in AppSettings");
+                        throw new AppException("The server string has too many components in AppSettings");
                     }
 
 

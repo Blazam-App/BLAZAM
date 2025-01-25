@@ -19,7 +19,7 @@
     public EventCallback StepCompleted { get; set; }
 
     ActiveDirectoryStatusPanel directoryStatusPanel;
-    ADSettings currentSettings;
+   
 
 
 
@@ -28,20 +28,8 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        var status = Directory.Status;
         Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
-        try
-        {
-            currentSettings = await Context.ActiveDirectorySettings.FirstOrDefaultAsync();
-        }
-        catch (InvalidOperationException)
-        {
-            Nav.NavigateTo("/oops");
-        }
-        catch (Exception)
-        {
-            //Ignoor oother exceptions
-        }
+        
        
     }
 

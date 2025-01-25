@@ -86,7 +86,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <param name="password">The new password</param>
         /// <param name="requireChange">Whether to force a password change after reset</param>
         /// <returns>True if the password change was successful, otherwise false.</returns>
-        /// <exception cref="ApplicationException"></exception>
+        /// <exception cref="AppException"></exception>
         bool SetPassword(SecureString password, bool requireChange = false);
 
 

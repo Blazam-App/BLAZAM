@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
@@ -460,7 +461,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (CurrentUser == null) return false;
                 if (DN == null)
                 {
-                    throw new ApplicationException("The directory object " + ADSPath + " did not load a distinguished name.");
+                    throw new AppException("The directory object " + ADSPath + " did not load a distinguished name.");
                 }
                 return CurrentUser.HasPermission(DN, allowSelector, denySelector, nestedSearch);
             }
@@ -710,7 +711,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
               )))
               );
             }
-            throw new ApplicationException("The field provided is invalid");
+            throw new AppException("The field provided is invalid");
 
 
         }
@@ -748,7 +749,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     );
 
             }
-            throw new ApplicationException("The field provided is invalid");
+            throw new AppException("The field provided is invalid");
 
 
 
@@ -809,8 +810,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if (DirectoryEntry == null)
                     {
                         Loggers.ActiveDirectoryLogger.Error("The directory entry for an existing " +
-                            " entry is somehow missing on commit." + " {@Error}", new ApplicationException("DirectoryEntry is null"));
-                        throw new ApplicationException("DirectoryEntry is null");
+                            " entry is somehow missing on commit." + " {@Error}", new AppException("DirectoryEntry is null"));
+                        throw new AppException("DirectoryEntry is null");
                     }
                     foreach (var p in NewEntryProperties)
                     {
@@ -857,8 +858,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if (DirectoryEntry == null)
                     {
                         Loggers.ActiveDirectoryLogger.Error("The directory entry for new entry " + DN +
-                            " is somehow missing on commit." + " {@Error}", new ApplicationException("DirectoryEntry is null"));
-                        throw new ApplicationException("DirectoryEntry is null");
+                            " is somehow missing on commit." + " {@Error}", new AppException("DirectoryEntry is null"));
+                        throw new AppException("DirectoryEntry is null");
                     }
                     foreach (var p in NewEntryProperties)
                     {
@@ -930,12 +931,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (DirectoryServicesCOMException ex)
             {
-                throw new ApplicationException(ex.Message + ex.ExtendedErrorMessage, ex);
+                throw new AppException(ex.Message + ex.ExtendedErrorMessage, ex);
             }
 
         }
 
-        public virtual void Delete()
+        public virtual void Delete(bool forceDeleteChildren = false)
         {
             try
             {
@@ -948,12 +949,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     case ActiveDirectoryObjectType.Group:
                     case ActiveDirectoryObjectType.Printer:
                     case ActiveDirectoryObjectType.Computer:
+                        if (forceDeleteChildren)
+                        {
+                            var children = DirectoryEntry.Children;
+                            foreach(DirectoryEntry child in children)
+                            {
+                                DirectoryEntry?.Children.Remove(child);
+                            }
+                    
+                        }
                         DirectoryEntry?.Parent.Children.Remove(DirectoryEntry);
                         IsDeleted = true;
                         OnModelDeleted?.Invoke();
                         break;
                     default:
-                        throw new ApplicationException("Deleting that object type is not supported yet.");
+                        throw new AppException("Deleting that object type is not supported yet.");
 
 
                 }
@@ -961,7 +971,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (UnauthorizedAccessException ex)
             {
-                throw new ApplicationException("The application directory user does not " +
+                throw new AppException("The application directory user does not " +
+                    "have permission to delete entries", ex);
+            }
+            catch (DirectoryServicesCOMException ex)
+            {
+                switch (ex.HResult)
+                {
+                    case -2147016683:
+                        throw new AppException("The object contains child objects.");
+                }
+                throw new AppException("The application directory user does not " +
                     "have permission to delete entries", ex);
             }
             catch (Exception ex)
@@ -1216,7 +1236,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <param name="value"></param>
         protected virtual void SetProperty(string propertyName, object? value)
         {
-            if (IsDeleted) throw new ApplicationException("Cannot set values for a deleted entry.");
+            if (IsDeleted) throw new AppException("Cannot set values for a deleted entry.");
             try
             {
                 if (!NewEntry)

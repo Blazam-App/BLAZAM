@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
@@ -325,8 +326,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public bool SetPassword(SecureString password, bool requireChange = false)
         {
-            if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
-            if (DirectorySettings == null) throw new ApplicationException("Directory settings not found when trying to change directory user password");
+            if (SamAccountName == null) throw new AppException("samaccount name not found!");
+            if (DirectorySettings == null) throw new AppException("Directory settings not found when trying to change directory user password");
 
             var directoryPassword = DirectorySettings.Password.Decrypt();
             if (directoryPassword == null) return false;
@@ -375,7 +376,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 Loggers.ActiveDirectoryLogger.Error("Error setting entry password {@Error}", ex);
                 if (!Debugger.IsAttached)
-                    throw new ApplicationException("Unable to set password", ex);
+                    throw new AppException("Unable to set password", ex);
                 else return true;
             }
 

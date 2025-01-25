@@ -1,7 +1,9 @@
 ﻿
+using BLAZAM.Common.Exceptions;
+
 namespace BLAZAM.ActiveDirectory.Exceptions
 {
-    public class CriticalActiveDirectoryException : ApplicationException
+    public class CriticalActiveDirectoryException : AppException
     {
         public ActiveDirectoryContext Context { get; }
         public override string Message { get; }

@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Gui.Services;
 using BLAZAM.Notifications.Services;
@@ -89,7 +90,7 @@ namespace BLAZAM.Server
         /// Attempts to get the windows installation id 
         /// </summary>
         /// <returns>A unique GUID for this machine</returns>
-        /// <exception cref="ApplicationException">Thrown when the running context does not have read permission for the Windows UUID</exception>
+        /// <exception cref="AppException">Thrown when the running context does not have read permission for the Windows UUID</exception>
         private static Guid GetInstallationId()
         {
             //Try and get os id
@@ -114,7 +115,7 @@ namespace BLAZAM.Server
                     }
 
                 }
-                throw new ApplicationException("Searched but could not find a CSProduct UUID");
+                throw new AppException("Searched but could not find a CSProduct UUID");
             }
 
             catch (Exception ex)
