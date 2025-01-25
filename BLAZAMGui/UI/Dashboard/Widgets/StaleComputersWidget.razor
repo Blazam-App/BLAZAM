@@ -1,12 +1,12 @@
-﻿
-@inherits Widget
+﻿@inherits Widget
 @attribute [Authorize]
 <StaleEntriesWidgetDataGrid Items="@StaleComputers"
-                          RowsPerPage="@ItemsPerPage"
-                          RowsPerPageChanged="@SetRowsPerPage"
-                          RowClick=@GoTo
-                          T="IADComputer"
-                          Loading=LoadingData />
+                            RowsPerPage="@ItemsPerPage"
+                            RowsPerPageChanged="@SetRowsPerPage"
+                            RowClick=@GoTo
+                            T="IADComputer"
+                            OnChanged="RefreshData"
+                            Loading=LoadingData />
 
 @code {
     List<IADComputer> StaleComputers

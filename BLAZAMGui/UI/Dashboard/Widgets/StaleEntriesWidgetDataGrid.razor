@@ -22,7 +22,8 @@
             <CellTemplate>
             
 
-                        <DirectoryEntryContextMenu Entry="@context.Item">
+                        <DirectoryEntryContextMenu Entry="@context.Item"
+                            OnChanged="OnChanged">
                             <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                                 <MudText>@context.Item?.CanonicalName</MudText>
                             </AppTooltip>
@@ -51,6 +52,9 @@
 
 @code {
 #nullable disable warnings
+
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
 
     private async Task<string> GetLastLogonTime(T item)
     {

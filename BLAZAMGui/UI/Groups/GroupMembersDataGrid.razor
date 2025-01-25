@@ -17,15 +17,7 @@
                     @AppLocalization["Type"]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
-                    @{
-                        var account = cellContext.Item as IAccountDirectoryAdapter;
-
-
-                    }
-                    <AppTooltip Text="@cellContext.Item.ObjectType.ToString()">
-                        <MudIcon Color=@(account!=null&&account.Disabled?Color.Error:Color.Default) Icon="@cellContext.Item.TypeIcon()" />
-                    </AppTooltip>
-
+                    <DirectoryEntryTypeIcon Entry=cellContext.Item />
                 </CellTemplate>
             </TemplateColumn>
             <TemplateColumn Sortable=true Filterable=true Context="templateContext">
