@@ -5,6 +5,7 @@
                             RowsPerPageChanged="@SetRowsPerPage"
                             RowClick=@GoTo
                             T="IADUser"
+                            OnChanged="RefreshData"
                             Loading=LoadingData />
 
 @code {
@@ -24,7 +25,7 @@
         await InvokeAsync(StateHasChanged);
 
     }
-    async Task RefreshData()
+    protected override async Task RefreshData()
     {
 
         LoadingData = true;

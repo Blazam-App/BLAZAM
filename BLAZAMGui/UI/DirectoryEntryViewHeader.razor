@@ -360,7 +360,7 @@ else
         {
             UserFavoriteEntry newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
 
-            return CurrentUser.State.Preferences.FavoriteEntries.Contains(newFavorrite);
+            return CurrentUser.State.Preferences.FavoriteEntries.Any(f=>f.Equals(newFavorrite));
         }
     }
     private async Task ToggleFavorite()
@@ -368,10 +368,13 @@ else
         try
         {
             UserFavoriteEntry? newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
-            if (CurrentUser.State.Preferences.FavoriteEntries.Contains(newFavorrite))
+            if (CurrentUser.State.Preferences.FavoriteEntries.Any(f => f.Equals(newFavorrite)))
             {
-                newFavorrite = CurrentUser.State.Preferences.FavoriteEntries.Where(u => newFavorrite.Equals(u)).FirstOrDefault();
-                CurrentUser.State.Preferences.FavoriteEntries.Remove(newFavorrite);
+                var matchingFavorites = CurrentUser.State.Preferences.FavoriteEntries.Where(u => newFavorrite.Equals(u)).ToList();
+                foreach (var favorite in matchingFavorites)
+                {
+                    CurrentUser.State.Preferences.FavoriteEntries.Remove(favorite);
+                }
             }
             else
             {

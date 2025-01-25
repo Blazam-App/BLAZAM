@@ -4,6 +4,7 @@
                           RowsPerPage="@ItemsPerPage"
                           RowsPerPageChanged="@SetRowsPerPage"
                           RowClick=@GoTo
+                          OnChanged="RefreshData"
                           T="IADComputer"
                           Loading=LoadingData />
 

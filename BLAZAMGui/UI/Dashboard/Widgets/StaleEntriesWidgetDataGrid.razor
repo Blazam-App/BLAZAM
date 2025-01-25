@@ -3,7 +3,6 @@
 @typeparam T where T : IAccountDirectoryAdapter
 
 <MudDataGrid T="@T"
-   
              Items=Items
              Dense=true
              Filterable=true
@@ -21,28 +20,23 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
-                <MudContextMenu>
+            
 
-                    <ChildContent>
+                        <DirectoryEntryContextMenu Entry="@context.Item"
+                            OnChanged="OnChanged">
+                            <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                                <MudText>@context.Item?.CanonicalName</MudText>
+                            </AppTooltip>
+                        </DirectoryEntryContextMenu>
 
-                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
-                            <MudText>@context.Item?.CanonicalName</MudText>
-                        </AppTooltip>
-
-                    </ChildContent>
-                    <MenuContents>
-
-                        <DirectoryEntryContextMenuItems Entry="@context.Item" />
-
-                    </MenuContents>
-                </MudContextMenu>
+                   
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization["Last Logon"]>
             <CellTemplate>
                 @if (context.Item?.Created != null)
                 {
-                    <LastLogonTime DirectoryEntry="@context.Item"/>
+                    <LastLogonTime DirectoryEntry="@context.Item" />
                 }
             </CellTemplate>
         </TemplateColumn>
@@ -56,14 +50,17 @@
 </MudDataGrid>
 
 
-    @code {
-    #nullable disable warnings
-    
+@code {
+#nullable disable warnings
+
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
+
     private async Task<string> GetLastLogonTime(T item)
     {
         return await Task.Run(() =>
         {
-            return item.LastLogonTime?.ToLocalTime().ToString();    
+            return item.LastLogonTime?.ToLocalTime().ToString();
         });
     }
 }

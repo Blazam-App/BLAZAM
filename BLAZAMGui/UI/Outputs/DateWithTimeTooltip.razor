@@ -1,10 +1,32 @@
-﻿<AppTooltip Text="@DateTime?.ToLocalTime().TimeOfDay.ToString()">
-    <MudText Style="text-align:end;" Typo="Typo.caption">@DateTime?.ToLocalTime().ToShortDateString()</MudText>
+﻿<AppTooltip Text="@_timeOfDay">
+    <MudText Style="text-align:end;" Typo="Typo.caption">@_date</MudText>
 </AppTooltip>
 @code {
     /// <summary>
     /// The DateTime to display in UTC
     /// </summary>
     [Parameter]
-    public DateTime? DateTime { get; set; }
+    public DateTime? DateTime
+    {
+        get => _dateTime; set
+        {
+            if (_dateTime == value) return;
+            _dateTime = value;
+            if (_dateTime != null)
+            {
+                _date = _dateTime.Value.ToLocalTime().ToShortDateString();
+                _timeOfDay = _dateTime.Value.ToLocalTime().ToString("T");
+            }
+            else
+            {
+                _date = null;
+                _timeOfDay = null;
+            }
+        }
+    }
+
+    private DateTime? _dateTime;
+
+    private string? _timeOfDay;
+    private string? _date;
 }

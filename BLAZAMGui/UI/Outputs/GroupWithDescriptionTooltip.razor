@@ -1,0 +1,13 @@
+﻿@if(!Group.Description.IsNullOrEmpty()){
+
+    <AppTooltip Text="@Group.Description">
+        @Group.CanonicalName
+    </AppTooltip>
+
+}else{
+    <MudElement Class="">@Group.CanonicalName</MudElement>
+}
+@code {
+    [Parameter]
+    public IADGroup Group { get; set; }
+}

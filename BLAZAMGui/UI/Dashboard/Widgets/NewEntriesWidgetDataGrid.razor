@@ -20,24 +20,22 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
-                <MudContextMenu>
-
-                    <ChildContent>
-
-                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                <DirectoryEntryContextMenu Entry="@context.Item"
+                OnChanged="OnChanged">
+                    <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                        @if (context.Item is IADGroup group)
+                        {
+                            <GroupWithDescriptionTooltip Group="group" />
+                        }
+                        else
+                        {
                             <MudText>@context.Item?.CanonicalName</MudText>
-                            </AppTooltip>
-                       @*  <DirectoryEntryTooltipPopover Entry="context.Item">
+                        }
+                    </AppTooltip>
+                    @*  <DirectoryEntryTooltipPopover Entry="context.Item">
                             <MudText>@context.Item?.CanonicalName</MudText>
                         </DirectoryEntryTooltipPopover> *@
-
-                    </ChildContent>
-                    <MenuContents>
-
-                        <DirectoryEntryContextMenuItems Entry="@context.Item" />
-
-                    </MenuContents>
-                </MudContextMenu>
+                </DirectoryEntryContextMenu>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization["Created"]>
@@ -61,4 +59,7 @@
 
 @code {
 #nullable disable warnings
+
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
 }

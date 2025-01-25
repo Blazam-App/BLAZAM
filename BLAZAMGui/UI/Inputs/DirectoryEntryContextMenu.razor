@@ -1,31 +1,44 @@
 ﻿@inherits AppComponentBase
-@if(Entry is IAccountDirectoryAdapter account)
+@if (Entry is IAccountDirectoryAdapter account)
 {
-    if(account.CanUnlock && account.LockedOut)
-    {
-        <MudMenuItem OnClick="(()=>{UnlockAccount(account);})" Icon="@Icons.Material.Outlined.LockOpen">
-            @AppLocalization["Unlock"] @AppLocalization[account.ObjectType.ToString()]
-        </MudMenuItem>
+    <MudContextMenu>
 
-    }
-    if (account.Enabled)
-    {
-        <MudMenuItem OnClick="(()=>{DisableAccount(account);})" Icon="@Icons.Material.Outlined.Cancel">
-            @AppLocalization["Disable"] @AppLocalization[account.ObjectType.ToString()]
-        </MudMenuItem>
-    }
-    if (account.Disabled)
-    {
-        <MudMenuItem OnClick="(()=>{EnableAccount(account);})" Icon="@Icons.Material.Outlined.Check">
-            @AppLocalization["Enable"] @AppLocalization[account.ObjectType.ToString()]
-        </MudMenuItem>
-    }
+        <ChildContent>
+
+            @ChildContent
+
+        </ChildContent>
+        <MenuContents>
+            @if(account.CanUnlock && account.LockedOut)
+            {
+                <MudMenuItem OnClick="(()=>{UnlockAccount(account);})" Icon="@Icons.Material.Outlined.LockOpen">
+                    @AppLocalization["Unlock"] @AppLocalization[account.ObjectType.ToString()]
+                </MudMenuItem>
+
+            }
+            @if (account.Enabled)
+            {
+                <MudMenuItem OnClick="(()=>{DisableAccount(account);})" Icon="@Icons.Material.Outlined.Cancel">
+                    @AppLocalization["Disable"] @AppLocalization[account.ObjectType.ToString()]
+                </MudMenuItem>
+            }
+            @if (account.Disabled)
+            {
+                <MudMenuItem OnClick="(()=>{EnableAccount(account);})" Icon="@Icons.Material.Outlined.Check">
+                    @AppLocalization["Enable"] @AppLocalization[account.ObjectType.ToString()]
+                </MudMenuItem>
+            }
+        </MenuContents>
+    </MudContextMenu>
 }
 
 @code {
     [Parameter]
-    public IDirectoryEntryAdapter Entry{ get; set; }
-
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public IDirectoryEntryAdapter Entry { get; set; }
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
     async Task UnlockAccount(IAccountDirectoryAdapter userToUnlock)
     {
         if (userToUnlock.LockedOut)
@@ -40,6 +53,7 @@
             {
 
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" unlocked"]);
+                OnChanged.InvokeAsync();
             }
             else
             {
@@ -62,6 +76,8 @@
             {
 
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" enabled"]);
+                OnChanged.InvokeAsync();
+
             }
             else
             {
@@ -84,6 +100,8 @@
             {
 
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" disabled"]);
+                OnChanged.InvokeAsync();
+
             }
             else
             {
