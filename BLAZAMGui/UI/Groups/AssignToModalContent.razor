@@ -9,13 +9,13 @@
         }
         <MudStack Row=true>
             <ADAutoComplete AutoFocus="true"
-                            Class=""
-                            Disabled=@(copyFrom!=null)
-                            Label="Group Name"
-                            CustomResultsFilter="(result)=>result is IADGroup group && group.CanRead"
-                            SearchObjectType="ActiveDirectoryObjectType.Group"
-                            @bind-SelectedResult=@Group
-                            CustomDisableFilter=@((result)=>{
+            Class=""
+            Disabled=@(copyFrom!=null)
+            Label=@AppLocalization["Group Name"]
+            CustomResultsFilter="(result)=>result is IADGroup group && group.CanRead"
+            SearchObjectType="ActiveDirectoryObjectType.Group"
+            @bind-SelectedResult=@Group
+            CustomDisableFilter=@((result)=>{
                             if(result is IADGroup group && group.CanAssign){
                             return DirectoryModel.MemberOf.Contains(group) || !group.CanAssign ;
                             }
@@ -34,14 +34,14 @@
 
             <MudStack Row=true>
                 <ADAutoComplete AutoFocus="true"
-                                Class=""
-                                Disabled=@(copyFrom!=null)
-                                Label="Group Name"
-                                CustomResultsFilter="(result)=>result is IADGroup group && group.CanRead"
-                                SelectedResult=@group.Value
-                                SelectedResultChanged="@((newValue)=>{additionalGroups[group.Key]=newValue;})"
-                                SearchObjectType="ActiveDirectoryObjectType.Group"
-                                CustomDisableFilter=@((result)=>{
+                Class=""
+                Disabled=@(copyFrom!=null)
+                Label=@AppLocalization["Group Name"]
+                CustomResultsFilter="(result)=>result is IADGroup group && group.CanRead"
+                SelectedResult=@group.Value
+                SelectedResultChanged="@((newValue)=>{additionalGroups[group.Key]=newValue;})"
+                SearchObjectType="ActiveDirectoryObjectType.Group"
+                CustomDisableFilter=@((result)=>{
                             if(result is IADGroup group && group.CanAssign){
                             return DirectoryModel.MemberOf.Contains(group) || !group.CanAssign ;
                             }
@@ -66,10 +66,10 @@
         }
         <MudText Class="my-3" Align="Align.Center">@AppLocalization["or"]</MudText>
         <ADAutoComplete Disabled=@(Group!=null)
-                        Label="Copy Memberships From"
-                        SearchObjectType="ActiveDirectoryObjectType.All"
-                        @bind-SelectedResult=@copyFrom
-                        CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
+        Label=@AppLocalization["Copy Memberships From"]
+        SearchObjectType="ActiveDirectoryObjectType.All"
+        @bind-SelectedResult=@CopyFrom
+        CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
 
 
     </MudStack>
@@ -77,17 +77,14 @@
     {
         <MudStack>
 
-            @{
-                var existingGroups = DirectoryModel.MemberOf;
-            }
-            @if (CopyFrom.MemberOf.Any(g => existingGroups.Contains(g) && g.CanRead))
+            @if (CopyFromMember?.MemberOf.Any(g => DirectoryModel.MemberOf.Contains(g) && g.CanRead)==true)
             {
-                <MudText>Already a member of...</MudText>
+                <MudText>@AppLocalization["Already a member of..."]</MudText>
                 <MudList T="string"
-                         Dense=true
-                         Style="max-height:200px;"
-                         Class="overflow-auto">
-                    @foreach (var group in CopyFrom.MemberOf.Where(g => existingGroups.Contains(g) && g.CanRead))
+                Dense=true
+                Style="max-height:200px;"
+                Class="overflow-auto">
+                    @foreach (var group in CopyFromMember.MemberOf.Where(g => DirectoryModel.MemberOf.Contains(g) && g.CanRead))
                     {
                         <MudListItem>
 
@@ -100,39 +97,31 @@
                     }
                 </MudList>
             }
-            @if (CopyFrom.MemberOf.Any(g => !existingGroups.Contains(g) && g.CanRead && g.CanAssign))
+            @if (CopyFromMember?.MemberOf.Any(g => !DirectoryModel.MemberOf.Contains(g) && g.CanRead && g.CanAssign)==true)
             {
-                <MudText>Will be added to...</MudText>
-                <MudList T="string"
-                         Dense=true
-                         Style="max-height:200px;"
-                         Class="overflow-auto">
 
-                    @foreach (var group in CopyFrom.MemberOf.Where(g => !existingGroups.Contains(g) && g.CanRead && g.CanAssign))
-                    {
-                        <MudListItem>
-
-
-
-                            <MudIcon Color=Color.Info Icon="@Icons.Material.Filled.PlaylistAdd" />
-
-                            @group.GroupName
-
-                        </MudListItem>
-
-                    }
-                </MudList>
+                <MudText>@AppLocalization["Will be added to..."]</MudText>
+                <MudDataGrid Items="CopyFromMember.MemberOf.Where(g => !DirectoryModel.MemberOf.Contains(g) && g.CanRead && g.CanAssign)"
+                SelectedItems="_selectedGroups" 
+                SelectOnRowClick="true">
+                    <Header>
+                    </Header>
+                    <Columns>
+                        <SelectColumn T="IADGroup" />
+                        <PropertyColumn Property="g=>g.GroupName" Title="@AppLocalization[""]" />
+                    </Columns>
+                </MudDataGrid>
 
             }
-            @if (CopyFrom.MemberOf.Any(g => !existingGroups.Contains(g) && g.CanRead && !g.CanAssign))
+            @if (CopyFromMember?.MemberOf.Any(g => !DirectoryModel.MemberOf.Contains(g) && g.CanRead && !g.CanAssign)==true)
             {
                 <MudText>Can't assign to...</MudText>
                 <MudList T="string"
-                         Dense=true
-                         Style="max-height:200px;"
-                         Class="overflow-auto">
+                Dense=true
+                Style="max-height:200px;"
+                Class="overflow-auto">
 
-                    @foreach (var group in CopyFrom.MemberOf.Where(g => !existingGroups.Contains(g) && g.CanRead && !g.CanAssign))
+                    @foreach (var group in CopyFromMember.MemberOf.Where(g => !DirectoryModel.MemberOf.Contains(g) && g.CanRead && !g.CanAssign))
                     {
                         <MudListItem>
 
@@ -155,8 +144,8 @@
 
 @code {
 
-#nullable disable warnings
-    
+    #nullable disable warnings
+    private HashSet<IADGroup>? _selectedGroups;
 
     /// <summary>
     /// The directory entry that we are assigning
@@ -174,9 +163,21 @@
     }
 
 
-    IDirectoryEntryAdapter copyFrom;
-    public IGroupableDirectoryAdapter CopyFrom { get => (IGroupableDirectoryAdapter)copyFrom; set => copyFrom = value; }
-
+    IDirectoryEntryAdapter? copyFrom;
+    IDirectoryEntryAdapter? CopyFrom
+    {
+        get => copyFrom; set
+        {
+            if (copyFrom == value) return;
+            copyFrom = value;
+            if (value != null)
+            {
+                var missingGroups = CopyFromMember.MemberOf.Where(g => !DirectoryModel.MemberOf.Contains(g) && g.CanRead && g.CanAssign).ToList();
+                _selectedGroups =  missingGroups.ToHashSet();
+            }
+        }
+    }
+    IGroupableDirectoryAdapter? CopyFromMember => CopyFrom as IGroupableDirectoryAdapter;
     new IDirectoryEntryAdapter Group { get; set; }
     async void AddGroupInput()
     {
@@ -205,7 +206,7 @@
         }
         if (CopyFrom != null)
         {
-            foreach (var g in CopyFrom.MemberOf.Where(g =>g.CanAssign))
+            foreach (var g in _selectedGroups)
             {
                 DirectoryModel.AssignTo(g);
 
