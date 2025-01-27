@@ -14,6 +14,7 @@ global using BLAZAM.Update.Services;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.Localization;
 global using Microsoft.JSInterop;
+global using BLAZAM.Gui.UI.Outputs.Menu;
 
 global using BLAZAM.Common.Exceptions;
 global using BLAZAM.Database.Models.Templates;
