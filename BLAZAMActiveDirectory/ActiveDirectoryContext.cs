@@ -524,7 +524,7 @@ namespace BLAZAM.ActiveDirectory
                 try
                 {
 
-                    var findUser = Users.FindUserByUsername(loginReq.Username.ToLower(), false);
+                    var findUser = Users.FindUserByUsername(loginReq.Username.ToLower(), true,true);
                     if (findUser != null
                         && ConnectionSettings != null)
                     {

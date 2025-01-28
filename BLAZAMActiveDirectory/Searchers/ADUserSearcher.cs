@@ -13,7 +13,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
         }
 
-        public async Task<List<IADUser>> FindUsersByStringAsync(string? searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
+        public async Task<List<IADUser>> FindUsersByStringAsync(string? searchTerm, bool ignoreDisabledUsers = true, bool exactMatch = false)
         {
             return await Task.Run(() =>
             {
@@ -21,7 +21,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             });
         }
 
-        public List<IADUser> FindUsersByString(string? searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
+        public List<IADUser> FindUsersByString(string? searchTerm, bool ignoreDisabledUsers = true, bool exactMatch = false)
         {
             return new ADSearch(Directory)
             {
@@ -32,7 +32,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
             }.Search<ADUser, IADUser>();
         }
-        public IADUser? FindUserByUsername(string? searchTerm, bool? ignoreDisabledUsers = true)
+        public IADUser? FindUserByUsername(string? searchTerm, bool ignoreDisabledUsers = true, bool exactMatch=false)
         {
             return new ADSearch(Directory)
             {
@@ -42,13 +42,13 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 {
                     SamAccountName = searchTerm
                 },
-                ExactMatch = true
+                ExactMatch = exactMatch
 
             }.Search<ADUser, IADUser>().FirstOrDefault();
 
         }
 
-        public async Task<List<IADUser>> FindLockedOutUsersAsync(bool? ignoreDisabledUsers = true)
+        public async Task<List<IADUser>> FindLockedOutUsersAsync(bool ignoreDisabledUsers = true)
         {
             return await Task.Run(() =>
             {
@@ -56,7 +56,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             });
         }
 
-        public List<IADUser> FindLockedOutUsers(bool? ignoreDisabledUsers = true)
+        public List<IADUser> FindLockedOutUsers(bool ignoreDisabledUsers = true)
         {
             return new ADSearch(Directory)
             {
@@ -73,7 +73,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         }
 
 
-        public async Task<List<IADUser>> FindNewUsersAsync(int maxAgeInDays = 14, bool? ignoreDisabledUsers = true)
+        public async Task<List<IADUser>> FindNewUsersAsync(int maxAgeInDays = 14, bool ignoreDisabledUsers = true)
         {
             return await Task.Run(() =>
             {
@@ -81,7 +81,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             });
         }
 
-        public List<IADUser> FindNewUsers(int maxAgeInDays = 14, bool? ignoreDisabledUsers = true)
+        public List<IADUser> FindNewUsers(int maxAgeInDays = 14, bool ignoreDisabledUsers = true)
         {
 
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
@@ -99,7 +99,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         }
 
-        public async Task<List<IADUser>> FindChangedPasswordUsersAsync(bool? ignoreDisabledUsers = true)
+        public async Task<List<IADUser>> FindChangedPasswordUsersAsync(bool ignoreDisabledUsers = true)
         {
             return await Task.Run(() =>
             {
@@ -107,7 +107,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             });
         }
 
-        public List<IADUser> FindChangedPasswordUsers(bool? ignoreDisabledUsers = true)
+        public List<IADUser> FindChangedPasswordUsers(bool ignoreDisabledUsers = true)
         {
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
 
@@ -126,7 +126,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         }
 
-        public async Task<List<IADUser>> FindChangedUsersAsync(bool? ignoreDisabledUsers = true)
+        public async Task<List<IADUser>> FindChangedUsersAsync(bool ignoreDisabledUsers = true)
         {
             return await Task.Run(() =>
             {
@@ -134,7 +134,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             });
         }
 
-        public List<IADUser> FindChangedUsers(bool? ignoreDisabledUsers = true, int daysBackToSearch = 90)
+        public List<IADUser> FindChangedUsers(bool ignoreDisabledUsers = true, int daysBackToSearch = 90)
         {
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(daysBackToSearch);
 
@@ -157,7 +157,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }.Search<ADUser, IADUser>().FirstOrDefault();
         }
 
-        public IADUser? FindUsersByContainerName(string? searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
+        public IADUser? FindUsersByContainerName(string? searchTerm, bool ignoreDisabledUsers = true, bool exactMatch = false)
         {
 
             return new ADSearch(Directory)

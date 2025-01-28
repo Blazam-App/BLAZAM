@@ -250,7 +250,8 @@ namespace BLAZAM.Server
 
             builder.Services.AddHttpClient(HttpClientNames.WebHookHttpClientNoSSLCheckName)
                   .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
-                  .AddPolicyHandler(GetWebhookRetryPolicy()).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                  .AddPolicyHandler(GetWebhookRetryPolicy())
+                  .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
                   {
                       ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
                   });
@@ -311,7 +312,7 @@ namespace BLAZAM.Server
 
 
             //Provide DuoSecurity service
-            builder.Services.AddScoped<IDuoClientProvider, DuoClientProvider>();
+            builder.Services.AddSingleton<IDuoClientProvider, DuoClientProvider>();
 
             //Provide encryption service
             //There's no benefit to filling memory with identical instances of this, so singleton
@@ -397,11 +398,12 @@ namespace BLAZAM.Server
                         Type = ReferenceType.SecurityScheme
                     }
                 };
-
-                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
+                
+                    c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+                    c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
                     { jwtSecurityScheme,Array.Empty<string>() }
                 });
+                
             });
 
             builder.Host.UseWindowsService();
@@ -411,6 +413,11 @@ namespace BLAZAM.Server
             return builder;
         }
         private static readonly object _lock = new object();
+        /// <summary>
+        /// Injects all services in all loaded assemblies that have the <see cref="AutoStartBackgroundService"/> attribute
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static WebApplicationBuilder InjectBackgroundServices(this WebApplicationBuilder builder)
         {
 
@@ -424,8 +431,8 @@ namespace BLAZAM.Server
                 foreach (var type in types)
                 {
                     var interfaceType = type.GetInterfaces()
-            .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
-            && i.Name != "IDisposable");
+                                                .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
+                                                && i.Name != "IDisposable");
 
                     if (interfaceType != null)
                     {
@@ -552,18 +559,6 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
-            //try
-            //{
-            //    if (ApplicationInfo.installationCompleted)
-            //    {
-            //        var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
-            //    }
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-            //}
             try
             {
                 if (ApplicationInfo.installationCompleted)
