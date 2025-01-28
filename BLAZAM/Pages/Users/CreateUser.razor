@@ -138,6 +138,7 @@
                 }
                 <MudTextField Class="mt-5"
                               Label="@AppLocalization["Username"]"
+                              Immediate="true"
                               Disabled=@(!CurrentUser.State.IsSuperAdmin && SelectedTemplate?.EffectiveAllowUsernameOverride!=true)
                               T=string
                               @bind-Value=@newUser!.SamAccountName />
