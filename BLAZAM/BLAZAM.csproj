@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.2.6</AssemblyVersion>
-		<Version>2025.01.28.2156</Version>
+		<Version>2025.01.28.2303</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -57,6 +57,7 @@
 		<PackageReference Include="BlazorTemplater" Version="1.5.1" />
 		<PackageReference Include="Cassia" Version="2.0.0.60" />
 		<PackageReference Include="DuoUniversal" Version="1.2.5" />
+		<PackageReference Include="MailKit" Version="4.10.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.12" />
 		<PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.12" />
@@ -72,7 +73,7 @@
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.12" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
-		<PackageReference Include="MudBlazor" Version="7.15.0" />
+		<PackageReference Include="MudBlazor" Version="7.16.0" />
 		<PackageReference Include="MudBlazor.Markdown" Version="7.14.0" />
 		<PackageReference Include="MudBlazor.ThemeManager" Version="2.1.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
