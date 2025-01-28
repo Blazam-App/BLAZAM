@@ -196,8 +196,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 }
 
 
-                if (!FilterQuery.IsNullOrEmpty() && ExactMatch)
-                    FilterQuery = FilterQuery.Replace("*", "");
+          
 
                 if (GeneralSearchTerm == null)
                 {
@@ -230,6 +229,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
 
                 }
+
+                if (!FilterQuery.IsNullOrEmpty() && ExactMatch)
+                    FilterQuery = FilterQuery.Replace("*", "");
+
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
