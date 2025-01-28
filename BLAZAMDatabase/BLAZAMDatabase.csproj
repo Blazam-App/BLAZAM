@@ -10,7 +10,7 @@
   <ItemGroup>
 	  <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.12" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="8.0.12" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="9.0.1" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.12">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
