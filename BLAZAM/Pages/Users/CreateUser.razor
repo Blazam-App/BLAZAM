@@ -124,8 +124,7 @@
                     bool conflictWarning = false;
                     if (conflictingEntry != null && conflictingEntry.SamAccountName?.Equals(newUser?.SamAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
                     {
-                        SnackBarService.Warning("An account with that name already exists!" + " " + conflictingEntry.SamAccountName);
-                        _usernameStepValid = false;
+                       _usernameStepValid = false;
                         conflictWarning = true;
                     }
                     else
@@ -157,7 +156,7 @@
                     @AppLocalization["Back"]
                 </MudButton>
                 <MudButton Color=Color.Success
-                           Disabled="@(conflictingEntry !=null)"
+                           Disabled="@(conflictWarning)"
                            OnClick="@(()=>{SelectedStep=3;})">
                     @AppLocalization["Next"]
                 </MudButton>
