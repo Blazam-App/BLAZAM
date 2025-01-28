@@ -120,11 +120,13 @@
             <ChildContent>
                 @{
 
-                    var conflictingEntry = Directory.Users.FindUserByUsername(newUser?.SamAccountName, false,true);
+                    var conflictingEntry = Directory.Users.FindUserByUsername(newUser?.SamAccountName, false, true);
+                    bool conflictWarning = false;
                     if (conflictingEntry != null && conflictingEntry.SamAccountName?.Equals(newUser?.SamAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
                     {
-                        SnackBarService.Warning("An account with that name already exists! " + conflictingEntry.SamAccountName);
+                        SnackBarService.Warning("An account with that name already exists!" + " " + conflictingEntry.SamAccountName);
                         _usernameStepValid = false;
+                        conflictWarning = true;
                     }
                     else
                     {
@@ -142,7 +144,13 @@
                               Disabled=@(!CurrentUser.State.IsSuperAdmin && SelectedTemplate?.EffectiveAllowUsernameOverride!=true)
                               T=string
                               @bind-Value=@newUser!.SamAccountName />
-
+                @if (conflictWarning)
+                {
+                    <MudAlert Severity="Severity.Error">
+                        @AppLocalization["An account with that name already exists!"]<br/>
+                        @AppLocalization["User"]: @conflictingEntry.SamAccountName
+                        </MudAlert>
+                }
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
                            OnClick="@(()=>{SelectedStep=1;})">
@@ -277,7 +285,7 @@
                 <ConfirmNewUser @bind-User="@newUser"
                                 Confirmed="_userCreated"
                                 DirectoryTemplate="SelectedTemplate"
-                                OnConfirmed="UserConfirmed"/>
+                                OnConfirmed="UserConfirmed" />
 
             </ChildContent>
 
@@ -416,9 +424,10 @@
         }
         return false;
     }
-    async Task UserConfirmed(){
-        newUserName=new();
-        _userCreated=true;
+    async Task UserConfirmed()
+    {
+        newUserName = new();
+        _userCreated = true;
         await InvokeAsync(StateHasChanged);
     }
 }
