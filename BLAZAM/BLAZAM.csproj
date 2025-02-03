@@ -78,9 +78,9 @@
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.12" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
-		<PackageReference Include="MudBlazor" Version="7.16.0" />
+		<PackageReference Include="MudBlazor" Version="8.0.0" />
 		<PackageReference Include="MudBlazor.Markdown" Version="7.14.0" />
-		<PackageReference Include="MudBlazor.ThemeManager" Version="2.1.0" />
+		<PackageReference Include="MudBlazor.ThemeManager" Version="3.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Octokit" Version="14.0.0" />
 		<PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
