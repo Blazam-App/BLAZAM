@@ -527,8 +527,8 @@ namespace BLAZAM.Server
                                     }
 
 
-                                    var data = type.GetCustomAttribute<AutoStartBackgroundService>();
-                                    service?.Start(data?.Immediate == true);
+                                    var metadata = type.GetCustomAttribute<AutoStartBackgroundService>();
+                                    service?.Start(metadata?.Immediate == true);
                                 }
                                 catch (Exception ex)
                                 {

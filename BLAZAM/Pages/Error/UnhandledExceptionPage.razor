@@ -1,8 +1,9 @@
 @inject EmailService email
 @inject ApplicationInfo ApplicationInfo
+@inject IStringLocalizer<AppLocalization> AppLocalization
 @inject IUserDatabaseFactory factory
 @inject NavigationManager Nav
-<PageTitle>Error</PageTitle>
+<PageTitle>@AppLocalization["Error"]</PageTitle>
 
 
 
@@ -12,14 +13,16 @@
 <MudAlert Elevation="5"
     Square=true
     ShowCloseIcon=true
-    CloseIconClicked=@(()=>{Nav.NavigateTo(Nav.Uri,true);}) 
+    CloseIconClicked=@(()=>{Nav.NavigateTo("/",true);}) 
     Class="mud-alert-outlined-error mb-5" 
     ContentAlignment="HorizontalAlignment.Center">
-    <MudContainer>
     <MudText Typo="Typo.h4">
-        Something terrible has happened...
+        @AppLocalization["Something terrible has happened..."]
 
     </MudText>
+    </MudAlert>
+    <MudContainer>
+
     @try
         {
             @if (ApplicationInfo.InDebugMode)
@@ -30,10 +33,10 @@
                 @Error?.Source : @Error?.GetType()
                 </MudCardHeader>
                 <MudPaper Square=true>
-                        Error Message: @Error?.Message
-                    </MudPaper Square>
-                    <MudPaper Class="overflow-auto mud-typography-nowrap">
-                        Stack Trace: <br>
+                        @AppLocalization["Error Message"]: @Error?.Message
+                    </MudPaper>
+                    <MudPaper Class="overflow-auto mud-typography-wrap">
+                        @AppLocalization["Stack Trace"]: <br>
                         @(
                                 (MarkupString)_error.StackTrace?.Replace("\n", "<br><br>")
                                 )
@@ -42,9 +45,9 @@
             }
             else
             {
-            <MudText Class="my-7">To see error details, set DebugMode to true in appsettings.json in the Blazam installation directory.</MudText>
+            <MudText Class="my-7">@AppLocalization["To see error details, set DebugMode to true in appsettings.json in the Blazam installation directory."]</MudText>
             }
-
+            <MudText Class="my-4" Align="Align.Right">@AppLocalization["Installation Id"]: @ApplicationInfo.InstallationId</MudText>
         }
         catch (Exception ex)
         {
@@ -52,7 +55,7 @@
         }
     </MudContainer>
 
-</MudAlert>
+
 
 
 
