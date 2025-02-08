@@ -3,9 +3,7 @@
 <MudCard onclick=@(()=>{OnSelected.InvokeAsync();}) Class="cursor-pointer d-inline-flex pa-4">
     <MudCardContent>
         <MudStack Row=true>
-            <AppTooltip Text="@AppLocalization[Entry.ObjectType.ToString()]">
-                <MudIcon Icon="@Entry.TypeIcon()" />
-            </AppTooltip>
+            <DirectoryEntryTypeIcon Entry="@Entry" />
             <MudText>@Entry.CanonicalName</MudText>
 
         </MudStack>
@@ -18,11 +16,11 @@
     /// The directory entry of this search result
     /// </summary>
     [Parameter]
-    public IDirectoryEntryAdapter Entry{ get; set; }
+    public IDirectoryEntryAdapter Entry { get; set; }
 
     /// <summary>
     /// Called when the search result is selected for viewing
     /// </summary>
     [Parameter]
-    public EventCallback OnSelected{ get; set; }
+    public EventCallback OnSelected { get; set; }
 }

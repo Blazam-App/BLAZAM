@@ -420,9 +420,7 @@ namespace BLAZAM.Server
         /// <returns></returns>
         public static WebApplicationBuilder InjectBackgroundServices(this WebApplicationBuilder builder)
         {
-
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            Parallel.ForEach(assemblies, assembly =>
+            Parallel.ForEach(blazamAssemblies, assembly =>
             {
                 var types = assembly.GetTypes()
                     .Where(t => t.IsClass && !t.IsAbstract
@@ -489,6 +487,7 @@ namespace BLAZAM.Server
                 .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
                 .WaitAndRetryAsync(delay);
         }
+        private static IEnumerable<Assembly> blazamAssemblies => AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName?.Contains("BLAZAM") == true);
         private static void PreloadServices(WebApplication application)
         {
 
@@ -496,9 +495,9 @@ namespace BLAZAM.Server
             {
                 if (ApplicationInfo.installationCompleted)
                 {
-                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-                    foreach (var assembly in assemblies.Where(a=>a.FullName?.Contains("BLAZAM")==true))
+
+                    foreach (var assembly in blazamAssemblies)
                     {
                         try
                         {
@@ -527,8 +526,8 @@ namespace BLAZAM.Server
                                     }
 
 
-                                    var data = type.GetCustomAttribute<AutoStartBackgroundService>();
-                                    service?.Start(data?.Immediate == true);
+                                    var metadata = type.GetCustomAttribute<AutoStartBackgroundService>();
+                                    service?.Start(metadata?.Immediate == true);
                                 }
                                 catch (Exception ex)
                                 {
@@ -578,6 +577,19 @@ namespace BLAZAM.Server
                 {
                     var context = Program.AppInstance.Services.GetRequiredService<WebHookPublisher>();
 
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+              try
+            {
+                if (ApplicationInfo.installationCompleted)
+                {
+                    ApplicationStatistics.Process = ApplicationInfo.runningProcess;
+                    ApplicationStatistics.StartResourceUsagePolling();
                 }
 
             }
