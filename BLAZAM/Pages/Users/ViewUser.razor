@@ -19,19 +19,19 @@
                 <SetSubHeader @ref="SubHeader">
 
                     <DirectoryEntryViewHeader EditMode="@EditMode"
-                                              DirectoryEntry="@User"
-                                              OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
-                                              OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
-                                              OnDelete="@DeleteUser"
-                                              OnDisable="@(async()=>{User.Enabled=false; await RefreshEntryComponents();})"
-                                              OnEnable="@(async()=>{User.Enabled=true; await RefreshEntryComponents();})"
-                                              OnMove="@(()=>{MoveToModal?.ShowAsync();})"
-                                              OnRename="@(()=>{RenameModal?.ShowAsync();})"
-                                              OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
-                                              OnToggleEditMode="ToggleEditMode"
-                                              OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
-                                              OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})"
-                                              OnUnlock="@Unlock" />
+                    DirectoryEntry="@User"
+                    OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
+                    OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
+                    OnDelete="@DeleteUser"
+                    OnDisable="@(async()=>{User.Enabled=false; await RefreshEntryComponents();})"
+                    OnEnable="@(async()=>{User.Enabled=true; await RefreshEntryComponents();})"
+                    OnMove="@(()=>{MoveToModal?.ShowAsync();})"
+                    OnRename="@(()=>{RenameModal?.ShowAsync();})"
+                    OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
+                    OnToggleEditMode="ToggleEditMode"
+                    OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
+                    OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})"
+                    OnUnlock="@Unlock" />
                     <LoadingData Loading=SavingChanges />
 
 
@@ -71,8 +71,8 @@
                     }
                 </AppModal>
                 <AppModal Title=@AppLocalization["Logon Hours"]
-                          @ref=@LogonHoursModal
-                          Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
+                @ref=@LogonHoursModal
+                Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
                     @if (LogonHoursModal?.IsShown == true)
                     {
                         <LogonHoursModalContent User="User" />
@@ -85,10 +85,10 @@
                         <Section FullWidth=false>
 
                             <MudCard Elevation="2"
-                                     Style="width:fit-content;height:fit-content"
-                                     Class="relative mx-auto d-block p-1 mb-5"
-                                     @onmouseenter=@(()=>{showRemoveThumbnail=true;})
-                                     @onmouseleave=@(()=>{showRemoveThumbnail=false;})>
+                            Style="width:fit-content;height:fit-content"
+                            Class="relative mx-auto d-block p-1 mb-5"
+                            @onmouseenter=@(()=>{showRemoveThumbnail=true;})
+                            @onmouseleave=@(()=>{showRemoveThumbnail=false;})>
 
                                 @if (User?.ThumbnailPhoto != null)
                                 {
@@ -97,9 +97,9 @@
                                     {
 
                                         <MudIconButton OnClick=RemoveThumbnail
-                                                       Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;left:10px"
-                                                       Color=Color.Error
-                                                       Icon="@Icons.Material.Filled.Delete" />
+                                        Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;left:10px"
+                                        Color=Color.Error
+                                        Icon="@Icons.Material.Filled.Delete" />
                                     }
 
                                 }
@@ -111,9 +111,9 @@
                                 @if (showRemoveThumbnail && User?.CanEditField(ActiveDirectoryFields.Thumbnail) == true)
                                 {
                                     <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.ShowAsync();})
-                                                   Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
-                                                   Color=Color.Primary
-                                                   Icon="@Icons.Material.Filled.Upload" />
+                                    Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
+                                    Color=Color.Primary
+                                    Icon="@Icons.Material.Filled.Upload" />
                                 }
                             </MudCard>
 
@@ -161,7 +161,7 @@
                                 <MudSpacer />
 
                                 <MudText Style="text-align:end;"
-                                         Typo="Typo.caption">@User?.OU.ToPrettyOu()</MudText>
+                                Typo="Typo.caption">@User?.OU.ToPrettyOu()</MudText>
                             </MudStack>
 
 
@@ -176,12 +176,12 @@
                             @if (User.Disabled)
                             {
                                 <MudAlert Severity="Severity.Error"
-                                          Class="mud-width-full">@AppLocalization["User is disabled"]</MudAlert>
+                                Class="mud-width-full">@AppLocalization["User is disabled"]</MudAlert>
                             }
                             @if (User.LockedOut)
                             {
                                 <MudAlert Severity="Severity.Warning"
-                                          Class="mud-width-full">@AppLocalization["User is locked out"]</MudAlert>
+                                Class="mud-width-full">@AppLocalization["User is locked out"]</MudAlert>
                             }
 
 
@@ -197,24 +197,24 @@
 
 
                                     <DynamicMudInput T=string
-                                                     Label="@AppLocalization["First Name"]"
-                                                     @bind-Value="@User.GivenName"
-                                                     Disabled=!User.NewEntry />
+                                    Label="@AppLocalization["First Name"]"
+                                    @bind-Value="@User.GivenName"
+                                    Disabled=!User.NewEntry />
 
                                     <DynamicMudInput T=string
-                                                     Label="@AppLocalization["Middle Name"]"
-                                                     @bind-Value="@User.MiddleName"
-                                                     Disabled=!User.NewEntry />
+                                    Label="@AppLocalization["Middle Name"]"
+                                    @bind-Value="@User.MiddleName"
+                                    Disabled=!User.NewEntry />
 
                                     <DynamicMudInput T=string
-                                                     Label="@AppLocalization["Last Name"]"
-                                                     @bind-Value="@User.Surname"
-                                                     Disabled=!User.NewEntry />
+                                    Label="@AppLocalization["Last Name"]"
+                                    @bind-Value="@User.Surname"
+                                    Disabled=!User.NewEntry />
 
                                     <DynamicMudInput T=string
-                                                     Label="@AppLocalization["Display Name"]"
-                                                     @bind-Value="@User.DisplayName"
-                                                     Disabled=!User.NewEntry />
+                                    Label="@AppLocalization["Display Name"]"
+                                    @bind-Value="@User.DisplayName"
+                                    Disabled=!User.NewEntry />
 
 
                                 </MudStack>
@@ -239,8 +239,8 @@
 
 
                                         <DynamicMudInput T=string Label="@AppLocalization["Username"]"
-                                                         @bind-Value="@User.SamAccountName"
-                                                         Disabled=@(User?.NewEntry==false) />
+                                        @bind-Value="@User.SamAccountName"
+                                        Disabled=@(User?.NewEntry==false) />
                                         <AppCopyButton TextToCopy=@User.SamAccountName />
 
                                     </MudStack>
@@ -250,21 +250,21 @@
                                     @if (User?.NewEntry == true)
                                     {
                                         <DynamicMudInput T=string
-                                                         Label="@AppLocalization["Password"]"
-                                                         @bind-Value="@Password"
-                                                         InputType="InputType.Password" />
+                                        Label="@AppLocalization["Password"]"
+                                        @bind-Value="@Password"
+                                        InputType="InputType.Password" />
 
                                         <DynamicMudInput T=string
-                                                         Label="@AppLocalization["Confirm Password"]"
-                                                         @bind-Value="@ConfirmPassword"
-                                                         InputType="InputType.Password" />
+                                        Label="@AppLocalization["Confirm Password"]"
+                                        @bind-Value="@ConfirmPassword"
+                                        InputType="InputType.Password" />
                                     }
 
 
                                     <MudStack Row=true Spacing="0">
                                         <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
-                                                         @bind-Value="@User.Email"
-                                                         Disabled=@(User?.NewEntry==false) />
+                                        @bind-Value="@User.Email"
+                                        Disabled=@(User?.NewEntry==false) />
                                         <AppCopyButton TextToCopy=@User.Email />
 
                                     </MudStack>
@@ -274,10 +274,10 @@
                                     @if (CanReadField(ActiveDirectoryFields.AccountExpires))
                                     {
                                         <DynamicMudInput T=DateTime?
-                                                         Clearable
-                                                         Label="@AppLocalization["Account Expiration"]"
-                                                         @bind-Value="@User.ExpireTime"
-                                                         Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.AccountExpires)) />
+                                        Clearable
+                                        Label="@AppLocalization["Account Expiration"]"
+                                        @bind-Value="@User.ExpireTime"
+                                        Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.AccountExpires)) />
 
 
                                     }
@@ -287,9 +287,9 @@
                                         @if (CanReadField(ActiveDirectoryFields.LogOnTo))
                                         {
                                             <MudButton Variant="Variant.Filled"
-                                                       Color="@(User.LogOnTo == null || User.LogOnTo == String.Empty?Color.Primary:Color.Warning)"
-                                                       OnClick="@(()=>{LogOnToModal?.ShowAsync();})"
-                                                       Disabled=@(!EditMode)>
+                                            Color="@(User.LogOnTo == null || User.LogOnTo == String.Empty?Color.Primary:Color.Warning)"
+                                            OnClick="@(()=>{LogOnToModal?.ShowAsync();})"
+                                            Disabled=@(!EditMode)>
                                                 @AppLocalization["Log On To"]
                                             </MudButton>
 
@@ -298,9 +298,9 @@
                                         @if (CanReadField(ActiveDirectoryFields.LogonHours))
                                         {
                                             <MudButton Variant="Variant.Filled"
-                                                       Color="@(Color.Primary)"
-                                                       OnClick="@(()=>{LogonHoursModal?.ShowAsync();})"
-                                                       Disabled=@(!EditMode)>
+                                            Color="@(Color.Primary)"
+                                            OnClick="@(()=>{LogonHoursModal?.ShowAsync();})"
+                                            Disabled=@(!EditMode)>
                                                 @AppLocalization["Logon Hours"]
                                             </MudButton>
 
@@ -309,11 +309,11 @@
                                         {
 
                                             <MudSwitch T=bool
-                                                       Color=Color.Success
-                                                       ThumbIconColor="@(User.RequirePasswordChange==true?Color.Success:Color.Default)"
-                                                       Label=@AppLocalization["Require Password Change"]
-                                                       Value=@User.RequirePasswordChange
-                                                       Disabled=@true />
+                                            Color=Color.Success
+                                            ThumbIconColor="@(User.RequirePasswordChange==true?Color.Success:Color.Default)"
+                                            Label=@AppLocalization["Require Password Change"]
+                                            Value=@User.RequirePasswordChange
+                                            Disabled=@true />
                                         }
                                     </MudStack>
 
@@ -434,13 +434,13 @@
                                 <MudStack Row=true Spacing="0">
 
                                     <DynamicMudInput T=string Label="@AppLocalization["Home Directory"]"
-                                                     @bind-Value="@User.HomeDirectory"
-                                                     Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.HomeDirectory)) />
+                                    @bind-Value="@User.HomeDirectory"
+                                    Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.HomeDirectory)) />
                                     @if (!User.HomeDirectory.IsNullOrEmpty())
                                     {
 
                                         <MudIcon Class="align-middle" Icon="@(homeDirectoryExists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
-                                                 Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
+                                        Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
                                     }
                                     <AppCopyButton TextToCopy=@User.HomeDirectory />
                                 </MudStack>
@@ -499,7 +499,7 @@
 
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     string password;
 
     [Parameter]
@@ -607,10 +607,7 @@
     {
         await base.OnInitializedAsync();
 
-
         await InvokeAsync(StateHasChanged);
-
-
 
         if (Context != null)
         {
