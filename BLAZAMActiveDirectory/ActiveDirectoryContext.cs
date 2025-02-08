@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
@@ -22,6 +23,7 @@ namespace BLAZAM.ActiveDirectory
 {
     public class ActiveDirectoryContext : IDisposable, IActiveDirectoryContext
     {
+        public DomainControllerEventLogReader EventLogReader { get; private set; }
         public IApplicationUserState? CurrentUser
         {
             get
@@ -188,7 +190,7 @@ namespace BLAZAM.ActiveDirectory
             Factory = factory;
             _userStateService = userStateService;
             SystemInstance = this;
-
+            EventLogReader = new(this);
             //UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
             ConnectAsync();
 
@@ -215,6 +217,7 @@ namespace BLAZAM.ActiveDirectory
             _wmiFactory = activeDirectoryContextSeed._wmiFactory;
             DomainControllers = activeDirectoryContextSeed.DomainControllers;
             Status = activeDirectoryContextSeed.Status;
+            EventLogReader = activeDirectoryContextSeed.EventLogReader;
             // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
             //ConnectAsync();
             // _timer = new Timer(KeepAlive, null, 30000, 30000);
