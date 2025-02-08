@@ -1,0 +1,51 @@
+@inherits AppComponentBase
+@using System.Diagnostics
+<SettingsField Label=@AppLocalization["CPU"]>
+    @if (ApplicationStatistics.CPUUsage.GetAverage(2) != 0)
+    {
+        <MudText>@ApplicationStatistics.CPUUsage.GetAverage(2)%</MudText>
+    }
+    else
+    {
+        <MudText>@AppLocalization["Loading"]</MudText>
+    }
+
+</SettingsField>
+<SettingsField Label=@AppLocalization["Memory"]>
+    @if (ApplicationStatistics.MemoryUsage.GetAverage() != 0)
+    {
+        <MudText>@(new ByteSize(ApplicationStatistics.MemoryUsage.GetAverage()).ToString())</MudText>
+
+    }
+    else
+    {
+        <MudText>@AppLocalization["Loading"]</MudText>
+    }
+</SettingsField>
+<SettingsField Label="@AppLocalization["AD Connections"]">
+    @ApplicationStatistics.ADContextCount
+</SettingsField>
+<SettingsField Label="@AppLocalization["DB Connections"]">
+    @ApplicationStatistics.DBContextCount
+
+</SettingsField>
+@code {
+    private Timer? refreshTimer;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        refreshTimer = new Timer((state) => { PollData(); }, null, 2000, 2000);
+
+
+    }
+
+    private async void PollData()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public override void Dispose()
+    {
+        refreshTimer?.Dispose();
+    }
+}

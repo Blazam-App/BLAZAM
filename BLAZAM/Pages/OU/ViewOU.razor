@@ -2,23 +2,23 @@
 
 <AppPageTitle>@OU?.CanonicalName</AppPageTitle>
 
-    <SetSubHeader>
+<SetSubHeader>
 
-        <DirectoryEntryViewHeader EditMode="@EditMode"
-                                  DirectoryEntry="@OU"
-                                  OnDelete="@DeleteOU"
-                                  OnMove="@(()=>{MoveToModal?.ShowAsync();})"
-                                  OnRename="@(()=>{RenameModal?.ShowAsync();})"
-                                  OnToggleEditMode="ToggleEditMode" />
+    <DirectoryEntryViewHeader EditMode="@EditMode"
+                              DirectoryEntry="@OU"
+                              OnDelete="@DeleteOU"
+                              OnMove="@(()=>{MoveToModal?.ShowAsync();})"
+                              OnRename="@(()=>{RenameModal?.ShowAsync();})"
+                              OnToggleEditMode="ToggleEditMode" />
     <LoadingData Loading=SavingChanges />
 
 
-    </SetSubHeader>
+</SetSubHeader>
 
 
 
-    <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
-        @if (MoveToModal?.IsShown == true)
+<AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
+    @if (MoveToModal?.IsShown == true)
     {
         <MoveToOUModalContent DirectoryModel="OU" />
     }
@@ -47,25 +47,23 @@
         <ToolBarContent>
             <MudText>@AppLocalization["Current OU"]: @OU.CanonicalName</MudText>
 
-                <MudSpacer />
-                <MudButton StartIcon="@Icons.Material.Filled.DriveFolderUpload"
-                Href="@parentOU?.SearchUri">@parentOU?.CanonicalName</MudButton>
+            <MudSpacer />
+            <MudButton StartIcon="@Icons.Material.Filled.DriveFolderUpload"
+                       Href="@parentOU?.SearchUri">@parentOU?.CanonicalName</MudButton>
 
-            </ToolBarContent>
-            <Columns>
-                <TemplateColumn Title=@AppLocalization["Type"]>
-                    <CellTemplate>
-                    <AppTooltip Text="@AppLocalization[context.Item.ObjectType.ToString()]">
-                        <MudIcon Icon="@context.Item.TypeIcon()" />
-                    </AppTooltip>
-                    </CellTemplate>
-                </TemplateColumn>
-                <PropertyColumn Title="@AppLocalization["Name"]" Property="x=>x.CanonicalName" />
-            </Columns>
-        </MudDataGrid>
+        </ToolBarContent>
+        <Columns>
+            <TemplateColumn Title=@AppLocalization["Type"]>
+                <CellTemplate>
+                    <DirectoryEntryTypeIcon Entry="@context.Item" />
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Title="@AppLocalization["Name"]" Property="x=>x.CanonicalName" />
+        </Columns>
+    </MudDataGrid>
 }
 
-@if (OU!=null && OU.CanEdit && OU.HasUnsavedChanges)
+@if (OU != null && OU.CanEdit && OU.HasUnsavedChanges)
 {
     <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
 }
@@ -79,7 +77,7 @@
         await AuditLogger.Searched(OU);
         if (OU != null)
         {
-            parentOU = (IADOrganizationalUnit?) await OU.GetParentAsync();
+            parentOU = (IADOrganizationalUnit?)await OU.GetParentAsync();
         }
         LoadingData = false;
         await RefreshEntryComponents();
@@ -101,7 +99,7 @@
                 }
                 else
                 {
-                    _= NotificationGenerationService.PostAsync(OU, NotificationType.Modify, CurrentUser.State);
+                    _ = NotificationGenerationService.PostAsync(OU, NotificationType.Modify, CurrentUser.State);
 
                 }
                 SnackBarService.Success(AppLocalization["The changes made to this ou have been saved."]);
