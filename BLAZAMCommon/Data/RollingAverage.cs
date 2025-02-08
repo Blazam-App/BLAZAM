@@ -25,12 +25,12 @@ namespace BLAZAM.Common.Data
         /// </summary>
         /// <param name="value"></param>
         /// <returns>The new average</returns>
-        public double AddValue(double value)
+        public void AddValue(double value)
         {
             if (_history.Count == memory)
                 _history.RemoveAt(0);
             _history.Add(value);
-            return _history.Average();
+           
         }
         public double GetAverage(int roundedDecimalPlaces=0)
         {
