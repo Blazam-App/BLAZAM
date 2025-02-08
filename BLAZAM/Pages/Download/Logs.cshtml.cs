@@ -7,21 +7,27 @@ namespace BLAZAM.Server.Pages.Download
 {
     public class LogsModel : PageModel
     {
+
         public IActionResult OnGet()
         {
             var inMemZip = GenerateZip();
-            return File(inMemZip.ToArray(), "application/zip");
+            return File(inMemZip, "application/zip");
         }
 
-        private MemoryStream GenerateZip()
+        private byte[] GenerateZip()
         {
-            MemoryStream memoryStream = new MemoryStream();
-            ZipArchive zip = new ZipArchive(memoryStream, ZipArchiveMode.Create);
-            // Recursively add files and subdirectories to the zip archive
-            //TODO make zip file
-            // zip.AddToZip(new SystemDirectory(LogPath),LogPath);
-
-            return memoryStream;
+            byte[] zipBytes;
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                using (ZipArchive zip = new ZipArchive(memoryStream, ZipArchiveMode.Create))
+                {
+                    var logPath = Loggers.LogPath;
+                    // Recursively add files and subdirectories to the zip archive
+                    //TODO make zip file
+                    zip.AddToZip(new SystemDirectory(logPath), logPath);
+                }
+                return memoryStream.ToArray();
+            }
         }
     }
 }
