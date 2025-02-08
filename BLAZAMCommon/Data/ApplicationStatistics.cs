@@ -47,7 +47,7 @@ namespace BLAZAM.Common.Data
                 _resourceUsageTimer = new Timer((state) => { PollData(); }, null, 0, 2000);
             }
         }
-        public static async void StopResourceUsagePolling()
+        public static async Task StopResourceUsagePolling()
         {
             if (_resourceUsageTimer != null)
             {
