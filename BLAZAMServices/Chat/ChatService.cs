@@ -19,7 +19,7 @@ namespace BLAZAM.Services.Chat
 {
     public class ChatService : IChatService
     {
-    
+
         public IQueryable<ChatRoom> ChatRooms => Context.ChatRooms.AsQueryable();
         public AppEvent<ChatMessage> OnMessagePosted { get; set; }
         public AppEvent<AppUser> OnMessageRead { get; set; }

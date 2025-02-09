@@ -192,7 +192,7 @@ namespace BLAZAM.Services
             }
             else
             {
-                
+
                 if (loginReq.Username.IsNullOrEmpty()) return loginReq.NoUsername();
             }
             //Pull the authentication settings from the database so we can check admin credentials
@@ -374,7 +374,7 @@ namespace BLAZAM.Services
 
                 // Set up the redirect after successful mfa
                 loginReq.MFARedirect = promptUri;
-           
+
 
                 return promptUri;
 

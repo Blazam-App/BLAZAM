@@ -673,7 +673,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                         }
                     });
-                    CachedChildren = directoryEntries.OrderBy(x => x.CanonicalName).ThenBy(x => x.ObjectType); 
+                    CachedChildren = directoryEntries.OrderBy(x => x.CanonicalName).ThenBy(x => x.ObjectType);
                 }
                 return CachedChildren;
             }
@@ -952,11 +952,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if (forceDeleteChildren)
                         {
                             var children = DirectoryEntry.Children;
-                            foreach(DirectoryEntry child in children)
+                            foreach (DirectoryEntry child in children)
                             {
                                 DirectoryEntry?.Children.Remove(child);
                             }
-                    
+
                         }
                         DirectoryEntry?.Parent.Children.Remove(DirectoryEntry);
                         IsDeleted = true;

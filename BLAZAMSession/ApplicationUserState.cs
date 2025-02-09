@@ -528,7 +528,7 @@ namespace BLAZAM.Server.Data.Services
 
             }
 
-     
+
             try
             {
                 var possibleReads = allowSelector.Invoke(baseSearch).ToList();

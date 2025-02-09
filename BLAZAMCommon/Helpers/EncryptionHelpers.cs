@@ -22,7 +22,7 @@ namespace BLAZAM.Helpers
         public static T? Decrypt<T>(this string input)
         {
             return Encryption.Instance.DecryptObject<T>(input);
-           
+
         }
         public static string Decrypt(this string input)
         {

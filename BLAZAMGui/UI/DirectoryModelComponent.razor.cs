@@ -131,12 +131,13 @@ namespace BLAZAM.Gui.UI
         {
 
             LoadingData = true;
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 if (User != null)
                     memberOfGroups = User.MemberOf;
 
             });
-         
+
             LoadingData = false;
 
 
@@ -153,11 +154,12 @@ namespace BLAZAM.Gui.UI
         {
 
             LoadingData = true;
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 if (Group != null)
                     memberOfGroups = Group.MemberOf;
             });
-       
+
             LoadingData = false;
 
 

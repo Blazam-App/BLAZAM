@@ -55,7 +55,7 @@ namespace BLAZAM.Gui.UI
             get
             {
                 var cats = TemplatesUserCanUse.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().ToList();
-                         return cats;
+                return cats;
             }
         }
 

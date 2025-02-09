@@ -32,7 +32,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
             }.Search<ADUser, IADUser>();
         }
-        public IADUser? FindUserByUsername(string? searchTerm, bool ignoreDisabledUsers = true, bool exactMatch=false)
+        public IADUser? FindUserByUsername(string? searchTerm, bool ignoreDisabledUsers = true, bool exactMatch = false)
         {
             return new ADSearch(Directory)
             {

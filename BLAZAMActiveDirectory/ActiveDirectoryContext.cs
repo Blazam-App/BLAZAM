@@ -108,7 +108,7 @@ namespace BLAZAM.ActiveDirectory
                 _encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 AuthenticationTypes.FastBind | AuthenticationTypes.Secure);
 
-      
+
 
 
 
@@ -527,7 +527,7 @@ namespace BLAZAM.ActiveDirectory
                 try
                 {
 
-                    var findUser = Users.FindUserByUsername(loginReq.Username.ToLower(), true,true);
+                    var findUser = Users.FindUserByUsername(loginReq.Username.ToLower(), true, true);
                     if (findUser != null
                         && ConnectionSettings != null)
                     {
@@ -701,7 +701,7 @@ namespace BLAZAM.ActiveDirectory
 
         public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn)
         {
-            if(dn == null)return null;
+            if (dn == null) return null;
             var searcher = new ADSearch(this);
             searcher.SearchRoot = RootDirectoryEntry;
             searcher.Fields.DN = dn;

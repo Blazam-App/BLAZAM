@@ -41,7 +41,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public string? GeneralSearchTerm
         {
             get => _generalSearchTerm;
-            set => _generalSearchTerm=value.EscapeLdapSearchFilter();
+            set => _generalSearchTerm = value.EscapeLdapSearchFilter();
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 }
 
 
-          
+
 
                 if (GeneralSearchTerm == null)
                 {

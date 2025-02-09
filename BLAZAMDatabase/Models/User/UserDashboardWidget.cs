@@ -31,7 +31,7 @@ namespace BLAZAM.Database.Models.User
         public AppUser User { get; set; }
         public int UserId { get; set; }
 
-        
+
 
     }
 }

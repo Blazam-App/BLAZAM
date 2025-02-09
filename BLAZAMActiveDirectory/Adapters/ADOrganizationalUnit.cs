@@ -274,7 +274,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             EnsureDirectoryEntry();
             IADGroup newGroup = new ADGroup();
-            
+
             newGroup.Parse(directoryEntry: DirectoryEntry!.Children.Add("CN=" + containerName.Trim(), "group"), directory: Directory);
             newGroup.NewEntry = true;
             newGroup.SamAccountName = containerName.Trim();

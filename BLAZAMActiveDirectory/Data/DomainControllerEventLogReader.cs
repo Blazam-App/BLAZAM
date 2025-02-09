@@ -75,31 +75,31 @@ namespace BLAZAM.ActiveDirectory.Data
             foreach (var domainController in dcNames)
             {
 
-               var result = _directory.Impersonation.Run(() =>
-                {
-                    try
-                    {
-                        var eventLog = new EventLog("Security", domainController);
+                var result = _directory.Impersonation.Run(() =>
+                 {
+                     try
+                     {
+                         var eventLog = new EventLog("Security", domainController);
 
-                        foreach (EventLogEntry entry in eventLog.Entries)
-                        {
-                            if (entry.TimeGenerated >= startTime && entry.TimeGenerated <= endTime &&
-                                (entry.InstanceId == 4624) && // Logon event ID
-                                entry.ReplacementStrings != null && entry.ReplacementStrings.Length > 1 &&
-                                entry.ReplacementStrings[1].Equals(userName, StringComparison.OrdinalIgnoreCase)) // Check username
-                            {
-                                events.Add(entry);
-                            }
-                        }
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        // Handle exceptions appropriately (e.g., logging)
-                        Console.WriteLine($"Error reading events from {domainController}: {ex.Message}");
-                        return false;
-                    }
-                });
+                         foreach (EventLogEntry entry in eventLog.Entries)
+                         {
+                             if (entry.TimeGenerated >= startTime && entry.TimeGenerated <= endTime &&
+                                 (entry.InstanceId == 4624) && // Logon event ID
+                                 entry.ReplacementStrings != null && entry.ReplacementStrings.Length > 1 &&
+                                 entry.ReplacementStrings[1].Equals(userName, StringComparison.OrdinalIgnoreCase)) // Check username
+                             {
+                                 events.Add(entry);
+                             }
+                         }
+                         return true;
+                     }
+                     catch (Exception ex)
+                     {
+                         // Handle exceptions appropriately (e.g., logging)
+                         Console.WriteLine($"Error reading events from {domainController}: {ex.Message}");
+                         return false;
+                     }
+                 });
 
             }
 

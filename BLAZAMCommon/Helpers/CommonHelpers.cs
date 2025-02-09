@@ -59,7 +59,7 @@ namespace BLAZAM.Helpers
 
         public static List<AuditChangeLog> GetChanges(this object changed, object? original)
         {
-            if(original == null)
+            if (original == null)
             {
                 return new List<AuditChangeLog>();
 

@@ -14,7 +14,7 @@ namespace BLAZAM.ActiveDirectory.Helpers
             var value = mo.GetPropertyValue(propertyName);
             if (value is T) { return (T)value; }
             return default;
-        
+
         }
     }
 }
