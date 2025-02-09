@@ -420,36 +420,36 @@ namespace BLAZAM.Server
         /// <returns></returns>
         public static WebApplicationBuilder InjectBackgroundServices(this WebApplicationBuilder builder)
         {
-          
-                Parallel.ForEach(blazamAssemblies, assembly =>
+
+            Parallel.ForEach(blazamAssemblies, assembly =>
+             {
+                 var types = assembly.GetTypes()
+                     .Where(t => t.IsClass && !t.IsAbstract
+                     && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
+
+                 foreach (var type in types)
                  {
-                     var types = assembly.GetTypes()
-                         .Where(t => t.IsClass && !t.IsAbstract
-                         && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
+                     var interfaceType = type.GetInterfaces()
+                                                 .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
+                                                 && i.Name != "IDisposable");
 
-                     foreach (var type in types)
+                     if (interfaceType != null)
                      {
-                         var interfaceType = type.GetInterfaces()
-                                                     .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
-                                                     && i.Name != "IDisposable");
-
-                         if (interfaceType != null)
+                         lock (_lock)
                          {
-                             lock (_lock)
-                             {
-                                 builder.Services.AddSingleton(interfaceType, type);
-                             }
-                         }
-                         else
-                         {
-                             lock (_lock)
-                             {
-                                 builder.Services.AddSingleton(type);
-                             }
+                             builder.Services.AddSingleton(interfaceType, type);
                          }
                      }
-                 });
-            
+                     else
+                     {
+                         lock (_lock)
+                         {
+                             builder.Services.AddSingleton(type);
+                         }
+                     }
+                 }
+             });
+
             return builder;
         }
 
