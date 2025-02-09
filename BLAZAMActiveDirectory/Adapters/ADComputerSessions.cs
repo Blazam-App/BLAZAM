@@ -1,8 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Logger;
 using Cassia;
-using Microsoft.AspNetCore.Components;
 using System.ComponentModel;
 
 namespace BLAZAM.ActiveDirectory.Adapters
@@ -12,7 +10,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private ITerminalServicesManager manager = new TerminalServicesManager();
         private ITerminalServer server;
         private bool Polling;
-        public List<IRemoteSession> ConnectedSessions = new List<IRemoteSession>();
+        public List<IRemoteSession> ConnectedSessions = new();
         private IADComputer Computer;
 
         public AppEvent ConnectedSessionsChanged { get; set; }

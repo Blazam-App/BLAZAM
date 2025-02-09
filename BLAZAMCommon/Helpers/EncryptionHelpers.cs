@@ -1,10 +1,4 @@
 ﻿using BLAZAM.Common.Data;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Helpers
 {
@@ -22,7 +16,7 @@ namespace BLAZAM.Helpers
         public static T? Decrypt<T>(this string input)
         {
             return Encryption.Instance.DecryptObject<T>(input);
-           
+
         }
         public static string Decrypt(this string input)
         {

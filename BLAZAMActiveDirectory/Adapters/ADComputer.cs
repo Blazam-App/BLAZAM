@@ -190,7 +190,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         IPHostEntry = null;
                     });
                 }
-                Ping ping = new Ping();
+                Ping ping = new();
                 int retries = 5;
                 int x = 0;
                 do

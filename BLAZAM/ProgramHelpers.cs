@@ -1,6 +1,4 @@
-﻿
-using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -11,28 +9,22 @@ using BLAZAM.Services.Attributes;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Duo;
-using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.Negotiate;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MimeKit;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
-using Serilog;
 using System.Diagnostics;
 using System.Globalization;
 using System.Management;
 using System.Reflection;
-using System.Text;
 
 namespace BLAZAM.Server
 {
@@ -100,8 +92,8 @@ namespace BLAZAM.Server
                 ManagementScope Scope;
                 Scope = new ManagementScope(String.Format("\\\\{0}\\root\\CIMV2", ComputerName), null);
                 Scope.Connect();
-                ObjectQuery Query = new ObjectQuery("SELECT UUID FROM Win32_ComputerSystemProduct");
-                ManagementObjectSearcher Searcher = new ManagementObjectSearcher(Scope, Query);
+                ObjectQuery Query = new("SELECT UUID FROM Win32_ComputerSystemProduct");
+                ManagementObjectSearcher Searcher = new(Scope, Query);
 
                 foreach (ManagementObject WmiObject in Searcher.Get())
                 {
@@ -398,12 +390,12 @@ namespace BLAZAM.Server
                         Type = ReferenceType.SecurityScheme
                     }
                 };
-                
-                    c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-                    c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
+
+                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
                     { jwtSecurityScheme,Array.Empty<string>() }
                 });
-                
+
             });
 
             builder.Host.UseWindowsService();
@@ -412,7 +404,7 @@ namespace BLAZAM.Server
 
             return builder;
         }
-        private static readonly object _lock = new object();
+        private static readonly object _lock = new();
         /// <summary>
         /// Injects all services in all loaded assemblies that have the <see cref="AutoStartBackgroundService"/> attribute
         /// </summary>
@@ -420,34 +412,36 @@ namespace BLAZAM.Server
         /// <returns></returns>
         public static WebApplicationBuilder InjectBackgroundServices(this WebApplicationBuilder builder)
         {
+
             Parallel.ForEach(blazamAssemblies, assembly =>
-            {
-                var types = assembly.GetTypes()
-                    .Where(t => t.IsClass && !t.IsAbstract
-                    && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
+             {
+                 var types = assembly.GetTypes()
+                     .Where(t => t.IsClass && !t.IsAbstract
+                     && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
 
-                foreach (var type in types)
-                {
-                    var interfaceType = type.GetInterfaces()
-                                                .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
-                                                && i.Name != "IDisposable");
+                 foreach (var type in types)
+                 {
+                     var interfaceType = type.GetInterfaces()
+                                                 .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
+                                                 && i.Name != "IDisposable");
 
-                    if (interfaceType != null)
-                    {
-                        lock (_lock)
-                        {
-                            builder.Services.AddSingleton(interfaceType, type);
-                        }
-                    }
-                    else
-                    {
-                        lock (_lock)
-                        {
-                            builder.Services.AddSingleton(type);
-                        }
-                    }
-                }
-            });
+                     if (interfaceType != null)
+                     {
+                         lock (_lock)
+                         {
+                             builder.Services.AddSingleton(interfaceType, type);
+                         }
+                     }
+                     else
+                     {
+                         lock (_lock)
+                         {
+                             builder.Services.AddSingleton(type);
+                         }
+                     }
+                 }
+             });
+
             return builder;
         }
 
@@ -465,7 +459,7 @@ namespace BLAZAM.Server
                 using var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
                 if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
                 {
-                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper!=false;
+                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != false;
 
                 }
 
@@ -584,7 +578,7 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
-              try
+            try
             {
                 if (ApplicationInfo.installationCompleted)
                 {

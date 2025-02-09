@@ -1,8 +1,6 @@
-﻿using BLAZAM.Common.Data.Services;
-using BLAZAM.Logger;
+﻿using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace BLAZAM.Server.Data.Services
 {

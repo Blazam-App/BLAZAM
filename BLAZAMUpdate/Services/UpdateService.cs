@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Octokit;
-using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 using System.Security.Principal;
 

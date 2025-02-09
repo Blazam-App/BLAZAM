@@ -1,7 +1,6 @@
 ﻿using BLAZAM.Common.Data.Database;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
-using MySqlConnector;
 using System.Data;
 using System.Data.SQLite;
 

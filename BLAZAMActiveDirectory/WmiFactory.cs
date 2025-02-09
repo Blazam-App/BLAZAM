@@ -1,16 +1,8 @@
-﻿using BLAZAM.ActiveDirectory.Exceptions;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Drawing.Printing;
 using System.Management;
-using System.Net;
 using System.Runtime.InteropServices;
-using System.Security;
 
 namespace BLAZAM.Common.Data.Services
 {
@@ -28,13 +20,13 @@ namespace BLAZAM.Common.Data.Services
             var settings = Directory.ConnectionSettings;
             if (settings != null)
             {
-                ConnectionOptions connectionOptions = new ConnectionOptions();
+                ConnectionOptions connectionOptions = new();
                 connectionOptions.Username = settings.Username + "@" + settings.FQDN;
                 connectionOptions.SecurePassword = settings.Password.Decrypt().ToSecureString();
                 connectionOptions.Impersonation = ImpersonationLevel.Impersonate;
                 connectionOptions.Timeout = TimeSpan.FromSeconds(5);
 
-                ManagementScope managementScope = new ManagementScope(string.Format("\\\\{0}\\root\\cimv2", hostName), connectionOptions);
+                ManagementScope managementScope = new(string.Format("\\\\{0}\\root\\cimv2", hostName), connectionOptions);
                 try
                 {
                     managementScope.Connect();

@@ -1,10 +1,4 @@
 ﻿using BLAZAM.Database.Context;
-using BLAZAM.Services.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Services.Background
 {
@@ -31,7 +25,7 @@ namespace BLAZAM.Services.Background
                 int delay = 0;
                 if (!immediate)
                 {
-                    Random rand = new Random();
+                    Random rand = new();
                     int jitter = rand.Next(-15, 15);
                     delay = 30 + jitter;
 

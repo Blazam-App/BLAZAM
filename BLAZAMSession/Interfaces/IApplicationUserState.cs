@@ -1,12 +1,9 @@
 ﻿
 using BLAZAM.Common.Data;
-using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
-using BLAZAM.Server.Data;
 using Microsoft.AspNetCore.Authentication;
-using System.Net;
 using System.Security.Claims;
 
 namespace BLAZAM.Session.Interfaces

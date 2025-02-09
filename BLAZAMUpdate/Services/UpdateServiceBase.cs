@@ -1,7 +1,4 @@
-﻿using BLAZAM.Common;
-
-
-namespace BLAZAM.Update.Services
+﻿namespace BLAZAM.Update.Services
 {
     public class UpdateServiceBase
     {

@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace BLAZAM.Pages.API.Data
+﻿namespace BLAZAM.Pages.API.Data
 {
     /// <summary>
     /// Represents an Active Directory attribute field to set for thee new user

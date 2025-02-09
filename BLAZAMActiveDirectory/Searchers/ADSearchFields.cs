@@ -41,5 +41,5 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public IADGroup? NestedMemberOf { get; internal set; }
         public string BitLockerRecoveryId { get => bitLockerRecoveryId; internal set => bitLockerRecoveryId = value.EscapeLdapSearchFilter(); }
     }
-  
+
 }

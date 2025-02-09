@@ -36,7 +36,7 @@ namespace BLAZAM.Notifications.Notifications
             {
                 return (T?)notificationTemplate;
             }
-            return default(T);
+            return default;
         }
     }
 }

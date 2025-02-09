@@ -1,8 +1,5 @@
 ﻿using BLAZAM.Helpers;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using System.Diagnostics.SymbolStore;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -139,11 +136,11 @@ namespace BLAZAM.Common.Data
             aes.Key = key;
             aes.IV = iv;
             ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-            using MemoryStream memoryStream = new MemoryStream(buffer);
+            using MemoryStream memoryStream = new(buffer);
 
-            using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+            using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
 
-            using StreamReader streamReader = new StreamReader(cryptoStream);
+            using StreamReader streamReader = new(cryptoStream);
 
             var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
             return decrypted;
@@ -178,11 +175,11 @@ namespace BLAZAM.Common.Data
             aes.Key = keyPackage.Key;
             aes.IV = iv;
             ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-            using MemoryStream memoryStream = new MemoryStream(buffer);
+            using MemoryStream memoryStream = new(buffer);
 
-            using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+            using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
 
-            using StreamReader streamReader = new StreamReader(cryptoStream);
+            using StreamReader streamReader = new(cryptoStream);
 
             var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
             return decrypted;
@@ -256,11 +253,11 @@ namespace BLAZAM.Common.Data
             aes.Key = APITokenKey;
             aes.IV = iv;
             ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-            using MemoryStream memoryStream = new MemoryStream(buffer);
+            using MemoryStream memoryStream = new(buffer);
 
-            using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+            using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
 
-            using StreamReader streamReader = new StreamReader(cryptoStream);
+            using StreamReader streamReader = new(cryptoStream);
 
             return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
 
@@ -300,9 +297,9 @@ namespace BLAZAM.Common.Data
             aes.Key = keyPackage.Key;
             aes.IV = iv;
             ICryptoTransform encryptor = aes.CreateEncryptor();
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (MemoryStream memoryStream = new())
             {
-                using (CryptoStream cryptoStream = new CryptoStream(
+                using (CryptoStream cryptoStream = new(
                     memoryStream,
                     encryptor,
                     CryptoStreamMode.Write))

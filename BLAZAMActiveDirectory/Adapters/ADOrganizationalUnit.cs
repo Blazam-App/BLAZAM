@@ -2,12 +2,6 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using System.Data.SQLite;
-using System.Diagnostics.Contracts;
-using System.DirectoryServices;
-using System.Reflection.PortableExecutable;
 using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
@@ -274,7 +268,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             EnsureDirectoryEntry();
             IADGroup newGroup = new ADGroup();
-            
+
             newGroup.Parse(directoryEntry: DirectoryEntry!.Children.Add("CN=" + containerName.Trim(), "group"), directory: Directory);
             newGroup.NewEntry = true;
             newGroup.SamAccountName = containerName.Trim();

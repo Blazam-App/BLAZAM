@@ -1,11 +1,4 @@
 ﻿using BLAZAM.Database.Models.Chat;
-using BLAZAM.Database.Models.User;
-using BLAZAM.Server.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Gui.UI.Chat
 {

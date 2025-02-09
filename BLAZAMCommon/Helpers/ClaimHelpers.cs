@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Common.Data;
-using System.Collections;
 using System.Security.Claims;
 
 namespace BLAZAM.Server.Helpers

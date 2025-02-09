@@ -103,12 +103,12 @@ namespace BLAZAM.ActiveDirectory
         /// Gets the root entry for deleted objects in Active Directory
         /// </summary>
         /// <returns></returns>
-        public DirectoryEntry GetDeleteObjectsEntry() => new DirectoryEntry("LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.FQDN.FqdnToDN(),
+        public DirectoryEntry GetDeleteObjectsEntry() => new("LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.FQDN.FqdnToDN(),
                 ConnectionSettings?.Username,
                 _encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 AuthenticationTypes.FastBind | AuthenticationTypes.Secure);
 
-      
+
 
 
 
@@ -230,7 +230,7 @@ namespace BLAZAM.ActiveDirectory
             Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
 
         }
-        private DirectoryContext DirectoryContext => new DirectoryContext(
+        private DirectoryContext DirectoryContext => new(
             DirectoryContextType.Domain,
             ConnectionSettings.FQDN,
             ConnectionSettings.Username,
@@ -527,7 +527,7 @@ namespace BLAZAM.ActiveDirectory
                 try
                 {
 
-                    var findUser = Users.FindUserByUsername(loginReq.Username.ToLower(), true,true);
+                    var findUser = Users.FindUserByUsername(loginReq.Username.ToLower(), true, true);
                     if (findUser != null
                         && ConnectionSettings != null)
                     {
@@ -648,7 +648,7 @@ namespace BLAZAM.ActiveDirectory
             if (ConnectionSettings is null) throw new AppException("Active Directory Connection Settings are missing for this enttry");
             string newDN = "CN=" + model.CanonicalName + "," + newOU.DN;
 
-            LdapConnection connection = new LdapConnection(
+            LdapConnection connection = new(
                 new LdapDirectoryIdentifier(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort),
                 new NetworkCredential()
                 {
@@ -662,14 +662,14 @@ namespace BLAZAM.ActiveDirectory
             {
                 connection.Bind();
                 connection.SessionOptions.ProtocolVersion = 3;
-                DirectoryAttributeModification isDeleteAttributeMod = new DirectoryAttributeModification();
+                DirectoryAttributeModification isDeleteAttributeMod = new();
                 isDeleteAttributeMod.Name = "isDeleted";
                 isDeleteAttributeMod.Operation = DirectoryAttributeOperation.Delete;
-                DirectoryAttributeModification dnAttributeMod = new DirectoryAttributeModification();
+                DirectoryAttributeModification dnAttributeMod = new();
                 dnAttributeMod.Name = "distinguishedName";
                 dnAttributeMod.Operation = DirectoryAttributeOperation.Replace;
                 dnAttributeMod.Add(newDN);
-                ModifyRequest request = new ModifyRequest(model.DN, new DirectoryAttributeModification[] { isDeleteAttributeMod, dnAttributeMod });
+                ModifyRequest request = new(model.DN, new DirectoryAttributeModification[] { isDeleteAttributeMod, dnAttributeMod });
                 request.Controls.Add(new ShowDeletedControl());
 
                 try
@@ -701,7 +701,7 @@ namespace BLAZAM.ActiveDirectory
 
         public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn)
         {
-            if(dn == null)return null;
+            if (dn == null) return null;
             var searcher = new ADSearch(this);
             searcher.SearchRoot = RootDirectoryEntry;
             searcher.Fields.DN = dn;

@@ -1,5 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -134,7 +133,7 @@ namespace BLAZAM.Services
         }
         private ClaimsPrincipal GetDemoUser()
         {
-            List<Claim> claims = new List<Claim>
+            List<Claim> claims = new()
             {
                 new Claim(ClaimTypes.Sid, "2"),
                 new Claim(ClaimTypes.Name, "Demo"),
@@ -147,7 +146,7 @@ namespace BLAZAM.Services
         }
         private ClaimsPrincipal GetLocalAdmin(string name = "admin")
         {
-            List<Claim> claims = new List<Claim>
+            List<Claim> claims = new()
             {
                  new Claim(ClaimTypes. Sid, "1"),
                     new Claim(ClaimTypes.Name, name),
@@ -192,7 +191,7 @@ namespace BLAZAM.Services
             }
             else
             {
-                
+
                 if (loginReq.Username.IsNullOrEmpty()) return loginReq.NoUsername();
             }
             //Pull the authentication settings from the database so we can check admin credentials
@@ -374,7 +373,7 @@ namespace BLAZAM.Services
 
                 // Set up the redirect after successful mfa
                 loginReq.MFARedirect = promptUri;
-           
+
 
                 return promptUri;
 

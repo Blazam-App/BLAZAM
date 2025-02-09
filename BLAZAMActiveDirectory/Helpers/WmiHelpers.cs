@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Management;
 
 namespace BLAZAM.ActiveDirectory.Helpers
 {
@@ -14,7 +9,7 @@ namespace BLAZAM.ActiveDirectory.Helpers
             var value = mo.GetPropertyValue(propertyName);
             if (value is T) { return (T)value; }
             return default;
-        
+
         }
     }
 }

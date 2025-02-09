@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-namespace BLAZAM.Server
+﻿namespace BLAZAM.Server
 {
     public static class ProgramEvents
     {

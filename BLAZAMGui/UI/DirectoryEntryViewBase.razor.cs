@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Database.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Gui.UI
 {

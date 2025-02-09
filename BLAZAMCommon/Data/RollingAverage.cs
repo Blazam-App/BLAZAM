@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLAZAM.Common.Data
+﻿namespace BLAZAM.Common.Data
 {
     public class RollingAverage
     {
@@ -30,17 +23,17 @@ namespace BLAZAM.Common.Data
             if (_history.Count == memory)
                 _history.RemoveAt(0);
             _history.Add(value);
-           
+
         }
-        public double GetAverage(int roundedDecimalPlaces=0)
+        public double GetAverage(int roundedDecimalPlaces = 0)
         {
-            if(_history.Count == 0) return 0;
+            if (_history.Count == 0) return 0;
             if (roundedDecimalPlaces > 0)
             {
                 return Math.Round(_history.Average(), roundedDecimalPlaces);
             }
             return _history.Average();
         }
-        
+
     }
 }

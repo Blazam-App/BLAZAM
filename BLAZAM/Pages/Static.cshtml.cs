@@ -1,10 +1,7 @@
-using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
-using BLAZAM.Gui;
 using BLAZAM.Static;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Server.Pages
 {

@@ -1,6 +1,4 @@
-﻿using BLAZAM.Common.Data;
-
-namespace BLAZAM.Services.Background
+﻿namespace BLAZAM.Services.Background
 {
     public interface IConnectionMonitor
     {

@@ -1,12 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Helpers;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Management;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
