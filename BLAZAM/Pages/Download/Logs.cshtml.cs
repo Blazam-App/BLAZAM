@@ -16,9 +16,9 @@ namespace BLAZAM.Server.Pages.Download
         private byte[] GenerateZip()
         {
             byte[] zipBytes;
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (MemoryStream memoryStream = new())
             {
-                using (ZipArchive zip = new ZipArchive(memoryStream, ZipArchiveMode.Create))
+                using (ZipArchive zip = new(memoryStream, ZipArchiveMode.Create))
                 {
                     var logPath = Loggers.LogPath;
                     // Recursively add files and subdirectories to the zip archive

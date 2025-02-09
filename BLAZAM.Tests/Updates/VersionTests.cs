@@ -5,10 +5,10 @@ namespace BLAZAM.Tests.Updates
 
     public class VersionTests
     {
-        private ApplicationVersion basicLow = new ApplicationVersion("0.5.1");
-        private ApplicationVersion basicHigh = new ApplicationVersion("0.5.2");
-        private ApplicationVersion longLow = new ApplicationVersion("0.5.1.2023.2.2.1053");
-        private ApplicationVersion longHigh = new ApplicationVersion("0.5.2.2023.2.3.1053");
+        private ApplicationVersion basicLow = new("0.5.1");
+        private ApplicationVersion basicHigh = new("0.5.2");
+        private ApplicationVersion longLow = new("0.5.1.2023.2.2.1053");
+        private ApplicationVersion longHigh = new("0.5.2.2023.2.3.1053");
 
         [Fact]
         public void Basic_Comparison_Valid()

@@ -302,7 +302,7 @@ namespace BLAZAM.Database.Models.Templates
             }
         }
 
-        private static readonly Random _random = new Random();
+        private static readonly Random _random = new();
 
         private static string RandomLetterOrDigit()
         {

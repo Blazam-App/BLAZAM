@@ -130,7 +130,7 @@ namespace BLAZAM.Helpers
 
 
             // Build the DN by appending each reversed domain component as a RDN (relative distinguished name)
-            StringBuilder dnBuilder = new StringBuilder();
+            StringBuilder dnBuilder = new();
             foreach (string dc in domainComponents)
             {
                 dnBuilder.Append("DC=");

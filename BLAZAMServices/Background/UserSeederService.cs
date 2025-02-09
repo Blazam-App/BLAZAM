@@ -21,8 +21,8 @@ namespace BLAZAM.Services.Background
 
         protected override void Execute(object? obj = null)
         {
-            Job seedJob = new Job("Seed New Users");
-            JobStep step = new JobStep("Check for new users", (state) =>
+            Job seedJob = new("Seed New Users");
+            JobStep step = new("Check for new users", (state) =>
             {
                 try
                 {

@@ -10,7 +10,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private ITerminalServicesManager manager = new TerminalServicesManager();
         private ITerminalServer server;
         private bool Polling;
-        public List<IRemoteSession> ConnectedSessions = new List<IRemoteSession>();
+        public List<IRemoteSession> ConnectedSessions = new();
         private IADComputer Computer;
 
         public AppEvent ConnectedSessionsChanged { get; set; }

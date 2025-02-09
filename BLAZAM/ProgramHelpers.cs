@@ -92,8 +92,8 @@ namespace BLAZAM.Server
                 ManagementScope Scope;
                 Scope = new ManagementScope(String.Format("\\\\{0}\\root\\CIMV2", ComputerName), null);
                 Scope.Connect();
-                ObjectQuery Query = new ObjectQuery("SELECT UUID FROM Win32_ComputerSystemProduct");
-                ManagementObjectSearcher Searcher = new ManagementObjectSearcher(Scope, Query);
+                ObjectQuery Query = new("SELECT UUID FROM Win32_ComputerSystemProduct");
+                ManagementObjectSearcher Searcher = new(Scope, Query);
 
                 foreach (ManagementObject WmiObject in Searcher.Get())
                 {
@@ -404,7 +404,7 @@ namespace BLAZAM.Server
 
             return builder;
         }
-        private static readonly object _lock = new object();
+        private static readonly object _lock = new();
         /// <summary>
         /// Injects all services in all loaded assemblies that have the <see cref="AutoStartBackgroundService"/> attribute
         /// </summary>

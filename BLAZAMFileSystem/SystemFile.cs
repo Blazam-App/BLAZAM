@@ -10,7 +10,7 @@
 
         public string Name => System.IO.Path.GetFileNameWithoutExtension(FullPath);
         public string Extension => System.IO.Path.GetExtension(FullPath);
-        public SystemDirectory ParentDirectory => new SystemDirectory(System.IO.Path.GetDirectoryName(FullPath));
+        public SystemDirectory ParentDirectory => new(System.IO.Path.GetDirectoryName(FullPath));
 
         public async Task<byte[]> ReadAllBytesAsync()
         {

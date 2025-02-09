@@ -48,12 +48,12 @@ namespace BLAZAM.Update
         private static SystemDirectory UpdateTempDirectory { get; set; }
 
         public static SystemDirectory StagingDirectory =>
-            new SystemDirectory(UpdateTempDirectory + "staged\\");
+            new(UpdateTempDirectory + "staged\\");
 
         /// <summary>
         /// The local staging directory path for this update
         /// </summary>
-        public SystemDirectory UpdateStagingDirectory { get => new SystemDirectory(StagingDirectory + Version.Version); }
+        public SystemDirectory UpdateStagingDirectory { get => new(StagingDirectory + Version.Version); }
 
 
 
@@ -65,21 +65,21 @@ namespace BLAZAM.Update
         /// </returns>
         public static SystemDirectory UpdateDownloadDirectory
         {
-            get => new SystemDirectory(UpdateTempDirectory + "download\\");
+            get => new(UpdateTempDirectory + "download\\");
         }
         public SystemDirectory BackupPath
         {
-            get => new SystemDirectory(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
+            get => new(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
         }
         public SystemDirectory BackupDirectory
         {
-            get => new SystemDirectory(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
+            get => new(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
         }
 
         /// <summary>
         /// The local path to the downloaded zip file
         /// </summary>
-        public SystemFile UpdateFile { get => new SystemFile(UpdateDownloadDirectory + Version.Version + ".zip"); }
+        public SystemFile UpdateFile { get => new(UpdateDownloadDirectory + Version.Version + ".zip"); }
         public string UpdateCommand => UpdateCommandProcess + " " + UpdateCommandArguments;
         public string UpdateCommandProcess
         {
@@ -191,7 +191,7 @@ namespace BLAZAM.Update
                 cancellationTokenSource = new CancellationTokenSource();
 
 
-            Job updateJob = new Job("Applying application update", "System", cancellationTokenSource);
+            Job updateJob = new("Applying application update", "System", cancellationTokenSource);
             updateJob.StopOnFailedStep = true;
             var cleanDownloadStep = new JobStep("Cleaning previous downloads", CleanDownload);
             var downloadStep = new JobStep("Download latest version", Download);
@@ -337,8 +337,8 @@ namespace BLAZAM.Update
 
 
 
-            SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.FullPath + "updater\\");
-            SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.FullPath + "updater\\");
+            SystemDirectory updaterDirFromStagedUpdate = new(UpdateStagingDirectory.FullPath + "updater\\");
+            SystemDirectory updaterDir = new(_applicationRootDirectory.FullPath + "updater\\");
 
 
 

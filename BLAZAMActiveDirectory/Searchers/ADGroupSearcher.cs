@@ -123,7 +123,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public List<IADGroup> FindGroupsByDN(List<string>? list)
         {
 
-            List<IADGroup> foundGroups = new List<IADGroup>();
+            List<IADGroup> foundGroups = new();
             if (list != null)
             {
 

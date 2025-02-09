@@ -19,7 +19,7 @@ namespace BLAZAM.Services
         private readonly ApplicationManager _applicationManager;
         private readonly ILogger<AdminTokenService> _logger;
 
-        private static AdminToken token = new AdminToken();
+        private static AdminToken token = new();
 
         /// <summary>
         /// Returns either an existing token or creates a new one.

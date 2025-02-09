@@ -124,7 +124,7 @@ namespace BLAZAM.Pages.API.v1
             AssignGroups(newUserDetails, newUser);
 
             //Prepare commit job
-            Job createUserJob = new Job(AppLocalization["Create User"]);
+            Job createUserJob = new(AppLocalization["Create User"]);
 
             createUserJob.StopOnFailedStep = true;
 
@@ -255,7 +255,7 @@ namespace BLAZAM.Pages.API.v1
         {
             try
             {
-                NewUserWelcomeEmailMessage message = new NewUserWelcomeEmailMessage();
+                NewUserWelcomeEmailMessage message = new();
                 message.Domain = user.Directory.ConnectionSettings?.FQDN;
                 message.Username = user.SamAccountName;
                 message.Password = password;

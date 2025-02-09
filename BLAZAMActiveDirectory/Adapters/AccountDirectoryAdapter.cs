@@ -69,7 +69,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 var coms = GetNonReplicatedProperty<object>("lastLogon");
-                List<DateTime?> times = new List<DateTime?>();
+                List<DateTime?> times = new();
                 foreach (var c in coms)
                 {
                     if (c is DateTime dt)
@@ -341,7 +341,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     Loggers.ActiveDirectoryLogger.Warning("Could not set password via Invoke {@Error}", ex);
                     //The following works outside the domain but may have issues with certs
-                    using (PrincipalContext pContext = new PrincipalContext(
+                    using (PrincipalContext pContext = new(
                         ContextType.Domain,
                         DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
                         DirectorySettings.Username + "@" + DirectorySettings.FQDN,

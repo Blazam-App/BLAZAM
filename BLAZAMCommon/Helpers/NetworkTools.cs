@@ -14,7 +14,7 @@ namespace BLAZAM.Helpers
         public static bool PingHost(string hostNameOrAddress)
         {
             bool pingable = false;
-            Ping pinger = new Ping();
+            Ping pinger = new();
             try
             {
                 PingReply reply = pinger.Send(hostNameOrAddress, 1000, new byte[32]);
@@ -50,7 +50,7 @@ namespace BLAZAM.Helpers
 
             foreach (int port in ports)
             {
-                using (TcpClient client = new TcpClient())
+                using (TcpClient client = new())
                 {
                     try
                     {

@@ -3,7 +3,7 @@
     public static class JobMonitor
     {
         public static AppEvent? OnUpdate { get; set; }
-        private static List<IJob> Jobs = new List<IJob>();
+        private static List<IJob> Jobs = new();
         public static List<IJob> AllJobs => Jobs.ToList();
         public static List<IJob> RunningJobs => Jobs.Where(x => x.Result == JobResult.Running).ToList();
         public static List<IJob> FailedJobs => Jobs.Where(x => x.Result == JobResult.Failed).ToList();

@@ -4,7 +4,7 @@
     {
         public HttpClient CreateClient(string name)
         {
-            HttpClient client = new HttpClient();
+            HttpClient client = new();
             return client;
         }
     }

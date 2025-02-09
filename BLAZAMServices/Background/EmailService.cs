@@ -174,7 +174,7 @@ namespace BLAZAM.Services.Background
 
         public string PrepareHTMLForEmail(string body)
         {
-            SystemFile css = new SystemFile(ApplicationInfo.applicationRoot + "\\wwwroot\\lib\\mudblazor\\css\\mudblazor.min.css");
+            SystemFile css = new(ApplicationInfo.applicationRoot + "\\wwwroot\\lib\\mudblazor\\css\\mudblazor.min.css");
             var preMailer = new PreMailer.Net.PreMailer(body);
             body = preMailer.MoveCssInline(stripIdAndClassAttributes: true, css: css.ReadAllText()).Html;
             return body;

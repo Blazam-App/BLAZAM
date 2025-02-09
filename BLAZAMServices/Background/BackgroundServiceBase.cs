@@ -25,7 +25,7 @@ namespace BLAZAM.Services.Background
                 int delay = 0;
                 if (!immediate)
                 {
-                    Random rand = new Random();
+                    Random rand = new();
                     int jitter = rand.Next(-15, 15);
                     delay = 30 + jitter;
 

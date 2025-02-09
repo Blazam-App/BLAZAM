@@ -133,7 +133,7 @@ namespace BLAZAM.Services
         }
         private ClaimsPrincipal GetDemoUser()
         {
-            List<Claim> claims = new List<Claim>
+            List<Claim> claims = new()
             {
                 new Claim(ClaimTypes.Sid, "2"),
                 new Claim(ClaimTypes.Name, "Demo"),
@@ -146,7 +146,7 @@ namespace BLAZAM.Services
         }
         private ClaimsPrincipal GetLocalAdmin(string name = "admin")
         {
-            List<Claim> claims = new List<Claim>
+            List<Claim> claims = new()
             {
                  new Claim(ClaimTypes. Sid, "1"),
                     new Claim(ClaimTypes.Name, name),

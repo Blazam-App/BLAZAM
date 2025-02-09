@@ -5,7 +5,7 @@
         /// <summary>
         /// All roles, except <see cref="SuperAdmin"/>
         /// </summary>
-        public static List<string> All = new List<string>(){
+        public static List<string> All = new(){
             Login,
             SearchComputers,
             SearchGroups,

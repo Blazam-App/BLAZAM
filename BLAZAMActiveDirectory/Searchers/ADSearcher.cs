@@ -38,7 +38,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             try
             {
-                ADSearch search = new ADSearch(Directory);
+                ADSearch search = new(Directory);
 
                 search.ObjectTypeFilter = searchType;
                 search.SearchRoot = Directory.GetDirectoryEntry(searchBaseDN);
@@ -66,7 +66,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         protected List<T> ConvertTo<T>(SearchResultCollection r) where T : IDirectoryEntryAdapter, new()
         {
-            List<T> objects = new List<T>();
+            List<T> objects = new();
 
 
             if (r != null && r.Count > 0)

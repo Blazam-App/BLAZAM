@@ -616,7 +616,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (CachedChildren == null)
                 {
-                    List<IDirectoryEntryAdapter> directoryEntries = new List<IDirectoryEntryAdapter>();
+                    List<IDirectoryEntryAdapter> directoryEntries = new();
                     var children = DirectoryEntry.Children;
                     var list = new List<DirectoryEntry>();
                     foreach (DirectoryEntry child in children)
@@ -1065,7 +1065,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     lock (list)
                     {
-                        list.Add(default(T));
+                        list.Add(default);
                     }
                 }
             });
@@ -1191,7 +1191,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                List<string> values = new List<string>();
+                List<string> values = new();
                 object[]? rawValue = null;
                 try
                 {

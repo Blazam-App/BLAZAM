@@ -42,10 +42,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                List<ComputerService> services = new List<ComputerService>();
+                List<ComputerService> services = new();
                 foreach (var mo in PerformQuery(ServicesQuery))
                 {
-                    ComputerService service = new ComputerService();
+                    ComputerService service = new();
                     service.Status = mo.GetPropertyValue<string>("Status");
                     service.State = mo.GetPropertyValue<string>("State");
                     service.Caption = mo.GetPropertyValue<string>("Caption");
@@ -86,7 +86,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                List<IADComputerDrive> drives = new List<IADComputerDrive>();
+                List<IADComputerDrive> drives = new();
                 try
                 {
 
@@ -128,7 +128,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                List<SharedPrinter> sharedPrinters = new List<SharedPrinter>();
+                List<SharedPrinter> sharedPrinters = new();
                 try
                 {
 
@@ -158,8 +158,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
                 List<ManagementObject> results = new();
-                ObjectQuery objectQuery = new ObjectQuery(query);
-                ManagementObjectSearcher searcher = new ManagementObjectSearcher(managementScope, objectQuery);
+                ObjectQuery objectQuery = new(query);
+                ManagementObjectSearcher searcher = new(managementScope, objectQuery);
                 ManagementObjectCollection queryCollection = searcher.Get();
                 if (queryCollection.Count > 0)
                 {

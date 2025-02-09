@@ -26,7 +26,7 @@ namespace BLAZAM
         /// <returns>
         /// eg: C:\inetpub\blazam\writable\
         /// </returns>
-        internal static SystemDirectory WritablePath => new SystemDirectory(ApplicationInfo.tempDirectory + @"writable\");
+        internal static SystemDirectory WritablePath => new(ApplicationInfo.tempDirectory + @"writable\");
 
 
 

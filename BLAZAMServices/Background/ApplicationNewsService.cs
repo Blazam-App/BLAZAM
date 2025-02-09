@@ -12,7 +12,7 @@ namespace BLAZAM.Services.Background
         private HttpClient _httpClient;
         private HttpClient _secondaryHttpClient;
         private bool _pollCompleted = false;
-        private List<NewsItem> _allNewsItems = new List<NewsItem>();
+        private List<NewsItem> _allNewsItems = new();
         private List<NewsItem> _activeNewsItems => _allNewsItems.Where(x => x.DeletedAt == null && x.Published == true && (x.ScheduledAt == null || x.ScheduledAt < DateTime.Now) && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now)).ToList();
         public AppEvent OnNewItemsAvailable { get; set; }
 

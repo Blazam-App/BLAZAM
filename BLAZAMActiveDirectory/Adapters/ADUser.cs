@@ -180,8 +180,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             InheritanceFlags none = InheritanceFlags.None;
 
             //set on dir itself
-            FileSystemAccessRule accessRule = new FileSystemAccessRule(SamAccountName, Rights, none, PropagationFlags.NoPropagateInherit, AccessControlType.Allow);
-            DirectoryInfo dInfo = new DirectoryInfo(HomeDirectory);
+            FileSystemAccessRule accessRule = new(SamAccountName, Rights, none, PropagationFlags.NoPropagateInherit, AccessControlType.Allow);
+            DirectoryInfo dInfo = new(HomeDirectory);
             DirectorySecurity dSecurity = dInfo.GetAccessControl();
             dSecurity.ModifyAccessRule(AccessControlModification.Set, accessRule, out modified);
 
@@ -190,7 +190,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
             //Add Access rule for the inheritance
-            FileSystemAccessRule accessRule2 = new FileSystemAccessRule(SamAccountName, Rights, iFlags, PropagationFlags.InheritOnly, AccessControlType.Allow);
+            FileSystemAccessRule accessRule2 = new(SamAccountName, Rights, iFlags, PropagationFlags.InheritOnly, AccessControlType.Allow);
             dSecurity.ModifyAccessRule(AccessControlModification.Add, accessRule2, out modified);
 
             dInfo.SetAccessControl(dSecurity);

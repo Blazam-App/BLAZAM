@@ -17,7 +17,7 @@ namespace BLAZAM.Notifications.Services
 {
     public class WebHookPublisher : IDisposable
     {
-        internal static readonly UTF8Encoding SafeUTF8Encoding = new UTF8Encoding(false, true);
+        internal static readonly UTF8Encoding SafeUTF8Encoding = new(false, true);
         internal const string UNBRANDED_ID_HEADER_KEY = "webhook-id";
         internal const string UNBRANDED_ATTEMPT_ID_HEADER_KEY = "webhook-attempt-id";
         internal const string UNBRANDED_SIGNATURE_HEADER_KEY = "webhook-signature";
@@ -112,7 +112,7 @@ namespace BLAZAM.Notifications.Services
             IDirectoryEntryAdapter? target = null)
         {
             IJob webhookAttemptJob = new Job("Publish Webhook");
-            JobStep execStep = new JobStep("Execute", async (step) =>
+            JobStep execStep = new("Execute", async (step) =>
             {
                 var msgId = Guid.NewGuid();
                 var eventTimestamp = DateTime.UtcNow;

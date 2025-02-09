@@ -42,7 +42,7 @@ namespace BLAZAM.Helpers
         {
             var list = enumerable.ToList();
             if (list.Count() < 1) return list;
-            List<IDirectoryEntryAdapter> mathingItems = new List<IDirectoryEntryAdapter>();
+            List<IDirectoryEntryAdapter> mathingItems = new();
             for (int x = 0; x < list.Count(); x++)
             {
 
@@ -76,7 +76,7 @@ namespace BLAZAM.Helpers
 
 
             // Build the DN by appending each reversed domain component as a RDN (relative distinguished name)
-            StringBuilder dnBuilder = new StringBuilder();
+            StringBuilder dnBuilder = new();
             foreach (string dc in domainComponents)
             {
                 dnBuilder.Append("DC=");
@@ -297,7 +297,7 @@ namespace BLAZAM.Helpers
         public static string? EscapeLdapSearchFilter(this string? input)
         {
             if (input.IsNullOrEmpty()) return null;
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (char c in input)
             {
                 switch (c)
