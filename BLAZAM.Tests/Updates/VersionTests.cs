@@ -1,11 +1,4 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Server.Data;
-using BLAZAM.Update;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Tests.Updates
 {

@@ -1,12 +1,9 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Configuration;
 using System.Text.RegularExpressions;
 using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
 

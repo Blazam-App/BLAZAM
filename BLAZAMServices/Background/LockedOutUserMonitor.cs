@@ -4,12 +4,6 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Services.Background
 {

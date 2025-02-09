@@ -1,8 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Common.Exceptions;
-using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
@@ -11,7 +9,6 @@ using System.Data;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
-using System.Globalization;
 using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters

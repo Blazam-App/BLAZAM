@@ -1,7 +1,4 @@
-﻿using Azure;
-using Azure.Core.Pipeline;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -10,22 +7,10 @@ using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.FileSystemGlobbing.Internal;
-using Microsoft.Extensions.Http;
-using MudBlazor.Extensions;
-using Polly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 
 namespace BLAZAM.Notifications.Services

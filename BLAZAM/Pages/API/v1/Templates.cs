@@ -1,5 +1,4 @@
-﻿using AngleSharp.Html.Construction;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
@@ -15,11 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
-using Newtonsoft.Json;
-using Octokit;
 using System.Security;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace BLAZAM.Pages.API.v1
 {

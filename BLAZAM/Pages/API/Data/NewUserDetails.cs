@@ -1,7 +1,4 @@
-﻿using BLAZAM.Database.Models.Templates;
-using System.Text.Json;
-
-namespace BLAZAM.Pages.API.Data
+﻿namespace BLAZAM.Pages.API.Data
 {
     /// <summary>
     /// Request package for creation of a templated user

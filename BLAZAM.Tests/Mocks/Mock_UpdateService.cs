@@ -3,13 +3,7 @@ using BLAZAM.Common.Data;
 using BLAZAM.FileSystem;
 using BLAZAM.Update;
 using BLAZAM.Update.Services;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Tests.Mocks
 {

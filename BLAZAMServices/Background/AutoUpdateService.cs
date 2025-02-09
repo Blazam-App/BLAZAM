@@ -1,15 +1,10 @@
-﻿using BLAZAM.Common;
-using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Update;
 using BLAZAM.Update.Services;
-using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
-using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.Services.Background
 {

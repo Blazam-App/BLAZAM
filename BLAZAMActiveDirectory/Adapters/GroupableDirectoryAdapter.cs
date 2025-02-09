@@ -4,7 +4,6 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using System.Data;
-using System.Globalization;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

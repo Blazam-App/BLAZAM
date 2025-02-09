@@ -1,8 +1,4 @@
-﻿using BLAZAM.Common.Exceptions;
-using BLAZAM.Helpers;
-using BLAZAM.Logger;
-using Microsoft.Win32.SafeHandles;
-using Serilog;
+﻿using Microsoft.Win32.SafeHandles;
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;

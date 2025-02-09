@@ -1,8 +1,4 @@
-﻿using System.IO;
-using System.Security.AccessControl;
-using System.Security.Principal;
-
-namespace BLAZAM.FileSystem
+﻿namespace BLAZAM.FileSystem
 {
     public class SystemFile : FileSystemBase
     {

@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using Serilog;
+﻿using Serilog;
 
 namespace BLAZAM.Services.Background
 {

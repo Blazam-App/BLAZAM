@@ -1,6 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Helpers;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using System.Management;
 

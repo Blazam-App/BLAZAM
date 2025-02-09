@@ -1,8 +1,5 @@
-﻿using BLAZAM.Common.Data.Database;
-using BLAZAM.Database.Context;
-using BLAZAM.Session.Interfaces;
+﻿using BLAZAM.Database.Context;
 using DuoUniversal;
-using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Services.Duo

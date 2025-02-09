@@ -1,6 +1,4 @@
-﻿
-using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -11,28 +9,22 @@ using BLAZAM.Services.Attributes;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Duo;
-using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.Negotiate;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MimeKit;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
-using Serilog;
 using System.Diagnostics;
 using System.Globalization;
 using System.Management;
 using System.Reflection;
-using System.Text;
 
 namespace BLAZAM.Server
 {

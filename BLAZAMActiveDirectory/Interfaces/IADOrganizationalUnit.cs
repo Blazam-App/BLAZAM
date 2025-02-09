@@ -1,6 +1,5 @@
 ﻿
 using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.Database.Models.Permissions;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {

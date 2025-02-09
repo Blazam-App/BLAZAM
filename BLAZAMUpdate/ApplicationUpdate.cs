@@ -1,16 +1,10 @@
-﻿using BLAZAM.Common;
-using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Exceptions;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.FileSystem;
-using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Update.Services;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Localization;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Security.Principal;

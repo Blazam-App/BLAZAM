@@ -1,6 +1,4 @@
-﻿using System.Configuration;
-
-namespace BLAZAM.Database.Models
+﻿namespace BLAZAM.Database.Models
 {
     public class RecoverableAppDbSetBase : AppDbSetBase
     {

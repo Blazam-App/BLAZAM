@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-
-namespace BLAZAM.Common.Data
+﻿namespace BLAZAM.Common.Data
 {
     public static class UserRoles
     {

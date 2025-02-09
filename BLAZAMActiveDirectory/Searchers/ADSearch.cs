@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory;
-using BLAZAM.ActiveDirectory.Adapters;
+﻿using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
@@ -7,8 +6,6 @@ using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.DirectoryServices;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {

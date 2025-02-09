@@ -1,9 +1,7 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Helpers;
 using Microsoft.JSInterop;
-using Octokit;
 
 namespace BLAZAM.Services.Audit
 {

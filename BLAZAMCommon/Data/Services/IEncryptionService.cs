@@ -1,6 +1,4 @@
-﻿using BLAZAM.Common.Data;
-
-namespace BLAZAM.Common.Data.Services
+﻿namespace BLAZAM.Common.Data.Services
 {
     public interface IEncryptionService
     {

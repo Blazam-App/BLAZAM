@@ -5,17 +5,10 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Logger;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
-using System.Linq;
-using System.Reflection;
-using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Helpers
 {

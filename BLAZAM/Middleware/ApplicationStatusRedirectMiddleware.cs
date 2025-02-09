@@ -1,9 +1,6 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
 using BLAZAM.Pages.Error;
-using BLAZAM.Services.Background;
-using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Server.Middleware
 {

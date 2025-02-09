@@ -1,11 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLAZAM.Common.Data.Interfaces
+﻿namespace BLAZAM.Common.Data.Interfaces
 {
     /// <summary>
     /// Provides a progress variable and an event when updated

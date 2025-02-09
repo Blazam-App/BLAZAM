@@ -1,11 +1,6 @@
 ﻿using BLAZAM.Database.Models.User;
 using BLAZAM.Gui.UI.Dashboard.Widgets;
 using BLAZAM.Gui.UI.Dashboard.Widgets.Admin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Gui.Services
 {

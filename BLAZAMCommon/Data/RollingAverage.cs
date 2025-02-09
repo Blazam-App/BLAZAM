@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLAZAM.Common.Data
+﻿namespace BLAZAM.Common.Data
 {
     public class RollingAverage
     {

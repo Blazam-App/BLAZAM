@@ -5,12 +5,10 @@ using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
-using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Security.AccessControl;
-using System.Text;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

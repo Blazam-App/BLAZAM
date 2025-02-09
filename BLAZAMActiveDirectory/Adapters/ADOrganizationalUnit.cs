@@ -2,12 +2,6 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using System.Data.SQLite;
-using System.Diagnostics.Contracts;
-using System.DirectoryServices;
-using System.Reflection.PortableExecutable;
 using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters

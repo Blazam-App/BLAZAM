@@ -6,22 +6,16 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
-using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
-using Newtonsoft.Json.Linq;
 using System.Data;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
-using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

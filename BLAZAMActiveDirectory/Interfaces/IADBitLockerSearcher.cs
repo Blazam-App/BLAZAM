@@ -1,6 +1,4 @@
-﻿using BLAZAM.Common.Data.Services;
-
-namespace BLAZAM.ActiveDirectory.Interfaces
+﻿namespace BLAZAM.ActiveDirectory.Interfaces
 {
     /// <summary>
     /// A searcher class for BitLocker objects in an <see cref="IActiveDirectoryContext"/>

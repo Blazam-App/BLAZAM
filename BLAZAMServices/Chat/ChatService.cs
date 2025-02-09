@@ -5,15 +5,7 @@ using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Server.Data;
-using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static MudBlazor.CategoryTypes;
 
 namespace BLAZAM.Services.Chat
 {

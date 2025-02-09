@@ -1,12 +1,7 @@
-﻿using BLAZAM.Common;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace BLAZAM.Server.Data.Services

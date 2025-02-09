@@ -5,18 +5,13 @@ using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Server;
 using BLAZAM.Server.Middleware;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Hosting.WindowsServices;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using System;
 using System.Diagnostics;
 using System.Net;
-using System.Security;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace BLAZAM
 {

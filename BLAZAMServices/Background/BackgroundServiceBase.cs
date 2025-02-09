@@ -1,10 +1,4 @@
 ﻿using BLAZAM.Database.Context;
-using BLAZAM.Services.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Services.Background
 {

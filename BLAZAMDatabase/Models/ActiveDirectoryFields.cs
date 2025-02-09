@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace BLAZAM.Database.Models
+﻿namespace BLAZAM.Database.Models
 {
 
     public class ActiveDirectoryFields

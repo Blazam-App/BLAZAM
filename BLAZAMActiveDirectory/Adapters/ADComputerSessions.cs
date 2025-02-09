@@ -1,8 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Logger;
 using Cassia;
-using Microsoft.AspNetCore.Components;
 using System.ComponentModel;
 
 namespace BLAZAM.ActiveDirectory.Adapters

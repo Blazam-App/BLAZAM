@@ -2,13 +2,7 @@
 using BLAZAM.Database.Context;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Services.Background
 {
