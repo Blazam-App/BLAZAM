@@ -398,12 +398,12 @@ namespace BLAZAM.Server
                         Type = ReferenceType.SecurityScheme
                     }
                 };
-                
-                    c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-                    c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
+
+                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
                     { jwtSecurityScheme,Array.Empty<string>() }
                 });
-                
+
             });
 
             builder.Host.UseWindowsService();
@@ -420,34 +420,37 @@ namespace BLAZAM.Server
         /// <returns></returns>
         public static WebApplicationBuilder InjectBackgroundServices(this WebApplicationBuilder builder)
         {
-            Parallel.ForEach(blazamAssemblies, assembly =>
+            if (ApplicationInfo.installationCompleted)
             {
-                var types = assembly.GetTypes()
-                    .Where(t => t.IsClass && !t.IsAbstract
-                    && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
-
-                foreach (var type in types)
+               Parallel.ForEach(blazamAssemblies, assembly =>
                 {
-                    var interfaceType = type.GetInterfaces()
-                                                .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
-                                                && i.Name != "IDisposable");
+                    var types = assembly.GetTypes()
+                        .Where(t => t.IsClass && !t.IsAbstract
+                        && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
 
-                    if (interfaceType != null)
+                    foreach (var type in types)
                     {
-                        lock (_lock)
+                        var interfaceType = type.GetInterfaces()
+                                                    .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
+                                                    && i.Name != "IDisposable");
+
+                        if (interfaceType != null)
                         {
-                            builder.Services.AddSingleton(interfaceType, type);
+                            lock (_lock)
+                            {
+                                builder.Services.AddSingleton(interfaceType, type);
+                            }
+                        }
+                        else
+                        {
+                            lock (_lock)
+                            {
+                                builder.Services.AddSingleton(type);
+                            }
                         }
                     }
-                    else
-                    {
-                        lock (_lock)
-                        {
-                            builder.Services.AddSingleton(type);
-                        }
-                    }
-                }
-            });
+                });
+            }
             return builder;
         }
 
@@ -465,7 +468,7 @@ namespace BLAZAM.Server
                 using var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
                 if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
                 {
-                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper!=false;
+                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != false;
 
                 }
 
@@ -584,7 +587,7 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
-              try
+            try
             {
                 if (ApplicationInfo.installationCompleted)
                 {

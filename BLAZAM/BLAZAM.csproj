@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.2.6</AssemblyVersion>
-		<Version>2025.02.08.2328</Version>
+		<Version>2025.02.09.0032</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -122,6 +122,10 @@
 		<Content Include="static\img\default_logo5.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\BLAZAMGui\UI\Settings\Templates\VariableTable.razor" Link="VariableTable.razor" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -203,12 +203,10 @@ namespace BLAZAM
             //});
             AppInstance.Start();
             GetRunningWebServerConfiguration();
-            //ScheduleAutoLoad();
-
+           
             AppInstance.WaitForShutdown();
             Log.Information("Application Shutting Down");
-            //AppInstance.Run();
-
+           
         }
 
         private static void SetupKestrel(WebApplicationBuilder builder)
