@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory;
-using BLAZAM.ActiveDirectory.Adapters;
+﻿using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
@@ -7,8 +6,6 @@ using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.DirectoryServices;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -41,7 +38,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public string? GeneralSearchTerm
         {
             get => _generalSearchTerm;
-            set => _generalSearchTerm=value.EscapeLdapSearchFilter();
+            set => _generalSearchTerm = value.EscapeLdapSearchFilter();
         }
 
         /// <summary>
@@ -196,8 +193,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 }
 
 
-                if (!FilterQuery.IsNullOrEmpty() && ExactMatch)
-                    FilterQuery = FilterQuery.Replace("*", "");
+
 
                 if (GeneralSearchTerm == null)
                 {
@@ -230,6 +226,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
 
                 }
+
+                if (!FilterQuery.IsNullOrEmpty() && ExactMatch)
+                    FilterQuery = FilterQuery.Replace("*", "");
+
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 

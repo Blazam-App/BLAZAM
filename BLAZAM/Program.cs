@@ -5,18 +5,13 @@ using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Server;
 using BLAZAM.Server.Middleware;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Hosting.WindowsServices;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using System;
 using System.Diagnostics;
 using System.Net;
-using System.Security;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace BLAZAM
 {
@@ -31,7 +26,7 @@ namespace BLAZAM
         /// <returns>
         /// eg: C:\inetpub\blazam\writable\
         /// </returns>
-        internal static SystemDirectory WritablePath => new SystemDirectory(ApplicationInfo.tempDirectory + @"writable\");
+        internal static SystemDirectory WritablePath => new(ApplicationInfo.tempDirectory + @"writable\");
 
 
 
@@ -203,11 +198,9 @@ namespace BLAZAM
             //});
             AppInstance.Start();
             GetRunningWebServerConfiguration();
-            //ScheduleAutoLoad();
 
             AppInstance.WaitForShutdown();
             Log.Information("Application Shutting Down");
-            //AppInstance.Run();
 
         }
 
@@ -280,7 +273,7 @@ namespace BLAZAM
 
         }
 
-       
+
 
         private static void GetRunningWebServerConfiguration()
         {

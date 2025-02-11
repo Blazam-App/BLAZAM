@@ -1,6 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Exceptions;
-using Microsoft.AspNetCore.Components.Authorization;
+﻿using BLAZAM.Common.Exceptions;
 using System.Runtime.Serialization;
 
 namespace BLAZAM.Services.Exceptions

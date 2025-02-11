@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BLAZAM.Common.Data
 {

@@ -1,6 +1,4 @@
-﻿using AngleSharp.Dom;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -14,11 +12,9 @@ using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Notifications;
 using BLAZAM.Notifications.Services;
-using BLAZAM.Server.Data.Services;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using System;
 
 namespace BLAZAM.Services.Background
 {

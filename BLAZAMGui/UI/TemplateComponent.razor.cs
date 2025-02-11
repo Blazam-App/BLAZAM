@@ -1,10 +1,7 @@
 ﻿
 using BLAZAM.Database.Models.Permissions;
-using BLAZAM.Database.Models.Templates;
 using BLAZAM.Gui.UI.Settings;
-using Microsoft.EntityFrameworkCore;
 using MudBlazor;
-using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Gui.UI
 {
@@ -55,7 +52,7 @@ namespace BLAZAM.Gui.UI
             get
             {
                 var cats = TemplatesUserCanUse.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().ToList();
-                         return cats;
+                return cats;
             }
         }
 

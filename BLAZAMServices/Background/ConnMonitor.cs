@@ -1,8 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
-using BLAZAM.Database.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Services.Background

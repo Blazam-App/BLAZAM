@@ -1,10 +1,8 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
-using System.Threading.Channels;
 
 namespace BLAZAM.Services.Audit
 {

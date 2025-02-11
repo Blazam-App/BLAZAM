@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Services;
+﻿using BLAZAM.Common.Data.Services;
 using Microsoft.Extensions.Configuration;
 
 namespace BLAZAM.Services

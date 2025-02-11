@@ -1,9 +1,4 @@
-﻿
-
-
-using System.ComponentModel;
-
-namespace BLAZAM.Database.Models.User
+﻿namespace BLAZAM.Database.Models.User
 {
     public enum DashboardWidgetType
     {
@@ -31,7 +26,7 @@ namespace BLAZAM.Database.Models.User
         public AppUser User { get; set; }
         public int UserId { get; set; }
 
-        
+
 
     }
 }

@@ -90,7 +90,7 @@
 </MudDataGrid>
 
 <AppModal @ref=addFieldModal
-          Title="Add Field">
+          Title="Add Field" Options=" new(){ MaxWidth=MaxWidth.ExtraSmall, CloseButton=true, FullWidth=true}">
     <AddFieldModalContent FieldCreated="FieldCreated" />
 </AppModal>
 @code {

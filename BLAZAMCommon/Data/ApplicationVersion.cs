@@ -1,8 +1,5 @@
-﻿using Microsoft.Extensions.Localization;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography.Xml;
 
 namespace BLAZAM.Common.Data
 {

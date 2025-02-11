@@ -1,7 +1,5 @@
 ﻿
 using BLAZAM.Common.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Database.Models

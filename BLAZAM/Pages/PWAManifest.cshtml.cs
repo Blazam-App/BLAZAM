@@ -17,7 +17,7 @@ namespace BLAZAM.Pages
     {
         public string short_name = "Blazam";
         public string name = "Blazam";
-        public List<ManifestIcon> icons = new List<ManifestIcon>();
+        public List<ManifestIcon> icons = new();
         public string start_url = ".";
         public string display = "minimal-ui";
         public string theme_color = "#000000";

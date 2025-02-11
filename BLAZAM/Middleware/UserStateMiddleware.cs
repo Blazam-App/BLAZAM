@@ -1,9 +1,4 @@
-﻿using BLAZAM.Common.Data.Services;
-using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Org.BouncyCastle.Ocsp;
-using System.Threading.Tasks;
+﻿using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.Server.Middleware
 {

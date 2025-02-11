@@ -1,12 +1,7 @@
-﻿using BLAZAM.Common;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace BLAZAM.Server.Data.Services
@@ -193,7 +188,7 @@ namespace BLAZAM.Server.Data.Services
         }
         public void SetMFAUserState(string mfaToken, IApplicationUserState state, string redirectUrl = "/")
         {
-            MFARequest mfaRequest = new MFARequest(mfaToken, redirectUrl, state);
+            MFARequest mfaRequest = new(mfaToken, redirectUrl, state);
             _mfaLoginQueue.Add(mfaRequest);
             Task.Delay(90000).ContinueWith((val) =>
             {

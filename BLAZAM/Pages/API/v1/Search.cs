@@ -41,7 +41,7 @@ namespace BLAZAM.Pages.API.v1
             {
                 return BadRequest();
             }
-            ADSearch search = new ADSearch(Directory);
+            ADSearch search = new(Directory);
             search.GeneralSearchTerm = query;
             var data = search.Search();
             var data2 = data.Where(de => de.CanRead).ToList();

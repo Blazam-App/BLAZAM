@@ -1,13 +1,11 @@
-﻿using System.Security.Claims;
-
-namespace BLAZAM.Common.Data
+﻿namespace BLAZAM.Common.Data
 {
     public static class UserRoles
     {
         /// <summary>
         /// All roles, except <see cref="SuperAdmin"/>
         /// </summary>
-        public static List<string> All = new List<string>(){
+        public static List<string> All = new(){
             Login,
             SearchComputers,
             SearchGroups,

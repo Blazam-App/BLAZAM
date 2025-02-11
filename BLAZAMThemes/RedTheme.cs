@@ -1,8 +1,4 @@
-﻿using BLAZAM.Helpers;
-using System.Drawing;
-
-
-namespace BLAZAM.Themes
+﻿namespace BLAZAM.Themes
 {
     public class RedTheme : ApplicationTheme
     {

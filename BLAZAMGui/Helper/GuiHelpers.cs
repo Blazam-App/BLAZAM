@@ -1,14 +1,8 @@
 ﻿
 using ApplicationNews;
-using BLAZAM.Database.Models.Templates;
 using BLAZAM.Gui.UI.Modals;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Helpers
 {

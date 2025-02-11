@@ -36,10 +36,7 @@
         <SelectColumn T="IDirectoryEntryAdapter" ShowInFooter=false ShowInHeader=true />
         <TemplateColumn Title=@AppLocalization["Type"]>
             <CellTemplate>
-                <AppTooltip Text="@AppLocalization[context.Item.ObjectType.ToString()]">
-                    <MudIcon Icon="@context.Item.TypeIcon()" />
-                </AppTooltip>
-
+                <DirectoryEntryTypeIcon Entry="@context.Item" />
             </CellTemplate>
         </TemplateColumn>
         <PropertyColumn Property="x => x.CanonicalName" Title=@AppLocalization["Name"] />
@@ -83,15 +80,17 @@
     {
 
         LoadingData = true;
-        await Task.Run(() => { 
+        await Task.Run(() =>
+        {
             var search = new ADSearch(Directory) { SearchRoot = Directory.GetDeleteObjectsEntry() };
             search.SearchDeleted = true;
             deletedObjects = search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
-            foreach(var del in deletedObjects){
+            foreach (var del in deletedObjects)
+            {
                 _ = del.LastKnownParent;
             }
             LoadingData = false;
-        }); 
+        });
     }
 
     //TODO stop the confimation message on batch restore
@@ -137,7 +136,8 @@
     bool RestoreEntry(IDirectoryEntryAdapter entry)
     {
         var result = (entry.LastKnownParent != null && Directory.RestoreTombstone(entry, entry.LastKnownParent));
-        if(result){
+        if (result)
+        {
             AuditLogger.System.Analytics.ObjectRestored(entry.ObjectType);
         }
         return result;
