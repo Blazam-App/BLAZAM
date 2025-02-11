@@ -168,10 +168,6 @@
 
             await Task.Delay(1000);
             createFirstTemplateTooltipVisible = true;
-
-
-
-
         }
         else
         {
@@ -219,18 +215,7 @@
         Nav.NavigateTo("/templates/0", true);
     }
 
-    [Obsolete]
-    private HashSet<DirectoryTemplate> CreateTemplateHash
-    {
-        get
 
-        {
-            HashSet<DirectoryTemplate> rootTemplates = Templates.Where(t => t.ParentTemplate == null && t.DeletedAt == null).ToHashSet();
-            rootTemplates = RecursiveFill(rootTemplates);
-            return rootTemplates;
-
-        }
-    }
     private IReadOnlyCollection<TreeItemData<DirectoryTemplate>> CreateTemplateTreeItemData()
     {
 
@@ -244,21 +229,7 @@
 
     }
 
-    [Obsolete]
 
-    private HashSet<DirectoryTemplate> RecursiveFill(HashSet<DirectoryTemplate> setToFill)
-    {
-        foreach (var template in setToFill)
-        {
-            if (Templates.Any(t => t.ParentTemplateId == template.Id))
-            {
-                var children = Templates.Where(t => t.ParentTemplateId == template.Id && t.DeletedAt == null).ToHashSet();
-                children = RecursiveFill(children);
-                template.ChildTemplates = children;
-            }
-        }
-        return setToFill;
-    }
     private List<TreeItemData<DirectoryTemplate>> RecursiveFillTreeViewItems(List<TreeItemData<DirectoryTemplate>> setToFill)
     {
         foreach (var template in setToFill)
@@ -289,14 +260,8 @@
             foreach (var template in restoreDataGrid.SelectedItems)
             {
                 template.DeletedAt = null;
-                try
-                {
-                    Templates.First(t => template.Equals(t)).DeletedAt = null;
-                }
-                catch
-                {
-                    //Do nothing, it's a best attempt
-                }
+                Templates.First(t => template.Equals(t)).DeletedAt = null;
+
             }
             if (await Context.SaveChangesAsync() > 0)
             {
