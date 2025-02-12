@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace BLAZAM.Database.Models.Audit
+﻿namespace BLAZAM.Database.Models.Audit
 {
     public class CommonAuditLog : AppDbSetBase, ICommonAuditLog
     {

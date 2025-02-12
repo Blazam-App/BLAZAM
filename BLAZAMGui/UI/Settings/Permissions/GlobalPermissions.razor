@@ -6,30 +6,35 @@
         <SettingsField Label="@AppLocalization["Allow access requests"]">
 
             <MudSwitch @bind-Value=settings.AllowAccessRequest
-                       T=bool
-                       Class="mt-0"
-                       Color="Color.Success"
-                       Label=@AppLocalization["Allow access requests"] />
+            T=bool
+            Class="mt-0"
+            Color="Color.Success"
+            Label=@AppLocalization["Allow access requests"] />
 
             @if (settings.AllowAccessRequest)
             {
-                 
+
                 <MudStack Class="ms-4">
                     <MudText>
                         @AppLocalization["Actions"]
                     </MudText>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Assign)"
-                               ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Assign); })"
-                               Color="Color.Success">
+                    ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Assign); })"
+                    Color="Color.Success">
                         @AppLocalization["Assign"]
                     </MudSwitch>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unassign)"
-                               ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unassign); })"
-                               Color="Color.Success">
+                    ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unassign); })"
+                    Color="Color.Success">
                         @AppLocalization["Unassign"]
                     </MudSwitch>
+                    <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unlock)"
+                    ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unlock); })"
+                    Color="Color.Success">
+                        @AppLocalization["Unlock"]
+                    </MudSwitch>
                 </MudStack>
-               
+
             }
 
         </SettingsField>
@@ -37,21 +42,21 @@
         <SettingsField Label="@AppLocalization["Allow self edit"]">
 
             <MudSwitch @bind-Value=settings.AllowSelfModification
-                       T=bool
-                       Class="mt-0"
-                       Color="Color.Success"
-                       Label=@AppLocalization["Allow self edit"] />
+            T=bool
+            Class="mt-0"
+            Color="Color.Success"
+            Label=@AppLocalization["Allow self edit"] />
             @if (settings.AllowSelfModification)
             {
                 <EditAccessLevel Self=true
-                                 Model="selfAccessLevel" />
+                Model="selfAccessLevel" />
             }
         </SettingsField>
         <MudDivider />
         <SettingsField>
             <MudButton Disabled="@(SaveDisabled ||(settings.AllowSelfModification && selfAccessLevel.Id==0))"
-                       ButtonType="ButtonType.Submit"
-                       Color="Color.Success">
+            ButtonType="ButtonType.Submit"
+            Color="Color.Success">
                 @AppLocalization["Save Changes"]
             </MudButton>
         </SettingsField>
@@ -79,11 +84,7 @@
             settings = dbData;
             globalPermissionRequestActions = await Context.GlobalPermissionRequestActions.ToListAsync();
         }
-        else
-        {
-            // Context.GlobalPermissionSettings.Add(settings);
-
-        }
+        
         var dbSelfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
         if (dbSelfAccessLevel != null)
         {
@@ -97,21 +98,21 @@
 
     }
 
-    private void AddAction(ActiveDirectoryObjectAction action)
+    private async Task AddAction(ActiveDirectoryObjectAction action)
     {
 
         if (settings.AllowAccessRequest)
         {
             if (!Context.GlobalPermissionRequestActions.Any(x => x.ObjectAction == action))
             {
-               
+
                 var requestAction = new GlobalPermissionRequestActions() { ObjectAction = action };
                 if (requestAction != null)
                 {
-                    var ctx  = DbFactory.CreateDbContext();
-                    // settings.AllowedAccessRequestActions.Add(requestAction);
-                    ctx.GlobalPermissionRequestActions.Add(requestAction);
-                    ctx.SaveChanges();
+                    var ctx  = await DbFactory.CreateDbContextAsync();
+                    globalPermissionRequestActions.Add(requestAction);
+                    await ctx.GlobalPermissionRequestActions.AddAsync(requestAction);
+                    await ctx.SaveChangesAsync();
                 }
 
             }
@@ -121,14 +122,15 @@
                 if (requestAction != null)
                 {
 
-                    var ctx = DbFactory.CreateDbContext();
+                    var ctx = await DbFactory.CreateDbContextAsync();
 
                     ctx.GlobalPermissionRequestActions.Remove(requestAction);
-                    //settings.AllowedAccessRequestActions.Remove(requestAction);
-                    ctx.SaveChanges();
+                    globalPermissionRequestActions.Remove(requestAction);
+                    await ctx.SaveChangesAsync();
 
                 }
             }
+            await InvokeAsync(StateHasChanged);
         }
 
 

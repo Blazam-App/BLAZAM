@@ -1,13 +1,12 @@
-﻿using BLAZAM.Common.Data.Services;
-using BLAZAM.Session.Interfaces;
+﻿using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.Server.Data.Services
 {
     public class ApplicationUserSessionCache : IApplicationUserSessionCache
     {
 
-        private Dictionary<Type, object> _typeCache = new Dictionary<Type, object>();
-        private Dictionary<string, object> _stringCache = new Dictionary<string, object>();
+        private Dictionary<Type, object> _typeCache = new();
+        private Dictionary<string, object> _stringCache = new();
 
         public T Get<T>(Type key) where T : new()
         {

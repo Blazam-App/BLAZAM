@@ -1,6 +1,4 @@
-﻿using System;
-using System.DirectoryServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace BLAZAM.ActiveDirectory
 {

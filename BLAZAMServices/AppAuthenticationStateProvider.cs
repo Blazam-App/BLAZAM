@@ -1,5 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -134,7 +133,7 @@ namespace BLAZAM.Services
         }
         private ClaimsPrincipal GetDemoUser()
         {
-            List<Claim> claims = new List<Claim>
+            List<Claim> claims = new()
             {
                 new Claim(ClaimTypes.Sid, "2"),
                 new Claim(ClaimTypes.Name, "Demo"),
@@ -147,7 +146,7 @@ namespace BLAZAM.Services
         }
         private ClaimsPrincipal GetLocalAdmin(string name = "admin")
         {
-            List<Claim> claims = new List<Claim>
+            List<Claim> claims = new()
             {
                  new Claim(ClaimTypes. Sid, "1"),
                     new Claim(ClaimTypes.Name, name),
@@ -192,7 +191,7 @@ namespace BLAZAM.Services
             }
             else
             {
-                
+
                 if (loginReq.Username.IsNullOrEmpty()) return loginReq.NoUsername();
             }
             //Pull the authentication settings from the database so we can check admin credentials
@@ -230,6 +229,7 @@ namespace BLAZAM.Services
 
                         if (userClaim != null)
                         {
+                            // Check that Duo is enabled and configured properly, also skip if impersonation
                             if (settings != null &&
                                 settings.DuoEnabled &&
                                 settings.DuoClientSecret != null &&
@@ -238,6 +238,8 @@ namespace BLAZAM.Services
                                 !loginReq.Impersonation
                                 )
                             {
+                                //Duo is enabled, so we need to set up an MFA request
+
                                 var mfaRRedirect = await PerformDuoAuthentication(loginReq);
                                 //Settings are configured so
                                 if (!mfaRRedirect.IsNullOrEmpty())
@@ -254,6 +256,7 @@ namespace BLAZAM.Services
                             }
                             else
                             {
+                                //Duo is not enabled, or this is impersonation, proceed with post login processing
                                 var sid = userClaim.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
                                 var userSettings = await context.UserSettings.FirstOrDefaultAsync(x => x.UserGUID == sid);
                                 if (userSettings != null && !loginReq.Impersonation && !userSettings.AuthenticatorSecret.IsNullOrEmpty())
@@ -362,18 +365,15 @@ namespace BLAZAM.Services
                 // Generate a random state value to tie the authentication steps together
                 string state = Client.GenerateState();
 
+                // Save the mfa state back to the login request
                 loginReq.MFAToken = state;
-                // Save the state and username in the session for later
-                //HttpContext.Session.SetString(STATE_SESSION_KEY, state);
-                //HttpContext.Session.SetString(USERNAME_SESSION_KEY, username);
 
                 // Get the URI of the Duo prompt from the client.  This includes an embedded authentication request.
                 string promptUri = duoClient.GenerateAuthUri(loginReq.Username, state);
+
+                // Set up the redirect after successful mfa
                 loginReq.MFARedirect = promptUri;
-                // Redirect the user's browser to the Duo prompt.
-                // The Duo prompt, after authentication, will redirect back to the configured Redirect URI to complete the authentication flow.
-                // In this example, that is /duo_callback, which is implemented in Callback.cshtml.cs.
-                // return new RedirectResult(promptUri);
+
 
                 return promptUri;
 

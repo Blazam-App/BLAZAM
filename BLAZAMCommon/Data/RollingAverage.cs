@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLAZAM.Common.Data
+﻿namespace BLAZAM.Common.Data
 {
     public class RollingAverage
     {
         private int memory;
         private List<double> _history;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="memory"></param>
         public RollingAverage(int memory = 10)
         {
             this.memory = memory;
@@ -21,11 +18,20 @@ namespace BLAZAM.Common.Data
         /// </summary>
         /// <param name="value"></param>
         /// <returns>The new average</returns>
-        public double AddValue(double value)
+        public void AddValue(double value)
         {
             if (_history.Count == memory)
                 _history.RemoveAt(0);
             _history.Add(value);
+
+        }
+        public double GetAverage(int roundedDecimalPlaces = 0)
+        {
+            if (_history.Count == 0) return 0;
+            if (roundedDecimalPlaces > 0)
+            {
+                return Math.Round(_history.Average(), roundedDecimalPlaces);
+            }
             return _history.Average();
         }
 

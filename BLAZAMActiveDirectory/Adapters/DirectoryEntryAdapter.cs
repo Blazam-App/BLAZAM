@@ -6,22 +6,16 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
-using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
-using Newtonsoft.Json.Linq;
 using System.Data;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
-using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -622,7 +616,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (CachedChildren == null)
                 {
-                    List<IDirectoryEntryAdapter> directoryEntries = new List<IDirectoryEntryAdapter>();
+                    List<IDirectoryEntryAdapter> directoryEntries = new();
                     var children = DirectoryEntry.Children;
                     var list = new List<DirectoryEntry>();
                     foreach (DirectoryEntry child in children)
@@ -673,7 +667,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                         }
                     });
-                    CachedChildren = directoryEntries.OrderBy(x => x.CanonicalName).ThenBy(x => x.ObjectType); 
+                    CachedChildren = directoryEntries.OrderBy(x => x.CanonicalName).ThenBy(x => x.ObjectType);
                 }
                 return CachedChildren;
             }
@@ -952,11 +946,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if (forceDeleteChildren)
                         {
                             var children = DirectoryEntry.Children;
-                            foreach(DirectoryEntry child in children)
+                            foreach (DirectoryEntry child in children)
                             {
                                 DirectoryEntry?.Children.Remove(child);
                             }
-                    
+
                         }
                         DirectoryEntry?.Parent.Children.Remove(DirectoryEntry);
                         IsDeleted = true;
@@ -1071,7 +1065,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     lock (list)
                     {
-                        list.Add(default(T));
+                        list.Add(default);
                     }
                 }
             });
@@ -1197,7 +1191,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                List<string> values = new List<string>();
+                List<string> values = new();
                 object[]? rawValue = null;
                 try
                 {

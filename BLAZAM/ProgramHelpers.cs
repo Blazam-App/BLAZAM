@@ -1,6 +1,4 @@
-﻿
-using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -11,28 +9,22 @@ using BLAZAM.Services.Attributes;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Duo;
-using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.Negotiate;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MimeKit;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
-using Serilog;
 using System.Diagnostics;
 using System.Globalization;
 using System.Management;
 using System.Reflection;
-using System.Text;
 
 namespace BLAZAM.Server
 {
@@ -100,8 +92,8 @@ namespace BLAZAM.Server
                 ManagementScope Scope;
                 Scope = new ManagementScope(String.Format("\\\\{0}\\root\\CIMV2", ComputerName), null);
                 Scope.Connect();
-                ObjectQuery Query = new ObjectQuery("SELECT UUID FROM Win32_ComputerSystemProduct");
-                ManagementObjectSearcher Searcher = new ManagementObjectSearcher(Scope, Query);
+                ObjectQuery Query = new("SELECT UUID FROM Win32_ComputerSystemProduct");
+                ManagementObjectSearcher Searcher = new(Scope, Query);
 
                 foreach (ManagementObject WmiObject in Searcher.Get())
                 {
@@ -250,7 +242,8 @@ namespace BLAZAM.Server
 
             builder.Services.AddHttpClient(HttpClientNames.WebHookHttpClientNoSSLCheckName)
                   .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
-                  .AddPolicyHandler(GetWebhookRetryPolicy()).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                  .AddPolicyHandler(GetWebhookRetryPolicy())
+                  .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
                   {
                       ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
                   });
@@ -311,7 +304,7 @@ namespace BLAZAM.Server
 
 
             //Provide DuoSecurity service
-            builder.Services.AddScoped<IDuoClientProvider, DuoClientProvider>();
+            builder.Services.AddSingleton<IDuoClientProvider, DuoClientProvider>();
 
             //Provide encryption service
             //There's no benefit to filling memory with identical instances of this, so singleton
@@ -402,6 +395,7 @@ namespace BLAZAM.Server
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
                     { jwtSecurityScheme,Array.Empty<string>() }
                 });
+
             });
 
             builder.Host.UseWindowsService();
@@ -410,39 +404,44 @@ namespace BLAZAM.Server
 
             return builder;
         }
-        private static readonly object _lock = new object();
+        private static readonly object _lock = new();
+        /// <summary>
+        /// Injects all services in all loaded assemblies that have the <see cref="AutoStartBackgroundService"/> attribute
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static WebApplicationBuilder InjectBackgroundServices(this WebApplicationBuilder builder)
         {
 
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            Parallel.ForEach(assemblies, assembly =>
-            {
-                var types = assembly.GetTypes()
-                    .Where(t => t.IsClass && !t.IsAbstract
-                    && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
+            Parallel.ForEach(blazamAssemblies, assembly =>
+             {
+                 var types = assembly.GetTypes()
+                     .Where(t => t.IsClass && !t.IsAbstract
+                     && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
 
-                foreach (var type in types)
-                {
-                    var interfaceType = type.GetInterfaces()
-            .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
-            && i.Name != "IDisposable");
+                 foreach (var type in types)
+                 {
+                     var interfaceType = type.GetInterfaces()
+                                                 .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null
+                                                 && i.Name != "IDisposable");
 
-                    if (interfaceType != null)
-                    {
-                        lock (_lock)
-                        {
-                            builder.Services.AddSingleton(interfaceType, type);
-                        }
-                    }
-                    else
-                    {
-                        lock (_lock)
-                        {
-                            builder.Services.AddSingleton(type);
-                        }
-                    }
-                }
-            });
+                     if (interfaceType != null)
+                     {
+                         lock (_lock)
+                         {
+                             builder.Services.AddSingleton(interfaceType, type);
+                         }
+                     }
+                     else
+                     {
+                         lock (_lock)
+                         {
+                             builder.Services.AddSingleton(type);
+                         }
+                     }
+                 }
+             });
+
             return builder;
         }
 
@@ -460,7 +459,7 @@ namespace BLAZAM.Server
                 using var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
                 if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
                 {
-                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper!=false;
+                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != false;
 
                 }
 
@@ -482,6 +481,7 @@ namespace BLAZAM.Server
                 .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
                 .WaitAndRetryAsync(delay);
         }
+        private static IEnumerable<Assembly> blazamAssemblies => AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName?.Contains("BLAZAM") == true);
         private static void PreloadServices(WebApplication application)
         {
 
@@ -489,9 +489,9 @@ namespace BLAZAM.Server
             {
                 if (ApplicationInfo.installationCompleted)
                 {
-                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-                    foreach (var assembly in assemblies.Where(a=>a.FullName?.Contains("BLAZAM")==true))
+
+                    foreach (var assembly in blazamAssemblies)
                     {
                         try
                         {
@@ -520,8 +520,8 @@ namespace BLAZAM.Server
                                     }
 
 
-                                    var data = type.GetCustomAttribute<AutoStartBackgroundService>();
-                                    service?.Start(data?.Immediate == true);
+                                    var metadata = type.GetCustomAttribute<AutoStartBackgroundService>();
+                                    service?.Start(metadata?.Immediate == true);
                                 }
                                 catch (Exception ex)
                                 {
@@ -552,18 +552,6 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
-            //try
-            //{
-            //    if (ApplicationInfo.installationCompleted)
-            //    {
-            //        var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
-            //    }
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-            //}
             try
             {
                 if (ApplicationInfo.installationCompleted)
@@ -583,6 +571,19 @@ namespace BLAZAM.Server
                 {
                     var context = Program.AppInstance.Services.GetRequiredService<WebHookPublisher>();
 
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+            try
+            {
+                if (ApplicationInfo.installationCompleted)
+                {
+                    ApplicationStatistics.Process = ApplicationInfo.runningProcess;
+                    ApplicationStatistics.StartResourceUsagePolling();
                 }
 
             }

@@ -1,6 +1,4 @@
-﻿using BLAZAM.Common.Data;
-
-namespace BLAZAM.Database.Models.Permissions
+﻿namespace BLAZAM.Database.Models.Permissions
 {
     public enum ActiveDirectoryObjectAction
     {

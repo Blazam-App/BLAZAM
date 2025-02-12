@@ -1,7 +1,4 @@
-﻿using BLAZAM.Common;
-using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Session.Interfaces;
+﻿using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components;
 
 namespace BLAZAM.Services

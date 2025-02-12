@@ -1,6 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using System.Diagnostics;
-using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {

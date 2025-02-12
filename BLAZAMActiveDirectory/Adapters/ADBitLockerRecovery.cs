@@ -1,11 +1,5 @@
 ﻿
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
-using BLAZAM.Database.Models;
-using BLAZAM.Logger;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

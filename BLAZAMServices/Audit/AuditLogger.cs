@@ -1,12 +1,7 @@
-﻿
-
-using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
 using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
-using Serilog.Parsing;
-using System.Threading.Channels;
 
 namespace BLAZAM.Services.Audit
 {

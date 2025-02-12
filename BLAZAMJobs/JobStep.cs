@@ -1,10 +1,5 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Interfaces;
 using BLAZAM.Common.Exceptions;
-using Microsoft.AspNetCore.Components;
-using MudBlazor.Services;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Jobs
 {

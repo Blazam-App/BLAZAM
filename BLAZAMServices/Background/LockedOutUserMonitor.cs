@@ -4,12 +4,6 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Services.Background
 {
@@ -28,18 +22,18 @@ namespace BLAZAM.Services.Background
             using var context = dbFactory.CreateDbContext();
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
 
-            List<GenericSidList> usersInTable = new List<GenericSidList>();
+            List<GenericSidList> usersInTable = new();
 
-            List<IADUser> lockedOutUsers = new List<IADUser>();
-            Job executeJob = new Job("Monitor Locked Out Users");
-            JobStep prepareStep = new JobStep("Prepare data", (state) =>
+            List<IADUser> lockedOutUsers = new();
+            Job executeJob = new("Monitor Locked Out Users");
+            JobStep prepareStep = new("Prepare data", (state) =>
             {
                 usersInTable = context.LockedOutUsers.ToList();
                 lockedOutUsers = directory.Users.FindLockedOutUsers();
                 return true;
             });
             executeJob.AddStep(prepareStep);
-            JobStep analyzeStep = new JobStep("Analyze data", (state) =>
+            JobStep analyzeStep = new("Analyze data", (state) =>
             {
                 foreach (var user in lockedOutUsers)
                 {

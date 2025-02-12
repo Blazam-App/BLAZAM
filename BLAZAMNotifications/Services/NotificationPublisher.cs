@@ -1,6 +1,4 @@
-﻿
-using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;

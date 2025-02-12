@@ -6,7 +6,6 @@ using BLAZAM.Logger;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Net.WebSockets;
 
 namespace BLAZAM.Database.Context
 {

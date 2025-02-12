@@ -1,6 +1,5 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
-using BLAZAM.Services.Background;
 
 namespace BLAZAM.Server.Middleware
 {

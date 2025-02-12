@@ -1,7 +1,4 @@
-﻿
-
-using BLAZAM.Common.Data;
-using BLAZAM.Common.Exceptions;
+﻿using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.EmailMessage;
@@ -9,7 +6,6 @@ using BLAZAM.EmailMessage.Email;
 using BLAZAM.EmailMessage.Email.Base;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
-using BLAZAM.Services.Audit;
 using BLAZAM.Static;
 using BlazorTemplater;
 using MailKit.Net.Smtp;
@@ -17,7 +13,6 @@ using MailKit.Security;
 using Microsoft.AspNetCore.Components;
 using MimeKit;
 using MimeKit.Utils;
-using System.Configuration;
 
 namespace BLAZAM.Services.Background
 {
@@ -179,7 +174,7 @@ namespace BLAZAM.Services.Background
 
         public string PrepareHTMLForEmail(string body)
         {
-            SystemFile css = new SystemFile(ApplicationInfo.applicationRoot + "\\wwwroot\\lib\\mudblazor\\css\\mudblazor.min.css");
+            SystemFile css = new(ApplicationInfo.applicationRoot + "\\wwwroot\\lib\\mudblazor\\css\\mudblazor.min.css");
             var preMailer = new PreMailer.Net.PreMailer(body);
             body = preMailer.MoveCssInline(stripIdAndClassAttributes: true, css: css.ReadAllText()).Html;
             return body;

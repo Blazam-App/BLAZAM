@@ -177,7 +177,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                ADSearch search = new ADSearch(Directory);
+                ADSearch search = new(Directory);
                 search.Fields.NestedMemberOf = this;
                 var result = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
                 return result;
@@ -192,9 +192,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 var temp = MembersAsStrings;
-                ADSearch search = new ADSearch(Directory);
+                ADSearch search = new(Directory);
 
-                List<IGroupableDirectoryAdapter> members = new List<IGroupableDirectoryAdapter>();
+                List<IGroupableDirectoryAdapter> members = new();
                 temp?.ForEach(t =>
                 {
                     search.Results.Clear();

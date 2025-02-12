@@ -1,12 +1,9 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Configuration;
 using System.Text.RegularExpressions;
 using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
 
@@ -294,18 +291,27 @@ namespace BLAZAM.Database.Models.Templates
                         var number = 0;
                         int.TryParse(argument, out number);
                         if (number != 0)
-                            return value.Substring(0, number);
+                        {
+                            value = value.Substring(0, number);
+                        }
 
                     }
-                    return value;
+                    break;
                 case "regex":
                     var regex = new Regex(argument);
-                    return regex.Match(value).Value;
-                default: return value;
+                    value = regex.Match(value).Value;
+                    break;
+                case "u":
+                    value = value.ToUpper();
+                    break;
+                case "l":
+                    value = value.ToLower();
+                    break;
             }
+            return value;
         }
 
-        private static readonly Random _random = new Random();
+        private static readonly Random _random = new();
 
         private static string RandomLetterOrDigit()
         {

@@ -1,9 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Interfaces;
-using BLAZAM.Database.Models.User;
-using BLAZAM.Session.Interfaces;
-
-namespace BLAZAM.Jobs
+﻿namespace BLAZAM.Jobs
 {
     /// <summary>
     /// A flexible multi step Job that can have actions as trackable steps.
