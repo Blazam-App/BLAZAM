@@ -1,0 +1,23 @@
+﻿@using BLAZAM.Helpers
+@if(appFQDN.IsNullOrEmpty())
+{
+    @ChildContent
+}else{
+    <MudLink Href="@(appFQDN+URI)">
+        @ChildContent
+    </MudLink>
+}
+
+@code {
+    string? appFQDN;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        appFQDN = DatabaseCache.ApplicationSettings.AppFQDN;
+        InvokeAsync(StateHasChanged);
+    }
+    [Parameter]
+    public string URI{ get; set; }
+    [Parameter]
+    public RenderFragment ChildContent{ get; set; }
+}
