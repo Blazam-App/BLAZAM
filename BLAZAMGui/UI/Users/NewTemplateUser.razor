@@ -354,7 +354,8 @@
 
     #nullable disable warnings
     MudForm form;
-
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
     [Parameter]
     public DirectoryTemplate DirectoryTemplate { get; set; }
     [Parameter]
