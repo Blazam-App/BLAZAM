@@ -8,20 +8,20 @@ namespace BLAZAM.Tests.Updates
     {
         private readonly Mock_UpdateService _updateService = new();
         [Fact]
-        public async void Update_Returns_Data()
+        public async Task Update_Returns_Data()
         {
             var latest = await _updateService.GetUpdates();
             Assert.NotNull(latest);
         }
         [Fact]
-        public async void Updat_Returns_ValidVersion()
+        public async Task Updat_Returns_ValidVersion()
         {
             var latest = await _updateService.GetUpdates();
 
             Assert.NotNull(latest?.Version);
         }
         [Fact]
-        public async void Update_Returns_ValidDownload()
+        public async Task Update_Returns_ValidDownload()
         {
             var latest = await _updateService.GetUpdates();
             if (latest != null)
@@ -31,14 +31,14 @@ namespace BLAZAM.Tests.Updates
             await Update_Stages_OK(latest);
             await Update_Cleanup_OK(latest);
         }
-        private async Task Update_Stages_OK(ApplicationUpdate latest)
+        private static async Task Update_Stages_OK(ApplicationUpdate latest)
         {
 
             await latest.ExtractFiles(null);
             Assert.True(latest.UpdateStagingDirectory.Files.Count > 2);
 
         }
-        private async Task Update_Cleanup_OK(ApplicationUpdate latest)
+        private static async Task Update_Cleanup_OK(ApplicationUpdate latest)
         {
 
             await latest.CleanStaging(null);
