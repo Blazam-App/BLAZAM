@@ -17,7 +17,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.49.0" />
+    <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.50.0" />
   </ItemGroup>
 
 </Project>
