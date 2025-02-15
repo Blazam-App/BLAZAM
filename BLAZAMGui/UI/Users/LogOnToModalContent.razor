@@ -21,8 +21,8 @@
             @if (User.CanEditField(ActiveDirectoryFields.LogOnTo))
             {
                 <MudButton Color="Color.Primary"
-                           Variant="Variant.Filled"
-                           OnClick="@(async()=>{await AllowAll();})">Allow all</MudButton>
+                Variant="Variant.Filled"
+                OnClick="@(()=>{AllowAll();})">Allow all</MudButton>
             }
         }
     </MudStack>
@@ -51,7 +51,7 @@
     {
         allowedWorkstations.Remove(name);
     }
-    public void SaveChanges()
+    public Task SaveChanges()
     {
         string? newValue = null;
         if (allowedWorkstations.Count > 0)
@@ -60,7 +60,7 @@
         }
         User.LogOnTo = newValue;
         Close();
-
+        return Task.CompletedTask;
     }
     private void AddComputer()
     {
@@ -70,9 +70,9 @@
             _searchBox.Clear();
         }
     }
-    private async Task AllowAll()
+    private void AllowAll()
     {
         allowedWorkstations = new();
-        await SaveChanges();
+        SaveChanges();
     }
 }

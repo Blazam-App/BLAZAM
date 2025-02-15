@@ -684,13 +684,8 @@
 
         using (var categoryContext = await DbFactory.CreateDbContextAsync())
         {
-
             categories = await categoryContext.DirectoryTemplates.Select(t => t.Category).Distinct().ToListAsync();
-
-
-            //following line will return filtered results
-            //  return categories.Where(s => s != null && (s.Contains(searchTerm) || s.Equals(searchTerm)));
-        }
+       }
 
     }
 

@@ -250,7 +250,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             return new List<TreeItemData<IDirectoryEntryAdapter>>();
 
         }
-        protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter?>?>> GetOUChildrenAsync(IDirectoryEntryAdapter parentNode)
+        protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>?>> GetOUChildrenAsync(IDirectoryEntryAdapter parentNode)
         {
             return await Task.Run(() =>
             {
@@ -259,7 +259,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
             });
         }
-        protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter?>?>> GetChildrenAsync(TreeItemData<IDirectoryEntryAdapter> parentNode)
+        protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>?>> GetChildrenAsync(TreeItemData<IDirectoryEntryAdapter> parentNode)
         {
             return await Task.Run(() =>
             {
