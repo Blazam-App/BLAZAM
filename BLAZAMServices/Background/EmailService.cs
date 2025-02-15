@@ -133,36 +133,37 @@ namespace BLAZAM.Services.Background
             if (IsConfigured)
             {
                 EmailSettings? settings = GetSettings();
+                if (settings != null)
+                {
+                    if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty()) email.Sender = MailboxAddress.Parse(settings.SMTPUsername);
+                    else email.Sender = MailboxAddress.Parse(settings.FromAddress);
+                    if (!settings.FromName.IsNullOrEmpty()) email.Sender.Name = settings.FromName;
+                    email.From.Add(email.Sender);
+                    if (to != null) email.To.Add(MailboxAddress.Parse(to));
+                    if (cc != null) email.Cc.Add(MailboxAddress.Parse(cc));
+                    if (bcc != null) email.Bcc.Add(MailboxAddress.Parse(bcc));
 
-                if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty()) email.Sender = MailboxAddress.Parse(settings.SMTPUsername);
-                else email.Sender = MailboxAddress.Parse(settings.FromAddress);
-                if (!settings.FromName.IsNullOrEmpty()) email.Sender.Name = settings.FromName;
-                email.From.Add(email.Sender);
-                if (to != null) email.To.Add(MailboxAddress.Parse(to));
-                if (cc != null) email.Cc.Add(MailboxAddress.Parse(cc));
-                if (bcc != null) email.Bcc.Add(MailboxAddress.Parse(bcc));
-
-                //Inject admin bcc
-                if (!settings.AdminBcc.IsNullOrEmpty()) email.Bcc.Add(MailboxAddress.Parse(settings.AdminBcc));
-
-
-                email.Subject = subject;
-                //Start body builder for attached logo image ref
-                var builder = new BodyBuilder();
-                //Attach logo
-                var image = builder.LinkedResources.Add("logo.png", StaticAssets.AppIcon(75));
-                //Generate attachment ID
-                image.ContentId = MimeUtils.GenerateMessageId();
-                //Replace logo placeholder in template with referenced img tag
-                body = body.Replace("{{ApplicationLogo}}", "<img src=\"cid:" + image.ContentId + "\">");
-                body = body.Replace("{{TrackingImgLink}}", "<img src=\"/background/acknowlegeEmail/" + email.MessageId + "\">");
-                body = PrepareHTMLForEmail(body);
-                builder.HtmlBody = body;
-                //Compile body
-                email.Body = builder.ToMessageBody();
+                    //Inject admin bcc
+                    if (!settings.AdminBcc.IsNullOrEmpty()) email.Bcc.Add(MailboxAddress.Parse(settings.AdminBcc));
 
 
+                    email.Subject = subject;
+                    //Start body builder for attached logo image ref
+                    var builder = new BodyBuilder();
+                    //Attach logo
+                    var image = builder.LinkedResources.Add("logo.png", StaticAssets.AppIcon(75));
+                    //Generate attachment ID
+                    image.ContentId = MimeUtils.GenerateMessageId();
+                    //Replace logo placeholder in template with referenced img tag
+                    body = body.Replace("{{ApplicationLogo}}", "<img src=\"cid:" + image.ContentId + "\">");
+                    body = body.Replace("{{TrackingImgLink}}", "<img src=\"/background/acknowlegeEmail/" + email.MessageId + "\">");
+                    body = PrepareHTMLForEmail(body);
+                    builder.HtmlBody = body;
+                    //Compile body
+                    email.Body = builder.ToMessageBody();
 
+
+                }
                 return email;
             }
             else

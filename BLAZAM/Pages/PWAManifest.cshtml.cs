@@ -7,6 +7,8 @@ using System.Data.Entity;
 
 namespace BLAZAM.Pages
 {
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class ManifestIcon
     {
         public string src;
@@ -62,4 +64,6 @@ namespace BLAZAM.Pages
 
         }
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
+
 }

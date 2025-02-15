@@ -91,7 +91,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             LoadingData = true;
             await InvokeAsync(StateHasChanged);

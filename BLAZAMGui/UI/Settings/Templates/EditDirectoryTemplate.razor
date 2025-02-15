@@ -1,9 +1,8 @@
-﻿
-@inherits ValidatedForm
+﻿@inherits ValidatedForm
 @attribute [Authorize]
 @if (DirectoryTemplate != null)
 {
-    <EditForm OnValidSubmit="SaveTemplate" Model="DirectoryTemplate">
+    <MudForm IsValidChanged="@((val)=>{SaveDisabled = !val;})">
         <CascadingValue Value="DirectoryTemplate">
             <MudStack>
                 <MudText Class="mt-5" Typo="Typo.h6">@AppLocalization["Current Template:"] @originalTemplate.Name</MudText>
@@ -15,8 +14,8 @@
                                Disabled=@(dropdownTemplates.IsNullOrEmpty())
                                Clearable=true
                                OnClearButtonClick="@(async()=>{
-await ParentTemplateChanged(null);
-})"
+                                                        await ParentTemplateChanged(null);
+                                                        })"
                                Label=@AppLocalization["Parent Template"]
                                Values="@dropdownTemplates.OrderBy(t=>t.Name)"
                                Value="@DirectoryTemplate.ParentTemplate"
@@ -71,7 +70,7 @@ await ParentTemplateChanged(null);
 
                     </MudStack>
 
-                    <VariableTable/>
+                    <VariableTable />
                 </MudExpansionPanel>
                 <Section Title=@AppLocalization["Account and Name"]>
 
@@ -89,7 +88,9 @@ await ParentTemplateChanged(null);
                         <MudStack Row=true>
                             <MudStack Row=true>
                                 <TemplateOverride SourceTemplate="@usernameFromTemplate">
-                                    <MudTextField Label=@AppLocalization["Username Format"]
+                                    <MudTextField Required="true"
+                                                  RequiredError=@AppLocalization["This field is required"]
+                                                  Label=@AppLocalization["Username Format"]
                                                   @bind-Value=DirectoryTemplate.EffectiveUsernameFormula />
                                 </TemplateOverride>
                                 @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveUsernameFormula != DirectoryTemplate.EffectiveUsernameFormula)
@@ -99,7 +100,9 @@ await ParentTemplateChanged(null);
                             </MudStack>
                             <MudStack Row=true>
                                 <TemplateOverride SourceTemplate="@displayNameFromTemplate">
-                                    <MudTextField Label=@AppLocalization["Display Name Format"]
+                                    <MudTextField Required="true"
+                                                  RequiredError=@AppLocalization["This field is required"]
+                                                  Label=@AppLocalization["Display Name Format"]
                                                   @bind-Value=DirectoryTemplate.EffectiveDisplayNameFormula />
                                 </TemplateOverride>
                                 @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveDisplayNameFormula != DirectoryTemplate.EffectiveDisplayNameFormula)
@@ -115,7 +118,9 @@ await ParentTemplateChanged(null);
                         <MudStack Row=true>
 
                             <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@passwordFromTemplateName">
-                                <MudTextField FullWidth=true
+                                <MudTextField Required="true"
+                                              RequiredError=@AppLocalization["This field is required"]
+                                              FullWidth=true
                                               Label=@AppLocalization["Password"]
                                               @bind-Value=DirectoryTemplate.EffectivePasswordFormula />
                             </TemplateOverride>
@@ -436,19 +441,24 @@ await ParentTemplateChanged(null);
                     buttonText = "Save this template";
                 }
             }
-            <MudButton Disabled=SaveDisabled
-                       Color="Color.Success"
-                       ButtonType="ButtonType.Submit">@buttonText</MudButton>
-            @if (DirectoryTemplate.Id == 0)
-            {
-                <MudButton Color="Color.Warning"
-                           OnClick="@CancelNewTemplate">Cancel</MudButton>
+            <MudStack Row=true>
 
-            }
+                @if (DirectoryTemplate.Id == 0)
+                {
+                    <MudButton Color="Color.Warning"
+                               OnClick="@CancelNewTemplate">Cancel</MudButton>
+
+                }
+                <MudButton Disabled=SaveDisabled
+                           Color="Color.Success"
+                           OnClick="SaveTemplate"
+                           ButtonType="ButtonType.Submit">@buttonText</MudButton>
+            </MudStack>
+
 
 
         </CascadingValue>
-    </EditForm>
+    </MudForm>
 }
 
 @code {

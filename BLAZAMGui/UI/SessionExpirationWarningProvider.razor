@@ -86,7 +86,7 @@
             var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
             if (timeLeft > TimeSpan.FromSeconds(0) && timeLeft < TimeSpan.FromMinutes(2) && ExpirationWarningModal?.IsShown == false)
             {
-                await InvokeAsync(() => { ExpirationWarningModal.ShowAsync(); });
+                await InvokeAsync(async () => { await ExpirationWarningModal.ShowAsync(); });
 
             }
         }

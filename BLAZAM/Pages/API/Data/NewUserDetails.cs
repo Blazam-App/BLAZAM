@@ -47,6 +47,9 @@
         /// </summary>
         public string? SendWelcomeEmailTo { get; set; }
     }
+    /// <summary>
+    /// Example details for Swagger documentation
+    /// </summary>
     public class NewUserDetailsExample
     {
         public object GetExamples()

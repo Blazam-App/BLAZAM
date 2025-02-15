@@ -11,8 +11,7 @@
         }
         set => _saveDisabled = value;
     }
-    [Parameter]
-    public EventCallback OnValidSubmit{ get; set; }
+
 
     protected virtual async Task Save()
     {

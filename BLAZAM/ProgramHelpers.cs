@@ -118,7 +118,11 @@ namespace BLAZAM.Server
 
 
         }
-
+        /// <summary>
+        /// Injects neccessary services for Blazam
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static WebApplicationBuilder InjectServices(this WebApplicationBuilder builder)
         {
 

@@ -73,8 +73,8 @@
         }
         try
         {
-            Context.SaveChangesAsync();
-            OnApproved.InvokeAsync();
+            await Context.SaveChangesAsync();
+            await OnApproved.InvokeAsync();
             await Modal.CloseAsync();
 
             LoadingData = false;
@@ -82,7 +82,7 @@
         {
             Loggers.DatabaseLogger.Error("Error adding approved permission mapping {Error}", ex.InnerException);
             SnackBarService.Error("Error trying to create permission mapping");
-            LoadData();
+            await LoadData();
         }
         
     }

@@ -42,7 +42,7 @@
             Context.PermissionDelegate.Add(NewPermissionDelegate);
             await Context.SaveChangesAsync();
             NewPermissionDelegate = new PermissionDelegate();
-            Modal.CloseAsync();
+            await Modal.CloseAsync();
             await DelegateAdded.InvokeAsync();
         }
         catch (DbUpdateException ex)

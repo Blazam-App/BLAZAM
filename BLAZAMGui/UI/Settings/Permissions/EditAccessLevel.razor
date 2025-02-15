@@ -262,7 +262,7 @@
 {
     <MudButton Disabled=@(WorkingModel.Id==1)
                Color=Color.Error
-               OnClick="@(()=>{_deleteModal.ShowAsync();})">@AppLocalization["Delete Access Level"]</MudButton>
+               OnClick="@(async()=>{await _deleteModal.ShowAsync();})">@AppLocalization["Delete Access Level"]</MudButton>
     <AppModal Width="MaxWidth.Medium"
               @ref=_deleteModal
               Title="@AppLocalization["Confirm deletion"]">

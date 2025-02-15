@@ -34,7 +34,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        refreshTimer = new Timer((state) => { PollData(); }, null, 2000, 2000);
+        refreshTimer = new Timer(async(state) => { await PollData(); }, null, 2000, 2000);
 
 
     }
