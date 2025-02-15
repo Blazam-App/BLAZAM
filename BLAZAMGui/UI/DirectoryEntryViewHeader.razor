@@ -144,7 +144,7 @@ else
                     aria-label="change password" />
                 </AppTooltip>
 
-                @if (CurrentUser.State.IsSuperAdmin)
+                @if (IsAdmin)
                 {
 
                     <AppTooltip Text="@AppLocalization["Change History"]">
@@ -219,14 +219,23 @@ else
                 {
                     <MudMenuItem OnClick="@DeleteUser">@AppLocalization["Delete"]</MudMenuItem>
                 }
-                @if (DirectoryEntry.CanEdit)
+          
+                @if (IsAdmin)
                 {
                     <MudMenuItem OnClick="@ShowHistory">@AppLocalization["Change History"]</MudMenuItem>
-                }
-                @if (CurrentUser.State.IsSuperAdmin)
-                {
+
                     <MudMenuItem OnClick="@ShowPermissions">@AppLocalization["Effective Permissions"]</MudMenuItem>
                 }
+                @if (_showRequestButton)
+                {
+                    <MudMenuItem OnClick="@(()=>{_requestAccessModal?.ShowAsync();})">@AppLocalization["Request Access"]</MudMenuItem>
+                }
+                <MudMenuItem Icon="@(IsFavorite==true?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
+                             IconColor="@(IsFavorite==true?Color.Warning:Color.Default)"
+                             OnClick="@ToggleFavorite">@(IsFavorite == true ? AppLocalization["Remove from favorites"] : AppLocalization["Add to favorites"])</MudMenuItem>
+
+              
+
             </MudMenu>
         </MudHidden>
     </MudStack>
