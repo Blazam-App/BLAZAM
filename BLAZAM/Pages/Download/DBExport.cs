@@ -57,7 +57,7 @@ namespace BLAZAM.Server.Pages.Download
                     });
                     JobStep packageData = new JobStep(_appLocalization["Prepare Files"], (step) =>
                     {
-                       
+
                         var exportDir = new SystemDirectory(tempPath);
                         zip.AddToZip(exportDir, exportDir.FullPath);
                         return true;
@@ -65,15 +65,15 @@ namespace BLAZAM.Server.Pages.Download
                     });
                     exportJob.AddStep(exportData);
                     exportJob.AddStep(packageData);
-                    var result = exportJob.Run();
-                    
+                    exportJob.Run();
+
                 }
                 return memoryStream.ToArray();
             }
 
 
 
-           
+
 
         }
     }

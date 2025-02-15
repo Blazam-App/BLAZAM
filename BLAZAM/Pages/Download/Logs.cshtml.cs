@@ -23,7 +23,7 @@ namespace BLAZAM.Server.Pages.Download
             return File(inMemZip, "application/zip");
         }
 
-        private byte[] GenerateZip()
+        private static byte[] GenerateZip()
         {
             using (MemoryStream memoryStream = new())
             {
