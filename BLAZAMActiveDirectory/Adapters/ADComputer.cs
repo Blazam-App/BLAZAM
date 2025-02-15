@@ -22,7 +22,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
             }
         }
-        private CancellationTokenSource cts;
+        private CancellationTokenSource _pingCancellationTokenSource;
         private bool? online;
         public ADComputer()
         {
@@ -155,14 +155,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <param name="timeout"></param>
         public void MonitorOnlineStatus(int timeout = 5000)
         {
-            cts = new CancellationTokenSource();
+            _pingCancellationTokenSource = new CancellationTokenSource();
             Task.Run(() =>
             {
-                while (!cts.IsCancellationRequested)
+                while (!_pingCancellationTokenSource.IsCancellationRequested)
                 {
                     try
                     {
-                        if (SearchResult != null && !cts.IsCancellationRequested && CanonicalName != null)
+                        if (SearchResult != null && !_pingCancellationTokenSource.IsCancellationRequested && CanonicalName != null)
                         {
                             Ping(timeout);
                         }
@@ -174,15 +174,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     Task.Delay(1000).Wait();
                 }
-                cts.Dispose();
-            }, cts.Token);
+                _pingCancellationTokenSource.Dispose();
+            }, _pingCancellationTokenSource.Token);
 
         }
         private void Ping(int timeout = 5000)
         {
             try
             {
-                if (IPHostEntry == null && !cts.IsCancellationRequested && CanonicalName != null)
+                if (IPHostEntry == null && !_pingCancellationTokenSource.IsCancellationRequested && CanonicalName != null)
                 {
                     IPHostEntry = Dns.GetHostEntry(CanonicalName);
                     Task.Delay(60000).ContinueWith((s) =>
@@ -197,7 +197,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     try
                     {
-                        if (cts.IsCancellationRequested || CanonicalName == null) return;
+                        if (_pingCancellationTokenSource.IsCancellationRequested || CanonicalName == null) return;
 
                         PingReply response = ping.Send(CanonicalName, timeout);
                         if (response != null)
@@ -236,7 +236,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override void Dispose()
         {
-            cts.Cancel();
+            _pingCancellationTokenSource.Cancel();
+            sessionManager.Dispose();
             base.Dispose();
         }
     }
