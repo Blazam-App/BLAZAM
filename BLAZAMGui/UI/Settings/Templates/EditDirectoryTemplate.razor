@@ -2,7 +2,7 @@
 @attribute [Authorize]
 @if (DirectoryTemplate != null)
 {
-    <MudForm IsValidChanged="@((val)=>{SaveDisabled=!val;})">
+    <MudForm IsValidChanged="@((val)=>{SaveDisabled = !val;})">
         <CascadingValue Value="DirectoryTemplate">
             <MudStack>
                 <MudText Class="mt-5" Typo="Typo.h6">@AppLocalization["Current Template:"] @originalTemplate.Name</MudText>
