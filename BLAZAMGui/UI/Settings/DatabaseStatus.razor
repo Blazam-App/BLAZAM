@@ -7,7 +7,7 @@
 <MudText Typo="Typo.h4">@AppLocalization["Database Status"]</MudText>
 <MudForm>
     <MudStack Spacing="5">
-        <MudText>To change these settings, modify appsettings.json in the application directory.</MudText>
+        <MudText>@AppLocalization["To change these settings, modify appsettings.json in the application directory."]</MudText>
         <SettingsField Label="@AppLocalization["DB Type"]">
             <MudTextField Disabled=true Label="@AppLocalization["DB Type"]" Value="@Context?.ConnectionString?.DatabaseType" />
         </SettingsField>
@@ -49,10 +49,11 @@
         }
         <SettingsField Label="@AppLocalization["Export Database"]">
 
-            <MudButton OnClick="Export" Color="Color.Success">Export</MudButton>
+            <MudButton Href="/download/dbexport" Target="_blank" Color="Color.Success">@AppLocalization["Export"]</MudButton>
 
         </SettingsField>
     </MudStack>
+    <DatabaseStats/>
 </MudForm>
 @code {
 #nullable disable warnings
@@ -64,33 +65,5 @@
 
         LoadingData = false;
     }
-    async void Export()
-    {
-
-        MemoryStream memoryStream = new MemoryStream();
-
-        Job exportJob = new Job(AppLocalization["Export Database"], CurrentUser.Username);
-        JobStep exportData = new JobStep(AppLocalization["Export Data"], (step) =>
-            {
-                Context.Export("export");
-                return true;
-
-            });
-        JobStep packageData = new JobStep(AppLocalization["Prepare Files"], (step) =>
-            {
-                ZipArchive exportZip = new ZipArchive(memoryStream, ZipArchiveMode.Create);
-                var exportDir = new SystemDirectory("export");
-                exportZip.AddToZip(exportDir, exportDir.FullPath);
-                memoryStream.SaveTo(new SystemFile("export/" + DatabaseCache.ApplicationSettings.AppName + "-" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".zip"));
-                return true;
-
-            });
-        exportJob.AddStep(exportData);
-        exportJob.AddStep(packageData);
-        await exportJob.ShowJobDetailsDialogAsync(MessageService);
-        await InvokeAsync(StateHasChanged);
-        await exportJob.RunAsync();
-
-
-    }
+  
 }

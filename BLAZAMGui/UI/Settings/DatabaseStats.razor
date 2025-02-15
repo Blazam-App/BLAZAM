@@ -1,0 +1,68 @@
+﻿@inherits DatabaseComponentBase
+<MudExpansionPanel Style="background-color: var(--mud-palette-background);" Text="@AppLocalization["Database Stats"]">
+    <MudDataGrid Loading=@LoadingData Items="@tableDataList">
+        <Columns>
+            <PropertyColumn Property="x=>x.TableName" />
+            <PropertyColumn Property="x=>x.Count" />
+        </Columns>
+    </MudDataGrid>
+    <LoadingData Loading="LoadingData" />
+</MudExpansionPanel>
+@code {
+    public class TableData
+    {
+        public string TableName { get; set; }
+        public int Count { get; set; }
+    }
+    List<TableData> tableDataList;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadStats();
+
+
+    }
+    private void LoadStats()
+    {
+        Task.Run(() =>
+        {
+            LoadingData = true;
+            tableDataList = new List<TableData>()
+    {
+        new TableData { TableName = "AccessLevelFieldMapping", Count = Context.AccessLevelFieldMapping.Count() },
+        new TableData { TableName = "AccessLevelObjectMapping", Count = Context.AccessLevelObjectMapping.Count() },
+        new TableData { TableName = "AccessLevels", Count = Context.AccessLevels.Count() },
+        new TableData { TableName = "ActiveDirectoryFields", Count = Context.ActiveDirectoryFields.Count() },
+        new TableData { TableName = "ActiveDirectoryFieldObjectMappings", Count = Context.ActiveDirectoryFieldObjectMappings.Count() },
+        new TableData { TableName = "ApiTokens", Count = Context.ApiTokens.Count() },
+        new TableData { TableName = "ChatRooms", Count = Context.ChatRooms.Count() },
+        new TableData { TableName = "DirectoryEntryAuditLogs", Count = Context.DirectoryEntryAuditLogs.Count() },
+        new TableData { TableName = "DirectoryTemplateFieldValues", Count = Context.DirectoryTemplateFieldValues.Count() },
+        new TableData { TableName = "DirectoryTemplateGroups", Count = Context.DirectoryTemplateGroups.Count() },
+        new TableData { TableName = "DirectoryTemplates", Count = Context.DirectoryTemplates.Count() },
+        new TableData { TableName = "FieldAccessLevel", Count = Context.FieldAccessLevel.Count() },
+        new TableData { TableName = "LockedOutUsers", Count = Context.LockedOutUsers.Count() },
+        new TableData { TableName = "LogonAuditLog", Count = Context.LogonAuditLog.Count() },
+        new TableData { TableName = "NotificationMessages", Count = Context.NotificationMessages.Count() },
+        new TableData { TableName = "NotificationSubscriptions", Count = Context.NotificationSubscriptions.Count() },
+        new TableData { TableName = "ObjectAccessLevel", Count = Context.ObjectAccessLevel.Count() },
+        new TableData { TableName = "ObjectActionFlag", Count = Context.ObjectActionFlag.Count() },
+        new TableData { TableName = "PermissionDelegate", Count = Context.PermissionDelegate.Count() },
+        new TableData { TableName = "PermissionMap", Count = Context.PermissionMap.Count() },
+        new TableData { TableName = "PermissionsAuditLog", Count = Context.PermissionsAuditLog.Count() },
+        new TableData { TableName = "RequestAuditLog", Count = Context.RequestAuditLog.Count() },
+        new TableData { TableName = "SettingsAuditLog", Count = Context.SettingsAuditLog.Count() },
+        new TableData { TableName = "SystemAuditLog", Count = Context.SystemAuditLog.Count() },
+        new TableData { TableName = "UnreadChatMessages", Count = Context.UnreadChatMessages.Count() },
+        new TableData { TableName = "UserDashboardWidgets", Count = Context.UserDashboardWidgets.Count() },
+        new TableData { TableName = "UserNotifications", Count = Context.UserNotifications.Count() },
+        new TableData { TableName = "UserSettings", Count = Context.UserSettings.Count() },
+        new TableData { TableName = "WebHookAttempts", Count = Context.WebHookAttempts.Count() },
+        new TableData { TableName = "WebHookSubscriptions", Count = Context.WebHookSubscriptions.Count() }
+    };
+            LoadingData = false;
+        });
+
+    }
+}
