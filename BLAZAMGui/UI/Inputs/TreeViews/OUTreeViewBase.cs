@@ -53,10 +53,6 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 if (value == _selectedEntry) return;
                 if (value != null)
                 {
-                    var firstSet = true;
-                    if (_selectedEntry != null)
-                        firstSet = false;
-
                     var cache = _selectedEntry;
 
                     _selectedEntry = value;
@@ -177,7 +173,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
                             openThis.Children = GetChildren(openThis);
                             var child = openThis.Children.Where(
-                                c => SelectedEntry.DN?.Contains(c.Value.DN)==true
+                                c => SelectedEntry.DN?.Contains(c.Value.DN) == true
                                                             && !SelectedEntry.DN.Equals(c.Value.DN)
                                                             ).FirstOrDefault();
                             if (child != null)

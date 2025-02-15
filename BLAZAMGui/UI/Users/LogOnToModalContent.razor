@@ -51,7 +51,7 @@
     {
         allowedWorkstations.Remove(name);
     }
-    public async Task SaveChanges()
+    public void SaveChanges()
     {
         string? newValue = null;
         if (allowedWorkstations.Count > 0)

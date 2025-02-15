@@ -295,7 +295,9 @@ namespace BLAZAM
 
 
 
-
+        /// <summary>
+        /// Indicates whether the app is running under the development environment
+        /// </summary>
         public static bool IsDevelopment
         {
             get
