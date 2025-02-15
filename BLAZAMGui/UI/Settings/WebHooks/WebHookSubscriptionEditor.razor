@@ -122,7 +122,7 @@
         {
             Context.WebHookSubscriptions.Add(_newSubscription);
             await Context.SaveChangesAsync();
-            GetSubscriptions();
+            await GetSubscriptions();
         }
         catch (Exception ex)
         {

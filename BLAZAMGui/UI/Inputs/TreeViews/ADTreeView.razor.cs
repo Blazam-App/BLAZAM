@@ -20,7 +20,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
 
 
-        private IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(IDirectoryEntryAdapter? parent)
+        protected override IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(IDirectoryEntryAdapter? parent)
         {
             try
             {

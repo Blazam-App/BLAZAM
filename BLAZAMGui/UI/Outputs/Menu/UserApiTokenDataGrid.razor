@@ -1,5 +1,5 @@
 @inherits DatabaseComponentBase
-<ApiTokenDataGrid OnTokenDeleted="@((token)=>{Delete(token);})"
+<ApiTokenDataGrid OnTokenDeleted="@(async(token)=>{await Delete(token);})"
 Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
 
 

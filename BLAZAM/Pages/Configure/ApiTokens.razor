@@ -69,7 +69,7 @@
                                             , AppLocalization["Confirm delete"]))
         {
             tokenToDelete.DeletedAt = DateTime.UtcNow;
-            Context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
 
 

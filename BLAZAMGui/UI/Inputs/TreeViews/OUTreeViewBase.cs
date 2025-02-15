@@ -60,7 +60,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                     var cache = _selectedEntry;
 
                     _selectedEntry = value;
-                    if (cache == null && RootOU.Count > 0 && value == RootOU.First()) return;
+                    if (cache == null && RootOU?.Count > 0 && value == RootOU.First()) return;
 
 
                     InvokeAsync(() => { SelectedEntryChanged.InvokeAsync(value); });
@@ -97,16 +97,16 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             return Color.Default;
         }
 
-        protected IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(IDirectoryEntryAdapter? parent)
+        protected virtual IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(IDirectoryEntryAdapter? parent)
         {
             try
             {
 
-                var items = parent.Children
+                var items = parent?.Children
                     .Where(c => c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c));
 
 
-                var treeBranchh = items.ToTreeItemData();
+                var treeBranchh = items?.ToTreeItemData();
                 return treeBranchh;
 
             }
@@ -177,7 +177,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
                             openThis.Children = GetChildren(openThis);
                             var child = openThis.Children.Where(
-                                c => SelectedEntry.DN.Contains(c.Value.DN)
+                                c => SelectedEntry.DN?.Contains(c.Value.DN)==true
                                                             && !SelectedEntry.DN.Equals(c.Value.DN)
                                                             ).FirstOrDefault();
                             if (child != null)
