@@ -36,8 +36,8 @@ namespace BLAZAM.Update
 
         public string Branch { get => Release.Branch; }
 
-        private IAppDatabaseFactory _dbFactory;
-        private UpdateService _updateService;
+        private readonly IAppDatabaseFactory _dbFactory;
+        private readonly UpdateService _updateService;
 
         /// <summary>
         /// The application update directory, in temporary files
@@ -81,7 +81,7 @@ namespace BLAZAM.Update
         /// </summary>
         public SystemFile UpdateFile { get => new(UpdateDownloadDirectory + Version.Version + ".zip"); }
         public string UpdateCommand => UpdateCommandProcess + " " + UpdateCommandArguments;
-        public string UpdateCommandProcess
+        public static string UpdateCommandProcess
         {
             get
             {
@@ -114,21 +114,12 @@ namespace BLAZAM.Update
         {
             get
             {
-                //var creds = _updateService.GetImpersonationUser();
+               
                 var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory;
                 if (Debugger.IsAttached)
                     args += "bin\\Debug\\net8.0\\";
                 args += "'";
-                //if (creds != null)
-                //{
-                //    args += " -Username " + creds.Username +
-                //   " -Password '" + creds.Password.ToPlainText() + "'";
-                //    if (!creds.FQDN.IsNullOrEmpty())
-                //    {
-
-                //        args += " -Domain " + creds.FQDN;
-                //    }
-                //}
+               
                 return args;
 
             }
@@ -139,9 +130,9 @@ namespace BLAZAM.Update
         /// </summary>
         public AppEvent<FileProgress?> DownloadPercentageChanged { get; set; }
 
-        private ApplicationVersion _runningVersion;
-        private Process _runningProcess;
-        private SystemDirectory _applicationRootDirectory;
+        private readonly ApplicationVersion _runningVersion;
+        private readonly Process _runningProcess;
+        private readonly SystemDirectory _applicationRootDirectory;
 
 
         public ApplicationUpdate(ApplicationInfo applicationInfo, UpdateService updateService, IAppDatabaseFactory dbFactory)
@@ -221,7 +212,7 @@ namespace BLAZAM.Update
             throw new ApplicationUpdateException("An unknown error caused the update to fail.");
 
         }
-        private async Task<bool> Wait(JobStep? step)
+        private static async Task<bool> Wait(JobStep? step)
         {
 
             await Task.Delay(60000);
@@ -268,71 +259,11 @@ namespace BLAZAM.Update
                 }
             }
             return false;
-            //switch (_updateService.UpdateCredential)
-            //{
-
-            //    case UpdateCredential.Application:
-            //        Loggers.UpdateLogger?.Warning("The application user has write permission to the application directory!");
-            //        try
-            //        {
-            //            return ApplyFiles();
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-            //            throw new ApplicationUpdateException("Error trying to apply update files", ex);
-            //        }
-            //    case UpdateCredential.Active_Directory:
-            //        var adCredentials = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
-            //        if (adCredentials != null)
-            //        {
-
-            //            return adCredentials.Run(() =>
-            //            {
-            //                try
-            //                {
-            //                    return ApplyFiles();
-            //                }
-            //                catch (Exception ex)
-            //                {
-            //                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-
-            //                }
-            //                return false;
-            //            });
-            //        }
-            //        break;
-            //    case UpdateCredential.Update:
-            //        var updateCredentials = _updateService.GetUpdateCredentials();
-            //        if (updateCredentials != null)
-            //        {
-
-            //            return updateCredentials.Run(() =>
-            //            {
-            //                try
-            //                {
-            //                    return ApplyFiles();
-            //                }
-            //                catch (Exception ex)
-            //                {
-            //                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-
-            //                }
-            //                return false;
-            //            });
-            //        }
-            //        break;
-            //    default:
-            //    case UpdateCredential.None:
-            //        return false;
-            //}
-            //return false;
-
         }
 
         private bool ApplyFiles()
         {
-            Loggers.UpdateLogger?.Information("Running update as: " + WindowsIdentity.GetCurrent().Name);
+            Loggers.UpdateLogger?.Information("Running update as: {RunningUser}", WindowsIdentity.GetCurrent().Name);
             Loggers.UpdateLogger?.Information("Updating updater");
 
 
@@ -364,38 +295,10 @@ namespace BLAZAM.Update
             }
         }
 
-        private bool InvokeUpdateExecutable_old()
-        {
-            var startTime = DateTime.Now;
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = UpdateCommandProcess,
-                    Arguments = UpdateCommandArguments,
-                    //RedirectStandardOutput = true,
-                    //UseShellExecute = false,
-                    UseShellExecute = true,
-                    CreateNoWindow = true,
-
-
-                }
-            };
-            Loggers.UpdateLogger?.Information("Starting update process");
-
-            process.Start();
-
-            Loggers.UpdateLogger?.Information("Update process id: " + process.Id);
-
-
-            process.WaitForExit();
-            Loggers.UpdateLogger?.Information("Update process exited: " + process.ExitCode);
-            Loggers.UpdateLogger?.Information("Update process execution time: " + (DateTime.Now - startTime).TotalMilliseconds + "ms");
-
-            return true;
-        }
         private bool InvokeUpdateExecutable()
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var startTime = DateTime.Now;
             var process = new Process
             {
@@ -412,7 +315,7 @@ namespace BLAZAM.Update
 
             Loggers.UpdateLogger?.Information("Starting update process");
             process.Start();
-            Loggers.UpdateLogger?.Information("Update process id: " + process.Id);
+            Loggers.UpdateLogger?.Information("Update process id: {ProcessId}", process.Id);
 
             // Read and log the output asynchronously
             var output = new StringBuilder();
@@ -421,7 +324,7 @@ namespace BLAZAM.Update
                 if (!string.IsNullOrEmpty(e.Data))
                 {
                     output.AppendLine(e.Data);
-                    Loggers.UpdateLogger?.Information("Update process output: " + e.Data);
+                    Loggers.UpdateLogger?.Information("Update process output: {ProcessOutput}", e.Data);
                 }
             };
             process.ErrorDataReceived += (sender, e) =>
@@ -429,35 +332,35 @@ namespace BLAZAM.Update
                 if (!string.IsNullOrEmpty(e.Data))
                 {
                     output.AppendLine(e.Data);
-                    Loggers.UpdateLogger?.Error("Update process error: " + e.Data); // Log as error
+                    Loggers.UpdateLogger?.Error("Update process error: {ProcessOutput}", e.Data); // Log as error
                 }
             };
             process.BeginOutputReadLine(); // Start asynchronous reading
 
             process.WaitForExit();
-
-            Loggers.UpdateLogger?.Information("Update process exited: " + process.ExitCode);
-            Loggers.UpdateLogger?.Information("Update process execution time: " + (DateTime.Now - startTime).TotalMilliseconds + "ms");
+            stopwatch.Stop();
+            Loggers.UpdateLogger?.Information("Update process exited: {ExitCode}", process.ExitCode);
+            Loggers.UpdateLogger?.Information("Update process execution time: {ExecutionTime}",  stopwatch.ElapsedMilliseconds + "ms");
 
             // Log the complete output (if needed)
-            Loggers.UpdateLogger?.Information("Complete update process output:\n" + output.ToString());
+            Loggers.UpdateLogger?.Information("Complete update process output:\n{ProcessOutput}", output.ToString());
 
             return true;
         }
         public async Task<bool> Backup(JobStep? step)
         {
-            Loggers.UpdateLogger?.Information("Attempting backup of current version to: " + BackupPath);
+            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {BackupPath}", BackupPath);
             try
             {
                 var result = await Task.Run(() => { return _applicationRootDirectory.CopyTo(BackupDirectory); });
 
-                Loggers.UpdateLogger?.Debug("Backup result: " + result.ToString());
+                Loggers.UpdateLogger?.Debug("Backup result: {BackupResult}", result.ToString());
 
                 return result;
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger?.Error("Backup of current version failed: " + ex.Message);
+                Loggers.UpdateLogger?.Error("Backup of current version failed: {ErrorMessage}", ex.Message);
                 return false;
             }
         }
@@ -467,7 +370,7 @@ namespace BLAZAM.Update
         {
             return await Task.Run(() =>
             {
-                Loggers.UpdateLogger?.Information("Attempting cleaning of download folder: " + UpdateFile);
+                Loggers.UpdateLogger?.Information("Attempting cleaning of download folder: {UpdatePath}", UpdateFile);
 
                 try
                 {
@@ -478,7 +381,7 @@ namespace BLAZAM.Update
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger?.Error("Error while cleaning of download folder: " + UpdateFile + " {@Error}", ex);
+                    Loggers.UpdateLogger?.Error("Error while cleaning of download folder: {UpdatePath} {@Error}", UpdateFile,  ex);
 
                     return false;
                 }
@@ -508,7 +411,7 @@ namespace BLAZAM.Update
 
                 if (!UpdateFile.Exists) return false;
 
-                Loggers.UpdateLogger?.Debug("Attempting unzip of " + UpdateFile);
+                Loggers.UpdateLogger?.Debug("Attempting unzip of {UpdatePath}", UpdateFile);
 
                 UpdateStagingDirectory.EnsureCreated();
 
@@ -518,7 +421,7 @@ namespace BLAZAM.Update
                     {
                         var zip = new ZipArchive(streamToReadFrom);
                         zip.ExtractToDirectory(UpdateStagingDirectory.FullPath, true);
-                        Loggers.UpdateLogger?.Debug(UpdateFile + " unzipped successfully to " + UpdateStagingDirectory);
+                        Loggers.UpdateLogger?.Debug("{UpdatePath} unzipped successfully to {StagingPath}", UpdateFile, UpdateStagingDirectory);
 
                         return true;
                     }
@@ -543,9 +446,9 @@ namespace BLAZAM.Update
             {
                 return false;
             }
-            Loggers.UpdateLogger?.Debug("Attempting download of update " + Version);
-            Loggers.UpdateLogger?.Debug("Download URL: " + Release.DownloadURL);
-            Loggers.UpdateLogger?.Debug("Download Path: " + UpdateDownloadDirectory);
+            Loggers.UpdateLogger?.Debug("Attempting download of update {UpdateVersion}", Version);
+            Loggers.UpdateLogger?.Debug("Download URL: {DownloadURL}", Release.DownloadURL);
+            Loggers.UpdateLogger?.Debug("Download Path: {UpdateDirectory}", UpdateDownloadDirectory);
 
             var progress = new FileProgress();
             using (var client = new HttpClient())
@@ -554,7 +457,7 @@ namespace BLAZAM.Update
                 {
                     if (!response.IsSuccessStatusCode)
                     {
-                        Loggers.UpdateLogger?.Debug("Unable to connect to download url: " + response.StatusCode + " : " + response.ReasonPhrase);
+                        Loggers.UpdateLogger?.Debug("Unable to connect to download url: {StatusCode}:{ReasonPhrase}", response.StatusCode,response.ReasonPhrase);
 
                         return false;
                     }

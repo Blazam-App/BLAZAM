@@ -43,8 +43,8 @@ namespace BLAZAM.Tests.Updates
 
             await latest.CleanStaging(null);
             latest.UpdateFile.Delete();
-            Assert.True(!latest.UpdateFile.Exists);
-            Assert.True(latest.UpdateStagingDirectory.Files.Count == 0);
+            Assert.False(latest.UpdateFile.Exists);
+            Assert.Empty(latest.UpdateStagingDirectory.Files);
         }
     }
 }

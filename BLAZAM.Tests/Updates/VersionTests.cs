@@ -40,12 +40,12 @@ namespace BLAZAM.Tests.Updates
         [Fact]
         public void Long_Basic_Comparison_Returns_Zero_When_Same()
         {
-            Assert.True(longLow.CompareTo(basicLow) == 0);
+            Assert.Equal(0, longLow.CompareTo(basicLow));
         }
         [Fact]
         public void CompareVersions_Returns_Zero_When_Same()
         {
-            Assert.True(longLow.CompareTo(longLow) == 0);
+            Assert.Equal(0, longLow.CompareTo(longLow));
         }
         [Fact]
         public void CompareVersions_Returns_GreaterThanZero_When_Other_Is_Older()

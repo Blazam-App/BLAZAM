@@ -1,5 +1,8 @@
 ﻿namespace BLAZAM.Update
 {
+    /// <summary>
+    /// Collection of constants of Release Branch names
+    /// </summary>
     public class ApplicationReleaseBranches
     {
         public const string Stable = "Release";

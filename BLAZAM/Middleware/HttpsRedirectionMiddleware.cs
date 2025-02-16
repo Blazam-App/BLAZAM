@@ -35,15 +35,17 @@ namespace BLAZAM.Server.Middleware
             // If the value is not cached, retrieve it from the database.
             if (_applicationInfo.InstallationCompleted)
             {
-                try
+
+                if (DatabaseCache.ApplicationSettings != null)
                 {
                     forceHttps = DatabaseCache.ApplicationSettings.ForceHTTPS;
                 }
-                catch (NullReferenceException ex)
+                else
                 {
-                    Loggers.SystemLogger.Warning("Error while checking database cache for Force HTTPS {@Error}", ex);
                     forceHttps = false;
                 }
+
+
 
 
 

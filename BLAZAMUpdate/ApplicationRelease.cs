@@ -23,11 +23,11 @@ namespace BLAZAM.Update
         }
 
         public string Branch { get; set; }
-        public string? ReleaseNotes => GitHubRelease.Body;
+        public string? ReleaseNotes => GitHubRelease?.Body;
 
-        public bool? PreviewRelease => GitHubRelease.Prerelease;
+        public bool? PreviewRelease => GitHubRelease?.Prerelease;
 
-        public DateTimeOffset? ReleaseTime => GitHubRelease.PublishedAt;
+        public DateTimeOffset? ReleaseTime => GitHubRelease?.PublishedAt;
 
         public ApplicationVersion Version { get; set; }
         public Release? GitHubRelease { get; internal set; }
