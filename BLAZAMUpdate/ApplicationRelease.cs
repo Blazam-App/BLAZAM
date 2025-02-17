@@ -31,7 +31,7 @@ namespace BLAZAM.Update
 
         public ApplicationVersion Version { get; set; }
         public Release? GitHubRelease { get; internal set; }
-        private ReleaseAsset? ReleaseAsset => GitHubRelease?.Assets.FirstOrDefault();
+        private ReleaseAsset? ReleaseAsset => GitHubRelease?.Assets[0];
 
     }
 }

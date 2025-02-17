@@ -1,6 +1,6 @@
-﻿namespace BLAZAM.Services.Attributes
+﻿namespace BLAZAM.Common.Attributes
 {
-    public class AutoStartBackgroundService : System.Attribute
+    public class AutoStartBackgroundService : Attribute
     {
         public int IntervalInMinutes { get; set; }
         public bool Immediate { get; set; }

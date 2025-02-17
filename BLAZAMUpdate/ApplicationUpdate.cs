@@ -23,7 +23,7 @@ namespace BLAZAM.Update
         /// <summary>
         /// Token source for cancelling this update when in progress
         /// </summary>
-        private CancellationTokenSource cancellationTokenSource { get; set; }
+        private CancellationTokenSource cancellationTokenSource { get; set; } = new CancellationTokenSource();
 
         public static AppEvent OnUpdateStarted { get; set; }
 
@@ -224,8 +224,8 @@ namespace BLAZAM.Update
 
 
             Loggers.UpdateLogger?.Debug("Copying updater script");
-            Loggers.UpdateLogger?.Debug("Source: " + UpdateStagingDirectory + "\\updater\\*");
-            Loggers.UpdateLogger?.Debug("Dest: " + _applicationRootDirectory + "updater\\");
+            Loggers.UpdateLogger?.Debug("Source: {Source}", UpdateStagingDirectory + "\\updater\\*");
+            Loggers.UpdateLogger?.Debug("Dest: {Destination}", _applicationRootDirectory + "updater\\");
 
 
             using var context = await _dbFactory.CreateDbContextAsync();
@@ -264,7 +264,6 @@ namespace BLAZAM.Update
         private bool ApplyFiles()
         {
             Loggers.UpdateLogger?.Information("Running update as: {RunningUser}", WindowsIdentity.GetCurrent().Name);
-            Loggers.UpdateLogger?.Information("Updating updater");
 
 
 
@@ -299,7 +298,6 @@ namespace BLAZAM.Update
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var startTime = DateTime.Now;
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -339,8 +337,8 @@ namespace BLAZAM.Update
 
             process.WaitForExit();
             stopwatch.Stop();
-            Loggers.UpdateLogger?.Information("Update process exited: {ExitCode}", process.ExitCode);
-            Loggers.UpdateLogger?.Information("Update process execution time: {ExecutionTime}",  stopwatch.ElapsedMilliseconds + "ms");
+            Loggers.UpdateLogger?.Information("Update process exited in {ExeecutionTime}: {ExitCode}", stopwatch.ElapsedMilliseconds + "ms", process.ExitCode);
+
 
             // Log the complete output (if needed)
             Loggers.UpdateLogger?.Information("Complete update process output:\n{ProcessOutput}", output.ToString());
@@ -360,7 +358,7 @@ namespace BLAZAM.Update
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger?.Error("Backup of current version failed: {ErrorMessage}", ex.Message);
+                Loggers.UpdateLogger?.Error("Backup of current version failed: {@Error}", ex);
                 return false;
             }
         }
@@ -467,16 +465,16 @@ namespace BLAZAM.Update
                     {
                         using (var streamToWriteTo = UpdateFile.OpenWriteStream())
                         {
-                            progress.ExpectedSize = (int)Release.ExpectedSize;
+                            progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
                             var buffer = new byte[4096];
                             int bytesRead;
                             int totalBytesRead = 0;
 
-                            while ((bytesRead = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                            while ((bytesRead = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length, cancellationTokenSource.Token)) > 0)
                             {
-                                if (cancellationTokenSource?.IsCancellationRequested != true)
+                                if (cancellationTokenSource.IsCancellationRequested != true)
                                 {
-                                    await streamToWriteTo.WriteAsync(buffer, 0, bytesRead);
+                                    await streamToWriteTo.WriteAsync(buffer, 0, bytesRead, cancellationTokenSource.Token);
                                     totalBytesRead += bytesRead;
                                     progress.CompletedBytes = totalBytesRead;
                                     if (step != null)

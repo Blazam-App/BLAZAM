@@ -1,6 +1,6 @@
 ﻿using BLAZAM.Session.Interfaces;
 
-namespace BLAZAM.Server.Data.Services
+namespace BLAZAM.Session
 {
     public class MFARequest : IEquatable<MFARequest?>
     {

@@ -2,7 +2,7 @@
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
 
-namespace BLAZAM.Server.Data.Services
+namespace BLAZAM.Session
 {
     public class CurrentUserStateService : IDisposable, ICurrentUserStateService
     {

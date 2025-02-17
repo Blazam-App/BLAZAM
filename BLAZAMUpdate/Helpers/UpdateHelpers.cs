@@ -5,16 +5,16 @@ namespace BLAZAM.Helpers
 {
     public static class UpdateHelpers
     {
-
+        /// <summary>
+        /// Provides updates via dependency injection
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection AddUpdateServices(this IServiceCollection services)
         {
-            //Provide updating as a service, may be a little much for one page using it
+            //Provide updating as a service
             services.AddSingleton<UpdateService>();
 
-            //Provide Automatic Updates as a service
-            //This service runs checks every 4 hours for an update and if found, schedules an
-            //update at a time of day specified in the database
-            //services.AddSingleton<AutoUpdateService>();
             return services;
         }
     }
