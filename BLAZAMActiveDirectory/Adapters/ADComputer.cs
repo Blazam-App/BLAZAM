@@ -13,16 +13,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
     public class ADComputer : AccountDirectoryAdapter, IADComputer
     {
 
-        private ADComputerSessions sessionManager;
+        private ADComputerSessions? sessionManager;
+        private WmiConnection? _wmiConnection;
         private WmiConnection? wmiConnection
         {
             get
             {
                 if (CanonicalName == null) return null;
-                return new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
+                if (_wmiConnection==null)
+                {
+                    _wmiConnection= new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
+                }
+                return _wmiConnection;
             }
         }
-        private CancellationTokenSource _pingCancellationTokenSource;
+        private CancellationTokenSource _pingCancellationTokenSource = new();
         private bool? online;
         public ADComputer()
         {
@@ -155,7 +160,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <param name="timeout"></param>
         public void MonitorOnlineStatus(int timeout = 5000)
         {
-            _pingCancellationTokenSource = new CancellationTokenSource();
+            if (_pingCancellationTokenSource == null || _pingCancellationTokenSource.IsCancellationRequested)
+                _pingCancellationTokenSource = new CancellationTokenSource();
             Task.Run(() =>
             {
                 while (!_pingCancellationTokenSource.IsCancellationRequested)
@@ -237,7 +243,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public override void Dispose()
         {
             _pingCancellationTokenSource.Cancel();
-            sessionManager.Dispose();
+            sessionManager?.Dispose();
             base.Dispose();
         }
     }
