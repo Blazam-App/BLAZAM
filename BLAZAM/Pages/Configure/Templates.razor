@@ -129,7 +129,7 @@
 </SetHeader>
 
 <MudText Typo="Typo.h4">@AppLocalization["Templates"] <AppDocumentationButton Page="/admin/templates" /></MudText>
-@if (Templates.Any() != true)
+@if (Templates.Any() == true)
 {
 
     <MudCard Elevation="2">
@@ -164,7 +164,7 @@
         await base.OnInitializedAsync();
         await RefreshComponents();
 
-        if (Templates?.Any() == true)
+        if (Templates?.Any() != true)
         {
 
             await Task.Delay(1000);

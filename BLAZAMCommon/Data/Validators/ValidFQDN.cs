@@ -11,11 +11,11 @@ namespace BLAZAM.Common.Data.Validators
             if (value != null && value is string strValue)
             {
                 if (!strValue.IsNullOrEmpty())
-                    if (!Regex.IsMatch(strValue, "^[A-Z0-9.-]+\\.[A-Z]{2,}$", RegexOptions.IgnoreCase))
-                        return new ValidationResult("Must be a valid domain name.");
+                    if (!Regex.IsMatch(strValue, "^[A-Z0-9.-]+\\.^[A-Z]{2,}$", RegexOptions.IgnoreCase))
+                        return ValidationResult.Success;
 
             }
-            return ValidationResult.Success;
+            return new ValidationResult("Must be a valid domain name.");
 
 
         }

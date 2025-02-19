@@ -12,7 +12,18 @@
         set => _saveDisabled = value;
     }
 
+    protected MudForm? Form;
+    protected bool IsValid;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if(firstRender){
+            Form?.ResetValidation();
+            Form?.Validate();
+            await InvokeAsync(StateHasChanged);
+        }
 
+    }
     protected virtual async Task Save()
     {
         if (Context != null)

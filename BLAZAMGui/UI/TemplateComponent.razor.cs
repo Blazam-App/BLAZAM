@@ -10,6 +10,7 @@ namespace BLAZAM.Gui.UI
         protected MudTabs? Tabs;
         private IEnumerable<DirectoryTemplate> templates = new List<DirectoryTemplate>();
         private string? selectedCategory;
+        protected DirectoryTemplate? OriginalTemplate;
         private DirectoryTemplate? selectedTemplate;
 
         protected SetHeader? Header { get; set; }
@@ -60,7 +61,9 @@ namespace BLAZAM.Gui.UI
         {
             get => selectedTemplate; set
             {
+                if (selectedTemplate == value) return;
                 selectedTemplate = value;
+                OriginalTemplate = Context.DirectoryTemplates.AsNoTracking().FirstOrDefault(t=>t.Id==value.Id);
                 _templateIdParameter = value?.Id;
                 Header?.OnRefreshRequested?.Invoke();
 
