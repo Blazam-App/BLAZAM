@@ -18,7 +18,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
 using System.Data;
 
 namespace BLAZAM.Database.Context

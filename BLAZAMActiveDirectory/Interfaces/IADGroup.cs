@@ -1,5 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
-using System.DirectoryServices;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {

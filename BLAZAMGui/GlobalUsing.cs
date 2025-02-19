@@ -1,8 +1,10 @@
 ﻿global using BLAZAM.ActiveDirectory.Interfaces;
 global using BLAZAM.Common.Data;
 global using BLAZAM.Common.Data.Services;
+global using BLAZAM.Common.Exceptions;
 global using BLAZAM.Database.Context;
 global using BLAZAM.Database.Models.Notifications;
+global using BLAZAM.Database.Models.Templates;
 global using BLAZAM.Helpers;
 global using BLAZAM.Localization;
 global using BLAZAM.Logger;
@@ -12,11 +14,7 @@ global using BLAZAM.Services.Background;
 global using BLAZAM.Session.Interfaces;
 global using BLAZAM.Update.Services;
 global using Microsoft.AspNetCore.Components;
-global using Microsoft.Extensions.Localization;
-global using Microsoft.JSInterop;
-global using BLAZAM.Gui.UI.Outputs.Menu;
-
-global using BLAZAM.Common.Exceptions;
-global using BLAZAM.Database.Models.Templates;
 global using Microsoft.Data.SqlClient;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Localization;
+global using Microsoft.JSInterop;

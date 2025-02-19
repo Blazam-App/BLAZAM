@@ -1,8 +1,4 @@
-﻿
-
-using BLAZAM.Database.Models.Chat;
-using BLAZAM.Database.Models.Notifications;
-using BLAZAM.Server.Data;
+﻿using BLAZAM.Database.Models.Notifications;
 
 namespace BLAZAM.Database.Models.User
 {

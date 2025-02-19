@@ -25,7 +25,7 @@
         <MudText Align="Align.Center">@AppLocalization["Google Authenticator Passcode"]</MudText>
         <GoogleAuthenticatorInput @bind-Passcode=passcode
                                   AuthSecret="@googleAuthSecret"
-                                  OnAuthenticated="@(async()=>{AttemptSignIn(passcode);})" />
+                                  OnAuthenticated="@(async()=>{await AttemptSignIn(passcode);})" />
         <MudButton Color="Color.Primary" OnClick="@(()=>{googleAuthSecret=null; LoginRequest.MFAToken=null;})">@AppLocalization["Back"]</MudButton>
 
     }

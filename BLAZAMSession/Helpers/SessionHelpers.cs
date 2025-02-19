@@ -1,33 +1,16 @@
 ﻿using BLAZAM.Database.Context;
-using BLAZAM.Server.Data.Services;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Helpers
 {
     public static class SessionHelpers
     {
 
-        public static IServiceCollection AddSessionServices(this IServiceCollection services)
-        {
-            //Provide UserStates as a service
-            //This service is a "hack" for Blazor Server not having, in a real sense, sessions
-            //It allows data to persist between refreshes/reloading page navigations per logged
-            //in user principal
-            services.AddSingleton<IApplicationUserStateService, ApplicationUserStateService>();
-
-
-            services.AddScoped<ICurrentUserStateService, CurrentUserStateService>();
-            return services;
-        }
+     
 
 
         public static void SlideCookieExpiration(this HttpContext httpContext, IApplicationUserState? userState = null)

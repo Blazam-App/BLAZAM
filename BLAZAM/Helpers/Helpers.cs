@@ -2,9 +2,6 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models.Templates;
-using BLAZAM.EmailMessage.Email.Notifications;
-using MudBlazor;
-using System.Security;
 
 namespace BLAZAM.Helpers
 {

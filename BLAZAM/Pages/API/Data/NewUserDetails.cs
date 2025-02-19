@@ -1,7 +1,4 @@
-﻿using BLAZAM.Database.Models.Templates;
-using System.Text.Json;
-
-namespace BLAZAM.Pages.API.Data
+﻿namespace BLAZAM.Pages.API.Data
 {
     /// <summary>
     /// Request package for creation of a templated user
@@ -50,6 +47,9 @@ namespace BLAZAM.Pages.API.Data
         /// </summary>
         public string? SendWelcomeEmailTo { get; set; }
     }
+    /// <summary>
+    /// Example details for Swagger documentation
+    /// </summary>
     public class NewUserDetailsExample
     {
         public object GetExamples()
@@ -62,8 +62,8 @@ namespace BLAZAM.Pages.API.Data
                 OU = "OU=Users,DC=example,DC=com",
                 Fields = new List<NewUserField>
             {
-                new NewUserField { FieldName = "Department", FieldValue = "Sales" },
-                new NewUserField { FieldName = "Title", FieldValue = "Sales Representative" }
+                new() { FieldName = "Department", FieldValue = "Sales" },
+                new() { FieldName = "Title", FieldValue = "Sales Representative" }
             },
                 Groups = new List<string> { "S-1-5-21-1004336348-1177238915-682003330-512", "S-1-5-21-1004336348-1148567915-615476330-495" }
             };

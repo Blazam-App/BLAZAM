@@ -52,7 +52,7 @@
         Modal.Options.CloseButton = true;
         await base.OnInitializedAsync();
 
-        AuditLogger.System.Analytics.ObjectHistoryViewed(Model.ObjectType);
+        _ = AuditLogger.System.Analytics.ObjectHistoryViewed(Model.ObjectType);
 
 
         _events = await Context.DirectoryEntryAuditLogs.Where(l => l.Action != AuditActions.Computer_Searched

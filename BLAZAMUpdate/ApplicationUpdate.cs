@@ -1,16 +1,10 @@
-﻿using BLAZAM.Common;
-using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Exceptions;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.FileSystem;
-using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Update.Services;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Localization;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Security.Principal;
@@ -29,7 +23,7 @@ namespace BLAZAM.Update
         /// <summary>
         /// Token source for cancelling this update when in progress
         /// </summary>
-        private CancellationTokenSource cancellationTokenSource { get; set; }
+        private CancellationTokenSource cancellationTokenSource { get; set; } = new CancellationTokenSource();
 
         public static AppEvent OnUpdateStarted { get; set; }
 
@@ -42,8 +36,8 @@ namespace BLAZAM.Update
 
         public string Branch { get => Release.Branch; }
 
-        private IAppDatabaseFactory _dbFactory;
-        private UpdateService _updateService;
+        private readonly IAppDatabaseFactory _dbFactory;
+        private readonly UpdateService _updateService;
 
         /// <summary>
         /// The application update directory, in temporary files
@@ -54,12 +48,12 @@ namespace BLAZAM.Update
         private static SystemDirectory UpdateTempDirectory { get; set; }
 
         public static SystemDirectory StagingDirectory =>
-            new SystemDirectory(UpdateTempDirectory + "staged\\");
+            new(UpdateTempDirectory + "staged\\");
 
         /// <summary>
         /// The local staging directory path for this update
         /// </summary>
-        public SystemDirectory UpdateStagingDirectory { get => new SystemDirectory(StagingDirectory + Version.Version); }
+        public SystemDirectory UpdateStagingDirectory { get => new(StagingDirectory + Version.Version); }
 
 
 
@@ -71,23 +65,23 @@ namespace BLAZAM.Update
         /// </returns>
         public static SystemDirectory UpdateDownloadDirectory
         {
-            get => new SystemDirectory(UpdateTempDirectory + "download\\");
+            get => new(UpdateTempDirectory + "download\\");
         }
         public SystemDirectory BackupPath
         {
-            get => new SystemDirectory(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
+            get => new(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
         }
         public SystemDirectory BackupDirectory
         {
-            get => new SystemDirectory(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
+            get => new(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
         }
 
         /// <summary>
         /// The local path to the downloaded zip file
         /// </summary>
-        public SystemFile UpdateFile { get => new SystemFile(UpdateDownloadDirectory + Version.Version + ".zip"); }
+        public SystemFile UpdateFile { get => new(UpdateDownloadDirectory + Version.Version + ".zip"); }
         public string UpdateCommand => UpdateCommandProcess + " " + UpdateCommandArguments;
-        public string UpdateCommandProcess
+        public static string UpdateCommandProcess
         {
             get
             {
@@ -120,21 +114,12 @@ namespace BLAZAM.Update
         {
             get
             {
-                //var creds = _updateService.GetImpersonationUser();
+               
                 var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory;
                 if (Debugger.IsAttached)
                     args += "bin\\Debug\\net8.0\\";
                 args += "'";
-                //if (creds != null)
-                //{
-                //    args += " -Username " + creds.Username +
-                //   " -Password '" + creds.Password.ToPlainText() + "'";
-                //    if (!creds.FQDN.IsNullOrEmpty())
-                //    {
-
-                //        args += " -Domain " + creds.FQDN;
-                //    }
-                //}
+               
                 return args;
 
             }
@@ -145,9 +130,9 @@ namespace BLAZAM.Update
         /// </summary>
         public AppEvent<FileProgress?> DownloadPercentageChanged { get; set; }
 
-        private ApplicationVersion _runningVersion;
-        private Process _runningProcess;
-        private SystemDirectory _applicationRootDirectory;
+        private readonly ApplicationVersion _runningVersion;
+        private readonly Process _runningProcess;
+        private readonly SystemDirectory _applicationRootDirectory;
 
 
         public ApplicationUpdate(ApplicationInfo applicationInfo, UpdateService updateService, IAppDatabaseFactory dbFactory)
@@ -197,7 +182,7 @@ namespace BLAZAM.Update
                 cancellationTokenSource = new CancellationTokenSource();
 
 
-            Job updateJob = new Job("Applying application update", "System", cancellationTokenSource);
+            Job updateJob = new("Applying application update", "System", cancellationTokenSource);
             updateJob.StopOnFailedStep = true;
             var cleanDownloadStep = new JobStep("Cleaning previous downloads", CleanDownload);
             var downloadStep = new JobStep("Download latest version", Download);
@@ -227,7 +212,7 @@ namespace BLAZAM.Update
             throw new ApplicationUpdateException("An unknown error caused the update to fail.");
 
         }
-        private async Task<bool> Wait(JobStep? step)
+        private static async Task<bool> Wait(JobStep? step)
         {
 
             await Task.Delay(60000);
@@ -239,8 +224,8 @@ namespace BLAZAM.Update
 
 
             Loggers.UpdateLogger?.Debug("Copying updater script");
-            Loggers.UpdateLogger?.Debug("Source: " + UpdateStagingDirectory + "\\updater\\*");
-            Loggers.UpdateLogger?.Debug("Dest: " + _applicationRootDirectory + "updater\\");
+            Loggers.UpdateLogger?.Debug("Source: {Source}", UpdateStagingDirectory + "\\updater\\*");
+            Loggers.UpdateLogger?.Debug("Dest: {Destination}", _applicationRootDirectory + "updater\\");
 
 
             using var context = await _dbFactory.CreateDbContextAsync();
@@ -274,77 +259,16 @@ namespace BLAZAM.Update
                 }
             }
             return false;
-            //switch (_updateService.UpdateCredential)
-            //{
-
-            //    case UpdateCredential.Application:
-            //        Loggers.UpdateLogger?.Warning("The application user has write permission to the application directory!");
-            //        try
-            //        {
-            //            return ApplyFiles();
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-            //            throw new ApplicationUpdateException("Error trying to apply update files", ex);
-            //        }
-            //    case UpdateCredential.Active_Directory:
-            //        var adCredentials = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
-            //        if (adCredentials != null)
-            //        {
-
-            //            return adCredentials.Run(() =>
-            //            {
-            //                try
-            //                {
-            //                    return ApplyFiles();
-            //                }
-            //                catch (Exception ex)
-            //                {
-            //                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-
-            //                }
-            //                return false;
-            //            });
-            //        }
-            //        break;
-            //    case UpdateCredential.Update:
-            //        var updateCredentials = _updateService.GetUpdateCredentials();
-            //        if (updateCredentials != null)
-            //        {
-
-            //            return updateCredentials.Run(() =>
-            //            {
-            //                try
-            //                {
-            //                    return ApplyFiles();
-            //                }
-            //                catch (Exception ex)
-            //                {
-            //                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-
-            //                }
-            //                return false;
-            //            });
-            //        }
-            //        break;
-            //    default:
-            //    case UpdateCredential.None:
-            //        return false;
-            //}
-            //return false;
-
         }
 
         private bool ApplyFiles()
         {
-            Loggers.UpdateLogger?.Information("Running update as: " + WindowsIdentity.GetCurrent().Name);
-            Loggers.UpdateLogger?.Information("Updating updater");
+            Loggers.UpdateLogger?.Information("Running update as: {RunningUser}", WindowsIdentity.GetCurrent().Name);
 
 
 
-            SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.FullPath + "updater\\");
-            SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.FullPath + "updater\\");
+            SystemDirectory updaterDirFromStagedUpdate = new(UpdateStagingDirectory.FullPath + "updater\\");
+            SystemDirectory updaterDir = new(_applicationRootDirectory.FullPath + "updater\\");
 
 
 
@@ -370,39 +294,10 @@ namespace BLAZAM.Update
             }
         }
 
-        private bool InvokeUpdateExecutable_old()
-        {
-            var startTime = DateTime.Now;
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = UpdateCommandProcess,
-                    Arguments = UpdateCommandArguments,
-                    //RedirectStandardOutput = true,
-                    //UseShellExecute = false,
-                    UseShellExecute = true,
-                    CreateNoWindow = true,
-
-
-                }
-            };
-            Loggers.UpdateLogger?.Information("Starting update process");
-
-            process.Start();
-
-            Loggers.UpdateLogger?.Information("Update process id: " + process.Id);
-
-
-            process.WaitForExit();
-            Loggers.UpdateLogger?.Information("Update process exited: " + process.ExitCode);
-            Loggers.UpdateLogger?.Information("Update process execution time: " + (DateTime.Now - startTime).TotalMilliseconds + "ms");
-
-            return true;
-        }
         private bool InvokeUpdateExecutable()
         {
-            var startTime = DateTime.Now;
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -418,7 +313,7 @@ namespace BLAZAM.Update
 
             Loggers.UpdateLogger?.Information("Starting update process");
             process.Start();
-            Loggers.UpdateLogger?.Information("Update process id: " + process.Id);
+            Loggers.UpdateLogger?.Information("Update process id: {ProcessId}", process.Id);
 
             // Read and log the output asynchronously
             var output = new StringBuilder();
@@ -427,7 +322,7 @@ namespace BLAZAM.Update
                 if (!string.IsNullOrEmpty(e.Data))
                 {
                     output.AppendLine(e.Data);
-                    Loggers.UpdateLogger?.Information("Update process output: " + e.Data);
+                    Loggers.UpdateLogger?.Information("Update process output: {ProcessOutput}", e.Data);
                 }
             };
             process.ErrorDataReceived += (sender, e) =>
@@ -435,35 +330,35 @@ namespace BLAZAM.Update
                 if (!string.IsNullOrEmpty(e.Data))
                 {
                     output.AppendLine(e.Data);
-                    Loggers.UpdateLogger?.Error("Update process error: " + e.Data); // Log as error
+                    Loggers.UpdateLogger?.Error("Update process error: {ProcessOutput}", e.Data); // Log as error
                 }
             };
             process.BeginOutputReadLine(); // Start asynchronous reading
 
             process.WaitForExit();
+            stopwatch.Stop();
+            Loggers.UpdateLogger?.Information("Update process exited in {ExeecutionTime}: {ExitCode}", stopwatch.ElapsedMilliseconds + "ms", process.ExitCode);
 
-            Loggers.UpdateLogger?.Information("Update process exited: " + process.ExitCode);
-            Loggers.UpdateLogger?.Information("Update process execution time: " + (DateTime.Now - startTime).TotalMilliseconds + "ms");
 
             // Log the complete output (if needed)
-            Loggers.UpdateLogger?.Information("Complete update process output:\n" + output.ToString());
+            Loggers.UpdateLogger?.Information("Complete update process output:\n{ProcessOutput}", output.ToString());
 
             return true;
         }
         public async Task<bool> Backup(JobStep? step)
         {
-            Loggers.UpdateLogger?.Information("Attempting backup of current version to: " + BackupPath);
+            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {BackupPath}", BackupPath);
             try
             {
                 var result = await Task.Run(() => { return _applicationRootDirectory.CopyTo(BackupDirectory); });
 
-                Loggers.UpdateLogger?.Debug("Backup result: " + result.ToString());
+                Loggers.UpdateLogger?.Debug("Backup result: {BackupResult}", result.ToString());
 
                 return result;
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger?.Error("Backup of current version failed: " + ex.Message);
+                Loggers.UpdateLogger?.Error("Backup of current version failed: {@Error}", ex);
                 return false;
             }
         }
@@ -473,7 +368,7 @@ namespace BLAZAM.Update
         {
             return await Task.Run(() =>
             {
-                Loggers.UpdateLogger?.Information("Attempting cleaning of download folder: " + UpdateFile);
+                Loggers.UpdateLogger?.Information("Attempting cleaning of download folder: {UpdatePath}", UpdateFile);
 
                 try
                 {
@@ -484,7 +379,7 @@ namespace BLAZAM.Update
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger?.Error("Error while cleaning of download folder: " + UpdateFile + " {@Error}", ex);
+                    Loggers.UpdateLogger?.Error("Error while cleaning of download folder: {UpdatePath} {@Error}", UpdateFile,  ex);
 
                     return false;
                 }
@@ -514,7 +409,7 @@ namespace BLAZAM.Update
 
                 if (!UpdateFile.Exists) return false;
 
-                Loggers.UpdateLogger?.Debug("Attempting unzip of " + UpdateFile);
+                Loggers.UpdateLogger?.Debug("Attempting unzip of {UpdatePath}", UpdateFile);
 
                 UpdateStagingDirectory.EnsureCreated();
 
@@ -524,7 +419,7 @@ namespace BLAZAM.Update
                     {
                         var zip = new ZipArchive(streamToReadFrom);
                         zip.ExtractToDirectory(UpdateStagingDirectory.FullPath, true);
-                        Loggers.UpdateLogger?.Debug(UpdateFile + " unzipped successfully to " + UpdateStagingDirectory);
+                        Loggers.UpdateLogger?.Debug("{UpdatePath} unzipped successfully to {StagingPath}", UpdateFile, UpdateStagingDirectory);
 
                         return true;
                     }
@@ -549,9 +444,9 @@ namespace BLAZAM.Update
             {
                 return false;
             }
-            Loggers.UpdateLogger?.Debug("Attempting download of update " + Version);
-            Loggers.UpdateLogger?.Debug("Download URL: " + Release.DownloadURL);
-            Loggers.UpdateLogger?.Debug("Download Path: " + UpdateDownloadDirectory);
+            Loggers.UpdateLogger?.Debug("Attempting download of update {UpdateVersion}", Version);
+            Loggers.UpdateLogger?.Debug("Download URL: {DownloadURL}", Release.DownloadURL);
+            Loggers.UpdateLogger?.Debug("Download Path: {UpdateDirectory}", UpdateDownloadDirectory);
 
             var progress = new FileProgress();
             using (var client = new HttpClient())
@@ -560,7 +455,7 @@ namespace BLAZAM.Update
                 {
                     if (!response.IsSuccessStatusCode)
                     {
-                        Loggers.UpdateLogger?.Debug("Unable to connect to download url: " + response.StatusCode + " : " + response.ReasonPhrase);
+                        Loggers.UpdateLogger?.Debug("Unable to connect to download url: {StatusCode}:{ReasonPhrase}", response.StatusCode,response.ReasonPhrase);
 
                         return false;
                     }
@@ -570,16 +465,16 @@ namespace BLAZAM.Update
                     {
                         using (var streamToWriteTo = UpdateFile.OpenWriteStream())
                         {
-                            progress.ExpectedSize = (int)Release.ExpectedSize;
+                            progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
                             var buffer = new byte[4096];
                             int bytesRead;
                             int totalBytesRead = 0;
 
-                            while ((bytesRead = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                            while ((bytesRead = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length, cancellationTokenSource.Token)) > 0)
                             {
-                                if (cancellationTokenSource?.IsCancellationRequested != true)
+                                if (cancellationTokenSource.IsCancellationRequested != true)
                                 {
-                                    await streamToWriteTo.WriteAsync(buffer, 0, bytesRead);
+                                    await streamToWriteTo.WriteAsync(buffer, 0, bytesRead, cancellationTokenSource.Token);
                                     totalBytesRead += bytesRead;
                                     progress.CompletedBytes = totalBytesRead;
                                     if (step != null)

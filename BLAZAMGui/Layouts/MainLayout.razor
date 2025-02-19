@@ -66,6 +66,7 @@
 
                     <MudDrawer Width=@(BrowseExpanded==false?"185px":"385px")
                                @bind-Open=@DrawerOpen
+                               Breakpoint="@(BrowseExpanded==true?Breakpoint.Lg:Breakpoint.Md)"
                                Class="animate-width"
                                Variant=@navDrawerVariant
                                Elevation="3"
@@ -252,7 +253,7 @@
     }
     public void GotoEntry(IDirectoryEntryAdapter entry)
     {
-        DrawerOpen = false;
+       // DrawerOpen = false;
         Nav.NavigateTo(entry.SearchUri);
     }
 
@@ -261,14 +262,16 @@
         get
 
         {
-            if (BrowseExpanded == false)
-            {
-                return DrawerVariant.Responsive;
-            }
-            else
-            {
-                return DrawerVariant.Temporary;
-            }
+            return DrawerVariant.Responsive;
+
+            // if (BrowseExpanded == false)
+            // {
+            //     return DrawerVariant.Responsive;
+            // }
+            // else
+            // {
+            //     return DrawerVariant.Temporary;
+            // }
 
         }
     }

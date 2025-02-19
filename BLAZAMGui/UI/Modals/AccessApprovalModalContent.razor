@@ -1,5 +1,4 @@
 @using BLAZAM.Common.Exceptions
-@using BLAZAM.Server.Data.Services
 @inherits AppModalContent
 
 <MudSimpleTable Class="mud-width-full p-5 m-5">
@@ -73,8 +72,8 @@
         }
         try
         {
-            Context.SaveChangesAsync();
-            OnApproved.InvokeAsync();
+            await Context.SaveChangesAsync();
+            await OnApproved.InvokeAsync();
             await Modal.CloseAsync();
 
             LoadingData = false;
@@ -82,7 +81,7 @@
         {
             Loggers.DatabaseLogger.Error("Error adding approved permission mapping {Error}", ex.InnerException);
             SnackBarService.Error("Error trying to create permission mapping");
-            LoadData();
+            await LoadData();
         }
         
     }

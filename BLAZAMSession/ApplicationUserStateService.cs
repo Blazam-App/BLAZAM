@@ -1,15 +1,13 @@
 ﻿using BLAZAM.Common;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
 using BLAZAM.Logger;
+using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 
-namespace BLAZAM.Server.Data.Services
+namespace BLAZAM.Session
 {
     /// <summary>
     /// A stateful "session" store for the application's user session state. This class is a "hack" for Blazor Server
@@ -28,7 +26,7 @@ namespace BLAZAM.Server.Data.Services
 
         private IHttpContextAccessor _httpContextAccessor { get; set; }
 
-        private IAppDatabaseFactory _factory;
+        private readonly IAppDatabaseFactory _factory;
 
         private int? Timeout { get; set; }
 
@@ -78,7 +76,14 @@ namespace BLAZAM.Server.Data.Services
                 Timeout = context.AuthenticationSettings.FirstOrDefault()?.SessionTimeout;
 
             });
+            ApplicationEvents.PermissionsChanged += (() => { ReloadAllPermissions(); });
         }
+
+        private void ReloadAllPermissions()
+        {
+         
+        }
+
         /// <summary>
         /// Ticker to check for stale user states that haven't been accessed for
         /// 3X the sessionTimeout set for the application in the database
@@ -193,7 +198,7 @@ namespace BLAZAM.Server.Data.Services
         }
         public void SetMFAUserState(string mfaToken, IApplicationUserState state, string redirectUrl = "/")
         {
-            MFARequest mfaRequest = new MFARequest(mfaToken, redirectUrl, state);
+            MFARequest mfaRequest = new(mfaToken, redirectUrl, state);
             _mfaLoginQueue.Add(mfaRequest);
             Task.Delay(90000).ContinueWith((val) =>
             {
@@ -240,6 +245,21 @@ namespace BLAZAM.Server.Data.Services
         public IApplicationUserState CreateUserState(ClaimsPrincipal user)
         {
             return new ApplicationUserState(_factory) { User = user };
+        }
+    }
+    public static class ApplicationUserStateServiceHelpers
+    {
+        public static IServiceCollection AddSessionServices(this IServiceCollection services)
+        {
+            //Provide UserStates as a service
+            //This service is a "hack" for Blazor Server not having, in a real sense, sessions
+            //It allows data to persist between refreshes/reloading page navigations per logged
+            //in user principal
+            services.AddSingleton<IApplicationUserStateService, ApplicationUserStateService>();
+
+
+            services.AddScoped<ICurrentUserStateService, CurrentUserStateService>();
+            return services;
         }
     }
 }

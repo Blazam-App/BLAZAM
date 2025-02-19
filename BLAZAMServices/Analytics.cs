@@ -1,14 +1,7 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
 using BLAZAM.Logger;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Services
 {

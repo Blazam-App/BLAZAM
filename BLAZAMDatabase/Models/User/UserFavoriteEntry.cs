@@ -1,8 +1,4 @@
-﻿
-
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BLAZAM.Database.Models.User
+﻿namespace BLAZAM.Database.Models.User
 {
 
     public class UserFavoriteEntry : AppDbSetBase, IEquatable<UserFavoriteEntry?>

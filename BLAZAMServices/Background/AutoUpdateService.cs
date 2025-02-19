@@ -1,20 +1,16 @@
-﻿using BLAZAM.Common;
-using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
+using BLAZAM.Database.Services;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Update;
 using BLAZAM.Update.Services;
-using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
-using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.Services.Background
 {
     [AutoStartBackgroundService(60)]
-    public class AutoUpdateService : BackgroundServiceBase, IDisposable
+    public class AutoUpdateService : DatabaseBackgroundServiceBase, IDisposable
     {
 
         public AppEvent<DateTime?> OnAutoUpdateQueued { get; set; }
@@ -185,8 +181,8 @@ namespace BLAZAM.Services.Background
         protected override async void Execute(object? state)
         {
             using var context = await factory.CreateDbContextAsync();
-            Job updateCheckJob = new Job("Check for Update");
-            JobStep checkForUpdateStep = new JobStep("Execute", async (step) =>
+            Job updateCheckJob = new("Check for Update");
+            JobStep checkForUpdateStep = new("Execute", async (step) =>
             {
                 try
                 {
@@ -244,8 +240,8 @@ namespace BLAZAM.Services.Background
                 bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall;
                 if (ScheduledUpdate != updateToInstall)
                 {
-                    Job scheduleUpdatteJob = new Job("Schedule Update");
-                    JobStep scheduleStep = new JobStep("Execute", (step) =>
+                    Job scheduleUpdatteJob = new("Schedule Update");
+                    JobStep scheduleStep = new("Execute", (step) =>
                     {
                         try
                         {

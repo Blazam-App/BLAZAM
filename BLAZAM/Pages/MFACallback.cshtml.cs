@@ -1,20 +1,13 @@
-using BLAZAM.Server;
-using BLAZAM.Server.Data.Services;
 using BLAZAM.Services;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Duo;
+using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using DuoUniversal;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Identity.Client;
-using Octokit;
-using Org.BouncyCastle.Ocsp;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace BLAZAM.Pages
 {
@@ -88,7 +81,7 @@ namespace BLAZAM.Pages
                     return new RedirectResult(mFARequest.redirectUrl);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Loggers.SystemLogger.Warning("Error attempting to perform Duo MFA {Error}", ex);
             }

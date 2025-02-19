@@ -1,8 +1,6 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-namespace BLAZAM.Server
+﻿namespace BLAZAM.Common
 {
-    public static class ProgramEvents
+    public static class ApplicationEvents
     {
         /// <summary>
         /// Called when permission are changed by an admin
@@ -15,6 +13,7 @@ namespace BLAZAM.Server
         public static void InvokePermissionsChanged()
         {
             PermissionsChanged?.Invoke();
+            
         }
 
         /// <summary>

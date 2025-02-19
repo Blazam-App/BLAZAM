@@ -58,7 +58,7 @@
                @if(context.Item.DeletedAt==null){
                 <AppIconButton Color="@Color.Error"
                                Icon="@Icons.Material.Filled.Delete"
-                    OnClick="@(()=>{Delete(context.Item);})" />
+                                   OnClick="@(async()=>{await Delete(context.Item);})" />
                 }
                 else
                 {

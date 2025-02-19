@@ -1,9 +1,6 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
 using BLAZAM.Pages.Error;
-using BLAZAM.Services.Background;
-using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Server.Middleware
 {
@@ -11,7 +8,7 @@ namespace BLAZAM.Server.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ConnMonitor _monitor;
-        private readonly List<string> _uriIgnoreList = new List<string> { "/static", "/css", "/_content", "/_blazor", "/BLAZAM.styles.css", "/_framework" };
+        private readonly List<string> _uriIgnoreList = new() { "/static", "/css", "/_content", "/_blazor", "/BLAZAM.styles.css", "/_framework" };
         private string intendedUri;
 
         public ApplicationStatusRedirectMiddleware(

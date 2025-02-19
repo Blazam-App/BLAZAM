@@ -1,10 +1,4 @@
-using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
-using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore;
 using MudBlazor;
-using Color = MudBlazor.Color;
 
 namespace BLAZAM.Gui.UI.Inputs.TreeViews
 {
@@ -26,7 +20,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
 
 
-        private IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(IDirectoryEntryAdapter? parent)
+        protected override IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(IDirectoryEntryAdapter? parent)
         {
             try
             {

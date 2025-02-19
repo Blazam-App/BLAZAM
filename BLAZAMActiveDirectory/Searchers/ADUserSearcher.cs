@@ -1,8 +1,6 @@
-﻿using BLAZAM.ActiveDirectory;
-using BLAZAM.ActiveDirectory.Adapters;
+﻿using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using System.Security.Cryptography;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -32,7 +30,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
             }.Search<ADUser, IADUser>();
         }
-        public IADUser? FindUserByUsername(string? searchTerm, bool ignoreDisabledUsers = true, bool exactMatch=false)
+        public IADUser? FindUserByUsername(string? searchTerm, bool ignoreDisabledUsers = true, bool exactMatch = false)
         {
             return new ADSearch(Directory)
             {

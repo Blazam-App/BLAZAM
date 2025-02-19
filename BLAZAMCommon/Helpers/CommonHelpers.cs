@@ -1,22 +1,12 @@
 ﻿using BLAZAM.Common.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Helpers
 {
@@ -59,7 +49,7 @@ namespace BLAZAM.Helpers
 
         public static List<AuditChangeLog> GetChanges(this object changed, object? original)
         {
-            if(original == null)
+            if (original == null)
             {
                 return new List<AuditChangeLog>();
 
@@ -103,8 +93,9 @@ namespace BLAZAM.Helpers
                     newValue = property.GetValue(changed);
 
                 // Compare the values using Equals method
-                if (oldValue is null || newValue is null
-                    || !Equals(oldValue, newValue))
+                if ((oldValue!=null && newValue!=null)
+                    && ((oldValue is not null && !oldValue.Equals(newValue)
+                    || (newValue is not null && !newValue.Equals(oldValue)))))
                 {
                     // Create a new AuditChangeLog instance with the property name and values
                     var change = new AuditChangeLog

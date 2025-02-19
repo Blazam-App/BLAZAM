@@ -1,8 +1,8 @@
-﻿using BLAZAM.Common.Data;
+﻿using BLAZAM.ActiveDirectory.Data;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Session.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 
@@ -93,6 +93,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// A list of the domain controllers that are members of the domain that was connected
         /// </summary>
         List<DomainController> DomainControllers { get; }
+        DomainControllerEventLogReader EventLogReader { get; }
 
         /// <summary>
         /// Searches for an Active Directory object by it's SID

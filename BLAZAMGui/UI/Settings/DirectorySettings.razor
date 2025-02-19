@@ -4,7 +4,7 @@
 
 <MudText Typo="Typo.h4">@AppLocalization["Active Directory Settings"] <AppDocumentationButton Page="/update/self/" /></MudText>
 
-<MudForm @onsubmit="Save">
+<MudForm @ref=Form @bind-IsValid="IsValid">
     <MudGrid>
 
         <MudItem xs=12 lg="9">
@@ -26,6 +26,8 @@
                     {
 
                         <MudTextField Label="@AppLocalization["Server"]"
+                                      AutoFocus=true
+                                      Immediate=true
                                       HelperText="Can be your domain name in most environments"
                                       For="(()=>settings.ServerAddress)"
                                       @bind-Value="@(settings.ServerAddress)">
@@ -54,6 +56,7 @@
                     @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
                     {
                         <MudNumericField HelperText="@helperText"
+                                         Immediate=true
                                          Label="@AppLocalization["Port"]"
                                          HideSpinButtons="true"
                                          Value="0"
@@ -65,6 +68,7 @@
                     {
 
                         <MudNumericField HelperText="@helperText"
+                                         Immediate=true
                                          Label="@AppLocalization["Port"]"
                                          HideSpinButtons="true"
                                          For="(()=>settings.ServerPort)"
@@ -86,7 +90,11 @@
                 <SettingsField Label="@AppLocalization["Username"]">
 
 
-                    <MudTextField For="(()=>settings.Username)" Label="@AppLocalization["Username"]" name="username" @bind-Value="@settings.Username">
+                    <MudTextField For="(()=>settings.Username)"
+                                  Immediate=true
+                                  Label="@AppLocalization["Username"]"
+                                  name="username"
+                                  @bind-Value="@settings.Username">
 
 
 
@@ -98,7 +106,12 @@
 
                 <SettingsField Label="@AppLocalization["Password"]">
 
-                    <MudTextField For="(()=>settings.Password)" Label="@AppLocalization["Password"]" name="password" InputType="InputType.Password" @bind-Value="@settings.Password">
+                    <MudTextField For="(()=>settings.Password)"
+                                  Immediate=true
+                                  Label="@AppLocalization["Password"]"
+                                  name="password"
+                                  InputType="InputType.Password"
+                                  @bind-Value="@settings.Password">
 
 
 
@@ -122,6 +135,7 @@
                 <SettingsField Label="@AppLocalization["FQDN"]">
 
                     <MudTextField For="(()=>settings.FQDN)"
+                                  Immediate=true
                                   Label="@AppLocalization["FQDN"]"
                                   name="fqdn"
                                   @bind-Value="@settings.FQDN" />
@@ -132,16 +146,20 @@
 
                 <SettingsField Label="@AppLocalization["Base DN"]">
 
-                    <MudTextField For="(()=>settings.ApplicationBaseDN)" Label="@AppLocalization["Base DN"]" name="baseDN" @bind-Value="@settings.ApplicationBaseDN" />
+                    <MudTextField For="(()=>settings.ApplicationBaseDN)"
+                                  Immediate=true
+                                  Label="@AppLocalization["Base DN"]"
+                                  name="baseDN"
+                                  @bind-Value="@settings.ApplicationBaseDN" />
 
                 </SettingsField>
 
 
                 <SettingsField>
 
-                    <MudButton Disabled="SaveDisabled"
-                        ButtonType="ButtonType.Submit"
-                        Color="Color.Success">
+                    <MudButton Disabled="!IsValid"
+                               OnClick="Save"
+                               Color="Color.Success">
                         @AppLocalization["Save Changes"]
                     </MudButton>
 

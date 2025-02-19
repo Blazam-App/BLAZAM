@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
@@ -11,6 +12,7 @@ using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Session.Interfaces;
+using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 using System.DirectoryServices.Protocols;
@@ -20,8 +22,9 @@ using System.Security.Principal;
 
 namespace BLAZAM.ActiveDirectory
 {
-    public class ActiveDirectoryContext : IDisposable, IActiveDirectoryContext
+    public class ActiveDirectoryContext : IActiveDirectoryContext
     {
+        public DomainControllerEventLogReader EventLogReader { get; private set; }
         public IApplicationUserState? CurrentUser
         {
             get
@@ -32,10 +35,13 @@ namespace BLAZAM.ActiveDirectory
             }
             set => _currentUser = value;
         }
-        private WmiFactory _wmiFactory;
-        private IEncryptionService _encryption;
-        private INotificationPublisher _notificationPublisher;
-        public static ActiveDirectoryContext SystemInstance;
+
+        private const string LDAP_PROTO = "LDAP://";
+        private readonly WmiFactory _wmiFactory;
+        private readonly IEncryptionService _encryption;
+        private readonly INotificationPublisher _notificationPublisher;
+        private static ActiveDirectoryContext _systemInstance;
+        public static ActiveDirectoryContext SystemInstance { get => _systemInstance; }
 
         public int FailedConnectionAttempts { get; set; } = 0;
 
@@ -91,7 +97,7 @@ namespace BLAZAM.ActiveDirectory
                 baseDN = ConnectionSettings?.ApplicationBaseDN;
 
             return new DirectoryEntry(
-                "LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + baseDN,
+                LDAP_PROTO + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + baseDN,
                 ConnectionSettings?.Username,
                  _encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 AuthType
@@ -101,12 +107,12 @@ namespace BLAZAM.ActiveDirectory
         /// Gets the root entry for deleted objects in Active Directory
         /// </summary>
         /// <returns></returns>
-        public DirectoryEntry GetDeleteObjectsEntry() => new DirectoryEntry("LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.FQDN.FqdnToDN(),
+        public DirectoryEntry GetDeleteObjectsEntry() => new(LDAP_PROTO + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.FQDN.FqdnToDN(),
                 ConnectionSettings?.Username,
                 _encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 AuthenticationTypes.FastBind | AuthenticationTypes.Secure);
 
-      
+
 
 
 
@@ -187,10 +193,10 @@ namespace BLAZAM.ActiveDirectory
             _notificationPublisher = notificationPublisher;
             Factory = factory;
             _userStateService = userStateService;
-            SystemInstance = this;
-
+            _systemInstance = this;
+            EventLogReader = new(this);
             //UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
-            ConnectAsync();
+            _ = ConnectAsync();
 
             Users = new ADUserSearcher(this);
             Groups = new ADGroupSearcher(this);
@@ -215,6 +221,7 @@ namespace BLAZAM.ActiveDirectory
             _wmiFactory = activeDirectoryContextSeed._wmiFactory;
             DomainControllers = activeDirectoryContextSeed.DomainControllers;
             Status = activeDirectoryContextSeed.Status;
+            EventLogReader = activeDirectoryContextSeed.EventLogReader;
             // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
             //ConnectAsync();
             // _timer = new Timer(KeepAlive, null, 30000, 30000);
@@ -227,7 +234,7 @@ namespace BLAZAM.ActiveDirectory
             Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
 
         }
-        private DirectoryContext DirectoryContext => new DirectoryContext(
+        private DirectoryContext DirectoryContext => new(
             DirectoryContextType.Domain,
             ConnectionSettings.FQDN,
             ConnectionSettings.Username,
@@ -320,7 +327,7 @@ namespace BLAZAM.ActiveDirectory
                             //based on the settings in the DB
 
 
-                            if (ad != null && ad.FQDN != null && ad.Username != null)
+                            if (ad.FQDN != null && ad.Username != null)
                             {
                                 Loggers.ActiveDirectoryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
 
@@ -332,10 +339,10 @@ namespace BLAZAM.ActiveDirectory
                                     {
                                         Loggers.ActiveDirectoryLogger.Information("Connecting Active Directory context");
                                         var pass = _encryption.DecryptObject<string>(ad.Password);
-                                        AppRootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, pass, AuthType);
+                                        AppRootDirectoryEntry = new DirectoryEntry(LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, pass, AuthType);
                                         Loggers.ActiveDirectoryLogger.Information("App Active Directory context connected");
 
-                                        RootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(), ad.Username, pass, AuthType);
+                                        RootDirectoryEntry = new DirectoryEntry(LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(), ad.Username, pass, AuthType);
 
                                         Loggers.ActiveDirectoryLogger.Information("Root Active Directory context connected");
                                         pass = null;
@@ -398,7 +405,7 @@ namespace BLAZAM.ActiveDirectory
 
                                                 Status = DirectoryConnectionStatus.BadConfiguration;
                                                 if (FailedConnectionAttempts < 10)
-                                                    FailedConnectionAttempts++; ;
+                                                    FailedConnectionAttempts++;
                                                 return;
                                             }
                                         }
@@ -508,36 +515,32 @@ namespace BLAZAM.ActiveDirectory
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            // Cleanup
             _keepAlive = false;
             _context?.Dispose();
         }
-
         public IADUser? Authenticate(LoginRequest loginReq)
         {
-            var startOfLogon = DateTime.Now;
-            if (loginReq.Username != null && loginReq.Username.Contains("\\"))
+            var stopWatch = Stopwatch.StartNew();
+            if (loginReq.Username != null && loginReq.Username.Contains('\\'))
             {
-                loginReq.Username = loginReq.Username.Substring(loginReq.Username.IndexOf("\\") + 1);
+                loginReq.Username = loginReq.Username.Substring(loginReq.Username.IndexOf('\\') + 1);
             }
             if (loginReq.Username != null && loginReq.Valid)
             {
                 try
                 {
 
-                    var findUser = Users.FindUserByUsername(loginReq.Username.ToLower(), true,true);
+                    var findUser = Users.FindUserByUsername(loginReq.Username.ToLower(), true, true);
                     if (findUser != null
                         && ConnectionSettings != null)
                     {
-                        var username = loginReq.Username;
-                        if (!username.Contains("@"))
-                        {
-                            username += "@" + ConnectionSettings.FQDN;
-                        }
-
-
-
-
-
+                   
                         try
                         {
                             var authUser = new WindowsImpersonationUser
@@ -554,7 +557,7 @@ namespace BLAZAM.ActiveDirectory
                                 impersonatedIdentity.IsAuthenticated)
                                 {
                                     var impersonatedNameParts = impersonatedIdentity.Name.Split('\\', 2);
-                                    if (impersonatedNameParts != null && impersonatedNameParts.Length > 1)
+                                    if (impersonatedNameParts.Length > 1)
                                     {
                                         var impersonatedName = impersonatedNameParts[1];
                                         if (impersonatedName.Equals(loginReq.Username, StringComparison.InvariantCultureIgnoreCase))
@@ -568,9 +571,10 @@ namespace BLAZAM.ActiveDirectory
                                 }
                                 return false;
                             });
-                            if (authResult == true)
+                            stopWatch.Stop();
+                            if (authResult)
                             {
-                                Loggers.ActiveDirectoryLogger.Debug("Authentication success: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+                                Loggers.ActiveDirectoryLogger.Debug("Authentication success: {Elapsed} ms", stopWatch.ElapsedMilliseconds);
                                 return findUser;
                             }
                             throw new AppException("Local AD Auth Failed");
@@ -583,7 +587,7 @@ namespace BLAZAM.ActiveDirectory
                             {
                                 Loggers.ActiveDirectoryLogger.Information("Authenticating Active Directory credentials");
 
-                                var _authenticatedContext = new DirectoryEntry("LDAP://" + ConnectionSettings.ServerAddress + ":" + ConnectionSettings.ServerPort + "/" + ConnectionSettings.ApplicationBaseDN, loginReq.Username, loginReq.Password, AuthType);
+                                var _authenticatedContext = new DirectoryEntry(LDAP_PROTO + ConnectionSettings.ServerAddress + ":" + ConnectionSettings.ServerPort + "/" + ConnectionSettings.ApplicationBaseDN, loginReq.Username, loginReq.Password, AuthType);
                                 _ = _authenticatedContext.AuthenticationType;
                                 var test2 = _authenticatedContext.Children.GetEnumerator();
                                 test2.MoveNext();
@@ -591,24 +595,29 @@ namespace BLAZAM.ActiveDirectory
                                 _ = test3?.Parent;
 
                                 _authenticatedContext.Dispose();
-                                Loggers.ActiveDirectoryLogger.Debug("Authentication success: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+                                stopWatch.Stop();
+                                Loggers.ActiveDirectoryLogger.Debug("Authentication success: {@Elapsed} ms", stopWatch.ElapsedMilliseconds);
 
                                 return findUser;
 
                             }
                             catch (DirectoryServicesCOMException ex)
                             {
-                                Loggers.ActiveDirectoryLogger.Error("Error authenticating user: " + ex.Message + " {@Error}", ex);
+                                Loggers.ActiveDirectoryLogger.Error("Error authenticating user: {Message} {@Error}", ex.Message, ex);
                                 switch (ex.Message)
                                 {
                                     case "The user name or password is incorrect.":
-                                        Loggers.ActiveDirectoryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+                                        stopWatch.Stop();
+
+                                        Loggers.ActiveDirectoryLogger.Debug("Authentication failure: {Elapsed} ms", stopWatch.ElapsedMilliseconds);
                                         return null;
                                 }
                             }
                             catch (Exception ex)
                             {
-                                Loggers.ActiveDirectoryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+                                stopWatch.Stop();
+
+                                Loggers.ActiveDirectoryLogger.Debug("Authentication failure: {Elapsed} ms", stopWatch.ElapsedMilliseconds);
 
                                 Loggers.ActiveDirectoryLogger.Error("Error while authenticating credentials. {@Error}", ex);
                             }
@@ -645,7 +654,7 @@ namespace BLAZAM.ActiveDirectory
             if (ConnectionSettings is null) throw new AppException("Active Directory Connection Settings are missing for this enttry");
             string newDN = "CN=" + model.CanonicalName + "," + newOU.DN;
 
-            LdapConnection connection = new LdapConnection(
+            LdapConnection connection = new(
                 new LdapDirectoryIdentifier(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort),
                 new NetworkCredential()
                 {
@@ -659,14 +668,14 @@ namespace BLAZAM.ActiveDirectory
             {
                 connection.Bind();
                 connection.SessionOptions.ProtocolVersion = 3;
-                DirectoryAttributeModification isDeleteAttributeMod = new DirectoryAttributeModification();
+                DirectoryAttributeModification isDeleteAttributeMod = new();
                 isDeleteAttributeMod.Name = "isDeleted";
                 isDeleteAttributeMod.Operation = DirectoryAttributeOperation.Delete;
-                DirectoryAttributeModification dnAttributeMod = new DirectoryAttributeModification();
+                DirectoryAttributeModification dnAttributeMod = new();
                 dnAttributeMod.Name = "distinguishedName";
                 dnAttributeMod.Operation = DirectoryAttributeOperation.Replace;
                 dnAttributeMod.Add(newDN);
-                ModifyRequest request = new ModifyRequest(model.DN, new DirectoryAttributeModification[] { isDeleteAttributeMod, dnAttributeMod });
+                ModifyRequest request = new(model.DN, new DirectoryAttributeModification[] { isDeleteAttributeMod, dnAttributeMod });
                 request.Controls.Add(new ShowDeletedControl());
 
                 try
@@ -698,7 +707,7 @@ namespace BLAZAM.ActiveDirectory
 
         public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn)
         {
-            if(dn == null)return null;
+            if (dn == null) return null;
             var searcher = new ADSearch(this);
             searcher.SearchRoot = RootDirectoryEntry;
             searcher.Fields.DN = dn;

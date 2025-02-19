@@ -45,7 +45,7 @@
         Modal.YesText = AppLocalization["Delete"];
         Modal.OnYes += ()=>{ OnConfirm.InvokeAsync(); return Task.CompletedTask; };
         await base.OnInitializedAsync();
-        Modal.RefreshView();
+        await Modal.RefreshView();
 
         LoadingData = true;
         Task.Run(() =>

@@ -1,15 +1,9 @@
 ﻿using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
-using BLAZAM.Server.Data.Services;
+using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Services
 {

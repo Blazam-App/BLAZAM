@@ -1,5 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
+using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -34,8 +34,7 @@ namespace BLAZAM.Services
             IEncryptionService enc,
             AuditLogger audit,
             ApplicationInfo applicationInfo,
-            GoogleAuthenticatorService googleAuthenticatorService,
-            NavigationManager nav)
+            GoogleAuthenticatorService googleAuthenticatorService)
         {
             _applicationInfo = applicationInfo;
             this._encryption = enc;
@@ -45,7 +44,6 @@ namespace BLAZAM.Services
             this._permissionHandler = permissionHandler;
             this._userStateService = userStateService;
             this._httpContextAccessor = ca;
-            this._nav = nav;
             this.CurrentUser = this.GetAnonymous(ca.HttpContext?.Session.Id);
 
             this._duoClientProvider = dcp;
@@ -58,7 +56,6 @@ namespace BLAZAM.Services
         private readonly ApplicationInfo _applicationInfo;
         private readonly IEncryptionService _encryption;
         private readonly GoogleAuthenticatorService _googleAuthenticatorService;
-        private readonly NavigationManager _nav;
         private readonly IActiveDirectoryContext _directory;
         private readonly IUserDatabaseFactory _factory;
         private readonly PermissionApplicator _permissionHandler;
@@ -134,7 +131,7 @@ namespace BLAZAM.Services
         }
         private ClaimsPrincipal GetDemoUser()
         {
-            List<Claim> claims = new List<Claim>
+            List<Claim> claims = new()
             {
                 new Claim(ClaimTypes.Sid, "2"),
                 new Claim(ClaimTypes.Name, "Demo"),
@@ -147,7 +144,7 @@ namespace BLAZAM.Services
         }
         private ClaimsPrincipal GetLocalAdmin(string name = "admin")
         {
-            List<Claim> claims = new List<Claim>
+            List<Claim> claims = new()
             {
                  new Claim(ClaimTypes. Sid, "1"),
                     new Claim(ClaimTypes.Name, name),
@@ -192,7 +189,7 @@ namespace BLAZAM.Services
             }
             else
             {
-                
+
                 if (loginReq.Username.IsNullOrEmpty()) return loginReq.NoUsername();
             }
             //Pull the authentication settings from the database so we can check admin credentials
@@ -230,6 +227,7 @@ namespace BLAZAM.Services
 
                         if (userClaim != null)
                         {
+                            // Check that Duo is enabled and configured properly, also skip if impersonation
                             if (settings != null &&
                                 settings.DuoEnabled &&
                                 settings.DuoClientSecret != null &&
@@ -238,6 +236,8 @@ namespace BLAZAM.Services
                                 !loginReq.Impersonation
                                 )
                             {
+                                //Duo is enabled, so we need to set up an MFA request
+
                                 var mfaRRedirect = await PerformDuoAuthentication(loginReq);
                                 //Settings are configured so
                                 if (!mfaRRedirect.IsNullOrEmpty())
@@ -254,6 +254,7 @@ namespace BLAZAM.Services
                             }
                             else
                             {
+                                //Duo is not enabled, or this is impersonation, proceed with post login processing
                                 var sid = userClaim.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
                                 var userSettings = await context.UserSettings.FirstOrDefaultAsync(x => x.UserGUID == sid);
                                 if (userSettings != null && !loginReq.Impersonation && !userSettings.AuthenticatorSecret.IsNullOrEmpty())
@@ -362,18 +363,15 @@ namespace BLAZAM.Services
                 // Generate a random state value to tie the authentication steps together
                 string state = Client.GenerateState();
 
+                // Save the mfa state back to the login request
                 loginReq.MFAToken = state;
-                // Save the state and username in the session for later
-                //HttpContext.Session.SetString(STATE_SESSION_KEY, state);
-                //HttpContext.Session.SetString(USERNAME_SESSION_KEY, username);
 
                 // Get the URI of the Duo prompt from the client.  This includes an embedded authentication request.
                 string promptUri = duoClient.GenerateAuthUri(loginReq.Username, state);
+
+                // Set up the redirect after successful mfa
                 loginReq.MFARedirect = promptUri;
-                // Redirect the user's browser to the Duo prompt.
-                // The Duo prompt, after authentication, will redirect back to the configured Redirect URI to complete the authentication flow.
-                // In this example, that is /duo_callback, which is implemented in Callback.cshtml.cs.
-                // return new RedirectResult(promptUri);
+
 
                 return promptUri;
 
@@ -419,118 +417,17 @@ namespace BLAZAM.Services
 
             //Load privilege levels for user
             await _permissionHandler.LoadPermissions(loginUser, user);
-            var userRoles = TransformUserRoles(loginUser);
-            //TransformUserRoles returns an empty list if the user has no login rights
-            if (userRoles.Count < 1)
-                throw new DeniedLoginException();
-
-            //Build the base of the ClaimIdentity
-            List<Claim> claims = new()
-                {
-                            new Claim(ClaimTypes.Sid, user.SID.ToSidString()),
-
-                        };
-            if (user.DisplayName != null)
-            {
-                claims.Add(new Claim(ClaimTypes.Name, user.DisplayName));
-            }
-            else if (user.SamAccountName != null)
-            {
-                claims.Add(new Claim(ClaimTypes.Name, user.SamAccountName));
-
-            }
-            if (user.UserPrincipalName != null)
-                claims.Add(new Claim(ClaimTypes.WindowsAccountName, user.SamAccountName));
-            if (user.GivenName != null)
-                claims.Add(new Claim(ClaimTypes.GivenName, user.GivenName));
-            if (user.Surname != null)
-                claims.Add(new Claim(ClaimTypes.Surname, user.Surname));
-            if (user.Email != null)
-                claims.Add(new Claim(ClaimTypes.Email, user.Email));
-
-            if (loginReq != null && loginReq.Impersonation)
-            {
-                //Handle Impersonated login
-                claims.Add(new Claim(ClaimTypes.UserData, "impersonated"));
-                //Set the impersonators SID to the actor claim type so we know who to unimpersonate back to
-                claims.Add(new Claim(ClaimTypes.Actor, loginReq.ImpersonatorClaims.FindFirstValue(ClaimTypes.Sid)));
-
-            }
-            else
-            {
-                //This sign in is not impersonated, so we use the users SID we got from Active Directory above
-                claims.Add(new Claim(ClaimTypes.Actor, user.SID.ToSidString()));
-
-            }
+            var userClaims = _permissionHandler.TransformUserRoles(loginUser, user, loginReq?.ImpersonatorClaims?.FindFirstValue(ClaimTypes.Sid));
+            
 
             //All Claims transformations are complete create the new signed in user's identity
-            identity = new ClaimsIdentity(claims, AppAuthenticationTypes.ActiveDirectoryAuthentication);
-            //Inject the appended transformations for [Authorized()] usage
-            userRoles.ForEach(ur =>
-            {
-                identity.AddClaim(ur);
-            });
+            identity = new ClaimsIdentity(userClaims, AppAuthenticationTypes.ActiveDirectoryAuthentication);
+     
 
             return identity;
 
         }
-        /// <summary>
-        /// Uses the Active Directory user who logged in and transforms
-        /// their identity to the applications ClaimRoles based
-        /// on the permissions set in the database
-        /// </summary>
-        /// <param name="user">The Active Directory user who authenticated</param>
-        /// <returns>A list of Claim Roles that the user has been privileged</returns>
-        private List<Claim> TransformUserRoles(IApplicationUserState user)
-        {
-
-            List<Claim> userRoles = new();
-
-            if (user.PermissionDelegates.Any(p => p.IsSuperAdmin))
-            {
-                userRoles.AddSuperAdmin();
-                userRoles.AddAllRoles();
-
-            }
-            else
-            {
-                if (user.HasUserPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchUsers));
-                }
-                if (user.HasCreateUserPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.CreateUsers));
-                }
-                if (user.HasGroupPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchGroups));
-                }
-                if (user.HasCreateGroupPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.CreateGroups));
-                }
-                if (user.HasOUPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchOUs));
-                }
-                if (user.HasCreateOUPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.CreateOUs));
-                }
-                if (user.HasComputerPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchComputers));
-                }
-                if (user.HasBitLockerPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchBitLocker));
-                }
-
-            }
-            return userRoles;
-        }
-
+   
         /// <summary>
         /// Sets the User AuthenticationState in the AuthenticationProvider
         /// </summary>

@@ -1,7 +1,4 @@
-﻿using BLAZAM.Common.Data.Database;
-using BLAZAM.Database.Exceptions;
-
-namespace BLAZAM.Database.Context
+﻿namespace BLAZAM.Database.Context
 {
     /// <summary>
     /// The primary database factory for BLAZAM.

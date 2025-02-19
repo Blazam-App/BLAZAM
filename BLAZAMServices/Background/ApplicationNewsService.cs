@@ -1,24 +1,19 @@
 ﻿using ApplicationNews;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Services;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Services.Background
 {
     [AutoStartBackgroundService(15, true)]
-    public class ApplicationNewsService : BackgroundServiceBase, IApplicationNewsService
+    public class ApplicationNewsService : DatabaseBackgroundServiceBase, IApplicationNewsService
     {
         private HttpClient _httpClient;
         private HttpClient _secondaryHttpClient;
         private bool _pollCompleted = false;
-        private List<NewsItem> _allNewsItems = new List<NewsItem>();
+        private List<NewsItem> _allNewsItems = new();
         private List<NewsItem> _activeNewsItems => _allNewsItems.Where(x => x.DeletedAt == null && x.Published == true && (x.ScheduledAt == null || x.ScheduledAt < DateTime.Now) && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now)).ToList();
         public AppEvent OnNewItemsAvailable { get; set; }
 

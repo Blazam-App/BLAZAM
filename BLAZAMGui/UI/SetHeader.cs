@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Gui.Layouts;
-using Microsoft.AspNetCore.Components;
 
 namespace BLAZAM.Gui.UI
 {

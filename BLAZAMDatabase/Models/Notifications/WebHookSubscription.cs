@@ -1,6 +1,4 @@
-﻿using BLAZAM.Database.Models.User;
-using BLAZAM.Helpers;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using BLAZAM.Helpers;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Database.Models.Notifications

@@ -8,10 +8,10 @@
 
 <MudStack Row=true>
     <MudTextField Placeholder="Filter Delegates"
-                  @bind-Value="@DelegateFilter" />
+    @bind-Value="@DelegateFilter" />
     <MudSpacer />
     <MudButton Color=Color.Secondary
-               OnClick="(()=>{_=trashModal?.ShowAsync();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
+    OnClick="(()=>{_=trashModal?.ShowAsync();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
 </MudStack>
 
 
@@ -36,15 +36,15 @@
         <MudContainer>
             <b>@model?.ObjectType</b><br />
             <MudText>@model?.CanonicalName</MudText>
-                <MudText>@deleg.DeletedAt</MudText>
-                <MudButton Float="Float.End" Color="Color.Primary" OnClick="(async()=>{await RestoreDelegate(deleg);})">Restore</MudButton>
+            <MudText>@deleg.DeletedAt</MudText>
+            <MudButton Float="Float.End" Color="Color.Primary" OnClick="(async()=>{await RestoreDelegate(deleg);})">Restore</MudButton>
 
-            </MudContainer>
+        </MudContainer>
     }
 </AppModal>
 <AppModal @ref=@addGroupModal
-          Title="Add Delegate"
-          YesText="Add">
+Title="Add Delegate"
+YesText="Add">
     <AddPrivilegeLevelModalContent DelegateAdded=@(()=>{SnackBarService.Success(AppLocalization["Delegate added"]); DelegatesChanged();}) />
 </AppModal>
 
@@ -95,10 +95,11 @@
         delegateToRestore.DeletedAt = null;
         await Context.SaveChangesAsync();
         SnackBarService.Success(AppLocalization["Delegate restored"]);
-    if (AllDelegates.Where(l => l.DeletedAt != null).Count() < 1)
+        if (AllDelegates.Where(l => l.DeletedAt != null).Count() < 1)
         {
-           await trashModal.CloseAsync();
+            await trashModal.CloseAsync();
         }
+        DelegatesChanged();
     }
     private async void DelegatesChanged()
     {
@@ -106,6 +107,7 @@
         await RefreshDelegates();
 
         await InvokeAsync(StateHasChanged);
+
     }
 
 }

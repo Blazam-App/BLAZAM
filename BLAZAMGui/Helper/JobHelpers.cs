@@ -1,12 +1,6 @@
-﻿using BLAZAM.Gui.UI.Outputs;
-using BLAZAM.Gui.UI.Outputs.Jobs;
+﻿using BLAZAM.Gui.UI.Outputs.Jobs;
 using BLAZAM.Jobs;
 using MudBlazor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Gui.Helper
 {

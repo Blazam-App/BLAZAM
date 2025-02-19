@@ -1,7 +1,4 @@
-﻿using Azure;
-using Azure.Core.Pipeline;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -10,29 +7,17 @@ using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.FileSystemGlobbing.Internal;
-using Microsoft.Extensions.Http;
-using MudBlazor.Extensions;
-using Polly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 
-namespace BLAZAM.Notifications.Services
+namespace BLAZAM.Services
 {
     public class WebHookPublisher : IDisposable
     {
-        internal static readonly UTF8Encoding SafeUTF8Encoding = new UTF8Encoding(false, true);
+        internal static readonly UTF8Encoding SafeUTF8Encoding = new(false, true);
         internal const string UNBRANDED_ID_HEADER_KEY = "webhook-id";
         internal const string UNBRANDED_ATTEMPT_ID_HEADER_KEY = "webhook-attempt-id";
         internal const string UNBRANDED_SIGNATURE_HEADER_KEY = "webhook-signature";
@@ -127,7 +112,7 @@ namespace BLAZAM.Notifications.Services
             IDirectoryEntryAdapter? target = null)
         {
             IJob webhookAttemptJob = new Job("Publish Webhook");
-            JobStep execStep = new JobStep("Execute", async (step) =>
+            JobStep execStep = new("Execute", async (step) =>
             {
                 var msgId = Guid.NewGuid();
                 var eventTimestamp = DateTime.UtcNow;

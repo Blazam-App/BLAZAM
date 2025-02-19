@@ -79,7 +79,7 @@
         <MudText Typo="Typo.h6">@AppLocalization["Resource Usage"]</MudText>
 
 
-        <ProcessResourceUsage Process="@ApplicationInfo.RunningProcess" />
+        <ViewApplicationStatistics />
        
         <MudDivider Class="my-6" />
         <MudText Typo="Typo.h6">@AppLocalization["Jobs Monitor"]</MudText>
@@ -137,7 +137,7 @@
 
     protected override async Task Save()
     {
-        AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
+        _ = AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
         await base.Save();
     }
 

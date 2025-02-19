@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLAZAM.Services.Attributes
+﻿namespace BLAZAM.Common.Attributes
 {
-    public class AutoStartBackgroundService : System.Attribute
+    public class AutoStartBackgroundService : Attribute
     {
         public int IntervalInMinutes { get; set; }
         public bool Immediate { get; set; }

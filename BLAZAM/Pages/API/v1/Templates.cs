@@ -1,5 +1,4 @@
-﻿using AngleSharp.Html.Construction;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
@@ -15,11 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
-using Newtonsoft.Json;
-using Octokit;
 using System.Security;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -128,7 +124,7 @@ namespace BLAZAM.Pages.API.v1
             AssignGroups(newUserDetails, newUser);
 
             //Prepare commit job
-            Job createUserJob = new Job(AppLocalization["Create User"]);
+            Job createUserJob = new(AppLocalization["Create User"]);
 
             createUserJob.StopOnFailedStep = true;
 
@@ -259,7 +255,7 @@ namespace BLAZAM.Pages.API.v1
         {
             try
             {
-                NewUserWelcomeEmailMessage message = new NewUserWelcomeEmailMessage();
+                NewUserWelcomeEmailMessage message = new();
                 message.Domain = user.Directory.ConnectionSettings?.FQDN;
                 message.Username = user.SamAccountName;
                 message.Password = password;

@@ -1,10 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BLAZAM.Pages.API.v1

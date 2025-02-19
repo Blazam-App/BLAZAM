@@ -1,8 +1,3 @@
-
-using BLAZAM.Database.Context;
-using BLAZAM.Notifications.Services;
-using BLAZAM.Server.Data.Services;
-using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI

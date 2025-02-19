@@ -1,8 +1,5 @@
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Gui.UI.Settings;
-using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Gui.UI
 {
@@ -131,12 +128,13 @@ namespace BLAZAM.Gui.UI
         {
 
             LoadingData = true;
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 if (User != null)
                     memberOfGroups = User.MemberOf;
 
             });
-         
+
             LoadingData = false;
 
 
@@ -153,11 +151,12 @@ namespace BLAZAM.Gui.UI
         {
 
             LoadingData = true;
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 if (Group != null)
                     memberOfGroups = Group.MemberOf;
             });
-       
+
             LoadingData = false;
 
 

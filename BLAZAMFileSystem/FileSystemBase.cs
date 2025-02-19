@@ -1,8 +1,4 @@
-﻿using System.Security;
-using System.Security.AccessControl;
-using System.Security.Permissions;
-
-namespace BLAZAM.FileSystem
+﻿namespace BLAZAM.FileSystem
 {
     public class FileSystemBase : IEquatable<FileSystemBase?>
     {

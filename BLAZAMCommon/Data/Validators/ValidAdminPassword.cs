@@ -3,8 +3,13 @@ using System.Text.RegularExpressions;
 
 namespace BLAZAM.Common.Data.Validators
 {
-    public class ValidAdminPassword : ValidationAttribute
+    public class ValidAdminPassword : AppValidationAttribute
     {
+        public ValidAdminPassword()
+        {
+            this.ErrorMessage = "Doesn't meet complexity requirements!";
+        }
+
         /// <summary>
         /// Checks if the given string meets minimum admin password complexity.
         /// </summary>
@@ -16,15 +21,16 @@ namespace BLAZAM.Common.Data.Validators
         /// <returns></returns>
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
+            
             if (value is string strValue)
             {
-                Regex regex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$");
+                Regex regex = new(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$");
                 if (regex.Match(strValue).Success)
                     return ValidationResult.Success;
 
             }
 
-            return new ValidationResult("Doesn't meet complexity requirements!");
+            return new ValidationResult(GetErrorMessage(validationContext));
 
 
         }
