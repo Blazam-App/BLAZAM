@@ -8,7 +8,7 @@ namespace BLAZAM.Database.Models
     {
         [Required(ErrorMessage = "The base DN is required.")]
         public string ApplicationBaseDN { get; set; }
-        [ValidFQDN]
+        [ValidFqdn]
         public string FQDN { get; set; }
         [Required(ErrorMessage = "The server address is required.")]
         public string ServerAddress { get; set; }

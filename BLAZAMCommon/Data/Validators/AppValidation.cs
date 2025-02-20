@@ -25,11 +25,14 @@ namespace BLAZAM.Common.Data.Validators
         }
 
         private static IStringLocalizer localizer;
+
+
+
         private IStringLocalizer GetLocalizer(ValidationContext validationContext)
         {
             if (localizer is null)
             {
-                var factory = validationContext.GetRequiredService<IStringLocalizer<AppLocalization>>();
+                var factory = (IStringLocalizer<AppLocalization>)validationContext.GetService(typeof(IStringLocalizer<AppLocalization>));
 
             }
 

@@ -13,14 +13,17 @@
     }
 
     protected MudForm? Form;
-    protected bool IsValid;
+    protected bool IsValid {
+        get;
+        set;
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
         if(firstRender){
-            Form?.ResetValidation();
+            //Form?.ResetValidation();
             Form?.Validate();
-            await InvokeAsync(StateHasChanged);
+            //await InvokeAsync(StateHasChanged);
         }
 
     }
