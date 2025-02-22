@@ -7,11 +7,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADComputerSessions : IDisposable
     {
-        private ITerminalServicesManager manager = new TerminalServicesManager();
+        private readonly ITerminalServicesManager manager = new TerminalServicesManager();
         private ITerminalServer server;
         private bool Polling;
-        public List<IRemoteSession> ConnectedSessions = new();
-        private IADComputer Computer;
+        public List<IRemoteSession> ConnectedSessions { get; set; } = new();
+        private readonly IADComputer Computer;
 
         public AppEvent ConnectedSessionsChanged { get; set; }
         public ADComputerSessions(IADComputer host)
@@ -20,7 +20,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (Computer.IsOnline == true)
                 RefreshSessions();
             else
-                Computer.OnOnlineChanged += (status) => { if (status == true) RefreshSessions(); };
+                Computer.OnOnlineChanged += (status) => { if (status) RefreshSessions(); };
 
         }
 
@@ -106,7 +106,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 session.Dispose();
             }
             ConnectedSessions.Clear();
-
+            server.Close();
         }
 
 

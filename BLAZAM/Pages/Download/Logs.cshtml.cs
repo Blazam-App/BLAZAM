@@ -1,11 +1,21 @@
+using BLAZAM.Common.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.IO.Compression;
 
 namespace BLAZAM.Server.Pages.Download
 {
+    /// <summary>
+    /// Log controller for exporting application logs
+    /// </summary>
+    [Authorize(Roles = UserRoles.SuperAdmin)]
     public class LogsModel : PageModel
     {
+        /// <summary>
+        /// On get return the zip of the logs
+        /// </summary>
+        /// <returns></returns>
 
         public IActionResult OnGet()
         {
@@ -13,9 +23,8 @@ namespace BLAZAM.Server.Pages.Download
             return File(inMemZip, "application/zip");
         }
 
-        private byte[] GenerateZip()
+        private static byte[] GenerateZip()
         {
-            byte[] zipBytes;
             using (MemoryStream memoryStream = new())
             {
                 using (ZipArchive zip = new(memoryStream, ZipArchiveMode.Create))

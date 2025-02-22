@@ -37,7 +37,7 @@
                     <CellTemplate>
                         @if (context.Item.ConnectionState.ToString() == "Active")
                         {
-                            <MudButton Color="Color.Warning" OnClick=@(()=>{DisconnectSession(context.Item);})>Disconnect</MudButton>
+                            <MudButton Color="Color.Warning" OnClick=@(async()=>{await DisconnectSession(context.Item);})>Disconnect</MudButton>
                         }
                         <MudButton Color="Color.Error" OnClick=@(()=>{LogoffSession(context.Item);})>Logoff</MudButton>
                     </CellTemplate>

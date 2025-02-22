@@ -31,7 +31,7 @@
         @if (createFirstTemplateTooltipVisible)
         {
             <AppTooltip Color=Color.Error
-                        ShowOnHover=@(Templates?.Count() < 1)
+                        ShowOnHover=@(Templates?.Any()==true)
                         Arrow=true
                         Visible=@(createFirstTemplateTooltipVisible)
                         Text="Create your first template">
@@ -129,7 +129,7 @@
 </SetHeader>
 
 <MudText Typo="Typo.h4">@AppLocalization["Templates"] <AppDocumentationButton Page="/admin/templates" /></MudText>
-@if (Templates.Count() > 0)
+@if (Templates.Any() == true)
 {
 
     <MudCard Elevation="2">
@@ -142,7 +142,8 @@
 }
 @if (SelectedTemplate != null)
 {
-    <EditDirectoryTemplate Header="Header" @bind-DirectoryTemplate=@SelectedTemplate
+    <EditDirectoryTemplate Header="Header"
+                           @bind-DirectoryTemplate=@SelectedTemplate
                            ClearSelectedTemplate="()=>{SelectedTemplate = null; InvokeAsync(StateHasChanged);}" />
 
 }
@@ -163,7 +164,7 @@
         await base.OnInitializedAsync();
         await RefreshComponents();
 
-        if (Templates?.Count() < 1)
+        if (Templates?.Any() != true)
         {
 
             await Task.Delay(1000);

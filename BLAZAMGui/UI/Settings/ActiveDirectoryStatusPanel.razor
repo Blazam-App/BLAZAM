@@ -63,7 +63,7 @@
     {
         base.OnInitialized();
         ResetStatus();
-        Directory.OnStatusChanged += ((state) => { UpdateStatus(state); });
+        Directory.OnStatusChanged += (async(state) => { await UpdateStatus(state); });
         UpdateStatus(null);
 
     }

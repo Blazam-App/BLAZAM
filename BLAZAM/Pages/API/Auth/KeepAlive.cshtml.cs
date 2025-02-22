@@ -1,19 +1,32 @@
 
-using BLAZAM.Server.Data.Services;
+using BLAZAM.ActiveDirectory.Services;
+using BLAZAM.Session;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BLAZAM.Server.Pages.API.Auth
 {
-    //[Route("/api/auth/leepAlive")]
+    /// <summary>
+    /// An endpoint for the client to check in to, to extend authentication expiration
+    /// </summary>
     public class KeepAliveModel : PageModel
     {
+        private readonly PermissionApplicator _permissionApplicator;
+
+        public KeepAliveModel(PermissionApplicator permissionApplicator)
+        {
+            _permissionApplicator = permissionApplicator;
+        }
+
         public IActionResult OnGet()
         {
 
             var response = new Dictionary<string, string>();
             if (HttpContext.User.Identity?.IsAuthenticated == true)
+            {
                 HttpContext.SlideCookieExpiration(ApplicationUserStateService.Instance.GetUserState(HttpContext.User));
+                
+            }
             else
             {
                 response.Add("expired", "true");

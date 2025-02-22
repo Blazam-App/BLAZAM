@@ -19,15 +19,15 @@ namespace BLAZAM.Update.Services
     /// Represents the source of the valid credential to write to
     /// the application directory
     /// </summary>
-    public enum UpdateCredential { None, Application, Active_Directory, Update };
+    public enum UpdateCredential { None, Application, Active_Directory, Custom };
 
 
 
 
     public class UpdateService : UpdateServiceBase
     {
-        [Inject]
-        protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }
+
+        private readonly IStringLocalizer<AppLocalization>? AppLocalization;
         /// <summary>
         /// The latest available update for the configured <see cref="SelectedBranch"/>
         /// </summary>
@@ -45,13 +45,11 @@ namespace BLAZAM.Update.Services
         private const string Publisher_Name = "BLAZAM-APP";
         private const string Repository_Name = "Blazam";
         private readonly IAppDatabaseFactory? _dbFactory;
-        protected readonly IHttpClientFactory httpClientFactory;
         private readonly ApplicationInfo _applicationInfo;
 
-        public UpdateService(IHttpClientFactory _clientFactory, ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null, IStringLocalizer<AppLocalization> appLocalization = null)
+        public UpdateService(ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null, IStringLocalizer<AppLocalization>? appLocalization = null)
         {
             _dbFactory = dbFactory;
-            httpClientFactory = _clientFactory;
             _applicationInfo = applicationInfo;
             AppLocalization = appLocalization;
         }
@@ -78,10 +76,6 @@ namespace BLAZAM.Update.Services
                 return NewestAvailableUpdate;
 
             }
-            catch (RateLimitExceededException ex)
-            {
-                throw ex;
-            }
             catch (Exception ex)
             {
                 Loggers.UpdateLogger.Error("An error occurred while getting latest update {@Error}", ex);
@@ -104,15 +98,72 @@ namespace BLAZAM.Update.Services
             //Get the releases from the repo
             var releases = await client.Repository.Release.GetAll(Publisher_Name, Repository_Name);
             //Filter the releases to the selected branch
-            var branchReleases = releases.Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
-            var stableReleases = releases.Where(r => r.TagName.Contains(ApplicationReleaseBranches.Stable, StringComparison.OrdinalIgnoreCase));
+            var branchReleases = releases
+                .Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
+            var stableReleases = releases
+                .Where(r => r.TagName.Contains(ApplicationReleaseBranches.Stable, StringComparison.OrdinalIgnoreCase));
             //Get the first release,which should be the most recent
             latestBranchRelease = branchReleases.FirstOrDefault();
             //Store all other releases for use later
             AvailableUpdates.Clear();
 
             var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
+            EncapsulateBetaReleases(betaStableReleases);
+            EncapsulateStableReleases(stableReleases);
+            EncapsulateLatestRelease(latestBranchRelease);
+            RemoveIncompatibleReleases();
 
+        }
+
+        private void RemoveIncompatibleReleases()
+        {
+            IncompatibleUpdates = AvailableUpdates.Where(x => !x.PassesPrerequisiteChecks).ToList();
+            foreach (var release in IncompatibleUpdates)
+            {
+                AvailableUpdates.Remove(release);
+            }
+        }
+
+        private void EncapsulateLatestRelease(Release? latestBranchRelease)
+        {
+            if (latestBranchRelease != null)
+            {
+                var latestBranchUpdate = EncapsulateUpdate(latestBranchRelease, SelectedBranch);
+                if (latestBranchUpdate != null && latestBranchUpdate.Branch != ApplicationReleaseBranches.Stable && latestBranchUpdate.Branch != "Stable")
+                {
+                    if (!AvailableUpdates.Contains(latestBranchUpdate))
+                    {
+                        AvailableUpdates.Add(latestBranchUpdate);
+                    }
+
+                }
+            }
+        }
+
+        private void EncapsulateStableReleases(IEnumerable<Release> stableReleases)
+        {
+            foreach (var release in stableReleases)
+            {
+                if (release != null)
+                {
+                    //Get the release filename to check that the release zip exists
+                    var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
+                    //Create that update object
+                    if (fn == null) continue;
+                    try
+                    {
+                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.UpdateLogger.Error("Error trying to get v1 releases {@Error}{@Release}", ex, release?.Name);
+                    }
+                }
+            }
+        }
+
+        private void EncapsulateBetaReleases(IEnumerable<Release> betaStableReleases)
+        {
             foreach (var release in betaStableReleases)
             {
                 if (release != null)
@@ -132,44 +183,6 @@ namespace BLAZAM.Update.Services
                     }
                 }
             }
-
-
-            foreach (var release in stableReleases)
-            {
-                if (release != null)
-                {
-                    //Get the release filename to check that the release zip exists
-                    var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
-                    //Create that update object
-                    if (fn == null) continue;
-                    try
-                    {
-                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.UpdateLogger.Error("Error trying to get v1 releases {@Error}{@Release}", ex, release?.Name);
-                    }
-                }
-            }
-            if (latestBranchRelease != null)
-            {
-                var latestBranchUpdate = EncapsulateUpdate(latestBranchRelease, SelectedBranch);
-                if (latestBranchUpdate != null && latestBranchUpdate.Branch != ApplicationReleaseBranches.Stable && latestBranchUpdate.Branch != "Stable")
-                {
-                    if (!AvailableUpdates.Contains(latestBranchUpdate))
-                    {
-                        AvailableUpdates.Add(latestBranchUpdate);
-                    }
-
-                }
-            }
-            IncompatibleUpdates = AvailableUpdates.Where(x => !x.PassesPrerequisiteChecks).ToList();
-            foreach (var release in IncompatibleUpdates)
-            {
-                AvailableUpdates.Remove(release);
-            }
-
         }
 
         /// <summary>
@@ -302,7 +315,7 @@ namespace BLAZAM.Update.Services
 
                 //Test Update Credentials
                 if (TestCustomCredentials())
-                    return UpdateCredential.Update;
+                    return UpdateCredential.Custom;
 
                 return UpdateCredential.None;
             }
@@ -319,7 +332,7 @@ namespace BLAZAM.Update.Services
                     //Pull ad settings to test if app ad account can write to the application directory
                     var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
                     return adSettings?.CreateDirectoryAdminImpersonator();
-                case UpdateCredential.Update:
+                case UpdateCredential.Custom:
                     var appSettings = context.AppSettings.FirstOrDefault();
                     return appSettings?.CreateUpdateImpersonator();
                 default:

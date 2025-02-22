@@ -13,7 +13,7 @@ using System.Security.Cryptography;
 using System.Text;
 
 
-namespace BLAZAM.Notifications.Services
+namespace BLAZAM.Services
 {
     public class WebHookPublisher : IDisposable
     {

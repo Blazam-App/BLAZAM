@@ -60,7 +60,9 @@ namespace BLAZAM.Gui.UI
         {
             get => selectedTemplate; set
             {
+                if (selectedTemplate == value) return;
                 selectedTemplate = value;
+               
                 _templateIdParameter = value?.Id;
                 Header?.OnRefreshRequested?.Invoke();
 

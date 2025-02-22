@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using BLAZAM.Common.Data.Validators;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Database.Models
@@ -21,9 +22,9 @@ namespace BLAZAM.Database.Models
         public string? SMTPUsername { get; set; }
         public string? SMTPPassword { get; set; }
         [Required(ErrorMessage = "You must provide an SMTP server to use email.")]
-
+        [ValidIpOrFqdn]
         public string SMTPServer { get; set; }
-        [Required(ErrorMessage = "You must provide an SMTP port to use email.")]
+        [ValidPort]
         public int SMTPPort { get; set; } = 25;
         public bool UseTLS { get; set; } = false;
 

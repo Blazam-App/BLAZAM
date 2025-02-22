@@ -1,14 +1,16 @@
-﻿using BLAZAM.Common.Data;
+﻿using BLAZAM.ActiveDirectory.Services;
+using BLAZAM.Common.Attributes;
+using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Gui.Services;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Services;
-using BLAZAM.Services.Attributes;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Duo;
+using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -118,7 +120,11 @@ namespace BLAZAM.Server
 
 
         }
-
+        /// <summary>
+        /// Injects neccessary services for Blazam
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static WebApplicationBuilder InjectServices(this WebApplicationBuilder builder)
         {
 
@@ -270,7 +276,7 @@ namespace BLAZAM.Server
             builder.Services.AddSingleton<ApplicationManager>();
 
             //Provide a PermissionHandler as a service
-            builder.Services.AddSingleton<PermissionApplicator>();
+            builder.Services.AddScoped<PermissionApplicator>();
 
 
             //Provide a AuditLogger as a service
@@ -406,7 +412,7 @@ namespace BLAZAM.Server
         }
         private static readonly object _lock = new();
         /// <summary>
-        /// Injects all services in all loaded assemblies that have the <see cref="AutoStartBackgroundService"/> attribute
+        /// Injects all services in all BLAZAM assemblies that have the <see cref="AutoStartBackgroundService"/> attribute
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
@@ -591,7 +597,19 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
+            try
+            {
+                if (ApplicationInfo.installationCompleted)
+                {
+                    var context = Program.AppInstance.Services.GetRequiredService<PermissionApplicator>();
+                    
+                }
 
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
         }
     }
 }

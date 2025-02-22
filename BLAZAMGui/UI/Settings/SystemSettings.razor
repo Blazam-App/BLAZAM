@@ -137,7 +137,7 @@
 
     protected override async Task Save()
     {
-        AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
+        _ = AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
         await base.Save();
     }
 
