@@ -43,7 +43,8 @@ namespace BLAZAM.Server.Middleware
                             }
                             break;
                         case ServiceConnectionState.Down:
-                            SendTo(context, "/oops");
+                            Oops.ErrorMessage = "The application database is not reachable";
+                             SendTo(context, "/oops");
 
                             break;
                     }

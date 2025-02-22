@@ -9,7 +9,7 @@ namespace BLAZAM.Tests.Mocks
 {
     internal class Mock_UpdateService : UpdateService
     {
-        public Mock_UpdateService() : base(new Mock_HttpClientFactory(), new()
+        public Mock_UpdateService() : base(new()
         {
             ApplicationRoot = new SystemDirectory("C:\\temp"),
             RunningProcess = Process.GetCurrentProcess(),

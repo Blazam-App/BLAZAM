@@ -58,7 +58,7 @@ namespace BLAZAM.Database.Models
         [DefaultValue(true)]
         public bool SendDeveloperAnalytics { get; set; } = true;
 
-        [ValidFQDN]
+        [ValidFqdn]
         public string? AppFQDN { get; set; }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Database.Context;
+using BLAZAM.Database.Services;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BLAZAM.Services.Background
 {
     [AutoStartBackgroundService(60)]
-    public class AutoUpdateService : BackgroundServiceBase, IDisposable
+    public class AutoUpdateService : DatabaseBackgroundServiceBase, IDisposable
     {
 
         public AppEvent<DateTime?> OnAutoUpdateQueued { get; set; }

@@ -6,7 +6,7 @@
 
 <MudText Typo="Typo.h4">@AppLocalization["Authentication Settings"] <AppDocumentationButton Page="/admin/settings/authentication" /></MudText>
 
-<MudForm @onsubmit=Save>
+<MudForm @ref=Form Model="settings" @onsubmit=Save>
     <MudStack Spacing="5">
 
         <SettingsField Label="@AppLocalization["Admin Password"]">

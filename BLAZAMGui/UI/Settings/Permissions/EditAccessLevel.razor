@@ -1,3 +1,4 @@
+
 @using BLAZAM.Gui.UI.Settings.Modals
 @inherits ValidatedForm
 
@@ -26,7 +27,7 @@
                     if ((ActiveDirectoryObjectType)adObjectType != ActiveDirectoryObjectType.All)
                     {
                         //Prepare data to show object access addbutons
-                        var existingAccess = WorkingModel.ObjectMap.Where(m => m.ObjectType == (ActiveDirectoryObjectType)adObjectType).FirstOrDefault();
+                        var existingAccess = WorkingModel.ObjectMap.FirstOrDefault(m => m.ObjectType == (ActiveDirectoryObjectType)adObjectType);
                         bool buttonDisabled = true;
                         if (existingAccess == null)
                         {
@@ -112,20 +113,19 @@
                             <MudMenu MaxHeight="200"
                                      Color="Color.Success"
                                      Icon="@Icons.Material.Outlined.Add">
-                                @foreach (var action in actions.OrderBy(f => f.Name))
+                                @foreach (var action in actions.Where(a => a.IsActionAppropriateForObject(objectMap.ObjectType)).OrderBy(f => f.Name))
                                 {
-                                    if (action.IsActionAppropriateForObject(objectMap.ObjectType))
+
+                                    if (!WorkingModel.ActionMap.Any(a => a.ObjectType == objectMap.ObjectType && a.ObjectAction == action))
                                     {
-                                        if (!WorkingModel.ActionMap.Any(a => a.ObjectType == objectMap.ObjectType && a.ObjectAction == action))
-                                        {
 
 
 
-                                            <MudMenuItem OnClick="()=>AddActionAccess(action,objectMap.ObjectType)">
-                                                @AppLocalization[@action.Name]
-                                            </MudMenuItem>
-                                        }
+                                        <MudMenuItem OnClick="()=>AddActionAccess(action,objectMap.ObjectType)">
+                                            @AppLocalization[@action.Name]
+                                        </MudMenuItem>
                                     }
+
                                 }
 
                             </MudMenu>
@@ -166,24 +166,25 @@
                             <MudMenu MaxHeight="200"
                                      Color="Color.Success"
                                      Icon="@Icons.Material.Outlined.Add">
-                                @foreach (var field in fields.OrderBy(f => f.DisplayName))
+                                @foreach (var field in fields.Where(f => ShowField(f, objectMap.ObjectType)).OrderBy(f => f.DisplayName))
                                 {
 
-                                    if (ShowField(field, objectMap.ObjectType))
-                                    {
-                                        var existingFieldAccess = WorkingModel.FieldMap.Where(m => m.ObjectType.Equals(objectMap.ObjectType)
+
+                                    var existingFieldAccess = WorkingModel.FieldMap.FirstOrDefault(
+                                        m => m.ObjectType.Equals(objectMap.ObjectType)
                                         && (m.Field?.Equals(field) == true
-                                        || m.CustomField?.Equals(field) == true)).FirstOrDefault();
-                                        if (existingFieldAccess == null)
-                                        {
+                                        || m.CustomField?.Equals(field) == true));
 
-                                            <MudMenuItem OnClick="()=>AddFieldAccess(field,objectMap.ObjectType)">
-                                                @AppLocalization[field.DisplayName]
-                                            </MudMenuItem>
+                                    if (existingFieldAccess == null)
+                                    {
+
+                                        <MudMenuItem OnClick="()=>AddFieldAccess(field,objectMap.ObjectType)">
+                                            @AppLocalization[field.DisplayName]
+                                        </MudMenuItem>
 
 
-                                        }
                                     }
+
                                 }
 
 
@@ -262,7 +263,7 @@
 {
     <MudButton Disabled=@(WorkingModel.Id==1)
                Color=Color.Error
-               OnClick="@(async()=>{await _deleteModal.ShowAsync();})">@AppLocalization["Delete Access Level"]</MudButton>
+               OnClick="@(async()=>{_ = _deleteModal?.ShowAsync();})">@AppLocalization["Delete Access Level"]</MudButton>
     <AppModal Width="MaxWidth.Medium"
               @ref=_deleteModal
               Title="@AppLocalization["Confirm deletion"]">
@@ -282,14 +283,7 @@
 
     AppModal? _deleteModal;
 
-    bool ShowFields
-    {
-        get
-        {
-            return WorkingModel.ObjectMap.AsQueryable().Any(om => om.ObjectAccessLevelId > ObjectAccessLevels.Deny.Id);
-
-        }
-    }
+  
 
     [Parameter]
     public AccessLevel Model { get; set; } = new AccessLevel();
@@ -313,7 +307,7 @@
         actions = Context.ObjectActionFlag.AsEnumerable();
         if (Model.Id > 0)
         {
-            WorkingModel = await Context.AccessLevels.Where(l => l.Id == Model.Id).FirstOrDefaultAsync();
+            WorkingModel = await Context.AccessLevels.Where(l => l.Id == Model.Id).FirstAsync();
 
 
         }
@@ -362,8 +356,7 @@
             WorkingModel = new();
         await LevelsChanged.InvokeAsync();
 
-        //TODO update withh common evnt handler
-        //ProgramEvents.InvokePermissionsChanged();
+        ApplicationEvents.InvokePermissionsChanged();
         await InvokeAsync(StateHasChanged);
 
     }

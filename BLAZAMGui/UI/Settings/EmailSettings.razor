@@ -5,7 +5,7 @@
 
 
 <MudText Typo="Typo.h4">@AppLocalization["Email Settings"]</MudText>
-<MudForm @onsubmit="Save">
+<MudForm @ref=Form @bind-IsValid=IsValid Model="settings">
     <MudStack Spacing="5">
         <SettingsField Label="@AppLocalization["Email Enabled"]">
             <MudSwitch @bind-Value="settings.Enabled"
@@ -15,17 +15,26 @@
 
 
         <SettingsField Label="@AppLocalization["Admin bcc"]">
-            <MudTextField Label="@AppLocalization["Admin bcc"]" HelperText="Addresses to blind copy all application emails that are sent." @bind-Value="settings.AdminBcc" />
+            <MudTextField Label="@AppLocalization["Admin bcc"]"
+                          For=@(()=> settings.AdminBcc)
+                          HelperText="Addresses to blind copy all application emails that are sent."
+                          @bind-Value="settings.AdminBcc" />
         </SettingsField>
 
         <SettingsField Label="@AppLocalization["SMTP Server"]">
-            <MudTextField Label="@AppLocalization["SMTP Server"]" @bind-Value="settings.SMTPServer" />
+            <MudTextField Label="@AppLocalization["SMTP Server"]"
+                          For=@(()=> settings.SMTPServer)
+                          @bind-Value="settings.SMTPServer" />
         </SettingsField>
 
         <SettingsField Label="@AppLocalization["SMTP Port"]">
 
 
-            <MudNumericField Label="@AppLocalization["SMTP Port"]" T="int" HideSpinButtons="true" @bind-Value="settings.SMTPPort" />
+            <MudNumericField Label="@AppLocalization["SMTP Port"]"
+                             For=@(()=> settings.SMTPPort)
+                             T="int"
+                             HideSpinButtons="true"
+                             @bind-Value="settings.SMTPPort" />
 
         </SettingsField>
 
@@ -52,48 +61,62 @@
         {
             <SettingsField Label="@AppLocalization["SMTP Username"]">
 
-                <MudTextField Label="@AppLocalization["SMTP Username"]" @bind-Value="settings.SMTPUsername" />
+                <MudTextField Label="@AppLocalization["SMTP Username"]"
+                              For=@(()=> settings.SMTPUsername)
+                              @bind-Value="settings.SMTPUsername" />
             </SettingsField>
 
             <SettingsField Label="@AppLocalization["SMTP Password"]">
 
 
-                <MudTextField Label="@AppLocalization["SMTP Password"]" @bind-Value="settings.SMTPPassword" />
+                <MudTextField Label="@AppLocalization["SMTP Password"]"
+                              For=@(()=> settings.SMTPPassword)
+                              @bind-Value="settings.SMTPPassword" />
 
             </SettingsField>
         }
         <SettingsField Label="@AppLocalization["From Address"]">
 
 
-            <MudTextField Label="@AppLocalization["From Address"]" @bind-Value="settings.FromAddress" />
+            <MudTextField Label="@AppLocalization["From Address"]"
+                          For=@(()=> settings.FromAddress)
+                          @bind-Value="settings.FromAddress" />
         </SettingsField>
         <SettingsField Label="@AppLocalization["From Display Name"]">
 
 
-            <MudTextField Label="@AppLocalization["From Display Name"]" @bind-Value="settings.FromName" />
+            <MudTextField Label="@AppLocalization["From Display Name"]"
+                          For=@(()=> settings.FromName)
+                          @bind-Value="settings.FromName" />
 
         </SettingsField>
 
         <SettingsField Label="@AppLocalization["Reply-To Address"]">
 
 
-            <MudTextField Label="@AppLocalization["Reply-To Address"]" @bind-Value="settings.ReplyToAddress" />
+            <MudTextField Label="@AppLocalization["Reply-To Address"]"
+                          For=@(()=> settings.ReplyToAddress)
+                          @bind-Value="settings.ReplyToAddress" />
 
         </SettingsField>
 
         <SettingsField Label="@AppLocalization["Reply-To Display Name"]">
 
 
-            <MudTextField Label="@AppLocalization["Reply-To Display Name"]" @bind-Value="settings.ReplyToName" />
+            <MudTextField Label="@AppLocalization["Reply-To Display Name"]"
+                          For=@(()=> settings.ReplyToName)
+                          @bind-Value="settings.ReplyToName" />
 
         </SettingsField>
 
-        <MudTextField Label="@AppLocalization["Test Recipient"]" 
-        Disabled=@(!settings.Enabled) 
-        @bind-Value=testRecipient />
+        <MudTextField Label="@AppLocalization["Test Recipient"]"
+                      For=@(()=> testRecipient)
+                      Disabled=@(!settings.Enabled)
+                      @bind-Value=testRecipient />
 
-        <MudButton Disabled=@((!settings.Enabled && !settings.Valid())||LoadingData) @onclick="SendTestEmail"
-        Color="Color.Success">Send Test Email</MudButton>
+        <MudButton Disabled=@((!settings.Enabled && !settings.Valid())||LoadingData)
+                   @onclick="SendTestEmail"
+                   Color="Color.Success">Send Test Email</MudButton>
         @if (ApplicationInfo.InDebugMode && emailPreview != null)
         {
             <MudContainer MaxWidth="MaxWidth.Large" Style="min-height:500px;">
@@ -104,9 +127,9 @@
         }
         <SettingsField>
 
-            <MudButton Disabled="SaveDisabled"
-                ButtonType="ButtonType.Submit"
-                Color="Color.Success">
+            <MudButton Disabled="!IsValid"
+                       OnClick="Save"
+                       Color="Color.Success">
                 @AppLocalization["Save Changes"]
             </MudButton>
 

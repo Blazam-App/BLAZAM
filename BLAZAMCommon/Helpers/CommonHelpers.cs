@@ -93,8 +93,9 @@ namespace BLAZAM.Helpers
                     newValue = property.GetValue(changed);
 
                 // Compare the values using Equals method
-                if (oldValue is null || newValue is null
-                    || !Equals(oldValue, newValue))
+                if ((oldValue!=null && newValue!=null)
+                    && ((oldValue is not null && !oldValue.Equals(newValue)
+                    || (newValue is not null && !newValue.Equals(oldValue)))))
                 {
                     // Create a new AuditChangeLog instance with the property name and values
                     var change = new AuditChangeLog

@@ -1,15 +1,15 @@
 ﻿@inherits SettingsComponents
 <MudText Typo="Typo.h4">@AppLocalization["Global Permission Settings"]<AppDocumentationButton Page="/admin/permissions" /></MudText>
-<EditForm Context="editContext" OnValidSubmit="Save" Model="settings">
+<MudForm @ref=Form @bind-IsValid=IsValid Model="settings">
     <MudStack Spacing="5">
 
         <SettingsField Label="@AppLocalization["Allow access requests"]">
 
             <MudSwitch @bind-Value=settings.AllowAccessRequest
-            T=bool
-            Class="mt-0"
-            Color="Color.Success"
-            Label=@AppLocalization["Allow access requests"] />
+                       T=bool
+                       Class="mt-0"
+                       Color="Color.Success"
+                       Label=@AppLocalization["Allow access requests"] />
 
             @if (settings.AllowAccessRequest)
             {
@@ -19,18 +19,18 @@
                         @AppLocalization["Actions"]
                     </MudText>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Assign)"
-                    ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Assign); })"
-                    Color="Color.Success">
+                               ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Assign); })"
+                               Color="Color.Success">
                         @AppLocalization["Assign"]
                     </MudSwitch>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unassign)"
-                    ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unassign); })"
-                    Color="Color.Success">
+                               ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unassign); })"
+                               Color="Color.Success">
                         @AppLocalization["Unassign"]
                     </MudSwitch>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unlock)"
-                    ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unlock); })"
-                    Color="Color.Success">
+                               ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unlock); })"
+                               Color="Color.Success">
                         @AppLocalization["Unlock"]
                     </MudSwitch>
                 </MudStack>
@@ -42,28 +42,29 @@
         <SettingsField Label="@AppLocalization["Allow self edit"]">
 
             <MudSwitch @bind-Value=settings.AllowSelfModification
-            T=bool
-            Class="mt-0"
-            Color="Color.Success"
-            Label=@AppLocalization["Allow self edit"] />
+                       T=bool
+                       Class="mt-0"
+                       Color="Color.Success"
+                       Label=@AppLocalization["Allow self edit"] />
             @if (settings.AllowSelfModification)
             {
                 <EditAccessLevel Self=true
-                Model="selfAccessLevel" />
+                                 Model="selfAccessLevel" />
             }
         </SettingsField>
         <MudDivider />
         <SettingsField>
-            <MudButton Disabled="@(SaveDisabled ||(settings.AllowSelfModification && selfAccessLevel.Id==0))"
-            ButtonType="ButtonType.Submit"
-            Color="Color.Success">
+            <MudButton Disabled="@(!IsValid ||(settings.AllowSelfModification && selfAccessLevel.Id==0))"
+                       ButtonType="ButtonType.Submit"
+                       OnClick="Save"
+                       Color="Color.Success">
                 @AppLocalization["Save Changes"]
             </MudButton>
         </SettingsField>
 
 
     </MudStack>
-</EditForm>
+</MudForm>
 <LoadingData Loading=LoadingData />
 
 @code {
@@ -84,7 +85,7 @@
             settings = dbData;
             globalPermissionRequestActions = await Context.GlobalPermissionRequestActions.ToListAsync();
         }
-        
+
         var dbSelfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
         if (dbSelfAccessLevel != null)
         {
@@ -109,7 +110,7 @@
                 var requestAction = new GlobalPermissionRequestActions() { ObjectAction = action };
                 if (requestAction != null)
                 {
-                    var ctx  = await DbFactory.CreateDbContextAsync();
+                    var ctx = await DbFactory.CreateDbContextAsync();
                     globalPermissionRequestActions.Add(requestAction);
                     await ctx.GlobalPermissionRequestActions.AddAsync(requestAction);
                     await ctx.SaveChangesAsync();

@@ -1,6 +1,6 @@
 ﻿using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
-using BLAZAM.Server.Data.Services;
+using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;

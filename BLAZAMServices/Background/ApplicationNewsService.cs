@@ -1,5 +1,6 @@
 ﻿using ApplicationNews;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Services;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using System.Text.Json;
@@ -7,7 +8,7 @@ using System.Text.Json;
 namespace BLAZAM.Services.Background
 {
     [AutoStartBackgroundService(15, true)]
-    public class ApplicationNewsService : BackgroundServiceBase, IApplicationNewsService
+    public class ApplicationNewsService : DatabaseBackgroundServiceBase, IApplicationNewsService
     {
         private HttpClient _httpClient;
         private HttpClient _secondaryHttpClient;

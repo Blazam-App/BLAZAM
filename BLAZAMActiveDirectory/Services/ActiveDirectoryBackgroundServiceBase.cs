@@ -1,9 +1,10 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Services;
 
-namespace BLAZAM.Services.Background
+namespace BLAZAM.ActiveDirectory.Services
 {
-    public class ActiveDirectoryBackgroundServiceBase : BackgroundServiceBase
+    public class ActiveDirectoryBackgroundServiceBase : DatabaseBackgroundServiceBase
     {
         protected readonly IActiveDirectoryContextFactory activeDirectoryContextFactory;
 

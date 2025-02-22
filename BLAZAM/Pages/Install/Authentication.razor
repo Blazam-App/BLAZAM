@@ -1,26 +1,30 @@
 ﻿@using System.Text.Json
 @using System.Net
 @using System.Diagnostics
+@using BLAZAM.Common.Data.Validators
 @using Microsoft.EntityFrameworkCore;
 @layout InstallLayout
 @inherits ValidatedForm
 
-<MudText Typo="Typo.h3" Size="HeadingSize.Is3">Authentication</MudText>
+<MudText Typo="Typo.h3" Size="HeadingSize.Is3">@AppLocalization["Authentication"]</MudText>
 <MudText Typo="Typo.h6">
-    Please set a secure admin password.
+    @AppLocalization["Please set a secure admin password."]
 
 </MudText>
 <MudText Typo="Typo.h6">
 
-    This account will have total application access.
+    @AppLocalization["This account will have total application access."]
 </MudText>
-<EditForm Model=settings OnValidSubmit="SubmitForm">
+<MudForm @ref=Form Model="settings" @bind-IsValid=IsValid>
     <SettingsField>
         <FieldLabel>
             @AppLocalization["Username"]
         </FieldLabel>
         <ChildContent>
-            <MudTextField Label="Username" Text="admin" T=string Disabled />
+            <MudTextField Label=@AppLocalization["Username"]
+                          Text="admin"
+                          T=string
+                          Disabled="true" />
         </ChildContent>
     </SettingsField>
     <SettingsField>
@@ -28,25 +32,25 @@
             @AppLocalization["Password"]
         </FieldLabel>
         <ChildContent>
-            <MudTextField Label="Password"
+            <MudTextField Label=@AppLocalization["Password"]
                           AutoFocus=true
                           Immediate=true
-                          HelperText="Must be 6 characters or longer containing at least one letter,numer and special character."
                           InputType="InputType.Password"
                           For="@(() => settings.AdminPassword)"
                           @bind-Value=settings.AdminPassword />
+            <MudText Typo="Typo.caption">@AppLocalization["Must be 6 characters or longer containing at least one letter,numer and special character."]</MudText>
         </ChildContent>
 
     </SettingsField>
     <SettingsField>
         <FieldLabel>
-            @AppLocalization["Password"]
+            @AppLocalization["Confirm Password"]
         </FieldLabel>
         <ChildContent>
             <MudTextField For="@(() => settings.AdminPasswordConfirmed)"
                           Immediate=true
                           @bind-Value=settings.AdminPasswordConfirmed
-                          Label="Confirm Password"
+                          Label=@AppLocalization["Confirm Password"]
                           InputType="InputType.Password"
                           T="string" />
         </ChildContent>
@@ -54,8 +58,11 @@
     </SettingsField>
 
 
-    <MudButton Disabled=SaveDisabled Color="Color.Primary" ButtonType="ButtonType.Submit">Save Password</MudButton>
-</EditForm>
+    <MudButton Disabled=!IsValid
+               OnClick="SubmitForm"
+               Color="Color.Primary"
+               ButtonType="ButtonType.Submit">Save Password</MudButton>
+</MudForm>
 
 
 @code {
@@ -69,10 +76,9 @@
         await base.OnInitializedAsync();
         settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
 
-        if (settings !=null && settings.AdminPassword == "password")
+        if (settings != null && settings.AdminPassword == "password")
             settings.AdminPassword = "";
 
-            
         await InvokeAsync(StateHasChanged);
 
     }

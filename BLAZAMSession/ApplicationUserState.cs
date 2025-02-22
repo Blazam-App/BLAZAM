@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace BLAZAM.Server.Data.Services
+namespace BLAZAM.Session
 {
     /// <summary>
     /// An application user state as managed by the <see cref="ApplicationUserStateService"/>
