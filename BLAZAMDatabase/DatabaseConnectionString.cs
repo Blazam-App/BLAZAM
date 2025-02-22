@@ -35,7 +35,7 @@ namespace BLAZAM.Common.Data.Database
         /// Returns a file that points to the <see cref="ServerAddress"/>.
         /// This should only be used for SQLite.
         /// </summary>
-        public SystemFile File => new(ServerAddress);
+        public SystemFile File => new(AddressComponent);
         /// <summary>
         /// The full ConnectionString to the database
         /// </summary>

@@ -459,7 +459,7 @@
 
         </CascadingValue>
     </MudForm>
-@*     @if(DirectoryTemplate.GetChanges(originalTemplate).Count>0){
+    @*     @if(DirectoryTemplate.GetChanges(originalTemplate).Count>0){
         <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges"/>
     } *@
 }
@@ -611,6 +611,8 @@
         }
         RefreshGroups();
         await InvokeAsync(StateHasChanged);
+        Form?.Validate();
+
     }
 
     private async Task LoadParentOU()
