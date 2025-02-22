@@ -19,7 +19,7 @@ namespace BLAZAM.Update.Services
     /// Represents the source of the valid credential to write to
     /// the application directory
     /// </summary>
-    public enum UpdateCredential { None, Application, Active_Directory, Update };
+    public enum UpdateCredential { None, Application, Active_Directory, Custom };
 
 
 
@@ -315,7 +315,7 @@ namespace BLAZAM.Update.Services
 
                 //Test Update Credentials
                 if (TestCustomCredentials())
-                    return UpdateCredential.Update;
+                    return UpdateCredential.Custom;
 
                 return UpdateCredential.None;
             }
@@ -332,7 +332,7 @@ namespace BLAZAM.Update.Services
                     //Pull ad settings to test if app ad account can write to the application directory
                     var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
                     return adSettings?.CreateDirectoryAdminImpersonator();
-                case UpdateCredential.Update:
+                case UpdateCredential.Custom:
                     var appSettings = context.AppSettings.FirstOrDefault();
                     return appSettings?.CreateUpdateImpersonator();
                 default:
