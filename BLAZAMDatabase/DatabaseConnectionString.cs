@@ -128,6 +128,10 @@ namespace BLAZAM.Common.Data.Database
                         string serverFragment = dataSourceParts[0];
                         if (serverFragment.StartsWith("tcp:"))
                             serverFragment = serverFragment.Substring(4);
+                        if (serverFragment.Contains("\\"))
+                        {
+                            serverFragment = serverFragment.Split("\\")[0];
+                        }
                         return serverFragment;  // Outputs "serverNameOrIp"
                     }
 
@@ -143,7 +147,45 @@ namespace BLAZAM.Common.Data.Database
 
 
         }
+        /// <summary>
+        /// The server IP or hostname as defined in the ConnectionString
+        /// </summary>
+        public string? InstanceName
+        {
+            get
+            {
 
+                var fullAddress = AddressComponent;
+
+                if (fullAddress != null)
+                {
+
+                    string[] dataSourceParts = fullAddress.Split("\\");
+                    if (dataSourceParts.Length > 0)
+                    {
+                        string serverFragment = dataSourceParts[0];
+                        if (serverFragment.StartsWith("tcp:"))
+                            serverFragment = serverFragment.Substring(4);
+
+                        if (serverFragment.Contains("\\"))
+                        {
+                            return serverFragment.Split("\\")[1];
+                        }
+                    }
+
+
+                    return null;
+
+
+
+
+                }
+                throw new DatabaseConnectionStringException("Error getting server address from appconfig");
+
+            }
+
+
+        }
 
         /// <summary>
         /// The database server port as defined in the ConnectionString
