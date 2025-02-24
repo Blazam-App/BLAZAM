@@ -35,12 +35,12 @@ namespace BLAZAM.Common.Data.Database
         /// Returns a file that points to the <see cref="ServerAddress"/>.
         /// This should only be used for SQLite.
         /// </summary>
-        public SystemFile File => new(ServerAddress);
+        public SystemFile File => new(AddressComponent);
         /// <summary>
         /// The full ConnectionString to the database
         /// </summary>
         public string? Value { get; set; }
-        public string AddressComponent
+        protected string AddressComponent
         {
             get
             {
@@ -159,14 +159,11 @@ namespace BLAZAM.Common.Data.Database
 
                 if (fullAddress != null)
                 {
-
-                    string[] dataSourceParts = fullAddress.Split("\\");
+                    string[] dataSourceParts = fullAddress.Split(',');
                     if (dataSourceParts.Length > 0)
                     {
                         string serverFragment = dataSourceParts[0];
-                        if (serverFragment.StartsWith("tcp:"))
-                            serverFragment = serverFragment.Substring(4);
-
+                       
                         if (serverFragment.Contains("\\"))
                         {
                             return serverFragment.Split("\\")[1];

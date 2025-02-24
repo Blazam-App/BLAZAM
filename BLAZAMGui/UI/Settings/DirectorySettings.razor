@@ -17,20 +17,20 @@
                     {
 
                         <MudTextField Label="@AppLocalization["Server"]"
-                                      AutoFocus=true
-                                      HelperText="Can be your domain name in most environments"
-                                      Value=@("Private")
-                                      Disabled />
+                        AutoFocus=true
+                        HelperText="Can be your domain name in most environments"
+                        Value=@("Private")
+                        Disabled />
                     }
                     else
                     {
 
                         <MudTextField Label="@AppLocalization["Server"]"
-                                      AutoFocus=true
-                                      Immediate=true
-                                      HelperText="Can be your domain name in most environments"
-                                      For="(()=>settings.ServerAddress)"
-                                      @bind-Value="@(settings.ServerAddress)">
+                        AutoFocus=true
+                        Immediate=true
+                        HelperText="Can be your domain name in most environments"
+                        For="(()=>settings.ServerAddress)"
+                        @bind-Value="@(settings.ServerAddress)">
 
 
 
@@ -56,11 +56,11 @@
                     @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
                     {
                         <MudNumericField HelperText="@helperText"
-                                         Immediate=true
-                                         Label="@AppLocalization["Port"]"
-                                         HideSpinButtons="true"
-                                         Value="0"
-                                         Disabled />
+                        Immediate=true
+                        Label="@AppLocalization["Port"]"
+                        HideSpinButtons="true"
+                        Value="0"
+                        Disabled />
 
 
                     }
@@ -68,11 +68,11 @@
                     {
 
                         <MudNumericField HelperText="@helperText"
-                                         Immediate=true
-                                         Label="@AppLocalization["Port"]"
-                                         HideSpinButtons="true"
-                                         For="(()=>settings.ServerPort)"
-                                         @bind-Value="@settings.ServerPort" />
+                        Immediate=true
+                        Label="@AppLocalization["Port"]"
+                        HideSpinButtons="true"
+                        For="(()=>settings.ServerPort)"
+                        @bind-Value="@settings.ServerPort" />
 
 
 
@@ -91,10 +91,10 @@
 
 
                     <MudTextField For="(()=>settings.Username)"
-                                  Immediate=true
-                                  Label="@AppLocalization["Username"]"
-                                  name="username"
-                                  @bind-Value="@settings.Username">
+                    Immediate=true
+                    Label="@AppLocalization["Username"]"
+                    name="username"
+                    @bind-Value="@settings.Username">
 
 
 
@@ -107,11 +107,11 @@
                 <SettingsField Label="@AppLocalization["Password"]">
 
                     <MudTextField For="(()=>settings.Password)"
-                                  Immediate=true
-                                  Label="@AppLocalization["Password"]"
-                                  name="password"
-                                  InputType="InputType.Password"
-                                  @bind-Value="@settings.Password">
+                    Immediate=true
+                    Label="@AppLocalization["Password"]"
+                    name="password"
+                    InputType="InputType.Password"
+                    @bind-Value="@settings.Password">
 
 
 
@@ -124,9 +124,9 @@
                 <SettingsField Label="@AppLocalization["UseTLS"]">
 
                     <MudSwitch For="(()=>settings.UseTLS)"
-                               Color="Color.Success"
-                               Label="@AppLocalization["UseTLS"]"
-                               @bind-Value="@settings.UseTLS" />
+                    Color="Color.Success"
+                    Label="@AppLocalization["UseTLS"]"
+                    @bind-Value="@settings.UseTLS" />
 
                 </SettingsField>
 
@@ -135,10 +135,10 @@
                 <SettingsField Label="@AppLocalization["FQDN"]">
 
                     <MudTextField For="(()=>settings.FQDN)"
-                                  Immediate=true
-                                  Label="@AppLocalization["FQDN"]"
-                                  name="fqdn"
-                                  @bind-Value="@settings.FQDN" />
+                    Immediate=true
+                    Label="@AppLocalization["FQDN"]"
+                    name="fqdn"
+                    @bind-Value="@settings.FQDN" />
 
                 </SettingsField>
 
@@ -147,10 +147,10 @@
                 <SettingsField Label="@AppLocalization["Base DN"]">
 
                     <MudTextField For="(()=>settings.ApplicationBaseDN)"
-                                  Immediate=true
-                                  Label="@AppLocalization["Base DN"]"
-                                  name="baseDN"
-                                  @bind-Value="@settings.ApplicationBaseDN" />
+                    Immediate=true
+                    Label="@AppLocalization["Base DN"]"
+                    name="baseDN"
+                    @bind-Value="@settings.ApplicationBaseDN" />
 
                 </SettingsField>
 
@@ -158,8 +158,8 @@
                 <SettingsField>
 
                     <MudButton Disabled="!IsValid"
-                               OnClick="Save"
-                               Color="Color.Success">
+                    OnClick="Save"
+                    Color="Color.Success">
                         @AppLocalization["Save Changes"]
                     </MudButton>
 
@@ -182,7 +182,7 @@
 </MudForm>
 @code {
 
-#nullable disable warnings
+    #nullable disable warnings
     ADSettings settings = new ADSettings();
     bool _insert;
 
@@ -192,6 +192,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         originalSettings = await Context.ActiveDirectorySettings.AsNoTracking().FirstOrDefaultAsync();
 
         var set = await Context.ActiveDirectorySettings.FirstOrDefaultAsync();
