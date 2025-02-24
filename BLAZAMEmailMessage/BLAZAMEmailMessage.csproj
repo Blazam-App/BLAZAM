@@ -24,7 +24,7 @@
 	  <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.2" />
 	  <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.2" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
-    <PackageReference Include="MudBlazor" Version="7.16.0" />
+    <PackageReference Include="MudBlazor" Version="8.3.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0" />
     <PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.2" />
     <PackageReference Include="System.Management" Version="9.0.2" />
