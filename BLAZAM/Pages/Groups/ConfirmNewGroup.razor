@@ -29,6 +29,7 @@
     {
         if (await MessageService.Confirm("Are you sure you want to create this group?", "Create group"))
         {
+            var assignTo = Group.MembersToAdd;
             disableCreateGroupButton = true;
             await InvokeAsync(StateHasChanged);
             var createGroupJob = new Job(AppLocalization["Create User"]);
@@ -40,6 +41,22 @@
             await InvokeAsync(StateHasChanged);
             if (result.FailedSteps.Count == 0)
             {
+                foreach (var assignment in assignTo)
+                {
+                    await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
+                    await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
+                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                    {
+                        await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
+
+                    }
+                    else
+                    {
+                        _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
+
+                    }
+                }
+
                 Group = (IADGroup)Directory.GetDirectoryEntryByDN(Group.DN);
 
                 SnackBarService.Success(AppLocalization["Group created"]);
