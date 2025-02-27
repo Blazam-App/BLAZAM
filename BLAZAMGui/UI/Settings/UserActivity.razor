@@ -4,7 +4,11 @@
     <Columns>
         <PropertyColumn Title=@AppLocalization["Username"] Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
         <PropertyColumn Title=@AppLocalization["IP Address"] Property="x => x.IPAddress==null?null:x.IPAddress" />
-
+        <TemplateColumn Title=@AppLocalization["IP Address"]>
+            <CellTemplate>
+                <IPAddress>@context.Item.IPAddress</IPAddress>
+            </CellTemplate>
+        </TemplateColumn>
        
         <TemplateColumn Title=@AppLocalization["Impersonator"]>
             <CellTemplate>

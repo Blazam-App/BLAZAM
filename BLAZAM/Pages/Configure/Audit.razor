@@ -43,19 +43,9 @@
                     <PropertyColumn Property="x => x.Username" Filterable="true" Title="@AppLocalization["Username"]"/>
                     <TemplateColumn Title=@AppLocalization["IP Address"] Filterable="true">
                         <CellTemplate>
-                            @if (ApplicationInfo.InDemoMode && !CurrentUser.Username.Equals("admin", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                <MudText Style="filter:blur(4px);">
-                                    10.20.30.40
-                                </MudText>
-                            }
-                            else
-                            {
-                                <MudText>
+                                <IPAddress>
                                     @context.Item.IpAddress
-                                </MudText>
-                            }
-
+                                </IPAddress>
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="@AppLocalization["Action"]">
@@ -109,19 +99,9 @@
 
                     <TemplateColumn Title=@AppLocalization["IP Address"] Filterable="true">
                         <CellTemplate>
-                            @if (ApplicationInfo.InDemoMode && !CurrentUser.Username.Equals("admin", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                <MudText Style="filter:blur(4px);">
-                                    10.20.30.40
-                                </MudText>
-                            }
-                            else
-                            {
-                                <MudText>
+                                <IPAddress>
                                     @context.Item.IpAddress
-                                </MudText>
-                            }
-                           
+                                </IPAddress>
                         </CellTemplate>
                     </TemplateColumn>
                     <PropertyColumn Property="x => x.Action" Title="@AppLocalization["Action"]" />
