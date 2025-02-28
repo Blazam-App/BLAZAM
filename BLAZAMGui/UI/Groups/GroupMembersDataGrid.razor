@@ -12,18 +12,13 @@
                  SortMode="@SortMode.None"
                  Groupable="false">
         <Columns>
-            <TemplateColumn Context="templateContext">
-                <HeaderTemplate>
-                    @AppLocalization["Type"]
-                </HeaderTemplate>
+            <TemplateColumn Context="templateContext" Title=@AppLocalization["Type"]>
                 <CellTemplate Context="cellContext">
                     <DirectoryEntryTypeIcon Entry=cellContext.Item />
                 </CellTemplate>
             </TemplateColumn>
-            <TemplateColumn Sortable=true Filterable=true Context="templateContext">
-                <HeaderTemplate>
-                    @AppLocalization["Name"]
-                </HeaderTemplate>
+            <TemplateColumn Title=@AppLocalization["Name"] Sortable=true Filterable=true Context="templateContext">
+              
                 <CellTemplate Context="cellContext">
                     <MudLink Href="@cellContext.Item.SearchUri">
                         @if (cellContext.Item is IADGroup group)
@@ -49,10 +44,7 @@
                     </MudText>
                 </CellTemplate>
             </TemplateColumn>
-            <TemplateColumn Context="templateContext">
-                <HeaderTemplate>
-                    @AppLocalization["Remove Member"]
-                </HeaderTemplate>
+            <TemplateColumn Title=@AppLocalization["Remove Member"] Context="templateContext">
                 <CellTemplate Context="cellContext">
                     <AppTooltip ShowOnClick=@(!cellContext.Item.CanUnassign)
                                 ShowOnHover=@(!cellContext.Item.CanUnassign)

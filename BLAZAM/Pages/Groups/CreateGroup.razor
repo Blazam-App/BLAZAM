@@ -11,9 +11,6 @@
 
                 <OUTreeView Label=@AppLocalization["Parent Organizational Unit"]
                             SelectedEntryChanged="OUSelected">
-                    @* <NodeContent>
-                    @context.Name
-                    </NodeContent>*@
                 </OUTreeView>
 
 
@@ -21,6 +18,10 @@
 
 
                 <MudTextField Immediate=true Label=@AppLocalization["Group Name"] @bind-Value=@newGroupName />
+
+                <MudTextField Immediate=true Label=@AppLocalization["Description"] @bind-Value=@newDescription />
+
+<MudTextField Immediate=true Label=@AppLocalization["Email"] @bind-Value=@newEmail />
 
 
 
@@ -81,6 +82,8 @@
 
 
     string newGroupName = "";
+    string newDescription = "";
+    string newEmail = "";
     IADOrganizationalUnit? parentOU;
     IADGroup? newGroup;
 
@@ -104,7 +107,12 @@
     {
         LoadingData = true;
         newGroup = parentOU?.CreateGroup(newGroupName);
-
+        if(!newDescription.IsNullOrEmpty()){
+            newGroup.Description = newDescription;
+        }
+        if(!newEmail.IsNullOrEmpty()){
+            newGroup.Email = newEmail;
+        }
 
 
         selectedStep = 1;

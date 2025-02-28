@@ -8,7 +8,7 @@ namespace BLAZAM.Common.Data.Validators
     {
         public ValidIpOrFqdn()
         {
-            ErrorMessage = "Must be a valid domain name or IP address.";
+            ErrorMessageResourceName = GetType().Name;
         }
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

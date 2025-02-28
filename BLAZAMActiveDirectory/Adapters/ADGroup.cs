@@ -63,7 +63,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (MembersToAdd.Count > 0)
             {
-                CommitSteps.Add(new JobStep("Add group members", (JobStep? step) =>
+                PostCommitSteps.Add(new JobStep("Add group members", (JobStep? step) =>
                 {
                     MembersToAdd.ForEach(g =>
                     {
@@ -77,7 +77,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             if (MembersToRemove.Count > 0)
             {
-                CommitSteps.Add(new JobStep("Remove group members", (JobStep? step) =>
+                PostCommitSteps.Add(new JobStep("Remove group members", (JobStep? step) =>
                 {
                     MembersToRemove.ForEach(g =>
                     {

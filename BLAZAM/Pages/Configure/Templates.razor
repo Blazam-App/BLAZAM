@@ -133,7 +133,7 @@
 {
 
     <MudCard Elevation="2">
-        <MudExpansionPanel Text="@AppLocalization["Inheritance Tree"]">
+        <MudExpansionPanel Text="@AppLocalization["Inheritance Tree"]" Expanded=true>
             <TemplateInheritanceTreeView RootTemplate="TemplateTreeItemData"
                                          SelectedTemplate="SelectedTemplate"
                                          OnTemplateSelected="@((template)=>{SelectedTemplate=template; Nav.NavigateTo("/templates/"+template.Id);})" />

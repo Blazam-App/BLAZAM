@@ -7,7 +7,8 @@ namespace BLAZAM.Common.Data.Validators
     {
         public ValidAdminPassword()
         {
-            this.ErrorMessage = "Doesn't meet complexity requirements!";
+            ErrorMessageResourceName = GetType().Name;
+
         }
 
         /// <summary>
