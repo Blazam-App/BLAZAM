@@ -6,7 +6,10 @@
 
 <MudText Typo="Typo.h4">@AppLocalization["Authentication Settings"] <AppDocumentationButton Page="/admin/settings/authentication" /></MudText>
 
-<MudForm @ref=Form Model="settings" @onsubmit=Save>
+<MudForm @ref=Form
+         @bind-IsValid=IsValid
+         Model="settings"
+         >
     <MudStack Spacing="5">
 
         <SettingsField Label="@AppLocalization["Admin Password"]">
@@ -71,6 +74,7 @@
         <SettingsField>
 
             <MudButton Disabled="SaveDisabled"
+                OnClick="Save"
                 ButtonType="ButtonType.Submit"
                 Color="Color.Success">
                 @AppLocalization["Save Changes"]

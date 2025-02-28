@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Common.Data;
+using BLAZAM.Localization;
 using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Database.Models
@@ -7,11 +8,11 @@ namespace BLAZAM.Database.Models
     {
 
 
-        [Required]
+        [Required (ErrorMessageResourceName ="CustomActiveDirectoryField_FieldName",ErrorMessageResourceType = typeof(AppValidationLocalization))]
         public string FieldName { get; set; }
 
 
-        [Required]
+        [Required (ErrorMessageResourceName = "CustomActiveDirectoryField_DisplayName", ErrorMessageResourceType = typeof(AppValidationLocalization))]
         public string DisplayName { get; set; }
 
 
@@ -20,7 +21,7 @@ namespace BLAZAM.Database.Models
 
 
 
-        [Required]
+        [Required (ErrorMessageResourceName = "CustomActiveDirectoryField_ObjectTypes", ErrorMessageResourceType = typeof(AppValidationLocalization))]
         public List<ActiveDirectoryFieldObjectType> ObjectTypes { get; set; }
 
 

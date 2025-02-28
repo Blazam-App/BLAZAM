@@ -7,6 +7,8 @@ namespace BLAZAM.Common.Data.Validators
     {
         public ValidPort()
         {
+            ErrorMessageResourceName = GetType().Name;
+
             this.ErrorMessage = "Enter a port number from 1 to 65535";
         }
 

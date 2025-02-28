@@ -87,7 +87,6 @@
                          SortMode="@SortMode.Multiple"
                          Groupable="false">
                 <Columns>
-                    @* <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" /> *@
                     <TemplateColumn Title=@AppLocalization["Timestamp"] Sortable="true">
                         <CellTemplate>
                             <MudText>
@@ -95,6 +94,7 @@
                             </MudText>
                         </CellTemplate>
                     </TemplateColumn>
+
                     <PropertyColumn Property="x => x.Username" Title="@AppLocalization["Username"]" />
 
                     <TemplateColumn Title=@AppLocalization["IP Address"] Filterable="true">
@@ -104,6 +104,7 @@
                                 </IPAddress>
                         </CellTemplate>
                     </TemplateColumn>
+
                     <PropertyColumn Property="x => x.Action" Title="@AppLocalization["Action"]" />
 
                 </Columns>
@@ -135,7 +136,6 @@
                              SortMode="@SortMode.Multiple"
                              Groupable="false">
                     <Columns>
-                        @* <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" /> *@
                         <TemplateColumn Title=@AppLocalization["Timestamp"] Sortable="true">
                             <CellTemplate>
                                 <MudText>
@@ -146,7 +146,6 @@
                         <PropertyColumn Property="x => x.Username" Title="@AppLocalization["Username"]"/>
                         <PropertyColumn Property="x => x.IpAddress" Title="@AppLocalization["IP Address"]" />
                         <PropertyColumn Property="x => x.Target" Title="@AppLocalization["Target"]" />
-
                         <PropertyColumn Property="x => x.BeforeAction" Title="@AppLocalization["Before Action"]" />
                         <PropertyColumn Property="x => x.AfterAction" Title="@AppLocalization["After Action"]" />
 

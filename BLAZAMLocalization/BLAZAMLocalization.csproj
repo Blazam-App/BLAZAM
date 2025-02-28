@@ -18,6 +18,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="AppValidationLocalization.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AppValidationLocalization.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +60,10 @@
     <EmbeddedResource Update="AppLocalization.resx">
       <LastGenOutput>AppLocalization.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="AppValidationLocalization.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppValidationLocalization.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

@@ -1,28 +1,39 @@
+@using System.Linq.Expressions
 @inherits AppComponentBase
-<MudSelect Variant=Variant.Outlined Disabled=@Disabled @bind-Value=@Value Label=@AppLocalization["Field Type"] T="ActiveDirectoryFieldType">
+<MudSelect For=For
+           Variant=Variant.Outlined
+           Disabled=@Disabled @bind-Value=@Value
+           Label=@AppLocalization["Field Type"]
+           T="ActiveDirectoryFieldType">
     @foreach (var fieldType in Enum.GetValues<ActiveDirectoryFieldType>())
     {
         <MudSelectItem Value="@fieldType">@fieldType.ToString()</MudSelectItem>
     }
 </MudSelect>
-@code{
+@code {
 
     [Parameter]
-    public Variant Variant{ get; set; }
+    public Variant Variant { get; set; }
 
     [Parameter]
-    public bool Disabled{ get; set; }
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public Expression<Func<ActiveDirectoryFieldType>>?  For { get; set; }
 
     private ActiveDirectoryFieldType value;
 
     [Parameter]
-    public ActiveDirectoryFieldType  Value{ get=>value; set
+    public ActiveDirectoryFieldType Value
+    {
+        get => value; set
         {
             if (this.value == value) return;
             this.value = value;
             ValueChanged.InvokeAsync(value);
-        } }
+        }
+    }
     [Parameter]
 
-    public EventCallback<ActiveDirectoryFieldType> ValueChanged{ get; set; }
+    public EventCallback<ActiveDirectoryFieldType> ValueChanged { get; set; }
 }

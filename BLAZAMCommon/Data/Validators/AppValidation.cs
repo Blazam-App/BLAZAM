@@ -26,7 +26,20 @@ namespace BLAZAM.Common.Data.Validators
 
         private static IStringLocalizer localizer;
 
+        public AppValidationAttribute()
+        {
+            this.ErrorMessageResourceType = typeof(AppValidationLocalization);
+        }
 
+        public AppValidationAttribute(Func<string> errorMessageAccessor) : base(errorMessageAccessor)
+        {
+            this.ErrorMessageResourceType = typeof(AppValidationLocalization);
+        }
+
+        public AppValidationAttribute(string errorMessage) : base(errorMessage)
+        {
+            this.ErrorMessageResourceType = typeof(AppValidationLocalization);
+        }
 
         private IStringLocalizer GetLocalizer(ValidationContext validationContext)
         {
