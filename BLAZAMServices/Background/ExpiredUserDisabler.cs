@@ -7,6 +7,7 @@ using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
+using BLAZAM.Session;
 using System.Security.Cryptography.Xml;
 
 namespace BLAZAM.Services.Background
@@ -51,7 +52,7 @@ namespace BLAZAM.Services.Background
                         if(result.Result == JobResult.Passed)
                         {
                             _serverAuditLogger.User.Changed(user,changes);
-                            _notificationGenerationService.PostAsync(user, NotificationType.Modify);
+                            _notificationGenerationService.PostAsync(user, NotificationType.Modify,new SystemUserState(dbFactory));
                         }
 
                     }

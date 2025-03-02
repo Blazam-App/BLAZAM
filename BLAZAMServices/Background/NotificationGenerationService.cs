@@ -233,7 +233,7 @@ namespace BLAZAM.Services.Background
             notification.Title = notificationTitle;
             notification.Message = notificationBody;
             notification.Dismissable = true;
-            notification.CreatorId = actor?.Preferences.Id;
+            notification.CreatorId = actor?.Preferences?.Id;
             notification.Level = NotificationLevel.Info;
         }
 
