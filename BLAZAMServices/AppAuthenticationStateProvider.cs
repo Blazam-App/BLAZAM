@@ -32,7 +32,7 @@ namespace BLAZAM.Services
             IHttpContextAccessor ca,
             IDuoClientProvider dcp,
             IEncryptionService enc,
-            AuditLogger audit,
+            WebUserAuditLogger audit,
             ApplicationInfo applicationInfo,
             GoogleAuthenticatorService googleAuthenticatorService)
         {
@@ -52,7 +52,7 @@ namespace BLAZAM.Services
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IDuoClientProvider _duoClientProvider;
-        private readonly AuditLogger _audit;
+        private readonly WebUserAuditLogger _audit;
         private readonly ApplicationInfo _applicationInfo;
         private readonly IEncryptionService _encryption;
         private readonly GoogleAuthenticatorService _googleAuthenticatorService;

@@ -378,7 +378,7 @@ namespace BLAZAM.ActiveDirectory
                                                 return;
                                             }
                                         }
-                                        catch (Exception)
+                                        catch (Exception ex)
                                         {
 
                                             Status = DirectoryConnectionStatus.BadConfiguration;

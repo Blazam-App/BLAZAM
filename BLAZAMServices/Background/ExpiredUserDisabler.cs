@@ -14,11 +14,13 @@ namespace BLAZAM.Services.Background
     [AutoStartBackgroundService(30)]
     internal class ExpiredUserDisabler : ActiveDirectoryBackgroundServiceBase
     {
-        private NotificationGenerationService _notificationGenerationService;
+        private readonly NotificationGenerationService _notificationGenerationService;
+        private readonly ServerAuditLogger _serverAuditLogger;
 
-        public ExpiredUserDisabler(NotificationGenerationService notificationGenerationService, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory) : base(activeDirectoryContextFactory, dbFactory)
+        public ExpiredUserDisabler(ServerAuditLogger serverAuditLogger, NotificationGenerationService notificationGenerationService, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory) : base(activeDirectoryContextFactory, dbFactory)
         {
             _notificationGenerationService = notificationGenerationService;
+            _serverAuditLogger = serverAuditLogger;
         }
 
         protected override void Execute(object? state = null)
@@ -43,11 +45,12 @@ namespace BLAZAM.Services.Background
                     {
                         var original = directory.Users.FindUserBySID(user.SID.ToSidString());
                         user.Enabled = false;
-                        var changes = user.GetChanges(original);
+                        List<AuditChangeLog>? changes = new(user.Changes);
                         var result = user.CommitChanges(); 
                         
                         if(result.Result == JobResult.Passed)
                         {
+                            _serverAuditLogger.User.Changed(user,changes);
                             _notificationGenerationService.PostAsync(user, NotificationType.Modify);
                         }
 

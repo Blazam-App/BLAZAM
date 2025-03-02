@@ -36,6 +36,14 @@ namespace BLAZAMCommon.Tests
             var result = encryption.DecryptObject<string>(test);
             Assert.Equal(expected, result);
         }
+        [Fact]
+        public void CanDecrypt2()
+        {
+            var test = "mBxrY94q0fYqvmJtIaIgUhWCMD48wf4B0Dc9N4nKFus=,/cMSG4ijXBJzg5Kq5FcGUVh/wvwELYciNy4/Zu4mZhs=";
+            var expected = "test";
+            var result = encryption.DecryptObject<string>(test);
+            Assert.Equal(expected, result);
+        }
 
         [Theory]
         [InlineData("s")]

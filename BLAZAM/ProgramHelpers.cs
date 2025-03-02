@@ -280,7 +280,8 @@ namespace BLAZAM.Server
 
 
             //Provide a AuditLogger as a service
-            builder.Services.AddScoped<AuditLogger>();
+            builder.Services.AddScoped<WebUserAuditLogger>();
+            builder.Services.AddSingleton<ServerAuditLogger>();
 
             builder.Services.AddScoped<GoogleAuthenticatorService>();
 

@@ -33,7 +33,7 @@ namespace BLAZAM.Pages.API.v1
         /// <summary>
         /// The API audit logger
         /// </summary>
-        protected readonly AuditLogger AuditLogger;
+        protected readonly WebUserAuditLogger AuditLogger;
         /// <summary>
         /// 
         /// </summary>
@@ -44,7 +44,7 @@ namespace BLAZAM.Pages.API.v1
         /// </summary>
         protected IApplicationUserState? CurrentUserState { get; }
 
-        public ApiController(IApplicationUserStateService applicationUserStateService, AuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
+        public ApiController(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
         {
             AuditLogger = audit;
             UserStateService = applicationUserStateService;
