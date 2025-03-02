@@ -211,6 +211,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(lastLogonTimestamp<={Fields.LastLogonTime})(!(lastLogonTimestamp=0))";
                     if (Fields.LockoutTime != null)
                         FilterQuery += $"(lockoutTime>={Fields.LockoutTime})";
+                    if (Fields.AccountExpires != null)
+                        FilterQuery += $"(accountExpires<={Fields.AccountExpires.Value.ToFileTimeUtc()})(!(accountExpires=9223372036854775807))(!(accountExpires=0))";
                     if (!Fields.DN.IsNullOrEmpty())
                         FilterQuery += $"(distinguishedName={Fields.DN})";
                     if (!Fields.MemberOf.IsNullOrEmpty())

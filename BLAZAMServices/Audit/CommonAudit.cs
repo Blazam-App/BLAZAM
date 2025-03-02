@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Database.Context;
+using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
 
@@ -6,7 +7,7 @@ namespace BLAZAM.Services.Audit
 {
     public class CommonAudit : BaseAudit
     {
-        protected IApplicationUserStateService UserStateService { get; private set; }
+        protected IApplicationUserStateService? UserStateService { get; private set; }
         /// <summary>
         /// The CurrentUser being auditted
         /// </summary>
@@ -16,11 +17,17 @@ namespace BLAZAM.Services.Audit
         protected IApplicationUserState? CurrentUser { get; set; }
 
 
-        public CommonAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime)
+        public CommonAudit(IAppDatabaseFactory factory,  IApplicationUserStateService? userStateService=null, IJSRuntime? jSRuntime=null) : base(factory, jSRuntime)
         {
             UserStateService = userStateService;
-            CurrentUser = UserStateService.CurrentUserState;
-
+            if (UserStateService != null)
+            {
+                CurrentUser = UserStateService.CurrentUserState;
+            }
+            else
+            {
+                CurrentUser = new SystemUserState(factory);
+            }
         }
     }
 }

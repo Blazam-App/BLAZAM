@@ -8,13 +8,13 @@ namespace BLAZAM.Services.Audit
 {
     public class GroupAudit : DirectoryAudit
     {
-        public GroupAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
+        public GroupAudit(IAppDatabaseFactory factory, IApplicationUserStateService? userStateService = null, IJSRuntime? jSRuntime = null) : base(factory, userStateService, jSRuntime)
         {
         }
 
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
         {
-            Analytics.ObjectDeleted(ActiveDirectoryObjectType.Group);
+            Analytics?.ObjectDeleted(ActiveDirectoryObjectType.Group);
 
             return await Log(t => t.DirectoryEntryAuditLogs,
             AuditActions.Group_Deleted, deletedEntry);
@@ -23,7 +23,7 @@ namespace BLAZAM.Services.Audit
 
         public async Task<bool> Assigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
         {
-            Analytics.ObjectAssigned(ActiveDirectoryObjectType.Group);
+            Analytics?.ObjectAssigned(ActiveDirectoryObjectType.Group);
 
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.Group_Assigned,
@@ -57,7 +57,7 @@ namespace BLAZAM.Services.Audit
         }
         public async Task<bool> Moved(IDirectoryEntryAdapter movedGroup, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
-            Analytics.ObjectMoved(ActiveDirectoryObjectType.Group);
+            Analytics?.ObjectMoved(ActiveDirectoryObjectType.Group);
 
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.Group_Moved,
@@ -78,7 +78,7 @@ namespace BLAZAM.Services.Audit
         }
         public override async Task<bool> Created(IDirectoryEntryAdapter newGroup)
         {
-            Analytics.ObjectCreated(ActiveDirectoryObjectType.Group);
+            Analytics?.ObjectCreated(ActiveDirectoryObjectType.Group);
 
             var oldValues = "";
             var newValues = "";

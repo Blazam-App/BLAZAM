@@ -8,30 +8,33 @@ namespace BLAZAM.Services.Audit
 {
     public class LogonAudit : CommonAudit
     {
-        public LogonAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
+        public LogonAudit(IAppDatabaseFactory factory, IApplicationUserStateService? userStateService = null, IJSRuntime? jSRuntime = null) : base(factory, userStateService, jSRuntime)
         {
         }
 
         public async Task<bool> AttemptedPersonation(string? iPAddress = null)
         {
-            CurrentUser = UserStateService.CurrentUserState;
+            CurrentUser = UserStateService?.CurrentUserState;
             return await Log("Attempted Personation", iPAddress);
         }
 
         public async Task<bool> AttemptedLogin(ClaimsPrincipal user, string? iPAddress = null)
         {
-            CurrentUser = UserStateService.CreateUserState(user);
+            CurrentUser = UserStateService?.CreateUserState(user);
             return await Log("Attempted Login", iPAddress);
         }
         public async Task<bool> Impersonate(ClaimsPrincipal impersonator, ClaimsPrincipal impersonateee, string? ipAddress = null)
         {
-            CurrentUser = UserStateService.CreateUserState(impersonateee);
-            CurrentUser.Impersonator = impersonator;
+            CurrentUser = UserStateService?.CreateUserState(impersonateee);
+            if (CurrentUser != null)
+            {
+                CurrentUser.Impersonator = impersonator;
+            }
             return await Log("Impersonation", ipAddress);
         }
         public async Task<bool> Login(ClaimsPrincipal user, string? ipAddress = null)
         {
-            CurrentUser = UserStateService.CreateUserState(user);
+            CurrentUser = UserStateService?.CreateUserState(user);
             return await Log("Login", ipAddress);
         }
         public async Task<bool> Logout() => await Log("Logout");
@@ -45,12 +48,12 @@ namespace BLAZAM.Services.Audit
                 var newAuditEntry = new LogonAuditLog
                 {
                     Action = action,
-                    Username = CurrentUser.AuditUsername,
+                    Username = CurrentUser?.AuditUsername,
                 };
                 if (ipAddress != null)
                     newAuditEntry.IpAddress = ipAddress;
                 else
-                    newAuditEntry.IpAddress = CurrentUser.IPAddress;
+                    newAuditEntry.IpAddress = CurrentUser?.IPAddress;
 
                 context.LogonAuditLog.Add(newAuditEntry);
                 await context.SaveChangesAsync();

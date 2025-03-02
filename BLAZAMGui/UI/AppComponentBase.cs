@@ -48,7 +48,7 @@ namespace BLAZAM.Gui.UI
 
 
         [Inject]
-        protected AuditLogger AuditLogger { get; set; }
+        protected WebUserAuditLogger AuditLogger { get; set; }
 
         [Inject]
         protected IChatService Chat { get; set; }

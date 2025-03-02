@@ -53,7 +53,21 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 return FindLockedOutUsers(ignoreDisabledUsers);
             });
         }
+        public List<IADUser> FindExpiredUsers(bool ignoreDisabledUsers = true)
+        {
+            return new ADSearch(Directory)
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.User,
+                EnabledOnly = ignoreDisabledUsers,
+                Fields = new()
+                {
+                    AccountExpires = DateTime.UtcNow
+                }
 
+            }.Search<ADUser, IADUser>();
+
+
+        }
         public List<IADUser> FindLockedOutUsers(bool ignoreDisabledUsers = true)
         {
             return new ADSearch(Directory)

@@ -29,7 +29,7 @@ namespace BLAZAM.Pages.API.v1
         private readonly EmailService EmailService;
         private readonly NotificationGenerationService OUNotificationService;
 
-        public Templates(NotificationGenerationService ouNotificationService, EmailService email, IApplicationUserStateService applicationUserStateService, IStringLocalizer<AppLocalization> localizer, AuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
+        public Templates(NotificationGenerationService ouNotificationService, EmailService email, IApplicationUserStateService applicationUserStateService, IStringLocalizer<AppLocalization> localizer, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
         {
             AppLocalization = localizer;
             EmailService = email;

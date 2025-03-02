@@ -5,7 +5,7 @@ using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
-    public class AuditLogger
+    public class BaseAuditLogger
     {
         public SystemAudit System;
         public UserAudit User;
@@ -17,16 +17,16 @@ namespace BLAZAM.Services.Audit
         public BitLockerAudit BitLocker;
         public EmailAudit Email;
 
-        public AuditLogger(IAppDatabaseFactory factory, IApplicationUserStateService userStateService, IJSRuntime jSRuntime)
+        public BaseAuditLogger(IAppDatabaseFactory factory, IApplicationUserStateService userStateService)
         {
-            System = new SystemAudit(factory, jSRuntime);
-            User = new UserAudit(factory, jSRuntime, userStateService);
-            Group = new GroupAudit(factory, jSRuntime, userStateService);
-            Computer = new ComputerAudit(factory, jSRuntime, userStateService);
-            OU = new OUAudit(factory, jSRuntime, userStateService);
-            Printer = new PrinterAudit(factory, jSRuntime, userStateService);
-            Logon = new LogonAudit(factory, jSRuntime, userStateService);
-            BitLocker = new BitLockerAudit(factory, jSRuntime, userStateService);
+            System = new SystemAudit(factory);
+            User = new UserAudit(factory, userStateService);
+            Group = new GroupAudit(factory, userStateService);
+            Computer = new ComputerAudit(factory, userStateService);
+            OU = new OUAudit(factory, userStateService);
+            Printer = new PrinterAudit(factory, userStateService);
+            Logon = new LogonAudit(factory, userStateService);
+            BitLocker = new BitLockerAudit(factory, userStateService);
         }
         public async Task Searched(IDirectoryEntryAdapter searchedEntry)
         {

@@ -11,7 +11,7 @@ namespace BLAZAM.Server.Pages
     [IgnoreAntiforgeryToken]
     public class SSOModel : PageModel
     {
-        public SSOModel(AppAuthenticationStateProvider auth, NavigationManager _nav, ConnMonitor _monitor, AuditLogger logger)
+        public SSOModel(AppAuthenticationStateProvider auth, NavigationManager _nav, ConnMonitor _monitor, WebUserAuditLogger logger)
         {
             Auth = auth;
             Nav = _nav;
@@ -24,7 +24,7 @@ namespace BLAZAM.Server.Pages
         public AppAuthenticationStateProvider Auth { get; }
         public NavigationManager Nav { get; private set; }
         public ConnMonitor Monitor { get; private set; }
-        public AuditLogger AuditLogger { get; private set; }
+        public WebUserAuditLogger AuditLogger { get; private set; }
 
         public IActionResult OnGet(string returnUrl = "")
         {

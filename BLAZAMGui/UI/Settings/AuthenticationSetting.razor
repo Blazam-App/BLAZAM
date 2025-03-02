@@ -75,7 +75,6 @@
 
             <MudButton Disabled="SaveDisabled"
                 OnClick="Save"
-                ButtonType="ButtonType.Submit"
                 Color="Color.Success">
                 @AppLocalization["Save Changes"]
             </MudButton>
@@ -145,7 +144,7 @@
         await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
         await base.Save();
         await InvokeAsync(StateHasChanged);
-        DoDuoHealthCheck();
+        //DoDuoHealthCheck();
     }
 
     public class BehaviorConverter : BoolConverter<DuoUnreachableBehavior>

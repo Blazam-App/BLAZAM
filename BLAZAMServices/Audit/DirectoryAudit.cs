@@ -10,7 +10,7 @@ namespace BLAZAM.Services.Audit
 {
     public class DirectoryAudit : CommonAudit
     {
-        public DirectoryAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
+        public DirectoryAudit(IAppDatabaseFactory factory, IApplicationUserStateService userStateService, IJSRuntime? jSRuntime=null) : base(factory,  userStateService, jSRuntime)
         {
         }
 

@@ -11,7 +11,7 @@ namespace BLAZAM.Server.Pages
     [IgnoreAntiforgeryToken]
     public class SignInModel : PageModel
     {
-        public SignInModel(AppAuthenticationStateProvider auth, NavigationManager _nav, ConnMonitor _monitor, AuditLogger logger)
+        public SignInModel(AppAuthenticationStateProvider auth, NavigationManager _nav, ConnMonitor _monitor, WebUserAuditLogger logger)
         {
             Auth = auth;
             Nav = _nav;
@@ -24,7 +24,7 @@ namespace BLAZAM.Server.Pages
         public AppAuthenticationStateProvider Auth { get; }
         public NavigationManager Nav { get; private set; }
         public ConnMonitor Monitor { get; private set; }
-        public AuditLogger AuditLogger { get; private set; }
+        public WebUserAuditLogger AuditLogger { get; private set; }
 
         public void OnGet(string returnUrl = "")
         {
