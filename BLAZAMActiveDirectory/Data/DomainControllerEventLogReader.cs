@@ -82,8 +82,11 @@ namespace BLAZAM.ActiveDirectory.Data
                         var reader = new EventLogReader(eventLogQuery);
                         for (EventRecord eventdetail = reader.ReadEvent(); eventdetail != null; eventdetail = reader.ReadEvent())
                         {
-                            // Read Event details
-                            events.Add(eventdetail);
+                            lock (events)
+                            {
+                                // Read Event details
+                                events.Add(eventdetail);
+                            }
 
                         }
                         return true;
