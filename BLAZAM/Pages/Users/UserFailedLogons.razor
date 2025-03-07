@@ -1,0 +1,40 @@
+@using System.Diagnostics.Eventing.Reader
+@inherits AppComponentBase
+<MudStack Class="mx-auto">
+        <MudDataGrid Elevation=0 Loading=LoadingData Items="_events">
+            <Header>
+            <MudText Typo=Typo.subtitle2 Align="Align.Center">@AppLocalization["Failed Logons"]</MudText>
+
+            </Header>
+            <Columns>
+                <PropertyColumn Title=@AppLocalization["Timestamp"] Property="x=>x.TimeCreated" />
+                <PropertyColumn Title="Workstation Name" Property="x=>x.Properties[13].Value" />
+                <PropertyColumn Title="Workstation IP" Property="x=>x.Properties[19].Value" />
+            </Columns>
+            <NoRecordsContent>
+                @AppLocalization["There are no recent failed attempts"]
+            </NoRecordsContent>
+            <LoadingContent>
+                @AppLocalization["Gathering logs from domain controllers..."]
+            </LoadingContent>
+        </MudDataGrid>
+    </MudStack>
+    @code {
+    private List<EventRecord> _events = new();
+
+
+    [CascadingParameter]
+    public IADUser User { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Task.Run(() =>
+        {
+            LoadingData = true;
+            _events = User.LogonEvents;
+            LoadingData = false;
+        });
+    }
+}
