@@ -1,6 +1,9 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
+using System.Reflection.Metadata;
 
 namespace BLAZAM.ActiveDirectory.Data
 {
@@ -62,40 +65,42 @@ namespace BLAZAM.ActiveDirectory.Data
 
             return events;
         }
-        public List<EventLogEntry> GetUserLogonEvents(string userName, DateTime startTime, DateTime endTime)
+        public List<EventRecord> GetUserLogonEvents(string userName, DateTime startTime, DateTime endTime)
         {
-            var events = new List<EventLogEntry>();
+            
+            var events = new List<EventRecord>();
             var dcNames = _directory.DomainControllers.Select(controller => controller.Name).ToList();
-            foreach (var domainController in dcNames)
-            {
-
+            Parallel.ForEach(dcNames, domainController => {
                 var result = _directory.Impersonation.Run(() =>
-                 {
-                     try
-                     {
-                         var eventLog = new EventLog("Security", domainController);
+                {
+                    try
+                    {
+                        EventLogSession session = new EventLogSession(domainController);
+                        var eventLogQuery = new EventLogQuery("Security", PathType.LogName, "*[System/EventID=4625] and *[EventData[Data[@Name='TargetUserName'] and (Data='" + userName + "')]]");
+                        eventLogQuery.Session = session;
 
-                         foreach (EventLogEntry entry in eventLog.Entries)
-                         {
-                             if (entry.TimeGenerated >= startTime && entry.TimeGenerated <= endTime &&
-                                 (entry.InstanceId == 4624) && // Logon event ID
-                                 entry.ReplacementStrings != null && entry.ReplacementStrings.Length > 1 &&
-                                 entry.ReplacementStrings[1].Equals(userName, StringComparison.OrdinalIgnoreCase)) // Check username
-                             {
-                                 events.Add(entry);
-                             }
-                         }
-                         return true;
-                     }
-                     catch (Exception ex)
-                     {
-                         // Handle exceptions appropriately (e.g., logging)
-                         Console.WriteLine($"Error reading events from {domainController}: {ex.Message}");
-                         return false;
-                     }
-                 });
+                        var reader = new EventLogReader(eventLogQuery);
+                        for (EventRecord eventdetail = reader.ReadEvent(); eventdetail != null; eventdetail = reader.ReadEvent())
+                        {
+                            lock (events)
+                            {
+                                // Read Event details
+                                events.Add(eventdetail);
+                            }
 
-            }
+                        }
+                        return true;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle exceptions appropriately (e.g., logging)
+                        Console.WriteLine($"Error reading events from {domainController}: {ex.Message}");
+                        return false;
+                    }
+                });
+            });
+
 
             return events;
         }

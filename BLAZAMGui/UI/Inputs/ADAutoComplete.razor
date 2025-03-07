@@ -68,7 +68,7 @@ Variant="@Variant">
     </MoreItemsTemplate>
 </MudAutocomplete>
 
-@code {
+    @code {
     #nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
@@ -228,15 +228,15 @@ Variant="@Variant">
         return await Task.Run(() =>
          {
 
-            if (!token.IsCancellationRequested && searchText != null)
-            {
-                SearchResults = new List<IDirectoryEntryAdapter>();
+             if (!token.IsCancellationRequested && searchText != null)
+             {
+                 SearchResults = new List<IDirectoryEntryAdapter>();
 
-                var search = new ADSearch(Directory);
+                 var search = new ADSearch(Directory);
 
-                search.ObjectTypeFilter = SearchObjectType;
-                search.GeneralSearchTerm = searchText.Replace(" ", "*");
-                search.EnabledOnly = !SearchDisabled;
+                 search.ObjectTypeFilter = SearchObjectType;
+                 search.GeneralSearchTerm = searchText;
+                 search.EnabledOnly = !SearchDisabled;
                 search.MaxResults = MaxResults + 1;
                 if (!search.GeneralSearchTerm.IsNullOrEmpty())
                  {
