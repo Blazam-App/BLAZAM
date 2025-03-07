@@ -1,8 +1,8 @@
 ---
-name: Feature request
-about: Suggest an idea for Blazam
+name: Change request
+about: Suggest an change for Blazam
 title: ''
-labels: 'enhancement'
+labels: 'change'
 type: 'Feature'
 assignees: 'jacobsen9026'
 
