@@ -37,6 +37,10 @@ namespace BLAZAM.Notifications.Services
 
                 }
             }
+            else
+            {
+                notificationMessage = context.NotificationMessages.FirstOrDefault(m => m.Id.Equals(notificationMessage.Id));
+            }
             List<UserNotification> sentNotifications = new();
             foreach (var user in users)
             {
