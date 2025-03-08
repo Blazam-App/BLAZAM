@@ -37,6 +37,8 @@ namespace BLAZAM.Services.Background
 
             var expiredUsers = new List<IADUser>(); 
             Job executeJob = new(AppLocalization["Disable Expired Users"]);
+            executeJob.StopOnFailedStep = true;
+
             JobStep prepareStep = new(AppLocalization["Collect data"], (state) =>
             {
                 expiredUsers = directory.Users.FindExpiredUsers().Where(u=>u.ExpireTime!=null && u.ExpireTime<DateTime.UtcNow).ToList();

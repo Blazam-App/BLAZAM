@@ -27,6 +27,8 @@ namespace BLAZAM.Services.Background
         protected override void Execute(object? obj = null)
         {
             Job seedJob = new(AppLocalization["Seed New Users"]);
+            seedJob.StopOnFailedStep = true;
+
             JobStep step = new(AppLocalization["Check for new users"], (state) =>
             {
                 try
