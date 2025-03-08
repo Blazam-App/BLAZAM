@@ -1,5 +1,8 @@
 ﻿
 
+using BLAZAM.Localization;
+using Microsoft.Extensions.Localization;
+
 namespace BLAZAM.Services.Background
 {
     public class BackgroundServiceBase : IDisposable
@@ -7,13 +10,22 @@ namespace BLAZAM.Services.Background
         protected virtual Timer? Timer { get; set; }
         protected virtual TimeSpan Interval { get; set; } = TimeSpan.FromMinutes(10);
         protected bool started { get; set; }
+        protected IStringLocalizer<AppLocalization> AppLocalization;
+
+        public BackgroundServiceBase(IStringLocalizer<AppLocalization> appLocalization)
+        {
+            AppLocalization = appLocalization;
+        }
+
+
+
 
         /// <summary>
         /// Starts this service.
         /// </summary>
         /// <param name="immediate">If false, or not set, the service will wait a 
         /// random time between 15 and 45 seconds after launch.</param>
-        public virtual void Start(bool immediate = false)
+        public virtual void Start( bool immediate = false)
         {
             if (!started)
             {

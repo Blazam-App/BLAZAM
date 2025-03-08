@@ -130,7 +130,7 @@
     <value>Doesn't meet complexity requirements!</value>
   </data>
   <data name="ValidFqdnAttribute" xml:space="preserve">
-    <value>Must be a valid domain name.</value>
+    <value>必须是有效的域名。</value>
   </data>
   <data name="ValidIpAttribute" xml:space="preserve">
     <value>Must be a valid IP address.</value>

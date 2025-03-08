@@ -5,16 +5,20 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
+using BLAZAM.Localization;
+using Microsoft.Extensions.Localization;
 
 namespace BLAZAM.Services.Background
 {
-    [AutoStartBackgroundService(10)]
+    [AutoStartBackgroundService]
     internal class LockedOutUserMonitor : ActiveDirectoryBackgroundServiceBase
     {
         private NotificationGenerationService _notificationGenerationService;
 
-        public LockedOutUserMonitor(NotificationGenerationService notificationGenerationService, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory) : base(activeDirectoryContextFactory, dbFactory)
+        public LockedOutUserMonitor(NotificationGenerationService notificationGenerationService, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
+            Interval = TimeSpan.FromMinutes(10);
+
             _notificationGenerationService = notificationGenerationService;
         }
 
@@ -26,15 +30,15 @@ namespace BLAZAM.Services.Background
             List<GenericSidList> usersInTable = new();
 
             List<IADUser> lockedOutUsers = new();
-            Job executeJob = new("Monitor Locked Out Users");
-            JobStep prepareStep = new("Prepare data", (state) =>
+            Job executeJob = new(AppLocalization["Monitor Locked Out Users"]);
+            JobStep prepareStep = new(AppLocalization["Prepare data"], (state) =>
             {
                 usersInTable = context.LockedOutUsers.ToList();
                 lockedOutUsers = directory.Users.FindLockedOutUsers();
                 return true;
             });
             executeJob.AddStep(prepareStep);
-            JobStep analyzeStep = new("Analyze data", (state) =>
+            JobStep analyzeStep = new(AppLocalization["Analyze data"], (state) =>
             {
                 foreach (var user in lockedOutUsers)
                 {

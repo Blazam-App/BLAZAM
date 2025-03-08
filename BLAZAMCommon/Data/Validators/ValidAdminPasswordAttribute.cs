@@ -3,9 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace BLAZAM.Common.Data.Validators
 {
-    public class ValidAdminPassword : AppValidationAttribute
+    public class ValidAdminPasswordAttribute : AppValidationAttribute
     {
-        public ValidAdminPassword()
+        public ValidAdminPasswordAttribute()
         {
             ErrorMessageResourceName = GetType().Name;
 

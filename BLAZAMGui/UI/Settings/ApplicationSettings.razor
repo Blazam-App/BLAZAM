@@ -88,7 +88,6 @@
             <MudTextField Label="@AppLocalization["Website FQDN"]"
                           For=@(()=> settings.AppFQDN)
                           Immediate="true"
-                          ErrorText="Must be a valid domain name"
                           HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)"
                           Placeholder="Enter the web address"
                           @bind-Value="@settings.AppFQDN" />

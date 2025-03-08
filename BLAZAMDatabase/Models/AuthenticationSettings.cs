@@ -16,7 +16,7 @@ namespace BLAZAM.Database.Models
         /// </summary>
         public int? SessionTimeout { get; set; } = 15;
         [Required]
-        [ValidAdminPassword]
+        [ValidAdminPasswordAttribute]
         public string? AdminPassword { get; set; }
         [NotMapped]
         [Required]

@@ -1,4 +1,4 @@
-﻿namespace BLAZAM.Common.Data
+﻿namespace BLAZAM.Session
 {
     public static class AppAuthenticationTypes
     {

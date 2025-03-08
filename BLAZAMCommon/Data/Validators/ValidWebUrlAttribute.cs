@@ -2,7 +2,7 @@
 
 namespace BLAZAM.Common.Data.Validators
 {
-    public class ValidWebUrl : ValidationAttribute
+    public class ValidWebUrlAttribute : ValidationAttribute
     {
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
