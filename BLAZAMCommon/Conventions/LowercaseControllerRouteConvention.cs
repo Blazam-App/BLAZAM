@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
-namespace BLAZAM.Common.Data
+namespace BLAZAM.Common.Conventions
 {
     public class LowercaseControllerRouteConvention : IApplicationModelConvention
     {

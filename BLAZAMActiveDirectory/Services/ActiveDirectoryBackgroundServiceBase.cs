@@ -1,6 +1,8 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Services;
+using BLAZAM.Localization;
+using Microsoft.Extensions.Localization;
 
 namespace BLAZAM.ActiveDirectory.Services
 {
@@ -8,7 +10,7 @@ namespace BLAZAM.ActiveDirectory.Services
     {
         protected readonly IActiveDirectoryContextFactory activeDirectoryContextFactory;
 
-        public ActiveDirectoryBackgroundServiceBase(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory) : base(dbFactory)
+        public ActiveDirectoryBackgroundServiceBase(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(dbFactory,appLocalization)
         {
             this.activeDirectoryContextFactory = activeDirectoryContextFactory;
         }

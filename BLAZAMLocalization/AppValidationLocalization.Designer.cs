@@ -90,45 +90,45 @@ namespace BLAZAM.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Doesn&apos;t meet complexity requirements!.
         /// </summary>
-        public static string ValidAdminPassword {
+        public static string ValidAdminPasswordAttribute {
             get {
-                return ResourceManager.GetString("ValidAdminPassword", resourceCulture);
+                return ResourceManager.GetString("ValidAdminPasswordAttribute", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Must be a valid domain name..
         /// </summary>
-        public static string ValidFqdn {
+        public static string ValidFqdnAttribute {
             get {
-                return ResourceManager.GetString("ValidFqdn", resourceCulture);
+                return ResourceManager.GetString("ValidFqdnAttribute", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Must be a valid IP address..
         /// </summary>
-        public static string ValidIp {
+        public static string ValidIpAttribute {
             get {
-                return ResourceManager.GetString("ValidIp", resourceCulture);
+                return ResourceManager.GetString("ValidIpAttribute", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Must be a valid domain name or IP address..
         /// </summary>
-        public static string ValidIpOrFqdn {
+        public static string ValidIpOrFqdnAttribute {
             get {
-                return ResourceManager.GetString("ValidIpOrFqdn", resourceCulture);
+                return ResourceManager.GetString("ValidIpOrFqdnAttribute", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Enter a port number from 1 to 65535.
         /// </summary>
-        public static string ValidPort {
+        public static string ValidPortAttribute {
             get {
-                return ResourceManager.GetString("ValidPort", resourceCulture);
+                return ResourceManager.GetString("ValidPortAttribute", resourceCulture);
             }
         }
     }

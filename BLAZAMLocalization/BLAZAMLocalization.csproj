@@ -61,6 +61,10 @@
       <LastGenOutput>AppLocalization.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="AppValidationLocalization.zh-Hans.resx">
+      <LastGenOutput>AppValidationLocalization.zh-Hans.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="AppValidationLocalization.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AppValidationLocalization.Designer.cs</LastGenOutput>

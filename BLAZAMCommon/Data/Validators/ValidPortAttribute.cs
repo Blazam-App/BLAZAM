@@ -3,9 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace BLAZAM.Common.Data.Validators
 {
-    public class ValidPort : AppValidationAttribute
+    public class ValidPortAttribute : AppValidationAttribute
     {
-        public ValidPort()
+        public ValidPortAttribute()
         {
             ErrorMessageResourceName = GetType().Name;
 

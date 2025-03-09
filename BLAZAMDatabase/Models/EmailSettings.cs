@@ -21,10 +21,10 @@ namespace BLAZAM.Database.Models
         public bool UseSMTPAuth { get; set; } = false;
         public string? SMTPUsername { get; set; }
         public string? SMTPPassword { get; set; }
-        [Required(ErrorMessage = "You must provide an SMTP server to use email.")]
+        [Required]
         [ValidIpOrFqdn]
         public string SMTPServer { get; set; }
-        [ValidPort]
+        [ValidPortAttribute]
         public int SMTPPort { get; set; } = 25;
         public bool UseTLS { get; set; } = false;
 

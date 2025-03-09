@@ -5,21 +5,27 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
+using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session;
+using Microsoft.Extensions.Localization;
 using System.Security.Cryptography.Xml;
 
 namespace BLAZAM.Services.Background
 {
-    [AutoStartBackgroundService(30)]
+    /// <summary>
+    /// Checks the directory for expired users, if configured, those users will be disabled
+    /// </summary>
+    [AutoStartBackgroundService]
     internal class ExpiredUserDisabler : ActiveDirectoryBackgroundServiceBase
     {
         private readonly NotificationGenerationService _notificationGenerationService;
         private readonly ServerAuditLogger _serverAuditLogger;
 
-        public ExpiredUserDisabler(ServerAuditLogger serverAuditLogger, NotificationGenerationService notificationGenerationService, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory) : base(activeDirectoryContextFactory, dbFactory)
+        public ExpiredUserDisabler(ServerAuditLogger serverAuditLogger, NotificationGenerationService notificationGenerationService, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory,appLocalization)
         {
+            Interval = TimeSpan.FromMinutes(30);
             _notificationGenerationService = notificationGenerationService;
             _serverAuditLogger = serverAuditLogger;
         }
@@ -30,14 +36,16 @@ namespace BLAZAM.Services.Background
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
 
             var expiredUsers = new List<IADUser>(); 
-            Job executeJob = new("Disable Expired Users");
-            JobStep prepareStep = new("Collect data", (state) =>
+            Job executeJob = new(AppLocalization["Disable Expired Users"]);
+            executeJob.StopOnFailedStep = true;
+
+            JobStep prepareStep = new(AppLocalization["Collect data"], (state) =>
             {
                 expiredUsers = directory.Users.FindExpiredUsers().Where(u=>u.ExpireTime!=null && u.ExpireTime<DateTime.UtcNow).ToList();
                 return true;
             });
             executeJob.AddStep(prepareStep);
-            JobStep analyzeStep = new("Disable Users", (state) =>
+            JobStep analyzeStep = new(AppLocalization["Disable Users"], (state) =>
             {
                 foreach (var user in expiredUsers)
                 {

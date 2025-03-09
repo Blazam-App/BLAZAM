@@ -71,6 +71,8 @@ namespace BLAZAM.Database.Context
         DbSet<WebHookSubscription> WebHookSubscriptions { get; set; }
         DbSet<WebHookAttempt> WebHookAttempts { get; set; }
         DbSet<GenericSidList> LockedOutUsers { get; set; }
+        DbSet<EmailAuditLog> EmailAuditLog { get; set; }
+        DbSet<FailedADLogonEvent> FailedADLogonEvents { get; set; }
 
         void Export(string directory);
     }
