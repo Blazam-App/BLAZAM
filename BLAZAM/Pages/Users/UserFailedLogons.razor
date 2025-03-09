@@ -1,5 +1,5 @@
 @using System.Diagnostics.Eventing.Reader
-@inherits AppComponentBase
+@inherits DatabaseComponentBase
 <MudStack Class="mx-auto">
         <MudDataGrid Elevation=0 Loading=LoadingData Items="_events">
             <Header>
@@ -7,20 +7,17 @@
 
             </Header>
             <Columns>
-                <PropertyColumn Title=@AppLocalization["Timestamp"] Property="x=>x.TimeCreated" />
-                <PropertyColumn Title=@AppLocalization["Workstation Name"] Property="x=>x.Properties[13].Value" />
-                <PropertyColumn Title=@AppLocalization["Workstation IP"] Property="x=>x.Properties[19].Value" />
+                <PropertyColumn Title=@AppLocalization["Timestamp"] Property="x=>x.Timestamp" />
+            <PropertyColumn Title=@AppLocalization["Workstation Name"] Property="x=>x.WorkstationName" />
+            <PropertyColumn Title=@AppLocalization["Workstation IP"]  Property="x=>x.WorkstationIp" />
             </Columns>
             <NoRecordsContent>
                 @AppLocalization["There are no recent failed attempts"]
             </NoRecordsContent>
-            <LoadingContent>
-                @AppLocalization["Gathering logs from domain controllers..."]
-            </LoadingContent>
         </MudDataGrid>
     </MudStack>
     @code {
-    private List<EventRecord> _events = new();
+    private List<FailedADLogonEvent> _events = new();
 
 
     [CascadingParameter]
@@ -33,7 +30,7 @@
         Task.Run(() =>
         {
             LoadingData = true;
-            _events = User.LogonEvents;
+            _events = Context.FailedADLogonEvents.Where(e=>e.Sid.Equals(User.SID)).ToList();
             LoadingData = false;
         });
     }

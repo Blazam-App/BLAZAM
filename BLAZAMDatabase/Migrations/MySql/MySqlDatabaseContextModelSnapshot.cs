@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "8.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -546,6 +546,55 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("DirectoryEntryAuditLogs");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.EmailAuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Bcc")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Cc")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("From")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("HtmlBody")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("LastAttemptTimestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("MessageGuid")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("ReadTimestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Retries")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ServerResponse")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("To")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailAuditLog");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.LogonAuditLog", b =>
                 {
                     b.Property<int>("Id")
@@ -929,6 +978,32 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.HasKey("Id");
 
                     b.ToTable("EmailTemplates");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.FailedADLogonEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("Sid")
+                        .IsRequired()
+                        .HasColumnType("longblob");
+
+                    b.Property<DateTime?>("Timestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("WorkstationIp")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("WorkstationName")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FailedADLogonEvents");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.GenericSidList", b =>

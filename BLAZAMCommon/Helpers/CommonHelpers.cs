@@ -2,6 +2,7 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using System.Collections;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO.Compression;
 using System.Reflection;
@@ -46,7 +47,15 @@ namespace BLAZAM.Helpers
             }
             return values;
         }
+        public static string? GetWorkstationName (this EventRecord eventRecord)
+        {
+            return eventRecord.Properties[13].Value.ToString();
+        }
 
+        public static string? GetWorkstationIp(this EventRecord eventRecord)
+        {
+            return eventRecord.Properties[19].Value.ToString();
+        }
         public static List<AuditChangeLog> GetChanges(this object changed, object? original)
         {
             if (original == null)

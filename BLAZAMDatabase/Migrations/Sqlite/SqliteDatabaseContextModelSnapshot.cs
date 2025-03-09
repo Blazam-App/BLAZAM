@@ -15,7 +15,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.13");
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
@@ -534,6 +534,53 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.ToTable("DirectoryEntryAuditLogs");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.EmailAuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Bcc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Cc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("From")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HtmlBody")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("LastAttemptTimestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MessageGuid")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ReadTimestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Retries")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ServerResponse")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("To")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailAuditLog");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.LogonAuditLog", b =>
                 {
                     b.Property<int>("Id")
@@ -897,6 +944,30 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasKey("Id");
 
                     b.ToTable("EmailTemplates");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.FailedADLogonEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Sid")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<DateTime?>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WorkstationIp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WorkstationName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FailedADLogonEvents");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.GenericSidList", b =>

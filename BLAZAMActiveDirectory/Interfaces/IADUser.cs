@@ -32,6 +32,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         byte[]? ThumbnailPhoto { get; set; }
         string? LogOnTo { get; set; }
         LogonHours? LogonHours { get; set; }
-        List<EventRecord> LogonEvents { get; }
+        List<EventRecord> FailedLogonEvents { get; }
     }
 }

@@ -7,6 +7,7 @@ using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using Microsoft.Extensions.Localization;
+using Polly;
 
 namespace BLAZAM.Services.Background
 {
@@ -24,7 +25,6 @@ namespace BLAZAM.Services.Background
 
         protected override void Execute(object? state = null)
         {
-            using var context = dbFactory.CreateDbContext();
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
 
             List<GenericSidList> usersInTable = new();
@@ -36,6 +36,7 @@ namespace BLAZAM.Services.Background
 
             JobStep prepareStep = new(AppLocalization["Prepare data"], (state) =>
             {
+                using var context = dbFactory.CreateDbContext();
                 usersInTable = context.LockedOutUsers.ToList();
                 lockedOutUsers = directory.Users.FindLockedOutUsers();
                 return true;
@@ -43,6 +44,7 @@ namespace BLAZAM.Services.Background
             executeJob.AddStep(prepareStep);
             JobStep analyzeStep = new(AppLocalization["Analyze data"], (state) =>
             {
+                using var context = dbFactory.CreateDbContext();
                 foreach (var user in lockedOutUsers)
                 {
                     if (user == null) continue;
@@ -56,6 +58,9 @@ namespace BLAZAM.Services.Background
                             if (user.LockoutTime > DateTime.UtcNow.AddDays(-1))
                             {
                                 _notificationGenerationService.PostAsync(user, NotificationType.LockedOut);
+
+                                RecordLogonEvents(user);
+
                             }
                         }
 
@@ -85,6 +90,38 @@ namespace BLAZAM.Services.Background
             var result = executeJob.Run();
 
 
+        }
+
+        private void RecordLogonEvents(IADUser user)
+        {
+            using var context = dbFactory.CreateDbContext();
+            var existing = context.FailedADLogonEvents.Where(e => e.Sid.Equals(user.SID)).OrderBy(e => e.Timestamp);
+
+            var failedLogonEvents = user.FailedLogonEvents;
+            if (failedLogonEvents.Count > 0)
+            {
+
+                foreach (var evt in failedLogonEvents.Where(e=>e.TimeCreated>existing.LastOrDefault()?.Timestamp))
+                {
+                    var matching = context.FailedADLogonEvents.FirstOrDefault(e => e.Timestamp.Equals(evt.TimeCreated));
+                    if (matching == null)
+                    {
+
+                        if (existing.Count() > 9)
+                        {
+                            context.FailedADLogonEvents.Remove(existing.First());
+                        }
+                        context.FailedADLogonEvents.Add(new()
+                        {
+                            Sid = user.SID,
+                            Timestamp = evt.TimeCreated,
+                            WorkstationIp = evt.GetWorkstationIp(),
+                            WorkstationName = evt.GetWorkstationName()
+                        });
+                    }
+
+                }
+            }
         }
     }
 }
