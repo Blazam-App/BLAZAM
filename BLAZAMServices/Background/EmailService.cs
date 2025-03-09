@@ -21,7 +21,7 @@ namespace BLAZAM.Services.Background
     {
         public static EmailService? Instance { get; set; }
         private IAppDatabaseFactory Factory { get; set; }
-        public EmailAudit Audit { get; }
+        public ServerAuditLogger Audit { get; }
 
         public bool IsConfigured
         {
@@ -37,11 +37,11 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        public EmailService(IAppDatabaseFactory factory)
+        public EmailService(IAppDatabaseFactory factory, ServerAuditLogger audit)
         {
             Instance = this;
             Factory = factory;
-            Audit = new EmailAudit(Factory);
+            Audit = audit;
         }
 
 
@@ -205,7 +205,7 @@ namespace BLAZAM.Services.Background
         private async Task<bool> TrySend(SmtpClient client, MimeMessage message)
         {
             var response = await client.SendAsync(message);
-            Audit.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody,response);
+            Audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody,response);
 
             //TODO Audit to database
             return true;
