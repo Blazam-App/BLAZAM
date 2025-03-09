@@ -10,7 +10,7 @@ namespace BLAZAM.Services.Audit
         /// <summary>
         /// The Email being auditted
         /// </summary>
-        public EmailAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime) : base(factory, jSRuntime)
+        public EmailAudit(IAppDatabaseFactory factory) : base(factory)
         {
 
         }
