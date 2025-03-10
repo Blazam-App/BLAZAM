@@ -76,7 +76,7 @@ namespace BLAZAM.ActiveDirectory.Data
                     try
                     {
                         EventLogSession session = new EventLogSession(domainController);
-                        var eventLogQuery = new EventLogQuery("Security", PathType.LogName, "*[System/EventID=4625] and *[EventData[Data[@Name='TargetUserName'] and (Data='" + userName + "')]]");
+                        var eventLogQuery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=4625 or EventID=4771)]] and *[EventData[Data[@Name='TargetUserName'] and (Data='" + userName + "')]]");
                         eventLogQuery.Session = session;
 
                         var reader = new EventLogReader(eventLogQuery);
@@ -94,7 +94,6 @@ namespace BLAZAM.ActiveDirectory.Data
                     }
                     catch (Exception ex)
                     {
-                        // Handle exceptions appropriately (e.g., logging)
                         Console.WriteLine($"Error reading events from {domainController}: {ex.Message}");
                         return false;
                     }
