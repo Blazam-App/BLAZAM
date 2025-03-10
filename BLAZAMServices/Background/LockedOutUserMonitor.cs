@@ -5,37 +5,46 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
+using BLAZAM.Localization;
+using Microsoft.Extensions.Localization;
+using Polly;
 
 namespace BLAZAM.Services.Background
 {
-    [AutoStartBackgroundService(10)]
+    [AutoStartBackgroundService]
     internal class LockedOutUserMonitor : ActiveDirectoryBackgroundServiceBase
     {
         private NotificationGenerationService _notificationGenerationService;
 
-        public LockedOutUserMonitor(NotificationGenerationService notificationGenerationService, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory) : base(activeDirectoryContextFactory, dbFactory)
+        public LockedOutUserMonitor(NotificationGenerationService notificationGenerationService, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
+            Interval = TimeSpan.FromMinutes(10);
+
             _notificationGenerationService = notificationGenerationService;
         }
 
         protected override void Execute(object? state = null)
         {
-            using var context = dbFactory.CreateDbContext();
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
 
             List<GenericSidList> usersInTable = new();
 
             List<IADUser> lockedOutUsers = new();
-            Job executeJob = new("Monitor Locked Out Users");
-            JobStep prepareStep = new("Prepare data", (state) =>
+            Job executeJob = new(AppLocalization["Monitor Locked Out Users"]);
+
+            executeJob.StopOnFailedStep = true;
+
+            JobStep prepareStep = new(AppLocalization["Prepare data"], (state) =>
             {
+                using var context = dbFactory.CreateDbContext();
                 usersInTable = context.LockedOutUsers.ToList();
                 lockedOutUsers = directory.Users.FindLockedOutUsers();
                 return true;
             });
             executeJob.AddStep(prepareStep);
-            JobStep analyzeStep = new("Analyze data", (state) =>
+            JobStep analyzeStep = new(AppLocalization["Analyze data"], (state) =>
             {
+                using var context = dbFactory.CreateDbContext();
                 foreach (var user in lockedOutUsers)
                 {
                     if (user == null) continue;
@@ -49,6 +58,9 @@ namespace BLAZAM.Services.Background
                             if (user.LockoutTime > DateTime.UtcNow.AddDays(-1))
                             {
                                 _notificationGenerationService.PostAsync(user, NotificationType.LockedOut);
+
+                                RecordLogonEvents(user);
+
                             }
                         }
 
@@ -78,6 +90,38 @@ namespace BLAZAM.Services.Background
             var result = executeJob.Run();
 
 
+        }
+
+        private void RecordLogonEvents(IADUser user)
+        {
+            using var context = dbFactory.CreateDbContext();
+            var existing = context.FailedADLogonEvents.Where(e => e.Sid.Equals(user.SID)).OrderBy(e => e.Timestamp);
+
+            var failedLogonEvents = user.FailedLogonEvents;
+            if (failedLogonEvents.Count > 0)
+            {
+
+                foreach (var evt in failedLogonEvents.Where(e=>e.TimeCreated>existing.LastOrDefault()?.Timestamp))
+                {
+                    var matching = context.FailedADLogonEvents.FirstOrDefault(e => e.Timestamp.Equals(evt.TimeCreated));
+                    if (matching == null)
+                    {
+
+                        if (existing.Count() > 9)
+                        {
+                            context.FailedADLogonEvents.Remove(existing.First());
+                        }
+                        context.FailedADLogonEvents.Add(new()
+                        {
+                            Sid = user.SID,
+                            Timestamp = evt.TimeCreated,
+                            WorkstationIp = evt.GetWorkstationIp(),
+                            WorkstationName = evt.GetWorkstationName()
+                        });
+                    }
+
+                }
+            }
         }
     }
 }

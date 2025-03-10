@@ -1,5 +1,7 @@
 ﻿using BLAZAM.Database.Context;
+using BLAZAM.Localization;
 using BLAZAM.Services.Background;
+using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +14,7 @@ namespace BLAZAM.Database.Services
     {
         protected readonly IAppDatabaseFactory dbFactory;
 
-        public DatabaseBackgroundServiceBase(IAppDatabaseFactory dbFactory)
+        public DatabaseBackgroundServiceBase(IAppDatabaseFactory dbFactory,IStringLocalizer<AppLocalization> appLocalization):base(appLocalization)
         {
             this.dbFactory = dbFactory;
 

@@ -2,14 +2,16 @@
 using BLAZAM.Database.Services;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
+using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Update;
 using BLAZAM.Update.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace BLAZAM.Services.Background
 {
-    [AutoStartBackgroundService(60)]
+    [AutoStartBackgroundService]
     public class AutoUpdateService : DatabaseBackgroundServiceBase, IDisposable
     {
 
@@ -30,8 +32,10 @@ namespace BLAZAM.Services.Background
 
         //private AuditLogger Audit;
 
-        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo) : base(factory)
+        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo, IStringLocalizer<AppLocalization> appLocalization) : base(factory,appLocalization)
         {
+            Interval = TimeSpan.FromMinutes(60);
+
             _applicationInfo = applicationInfo;
             this.factory = factory;
             this.updateService = updateService;
@@ -178,11 +182,11 @@ namespace BLAZAM.Services.Background
 
         }
 
-        protected override async void Execute(object? state)
+        protected override void Execute(object? state)
         {
-            using var context = await factory.CreateDbContextAsync();
-            Job updateCheckJob = new("Check for Update");
-            JobStep checkForUpdateStep = new("Execute", async (step) =>
+            using var context = factory.CreateDbContext();
+            Job updateCheckJob = new(AppLocalization["Check for Update"]);
+            JobStep checkForUpdateStep = new(AppLocalization["Execute"], async (step) =>
             {
                 try
                 {
@@ -223,7 +227,7 @@ namespace BLAZAM.Services.Background
                 return true;
             });
             updateCheckJob.AddStep(checkForUpdateStep);
-            await updateCheckJob.RunAsync();
+            updateCheckJob.Run();
         }
         public void Cancel()
         {

@@ -136,12 +136,9 @@ namespace BLAZAM.Database.Context
         //Audit Logs
         public virtual DbSet<SystemAuditLog> SystemAuditLog { get; set; }
         public virtual DbSet<LogonAuditLog> LogonAuditLog { get; set; }
-        //public virtual DbSet<EmailAuditLog> EmailAuditLog { get; set; }
+        public virtual DbSet<EmailAuditLog> EmailAuditLog { get; set; }
+        public virtual DbSet<FailedADLogonEvent> FailedADLogonEvents { get; set; }
         public virtual DbSet<DirectoryEntryAuditLog> DirectoryEntryAuditLogs { get; set; }
-        //public virtual DbSet<UserAuditLog> UserAuditLog { get; set; }
-        //public virtual DbSet<GroupAuditLog> GroupAuditLog { get; set; }
-        //public virtual DbSet<ComputerAuditLog> ComputerAuditLog { get; set; }
-        //public virtual DbSet<OUAuditLog> OUAuditLog { get; set; }
         public virtual DbSet<RequestAuditLog> RequestAuditLog { get; set; }
         public virtual DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
         public virtual DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }

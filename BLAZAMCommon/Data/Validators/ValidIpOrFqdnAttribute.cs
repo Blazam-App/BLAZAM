@@ -4,9 +4,9 @@ using System.Text.RegularExpressions;
 
 namespace BLAZAM.Common.Data.Validators
 {
-    public class ValidIpOrFqdn : AppValidationAttribute
+    public class ValidIpOrFqdnAttribute : AppValidationAttribute
     {
-        public ValidIpOrFqdn()
+        public ValidIpOrFqdnAttribute()
         {
             ErrorMessageResourceName = GetType().Name;
         }

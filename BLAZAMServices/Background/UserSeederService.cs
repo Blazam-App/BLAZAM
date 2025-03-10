@@ -3,27 +3,33 @@ using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
+using BLAZAM.Localization;
 using BLAZAM.Logger;
+using Microsoft.Extensions.Localization;
 
 namespace BLAZAM.Services.Background
 {
     /// <summary>
     /// Prefills the user table with all users who have login access
     /// </summary>
-    [AutoStartBackgroundService(60)]
+    [AutoStartBackgroundService]
     public class UserSeederService : ActiveDirectoryBackgroundServiceBase
     {
         private readonly ApplicationInfo _applicationInfo;
 
-        public UserSeederService(ApplicationInfo applicationInfo, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory) : base(activeDirectoryContextFactory, dbFactory)
+        public UserSeederService(ApplicationInfo applicationInfo, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
+            Interval = TimeSpan.FromMinutes(60);
+
             _applicationInfo = applicationInfo;
         }
 
         protected override void Execute(object? obj = null)
         {
-            Job seedJob = new("Seed New Users");
-            JobStep step = new("Check for new users", (state) =>
+            Job seedJob = new(AppLocalization["Seed New Users"]);
+            seedJob.StopOnFailedStep = true;
+
+            JobStep step = new(AppLocalization["Check for new users"], (state) =>
             {
                 try
                 {

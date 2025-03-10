@@ -14,7 +14,7 @@ namespace BLAZAM.Update
 {
     public enum UpdateStage { None, Downloading, Downloaded, Staging, Staged, BackingUp, Prepared, Applying, Applied };
 
-    public class ApplicationUpdate
+    public class ApplicationUpdate : IEquatable<ApplicationUpdate?>
     {
 
 
@@ -433,6 +433,7 @@ namespace BLAZAM.Update
             });
 
         }
+
         public void Cancel()
         {
             cancellationTokenSource?.Cancel();
@@ -520,6 +521,32 @@ namespace BLAZAM.Update
 
 
             return true;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as ApplicationUpdate);
+        }
+
+        public bool Equals(ApplicationUpdate? other)
+        {
+            return other is not null &&
+                   EqualityComparer<ApplicationVersion>.Default.Equals(Version, other.Version);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Version);
+        }
+
+        public static bool operator ==(ApplicationUpdate? left, ApplicationUpdate? right)
+        {
+            return EqualityComparer<ApplicationUpdate>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(ApplicationUpdate? left, ApplicationUpdate? right)
+        {
+            return !(left == right);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace BLAZAM.Services.Audit
             OU = new OUAudit(factory);
             Printer = new PrinterAudit(factory);
             BitLocker = new BitLockerAudit(factory);
+            Email=new EmailAudit(factory);
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Common.Attributes;
+using BLAZAM.Common.Conventions;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
@@ -528,6 +529,7 @@ namespace BLAZAM.Server
 
 
                                     var metadata = type.GetCustomAttribute<AutoStartBackgroundService>();
+                                    
                                     service?.Start(metadata?.Immediate == true);
                                 }
                                 catch (Exception ex)

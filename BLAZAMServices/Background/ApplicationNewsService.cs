@@ -1,13 +1,16 @@
 ﻿using ApplicationNews;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Services;
+using BLAZAM.Jobs;
+using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
+using Microsoft.Extensions.Localization;
 using System.Text.Json;
 
 namespace BLAZAM.Services.Background
 {
-    [AutoStartBackgroundService(15, true)]
+    [AutoStartBackgroundService(true)]
     public class ApplicationNewsService : DatabaseBackgroundServiceBase, IApplicationNewsService
     {
         private HttpClient _httpClient;
@@ -17,8 +20,10 @@ namespace BLAZAM.Services.Background
         private List<NewsItem> _activeNewsItems => _allNewsItems.Where(x => x.DeletedAt == null && x.Published == true && (x.ScheduledAt == null || x.ScheduledAt < DateTime.Now) && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now)).ToList();
         public AppEvent OnNewItemsAvailable { get; set; }
 
-        public ApplicationNewsService(IAppDatabaseFactory dbFactory) : base(dbFactory)
+        public ApplicationNewsService(IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(dbFactory, appLocalization)
         {
+            Interval = TimeSpan.FromMinutes(15);
+
             _httpClient = new HttpClient
             {
                 BaseAddress = new Uri("https://blazam.org/api/"),
@@ -32,48 +37,60 @@ namespace BLAZAM.Services.Background
         }
 
 
-        protected override async void Execute(object? obj = null)
+        protected override void Execute(object? obj = null)
         {
-            try
+            Job newsCollectionJob = new Job(AppLocalization["Fetch News"]);
+            newsCollectionJob.StopOnFailedStep = true;
+            JobStep collectStep = new JobStep(AppLocalization["Collect data"], async (step) =>
             {
-                _pollCompleted = false;
                 try
                 {
-                    var apiResponse = await _httpClient.GetAsync("newsItems");
-                    if (apiResponse != null && apiResponse.IsSuccessStatusCode)
+                    _pollCompleted = false;
+                    try
                     {
-                        var content = await apiResponse.Content.ReadAsStringAsync();
-                        var allNewsItems = JsonSerializer.Deserialize<List<NewsItem>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                        if (allNewsItems != null)
+                        var apiResponse = await _httpClient.GetAsync("newsItems");
+                        if (apiResponse != null && apiResponse.IsSuccessStatusCode)
                         {
-                            _allNewsItems = allNewsItems;
-                            _pollCompleted = true;
+                            var content = await apiResponse.Content.ReadAsStringAsync();
+                            var allNewsItems = JsonSerializer.Deserialize<List<NewsItem>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                            if (allNewsItems != null)
+                            {
+                                _allNewsItems = allNewsItems;
+                                _pollCompleted = true;
 
-                            OnNewItemsAvailable?.Invoke();
+                                OnNewItemsAvailable?.Invoke();
+
+                            }
+                            return true;
+                        }
+                    }
+                    catch
+                    {
+                        var apiResponse = await _secondaryHttpClient.GetAsync("newsItems");
+                        if (apiResponse != null && apiResponse.IsSuccessStatusCode)
+                        {
+                            var content = await apiResponse.Content.ReadAsStringAsync();
+                            var allNewsItems = JsonSerializer.Deserialize<List<NewsItem>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                            if (allNewsItems != null)
+                            {
+                                _allNewsItems = allNewsItems;
+                                _pollCompleted = true;
+
+                                OnNewItemsAvailable?.Invoke();
+
+                            }
+                            return true;
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    var apiResponse = await _secondaryHttpClient.GetAsync("newsItems");
-                    if (apiResponse != null && apiResponse.IsSuccessStatusCode)
-                    {
-                        var content = await apiResponse.Content.ReadAsStringAsync();
-                        var allNewsItems = JsonSerializer.Deserialize<List<NewsItem>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                        if (allNewsItems != null)
-                        {
-                            _allNewsItems = allNewsItems;
-                            _pollCompleted = true;
-
-                            OnNewItemsAvailable?.Invoke();
-                        }
-                    }
+                    Loggers.SystemLogger.Warning("Unable to contact application news API {@URI}{@Error}", _httpClient.BaseAddress, ex);
                 }
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Warning("Unable to contact application news API {@URI}{@Error}", _httpClient.BaseAddress, ex);
-            }
+                return false;
+            });
+            newsCollectionJob.AddStep(collectStep);
+            newsCollectionJob.Run();
         }
         public List<NewsItem> GetUnreadNewsItems(IApplicationUserState user)
         {

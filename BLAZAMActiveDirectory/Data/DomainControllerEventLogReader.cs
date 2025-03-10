@@ -65,7 +65,7 @@ namespace BLAZAM.ActiveDirectory.Data
 
             return events;
         }
-        public List<EventRecord> GetUserLogonEvents(string userName, DateTime startTime, DateTime endTime)
+        public List<EventRecord> GetFailedLogonEvents(string userName, DateTime startTime, DateTime endTime)
         {
             
             var events = new List<EventRecord>();

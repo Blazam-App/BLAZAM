@@ -6,6 +6,7 @@ using BLAZAM.EmailMessage.Email;
 using BLAZAM.EmailMessage.Email.Base;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
+using BLAZAM.Services.Audit;
 using BLAZAM.Static;
 using BlazorTemplater;
 using MailKit.Net.Smtp;
@@ -20,6 +21,7 @@ namespace BLAZAM.Services.Background
     {
         public static EmailService? Instance { get; set; }
         private IAppDatabaseFactory Factory { get; set; }
+        public ServerAuditLogger Audit { get; }
 
         public bool IsConfigured
         {
@@ -35,10 +37,11 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        public EmailService(IAppDatabaseFactory factory)
+        public EmailService(IAppDatabaseFactory factory, ServerAuditLogger audit)
         {
             Instance = this;
             Factory = factory;
+            Audit = audit;
         }
 
 
@@ -202,9 +205,7 @@ namespace BLAZAM.Services.Background
         private async Task<bool> TrySend(SmtpClient client, MimeMessage message)
         {
             var response = await client.SendAsync(message);
-            //AuditLogger.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody,response);
-
-            //TODO Audit to database
+            Audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody,response);
             return true;
         }
 

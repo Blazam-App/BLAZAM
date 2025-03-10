@@ -4,9 +4,9 @@ using System.Text.RegularExpressions;
 
 namespace BLAZAM.Common.Data.Validators
 {
-    public class ValidFqdn : AppValidationAttribute
+    public class ValidIpAttribute : AppValidationAttribute
     {
-        public ValidFqdn()
+        public ValidIpAttribute()
         {
             ErrorMessageResourceName = GetType().Name;
         }
@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Data.Validators
             if (value != null && value is string strValue)
             {
                 if (!strValue.IsNullOrEmpty())
-                    if (Regex.IsMatch(strValue, "^(?!:\\/\\/)(?=.{1,255}$)((.{1,63}\\.){1,127}(?![0-9]*$)[a-z0-9-]+\\.?)", RegexOptions.IgnoreCase))
+                    if (Regex.IsMatch(strValue, "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])", RegexOptions.IgnoreCase))
                         return ValidationResult.Success;
 
             }
