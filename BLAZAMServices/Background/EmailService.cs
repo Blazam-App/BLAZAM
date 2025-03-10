@@ -206,8 +206,6 @@ namespace BLAZAM.Services.Background
         {
             var response = await client.SendAsync(message);
             Audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody,response);
-
-            //TODO Audit to database
             return true;
         }
 
