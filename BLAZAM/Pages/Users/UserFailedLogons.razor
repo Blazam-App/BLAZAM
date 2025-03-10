@@ -30,6 +30,8 @@
         Task.Run(() =>
         {
             LoadingData = true;
+
+            var events = User.FailedLogonEvents;
             _events = Context.FailedADLogonEvents.Where(e=>e.Sid.Equals(User.SID)).ToList();
             LoadingData = false;
         });
