@@ -209,6 +209,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(samaccountname=*{Fields.SamAccountName}*)";
                     if (Fields.LastLogonTime != null)
                         FilterQuery += $"(lastLogonTimestamp<={Fields.LastLogonTime})(!(lastLogonTimestamp=0))";
+                    if (Fields.AccountExpires != null)
+                        FilterQuery += $"(accountExpires<={Fields.AccountExpires.Value.ToFileTimeUtc().ToString()})(!(accountExpires=0))";
                     if (Fields.LockoutTime != null)
                         FilterQuery += $"(lockoutTime>={Fields.LockoutTime})";
                     if (!Fields.DN.IsNullOrEmpty())
@@ -222,7 +224,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     if (Fields.BitLockerRecoveryId != null)
                         FilterQuery += $"(name=*{Fields.BitLockerRecoveryId}*)";
                     if (Fields.PasswordLastSet != null)
-                        FilterQuery += $"(pwdLastSet>={Fields.PasswordLastSet.Value.ToFileTime().ToString()})";
+                        FilterQuery += $"(pwdLastSet>={Fields.PasswordLastSet.Value.ToFileTimeUtc().ToString()})";
 
 
                 }
