@@ -2,5 +2,6 @@
 {
     public class AutomationRuleFilter:RecoverableAppDbSetBase
     {
+        public ActiveDirectoryField Field { get; set; }
     }
 }
