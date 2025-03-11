@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
+using BLAZAM.Database.Models;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 
@@ -32,6 +33,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         byte[]? ThumbnailPhoto { get; set; }
         string? LogOnTo { get; set; }
         LogonHours? LogonHours { get; set; }
-        List<EventRecord> FailedLogonEvents { get; }
+        List<FailedADLogonEvent> FailedLogonEvents { get; }
     }
 }

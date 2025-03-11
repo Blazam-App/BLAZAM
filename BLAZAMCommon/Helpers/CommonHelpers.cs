@@ -47,14 +47,18 @@ namespace BLAZAM.Helpers
             }
             return values;
         }
-        public static string? GetWorkstationName (this EventRecord eventRecord)
-        {
-            return eventRecord.Properties[13].Value.ToString();
-        }
+       
 
-        public static string? GetWorkstationIp(this EventRecord eventRecord)
+        public static string? GetEventProperty(this EventRecord eventRecord,int index)
         {
-            return eventRecord.Properties[19].Value.ToString();
+            try
+            {
+                return eventRecord.Properties[index].Value.ToString();
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return null;
+            }
         }
         public static List<AuditChangeLog> GetChanges(this object changed, object? original)
         {
@@ -102,7 +106,7 @@ namespace BLAZAM.Helpers
                     newValue = property.GetValue(changed);
 
                 // Compare the values using Equals method
-                if ((oldValue!=null && newValue!=null)
+                if ((oldValue != null && newValue != null)
                     && ((oldValue is not null && !oldValue.Equals(newValue)
                     || (newValue is not null && !newValue.Equals(oldValue)))))
                 {
