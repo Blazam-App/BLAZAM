@@ -16,7 +16,7 @@
             </NoRecordsContent>
         </MudDataGrid>
     </MudStack>
-    @code {
+@code {
     private List<FailedADLogonEvent> _events = new();
 
 
@@ -30,10 +30,17 @@
         Task.Run(() =>
         {
             LoadingData = true;
-
-            var events = User.FailedLogonEvents;
-            _events = Context.FailedADLogonEvents.Where(e=>e.Sid.Equals(User.SID)).ToList();
+            _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
             LoadingData = false;
+            LoadingData = true;
+
+            LockedOutUserMonitor.RecordLogonEvents(User);
+
+            _events = Context.FailedADLogonEvents.Where(e=>e.Sid.Equals(User.SID)).OrderByDescending(e=>e.Timestamp).ToList();
+            LoadingData = false;
+
+            //InvokeAsync(StateHasChanged);
+
         });
     }
 }
