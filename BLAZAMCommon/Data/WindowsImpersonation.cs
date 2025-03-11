@@ -5,13 +5,16 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 namespace BLAZAM.Common.Data
 {
+    /// <summary>
+    /// Provides a way to run code under other identities
+    /// </summary>
     public class WindowsImpersonation
     {
         private SafeAccessTokenHandle safeAccessTokenHandle;
         private WindowsImpersonationUser impersonationUser;
         private readonly WindowsIdentity ApplicationIdentity;
 
-        public SafeAccessTokenHandle ImpersonatedToken
+        private SafeAccessTokenHandle ImpersonatedToken
         {
             get
             {
@@ -59,18 +62,34 @@ namespace BLAZAM.Common.Data
 
 
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern bool LogonUser(string lpszUsername, string lpszDomain, IntPtr lpszPassword,
+        private static extern bool LogonUser(string lpszUsername, string lpszDomain, IntPtr lpszPassword,
     int dwLogonType, int dwLogonProvider, out SafeAccessTokenHandle phToken);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         public extern static bool CloseHandle(IntPtr handle);
-
+        /// <summary>
+        /// Creates a new impersonation context under the provided <see cref="WindowsImpersonationUser"/>
+        /// </summary>
+        /// <param name="user"></param>
         public WindowsImpersonation(WindowsImpersonationUser user)
         {
             impersonationUser = user;
             ApplicationIdentity = WindowsIdentity.GetCurrent();
         }
+        /// <summary>
+        /// Runs the provided action asynchronously as the <see cref="WindowsImpersonationUser"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="task"></param>
+        /// <returns></returns>
         public async Task<T?> RunAsync<T>(Func<T> task) => await Task.Run(() => Run<T>(task));
+        /// <summary>
+        /// Runs the provided action synchronously as the <see cref="WindowsImpersonationUser"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        /// <exception cref="AppException"></exception>
         public T? Run<T>(Func<T> task)
         {
 
@@ -125,50 +144,7 @@ namespace BLAZAM.Common.Data
 
             return result;
         }
-        public async Task<string> RunProcess(string processPath, string arguments)
-        {
-
-
-            var output = "";
-            try
-            {
-
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        WorkingDirectory = "C:\\",
-                        FileName = processPath,
-                        Arguments = arguments,
-                        RedirectStandardOutput = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                        LoadUserProfile = true,
-                        UserName = impersonationUser?.Username,
-                        Domain = impersonationUser?.FQDN,
-                        Password = impersonationUser?.Password,
-                    }
-
-                };
-
-
-
-
-                process.Start();
-
-                // Reading the standard output stream of the process
-                output = await process.StandardOutput.ReadToEndAsync();
-                await process.WaitForExitAsync();
-
-
-            }
-            catch (Exception ex)
-            {
-                Loggers.ActiveDirectoryLogger.Error("Error trying to impersonate " + impersonationUser.Username + " {@Error}", ex);
-            }
-            return output;
-
-        }
+      
 
     }
 }

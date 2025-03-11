@@ -132,7 +132,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty(ActiveDirectoryFields.EmployeeId.FieldName, value);
             }
         }
-        public List<EventRecord> FailedLogonEvents => this.DomainControllerEventLogs.GetFailedLogonEvents(SamAccountName, DateTime.UtcNow - TimeSpan.FromDays(5), DateTime.UtcNow);
+        public List<FailedADLogonEvent> FailedLogonEvents => this.DomainControllerEventLogs.GetFailedLogonEvents(this, DateTime.UtcNow - TimeSpan.FromDays(5), DateTime.UtcNow);
 
         public string? HomeDirectory
         {
