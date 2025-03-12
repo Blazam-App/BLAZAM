@@ -12,64 +12,64 @@
 
 
 <AppPageTitle>@AppLocalization["Audit"]</AppPageTitle>
-<SetHeader>
-    <MudText>@AppLocalization["Audit"]</MudText>
-</SetHeader>
-<MudText Typo="Typo.h4">@AppLocalization["Audit"]</MudText>
+    <SetHeader>
+        <MudText>@AppLocalization["Audit"]</MudText>
+    </SetHeader>
+    <MudText Typo="Typo.h4">@AppLocalization["Audit"]</MudText>
 
 
 
-<MudTabs @bind-ActivePanelIndex="@ActiveTab">
-    <MudTabPanel>
-        <ChildContent>
-            <MudDataGrid Virtualize=true
-                         Height="600px"
-                         ColumnResizeMode="ResizeMode.Container"
-                         FixedHeader=true
-                         Hideable=true
-                         Items="@auditEntries.Where(ae=>ae.Action!="Login" && ae.Action!="Logout").OrderByDescending(ae=>ae.Timestamp)"
-                         Filterable="false"
-                         SortMode="@SortMode.Multiple"
-                         Groupable="false">
-                <Columns>
-                    @* <PropertyColumn Property="x => x.Timestamp.ToLocalTime()"   Sortable="true" /> *@
-                    <TemplateColumn Title=@AppLocalization["Timestamp"] Sortable="true">
-                        <CellTemplate>
-                            <MudText>
-                                @context.Item.Timestamp.ToLocalTime()
+    <MudTabs @bind-ActivePanelIndex="@ActiveTab">
+        <MudTabPanel>
+            <ChildContent>
+                <MudDataGrid Virtualize=true
+                             Height="600px"
+                             ColumnResizeMode="ResizeMode.Container"
+                             FixedHeader=true
+                             Hideable=true
+                             Items="@auditEntries.Where(ae=>ae.Action!="Login" && ae.Action!="Logout").OrderByDescending(ae=>ae.Timestamp)"
+                             Filterable="false"
+                             SortMode="@SortMode.Multiple"
+                             Groupable="false">
+                    <Columns>
+                        @* <PropertyColumn Property="x => x.Timestamp.ToLocalTime()"   Sortable="true" /> *@
+                        <TemplateColumn Title=@AppLocalization["Timestamp"] Sortable="true">
+                            <CellTemplate>
+                                <MudText>
+                                    @context.Item.Timestamp.ToLocalTime()
                             </MudText>
                         </CellTemplate>
                     </TemplateColumn>
-                    <PropertyColumn Property="x => x.Username" Filterable="true" Title="@AppLocalization["Username"]"/>
+                    <PropertyColumn Property="x => x.Username" Filterable="true" Title="@AppLocalization["Username"]" />
                     <TemplateColumn Title=@AppLocalization["IP Address"] Filterable="true">
                         <CellTemplate>
-                                <IPAddress>
-                                    @context.Item.IpAddress
-                                </IPAddress>
+                            <IPAddress>
+                                @context.Item.IpAddress
+                            </IPAddress>
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="@AppLocalization["Action"]">
                         <CellTemplate>
                             <MudText>@AppLocalization[context.Item.Action]</MudText>
-                        </CellTemplate>
-                    </TemplateColumn>
-                    <TemplateColumn Title="@AppLocalization["Target"]">
-                        <CellTemplate>
-                            <MudLink Href="@("/view/"+context.Item.Target)">@context.Item.Target</MudLink>
-                        </CellTemplate>
-                    </TemplateColumn>
-                    <PropertyColumn Property="x => x.BeforeAction" Filterable="true" Title="@AppLocalization["Before Action"]" />
-                    <PropertyColumn Property="x => x.AfterAction" Filterable="true" Title="@AppLocalization["After Action"]" />
+                            </CellTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn Title="@AppLocalization["Target"]">
+                            <CellTemplate>
+                                <MudLink Href="@("/view/"+context.Item.Target)">@context.Item.Target</MudLink>
+                            </CellTemplate>
+                        </TemplateColumn>
+                        <PropertyColumn Property="x => x.BeforeAction" Filterable="true" Title="@AppLocalization["Before Action"]" />
+                        <PropertyColumn Property="x => x.AfterAction" Filterable="true" Title="@AppLocalization["After Action"]" />
 
-                </Columns>
-            </MudDataGrid>
-
-
+                    </Columns>
+                </MudDataGrid>
 
 
-        </ChildContent>
-        <TabContent>
-            @AppLocalization["Main"]
+
+
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Main"]
         </TabContent>
     </MudTabPanel>
     <MudTabPanel>
@@ -99,9 +99,9 @@
 
                     <TemplateColumn Title=@AppLocalization["IP Address"] Filterable="true">
                         <CellTemplate>
-                                <IPAddress>
-                                    @context.Item.IpAddress
-                                </IPAddress>
+                            <IPAddress>
+                                @context.Item.IpAddress
+                            </IPAddress>
                         </CellTemplate>
                     </TemplateColumn>
 
@@ -143,7 +143,7 @@
                                 </MudText>
                             </CellTemplate>
                         </TemplateColumn>
-                        <PropertyColumn Property="x => x.Username" Title="@AppLocalization["Username"]"/>
+                        <PropertyColumn Property="x => x.Username" Title="@AppLocalization["Username"]" />
                         <PropertyColumn Property="x => x.IpAddress" Title="@AppLocalization["IP Address"]" />
                         <PropertyColumn Property="x => x.Target" Title="@AppLocalization["Target"]" />
                         <PropertyColumn Property="x => x.BeforeAction" Title="@AppLocalization["Before Action"]" />
@@ -163,9 +163,19 @@
 
 
     </MudTabPanel>
-       <MudTabPanel>
+    <MudTabPanel>
         <ChildContent>
-         <WebHookAuditContent/>
+            <EmailAuditContent />
+        </ChildContent>
+        <TabContent>
+            @AppLocalization["Email"]
+        </TabContent>
+
+
+    </MudTabPanel>
+    <MudTabPanel>
+        <ChildContent>
+            <WebHookAuditContent />
         </ChildContent>
         <TabContent>
             @AppLocalization["Webhooks"]
