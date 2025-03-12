@@ -85,8 +85,26 @@
 
                         <MudText Style="text-align:end;" Typo="Typo.caption">@Group.OU.ToPrettyOu()</MudText>
                     </MudStack>
+                    <MudStack Row=true>
+                        <MudText Typo="Typo.subtitle2">@AppLocalization["Group Type"]:</MudText>
+                        <MudSpacer />
+                        <MudRadioGroup Disabled="@Group.NewEntryProperties.ContainsKey("groupType")" @bind-Value="Group.Scope">
+                            <MudRadio Value="GroupScope.Universal">@AppLocalization["Universal"]</MudRadio>
+                            <MudRadio Value="GroupScope.Global" Disabled="@(Group.Scope==GroupScope.DomainLocal)">@AppLocalization["Global"]</MudRadio>
+                            <MudRadio Value="GroupScope.DomainLocal" Disabled="@(Group.Scope==GroupScope.Global)">@AppLocalization["Domain Local"]</MudRadio>
+                        </MudRadioGroup>
+                    </MudStack>
+                    <MudStack Row=true>
+                        <MudText Typo="Typo.subtitle2">@AppLocalization["Group Scope"]:</MudText>
+                        <MudSpacer />
+                        <MudRadioGroup @bind-Value="Group.IsSecurityGroup">
+                            <MudRadio Value="@true">@AppLocalization["Security"]</MudRadio>
+                            <MudRadio Value="@false">@AppLocalization["Distribution"]</MudRadio>
+                        </MudRadioGroup>
 
-
+                    </MudStack>
+                   
+                   
                 </Section>
             </MudItem>
             <MudItem xs="12" md="6">

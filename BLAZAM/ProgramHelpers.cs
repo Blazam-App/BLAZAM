@@ -600,19 +600,6 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
-            try
-            {
-                if (ApplicationInfo.installationCompleted)
-                {
-                    var context = Program.AppInstance.Services.GetRequiredService<PermissionApplicator>();
-                    
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-            }
         }
     }
 }
