@@ -85,26 +85,32 @@
 
                         <MudText Style="text-align:end;" Typo="Typo.caption">@Group.OU.ToPrettyOu()</MudText>
                     </MudStack>
-                    <MudStack Row=true>
-                        <MudText Typo="Typo.subtitle2">@AppLocalization["Group Type"]:</MudText>
-                        <MudSpacer />
-                        <MudRadioGroup Disabled="@Group.NewEntryProperties.ContainsKey("groupType")" @bind-Value="Group.Scope">
-                            <MudRadio Value="GroupScope.Universal">@AppLocalization["Universal"]</MudRadio>
-                            <MudRadio Value="GroupScope.Global" Disabled="@(Group.Scope==GroupScope.DomainLocal)">@AppLocalization["Global"]</MudRadio>
-                            <MudRadio Value="GroupScope.DomainLocal" Disabled="@(Group.Scope==GroupScope.Global)">@AppLocalization["Domain Local"]</MudRadio>
-                        </MudRadioGroup>
-                    </MudStack>
-                    <MudStack Row=true>
-                        <MudText Typo="Typo.subtitle2">@AppLocalization["Group Scope"]:</MudText>
-                        <MudSpacer />
-                        <MudRadioGroup @bind-Value="Group.IsSecurityGroup">
-                            <MudRadio Value="@true">@AppLocalization["Security"]</MudRadio>
-                            <MudRadio Value="@false">@AppLocalization["Distribution"]</MudRadio>
-                        </MudRadioGroup>
+                    @if (Group.CanReadField(ActiveDirectoryFields.GroupType))
+                    {
 
-                    </MudStack>
-                   
-                   
+
+                        <MudStack Row=true>
+                            <MudText Typo="Typo.subtitle2">@AppLocalization["Group Type"]:</MudText>
+                            <MudSpacer />
+                            <MudRadioGroup Disabled="@(Group.NewEntryProperties.ContainsKey("groupType") || !Group.CanEditField(ActiveDirectoryFields.GroupType))"
+                                           @bind-Value="Group.Scope">
+                                <MudRadio Value="GroupScope.Universal">@AppLocalization["Universal"]</MudRadio>
+                                <MudRadio Value="GroupScope.Global" Disabled="@(Group.Scope==GroupScope.DomainLocal)">@AppLocalization["Global"]</MudRadio>
+                                <MudRadio Value="GroupScope.DomainLocal" Disabled="@(Group.Scope==GroupScope.Global)">@AppLocalization["Domain Local"]</MudRadio>
+                            </MudRadioGroup>
+                        </MudStack>
+                        <MudStack Row=true>
+                            <MudText Typo="Typo.subtitle2">@AppLocalization["Group Scope"]:</MudText>
+                            <MudSpacer />
+                            <MudRadioGroup Disabled="@( !Group.CanEditField(ActiveDirectoryFields.GroupType))"
+                                           @bind-Value="Group.IsSecurityGroup">
+                                <MudRadio Value="@true">@AppLocalization["Security"]</MudRadio>
+                                <MudRadio Value="@false">@AppLocalization["Distribution"]</MudRadio>
+                            </MudRadioGroup>
+
+                        </MudStack>
+                    }
+
                 </Section>
             </MudItem>
             <MudItem xs="12" md="6">
@@ -115,14 +121,14 @@
             </MudItem>
 
 
-   
-                <MudItem xs="12" md="12">
-                    <Section Style="min-height:200px;" Title=@AppLocalization["Members"]>
-                        <GroupMembersDataGrid Group="Group" />
 
-                    </Section>
-                </MudItem>
-            
+            <MudItem xs="12" md="12">
+                <Section Style="min-height:200px;" Title=@AppLocalization["Members"]>
+                    <GroupMembersDataGrid Group="Group" />
+
+                </Section>
+            </MudItem>
+
         </MudGrid>
 
 
@@ -186,7 +192,7 @@
                     }
                     else
                     {
-                        _= NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
+                        _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
 
                     }
                 }
@@ -202,7 +208,7 @@
                     }
                     else
                     {
-                        _= NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Unassign, CurrentUser.State, Group);
+                        _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Unassign, CurrentUser.State, Group);
 
                     }
                 }
