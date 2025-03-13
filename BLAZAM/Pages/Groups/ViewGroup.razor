@@ -29,7 +29,7 @@
         <AppModal Title=@AppLocalization[Lang.Assign_To] @ref=@AssignToModal>
             <AssignToModalContent ModelChanged=@((change)=>{AssignToModal?.Close(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
         </AppModal>
-        <AppModal Title=@AppLocalization["Add Members"] @ref=@AssignMemberModal>
+        <AppModal Title=@AppLocalization[Lang.Add_Members] @ref=@AssignMemberModal>
             <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Close();InvokeAsync(StateHasChanged);}) Group="Group" />
         </AppModal>
         <AppModal Title=@AppLocalization[Lang.Move_To] @ref=@MoveToModal>
@@ -55,7 +55,7 @@
                 <Section Style="min-height:200px;" Title="Group Details">
                     <MudTextField Label="@AppLocalization[Lang.Group_Name]" @bind-Value="@Group.CanonicalName" Disabled />
 
-                    <MudTextField Label="@AppLocalization["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
+                    <MudTextField Label="@AppLocalization[Lang.Account_Name]" @bind-Value="@Group.SamAccountName" Disabled />
 
                     <MudTextField Label="@AppLocalization[Lang.Description]" @bind-Value="@Group.Description" Disabled=@(!EditMode || !Group.CanEdit) />
 
@@ -94,9 +94,11 @@
                             <MudSpacer />
                             <MudRadioGroup Disabled="@(Group.NewEntryProperties.ContainsKey("groupType") || !Group.CanEditField(ActiveDirectoryFields.GroupType))"
                                            @bind-Value="Group.Scope">
-                                <MudRadio Value="GroupScope.Universal">@AppLocalization["Universal"]</MudRadio>
-                                <MudRadio Value="GroupScope.Global" Disabled="@(Group.Scope==GroupScope.DomainLocal)">@AppLocalization["Global"]</MudRadio>
-                                <MudRadio Value="GroupScope.DomainLocal" Disabled="@(Group.Scope==GroupScope.Global)">@AppLocalization["Domain Local"]</MudRadio>
+                                <MudRadio Value="GroupScope.Universal">@AppLocalization[Lang.Universal]</MudRadio>
+                                <MudRadio Value="GroupScope.Global"
+                                Disabled="@(Group.Scope==GroupScope.DomainLocal)">@AppLocalization[Lang.Global]</MudRadio>
+                                <MudRadio Value="GroupScope.DomainLocal" 
+                                Disabled="@(Group.Scope==GroupScope.Global)">@AppLocalization[Lang.Domain_Local]</MudRadio>
                             </MudRadioGroup>
                         </MudStack>
                         <MudStack Row=true>

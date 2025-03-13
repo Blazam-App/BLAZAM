@@ -74,7 +74,7 @@
                                Class="align-middle"
                                Icon="@Icons.Material.Filled.FileCopy" />
             </AppTooltip>
-            <AppTooltip Text="@AppLocalization["Remove template"]">
+            <AppTooltip Text="@AppLocalization[Lang.Remove_template]">
 
 
                 <MudIconButton Color=Color.Error
@@ -86,7 +86,7 @@
 
         @if (Templates?.Any(t => t.DeletedAt != null) == true)
         {
-            <AppTooltip Text="@AppLocalization["Restore templates"]">
+            <AppTooltip Text="@AppLocalization[Lang.Restore_templates]">
 
                 <MudIconButton OnClick=@(async()=>{RestoreModal?.ShowAsync();})
                                Color="Color.Warning"

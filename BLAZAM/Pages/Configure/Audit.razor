@@ -58,8 +58,8 @@
                                 <MudLink Href="@("/view/"+context.Item.Target)">@context.Item.Target</MudLink>
                             </CellTemplate>
                         </TemplateColumn>
-                        <PropertyColumn Property="x => x.BeforeAction" Filterable="true" Title="@AppLocalization["Before Action"]" />
-                        <PropertyColumn Property="x => x.AfterAction" Filterable="true" Title="@AppLocalization["After Action"]" />
+                        <PropertyColumn Property="x => x.BeforeAction" Filterable="true" Title="@AppLocalization[Lang.Before_Action]" />
+                        <PropertyColumn Property="x => x.AfterAction" Filterable="true" Title="@AppLocalization[Lang.After_Action]" />
 
                     </Columns>
                 </MudDataGrid>
@@ -146,8 +146,8 @@
                         <PropertyColumn Property="x => x.Username" Title="@AppLocalization[Lang.Username]" />
                         <PropertyColumn Property="x => x.IpAddress" Title="@AppLocalization[Lang.IP_Address]" />
                         <PropertyColumn Property="x => x.Target" Title="@AppLocalization[Lang.Target]" />
-                        <PropertyColumn Property="x => x.BeforeAction" Title="@AppLocalization["Before Action"]" />
-                        <PropertyColumn Property="x => x.AfterAction" Title="@AppLocalization["After Action"]" />
+                        <PropertyColumn Property="x => x.BeforeAction" Title="@AppLocalization[Lang.Before_Action]" />
+                        <PropertyColumn Property="x => x.AfterAction" Title="@AppLocalization[Lang.After_Action]" />
 
                     </Columns>
                 </MudDataGrid>

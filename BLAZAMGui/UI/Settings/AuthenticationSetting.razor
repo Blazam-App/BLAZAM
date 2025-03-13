@@ -18,9 +18,9 @@
                           @bind-Value="newAdminPassword" />
         </SettingsField>
 
-        <SettingsField Label="@AppLocalization["Session Timeout"]">
+        <SettingsField Label="@AppLocalization[Lang.Session_Timeout]">
 
-            <MudNumericField Label="@AppLocalization["Session Timeout"]"
+            <MudNumericField Label="@AppLocalization[Lang.Session_Timeout]"
                              HelperText=@AppLocalization["Time in minutes"]
                              T="int?"
                              @bind-Value="@settings.SessionTimeout" />
