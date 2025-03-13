@@ -1,13 +1,13 @@
 ﻿@inherits AppModalContent
 <div Background="Background.Light" Color="Color.Dark">
-<Section Title=@AppLocalization["OU"]>
+<Section Title=@AppLocalization[Lang.OU]>
 
 
     @if (OU.CanReadField(ActiveDirectoryFields.CanonicalName))
     {
 
 
-            <MudTextField AutoFocus=true Label="@AppLocalization["Name"]" @bind-Value="@OU.CanonicalName" />
+            <MudTextField AutoFocus=true Label="@AppLocalization[Lang.Name]" @bind-Value="@OU.CanonicalName" />
 
             
         
@@ -17,7 +17,7 @@
 </Section>
 
 
-    <MudButton Color=Color.Primary OnClick="SaveChanges">@AppLocalization["Save Changes"]</MudButton>
+    <MudButton Color=Color.Primary OnClick="SaveChanges">@AppLocalization[Lang.Save_Changes]</MudButton>
 </div>
 @code {
 
@@ -26,7 +26,7 @@
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
         Modal.OnYes = SaveChanges;
-        Modal.YesText = AppLocalization["Save Changes"];
+        Modal.YesText = AppLocalization[Lang.Save_Changes];
         Modal.Title = AppLocalization["Rename OU"];
     }
 

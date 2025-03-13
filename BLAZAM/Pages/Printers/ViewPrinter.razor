@@ -47,7 +47,7 @@
 
                     <Section Title=@AppLocalization["Info"]>
                         <MudStack Row=true Class="@_fieldMudStackClasses">
-                            <DynamicMudInput T=string Label="@AppLocalization["Name"]" @bind-Value="@Printer.CanonicalName" Disabled=@true />
+                            <DynamicMudInput T=string Label="@AppLocalization[Lang.Name]" @bind-Value="@Printer.CanonicalName" Disabled=@true />
                             <DynamicMudInput T=string Label="@AppLocalization["Driver"]" @bind-Value="@Printer.DriverName" Disabled=@true />
                             <DynamicMudInput T=string Label="@AppLocalization["Driver Version"]" @bind-Value="@Printer.DriverVersion" Disabled=@true />
                             <DynamicMudInput T=string Label="@AppLocalization["UNC Path"]" @bind-Value="@Printer.UncName" Disabled=@true />

@@ -77,13 +77,13 @@ else
                                Variant="Variant.Filled"
                                StartIcon="@Icons.Material.Filled.ThumbDownAlt"
                                OnClick="DenyRequest"
-                               Color="Color.Error">@AppLocalization["Deny"]</MudButton>
+                               Color="Color.Error">@AppLocalization[Lang.Deny]</MudButton>
                     <MudSpacer />
                     <MudButton Size="Size.Small"
                                Variant="Variant.Filled"
                                StartIcon="@Icons.Material.Filled.ThumbUpAlt"
                                OnClick="@(()=>{_=_approvalModal.ShowAsync();})"
-                               Color="Color.Success">@AppLocalization["Approve"]</MudButton>
+                               Color="Color.Success">@AppLocalization[Lang.Approve]</MudButton>
                 </MudStack>
 
             </MudStack>

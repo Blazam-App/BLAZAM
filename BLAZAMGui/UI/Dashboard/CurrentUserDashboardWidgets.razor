@@ -73,12 +73,12 @@
                                     <MudSpacer />
                                     <AppIconButton Icon="@Icons.Material.Filled.Refresh"
                                                    Color="Color.Primary"
-                                                   Tooltip=@AppLocalization["Refresh"]
+                                                   Tooltip=@AppLocalization[Lang.Refresh]
                                                    OnClick="@(()=>{OnRefreshWidget?.Invoke(widget);})" />
 
 
                                     <AppCloseButton Disabled="!_editMode"
-                                                    Tooltip=@AppLocalization["Remove"]
+                                                    Tooltip=@AppLocalization[Lang.Remove]
                                                     OnClick=@(async()=>{await RemoveWidget(context);}) />
 
                                 </MudCardHeader>
@@ -121,7 +121,7 @@
     <MudStack Class="d-flex mt-5"
               Style="justify-content: flex-end;" 
               Row=true>
-        <AppTooltip Text=@AppLocalization["Edit"]>
+        <AppTooltip Text=@AppLocalization[Lang.Edit]>
             <MudFab StartIcon="@(_editMode==false?Icons.Material.Filled.Edit:Icons.Material.Filled.EditOff)"
                     Color="@(_editMode==false?Color.Success:Color.Error)"
                     OnClick="@(()=>{_editMode = !_editMode; widgetContainer?.Refresh();})" />

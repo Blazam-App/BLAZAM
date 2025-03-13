@@ -121,7 +121,7 @@ namespace BLAZAM.Gui.UI
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            YesText = AppLocalization["Ok"];
+            YesText = AppLocalization[Lang.Ok];
             if (Options == null)
                 Options = new();
             if (Width != null)

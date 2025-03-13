@@ -12,14 +12,14 @@ Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
             <MudSelectItem Value="TimeSpan.FromSeconds(30)">30 @AppLocalization["seconds"]</MudSelectItem>
 
         }
-        <MudSelectItem Value="TimeSpan.FromDays(30)">30 @AppLocalization["days"]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(60)">60 @AppLocalization["days"]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(90)">90 @AppLocalization["days"]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(180)">180 @AppLocalization["days"]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(1*365)">1 @AppLocalization["year"]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(2*365)">2 @AppLocalization["years"]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(5*365)">5 @AppLocalization["years"]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(10*365)">10 @AppLocalization["years"]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(30)">30 @AppLocalization[Lang.days]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(60)">60 @AppLocalization[Lang.days]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(90)">90 @AppLocalization[Lang.days]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(180)">180 @AppLocalization[Lang.days]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(1*365)">1 @AppLocalization[Lang.year]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(2*365)">2 @AppLocalization[Lang.years]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(5*365)">5 @AppLocalization[Lang.years]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(10*365)">10 @AppLocalization[Lang.years]</MudSelectItem>
         <MudSelectItem Value="TimeSpan.FromDays(1000*365)">@AppLocalization["Forever"]</MudSelectItem>
 
     </MudSelect>

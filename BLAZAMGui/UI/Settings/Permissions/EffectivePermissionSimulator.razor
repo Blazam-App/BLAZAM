@@ -18,7 +18,7 @@
         </MudText>
     </MudItem>
     <MudItem xs="12" md="5">
-        <ADAutoComplete Disabled="selectedUser==null" Label=@AppLocalization["Target"]
+        <ADAutoComplete Disabled="selectedUser==null" Label=@AppLocalization[Lang.Target]
                         SelectedResult=@target
                         SelectedResultChanged="@(async(tgt)=>{target=tgt; await onRun();})" />
     </MudItem>

@@ -52,7 +52,7 @@
 </AppModal>
 <AppModal Title=@AppLocalization["Session Expired"]
           @ref="ExpiredModal"
-          YesText=@AppLocalization["Log In"]
+          YesText=@AppLocalization[Lang.Log_In]
           OnYes="@(()=>{Refresh();
           return Task.CompletedTask;
            })"

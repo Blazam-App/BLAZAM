@@ -79,7 +79,7 @@ else
 
 
 
-                <AppTooltip Text="@(EditMode?AppLocalization["End Edit"]:AppLocalization["Edit"])">
+                <AppTooltip Text="@(EditMode?AppLocalization["End Edit"]:AppLocalization[Lang.Edit])">
 
                     <MudToggleIconButton Toggled=EditMode
                                          ToggledChanged="@(async(state)=>{await ToggleEditMode(state);})"
@@ -92,7 +92,7 @@ else
 
                 @if (accountEntry != null && accountEntry.LockedOut)
                 {
-                    <AppTooltip Text="@AppLocalization["Unlock"]">
+                    <AppTooltip Text="@AppLocalization[Lang.Unlock]">
 
                         <MudIconButton OnClick="OnUnlock"
                                        Icon="@Icons.Material.Filled.LockOpen"
@@ -102,7 +102,7 @@ else
                 }
                 @if (groupableEntry != null)
                 {
-                    <AppTooltip Text="@AppLocalization["Assign To"]">
+                    <AppTooltip Text="@AppLocalization[Lang.Assign_To]">
 
                         <MudIconButton OnClick="@OnAssignTo"
                                        Icon="@Icons.Material.Filled.GroupAdd"
@@ -112,14 +112,14 @@ else
                 }
                 @if (accountEntry != null && accountEntry is not IADComputer)
                 {
-                    <AppTooltip Text="@AppLocalization["Change Password"]">
+                    <AppTooltip Text="@AppLocalization[Lang.Change_Password]">
                         <MudIconButton OnClick="@OnResetPassword"
                                        Disabled=@(!accountEntry.CanSetPassword)
                                        Icon="@Icons.Material.Filled.Password"
                                        aria-label="change password" />
                     </AppTooltip>
                 }
-                <AppTooltip Text="@AppLocalization["Rename"]">
+                <AppTooltip Text="@AppLocalization[Lang.Rename]">
 
                     <MudIconButton OnClick="@OnRename"
                                    Disabled=@(!DirectoryEntry.CanRename)
@@ -128,14 +128,14 @@ else
 
                 </AppTooltip>
 
-                <AppTooltip Text="@AppLocalization["Move"]">
+                <AppTooltip Text="@AppLocalization[Lang.Move]">
 
                     <MudIconButton OnClick="@OnMove"
                                    Disabled=@(!DirectoryEntry.CanMove)
                                    Icon="@Icons.Material.Filled.DriveFileMove"
                                    aria-label="move" />
                 </AppTooltip>
-                <AppTooltip Text="@AppLocalization["Delete"]">
+                <AppTooltip Text="@AppLocalization[Lang.Delete]">
 
                     <MudIconButton OnClick="@OnDelete"
                                    Color="Color.Error"
@@ -147,7 +147,7 @@ else
                 @if (IsAdmin)
                 {
 
-                    <AppTooltip Text="@AppLocalization["Change History"]">
+                    <AppTooltip Text="@AppLocalization[Lang.Change_History]">
                         <MudIconButton OnClick="@OnShowHistory"
                                        Disabled=@(!DirectoryEntry.CanEdit)
                                        Icon="@Icons.Material.Filled.History" />
@@ -160,7 +160,7 @@ else
                 }
                 @if (_showRequestButton)
                 {
-                    <AppTooltip Text="@AppLocalization["Request Access"]">
+                    <AppTooltip Text="@AppLocalization[Lang.Request_Access]">
                         <MudIconButton OnClick="@(()=>{_requestAccessModal?.ShowAsync();})"
                                        Icon="@Icons.Material.Filled.PlaylistAdd" />
                     </AppTooltip>
@@ -195,39 +195,39 @@ else
 
                 @if (DirectoryEntry.CanEdit)
                 {
-                    <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!EditMode);})">@(EditMode ? AppLocalization["End Edit"] : AppLocalization["Edit"])</MudMenuItem>
+                    <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!EditMode);})">@(EditMode ? AppLocalization["End Edit"] : AppLocalization[Lang.Edit])</MudMenuItem>
                 }
                 @if (accountEntry != null && accountEntry.LockedOut && accountEntry.CanUnlock)
                 {
-                    <MudMenuItem OnClick="@OnUnlock">@AppLocalization["Unlock"]</MudMenuItem>
+                    <MudMenuItem OnClick="@OnUnlock">@AppLocalization[Lang.Unlock]</MudMenuItem>
                 }
-                <MudMenuItem OnClick="@OnAssignTo">@AppLocalization["Assign To"]</MudMenuItem>
+                <MudMenuItem OnClick="@OnAssignTo">@AppLocalization[Lang.Assign_To]</MudMenuItem>
                 @if (accountEntry?.CanSetPassword == true && accountEntry is not IADComputer)
                 {
-                    <MudMenuItem OnClick="@OnResetPassword">@AppLocalization["Change Password"]</MudMenuItem>
+                    <MudMenuItem OnClick="@OnResetPassword">@AppLocalization[Lang.Change_Password]</MudMenuItem>
                 }
                 @if (DirectoryEntry.CanRename)
                 {
-                    <MudMenuItem OnClick="@OnRename">@AppLocalization["Rename"]</MudMenuItem>
+                    <MudMenuItem OnClick="@OnRename">@AppLocalization[Lang.Rename]</MudMenuItem>
                 }
                 @if (DirectoryEntry.CanMove)
                 {
-                    <MudMenuItem OnClick="@OnMove">@AppLocalization["Move"]</MudMenuItem>
+                    <MudMenuItem OnClick="@OnMove">@AppLocalization[Lang.Move]</MudMenuItem>
                 }
                 @if (DirectoryEntry.CanDelete)
                 {
-                    <MudMenuItem OnClick="@OnDelete">@AppLocalization["Delete"]</MudMenuItem>
+                    <MudMenuItem OnClick="@OnDelete">@AppLocalization[Lang.Delete]</MudMenuItem>
                 }
 
                 @if (IsAdmin)
                 {
-                    <MudMenuItem OnClick="@OnShowHistory">@AppLocalization["Change History"]</MudMenuItem>
+                    <MudMenuItem OnClick="@OnShowHistory">@AppLocalization[Lang.Change_History]</MudMenuItem>
 
                     <MudMenuItem OnClick="@OnShowPermissions">@AppLocalization["Effective Permissions"]</MudMenuItem>
                 }
                 @if (_showRequestButton)
                 {
-                    <MudMenuItem OnClick="@(()=>{_requestAccessModal?.ShowAsync();})">@AppLocalization["Request Access"]</MudMenuItem>
+                    <MudMenuItem OnClick="@(()=>{_requestAccessModal?.ShowAsync();})">@AppLocalization[Lang.Request_Access]</MudMenuItem>
                 }
                 <MudMenuItem Icon="@(IsFavorite?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
                              IconColor="@(IsFavorite?Color.Warning:Color.Default)"
@@ -240,7 +240,7 @@ else
     </MudStack>
     @if (_showRequestButton)
     {
-        <AppModal @ref=_requestAccessModal Title="@AppLocalization["Request Access"]">
+        <AppModal @ref=_requestAccessModal Title="@AppLocalization[Lang.Request_Access]">
             <RequestAccessModalContent Entry="@DirectoryEntry" />
         </AppModal>
     }

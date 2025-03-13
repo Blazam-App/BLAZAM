@@ -6,7 +6,7 @@
 @layout InstallLayout
 @inherits ValidatedForm
 
-<MudText Typo="Typo.h3" Size="HeadingSize.Is3">@AppLocalization["Authentication"]</MudText>
+<MudText Typo="Typo.h3" Size="HeadingSize.Is3">@AppLocalization[Lang.Authentication]</MudText>
 <MudText Typo="Typo.h6">
     @AppLocalization["Please set a secure admin password."]
 
@@ -18,10 +18,10 @@
 <MudForm @ref=Form Model="settings" @bind-IsValid=IsValid>
     <SettingsField>
         <FieldLabel>
-            @AppLocalization["Username"]
+            @AppLocalization[Lang.Username]
         </FieldLabel>
         <ChildContent>
-            <MudTextField Label=@AppLocalization["Username"]
+            <MudTextField Label=@AppLocalization[Lang.Username]
                           Text="admin"
                           T=string
                           Disabled="true" />
@@ -29,10 +29,10 @@
     </SettingsField>
     <SettingsField>
         <FieldLabel>
-            @AppLocalization["Password"]
+            @AppLocalization[Lang.Password]
         </FieldLabel>
         <ChildContent>
-            <MudTextField Label=@AppLocalization["Password"]
+            <MudTextField Label=@AppLocalization[Lang.Password]
                           AutoFocus=true
                           Immediate=true
                           InputType="InputType.Password"
@@ -44,13 +44,13 @@
     </SettingsField>
     <SettingsField>
         <FieldLabel>
-            @AppLocalization["Confirm Password"]
+            @AppLocalization[Lang.Confirm_Password]
         </FieldLabel>
         <ChildContent>
             <MudTextField For="@(() => settings.AdminPasswordConfirmed)"
                           Immediate=true
                           @bind-Value=settings.AdminPasswordConfirmed
-                          Label=@AppLocalization["Confirm Password"]
+                          Label=@AppLocalization[Lang.Confirm_Password]
                           InputType="InputType.Password"
                           T="string" />
         </ChildContent>

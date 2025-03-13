@@ -40,7 +40,7 @@
 
         <SettingsField Label="@AppLocalization["Use TLS"]">
 
-            <MudSwitch Label="@AppLocalization["Enabled"]"
+            <MudSwitch Label="@AppLocalization[Lang.Enabled]"
                        Color="Color.Success"
                        UncheckedColor="Color.Error"
                        @bind-Value="settings.UseTLS" />
@@ -50,7 +50,7 @@
 
         <SettingsField Label="@AppLocalization["Use SMTP Authentication"]">
 
-            <MudSwitch Label="@AppLocalization["Enabled"]"
+            <MudSwitch Label="@AppLocalization[Lang.Enabled]"
                        Color="Color.Success"
                        UncheckedColor="Color.Error"
                        @bind-Value="settings.UseSMTPAuth" />
@@ -130,7 +130,7 @@
             <MudButton Disabled="!IsValid"
                        OnClick="Save"
                        Color="Color.Success">
-                @AppLocalization["Save Changes"]
+                @AppLocalization[Lang.Save_Changes]
             </MudButton>
 
         </SettingsField>

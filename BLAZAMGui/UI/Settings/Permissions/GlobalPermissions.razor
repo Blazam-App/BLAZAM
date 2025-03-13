@@ -16,22 +16,22 @@
 
                 <MudStack Class="ms-4">
                     <MudText>
-                        @AppLocalization["Actions"]
+                        @AppLocalization[Lang.Actions]
                     </MudText>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Assign)"
                                ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Assign); })"
                                Color="Color.Success">
-                        @AppLocalization["Assign"]
+                        @AppLocalization[Lang.Assign]
                     </MudSwitch>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unassign)"
                                ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unassign); })"
                                Color="Color.Success">
-                        @AppLocalization["Unassign"]
+                        @AppLocalization[Lang.Unassign]
                     </MudSwitch>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unlock)"
                                ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unlock); })"
                                Color="Color.Success">
-                        @AppLocalization["Unlock"]
+                        @AppLocalization[Lang.Unlock]
                     </MudSwitch>
                 </MudStack>
 
@@ -58,7 +58,7 @@
                        ButtonType="ButtonType.Submit"
                        OnClick="Save"
                        Color="Color.Success">
-                @AppLocalization["Save Changes"]
+                @AppLocalization[Lang.Save_Changes]
             </MudButton>
         </SettingsField>
 

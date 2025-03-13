@@ -1,7 +1,7 @@
 ﻿@inherits AppModal
 <MudDialog @ref="Modal">
     <MudText>Add Delegate</MudText>
-    <AppCloseButton Tooltip=@AppLocalization["Close"] />
+    <AppCloseButton Tooltip=@AppLocalization[Lang.Close] />
     <MudStack>
         <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
                         @bind-SelectedResult=@selectedDelegate

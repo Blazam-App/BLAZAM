@@ -4,10 +4,10 @@
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits TabbedAppComponentBase
-<AppPageTitle>@AppLocalization["Settings"]</AppPageTitle>
+<AppPageTitle>@AppLocalization[Lang.Settings]</AppPageTitle>
 
 <SetHeader>
-    <MudText>@AppLocalization["Settings"]</MudText>
+    <MudText>@AppLocalization[Lang.Settings]</MudText>
 </SetHeader>
 <AuthorizeView>
     @{
@@ -37,7 +37,7 @@
 
             </ChildContent>
             <TabContent>
-                @AppLocalization["Application"]
+                @AppLocalization[Lang.Application]
             </TabContent>
         </MudTabPanel>
         <MudTabPanel>
@@ -46,7 +46,7 @@
 
             </ChildContent>
             <TabContent>
-                @AppLocalization["Authentication"]
+                @AppLocalization[Lang.Authentication]
             </TabContent>
 
 
@@ -57,7 +57,7 @@
 
             </ChildContent>
             <TabContent>
-                @AppLocalization["Active Directory"]
+                @AppLocalization[Lang.Active_Directory]
             </TabContent>
 
 
@@ -68,7 +68,7 @@
 
             </ChildContent>
             <TabContent>
-                @AppLocalization["Database"]
+                @AppLocalization[Lang.Database]
             </TabContent>
 
 
@@ -79,7 +79,7 @@
 
             </ChildContent>
             <TabContent>
-                @AppLocalization["Email"]
+                @AppLocalization[Lang.Email]
             </TabContent>
 
 
@@ -90,7 +90,7 @@
 
             </ChildContent>
             <TabContent>
-                @AppLocalization["Update"]
+                @AppLocalization[Lang.Update]
             </TabContent>
 
 
@@ -113,7 +113,7 @@
 
             </ChildContent>
             <TabContent>
-                @AppLocalization["System"]
+                @AppLocalization[Lang.System]
             </TabContent>
 
 

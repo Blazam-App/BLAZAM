@@ -2,8 +2,8 @@
 <MudText Typo="Typo.h4">@AppLocalization["User Activity"]</MudText>
 <MudDataGrid Items="@UserStateService.UserStates.Where(u=>u.User.Identity?.IsAuthenticated==true)">
     <Columns>
-        <PropertyColumn Title=@AppLocalization["Username"] Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
-        <TemplateColumn Title=@AppLocalization["IP Address"]>
+        <PropertyColumn Title=@AppLocalization[Lang.Username] Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
+        <TemplateColumn Title=@AppLocalization[Lang.IP_Address]>
             <CellTemplate>
                 <IPAddress>@context.Item.IPAddress</IPAddress>
             </CellTemplate>

@@ -4,25 +4,25 @@
     
 
     <MudStack Class="px-7">
-        <MudTextField AutoFocus=true Label="@AppLocalization["First Name"]" @bind-Value="@_privateUserInstance.GivenName" />
+        <MudTextField AutoFocus=true Label="@AppLocalization[Lang.First_Name]" @bind-Value="@_privateUserInstance.GivenName" />
 
 
 
 
 
-        <MudTextField Label="@AppLocalization["Middle Name"]" @bind-Value="@_privateUserInstance.MiddleName" />
+        <MudTextField Label="@AppLocalization[Lang.Middle_Name]" @bind-Value="@_privateUserInstance.MiddleName" />
 
 
 
 
 
-        <MudTextField Label="@AppLocalization["Last Name"]" @bind-Value="@_privateUserInstance.Surname" />
+        <MudTextField Label="@AppLocalization[Lang.Last_Name]" @bind-Value="@_privateUserInstance.Surname" />
 
 
 
 
 
-        <MudTextField T="string" Label="@AppLocalization["Display Name"]" Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
+        <MudTextField T="string" Label="@AppLocalization[Lang.Display_Name]" Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
 
 
 
@@ -33,7 +33,7 @@
         {
 
 
-            <MudTextField Label="@AppLocalization["Username"]" @bind-Value="@_privateUserInstance.SamAccountName" />
+            <MudTextField Label="@AppLocalization[Lang.Username]" @bind-Value="@_privateUserInstance.SamAccountName" />
 
 
 
@@ -42,7 +42,7 @@
         {
 
 
-            <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@_privateUserInstance.Email" />
+            <MudTextField Label="@AppLocalization[Lang.Email_Address]" @bind-Value="@_privateUserInstance.Email" />
 
 
 

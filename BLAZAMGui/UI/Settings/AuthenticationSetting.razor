@@ -11,9 +11,9 @@
          Model="settings">
     <MudStack Spacing="5">
 
-        <SettingsField Label="@AppLocalization["Admin Password"]">
+        <SettingsField Label="@AppLocalization[Lang.Admin_Password]">
 
-            <MudTextField Label="@AppLocalization["Admin Password"]"
+            <MudTextField Label="@AppLocalization[Lang.Admin_Password]"
                           InputType="InputType.Password"
                           @bind-Value="newAdminPassword" />
         </SettingsField>
@@ -99,7 +99,7 @@
             <MudButton Disabled="SaveDisabled"
                        OnClick="Save"
                        Color="Color.Success">
-                @AppLocalization["Save Changes"]
+                @AppLocalization[Lang.Save_Changes]
             </MudButton>
 
         </SettingsField>

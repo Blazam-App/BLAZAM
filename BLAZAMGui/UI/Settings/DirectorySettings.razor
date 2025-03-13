@@ -10,13 +10,13 @@
         <MudItem xs=12 lg="9">
 
             <MudStack Spacing="5">
-                <SettingsField Label="@AppLocalization["Server"]">
+                <SettingsField Label="@AppLocalization[Lang.Server]">
 
 
                     @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
                     {
 
-                        <MudTextField Label="@AppLocalization["Server"]"
+                        <MudTextField Label="@AppLocalization[Lang.Server]"
                         AutoFocus=true
                         HelperText="Can be your domain name in most environments"
                         Value=@("Private")
@@ -25,7 +25,7 @@
                     else
                     {
 
-                        <MudTextField Label="@AppLocalization["Server"]"
+                        <MudTextField Label="@AppLocalization[Lang.Server]"
                         AutoFocus=true
                         Immediate=true
                         HelperText="Can be your domain name in most environments"
@@ -39,7 +39,7 @@
                     }
 
                 </SettingsField>
-                <SettingsField Label="@AppLocalization["Port"]">
+                <SettingsField Label="@AppLocalization[Lang.Port]">
 
                     @{
                         string helperText = "The default port of 389 is the recommended port to use.";
@@ -57,7 +57,7 @@
                     {
                         <MudNumericField HelperText="@helperText"
                         Immediate=true
-                        Label="@AppLocalization["Port"]"
+                        Label="@AppLocalization[Lang.Port]"
                         HideSpinButtons="true"
                         Value="0"
                         Disabled />
@@ -69,7 +69,7 @@
 
                         <MudNumericField HelperText="@helperText"
                         Immediate=true
-                        Label="@AppLocalization["Port"]"
+                        Label="@AppLocalization[Lang.Port]"
                         HideSpinButtons="true"
                         For="(()=>settings.ServerPort)"
                         @bind-Value="@settings.ServerPort" />
@@ -87,12 +87,12 @@
 
 
 
-                <SettingsField Label="@AppLocalization["Username"]">
+                <SettingsField Label="@AppLocalization[Lang.Username]">
 
 
                     <MudTextField For="(()=>settings.Username)"
                     Immediate=true
-                    Label="@AppLocalization["Username"]"
+                    Label="@AppLocalization[Lang.Username]"
                     name="username"
                     @bind-Value="@settings.Username">
 
@@ -104,11 +104,11 @@
 
 
 
-                <SettingsField Label="@AppLocalization["Password"]">
+                <SettingsField Label="@AppLocalization[Lang.Password]">
 
                     <MudTextField For="(()=>settings.Password)"
                     Immediate=true
-                    Label="@AppLocalization["Password"]"
+                    Label="@AppLocalization[Lang.Password]"
                     name="password"
                     InputType="InputType.Password"
                     @bind-Value="@settings.Password">
@@ -132,11 +132,11 @@
 
 
 
-                <SettingsField Label="@AppLocalization["FQDN"]">
+                <SettingsField Label="@AppLocalization[Lang.FQDN]">
 
                     <MudTextField For="(()=>settings.FQDN)"
                     Immediate=true
-                    Label="@AppLocalization["FQDN"]"
+                    Label="@AppLocalization[Lang.FQDN]"
                     name="fqdn"
                     @bind-Value="@settings.FQDN" />
 
@@ -160,7 +160,7 @@
                     <MudButton Disabled="!IsValid"
                     OnClick="Save"
                     Color="Color.Success">
-                        @AppLocalization["Save Changes"]
+                        @AppLocalization[Lang.Save_Changes]
                     </MudButton>
 
                 </SettingsField>

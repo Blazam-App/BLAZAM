@@ -30,14 +30,14 @@
         <MudMenuItem Href="https://docs.blazam.org"
                      Target="_blank"
                      Icon="@Icons.Material.Filled.Book">
-            @AppLocalization["Documentation"]
+            @AppLocalization[Lang.Documentation]
         </MudMenuItem>
         <AuthorizeView Roles="@UserRoles.SuperAdmin">
             <MudMenuItem OnClick="@(()=>{apiModal?.ShowAsync();})"
                          Icon="@Icons.Material.Filled.Api">
-                @AppLocalization["API"]
+                @AppLocalization[Lang.API]
             </MudMenuItem>
-@*             <MudMenuItem OnClick="@(async()=>{await JS.InvokeAsync<object>("openFeatureRequestDialog");})"
+            @*             <MudMenuItem OnClick="@(async()=>{await JS.InvokeAsync<object>("openFeatureRequestDialog");})"
                          Icon="@Icons.Material.Filled.RequestPage">
                 @AppLocalization["Feature Request"]
             </MudMenuItem> *@
@@ -45,7 +45,7 @@
         @if (UserState?.Impersonator == null)
         {
             <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/logout",true);})" Icon="@Icons.Material.Filled.Logout">
-                @AppLocalization["Sign Out"]
+                @AppLocalization[Lang.Sign_Out]
             </MudMenuItem>
         }
         else
@@ -64,11 +64,11 @@
     </CascadingValue>
 </AppModal>
 <AppModal @ref=apiModal
-            Options="new(){
+          Options="new(){
      MaxWidth=MaxWidth.Large,
 CloseButton=true
 }"
-          Title="API Tokens">
+          Title=@AppLocalization[Lang.API_Tokens]>
     <CascadingValue Value="mainLayout">
         <AppUserApiModalContent />
     </CascadingValue>
