@@ -25,7 +25,7 @@ else
 }
 @code {
 
-#nullable disable warnings
+    #nullable disable warnings
     private IADComputer _privateComputerInstance;
     private string newName;
     [Parameter]
@@ -68,15 +68,23 @@ else
         }
         SaveDisabled = true;
         LoadingData = true;
+        if(await Computer.RenameAsync(newName))
+        {
+            SnackBarService.Success("Computer has been renamed.");
+            Close();
 
-        SnackBarService.Success("Computer has been renamed.");
+        }
+        else
+        {
+            SnackBarService.Error("An error occured");
+
+        }
         //User.DirectoryEntry = null;
 
         //await DirectoryModelRenamed.InvokeAsync(_privateComputerInstance);
         LoadingData = false;
 
         SaveDisabled = false;
-        Close();
     }
     
 
