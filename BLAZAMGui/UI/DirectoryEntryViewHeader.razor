@@ -135,6 +135,16 @@ else
                                    Icon="@Icons.Material.Filled.DriveFileMove"
                                    aria-label="move" />
                 </AppTooltip>
+                @if (DirectoryEntry is IADComputer)
+                {
+                    <AppTooltip Text="@AppLocalization[Lang.Reboot_Shutdown]">
+
+                        <MudIconButton OnClick="@OnRebootOrShutdown"
+                                       Disabled=@(!CurrentUser.State.IsSuperAdmin||ApplicationInfo.InDemoMode)
+                                       Icon="@Icons.Material.Filled.RestartAlt"
+                                       aria-label="restart" />
+                    </AppTooltip>
+                }
                 <AppTooltip Text="@AppLocalization[Lang.Delete]">
 
                     <MudIconButton OnClick="@OnDelete"
@@ -202,7 +212,7 @@ else
                     <MudMenuItem OnClick="@OnUnlock">@AppLocalization[Lang.Unlock]</MudMenuItem>
                 }
                 <MudMenuItem OnClick="@OnAssignTo">@AppLocalization[Lang.Assign_To]</MudMenuItem>
-                @if (accountEntry?.CanSetPassword == true && accountEntry is not IADComputer)
+                    @if (accountEntry?.CanSetPassword == true && accountEntry is not IADComputer)
                 {
                     <MudMenuItem OnClick="@OnResetPassword">@AppLocalization[Lang.Change_Password]</MudMenuItem>
                 }
@@ -213,6 +223,13 @@ else
                 @if (DirectoryEntry.CanMove)
                 {
                     <MudMenuItem OnClick="@OnMove">@AppLocalization[Lang.Move]</MudMenuItem>
+                }
+                @if (DirectoryEntry is IADComputer)
+                {
+                    <MudMenuItem Disabled=@(!CurrentUser.State.IsSuperAdmin||ApplicationInfo.InDemoMode)
+                                 OnClick="@OnRebootOrShutdown">
+                        @AppLocalization[Lang.Reboot_Shutdown]
+                    </MudMenuItem>
                 }
                 @if (DirectoryEntry.CanDelete)
                 {
@@ -252,6 +269,9 @@ else
     private IDirectoryEntryAdapter? _parentOU;
     [Parameter]
     public EventCallback OnDelete { get; set; }
+
+    [Parameter]
+    public EventCallback OnRebootOrShutdown { get; set; }
 
     [Parameter]
     public EventCallback OnMove { get; set; }
@@ -327,7 +347,7 @@ else
         get
         {
             if (DirectoryEntry.DN == null) return false;
- 
+
             UserFavoriteEntry newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
 
             return CurrentUser.State.Preferences.FavoriteEntries.Any(f => f.Equals(newFavorrite));

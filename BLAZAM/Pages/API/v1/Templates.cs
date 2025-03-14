@@ -2,6 +2,7 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
+using BLAZAM.Gui.Helpers;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.EmailMessage.Email.Notifications;

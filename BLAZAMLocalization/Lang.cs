@@ -87,6 +87,9 @@
         public static readonly string BitLocker = "BitLocker";
         public static readonly string N_A = "N/A";
         public static readonly string News = "News";
+        public static readonly string Reboot = "Reboot";
+        public static readonly string Shutdown = "Shutdown";
+        public static readonly string Delay = "Delay";
         public static readonly string Deny = "Deny";
         public static readonly string Approve = "Approve";
         public static readonly string days = "days";
@@ -187,9 +190,12 @@
         public static readonly string DB_Connections = "DB Connections";
         public static readonly string CPU = "CPU";
         public static readonly string Used = "Used";
+        public static readonly string Delay_in_seconds = "Delay in seconds";
         public static readonly string Capacity = "Capacity";
         public static readonly string Serial = "Serial";
         public static readonly string Member = "Member";
+        public static readonly string Time = "Time";
+        public static readonly string Date = "Date";
         public static readonly string Computer_not_reachable = "Computer is not reachable.";
         public static readonly string Idle_Time = "Idle Time";
         public static readonly string Message = "Message";
@@ -198,5 +204,9 @@
         public static readonly string Comment = "Comment";
         public static readonly string Location = "Location";
         public static readonly string Disconnect = "Disconnect";
+        public static readonly string Reboot_Shutdown = "Reboot/Shutdown";
+        public static readonly string Reboot_Shutdown_Confirmation = "Reboot_Shutdown_Confirmation";
+        public static readonly string Reboot_Shutdown_Success = "Reboot_Shutdown_Success";
+        public static readonly string Reboot_Shutdown_Failure = "Reboot_Shutdown_Failure";
     }
 }

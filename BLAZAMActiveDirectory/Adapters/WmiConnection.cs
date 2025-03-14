@@ -3,6 +3,7 @@ using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Logger;
 using System.Management;
 using static MudBlazor.CategoryTypes;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -28,24 +29,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 // Use WMI to initiate the shutdown.
                 // The Win32_OperatingSystem class has a Win32Shutdown method.
+                SelectQuery query = new SelectQuery("Win32_OperatingSystem");
+                ManagementObjectSearcher searcher =
+                    new ManagementObjectSearcher(managementScope, query);
 
-                // Build the connection options.  We'll use impersonation.
-                //ConnectionOptions options = new ConnectionOptions();
-                //options.Impersonation = ImpersonationLevel.Impersonate;
-
-                // Make a connection to the remote computer.  Replace "localhost" with the actual
-                // computer name if you're not testing locally.
-                //ManagementScope scope = new ManagementScope($@"\\{target.CanonicalName}\root\cimv2", options);
-                //scope.Connect();
-
-                // Get the Win32_OperatingSystem object.
-                ObjectQuery query = new ObjectQuery("SELECT * FROM Win32_OperatingSystem");
-                ManagementObjectSearcher searcher = new ManagementObjectSearcher(managementScope, query);
-                ManagementObjectCollection queryCollection = searcher.Get();
-
-                foreach (ManagementObject mo in queryCollection)
+                foreach (ManagementObject os in searcher.Get())
                 {
-                    // Call the Win32Shutdown method.
+                    // Obtain in-parameters for the method
+                    ManagementBaseObject inParams =
+                        os.GetMethodParameters("Win32ShutdownTracker");
+
+                    // Add the input parameters.
 
                     // Shutdown flags
                     // https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32shutdown-method-in-class-win32-operatingsystem
@@ -67,40 +61,39 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     // Note:  If we added NO flags, it's a logoff.  Shutdown requires flags.
                     // Another flag, 0x8, is for power off (if supported).
 
+                    inParams["Flags"] = flags;
+                    inParams["Timeout"] = delaySeconds;
+                    inParams["Comment"] = message;
 
-                    ManagementBaseObject inParams = mo.GetMethodParameters("Win32Shutdown");
-                    inParams["Flags"] = flags.ToString();
-                    inParams["Reserved"] = "0";
-
-                    // Add delay with message if applicable
-                    if (!string.IsNullOrWhiteSpace(message) && delaySeconds > 0)
-                    {
-                        inParams["Timeout"] = delaySeconds.ToString(); // Timeout is actually for the shutdown itself, *after* the delay
-
-                        // Use InitiateSystemShutdownEx to add message and actual delay before shutdown.
-                        inParams = mo.GetMethodParameters("InitiateSystemShutdownEx");
-                        inParams["Message"] = message;
-                        inParams["Timeout"] = delaySeconds;
-                        inParams["ForceAppsClosed"] = force;
-                        inParams["RebootAfterShutdown"] = reboot;
-
-                        ManagementBaseObject outParams = mo.InvokeMethod("InitiateSystemShutdownEx", inParams, null);
-
-                        // Check the return value.  0 means success.
-                        uint result = (uint)outParams["returnValue"];
-                        return result == 0;
-                    }
-                    else
-                    { // No delay or no message.
-
-                        ManagementBaseObject outParams = mo.InvokeMethod("Win32Shutdown", inParams, null);
-
-                        // Check the return value.  0 means success.
-                        uint result = (uint)outParams["returnValue"];
-                        return result == 0;
-                    }
+                    // Execute the method and obtain the return values.
+                    ManagementBaseObject outParams =
+                        os.InvokeMethod("Win32ShutdownTracker", inParams, null);
+                    return true;
                 }
 
+
+                // Get the Win32_OperatingSystem object.
+                System.Management.ObjectQuery oq = new System.Management.ObjectQuery("SELECT * FROM Win32_OperatingSystem");
+                ManagementObjectSearcher query1 = new ManagementObjectSearcher(managementScope, oq);
+                ManagementObjectCollection queryCollection1 = query1.Get();
+
+                foreach (ManagementObject mo in queryCollection1)
+                {
+                    if (reboot)
+                    {
+                        string[] ss = { "" };
+                        mo.InvokeMethod("Reboot", ss);
+                        return true;
+
+                    }
+                    else
+                    {
+                        string[] ss = { "" };
+                        mo.InvokeMethod("Shutdown", ss);
+                        return true;
+
+                    }
+                }
                 Loggers.ActiveDirectoryLogger.Warning($"Shutdown command sent to {target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
                 return false; // No Win32_OperatingSystem object found.
             }

@@ -1,0 +1,19 @@
+﻿@page "/create/{type}"
+@attribute [Authorize(Roles = UserRoles.CreateUsers + "," + UserRoles.CreateGroups + "," + UserRoles.CreateOUs)]
+@switch (type.ToLower())
+{
+    case "user":
+        <CreateUser />
+        break;
+    case "group":
+        <CreateGroup />
+        break;
+    case "ou":
+        <CreateOU />
+        break;
+
+}
+@code {
+    [Parameter]
+    public string type { get; set; }
+}

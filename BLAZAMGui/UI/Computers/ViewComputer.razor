@@ -1,4 +1,4 @@
-﻿@using BLAZAM.Gui.UI.Computers
+﻿
 @inherits DirectoryEntryViewBase
 @{
     string _fieldMudStackClasses = "flex-wrap gap-10";
@@ -21,6 +21,7 @@
                                       OnRename="@(()=>{RenameModal?.ShowAsync();})"
                                       OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
                                       OnToggleEditMode="ToggleEditMode"
+                                      OnRebootOrShutdown="@(()=>{_rebootModal?.ShowAsync();})"
                                       OnUnlock="@Unlock"
                                       OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
                                       OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})" />
@@ -34,16 +35,19 @@
                 <FlexContainer>
 
 
-                    <AppModal Color="Color.Dark" Title="Assign To..." @ref=@AssignToModal>
+                    <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Assign_To] @ref=@AssignToModal>
                         <AssignToModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Computer" />
                     </AppModal>
-                    <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
+                    <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Reboot_Shutdown] @ref=@_rebootModal>
+                        <RebootModalContent ModelChanged=@RefreshEntryComponents Computer="Computer" />
+                    </AppModal>
+                    <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Move_To] @ref=@MoveToModal>
                         @if (MoveToModal?.IsShown == true)
                         {
                             <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Computer" />
                         }
                     </AppModal>
-                    <AppModal Title="Rename Computer" @ref=@RenameModal>
+                    <AppModal Title=@AppLocalization[Lang.Rename] @ref=@RenameModal>
                         @if (RenameModal?.IsShown == true)
                         {
                             <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Computer="Computer" />
@@ -248,6 +252,7 @@
 
 
 @code {
+    AppModal? _rebootModal;
     IADComputer? Computer => DirectoryEntry as IADComputer;
     protected override async Task OnInitializedAsync()
     {
