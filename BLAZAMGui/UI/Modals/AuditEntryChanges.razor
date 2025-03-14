@@ -41,7 +41,7 @@
                 }
                 else
                 {
-                    Changes.Add(AppLocalization["Action"], null);
+                    Changes.Add(AppLocalization[Lang.Action], null);
                 }
             }
             else if (!AuditEntry.AfterAction.IsNullOrEmpty())
@@ -64,7 +64,7 @@
                 }
                 else
                 {
-                    Changes.Add(AppLocalization["Action"], null);
+                    Changes.Add(AppLocalization[Lang.Action], null);
                 }
             }
             foreach (var attr in Changes.Keys)

@@ -77,5 +77,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </remarks>
         /// <param name="timeout"></param>
         void MonitorOnlineStatus(int timeout = 500);
+        Task<bool> ShutdownAsync(int delaySeconds = 0, string? message = null, bool force = true, bool reboot = false);
     }
 }

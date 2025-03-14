@@ -9,6 +9,11 @@ namespace BLAZAM.Database.Models
         Block,
         Bypass
     }
+    public enum MFAType
+    {
+        CiscoDuo,
+        GoogleAuthenticator
+    }
     public class AuthenticationSettings : AppDbSetBase
     {
         /// <summary>
@@ -35,5 +40,6 @@ namespace BLAZAM.Database.Models
         /// If DUO is enabled this setting has no effect.
         /// </remarks>
         public bool RequireMFA { get; set; }
+        public MFAType MFAType { get; set; }
     }
 }

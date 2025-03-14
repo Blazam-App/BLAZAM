@@ -23,7 +23,7 @@ Model="newField">
     {
         base.OnInitialized();
         Modal.SetOnYes(Add);
-        Modal.SetYesText(AppLocalization["Add"]);
+        Modal.SetYesText(AppLocalization[Lang.Add]);
         foreach (var objectType in Enum.GetValues<ActiveDirectoryObjectType>().Where(ot => ot != ActiveDirectoryObjectType.All))
         {
             assignedObjectTypes.Add(objectType.ToString(), false);

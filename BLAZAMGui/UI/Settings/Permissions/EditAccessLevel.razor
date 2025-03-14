@@ -8,7 +8,7 @@
     @if (!Self)
     {
         <MudTextField Disabled=@(WorkingModel.Id==1)
-                      Label="@AppLocalization["Name"]"
+                      Label="@AppLocalization[Lang.Name]"
                       @bind-Value=WorkingModel.Name />
     }
     @if (!Self)
@@ -75,7 +75,7 @@
 
 
                     <AppCloseButton Disabled=@(WorkingModel.Id==1)
-                                    Tooltip=@AppLocalization["Remove"]
+                                    Tooltip=@AppLocalization[Lang.Remove]
                                     OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
                 }
             </MudCardHeader>
@@ -107,7 +107,7 @@
                                  Elevation="0">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">
-                                @AppLocalization[name] @AppLocalization["Actions"]
+                                @AppLocalization[name] @AppLocalization[Lang.Actions]
                             </MudText>
                             <MudSpacer />
                             <MudMenu MaxHeight="200"
@@ -132,17 +132,17 @@
                         </ToolBarContent>
                         <Columns>
                             <PropertyColumn Property="x => x.ObjectAction.Name"
-                                            Title=@AppLocalization["Action"] />
-                            <TemplateColumn Title=@AppLocalization["Access"]>
+                                            Title=@AppLocalization[Lang.Action] />
+                            <TemplateColumn Title=@AppLocalization[Lang.Access]>
                                 <CellTemplate>
                                     <MudRadioGroup T="bool" @bind-Value=context.Item.AllowOrDeny>
-                                        <MudRadio T="bool" Value="false">@AppLocalization["Deny"]</MudRadio>
-                                        <MudRadio T="bool" Value="true">@AppLocalization["Allow"]</MudRadio>
+                                        <MudRadio T="bool" Value="false">@AppLocalization[Lang.Deny]</MudRadio>
+                                        <MudRadio T="bool" Value="true">@AppLocalization[Lang.Allow]</MudRadio>
 
                                     </MudRadioGroup>
                                 </CellTemplate>
                             </TemplateColumn>
-                            <TemplateColumn Title=@AppLocalization["Remove"]>
+                            <TemplateColumn Title=@AppLocalization[Lang.Remove]>
                                 <CellTemplate>
                                     <MudIconButton Icon="@Icons.Material.Filled.Close"
                                                    Color="Color.Error"
@@ -160,7 +160,7 @@
                                  Items="@WorkingModel.FieldMap.Where(am=>am.ObjectType==objectMap.ObjectType)">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">
-                                @AppLocalization[name] @AppLocalization["Fields"]
+                                @AppLocalization[name] @AppLocalization[Lang.Fields]
                             </MudText>
                             <MudSpacer />
                             <MudMenu MaxHeight="200"
@@ -192,7 +192,7 @@
                         </ToolBarContent>
 
                         <Columns>
-                            <TemplateColumn Title=@AppLocalization["Field"]>
+                            <TemplateColumn Title=@AppLocalization[Lang.Field]>
                                 <CellTemplate>
 
                                     @if (context.Item?.Field != null)
@@ -212,7 +212,7 @@
 
                                 </CellTemplate>
                             </TemplateColumn>
-                            <TemplateColumn Title=@AppLocalization["Access"]>
+                            <TemplateColumn Title=@AppLocalization[Lang.Access]>
 
                                 <CellTemplate>
                                     <MudSelect T="int" @bind-Value="context.Item.FieldAccessLevelId">
@@ -226,9 +226,9 @@
                                 </CellTemplate>
                             </TemplateColumn>
 
-                            <TemplateColumn Title=@AppLocalization["Remove"]>
+                            <TemplateColumn Title=@AppLocalization[Lang.Remove]>
                                 <CellTemplate>
-                                    <AppCloseButton Tooltip=@AppLocalization["Remove"]
+                                    <AppCloseButton Tooltip=@AppLocalization[Lang.Remove]
                                                     OnClick="()=>RemoveFieldAccess(context.Item)" />
 
                                 </CellTemplate>

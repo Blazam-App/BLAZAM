@@ -10,12 +10,12 @@
          Model="settings">
     <MudStack Spacing="5">
 
-        <SettingsField Label="@AppLocalization["Application Name"]">
+        <SettingsField Label="@AppLocalization[Lang.Application_Name]">
 
             <MudTextField Class="mt-0"
                           For=@(()=> settings.AppName)
                           Immediate="true"
-                          Label=@AppLocalization["Application Name"]
+                          Label=@AppLocalization[Lang.Application_Name]
                           @bind-Value="@settings.AppName" />
 
         </SettingsField>
@@ -34,7 +34,7 @@
 
         <SettingsField Label="@AppLocalization["Force Https"]">
 
-            <MudSwitch Label="@AppLocalization["Enabled"]"
+            <MudSwitch Label="@AppLocalization[Lang.Enabled]"
                        Color="Color.Success"
                        UncheckedColor="Color.Error"
                        @bind-Value="@settings.ForceHTTPS" />
@@ -64,7 +64,7 @@
 
                     <Base64Image Width=100 Data="@settings.AppIcon" />
 
-                    <AppCloseButton Tooltip=@AppLocalization["Remove"] OnClick="@(()=>{settings.AppIcon=null;})" />
+                    <AppCloseButton Tooltip=@AppLocalization[Lang.Remove] OnClick="@(()=>{settings.AppIcon=null;})" />
 
                 }
             </MudContainer>
@@ -116,7 +116,7 @@
                        OnClick="Save"
                        ButtonType="ButtonType.Submit"
                        Color="Color.Success">
-                @AppLocalization["Save Changes"]
+                @AppLocalization[Lang.Save_Changes]
             </MudButton>
         </SettingsField>
 

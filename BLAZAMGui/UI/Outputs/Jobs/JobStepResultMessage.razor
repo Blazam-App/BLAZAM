@@ -17,11 +17,11 @@
                 case JobResult.Failed:
                     return Step.Exception?.Message;
                 case JobResult.Cancelled:
-                    return AppLocalization["Cancelled"];
+                    return AppLocalization[Lang.Cancelled];
                 case JobResult.Running:
-                    return AppLocalization["Running"];
+                    return AppLocalization[Lang.Running];
                 case JobResult.NotRun:
-                    return AppLocalization["Queued"];
+                    return AppLocalization[Lang.Queued];
                 default:
                     return "";
             }

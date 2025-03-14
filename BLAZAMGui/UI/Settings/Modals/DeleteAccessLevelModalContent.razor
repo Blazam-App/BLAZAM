@@ -19,7 +19,7 @@
                             </MudList>
                         </CellTemplate>
                     </TemplateColumn>
-                    <TemplateColumn Title=@AppLocalization["Target"]>
+                    <TemplateColumn Title=@AppLocalization[Lang.Target]>
                         <CellTemplate>
                            <MudText>@context.Item.OU</MudText>
                         </CellTemplate>
@@ -42,7 +42,7 @@
     protected override async Task OnInitializedAsync()
     {
         Modal.Options.MaxWidth = MaxWidth.Medium;
-        Modal.YesText = AppLocalization["Delete"];
+        Modal.YesText = AppLocalization[Lang.Delete];
         Modal.OnYes += ()=>{ OnConfirm.InvokeAsync(); return Task.CompletedTask; };
         await base.OnInitializedAsync();
         await Modal.RefreshView();

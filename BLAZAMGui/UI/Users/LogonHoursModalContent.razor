@@ -6,7 +6,7 @@
         <MudSimpleTable Dense=true Hover="true">
             <thead>
                 <tr>
-                    <th>@AppLocalization["Day"]</th>
+                    <th>@AppLocalization[Lang.Day]</th>
                     @foreach (var hour in Enumerable.Range(0, 24))
                     {
 
@@ -76,8 +76,8 @@
         Modal.OnYes = SaveChanges;
         Modal.AllowClose = true;
         Modal.YesEnabled = ()=> { return User.CanEditField(ActiveDirectoryFields.LogonHours); };
-        Modal.YesText = AppLocalization["Save Changes"];
-        Modal.Title = AppLocalization["Logon Hours"];
+        Modal.YesText = AppLocalization[Lang.Save_Changes];
+        Modal.Title = AppLocalization[Lang.Logon_Hours];
         schedule = User.LogonHours;
         _=Modal.RefreshView();
 

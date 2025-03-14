@@ -3,12 +3,12 @@
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits TabbedAppComponentBase
-<AppPageTitle>@AppLocalization["Permissions"]</AppPageTitle>
+<AppPageTitle>@AppLocalization[Lang.Permissions]</AppPageTitle>
 
 <AuthorizeView Roles=@UserRoles.SuperAdmin>
 
     <SetHeader>
-        <MudText>@AppLocalization["Permissions"]</MudText>
+        <MudText>@AppLocalization[Lang.Permissions]</MudText>
     </SetHeader>
 
 
@@ -27,7 +27,7 @@
 
             </ChildContent>
             <TabContent>
-                @AppLocalization["Delegates"]
+                @AppLocalization[Lang.Delegates]
             </TabContent>
         </MudTabPanel>
         <MudTabPanel>
@@ -39,7 +39,7 @@
 
             </ChildContent>
             <TabContent>
-                @AppLocalization["Access Levels"]
+                @AppLocalization[Lang.Access_Levels]
             </TabContent>
 
         </MudTabPanel>
@@ -56,7 +56,7 @@
 
             </ChildContent>
             <TabContent>
-                @AppLocalization["Mappings"]
+                @AppLocalization[Lang.Mappings]
             </TabContent>
 
         </MudTabPanel>
@@ -72,7 +72,7 @@
 
             </ChildContent>
             <TabContent>
-                @AppLocalization["Effective Permissions"]
+                @AppLocalization[Lang.Effective_Permissions]
             </TabContent>
 
         </MudTabPanel>
@@ -88,7 +88,7 @@
 
             </ChildContent>
             <TabContent>
-                @AppLocalization["Global Settings"]
+                @AppLocalization[Lang.Global_Settings]
             </TabContent>
 
         </MudTabPanel>

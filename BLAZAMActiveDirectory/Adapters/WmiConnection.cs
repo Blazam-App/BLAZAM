@@ -2,6 +2,8 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Logger;
 using System.Management;
+using static MudBlazor.CategoryTypes;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -21,7 +23,98 @@ namespace BLAZAM.ActiveDirectory.Adapters
             this.managementScope = managementScope;
             this.target = target;
         }
+        public async Task<bool> ShutdownAsync(int delaySeconds=0, string? message=null, bool force = true, bool reboot = false)
+        {
+            try
+            {
+                // Use WMI to initiate the shutdown.
+                // The Win32_OperatingSystem class has a Win32Shutdown method.
+                SelectQuery query = new SelectQuery("Win32_OperatingSystem");
+                ManagementObjectSearcher searcher =
+                    new ManagementObjectSearcher(managementScope, query);
 
+                foreach (ManagementObject os in searcher.Get())
+                {
+                    // Obtain in-parameters for the method
+                    ManagementBaseObject inParams =
+                        os.GetMethodParameters("Win32ShutdownTracker");
+
+                    // Add the input parameters.
+
+                    // Shutdown flags
+                    // https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32shutdown-method-in-class-win32-operatingsystem
+                    int flags = 0;
+                    if (force)
+                    {
+                        flags |= 4; // Force (adds to other flags) 0x4
+                    }
+
+                    if (reboot)
+                    {
+                        flags |= 2; // Reboot  0x2
+                    }
+                    else
+                    {
+                        flags |= 1; // Shutdown 0x1.  Logoff is 0x0, but *not* appropriate here
+                    }
+
+                    // Note:  If we added NO flags, it's a logoff.  Shutdown requires flags.
+                    // Another flag, 0x8, is for power off (if supported).
+
+                    inParams["Flags"] = flags;
+                    inParams["Timeout"] = delaySeconds;
+                    inParams["Comment"] = message;
+
+                    // Execute the method and obtain the return values.
+                    ManagementBaseObject outParams =
+                        os.InvokeMethod("Win32ShutdownTracker", inParams, null);
+                    return true;
+                }
+
+
+                // Get the Win32_OperatingSystem object.
+                System.Management.ObjectQuery oq = new System.Management.ObjectQuery("SELECT * FROM Win32_OperatingSystem");
+                ManagementObjectSearcher query1 = new ManagementObjectSearcher(managementScope, oq);
+                ManagementObjectCollection queryCollection1 = query1.Get();
+
+                foreach (ManagementObject mo in queryCollection1)
+                {
+                    if (reboot)
+                    {
+                        string[] ss = { "" };
+                        mo.InvokeMethod("Reboot", ss);
+                        return true;
+
+                    }
+                    else
+                    {
+                        string[] ss = { "" };
+                        mo.InvokeMethod("Shutdown", ss);
+                        return true;
+
+                    }
+                }
+                Loggers.ActiveDirectoryLogger.Warning($"Shutdown command sent to {target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
+                return false; // No Win32_OperatingSystem object found.
+            }
+            catch (ManagementException mex)
+            {
+                Loggers.ActiveDirectoryLogger.Error($"Management exception while shutting down {target.CanonicalName}: {mex.Message} ErrorCode: {mex.ErrorCode}", mex);
+                return false;
+            }
+            catch (UnauthorizedAccessException uaex)
+            {
+                Loggers.ActiveDirectoryLogger.Error($"Unauthorized access while shutting down {target.CanonicalName}: {uaex.Message}", uaex);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Error($"Exception while shutting down {target.CanonicalName}: {ex.Message}", ex);
+                return false;
+            }
+
+
+        }
         public ComputerMemory Memory
         {
             get

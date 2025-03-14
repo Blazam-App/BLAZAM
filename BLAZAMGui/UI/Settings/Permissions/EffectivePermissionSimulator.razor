@@ -2,7 +2,7 @@
 
 @inherits AppComponentBase
 
-<MudText Typo="Typo.h4">@AppLocalization["Effective Permissions"] <AppDocumentationButton Page="/admin/permissions" /></MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Effective_Permissions] <AppDocumentationButton Page="/admin/permissions" /></MudText>
 <ImpersonateUser />
 <MudDivider Class="my-5"/>
 <MudGrid>
@@ -18,7 +18,7 @@
         </MudText>
     </MudItem>
     <MudItem xs="12" md="5">
-        <ADAutoComplete Disabled="selectedUser==null" Label=@AppLocalization["Target"]
+        <ADAutoComplete Disabled="selectedUser==null" Label=@AppLocalization[Lang.Target]
                         SelectedResult=@target
                         SelectedResultChanged="@(async(tgt)=>{target=tgt; await onRun();})" />
     </MudItem>

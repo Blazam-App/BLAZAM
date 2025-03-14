@@ -396,6 +396,13 @@ namespace BLAZAM.Common.Migrations.Sqlite
                             DisplayName = "Logon Hours",
                             FieldName = "logonHours",
                             FieldType = 2
+                        },
+                        new
+                        {
+                            Id = 38,
+                            DisplayName = "Group Type and Scope",
+                            FieldName = "groupType",
+                            FieldType = 2
                         });
                 });
 
@@ -775,6 +782,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<int>("DuoUnreachableBehavior")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("MFAType")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("RequireMFA")
                         .HasColumnType("INTEGER");
 
@@ -795,6 +805,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                             AdminPassword = "password",
                             DuoEnabled = false,
                             DuoUnreachableBehavior = 0,
+                            MFAType = 0,
                             RequireMFA = false,
                             SessionTimeout = 15
                         });

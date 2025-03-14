@@ -13,27 +13,27 @@
              SortMode="@SortMode.Multiple"
              Groupable="false">
     <Columns>
-        <TemplateColumn Title=@AppLocalization["To"]
+        <TemplateColumn Title=@AppLocalization[Lang.To]
                         Filterable="true"
                         Sortable="true"
                         SortBy="x=>x.To">
             <CellTemplate>
                 <MudText>
-                    @AppLocalization["To"]: @context.Item.To
+                    @AppLocalization[Lang.To]: @context.Item.To
                 </MudText>
 
                 <MudText>
-                    @AppLocalization["CC"]: @context.Item.Cc
+                    @AppLocalization[Lang.CC]: @context.Item.Cc
                 </MudText>
 
                 <MudText>
-                    @AppLocalization["BCC"]: @context.Item.Bcc
+                    @AppLocalization[Lang.BCC]: @context.Item.Bcc
                 </MudText>
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x => x.Subject" Title=@AppLocalization["Subject"] />
+        <PropertyColumn Property="x => x.Subject" Title=@AppLocalization[Lang.Subject] />
 
-        <TemplateColumn Title=@AppLocalization["Success"]
+        <TemplateColumn Title=@AppLocalization[Lang.Success]
                         Filterable="true"
                         Sortable="true"
                         SortBy="x=>x.To">
@@ -61,15 +61,15 @@
     @if (emailToPreview!=null)
     {
         <MudText>
-            @AppLocalization["To"]: @emailToPreview.To
+            @AppLocalization[Lang.To]: @emailToPreview.To
         </MudText>
 
         <MudText>
-            @AppLocalization["CC"]: @emailToPreview.Cc
+            @AppLocalization[Lang.CC]: @emailToPreview.Cc
         </MudText>
 
         <MudText>
-            @AppLocalization["BCC"]: @emailToPreview.Bcc
+            @AppLocalization[Lang.BCC]: @emailToPreview.Bcc
         </MudText>
         <MudContainer MaxWidth="MaxWidth.Large" Style="min-height:500px;">
             @((MarkupString)emailToPreview.HtmlBody)

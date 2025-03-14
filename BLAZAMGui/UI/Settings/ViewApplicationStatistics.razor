@@ -1,17 +1,17 @@
 @inherits AppComponentBase
 @using System.Diagnostics
-<SettingsField Label=@AppLocalization["CPU"]>
+<SettingsField Label=@AppLocalization[Lang.CPU]>
     @if (ApplicationStatistics.CPUUsage.GetAverage(2) != 0)
     {
         <MudText>@ApplicationStatistics.CPUUsage.GetAverage(2)%</MudText>
     }
     else
     {
-        <MudText>@AppLocalization["Loading"]</MudText>
+        <MudText>@AppLocalization[Lang.Loading]</MudText>
     }
 
 </SettingsField>
-<SettingsField Label=@AppLocalization["Memory"]>
+<SettingsField Label=@AppLocalization[Lang.Memory]>
     @if (ApplicationStatistics.MemoryUsage.GetAverage() != 0)
     {
         <MudText>@(new ByteSize(ApplicationStatistics.MemoryUsage.GetAverage()).ToString())</MudText>
@@ -19,13 +19,13 @@
     }
     else
     {
-        <MudText>@AppLocalization["Loading"]</MudText>
+        <MudText>@AppLocalization[Lang.Loading]</MudText>
     }
 </SettingsField>
-<SettingsField Label="@AppLocalization["AD Connections"]">
+<SettingsField Label="@AppLocalization[Lang.AD_Connections]">
     @ApplicationStatistics.ADContextCount
 </SettingsField>
-<SettingsField Label="@AppLocalization["DB Connections"]">
+<SettingsField Label="@AppLocalization[Lang.DB_Connections]">
     @ApplicationStatistics.DBContextCount
 
 </SettingsField>

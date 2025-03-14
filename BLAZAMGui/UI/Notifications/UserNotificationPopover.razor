@@ -6,7 +6,7 @@
 
     <MudText Typo="Typo.h6"
              Class="sticky align-middle">
-        @AppLocalization["Notifications"]
+        @AppLocalization[Lang.Notifications]
     </MudText>
     <MudSpacer />
     <AppIconButton Size="Size.Large"
@@ -21,7 +21,7 @@
                    OnClick="MarkAllRead" />
     <AppCloseButton Size="Size.Large"
                     Icon="@Icons.Material.Filled.Start"
-                    Tooltip="@AppLocalization["Close"]"
+                    Tooltip="@AppLocalization[Lang.Close]"
                     TooltipPlacement="Placement.Left"
                     OnClick=@(()=>{mainLayout.NotificationsOpen=false;}) />
 

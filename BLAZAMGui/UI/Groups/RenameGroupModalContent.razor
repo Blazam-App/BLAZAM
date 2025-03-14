@@ -1,11 +1,11 @@
 ﻿@inherits AppModalContent
-    @* <Section Title=@AppLocalization["Name"]> *@
+    @* <Section Title=@AppLocalization[Lang.Name]> *@
 
         @if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
         {
 
 
-        <MudTextField AutoFocus=true Label="@AppLocalization["Group Name"]" @bind-Value="@GroupName" />
+        <MudTextField AutoFocus=true Label="@AppLocalization[Lang.Group_Name]" @bind-Value="@GroupName" />
 
                 
             
@@ -18,13 +18,13 @@
     {
         
 
-                <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@Group.Email" />
+                <MudTextField Label="@AppLocalization[Lang.Email_Address]" @bind-Value="@Group.Email" />
 
             
         
     }
 
-    <MudButton Color=Color.Primary OnClick="SaveChanges">@AppLocalization["Save Changes"]</MudButton>
+    <MudButton Color=Color.Primary OnClick="SaveChanges">@AppLocalization[Lang.Save_Changes]</MudButton>
 
 @code {
     #nullable disable warnings

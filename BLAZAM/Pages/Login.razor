@@ -8,7 +8,7 @@
 {
     <MudProgressLinear Color="Color.Info" Indeterminate=true />
 }
-<AppPageTitle>@AppLocalization["Login"]</AppPageTitle>
+<AppPageTitle>@AppLocalization[Lang.Login]</AppPageTitle>
 
 <MudElement Class="brand-icon">
     <MudImage Src="@StaticAssets.ApplicationIconUri" />
@@ -26,7 +26,9 @@
         <GoogleAuthenticatorInput @bind-Passcode=passcode
                                   AuthSecret="@googleAuthSecret"
                                   OnAuthenticated="@(async()=>{await AttemptSignIn(passcode);})" />
-        <MudButton Color="Color.Primary" OnClick="@(()=>{googleAuthSecret=null; LoginRequest.MFAToken=null;})">@AppLocalization["Back"]</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@(()=>{googleAuthSecret=null; LoginRequest.MFAToken=null;})">
+            @AppLocalization[Lang.Back]
+        </MudButton>
 
     }
     else
@@ -51,13 +53,13 @@
                     <MudTextField Disabled=@attemptingSignIn
                                   Class="justify-center"
                                   AutoFocus=true
-                                  Label=@AppLocalization["Username"]
+                                  Label=@AppLocalization[Lang.Username]
                                   name="Username"
                                   @bind-Value=LoginRequest.Username />
 
                     <MudTextField Disabled=@attemptingSignIn
                                   Class="justify-center"
-                                  Label=@AppLocalization["Password"]
+                                  Label=@AppLocalization[Lang.Password]
                                   name="Password"
                                   InputType="InputType.Password"
                                   @bind-Value=LoginRequest.Password />
@@ -70,7 +72,7 @@
                                Class="my-5"
                                ButtonType=ButtonType.Submit
                                Color="Color.Primary">
-                        @AppLocalization["Log In"]
+                        @AppLocalization[Lang.Log_In]
                     </MudButton>
 
 

@@ -15,14 +15,14 @@
                     <PropertyColumn Property="x=>x.Comment" />
                     <TemplateColumn>
                         <CellTemplate>
-                            <MudButton OnClick="@(()=>{activePanel=1;})">@AppLocalization["Next"]</MudButton>
+                            <MudButton OnClick="@(()=>{activePanel=1;})">@AppLocalization[Lang.Next]</MudButton>
                         </CellTemplate>
                     </TemplateColumn>
 
                 </Columns>
             </MudDataGrid>
         </MudTabPanel>
-        <MudTabPanel Text="@AppLocalization["OU"]">
+        <MudTabPanel Text="@AppLocalization[Lang.OU]">
             <OUTreeView SelectedEntry="destinationOU" SelectedOUChanged="destinationOUChanged" StartingSelectedOU="null" StartRootExpanded=true />
         </MudTabPanel>
 
@@ -44,7 +44,7 @@
         Modal.Options.MaxWidth = MaxWidth.Large;
 
         // Modal.OnYes = SaveChanges;
-        Modal.YesText = AppLocalization["Next"];
+        Modal.YesText = AppLocalization[Lang.Next];
         Modal.Title = "Register Printers";
         Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
         base.OnInitialized();
@@ -98,7 +98,7 @@
             }
             else
             {
-                Modal.YesText = AppLocalization["Next"];
+                Modal.YesText = AppLocalization[Lang.Next];
                 Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
                 _=Modal.RefreshView();
 
@@ -117,7 +117,7 @@
     //     }
     //     else if(validated)
     //     {
-    //         Modal.YesText = AppLocalization["Next"];
+    //         Modal.YesText = AppLocalization[Lang.Next];
     //         Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
     //         Modal.RefreshView();
 

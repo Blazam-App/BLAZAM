@@ -3,25 +3,25 @@
 @inherits TemplateComponent
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
-<AppPageTitle>@AppLocalization["Templates"]</AppPageTitle>
+<AppPageTitle>@AppLocalization[Lang.Templates]</AppPageTitle>
 
 <SetHeader @ref=Header>
 
 
     <MudStack Row=true AlignItems="AlignItems.Center">
         <MudText Class="align-middle" Align="Align.Center">
-            @AppLocalization["Templates"]
+            @AppLocalization[Lang.Templates]
 
         </MudText>
 
         <MudSelectList T="string"
-                       Label=@AppLocalization["Category"]
+                       Label=@AppLocalization[Lang.Category]
                        Values="TemplateCategories"
                        @bind-Value="@SelectedCategory" />
 
         <MudSelectList T="DirectoryTemplate"
                        Disabled=@(Templates.Count(t=>t.DeletedAt==null)<1)
-                       Label=@AppLocalization["Template"]
+                       Label=@AppLocalization[Lang.Template]
                        Values="@Templates.Where(t=>t.DeletedAt==null)"
                        Value="@SelectedTemplate"
                        ValueChanged="@((selected)=>{
@@ -74,7 +74,7 @@
                                Class="align-middle"
                                Icon="@Icons.Material.Filled.FileCopy" />
             </AppTooltip>
-            <AppTooltip Text="@AppLocalization["Remove template"]">
+            <AppTooltip Text="@AppLocalization[Lang.Remove_template]">
 
 
                 <MudIconButton Color=Color.Error
@@ -86,7 +86,7 @@
 
         @if (Templates?.Any(t => t.DeletedAt != null) == true)
         {
-            <AppTooltip Text="@AppLocalization["Restore templates"]">
+            <AppTooltip Text="@AppLocalization[Lang.Restore_templates]">
 
                 <MudIconButton OnClick=@(async()=>{RestoreModal?.ShowAsync();})
                                Color="Color.Warning"
@@ -109,7 +109,7 @@
                    OnClick="RenameSelectedCategory">Save</MudButton>
     </AppModal>
 
-    <AppModal YesText="@AppLocalization["Restore"]"
+    <AppModal YesText="@AppLocalization[Lang.Restore]"
               OnYes="RestoreSelectedTemplates"
               @ref=RestoreModal
               Title=@AppLocalization["Restore Template"]>
@@ -128,7 +128,7 @@
     </AppModal>
 </SetHeader>
 
-<MudText Typo="Typo.h4">@AppLocalization["Templates"] <AppDocumentationButton Page="/admin/templates" /></MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Templates] <AppDocumentationButton Page="/admin/templates" /></MudText>
 @if (Templates.Any() == true)
 {
 

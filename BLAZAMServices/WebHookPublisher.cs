@@ -230,6 +230,7 @@ namespace BLAZAM.Services
                 }
                 else
                 {
+                    thisMessage.LastAttemptTimestamp = DateTime.UtcNow;
                     thisMessage.RetryCount++;
                     thisMessage.Uri = request.RequestUri.ToString();
                 }

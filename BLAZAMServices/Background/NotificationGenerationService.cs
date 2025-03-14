@@ -160,7 +160,7 @@ namespace BLAZAM.Services.Background
                 case NotificationType.Create:
                     notification.Action = ActiveDirectoryObjectAction.Create;
 
-                    notificationTitle += _appLocalization["Created"];
+                    notificationTitle += _appLocalization[Lang.Created];
                     notificationBody += _appLocalization["was created at "] + time;
                     var createdMessage = NotificationType.Create.ToNotification<EntryCreatedEmailMessage>();
                     createdMessage.EntryName = source.CanonicalName;
@@ -169,7 +169,7 @@ namespace BLAZAM.Services.Background
                 case NotificationType.Delete:
                     notification.Action = ActiveDirectoryObjectAction.Delete;
 
-                    notificationTitle += _appLocalization["Deleted"];
+                    notificationTitle += _appLocalization[Lang.Deleted];
                     notificationBody += _appLocalization["was deleted at "] + time;
                     var deletedMessage = NotificationType.Delete.ToNotification<EntryDeletedEmailMessage>();
                     deletedMessage.EntryName = source.CanonicalName;

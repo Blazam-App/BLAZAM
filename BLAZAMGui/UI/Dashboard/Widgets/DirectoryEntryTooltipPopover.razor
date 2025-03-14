@@ -29,7 +29,7 @@
                     </MudCard>
 
                     <MudStack Row=true>
-                        <MudText Typo="Typo.subtitle2">@AppLocalization["Created"]:</MudText>
+                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Created]:</MudText>
                         <MudSpacer />
                         <DateWithTimeTooltip DateTime="User?.Created" />
 
@@ -37,7 +37,7 @@
 
                     <MudStack Row=true>
 
-                        <MudText Typo="Typo.subtitle2">@AppLocalization["Last Change"]:</MudText>
+                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Change]:</MudText>
                         <MudSpacer />
 
                         <DateWithTimeTooltip DateTime="User?.LastChanged" />
@@ -46,7 +46,7 @@
 
                     <MudStack Row=true>
 
-                        <MudText Typo="Typo.subtitle2">@AppLocalization["Pass Change"]:</MudText>
+                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Pass_Change]:</MudText>
                         <MudSpacer />
                         <DateWithTimeTooltip DateTime="User?.PasswordLastSet" />
 
@@ -55,20 +55,20 @@
 
                     <MudStack Row=true>
 
-                        <MudText Typo="Typo.subtitle2">@AppLocalization["Last Logon"]:</MudText>
+                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
                         <MudSpacer />
                         <LastLogonTime Typo=Typo.caption DirectoryEntry="User" />
                     </MudStack>
                     @if (User?.LockedOut == true)
                     {
                         <MudStack Row=true>
-                            <MudText Typo="Typo.subtitle2">@AppLocalization["Lockout Time"]:</MudText>
+                            <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Lockout_Time]:</MudText>
                             <MudSpacer />
                             <DateWithTimeTooltip DateTime="User?.LockoutTime" />
                         </MudStack>
                     }
                     <MudStack Row=true>
-                        <MudText Typo="Typo.subtitle2">@AppLocalization["OU"]:</MudText>
+                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.OU]:</MudText>
                         <MudSpacer />
 
                         <MudText Style="text-align:end;"

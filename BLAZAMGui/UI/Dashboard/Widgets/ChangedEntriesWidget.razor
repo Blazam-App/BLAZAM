@@ -16,13 +16,13 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Style="width:100px;" Title=@AppLocalization["Type"]>
+        <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
             <CellTemplate>
                 <DirectoryEntryTypeIcon Entry=context.Item />
 
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization["Name"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
                 <DirectoryEntryContextMenu Entry="@context.Item"
                                            OnChanged="RefreshData">
@@ -32,7 +32,7 @@
                 </DirectoryEntryContextMenu>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization["Changed"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Changed]>
             <CellTemplate>
                 @if (context.Item?.LastChanged != null)
                 {

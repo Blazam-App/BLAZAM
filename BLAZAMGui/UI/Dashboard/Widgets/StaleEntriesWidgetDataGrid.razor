@@ -18,7 +18,7 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Title=@AppLocalization["Name"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
             
 
@@ -32,7 +32,7 @@
                    
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization["Last Logon"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Last_Logon]>
             <CellTemplate>
                 @if (context.Item?.Created != null)
                 {

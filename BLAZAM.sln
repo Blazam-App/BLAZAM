@@ -46,7 +46,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLAZAMJobs", "BLAZAMJobs\BL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlaywrightTests", "PlaywrightTests\PlaywrightTests.csproj", "{7E4AD00B-CA62-4994-A80E-A3900FF98E8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLAZAMDatabaseTests", "BLAZAMDatabaseTests\BLAZAMDatabaseTests.csproj", "{60BE96F4-78BE-4374-B362-4B469D4943B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLAZAMDatabaseTests", "BLAZAMDatabaseTests\BLAZAMDatabaseTests.csproj", "{60BE96F4-78BE-4374-B362-4B469D4943B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
