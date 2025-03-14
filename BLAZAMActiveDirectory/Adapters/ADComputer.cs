@@ -39,7 +39,28 @@ namespace BLAZAM.ActiveDirectory.Adapters
             var recovery = await Directory.BitLocker.FindByComputerAsync(this);
             return recovery;
         }
+        public async Task<bool> ShutdownAsync(int delaySeconds = 0, string? message = null, bool force = true, bool reboot = false)
+        {
+            if (string.IsNullOrEmpty(CanonicalName))
+            {
+                Loggers.ActiveDirectoryLogger.Warning("Cannot shutdown computer. CanonicalName is null or empty.");
+                return false;
+            }
 
+            if (delaySeconds < 0)
+            {
+                Loggers.ActiveDirectoryLogger.Warning("Delay cannot be negative. Setting to 0");
+                delaySeconds = 0; //Prevent exceptions
+            }
+            if (wmiConnection != null)
+            {
+                return await wmiConnection.ShutdownAsync(delaySeconds, message, force, reboot);
+            }
+            else
+            {
+                return false;
+            }
+        }
         public string? OperatingSystem
         {
             get
