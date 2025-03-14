@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Logger;
 using System.Management;
+using static MudBlazor.CategoryTypes;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -21,7 +22,106 @@ namespace BLAZAM.ActiveDirectory.Adapters
             this.managementScope = managementScope;
             this.target = target;
         }
+        public async Task<bool> ShutdownAsync(int delaySeconds=0, string? message=null, bool force = true, bool reboot = false)
+        {
+            try
+            {
+                // Use WMI to initiate the shutdown.
+                // The Win32_OperatingSystem class has a Win32Shutdown method.
 
+                // Build the connection options.  We'll use impersonation.
+                //ConnectionOptions options = new ConnectionOptions();
+                //options.Impersonation = ImpersonationLevel.Impersonate;
+
+                // Make a connection to the remote computer.  Replace "localhost" with the actual
+                // computer name if you're not testing locally.
+                //ManagementScope scope = new ManagementScope($@"\\{target.CanonicalName}\root\cimv2", options);
+                //scope.Connect();
+
+                // Get the Win32_OperatingSystem object.
+                ObjectQuery query = new ObjectQuery("SELECT * FROM Win32_OperatingSystem");
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher(managementScope, query);
+                ManagementObjectCollection queryCollection = searcher.Get();
+
+                foreach (ManagementObject mo in queryCollection)
+                {
+                    // Call the Win32Shutdown method.
+
+                    // Shutdown flags
+                    // https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32shutdown-method-in-class-win32-operatingsystem
+                    int flags = 0;
+                    if (force)
+                    {
+                        flags |= 4; // Force (adds to other flags) 0x4
+                    }
+
+                    if (reboot)
+                    {
+                        flags |= 2; // Reboot  0x2
+                    }
+                    else
+                    {
+                        flags |= 1; // Shutdown 0x1.  Logoff is 0x0, but *not* appropriate here
+                    }
+
+                    // Note:  If we added NO flags, it's a logoff.  Shutdown requires flags.
+                    // Another flag, 0x8, is for power off (if supported).
+
+
+                    ManagementBaseObject inParams = mo.GetMethodParameters("Win32Shutdown");
+                    inParams["Flags"] = flags.ToString();
+                    inParams["Reserved"] = "0";
+
+                    // Add delay with message if applicable
+                    if (!string.IsNullOrWhiteSpace(message) && delaySeconds > 0)
+                    {
+                        inParams["Timeout"] = delaySeconds.ToString(); // Timeout is actually for the shutdown itself, *after* the delay
+
+                        // Use InitiateSystemShutdownEx to add message and actual delay before shutdown.
+                        inParams = mo.GetMethodParameters("InitiateSystemShutdownEx");
+                        inParams["Message"] = message;
+                        inParams["Timeout"] = delaySeconds;
+                        inParams["ForceAppsClosed"] = force;
+                        inParams["RebootAfterShutdown"] = reboot;
+
+                        ManagementBaseObject outParams = mo.InvokeMethod("InitiateSystemShutdownEx", inParams, null);
+
+                        // Check the return value.  0 means success.
+                        uint result = (uint)outParams["returnValue"];
+                        return result == 0;
+                    }
+                    else
+                    { // No delay or no message.
+
+                        ManagementBaseObject outParams = mo.InvokeMethod("Win32Shutdown", inParams, null);
+
+                        // Check the return value.  0 means success.
+                        uint result = (uint)outParams["returnValue"];
+                        return result == 0;
+                    }
+                }
+
+                Loggers.ActiveDirectoryLogger.Warning($"Shutdown command sent to {target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
+                return false; // No Win32_OperatingSystem object found.
+            }
+            catch (ManagementException mex)
+            {
+                Loggers.ActiveDirectoryLogger.Error($"Management exception while shutting down {target.CanonicalName}: {mex.Message} ErrorCode: {mex.ErrorCode}", mex);
+                return false;
+            }
+            catch (UnauthorizedAccessException uaex)
+            {
+                Loggers.ActiveDirectoryLogger.Error($"Unauthorized access while shutting down {target.CanonicalName}: {uaex.Message}", uaex);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Error($"Exception while shutting down {target.CanonicalName}: {ex.Message}", ex);
+                return false;
+            }
+
+
+        }
         public ComputerMemory Memory
         {
             get
