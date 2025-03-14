@@ -378,6 +378,16 @@ namespace BLAZAM.ActiveDirectory
                                                 return;
                                             }
                                         }
+                                        catch (DirectoryServicesCOMException ex)
+                                        {
+                                            if (ex.ExtendedError == -2146893044)
+                                            {
+                                                Status = DirectoryConnectionStatus.BadCredentials;
+                                                if (FailedConnectionAttempts < 10)
+                                                    FailedConnectionAttempts++;
+                                                return;
+                                            }
+                                        }
                                         catch (Exception ex)
                                         {
 
