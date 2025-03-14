@@ -1,5 +1,5 @@
 @inherits SettingsComponents
-<MudText Typo="Typo.h4">@AppLocalization["User Activity"]</MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.User_Activity]</MudText>
 <MudDataGrid Items="@UserStateService.UserStates.Where(u=>u.User.Identity?.IsAuthenticated==true)">
     <Columns>
         <PropertyColumn Title=@AppLocalization[Lang.Username] Property="x => x.User.Identity==null?null:x.User.Identity.Name" />

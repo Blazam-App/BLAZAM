@@ -121,11 +121,11 @@
 
 
 
-                <SettingsField Label="@AppLocalization["UseTLS"]">
+                <SettingsField Label="@AppLocalization[Lang.Use_TLS]">
 
                     <MudSwitch For="(()=>settings.UseTLS)"
                     Color="Color.Success"
-                    Label="@AppLocalization["UseTLS"]"
+                               Label="@AppLocalization[Lang.Use_TLS]"
                     @bind-Value="@settings.UseTLS" />
 
                 </SettingsField>
@@ -144,11 +144,11 @@
 
 
 
-                <SettingsField Label="@AppLocalization["Base DN"]">
+                <SettingsField Label="@AppLocalization[Lang.Base_DN]">
 
                     <MudTextField For="(()=>settings.ApplicationBaseDN)"
                     Immediate=true
-                    Label="@AppLocalization["Base DN"]"
+                    Label="@AppLocalization[Lang.Base_DN]"
                     name="baseDN"
                     @bind-Value="@settings.ApplicationBaseDN" />
 
