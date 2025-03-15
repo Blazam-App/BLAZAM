@@ -5,20 +5,20 @@
         <MudText Class="w-100"
         Align="Align.Center"
         Typo="@Typo.h6">
-            @AppLocalization["Active Directory Connection Status"]
+            @AppLocalization[Lang.Active_Directory_Connection_Status]
         </MudText>
     </MudCardHeader>
 
     <MudGrid Spacing="0" Class="mx-auto mud-container-maxwidth-xs">
         <MudItem xs="8">
-            @AppLocalization["Server Port Open"]
+            @AppLocalization[Lang.Server_Port_Open]
         </MudItem>
         <MudItem xs="4">
             <StatusCheck Status="_portStatus" />
         </MudItem>
 
         <MudItem xs="8">
-            @AppLocalization["Credentials OK"]
+            @AppLocalization[Lang.Credentials_OK]
 
         </MudItem>
         <MudItem xs="4">
@@ -86,7 +86,7 @@
 
     bool _monitoring = false;
     bool _portStatus;
-    bool _credStatus;
+    bool? _credStatus=null;
     bool showProgress = true;
     protected override void OnInitialized()
     {
@@ -112,7 +112,7 @@
         //Directory = DirectoryFactory.CreateActiveDirectoryContext();
         Directory.ConnectAsync();
         _portStatus = false;
-        _credStatus = false;
+        _credStatus = null;
         showProgress = true;
         StateHasChanged();
     }
