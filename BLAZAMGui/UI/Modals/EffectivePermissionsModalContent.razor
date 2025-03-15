@@ -3,7 +3,7 @@
 
 @inherits AppModalContent
 
-<ADAutoComplete Label=@AppLocalization["Application User"]
+<ADAutoComplete Label=@AppLocalization[Lang.Application_User]
                 SearchObjectType="ActiveDirectoryObjectType.User"
                 SelectedResult=@selectedUser
                 SelectedResultChanged="@(async(tgt)=>{selectedUser=tgt; await onRun();})" />

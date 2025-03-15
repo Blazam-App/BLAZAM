@@ -1,13 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms;
 @inherits AppModalContent
-<div Background="Background.Light" Color="Color.Dark">
     @if (newThumbnail != null)
     {
         <Base64Image Data="newThumbnail" />
 
     }
     <MudText>
-        @AppLocalization["Upload Thumbnail Photo"]
+        @AppLocalization[Lang.Upload_Thumbnail_Photo]
     </MudText>
     <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
         <ActivatorContent>
@@ -17,14 +16,10 @@
             StartIcon="@Icons.Material.Filled.CloudUpload"
 
             Disabled=LoadingData>
-                Upload Files
+                @AppLocalization[Lang.Upload_File]
             </MudButton>
         </ActivatorContent>
     </MudFileUpload>
-
-
-
-</div>
 @code {
     byte[]? newThumbnail;
     [Parameter]
@@ -34,8 +29,8 @@
     {
         await base.OnInitializedAsync();
         Modal.OnYes = SaveChanges;
-        Modal.YesText = AppLocalization["Save Photo"];
-        Modal.Title = "Change Thumbnail";
+        Modal.YesText = AppLocalization[Lang.Save_Photo];
+        Modal.Title = AppLocalization[Lang.Change_Thumbnail];
         await InvokeAsync(StateHasChanged);
     }
     private async void LoadIcon(IBrowserFile e)
@@ -72,7 +67,7 @@
         }
         catch
         {
-            SnackBarService.Error("Unable to set thumbnail for " + DirectoryModel.DisplayName);
+            SnackBarService.Error(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred]);
 
         }
         Close();

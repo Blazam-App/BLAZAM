@@ -11,7 +11,7 @@
     <MudSpacer />
     <AppIconButton Size="Size.Large"
                    Icon="@Icons.Material.Filled.Settings"
-                   Tooltip="@AppLocalization["Notification Settings"]"
+                   Tooltip="@AppLocalization[Lang.Notification_Settings]"
                    Color="Color.Info"
                    OnClick="@(()=>{notificationsModal?.ShowAsync();})" />
     <AppIconButton Size="Size.Large"
@@ -29,7 +29,7 @@
 <NotificationList @ref=_notificationList UserState="@UserState" />
 
 <AppModal @ref=notificationsModal
-          Title=@AppLocalization["Notification Settings"]
+          Title=@AppLocalization[Lang.Notification_Settings]
           Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
         <NotificaionSubscriptionEditor User="UserState.Preferences" />
 </AppModal>

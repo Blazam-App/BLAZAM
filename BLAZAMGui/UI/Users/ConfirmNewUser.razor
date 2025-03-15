@@ -1,3 +1,4 @@
+@using BLAZAM.Common.Data.Database
 @using BLAZAM.EmailMessage.Email
 @using System.Security
 @using BLAZAM.EmailMessage.Email.Notifications
@@ -93,23 +94,23 @@ InDirectoryTemplate(ActiveDirectoryFields.State) ||
 InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
 )
 {
-    <Section Title=@AppLocalization["Contact Info"]>
+    <Section Title=@AppLocalization[Lang.Contact_Info]>
 
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone))
         {
-            <MudTextField Label="@AppLocalization["Home Phone"]"
+            <MudTextField Label="@AppLocalization[Lang.Home_Phone]"
             @bind-Value="@User.HomePhone"
             Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.StreetAddress))
         {
-            <MudTextField Label="@AppLocalization["Street Address"]"
+            <MudTextField Label="@AppLocalization[Lang.Street_Address]"
             @bind-Value="@User.StreetAddress"
             Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.POBox))
         {
-            <MudTextField Label="@AppLocalization["PO Box"]"
+            <MudTextField Label="@AppLocalization[Lang.PO_Box]"
             @bind-Value="@User.POBox"
             Disabled=true />
         }
@@ -154,25 +155,25 @@ InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
     <Section Title=@AppLocalization[Lang.Profile]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
         {
-            <MudTextField Label="@AppLocalization["Home Directory"]"
+            <MudTextField Label="@AppLocalization[Lang.Home_Directory]"
             @bind-Value="@User.HomeDirectory"
             Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDrive))
         {
-            <HomeDriveSelect Label="@AppLocalization["Home Drive"]"
+            <HomeDriveSelect Label="@AppLocalization[Lang.Home_Drive]"
             @bind-Value="@User.HomeDrive"
             Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.ScriptPath))
         {
-            <MudTextField Label="@AppLocalization["Script Path"]"
+            <MudTextField Label="@AppLocalization[Lang.Script_Path]"
             @bind-Value="@User.ScriptPath"
             Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.ProfilePath))
         {
-            <MudTextField Label="@AppLocalization["Profile Path"]"
+            <MudTextField Label="@AppLocalization[Lang.Profile_Path]"
             @bind-Value="@User.ProfilePath"
             Disabled=true />
         }
