@@ -37,19 +37,19 @@
             <AuthorizeView Roles="@UserRoles.CreateUsers">
                 <MudNavLink Href="/create/user"
                             Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
-                    @AppLocalization["Create User"]
+                    @AppLocalization[Lang.Create_User]
                     </MudNavLink>
             </AuthorizeView>
             <AuthorizeView Roles="@UserRoles.CreateGroups">
                 <MudNavLink Href="/create/group"
                             Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
-                            @AppLocalization["Create Group"]
+                    @AppLocalization[Lang.Create_Group]
                             </MudNavLink>
             </AuthorizeView>
             <AuthorizeView Roles="@UserRoles.CreateOUs">
                 <MudNavLink Href="/create/ou"
                             Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
-                    @AppLocalization["Create OU"]
+                    @AppLocalization[Lang.Create_OU]
                 </MudNavLink>
             </AuthorizeView>
         </MudNavGroup>

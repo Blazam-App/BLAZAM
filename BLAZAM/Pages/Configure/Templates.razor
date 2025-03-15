@@ -58,7 +58,7 @@
 
         @if (SelectedCategory != null && SelectedCategory != "All")
         {
-            <AppTooltip Text="@AppLocalization["Rename Category"]">
+            <AppTooltip Text="@AppLocalization[Lang.Rename_Category]">
                 <MudIconButton OnClick=@(()=>{RenameModal?.ShowAsync();})
                                Color="Color.Tertiary"
                                Class="align-middle"
@@ -99,7 +99,7 @@
     </MudStack>
 
     <AppModal @ref=RenameModal
-              Title=@AppLocalization["Rename Category"]>
+              Title=@AppLocalization[Lang.Rename_Category]>
 
 
         <MudTextField Label="New Name" @bind-Value=newCategoryName />

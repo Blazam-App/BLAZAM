@@ -218,7 +218,7 @@ InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
 {
     <MudButton Disabled=@disableCreateUserButton
     Color="Color.Success"
-    OnClick="ConfirmUser">@AppLocalization["Create User"]</MudButton>
+    OnClick="ConfirmUser">@AppLocalization[Lang.Create_User]</MudButton>
 
 }
 else
@@ -272,7 +272,7 @@ OnClick="Print">@AppLocalization["Print"]</MudButton>
             disableCreateUserButton = true;
             await InvokeAsync(StateHasChanged);
 
-            var createUserJob = new Job(AppLocalization["Create User"]);
+            var createUserJob = new Job(AppLocalization[Lang.Create_User]);
             createUserJob.StopOnFailedStep = true;
 
             _username = User.SamAccountName;
