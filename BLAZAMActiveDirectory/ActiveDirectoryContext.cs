@@ -159,7 +159,7 @@ namespace BLAZAM.ActiveDirectory
         public AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
 
 
-
+        public Exception? ConnectionException { get; set; }
 
         public IAppDatabaseFactory Factory { get; private set; }
 
@@ -291,213 +291,237 @@ namespace BLAZAM.ActiveDirectory
             });
 
         }
+        public async Task CancelConnection()
+        {
+            await connectionCTS.CancelAsync();
+            connectionCTS = new();
+        }
+        private CancellationTokenSource connectionCTS = new();
         /// <summary>
         /// Attempts a connection to the Active Directory server
         /// </summary>
         public void Connect()
         {
+
             //Set status flag
             Status = DirectoryConnectionStatus.Connecting;
 
             Loggers.ActiveDirectoryLogger.Information("Initiating Active Directory connection");
             try
             {
-                //We want the latest settings each connection attempt so we make a new database connection
-                _context = Factory.CreateDbContext();
+                ConnectDatabase();
+                
+                if (connectionCTS.IsCancellationRequested) return;
 
-                Loggers.ActiveDirectoryLogger.Information("Connecting to settings database");
+                ADSettings? ad;
 
-                //Proceed no further if the DB is down
-                if (_context.Status == ServiceConnectionState.Up)
-                {
-                    Loggers.ActiveDirectoryLogger.Information("Database connected");
-                    //No reason connecting if we're already connected
-                    if (Status != DirectoryConnectionStatus.OK)
-                    {
+                GetConnectionSettings(out ad);
 
-                        //Ok get the latest settings
-                        ADSettings? ad = _context?.ActiveDirectorySettings.FirstOrDefault();
+                if (connectionCTS.IsCancellationRequested) return;
 
-                        if (ad != null)
-                        {
-                            ConnectionSettings = ad;
+                PerformNetworkTests(ad);
 
-                            Loggers.ActiveDirectoryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
-                            //We need to determine what security options to use when authenticating
-                            //based on the settings in the DB
+                if (connectionCTS.IsCancellationRequested) return;
 
+                InitializeDirectoryEntries(ad);
 
-                            if (ad.FQDN != null && ad.Username != null)
-                            {
-                                Loggers.ActiveDirectoryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
+                if (connectionCTS.IsCancellationRequested) return;
 
-                                if (NetworkTools.IsPortOpen(ad.ServerAddress, ad.ServerPort))
-                                {
-                                    Loggers.ActiveDirectoryLogger.Information("Active Directory port is open.");
+                PerformConnectionTests(ad);
 
-                                    try
-                                    {
-                                        Loggers.ActiveDirectoryLogger.Information("Connecting Active Directory context");
-                                        var pass = _encryption.DecryptObject<string>(ad.Password);
-                                        AppRootDirectoryEntry = new DirectoryEntry(LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, pass, AuthType);
-                                        Loggers.ActiveDirectoryLogger.Information("App Active Directory context connected");
+                return;
+            }
+            catch (DirectoryOperationException ex)
+            {
+                ConnectionException = ex;
 
-                                        RootDirectoryEntry = new DirectoryEntry(LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(), ad.Username, pass, AuthType);
+                Loggers.ActiveDirectoryLogger.Warning("Error connecting to Active Directory {@Error}", ex);
 
-                                        Loggers.ActiveDirectoryLogger.Information("Root Active Directory context connected");
-                                        pass = null;
-
-                                        //Perform Auth check
-                                        Loggers.ActiveDirectoryLogger.Information("Performing Active Directory connection test");
-
-                                        var search = new ADSearch(this)
-                                        {
-                                            ObjectTypeFilter = ActiveDirectoryObjectType.User,
-                                            SearchRoot = RootDirectoryEntry,
-                                            Fields = new()
-                                            {
-                                                SamAccountName = ad.Username
-                                            },
-                                            ExactMatch = true
-                                        };
-                                        var results = search.Search<ADUser, IADUser>();
-                                        try
-                                        {
-                                            //Check if there is a parent to confirm the app root is a valid OU, even at the root of a domain this reports the domain itself
-                                            if (AppRootDirectoryEntry.Parent == null)
-                                            {
-                                                _notificationPublisher.PublishNotification(new NotificationMessage()
-                                                {
-                                                    Level = NotificationLevel.Error,
-                                                    Message = "The configured BaseDN is not valid. Please correct your settings.",
-                                                    Title = "Active Directory Error"
-                                                });
-                                                Status = DirectoryConnectionStatus.BadConfiguration;
-                                                if (FailedConnectionAttempts < 10)
-                                                    FailedConnectionAttempts++;
-                                                return;
-                                            }
-                                        }
-                                        catch (DirectoryServicesCOMException ex)
-                                        {
-                                            if (ex.ExtendedError == -2146893044)
-                                            {
-                                                Status = DirectoryConnectionStatus.BadCredentials;
-                                                if (FailedConnectionAttempts < 10)
-                                                    FailedConnectionAttempts++;
-                                                return;
-                                            }
-                                        }
-                                        catch (Exception ex)
-                                        {
-
-                                            Status = DirectoryConnectionStatus.BadConfiguration;
-                                            if (FailedConnectionAttempts < 10)
-                                                FailedConnectionAttempts++;
-                                            return;
-
-                                        }
-
-                                        try
-                                        {
-                                            if (results.Count > 0)
-                                            {
-                                                Loggers.ActiveDirectoryLogger.Information("Active Directory test passed");
-
-                                                Status = DirectoryConnectionStatus.OK;
-                                                KeepAlive();
-                                                TryGetDomainControllers();
-                                                FailedConnectionAttempts = 0;
-                                            }
-                                            else
-                                            {
-                                                Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
-
-                                                Status = DirectoryConnectionStatus.BadConfiguration;
-                                                if (FailedConnectionAttempts < 10)
-                                                    FailedConnectionAttempts++;
-                                                return;
-                                            }
-                                        }
-                                        catch (Exception ex)
-                                        {
-
-                                            switch (ex.HResult)
-                                            {
-                                                case -2147016646:
-                                                    Status = DirectoryConnectionStatus.EncryptionError;
-                                                    break;
-                                                case -2147023570:
-                                                    Status = DirectoryConnectionStatus.BadCredentials;
-                                                    break;
-                                                default:
-                                                    Loggers.ActiveDirectoryLogger.Warning("Error collecting domain controllers {@Error}", ex);
-                                                    break;
-                                            }
-                                        }
-
-
-                                        return;
-                                    }
-
-
-                                    catch (DirectoryOperationException ex)
-                                    {
-                                        Loggers.ActiveDirectoryLogger.Warning("Error connecting to Active Directory {@Error}", ex);
-
-                                        Status = DirectoryConnectionStatus.BadConfiguration;
-                                        if (FailedConnectionAttempts < 10)
-                                            FailedConnectionAttempts++; ;
-                                        return;
-                                    }
-                                    catch (CryptographicException ex)
-                                    {
-                                        Loggers.ActiveDirectoryLogger.Warning("Unable to decrypt Active Directory password {@Error}", ex);
-                                        Status = DirectoryConnectionStatus.UnreachableConfiguration;
-                                        if (FailedConnectionAttempts < 10)
-                                            FailedConnectionAttempts++; ;
-                                        return;
-
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Loggers.ActiveDirectoryLogger.Error("Unexpected Error connecting to Active Directory {@Error}", ex);
-                                        Status = DirectoryConnectionStatus.BadConfiguration;
-                                        if (FailedConnectionAttempts < 10)
-                                            FailedConnectionAttempts++; ;
-                                        return;
-
-                                    }
-                                }
-                                else
-                                {
-                                    Loggers.ActiveDirectoryLogger.Warning("Active Directory port is not open");
-
-                                    Status = DirectoryConnectionStatus.ServerDown;
-                                    if (FailedConnectionAttempts < 10)
-                                        FailedConnectionAttempts++; ;
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-                Status = DirectoryConnectionStatus.Unconfigured;
+                Status = DirectoryConnectionStatus.BadConfiguration;
                 if (FailedConnectionAttempts < 10)
                     FailedConnectionAttempts++; ;
-                return;
+            }
+            catch (CryptographicException ex)
+            {
+                ConnectionException = ex;
+
+                Loggers.ActiveDirectoryLogger.Warning("Unable to decrypt Active Directory password {@Error}", ex);
+                Status = DirectoryConnectionStatus.EncryptionError;
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++; ;
+
+            }
+            catch (DirectoryServicesCOMException ex)
+            {
+                ConnectionException = ex;
+                switch (ex.ExtendedError)
+                {
+                    case -2146893044:
+                        Status = DirectoryConnectionStatus.BadCredentials;
+                        break;
+
+                    case 8235:
+                        Status = DirectoryConnectionStatus.BadConfiguration;
+                        break;
+                    case 8333:
+                        Status = DirectoryConnectionStatus.ContainerNotFound;
+                        break;
+                }
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++;
+            }
+            catch(CriticalActiveDirectoryException ex)
+            {
+                ConnectionException = ex;
 
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+                ConnectionException = ex;
 
-                Status = DirectoryConnectionStatus.ServerDown;
+                switch (ex.HResult)
+                {
+                    case -2147016646:
+                        Status = DirectoryConnectionStatus.EncryptionError;
+                        break;
+                    case -2147023570:
+                        Status = DirectoryConnectionStatus.BadCredentials;
+                        break;
+                    default:
+                        Loggers.ActiveDirectoryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+                        Status = DirectoryConnectionStatus.ServerDown;
+                        break;
+                }
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++; ;
+            }
+        }
+
+        private void GetConnectionSettings(out ADSettings? ad)
+        {
+            //Ok get the latest settings
+            ad = _context?.ActiveDirectorySettings.FirstOrDefault();
+            if (connectionCTS.IsCancellationRequested) return;
+
+            if (ad == null)
+            {
+                Status = DirectoryConnectionStatus.UnreachableConfiguration;
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++; ;
+                return;
+            }
+            ConnectionSettings = ad;
+
+            Loggers.ActiveDirectoryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
+            //We need to determine what security options to use when authenticating
+            //based on the settings in the DB
+
+            if (!ad.IsValid)
+            {
+                Status = DirectoryConnectionStatus.Unconfigured;
                 if (FailedConnectionAttempts < 10)
                     FailedConnectionAttempts++; ;
                 return;
             }
         }
+
+        private void ConnectDatabase()
+        {
+            //We want the latest settings each connection attempt so we make a new database connection
+            _context = Factory.CreateDbContext();
+
+            if (connectionCTS.IsCancellationRequested) return;
+
+            Loggers.ActiveDirectoryLogger.Information("Connecting to settings database");
+
+            //Proceed no further if the DB is down
+            if (_context.Status != ServiceConnectionState.Up)
+            {
+                Status = DirectoryConnectionStatus.UnreachableConfiguration;
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++; ;
+                return;
+
+            }
+            Loggers.ActiveDirectoryLogger.Information("Database connected");
+        }
+
+        private void PerformConnectionTests(ADSettings? ad)
+        {
+            //Perform Auth check
+            Loggers.ActiveDirectoryLogger.Information("Performing Active Directory connection test");
+
+            var rootConnectionTest = RootDirectoryEntry.Name;
+            var appRootConnectionTest = AppRootDirectoryEntry.Name;
+
+            var search = new ADSearch(this)
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.User,
+                SearchRoot = RootDirectoryEntry,
+                Fields = new()
+                {
+                    SamAccountName = ad.Username
+                },
+                ExactMatch = true
+            };
+            var results = search.Search<ADUser, IADUser>();
+
+
+            if (results.Count > 0)
+            {
+                Loggers.ActiveDirectoryLogger.Information("Active Directory test passed");
+                ConnectionException = null;
+
+                Status = DirectoryConnectionStatus.OK;
+                KeepAlive();
+                TryGetDomainControllers();
+                FailedConnectionAttempts = 0;
+                return;
+
+            }
+            else
+            {
+                Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
+
+                Status = DirectoryConnectionStatus.BadConfiguration;
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++;
+                throw new CriticalActiveDirectoryException(this, "Active Directory test failed");
+
+            }
+        }
+
+        private void InitializeDirectoryEntries(ADSettings? ad)
+        {
+            var pass = _encryption.DecryptObject<string>(ad.Password);
+
+            AppRootDirectoryEntry = new DirectoryEntry(LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, pass, AuthType);
+            Loggers.ActiveDirectoryLogger.Information("App Active Directory context connected");
+
+            RootDirectoryEntry = new DirectoryEntry(LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(), ad.Username, pass, AuthType);
+
+            Loggers.ActiveDirectoryLogger.Information("Root Active Directory context connected");
+
+            pass = null;
+        }
+
+        private void PerformNetworkTests(ADSettings? ad)
+        {
+            Loggers.ActiveDirectoryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
+
+            if (!NetworkTools.IsPortOpen(ad.ServerAddress, ad.ServerPort))
+            {
+                Loggers.ActiveDirectoryLogger.Warning("Active Directory port is not open");
+
+                Status = DirectoryConnectionStatus.ServerDown;
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++;
+                throw new CriticalActiveDirectoryException(this,"Active Directory port is not open");
+
+            }
+            Loggers.ActiveDirectoryLogger.Information("Active Directory port is open.");
+        }
+
         /// <summary>
         /// Tries to get the domain controllers by connecting to the domain from the web server
         /// </summary>
@@ -550,7 +574,7 @@ namespace BLAZAM.ActiveDirectory
                     if (findUser != null
                         && ConnectionSettings != null)
                     {
-                   
+
                         try
                         {
                             var authUser = new WindowsImpersonationUser
