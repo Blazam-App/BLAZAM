@@ -2,7 +2,7 @@
 
 
 
-<MudText Typo="Typo.h4">@AppLocalization["Active Directory Settings"] <AppDocumentationButton Page="/update/self/" /></MudText>
+<MudText Typo="Typo.h4">@AppLocalization["Active Directory Settings"] <AppDocumentationButton Page="/admin/settings/activeDirectory/" /></MudText>
 
 <MudForm @ref=Form @bind-IsValid="IsValid">
     <MudGrid>
@@ -125,7 +125,7 @@
 
                     <MudSwitch For="(()=>settings.UseTLS)"
                     Color="Color.Success"
-                               Label="@AppLocalization[Lang.Use_TLS]"
+                    Label="@AppLocalization[Lang.Use_TLS]"
                     @bind-Value="@settings.UseTLS" />
 
                 </SettingsField>
@@ -171,7 +171,7 @@
             <MudItem xs=12 lg="3">
 
 
-                <ActiveDirectoryStatusPanel />
+                <ActiveDirectoryStatusPanel @ref=statusPanel />
 
             </MudItem>
         }
@@ -184,6 +184,7 @@
 
     #nullable disable warnings
     ADSettings settings = new ADSettings();
+    ActiveDirectoryStatusPanel? statusPanel;
     bool _insert;
 
     [Parameter]
@@ -227,7 +228,9 @@
         await AuditLogger.System.SettingsChanged("Active Directory", settings.GetChanges(originalSettings));
         await base.Save();
         await SettingsSaved.InvokeAsync();
-
+        if(ShowStatusPanel){
+            statusPanel?.RefreshStatuses();
+        }
 
     }
 
