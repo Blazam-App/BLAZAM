@@ -2,7 +2,8 @@
 
 <MudStack Row=true>
 
-    <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
+    <ADAutoComplete Label=@(AppLocalization[Lang.User] + " "+ AppLocalization[Lang.or] + " "+ AppLocalization[Lang.Group])
+    SearchObjectType="ActiveDirectoryObjectType.All"
     @bind-SelectedResult=@selectedDelegate
     CustomResultsFilter="@((result)=>{
 return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group;
@@ -11,8 +12,8 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
 
 
 
-    <DynamicMudInput HelperText="Will have complete and total access to the application if enabled"
-    Label="Super User"
+    <DynamicMudInput HelperText=@AppHelpLocalization[HelpLang.Super_User_Definition]
+                     Label=@AppLocalization[Lang.Super_User]
     @bind-Value="@NewPermissionDelegate.IsSuperAdmin"
     Disabled=ApplicationInfo.InDemoMode />
 
@@ -38,9 +39,9 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
                     var confilctingDelegate = await Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefaultAsync();
                     if (confilctingDelegate != null)
                         if (confilctingDelegate.DeletedAt == null)
-                            SnackBarService.Error("That delegate already exists.");
+                            SnackBarService.Error(AppHelpLocalization[HelpLang.Duplicate_Delegate]);
                         else
-                            SnackBarService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
+                            SnackBarService.Error(AppHelpLocalization[HelpLang.Duplicate_Deleted_Delegate]);
                     return;
                 }
                 NewPermissionDelegate.DelegateSid = selectedDelegate.SID;
@@ -58,7 +59,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
         {
 
             Loggers.ActiveDirectoryLogger.Error("Error attempting to add delegate " + selectedDelegate?.CanonicalName + " {@Error}",ex);
-            SnackBarService.Error("An unexpected error has occured.");
+            SnackBarService.Error(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred]);
         }
     }
     protected override void OnInitialized()

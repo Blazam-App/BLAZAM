@@ -13,6 +13,8 @@ namespace BLAZAM.Gui.UI
         protected AppSnackBarService NotificationService { get; set; }
         [Inject]
         protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }
+        [Inject]
+        protected IStringLocalizer<AppHelpLocalization> AppHelpLocalization { get; set; }
         /// <summary>
         /// The modal's  database connection
         /// </summary>

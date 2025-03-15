@@ -315,7 +315,7 @@
   <data name="Contact Info" xml:space="preserve">
     <value>연락처 정보</value>
   </data>
-  <data name="Copy template" xml:space="preserve">
+  <data name="Copy Template" xml:space="preserve">
     <value>템플릿 복사</value>
   </data>
   <data name="CPU" xml:space="preserve">
@@ -603,7 +603,7 @@
   <data name="New Password" xml:space="preserve">
     <value>새 비밀번호</value>
   </data>
-  <data name="New template" xml:space="preserve">
+  <data name="New Template" xml:space="preserve">
     <value>새 템플릿</value>
   </data>
   <data name="Next" xml:space="preserve">

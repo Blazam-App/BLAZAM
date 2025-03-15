@@ -47,7 +47,7 @@
         }
         else
         {
-            <AppTooltip Text="@AppLocalization["New template"]">
+            <AppTooltip Text="@AppLocalization[Lang.New_Template]">
                 <MudIconButton Color=Color.Tertiary
                                Class="align-middle"
                                OnClick="@(NewTemplate)"
@@ -67,7 +67,7 @@
         }
         @if (SelectedTemplate != null)
         {
-            <AppTooltip Text="@AppLocalization["Copy template"]">
+            <AppTooltip Text="@AppLocalization[Lang.Copy_Template]">
 
                 <MudIconButton OnClick=@(async()=>{await DuplicateTemplate(SelectedTemplate);})
                                Color="Color.Tertiary"

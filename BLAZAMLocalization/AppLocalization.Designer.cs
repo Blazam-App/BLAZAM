@@ -812,7 +812,7 @@ namespace BLAZAM.Localization {
         /// </summary>
         public static string Copy_template {
             get {
-                return ResourceManager.GetString("Copy template", resourceCulture);
+                return ResourceManager.GetString("Copy Template", resourceCulture);
             }
         }
         
@@ -2072,7 +2072,7 @@ namespace BLAZAM.Localization {
         /// </summary>
         public static string New_template {
             get {
-                return ResourceManager.GetString("New template", resourceCulture);
+                return ResourceManager.GetString("New Template", resourceCulture);
             }
         }
         

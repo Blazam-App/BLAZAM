@@ -2,7 +2,7 @@
 
 
 
-<MudText Typo="Typo.h4">@AppLocalization["Active Directory Settings"] <AppDocumentationButton Page="/admin/settings/activeDirectory/" /></MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Active_Directory_Settings] <AppDocumentationButton Page="/admin/settings/activeDirectory/" /></MudText>
 
 <MudForm @ref=Form @bind-IsValid="IsValid">
     <MudGrid>
@@ -41,9 +41,7 @@
                 </SettingsField>
                 <SettingsField Label="@AppLocalization[Lang.Port]">
 
-                    @{
-                        string helperText = "The default port of 389 is the recommended port to use.";
-                    }
+                
 
                     @*
                     TODO Add this as a popover
@@ -55,7 +53,7 @@
 
                     @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
                     {
-                        <MudNumericField HelperText="@helperText"
+                        <MudNumericField
                         Immediate=true
                         Label="@AppLocalization[Lang.Port]"
                         HideSpinButtons="true"
@@ -67,7 +65,7 @@
                     else
                     {
 
-                        <MudNumericField HelperText="@helperText"
+                        <MudNumericField
                         Immediate=true
                         Label="@AppLocalization[Lang.Port]"
                         HideSpinButtons="true"
