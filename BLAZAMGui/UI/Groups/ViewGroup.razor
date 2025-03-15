@@ -1,4 +1,5 @@
-﻿@inherits DirectoryEntryViewBase
+﻿@using BLAZAM.Common.Data.Database
+@inherits DirectoryEntryViewBase
 
 
 <AppPageTitle>@Group?.CanonicalName</AppPageTitle>
@@ -39,7 +40,7 @@
             }
         </AppModal>
 
-        <AppModal Title=@AppLocalization["Rename Group"] @ref=@RenameModal>
+        <AppModal Title=@AppLocalization[Lang.Rename_Group] @ref=@RenameModal>
             @if (RenameModal?.IsShown == true)
             {
                 <RenameGroupModalContent Group="Group" />

@@ -10,7 +10,7 @@
                 </CellTemplate>
             </TemplateColumn>
         }
-        <TemplateColumn Class="" Title="@AppLocalization["Token"]">
+        <TemplateColumn Class="" Title="@AppLocalization[Lang.Token]">
             <CellTemplate>
                 @{
                     var decrypted = context.Item.Token.Decrypt<string>();
@@ -26,7 +26,7 @@
                 <MudText>@(context.Item.CreatedAt.ToLocalTime())</MudText>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Expires"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Expires]">
             <CellTemplate>
                 <MudText>@(context.Item.ExpiresAt.ToLocalTime())</MudText>
             </CellTemplate>

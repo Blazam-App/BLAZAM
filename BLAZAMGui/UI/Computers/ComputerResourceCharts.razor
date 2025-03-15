@@ -3,7 +3,7 @@
 {
     <DialGuage Title=@AppLocalization[Lang.CPU] PollFunc="@(()=>{return Computer.Processor;})" />
 
-    <AppTooltip Text="@AppLocalization["CPU Chart"]">
+    <AppTooltip Text="@AppLocalization[Lang.CPU_Chart]">
         <MudIconButton Style="width:75px;height:75px;"
                        Size="Size.Large"
                        Icon="@Icons.Material.Filled.History"
@@ -11,7 +11,7 @@
     </AppTooltip>
     <DialGuage Title=@AppLocalization[Lang.Memory]
                PollFunc="@(()=>{return Computer.MemoryUsedPercent;})" />
-    <AppTooltip Text="@AppLocalization["Memory Chart"]">
+    <AppTooltip Text="@AppLocalization[Lang.Memory_Chart]">
 
         <MudIconButton Style="width:75px;height:75px;"
                        Size="Size.Large"

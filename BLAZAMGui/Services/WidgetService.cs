@@ -58,13 +58,13 @@ namespace BLAZAM.Gui.Services
                 if (applicationUser.IsSuperAdmin)
                 {
                     widgets.Add(new DeletedEntriesWidget() { WidgetType = DashboardWidgetType.DeletedEntries, Title = AppLocalization["Entries deleted in the last 14 days"] });
-                    widgets.Add(new AppLogonsWidget() { WidgetType = DashboardWidgetType.AppLogons, Title = AppLocalization["Application logons"] });
-                    widgets.Add(new StaleUsersWidget() { WidgetType = DashboardWidgetType.StaleUsers, Title = AppLocalization["Stale users"] });
-                    widgets.Add(new StaleComputersWidget() { WidgetType = DashboardWidgetType.StaleComputers, Title = AppLocalization["Stale computers"] });
+                    widgets.Add(new AppLogonsWidget() { WidgetType = DashboardWidgetType.AppLogons, Title = AppLocalization[Lang.Application_logons] });
+                    widgets.Add(new StaleUsersWidget() { WidgetType = DashboardWidgetType.StaleUsers, Title = AppLocalization[Lang.Stale_users] });
+                    widgets.Add(new StaleComputersWidget() { WidgetType = DashboardWidgetType.StaleComputers, Title = AppLocalization[Lang.Stale_computers] });
 
                 }
 
-                widgets.Add(new FavoritesWidget() { WidgetType = DashboardWidgetType.FavoriteEntries, Title = AppLocalization["Favorites"] });
+                widgets.Add(new FavoritesWidget() { WidgetType = DashboardWidgetType.FavoriteEntries, Title = AppLocalization[Lang.Favorites] });
 
             }
             return widgets;

@@ -63,7 +63,7 @@
 
 
                     <MudTextField Immediate=true
-                                  Label="@AppLocalization["Employee Id"]"
+                                  Label="@AppLocalization[Lang.Employee_Id]"
                                   @bind-Value="@User.EmployeeId"
                                   Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.EmployeeId))
                                   Required=@(IsRequiredTemplateField(ActiveDirectoryFields.EmployeeId)) />
@@ -145,7 +145,7 @@
 
 
                     <MudTextField Immediate=true
-                                  Label="@AppLocalization["Home Phone"]"
+                                  Label="@AppLocalization[Lang.Home_Phone]"
                                   @bind-Value="@User.HomePhone"
                                   Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.HomePhone))
                                   Required=@(IsRequiredTemplateField(ActiveDirectoryFields.HomePhone)) />
@@ -159,7 +159,7 @@
 
 
                     <MudTextField Immediate=true
-                                  Label="@AppLocalization["Street Address"]"
+                                  Label="@AppLocalization[Lang.Street_Address]"
                                   @bind-Value="@User.StreetAddress"
                                   Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.StreetAddress))
                                   Required=@(IsRequiredTemplateField(ActiveDirectoryFields.StreetAddress)) />
@@ -253,7 +253,7 @@
 
 
                     <MudTextField Immediate=true
-                                  Label="@AppLocalization["Home Directory"]"
+                                  Label="@AppLocalization[Lang.Home_Directory]"
                                   @bind-Value="@User.HomeDirectory"
                                   Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.HomeDirectory))
                                   Required=@(IsRequiredTemplateField(ActiveDirectoryFields.HomeDirectory)) />
@@ -281,7 +281,7 @@
 
 
                     <MudTextField Immediate=true
-                                  Label="@AppLocalization["Script Path"]"
+                                  Label="@AppLocalization[Lang.Script_Path]"
                                   @bind-Value="@User.ScriptPath"
                                   Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.ScriptPath))
                                   Required=@(IsRequiredTemplateField(ActiveDirectoryFields.ScriptPath)) />
@@ -295,7 +295,7 @@
 
 
                     <MudTextField Immediate=true
-                                  Label="@AppLocalization["Profile Path"]"
+                                  Label="@AppLocalization[Lang.Profile_Path]"
                                   @bind-Value="@User.ProfilePath"
                                   Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.ProfilePath))
                                   Required=@(IsRequiredTemplateField(ActiveDirectoryFields.Description)) />

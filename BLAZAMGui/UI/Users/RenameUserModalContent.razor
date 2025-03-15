@@ -70,8 +70,8 @@ else
 
         SaveDisabled = false;
         Modal.OnYes = SaveChanges;
-        Modal.YesText = AppLocalization["Rename User"];
-        Modal.Title = "Rename User";
+        Modal.YesText = AppLocalization[Lang.Rename_User];
+        Modal.Title = AppLocalization[Lang.Rename_User];
 
         await InvokeAsync(StateHasChanged);
     }
