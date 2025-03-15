@@ -294,6 +294,7 @@ namespace BLAZAM.ActiveDirectory
         public async Task CancelConnection()
         {
             await connectionCTS.CancelAsync();
+            connectionCTS.Dispose();
             connectionCTS = new();
         }
         private CancellationTokenSource connectionCTS = new();
