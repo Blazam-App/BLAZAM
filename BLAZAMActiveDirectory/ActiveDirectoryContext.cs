@@ -495,10 +495,18 @@ namespace BLAZAM.ActiveDirectory
         {
             var pass = _encryption.DecryptObject<string>(ad.Password);
 
-            AppRootDirectoryEntry = new DirectoryEntry(LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, pass, AuthType);
+            AppRootDirectoryEntry = new DirectoryEntry(
+                LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN,
+                ad.Username,
+                pass,
+                AuthType);
             Loggers.ActiveDirectoryLogger.Information("App Active Directory context connected");
 
-            RootDirectoryEntry = new DirectoryEntry(LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(), ad.Username, pass, AuthType);
+            RootDirectoryEntry = new DirectoryEntry(
+                LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(),
+                ad.Username,
+                pass,
+                AuthType);
 
             Loggers.ActiveDirectoryLogger.Information("Root Active Directory context connected");
 
@@ -550,6 +558,7 @@ namespace BLAZAM.ActiveDirectory
         public void Dispose()
         {
             Dispose(true);
+            connectionCTS?.Dispose();
             GC.SuppressFinalize(this);
         }
         protected virtual void Dispose(bool disposing)
