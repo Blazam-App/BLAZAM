@@ -10,7 +10,7 @@
         @AppLocalization["Founded"]: 2022
     </MudText>
     <MudText Align="Align.Center">
-        @AppLocalization["Version"]: @ApplicationInfo.RunningVersion.ToString()
+        @AppLocalization[Lang.Version]: @ApplicationInfo.RunningVersion.ToString()
     </MudText>
     <MudText Align="Align.Center">
 
@@ -41,7 +41,7 @@
     {
 
         // Modal.OnYes = SaveChanges;
-        Modal.YesText = AppLocalization["Close"];
+        Modal.YesText = AppLocalization[Lang.Close];
         base.OnInitialized();
 
 

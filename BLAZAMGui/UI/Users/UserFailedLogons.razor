@@ -7,7 +7,7 @@
 
             </Header>
             <Columns>
-                <PropertyColumn Title=@AppLocalization["Timestamp"] Property="x=>x.Timestamp" />
+                <PropertyColumn Title=@AppLocalization[Lang.Timestamp] Property="x=>x.Timestamp" />
             <PropertyColumn Title=@AppLocalization["Workstation Name"] Property="x=>x.WorkstationName" />
             <PropertyColumn Title=@AppLocalization["Workstation IP"]  Property="x=>x.WorkstationIp" />
             </Columns>
@@ -16,7 +16,7 @@
             </NoRecordsContent>
         </MudDataGrid>
     </MudStack>
-    @code {
+@code {
     private List<FailedADLogonEvent> _events = new();
 
 
@@ -30,8 +30,17 @@
         Task.Run(() =>
         {
             LoadingData = true;
-            _events = Context.FailedADLogonEvents.Where(e=>e.Sid.Equals(User.SID)).ToList();
+            _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
             LoadingData = false;
+            LoadingData = true;
+
+            LockedOutUserMonitor.RecordLogonEvents(User);
+
+            _events = Context.FailedADLogonEvents.Where(e=>e.Sid.Equals(User.SID)).OrderByDescending(e=>e.Timestamp).ToList();
+            LoadingData = false;
+
+            //InvokeAsync(StateHasChanged);
+
         });
     }
 }

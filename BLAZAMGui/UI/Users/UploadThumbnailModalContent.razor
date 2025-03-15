@@ -48,7 +48,6 @@
                 {
                     await stream.CopyToAsync(memoryStream);
                     newThumbnail = memoryStream.ToArray().ReizeRawImage(250);
-                    //settings.AppIcon = memoryStream.ToArray();
                 }
             }
         }
@@ -63,7 +62,7 @@
     }
 
 
-    async Task SaveChanges()
+    Task SaveChanges()
     {
         try
         {
@@ -77,7 +76,7 @@
 
         }
         Close();
-
+        return Task.CompletedTask;
     }
     protected override bool IsValid => newThumbnail != null;
 

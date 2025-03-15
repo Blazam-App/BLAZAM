@@ -12,20 +12,20 @@
             @switch (Job.Result)
             {
                 case JobResult.Passed:
-                    title += AppLocalization["Success"];
+                    title += AppLocalization[Lang.Success];
                     break;
                 case JobResult.Cancelled:
-                    title += AppLocalization["Cancelled"];
+                    title += AppLocalization[Lang.Cancelled];
                     break;
                 case JobResult.Failed:
-                    title += AppLocalization["Failed"];
+                    title += AppLocalization[Lang.Failed];
                     break;
 
                 case JobResult.NotRun:
-                    title += AppLocalization["Queued"];
+                    title += AppLocalization[Lang.Queued];
                     break;
                 case JobResult.Running:
-                    title += AppLocalization["Running"];
+                    title += AppLocalization[Lang.Running];
                     break;
 
 

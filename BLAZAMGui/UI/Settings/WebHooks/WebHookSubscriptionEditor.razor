@@ -47,7 +47,7 @@
         <TemplateColumn Title="@AppLocalization["Authorization Type"]">
             <CellTemplate>
                 <MudSelect @bind-Value=context.Item.WebHookAuthorization>
-                    <MudSelectItem Value="WebHookAuthorization.None">@AppLocalization["None"]</MudSelectItem>
+                    <MudSelectItem Value="WebHookAuthorization.None">@AppLocalization[Lang.None]</MudSelectItem>
                     <MudSelectItem Value="WebHookAuthorization.Basic">@AppLocalization["Basic"]</MudSelectItem>
                     <MudSelectItem Value="WebHookAuthorization.Bearer">@AppLocalization["Bearer"]</MudSelectItem>
                 </MudSelect>
@@ -66,7 +66,7 @@
                 @* <StatusCheck StatusFunc="(()=>{return GetLastMessageStatus(context.Item);})"/> *@
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Delete"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Delete]">
             <CellTemplate>
 
                 <MudFab StartIcon="@Icons.Material.Filled.Delete"
@@ -76,7 +76,7 @@
                         OnClick="@(async()=>{await Delete(context.Item);})" />
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Save"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Save]">
             <CellTemplate>
 
                 <MudFab StartIcon="@Icons.Material.Filled.Save"

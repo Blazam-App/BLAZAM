@@ -69,7 +69,7 @@
                     Timestamp = Model.Created.Value,
                     Target = Model.SamAccountName,
                     Action = Model.ObjectType.ToString() + " created",
-                    Username = AppLocalization["Active Directory"]
+                    Username = AppLocalization[Lang.Active_Directory]
         });
         }
 
@@ -84,7 +84,7 @@
                         Timestamp =account.PasswordLastSet.Value,
                         Target = Model.SamAccountName,
                         Action = Model.ObjectType.ToString() + " "+AppLocalization["password changed"]+".",
-                        Username = AppLocalization["Active Directory"]
+                        Username = AppLocalization[Lang.Active_Directory]
                     });
                 }
 
@@ -97,7 +97,7 @@
                         Timestamp = account.LockoutTime.Value,
                         Target = Model.SamAccountName,
                         Action = Model.ObjectType.ToString() + " " + AppLocalization["locked out"] + ".",
-                        Username = AppLocalization["Active Directory"]
+                        Username = AppLocalization[Lang.Active_Directory]
                     });
             }
             if (account.LastChanged.HasValue)
@@ -109,7 +109,7 @@
                         Timestamp = account.LastChanged.Value,
                         Target = Model.SamAccountName,
                         Action = Model.ObjectType.ToString() + " " + AppLocalization["last changed"] + ".",
-                        Username = AppLocalization["Active Directory"]
+                        Username = AppLocalization[Lang.Active_Directory]
                     });
                 }
             }

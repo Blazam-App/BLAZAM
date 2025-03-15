@@ -8,14 +8,14 @@
     @if (!Self)
     {
         <MudTextField Disabled=@(WorkingModel.Id==1)
-                      Label="@AppLocalization["Name"]"
+                      Label="@AppLocalization[Lang.Name]"
                       @bind-Value=WorkingModel.Name />
     }
     @if (!Self)
     {
         <MudItem>
             <MudText Class="w-100 align-center">
-                @AppLocalization["Assign Objects"]
+                @AppLocalization[Lang.Assign_Objects]
             </MudText>
 
             <MudButtonGroup Color=Color.Success Variant="Variant.Outlined">
@@ -75,7 +75,7 @@
 
 
                     <AppCloseButton Disabled=@(WorkingModel.Id==1)
-                                    Tooltip=@AppLocalization["Remove"]
+                                    Tooltip=@AppLocalization[Lang.Remove]
                                     OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
                 }
             </MudCardHeader>
@@ -90,7 +90,7 @@
                     <MudSwitch T=bool
                                UncheckedColor="Color.Error"
                                Color="Color.Success"
-                               Label="@AppLocalization["Allow Disabled User Access"]"
+                               Label="@AppLocalization[Lang.Allow_Disabled_User_Access]"
                                @bind-Value=objectMap.AllowDisabled />
                 }
 
@@ -107,7 +107,7 @@
                                  Elevation="0">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">
-                                @AppLocalization[name] @AppLocalization["Actions"]
+                                @AppLocalization[name] @AppLocalization[Lang.Actions]
                             </MudText>
                             <MudSpacer />
                             <MudMenu MaxHeight="200"
@@ -132,17 +132,17 @@
                         </ToolBarContent>
                         <Columns>
                             <PropertyColumn Property="x => x.ObjectAction.Name"
-                                            Title=@AppLocalization["Action"] />
-                            <TemplateColumn Title=@AppLocalization["Access"]>
+                                            Title=@AppLocalization[Lang.Action] />
+                            <TemplateColumn Title=@AppLocalization[Lang.Access]>
                                 <CellTemplate>
                                     <MudRadioGroup T="bool" @bind-Value=context.Item.AllowOrDeny>
-                                        <MudRadio T="bool" Value="false">@AppLocalization["Deny"]</MudRadio>
-                                        <MudRadio T="bool" Value="true">@AppLocalization["Allow"]</MudRadio>
+                                        <MudRadio T="bool" Value="false">@AppLocalization[Lang.Deny]</MudRadio>
+                                        <MudRadio T="bool" Value="true">@AppLocalization[Lang.Allow]</MudRadio>
 
                                     </MudRadioGroup>
                                 </CellTemplate>
                             </TemplateColumn>
-                            <TemplateColumn Title=@AppLocalization["Remove"]>
+                            <TemplateColumn Title=@AppLocalization[Lang.Remove]>
                                 <CellTemplate>
                                     <MudIconButton Icon="@Icons.Material.Filled.Close"
                                                    Color="Color.Error"
@@ -160,7 +160,7 @@
                                  Items="@WorkingModel.FieldMap.Where(am=>am.ObjectType==objectMap.ObjectType)">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">
-                                @AppLocalization[name] @AppLocalization["Fields"]
+                                @AppLocalization[name] @AppLocalization[Lang.Fields]
                             </MudText>
                             <MudSpacer />
                             <MudMenu MaxHeight="200"
@@ -192,7 +192,7 @@
                         </ToolBarContent>
 
                         <Columns>
-                            <TemplateColumn Title=@AppLocalization["Field"]>
+                            <TemplateColumn Title=@AppLocalization[Lang.Field]>
                                 <CellTemplate>
 
                                     @if (context.Item?.Field != null)
@@ -212,7 +212,7 @@
 
                                 </CellTemplate>
                             </TemplateColumn>
-                            <TemplateColumn Title=@AppLocalization["Access"]>
+                            <TemplateColumn Title=@AppLocalization[Lang.Access]>
 
                                 <CellTemplate>
                                     <MudSelect T="int" @bind-Value="context.Item.FieldAccessLevelId">
@@ -226,9 +226,9 @@
                                 </CellTemplate>
                             </TemplateColumn>
 
-                            <TemplateColumn Title=@AppLocalization["Remove"]>
+                            <TemplateColumn Title=@AppLocalization[Lang.Remove]>
                                 <CellTemplate>
-                                    <AppCloseButton Tooltip=@AppLocalization["Remove"]
+                                    <AppCloseButton Tooltip=@AppLocalization[Lang.Remove]
                                                     OnClick="()=>RemoveFieldAccess(context.Item)" />
 
                                 </CellTemplate>
@@ -242,7 +242,7 @@
                 else
                 {
 
-                    <MudText Style="width:471px;">Change @name access to Read to set permissions</MudText>
+                    <MudText Style="width:471px;">@AppHelpLocalization[HelpLang.Access_Level_Object_Missing_Read,[name]]</MudText>
                 }
             </MudCardContent>
         </MudCard>
@@ -252,9 +252,9 @@
 </FlexContainer>
 
 @{
-    string buttonLabel = AppLocalization["Create Access Level"];
+    string buttonLabel = AppLocalization[Lang.Create_Access_Level];
     if (Model.Id > 0)
-        buttonLabel = AppLocalization["Update Access Level"];
+        buttonLabel = AppLocalization[Lang.Update_Access_Level];
 }
 <MudButton Disabled=@(SaveDisabled || WorkingModel.Id==1)
            Color=Color.Success
@@ -263,10 +263,10 @@
 {
     <MudButton Disabled=@(WorkingModel.Id==1)
                Color=Color.Error
-               OnClick="@(async()=>{_ = _deleteModal?.ShowAsync();})">@AppLocalization["Delete Access Level"]</MudButton>
+               OnClick="@(async()=>{_ = _deleteModal?.ShowAsync();})">@AppLocalization[Lang.Delete_Access_Level]</MudButton>
     <AppModal Width="MaxWidth.Medium"
               @ref=_deleteModal
-              Title="@AppLocalization["Confirm deletion"]">
+              Title="@AppLocalization[Lang.Confirm_deletion]">
         <DeleteAccessLevelModalContent AccessLevel="Model"
                                        OnConfirm="@(async()=>{await DeleteAccessLevel();})" />
     </AppModal>
@@ -347,9 +347,9 @@
         await Context.SaveChangesAsync();
 
         if (addition)
-            SnackBarService.Success(WorkingModel.Name + " has been created");
+            SnackBarService.Success(AppHelpLocalization[HelpLang.Created,WorkingModel.Name]);
         else
-            SnackBarService.Success(WorkingModel.Name + " has been updated");
+            SnackBarService.Success(AppHelpLocalization[HelpLang.Updated, WorkingModel.Name]);
 
 
         if (addition && !Self)

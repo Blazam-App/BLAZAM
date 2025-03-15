@@ -121,7 +121,7 @@
                                 <MudTextField Required="true"
                                               RequiredError=@AppLocalization["This field is required"]
                                               FullWidth=true
-                                              Label=@AppLocalization["Password"]
+                                              Label=@AppLocalization[Lang.Password]
                                               @bind-Value=DirectoryTemplate.EffectivePasswordFormula />
                             </TemplateOverride>
                             @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectivePasswordFormula != DirectoryTemplate.EffectivePasswordFormula)
@@ -196,13 +196,13 @@
 
 
                                         <MudTextField T="string"
-                                                      Label="@AppLocalization["First Name"]"
+                                                      Label="@AppLocalization[Lang.First_Name]"
                                                       @bind-Value="@_testFirstName" />
                                         <MudTextField T="string"
-                                                      Label="@AppLocalization["Middle Name"]"
+                                                      Label="@AppLocalization[Lang.Middle_Name]"
                                                       @bind-Value="@_testMiddleName" />
                                         <MudTextField T="string"
-                                                      Label="@AppLocalization["Last Name"]"
+                                                      Label="@AppLocalization[Lang.Last_Name]"
                                                       @bind-Value="@_testLastName" />
 
                                     </MudStack>
@@ -219,13 +219,13 @@
                                                 };
                                         }
                                         <MudTextField T="string"
-                                                      Label="@AppLocalization["Username"]"
+                                                      Label="@AppLocalization[Lang.Username]"
                                                       Value="@(DirectoryTemplate.EffectiveUsernameFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveUsernameFormula,testName):null)" />
                                         <MudTextField T="string"
-                                                      Label="@AppLocalization["Display Name"]"
+                                                      Label="@AppLocalization[Lang.Display_Name]"
                                                       Value="@(DirectoryTemplate.EffectiveDisplayNameFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveDisplayNameFormula,testName):null)" />
                                         <MudTextField T="string"
-                                                      Label="@AppLocalization["Password"]"
+                                                      Label="@AppLocalization[Lang.Password]"
                                                       Value="@(DirectoryTemplate.EffectivePasswordFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectivePasswordFormula,testName):null)" />
                                     </MudStack>
                                 </MudItem>
@@ -247,7 +247,7 @@
                     </MudElement>
 
                 </Section>
-                <Section Title=@AppLocalization["Fields"]>
+                <Section Title=@AppLocalization[Lang.Fields]>
 
 
                     <MudDrawerContainer Class="mud-height-full"
@@ -307,7 +307,7 @@
 
                                     </ToolBarContent>
                                     <Columns>
-                                        <TemplateColumn StickyLeft=true Title=@AppLocalization["Name"]>
+                                        <TemplateColumn StickyLeft=true Title=@AppLocalization[Lang.Name]>
                                             <CellTemplate Context="cellContext">
                                                 @{
                                                     var fromTemplateName = dropdownTemplates.Where(ot => ot.FieldValues.Contains(cellContext.Item)).FirstOrDefault();
@@ -323,14 +323,14 @@
 
                                             </CellTemplate>
                                         </TemplateColumn>
-                                        <TemplateColumn Title=@AppLocalization["Value"]>
+                                        <TemplateColumn Title=@AppLocalization[Lang.Value]>
                                             <CellTemplate Context="cellContext">
                                                 <MudTextField T=string Value=cellContext.Item.Value
                                                               ValueChanged=@((newValue)=>{ValueChanged(newValue,cellContext.Item);}) />
 
                                             </CellTemplate>
                                         </TemplateColumn>
-                                        <TemplateColumn Title=@AppLocalization["Editable"]>
+                                        <TemplateColumn Title=@AppLocalization[Lang.Editable]>
                                             <CellTemplate Context="cellContext">
                                                 <MudCheckBox T=bool
                                                              Value=cellContext.Item.Editable
@@ -338,7 +338,7 @@
 
                                             </CellTemplate>
                                         </TemplateColumn>
-                                        <TemplateColumn Title=@AppLocalization["Required"]>
+                                        <TemplateColumn Title=@AppLocalization[Lang.Required]>
                                             <CellTemplate Context="cellContext">
                                                 <MudCheckBox T=bool
                                                              Value=cellContext.Item.Required
@@ -357,7 +357,7 @@
                                                 {
                                                     <AppTooltip Text="@AppLocalization["Remove field"]">
                                                         <AppCloseButton Disabled=@(!DirectoryTemplate.FieldValues.Contains(cellContext.Item))
-                                                                        Tooltip=@AppLocalization["Remove"]
+                                                                        Tooltip=@AppLocalization[Lang.Remove]
                                                                         OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
                                                     </AppTooltip>
                                                 }
@@ -379,7 +379,7 @@
                         var ouTemplateSource = GetParentOfValue(DirectoryTemplate.EffectiveParentOU, template => template.ParentOU);
 
                         <TemplateOverride SourceTemplate="@ouTemplateSource">
-                            <OUTreeView Label=@(AppLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
+                            <OUTreeView Label=@(AppLocalization[Lang.OU]+": "+ SelectedOU?.CanonicalName)
                                         SelectedEntry=@SelectedOU
                                         SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
                                         StartingSelectedOU=@SelectedOU />
@@ -415,7 +415,7 @@
                     </MudStack>
                     <MudStack Row=true>
                         <ADAutoComplete SearchObjectType=ActiveDirectoryObjectType.Group
-                                        Label="@AppLocalization["Groups"]"
+                                        Label="@AppLocalization[Lang.Groups]"
                                         @bind-SelectedResult="@SelectedGroup"
                                         SearchTerm="@SelectedGroup?.CanonicalName"
                                         AnchorOrigin="Origin.TopCenter"
@@ -488,7 +488,7 @@
                 {
                     new TemplateVariable()
                     {
-                        DisplayName = AppLocalization["First Name"],
+                        DisplayName = AppLocalization[Lang.First_Name],
                         Value = "{fn}"
                     },
                     new TemplateVariable()
@@ -498,7 +498,7 @@
                     },
                     new TemplateVariable()
                     {
-                        DisplayName = AppLocalization["Middle Name"],
+                        DisplayName = AppLocalization[Lang.Middle_Name],
                         Value = "{mn}"
                     },
                     new TemplateVariable()
@@ -508,7 +508,7 @@
                     },
                     new TemplateVariable()
                     {
-                        DisplayName = AppLocalization["Last Name"],
+                        DisplayName = AppLocalization[Lang.Last_Name],
                         Value = "{ln}"
                     },
                     new TemplateVariable()

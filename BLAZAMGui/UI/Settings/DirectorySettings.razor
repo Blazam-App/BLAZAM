@@ -2,7 +2,7 @@
 
 
 
-<MudText Typo="Typo.h4">@AppLocalization["Active Directory Settings"] <AppDocumentationButton Page="/update/self/" /></MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Active_Directory_Settings] <AppDocumentationButton Page="/admin/settings/activeDirectory/" /></MudText>
 
 <MudForm @ref=Form @bind-IsValid="IsValid">
     <MudGrid>
@@ -10,13 +10,13 @@
         <MudItem xs=12 lg="9">
 
             <MudStack Spacing="5">
-                <SettingsField Label="@AppLocalization["Server"]">
+                <SettingsField Label="@AppLocalization[Lang.Server]">
 
 
                     @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
                     {
 
-                        <MudTextField Label="@AppLocalization["Server"]"
+                        <MudTextField Label="@AppLocalization[Lang.Server]"
                         AutoFocus=true
                         HelperText="Can be your domain name in most environments"
                         Value=@("Private")
@@ -25,7 +25,7 @@
                     else
                     {
 
-                        <MudTextField Label="@AppLocalization["Server"]"
+                        <MudTextField Label="@AppLocalization[Lang.Server]"
                         AutoFocus=true
                         Immediate=true
                         HelperText="Can be your domain name in most environments"
@@ -39,11 +39,9 @@
                     }
 
                 </SettingsField>
-                <SettingsField Label="@AppLocalization["Port"]">
+                <SettingsField Label="@AppLocalization[Lang.Port]">
 
-                    @{
-                        string helperText = "The default port of 389 is the recommended port to use.";
-                    }
+                
 
                     @*
                     TODO Add this as a popover
@@ -55,9 +53,9 @@
 
                     @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
                     {
-                        <MudNumericField HelperText="@helperText"
+                        <MudNumericField
                         Immediate=true
-                        Label="@AppLocalization["Port"]"
+                        Label="@AppLocalization[Lang.Port]"
                         HideSpinButtons="true"
                         Value="0"
                         Disabled />
@@ -67,9 +65,9 @@
                     else
                     {
 
-                        <MudNumericField HelperText="@helperText"
+                        <MudNumericField
                         Immediate=true
-                        Label="@AppLocalization["Port"]"
+                        Label="@AppLocalization[Lang.Port]"
                         HideSpinButtons="true"
                         For="(()=>settings.ServerPort)"
                         @bind-Value="@settings.ServerPort" />
@@ -87,12 +85,12 @@
 
 
 
-                <SettingsField Label="@AppLocalization["Username"]">
+                <SettingsField Label="@AppLocalization[Lang.Username]">
 
 
                     <MudTextField For="(()=>settings.Username)"
                     Immediate=true
-                    Label="@AppLocalization["Username"]"
+                    Label="@AppLocalization[Lang.Username]"
                     name="username"
                     @bind-Value="@settings.Username">
 
@@ -104,11 +102,11 @@
 
 
 
-                <SettingsField Label="@AppLocalization["Password"]">
+                <SettingsField Label="@AppLocalization[Lang.Password]">
 
                     <MudTextField For="(()=>settings.Password)"
                     Immediate=true
-                    Label="@AppLocalization["Password"]"
+                    Label="@AppLocalization[Lang.Password]"
                     name="password"
                     InputType="InputType.Password"
                     @bind-Value="@settings.Password">
@@ -121,22 +119,22 @@
 
 
 
-                <SettingsField Label="@AppLocalization["UseTLS"]">
+                <SettingsField Label="@AppLocalization[Lang.Use_TLS]">
 
                     <MudSwitch For="(()=>settings.UseTLS)"
                     Color="Color.Success"
-                    Label="@AppLocalization["UseTLS"]"
+                    Label="@AppLocalization[Lang.Use_TLS]"
                     @bind-Value="@settings.UseTLS" />
 
                 </SettingsField>
 
 
 
-                <SettingsField Label="@AppLocalization["FQDN"]">
+                <SettingsField Label="@AppLocalization[Lang.FQDN]">
 
                     <MudTextField For="(()=>settings.FQDN)"
                     Immediate=true
-                    Label="@AppLocalization["FQDN"]"
+                    Label="@AppLocalization[Lang.FQDN]"
                     name="fqdn"
                     @bind-Value="@settings.FQDN" />
 
@@ -144,11 +142,11 @@
 
 
 
-                <SettingsField Label="@AppLocalization["Base DN"]">
+                <SettingsField Label="@AppLocalization[Lang.Base_DN]">
 
                     <MudTextField For="(()=>settings.ApplicationBaseDN)"
                     Immediate=true
-                    Label="@AppLocalization["Base DN"]"
+                    Label="@AppLocalization[Lang.Base_DN]"
                     name="baseDN"
                     @bind-Value="@settings.ApplicationBaseDN" />
 
@@ -160,7 +158,7 @@
                     <MudButton Disabled="!IsValid"
                     OnClick="Save"
                     Color="Color.Success">
-                        @AppLocalization["Save Changes"]
+                        @AppLocalization[Lang.Save_Changes]
                     </MudButton>
 
                 </SettingsField>
@@ -171,7 +169,7 @@
             <MudItem xs=12 lg="3">
 
 
-                <ActiveDirectoryStatusPanel />
+                <ActiveDirectoryStatusPanel @ref=statusPanel />
 
             </MudItem>
         }
@@ -184,6 +182,7 @@
 
     #nullable disable warnings
     ADSettings settings = new ADSettings();
+    ActiveDirectoryStatusPanel? statusPanel;
     bool _insert;
 
     [Parameter]
@@ -227,7 +226,9 @@
         await AuditLogger.System.SettingsChanged("Active Directory", settings.GetChanges(originalSettings));
         await base.Save();
         await SettingsSaved.InvokeAsync();
-
+        if(ShowStatusPanel){
+            statusPanel?.RefreshStatuses();
+        }
 
     }
 

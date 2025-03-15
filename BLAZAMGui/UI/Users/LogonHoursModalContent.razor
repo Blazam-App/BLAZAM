@@ -6,7 +6,7 @@
         <MudSimpleTable Dense=true Hover="true">
             <thead>
                 <tr>
-                    <th>@AppLocalization["Day"]</th>
+                    <th>@AppLocalization[Lang.Day]</th>
                     @foreach (var hour in Enumerable.Range(0, 24))
                     {
 
@@ -53,7 +53,7 @@
                         @foreach (var hour in Enumerable.Range(0, 24))
                         {
                             <td @onmousedown="() => StartSelection(day, hour)"
-                                @onmouseover="(e) => UpdateSelection(day, hour, e)"
+                                @onmouseover="(e) => UpdateSelection(day, hour)"
                                 @onmouseup="EndSelection"
                                 class="ma-0 pa-0"
                                 style="background-color:@(GetHourColor(day, hour))">
@@ -76,18 +76,19 @@
         Modal.OnYes = SaveChanges;
         Modal.AllowClose = true;
         Modal.YesEnabled = ()=> { return User.CanEditField(ActiveDirectoryFields.LogonHours); };
-        Modal.YesText = AppLocalization["Save Changes"];
-        Modal.Title = AppLocalization["Logon Hours"];
+        Modal.YesText = AppLocalization[Lang.Save_Changes];
+        Modal.Title = AppLocalization[Lang.Logon_Hours];
         schedule = User.LogonHours;
         _=Modal.RefreshView();
 
     }
 
-    public async Task SaveChanges()
+    public Task SaveChanges()
     {
         var rawSchedule = schedule.EncodeLogonHours();
         User.LogonHours = schedule;
         Close();
+        return Task.CompletedTask;
 
     }
     private LogonHours schedule = new();
@@ -106,10 +107,10 @@
     {
         isSelecting = true;
         selectionValue = !schedule.GetLogonHour(day, hour);
-        UpdateSelection(day, hour, null);
+        UpdateSelection(day, hour);
     }
 
-    private void UpdateSelection(DayOfWeek day, int hour, MouseEventArgs e)
+    private void UpdateSelection(DayOfWeek day, int hour)
     {
         if (User.CanEditField(ActiveDirectoryFields.LogonHours))
         {

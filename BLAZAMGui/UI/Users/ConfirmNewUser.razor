@@ -11,35 +11,35 @@
 
 
 
-<MudTextField Label="@AppLocalization["OU"]"
+<MudTextField Label="@AppLocalization[Lang.OU]"
 Value="@User.OU.ToPrettyOu()"
 Disabled=true />
 
-<MudTextField Label="@AppLocalization["First Name"]"
+<MudTextField Label="@AppLocalization[Lang.First_Name]"
 Value="@User.GivenName"
 Disabled=true />
 
-<MudTextField Label="@AppLocalization["Middle Name"]"
+<MudTextField Label="@AppLocalization[Lang.Middle_Name]"
 Value="@User.MiddleName"
 Disabled=true />
 
-<MudTextField Label="@AppLocalization["Last Name"]"
+<MudTextField Label="@AppLocalization[Lang.Last_Name]"
 Value="@User.Surname"
 Disabled=true />
 
-<MudTextField Label="@AppLocalization["Display Name"]"
+<MudTextField Label="@AppLocalization[Lang.Display_Name]"
 Value="@User.DisplayName"
 Disabled=true />
 
-<MudTextField Label="@AppLocalization["Username"]"
+<MudTextField Label="@AppLocalization[Lang.Username]"
 Value="@User.SamAccountName"
 Disabled=true />
 
-<MudTextField Label="@AppLocalization["Password"]"
+<MudTextField Label="@AppLocalization[Lang.Password]"
 Value="@User.NewPassword.ToPlainText()"
 Disabled=true />
 
-<MudTextField Label="@AppLocalization["Email Address"]"
+<MudTextField Label="@AppLocalization[Lang.Email_Address]"
 Value="@User.Email"
 Disabled=true />
 
@@ -51,7 +51,7 @@ InDirectoryTemplate(ActiveDirectoryFields.Title) ||
 InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 )
 {
-    <Section Title=@AppLocalization["Organization"]>
+    <Section Title=@AppLocalization[Lang.Organization]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.EmployeeId))
         {
             <MudTextField Label="@AppLocalization["Employee Id"]"
@@ -60,25 +60,25 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.Department))
         {
-            <MudTextField Label="@AppLocalization["Department"]"
+            <MudTextField Label="@AppLocalization[Lang.Department]"
             @bind-Value="@User.Department"
             Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.Company))
         {
-            <MudTextField Label="@AppLocalization["Company"]"
+            <MudTextField Label="@AppLocalization[Lang.Company]"
             @bind-Value="@User.Company"
             Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.Title))
         {
-            <MudTextField Label="@AppLocalization["Job Title"]"
+            <MudTextField Label="@AppLocalization[Lang.Job_Title]"
             @bind-Value="@User.Title"
             Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice))
         {
-            <MudTextField Label="@AppLocalization["Office"]"
+            <MudTextField Label="@AppLocalization[Lang.Office]"
             @bind-Value="@User.PhysicalDeliveryOfficeName"
             Disabled=true />
         }
@@ -115,19 +115,19 @@ InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.City))
         {
-            <MudTextField Label="@AppLocalization["City"]"
+            <MudTextField Label="@AppLocalization[Lang.City]"
             @bind-Value="@User.City"
             Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.State))
         {
-            <MudTextField Label="@AppLocalization["State"]"
+            <MudTextField Label="@AppLocalization[Lang.State]"
             @bind-Value="@User.State"
             Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.PostalCode))
         {
-            <MudTextField Label="@AppLocalization["Zip Code"]"
+            <MudTextField Label="@AppLocalization[Lang.Zip_Code]"
             @bind-Value="@User.Zip"
             Disabled=true />
         }
@@ -135,13 +135,13 @@ InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
 {
-    <MudTextField Label="@AppLocalization["Description"]"
+    <MudTextField Label="@AppLocalization[Lang.Description]"
     @bind-Value="@User.Description"
     Disabled=true />
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.Site))
 {
-    <MudTextField Label="@AppLocalization["Site"]"
+    <MudTextField Label="@AppLocalization[Lang.Site]"
     @bind-Value="@User.Site"
     Disabled=true />
 }
@@ -151,7 +151,7 @@ InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
 InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
 )
 {
-    <Section Title=@AppLocalization["Profile"]>
+    <Section Title=@AppLocalization[Lang.Profile]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
         {
             <MudTextField Label="@AppLocalization["Home Directory"]"
@@ -183,7 +183,7 @@ InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
 
 
 
-<Section Title=@AppLocalization["Groups"]>
+<Section Title=@AppLocalization[Lang.Groups]>
     @if (User.IsAGroupMember)
     {
         var deniedRead = false;
@@ -218,7 +218,7 @@ InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
 {
     <MudButton Disabled=@disableCreateUserButton
     Color="Color.Success"
-    OnClick="ConfirmUser">@AppLocalization["Create User"]</MudButton>
+    OnClick="ConfirmUser">@AppLocalization[Lang.Create_User]</MudButton>
 
 }
 else
@@ -272,7 +272,7 @@ OnClick="Print">@AppLocalization["Print"]</MudButton>
             disableCreateUserButton = true;
             await InvokeAsync(StateHasChanged);
 
-            var createUserJob = new Job(AppLocalization["Create User"]);
+            var createUserJob = new Job(AppLocalization[Lang.Create_User]);
             createUserJob.StopOnFailedStep = true;
 
             _username = User.SamAccountName;

@@ -53,12 +53,12 @@
 
         </ToolBarContent>
         <Columns>
-            <TemplateColumn Title=@AppLocalization["Type"]>
+            <TemplateColumn Title=@AppLocalization[Lang.Type]>
                 <CellTemplate>
                     <DirectoryEntryTypeIcon Entry="@context.Item" />
                 </CellTemplate>
             </TemplateColumn>
-            <PropertyColumn Title="@AppLocalization["Name"]" Property="x=>x.CanonicalName" />
+            <PropertyColumn Title="@AppLocalization[Lang.Name]" Property="x=>x.CanonicalName" />
         </Columns>
     </MudDataGrid>
 }

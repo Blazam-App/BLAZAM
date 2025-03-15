@@ -155,7 +155,7 @@ namespace BLAZAM.Server
             /*
              * Uncomment this to force a language
            
-
+            
             CultureInfo culture = new CultureInfo("zh-Hans");
             //CultureInfo culture = new CultureInfo("zh-Hans");
             CultureInfo.DefaultThreadCurrentCulture = culture;
@@ -593,19 +593,6 @@ namespace BLAZAM.Server
                 {
                     ApplicationStatistics.Process = ApplicationInfo.runningProcess;
                     ApplicationStatistics.StartResourceUsagePolling();
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-            }
-            try
-            {
-                if (ApplicationInfo.installationCompleted)
-                {
-                    var context = Program.AppInstance.Services.GetRequiredService<PermissionApplicator>();
-                    
                 }
 
             }

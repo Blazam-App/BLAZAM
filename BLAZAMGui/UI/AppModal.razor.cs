@@ -13,6 +13,8 @@ namespace BLAZAM.Gui.UI
         protected AppSnackBarService NotificationService { get; set; }
         [Inject]
         protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }
+        [Inject]
+        protected IStringLocalizer<AppHelpLocalization> AppHelpLocalization { get; set; }
         /// <summary>
         /// The modal's  database connection
         /// </summary>
@@ -58,8 +60,7 @@ namespace BLAZAM.Gui.UI
                 InvokeAsync(StateHasChanged);
             }
         }
-        //[Parameter]
-        //public EventCallback OnNo { get; set; }
+
         [Parameter]
         public OnCancelEvent OnCancel { get; set; }
 
@@ -121,7 +122,7 @@ namespace BLAZAM.Gui.UI
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            YesText = AppLocalization["Ok"];
+            YesText = AppLocalization[Lang.Ok];
             if (Options == null)
                 Options = new();
             if (Width != null)

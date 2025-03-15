@@ -1,9 +1,9 @@
 @inherits AppComponentBase
 
     <MudStack Row=true>
-        <MudText>@Group.CanonicalName @AppLocalization["Members"]</MudText>
+        <MudText>@Group.CanonicalName @AppLocalization[Lang.Members]</MudText>
         <MudSpacer/>
-        <AppCloseButton Tooltip=@AppLocalization["Close"]
+        <AppCloseButton Tooltip=@AppLocalization[Lang.Close]
         OnClick="Close"/>
     </MudStack>
     @if (Members != null)
@@ -21,7 +21,7 @@
         <Columns>
             <TemplateColumn Context="templateContext">
                 <HeaderTemplate>
-                    @AppLocalization["Type"]
+                    @AppLocalization[Lang.Type]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     @{
@@ -45,7 +45,7 @@
             </TemplateColumn>
             <TemplateColumn Sortable=true Filterable=true Context="templateContext">
                 <HeaderTemplate>
-                    @AppLocalization["Name"]
+                    @AppLocalization[Lang.Name]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                         <MudLink Href="@cellContext.Item.SearchUri">
@@ -55,7 +55,7 @@
             </TemplateColumn>
             <TemplateColumn Sortable=true Filterable=true Context="templateContext">
                 <HeaderTemplate>
-                    @AppLocalization["OU"]
+                    @AppLocalization[Lang.OU]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     <MudText>
@@ -75,7 +75,7 @@
                         <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
                                    OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
-                            @AppLocalization["Remove"]
+                            @AppLocalization[Lang.Remove]
                         </MudButton>
                     </AppTooltip>
                 </CellTemplate>
@@ -113,9 +113,6 @@ else
     public int PageSize { get; set; } = 25;
 
     List<IGroupableDirectoryAdapter> Members{ get; set; }
-
-
-    AppModal AssignMemberModal;
 
 
     protected override async Task OnInitializedAsync()

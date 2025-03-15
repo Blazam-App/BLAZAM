@@ -29,8 +29,8 @@
                     }
                 </CellTemplate>
                 </TemplateColumn>
-            <PropertyColumn Property="x=>x.Location" />
-            <PropertyColumn Property="x=>x.Comment" />
+                <PropertyColumn Title="@AppLocalization[Lang.Location]" Property="x=>x.Location" />
+                <PropertyColumn Title="@AppLocalization[Lang.Comment]" Property="x=>x.Comment" />
             <PropertyColumn Property="x=>x.DoCompleteFirst" />
             <PropertyColumn Property="x=>x.Hidden" />
             <PropertyColumn Property="x=>x.DriverName" />
@@ -38,13 +38,13 @@
             <PropertyColumn Property="x=>x.Queued" />
             <PropertyColumn Property="x=>x.ErrorDescription" />
             <PropertyColumn Property="x=>x.ErrorInformation" />
-            <PropertyColumn Property="x=>x.Description" />
+                <PropertyColumn Title="@AppLocalization[Lang.Description]" Property="x=>x.Description" />
             <PropertyColumn Property="x=>x.Caption" />
-            <PropertyColumn Property="x=>x.PortName" />
+                <PropertyColumn Title="@AppLocalization[Lang.Port]" Property="x=>x.PortName" />
             <PropertyColumn Property="x=>x.Published" />
-            <PropertyColumn Property="x=>x.PrinterState" />
+                <PropertyColumn Title="@AppLocalization[Lang.State]" Property="x=>x.PrinterState" />
             <PropertyColumn Property="x=>x.PrinterStatus" />
-            <PropertyColumn Property="x=>x.Name" />
+                <PropertyColumn Title="@AppLocalization[Lang.Name]" Property="x=>x.Name" />
 
         </Columns>
     </MudDataGrid>

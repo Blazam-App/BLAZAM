@@ -13,6 +13,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         IEnumerable<IGroupableDirectoryAdapter> NestedMembers { get; }
         List<GroupMembership> MembersToRemove { get; }
         List<GroupMembership> MembersToAdd { get; }
+        bool IsSecurityGroup { get; set; }
+        GroupScope Scope { get; set; }
 
         void AssignMember(IGroupableDirectoryAdapter member);
         void UnassignMember(IGroupableDirectoryAdapter member);

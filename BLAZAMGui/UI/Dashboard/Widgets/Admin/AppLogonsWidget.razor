@@ -16,12 +16,12 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Title=@AppLocalization["User"]>
+        <TemplateColumn Title=@AppLocalization[Lang.User]>
             <CellTemplate>
                 <MudText>@context.Item?.Username</MudText>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization["Ip Address"] Sortable="true">
+        <TemplateColumn Title=@AppLocalization[Lang.IP_Address] Sortable="true">
             <CellTemplate>
           
                     <IPAddress>
@@ -31,7 +31,7 @@
 
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization["Timestamp"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Timestamp]>
             <CellTemplate>
                 <MudText>@context.Item?.Timestamp.ToLocalTime()</MudText>
             </CellTemplate>

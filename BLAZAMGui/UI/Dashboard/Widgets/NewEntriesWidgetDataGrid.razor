@@ -18,7 +18,7 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Title=@AppLocalization["Name"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
                 <DirectoryEntryContextMenu Entry="@context.Item"
                 OnChanged="OnChanged">
@@ -38,7 +38,7 @@
                 </DirectoryEntryContextMenu>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization["Created"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Created]>
             <CellTemplate>
                 @if (context.Item?.Created != null)
                 {

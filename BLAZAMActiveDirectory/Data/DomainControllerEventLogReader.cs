@@ -1,4 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Database.Models;
+using BLAZAM.Helpers;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.DirectoryServices;
@@ -65,27 +67,69 @@ namespace BLAZAM.ActiveDirectory.Data
 
             return events;
         }
-        public List<EventRecord> GetFailedLogonEvents(string userName, DateTime startTime, DateTime endTime)
+        public List<FailedADLogonEvent> GetFailedLogonEvents(IADUser user, DateTime startTime, DateTime endTime)
         {
-            
-            var events = new List<EventRecord>();
+
+            var events = new List<FailedADLogonEvent>();
             var dcNames = _directory.DomainControllers.Select(controller => controller.Name).ToList();
-            Parallel.ForEach(dcNames, domainController => {
-                var result = _directory.Impersonation.Run(() =>
+            Parallel.ForEach(dcNames, domainController =>
+            {
+                _ = _directory.Impersonation.Run(() =>
                 {
                     try
                     {
                         EventLogSession session = new EventLogSession(domainController);
-                        var eventLogQuery = new EventLogQuery("Security", PathType.LogName, "*[System/EventID=4625] and *[EventData[Data[@Name='TargetUserName'] and (Data='" + userName + "')]]");
+                        var eventLogQuery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=4625 or EventID=4771 or EventID=4740)]] and *[EventData[Data[@Name='TargetUserName'] and (Data='" + user.SamAccountName + "' or Data='" + user.UserPrincipalName + "')]]");
                         eventLogQuery.Session = session;
 
                         var reader = new EventLogReader(eventLogQuery);
                         for (EventRecord eventdetail = reader.ReadEvent(); eventdetail != null; eventdetail = reader.ReadEvent())
                         {
+                            FailedADLogonEvent? failedADLogonEvent = null;
+                            switch (eventdetail.Id)
+                            {
+                                case 4776:
+                                    failedADLogonEvent = new FailedADLogonEvent
+                                    {
+                                        Sid = user.SID,
+                                        Timestamp = eventdetail.TimeCreated,
+                                        WorkstationName = eventdetail.GetEventProperty(2),
+
+                                    };
+                                    break;
+                                case 4771:
+                                    failedADLogonEvent = new FailedADLogonEvent
+                                    {
+                                        Sid = user.SID,
+                                        Timestamp = eventdetail.TimeCreated,
+                                        WorkstationIp = eventdetail.GetEventProperty(6),
+
+                                    };
+                                    break;
+                                case 4740:
+                                    failedADLogonEvent = new FailedADLogonEvent
+                                    {
+                                        Sid = user.SID,
+                                        Timestamp = eventdetail.TimeCreated,
+                                        WorkstationName = eventdetail.GetEventProperty(1),
+
+                                    };
+                                    break;
+                                default:
+                                    failedADLogonEvent = new FailedADLogonEvent
+                                    {
+                                        Sid = user.SID,
+                                        Timestamp = eventdetail.TimeCreated,
+                                        WorkstationIp = eventdetail.GetEventProperty(19),
+                                        WorkstationName = eventdetail.GetEventProperty(13),
+
+                                    };
+                                    break;
+                            }
                             lock (events)
                             {
                                 // Read Event details
-                                events.Add(eventdetail);
+                                events.Add(failedADLogonEvent);
                             }
 
                         }
@@ -94,7 +138,6 @@ namespace BLAZAM.ActiveDirectory.Data
                     }
                     catch (Exception ex)
                     {
-                        // Handle exceptions appropriately (e.g., logging)
                         Console.WriteLine($"Error reading events from {domainController}: {ex.Message}");
                         return false;
                     }
@@ -102,7 +145,7 @@ namespace BLAZAM.ActiveDirectory.Data
             });
 
 
-            return events;
+            return events.OrderByDescending(e=>e.Timestamp).ToList();
         }
     }
 

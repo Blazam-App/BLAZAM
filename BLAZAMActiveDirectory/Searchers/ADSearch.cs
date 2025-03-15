@@ -209,6 +209,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(samaccountname=*{Fields.SamAccountName}*)";
                     if (Fields.LastLogonTime != null)
                         FilterQuery += $"(lastLogonTimestamp<={Fields.LastLogonTime})(!(lastLogonTimestamp=0))";
+                    if (Fields.AccountExpires != null)
+                        FilterQuery += $"(accountExpires<={Fields.AccountExpires.Value.ToFileTimeUtc().ToString()})(!(accountExpires=0))";
                     if (Fields.LockoutTime != null)
                         FilterQuery += $"(lockoutTime>={Fields.LockoutTime})";
                     if (!Fields.DN.IsNullOrEmpty())
@@ -222,7 +224,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     if (Fields.BitLockerRecoveryId != null)
                         FilterQuery += $"(name=*{Fields.BitLockerRecoveryId}*)";
                     if (Fields.PasswordLastSet != null)
-                        FilterQuery += $"(pwdLastSet>={Fields.PasswordLastSet.Value.ToFileTime().ToString()})";
+                        FilterQuery += $"(pwdLastSet>={Fields.PasswordLastSet.Value.ToFileTimeUtc().ToString()})";
 
 
                 }
@@ -333,7 +335,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
             SearchTime = DateTime.Now - startTime;
 
-            if (cancellationToken?.IsCancellationRequested == true) return;
 
         }
 
@@ -377,7 +378,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         private void AddResults<T, I>(SearchResultCollection lastResults) where T : I, IDirectoryEntryAdapter, new()
         {
-            List<IDirectoryEntryAdapter> last = new();
+            List<IDirectoryEntryAdapter> last;
             if (_currentUserActiveDirectoryContext != null)
             {
                 last = lastResults.Encapsulate(_currentUserActiveDirectoryContext);

@@ -1,5 +1,12 @@
 ﻿namespace BLAZAM.Database.Models.Permissions
 {
+    /// <summary>
+    /// The allowed actions in blazam
+    /// </summary>
+    /// <remarks>
+    ///   Move, Delete, Create, Unassign, Assign, Enable, Disable, Rename,
+    ///   Unlock, SetPassword
+    /// </remarks>
     public enum ActiveDirectoryObjectAction
     {
         Move, Delete, Create, Unassign, Assign, Enable, Disable, Rename,

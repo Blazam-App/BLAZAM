@@ -2,49 +2,46 @@
 
 @inherits AppComponentBase
 
-<MudText Typo="Typo.h4">@AppLocalization["Effective Permissions"] <AppDocumentationButton Page="/admin/permissions" /></MudText>
+<MudText Typo="Typo.h4">
+    @AppLocalization[Lang.Effective_Permissions] <AppDocumentationButton Page="/admin/permissions" />
+</MudText>
 <ImpersonateUser />
-<MudDivider Class="my-5"/>
+<MudDivider Class="my-5" />
 <MudGrid>
-    <MudItem  xs=12 md="5">
-        <ADAutoComplete Label=@AppLocalization["Application User"]
+    <MudItem xs=12 md="5">
+        <ADAutoComplete Label=@AppLocalization[Lang.Application_User]
                         SearchObjectType="ActiveDirectoryObjectType.User"
                         @bind-SelectedResult=@selectedUser />
     </MudItem>
     <MudItem xs=12 md="2" Class="align-middle">
-        <MudText Align="Align.Center" >
+        <MudText Align="Align.Center">
             <MudIcon Class="align-center" Icon="@Icons.Material.Filled.ArrowRightAlt" />
 
         </MudText>
     </MudItem>
     <MudItem xs="12" md="5">
-        <ADAutoComplete Disabled="selectedUser==null" Label=@AppLocalization["Target"]
+        <ADAutoComplete Disabled="selectedUser==null" Label=@AppLocalization[Lang.Target]
                         SelectedResult=@target
                         SelectedResultChanged="@(async(tgt)=>{target=tgt; await onRun();})" />
     </MudItem>
 </MudGrid>
 
-   
-  @*   <MudButton  Disabled=@(selectedUser==null || target==null)
-        OnClick=onRun
-        Color="Color.Success">
-  
-        @AppLocalization["Run"]
-    </MudButton> *@
-    
-    <EffectivePermissionsDataGrid Target="target" Disabled="!simRan"/>
-@code{
+
+
+<EffectivePermissionsDataGrid Target="target" Disabled="!simRan" />
+@code {
     private IDirectoryEntryAdapter selectedUser;
     private IDirectoryEntryAdapter target;
     bool simRan;
-    private async Task onRun(){
+    private async Task onRun()
+    {
         simRan = false;
         await InvokeAsync(StateHasChanged);
         var permissionApplicator = new PermissionApplicator(UserStateService, DbFactory, Directory);
         var simUser = new ApplicationUserState(DbFactory);
-       await permissionApplicator.LoadPermissions(simUser,selectedUser as IADUser);
+        await permissionApplicator.LoadPermissions(simUser, selectedUser as IADUser);
         target.SetCurrentUser(simUser);
-        simRan=true;
+        simRan = true;
         await InvokeAsync(StateHasChanged);
     }
 }

@@ -76,6 +76,9 @@
 	  <Content Update="UI\Outputs\BitLockerViewer.razor">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	  </Content>
+	  <Content Update="UI\OU\CreateOU.razor">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	  </Content>
 	</ItemGroup>
 
 	<ItemGroup>

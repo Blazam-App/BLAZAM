@@ -3,7 +3,7 @@
 
 <MudStack>
 
-    <ADAutoComplete Label="Member" @bind-SelectedResult="@Entry" />
+    <ADAutoComplete Label=@AppLocalization[Lang.Member] @bind-SelectedResult="@Entry" />
 
 
     <ADAutoComplete Label="Copy Memberships From"
@@ -48,7 +48,7 @@
     {
         base.OnInitialized();
         Modal.OnYes = AssignToGroup;
-        Modal.YesText = AppLocalization["Assign"];
+        Modal.YesText = AppLocalization[Lang.Assign];
         Modal.Title = "Assign Member";
     }
 

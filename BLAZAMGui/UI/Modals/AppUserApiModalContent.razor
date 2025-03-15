@@ -16,7 +16,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Modal.SetYesText(AppLocalization["Save"]);
+        Modal.SetYesText(AppLocalization[Lang.Save]);
         Modal.OnYes += SaveSettings;
         Modal.YesEnabled = () => { return !LoadingData; };
     }

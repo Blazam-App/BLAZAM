@@ -34,6 +34,7 @@ namespace BLAZAM.Services.Audit
                     Cc = cc,
                     Bcc = bcc,
                     Subject = subject,
+                    LastAttemptTimestamp = DateTime.UtcNow,
                     HtmlBody = body,
                     ServerResponse = response
                 };

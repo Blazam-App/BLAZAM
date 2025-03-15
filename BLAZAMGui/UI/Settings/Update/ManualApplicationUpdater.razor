@@ -192,7 +192,7 @@
             var output = LatestAvailableVersion.GetUpdateJob();
             if (output != null)
             {
-                _= MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization["Update"]);
+                _= MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization[Lang.Update]);
                 await output.RunAsync();
 
             }

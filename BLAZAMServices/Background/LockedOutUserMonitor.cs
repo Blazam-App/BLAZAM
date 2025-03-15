@@ -12,7 +12,7 @@ using Polly;
 namespace BLAZAM.Services.Background
 {
     [AutoStartBackgroundService]
-    internal class LockedOutUserMonitor : ActiveDirectoryBackgroundServiceBase
+    public class LockedOutUserMonitor : ActiveDirectoryBackgroundServiceBase
     {
         private NotificationGenerationService _notificationGenerationService;
 
@@ -92,36 +92,35 @@ namespace BLAZAM.Services.Background
 
         }
 
-        private void RecordLogonEvents(IADUser user)
+        public void RecordLogonEvents(IADUser user)
         {
             using var context = dbFactory.CreateDbContext();
-            var existing = context.FailedADLogonEvents.Where(e => e.Sid.Equals(user.SID)).OrderBy(e => e.Timestamp);
+            var existing = context.FailedADLogonEvents.Where(e => e.Sid.Equals(user.SID)).OrderBy(e => e.Timestamp).ToList();
 
-            var failedLogonEvents = user.FailedLogonEvents;
+            var failedLogonEvents = user.FailedLogonEvents.OrderBy(e=>e.Timestamp).ToList();
             if (failedLogonEvents.Count > 0)
             {
 
-                foreach (var evt in failedLogonEvents.Where(e=>e.TimeCreated>existing.LastOrDefault()?.Timestamp))
+                foreach (var evt in failedLogonEvents.Where(e=> existing == null || existing.Count == 0 || e.Timestamp>existing.LastOrDefault()?.Timestamp))
+                //foreach (var evt in failedLogonEvents)
                 {
-                    var matching = context.FailedADLogonEvents.FirstOrDefault(e => e.Timestamp.Equals(evt.TimeCreated));
+                    var matching = context.FailedADLogonEvents.FirstOrDefault(e => e.Timestamp.Equals(evt.Timestamp));
                     if (matching == null)
                     {
 
                         if (existing.Count() > 9)
                         {
                             context.FailedADLogonEvents.Remove(existing.First());
+                            existing.Remove(existing.First());
                         }
-                        context.FailedADLogonEvents.Add(new()
-                        {
-                            Sid = user.SID,
-                            Timestamp = evt.TimeCreated,
-                            WorkstationIp = evt.GetWorkstationIp(),
-                            WorkstationName = evt.GetWorkstationName()
-                        });
+                        context.FailedADLogonEvents.Add(evt);
+                        existing.Add(evt);
+
                     }
 
                 }
             }
+            context.SaveChanges();
         }
     }
 }

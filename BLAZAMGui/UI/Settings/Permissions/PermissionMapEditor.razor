@@ -12,7 +12,7 @@
                            Placeholder=@AppLocalization["Choose or Search..."]
                            T="PermissionDelegate"
                            ToStringFunc=DelegateToString
-                           Label="@AppLocalization["Delegates"]"
+                           Label="@AppLocalization[Lang.Delegates]"
                            MultiSelection=true
                            @bind-Text=@selectedPermissionDelegateNames
                            @bind-SelectedValues=@Map.PermissionDelegates />
@@ -24,7 +24,7 @@
                            Placeholder=@AppLocalization["Choose or Search..."]
                            T="AccessLevel"
                            ToStringFunc="item=>item?.Name"
-                           Label="@AppLocalization["Access Levels"]"
+                           Label="@AppLocalization[Lang.Access_Levels]"
                            @bind-Text=@selectedAccessLevelNames
                            MultiSelection="true"
                            @bind-SelectedValues=@Map.AccessLevels />
@@ -33,7 +33,7 @@
                        Disabled=SaveDisabled
                        ButtonType="ButtonType.Submit">Save Mapping</MudButton>
             <AppCloseButton OnClick="DeleteMapping"
-                            Tooltip=@AppLocalization["Remove"] />
+                            Tooltip=@AppLocalization[Lang.Remove] />
         }
         else
         {

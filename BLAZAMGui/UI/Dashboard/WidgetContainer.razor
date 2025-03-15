@@ -8,12 +8,12 @@
                 <MudSpacer />
                 <AppIconButton Icon="@Icons.Material.Filled.Refresh"
                                Color="Color.Primary"
-                               Tooltip=@AppLocalization["Refresh"]
+                               Tooltip=@AppLocalization[Lang.Refresh]
                                OnClick="@(async()=>{await OnRefresh.InvokeAsync(Widget);})" />
 
 
                 <AppCloseButton Disabled="!_editMode"
-                                Tooltip=@AppLocalization["Remove"]
+                                Tooltip=@AppLocalization[Lang.Remove]
                                 OnClick=@(async()=>{await OnRemove.InvokeAsync(Widget);}) />
 
             </MudCardHeader>

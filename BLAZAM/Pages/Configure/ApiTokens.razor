@@ -2,7 +2,7 @@
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits DatabaseComponentBase
-<AppPageTitle>@AppLocalization["API Tokens"]</AppPageTitle>
+<AppPageTitle>@AppLocalization[Lang.API_Tokens]</AppPageTitle>
 
 <AuthorizeView Roles=@UserRoles.SuperAdmin>
 
@@ -10,10 +10,10 @@
         <MudSwitch T=bool Color="@Color.Success"
                    @bind-Value=ShowDeleted
                    UncheckedColor="Color.Error"
-                   Label="@AppLocalization["Show Deleted"]" />
+                   Label="@AppLocalization[Lang.Show_Deleted]" />
     </SetHeader>
 
-    <MudText Typo="Typo.h4">@AppLocalization["API Tokens"] <AppDocumentationButton Page="/admin/api" /></MudText>
+    <MudText Typo="Typo.h4">@AppLocalization[Lang.API_Tokens] <AppDocumentationButton Page="/admin/api" /></MudText>
     <MudLink Href="/swagger" Target="_blank">
         <MudAlert Severity="Severity.Info"
                   Variant="Variant.Filled"
@@ -23,7 +23,7 @@
         </MudAlert>
     </MudLink>
     <ApiTokenDataGrid ShowUser="true" OnTokenDeleted="@(async(token)=>{await Delete(token);})" Tokens="@_tokens" />
-    <MudButton Color="Color.Primary" OnClick="@(Save)">@AppLocalization["Save"]</MudButton>
+    <MudButton Color="Color.Primary" OnClick="@(Save)">@AppLocalization[Lang.Save]</MudButton>
 </AuthorizeView>
 
 
