@@ -125,7 +125,7 @@ namespace BLAZAM.Pages.API.v1
             AssignGroups(newUserDetails, newUser);
 
             //Prepare commit job
-            Job createUserJob = new(AppLocalization["Create User"]);
+            Job createUserJob = new(AppLocalization[Lang.Create_User]);
 
             createUserJob.StopOnFailedStep = true;
 

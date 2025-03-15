@@ -39,6 +39,25 @@ namespace BLAZAM.ActiveDirectory.Adapters
             var recovery = await Directory.BitLocker.FindByComputerAsync(this);
             return recovery;
         }
+        public async Task<bool> RenameAsync(string newName)
+        {
+            if (string.IsNullOrEmpty(CanonicalName))
+            {
+                Loggers.ActiveDirectoryLogger.Warning("Cannot rename computer. CanonicalName is null or empty.");
+                return false;
+            }
+
+            
+            if (wmiConnection != null)
+            {
+                return await wmiConnection.RenameComputerAsync(newName);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> ShutdownAsync(int delaySeconds = 0, string? message = null, bool force = true, bool reboot = false)
         {
             if (string.IsNullOrEmpty(CanonicalName))

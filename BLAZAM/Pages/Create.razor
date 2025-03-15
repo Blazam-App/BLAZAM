@@ -1,4 +1,7 @@
 ﻿@page "/create/{type}"
+@using BLAZAM.Gui.UI.Groups
+@using BLAZAM.Gui.UI.OU
+@using BLAZAM.Gui.UI.Users
 @attribute [Authorize(Roles = UserRoles.CreateUsers + "," + UserRoles.CreateGroups + "," + UserRoles.CreateOUs)]
 @switch (type.ToLower())
 {

@@ -168,6 +168,11 @@
         public static readonly string Add = "Add";
         public static readonly string Main = "Main";
         public static readonly string System = "System";
+        public static readonly string Create_User = "Create User";
+        public static readonly string Create_Group = "Create Group";
+        public static readonly string Create_OU = "Create OU";
+        public static readonly string Show_Deleted = "Show Deleted";
+        public static readonly string Rename_Category = "Rename Category";
         public static readonly string Mappings = "Mappings";
         public static readonly string Category = "Category";
         public static readonly string Security = "Security";
