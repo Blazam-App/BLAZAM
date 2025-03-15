@@ -207,6 +207,7 @@ namespace BLAZAM.Localization
         public static readonly string Capacity = "Capacity";
         public static readonly string or = "or";
         public static readonly string Serial = "Serial";
+        public static readonly string Domain_Controllers = "Domain Controllers";
         public static readonly string Active_Directory_Connection_Status = "Active Directory Connection Status";
         public static readonly string Credentials_OK = "Credentials OK";
         public static readonly string Allow_self_edit = "Allow self edit";

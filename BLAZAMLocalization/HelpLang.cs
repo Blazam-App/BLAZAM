@@ -2,7 +2,7 @@
 {
     public static class HelpLang
     {
-        public static readonly string Mapping_Use_Access_Level = "Access_Level_Used_By";
+        public static readonly string Mapping_Use_Access_Level = "Mapping_Use_Access_Level";
         public static readonly string Invalid_Cert_Type = "Invalid_Cert_Type";
         public static readonly string Access_Level_Definition = "Access_Level_Definition";
         public static readonly string Super_User_Definition = "Super_User_Definition";
