@@ -12,11 +12,11 @@
     <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
         <ActivatorContent>
             <MudButton HtmlTag="label"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload"
-                       
-                       Disabled=LoadingData>
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            StartIcon="@Icons.Material.Filled.CloudUpload"
+
+            Disabled=LoadingData>
                 Upload Files
             </MudButton>
         </ActivatorContent>
@@ -40,18 +40,25 @@
     }
     private async void LoadIcon(IBrowserFile e)
     {
-
-        using (var stream = e.OpenReadStream(5000000))
+        try
         {
-            using (var memoryStream = new MemoryStream())
+            using (var stream = e.OpenReadStream(5000000))
             {
-                await stream.CopyToAsync(memoryStream);
-                newThumbnail = memoryStream.ToArray().ReizeRawImage(250);
-                //settings.AppIcon = memoryStream.ToArray();
+                using (var memoryStream = new MemoryStream())
+                {
+                    await stream.CopyToAsync(memoryStream);
+                    newThumbnail = memoryStream.ToArray().ReizeRawImage(250);
+                    //settings.AppIcon = memoryStream.ToArray();
+                }
             }
         }
-
-        await InvokeAsync(StateHasChanged);
+        catch(IOException ex){
+            SnackBarService.Error(ex.Message);
+        }
+        catch(Exception ex){
+            Loggers.SystemLogger.Error("Error uploading thumbnail image. {@Error}", ex);
+        }
+    await InvokeAsync(StateHasChanged);
 
     }
 
