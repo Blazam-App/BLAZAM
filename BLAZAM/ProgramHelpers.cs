@@ -155,12 +155,12 @@ namespace BLAZAM.Server
             /*
              * Uncomment this to force a language
            
-            */
+            
             CultureInfo culture = new CultureInfo("zh-Hans");
             //CultureInfo culture = new CultureInfo("zh-Hans");
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
-            /*
+            
            */
 
 

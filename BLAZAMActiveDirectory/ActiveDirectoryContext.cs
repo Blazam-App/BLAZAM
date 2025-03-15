@@ -35,6 +35,7 @@ namespace BLAZAM.ActiveDirectory
             }
             set => _currentUser = value;
         }
+        private CancellationTokenSource _connectionCTS = new();
 
         private const string LDAP_PROTO = "LDAP://";
         private readonly WmiFactory _wmiFactory;
@@ -90,6 +91,64 @@ namespace BLAZAM.ActiveDirectory
         /// </remarks>
         public DirectoryEntry RootDirectoryEntry { get; private set; }
 
+
+        /// <summary>
+        /// Initializes the applications Active Directory connection. It takes the information
+        /// from the ActiveDirectorySetting table in the database and uses them to configure the
+        /// connection.
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
+        public ActiveDirectoryContext(IAppDatabaseFactory factory,
+            IApplicationUserStateService userStateService,
+            IEncryptionService encryptionService,
+            INotificationPublisher notificationPublisher
+            )
+        {
+            _wmiFactory = new(this);
+            _encryption = encryptionService;
+            _notificationPublisher = notificationPublisher;
+            Factory = factory;
+            _userStateService = userStateService;
+            SetSystemInstance(this);
+            EventLogReader = new(this);
+            _ = ConnectAsync();
+
+            Users = new ADUserSearcher(this);
+            Groups = new ADGroupSearcher(this);
+            OUs = new ADOUSearcher(this);
+            Printers = new ADPrinterSearcher(this);
+            BitLocker = new ADBitLockerSearcher(this);
+            Computers = new ADComputerSearcher(this, _wmiFactory);
+        }
+
+        /// <summary>
+        /// Used for factory creation of session scoped contexts.
+        /// </summary>
+        /// <param name="activeDirectoryContextSeed"></param>
+        public ActiveDirectoryContext(ActiveDirectoryContext activeDirectoryContextSeed)
+        {
+            _encryption = activeDirectoryContextSeed._encryption;
+            _notificationPublisher = activeDirectoryContextSeed._notificationPublisher;
+            Factory = activeDirectoryContextSeed.Factory;
+            _userStateService = activeDirectoryContextSeed._userStateService;
+            ConnectionSettings = activeDirectoryContextSeed.ConnectionSettings;
+            RootDirectoryEntry = activeDirectoryContextSeed.RootDirectoryEntry;
+            AppRootDirectoryEntry = activeDirectoryContextSeed.AppRootDirectoryEntry;
+            _wmiFactory = activeDirectoryContextSeed._wmiFactory;
+            DomainControllers = activeDirectoryContextSeed.DomainControllers;
+            Status = activeDirectoryContextSeed.Status;
+            EventLogReader = activeDirectoryContextSeed.EventLogReader;
+
+            Users = new ADUserSearcher(this);
+            Groups = new ADGroupSearcher(this);
+            OUs = new ADOUSearcher(this);
+            Printers = new ADPrinterSearcher(this);
+            BitLocker = new ADBitLockerSearcher(this);
+            Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
+
+        }
 
         public DirectoryEntry GetDirectoryEntry(string? baseDN = null)
         {
@@ -174,66 +233,12 @@ namespace BLAZAM.ActiveDirectory
                 return ConnectionSettings?.CreateDirectoryAdminImpersonator();
             }
         }
-        /// <summary>
-        /// Initializes the applications Active Directory connection. It takes the information
-        /// from the ActiveDirectorySetting table in the database and uses them to configure the
-        /// connection.
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
-        public ActiveDirectoryContext(IAppDatabaseFactory factory,
-            IApplicationUserStateService userStateService,
-            IEncryptionService encryptionService,
-            INotificationPublisher notificationPublisher
-            )
+       
+        private static void SetSystemInstance(ActiveDirectoryContext context)
         {
-            _wmiFactory = new(this);
-            _encryption = encryptionService;
-            _notificationPublisher = notificationPublisher;
-            Factory = factory;
-            _userStateService = userStateService;
-            _systemInstance = this;
-            EventLogReader = new(this);
-            //UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
-            _ = ConnectAsync();
-
-            Users = new ADUserSearcher(this);
-            Groups = new ADGroupSearcher(this);
-            OUs = new ADOUSearcher(this);
-            Printers = new ADPrinterSearcher(this);
-            BitLocker = new ADBitLockerSearcher(this);
-            Computers = new ADComputerSearcher(this, _wmiFactory);
+            _systemInstance = context;
         }
-        /// <summary>
-        /// Used for factory creation of session scoped contexts.
-        /// </summary>
-        /// <param name="activeDirectoryContextSeed"></param>
-        public ActiveDirectoryContext(ActiveDirectoryContext activeDirectoryContextSeed)
-        {
-            _encryption = activeDirectoryContextSeed._encryption;
-            _notificationPublisher = activeDirectoryContextSeed._notificationPublisher;
-            Factory = activeDirectoryContextSeed.Factory;
-            _userStateService = activeDirectoryContextSeed._userStateService;
-            ConnectionSettings = activeDirectoryContextSeed.ConnectionSettings;
-            RootDirectoryEntry = activeDirectoryContextSeed.RootDirectoryEntry;
-            AppRootDirectoryEntry = activeDirectoryContextSeed.AppRootDirectoryEntry;
-            _wmiFactory = activeDirectoryContextSeed._wmiFactory;
-            DomainControllers = activeDirectoryContextSeed.DomainControllers;
-            Status = activeDirectoryContextSeed.Status;
-            EventLogReader = activeDirectoryContextSeed.EventLogReader;
-            // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
-            //ConnectAsync();
-            // _timer = new Timer(KeepAlive, null, 30000, 30000);
-
-            Users = new ADUserSearcher(this);
-            Groups = new ADGroupSearcher(this);
-            OUs = new ADOUSearcher(this);
-            Printers = new ADPrinterSearcher(this);
-            BitLocker = new ADBitLockerSearcher(this);
-            Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
-
-        }
+     
         private DirectoryContext DirectoryContext => new(
             DirectoryContextType.Domain,
             ConnectionSettings.FQDN,
@@ -293,11 +298,10 @@ namespace BLAZAM.ActiveDirectory
         }
         public async Task CancelConnection()
         {
-            await connectionCTS.CancelAsync();
-            connectionCTS.Dispose();
-            connectionCTS = new();
+            await _connectionCTS.CancelAsync();
+            _connectionCTS.Dispose();
+            _connectionCTS = new();
         }
-        private CancellationTokenSource connectionCTS = new();
         /// <summary>
         /// Attempts a connection to the Active Directory server
         /// </summary>
@@ -312,25 +316,24 @@ namespace BLAZAM.ActiveDirectory
             {
                 ConnectDatabase();
                 
-                if (connectionCTS.IsCancellationRequested) return;
+                if (_connectionCTS.IsCancellationRequested) return;
 
                 ADSettings? ad;
 
                 GetConnectionSettings(out ad);
 
-                if (connectionCTS.IsCancellationRequested) return;
+                if (_connectionCTS.IsCancellationRequested) return;
 
                 PerformNetworkTests(ad);
 
-                if (connectionCTS.IsCancellationRequested) return;
+                if (_connectionCTS.IsCancellationRequested) return;
 
                 InitializeDirectoryEntries(ad);
 
-                if (connectionCTS.IsCancellationRequested) return;
+                if (_connectionCTS.IsCancellationRequested) return;
 
                 PerformConnectionTests(ad);
 
-                return;
             }
             catch (DirectoryOperationException ex)
             {
@@ -340,7 +343,7 @@ namespace BLAZAM.ActiveDirectory
 
                 Status = DirectoryConnectionStatus.BadConfiguration;
                 if (FailedConnectionAttempts < 10)
-                    FailedConnectionAttempts++; ;
+                    FailedConnectionAttempts++;
             }
             catch (CryptographicException ex)
             {
@@ -349,7 +352,7 @@ namespace BLAZAM.ActiveDirectory
                 Loggers.ActiveDirectoryLogger.Warning("Unable to decrypt Active Directory password {@Error}", ex);
                 Status = DirectoryConnectionStatus.EncryptionError;
                 if (FailedConnectionAttempts < 10)
-                    FailedConnectionAttempts++; ;
+                    FailedConnectionAttempts++;
 
             }
             catch (DirectoryServicesCOMException ex)
@@ -394,7 +397,7 @@ namespace BLAZAM.ActiveDirectory
                         break;
                 }
                 if (FailedConnectionAttempts < 10)
-                    FailedConnectionAttempts++; ;
+                    FailedConnectionAttempts++;
             }
         }
 
@@ -402,14 +405,13 @@ namespace BLAZAM.ActiveDirectory
         {
             //Ok get the latest settings
             ad = _context?.ActiveDirectorySettings.FirstOrDefault();
-            if (connectionCTS.IsCancellationRequested) return;
+            if (_connectionCTS.IsCancellationRequested) return;
 
             if (ad == null)
             {
                 Status = DirectoryConnectionStatus.UnreachableConfiguration;
                 if (FailedConnectionAttempts < 10)
-                    FailedConnectionAttempts++; ;
-                return;
+                    FailedConnectionAttempts++;
             }
             ConnectionSettings = ad;
 
@@ -421,8 +423,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 Status = DirectoryConnectionStatus.Unconfigured;
                 if (FailedConnectionAttempts < 10)
-                    FailedConnectionAttempts++; ;
-                return;
+                    FailedConnectionAttempts++;
             }
         }
 
@@ -431,7 +432,7 @@ namespace BLAZAM.ActiveDirectory
             //We want the latest settings each connection attempt so we make a new database connection
             _context = Factory.CreateDbContext();
 
-            if (connectionCTS.IsCancellationRequested) return;
+            if (_connectionCTS.IsCancellationRequested) return;
 
             Loggers.ActiveDirectoryLogger.Information("Connecting to settings database");
 
@@ -440,7 +441,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 Status = DirectoryConnectionStatus.UnreachableConfiguration;
                 if (FailedConnectionAttempts < 10)
-                    FailedConnectionAttempts++; ;
+                    FailedConnectionAttempts++; 
                 return;
 
             }
@@ -452,8 +453,9 @@ namespace BLAZAM.ActiveDirectory
             //Perform Auth check
             Loggers.ActiveDirectoryLogger.Information("Performing Active Directory connection test");
 
-            var rootConnectionTest = RootDirectoryEntry.Name;
-            var appRootConnectionTest = AppRootDirectoryEntry.Name;
+            _ = RootDirectoryEntry.Name;
+            _ = AppRootDirectoryEntry?.Name;
+            
 
             var search = new ADSearch(this)
             {
@@ -510,8 +512,6 @@ namespace BLAZAM.ActiveDirectory
                 AuthType);
 
             Loggers.ActiveDirectoryLogger.Information("Root Active Directory context connected");
-
-            pass = null;
         }
 
         private void PerformNetworkTests(ADSettings? ad)
@@ -559,13 +559,14 @@ namespace BLAZAM.ActiveDirectory
         public void Dispose()
         {
             Dispose(true);
-            connectionCTS?.Dispose();
+           
             GC.SuppressFinalize(this);
         }
         protected virtual void Dispose(bool disposing)
         {
             // Cleanup
             _keepAlive = false;
+            _connectionCTS?.Dispose();
             _context?.Dispose();
         }
         public IADUser? Authenticate(LoginRequest loginReq)

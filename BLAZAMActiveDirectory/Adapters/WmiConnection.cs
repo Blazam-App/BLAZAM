@@ -60,22 +60,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         return true;
                     }
 
-                    Loggers.ActiveDirectoryLogger.Warning($"Shutdown command sent to {target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
+                    Loggers.ActiveDirectoryLogger.Warning($"Rename command sent to {target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
                     return false; // No Win32_OperatingSystem object found.
                 }
                 catch (ManagementException mex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Management exception while shutting down {target.CanonicalName}: {mex.Message} ErrorCode: {mex.ErrorCode}", mex);
+                    Loggers.ActiveDirectoryLogger.Error($"Management exception while renaming {target.CanonicalName}: {mex.Message} ErrorCode: {mex.ErrorCode}", mex);
                     return false;
                 }
                 catch (UnauthorizedAccessException uaex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Unauthorized access while shutting down {target.CanonicalName}: {uaex.Message}", uaex);
+                    Loggers.ActiveDirectoryLogger.Error($"Unauthorized access while renaming {target.CanonicalName}: {uaex.Message}", uaex);
                     return false;
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Exception while shutting down {target.CanonicalName}: {ex.Message}", ex);
+                    Loggers.ActiveDirectoryLogger.Error($"Exception while renaming {target.CanonicalName}: {ex.Message}", ex);
                     return false;
                 }
             });
@@ -162,7 +162,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     double total = Convert.ToDouble(mo["TotalVisibleMemorySize"]);
                     double free = Convert.ToDouble(mo["FreePhysicalMemory"]);
                     return new ComputerMemory { Total = total, Free = free };
-                };
+                }
 
                 return new ComputerMemory();
 
@@ -204,8 +204,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 foreach (var mo in PerformQuery(CPUStatsQuery))
                 {
-                    var test = mo;
-                    int percentIdle = Convert.ToInt32(mo["PercentIdleTime"]);
                     int percentProcessor = Convert.ToInt32(mo["PercentProcessorTime"]);
                     return percentProcessor;
                 }

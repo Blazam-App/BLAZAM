@@ -31,10 +31,11 @@
     }
 
 
-    async Task SaveChanges()
+    Task SaveChanges()
     {
         SnackBarService.Warning("The ou has been renamed but changes must be saved.");
         Close();
+        return Task.CompletedTask;
 
     }
     protected override bool IsValid=> !OU.CanonicalName.IsNullOrEmpty();

@@ -31,7 +31,6 @@
 
 </MudContainer>
 @code {
-    bool validated;
     int activePanel = 0;
     IADOrganizationalUnit destinationOU;
     [Parameter]
@@ -43,7 +42,6 @@
         Modal.Options.FullWidth = true;
         Modal.Options.MaxWidth = MaxWidth.Large;
 
-        // Modal.OnYes = SaveChanges;
         Modal.YesText = AppLocalization[Lang.Next];
         Modal.Title = "Register Printers";
         Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
@@ -91,7 +89,6 @@
             destinationOU = newDestinationOU;
             if (destinationOU != null && selectedPrinters != null && selectedPrinters.Count > 0)
             {
-                validated = true;
                 Modal.YesText = AppLocalization["Register"];
                 Modal.OnYes = RegisterSelectedPrinters;
                 _=Modal.RefreshView();

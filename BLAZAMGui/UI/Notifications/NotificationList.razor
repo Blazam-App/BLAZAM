@@ -33,7 +33,7 @@
         <MudCard Class="py-3 cursor-pointer" Elevation="2" @onclick=@(()=>{_showRead = !_showRead; })>
             <MudStack Row=true Class="px-4">
                 <MudIcon Color="Color.Success"
-                         Icon="@(_showRead == true ? Icons.Material.Filled.ArrowDropUp : Icons.Material.Filled.ArrowDropDown)" />
+                         Icon="@(_showRead? Icons.Material.Filled.ArrowDropUp : Icons.Material.Filled.ArrowDropDown)" />
                 <MudText Typo="Typo.subtitle2">@AppLocalization["Read Notifications"]</MudText>
             </MudStack>
         </MudCard>
@@ -64,27 +64,27 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        RetrieveMessages();
+        await RetrieveMessagesAsync();
 
-        UserState.OnSettingsChanged +=  () =>
+        UserState.OnSettingsChanged += async () =>
         {
-            RetrieveMessages();
+            await RetrieveMessagesAsync();
         };
-        NotificationPublisher.OnNotificationPublished +=  (notification) =>
+        NotificationPublisher.OnNotificationPublished += async (notification) =>
         {
-            RetrieveMessages();
+            await RetrieveMessagesAsync();
         };
-        NotificationPublisher.OnNotificationDeleted +=  () =>
+        NotificationPublisher.OnNotificationDeleted += async () =>
         {
-            RetrieveMessages();
+            await RetrieveMessagesAsync();
         };
 
     }
-    private void RetrieveMessages()
+    private async Task RetrieveMessagesAsync()
     {
-        Task.Run(async () =>
+        await Task.Run(async () =>
         {
-            if(messages ==  null || messages.Count==0)
+            if (messages == null || messages.Count == 0)
             {
                 LoadingData = true;
             }
@@ -104,7 +104,7 @@
     }
     public override async Task UpdateState()
     {
-        RetrieveMessages();
+        await RetrieveMessagesAsync();
 
     }
 

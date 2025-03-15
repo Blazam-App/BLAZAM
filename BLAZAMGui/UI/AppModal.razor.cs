@@ -60,8 +60,7 @@ namespace BLAZAM.Gui.UI
                 InvokeAsync(StateHasChanged);
             }
         }
-        //[Parameter]
-        //public EventCallback OnNo { get; set; }
+
         [Parameter]
         public OnCancelEvent OnCancel { get; set; }
 

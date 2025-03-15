@@ -232,6 +232,8 @@ namespace BLAZAM.Localization
         public static readonly string Manage = "Manage";
         public static readonly string Comment = "Comment";
         public static readonly string Show_All_Members = "Show All Members";
+        public static readonly string Request_Approved = "The request has been approved";
+        public static readonly string Request_Denied = "The request has been denied";
         public static readonly string Delegate_restored = "Delegate restored";
         public static readonly string Delgate_Name = "Delgate Name";
         public static readonly string Delegate_added = "Delegate added";
