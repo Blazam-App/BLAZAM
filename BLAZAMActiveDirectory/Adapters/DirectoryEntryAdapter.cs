@@ -337,7 +337,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     return _cachedHasChildren == true;
 
                 }
-                var hasChildren = CachedChildren.Count() > 0;
+                var hasChildren = CachedChildren.Any();
                 return hasChildren;
             }
         }
@@ -1002,7 +1002,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         private void FetchDirectoryEntry()
         {
-            if (SearchResult is null) throw new ArgumentNullException(nameof(SearchResult));
+            if (SearchResult is null) throw new CriticalActiveDirectoryException(Directory,nameof(SearchResult));
 
             DirectoryEntry = SearchResult.GetDirectoryEntry();
 

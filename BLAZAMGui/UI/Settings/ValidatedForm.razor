@@ -33,12 +33,12 @@
         {
             try
             {
-                // if (ApplicationInfo.InDemoMode && ApplicationInfo.InstallationCompleted && UserStateService.CurrentUsername.Equals("demo", StringComparison.OrdinalIgnoreCase))
-                // {
-                //     SnackBarService.Warning("Settings changes are not allowed in the demo");
-                //     return;
+                if (ApplicationInfo.InDemoMode && ApplicationInfo.InstallationCompleted && UserStateService.CurrentUsername.Equals("demo", StringComparison.OrdinalIgnoreCase))
+                {
+                    SnackBarService.Warning("Settings changes are not allowed in the demo");
+                    return;
 
-                // }
+                }
                 var results = await Context.SaveChangesAsync();
                 SnackBarService.Success("Settings have been saved");
             }

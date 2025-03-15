@@ -1,14 +1,16 @@
 ﻿@inherits DatabaseComponentBase
-<MudText Typo="Typo.h4">@AppLocalization["Manage Notifications"] <AppDocumentationButton Page="/admin/notifications" /></MudText>
+<MudText Typo="Typo.h4">
+    @AppLocalization[Lang.Manage_Notifications] <AppDocumentationButton Page="/admin/notifications" />
+</MudText>
 
 <MudAutocomplete @bind-Value=_selectedUser
-                 MaxItems="50"
-                 SearchFunc="SearchUsers"
-                 T="AppUser"
-                 Label="@AppLocalization[Lang.User]" />
+MaxItems="50"
+SearchFunc="SearchUsers"
+T="AppUser"
+Label="@AppLocalization[Lang.User]" />
 @if (_selectedUser != null)
 {
- <NotificaionSubscriptionEditor User=_selectedUser/>
+    <NotificaionSubscriptionEditor User=_selectedUser />
 }
 @code {
     IList<AppUser> Users = new List<AppUser>();
@@ -18,12 +20,13 @@
         await base.OnInitializedAsync();
         Users = await Context.UserSettings.ToListAsync();
     }
-    private async Task<IEnumerable<AppUser>> SearchUsers(string value,CancellationToken token)
+    private async Task<IEnumerable<AppUser>> SearchUsers(string value, CancellationToken token)
     {
+        if (token.IsCancellationRequested) return new List<AppUser>();
         if (value == null) value = String.Empty;
-        return Users.Where(x => x.Username.Contains(value)).OrderBy(x=>x.Username);
+        return Users.Where(x => x.Username?.Contains(value)==true).OrderBy(x => x.Username);
     }
-    
+
 
 
 

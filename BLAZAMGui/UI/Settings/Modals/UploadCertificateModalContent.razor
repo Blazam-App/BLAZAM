@@ -3,40 +3,16 @@
 @using System.Security.Cryptography.X509Certificates
 @inherits AppModalContent
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
-    <MudSelectList Label=@AppLocalization["Certificate Type"] Values="@(new List<string>{"PFX","Crt and Key"})"  @bind-Value=SelectedCertType />
-        @if(SelectedCertType=="PFX"){
-        <MudFileUpload T="IBrowserFile" FilesChanged="LoadPFX" Accept=".pfx">
-        <ActivatorContent>
-            <MudButton HtmlTag="label"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload">
-                Upload PFX
-            </MudButton>
-        </ActivatorContent>
-        <SelectedTemplate>
-            @if (context != null)
-            {
-                <MudText>@context.Name</MudText>
-            }
-            else
-            {
-                <MudText>No File</MudText>
-            }
-        </SelectedTemplate>
-        </MudFileUpload>
-        <MudTextField Label="Password" name="Password" InputType="InputType.Password" @bind-Value=pfxPassword />
-
-    }
-    else
+    <MudSelectList Label=@AppLocalization[Lang.Certificate_Type] Values="@(new List<string>{"PFX","Crt and Key"})" @bind-Value=SelectedCertType />
+    @if (SelectedCertType == "PFX")
     {
-        <MudFileUpload T="IBrowserFile" FilesChanged="LoadCert" Accept=".pem, .crt">
+        <MudFileUpload T="IBrowserFile" FilesChanged="LoadPFX" Accept=".pfx">
             <ActivatorContent>
                 <MudButton HtmlTag="label"
                            Variant="Variant.Filled"
                            Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.CloudUpload">
-                    Upload Certificate
+                    @AppLocalization[Lang.Upload] PFX
                 </MudButton>
             </ActivatorContent>
             <SelectedTemplate>
@@ -46,7 +22,37 @@
                 }
                 else
                 {
-                    <MudText>No File</MudText>
+                    <MudText>@AppLocalization[Lang.No_File]</MudText>
+                }
+            </SelectedTemplate>
+        </MudFileUpload>
+        <MudTextField Label="@AppLocalization[Lang.Password]"
+                      name="Password"
+                      InputType="InputType.Password"
+                      @bind-Value=pfxPassword />
+
+    }
+    else
+    {
+        <MudFileUpload T="IBrowserFile"
+                       FilesChanged="LoadCert"
+                       Accept=".pem, .crt">
+            <ActivatorContent>
+                <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload">
+                    @AppLocalization[Lang.Upload_Certificate]
+                </MudButton>
+            </ActivatorContent>
+            <SelectedTemplate>
+                @if (context != null)
+                {
+                    <MudText>@context.Name</MudText>
+                }
+                else
+                {
+                    <MudText>@AppLocalization[Lang.No_File]</MudText>
                 }
             </SelectedTemplate>
         </MudFileUpload>
@@ -57,7 +63,7 @@
                            Variant="Variant.Filled"
                            Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.CloudUpload">
-                    Upload Key
+                    @AppLocalization[Lang.Upload_Key]
                 </MudButton>
             </ActivatorContent>
             <SelectedTemplate>
@@ -67,7 +73,7 @@
                 }
                 else
                 {
-                    <MudText>No File</MudText>
+                    <MudText>@AppLocalization[Lang.No_File]</MudText>
                 }
             </SelectedTemplate>
         </MudFileUpload>
@@ -75,7 +81,7 @@
 </MudContainer>
 
 @code {
-    string SelectedCertType="PFX";
+    string SelectedCertType = "PFX";
     string pfxPassword = "";
     byte[] pfxBytes;
     byte[] crtBytes;
@@ -85,14 +91,14 @@
     public AppSettings AppSettings { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        Modal.YesText = AppLocalization["Upload"];
+        Modal.YesText = AppLocalization[Lang.Upload];
         Modal.OnYes = Import;
         await base.OnInitializedAsync();
 
     }
 
 
-    public async Task Import()
+    public Task Import()
     {
         try
         {
@@ -107,23 +113,24 @@
                         var cipher = rawCert2?.Encrypt();
                         AppSettings.SSLCertificateCipher = cipher;
 
-                        var byteArray = cipher?.Decrypt<byte[]>();
-                        var cert3 = new X509Certificate2(byteArray);
+
                         Close();
                     }
                     else
                     {
-                        SnackBarService.Warning(AppLocalization["Not a valid certificate type."]);
+                        SnackBarService.Warning(AppHelpLocalization[HelpLang.Invalid_Cert_Type]);
                     }
                     break;
                 case "Crt and Key":
 
                     break;
             }
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             SnackBarService.Warning(ex.Message);
         }
+        return Task.CompletedTask;
 
     }
 
@@ -131,9 +138,6 @@
     {
         pfxBytes = await e.ToByteArrayAsync(5000000);
 
-
-
-        //await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
 
 
@@ -145,7 +149,6 @@
         crtBytes = await e.ToByteArrayAsync(5000000);
 
 
-        //await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
 
 
@@ -154,8 +157,8 @@
     private async void LoadKey(IBrowserFile e)
     {
         var bytes = await e.ToByteArrayAsync(5000000);
-        if(bytes!=null)
-            keyBytes=bytes;
+        if (bytes != null)
+            keyBytes = bytes;
 
         await InvokeAsync(StateHasChanged);
 

@@ -1,23 +1,23 @@
 ﻿@inherits SettingsComponents
-<MudText Typo="Typo.h4">@AppLocalization["Global Permission Settings"]<AppDocumentationButton Page="/admin/permissions" /></MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Global_Permission_Settings]<AppDocumentationButton Page="/admin/permissions" /></MudText>
 <MudForm @ref=Form @bind-IsValid=IsValid Model="settings">
     <MudStack Spacing="5">
 
-        <SettingsField Label="@AppLocalization["Allow access requests"]">
+        <SettingsField Label="@AppLocalization[Lang.Allow_access_requests]">
 
             <MudSwitch @bind-Value=settings.AllowAccessRequest
                        T=bool
                        Class="mt-0"
                        Color="Color.Success"
-                       Label=@AppLocalization["Allow access requests"] />
+                       Label=@AppLocalization[Lang.Allow_access_requests] />
+        </SettingsField>
+        @if (settings.AllowAccessRequest)
+        {
+            <SettingsField Label="@AppLocalization[Lang.Actions]">
 
-            @if (settings.AllowAccessRequest)
-            {
+
 
                 <MudStack Class="ms-4">
-                    <MudText>
-                        @AppLocalization[Lang.Actions]
-                    </MudText>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Assign)"
                                ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Assign); })"
                                Color="Color.Success">
@@ -35,17 +35,17 @@
                     </MudSwitch>
                 </MudStack>
 
-            }
 
-        </SettingsField>
+            </SettingsField>
+        }
 
-        <SettingsField Label="@AppLocalization["Allow self edit"]">
+        <SettingsField Label="@AppLocalization[Lang.Allow_self_edit]">
 
             <MudSwitch @bind-Value=settings.AllowSelfModification
                        T=bool
                        Class="mt-0"
                        Color="Color.Success"
-                       Label=@AppLocalization["Allow self edit"] />
+                       Label=@AppLocalization[Lang.Allow_self_edit] />
             @if (settings.AllowSelfModification)
             {
                 <EditAccessLevel Self=true

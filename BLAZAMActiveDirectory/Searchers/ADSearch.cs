@@ -335,7 +335,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
             SearchTime = DateTime.Now - startTime;
 
-            if (cancellationToken?.IsCancellationRequested == true) return;
 
         }
 
@@ -379,7 +378,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         private void AddResults<T, I>(SearchResultCollection lastResults) where T : I, IDirectoryEntryAdapter, new()
         {
-            List<IDirectoryEntryAdapter> last = new();
+            List<IDirectoryEntryAdapter> last;
             if (_currentUserActiveDirectoryContext != null)
             {
                 last = lastResults.Encapsulate(_currentUserActiveDirectoryContext);

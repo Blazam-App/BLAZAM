@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Localization
+﻿using System.Security;
+
+namespace BLAZAM.Localization
 {
     public static class Lang
     {
@@ -167,10 +169,12 @@
         public static readonly string Zip_Code = "Zip Code";
         public static readonly string Add = "Add";
         public static readonly string Main = "Main";
+        public static readonly string Error = "Error";
         public static readonly string System = "System";
         public static readonly string Create_User = "Create User";
         public static readonly string Create_Group = "Create Group";
         public static readonly string Create_OU = "Create OU";
+        public static readonly string Connection_Type = "Connection Type";
         public static readonly string Show_Deleted = "Show Deleted";
         public static readonly string Rename_Category = "Rename Category";
         public static readonly string Mappings = "Mappings";
@@ -193,11 +197,30 @@
         public static readonly string Memory = "Memory";
         public static readonly string AD_Connections = "AD Connections";
         public static readonly string DB_Connections = "DB Connections";
+        public static readonly string Active_Directory_Settings = "Active Directory Settings";
+        public static readonly string Copy_Template = "Copy Template";
+        public static readonly string New_Template = "New Template";
         public static readonly string CPU = "CPU";
+        public static readonly string Delegate = "Delegate";
         public static readonly string Used = "Used";
         public static readonly string Delay_in_seconds = "Delay in seconds";
         public static readonly string Capacity = "Capacity";
+        public static readonly string or = "or";
         public static readonly string Serial = "Serial";
+        public static readonly string Domain_Controllers = "Domain Controllers";
+        public static readonly string Active_Directory_Connection_Status = "Active Directory Connection Status";
+        public static readonly string Credentials_OK = "Credentials OK";
+        public static readonly string Allow_self_edit = "Allow self edit";
+        public static readonly string Server_Port_Open = "Server Port Open";
+        public static readonly string Allow_access_requests = "Allow access requests";
+        public static readonly string Global_Permission_Settings = "Global Permission Settings";
+        public static readonly string Application_User = "Application User";
+        public static readonly string Confirm_deletion = "Confirm deletion";
+        public static readonly string Delete_Access_Level = "Delete Access Level";
+        public static readonly string Update_Access_Level = "Update Access Level";
+        public static readonly string Create_Access_Level = "Create Access Level";
+        public static readonly string Allow_Disabled_User_Access = "Allow Disabled User Access";
+        public static readonly string Assign_Objects = "Assign Objects";
         public static readonly string Member = "Member";
         public static readonly string Time = "Time";
         public static readonly string Date = "Date";
@@ -205,11 +228,29 @@
         public static readonly string Idle_Time = "Idle Time";
         public static readonly string Message = "Message";
         public static readonly string Send_Message = "Send Message";
+        public static readonly string Delegate_removed = "Delegate removed";
         public static readonly string Manage = "Manage";
         public static readonly string Comment = "Comment";
+        public static readonly string Show_All_Members = "Show All Members";
+        public static readonly string Request_Approved = "The request has been approved";
+        public static readonly string Request_Denied = "The request has been denied";
+        public static readonly string Delegate_restored = "Delegate restored";
+        public static readonly string Delgate_Name = "Delgate Name";
+        public static readonly string Delegate_added = "Delegate added";
+        public static readonly string Filter_Delegates = "Filter Delegates";
+        public static readonly string Create_New_Delegation_Target = "Create New Delegation Target";
+        public static readonly string Super_User = "Super User";
+        public static readonly string No_File = "No File";
+        public static readonly string Upload = "Upload";
         public static readonly string Location = "Location";
         public static readonly string Disconnect = "Disconnect";
+        public static readonly string Add_Delegate = "Add Delegate";
         public static readonly string Reboot_Shutdown = "Reboot/Shutdown";
+        public static readonly string Certificate_Type = "Certificate Type";
+        public static readonly string Upload_Certificate = "Upload Certificate";
+        public static readonly string Upload_Key = "Upload Key";
+        public static readonly string Manage_Notifications = "Manage Notifications";
+        public static readonly string Add_New_Access_Level = "Add New Access Level";
         public static readonly string Reboot_Shutdown_Confirmation = "Reboot_Shutdown_Confirmation";
         public static readonly string Reboot_Shutdown_Success = "Reboot_Shutdown_Success";
         public static readonly string Reboot_Shutdown_Failure = "Reboot_Shutdown_Failure";

@@ -117,10 +117,10 @@ namespace BLAZAM.Services
 
             var identity = new ClaimsIdentity(new[]
            {
-                    new Claim(ClaimTypes.Sid, sessionId.IsNullOrEmpty()==true?"0":sessionId),
+                    new Claim(ClaimTypes.Sid, sessionId.IsNullOrEmpty()?"0":sessionId),
                     new Claim(ClaimTypes.Name, "Anonymous"),
                     new Claim(ClaimTypes.Role, "Anonymous"),
-                    new Claim(ClaimTypes.Actor,sessionId.IsNullOrEmpty()==true?"0":sessionId)
+                    new Claim(ClaimTypes.Actor,sessionId.IsNullOrEmpty()?"0":sessionId)
                 }, null);
             if (mfaToken != null)
             {
@@ -301,7 +301,6 @@ namespace BLAZAM.Services
             //Return the authenticationstate
             if (authenticationState != null)
             {
-                //await _audit.Logon.Login(result.User);
 
                 return loginReq.Success(authenticationState);
             }
@@ -411,7 +410,7 @@ namespace BLAZAM.Services
         public async Task<ClaimsIdentity?> CreateDirectoryIdentity(IApplicationUserState loginUser, IADUser user, LoginRequest? loginReq = null)
         {
 
-            var identity = new ClaimsIdentity();
+            ClaimsIdentity identity;
 
 
 

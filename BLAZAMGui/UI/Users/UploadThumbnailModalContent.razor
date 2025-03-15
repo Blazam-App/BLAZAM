@@ -12,11 +12,11 @@
     <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
         <ActivatorContent>
             <MudButton HtmlTag="label"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload"
-                       
-                       Disabled=LoadingData>
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            StartIcon="@Icons.Material.Filled.CloudUpload"
+
+            Disabled=LoadingData>
                 Upload Files
             </MudButton>
         </ActivatorContent>
@@ -47,7 +47,6 @@
             {
                 await stream.CopyToAsync(memoryStream);
                 newThumbnail = memoryStream.ToArray().ReizeRawImage(250);
-                //settings.AppIcon = memoryStream.ToArray();
             }
         }
 
@@ -56,7 +55,7 @@
     }
 
 
-    async Task SaveChanges()
+    Task SaveChanges()
     {
         try
         {
@@ -70,7 +69,7 @@
 
         }
         Close();
-
+        return Task.CompletedTask;
     }
     protected override bool IsValid => newThumbnail != null;
 

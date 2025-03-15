@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Update="AppHelpLocalization.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AppHelpLocalization.resx</DependentUpon>
+    </Compile>
     <Compile Update="AppLocalization.hi.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -26,6 +31,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="AppHelpLocalization.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppHelpLocalization.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="AppLocalization.hi.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AppLocalization.hi.Designer.cs</LastGenOutput>

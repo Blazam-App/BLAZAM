@@ -315,7 +315,7 @@
   <data name="Contact Info" xml:space="preserve">
     <value>Kontaktdaten</value>
   </data>
-  <data name="Copy template" xml:space="preserve">
+  <data name="Copy Template" xml:space="preserve">
     <value>Vorlage kopieren</value>
   </data>
   <data name="CPU" xml:space="preserve">
@@ -603,7 +603,7 @@
   <data name="New Password" xml:space="preserve">
     <value>Neues Passwort</value>
   </data>
-  <data name="New template" xml:space="preserve">
+  <data name="New Template" xml:space="preserve">
     <value>Neue Vorlage</value>
   </data>
   <data name="Next" xml:space="preserve">

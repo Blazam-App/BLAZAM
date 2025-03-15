@@ -6,10 +6,10 @@
     @if (_usedInMappings.Count > 0)
     {
         <MudAlert Severity="Severity.Warning">
-            @_usedInMappings.Count @AppLocalization["mappings use this Access Level and will be deleted"]
+            @AppHelpLocalization[HelpLang.Mapping_Use_Access_Level,[_usedInMappings.Count]]
             <MudDataGrid Items="_usedInMappings" T="PermissionMapping">
                 <Columns>
-                    <TemplateColumn Title=@AppLocalization["Delegate"]>
+                    <TemplateColumn Title=@AppLocalization[Lang.Delegate]>
                         <CellTemplate>
                             <MudList>
                                 @foreach (var delag in context.Item.PermissionDelegates)
