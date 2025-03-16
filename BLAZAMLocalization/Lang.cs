@@ -298,7 +298,10 @@ namespace BLAZAM.Localization
         public static readonly string No_File = "No File";
         public static readonly string Upload = "Upload";
         public static readonly string Location = "Location";
+        public static readonly string Computer_is_locked_out = "Computer is locked out";
+        public static readonly string Computer_is_disabled = "Computer is disabled";
         public static readonly string Disconnect = "Disconnect";
+        public static readonly string Active_Directory_object_created = "Active Directory object created";
         public static readonly string Add_Delegate = "Add Delegate";
         public static readonly string Reboot_Shutdown = "Reboot/Shutdown";
         public static readonly string Certificate_Type = "Certificate Type";

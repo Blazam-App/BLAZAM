@@ -12,6 +12,8 @@ namespace BLAZAM.EmailMessage.Email.Base
         [Inject]
         protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }
         [Inject]
+        protected IStringLocalizer<AppHelpLocalization> AppHelpLocalization { get; set; }
+        [Inject]
         protected ApplicationInfo ApplicationInfo { get; set; }
         [Parameter]
         public MarkupString EmailMessageHeader { get; set; }

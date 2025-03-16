@@ -72,11 +72,11 @@
                                         </MudStack>
                                         @if (Computer.Disabled)
                                         {
-                                            <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization["Computer is disabled"]</MudAlert>
+                                            <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization[Lang.Computer_is_disabled]</MudAlert>
                                         }
                                         @if (Computer.LockedOut)
                                         {
-                                            <MudAlert Severity="Severity.Warning" Class="mud-width-full">@AppLocalization["Computer is locked out"]</MudAlert>
+                                            <MudAlert Severity="Severity.Warning" Class="mud-width-full">@AppLocalization[Lang.Computer_is_locked_out]</MudAlert>
                                         }
                                     </MudStack>
 
