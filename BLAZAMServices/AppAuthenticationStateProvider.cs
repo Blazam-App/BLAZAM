@@ -4,10 +4,12 @@ using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
+using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using BLAZAM.Server.Helpers;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Duo;
+using BLAZAM.Services.Exceptions;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using DuoUniversal;
@@ -255,22 +257,28 @@ namespace BLAZAM.Services
                             else
                             {
                                 //Duo is not enabled, or this is impersonation, proceed with post login processing
-                                var sid = userClaim.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
-                                var userSettings = await context.UserSettings.FirstOrDefaultAsync(x => x.UserGUID == sid);
-                                if (userSettings != null && !loginReq.Impersonation && !userSettings.AuthenticatorSecret.IsNullOrEmpty())
-                                {
-                                    var passcode = loginReq.MFAToken;
-                                    loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
-                                    if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken, passcode))
-                                    {
-                                        var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
-                                        var authResult = await SetUser(twostepState);
-                                        newUserState.User = userClaim;
-                                        _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
-                                        authenticationState = authResult;
-                                        return loginReq.GoogleAuthenticatorRequested(authenticationState);
-                                    }
+                                AppUser? userSettings = await GetUserSettings(context, userClaim);
 
+                                if (userSettings != null && !loginReq.Impersonation && settings.RequireMFA && settings.MFAType == MFAType.GoogleAuthenticator)
+                                {
+                                    if (!userSettings.AuthenticatorSecret.Decrypt<string>().IsNullOrEmpty())
+                                    {
+                                        var passcode = loginReq.MFAToken;
+                                        loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
+                                        if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken, passcode))
+                                        {
+                                            var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
+                                            var authResult = await SetUser(twostepState);
+                                            newUserState.User = userClaim;
+                                            _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                                            authenticationState = authResult;
+                                            return loginReq.GoogleAuthenticatorRequested(authenticationState);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return loginReq.GoogleAuthenticatorRegistrationRequested(authenticationState);
+                                    }
                                 }
                             }
 
@@ -308,6 +316,13 @@ namespace BLAZAM.Services
                 return loginReq.BadCredentials();
 
 
+        }
+
+        private static async Task<AppUser?> GetUserSettings(IDatabaseContext context, ClaimsPrincipal? userClaim)
+        {
+            var sid = userClaim.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+            var userSettings = await context.UserSettings.FirstOrDefaultAsync(x => x.UserGUID == sid);
+            return userSettings;
         }
 
         /// <summary>
@@ -417,16 +432,16 @@ namespace BLAZAM.Services
             //Load privilege levels for user
             await _permissionHandler.LoadPermissions(loginUser, user);
             var userClaims = _permissionHandler.TransformUserRoles(loginUser, user, loginReq?.ImpersonatorClaims?.FindFirstValue(ClaimTypes.Sid));
-            
+
 
             //All Claims transformations are complete create the new signed in user's identity
             identity = new ClaimsIdentity(userClaims, AppAuthenticationTypes.ActiveDirectoryAuthentication);
-     
+
 
             return identity;
 
         }
-   
+
         /// <summary>
         /// Sets the User AuthenticationState in the AuthenticationProvider
         /// </summary>

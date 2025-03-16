@@ -15,7 +15,7 @@ OnClick="GenerateGoogleAuthToken">@AppLocalization["Create Google Authenticator 
 <GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
 
 @code {
-    string _authenticatorSecret;
+    string? _authenticatorSecret;
     private string? qrCode;
     GoogleAuthenticatorModal? googleAuthenticatorModal;
 
@@ -25,7 +25,7 @@ OnClick="GenerateGoogleAuthToken">@AppLocalization["Create Google Authenticator 
         base.OnInitialized();
         try
         {
-            _authenticatorSecret = CurrentUser.State.Preferences.AuthenticatorSecret.Decrypt<string>();
+            _authenticatorSecret = CurrentUser.State.Preferences?.AuthenticatorSecret?.Decrypt<string>();
             if (!_authenticatorSecret.IsNullOrEmpty())
             {
                 qrCode = GoogleAuthenticatorService.GenerateSetupCode(CurrentUser.Username, _authenticatorSecret.ToString()).QrCodeSetupImageUrl;

@@ -57,23 +57,27 @@
 
 
     </MudNavGroup>
-    <CreateGoogleAuthenticationToken/>
-    
+    @if (authSettings != null && authSettings.MFAType == MFAType.GoogleAuthenticator)
+    {
+        <CreateGoogleAuthenticationToken/>
+    }
 
-    <LoadingData Loading=LoadingData />
-</MudStack>
-@code {
 
+        <LoadingData Loading=LoadingData />
+    </MudStack>
+    @code {
+    private AuthenticationSettings? authSettings;
 
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
     protected override void OnInitialized()
     {
         base.OnInitialized();
-      
+
         Modal.SetYesText(AppLocalization[Lang.Save]);
         Modal.OnYes += SaveSettings;
         Modal.YesEnabled = () => { return !LoadingData; };
+        authSettings = Context.AuthenticationSettings.FirstOrDefault();
     }
     private async Task SaveSettings()
     {

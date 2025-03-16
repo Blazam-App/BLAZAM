@@ -13,6 +13,7 @@
               @bind-Value="@Passcode" />
 
 @code {
+    MudTextField<string>? textField;
     private bool _authenticated;
     [Parameter]
     public string? AuthSecret { get; set; }
@@ -26,6 +27,7 @@
             AuthenticatedChanged.InvokeAsync(value);
             if (value)
                 OnAuthenticated.InvokeAsync();
+
         }
     }
 

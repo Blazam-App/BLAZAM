@@ -19,13 +19,13 @@
 <MudContainer Class="py-5">
 
 
-    @* <GoogleAuthenticatorModal @ref=googleAuthenticatorModal /> *@
+    <GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
     @if (!googleAuthSecret.IsNullOrEmpty())
     {
         <MudText Align="Align.Center">@AppLocalization["Google Authenticator Passcode"]</MudText>
         <GoogleAuthenticatorInput @bind-Passcode=passcode
-                                  AuthSecret="@googleAuthSecret"
-                                  OnAuthenticated="@(async()=>{await AttemptSignIn(passcode);})" />
+        AuthSecret="@googleAuthSecret"
+        OnAuthenticated="@(async()=>{await AttemptSignIn(passcode);})" />
         <MudButton Color="Color.Primary" OnClick="@(()=>{googleAuthSecret=null; LoginRequest.MFAToken=null;})">
             @AppLocalization[Lang.Back]
         </MudButton>
@@ -39,39 +39,39 @@
 
 
         <form onsubmit="@(()=>{AttemptSignIn();})"
-              class="login-form"
-              method="post"
-              action="/signin"
-              id="login-form">
+        class="login-form"
+        method="post"
+        action="/signin"
+        id="login-form">
             <MudContainer Style="max-width:300px;"
-                          Class="py-4">
+            Class="py-4">
                 @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
                 {
 
 
 
                     <MudTextField Disabled=@attemptingSignIn
-                                  Class="justify-center"
-                                  AutoFocus=true
-                                  Label=@AppLocalization[Lang.Username]
-                                  name="Username"
-                                  @bind-Value=LoginRequest.Username />
+                    Class="justify-center"
+                    AutoFocus=true
+                    Label=@AppLocalization[Lang.Username]
+                    name="Username"
+                    @bind-Value=LoginRequest.Username />
 
                     <MudTextField Disabled=@attemptingSignIn
-                                  Class="justify-center"
-                                  Label=@AppLocalization[Lang.Password]
-                                  name="Password"
-                                  InputType="InputType.Password"
-                                  @bind-Value=LoginRequest.Password />
+                    Class="justify-center"
+                    Label=@AppLocalization[Lang.Password]
+                    name="Password"
+                    InputType="InputType.Password"
+                    @bind-Value=LoginRequest.Password />
 
                     <MudTextField Class="d-none"
-                                  name="ReturnUrl"
-                                  Value="@redirectUrl" />
+                    name="ReturnUrl"
+                    Value="@redirectUrl" />
 
                     <MudButton OnClick=@(()=>{attemptingSignIn=true;})
-                               Class="my-5"
-                               ButtonType=ButtonType.Submit
-                               Color="Color.Primary">
+                    Class="my-5"
+                    ButtonType=ButtonType.Submit
+                    Color="Color.Primary">
                         @AppLocalization[Lang.Log_In]
                     </MudButton>
 
@@ -112,34 +112,35 @@
 
         </MudElement>
 
+
     }
 
 </MudContainer>
 <style>
     .brand-icon {
-        position: fixed;
-        left: 5px;
-        top: 5px;
+    position: fixed;
+    left: 5px;
+    top: 5px;
     }
 
-        .brand-icon img {
-            max-width: 65px;
-            max-height: 65px;
-        }
+    .brand-icon img {
+    max-width: 65px;
+    max-height: 65px;
+    }
 
     .login-form input {
-        max-width: 300px;
-        margin-left: auto;
-        margin-right: auto;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
     }
 </style>
 
 @code {
-
+    CreateGoogleAuthenticationToken? createGoogleAuthToken;
     GoogleAuthenticatorModal? googleAuthenticatorModal;
     private string? passcode;
     private string? googleAuthSecret;
-
+    AuthenticationSettings authSettings;
 
     bool attemptingSignIn = false;
     string redirectUrl;
@@ -148,6 +149,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        authSettings = Context.AuthenticationSettings.FirstOrDefault();
         redirectUrl = Nav.Uri;
         LoginRequest.ReturnUrl = Nav.Uri;
         var currentUri = new Uri(Nav.Uri);
@@ -247,6 +249,10 @@
             case LoginResultStatus.GoogleAuthenticatorRequested:
                 googleAuthSecret = authenticationResult.MFAToken;
                 await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken);
+                break;
+            case LoginResultStatus.GoogleAuthenticatorRegistrationRequested:
+
+                await googleAuthenticatorModal.ShowAsync();
                 break;
             case LoginResultStatus.OK:
                 attemptingSignIn = true;
