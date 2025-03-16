@@ -48,7 +48,7 @@
         await Modal.RefreshView();
 
         LoadingData = true;
-        Task.Run(() =>
+        _=Task.Run(() =>
         {
             _usedInMappings = Context.PermissionMap.Where(x => x.AccessLevels.Any(al => al.Id == AccessLevel.Id)).Include(x=>x.PermissionDelegates).ToList();
             LoadingData = false;

@@ -46,7 +46,7 @@ namespace BLAZAM.Services
             this._permissionHandler = permissionHandler;
             this._userStateService = userStateService;
             this._httpContextAccessor = ca;
-            this.CurrentUser = this.GetAnonymous(ca.HttpContext?.Session.Id);
+            this.CurrentUser = GetAnonymous(ca.HttpContext?.Session.Id);
 
             this._duoClientProvider = dcp;
             this._audit = audit;
@@ -114,7 +114,7 @@ namespace BLAZAM.Services
         /// before login.
         /// </summary>
         /// <returns>An unauthenticated anonymous User ClaimsPrincipal</returns>
-        private ClaimsPrincipal GetAnonymous(string? sessionId = null, string? mfaToken = null)
+        private static ClaimsPrincipal GetAnonymous(string? sessionId = null, string? mfaToken = null)
         {
 
             var identity = new ClaimsIdentity(new[]
@@ -131,7 +131,7 @@ namespace BLAZAM.Services
 
             return new ClaimsPrincipal(identity);
         }
-        private ClaimsPrincipal GetDemoUser()
+        private static ClaimsPrincipal GetDemoUser()
         {
             List<Claim> claims = new()
             {
@@ -144,7 +144,7 @@ namespace BLAZAM.Services
             var identity = new ClaimsIdentity(claims.ToArray(), AppAuthenticationTypes.LocalAuthentication);
             return new ClaimsPrincipal(identity);
         }
-        private ClaimsPrincipal GetLocalAdmin(string name = "admin")
+        private static ClaimsPrincipal GetLocalAdmin(string name = "admin")
         {
             List<Claim> claims = new()
             {
@@ -206,7 +206,7 @@ namespace BLAZAM.Services
                 {
                     var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
                     if (loginReq.Password == adminPass)
-                        authenticationState = await SetUser(this.GetLocalAdmin());
+                        authenticationState = await SetUser(GetLocalAdmin());
                     else
                         await _audit.Logon.AttemptedLogin(GetLocalAdmin(), loginReq.IPAddress);
 
@@ -217,7 +217,7 @@ namespace BLAZAM.Services
                     && loginReq.Username != null
                     && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
                 {
-                    authenticationState = await SetUser(this.GetDemoUser());
+                    authenticationState = await SetUser(GetDemoUser());
 
                 }
                 else
@@ -463,7 +463,7 @@ namespace BLAZAM.Services
         public Task<AuthenticationState> Logout(ClaimsPrincipal claimsPrincipal)
         {
             _userStateService.RemoveUserState(claimsPrincipal);
-            this.CurrentUser = this.GetAnonymous(_httpContextAccessor.HttpContext?.Session.Id);
+            this.CurrentUser = GetAnonymous(_httpContextAccessor.HttpContext?.Session.Id);
             var task = this.GetAuthenticationStateAsync();
             this.NotifyAuthenticationStateChanged(task);
             return task;

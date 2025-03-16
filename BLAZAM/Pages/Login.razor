@@ -38,7 +38,7 @@
 
 
 
-        <form onsubmit="@(()=>{AttemptSignIn();})"
+        <form onsubmit="@(async()=>{await AttemptSignIn();})"
         class="login-form"
         method="post"
         action="/signin"
@@ -270,7 +270,7 @@
             var passcode = await googleAuthenticatorModal.ShowAsync(mfaToken);
             if (passcode != null)
             {
-                AttemptSignIn(passcode);
+                await AttemptSignIn(passcode);
             }
             else
             {

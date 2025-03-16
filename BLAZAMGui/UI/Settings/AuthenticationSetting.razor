@@ -131,7 +131,7 @@
             newAdminPassword = adminPasswordInDb;
             LoadingData = false;
             await InvokeAsync(StateHasChanged);
-            DoDuoHealthCheck();
+            await DoDuoHealthCheck();
 
         });
 

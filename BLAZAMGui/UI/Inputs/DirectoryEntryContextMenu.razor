@@ -55,7 +55,7 @@
             {
 
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" unlocked"]);
-                OnChanged.InvokeAsync();
+                await OnChanged.InvokeAsync();
             }
             else
             {
@@ -78,7 +78,7 @@
             {
 
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" enabled"]);
-                OnChanged.InvokeAsync();
+                await OnChanged.InvokeAsync();
 
             }
             else
@@ -102,7 +102,7 @@
             {
 
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" disabled"]);
-                OnChanged.InvokeAsync();
+                await OnChanged.InvokeAsync();
 
             }
             else

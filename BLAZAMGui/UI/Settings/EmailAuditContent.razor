@@ -7,7 +7,7 @@
              Dense=true
              Hideable=true
              RowClass="cursor-pointer"
-             RowClick="@((DataGridRowClickEventArgs<EmailAuditLog> args)=>{emailToPreview = args.Item;bodyModal.ShowAsync();})"
+             RowClick="@(async (DataGridRowClickEventArgs<EmailAuditLog> args)=>{emailToPreview = args.Item;await bodyModal.ShowAsync();})"
              Items="@_attempts.OrderByDescending(ae=>ae.LastAttemptTimestamp)"
              Filterable="true"
              SortMode="@SortMode.Multiple"

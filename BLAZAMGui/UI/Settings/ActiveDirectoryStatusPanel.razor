@@ -88,12 +88,12 @@
     bool _portStatus;
     bool? _credStatus=null;
     bool showProgress = true;
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
         ResetStatus();
         Directory.OnStatusChanged += (async (state) => { await UpdateStatus(state); });
-        UpdateStatus(null);
+        await UpdateStatus(null);
 
     }
     public override void Dispose()
