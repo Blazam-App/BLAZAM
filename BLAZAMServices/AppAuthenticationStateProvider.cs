@@ -265,7 +265,7 @@ namespace BLAZAM.Services
                                     {
                                         var passcode = loginReq.MFAToken;
                                         loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
-                                        if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken, passcode))
+                                        if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken.ToSecureString(), passcode))
                                         {
                                             var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
                                             var authResult = await SetUser(twostepState);
@@ -274,10 +274,6 @@ namespace BLAZAM.Services
                                             authenticationState = authResult;
                                             return loginReq.GoogleAuthenticatorRequested(authenticationState);
                                         }
-                                    }
-                                    else
-                                    {
-                                        return loginReq.GoogleAuthenticatorRegistrationRequested(authenticationState);
                                     }
                                 }
                             }

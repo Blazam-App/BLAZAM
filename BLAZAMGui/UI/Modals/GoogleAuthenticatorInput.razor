@@ -1,22 +1,23 @@
+
 @inherits AppComponentBase
 <MudTextField T="string"
-              Class="mb-8"
-              Mask=@(new PatternMask("000 000"))
-              Required="true"
-              AdornmentIcon="@Icons.Custom.Brands.Google"
-              Adornment="Adornment.Start"
-              Clearable="true"
-              InputMode="InputMode.numeric"
-              AutoFocus=true
-              Immediate="true"
-              TextChanged="@((key)=>{_=Authenticate();})"
-              @bind-Value="@Passcode" />
+Class="mb-8"
+Mask=@(new PatternMask("000 000"))
+Required="true"
+AdornmentIcon="@Icons.Custom.Brands.Google"
+Adornment="Adornment.Start"
+Clearable="true"
+InputMode="InputMode.numeric"
+AutoFocus=true
+Immediate="true"
+TextChanged="@((key)=>{_=Authenticate();})"
+@bind-Value="@Passcode" />
 
 @code {
     MudTextField<string>? textField;
     private bool _authenticated;
     [Parameter]
-    public string? AuthSecret { get; set; }
+    public SecureString? AuthSecret { get; set; }
     [Parameter]
     public bool Authenticated
     {
@@ -30,7 +31,7 @@
 
         }
     }
-
+ 
     [Parameter]
     public EventCallback<bool> AuthenticatedChanged { get; set; }
     private string? _passcode;
