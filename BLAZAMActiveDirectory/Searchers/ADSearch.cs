@@ -66,7 +66,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public ActiveDirectoryObjectType? ObjectTypeFilter { get; set; }
         public bool? EnabledOnly { get; set; }
-        public int MaxResults { get; set; } = 50;
+        public int MaxResults { get; set; } = 500;
         private List<SearchResult> _searchResults = new();
 
         public List<IDirectoryEntryAdapter> Results { get; set; } = new();
@@ -124,10 +124,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 searcher = new DirectorySearcher(SearchRoot)
                 {
-                    //TODO Ensure broken
-                    //Make sure this is not  usable
-                    //Seems to never pull OU's
-                    //VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
+                    VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, pageOffset),
+                    PageSize = PageSize,
+                    Sort = new SortOption("cn", SortDirection.Ascending),
                     SearchScope = SearchScope,
                     SizeLimit = MaxResults,
                     Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
@@ -359,7 +358,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
             searcher.SizeLimit = MaxResults;
             searcher.Filter = searcher.Filter?.Substring(0, searcher.Filter.Length - 1) + FilterQuery + ")";
             LdapQuery = searcher.Filter;
-            searcher.Sort = new SortOption("cn", SortDirection.Ascending);
         }
         /// <summary>
         /// Cancels the current search if still running

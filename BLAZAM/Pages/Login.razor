@@ -140,7 +140,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        authSettings = Context.AuthenticationSettings.FirstOrDefault();
+        authSettings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
         redirectUrl = Nav.Uri;
         LoginRequest.ReturnUrl = Nav.Uri;
         var currentUri = new Uri(Nav.Uri);
