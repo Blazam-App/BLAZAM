@@ -13,8 +13,8 @@ namespace BLAZAM.Services.Background
     [AutoStartBackgroundService(true)]
     public class ApplicationNewsService : DatabaseBackgroundServiceBase, IApplicationNewsService
     {
-        private HttpClient _httpClient;
-        private HttpClient _secondaryHttpClient;
+        private readonly HttpClient _httpClient;
+        private readonly HttpClient _secondaryHttpClient;
         private bool _pollCompleted = false;
         private List<NewsItem> _allNewsItems = new();
         private List<NewsItem> _activeNewsItems => _allNewsItems.Where(x => x.DeletedAt == null && x.Published == true && (x.ScheduledAt == null || x.ScheduledAt < DateTime.Now) && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now)).ToList();
@@ -159,7 +159,7 @@ namespace BLAZAM.Services.Background
                 return new();
             }
         }
-        public void Dispose()
+        public override void Dispose()
         {
             _httpClient.Dispose();
             _secondaryHttpClient.Dispose();

@@ -234,6 +234,13 @@ namespace BLAZAM.Services.Background
             return body;
         }
 
+        private async Task<bool> TrySend(SmtpClient client, MimeMessage message)
+        {
+            var response = await client.SendAsync(message);
+            Audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody,response);
+            return true;
+        }
+
         public async Task<bool> SendMessage(string subject, string to, MarkupString header, MarkupString body, string? cc = null, string? bcc = null)
         {
             try
@@ -251,14 +258,6 @@ namespace BLAZAM.Services.Background
 
             }
         }
-
-        private async Task<bool> TrySend(SmtpClient client, MimeMessage message)
-        {
-            var response = await client.SendAsync(message);
-            Audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody,response);
-            return true;
-        }
-
 
         public async Task<bool> SendMessage<T>(string subject, string to, string? cc = null, string? bcc = null) where T : IComponent
         {

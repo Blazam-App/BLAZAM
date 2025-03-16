@@ -257,7 +257,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        UpdateSubscriptions();
+        await UpdateSubscriptions();
     }
 
     private async Task ouChanged(IDirectoryEntryAdapter? entry)
@@ -306,7 +306,7 @@
         }
     }
 
-    private async void SaveExisting()
+    private async Task SaveExisting()
     {
         if (Context != null)
         {
@@ -314,7 +314,7 @@
             if (result > 0)
             {
                 SnackBarService.Success("Subscription saved.");
-                UpdateSubscriptions();
+                await UpdateSubscriptions();
             }
             else
             {
@@ -338,7 +338,7 @@
                 SnackBarService.Warning("Subscription could not be deleted.");
 
             }
-            UpdateSubscriptions();
+            await UpdateSubscriptions();
         }
 
     }

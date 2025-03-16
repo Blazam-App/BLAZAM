@@ -66,7 +66,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public ActiveDirectoryObjectType? ObjectTypeFilter { get; set; }
         public bool? EnabledOnly { get; set; }
-        public int MaxResults { get; set; } = 50;
+        public int MaxResults { get; set; } = 500;
         private List<SearchResult> _searchResults = new();
 
         public List<IDirectoryEntryAdapter> Results { get; set; } = new();
@@ -85,7 +85,13 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 return Search<T, I>(token);
             });
+        } 
+        
+        public async Task<List<IDirectoryEntryAdapter>> SearchAsync()
+        {
+            return await SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         }
+
         /// <summary>
         /// Searches ambiguously for all object types
         /// </summary>
@@ -95,10 +101,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             return Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         }
 
-        public async Task<List<IDirectoryEntryAdapter>> SearchAsync()
-        {
-            return await SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
-        }
+       
 
         /// <summary>
         /// Executes a search in Active Directory using the configured properties of this object.
@@ -112,7 +115,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             else cancellationToken = new CancellationToken();
             if (cancellationToken?.IsCancellationRequested == true)
                 return new();
-            DateTime startTime = InitializeSearch();
+            InitializeSearch();
             DirectorySearcher searcher;
             try
             {
@@ -121,10 +124,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 searcher = new DirectorySearcher(SearchRoot)
                 {
-                    //TODO Ensure broken
-                    //Make sure this is not  usable
-                    //Seems to never pull OU's
-                    //VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
+                    VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, pageOffset),
+                    PageSize = PageSize,
+                    Sort = new SortOption("cn", SortDirection.Ascending),
                     SearchScope = SearchScope,
                     SizeLimit = MaxResults,
                     Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
@@ -239,15 +241,13 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
-                SearchTime = DateTime.Now - startTime;
 
-                PerformSearch<TObject, TInterface>(startTime, searcher, PageSize);
+                PerformSearch<TObject, TInterface>(searcher, PageSize);
 
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
                 SearchState = SearchState.Completed;
-                SearchTime = DateTime.Now - startTime;
 
 
 
@@ -255,6 +255,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     return new();
 
                 OnSearchCompleted?.Invoke();
+                stopwatch.Stop();
 
 
                 return Results.Cast<TInterface>().ToList();
@@ -267,26 +268,25 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
 
             SearchState = SearchState.Completed;
-            SearchTime = DateTime.Now - startTime;
 
             OnSearchCompleted?.Invoke();
+            stopwatch.Stop();
 
             return new List<TInterface>();
 
 
         }
 
-        private DateTime InitializeSearch()
+        private void InitializeSearch()
         {
-            var startTime = DateTime.Now;
+            stopwatch.Start();
             SearchState = SearchState.Started;
             OnSearchStarted?.Invoke();
             cancellationToken = new();
             Results.Clear();
-            return startTime;
         }
 
-        private void PerformSearch<TObject, TInterface>(DateTime startTime, DirectorySearcher searcher, int pageSize) where TObject : IDirectoryEntryAdapter, TInterface, new()
+        private void PerformSearch<TObject, TInterface>(DirectorySearcher searcher, int pageSize) where TObject : IDirectoryEntryAdapter, TInterface, new()
         {
 
             bool moreResults = true;
@@ -306,10 +306,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 searcher.VirtualListView = null;
                 lastResults = searcher.FindAll();
             }
-            SearchTime = DateTime.Now - startTime;
 
             AddResults<TObject, TInterface>(lastResults);
-            SearchTime = DateTime.Now - startTime;
 
             if (ObjectTypeFilter != ActiveDirectoryObjectType.OU)
             {
@@ -333,7 +331,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     moreResults = false;
 
             }
-            SearchTime = DateTime.Now - startTime;
 
 
         }
@@ -361,7 +358,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
             searcher.SizeLimit = MaxResults;
             searcher.Filter = searcher.Filter?.Substring(0, searcher.Filter.Length - 1) + FilterQuery + ")";
             LdapQuery = searcher.Filter;
-            searcher.Sort = new SortOption("cn", SortDirection.Ascending);
         }
         /// <summary>
         /// Cancels the current search if still running

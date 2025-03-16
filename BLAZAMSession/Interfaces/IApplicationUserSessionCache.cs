@@ -9,9 +9,8 @@
         /// <param name="key">The key for the cached data</param>
         /// <returns>The cached data, or a new instance of the data type if no data is cached.</returns>
         T Get<T>(Type key) where T : new();
-        void Set(Type key, object value);
-
         T Get<T>(string key) where T : new();
+        void Set(Type key, object value);
         void Set(string key, object value);
     }
 }

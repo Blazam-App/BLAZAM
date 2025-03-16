@@ -41,5 +41,17 @@ namespace BLAZAM.Database.Models
         /// </remarks>
         public bool RequireMFA { get; set; }
         public MFAType MFAType { get; set; }
+
+        [NotMapped]
+        public bool DuoSettingsValid
+        {
+            get
+            {
+                return DuoEnabled &&
+                    DuoClientSecret != null &&
+                    DuoClientId != null &&
+                    DuoApiHost != null;
+            }
+        }
     }
 }

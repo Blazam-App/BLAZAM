@@ -15,7 +15,7 @@ namespace BLAZAM.Jobs
         private DateTime scheduledRunTime = DateTime.Now;
         private Timer? runScheduler;
 
-        public string? User { get; set; } = "System";
+        public string? User { get; set; } 
 
         private IList<IJobStep> _steps = [];
 

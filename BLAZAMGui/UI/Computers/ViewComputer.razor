@@ -262,9 +262,9 @@
         await InvokeAsync(StateHasChanged);
         if (Computer != null)
         {
-            Computer.OnOnlineChanged += ((online) =>
+            Computer.OnOnlineChanged += (async(online) =>
             {
-                RefreshEntryComponents();
+                await RefreshEntryComponents();
             });
         }
         await AuditLogger.Searched(Computer);

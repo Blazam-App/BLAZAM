@@ -19,17 +19,17 @@
 
                 <MudStack Class="ms-4">
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Assign)"
-                               ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Assign); })"
+                               ValueChanged="@(async (bool  val)=>{ await AddAction(ActiveDirectoryObjectAction.Assign); })"
                                Color="Color.Success">
                         @AppLocalization[Lang.Assign]
                     </MudSwitch>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unassign)"
-                               ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unassign); })"
+                               ValueChanged="@(async (bool  val)=>{ await AddAction(ActiveDirectoryObjectAction.Unassign); })"
                                Color="Color.Success">
                         @AppLocalization[Lang.Unassign]
                     </MudSwitch>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unlock)"
-                               ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unlock); })"
+                               ValueChanged="@(async (bool  val)=>{ await AddAction(ActiveDirectoryObjectAction.Unlock); })"
                                Color="Color.Success">
                         @AppLocalization[Lang.Unlock]
                     </MudSwitch>

@@ -55,7 +55,7 @@
         Modal.YesText = AppLocalization[Lang.Approve];
         base.Modal.OnYes += async () => { await Approve(); };
         _ = LoadData();
-        Modal.RefreshView();
+        await Modal.RefreshView();
 
     }
 

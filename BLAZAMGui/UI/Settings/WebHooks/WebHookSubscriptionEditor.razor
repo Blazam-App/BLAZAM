@@ -150,7 +150,7 @@
             await Context.SaveChangesAsync();
             SnackBarService.Success(AppLocalization["Changes saved successfully"]);
 
-            GetSubscriptions();
+            await GetSubscriptions();
         }
         catch (Exception ex)
         {
@@ -170,7 +170,7 @@
                 await Context.SaveChangesAsync();
                 SnackBarService.Success(AppLocalization["Changes saved successfully"]);
 
-                GetSubscriptions();
+                await GetSubscriptions();
             }
             catch (Exception ex)
             {

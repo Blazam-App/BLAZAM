@@ -34,6 +34,7 @@ namespace BLAZAM.Gui.UI
                 Options.BackdropClick = value;
                 Options.CloseButton = value;
                 Options.CloseOnEscapeKey = value;
+                RefreshView();
             }
         }
         [Parameter]

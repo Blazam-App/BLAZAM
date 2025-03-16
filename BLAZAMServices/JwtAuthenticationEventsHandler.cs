@@ -11,15 +11,11 @@ namespace BLAZAM.Services
     public class JwtAuthenticationEventsHandler : JwtBearerEvents
     {
         private readonly IApplicationUserStateService _userStateService; // Inject any service you need
-        private readonly ICurrentUserStateService _currentUserStateService; // Inject any service you need
-        private readonly IHttpContextAccessor _httpContextAccessor; // Inject any service you need
         private readonly IAppDatabaseFactory _dbFactory; // Inject any service you need
 
-        public JwtAuthenticationEventsHandler(IHttpContextAccessor httpContextAccessor, IApplicationUserStateService userStateService, IAppDatabaseFactory dbFactory, ICurrentUserStateService currentUserStateService)
+        public JwtAuthenticationEventsHandler(IApplicationUserStateService userStateService, IAppDatabaseFactory dbFactory)
         {
             _userStateService = userStateService;
-            _httpContextAccessor = httpContextAccessor;
-            _currentUserStateService = currentUserStateService;
             _dbFactory = dbFactory;
         }
         /// <summary>

@@ -76,7 +76,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 return (GroupType & ADS_GROUP_TYPE_GLOBAL_GROUP) != 0;
             }
-            set { }
+           
         }
         public bool IsDomainLocalGroup
         {
@@ -84,15 +84,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 return (GroupType & ADS_GROUP_TYPE_DOMAIN_LOCAL_GROUP) != 0;
             }
-            set { }
+           
         }
         public bool IsUniversalGroup
         {
             get
             {
                 return (GroupType & ADS_GROUP_TYPE_UNIVERSAL_GROUP) != 0;
+
             }
-            set { }
+         
         }
 
 
@@ -343,7 +344,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public int CompareTo(object? obj)
         {
-            if (obj != null && obj is ADGroup g)
+            if (obj is ADGroup g)
                 return CanonicalName.CompareTo(g.CanonicalName);
             return 0;
         }
