@@ -123,8 +123,7 @@ else
             if (appUser != null)
             {
                 _creatorAppUser = appUser;
-                if (!appUser.Username.Equals("admin", StringComparison.InvariantCultureIgnoreCase)
-            && !appUser.Username.Equals("demo", StringComparison.InvariantCultureIgnoreCase))
+                if (!appUser.IsAdminOrDemo())
                 {
                     var directoryUser = Directory.GetDirectoryEntryBySid(appUser.UserGUID);
                     if (directoryUser != null && directoryUser is IADUser)

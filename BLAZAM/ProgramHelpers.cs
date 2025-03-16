@@ -195,10 +195,8 @@ namespace BLAZAM.Server
 
                 };
                 options.Events = new JwtAuthenticationEventsHandler(
-                    builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>(),
                     builder.Services.BuildServiceProvider().GetRequiredService<IApplicationUserStateService>(),
-                    builder.Services.BuildServiceProvider().GetRequiredService<IAppDatabaseFactory>(),
-                    builder.Services.BuildServiceProvider().GetRequiredService<ICurrentUserStateService>()
+                    builder.Services.BuildServiceProvider().GetRequiredService<IAppDatabaseFactory>()
                 );
             });
             builder.Services.Configure<AuthenticationOptions>(options =>

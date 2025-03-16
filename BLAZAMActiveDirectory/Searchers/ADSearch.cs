@@ -85,7 +85,13 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 return Search<T, I>(token);
             });
+        } 
+        
+        public async Task<List<IDirectoryEntryAdapter>> SearchAsync()
+        {
+            return await SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         }
+
         /// <summary>
         /// Searches ambiguously for all object types
         /// </summary>
@@ -95,10 +101,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             return Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         }
 
-        public async Task<List<IDirectoryEntryAdapter>> SearchAsync()
-        {
-            return await SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
-        }
+       
 
         /// <summary>
         /// Executes a search in Active Directory using the configured properties of this object.
@@ -112,7 +115,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             else cancellationToken = new CancellationToken();
             if (cancellationToken?.IsCancellationRequested == true)
                 return new();
-            DateTime startTime = InitializeSearch();
+            InitializeSearch();
             DirectorySearcher searcher;
             try
             {
@@ -239,15 +242,13 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
-                SearchTime = DateTime.Now - startTime;
 
-                PerformSearch<TObject, TInterface>(startTime, searcher, PageSize);
+                PerformSearch<TObject, TInterface>(searcher, PageSize);
 
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
                 SearchState = SearchState.Completed;
-                SearchTime = DateTime.Now - startTime;
 
 
 
@@ -255,6 +256,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     return new();
 
                 OnSearchCompleted?.Invoke();
+                stopwatch.Stop();
 
 
                 return Results.Cast<TInterface>().ToList();
@@ -267,26 +269,25 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
 
             SearchState = SearchState.Completed;
-            SearchTime = DateTime.Now - startTime;
 
             OnSearchCompleted?.Invoke();
+            stopwatch.Stop();
 
             return new List<TInterface>();
 
 
         }
 
-        private DateTime InitializeSearch()
+        private void InitializeSearch()
         {
-            var startTime = DateTime.Now;
+            stopwatch.Start();
             SearchState = SearchState.Started;
             OnSearchStarted?.Invoke();
             cancellationToken = new();
             Results.Clear();
-            return startTime;
         }
 
-        private void PerformSearch<TObject, TInterface>(DateTime startTime, DirectorySearcher searcher, int pageSize) where TObject : IDirectoryEntryAdapter, TInterface, new()
+        private void PerformSearch<TObject, TInterface>(DirectorySearcher searcher, int pageSize) where TObject : IDirectoryEntryAdapter, TInterface, new()
         {
 
             bool moreResults = true;
@@ -306,10 +307,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 searcher.VirtualListView = null;
                 lastResults = searcher.FindAll();
             }
-            SearchTime = DateTime.Now - startTime;
 
             AddResults<TObject, TInterface>(lastResults);
-            SearchTime = DateTime.Now - startTime;
 
             if (ObjectTypeFilter != ActiveDirectoryObjectType.OU)
             {
@@ -333,7 +332,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     moreResults = false;
 
             }
-            SearchTime = DateTime.Now - startTime;
 
 
         }

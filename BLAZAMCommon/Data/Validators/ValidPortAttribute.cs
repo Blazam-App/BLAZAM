@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace BLAZAM.Common.Data.Validators
 {
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class ValidPortAttribute : AppValidationAttribute
     {
         public ValidPortAttribute()

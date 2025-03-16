@@ -156,6 +156,7 @@ namespace BLAZAM.Localization
         public static readonly string Computer = "Computer";
         public static readonly string Printer = "Printer";
         public static readonly string Search = "Search";
+        public static readonly string Google_Authenticator_Registration_Required = "Google Authenticator Registration Required";
         public static readonly string Application_Name = "Application Name";
         public static readonly string Enabled = "Enabled";
         public static readonly string Server = "Server";

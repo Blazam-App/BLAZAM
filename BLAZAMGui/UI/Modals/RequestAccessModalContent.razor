@@ -76,7 +76,7 @@
                 {
                     var appUser = await AppAuthenticationStateProvider.CreateDirectoryPrincipal(userState, adUser);
                     userState.User = appUser;
-                    if (userState.IsSuperAdmin || user.Username == "admin" || user.Username == "Demo")
+                    if (userState.IsSuperAdmin || user.IsAdminOrDemo())
                     {
                         lock (adminUsers)
                         {

@@ -19,7 +19,10 @@ namespace BLAZAM.Helpers
         {
             return Enum.GetValues(typeof(ActiveDirectoryObjectAction)).Cast<ActiveDirectoryObjectAction>().ToList();
         }
-
+        public static bool IsAdminOrDemo(this AppUser state)
+        {
+            return state.Username?.Equals("admin", StringComparison.InvariantCultureIgnoreCase) == true || state.Username?.Equals("demo", StringComparison.InvariantCultureIgnoreCase) == true;
+        }
         public static bool IsActionAppropriateForObject(this ActiveDirectoryObjectAction action, ActiveDirectoryObjectType type)
         {
 

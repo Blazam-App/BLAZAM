@@ -18,7 +18,7 @@ namespace BLAZAM.Session.Interfaces
         // IApplicationUserState? GetUserState(ClaimsPrincipal userClaim);
         void RemoveUserState(IApplicationUserState state);
         void RemoveUserState(ClaimsPrincipal currentUser);
-        void SetMFAUserState(string mfaToken, IApplicationUserState state, string returnURL);
+        void SetMFAUserState(string mfaToken, IApplicationUserState state, string returnURL="/");
         void SetUserState(IApplicationUserState state);
     }
 }

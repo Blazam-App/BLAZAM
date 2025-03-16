@@ -344,7 +344,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public int CompareTo(object? obj)
         {
-            if (obj != null && obj is ADGroup g)
+            if (obj is ADGroup g)
                 return CanonicalName.CompareTo(g.CanonicalName);
             return 0;
         }

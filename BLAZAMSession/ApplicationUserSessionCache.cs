@@ -20,10 +20,6 @@ namespace BLAZAM.Session
             }
         }
 
-        public void Set(Type key, object value)
-        {
-            _typeCache[key] = value;
-        }
         public T Get<T>(string key) where T : new()
         {
             try
@@ -36,6 +32,11 @@ namespace BLAZAM.Session
             }
         }
 
+        public void Set(Type key, object value)
+        {
+            _typeCache[key] = value;
+        }
+        
         public void Set(string key, object value)
         {
             _stringCache[key] = value;
