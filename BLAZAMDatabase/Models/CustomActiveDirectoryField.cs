@@ -21,8 +21,8 @@ namespace BLAZAM.Database.Models
 
 
 
-        [Required (ErrorMessageResourceName = "CustomActiveDirectoryField_ObjectTypes", ErrorMessageResourceType = typeof(AppValidationLocalization))]
-        public List<ActiveDirectoryFieldObjectType> ObjectTypes { get; set; }
+        [Required(ErrorMessageResourceName = "CustomActiveDirectoryField_ObjectTypes", ErrorMessageResourceType = typeof(AppValidationLocalization))]
+        public List<ActiveDirectoryFieldObjectType> ObjectTypes { get; set; } = new();
 
 
 
