@@ -231,10 +231,9 @@ namespace BLAZAM.Services
                         {
                             // Check that Duo is enabled and configured properly, also skip if impersonation
                             if (settings != null &&
-                                settings.DuoEnabled &&
-                                settings.DuoClientSecret != null &&
-                                settings.DuoClientId != null &&
-                                settings.DuoApiHost != null &&
+                                settings.RequireMFA &&
+                                settings.MFAType == MFAType.CiscoDuo &&
+                                settings.DuoSettingsValid &&
                                 !loginReq.Impersonation
                                 )
                             {
