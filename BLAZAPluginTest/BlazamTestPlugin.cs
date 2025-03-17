@@ -1,10 +1,14 @@
 ﻿using BLAZAM.Database.Context;
 using BLAZAM.Plugins;
 using Microsoft.AspNetCore.Builder;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BlazamTestPlugin
+namespace BLAZAPluginTest
 {
-
     public class BlazamTestPlugin : IPluginBase
     {
         private readonly IAppDatabaseFactory _appDatabaseFactory;
@@ -16,6 +20,7 @@ namespace BlazamTestPlugin
 
         public string Author => "jacobsen9026";
 
+        public IPluginView? SettingsPage => null;
 
 
         public WebApplicationBuilder InjectServices(WebApplicationBuilder builder)
@@ -23,5 +28,4 @@ namespace BlazamTestPlugin
             return builder;
         }
     }
-
 }
