@@ -305,5 +305,7 @@ namespace BLAZAM
                 return AppInstance.Environment.IsDevelopment();
             }
         }
+
+        public static SystemDirectory PluginDirectory { get; internal set; }
     }
 }
