@@ -84,7 +84,7 @@ namespace BLAZAM
             //Create and discard a new instance of Encryption to inject the encryption seed string
             _ = new Encryption(Configuration?.GetValue<string>("EncryptionKey"));
 
-            //Assign installation ID
+            //Assign installation details
             Loggers.InstallationId = ApplicationInfo.installationId.ToString();
             Loggers.InstallationType = ApplicationInfo.isUnderIIS ? "IIS" : "Service";
             Loggers.DatabaseType = Configuration.GetValue<string>("DatabaseType");
