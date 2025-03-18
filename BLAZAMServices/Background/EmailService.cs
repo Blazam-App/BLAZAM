@@ -22,6 +22,8 @@ using MimeKit;
 using MimeKit.Utils;
 using BLAZAM.Database.Models.Audit;
 using ApplicationNews;
+using Newtonsoft.Json;
+using static QRCoder.PayloadGenerator;
 
 namespace BLAZAM.Services.Background
 {
@@ -233,10 +235,24 @@ namespace BLAZAM.Services.Background
             body = preMailer.MoveCssInline(stripIdAndClassAttributes: true, css: css.ReadAllText()).Html;
             return body;
         }
+        //private async Task<bool> RetrySend(EmailAuditLog failedEmail)
+        //{
+        //    MimeMessage retryMessage = new();
+        //    retryMessage.MessageId = failedEmail.MessageGuid;
+        //    retryMessage.From.Add(MailboxAddress.Parse(failedEmail.From));
+        //    retryMessage.Cc.Add(MailboxAddress.Parse(failedEmail.Cc));
+        //    retryMessage.Bcc.Add(MailboxAddress.Parse(failedEmail.Bcc));
+            
+        //    var response = await client.SendAsync(retryMessage);
+
+        //    Audit.Email.EmailSent(retryMessage.MessageId, retryMessage.From.ToString(), retryMessage.To.ToString(), retryMessage.Cc.ToString(), retryMessage.Bcc.ToString(), retryMessage.Subject, retryMessage.HtmlBody, response);
+        //    return true;
+        //}
 
         private async Task<bool> TrySend(SmtpClient client, MimeMessage message)
         {
             var response = await client.SendAsync(message);
+
             Audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody,response);
             return true;
         }

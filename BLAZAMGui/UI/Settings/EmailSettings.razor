@@ -156,11 +156,6 @@
                 settings = set;
             }
         }
-        //NewUserWelcomeEmailMessage message = new NewUserWelcomeEmailMessage();
-        //var user= Directory.Users.FindUserByUsername("cjacobsen");
-        //message.User = user;
-        //var html = message.Render();
-        //emailPreview = EmailService.PrepareHTMLForEmail(html);
         if (EmailService.IsConfigured)
             emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
 
@@ -191,8 +186,9 @@
             settings.Id = 1;
             Context.EmailSettings.Add(settings);
         }
-        await AuditLogger.System.SettingsChanged("Email", settings.GetChanges(originalSettings));
         await base.Save();
+        await AuditLogger.System.SettingsChanged("Email", settings.GetChanges(originalSettings));
+
 
     }
 }

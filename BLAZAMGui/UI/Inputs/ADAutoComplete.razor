@@ -16,6 +16,7 @@
                  SearchFunc="@GetResults"
                  DebounceInterval=500
                  ResetValueOnEmptyText="true"
+                 MinCharacters="3"
                  Validation="@Validation"
                  CoerceText="@(!AllowCustomInput)"
                  CoerceValue="true"
@@ -69,7 +70,7 @@
 </MudAutocomplete>
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
     [Parameter]
@@ -230,6 +231,7 @@
 
                  search.ObjectTypeFilter = SearchObjectType;
                  search.GeneralSearchTerm = searchText;
+                 search.MaxResults = MaxResults;
                  search.EnabledOnly = !SearchDisabled;
                  if (!search.GeneralSearchTerm.IsNullOrEmpty())
                  {
