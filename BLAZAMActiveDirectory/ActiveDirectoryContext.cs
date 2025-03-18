@@ -233,12 +233,12 @@ namespace BLAZAM.ActiveDirectory
                 return ConnectionSettings?.CreateDirectoryAdminImpersonator();
             }
         }
-       
+
         private static void SetSystemInstance(ActiveDirectoryContext context)
         {
             _systemInstance = context;
         }
-     
+
         private DirectoryContext DirectoryContext => new(
             DirectoryContextType.Domain,
             ConnectionSettings.FQDN,
@@ -298,8 +298,11 @@ namespace BLAZAM.ActiveDirectory
         }
         public async Task CancelConnection()
         {
-            await _connectionCTS.CancelAsync();
-            _connectionCTS.Dispose();
+            if (_connectionCTS != null)
+            {
+                await _connectionCTS.CancelAsync();
+            }
+            _connectionCTS?.Dispose();
             _connectionCTS = new();
         }
         /// <summary>
@@ -315,22 +318,22 @@ namespace BLAZAM.ActiveDirectory
             try
             {
                 ConnectDatabase();
-                
-                if (_connectionCTS.IsCancellationRequested) return;
+
+                if (IsCancelRequested) return;
 
                 ADSettings? ad;
 
                 GetConnectionSettings(out ad);
 
-                if (_connectionCTS.IsCancellationRequested) return;
+                if (IsCancelRequested) return;
 
                 PerformNetworkTests(ad);
 
-                if (_connectionCTS.IsCancellationRequested) return;
+                if (IsCancelRequested) return;
 
                 InitializeDirectoryEntries(ad);
 
-                if (_connectionCTS.IsCancellationRequested) return;
+                if (IsCancelRequested) return;
 
                 PerformConnectionTests(ad);
 
@@ -374,7 +377,7 @@ namespace BLAZAM.ActiveDirectory
                 if (FailedConnectionAttempts < 10)
                     FailedConnectionAttempts++;
             }
-            catch(CriticalActiveDirectoryException ex)
+            catch (CriticalActiveDirectoryException ex)
             {
                 ConnectionException = ex;
 
@@ -400,12 +403,18 @@ namespace BLAZAM.ActiveDirectory
                     FailedConnectionAttempts++;
             }
         }
-
+        private bool IsCancelRequested
+        {
+            get
+            {
+                return _connectionCTS != null && _connectionCTS.IsCancellationRequested;
+            }
+        }
         private void GetConnectionSettings(out ADSettings? ad)
         {
             //Ok get the latest settings
             ad = _context?.ActiveDirectorySettings.FirstOrDefault();
-            if (_connectionCTS.IsCancellationRequested) return;
+            if (IsCancelRequested) return;
 
             if (ad == null)
             {
@@ -432,17 +441,25 @@ namespace BLAZAM.ActiveDirectory
             //We want the latest settings each connection attempt so we make a new database connection
             _context = Factory.CreateDbContext();
 
-            if (_connectionCTS.IsCancellationRequested) return;
+            if (IsCancelRequested) return;
 
             Loggers.ActiveDirectoryLogger.Information("Connecting to settings database");
 
             //Proceed no further if the DB is down
             if (_context.Status != ServiceConnectionState.Up)
             {
-                Status = DirectoryConnectionStatus.UnreachableConfiguration;
-                if (FailedConnectionAttempts < 10)
-                    FailedConnectionAttempts++; 
-                return;
+                //When cancelling and retrying a connection, the first Up check above is sometimes no Up,
+                //but will be one line later. Confirmed with Debugging (3/18/2025)
+                //This is the least impactful way and avoids any Task waits
+#pragma warning disable S1066 // Mergeable "if" statements should be combined
+                if (_context.Status != ServiceConnectionState.Up)
+                {
+                    Status = DirectoryConnectionStatus.UnreachableConfiguration;
+                    if (FailedConnectionAttempts < 10)
+                        FailedConnectionAttempts++;
+                    return;
+                }
+#pragma warning restore S1066 // Mergeable "if" statements should be combined
 
             }
             Loggers.ActiveDirectoryLogger.Information("Database connected");
@@ -455,7 +472,7 @@ namespace BLAZAM.ActiveDirectory
 
             _ = RootDirectoryEntry.Name;
             _ = AppRootDirectoryEntry?.Name;
-            
+
 
             var search = new ADSearch(this)
             {
@@ -525,7 +542,7 @@ namespace BLAZAM.ActiveDirectory
                 Status = DirectoryConnectionStatus.ServerDown;
                 if (FailedConnectionAttempts < 10)
                     FailedConnectionAttempts++;
-                throw new CriticalActiveDirectoryException(this,"Active Directory port is not open");
+                throw new CriticalActiveDirectoryException(this, "Active Directory port is not open");
 
             }
             Loggers.ActiveDirectoryLogger.Information("Active Directory port is open.");
@@ -559,7 +576,7 @@ namespace BLAZAM.ActiveDirectory
         public void Dispose()
         {
             Dispose(true);
-           
+
             GC.SuppressFinalize(this);
         }
         protected virtual void Dispose(bool disposing)
@@ -567,7 +584,9 @@ namespace BLAZAM.ActiveDirectory
             // Cleanup
             _keepAlive = false;
             _connectionCTS?.Dispose();
+            _connectionCTS = null;
             _context?.Dispose();
+            _context = null;
         }
         public IADUser? Authenticate(LoginRequest loginReq)
         {

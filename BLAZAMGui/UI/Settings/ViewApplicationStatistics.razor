@@ -1,7 +1,7 @@
 @inherits AppComponentBase
 @using System.Diagnostics
 <SettingsField Label=@AppLocalization[Lang.CPU]>
-    @if (ApplicationStatistics.CPUUsage.GetAverage(2) != 0)
+    @if (ApplicationStatistics.CPUUsage.Count > 2)
     {
         <MudText>@ApplicationStatistics.CPUUsage.GetAverage(2)%</MudText>
     }
@@ -12,7 +12,7 @@
 
 </SettingsField>
 <SettingsField Label=@AppLocalization[Lang.Memory]>
-    @if (ApplicationStatistics.MemoryUsage.GetAverage() != 0)
+    @if (ApplicationStatistics.MemoryUsage.Count > 2)
     {
         <MudText>@(new ByteSize(ApplicationStatistics.MemoryUsage.GetAverage()).ToString())</MudText>
 

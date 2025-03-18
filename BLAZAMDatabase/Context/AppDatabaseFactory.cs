@@ -35,6 +35,8 @@ namespace BLAZAM.Database.Context
             try
             {
                 ApplicationInfo.installationCompleted = CheckInstallation();
+                Loggers.InstallationCompleted = ApplicationInfo.installationCompleted;
+
             }
             catch (DatabaseException ex)
             {
