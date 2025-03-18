@@ -1,7 +1,5 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Builder;
+using System.Reflection;
 
 namespace BLAZAM.Plugins
 {
@@ -16,6 +14,6 @@ namespace BLAZAM.Plugins
 
         WebApplicationBuilder InjectServices(WebApplicationBuilder builder);
 
-            IPluginView? SettingsPage { get; }
+        Assembly Assembly { get; set; }
     }
 }

@@ -422,8 +422,9 @@ namespace BLAZAM.Server
             {
                 try
                 {
-                    Assembly assembly = Assembly.LoadFrom(dll.FullPath);
-
+                    var loadContext = new PluginLoadContext(dll.FullPath);
+                    Assembly assembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(dll.FullPath)));
+                    //Assembly assembly = Assembly.LoadFrom(dll.FullPath);
                     // Get all types in the assembly that implement IPluginBase
                     var pluginTypes = assembly.GetTypes()
                         .Where(type => typeof(IPluginBase).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
@@ -437,6 +438,9 @@ namespace BLAZAM.Server
                             {
                                 // Invoke the InjectServices method
                                 pluginInstance.InjectServices(builder);
+                                pluginInstance.Assembly = assembly;
+                                ApplicationInfo.loadedPlugins.Add(pluginInstance);
+
                             }
                             else
                             {

@@ -53,6 +53,7 @@
     <ProjectReference Include="..\BLAZAMFileSystem\BLAZAMFileSystem.csproj" />
     <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
     <ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
+    <ProjectReference Include="..\BLAZAMPlugins\BLAZAMPlugins.csproj" />
   </ItemGroup>
 
 </Project>

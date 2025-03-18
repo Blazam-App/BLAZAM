@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BLAZAM\BLAZAM.csproj" />
+    <ProjectReference Include="..\BLAZAMPlugins\BLAZAMPlugins.csproj" />
   </ItemGroup>
 
 </Project>
