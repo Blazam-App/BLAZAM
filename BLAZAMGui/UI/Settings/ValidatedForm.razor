@@ -2,31 +2,23 @@
 
 
 @code {
-    bool _saveDisabled = false;
-    protected bool SaveDisabled
-    {
-        get
-        {
-            return _saveDisabled;
-        }
-        set => _saveDisabled = value;
-    }
+    protected bool SaveDisabled { get; set; }
 
     protected MudForm? Form;
-    protected bool IsValid {
+    protected bool IsValid
+    {
         get;
         set;
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-        if(firstRender){
-            //Form?.ResetValidation();
+        if (firstRender)
+        {
             Form?.Validate();
-            //await InvokeAsync(StateHasChanged);
         }
-
     }
+
     protected virtual async Task Save()
     {
         if (Context != null)
@@ -40,7 +32,15 @@
 
                 }
                 var results = await Context.SaveChangesAsync();
-                SnackBarService.Success("Settings have been saved");
+                if (results > 0)
+                {
+                    SnackBarService.Success("Settings have been saved");
+                }
+                else
+                {
+                    SnackBarService.Error(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred]);
+
+                }
             }
             catch (Exception ex)
             {
