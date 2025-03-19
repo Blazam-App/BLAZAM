@@ -258,23 +258,26 @@ namespace BLAZAM.Services
                                 //Duo is not enabled, or this is impersonation, proceed with post login processing
                                 AppUser? userSettings = await GetUserSettings(context, userClaim);
 
-                                if (userSettings != null && !loginReq.Impersonation && settings.RequireMFA && settings.MFAType == MFAType.GoogleAuthenticator)
+                                if (userSettings != null
+                                    && !loginReq.Impersonation
+                                    && settings != null
+                                    && settings.RequireMFA
+                                    && settings.MFAType == MFAType.GoogleAuthenticator
+                                    && userSettings.AuthenticatorSecret?.Decrypt<string>().IsNullOrEmpty() == false)
                                 {
-                                    if (!userSettings.AuthenticatorSecret.Decrypt<string>().IsNullOrEmpty())
+                                    var passcode = loginReq.MFAToken;
+                                    loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
+                                    if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken.ToSecureString(), passcode))
                                     {
-                                        var passcode = loginReq.MFAToken;
-                                        loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
-                                        if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken.ToSecureString(), passcode))
-                                        {
-                                            var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
-                                            var authResult = await SetUser(twostepState);
-                                            newUserState.User = userClaim;
-                                            _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
-                                            authenticationState = authResult;
-                                            return loginReq.GoogleAuthenticatorRequested(authenticationState);
-                                        }
+                                        var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
+                                        var authResult = await SetUser(twostepState);
+                                        newUserState.User = userClaim;
+                                        _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                                        authenticationState = authResult;
+                                        return loginReq.GoogleAuthenticatorRequested(authenticationState);
                                     }
                                 }
+
                             }
 
                             //If active directory login/impersonation succeeded the userClaim will be popluated

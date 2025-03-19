@@ -57,7 +57,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         {
                             throw new InvalidOperationException($"Failed to change computer name. Error code: {returnValue}");
                         }
+#pragma warning disable S1751 // Loops with at most one iteration should be refactored
                         return true;
+#pragma warning restore S1751 // Loops with at most one iteration should be refactored
                     }
 
                     Loggers.ActiveDirectoryLogger.Warning($"Rename command sent to {target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
@@ -127,7 +129,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         // Execute the method and obtain the return values.
                         ManagementBaseObject outParams =
                             os.InvokeMethod("Win32ShutdownTracker", inParams, null);
+#pragma warning disable S1751 // Loops with at most one iteration should be refactored
                         return true;
+#pragma warning restore S1751 // Loops with at most one iteration should be refactored
                     }
 
                     Loggers.ActiveDirectoryLogger.Warning($"Shutdown command sent to {target.CanonicalName}, but no Win32_OperatingSystem instance was found.");

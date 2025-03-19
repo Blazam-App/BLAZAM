@@ -420,7 +420,10 @@ namespace BLAZAM.ActiveDirectory
             {
                 Status = DirectoryConnectionStatus.UnreachableConfiguration;
                 if (FailedConnectionAttempts < 10)
+                {
                     FailedConnectionAttempts++;
+                }
+                return;
             }
             ConnectionSettings = ad;
 
