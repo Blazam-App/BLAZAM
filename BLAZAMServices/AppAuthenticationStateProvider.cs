@@ -4,10 +4,12 @@ using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
+using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using BLAZAM.Server.Helpers;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Duo;
+using BLAZAM.Services.Exceptions;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using DuoUniversal;
@@ -44,7 +46,7 @@ namespace BLAZAM.Services
             this._permissionHandler = permissionHandler;
             this._userStateService = userStateService;
             this._httpContextAccessor = ca;
-            this.CurrentUser = this.GetAnonymous(ca.HttpContext?.Session.Id);
+            this.CurrentUser = GetAnonymous(ca.HttpContext?.Session.Id);
 
             this._duoClientProvider = dcp;
             this._audit = audit;
@@ -112,7 +114,7 @@ namespace BLAZAM.Services
         /// before login.
         /// </summary>
         /// <returns>An unauthenticated anonymous User ClaimsPrincipal</returns>
-        private ClaimsPrincipal GetAnonymous(string? sessionId = null, string? mfaToken = null)
+        private static ClaimsPrincipal GetAnonymous(string? sessionId = null, string? mfaToken = null)
         {
 
             var identity = new ClaimsIdentity(new[]
@@ -129,7 +131,7 @@ namespace BLAZAM.Services
 
             return new ClaimsPrincipal(identity);
         }
-        private ClaimsPrincipal GetDemoUser()
+        private static ClaimsPrincipal GetDemoUser()
         {
             List<Claim> claims = new()
             {
@@ -142,7 +144,7 @@ namespace BLAZAM.Services
             var identity = new ClaimsIdentity(claims.ToArray(), AppAuthenticationTypes.LocalAuthentication);
             return new ClaimsPrincipal(identity);
         }
-        private ClaimsPrincipal GetLocalAdmin(string name = "admin")
+        private static ClaimsPrincipal GetLocalAdmin(string name = "admin")
         {
             List<Claim> claims = new()
             {
@@ -204,7 +206,7 @@ namespace BLAZAM.Services
                 {
                     var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
                     if (loginReq.Password == adminPass)
-                        authenticationState = await SetUser(this.GetLocalAdmin());
+                        authenticationState = await SetUser(GetLocalAdmin());
                     else
                         await _audit.Logon.AttemptedLogin(GetLocalAdmin(), loginReq.IPAddress);
 
@@ -215,7 +217,7 @@ namespace BLAZAM.Services
                     && loginReq.Username != null
                     && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
                 {
-                    authenticationState = await SetUser(this.GetDemoUser());
+                    authenticationState = await SetUser(GetDemoUser());
 
                 }
                 else
@@ -229,10 +231,9 @@ namespace BLAZAM.Services
                         {
                             // Check that Duo is enabled and configured properly, also skip if impersonation
                             if (settings != null &&
-                                settings.DuoEnabled &&
-                                settings.DuoClientSecret != null &&
-                                settings.DuoClientId != null &&
-                                settings.DuoApiHost != null &&
+                                settings.RequireMFA &&
+                                settings.MFAType == MFAType.CiscoDuo &&
+                                settings.DuoSettingsValid &&
                                 !loginReq.Impersonation
                                 )
                             {
@@ -255,22 +256,24 @@ namespace BLAZAM.Services
                             else
                             {
                                 //Duo is not enabled, or this is impersonation, proceed with post login processing
-                                var sid = userClaim.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
-                                var userSettings = await context.UserSettings.FirstOrDefaultAsync(x => x.UserGUID == sid);
-                                if (userSettings != null && !loginReq.Impersonation && !userSettings.AuthenticatorSecret.IsNullOrEmpty())
-                                {
-                                    var passcode = loginReq.MFAToken;
-                                    loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
-                                    if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken, passcode))
-                                    {
-                                        var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
-                                        var authResult = await SetUser(twostepState);
-                                        newUserState.User = userClaim;
-                                        _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
-                                        authenticationState = authResult;
-                                        return loginReq.GoogleAuthenticatorRequested(authenticationState);
-                                    }
+                                AppUser? userSettings = await GetUserSettings(context, userClaim);
 
+                                if (userSettings != null && !loginReq.Impersonation && settings.RequireMFA && settings.MFAType == MFAType.GoogleAuthenticator)
+                                {
+                                    if (!userSettings.AuthenticatorSecret.Decrypt<string>().IsNullOrEmpty())
+                                    {
+                                        var passcode = loginReq.MFAToken;
+                                        loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
+                                        if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken.ToSecureString(), passcode))
+                                        {
+                                            var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
+                                            var authResult = await SetUser(twostepState);
+                                            newUserState.User = userClaim;
+                                            _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                                            authenticationState = authResult;
+                                            return loginReq.GoogleAuthenticatorRequested(authenticationState);
+                                        }
+                                    }
                                 }
                             }
 
@@ -308,6 +311,13 @@ namespace BLAZAM.Services
                 return loginReq.BadCredentials();
 
 
+        }
+
+        private static async Task<AppUser?> GetUserSettings(IDatabaseContext context, ClaimsPrincipal? userClaim)
+        {
+            var sid = userClaim.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+            var userSettings = await context.UserSettings.FirstOrDefaultAsync(x => x.UserGUID == sid);
+            return userSettings;
         }
 
         /// <summary>
@@ -417,16 +427,16 @@ namespace BLAZAM.Services
             //Load privilege levels for user
             await _permissionHandler.LoadPermissions(loginUser, user);
             var userClaims = _permissionHandler.TransformUserRoles(loginUser, user, loginReq?.ImpersonatorClaims?.FindFirstValue(ClaimTypes.Sid));
-            
+
 
             //All Claims transformations are complete create the new signed in user's identity
             identity = new ClaimsIdentity(userClaims, AppAuthenticationTypes.ActiveDirectoryAuthentication);
-     
+
 
             return identity;
 
         }
-   
+
         /// <summary>
         /// Sets the User AuthenticationState in the AuthenticationProvider
         /// </summary>
@@ -448,7 +458,7 @@ namespace BLAZAM.Services
         public Task<AuthenticationState> Logout(ClaimsPrincipal claimsPrincipal)
         {
             _userStateService.RemoveUserState(claimsPrincipal);
-            this.CurrentUser = this.GetAnonymous(_httpContextAccessor.HttpContext?.Session.Id);
+            this.CurrentUser = GetAnonymous(_httpContextAccessor.HttpContext?.Session.Id);
             var task = this.GetAuthenticationStateAsync();
             this.NotifyAuthenticationStateChanged(task);
             return task;

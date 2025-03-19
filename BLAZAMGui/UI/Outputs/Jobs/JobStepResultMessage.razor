@@ -13,7 +13,7 @@
             switch (Step.Result)
             {
                 case JobResult.Passed:
-                    return AppLocalization["Completed Successfully"];
+                    return AppLocalization[Lang.Success];
                 case JobResult.Failed:
                     return Step.Exception?.Message;
                 case JobResult.Cancelled:

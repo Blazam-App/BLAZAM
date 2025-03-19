@@ -1,4 +1,5 @@
-﻿
+﻿@using BLAZAM.Common.Data.Database
+
 @inherits DirectoryEntryViewBase
 @{
     string _fieldMudStackClasses = "flex-wrap gap-10";
@@ -71,11 +72,11 @@
                                         </MudStack>
                                         @if (Computer.Disabled)
                                         {
-                                            <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization["Computer is disabled"]</MudAlert>
+                                            <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization[Lang.Computer_is_disabled]</MudAlert>
                                         }
                                         @if (Computer.LockedOut)
                                         {
-                                            <MudAlert Severity="Severity.Warning" Class="mud-width-full">@AppLocalization["Computer is locked out"]</MudAlert>
+                                            <MudAlert Severity="Severity.Warning" Class="mud-width-full">@AppLocalization[Lang.Computer_is_locked_out]</MudAlert>
                                         }
                                     </MudStack>
 
@@ -96,7 +97,7 @@
                         <MudItem xs=12 md="9">
                             <MudStack>
 
-                                <Section Title=@AppLocalization["Live Stats"]>
+                                <Section Title=@AppLocalization[Lang.Live_Stats]>
 
                                     <MudStack Row=true Class="@_fieldMudStackClasses">
                                         @if (Computer.IsOnline == true)
@@ -149,7 +150,7 @@
 
 
 
-                    <Section Title=@AppLocalization["Drive Details"]>
+                    <Section Title=@AppLocalization[Lang.Drive_Details]>
                         <MudStack Row=true Class="@_fieldMudStackClasses">
                             @if (Computer.IsOnline == true)
                             {
@@ -261,9 +262,9 @@
         await InvokeAsync(StateHasChanged);
         if (Computer != null)
         {
-            Computer.OnOnlineChanged += ((online) =>
+            Computer.OnOnlineChanged += (async(online) =>
             {
-                RefreshEntryComponents();
+                await RefreshEntryComponents();
             });
         }
         await AuditLogger.Searched(Computer);

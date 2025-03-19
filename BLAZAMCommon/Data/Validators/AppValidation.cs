@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Common.Data.Validators
 {
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class AppValidationAttribute : ValidationAttribute
     {
   

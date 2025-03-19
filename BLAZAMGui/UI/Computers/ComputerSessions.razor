@@ -39,7 +39,7 @@
                         {
                             <MudButton Color="Color.Warning" OnClick=@(async()=>{await DisconnectSession(context.Item);})>@AppLocalization[Lang.Disconnect]</MudButton>
                         }
-                        <MudButton Color="Color.Error" OnClick=@(()=>{LogoffSession(context.Item);})>Logoff</MudButton>
+                        <MudButton Color="Color.Error" OnClick=@(async()=>{await LogoffSession(context.Item);})>Logoff</MudButton>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>

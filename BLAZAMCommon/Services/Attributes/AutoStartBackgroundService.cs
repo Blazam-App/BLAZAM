@@ -1,5 +1,6 @@
 ﻿namespace BLAZAM.Common.Attributes
 {
+    [AttributeUsage(AttributeTargets.Class)]
     public class AutoStartBackgroundService : Attribute
     {
         public bool Immediate { get; set; }

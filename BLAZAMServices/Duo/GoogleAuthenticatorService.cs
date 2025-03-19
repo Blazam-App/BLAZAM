@@ -1,4 +1,5 @@
-﻿using Google.Authenticator;
+﻿using BLAZAM.Helpers;
+using Google.Authenticator;
 
 namespace BLAZAM.Services.Duo
 {
@@ -16,9 +17,9 @@ namespace BLAZAM.Services.Duo
             return _authenticator.GenerateSetupCode("Blazam", accountName, accountSecretKey, false);
         }
 
-        public bool ValidateTwoFactorPIN(string accountSecretKey, string twoFactorCodeFromClient)
+        public bool ValidateTwoFactorPIN(SecureString accountSecretKey, string twoFactorCodeFromClient)
         {
-            return _authenticator.ValidateTwoFactorPIN(accountSecretKey, twoFactorCodeFromClient, TimeSpan.FromMinutes(3));
+            return _authenticator.ValidateTwoFactorPIN(accountSecretKey.ToPlainText(), twoFactorCodeFromClient, TimeSpan.FromMinutes(3));
         }
     }
 }

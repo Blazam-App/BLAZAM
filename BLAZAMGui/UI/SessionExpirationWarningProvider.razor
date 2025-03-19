@@ -6,7 +6,7 @@
 <AppModal Title=@AppLocalization["Your session is about to expire"]
           @ref="ExpirationWarningModal"
           AllowClose=false
-          YesText=@AppLocalization["Refresh Session"]
+          YesText=@AppLocalization[Lang.Refresh_Session]
           OnYes=@(()=>{
           JSRuntime.InvokeVoidAsync("updateCookieExpiration");
           ExpirationWarningModal?.Close();

@@ -28,16 +28,9 @@
         </SettingsField>
         <MudDivider Class="my-6" />
 
-        <SettingsField Label="@AppLocalization["Force MFA"]">
 
-            <MudSwitch Label=@AppLocalization["Force MFA"]
-                       T="bool" @bind-Value="@settings.RequireMFA"
-                       UncheckedColor="Color.Error"
-                       Color="Color.Success" />
-
-        </SettingsField>
         <SettingsField Label="@AppLocalization["MFA Type"]">
-            <MudRadioGroup @bind-Value=@settings.MFAType>
+            <MudRadioGroup Value="settings.MFAType" ValueChanged="@((MFAType type)=>{MFATypeChanged(type);})">
                 <MudRadio Value="MFAType.CiscoDuo">
                     @AppLocalization["Cisco Duo"]
                 </MudRadio>
@@ -61,7 +54,7 @@
                            T="bool" @bind-Value="@settings.DuoEnabled"
                            UncheckedColor="Color.Error"
                            Color="Color.Success"
-                           Disabled=@(settings.DuoEnabled!=true && duoHealthCheckResult!=true) />
+                           Disabled=@((settings.DuoEnabled!=true && duoHealthCheckResult!=true)||(settings.DuoEnabled && settings.RequireMFA)) />
 
             </SettingsField>
             <SettingsField Label="@AppLocalization["Duo Unreachable Behavior"]">
@@ -90,10 +83,19 @@
                 <MudTextField Label=@AppLocalization["Duo ApiHost"] InputType="InputType.Text" @bind-Value="@settings.DuoApiHost" />
 
             </SettingsField>
+
         }
 
 
+        <SettingsField Label="@AppLocalization["Force MFA"]">
 
+            <MudSwitch Label=@AppLocalization["Force MFA"]
+                       T="bool" @bind-Value="@settings.RequireMFA"
+                       Disabled="settings.MFAType==MFAType.CiscoDuo && duoHealthCheckResult!=true"
+                       UncheckedColor="Color.Error"
+                       Color="Color.Success" />
+
+        </SettingsField>
         <SettingsField>
 
             <MudButton Disabled="SaveDisabled"
@@ -131,11 +133,19 @@
             newAdminPassword = adminPasswordInDb;
             LoadingData = false;
             await InvokeAsync(StateHasChanged);
-            DoDuoHealthCheck();
+            await DoDuoHealthCheck();
 
         });
 
 
+    }
+    private void MFATypeChanged(MFAType type)
+    {
+        settings.MFAType = type;
+        if (type == MFAType.CiscoDuo && !settings.DuoSettingsValid)
+        {
+            settings.RequireMFA = false;
+        }
     }
     private async Task DoDuoHealthCheck()
     {

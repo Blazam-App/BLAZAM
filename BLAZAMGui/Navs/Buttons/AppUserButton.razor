@@ -24,7 +24,7 @@
 
         <MudMenuItem OnClick="@(()=>{profileModal?.ShowAsync();})"
                      Icon="@Icons.Material.Filled.Settings">
-            @AppLocalization["Profile Settings"]
+            @AppLocalization[Lang.Profile_Settings]
         </MudMenuItem>
 
         <MudMenuItem Href="https://docs.blazam.org"
@@ -37,10 +37,7 @@
                          Icon="@Icons.Material.Filled.Api">
                 @AppLocalization[Lang.API]
             </MudMenuItem>
-            @*             <MudMenuItem OnClick="@(async()=>{await JS.InvokeAsync<object>("openFeatureRequestDialog");})"
-                         Icon="@Icons.Material.Filled.RequestPage">
-                @AppLocalization["Feature Request"]
-            </MudMenuItem> *@
+           
         </AuthorizeView>
         @if (UserState?.Impersonator == null)
         {
@@ -52,7 +49,7 @@
         {
             <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/unimpersonate",true);})" Icon="@Icons.Material.Filled.PersonOff">
 
-                @AppLocalization["Stop It"]
+                @AppLocalization[Lang.Stop_It]
             </MudMenuItem>
         }
     </ChildContent>

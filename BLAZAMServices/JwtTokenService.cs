@@ -10,16 +10,12 @@ namespace BLAZAM.Services
 {
     public class JwtTokenService
     {
-        private readonly IEncryptionService _encryptionService;
         private readonly ICurrentUserStateService _currentUserStateService;
-        private readonly ApplicationInfo _applicationInfo;
 
-        public JwtTokenService(IEncryptionService encryptionService, ApplicationInfo applicationInfo, ICurrentUserStateService currentUserStateService)
+        public JwtTokenService(ICurrentUserStateService currentUserStateService)
 
         {
-            _encryptionService = encryptionService;
             _currentUserStateService = currentUserStateService;
-            _applicationInfo = applicationInfo;
         }
         /// <summary>
         /// Generates a new <see cref="JwtSecurityToken"/> for the <see cref="ICurrentUserStateService"/> user and places

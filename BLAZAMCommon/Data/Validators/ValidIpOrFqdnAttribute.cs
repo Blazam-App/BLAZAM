@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace BLAZAM.Common.Data.Validators
 {
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class ValidIpOrFqdnAttribute : AppValidationAttribute
     {
         public ValidIpOrFqdnAttribute()
@@ -14,7 +15,7 @@ namespace BLAZAM.Common.Data.Validators
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             if (value == null || (value is string str && str.IsNullOrEmpty())) return null;
-            if (value != null && value is string strValue)
+            if (value is string strValue)
             {
                 if (!strValue.IsNullOrEmpty())
                     if (Regex.IsMatch(strValue, "^[A-Z]",RegexOptions.IgnoreCase))

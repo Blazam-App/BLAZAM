@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Diagnostics;
 namespace BLAZAM.ActiveDirectory.Searchers
 {
     public class SearchBase
@@ -9,8 +10,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// </summary>
         public AppEvent OnSearchCompleted { get; set; }
         public AppEvent OnSearchStarted { get; set; }
-        public TimeSpan SearchTime { get; set; }
-
+        public TimeSpan SearchTime { get => stopwatch.Elapsed; }
+        protected Stopwatch stopwatch = new Stopwatch();
         /// <summary>
         /// Indicates the current state of this search
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿@page "/login"
 @using BLAZAM.Static;
+@using System.Security
 @inject IHttpContextAccessor HttpContextAccessor
 @inherits ValidatedForm
 @inject IJSRuntime JSRuntime
@@ -19,100 +20,90 @@
 <MudContainer Class="py-5">
 
 
-    @* <GoogleAuthenticatorModal @ref=googleAuthenticatorModal /> *@
-    @if (!googleAuthSecret.IsNullOrEmpty())
-    {
-        <MudText Align="Align.Center">@AppLocalization["Google Authenticator Passcode"]</MudText>
-        <GoogleAuthenticatorInput @bind-Passcode=passcode
-                                  AuthSecret="@googleAuthSecret"
-                                  OnAuthenticated="@(async()=>{await AttemptSignIn(passcode);})" />
-        <MudButton Color="Color.Primary" OnClick="@(()=>{googleAuthSecret=null; LoginRequest.MFAToken=null;})">
-            @AppLocalization[Lang.Back]
-        </MudButton>
-
-    }
-    else
-    {
-
-        <FullAppName />
+    <GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
 
 
 
-        <form onsubmit="@(()=>{AttemptSignIn();})"
-              class="login-form"
-              method="post"
-              action="/signin"
-              id="login-form">
-            <MudContainer Style="max-width:300px;"
-                          Class="py-4">
-                @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
-                {
+    <FullAppName />
 
 
 
-                    <MudTextField Disabled=@attemptingSignIn
-                                  Class="justify-center"
-                                  AutoFocus=true
-                                  Label=@AppLocalization[Lang.Username]
-                                  name="Username"
-                                  @bind-Value=LoginRequest.Username />
-
-                    <MudTextField Disabled=@attemptingSignIn
-                                  Class="justify-center"
-                                  Label=@AppLocalization[Lang.Password]
-                                  name="Password"
-                                  InputType="InputType.Password"
-                                  @bind-Value=LoginRequest.Password />
-
-                    <MudTextField Class="d-none"
-                                  name="ReturnUrl"
-                                  Value="@redirectUrl" />
-
-                    <MudButton OnClick=@(()=>{attemptingSignIn=true;})
-                               Class="my-5"
-                               ButtonType=ButtonType.Submit
-                               Color="Color.Primary">
-                        @AppLocalization[Lang.Log_In]
-                    </MudButton>
+    <form onsubmit="@(async()=>{await AttemptSignIn();})"
+          class="login-form"
+          method="post"
+          action="/signin"
+          id="login-form">
+        <MudContainer Style="max-width:300px;"
+                      Class="py-4">
+            @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
+            {
 
 
 
-                }
-                else if (ApplicationInfo.InDemoMode)
-                {
-                    LoginRequest.Username = "demo";
-                    LoginRequest.Password = "demo";
+                <MudTextField Disabled=@attemptingSignIn
+                              Class="justify-center"
+                              AutoFocus=true
+                              Label=@AppLocalization[Lang.Username]
+                              name="Username"
+                              @bind-Value=LoginRequest.Username />
+
+                <MudTextField Disabled=@attemptingSignIn
+                              Class="justify-center"
+                              Label=@AppLocalization[Lang.Password]
+                              name="Password"
+                              InputType="InputType.Password"
+                              @bind-Value=LoginRequest.Password />
+
+                <MudTextField Class="d-none"
+                              name="ReturnUrl"
+                              Value="@redirectUrl" />
+
+                <MudButton OnClick=@(()=>{attemptingSignIn=true;})
+                           Class="my-5"
+                           ButtonType=ButtonType.Submit
+                           Color="Color.Primary">
+                    @AppLocalization[Lang.Log_In]
+                </MudButton>
 
 
-                    <MudContainer Class="d-none">
 
-                        <MudTextField name="username" Value=@("demo") hidden />
-                        <MudTextField name="password" InputType="InputType.Password" Value=@("demo") hidden />
-                        <MudTextField name="ReturnUrl" Value="@redirectUrl" />
-                    </MudContainer>
-                    <LoginConnectionWarnings />
-                    <MudButtonGroup Color=Color.Primary Variant="Variant.Outlined">
+            }
+            else if (ApplicationInfo.InDemoMode)
+            {
+                LoginRequest.Username = "demo";
+                LoginRequest.Password = "demo";
 
 
-                        <MudButton Disabled=@attemptingSignIn Class="my-6" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
+                <MudContainer Class="d-none">
 
-                        <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
-                            <MudMenuItem OnClick=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</MudMenuItem>
-                        </MudMenu>
-                    </MudButtonGroup>
+                    <MudTextField name="username" Value=@("demo") hidden />
+                    <MudTextField name="password" InputType="InputType.Password" Value=@("demo") hidden />
+                    <MudTextField name="ReturnUrl" Value="@redirectUrl" />
+                </MudContainer>
+                <LoginConnectionWarnings />
+                <MudButtonGroup Color=Color.Primary Variant="Variant.Outlined">
 
-                }
 
-            </MudContainer>
+                    <MudButton Disabled=@attemptingSignIn Class="my-6" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
 
-            <LoadingData Loading=attemptingSignIn />
-        </form>
-        <MudElement Class="d-flex mud-width-full justify-end">
-            <Copyright Style="font-size:0.8em;" />
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                        <MudMenuItem OnClick=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</MudMenuItem>
+                    </MudMenu>
+                </MudButtonGroup>
 
-        </MudElement>
+            }
 
-    }
+        </MudContainer>
+
+        <LoadingData Loading=attemptingSignIn />
+    </form>
+    <MudElement Class="d-flex mud-width-full justify-end">
+        <Copyright Style="font-size:0.8em;" />
+
+    </MudElement>
+
+
+
 
 </MudContainer>
 <style>
@@ -135,11 +126,12 @@
 </style>
 
 @code {
-
+    AppModal? createGoogleAuthenticatorModal;
+    string? tokenCreatorUsername;
     GoogleAuthenticatorModal? googleAuthenticatorModal;
     private string? passcode;
-    private string? googleAuthSecret;
-
+    private SecureString? googleAuthSecret;
+    AuthenticationSettings authSettings;
 
     bool attemptingSignIn = false;
     string redirectUrl;
@@ -148,6 +140,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        authSettings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
         redirectUrl = Nav.Uri;
         LoginRequest.ReturnUrl = Nav.Uri;
         var currentUri = new Uri(Nav.Uri);
@@ -245,8 +238,8 @@
                     Nav.NavigateTo(authenticationResult.MFARedirect);
                 break;
             case LoginResultStatus.GoogleAuthenticatorRequested:
-                googleAuthSecret = authenticationResult.MFAToken;
-                await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken);
+                googleAuthSecret = authenticationResult.MFAToken.ToSecureString();
+                await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken.ToSecureString());
                 break;
             case LoginResultStatus.OK:
                 attemptingSignIn = true;
@@ -257,14 +250,14 @@
         }
 
     }
-    async Task PerformGoogleAuthenticatorValidation(string? mfaToken)
+    async Task PerformGoogleAuthenticatorValidation(SecureString? mfaToken)
     {
         if (googleAuthenticatorModal != null)
         {
             var passcode = await googleAuthenticatorModal.ShowAsync(mfaToken);
             if (passcode != null)
             {
-                AttemptSignIn(passcode);
+                await AttemptSignIn(passcode);
             }
             else
             {

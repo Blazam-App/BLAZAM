@@ -4,6 +4,12 @@
     {
         private int memory;
         private List<double> _history;
+
+        /// <summary>
+        /// Returns the total samples in this average
+        /// </summary>
+        public int Count => _history.Count;
+
         /// <summary>
         /// 
         /// </summary>

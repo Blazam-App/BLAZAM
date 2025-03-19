@@ -14,7 +14,7 @@
                          Items=@GetItems(context.Value)
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.Expanded"
-                         @bind-Activated=context.Selected
+                         @bind-Selected=context.Selected
                          Text="@context.Value?.CanonicalName"
                          Icon="@context.Value?.TypeIcon()"
                          IconColor=@GetItemColor(context.Value)

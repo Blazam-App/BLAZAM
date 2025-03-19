@@ -7,6 +7,7 @@ using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Gui.Services;
 using BLAZAM.Notifications.Services;
+using BLAZAM.Plugins;
 using BLAZAM.Services;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
@@ -21,6 +22,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MudBlazor;
 using MudBlazor.Services;
+using NuGet.Protocol.Plugins;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
@@ -65,6 +67,7 @@ namespace BLAZAM.Server
             }
 
             Program.AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Blazam\\");
+            Program.PluginDirectory = new SystemDirectory(Program.WritablePath + @"plugins\");
 
 
             //Store the configuration so other pages/objects can easily access it
@@ -195,10 +198,8 @@ namespace BLAZAM.Server
 
                 };
                 options.Events = new JwtAuthenticationEventsHandler(
-                    builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>(),
                     builder.Services.BuildServiceProvider().GetRequiredService<IApplicationUserStateService>(),
-                    builder.Services.BuildServiceProvider().GetRequiredService<IAppDatabaseFactory>(),
-                    builder.Services.BuildServiceProvider().GetRequiredService<ICurrentUserStateService>()
+                    builder.Services.BuildServiceProvider().GetRequiredService<IAppDatabaseFactory>()
                 );
             });
             builder.Services.Configure<AuthenticationOptions>(options =>
@@ -408,10 +409,77 @@ namespace BLAZAM.Server
 
             builder.Host.UseWindowsService();
 
-
+            InjectPluginServices(builder);
 
             return builder;
         }
+
+        private static void InjectPluginServices(WebApplicationBuilder builder)
+        {
+            var pluginDir = Program.PluginDirectory;
+            
+            Parallel.ForEach(pluginDir.Files.Where(f=>f.Extension.Equals(".dll")), dll=>
+            {
+                try
+                {
+                    var loadContext = new PluginLoadContext(dll.FullPath);
+                    Assembly assembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(dll.FullPath)));
+                    //Assembly assembly = Assembly.LoadFrom(dll.FullPath);
+                    // Get all types in the assembly that implement IPluginBase
+                    var pluginTypes = assembly.GetTypes()
+                        .Where(type => typeof(IPluginBase).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
+
+                    foreach (Type pluginType in pluginTypes)
+                    {
+                        try
+                        {
+                            // Create an instance of the plugin
+                            if (Activator.CreateInstance(pluginType) is IPluginBase pluginInstance)
+                            {
+                                // Invoke the InjectServices method
+                                pluginInstance.InjectServices(builder);
+                                pluginInstance.Assembly = assembly;
+                                ApplicationInfo.loadedPlugins.Add(pluginInstance);
+
+                            }
+                            else
+                            {
+                                Loggers.SystemLogger.Warning($"Warning: Could not create an instance of plugin type: {pluginType.FullName} in {dll.Name}.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Loggers.SystemLogger.Error($"Error creating or injecting services for plugin {pluginType.FullName} in {dll.Name}: {ex.Message}");
+                            // Optionally log the full exception: Console.WriteLine(ex);
+                        }
+                    }
+                }
+                catch (ReflectionTypeLoadException ex)
+                {
+                    Loggers.SystemLogger.Error($"Error loading assembly {dll.Name}: {ex.Message}");
+                    if (ex.LoaderExceptions != null)
+                    {
+                        foreach (Exception loaderEx in ex.LoaderExceptions)
+                        {
+                            Loggers.SystemLogger.Error($"- {loaderEx.Message}");
+                        }
+                    }
+                }
+                catch (FileLoadException ex)
+                {
+                    Loggers.SystemLogger.Error($"Error loading assembly {dll.Name}: {ex.Message}");
+                }
+                catch (BadImageFormatException ex)
+                {
+                    Loggers.SystemLogger.Error($"Error loading assembly {dll.Name}: Invalid assembly format - {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Error($"An unexpected error occurred while processing assembly {dll.Name}: {ex.Message}");
+                }
+            });
+        }
+
         private static readonly object _lock = new();
         /// <summary>
         /// Injects all services in all BLAZAM assemblies that have the <see cref="AutoStartBackgroundService"/> attribute
@@ -529,7 +597,7 @@ namespace BLAZAM.Server
 
 
                                     var metadata = type.GetCustomAttribute<AutoStartBackgroundService>();
-                                    
+
                                     service?.Start(metadata?.Immediate == true);
                                 }
                                 catch (Exception ex)

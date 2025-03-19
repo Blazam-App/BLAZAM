@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Exceptions;
+using System.DirectoryServices;
 
 namespace BLAZAM.Jobs
 {
@@ -100,6 +101,21 @@ namespace BLAZAM.Jobs
                 EndTime = DateTime.Now;
                 Progress = 100;
                 return Result == JobResult.Passed;
+
+            }
+            catch (DirectoryServicesCOMException ex)
+            {
+                switch (ex.ExtendedError)
+                {
+                    case 8517:
+                        Exception = new Exception("A global group cannont have a universal member", ex);
+                        break;
+
+                }
+                Result = Result = JobResult.Failed;
+                EndTime = DateTime.Now;
+                Progress = 100;
+                return false;
 
             }
             catch (Exception ex)

@@ -27,7 +27,7 @@ namespace BLAZAM.Services.Chat
         void PostMessage(ChatMessage message);
         Task<ChatRoom?> GetChatRoom(ChatRoom? chatRoom);
         List<ChatMessage> GetUnreadMessages(AppUser user);
-        List<ChatRoom> GetPrivateChats(AppUser user);
         List<ChatMessage> GetUnreadMessages(AppUser user, ChatRoom room);
+        List<ChatRoom> GetPrivateChats(AppUser user);
     }
 }

@@ -43,7 +43,7 @@
         Modal.Options.MaxWidth = MaxWidth.Large;
 
         Modal.YesText = AppLocalization[Lang.Next];
-        Modal.Title = "Register Printers";
+        Modal.Title = AppLocalization[Lang.Register_Printers];
         Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
         base.OnInitialized();
 
@@ -56,7 +56,7 @@
 
         foreach (var printer in selectedPrinters.Where(p => p.ADPrinter == null))
         {
-            IJob registerJob = new Job(AppLocalization["Register Printers"], CurrentUser.State.AuditUsername);
+            IJob registerJob = new Job(AppLocalization[Lang.Register_Printers], CurrentUser.State.AuditUsername);
             var newPrinter = destinationOU.CreatePrinter(printer);
             registerJob = await newPrinter.CommitChangesAsync(registerJob);
             if (registerJob.FailedSteps.Count == 0)
@@ -89,7 +89,7 @@
             destinationOU = newDestinationOU;
             if (destinationOU != null && selectedPrinters != null && selectedPrinters.Count > 0)
             {
-                Modal.YesText = AppLocalization["Register"];
+                Modal.YesText = AppLocalization[Lang.Register];
                 Modal.OnYes = RegisterSelectedPrinters;
                 _=Modal.RefreshView();
             }

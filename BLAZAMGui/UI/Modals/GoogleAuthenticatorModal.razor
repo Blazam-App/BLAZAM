@@ -50,7 +50,7 @@
     private string? registrationUri;
     private string? authToken;
     private MudDialog? dialog;
-    private string? authSecret;
+    private SecureString? authSecret;
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter]
     public AppEvent? OnAuthenticated { get; set; }
@@ -59,10 +59,10 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        authSecret = CurrentUser?.State?.Preferences?.AuthenticatorSecret?.Decrypt();
+        authSecret = CurrentUser?.State?.Preferences?.AuthenticatorSecret?.Decrypt().ToSecureString();
         _authenticated = false;
     }
-    public async Task<string?> ShowAsync(string? customSecret = null, string? customRegistrationUri = null)
+    public async Task<string?> ShowAsync(SecureString? customSecret = null, string? customRegistrationUri = null)
     {
         if (customSecret != null)
         {

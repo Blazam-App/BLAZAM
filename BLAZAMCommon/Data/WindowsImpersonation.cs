@@ -66,7 +66,7 @@ namespace BLAZAM.Common.Data
     int dwLogonType, int dwLogonProvider, out SafeAccessTokenHandle phToken);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-        public extern static bool CloseHandle(IntPtr handle);
+        private extern static bool CloseHandle(IntPtr handle);
         /// <summary>
         /// Creates a new impersonation context under the provided <see cref="WindowsImpersonationUser"/>
         /// </summary>

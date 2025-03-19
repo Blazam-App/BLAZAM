@@ -69,14 +69,12 @@ Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
 
     private async Task Delete(ApiToken? tokenToDelete)
     {
-        if (await MessageService.Confirm(AppLocalization["Are you sure you want to delete this API token?"], AppLocalization["Confirm delete"]))
+        if (tokenToDelete != null && await MessageService.Confirm(AppLocalization["Are you sure you want to delete this API token?"], AppLocalization["Confirm delete"]))
         {
-            if (tokenToDelete != null)
-            {
                 tokenToDelete.DeletedAt = DateTime.UtcNow;
-                Context.SaveChangesAsync();
+                await Context.SaveChangesAsync();
                 GetTokens();
-            }
+            
         }
 
     }

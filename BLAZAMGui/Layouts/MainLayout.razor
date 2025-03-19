@@ -122,9 +122,8 @@
 
                         <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Style="@(SubHeader==null?"":"padding-top: calc(var(--mud-appbar-height) - var(--mud-appbar-height) / 4);")">
                             @Body
-
                         </MudContainer>
-
+                        <ForceCreateGoogleAuthenticatorTokenModal/>
                         <AppUserPageTracker />
                         <DirectoryConnectingIndicator />
 
