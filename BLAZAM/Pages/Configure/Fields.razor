@@ -3,11 +3,11 @@
 @inherits DatabaseComponentBase
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
-<AppPageTitle>@AppLocalization["Fields"]</AppPageTitle>
+<AppPageTitle>@AppLocalization[Lang.Fields]</AppPageTitle>
 <SetHeader>
-    <MudText>@AppLocalization["Fields"]</MudText>
+    <MudText>@AppLocalization[Lang.Fields]</MudText>
 </SetHeader>
-<MudText Typo="Typo.h4">@AppLocalization["Fields"] <AppDocumentationButton Page="/admin/fields" /></MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Fields] <AppDocumentationButton Page="/admin/fields" /></MudText>
 <MudDataGrid @ref=fieldGrid
              T="CustomActiveDirectoryField"
              ServerData="RefreshData"
@@ -27,7 +27,7 @@
 
         <TemplateColumn Context="cellContext"
                         CellClass="d-flex justify-end"
-                        Title=@AppLocalization["Edit"]
+                        Title=@AppLocalization[Lang.Edit]
                         Sortable="false">
             <CellTemplate>
                 <MudIconButton Size="@Size.Small"
@@ -38,13 +38,13 @@
 
         <PropertyColumn Sortable="true"
                         Property="x => x.DisplayName"
-                        Title=@AppLocalization["Display Name"] />
+                        Title=@AppLocalization[Lang.Display_Name] />
 
         <PropertyColumn Sortable="true"
                         Property="x => x.FieldName"
-                        Title=@AppLocalization["Field Name"] />
+                        Title=@AppLocalization[Lang.Field_Name] />
 
-        <TemplateColumn Title=@AppLocalization["Field Type"]
+        <TemplateColumn Title=@AppLocalization[Lang.Field_Type]
                         Sortable="true">
             <EditTemplate>
                 <FieldTypeSelect Variant="@Variant.Outlined"
@@ -77,7 +77,7 @@
             </TemplateColumn>
         }
         <TemplateColumn CellClass="d-flex justify-end"
-                        Title=@AppLocalization["Delete"]
+                        Title=@AppLocalization[Lang.Delete]
                         Sortable="false">
             <CellTemplate>
                 <MudIconButton Disabled=@(context.Item.Id>100000)

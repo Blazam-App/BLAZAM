@@ -40,7 +40,7 @@ namespace BLAZAM.Tests.Jobs
             var result = testJob.Run();
 
             // Assert
-            Assert.True(result == false && testJob.FailedSteps.Count == 1 && testJob.PassedSteps.Count == 1);
+            Assert.True(!result && testJob.FailedSteps.Count == 1 && testJob.PassedSteps.Count == 1);
         }
         [Fact]
         public void Steps_Cancelled_After_Error_When_Stop_Enabled()
@@ -50,7 +50,7 @@ namespace BLAZAM.Tests.Jobs
             testJob.StopOnFailedStep = true;
 
             // Act
-            var result = testJob.Run();
+            _ = testJob.Run();
 
             // Assert
             Assert.True(testJob.Steps[1].Result == JobResult.Failed && testJob.Steps[2].Result == JobResult.Cancelled && testJob.Steps[3].Result == JobResult.Cancelled);
@@ -62,7 +62,7 @@ namespace BLAZAM.Tests.Jobs
             var testJob = TestJob;
 
             // Act
-            var result = testJob.Run();
+            _ = testJob.Run();
             var subjobStep1Result = ((IJob)testJob.Steps[3]).Steps[0].Result;
             var subjobStep3Result = ((IJob)testJob.Steps[3]).Steps[2].Result;
             // Assert
@@ -76,7 +76,7 @@ namespace BLAZAM.Tests.Jobs
             var testJob = TestJob;
 
             // Act
-            var result = testJob.Run();
+           _ = testJob.Run();
 
             // Assert
             Assert.True(testJob.StartTime != null

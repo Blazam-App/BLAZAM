@@ -4,9 +4,9 @@
 <MudSimpleTable Class="mud-width-full p-5 m-5">
     <thead>
         <tr>
-            <th>@AppLocalization["Delegate"]</th>
-            <th>@AppLocalization["Access Level"]</th>
-            <th>@AppLocalization["Permission Mapping"]</th>
+            <th>@AppLocalization[Lang.Delegate]</th>
+            <th>@AppLocalization[Lang.Access_Level]</th>
+            <th>@AppLocalization[Lang.Permission_Mapping]</th>
         </tr>
     </thead>
     <tbody>
@@ -23,14 +23,14 @@
         </tr>
         <tr>
             <td>
-                <MudText>@AppLocalization["Name"]: </MudText><MudText>@_delegate?.DelegateName</MudText>
+                <MudText>@AppLocalization[Lang.Name]: </MudText><MudText>@_delegate?.DelegateName</MudText>
             </td>
             <td>
-                <MudText>@AppLocalization["Name"]: </MudText><MudText>@_accessLevel?.Name</MudText>
+                <MudText>@AppLocalization[Lang.Name]: </MudText><MudText>@_accessLevel?.Name</MudText>
 
             </td>
             <td>
-                <MudText>@AppLocalization["Name"]: </MudText><MudText>@_target?.CanonicalName</MudText>
+                <MudText>@AppLocalization[Lang.Name]: </MudText><MudText>@_target?.CanonicalName</MudText>
 
             </td>
         </tr>
@@ -52,10 +52,10 @@
     {
         await base.OnInitializedAsync();
         Modal.Options.MaxWidth = MaxWidth.Large;
-        Modal.YesText = AppLocalization["Approve"];
+        Modal.YesText = AppLocalization[Lang.Approve];
         base.Modal.OnYes += async () => { await Approve(); };
         _ = LoadData();
-        Modal.RefreshView();
+        await Modal.RefreshView();
 
     }
 

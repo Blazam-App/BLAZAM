@@ -11,7 +11,9 @@ namespace BLAZAM.Gui.UI
     public class AppComponentBase : ComponentBase, IDisposable
     {
         [Inject]
-        protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }
+        protected IStringLocalizer<AppLocalization> AppLocalization { get; set; } 
+        [Inject]
+        protected IStringLocalizer<AppHelpLocalization> AppHelpLocalization { get; set; }
 
         [Inject]
         protected SearchService SearchService { get; set; }

@@ -1,20 +1,24 @@
 ﻿@inherits ComputerViewBase
 @if (Computer.IsOnline == true)
 {
-    <DialGuage Title="CPU" PollFunc="@(()=>{return Computer.Processor;})" />
+    <DialGuage Title=@AppLocalization[Lang.CPU] PollFunc="@(()=>{return Computer.Processor;})" />
 
-    <AppTooltip Text="@AppLocalization["CPU Chart"]">
+    <AppTooltip Text="@AppLocalization[Lang.CPU_Chart]">
         <MudIconButton Style="width:75px;height:75px;"
                        Size="Size.Large"
                        Icon="@Icons.Material.Filled.History"
                        OnClick="@(()=>{showCPUChart = !showCPUChart;})" />
     </AppTooltip>
-    <DialGuage Title="RAM"
+    <DialGuage Title=@AppLocalization[Lang.Memory]
                PollFunc="@(()=>{return Computer.MemoryUsedPercent;})" />
-    <MudIconButton Style="width:75px;height:75px;"
-                   Size="Size.Large"
-                   Icon="@Icons.Material.Filled.History"
-                   OnClick="@(()=>{showRAMChart = !showRAMChart;})" />
+    <AppTooltip Text="@AppLocalization[Lang.Memory_Chart]">
+
+        <MudIconButton Style="width:75px;height:75px;"
+                       Size="Size.Large"
+                       Icon="@Icons.Material.Filled.History"
+                       OnClick="@(()=>{showRAMChart = !showRAMChart;})" />
+    </AppTooltip>
+
     @if (showCPUChart)
     {
         <LiveChart Enabled=@(Computer.IsOnline==true)
@@ -34,7 +38,7 @@
 }
 else
 {
-    <MudText>Computer is not reachable.</MudText>
+    <MudText>@AppLocalization[Lang.Computer_not_reachable]</MudText>
 }
 
 

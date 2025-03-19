@@ -74,7 +74,7 @@ namespace BLAZAM.ActiveDirectory.Data
             var dcNames = _directory.DomainControllers.Select(controller => controller.Name).ToList();
             Parallel.ForEach(dcNames, domainController =>
             {
-                var result = _directory.Impersonation.Run(() =>
+                _ = _directory.Impersonation.Run(() =>
                 {
                     try
                     {

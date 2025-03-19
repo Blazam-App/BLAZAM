@@ -78,19 +78,19 @@
                     <MudText>Configure custom update credentials.</MudText>
 
                     <MudCard>
-                        <SettingsField Label="@AppLocalization["Domain"]">
+                        <SettingsField Label="@AppLocalization[Lang.Domain]">
 
-                            <MudTextField Label="@AppLocalization["Domain"]" @bind-Value="settings.UpdateDomain" />
+                            <MudTextField Label="@AppLocalization[Lang.Domain]" @bind-Value="settings.UpdateDomain" />
                         </SettingsField>
 
-                        <SettingsField Label="@AppLocalization["Username"]">
+                        <SettingsField Label="@AppLocalization[Lang.Username]">
 
-                            <MudTextField Label="@AppLocalization["Username"]" @bind-Value="settings.UpdateUsername" />
+                            <MudTextField Label="@AppLocalization[Lang.Username]" @bind-Value="settings.UpdateUsername" />
                         </SettingsField>
 
-                        <SettingsField Label="@AppLocalization["Password"]">
+                        <SettingsField Label="@AppLocalization[Lang.Password]">
 
-                            <MudTextField Label="@AppLocalization["Password"]"
+                            <MudTextField Label="@AppLocalization[Lang.Password]"
                                           InputType="InputType.Password"
                                           @bind-Value="newUpdatePassword" />
                         </SettingsField>
@@ -116,11 +116,11 @@
 
 
 
-            <SettingsField Label="@AppLocalization["Update"]">
+            <SettingsField Label="@AppLocalization[Lang.Update]">
 
                 <FieldLabel>
                     <MudText>
-                        @AppLocalization["Update"]
+                        @AppLocalization[Lang.Update]
                     </MudText>
                     <MudIconButton Color="Color.Primary"
                                    OnClick=@(async()=>{await appUpdateComponent!.GetLatestUpdate();})
@@ -169,7 +169,7 @@
             <MudButton Disabled="SaveDisabled"
                        ButtonType="ButtonType.Submit"
                        Color="Color.Success">
-                @AppLocalization["Save Changes"]
+                @AppLocalization[Lang.Save_Changes]
             </MudButton>
 
         </SettingsField>

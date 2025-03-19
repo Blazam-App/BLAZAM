@@ -337,7 +337,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     return _cachedHasChildren == true;
 
                 }
-                var hasChildren = CachedChildren.Count() > 0;
+                var hasChildren = CachedChildren.Any();
                 return hasChildren;
             }
         }
@@ -987,24 +987,25 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual void DiscardChanges()
         {
-            DirectoryEntry = null;
-            HasUnsavedChanges = false;
-            NewEntryProperties = new();
-            CommitSteps.Clear();
 
-            PostCommitSteps.Clear();
-            if (SearchResult != null)
-                FetchDirectoryEntry();
+                DirectoryEntry = null;
+                HasUnsavedChanges = false;
+                NewEntryProperties = new();
+                CommitSteps.Clear();
 
-            OnModelChanged?.Invoke();
+                PostCommitSteps.Clear();
+                if (SearchResult != null)
+                    FetchDirectoryEntry();
 
+                OnModelChanged?.Invoke();
+            
         }
-
         private void FetchDirectoryEntry()
         {
-            if (SearchResult is null) throw new ArgumentNullException(nameof(SearchResult));
+            if (SearchResult is null) throw new CriticalActiveDirectoryException(Directory,nameof(SearchResult));
 
             DirectoryEntry = SearchResult.GetDirectoryEntry();
+
         }
 
         public virtual T? GetCustomProperty<T>(string propertyName)
@@ -1144,8 +1145,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             try
             {
-                if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
-                    return (T?)DirectoryEntry.Properties[propertyName].Value;
+                    if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
+                        return (T?)DirectoryEntry.Properties[propertyName].Value;
+                
             }
             catch (ArgumentException)
             {

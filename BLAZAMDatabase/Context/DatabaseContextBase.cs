@@ -478,6 +478,13 @@ namespace BLAZAM.Database.Context
                     FieldName = "logonHours",
                     DisplayName = "Logon Hours",
                     FieldType = ActiveDirectoryFieldType.RawData
+                },
+                new ActiveDirectoryField
+                {
+                    Id = 38,
+                    FieldName = "groupType",
+                    DisplayName = "Group Type and Scope",
+                    FieldType = ActiveDirectoryFieldType.RawData
                 }
 
 

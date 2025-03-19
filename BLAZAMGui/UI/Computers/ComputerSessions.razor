@@ -9,10 +9,10 @@
     {
         <MudDataGrid HorizontalScrollbar=true Elevation=0 Items="sessions">
             <Columns>
-                <PropertyColumn Property="x=>x.User" />
-                <PropertyColumn Property="x=>x.ConnectionState" />
-                <PropertyColumn Property="x=>x.ClientIPAddress" />
-                <TemplateColumn Title="Connected">
+                <PropertyColumn Title="@AppLocalization[Lang.User]" Property="x=>x.User" />
+                <PropertyColumn Title="@AppLocalization[Lang.State]" Property="x=>x.ConnectionState" />
+                <PropertyColumn Title="@AppLocalization[Lang.IP_Address]" Property="x=>x.ClientIPAddress" />
+                <TemplateColumn Title="@AppLocalization[Lang.Connected]">
                     <CellTemplate>
                         @if (context.Item.ConnectTime != null)
                         {
@@ -20,8 +20,8 @@
                         }
                     </CellTemplate>
                 </TemplateColumn>
-                <PropertyColumn Property="x=>x.IdleTime" />
-                <TemplateColumn Title="Message">
+                <PropertyColumn Title="@AppLocalization[Lang.Idle_Time]" Property="x=>x.IdleTime" />
+                <TemplateColumn Title="@AppLocalization[Lang.Message]">
                     <CellTemplate>
                         @if (context.Item.ConnectionState.ToString() == "Active")
                         {
@@ -33,17 +33,17 @@
                     </CellTemplate>
                 </TemplateColumn>
 
-                <TemplateColumn Title="Manage">
+                <TemplateColumn Title="@AppLocalization[Lang.Manage]">
                     <CellTemplate>
                         @if (context.Item.ConnectionState.ToString() == "Active")
                         {
-                            <MudButton Color="Color.Warning" OnClick=@(async()=>{await DisconnectSession(context.Item);})>Disconnect</MudButton>
+                            <MudButton Color="Color.Warning" OnClick=@(async()=>{await DisconnectSession(context.Item);})>@AppLocalization[Lang.Disconnect]</MudButton>
                         }
-                        <MudButton Color="Color.Error" OnClick=@(()=>{LogoffSession(context.Item);})>Logoff</MudButton>
+                        <MudButton Color="Color.Error" OnClick=@(async()=>{await LogoffSession(context.Item);})>Logoff</MudButton>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
-        </MudDataGrid>   <AppModal @ref=@sessionMessageModal AllowClose=true Title="Send Message">
+        </MudDataGrid>   <AppModal @ref=@sessionMessageModal AllowClose=true Title=@AppLocalization[Lang.Send_Message]>
             <SendMessageModalContent Session="@sessionToMessage" />
         </AppModal>
 
@@ -57,7 +57,7 @@
 }
 else
 {
-    <MudText>Computer is not reachable.</MudText>
+    <MudText>@AppLocalization[Lang.Computer_not_reachable]</MudText>
 }
 
 

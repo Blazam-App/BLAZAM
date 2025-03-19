@@ -20,8 +20,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private const int ADS_UF_PASSWD_CANT_CHANGE = 0x0040;
         private const int ADS_UF_NORMAL_ACCOUNT = 0x0200;
         private const int ADS_UF_DONT_EXPIRE_PASSWD = 0x10000;
-        private const int PASSWD_NOTREQD_MASK = 0xFFDF;
-        private const int ACCOUNT_ENABLE_MASK = 0xFFFFFFD;
 
 
 
@@ -128,7 +126,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 else if (!value && Disabled)
                 {
 
-                    UAC = UAC & ACCOUNT_ENABLE_MASK;
+                    UAC = UAC & ~ADS_UF_ACCOUNTDISABLE;
 
                 }
             }
@@ -157,7 +155,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 else if (!value && PasswordNotRequired)
                 {
 
-                    UAC = UAC & PASSWD_NOTREQD_MASK;
+                    UAC = UAC & ~ADS_UF_PASSWD_NOTREQD;
 
                 }
             }

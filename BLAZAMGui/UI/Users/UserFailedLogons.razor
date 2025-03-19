@@ -7,7 +7,7 @@
 
             </Header>
             <Columns>
-                <PropertyColumn Title=@AppLocalization["Timestamp"] Property="x=>x.Timestamp" />
+                <PropertyColumn Title=@AppLocalization[Lang.Timestamp] Property="x=>x.Timestamp" />
             <PropertyColumn Title=@AppLocalization["Workstation Name"] Property="x=>x.WorkstationName" />
             <PropertyColumn Title=@AppLocalization["Workstation IP"]  Property="x=>x.WorkstationIp" />
             </Columns>
@@ -27,7 +27,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Task.Run(() =>
+        _=Task.Run(() =>
         {
             LoadingData = true;
             _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();

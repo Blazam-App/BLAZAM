@@ -1,5 +1,7 @@
 ﻿
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace BLAZAM.Database.Models.Audit
 {
     public class EmailAuditLog : AppDbSetBase
@@ -17,5 +19,8 @@ namespace BLAZAM.Database.Models.Audit
         public int Retries { get; set; }
         public DateTime? ReadTimestamp { get; set; }
         public string? ServerResponse { get; set; }
+
+        [NotMapped]
+        public bool Delivered { get { return ServerResponse?.StartsWith("2") == true; } }
     }
 }

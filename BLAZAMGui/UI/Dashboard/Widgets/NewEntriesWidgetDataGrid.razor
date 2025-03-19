@@ -18,7 +18,7 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Title=@AppLocalization["Name"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
                 <DirectoryEntryContextMenu Entry="@context.Item"
                 OnChanged="OnChanged">
@@ -38,7 +38,7 @@
                 </DirectoryEntryContextMenu>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization["Created"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Created]>
             <CellTemplate>
                 @if (context.Item?.Created != null)
                 {
@@ -52,7 +52,7 @@
         <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="@T" />
     </PagerContent>
     <NoRecordsContent>
-        <MudText>@AppLocalization["No matching entries"]</MudText>
+        <MudText>@AppLocalization[Lang.No_matching_results]</MudText>
     </NoRecordsContent>
 </MudDataGrid>
 

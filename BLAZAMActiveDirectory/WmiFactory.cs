@@ -25,6 +25,7 @@ namespace BLAZAM.Common.Data.Services
                 connectionOptions.SecurePassword = settings.Password.Decrypt().ToSecureString();
                 connectionOptions.Impersonation = ImpersonationLevel.Impersonate;
                 connectionOptions.Timeout = TimeSpan.FromSeconds(5);
+                connectionOptions.Authentication = AuthenticationLevel.PacketPrivacy;
 
                 ManagementScope managementScope = new(string.Format("\\\\{0}\\root\\cimv2", hostName), connectionOptions);
                 try

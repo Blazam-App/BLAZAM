@@ -11,7 +11,7 @@
             <ADAutoComplete AutoFocus="true"
             Class=""
             Disabled=@(copyFrom!=null)
-            Label=@AppLocalization["Group Name"]
+            Label=@AppLocalization[Lang.Group_Name]
             CustomResultsFilter="(result)=>result is IADGroup group && group.CanRead"
             SearchObjectType="ActiveDirectoryObjectType.Group"
             @bind-SelectedResult=@Group
@@ -36,7 +36,7 @@
                 <ADAutoComplete AutoFocus="true"
                 Class=""
                 Disabled=@(copyFrom!=null)
-                Label=@AppLocalization["Group Name"]
+                Label=@AppLocalization[Lang.Group_Name]
                 CustomResultsFilter="(result)=>result is IADGroup group && group.CanRead"
                 SelectedResult=@group.Value
                 SelectedResultChanged="@((newValue)=>{additionalGroups[group.Key]=newValue;})"
@@ -108,7 +108,7 @@
                     </Header>
                     <Columns>
                         <SelectColumn T="IADGroup" />
-                        <PropertyColumn Property="g=>g.GroupName" Title="@AppLocalization[""]" />
+                        <PropertyColumn Property="g=>g.GroupName" />
                     </Columns>
                 </MudDataGrid>
 
@@ -158,8 +158,8 @@
     {
         base.OnInitialized();
         Modal.OnYes = AssignToGroup;
-        Modal.YesText = AppLocalization["Assign"];
-        Modal.Title = AppLocalization["Assign To"];
+        Modal.YesText = AppLocalization[Lang.Assign];
+        Modal.Title = AppLocalization[Lang.Assign_To];
     }
 
 

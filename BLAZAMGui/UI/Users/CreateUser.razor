@@ -1,4 +1,8 @@
-﻿@page "/create/user"
+﻿
+@using BLAZAM.Gui.Helpers
+@using BLAZAM.Gui.UI.Groups
+@using BLAZAM.Gui.UI.Users
+
 @inherits TemplateComponent
 @attribute [Authorize(Roles = UserRoles.CreateUsers)]
 
@@ -6,7 +10,7 @@
 {
     <AppNavLock />
 }
-<AppPageTitle>@AppLocalization["Create User"]</AppPageTitle>
+<AppPageTitle>@AppLocalization[Lang.Create_User]</AppPageTitle>
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudTabs PanelClass="mx-auto w-100"
@@ -18,7 +22,7 @@
 
         <MudTabPanel>
             <TabContent>
-                @AppLocalization["Template"]
+                @AppLocalization[Lang.Template]
             </TabContent>
             <ChildContent>
 
@@ -88,7 +92,7 @@
                 }
                 <MudButton Color=Color.Secondary
                            OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=5;})">
-                    @AppLocalization["Custom"]
+                    @AppLocalization[Lang.Custom]
                 </MudButton>
 
             </ChildContent>
@@ -98,7 +102,7 @@
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
                      Disabled=@( SelectedTemplate==null)>
             <TabContent>
-                @AppLocalization["Name"]
+                @AppLocalization[Lang.Name]
             </TabContent>
             <ChildContent>
 
@@ -115,7 +119,7 @@
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
                      Disabled="@(newUser==null || _userCreated)">
             <TabContent>
-                @AppLocalization["Username"]
+                @AppLocalization[Lang.Username]
             </TabContent>
             <ChildContent>
                 @{
@@ -138,7 +142,7 @@
 
                 }
                 <MudTextField Class="mt-5"
-                              Label="@AppLocalization["Username"]"
+                              Label="@AppLocalization[Lang.Username]"
                               Immediate="true"
                               Disabled=@(!CurrentUser.State.IsSuperAdmin && SelectedTemplate?.EffectiveAllowUsernameOverride!=true)
                               T=string
@@ -147,18 +151,18 @@
                 {
                     <MudAlert Severity="Severity.Error">
                         @AppLocalization["An account with that name already exists!"]<br/>
-                        @AppLocalization["User"]: @conflictingEntry.SamAccountName
+                        @AppLocalization[Lang.User]: @conflictingEntry.SamAccountName
                         </MudAlert>
                 }
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
                            OnClick="@(()=>{SelectedStep=1;})">
-                    @AppLocalization["Back"]
+                    @AppLocalization[Lang.Back]
                 </MudButton>
                 <MudButton Color=Color.Success
                            Disabled="@(conflictWarning)"
                            OnClick="@(()=>{SelectedStep=3;})">
-                    @AppLocalization["Next"]
+                    @AppLocalization[Lang.Next]
                 </MudButton>
 
             </ChildContent>
@@ -167,7 +171,7 @@
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
                      Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
             <TabContent>
-                @AppLocalization["Fields"]
+                @AppLocalization[Lang.Fields]
             </TabContent>
             <ChildContent>
                 <NewTemplateUser NewUserName="newUserName"
@@ -177,7 +181,7 @@
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
                            OnClick="@(()=>{SelectedStep=2;})">
-                    @AppLocalization["Back"]
+                    @AppLocalization[Lang.Back]
                 </MudButton>
 
             </ChildContent>
@@ -187,7 +191,7 @@
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
                      Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
             <TabContent>
-                @AppLocalization["Groups"]
+                @AppLocalization[Lang.Groups]
             </TabContent>
             <ChildContent>
                 <MemberOfList Target="_blank"
@@ -202,11 +206,11 @@
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
                            OnClick="@(()=>{SelectedStep=3;})">
-                    @AppLocalization["Back"]
+                    @AppLocalization[Lang.Back]
                 </MudButton>
                 <MudButton Color=Color.Success
                            OnClick="@(()=>{SelectedStep=7;})">
-                    @AppLocalization["Next"]
+                    @AppLocalization[Lang.Next]
                 </MudButton>
 
             </ChildContent>
@@ -216,21 +220,21 @@
 
         <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(custom==false || _userCreated)">
             <TabContent>
-                @AppLocalization["OU"]
+                @AppLocalization[Lang.OU]
             </TabContent>
             <ChildContent>
                 <OUTreeView AdditionalVisibilityFilters=@(AdditionalShow)
                             StartRootExpanded=true
                             SelectedEntryChanged="OUSelected" />
 
-                <MudTextField Label="@AppLocalization["Display Name"]"
+                <MudTextField Label="@AppLocalization[Lang.Display_Name]"
                               @bind-Value="@customUserDisplayName" />
 
 
 
                 <MudButton Color=Color.Primary
                            OnClick="@(()=>{SelectedStep=0;})">
-                    @AppLocalization["Back"]
+                    @AppLocalization[Lang.Back]
                 </MudButton>
                 <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()|| selectedOU==null)
                            Color=Color.Success
@@ -238,7 +242,7 @@
                                                 await CreateCustomUser();
                                                 selectedStep=6;
                                                 })">
-                    @AppLocalization["Next"]
+                    @AppLocalization[Lang.Next]
                 </MudButton>
 
 
@@ -248,7 +252,7 @@
         <MudTabPanel Class=@(custom==true?"":"d-none")
                      Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
             <TabContent>
-                @AppLocalization["Details"]
+                @AppLocalization[Lang.Details]
             </TabContent>
             <ChildContent>
                 @*TODO: The following binding cause the next button to not update when validation is reached, updates are controlled from
@@ -259,7 +263,7 @@
                           @bind-Password=customPassword />
                 <MudButton Color=Color.Primary
                            OnClick="@(()=>{SelectedStep=4;})">
-                    @AppLocalization["Back"]
+                    @AppLocalization[Lang.Back]
                 </MudButton>
                 <MudButton Color=Color.Success
                            OnClick="@(()=>{
@@ -268,7 +272,7 @@
                                                 newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
                                             })"
                            Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
-                    @AppLocalization["Next"]
+                    @AppLocalization[Lang.Next]
                 </MudButton>
             </ChildContent>
 
@@ -278,7 +282,7 @@
         <MudTabPanel Disabled=@(newUser==null || !_usernameStepValid)>
             <TabContent>
 
-                @AppLocalization["Confirm"]
+                @AppLocalization[Lang.Confirm]
             </TabContent>
             <ChildContent>
                 <ConfirmNewUser @bind-User="@newUser"

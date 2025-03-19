@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using BLAZAM.Plugins;
+using Microsoft.AspNetCore.Builder;
 using System.Diagnostics;
 
 namespace BLAZAM.Common.Data
@@ -108,6 +109,16 @@ namespace BLAZAM.Common.Data
         /// The running AppConfig configuration
         /// </summary>
         public static Microsoft.Extensions.Configuration.ConfigurationManager configuration;
+
+        /// <summary>
+        /// A list of plugins that were found
+        /// </summary>
+        public static List<IPluginBase> loadedPlugins = new();
+
+        /// <summary>
+        /// A list of plugins that were found
+        /// </summary>
+        public static List<IPluginBase> LoadedPlugins {get => loadedPlugins;set=>loadedPlugins = value;}
 
         /// <summary>
         /// A collection of active listening address's with port

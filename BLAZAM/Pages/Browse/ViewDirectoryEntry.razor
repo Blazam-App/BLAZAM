@@ -1,3 +1,8 @@
+@using BLAZAM.Gui.UI.Computers
+@using BLAZAM.Gui.UI.Groups
+@using BLAZAM.Gui.UI.OU
+@using BLAZAM.Gui.UI.Printers
+@using BLAZAM.Gui.UI.Users
 @inject IStringLocalizer<AppLocalization> AppLocalization
 <CascadingValue Value="ChangeHistoryModal" Name="ChangeHistoryModal">
     <CascadingValue Value="EffectivePermissionsModal" Name="EffectivePermissionsModal">
@@ -24,7 +29,7 @@
     }
 </CascadingValue>
 </CascadingValue>
-<AppModal Title=@AppLocalization["Change History"]
+<AppModal Title=@AppLocalization[Lang.Change_History]
           @ref=@ChangeHistoryModal
           Options=@(new DialogOptions(){FullWidth=true,
           MaxWidth=MaxWidth.ExtraExtraLarge,
@@ -34,7 +39,7 @@
         <ChangeHistoryModalContent Model="DirectoryEntry" />
     }
 </AppModal>
-<AppModal Title=@AppLocalization["Effective Permissions"]
+<AppModal Title=@AppLocalization[Lang.Effective_Permissions]
           @ref=@EffectivePermissionsModal
           Options=@(new DialogOptions(){FullWidth=true,
           MaxWidth=MaxWidth.ExtraExtraLarge,

@@ -5,7 +5,7 @@
 
         <MudStack Row Class="mx-auto">
 
-            <AppTooltip Text="@AppLocalization["Discard Changes"]">
+            <AppTooltip Text="@AppLocalization[Lang.Discard_Changes]">
 
             <MudFab Color=Color.Error
                     StartIcon="@Icons.Material.Outlined.Undo"
@@ -13,7 +13,7 @@
             </AppTooltip>
 
 
-            <AppTooltip Text="@AppLocalization["Save Changes"]">
+            <AppTooltip Text="@AppLocalization[Lang.Save_Changes]">
                 <MudFab Color=Color.Success
                         StartIcon="@Icons.Material.Filled.Save"
                         OnClick="@(()=>{SaveChanges.InvokeAsync();})" />

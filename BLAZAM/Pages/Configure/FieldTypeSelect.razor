@@ -3,7 +3,7 @@
 <MudSelect For=For
            Variant=Variant.Outlined
            Disabled=@Disabled @bind-Value=@Value
-           Label=@AppLocalization["Field Type"]
+           Label=@AppLocalization[Lang.Field_Type]
            T="ActiveDirectoryFieldType">
     @foreach (var fieldType in Enum.GetValues<ActiveDirectoryFieldType>())
     {

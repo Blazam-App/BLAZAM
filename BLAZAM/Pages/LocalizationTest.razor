@@ -1,0 +1,89 @@
+﻿@using System.Reflection
+@inject IStringLocalizer<AppLocalization> AppLocalization
+@inject IStringLocalizer<AppHelpLocalization> AppHelpLocalization
+@inject IStringLocalizer<AppValidationLocalization> AppValidationLocalization
+@page "/localizationTest"
+<h3>LocalizationTest</h3>
+
+<MudDataGrid Items="Strings">
+    <Columns>
+        <PropertyColumn Filterable="true" Sortable="true" Property="x=>x.LocalizatinSource" />
+        <PropertyColumn Filterable="true" Sortable="true" Property="x=>x.Translates" />
+        <PropertyColumn Filterable="true" Sortable="true" Property="x=>x.Field.Name" />
+        <PropertyColumn Filterable="true" Sortable="true" Property="x=>x.Key" />
+        <TemplateColumn Filterable="true" Sortable="true" Title="Translated">
+            <CellTemplate>
+                @switch(context.Item.LocalizatinSource){
+                    case LocalizatinSource.AppLocalization:
+                        @AppLocalization[context.Item.Key]
+                        break;
+                    case LocalizatinSource.AppHelpLocalization:
+                        @AppHelpLocalization[context.Item.Key]
+                        break;
+                    case LocalizatinSource.AppValidationLocalization:
+                        @AppValidationLocalization[context.Item.Key]
+                        break;
+                }
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+
+@code {
+    List<LocalizationField> Strings = new();
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        var langFields = typeof(Lang).GetFields();
+        foreach (var field in langFields)
+        {
+            var key = field.GetValue(null)?.ToString();
+            var translated = AppLocalization[key];
+            bool translates = true;
+            if (key.Equals(translated))
+            {
+                translates = false;
+            }
+            Strings.Add(new()
+                {
+                    Field = field,
+                    Key = key,
+                    Translates = translates,
+                    LocalizatinSource = LocalizatinSource.AppLocalization
+                });
+        }
+        var helpLangFields = typeof(HelpLang).GetFields();
+        foreach (var field in helpLangFields)
+        {
+            var key = field.GetValue(null)?.ToString();
+            var translated = AppHelpLocalization[key];
+            bool translates = true;
+            if (key.Equals(translated))
+            {
+                translates = false;
+            }
+            Strings.Add(new()
+                {
+                    Field = field,
+                    Key = key,
+                    Translates = translates,
+                    LocalizatinSource = LocalizatinSource.AppHelpLocalization
+                });
+        }
+    }
+
+    private enum LocalizatinSource
+    {
+        AppLocalization,
+        AppHelpLocalization,
+        AppValidationLocalization
+    }
+    private class LocalizationField
+    {
+        public FieldInfo Field { get; set; }
+        public string? Key { get; set; }
+        public bool Translates { get; set; }
+        public LocalizatinSource LocalizatinSource { get; set; }
+    }
+}

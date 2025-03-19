@@ -73,12 +73,12 @@
                                     <MudSpacer />
                                     <AppIconButton Icon="@Icons.Material.Filled.Refresh"
                                                    Color="Color.Primary"
-                                                   Tooltip=@AppLocalization["Refresh"]
+                                                   Tooltip=@AppLocalization[Lang.Refresh]
                                                    OnClick="@(()=>{OnRefreshWidget?.Invoke(widget);})" />
 
 
                                     <AppCloseButton Disabled="!_editMode"
-                                                    Tooltip=@AppLocalization["Remove"]
+                                                    Tooltip=@AppLocalization[Lang.Remove]
                                                     OnClick=@(async()=>{await RemoveWidget(context);}) />
 
                                 </MudCardHeader>
@@ -121,7 +121,7 @@
     <MudStack Class="d-flex mt-5"
               Style="justify-content: flex-end;" 
               Row=true>
-        <AppTooltip Text=@AppLocalization["Edit"]>
+        <AppTooltip Text=@AppLocalization[Lang.Edit]>
             <MudFab StartIcon="@(_editMode==false?Icons.Material.Filled.Edit:Icons.Material.Filled.EditOff)"
                     Color="@(_editMode==false?Color.Success:Color.Error)"
                     OnClick="@(()=>{_editMode = !_editMode; widgetContainer?.Refresh();})" />
@@ -133,7 +133,7 @@
                 <MudMenu AnchorOrigin="Origin.BottomRight"
                          TransformOrigin="Origin.TopRight">
                     <ActivatorContent>
-                        <AppTooltip Text=@AppLocalization["Add Widget"]>
+                        <AppTooltip Text=@AppLocalization[Lang.Add_Widget]>
                             <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
                         </AppTooltip>
                     </ActivatorContent>
@@ -159,7 +159,7 @@
         }
         else
         {
-            <AppTooltip Text=@AppLocalization["Enable edit mode"]>
+            <AppTooltip Text=@AppLocalization[Lang.Enable_edit_mode]>
                 <MudFab Disabled="true" Color="Color.Error" StartIcon="@Icons.Material.Filled.Add" />
             </AppTooltip>
         }

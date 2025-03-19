@@ -1,4 +1,5 @@
-﻿@inherits DirectoryEntryViewBase
+﻿@using BLAZAM.Common.Data.Database
+@inherits DirectoryEntryViewBase
 @{
     string _fieldMudStackClasses = "flex-wrap gap-10";
 }
@@ -40,37 +41,37 @@
             }
             <CascadingValue Value="User">
 
-                <AppModal Color="Color.Dark" Title=@AppLocalization["Upload Thumbnail"] @ref=@UploadThumbnailModal>
+                <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Upload_Thumbnail_Photo] @ref=@UploadThumbnailModal>
                     <UploadThumbnailModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
                 </AppModal>
-                <AppModal Color="Color.Dark" Title=@AppLocalization["Assign To"] @ref=@AssignToModal>
+                <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Assign_To] @ref=@AssignToModal>
                     <AssignToModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
                 </AppModal>
-                <AppModal Color="Color.Dark" Title=@AppLocalization["Move To"] @ref=@MoveToModal>
+                <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Move_To] @ref=@MoveToModal>
                     @if (MoveToModal?.IsShown == true)
                     {
                         <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
                     }
                 </AppModal>
-                <AppModal Title=@AppLocalization["Rename User"] @ref=@RenameModal>
+                <AppModal Title=@AppLocalization[Lang.Rename_User] @ref=@RenameModal>
                     @if (RenameModal?.IsShown == true)
                     {
                         <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) User="User" />
                     }
                 </AppModal>
-                <AppModal Title=@AppLocalization["Reset Password"] @ref=@ChangePasswordModal>
+                <AppModal Title=@AppLocalization[Lang.Reset_Password] @ref=@ChangePasswordModal>
                     @if (ChangePasswordModal?.IsShown == true)
                     {
                         <ChangeUserPasswordModalContent User="User" />
                     }
                 </AppModal>
-                <AppModal Title=@AppLocalization["Log On To"] @ref=@LogOnToModal>
+                <AppModal Title=@AppLocalization[Lang.Log_On_To] @ref=@LogOnToModal>
                     @if (LogOnToModal?.IsShown == true)
                     {
                         <LogOnToModalContent User="User" />
                     }
                 </AppModal>
-                <AppModal Title=@AppLocalization["Logon Hours"]
+                <AppModal Title=@AppLocalization[Lang.Logon_Hours]
                           @ref=@LogonHoursModal
                           Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
                     @if (LogonHoursModal?.IsShown == true)
@@ -118,7 +119,7 @@
                             </MudCard>
 
                             <MudStack Row=true>
-                                <MudText Typo="Typo.subtitle2">@AppLocalization["Created"]:</MudText>
+                                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Created]:</MudText>
                                 <MudSpacer />
                                 <DateWithTimeTooltip DateTime="User?.Created" />
 
@@ -126,7 +127,7 @@
 
                             <MudStack Row=true>
 
-                                <MudText Typo="Typo.subtitle2">@AppLocalization["Last Change"]:</MudText>
+                                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Change]:</MudText>
                                 <MudSpacer />
 
                                 <DateWithTimeTooltip DateTime="User?.LastChanged" />
@@ -135,7 +136,7 @@
 
                             <MudStack Row=true>
 
-                                <MudText Typo="Typo.subtitle2">@AppLocalization["Pass Change"]:</MudText>
+                                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Pass_Change]:</MudText>
                                 <MudSpacer />
                                 <DateWithTimeTooltip DateTime="User?.PasswordLastSet" />
 
@@ -144,20 +145,20 @@
 
                             <MudStack Row=true>
 
-                                <MudText Typo="Typo.subtitle2">@AppLocalization["Last Logon"]:</MudText>
+                                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
                                 <MudSpacer />
                                 <LastLogonTime Typo=Typo.caption DirectoryEntry="User" />
                             </MudStack>
                             @if (User?.LockedOut == true)
                             {
                                 <MudStack Row=true>
-                                    <MudText Typo="Typo.subtitle2">@AppLocalization["Lockout Time"]:</MudText>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Lockout_Time]:</MudText>
                                     <MudSpacer />
                                     <DateWithTimeTooltip DateTime="User?.LockoutTime" />
                                 </MudStack>
                             }
                             <MudStack Row=true>
-                                <MudText Typo="Typo.subtitle2">@AppLocalization["OU"]:</MudText>
+                                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.OU]:</MudText>
                                 <MudSpacer />
 
                                 <MudText Style="text-align:end;"
@@ -169,7 +170,7 @@
 
 
                             <MudStack>
-                                <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]:</MudText>
+                                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Groups]:</MudText>
                                 <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="User" />
                             </MudStack>
 
@@ -191,29 +192,29 @@
                     <MudItem xs=12 md="9">
                         <MudStack>
 
-                            <Section FullWidth=false Title=@AppLocalization["Name"]>
+                            <Section FullWidth=false Title=@AppLocalization[Lang.Name]>
 
 
                                 <MudStack Row Class="@_fieldMudStackClasses">
 
 
                                     <DynamicMudInput T=string
-                                                     Label="@AppLocalization["First Name"]"
+                                                     Label="@AppLocalization[Lang.First_Name]"
                                                      @bind-Value="@User.GivenName"
                                                      Disabled=!User.NewEntry />
 
                                     <DynamicMudInput T=string
-                                                     Label="@AppLocalization["Middle Name"]"
+                                                     Label="@AppLocalization[Lang.Middle_Name]"
                                                      @bind-Value="@User.MiddleName"
                                                      Disabled=!User.NewEntry />
 
                                     <DynamicMudInput T=string
-                                                     Label="@AppLocalization["Last Name"]"
+                                                     Label="@AppLocalization[Lang.Last_Name]"
                                                      @bind-Value="@User.Surname"
                                                      Disabled=!User.NewEntry />
 
                                     <DynamicMudInput T=string
-                                                     Label="@AppLocalization["Display Name"]"
+                                                     Label="@AppLocalization[Lang.Display_Name]"
                                                      @bind-Value="@User.DisplayName"
                                                      Disabled=!User.NewEntry />
 
@@ -229,7 +230,7 @@
 
 
 
-                            <Section Title="@AppLocalization["Account"]">
+                            <Section Title="@AppLocalization[Lang.Account]">
 
                                 <MudStack Row Class="@_fieldMudStackClasses">
 
@@ -239,7 +240,7 @@
                                     <MudStack Row=true Spacing="0">
 
 
-                                        <DynamicMudInput T=string Label="@AppLocalization["Username"]"
+                                        <DynamicMudInput T=string Label="@AppLocalization[Lang.Username]"
                                                          @bind-Value="@User.SamAccountName"
                                                          Disabled=@(User?.NewEntry==false) />
                                         <AppCopyButton TextToCopy=@User.SamAccountName />
@@ -251,19 +252,19 @@
                                     @if (User?.NewEntry == true)
                                     {
                                         <DynamicMudInput T=string
-                                                         Label="@AppLocalization["Password"]"
+                                                         Label="@AppLocalization[Lang.Password]"
                                                          @bind-Value="@Password"
                                                          InputType="InputType.Password" />
 
                                         <DynamicMudInput T=string
-                                                         Label="@AppLocalization["Confirm Password"]"
+                                                         Label="@AppLocalization[Lang.Confirm_Password]"
                                                          @bind-Value="@ConfirmPassword"
                                                          InputType="InputType.Password" />
                                     }
 
 
                                     <MudStack Row=true Spacing="0">
-                                        <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
+                                        <DynamicMudInput T=string Label="@AppLocalization[Lang.Email_Address]"
                                                          @bind-Value="@User.Email"
                                                          Disabled=@(User?.NewEntry==false) />
                                         <AppCopyButton TextToCopy=@User.Email />
@@ -291,7 +292,7 @@
                                                        Color="@(User.LogOnTo == null || User.LogOnTo == String.Empty?Color.Primary:Color.Warning)"
                                                        OnClick="@(()=>{LogOnToModal?.ShowAsync();})"
                                                        Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.LogOnTo))>
-                                                @AppLocalization["Log On To"]
+                                                @AppLocalization[Lang.Log_On_To]
                                             </MudButton>
 
                                         }
@@ -302,7 +303,7 @@
                                                        Color="@(Color.Primary)"
                                                        OnClick="@(()=>{LogonHoursModal?.ShowAsync();})"
                                                        Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.LogonHours))>
-                                                @AppLocalization["Logon Hours"]
+                                                @AppLocalization[Lang.Logon_Hours]
                                             </MudButton>
 
                                         }
@@ -351,32 +352,32 @@
             CanReadField(ActiveDirectoryFields.PhysicalDeliveryOffice)
             )
                 {
-                    <Section Title=@AppLocalization["Organization"]>
+                    <Section Title=@AppLocalization[Lang.Organization]>
                         <MudStack Row Class="@_fieldMudStackClasses">
 
                             @if (CanReadField(ActiveDirectoryFields.Description))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["Description"]" @bind-Value="@User.Description" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Description)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Description]" @bind-Value="@User.Description" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Description)) />
                             }
                             @if (CanReadField(ActiveDirectoryFields.EmployeeId))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["Employee Id"]" @bind-Value="@User.EmployeeId" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.EmployeeId)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Employee_Id]" @bind-Value="@User.EmployeeId" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.EmployeeId)) />
                             }
                             @if (CanReadField(ActiveDirectoryFields.Department))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["Department"]" @bind-Value="@User.Department" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Department)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Department]" @bind-Value="@User.Department" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Department)) />
                             }
                             @if (CanReadField(ActiveDirectoryFields.Company))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["Company"]" @bind-Value="@User.Company" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Company)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Company]" @bind-Value="@User.Company" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Company)) />
                             }
                             @if (CanReadField(ActiveDirectoryFields.Title))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["Job Title"]" @bind-Value="@User.Title" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Title)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Job_Title]" @bind-Value="@User.Title" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Title)) />
                             }
                             @if (CanReadField(ActiveDirectoryFields.PhysicalDeliveryOffice))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["Office"]" @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Office]" @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
                             }
                         </MudStack>
                     </Section>
@@ -390,33 +391,33 @@
             CanReadField(ActiveDirectoryFields.PostalCode)
             )
                 {
-                    <Section Title=@AppLocalization["Contact Info"]>
+                    <Section Title=@AppLocalization[Lang.Contact_Info]>
                         <MudStack Row Class="@_fieldMudStackClasses">
 
                             @if (CanReadField(ActiveDirectoryFields.HomePhone))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["Home Phone"]" @bind-Value="@User.HomePhone" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.HomePhone)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Home_Phone]" @bind-Value="@User.HomePhone" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.HomePhone)) />
 
                             }
                             @if (CanReadField(ActiveDirectoryFields.StreetAddress))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["Street Address"]" @bind-Value="@User.StreetAddress" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.StreetAddress)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Street_Address]" @bind-Value="@User.StreetAddress" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.StreetAddress)) />
                             }
                             @if (CanReadField(ActiveDirectoryFields.POBox))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["PO Box"]" @bind-Value="@User.POBox" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.POBox)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.PO_Box]" @bind-Value="@User.POBox" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.POBox)) />
                             }
                             @if (CanReadField(ActiveDirectoryFields.City))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["City"]" @bind-Value="@User.City" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.City)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.City]" @bind-Value="@User.City" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.City)) />
                             }
                             @if (CanReadField(ActiveDirectoryFields.State))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["State"]" @bind-Value="@User.State" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.State)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.State]" @bind-Value="@User.State" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.State)) />
                             }
                             @if (CanReadField(ActiveDirectoryFields.PostalCode))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["Zip Code"]" @bind-Value="@User.Zip" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.PostalCode)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Zip_Code]" @bind-Value="@User.Zip" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.PostalCode)) />
                             }
                         </MudStack>
 
@@ -430,14 +431,14 @@
             CanReadField(ActiveDirectoryFields.ProfilePath)
             )
                 {
-                    <Section Title=@AppLocalization["Profile"]>
+                    <Section Title=@AppLocalization[Lang.Profile]>
                         <MudStack Row Class="@_fieldMudStackClasses">
 
                             @if (CanReadField(ActiveDirectoryFields.HomeDirectory))
                             {
                                 <MudStack Row=true Spacing="0">
 
-                                    <DynamicMudInput T=string Label="@AppLocalization["Home Directory"]"
+                                    <DynamicMudInput T=string Label="@AppLocalization[Lang.Home_Directory]"
                                                      @bind-Value="@User.HomeDirectory"
                                                      Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.HomeDirectory)) />
                                     @if (!User.HomeDirectory.IsNullOrEmpty())
@@ -451,15 +452,15 @@
                             }
                             @if (CanReadField(ActiveDirectoryFields.HomeDrive))
                             {
-                                <HomeDriveSelect Label="@AppLocalization["Home Drive"]" @bind-DriveLetter="@User.HomeDrive" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.HomeDrive)) />
+                                <HomeDriveSelect Label="@AppLocalization[Lang.Home_Drive]" @bind-DriveLetter="@User.HomeDrive" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.HomeDrive)) />
                             }
                             @if (CanReadField(ActiveDirectoryFields.ScriptPath))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["Script Path"]" @bind-Value="@User.ScriptPath" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.ScriptPath)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Script_Path]" @bind-Value="@User.ScriptPath" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.ScriptPath)) />
                             }
                             @if (CanReadField(ActiveDirectoryFields.ProfilePath))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["Profile Path"]" @bind-Value="@User.ProfilePath" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.ProfilePath)) />
+                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Profile_Path]" @bind-Value="@User.ProfilePath" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.ProfilePath)) />
                             }
                         </MudStack>
 

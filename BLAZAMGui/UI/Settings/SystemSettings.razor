@@ -1,5 +1,5 @@
 @inherits SettingsComponents
-<MudText Typo="Typo.h4">@AppLocalization["System Settings"]</MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.System_Settings]</MudText>
 <MudForm @onsubmit="Save">
     <MudStack Spacing="5">
         @if (settings != null)
@@ -35,7 +35,7 @@
                 <MudText>
                     We ask that you allow developer logging so we can quickly and transparently improve Blazam and to aid in our developement efforts.
                 </MudText>
-                <MudSwitch Label="@AppLocalization["Enabled"]"
+                <MudSwitch Label="@AppLocalization[Lang.Enabled]"
                            UncheckedColor="Color.Error"
                            Color="Color.Success"
                            @bind-Value="@settings.SendLogsToDeveloper" />
@@ -47,7 +47,7 @@
                     We ask that you allow developer analytics so we can understand how our app is used to focus our
                     efforts on what our users think matters most.
                 </MudText>
-                <MudSwitch Label="@AppLocalization["Enabled"]"
+                <MudSwitch Label="@AppLocalization[Lang.Enabled]"
                            UncheckedColor="Color.Error"
                            Color="Color.Success"
                            @bind-Value="@settings.SendDeveloperAnalytics" />
@@ -92,7 +92,7 @@
             <MudButton
                 ButtonType="ButtonType.Submit"
             Color="Color.Success">
-                @AppLocalization["Save Changes"]
+                @AppLocalization[Lang.Save_Changes]
         </MudButton>
 
         </SettingsField>

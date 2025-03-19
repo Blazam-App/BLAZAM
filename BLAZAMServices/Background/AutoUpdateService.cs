@@ -97,16 +97,13 @@ namespace BLAZAM.Services.Background
                 catch (IndexOutOfRangeException ex)
                 {
                     Loggers.UpdateLogger.Warning("Tried to delete non-existent file: " + file, ex);
-                    //file.Delete();
                 }
                 catch (Exception ex)
                 {
                     Loggers.UpdateLogger.Error("Other error deleting file: " + file + " {@Error}", ex);
-                    //file.Delete();
                 }
 
             }
-            //TODO Fix the staging cleanup
 
 
             var oldStaginDirectories = ApplicationUpdate.StagingDirectory.SubDirectories;
@@ -124,7 +121,7 @@ namespace BLAZAM.Services.Background
                             if (dir.Writable)
                             {
 
-                                Loggers.UpdateLogger.Debug("Deleting old staged update directory: " + dir);
+                                Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
                                 dir.Delete(true);
                             }
                             else
@@ -137,7 +134,7 @@ namespace BLAZAM.Services.Background
                                     if (dir.Writable)
                                     {
 
-                                        Loggers.UpdateLogger.Debug("Deleting old staged update directory: " + dir);
+                                        Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
                                         dir.Delete(true);
                                         return true;
                                     }
@@ -150,7 +147,7 @@ namespace BLAZAM.Services.Background
                                         if (dir.Writable)
                                         {
 
-                                            Loggers.UpdateLogger.Debug("Deleting old staged update directory: " + dir);
+                                            Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
                                             dir.Delete(true);
                                             return true;
 
@@ -170,12 +167,12 @@ namespace BLAZAM.Services.Background
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Loggers.UpdateLogger.Error("Deleting unknown directory: " + dir + "{@Error}", ex);
+                    Loggers.UpdateLogger.Error("Deleting unknown directory: {@Directory} {@Error}", dir.ToString(), ex);
                     //dir.Delete(true);
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Other error cleaning staging files {Directory}{@Error}", dir.FullPath, ex);
+                    Loggers.UpdateLogger.Error("Other error cleaning staging files {@Directory}{@Error}", dir.FullPath, ex);
                     //file.Delete();
                 }
             }
@@ -307,8 +304,8 @@ namespace BLAZAM.Services.Background
                     if (settings.AutoUpdate)
                     {
                         Loggers.UpdateLogger.Information("Applying auto-update");
-                        Loggers.UpdateLogger.Information("Current Version: " + _applicationInfo.RunningVersion);
-                        Loggers.UpdateLogger.Information("Update Version: " + ScheduledUpdate?.Version);
+                        Loggers.UpdateLogger.Information("Current Version: {@Version}", _applicationInfo.RunningVersion);
+                        Loggers.UpdateLogger.Information("Update Version: {@UpdateVersion}", ScheduledUpdate?.Version);
 
                         autoUpdateApplyTimer = null;
                         ScheduledUpdateTime = DateTime.MinValue;
@@ -351,7 +348,6 @@ namespace BLAZAM.Services.Background
                     else
                     {
                         //Auto Update was turned off since scheduling
-                        //Audit.System.LogMessage("Auto Update was turned off after scheduling");
                         Loggers.UpdateLogger.Warning("Auto Update was turned off after scheduling");
 
                     }

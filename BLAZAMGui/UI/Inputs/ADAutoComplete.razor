@@ -3,33 +3,34 @@
     //TODO Finish custom disable
 }
 <MudAutocomplete Class="@Class"
-Style="@Style"
-Disabled=@Disabled
-T="IDirectoryEntryAdapter"
-Label="@Label"
-AnchorOrigin="@AnchorOrigin"
-TransformOrigin="@TransformOrigin"
-@bind-Value="SelectedResult"
-@bind-Text=@SearchTerm
-@ref=AutoComplete
-AutoFocus=@AutoFocus
-SearchFunc="@GetResults"
-DebounceInterval=500
-ResetValueOnEmptyText="true"
-Validation="@Validation"
-CoerceText="@(!AllowCustomInput)"
-CoerceValue="true"
-ItemDisabledFunc="@(CustomDisableFilter??((r)=>false))"
-MaxItems=@MaxResults
-Clearable=true
-Dense=true
-ShowProgressIndicator=true
-ToStringFunc="item=>item?.CanonicalName"
-AdornmentColor="Color.Tertiary"
-ProgressIndicatorColor="Color.Secondary"
-Adornment="Adornment.Start"
-AdornmentIcon="@AdornmentIcon"
-Variant="@Variant">
+                 Style="@Style"
+                 Disabled=@Disabled
+                 T="IDirectoryEntryAdapter"
+                 Label="@Label"
+                 AnchorOrigin="@AnchorOrigin"
+                 TransformOrigin="@TransformOrigin"
+                 @bind-Value="SelectedResult"
+                 @bind-Text=@SearchTerm
+                 @ref=AutoComplete
+                 AutoFocus=@AutoFocus
+                 SearchFunc="@GetResults"
+                 DebounceInterval=500
+                 ResetValueOnEmptyText="true"
+                 MinCharacters="3"
+                 Validation="@Validation"
+                 CoerceText="@(!AllowCustomInput)"
+                 CoerceValue="true"
+                 ItemDisabledFunc="@(CustomDisableFilter??((r)=>false))"
+                 MaxItems=@MaxResults
+                 Clearable=true
+                 Dense=true
+                 ShowProgressIndicator=true
+                 ToStringFunc="item=>item?.CanonicalName"
+                 AdornmentColor="Color.Tertiary"
+                 ProgressIndicatorColor="Color.Secondary"
+                 Adornment="Adornment.Start"
+                 AdornmentIcon="@AdornmentIcon"
+                 Variant="@Variant">
     <ItemTemplate>
 
         <ADAutoCompleteResult Entry="context" />
@@ -38,7 +39,7 @@ Variant="@Variant">
     <BeforeItemsTemplate>
         <MudText>
 
-            @SearchResults.Count() @AppLocalization["Results"]
+            @SearchResults.Count() @AppLocalization[Lang.Results]
         </MudText>
 
     </BeforeItemsTemplate>
@@ -61,14 +62,14 @@ Variant="@Variant">
 
     </NoItemsTemplate>
     <MoreItemsTemplate>
-        <MudButton OnClick="ShowMoreResults" Color="Color.Primary">@AppLocalization["Show more"]</MudButton>
+
         <MudText>
             More results than shown...
         </MudText>
     </MoreItemsTemplate>
 </MudAutocomplete>
 
-    @code {
+@code {
     #nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
@@ -107,7 +108,7 @@ Variant="@Variant">
     /// Defaults to 10
     /// </remarks>
     [Parameter]
-    public int MaxResults { get; set; } = 10;
+    public int MaxResults { get; set; } = 500;
 
 
     [Parameter]
@@ -146,12 +147,6 @@ Variant="@Variant">
     }
 
 
-    async Task ShowMoreResults()
-    {
-        MaxResults += 10;
-        await GetResults(SearchTerm, new());
-        await InvokeAsync(StateHasChanged);
-    }
 
     [Parameter]
     public ActiveDirectoryObjectType? SearchObjectType { get; set; }
@@ -236,11 +231,11 @@ Variant="@Variant">
 
                  search.ObjectTypeFilter = SearchObjectType;
                  search.GeneralSearchTerm = searchText;
+                 search.MaxResults = MaxResults;
                  search.EnabledOnly = !SearchDisabled;
-                search.MaxResults = MaxResults + 1;
-                if (!search.GeneralSearchTerm.IsNullOrEmpty())
+                 if (!search.GeneralSearchTerm.IsNullOrEmpty())
                  {
-
+                     //search.ResultsCollected += AddResults;
                      var temp = (search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token)).Where(r => r.CanRead);
 
                      if (!token.IsCancellationRequested)
@@ -274,7 +269,14 @@ Variant="@Variant">
 
 
     }
-
+    private void AddResults(IEnumerable<IDirectoryEntryAdapter> resultsPage)
+    {
+        foreach (var result in resultsPage)
+        {
+            SearchResults = SearchResults.Append(result);
+        }
+        InvokeAsync(StateHasChanged);
+    }
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

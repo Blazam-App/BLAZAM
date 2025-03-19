@@ -44,6 +44,7 @@
         public static ActiveDirectoryField Thumbnail = new() { Id = 35, FieldName = "thumbnail", DisplayName = "Photo", FieldType = ActiveDirectoryFieldType.RawData };
         public static ActiveDirectoryField LogOnTo = new() { Id = 36, FieldName = "userWorkstations", DisplayName = "Log On To", FieldType = ActiveDirectoryFieldType.Text };
         public static ActiveDirectoryField LogonHours = new() { Id = 37, FieldName = "logonHours", DisplayName = "Logon Hours", FieldType = ActiveDirectoryFieldType.RawData };
+        public static ActiveDirectoryField GroupType = new() { Id = 38, FieldName = "groupType", DisplayName = "Group Type and Scope", FieldType = ActiveDirectoryFieldType.RawData };
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
 

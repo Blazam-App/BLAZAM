@@ -1,26 +1,36 @@
-﻿using BLAZAM.Common.Exceptions;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.ActiveDirectory;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
+using BLAZAM.Database.Services;
 using BLAZAM.EmailMessage;
 using BLAZAM.EmailMessage.Email;
 using BLAZAM.EmailMessage.Email.Base;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
+using BLAZAM.Jobs;
+using BLAZAM.Localization;
 using BLAZAM.Services.Audit;
 using BLAZAM.Static;
 using BlazorTemplater;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using MimeKit;
 using MimeKit.Utils;
+using BLAZAM.Database.Models.Audit;
+using ApplicationNews;
+using Newtonsoft.Json;
+using static QRCoder.PayloadGenerator;
 
 namespace BLAZAM.Services.Background
 {
-    public class EmailService
+    [AutoStartBackgroundService]
+    public class EmailService:DatabaseBackgroundServiceBase
     {
         public static EmailService? Instance { get; set; }
-        private IAppDatabaseFactory Factory { get; set; }
         public ServerAuditLogger Audit { get; }
 
         public bool IsConfigured
@@ -37,17 +47,59 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        public EmailService(IAppDatabaseFactory factory, ServerAuditLogger audit)
+        public EmailService(IAppDatabaseFactory factory, IStringLocalizer<AppLocalization>appLocalization, ServerAuditLogger audit):base(factory, appLocalization)
         {
             Instance = this;
-            Factory = factory;
             Audit = audit;
+            Interval = TimeSpan.FromMinutes(5);
         }
 
+        protected override void Execute(object? state = null)
+        {
+            
 
+         
+            Job executeJob = new(AppLocalization["Retry failed emails"]);
+
+            executeJob.StopOnFailedStep = true;
+            List<EmailAuditLog>failedEmails = new List<EmailAuditLog>();
+            JobStep prepareStep = new(AppLocalization["Check for failed emails"], (state) =>
+            {
+                using var context = dbFactory.CreateDbContext();
+                 failedEmails = context.EmailAuditLog.Where(e=> e.ServerResponse!=null && !e.ServerResponse.StartsWith("2") && e.Retries<5).ToList();
+                
+                return true;
+            });
+            executeJob.AddStep(prepareStep);
+            JobStep analyzeStep = new(AppLocalization["Analyze data"], (state) =>
+            {
+                
+                foreach (var email in failedEmails)
+                {
+                    if (email == null) continue;
+                    if (!email.Delivered)
+                    {
+                        MimeMessage message = new MimeMessage();
+                        message.Sender = MailboxAddress.Parse(email.From);
+                        message.To.Add(MailboxAddress.Parse(email.To));
+                        message.Cc.Add(MailboxAddress.Parse(email.Cc));
+                        message.Bcc.Add(MailboxAddress.Parse(email.Bcc));
+
+                        //Inject admin bcc
+                        message.Subject = email.Subject;
+                    }
+                }
+               
+                return true;
+            });
+            executeJob.AddStep(analyzeStep);
+            var result = executeJob.Run();
+
+
+        }
 
         private ComponentRenderer<TComponent> GetRenderer<TComponent>() where TComponent : IComponent => new ComponentRenderer<TComponent>()
-            .AddService(Factory)
+            .AddService(dbFactory)
             .UseLayout<DefaultEmailLayout>()
             .AddServiceProvider(ApplicationInfo.services);
 
@@ -114,7 +166,7 @@ namespace BLAZAM.Services.Background
 
         private EmailSettings? GetSettings()
         {
-            return Factory.CreateDbContext().EmailSettings.FirstOrDefault();
+            return dbFactory.CreateDbContext().EmailSettings.FirstOrDefault();
         }
 
         public MimeMessage BuildMessage<T>(string subject, string to, string? cc = null, string? bcc = null, EmailTemplate? template = null) where T : IComponent
@@ -183,6 +235,27 @@ namespace BLAZAM.Services.Background
             body = preMailer.MoveCssInline(stripIdAndClassAttributes: true, css: css.ReadAllText()).Html;
             return body;
         }
+        //private async Task<bool> RetrySend(EmailAuditLog failedEmail)
+        //{
+        //    MimeMessage retryMessage = new();
+        //    retryMessage.MessageId = failedEmail.MessageGuid;
+        //    retryMessage.From.Add(MailboxAddress.Parse(failedEmail.From));
+        //    retryMessage.Cc.Add(MailboxAddress.Parse(failedEmail.Cc));
+        //    retryMessage.Bcc.Add(MailboxAddress.Parse(failedEmail.Bcc));
+            
+        //    var response = await client.SendAsync(retryMessage);
+
+        //    Audit.Email.EmailSent(retryMessage.MessageId, retryMessage.From.ToString(), retryMessage.To.ToString(), retryMessage.Cc.ToString(), retryMessage.Bcc.ToString(), retryMessage.Subject, retryMessage.HtmlBody, response);
+        //    return true;
+        //}
+
+        private async Task<bool> TrySend(SmtpClient client, MimeMessage message)
+        {
+            var response = await client.SendAsync(message);
+
+            Audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody,response);
+            return true;
+        }
 
         public async Task<bool> SendMessage(string subject, string to, MarkupString header, MarkupString body, string? cc = null, string? bcc = null)
         {
@@ -201,14 +274,6 @@ namespace BLAZAM.Services.Background
 
             }
         }
-
-        private async Task<bool> TrySend(SmtpClient client, MimeMessage message)
-        {
-            var response = await client.SendAsync(message);
-            Audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody,response);
-            return true;
-        }
-
 
         public async Task<bool> SendMessage<T>(string subject, string to, string? cc = null, string? bcc = null) where T : IComponent
         {

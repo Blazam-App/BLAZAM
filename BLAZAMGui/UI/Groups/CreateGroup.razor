@@ -1,5 +1,4 @@
-﻿@page "/create/group"
-@inherits TabbedAppComponentBase
+﻿@inherits TabbedAppComponentBase
 @attribute [Authorize]
 <AppPageTitle>@AppLocalization["Create Group"]</AppPageTitle>
 
@@ -17,23 +16,23 @@
 
 
 
-                <MudTextField Immediate=true Label=@AppLocalization["Group Name"] @bind-Value=@newGroupName />
+                <MudTextField Immediate=true Label=@AppLocalization[Lang.Group_Name] @bind-Value=@newGroupName />
 
-                <MudTextField Immediate=true Label=@AppLocalization["Description"] @bind-Value=@newDescription />
+                <MudTextField Immediate=true Label=@AppLocalization[Lang.Description] @bind-Value=@newDescription />
 
-<MudTextField Immediate=true Label=@AppLocalization["Email"] @bind-Value=@newEmail />
+<MudTextField Immediate=true Label=@AppLocalization[Lang.Email] @bind-Value=@newEmail />
 
 
 
                 <MudButton Disabled=@(parentOU==null || newGroupName.IsNullOrEmpty())
                            Color="Color.Primary"
                            OnClick="CreateNewGroup">
-                    @AppLocalization["Next"]
+                    @AppLocalization[Lang.Next]
                 </MudButton>
             </MudText>
         </ChildContent>
         <TabContent>
-            @AppLocalization["Create"]
+            @AppLocalization[Lang.Create]
         </TabContent>
     </MudTabPanel>
     <MudTabPanel Disabled=@(newGroup==null || newGroupName.IsNullOrEmpty())>
@@ -46,12 +45,12 @@
 
 
                 <MudButton Color="Color.Primary" OnClick="@(()=>{selectedStep=2;})">
-                    @AppLocalization["Next"]
+                    @AppLocalization[Lang.Next]
                 </MudButton>
             </MudText>
         </ChildContent>
         <TabContent>
-            @AppLocalization["Assign"]
+            @AppLocalization[Lang.Assign]
         </TabContent>
     </MudTabPanel>
     <MudTabPanel Disabled=@(newGroup==null || newGroupName.IsNullOrEmpty())>
@@ -62,7 +61,7 @@
             </MudText>
         </ChildContent>
         <TabContent>
-            @AppLocalization["Confirm"]
+            @AppLocalization[Lang.Confirm]
         </TabContent>
     </MudTabPanel>
 </MudTabs>

@@ -12,10 +12,10 @@
     <tr>
 
         <th style="border-left:solid;border-right:solid;" colspan="6">
-            @AppLocalization["Events"]
+            @AppLocalization[Lang.Events]
         </th>
         <th style="border-right:solid;" colspan="2">
-            @AppLocalization["Delivery"]
+            @AppLocalization[Lang.Delivery]
         </th>
         <th style="border-right:solid;">
             @AppLocalization[" "]
@@ -26,7 +26,7 @@
     </tr>
     <tr>
         <th style="border-left:solid;" class="align-self-center">
-            @AppLocalization["Group Membership Changes"]
+            @AppLocalization[Lang.Group_Membership_Changes]
         </th>
 
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
@@ -43,19 +43,19 @@
 
         }
         <th style="border-left:solid;">
-            @AppLocalization["In App"]
+            @AppLocalization[Lang.In_App]
         </th>
         <th>
-            @AppLocalization["To Email"]
+            @AppLocalization[Lang.To_Email]
         </th>
         <th style="border-left:solid;">
-            @AppLocalization["Block"]
+            @AppLocalization[Lang.Block]
         </th>
         <th style="border-left:solid;">
-            @AppLocalization["Save"]
+            @AppLocalization[Lang.Save]
         </th>
         <th>
-            @AppLocalization["Delete"]
+            @AppLocalization[Lang.Delete]
         </th>
     </tr>
     @if (subscriptions != null && subscriptions.Count > 0)
@@ -107,7 +107,7 @@
     </tr>
     <tr>
         <th style="border-left:solid;" class="align-self-center">
-            @AppLocalization["Group Membership Changes"]
+            @AppLocalization[Lang.Group_Membership_Changes]
         </th>
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
@@ -257,7 +257,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        UpdateSubscriptions();
+        await UpdateSubscriptions();
     }
 
     private async Task ouChanged(IDirectoryEntryAdapter? entry)
@@ -306,7 +306,7 @@
         }
     }
 
-    private async void SaveExisting()
+    private async Task SaveExisting()
     {
         if (Context != null)
         {
@@ -314,7 +314,7 @@
             if (result > 0)
             {
                 SnackBarService.Success("Subscription saved.");
-                UpdateSubscriptions();
+                await UpdateSubscriptions();
             }
             else
             {
@@ -338,7 +338,7 @@
                 SnackBarService.Warning("Subscription could not be deleted.");
 
             }
-            UpdateSubscriptions();
+            await UpdateSubscriptions();
         }
 
     }

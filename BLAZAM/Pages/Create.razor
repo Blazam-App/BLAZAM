@@ -1,0 +1,22 @@
+﻿@page "/create/{type}"
+@using BLAZAM.Gui.UI.Groups
+@using BLAZAM.Gui.UI.OU
+@using BLAZAM.Gui.UI.Users
+@attribute [Authorize(Roles = UserRoles.CreateUsers + "," + UserRoles.CreateGroups + "," + UserRoles.CreateOUs)]
+@switch (type.ToLower())
+{
+    case "user":
+        <CreateUser />
+        break;
+    case "group":
+        <CreateGroup />
+        break;
+    case "ou":
+        <CreateOU />
+        break;
+
+}
+@code {
+    [Parameter]
+    public string type { get; set; }
+}

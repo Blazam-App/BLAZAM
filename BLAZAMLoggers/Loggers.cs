@@ -9,6 +9,7 @@ namespace BLAZAM.Logger
         private static string _logPath;
         private static string _applicationVersion;
         public static bool SendToSeqServer { get; set; } = true;
+        public static bool? InstallationCompleted { get; set; } = null;
         public static string SeqServerUri { get; set; }
         public static string InstallationId { get; set; }
         public static string InstallationType { get; set; }
@@ -61,6 +62,7 @@ namespace BLAZAM.Logger
                              .Enrich.WithProperty("Application Name", "Blazam")
                              .Enrich.WithProperty("Installation Type", InstallationType)
                              .Enrich.WithProperty("Installation Id", InstallationId)
+                             .Enrich.WithProperty("Installation Completed", InstallationCompleted)
                              .Enrich.WithProperty("Database Type", DatabaseType)
                                .Enrich.WithProperty("Application Version", _applicationVersion);
         }

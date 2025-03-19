@@ -8,16 +8,16 @@
 
      
 
-            <ADAutoComplete Disabled=@attemptingImpersonation 
-            Label="@AppLocalization["Impersonate User"]" 
-            SearchObjectType="ActiveDirectoryObjectType.User" 
+            <ADAutoComplete Disabled=@attemptingImpersonation
+                        Label="@AppLocalization[Lang.Impersonate_User]"
+                        SearchObjectType="ActiveDirectoryObjectType.User" 
             @bind-SelectedResult=User />
 
 
             <MudButton Disabled=@attemptingImpersonation 
             Color=Color.Primary 
             ButtonType="ButtonType.Submit">
-                @AppLocalization["Impersonate User"]
+                @AppLocalization[Lang.Impersonate_User]
             </MudButton>
 
 

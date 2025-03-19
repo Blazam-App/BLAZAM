@@ -1,4 +1,5 @@
-﻿@using BLAZAM.Gui.UI.Computers
+﻿@using BLAZAM.Common.Data.Database
+
 @inherits DirectoryEntryViewBase
 @{
     string _fieldMudStackClasses = "flex-wrap gap-10";
@@ -21,6 +22,7 @@
                                       OnRename="@(()=>{RenameModal?.ShowAsync();})"
                                       OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
                                       OnToggleEditMode="ToggleEditMode"
+                                      OnRebootOrShutdown="@(()=>{_rebootModal?.ShowAsync();})"
                                       OnUnlock="@Unlock"
                                       OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
                                       OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})" />
@@ -34,16 +36,19 @@
                 <FlexContainer>
 
 
-                    <AppModal Color="Color.Dark" Title="Assign To..." @ref=@AssignToModal>
+                    <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Assign_To] @ref=@AssignToModal>
                         <AssignToModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Computer" />
                     </AppModal>
-                    <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
+                    <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Reboot_Shutdown] @ref=@_rebootModal>
+                        <RebootModalContent ModelChanged=@RefreshEntryComponents Computer="Computer" />
+                    </AppModal>
+                    <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Move_To] @ref=@MoveToModal>
                         @if (MoveToModal?.IsShown == true)
                         {
                             <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Computer" />
                         }
                     </AppModal>
-                    <AppModal Title="Rename Computer" @ref=@RenameModal>
+                    <AppModal Title=@AppLocalization[Lang.Rename] @ref=@RenameModal>
                         @if (RenameModal?.IsShown == true)
                         {
                             <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Computer="Computer" />
@@ -54,30 +59,30 @@
                         <MudItem xs="12" md="3">
                             <Section FullWidth=false>
 
-                                <Section Elevation=0 Title=@AppLocalization["Info"]>
+                                <Section Elevation=0 Title=@AppLocalization[Lang.Info]>
                                     <MudStack Row=true Class="@_fieldMudStackClasses">
-                                        <DynamicMudInput T=string Label="@AppLocalization["Name"]" @bind-Value="@Computer.CanonicalName" Disabled=@(!EditMode) />
-                                        <DynamicMudInput T=string Label="@AppLocalization["Operating System"]" @bind-Value="@Computer.OperatingSystem" Disabled=@true />
-                                        <DynamicMudInput T=bool Label="@AppLocalization["Online"]" Value="@(Computer.IsOnline==true)" Disabled=@true />
+                                        <DynamicMudInput T=string Label="@AppLocalization[Lang.Name]" @bind-Value="@Computer.CanonicalName" Disabled=@(!EditMode) />
+                                        <DynamicMudInput T=string Label="@AppLocalization[Lang.Operating_System]" @bind-Value="@Computer.OperatingSystem" Disabled=@true />
+                                        <DynamicMudInput T=bool Label="@AppLocalization[Lang.Online]" Value="@(Computer.IsOnline==true)" Disabled=@true />
                                         <MudStack Row=true>
 
-                                            <MudText Typo="Typo.subtitle2">@AppLocalization["Last Logon"]:</MudText>
+                                            <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
                                             <MudSpacer />
                                                 <LastLogonTime Typo=Typo.caption DirectoryEntry="Computer" />
                                         </MudStack>
                                         @if (Computer.Disabled)
                                         {
-                                            <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization["Computer is disabled"]</MudAlert>
+                                            <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization[Lang.Computer_is_disabled]</MudAlert>
                                         }
                                         @if (Computer.LockedOut)
                                         {
-                                            <MudAlert Severity="Severity.Warning" Class="mud-width-full">@AppLocalization["Computer is locked out"]</MudAlert>
+                                            <MudAlert Severity="Severity.Warning" Class="mud-width-full">@AppLocalization[Lang.Computer_is_locked_out]</MudAlert>
                                         }
                                     </MudStack>
 
                                 </Section>
 
-                                <Section Title=@AppLocalization["Groups"]>
+                                <Section Title=@AppLocalization[Lang.Groups]>
                                     <MudStack Row=true Class="@_fieldMudStackClasses">
                                         <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="Computer" />
 
@@ -92,7 +97,7 @@
                         <MudItem xs=12 md="9">
                             <MudStack>
 
-                                <Section Title=@AppLocalization["Live Stats"]>
+                                <Section Title=@AppLocalization[Lang.Live_Stats]>
 
                                     <MudStack Row=true Class="@_fieldMudStackClasses">
                                         @if (Computer.IsOnline == true)
@@ -103,14 +108,14 @@
                                         }
                                         else
                                         {
-                                            <MudText>@AppLocalization["Computer is not reachable."]</MudText>
+                                            <MudText>@AppLocalization[Lang.Computer_not_reachable]</MudText>
 
                                         }
                                     </MudStack>
                                 </Section>
 
 
-                                <Section Title=@AppLocalization["Services"]>
+                                <Section Title=@AppLocalization[Lang.Services]>
 
                                     <MudStack Row=true Class="@_fieldMudStackClasses">
                                         @if (Computer.IsOnline == true)
@@ -119,7 +124,7 @@
                                         }
                                         else
                                         {
-                                            <MudText>@AppLocalization["Computer is not reachable."]</MudText>
+                                            <MudText>@AppLocalization[Lang.Computer_not_reachable]</MudText>
 
                                         }
 
@@ -145,7 +150,7 @@
 
 
 
-                    <Section Title=@AppLocalization["Drive Details"]>
+                    <Section Title=@AppLocalization[Lang.Drive_Details]>
                         <MudStack Row=true Class="@_fieldMudStackClasses">
                             @if (Computer.IsOnline == true)
                             {
@@ -153,7 +158,7 @@
                             }
                             else
                             {
-                                <MudText>@AppLocalization["Computer is not reachable."]</MudText>
+                                <MudText>@AppLocalization[Lang.Computer_not_reachable]</MudText>
 
                             }
 
@@ -165,7 +170,7 @@
 
 
 
-                    <Section Title=@AppLocalization["Sessions"]>
+                    <Section Title=@AppLocalization[Lang.Sessions]>
 
                         <MudStack Row=true Class="@_fieldMudStackClasses">
                             @if (Computer.IsOnline == true)
@@ -178,7 +183,7 @@
                             else
                             {
                                 <MudText>
-                                    @AppLocalization["Computer is not reachable."]
+                                    @AppLocalization[Lang.Computer_not_reachable]
                                 </MudText>
 
                             }
@@ -188,7 +193,7 @@
 
                     </Section>
 
-                    <Section Title=@AppLocalization["Printers"]>
+                    <Section Title=@AppLocalization[Lang.Printers]>
 
                         <MudStack Row=true Class="@_fieldMudStackClasses">
                             @if (Computer.IsOnline == true)
@@ -197,7 +202,7 @@
                             }
                             else
                             {
-                                <MudText>@AppLocalization["Computer is not reachable."]</MudText>
+                                <MudText>@AppLocalization[Lang.Computer_not_reachable]</MudText>
 
                             }
                         </MudStack>
@@ -206,9 +211,10 @@
 
                     @if (Computer.CanReadAnyCustomFields)
                     {
-                        <Section Title=@AppLocalization["Additional Fields"]>
-                            @if (CustomFields != null)
-                            {
+                        @if (CustomFields != null && CustomFields.Count>0)
+                        {
+                            <Section Title=@AppLocalization[Lang.Additional_Fields]>
+
                                 @foreach (var field in CustomFields)
                                 {
                                     @if (Computer.CanReadField(field))
@@ -217,9 +223,10 @@
 
                                     }
                                 }
-                            }
+
 
                         </Section>
+                        }
                     }
 
 
@@ -246,6 +253,7 @@
 
 
 @code {
+    AppModal? _rebootModal;
     IADComputer? Computer => DirectoryEntry as IADComputer;
     protected override async Task OnInitializedAsync()
     {
@@ -254,9 +262,9 @@
         await InvokeAsync(StateHasChanged);
         if (Computer != null)
         {
-            Computer.OnOnlineChanged += ((online) =>
+            Computer.OnOnlineChanged += (async(online) =>
             {
-                RefreshEntryComponents();
+                await RefreshEntryComponents();
             });
         }
         await AuditLogger.Searched(Computer);

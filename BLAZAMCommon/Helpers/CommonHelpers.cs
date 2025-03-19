@@ -107,8 +107,8 @@ namespace BLAZAM.Helpers
 
                 // Compare the values using Equals method
                 if ((oldValue != null && newValue != null)
-                    && ((oldValue is not null && !oldValue.Equals(newValue)
-                    || (newValue is not null && !newValue.Equals(oldValue)))))
+                    && (oldValue is not null && !oldValue.Equals(newValue)
+                    || (newValue is not null && !newValue.Equals(oldValue))))
                 {
                     // Create a new AuditChangeLog instance with the property name and values
                     var change = new AuditChangeLog
@@ -229,32 +229,6 @@ namespace BLAZAM.Helpers
                 }
             }
         }
-        //public static PropertyInfo GetPropertyFromExpression<T>(this T obj, Expression<Func<T, object>> GetPropertyLambda)
-        //{
-        //    MemberExpression Exp = null;
-
-        //    //this line is necessary, because sometimes the expression comes in as Convert(originalexpression)
-        //    if (GetPropertyLambda.Body is UnaryExpression)
-        //    {
-        //        var UnExp = (UnaryExpression)GetPropertyLambda.Body;
-        //        if (UnExp.Operand is MemberExpression)
-        //        {
-        //            Exp = (MemberExpression)UnExp.Operand;
-        //        }
-        //        else
-        //            throw new ArgumentException();
-        //    }
-        //    else if (GetPropertyLambda.Body is MemberExpression)
-        //    {
-        //        Exp = (MemberExpression)GetPropertyLambda.Body;
-        //    }
-        //    else
-        //    {
-        //        throw new ArgumentException();
-        //    }
-
-        //    return (PropertyInfo)Exp.Member;
-        //}
 
         public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
         {

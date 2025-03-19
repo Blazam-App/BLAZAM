@@ -27,7 +27,7 @@ else
         {
             if (UserState == null) return "background-color:#0c13a7";
             int usernameHash = UserState.Username?.GetAppHashCode() ?? 0;
-            byte[] usernameHashBytes = Helpers.ByteHelpers.ToByteArray(usernameHash, 3);
+            byte[] usernameHashBytes = usernameHash.ToByteArray(3);
             int totalBytes = 0;
             for (int x = 0; x < usernameHashBytes.Length; x++)
             {

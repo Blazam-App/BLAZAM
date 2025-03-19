@@ -403,6 +403,13 @@ namespace BLAZAM.Common.Migrations.MySql
                             DisplayName = "Logon Hours",
                             FieldName = "logonHours",
                             FieldType = 2
+                        },
+                        new
+                        {
+                            Id = 38,
+                            DisplayName = "Group Type and Scope",
+                            FieldName = "groupType",
+                            FieldType = 2
                         });
                 });
 
@@ -799,6 +806,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int>("DuoUnreachableBehavior")
                         .HasColumnType("int");
 
+                    b.Property<int>("MFAType")
+                        .HasColumnType("int");
+
                     b.Property<bool>("RequireMFA")
                         .HasColumnType("tinyint(1)");
 
@@ -820,6 +830,7 @@ namespace BLAZAM.Common.Migrations.MySql
                             AdminPassword = "password",
                             DuoEnabled = false,
                             DuoUnreachableBehavior = 0,
+                            MFAType = 0,
                             RequireMFA = false,
                             SessionTimeout = 15
                         });

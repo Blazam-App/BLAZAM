@@ -10,7 +10,7 @@
 
     </MudCard>
     <MudButton Disabled=@disableCreateGroupButton Color=Color.Success OnClick="CommitChanges">
-        @AppLocalization["Create"]
+        @AppLocalization[Lang.Create]
     </MudButton>
 }
 @code {
@@ -32,7 +32,7 @@
             var assignTo = Group.MembersToAdd;
             disableCreateGroupButton = true;
             await InvokeAsync(StateHasChanged);
-            var createGroupJob = new Job(AppLocalization["Create User"]);
+            var createGroupJob = new Job(AppLocalization[Lang.Create_User]);
             createGroupJob.StopOnFailedStep = true;
             createGroupJob.ShowJobDetailsDialog(MessageService);
             var result = await Group.CommitChangesAsync(createGroupJob);

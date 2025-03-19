@@ -1,23 +1,23 @@
 ﻿@inherits AppComponentBase
 <EditForm Model="NewUserName">
 
-    <Section Title=@AppLocalization["Name"]>
+    <Section Title=@AppLocalization[Lang.Name]>
 
 
 
-        <MudTextField AutoFocus=true Label="@AppLocalization["First Name"]" @bind-Value="@NewUserName.GivenName" />
-
-
-
-
-
-        <MudTextField Label="@AppLocalization["Middle Name"]" @bind-Value="@NewUserName.MiddleName" />
+        <MudTextField AutoFocus=true Label="@AppLocalization[Lang.First_Name]" @bind-Value="@NewUserName.GivenName" />
 
 
 
 
 
-        <MudTextField Label="@AppLocalization["Last Name"]" @bind-Value="@NewUserName.Surname" />
+        <MudTextField Label="@AppLocalization[Lang.Middle_Name]" @bind-Value="@NewUserName.MiddleName" />
+
+
+
+
+
+        <MudTextField Label="@AppLocalization[Lang.Last_Name]" @bind-Value="@NewUserName.Surname" />
 
 
 
@@ -26,12 +26,12 @@
 </EditForm>
 <MudButton Color=Color.Primary
            OnClick="OnBack">
-    @AppLocalization["Back"]
+    @AppLocalization[Lang.Back]
 </MudButton>
 <MudButton Color="Color.Success"
            OnClick="OnNext"
            Disabled=@(newUserName is null || (newUserName.Surname.IsNullOrEmpty() && newUserName.GivenName.IsNullOrEmpty()))>
-    @AppLocalization["Next"]
+    @AppLocalization[Lang.Next]
 </MudButton>
 
 

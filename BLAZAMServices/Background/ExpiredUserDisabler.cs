@@ -17,7 +17,8 @@ namespace BLAZAM.Services.Background
     /// <summary>
     /// Checks the directory for expired users, if configured, those users will be disabled
     /// </summary>
-    [AutoStartBackgroundService]
+    //TODO Re-enable this service when a setting is added to db or the rules take its place and remove this
+    //[AutoStartBackgroundService]
     internal class ExpiredUserDisabler : ActiveDirectoryBackgroundServiceBase
     {
         private readonly NotificationGenerationService _notificationGenerationService;

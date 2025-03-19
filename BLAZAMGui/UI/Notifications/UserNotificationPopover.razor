@@ -6,12 +6,12 @@
 
     <MudText Typo="Typo.h6"
              Class="sticky align-middle">
-        @AppLocalization["Notifications"]
+        @AppLocalization[Lang.Notifications]
     </MudText>
     <MudSpacer />
     <AppIconButton Size="Size.Large"
                    Icon="@Icons.Material.Filled.Settings"
-                   Tooltip="@AppLocalization["Notification Settings"]"
+                   Tooltip="@AppLocalization[Lang.Notification_Settings]"
                    Color="Color.Info"
                    OnClick="@(()=>{notificationsModal?.ShowAsync();})" />
     <AppIconButton Size="Size.Large"
@@ -21,7 +21,7 @@
                    OnClick="MarkAllRead" />
     <AppCloseButton Size="Size.Large"
                     Icon="@Icons.Material.Filled.Start"
-                    Tooltip="@AppLocalization["Close"]"
+                    Tooltip="@AppLocalization[Lang.Close]"
                     TooltipPlacement="Placement.Left"
                     OnClick=@(()=>{mainLayout.NotificationsOpen=false;}) />
 
@@ -29,7 +29,7 @@
 <NotificationList @ref=_notificationList UserState="@UserState" />
 
 <AppModal @ref=notificationsModal
-          Title=@AppLocalization["Notification Settings"]
+          Title=@AppLocalization[Lang.Notification_Settings]
           Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
         <NotificaionSubscriptionEditor User="UserState.Preferences" />
 </AppModal>

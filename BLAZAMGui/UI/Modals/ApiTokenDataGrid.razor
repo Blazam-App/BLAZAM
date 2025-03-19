@@ -4,13 +4,13 @@
     <Columns>
         @if (ShowUser)
         {
-            <TemplateColumn Class="" Title="@AppLocalization["User"]">
+            <TemplateColumn Class="" Title="@AppLocalization[Lang.User]">
                 <CellTemplate>
                         <MudText>@(context.Item.User.Username)</MudText>
                 </CellTemplate>
             </TemplateColumn>
         }
-        <TemplateColumn Class="" Title="@AppLocalization["Token"]">
+        <TemplateColumn Class="" Title="@AppLocalization[Lang.Token]">
             <CellTemplate>
                 @{
                     var decrypted = context.Item.Token.Decrypt<string>();
@@ -21,17 +21,17 @@
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Created"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Created]">
             <CellTemplate>
                 <MudText>@(context.Item.CreatedAt.ToLocalTime())</MudText>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Expires"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Expires]">
             <CellTemplate>
                 <MudText>@(context.Item.ExpiresAt.ToLocalTime())</MudText>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Description"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Description]">
             <CellTemplate>
                 <MudTextField Disabled="context.Item.DeletedAt!=null"
  @bind-Value=@(context.Item.Description) />
@@ -53,7 +53,7 @@
                 @bind-Value=@context.Item.IsRevoked />
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Delete"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Delete]">
             <CellTemplate>
                @if(context.Item.DeletedAt==null){
                 <AppIconButton Color="@Color.Error"
@@ -64,7 +64,7 @@
                 {
                     <MudAlert Severity="Severity.Error">
                         <MudStack>
-                            <MudText>@AppLocalization["Deleted"]</MudText>
+                            <MudText>@AppLocalization[Lang.Deleted]</MudText>
                             <MudText>@context.Item.DeletedAt.Value.ToLocalTime().ToString()</MudText>
                         </MudStack></MudAlert>
                 }
