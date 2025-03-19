@@ -5,8 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
-		<AssemblyVersion>1.2.8</AssemblyVersion>
-		<Version>2025.03.19.0541</Version>
+		<AssemblyVersion>1.3.0</AssemblyVersion>
+		<Version>2025.03.19.1853</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
