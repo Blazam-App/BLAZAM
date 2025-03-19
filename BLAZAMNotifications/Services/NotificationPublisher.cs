@@ -28,8 +28,10 @@ namespace BLAZAM.Notifications.Services
                 try
                 {
 
-                    notificationMessage = context.NotificationMessages.Add(notificationMessage).Entity;
+                    context.NotificationMessages.Add(notificationMessage);
                     context.SaveChanges();
+                    var id = notificationMessage.Id;
+                    notificationMessage = context.NotificationMessages.First(nm=>nm.Id.Equals(notificationMessage.Id));
                 }
                 catch (Exception ex)
                 {
