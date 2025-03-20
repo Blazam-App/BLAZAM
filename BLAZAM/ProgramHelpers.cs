@@ -433,19 +433,21 @@ namespace BLAZAM.Server
                     {
                         try
                         {
-                            // Create an instance of the plugin
-                            if (Activator.CreateInstance(pluginType) is IPluginBase pluginInstance)
-                            {
-                                // Invoke the InjectServices method
-                                pluginInstance.InjectServices(builder);
-                                pluginInstance.Assembly = assembly;
-                                ApplicationInfo.loadedPlugins.Add(pluginInstance);
+                            ApplicationInfo.loadedPlugins.Add(assembly);
+                            continue;
+                            //Create an instance of the plugin
+                            //if (Activator.CreateInstance(pluginType) is IPluginBase pluginInstance)
+                            //{
+                            //    // Invoke the InjectServices method
+                            //    pluginInstance.InjectServices(builder);
+                            //    pluginInstance.Assembly = assembly;
+                            //    ApplicationInfo.loadedPlugins.Add(pluginInstance);
 
-                            }
-                            else
-                            {
-                                Loggers.SystemLogger.Warning($"Warning: Could not create an instance of plugin type: {pluginType.FullName} in {dll.Name}.");
-                            }
+                            //}
+                            //else
+                            //{
+                            //    Loggers.SystemLogger.Warning($"Warning: Could not create an instance of plugin type: {pluginType.FullName} in {dll.Name}.");
+                            //}
                         }
                         catch (Exception ex)
                         {

@@ -8,15 +8,10 @@ namespace BLAZAM.Plugins
 {
     public enum PageType
     {
-        Settings,
-        User,
-        Group,
-        Computer,
-        OU,
-        Printer,
-        Widget
+        Settings
     }
 
+    [AttributeUsage(AttributeTargets.Class)]
     public class PluginRenderFragmentAttribute : Attribute
     {
         public PageType PageType { get; }

@@ -11,6 +11,7 @@ namespace BLAZAM.Logger
         public static bool SendToSeqServer { get; set; } = true;
         public static bool? InstallationCompleted { get; set; } = null;
         public static string SeqServerUri { get; set; }
+        public static string SecondarySeqServerUri { get; set; }
         public static string InstallationId { get; set; }
         public static string InstallationType { get; set; }
         public static string DatabaseType { get; set; }
@@ -18,6 +19,7 @@ namespace BLAZAM.Logger
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public static ILogger RequestLogger { get; private set; }
         public static ILogger DatabaseLogger { get; private set; }
+        public static ILogger PluginsLogger { get; private set; }
         public static ILogger ActiveDirectoryLogger { get; private set; }
         public static ILogger UpdateLogger { get; private set; }
         public static ILogger SystemLogger { get; set; }
@@ -31,6 +33,7 @@ namespace BLAZAM.Logger
             DatabaseLogger = SetupLogger(logPath + @"database\db.txt");
             ActiveDirectoryLogger = SetupLogger(logPath + @"activedirectory\activedirectory.txt");
             UpdateLogger = SetupLogger(logPath + @"update\update.txt", RollingInterval.Month);
+            PluginsLogger = SetupLogger(logPath + @"plugins\plugins.txt", RollingInterval.Month);
 
             var systemLoggerBuilder = CreateLogBuilder()
                     .WriteTo.File(logPath + @"system\system.txt",
@@ -52,9 +55,9 @@ namespace BLAZAM.Logger
             //Serilog.Debugging.SelfLog.Enable(Console.Error);
         }
 
-        private static LoggerConfiguration CreateLogBuilder()
+        private static LoggerConfiguration CreateLogBuilder(string? pluginName=null,string? pluginVersion=null)
         {
-            return new LoggerConfiguration()
+           var config =  new LoggerConfiguration()
                                 .Enrich.FromLogContext()
                                .Enrich.WithMachineName()
                                .Enrich.WithEnvironmentName()
@@ -65,9 +68,15 @@ namespace BLAZAM.Logger
                              .Enrich.WithProperty("Installation Completed", InstallationCompleted)
                              .Enrich.WithProperty("Database Type", DatabaseType)
                                .Enrich.WithProperty("Application Version", _applicationVersion);
+            if (pluginName != null)
+            {
+                config.Enrich.WithProperty("Plugin Name", pluginName);
+                config.Enrich.WithProperty("Plugin Version", pluginVersion);
+            }
+            return config;
         }
 
-        private static Serilog.ILogger SetupLogger(string logFilePath, RollingInterval rollingInterval = RollingInterval.Hour)
+        public static ILogger SetupLogger(string logFilePath, RollingInterval rollingInterval = RollingInterval.Hour)
         {
             var loggerBuilder = CreateLogBuilder()
                 .WriteTo.File(logFilePath,
