@@ -1,10 +1,13 @@
 @inherits SettingsComponents
-<MudText Typo="Typo.h4">@AppLocalization["User Activity"]</MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.User_Activity]</MudText>
 <MudDataGrid Items="@UserStateService.UserStates.Where(u=>u.User.Identity?.IsAuthenticated==true)">
     <Columns>
-        <PropertyColumn Title=@AppLocalization["Username"] Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
-        <PropertyColumn Title=@AppLocalization["IP Address"] Property="x => x.IPAddress==null?null:x.IPAddress" />
-
+        <PropertyColumn Title=@AppLocalization[Lang.Username] Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
+        <TemplateColumn Title=@AppLocalization[Lang.IP_Address]>
+            <CellTemplate>
+                <IPAddress>@context.Item.IPAddress</IPAddress>
+            </CellTemplate>
+        </TemplateColumn>
        
         <TemplateColumn Title=@AppLocalization["Impersonator"]>
             <CellTemplate>
@@ -19,20 +22,7 @@
                 <MudText>@context.Item.LastAccessed.ToLocalTime()</MudText>
             </CellTemplate>
         </TemplateColumn>
-       
-@*         <TemplateColumn Title=@AppLocalization["Session Expiration Time"]>
-            <CellTemplate>
-                <MudText>@(DateTimeOffset.UtcNow - context.Item.Ticket?.Properties.ExpiresUtc)</MudText>
-            </CellTemplate>
-        </TemplateColumn> *@
+     
         <PropertyColumn Title=@AppLocalization["Session Expiration Time"] Property="x => x.Ticket==null?null:(DateTimeOffset.UtcNow-x.Ticket.Properties.ExpiresUtc)" />
-
-
-
-
     </Columns>
 </MudDataGrid>
-    @code {
-
-
-}

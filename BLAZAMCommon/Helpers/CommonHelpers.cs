@@ -2,6 +2,7 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using System.Collections;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO.Compression;
 using System.Reflection;
@@ -46,7 +47,19 @@ namespace BLAZAM.Helpers
             }
             return values;
         }
+       
 
+        public static string? GetEventProperty(this EventRecord eventRecord,int index)
+        {
+            try
+            {
+                return eventRecord.Properties[index].Value.ToString();
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return null;
+            }
+        }
         public static List<AuditChangeLog> GetChanges(this object changed, object? original)
         {
             if (original == null)
@@ -93,9 +106,9 @@ namespace BLAZAM.Helpers
                     newValue = property.GetValue(changed);
 
                 // Compare the values using Equals method
-                if ((oldValue!=null && newValue!=null)
-                    && ((oldValue is not null && !oldValue.Equals(newValue)
-                    || (newValue is not null && !newValue.Equals(oldValue)))))
+                if ((oldValue != null && newValue != null)
+                    && (oldValue is not null && !oldValue.Equals(newValue)
+                    || (newValue is not null && !newValue.Equals(oldValue))))
                 {
                     // Create a new AuditChangeLog instance with the property name and values
                     var change = new AuditChangeLog
@@ -216,32 +229,6 @@ namespace BLAZAM.Helpers
                 }
             }
         }
-        //public static PropertyInfo GetPropertyFromExpression<T>(this T obj, Expression<Func<T, object>> GetPropertyLambda)
-        //{
-        //    MemberExpression Exp = null;
-
-        //    //this line is necessary, because sometimes the expression comes in as Convert(originalexpression)
-        //    if (GetPropertyLambda.Body is UnaryExpression)
-        //    {
-        //        var UnExp = (UnaryExpression)GetPropertyLambda.Body;
-        //        if (UnExp.Operand is MemberExpression)
-        //        {
-        //            Exp = (MemberExpression)UnExp.Operand;
-        //        }
-        //        else
-        //            throw new ArgumentException();
-        //    }
-        //    else if (GetPropertyLambda.Body is MemberExpression)
-        //    {
-        //        Exp = (MemberExpression)GetPropertyLambda.Body;
-        //    }
-        //    else
-        //    {
-        //        throw new ArgumentException();
-        //    }
-
-        //    return (PropertyInfo)Exp.Member;
-        //}
 
         public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
         {

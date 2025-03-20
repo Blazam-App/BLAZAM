@@ -1,0 +1,99 @@
+﻿@page "/create/ou"
+@inherits TabbedAppComponentBase
+@attribute [Authorize]
+<AppPageTitle>@AppLocalization["Create OU"]</AppPageTitle>
+
+
+<MudTabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="selectedStep">
+    <MudTabPanel>
+        <ChildContent>
+            <MudText>
+                <OUTreeView Label="Parent Organizational Unit"
+                            SelectedEntryChanged="OUSelected"/>
+
+                <MudTextField Immediate=true Label="Organizational Unit Name" @bind-Value=@newOUName />
+
+                <MudButton Disabled=@(parentOU==null || newOUName.IsNullOrEmpty()) Color="Color.Primary" OnClick="CreateNewOU">Next</MudButton>
+            </MudText>
+        </ChildContent>
+        <TabContent>
+            @AppLocalization[Lang.Create]
+        </TabContent>
+    </MudTabPanel>
+    <MudTabPanel Disabled=@(newOU==null || newOUName.IsNullOrEmpty())>
+        <ChildContent>
+            <MudText>
+                <ConfirmNewOU OU="@newOU" />
+            </MudText>
+        </ChildContent>
+        <TabContent>
+            @AppLocalization[Lang.Confirm]
+        </TabContent>
+    </MudTabPanel>
+</MudTabs>
+
+
+
+
+
+@code {
+
+
+    int selectedStep;
+
+    string newOUName;
+    IADOrganizationalUnit? parentOU;
+    IADOrganizationalUnit? newOU;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+    /*
+    bool AllowStep(StepNavigationContext context)
+    {
+        switch (context.NextStepName)
+        {
+            case "stepConfigure":
+                return true;
+            case "stepConfirm":
+
+                return newOU != null;
+        }
+        return false;
+    }
+    */
+    async void OUSelected(IDirectoryEntryAdapter entry)
+    {
+        if (entry is IADOrganizationalUnit ou)
+        {
+            if (parentOU == null)
+            {
+                parentOU = ou;
+                return;
+            }
+            parentOU = ou;
+
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+
+    void CreateNewOU()
+    {
+        LoadingData = true;
+
+        newOU = parentOU?.CreateOU(newOUName);
+
+
+
+        selectedStep = 1;
+
+
+        LoadingData = false;
+
+    }
+
+}

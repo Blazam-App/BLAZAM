@@ -1,0 +1,46 @@
+﻿@inherits DatabaseComponentBase
+@if (_show)
+{
+    <AppModal @ref=modal
+              Title="@AppLocalization[Lang.Google_Authenticator_Registration_Required]">
+        <MudText Align="Align.Center">
+            <CreateGoogleAuthenticationToken AutoOpen="true" OnCreated="@(()=>{modal?.Close();})" />
+            <br />
+            <MudButton Color="Color.Primary"
+                       Href="/logout">
+                @AppLocalization[Lang.Sign_Out]
+            </MudButton>
+        </MudText>
+    </AppModal>
+}
+
+@code {
+    AppModal? modal;
+    bool _show;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
+
+        if (settings != null && settings.RequireMFA && !CurrentUser.State.IsAdminOrDemo() && CurrentUser.State.Preferences.AuthenticatorSecret.IsNullOrEmpty())
+        {
+            _show = true;
+        }
+
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender && _show)
+        {
+            modal.Options = new()
+                {
+                    BackdropClick = false,
+                    CloseButton = false,
+                    CloseOnEscapeKey = false
+                };
+            modal.YesEnabled = () => false;
+            await modal.ShowAsync();
+        }
+    }
+}

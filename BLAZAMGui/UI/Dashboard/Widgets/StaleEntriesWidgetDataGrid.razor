@@ -18,7 +18,7 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Title=@AppLocalization["Name"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
             
 
@@ -32,7 +32,7 @@
                    
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization["Last Logon"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Last_Logon]>
             <CellTemplate>
                 @if (context.Item?.Created != null)
                 {
@@ -45,7 +45,7 @@
         <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="@T" />
     </PagerContent>
     <NoRecordsContent>
-        <MudText>@AppLocalization["No matching entries"]</MudText>
+        <MudText>@AppLocalization[Lang.No_matching_results]</MudText>
     </NoRecordsContent>
 </MudDataGrid>
 

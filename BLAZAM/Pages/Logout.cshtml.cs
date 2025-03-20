@@ -9,7 +9,7 @@ namespace BLAZAM.Server.Pages
 {
     public class LogOutModel : PageModel
     {
-        public LogOutModel(AppAuthenticationStateProvider auth, AuditLogger logger, IApplicationUserStateService uss)
+        public LogOutModel(AppAuthenticationStateProvider auth, WebUserAuditLogger logger, IApplicationUserStateService uss)
         {
             _auth = auth;
             _auditLogger = logger;
@@ -17,7 +17,7 @@ namespace BLAZAM.Server.Pages
         }
 
         private readonly AppAuthenticationStateProvider _auth;
-        private readonly AuditLogger _auditLogger;
+        private readonly WebUserAuditLogger _auditLogger;
         private readonly IApplicationUserStateService _userStateService;
 
         /// <summary>

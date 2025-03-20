@@ -1,30 +1,31 @@
 @inherits AppModalContent
-<EditForm Model="newField" OnValidSubmit="Add">
-<MudTextField T=string @bind-Value=newField.DisplayName Label="Display Name" />
-<MudTextField T=string @bind-Value=newField.FieldName Label="Field Name" />
-<FieldTypeSelect @bind-Value=newField.FieldType />
+<MudForm @ref=Form 
+@bind-IsValid=IsValid
+Model="newField">
+    <MudTextField For=@(()=>newField.DisplayName) T=string @bind-Value=newField.DisplayName Label="Display Name" />
+    <MudTextField For=@(()=>newField.FieldName) T=string @bind-Value=newField.FieldName Label="Field Name" />
+    <FieldTypeSelect For=@(()=>newField.FieldType) @bind-Value=newField.FieldType />
+    @foreach (var objectType in assignedObjectTypes)
+    {
+        <MudCheckBox T=bool Label="@objectType.Key.ToString()" ValueChanged="@((bool val)=>{ToggleObjectType(val, objectType.Key);})" />
 
-@foreach (var objectType in assignedObjectTypes)
-{
-    <MudCheckBox T=bool Label="@objectType.Key" @bind-bind-Value=assignedObjectTypes[objectType.Key] />
-
-}
-</EditForm>
-@code{
+    }
+</MudForm>
+@code {
     private CustomActiveDirectoryField newField = new();
 
-   
 
-    private Dictionary<string, bool> assignedObjectTypes = new();
+
+    private Dictionary<ActiveDirectoryObjectType, bool> assignedObjectTypes = new();
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         Modal.SetOnYes(Add);
-        Modal.SetYesText(AppLocalization["Add"]);
-        foreach(var objectType in Enum.GetValues<ActiveDirectoryObjectType>().Where(ot=>ot!=ActiveDirectoryObjectType.All))
+        Modal.SetYesText(AppLocalization[Lang.Add]);
+        foreach (var objectType in Enum.GetValues<ActiveDirectoryObjectType>().Where(ot => ot != ActiveDirectoryObjectType.All))
         {
-            assignedObjectTypes.Add(objectType.ToString(), false);
+            assignedObjectTypes.Add(objectType, false);
         }
     }
     [Parameter]
@@ -36,18 +37,36 @@
         {
             try
             {
+                
                 Context.CustomActiveDirectoryFields.Add(newField);
                 await Context.SaveChangesAsync();
-                Close();
+                foreach (var objectType in assignedObjectTypes)
+                {
+                    if (objectType.Value)
+                    {
+                        newField.ObjectTypes.Add(new()
+                            {
+                                ObjectType = objectType.Key,
+                                ActiveDirectoryFieldId = newField.Id
+                            });
+                    }
+                }
+                await Context.SaveChangesAsync();
 
                 SnackBarService.Success("Field created");
                 await FieldCreated.InvokeAsync(newField);
                 await InvokeAsync(StateHasChanged);
+                Close();
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 SnackBarService.Error(ex.Message);
             }
         }
+    }
+    private void ToggleObjectType(bool value, ActiveDirectoryObjectType objectType)
+    {
+        assignedObjectTypes[objectType] = value;
     }
 }

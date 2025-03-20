@@ -2,11 +2,11 @@
 @* <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/browse");})"
             Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)
             Icon="@Icons.Material.Filled.ViewList">
-    @AppLocalization["Browse"]
+    @AppLocalization[Lang.Browse]
 </MudNavLink> *@
 <MudNavGroup ExpandedChanged=@((value)=>{BrowseExpandedChanged.InvokeAsync(value);})
              Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)
-             Title="@AppLocalization["Browse"]"
+             Title="@AppLocalization[Lang.Browse]"
              Icon="@Icons.Material.Filled.ViewList">
     <ADTreeView AdditionalVisibilityFilters=@((entry)=>{if(entry is IADOrganizationalUnit ou) return (ou.CanReadUsersInSubOus || ou.CanReadNonOUs); return false;})
                 SelectedEntryChanged="@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);})"

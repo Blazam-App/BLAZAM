@@ -3,11 +3,11 @@
 @inherits NotificationTemplateComponent
 
     <EmailTemplateHeader>
-    <strong>@AppLocalization["Active Directory object created"]</strong>
+    <strong>@AppLocalization[Lang.Active_Directory_object_created]</strong>
     </EmailTemplateHeader>
    
     <EmailTemplateBody>
-        @EntryName @AppLocalization[" has been created."]
+       @AppHelpLocalization[HelpLang.Created,EntryName]
     <br/>
    
    

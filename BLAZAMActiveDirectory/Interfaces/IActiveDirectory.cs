@@ -94,6 +94,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         List<DomainController> DomainControllers { get; }
         DomainControllerEventLogReader EventLogReader { get; }
+        Exception? ConnectionException { get; set; }
 
         /// <summary>
         /// Searches for an Active Directory object by it's SID
@@ -168,5 +169,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <param name="dn">The DN to search for</param>
         /// <returns>The matching entry, otherwise null</returns>
         IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn);
+        Task CancelConnection();
     }
 }

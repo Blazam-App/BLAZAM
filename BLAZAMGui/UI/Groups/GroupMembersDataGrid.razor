@@ -12,18 +12,13 @@
                  SortMode="@SortMode.None"
                  Groupable="false">
         <Columns>
-            <TemplateColumn Context="templateContext">
-                <HeaderTemplate>
-                    @AppLocalization["Type"]
-                </HeaderTemplate>
+            <TemplateColumn Context="templateContext" Title=@AppLocalization[Lang.Type]>
                 <CellTemplate Context="cellContext">
                     <DirectoryEntryTypeIcon Entry=cellContext.Item />
                 </CellTemplate>
             </TemplateColumn>
-            <TemplateColumn Sortable=true Filterable=true Context="templateContext">
-                <HeaderTemplate>
-                    @AppLocalization["Name"]
-                </HeaderTemplate>
+            <TemplateColumn Title=@AppLocalization[Lang.Name] Sortable=true Filterable=true Context="templateContext">
+              
                 <CellTemplate Context="cellContext">
                     <MudLink Href="@cellContext.Item.SearchUri">
                         @if (cellContext.Item is IADGroup group)
@@ -41,7 +36,7 @@
             </TemplateColumn>
             <TemplateColumn Sortable=true Filterable=true Context="templateContext">
                 <HeaderTemplate>
-                    @AppLocalization["OU"]
+                    @AppLocalization[Lang.OU]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     <MudText>
@@ -49,10 +44,7 @@
                     </MudText>
                 </CellTemplate>
             </TemplateColumn>
-            <TemplateColumn Context="templateContext">
-                <HeaderTemplate>
-                    @AppLocalization["Remove Member"]
-                </HeaderTemplate>
+            <TemplateColumn Title=@AppLocalization["Remove Member"] Context="templateContext">
                 <CellTemplate Context="cellContext">
                     <AppTooltip ShowOnClick=@(!cellContext.Item.CanUnassign)
                                 ShowOnHover=@(!cellContext.Item.CanUnassign)
@@ -60,7 +52,7 @@
                         <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
                                    OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
-                            @AppLocalization["Remove"]
+                            @AppLocalization[Lang.Remove]
                         </MudButton>
                     </AppTooltip>
                 </CellTemplate>
@@ -68,34 +60,34 @@
         </Columns>
     </MudDataGrid>
     <MudText Align="Align.End">
-        @AppLocalization["Members"]: @Members.Count
+        @AppLocalization[Lang.Members]: @Members.Count
     </MudText>
     @if (Members.Any(m => m is IADGroup))
     {
 
         <MudText Align="Align.End">
-            @AppLocalization["Groups"]: @Members.Where(m => m is IADGroup).Count()
+            @AppLocalization[Lang.Groups]: @Members.Where(m => m is IADGroup).Count()
         </MudText>
     }
     @if (Members.Any(m => m is IADUser))
     {
 
         <MudText Align="Align.End">
-            @AppLocalization["Users"]: @Members.Where(m => m is IADUser).Count()
+            @AppLocalization[Lang.Users]: @Members.Where(m => m is IADUser).Count()
         </MudText>
     }
     @if (Members.Any(m => m is IADComputer))
     {
 
         <MudText Align="Align.End">
-            @AppLocalization["Computers"]: @Members.Where(m => m is IADComputer).Count()
+            @AppLocalization[Lang.Computers]: @Members.Where(m => m is IADComputer).Count()
         </MudText>
     }
     @if (Members.Any(m => m is IADPrinter))
     {
 
         <MudText Align="Align.End">
-            @AppLocalization["Printers"]: @Members.Where(m => m is IADPrinter).Count()
+            @AppLocalization[Lang.Printers]: @Members.Where(m => m is IADPrinter).Count()
         </MudText>
     }
     if (Members.Where(m => !m.CanRead).Count() > 0)

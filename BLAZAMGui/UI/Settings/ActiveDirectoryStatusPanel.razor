@@ -2,21 +2,23 @@
 @inherits AppComponentBase
 <MudCard Class="ma-5 mx-auto pa-3">
     <MudCardHeader>
-        <MudText Class="w-100" Align="Align.Center" Typo="@Typo.h6">
-            @AppLocalization["Active Directory Connection Status"]
+        <MudText Class="w-100"
+        Align="Align.Center"
+        Typo="@Typo.h6">
+            @AppLocalization[Lang.Active_Directory_Connection_Status]
         </MudText>
     </MudCardHeader>
 
     <MudGrid Spacing="0" Class="mx-auto mud-container-maxwidth-xs">
         <MudItem xs="8">
-            @AppLocalization["Server Port Open"]
+            @AppLocalization[Lang.Server_Port_Open]
         </MudItem>
         <MudItem xs="4">
             <StatusCheck Status="_portStatus" />
         </MudItem>
 
         <MudItem xs="8">
-            @AppLocalization["Credentials OK"]
+            @AppLocalization[Lang.Credentials_OK]
 
         </MudItem>
         <MudItem xs="4">
@@ -24,7 +26,7 @@
         </MudItem>
 
         <MudItem xs="8">
-            @AppLocalization["Connected"]
+            @AppLocalization[Lang.Connected]
         </MudItem>
         <MudItem xs="4">
             <StatusCheck Status="Directory.Status==DirectoryConnectionStatus.OK" />
@@ -32,13 +34,40 @@
 
 
         <MudItem xs="8">
-            @AppLocalization["Connection Type"]
+            @AppLocalization[Lang.Connection_Type]
         </MudItem>
         <MudItem xs="4">
             <StatusCheck Status=@GetConnectionTypeStatus()
-                         Text="@GetConnectionType()" />
+            Text="@GetConnectionType()" />
         </MudItem>
     </MudGrid>
+    @if (Directory.Status != DirectoryConnectionStatus.OK && Directory.Status != DirectoryConnectionStatus.Connecting)
+    {
+        <MudChip Color="Color.Warning" Size="Size.Small" T="string" Text="@AppLocalization[Directory.Status.ToString()]" />
+    }
+    @if (Directory.ConnectionException != null)
+    {
+        var exception = Directory.ConnectionException;
+
+        <MudAlert Severity="Severity.Error">
+
+            <MudText Inline="false">@AppLocalization[Lang.Error]:</MudText>
+            <br />
+            <MudText Inline="false" Class="mt-3" Typo="Typo.caption">@exception.Message</MudText>
+
+            @if (exception is DirectoryServicesCOMException comException)
+            {
+                <br />
+
+                <br />
+                <MudText Inline="false" Class="mt-3" Typo="Typo.caption">@comException.ExtendedErrorMessage</MudText>
+            }
+        </MudAlert>
+    }
+    <MudButton OnClick="@(RefreshStatuses)"
+    Color="Color.Primary">
+        @AppLocalization[Lang.Refresh]
+    </MudButton>
     @if (showProgress)
     {
         <MudStack Row=true>
@@ -57,14 +86,14 @@
 
     bool _monitoring = false;
     bool _portStatus;
-    bool _credStatus;
+    bool? _credStatus=null;
     bool showProgress = true;
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
         ResetStatus();
-        Directory.OnStatusChanged += (async(state) => { await UpdateStatus(state); });
-        UpdateStatus(null);
+        Directory.OnStatusChanged += (async (state) => { await UpdateStatus(state); });
+        await UpdateStatus(null);
 
     }
     public override void Dispose()
@@ -72,13 +101,18 @@
         base.Dispose();
         _monitoring = false;
     }
-
+    public async Task RefreshStatuses()
+    {
+        await Directory.CancelConnection();
+        ResetStatus();
+        _ = Directory.ConnectAsync();
+    }
     public void ResetStatus()
     {
         //Directory = DirectoryFactory.CreateActiveDirectoryContext();
         Directory.ConnectAsync();
         _portStatus = false;
-        _credStatus = false;
+        _credStatus = null;
         showProgress = true;
         StateHasChanged();
     }
@@ -153,7 +187,7 @@
                     }
 
                     await InvokeAsync(StateHasChanged);
-                    await Task.Delay(10000);
+                    await Task.Delay(1000);
                 }
             }
 
@@ -163,10 +197,12 @@
     private bool? GetConnectionTypeStatus()
     {
         if (Directory.Status != DirectoryConnectionStatus.OK) return false;
-        return Directory.AppRootDirectoryEntry != null && (
-                         Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.Encryption) ||
-                         Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.SecureSocketsLayer) ||
-                         Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.Secure));
+        if (Directory.AppRootDirectoryEntry == null) return false;
+        var authType = Directory.AppRootDirectoryEntry.AuthenticationType;
+        if (authType.Equals(AuthenticationTypes.Encryption) ||
+            authType.Equals(AuthenticationTypes.SecureSocketsLayer) ||
+            authType.Equals(AuthenticationTypes.Secure)) return true;
+        return authType.Equals(AuthenticationTypes.Secure | AuthenticationTypes.SecureSocketsLayer);
     }
     private string? GetConnectionType()
     {

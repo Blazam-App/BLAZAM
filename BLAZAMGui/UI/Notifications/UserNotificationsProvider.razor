@@ -8,7 +8,7 @@
           BadgeClass="badge-repos cursor-pointer"
           Content="@Notifications.Where(n=>!n.IsRead).Count()"
           OnClick="@ToggleNotifications">
-    <AppTooltip Text=@(AppLocalization["Notifications"])>
+    <AppTooltip Text=@(AppLocalization[Lang.Notifications])>
         <AppIconButton Size="Size.Large"
                        OnClick="@ToggleNotifications"
                        Icon="@(notifs.Count() > 0?Icons.Material.Filled.NotificationImportant:Icons.Material.Filled.Notifications)"

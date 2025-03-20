@@ -1,0 +1,62 @@
+﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Database.Context;
+using BLAZAM.Session.Interfaces;
+using Microsoft.JSInterop;
+
+namespace BLAZAM.Services.Audit
+{
+    public class BaseAuditLogger
+    {
+        public SystemAudit System;
+        public UserAudit User;
+        public GroupAudit Group;
+        public ComputerAudit Computer;
+        public OUAudit OU;
+        public PrinterAudit Printer;
+        public LogonAudit Logon;
+        public BitLockerAudit BitLocker;
+        public EmailAudit Email;
+
+        public BaseAuditLogger(IAppDatabaseFactory factory, IApplicationUserStateService userStateService)
+        {
+            System = new SystemAudit(factory);
+            User = new UserAudit(factory, userStateService);
+            Group = new GroupAudit(factory, userStateService);
+            Computer = new ComputerAudit(factory, userStateService);
+            OU = new OUAudit(factory, userStateService);
+            Printer = new PrinterAudit(factory, userStateService);
+            Logon = new LogonAudit(factory, userStateService);
+            BitLocker = new BitLockerAudit(factory, userStateService);
+        }
+        public async Task Searched(IDirectoryEntryAdapter searchedEntry)
+        {
+            if (searchedEntry is IADUser)
+                await User.Searched(searchedEntry);
+            else if (searchedEntry is IADGroup)
+                await Group.Searched(searchedEntry);
+            else if (searchedEntry is IADComputer)
+                await Computer.Searched(searchedEntry);
+            else if (searchedEntry is IADOrganizationalUnit)
+                await OU.Searched(searchedEntry);
+            else if (searchedEntry is IADPrinter)
+                await Printer.Searched(searchedEntry);
+            else if (searchedEntry is IADBitLockerRecovery)
+                await BitLocker.Searched(searchedEntry);
+        }
+
+        public async Task Moved(IDirectoryEntryAdapter searchedEntry, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
+        {
+            if (searchedEntry is IADUser)
+                await User.Moved(searchedEntry, ouMovedFrom, ouMovedTo);
+            else if (searchedEntry is IADGroup)
+                await Group.Moved(searchedEntry, ouMovedFrom, ouMovedTo);
+            else if (searchedEntry is IADComputer)
+                await Computer.Moved(searchedEntry, ouMovedFrom, ouMovedTo);
+            else if (searchedEntry is IADOrganizationalUnit)
+                await OU.Moved(searchedEntry, ouMovedFrom, ouMovedTo);
+            else if (searchedEntry is IADPrinter)
+                await Printer.Moved(searchedEntry, ouMovedFrom, ouMovedTo);
+        }
+
+    }
+}

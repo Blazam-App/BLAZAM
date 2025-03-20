@@ -1,0 +1,52 @@
+@using BLAZAM.Common.Data.Database
+@inherits AppComponentBase
+@inject NotificationGenerationService NotificationGenerationService
+
+<AppPageTitle>@AppLocalization["Confirm OU Creation"]</AppPageTitle>
+
+@if (OU != null)
+{
+    <MudCard>
+            @OU.ADSPath
+        
+    </MudCard>
+    <MudButton Color=Color.Success OnClick="CommitChanges">@AppLocalization[Lang.Create]</MudButton>
+}
+@code {
+
+    #nullable disable warnings
+
+
+
+    [Parameter]
+    public EventCallback<IADOrganizationalUnit> Confirmed { get; set; }
+
+    [Parameter]
+    public IADOrganizationalUnit OU { get; set; }
+
+    async Task CommitChanges()
+    {
+        if (await MessageService.Confirm("Are you sure you want to create this OU?", "Create OU"))
+        {
+            var results = await OU.CommitChangesAsync();
+            if (results.FailedSteps.Count == 0)
+            {
+                OU = Directory.OUs.FindOuByDN(OU.DN);
+                SnackBarService.Success(AppLocalization["OU created"]);
+                await AuditLogger.OU.Created(OU);
+                if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                {
+                    await NotificationGenerationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
+
+                }
+                else
+                {
+                    _ = NotificationGenerationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
+
+                }
+                await Confirmed.InvokeAsync(OU);
+                Nav.NavigateTo("/create/ou", true);
+            }
+        }
+    }
+}

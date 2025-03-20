@@ -1,6 +1,6 @@
 ﻿@using BLAZAM.Database.Models.Audit
 @inherits Widget
-@attribute [Authorize]
+@attribute [Authorize(Roles =UserRoles.SuperAdmin)]
 
 <MudDataGrid T="LogonAuditLog"
              Items="@UserLogons"
@@ -16,29 +16,22 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Title=@AppLocalization["User"]>
+        <TemplateColumn Title=@AppLocalization[Lang.User]>
             <CellTemplate>
                 <MudText>@context.Item?.Username</MudText>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization["Ip Address"] Sortable="true">
+        <TemplateColumn Title=@AppLocalization[Lang.IP_Address] Sortable="true">
             <CellTemplate>
-                @if (ApplicationInfo.InDemoMode && !CurrentUser.Username.Equals("admin", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    <MudText Style="filter:blur(4px);">
-                        10.20.30.40
-                    </MudText>
-                }
-                else
-                {
-                    <MudText>
+          
+                    <IPAddress>
                         @context.Item.IpAddress
-                    </MudText>
-                }
+                    </IPAddress>
+                
 
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization["Timestamp"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Timestamp]>
             <CellTemplate>
                 <MudText>@context.Item?.Timestamp.ToLocalTime()</MudText>
             </CellTemplate>

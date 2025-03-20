@@ -1,19 +1,11 @@
 ﻿using BLAZAM.Helpers;
 using BLAZAM.Localization;
-using Microsoft.AspNetCore.Mvc.DataAnnotations;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Common.Data.Validators
 {
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class AppValidationAttribute : ValidationAttribute
     {
   
@@ -21,23 +13,25 @@ namespace BLAZAM.Common.Data.Validators
         protected string? GetErrorMessage(ValidationContext validationContext)
         {
             return ErrorMessage;
-            return GetLocalizer(validationContext)[ErrorMessage];
         }
 
-        private static IStringLocalizer localizer;
 
-
-
-        private IStringLocalizer GetLocalizer(ValidationContext validationContext)
+        public AppValidationAttribute()
         {
-            if (localizer is null)
-            {
-                var factory = (IStringLocalizer<AppLocalization>)validationContext.GetService(typeof(IStringLocalizer<AppLocalization>));
-
-            }
-
-            return localizer;
+            this.ErrorMessageResourceType = typeof(AppValidationLocalization);
         }
+
+        public AppValidationAttribute(Func<string> errorMessageAccessor) : base(errorMessageAccessor)
+        {
+            this.ErrorMessageResourceType = typeof(AppValidationLocalization);
+        }
+
+        public AppValidationAttribute(string errorMessage) : base(errorMessage)
+        {
+            this.ErrorMessageResourceType = typeof(AppValidationLocalization);
+        }
+
+      
 
     }
 }

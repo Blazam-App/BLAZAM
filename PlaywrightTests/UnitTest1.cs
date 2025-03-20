@@ -474,7 +474,7 @@ namespace PlaywrightTests
                 IsMobile = false,
                 ViewportSize = new ViewportSize() { Width = 1280, Height = 1024 }
             });
-            await Page.GotoAsync("https://blazam.azurewebsites.net/home");
+            await Page.GotoAsync("https://demo.blazam.org/home");
             await Page.GetByRole(AriaRole.Button, new() { Name = "Log In To Demo" }).ClickAsync();
 
             try

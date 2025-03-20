@@ -58,12 +58,6 @@
                 <ViewDirectoryEntry DirectoryEntry="result" />
             }
         }
-        @*        else
-    {
-    <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
-
-    }
-    *@
     }
 
     else if (LoadingData)
@@ -148,7 +142,7 @@
        });
         Searcher.ResultsCollected += ((batch) =>
              {
-                 results.AddRange(batch.Where(r=>r.CanRead));
+                 results.AddRange(batch.Where(r => r.CanRead));
              });
     }
     /// <summary>

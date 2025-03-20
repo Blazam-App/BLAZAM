@@ -1,7 +1,6 @@
 ﻿using BLAZAM.Common;
 using BLAZAM.Database.Context;
 using BLAZAM.Logger;
-using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -139,10 +138,6 @@ namespace BLAZAM.Session
                     var cu = CurrentUserState;
                     if (cu != null)
                     {
-                        //if (cu.User.FindFirstValue(ClaimTypes.UserData) != null)
-                        //{
-                        //    return cu.Impersonator?.Identity?.Name;
-                        //}
                         return cu.User?.Identity?.Name;
                     }
                 }
@@ -177,7 +172,7 @@ namespace BLAZAM.Session
             if (existingState == null)
             {
 
-                //if (!userClaim.Identity.IsAuthenticated) return null;
+               
                 //Create a new cached state since the one we're looking for appears to be missing
                 existingState = CreateUserState(userClaim);
                 AddUserState(existingState);
@@ -193,12 +188,10 @@ namespace BLAZAM.Session
         private void AddUserState(IApplicationUserState state)
         {
             UserStates.Add(state);
-            //Invoke event so Active Directory can populate DirectoryUser if required
-            //UserStateAdded?.Invoke(state);
         }
-        public void SetMFAUserState(string mfaToken, IApplicationUserState state, string redirectUrl = "/")
+        public void SetMFAUserState(string mfaToken, IApplicationUserState state, string returnURL= "/")
         {
-            MFARequest mfaRequest = new(mfaToken, redirectUrl, state);
+            MFARequest mfaRequest = new(mfaToken, returnURL, state);
             _mfaLoginQueue.Add(mfaRequest);
             Task.Delay(90000).ContinueWith((val) =>
             {

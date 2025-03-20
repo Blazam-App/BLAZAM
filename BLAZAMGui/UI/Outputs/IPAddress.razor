@@ -1,0 +1,19 @@
+﻿@inherits AppComponentBase
+
+@if (ApplicationInfo.InDemoMode && !CurrentUser.Username.Equals("admin", StringComparison.InvariantCultureIgnoreCase))
+{
+    <MudText Style="filter:blur(4px);">
+        10.20.30.40
+    </MudText>
+}
+else
+{
+    <MudText>
+        @ChildContent
+    </MudText>
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent{ get; set; }
+}

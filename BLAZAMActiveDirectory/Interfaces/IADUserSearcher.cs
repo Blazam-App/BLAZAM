@@ -19,5 +19,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         Task<List<IADUser>> FindChangedUsersAsync(bool ignoreDisabledUsers = true);
         Task<List<IADUser>> FindChangedPasswordUsersAsync(bool ignoreDisabledUsers = true);
         List<IADUser>? FindChangedPasswordUsers(bool ignoreDisabledUsers = true);
+        List<IADUser> FindExpiredUsers(bool ignoreDisabledUsers = true);
     }
 }

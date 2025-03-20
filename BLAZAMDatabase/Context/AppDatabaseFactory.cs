@@ -35,6 +35,8 @@ namespace BLAZAM.Database.Context
             try
             {
                 ApplicationInfo.installationCompleted = CheckInstallation();
+                Loggers.InstallationCompleted = ApplicationInfo.installationCompleted;
+
             }
             catch (DatabaseException ex)
             {
@@ -187,7 +189,6 @@ namespace BLAZAM.Database.Context
                 var _dbType = _configuration.GetValue<string>("DatabaseType");
                 if (_dbType == null) throw new DatabaseException("DatabaseType missing in configuration file");
 
-                IDatabaseContext? databaseContext = null;
                 switch (_dbType.ToLower())
                 {
 
@@ -271,7 +272,6 @@ namespace BLAZAM.Database.Context
                             {
                                 throw new DatabaseException("Database incompatible with current application version.");
                             }
-                    //context.Database.Migrate();
 
 
                     return true;
@@ -319,7 +319,7 @@ namespace BLAZAM.Database.Context
             catch (Exception ex)
             {
                 Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
-                //DownReason = new DatabaseException(ex.Message, ex);
+               
                 FatalError = ex;
                 OnFatalError?.Invoke(ex);
                 return false;

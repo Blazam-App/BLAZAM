@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Database.Context;
+using BLAZAM.Database.Models.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
 
@@ -6,18 +7,11 @@ namespace BLAZAM.Services.Audit
 {
     public class EmailAudit : BaseAudit
     {
-        protected IApplicationUserStateService UserStateService { get; private set; }
         /// <summary>
         /// The Email being auditted
         /// </summary>
-        /// <remarks>
-        /// The default value is the current web user from the <see cref="IApplicationUserStateService"/>
-        /// </remarks>
-        protected IApplicationUserState? CurrentUser { get; set; }
-        public EmailAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime)
+        public EmailAudit(IAppDatabaseFactory factory) : base(factory)
         {
-            UserStateService = userStateService;
-            CurrentUser = UserStateService.CurrentUserState;
 
         }
 
@@ -31,19 +25,20 @@ namespace BLAZAM.Services.Audit
             try
             {
                 using var context = await factory.CreateDbContextAsync();
-                //var table = context.EmailAuditLog;
-                //var auditEntry = new EmailAuditLog()
-                //{
-                //    MessageGuid = emailId,
-                //    From = from,
-                //    To = to,
-                //    Cc = cc,
-                //    Bcc = bcc,
-                //    Subject = subject,
-                //    HtmlBody = body,
-                //    ServerResponse = response
-                //};
-                //table.Add(auditEntry);
+                var table = context.EmailAuditLog;
+                var auditEntry = new EmailAuditLog()
+                {
+                    MessageGuid = emailId,
+                    From = from,
+                    To = to,
+                    Cc = cc,
+                    Bcc = bcc,
+                    Subject = subject,
+                    LastAttemptTimestamp = DateTime.UtcNow,
+                    HtmlBody = body,
+                    ServerResponse = response
+                };
+                table.Add(auditEntry);
                 await context.SaveChangesAsync();
                 return true;
 

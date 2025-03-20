@@ -6,6 +6,7 @@ using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Security.Claims;
 
 namespace BLAZAM.Pages.API.v1
@@ -20,7 +21,7 @@ namespace BLAZAM.Pages.API.v1
     [Route("api/v1/[controller]")]
     public class ApiController : ControllerBase
     {
-        private readonly DateTime _startTime = DateTime.Now;
+        private readonly Stopwatch stopwatch = new();
 
         /// <summary>
         /// A string dictionary that contains the base of the response.
@@ -33,7 +34,7 @@ namespace BLAZAM.Pages.API.v1
         /// <summary>
         /// The API audit logger
         /// </summary>
-        protected readonly AuditLogger AuditLogger;
+        protected readonly WebUserAuditLogger AuditLogger;
         /// <summary>
         /// 
         /// </summary>
@@ -44,23 +45,29 @@ namespace BLAZAM.Pages.API.v1
         /// </summary>
         protected IApplicationUserState? CurrentUserState { get; }
 
-        public ApiController(IApplicationUserStateService applicationUserStateService, AuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
+        public ApiController(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
         {
+            stopwatch.Start();
+
+            RequestId = Guid.NewGuid();
+            ResponseData.Add("Request Id", RequestId);
+            ResponseData.Add("Version", "1.0");
+            ResponseData.Add("Received Time", DateTime.UtcNow);
+            ResponseData.Add("User", httpContextAccessor?.HttpContext?.User?.Identity?.Name);
+            ResponseData.Add("User Id", httpContextAccessor?.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value);
+            ResponseData.Add("IP Address", httpContextAccessor?.HttpContext?.Connection?.RemoteIpAddress?.ToString());
+
+
             AuditLogger = audit;
             UserStateService = applicationUserStateService;
             CurrentUserState = UserStateService.CurrentUserState;
 
             Directory = adFactory.CreateActiveDirectoryContext();
             DbFactory = appDatabaseFactory;
-            RequestId = Guid.NewGuid();
-            ResponseData.Add("Request Id", RequestId);
-            ResponseData.Add("Version", "1.0");
-            ResponseData.Add("Received Time", _startTime);
-            ResponseData.Add("User", httpContextAccessor?.HttpContext?.User?.Identity?.Name);
-            ResponseData.Add("User Id", httpContextAccessor?.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value);
-            ResponseData.Add("IP Address", httpContextAccessor?.HttpContext?.Connection?.RemoteIpAddress?.ToString());
+          
 
         }
+
         /// <summary>
         /// The current API users Active Directory connection
         /// </summary>
@@ -79,9 +86,10 @@ namespace BLAZAM.Pages.API.v1
         /// <returns>A new <see cref="JsonResult"/> containing the <see cref="ResponseData"/></returns>
         protected IActionResult FormatData(dynamic data)
         {
+            stopwatch.Stop();
             ResponseData.Add("Data", data);
             ResponseData.Add("Finish Time", DateTime.Now.ToString());
-            ResponseData.Add("Runtime", (DateTime.Now - _startTime).TotalMilliseconds + "ms");
+            ResponseData.Add("Runtime", stopwatch.ElapsedMilliseconds + "ms");
 
             return new JsonResult(ResponseData);
         }

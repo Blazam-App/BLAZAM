@@ -8,7 +8,7 @@
             <Columns>
                 <PropertyColumn Property="x=>x.DriveType" />
                 <PropertyColumn Property="x=>x.Letter" />
-                <TemplateColumn Title="Used">
+                <TemplateColumn Title=@AppLocalization[Lang.Used]>
                     <CellTemplate>
                         <MudProgressLinear Style="height:25px;" Value="@context.Item.PercentUsed.Round(0)"
                                            Color="@(context.Item.PercentUsed<70?Color.Success:context.Item.PercentUsed<80?Color.Warning:Color.Error)">
@@ -18,15 +18,15 @@
                         </MudProgressLinear>
                     </CellTemplate>
                 </TemplateColumn>
-                <TemplateColumn Title="Capacity">
+                <TemplateColumn Title=@AppLocalization[Lang.Capacity]>
                     <CellTemplate>
                         @(
                             context.Item.Capacity.Round(0).ToString() + "GB"
                             )
                     </CellTemplate>
                 </TemplateColumn>
-                <PropertyColumn Property="x=>x.FileSystem" />
-                <PropertyColumn Property="x=>x.Serial" />
+                <PropertyColumn Title="@AppLocalization[Lang.Memory]" Property="x=>x.FileSystem" />
+                <PropertyColumn Title=@AppLocalization[Lang.Serial] Property="x=>x.Serial" />
             </Columns>
         </MudDataGrid>
 
@@ -35,7 +35,7 @@
 }
 else
 {
-    <MudText>Computer is not reachable.</MudText>
+    <MudText>@AppLocalization[Lang.Computer_not_reachable]</MudText>
 }
 @code {
 

@@ -10,13 +10,13 @@ namespace BLAZAM.Services.Audit
 {
     public class ComputerAudit : DirectoryAudit
     {
-        public ComputerAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
+        public ComputerAudit(IAppDatabaseFactory factory, IApplicationUserStateService? userStateService = null, IJSRuntime? jSRuntime = null) : base(factory, userStateService, jSRuntime)
         {
         }
 
         public async Task<bool> Moved(IDirectoryEntryAdapter movedComputer, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
-            Analytics.ObjectMoved(ActiveDirectoryObjectType.Computer);
+            Analytics?.ObjectMoved(ActiveDirectoryObjectType.Computer);
 
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.Computer_Moved,
@@ -33,7 +33,7 @@ namespace BLAZAM.Services.Audit
 
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
         {
-            Analytics.ObjectDeleted(ActiveDirectoryObjectType.Computer);
+            Analytics?.ObjectDeleted(ActiveDirectoryObjectType.Computer);
 
             return await Log(t => t.DirectoryEntryAuditLogs,
              AuditActions.Computer_Deleted, deletedEntry);
@@ -41,7 +41,7 @@ namespace BLAZAM.Services.Audit
 
         public async Task<bool> Assigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
         {
-            Analytics.ObjectAssigned(ActiveDirectoryObjectType.Computer);
+            Analytics?.ObjectAssigned(ActiveDirectoryObjectType.Computer);
 
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.Computer_Assigned,
@@ -53,7 +53,7 @@ namespace BLAZAM.Services.Audit
         }
         public async Task<bool> Unassigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
         {
-            Analytics.ObjectUnassigned(ActiveDirectoryObjectType.Computer);
+            Analytics?.ObjectUnassigned(ActiveDirectoryObjectType.Computer);
 
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.Computer_Unassigned,
@@ -77,8 +77,8 @@ namespace BLAZAM.Services.Audit
                     Sid = searchedComputer.SID.ToSidString(),
                     Action = action,
                     Target = searchedComputer.CanonicalName,
-                    Username = UserStateService?.CurrentUsername,
-                    IpAddress = UserStateService?.CurrentUserState?.IPAddress
+                    Username = CurrentUser?.AuditUsername,
+                    IpAddress = CurrentUser?.IPAddress
 
                 });
                 await context.SaveChangesAsync();

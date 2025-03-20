@@ -13,7 +13,7 @@ namespace BLAZAM.Pages
 {
     public class MFACallbackModel : PageModel
     {
-        private readonly AuditLogger _audit;
+        private readonly WebUserAuditLogger _audit;
         private readonly AppAuthenticationStateProvider _auth;
         private readonly IDuoClientProvider _duoClientProvider;
         private readonly IApplicationUserStateService _userStateService;
@@ -21,7 +21,7 @@ namespace BLAZAM.Pages
         public MFACallbackModel(IDuoClientProvider duoClientProvider,
             IApplicationUserStateService userStateService,
             AppAuthenticationStateProvider appAuthenticationStateProvider,
-            AuditLogger logger
+            WebUserAuditLogger logger
             )
         {
             _audit = logger;

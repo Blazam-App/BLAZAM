@@ -28,14 +28,20 @@ namespace BLAZAM.Notifications.Services
                 try
                 {
 
-                    notificationMessage = context.NotificationMessages.Add(notificationMessage).Entity;
+                    context.NotificationMessages.Add(notificationMessage);
                     context.SaveChanges();
+                    var id = notificationMessage.Id;
+                    notificationMessage = context.NotificationMessages.First(nm=>nm.Id.Equals(notificationMessage.Id));
                 }
                 catch (Exception ex)
                 {
                     Loggers.SystemLogger.Error("Error saving new notification {Error}", ex);
 
                 }
+            }
+            else
+            {
+                notificationMessage = context.NotificationMessages.FirstOrDefault(m => m.Id.Equals(notificationMessage.Id));
             }
             List<UserNotification> sentNotifications = new();
             foreach (var user in users)

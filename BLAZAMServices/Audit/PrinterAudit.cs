@@ -7,13 +7,13 @@ namespace BLAZAM.Services.Audit
 {
     public class PrinterAudit : DirectoryAudit
     {
-        public PrinterAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
+        public PrinterAudit(IAppDatabaseFactory factory, IApplicationUserStateService? userStateService = null, IJSRuntime? jSRuntime = null) : base(factory, userStateService, jSRuntime)
         {
         }
 
         public async Task<bool> Moved(IDirectoryEntryAdapter movedPrinter, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
-            Analytics.ObjectMoved(ActiveDirectoryObjectType.Printer);
+            Analytics?.ObjectMoved(ActiveDirectoryObjectType.Printer);
 
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.Printer_Moved,

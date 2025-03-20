@@ -5,7 +5,8 @@ namespace BLAZAM.Common.Data
     public enum LoginResultStatus
     {
         OK, BadCredentials, UnauthorizedImpersonation, NoData, NoUsername, NoPassword, UnknownFailure,
-        DeniedLogin, DuoRequested, GoogleAuthenticatorRequested
+        DeniedLogin, DuoRequested, GoogleAuthenticatorRequested,
+        GoogleAuthenticatorRegistrationRequested
     }
     public class LoginResult
     {

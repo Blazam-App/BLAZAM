@@ -11,7 +11,9 @@ namespace BLAZAM.Gui.UI
     public class AppComponentBase : ComponentBase, IDisposable
     {
         [Inject]
-        protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }
+        protected IStringLocalizer<AppLocalization> AppLocalization { get; set; } 
+        [Inject]
+        protected IStringLocalizer<AppHelpLocalization> AppHelpLocalization { get; set; }
 
         [Inject]
         protected SearchService SearchService { get; set; }
@@ -31,6 +33,9 @@ namespace BLAZAM.Gui.UI
         [Inject]
         protected IActiveDirectoryContextFactory DirectoryFactory { get; set; }
 
+        [Inject]
+        protected LockedOutUserMonitor LockedOutUserMonitor { get; set; }
+
         protected IActiveDirectoryContext Directory { get; set; }
 
 
@@ -48,7 +53,7 @@ namespace BLAZAM.Gui.UI
 
 
         [Inject]
-        protected AuditLogger AuditLogger { get; set; }
+        protected WebUserAuditLogger AuditLogger { get; set; }
 
         [Inject]
         protected IChatService Chat { get; set; }

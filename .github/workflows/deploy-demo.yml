@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: Demo
     permissions: write-all
 
     steps:
@@ -24,33 +24,21 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
+     
+
+      - name: Shutdown Demo Website
+        shell: pwsh
+        run: |
+          New-Item -Path C:\inetpub\wwwroot -Name "app_offline.htm" -ItemType "file"
+
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp BLAZAM/BLAZAM.csproj
+        run: dotnet publish -c Release -o C:\inetpub\wwwroot BLAZAM/BLAZAM.csproj
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+      - name: Restart Demo Website
+        shell: pwsh
+        run: |
+          Remove-Item -Path C:\inetpub\wwwroot\app_offline.htm
 
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+     
 
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: .net-app
-
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'blazam'
-          slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_14739430F7CB4F058F14E4E859883DDC }}
-          package: .
+ 

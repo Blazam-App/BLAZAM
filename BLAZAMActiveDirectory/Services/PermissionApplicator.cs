@@ -46,13 +46,13 @@ namespace BLAZAM.ActiveDirectory.Services
                     if (!sid.IsNullOrEmpty() && sid.StartsWith('S'))
                     {
                         var adObj = _directory.FindEntryBySID(sid.ToSidByteArray());
-                        if (adObj != null && adObj is IADUser adUser)
+                        if (adObj is IADUser adUser)
                         {
                             LoadPermissions(userState, adUser);
-                            var actorSid = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Actor)).Value;
-                            var userSid = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value;
+                            var actorSid = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Actor))?.Value;
+                            var userSid = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid))?.Value;
                             string? impersonatorSid = null;
-                            if (!actorSid.Equals(userSid))
+                            if (actorSid != null && userSid != null && !actorSid.Equals(userSid))
                             {
                                 impersonatorSid = actorSid;
                             }

@@ -135,6 +135,7 @@ namespace BLAZAM.Database.Models
                         case "objectSID":
                         case "samaccountname":
                         case "site":
+                        case "groupType":
                             return true;
                     }
                     break;

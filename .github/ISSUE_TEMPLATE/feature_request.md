@@ -1,9 +1,10 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Suggest an idea for Blazam
 title: ''
-labels: ''
-assignees: ''
+labels: 'enhancement'
+type: 'Feature'
+assignees: 'jacobsen9026'
 
 ---
 

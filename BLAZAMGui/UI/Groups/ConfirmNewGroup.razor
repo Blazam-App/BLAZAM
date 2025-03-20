@@ -1,0 +1,79 @@
+@inherits AppComponentBase
+@inject NotificationGenerationService NotificationGenerationService
+
+<AppPageTitle>@AppLocalization["Confirm Group Creation"]</AppPageTitle>
+
+@if (Group != null)
+{
+    <MudCard>
+        @Group.ADSPath
+
+    </MudCard>
+    <MudButton Disabled=@disableCreateGroupButton Color=Color.Success OnClick="CommitChanges">
+        @AppLocalization[Lang.Create]
+    </MudButton>
+}
+@code {
+
+#nullable disable warnings
+
+    private bool disableCreateGroupButton = false;
+
+    [Parameter]
+    public EventCallback<IADGroup> Confirmed { get; set; }
+
+    [Parameter]
+    public IADGroup Group { get; set; }
+
+    async Task CommitChanges()
+    {
+        if (await MessageService.Confirm("Are you sure you want to create this group?", "Create group"))
+        {
+            var assignTo = Group.MembersToAdd;
+            disableCreateGroupButton = true;
+            await InvokeAsync(StateHasChanged);
+            var createGroupJob = new Job(AppLocalization[Lang.Create_User]);
+            createGroupJob.StopOnFailedStep = true;
+            createGroupJob.ShowJobDetailsDialog(MessageService);
+            var result = await Group.CommitChangesAsync(createGroupJob);
+
+            disableCreateGroupButton = false;
+            await InvokeAsync(StateHasChanged);
+            if (result.FailedSteps.Count == 0)
+            {
+                foreach (var assignment in assignTo)
+                {
+                    await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
+                    await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
+                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                    {
+                        await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
+
+                    }
+                    else
+                    {
+                        _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
+
+                    }
+                }
+
+                Group = (IADGroup)Directory.GetDirectoryEntryByDN(Group.DN);
+
+                SnackBarService.Success(AppLocalization["Group created"]);
+                await AuditLogger.Group.Created(Group);
+                if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                {
+                    await NotificationGenerationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
+
+                }
+                else
+                {
+                    _= NotificationGenerationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
+
+                }
+                await Confirmed.InvokeAsync(Group);
+            }
+
+        }
+    }
+}

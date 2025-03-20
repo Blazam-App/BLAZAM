@@ -12,7 +12,10 @@ namespace BLAZAM.Helpers
 
      
 
-
+        public static bool IsAdminOrDemo(this IApplicationUserState state)
+        {
+            return state.Username?.Equals("admin",StringComparison.InvariantCultureIgnoreCase)==true || state.Username?.Equals("demo", StringComparison.InvariantCultureIgnoreCase) == true;
+        }
         public static void SlideCookieExpiration(this HttpContext httpContext, IApplicationUserState? userState = null)
         {
 

@@ -13,7 +13,7 @@ namespace BLAZAM.Database.Models.Permissions
 
         public int CompareTo(object? obj)
         {
-            if (obj != null && obj is PermissionDelegate pl)
+            if (obj is PermissionDelegate pl)
                 return DelegateSid.ToSidString().CompareTo(pl.DelegateSid.ToSidString());
             return 0;
         }

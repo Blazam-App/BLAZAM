@@ -20,36 +20,12 @@ namespace BLAZAM.Services.Background
             {
                 case DirectoryConnectionStatus.OK:
                     Status = ServiceConnectionState.Up;
-
                     break;
-                //TODO Separate Oops logic from razor page
-
-                //case DirectoryConnectionStatus.BadCredentials:
-                //    //Oops.ErrorMessage = "Bad Credentials!";
-                //    goto default;
-                //case DirectoryConnectionStatus.BadConfiguration:
-                //    //Oops.ErrorMessage = "Bad Active Directory Configuration!";
-                //    goto default;
-                //case DirectoryConnectionStatus.EncryptionError:
-                //    //Oops.ErrorMessage = "Encryption Error";
-                //    goto default;
-                //case DirectoryConnectionStatus.ConnectionDown:
-                //    //Oops.ErrorMessage = "Active Directory server connection is down.";
-                //    goto default;
-
-                //case DirectoryConnectionStatus.ServerDown:
-                //   // Oops.ErrorMessage = "Directory Server appears down";
-                //    goto default;
-                //case DirectoryConnectionStatus.UnreachableConfiguration:
-                //    //Oops.ErrorMessage = "Database is corrupt, or installation was incomplete!";
-                //    goto default;
                 case DirectoryConnectionStatus.Connecting:
                     Status = ServiceConnectionState.Connecting;
                     break;
                 default:
-
                     Status = ServiceConnectionState.Down;
-
                     break;
             }
         }

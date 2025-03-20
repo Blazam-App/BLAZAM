@@ -9,6 +9,11 @@ namespace BLAZAM.Database.Models
         Block,
         Bypass
     }
+    public enum MFAType
+    {
+        CiscoDuo,
+        GoogleAuthenticator
+    }
     public class AuthenticationSettings : AppDbSetBase
     {
         /// <summary>
@@ -16,7 +21,7 @@ namespace BLAZAM.Database.Models
         /// </summary>
         public int? SessionTimeout { get; set; } = 15;
         [Required]
-        [ValidAdminPassword]
+        [ValidAdminPasswordAttribute]
         public string? AdminPassword { get; set; }
         [NotMapped]
         [Required]
@@ -35,5 +40,18 @@ namespace BLAZAM.Database.Models
         /// If DUO is enabled this setting has no effect.
         /// </remarks>
         public bool RequireMFA { get; set; }
+        public MFAType MFAType { get; set; }
+
+        [NotMapped]
+        public bool DuoSettingsValid
+        {
+            get
+            {
+                return DuoEnabled &&
+                    DuoClientSecret != null &&
+                    DuoClientId != null &&
+                    DuoApiHost != null;
+            }
+        }
     }
 }

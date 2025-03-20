@@ -13,38 +13,38 @@
         </SettingsField>
         @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
         {
-            <SettingsField Label="@AppLocalization["Server"]">
-                <MudTextField Disabled=true Label="@AppLocalization["Server"]" Value=@("Private") />
+            <SettingsField Label="@AppLocalization[Lang.Server]">
+                <MudTextField Disabled=true Label="@AppLocalization[Lang.Server]" Value=@("Private") />
             </SettingsField>
         }
         else
         {
-            <SettingsField Label="@AppLocalization["Server"]">
-                <MudTextField Disabled=true Label="@AppLocalization["Server"]" Value="@Context?.ConnectionString?.ServerAddress" />
+            <SettingsField Label="@AppLocalization[Lang.Server]">
+                <MudTextField Disabled=true Label="@AppLocalization[Lang.Server]" Value="@Context?.ConnectionString?.ServerAddress" />
             </SettingsField>
         }
         @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
         {
-            <SettingsField Label="@AppLocalization["Port"]">
-                <MudTextField Disabled=true Label="@AppLocalization["Port"]" Value=@("Private") />
+            <SettingsField Label="@AppLocalization[Lang.Port]">
+                <MudTextField Disabled=true Label="@AppLocalization[Lang.Port]" Value=@("Private") />
             </SettingsField>
         }
         else
         {
-            <SettingsField Label="@AppLocalization["Port"]">
-                <MudTextField Disabled=true Label="@AppLocalization["Port"]" Value="@Context?.ConnectionString?.ServerPort" />
+            <SettingsField Label="@AppLocalization[Lang.Port]">
+                <MudTextField Disabled=true Label="@AppLocalization[Lang.Port]" Value="@Context?.ConnectionString?.ServerPort" />
             </SettingsField>
         }
         @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
         {
-            <SettingsField Label="@AppLocalization["Database"]">
-                <MudTextField Disabled=true Label="@AppLocalization["Database"]" Value=@("Private") />
+            <SettingsField Label="@AppLocalization[Lang.Database]">
+                <MudTextField Disabled=true Label="@AppLocalization[Lang.Database]" Value=@("Private") />
             </SettingsField>
         }
         else
         {
-            <SettingsField Label="@AppLocalization["Database"]">
-                <MudTextField Disabled=true Label="@AppLocalization["Database"]" Value="@Context?.ConnectionString?.Database" />
+            <SettingsField Label="@AppLocalization[Lang.Database]">
+                <MudTextField Disabled=true Label="@AppLocalization[Lang.Database]" Value="@Context?.ConnectionString?.Database" />
             </SettingsField>
         }
         <SettingsField Label="@AppLocalization["Export Database"]">

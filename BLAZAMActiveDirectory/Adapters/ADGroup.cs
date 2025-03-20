@@ -6,9 +6,97 @@ using BLAZAM.Jobs;
 namespace BLAZAM.ActiveDirectory.Adapters
 {
 
-
+    public enum GroupScope
+    {
+        Universal,
+        Global,
+        DomainLocal
+    }
     public class ADGroup : GroupableDirectoryAdapter, IADGroup
     {
+        protected const int ADS_GROUP_TYPE_GLOBAL_GROUP = 0x2;
+        protected const int ADS_GROUP_TYPE_DOMAIN_LOCAL_GROUP = 0x4;
+        protected const int ADS_GROUP_TYPE_UNIVERSAL_GROUP = 0x8;
+        protected const int ADS_GROUP_TYPE_SECURITY_ENABLED = unchecked((int)0x80000000);
+
+        public GroupScope Scope
+        {
+            get
+            {
+                if (IsDomainLocalGroup) return GroupScope.DomainLocal;
+                if (IsGlobalGroup) return GroupScope.Global;
+                return GroupScope.Universal;
+            }
+            set
+            {
+                switch (value)
+                {
+                    case GroupScope.Universal:
+
+                        GroupType = GroupType | ADS_GROUP_TYPE_UNIVERSAL_GROUP;
+                        GroupType = GroupType & ~ADS_GROUP_TYPE_GLOBAL_GROUP;
+                        GroupType = GroupType & ~ADS_GROUP_TYPE_DOMAIN_LOCAL_GROUP;
+
+                        break;
+                    case GroupScope.Global:
+                        GroupType = GroupType | ADS_GROUP_TYPE_GLOBAL_GROUP;
+                        GroupType = GroupType & ~ADS_GROUP_TYPE_UNIVERSAL_GROUP;
+                        GroupType = GroupType & ~ADS_GROUP_TYPE_DOMAIN_LOCAL_GROUP;
+                        break;
+                    case GroupScope.DomainLocal:
+                        GroupType = GroupType | ADS_GROUP_TYPE_DOMAIN_LOCAL_GROUP;
+                        GroupType = GroupType & ~ADS_GROUP_TYPE_GLOBAL_GROUP;
+                        GroupType = GroupType & ~ADS_GROUP_TYPE_UNIVERSAL_GROUP;
+                        break;
+
+                }
+            }
+        }
+
+        public bool IsSecurityGroup
+        {
+            get
+            {
+                return (GroupType & ADS_GROUP_TYPE_SECURITY_ENABLED) != 0;
+            }
+            set {
+                if (value) {
+                    GroupType = GroupType | ADS_GROUP_TYPE_SECURITY_ENABLED;
+                }
+                else
+                {
+                    GroupType = GroupType & ~ADS_GROUP_TYPE_SECURITY_ENABLED;
+
+                }
+            }
+        }
+        public bool IsGlobalGroup
+        {
+            get
+            {
+                return (GroupType & ADS_GROUP_TYPE_GLOBAL_GROUP) != 0;
+            }
+           
+        }
+        public bool IsDomainLocalGroup
+        {
+            get
+            {
+                return (GroupType & ADS_GROUP_TYPE_DOMAIN_LOCAL_GROUP) != 0;
+            }
+           
+        }
+        public bool IsUniversalGroup
+        {
+            get
+            {
+                return (GroupType & ADS_GROUP_TYPE_UNIVERSAL_GROUP) != 0;
+
+            }
+         
+        }
+
+
         public List<GroupMembership> MembersToRemove { get; private set; } = new List<GroupMembership>();
         public List<GroupMembership> MembersToAdd { get; private set; } = new List<GroupMembership>();
         public override string? DisplayName { get => base.CanonicalName; set => base.CanonicalName = value; }
@@ -59,11 +147,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public override IJob CommitChanges(IJob? dcr = null)
+        public override IJob CommitChanges(IJob? commitJob = null)
         {
             if (MembersToAdd.Count > 0)
             {
-                CommitSteps.Add(new JobStep("Add group members", (JobStep? step) =>
+                PostCommitSteps.Add(new JobStep("Add group members", (JobStep? step) =>
                 {
                     MembersToAdd.ForEach(g =>
                     {
@@ -77,7 +165,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             if (MembersToRemove.Count > 0)
             {
-                CommitSteps.Add(new JobStep("Remove group members", (JobStep? step) =>
+                PostCommitSteps.Add(new JobStep("Remove group members", (JobStep? step) =>
                 {
                     MembersToRemove.ForEach(g =>
                     {
@@ -88,9 +176,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
 
-            dcr = base.CommitChanges(dcr);
+            commitJob = base.CommitChanges(commitJob);
 
-            return dcr;
+            return commitJob;
         }
 
         public override void DiscardChanges()
@@ -169,7 +257,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return temp;
             }
         }
+        protected int GroupType
+        {
+            get
+            {
+                var uacRaw = Convert.ToInt32(GetProperty<object>("groupType"));
 
+                return uacRaw;
+            }
+            set
+            {
+                SetProperty("groupType", value);
+            }
+        }
         /// <summary>
         /// Gathers group and sub-group members in realtime
         /// </summary>
@@ -244,7 +344,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public int CompareTo(object? obj)
         {
-            if (obj != null && obj is ADGroup g)
+            if (obj is ADGroup g)
                 return CanonicalName.CompareTo(g.CanonicalName);
             return 0;
         }

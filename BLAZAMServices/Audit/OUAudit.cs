@@ -7,13 +7,13 @@ namespace BLAZAM.Services.Audit
 {
     public class OUAudit : DirectoryAudit
     {
-        public OUAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime, IApplicationUserStateService userStateService) : base(factory, jSRuntime, userStateService)
+        public OUAudit(IAppDatabaseFactory factory, IApplicationUserStateService? userStateService = null, IJSRuntime? jSRuntime = null) : base(factory, userStateService, jSRuntime)
         {
         }
 
         public async Task<bool> Moved(IDirectoryEntryAdapter movedOU, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
-            Analytics.ObjectMoved(ActiveDirectoryObjectType.OU);
+            Analytics?.ObjectMoved(ActiveDirectoryObjectType.OU);
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.OU_Moved,
             movedOU,
@@ -23,7 +23,7 @@ namespace BLAZAM.Services.Audit
         }
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
         {
-            Analytics.ObjectDeleted(ActiveDirectoryObjectType.OU);
+            Analytics?.ObjectDeleted(ActiveDirectoryObjectType.OU);
             return await Log(t => t.DirectoryEntryAuditLogs,
              AuditActions.OU_Deleted, deletedEntry);
 
@@ -37,7 +37,7 @@ namespace BLAZAM.Services.Audit
         public override async Task<bool> Created(IDirectoryEntryAdapter newOU)
 
         {
-            Analytics.ObjectCreated(ActiveDirectoryObjectType.OU);
+            Analytics?.ObjectCreated(ActiveDirectoryObjectType.OU);
 
             var newValues = "";
             foreach (var c in newOU.NewEntryProperties)

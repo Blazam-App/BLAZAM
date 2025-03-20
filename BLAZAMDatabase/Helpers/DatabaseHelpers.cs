@@ -19,59 +19,61 @@ namespace BLAZAM.Helpers
         {
             return Enum.GetValues(typeof(ActiveDirectoryObjectAction)).Cast<ActiveDirectoryObjectAction>().ToList();
         }
-
+        public static bool IsAdminOrDemo(this AppUser state)
+        {
+            return state.Username?.Equals("admin", StringComparison.InvariantCultureIgnoreCase) == true || state.Username?.Equals("demo", StringComparison.InvariantCultureIgnoreCase) == true;
+        }
         public static bool IsActionAppropriateForObject(this ActiveDirectoryObjectAction action, ActiveDirectoryObjectType type)
         {
 
-            var Name = action.ToString();
+            //var Name = action.ToString();
             switch (type)
             {
                 case ActiveDirectoryObjectType.User:
                 case ActiveDirectoryObjectType.Computer:
-                    switch (Name)
+                    switch (action)
                     {
-                        case "Lock":
-                        case "Unlock":
-                        case "Move":
-                        case "Delete":
-                        case "Create":
-                        case "Enable":
-                        case "Disable":
-                        case "Rename":
-                        case "SetPassword":
+                        case ActiveDirectoryObjectAction.Unlock:
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Enable:
+                        case ActiveDirectoryObjectAction.Disable:
+                        case ActiveDirectoryObjectAction.Rename:
+                        case ActiveDirectoryObjectAction.SetPassword:
                             return true;
                         default:
                             return false;
                     }
                 case ActiveDirectoryObjectType.Group:
-                    switch (Name)
+                    switch (action)
                     {
-                        case "Move":
-                        case "Delete":
-                        case "Create":
-                        case "Unassign":
-                        case "Rename":
-                        case "Assign":
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Unassign:
+                        case ActiveDirectoryObjectAction.Assign:
+                        case ActiveDirectoryObjectAction.Rename:
                             return true;
                         default:
                             return false;
                     }
                 case ActiveDirectoryObjectType.Printer:
                 case ActiveDirectoryObjectType.OU:
-                    switch (Name)
+                    switch (action)
                     {
-                        case "Move":
-                        case "Delete":
-                        case "Rename":
-                        case "Create":
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Rename:
                             return true;
                         default:
                             return false;
                     }
                 case ActiveDirectoryObjectType.BitLocker:
-                    switch (Name)
+                    switch (action)
                     {
-                        case "Delete":
+                        case ActiveDirectoryObjectAction.Delete:
                             return true;
                         default:
                             return false;

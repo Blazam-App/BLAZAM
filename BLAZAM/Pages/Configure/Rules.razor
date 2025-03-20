@@ -1,0 +1,13 @@
+﻿@page "/rules"
+@inherits AppComponentBase
+@attribute [Authorize(Roles = UserRoles.SuperAdmin)]
+<AppPageTitle>@AppLocalization[Lang.Rules]</AppPageTitle>
+<SetHeader>
+
+    </SetHeader>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Rules] <AppDocumentationButton Page="/admin/rules" /></MudText>
+
+<MudText>Rules is a concept for automation within Blazam. It would allow automated actions based on filtered event triggers.</MudText>
+@code {
+
+}

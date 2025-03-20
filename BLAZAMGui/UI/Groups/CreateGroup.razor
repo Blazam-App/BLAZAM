@@ -1,0 +1,125 @@
+﻿@inherits TabbedAppComponentBase
+@attribute [Authorize]
+<AppPageTitle>@AppLocalization["Create Group"]</AppPageTitle>
+
+<MudTabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="selectedStep">
+    <MudTabPanel>
+        <ChildContent>
+            <MudText>
+
+
+                <OUTreeView Label=@AppLocalization["Parent Organizational Unit"]
+                            SelectedEntryChanged="OUSelected">
+                </OUTreeView>
+
+
+
+
+
+                <MudTextField Immediate=true Label=@AppLocalization[Lang.Group_Name] @bind-Value=@newGroupName />
+
+                <MudTextField Immediate=true Label=@AppLocalization[Lang.Description] @bind-Value=@newDescription />
+
+<MudTextField Immediate=true Label=@AppLocalization[Lang.Email] @bind-Value=@newEmail />
+
+
+
+                <MudButton Disabled=@(parentOU==null || newGroupName.IsNullOrEmpty())
+                           Color="Color.Primary"
+                           OnClick="CreateNewGroup">
+                    @AppLocalization[Lang.Next]
+                </MudButton>
+            </MudText>
+        </ChildContent>
+        <TabContent>
+            @AppLocalization[Lang.Create]
+        </TabContent>
+    </MudTabPanel>
+    <MudTabPanel Disabled=@(newGroup==null || newGroupName.IsNullOrEmpty())>
+        <ChildContent>
+            <MudText>
+
+                <GroupMembersDataGrid Group="newGroup" />
+
+
+
+
+                <MudButton Color="Color.Primary" OnClick="@(()=>{selectedStep=2;})">
+                    @AppLocalization[Lang.Next]
+                </MudButton>
+            </MudText>
+        </ChildContent>
+        <TabContent>
+            @AppLocalization[Lang.Assign]
+        </TabContent>
+    </MudTabPanel>
+    <MudTabPanel Disabled=@(newGroup==null || newGroupName.IsNullOrEmpty())>
+        <ChildContent>
+            <MudText>
+                <ConfirmNewGroup Group="@newGroup" />
+
+            </MudText>
+        </ChildContent>
+        <TabContent>
+            @AppLocalization[Lang.Confirm]
+        </TabContent>
+    </MudTabPanel>
+</MudTabs>
+
+
+
+
+
+@code {
+
+
+    int selectedStep;
+
+
+
+
+
+
+    string newGroupName = "";
+    string newDescription = "";
+    string newEmail = "";
+    IADOrganizationalUnit? parentOU;
+    IADGroup? newGroup;
+
+    async void OUSelected(IDirectoryEntryAdapter entry)
+    {
+        if (entry is IADOrganizationalUnit ou)
+        {
+            if (parentOU == null)
+            {
+                parentOU = ou;
+                return;
+            }
+            parentOU = ou;
+
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    void CreateNewGroup()
+    {
+        if (parentOU == null) return;
+        LoadingData = true;
+        newGroup = parentOU.CreateGroup(newGroupName);
+
+        if(!newDescription.IsNullOrEmpty()){
+            newGroup.Description = newDescription;
+        }
+        if(!newEmail.IsNullOrEmpty()){
+            newGroup.Email = newEmail;
+        }
+
+
+        selectedStep = 1;
+
+
+        LoadingData = true;
+
+    }
+}

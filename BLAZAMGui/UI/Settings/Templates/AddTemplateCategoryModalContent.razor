@@ -14,7 +14,7 @@
     {
         base.OnInitialized();
         Modal.OnYes = Submit;
-        Modal.YesText = AppLocalization["Add"];
+        Modal.YesText = AppLocalization[Lang.Add];
         _=Modal.RefreshView();
     }
     private async Task Submit()

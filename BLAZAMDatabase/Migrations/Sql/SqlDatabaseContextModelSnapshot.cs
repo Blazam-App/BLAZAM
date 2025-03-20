@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.Sql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "8.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -403,6 +403,13 @@ namespace BLAZAM.Common.Migrations.Sql
                             DisplayName = "Logon Hours",
                             FieldName = "logonHours",
                             FieldType = 2
+                        },
+                        new
+                        {
+                            Id = 38,
+                            DisplayName = "Group Type and Scope",
+                            FieldName = "groupType",
+                            FieldType = 2
                         });
                 });
 
@@ -544,6 +551,55 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.HasKey("Id");
 
                     b.ToTable("DirectoryEntryAuditLogs");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.EmailAuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Bcc")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Cc")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("From")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HtmlBody")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastAttemptTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MessageGuid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ReadTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Retries")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ServerResponse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("To")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.LogonAuditLog", b =>
@@ -750,6 +806,9 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<int>("DuoUnreachableBehavior")
                         .HasColumnType("int");
 
+                    b.Property<int>("MFAType")
+                        .HasColumnType("int");
+
                     b.Property<bool>("RequireMFA")
                         .HasColumnType("bit");
 
@@ -771,6 +830,7 @@ namespace BLAZAM.Common.Migrations.Sql
                             AdminPassword = "password",
                             DuoEnabled = false,
                             DuoUnreachableBehavior = 0,
+                            MFAType = 0,
                             RequireMFA = false,
                             SessionTimeout = 15
                         });
@@ -929,6 +989,32 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.HasKey("Id");
 
                     b.ToTable("EmailTemplates");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.FailedADLogonEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("Sid")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<DateTime?>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("WorkstationIp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WorkstationName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FailedADLogonEvents");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.GenericSidList", b =>

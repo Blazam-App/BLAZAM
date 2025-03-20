@@ -1,6 +1,8 @@
 ﻿
 using BLAZAM.Common.Data.Validators;
+using BLAZAM.Helpers;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Database.Models
 {
@@ -8,7 +10,7 @@ namespace BLAZAM.Database.Models
     {
         [Required(ErrorMessage = "The base DN is required.")]
         public string ApplicationBaseDN { get; set; }
-        [ValidFqdn]
+        [ValidFqdnAttribute]
         public string FQDN { get; set; }
         [Required(ErrorMessage = "The server address is required.")]
         public string ServerAddress { get; set; }
@@ -20,6 +22,17 @@ namespace BLAZAM.Database.Models
         public string Password { get; set; }
         public bool UseTLS { get; set; } = false;
 
-
+        [NotMapped]
+        public bool IsValid
+        {
+            get
+            {
+                return (!FQDN.IsNullOrEmpty()
+                    && !Username.IsNullOrEmpty()
+                    && !Password.IsNullOrEmpty()
+                    && !ServerAddress.IsNullOrEmpty()
+                    && ServerPort != 0);
+            }
+        }
     }
 }

@@ -7,10 +7,10 @@ namespace BLAZAM.Services.Audit
 {
     public class SystemAudit : BaseAudit
     {
-
-        public SystemAudit(IAppDatabaseFactory factory, IJSRuntime jSRuntime) : base(factory, jSRuntime)
+        public SystemAudit(IAppDatabaseFactory factory, IJSRuntime? jSRuntime = null) : base(factory, jSRuntime)
         {
         }
+
         public async Task<bool> LogMessage(string message)
         {
 

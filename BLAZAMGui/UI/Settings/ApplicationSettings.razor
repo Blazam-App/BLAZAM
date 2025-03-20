@@ -5,15 +5,17 @@
 
 
 <MudText Typo="Typo.h4">@AppLocalization["Application Settings"] <AppDocumentationButton Page="/admin/settings/application" /></MudText>
-<MudForm @ref=Form @bind-IsValid=IsValid Model="settings">
+<MudForm @ref=Form
+         @bind-IsValid=IsValid
+         Model="settings">
     <MudStack Spacing="5">
 
-        <SettingsField Label="@AppLocalization["Application Name"]">
+        <SettingsField Label="@AppLocalization[Lang.Application_Name]">
 
             <MudTextField Class="mt-0"
                           For=@(()=> settings.AppName)
                           Immediate="true"
-                          Label=@AppLocalization["Application Name"]
+                          Label=@AppLocalization[Lang.Application_Name]
                           @bind-Value="@settings.AppName" />
 
         </SettingsField>
@@ -32,7 +34,7 @@
 
         <SettingsField Label="@AppLocalization["Force Https"]">
 
-            <MudSwitch Label="@AppLocalization["Enabled"]"
+            <MudSwitch Label="@AppLocalization[Lang.Enabled]"
                        Color="Color.Success"
                        UncheckedColor="Color.Error"
                        @bind-Value="@settings.ForceHTTPS" />
@@ -62,7 +64,7 @@
 
                     <Base64Image Width=100 Data="@settings.AppIcon" />
 
-                    <AppCloseButton Tooltip=@AppLocalization["Remove"] OnClick="@(()=>{settings.AppIcon=null;})" />
+                    <AppCloseButton Tooltip=@AppLocalization[Lang.Remove] OnClick="@(()=>{settings.AppIcon=null;})" />
 
                 }
             </MudContainer>
@@ -86,7 +88,6 @@
             <MudTextField Label="@AppLocalization["Website FQDN"]"
                           For=@(()=> settings.AppFQDN)
                           Immediate="true"
-                          ErrorText="Must be a valid domain name"
                           HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)"
                           Placeholder="Enter the web address"
                           @bind-Value="@settings.AppFQDN" />
@@ -100,7 +101,7 @@
                            Variant="Variant.Filled"
                            Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.CloudUpload">
-                    @AppLocalization["Upload Certificate"]
+                    @AppLocalization[Lang.Upload_Certificate]
                 </MudButton>
 
             </SettingsField>
@@ -115,7 +116,7 @@
                        OnClick="Save"
                        ButtonType="ButtonType.Submit"
                        Color="Color.Success">
-                @AppLocalization["Save Changes"]
+                @AppLocalization[Lang.Save_Changes]
             </MudButton>
         </SettingsField>
 

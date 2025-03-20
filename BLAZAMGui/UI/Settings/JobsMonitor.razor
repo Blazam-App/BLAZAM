@@ -10,12 +10,12 @@
                  RowClick="ShowJobDetails"
                  RowClass="cursor-pointer">
         <Columns>
-            <PropertyColumn Title="@AppLocalization["Name"]" Property="x=>x.Name" />
-            <PropertyColumn Title="@AppLocalization["User"]" Property="x=>x.User" />
-            <PropertyColumn Title="@AppLocalization["Start Time"]" Property="x=>x.StartTime" />
-            <PropertyColumn Title="@AppLocalization["Steps"]" Property="x=>x.Steps.Count" />
-            <PropertyColumn Title="@AppLocalization["Progress"]" Property="x=>x.Progress" />
-                <TemplateColumn Title="@AppLocalization["Result"]">
+            <PropertyColumn Title="@AppLocalization[Lang.Name]" Property="x=>x.Name" />
+            <PropertyColumn Title="@AppLocalization[Lang.User]" Property="x=>x.User" />
+            <PropertyColumn Title="@AppLocalization[Lang.Start_Time]" Property="x=>x.StartTime" />
+            <PropertyColumn Title="@AppLocalization[Lang.Steps]" Property="x=>x.Steps.Count" />
+            <PropertyColumn Title="@AppLocalization[Lang.Progress]" Property="x=>x.Progress" />
+                <TemplateColumn Title="@AppLocalization[Lang.Result]">
                     <CellTemplate>
                         <MudElement>@(context.Item.Result==JobResult.Passed?AppLocalization["No errors"]:context.Item.Result.ToString())</MudElement>
                     </CellTemplate>
@@ -26,7 +26,6 @@
 }
 
 @code {
-    IJob _selectedJob;
     protected override void OnInitialized()
     {
         base.OnInitialized();
