@@ -45,7 +45,6 @@
 </MudDataGrid>
 
 
-<LoadingData Loading=LoadingData />
 @code {
     List<IDirectoryEntryAdapter> deletedObjects
     {
@@ -54,7 +53,7 @@
     }
    
 
-    protected override async Task RefreshData()
+    protected override async Task RefreshDataAsync()
     {
         LoadingData = true;
         var search = new ADSearch(Directory) { SearchRoot = Directory.GetDeleteObjectsEntry() };
