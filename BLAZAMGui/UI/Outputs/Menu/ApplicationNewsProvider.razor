@@ -111,16 +111,19 @@ else
     {
         get
         {
-            if (latestUpdate == null) return null;
+            if (!AutoUpdateService.IsUpdateAvailable || UpdateService.NewestAvailableUpdate==null) {
+                return null;
+            }
             return new NewsItem
                 {
                     Title = AppLocalization["Update Available"],
-                    Body = AppLocalization[Lang.Version] + " " + latestUpdate.Version,
+                    Body = AppLocalization[Lang.Version] + " " + UpdateService.NewestAvailableUpdate?.Version +
+                    "<br/> ",
                     Link = "/settings/update",
                     Published = true,
                     UpdatedAt = DateTime.MinValue,
                     CreatedAt = DateTime.MinValue,
-                    Id = ulong.Parse(latestUpdate.Version.ToString().Replace(".", ""))
+                    Id = ulong.Parse(UpdateService.NewestAvailableUpdate.Version.ToString().Replace(".", ""))
                 };
         }
     }
@@ -173,7 +176,6 @@ else
 
         }
         LoadingData = false;
-       // InvokeAsync(StateHasChanged);
 
     }
     private void RefreshUnreadItems()
