@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLAZAM.Database.Models
+namespace BLAZAM.Database.Models.Rules
 {
-    public class AutomationRule: RecoverableAppDbSetBase
+    public class AutomationRule : RecoverableAppDbSetBase
     {
         public string Name { get; set; }
         public bool Enabled { get; set; }

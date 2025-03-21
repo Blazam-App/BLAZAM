@@ -1,16 +1,18 @@
-﻿namespace BLAZAM.Database.Models
+﻿namespace BLAZAM.Database.Models.Rules
 {
     public enum RuleOperator
     {
         Equals,
         Contains,
         StartsWith,
-        PreviousTimeFrame,
+        EndsWith,
+        HistoricalTimeFrame,
         FutureTimeFrame,
         BeforeNow,
+        AfterNow
 
     }
-    public class AutomationRuleFilter:RecoverableAppDbSetBase
+    public class AutomationRuleFilter : RecoverableAppDbSetBase
     {
         public ActiveDirectoryField Field { get; set; }
         public object? Value { get; set; }
