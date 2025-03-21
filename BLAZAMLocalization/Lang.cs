@@ -1,4 +1,5 @@
 ﻿using System.Security;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.Localization
 {
@@ -250,12 +251,15 @@ namespace BLAZAM.Localization
         public static readonly string Base_DN = "Base DN";
         public static readonly string User_Activity = "User Activity";
         public static readonly string Memory = "Memory";
+        public static readonly string Rename_Computer = "Rename Computer";
         public static readonly string AD_Connections = "AD Connections";
         public static readonly string DB_Connections = "DB Connections";
+        public static readonly string You_have_unsaved_changes = "You have unsaved changes";
         public static readonly string Active_Directory_Settings = "Active Directory Settings";
         public static readonly string Copy_Template = "Copy Template";
         public static readonly string New_Template = "New Template";
         public static readonly string CPU = "CPU";
+        public static readonly string Locked_Out_Users = "Locked Out Users";
         public static readonly string Delegate = "Delegate";
         public static readonly string Used = "Used";
         public static readonly string Delay_in_seconds = "Delay in seconds";
@@ -297,6 +301,34 @@ namespace BLAZAM.Localization
         public static readonly string Super_User = "Super User";
         public static readonly string No_File = "No File";
         public static readonly string Upload = "Upload";
+        public static readonly string enabled = "enabled";
+        public static readonly string Parent_Groups = "Parent Groups";
+        public static readonly string Group_Scope = "Group Scope";
+        public static readonly string Parent_Organizational_Unit = "Parent Organizational Unit";
+        public static readonly string Group_created = "Group created";
+        public static readonly string Confirm_Group_Creation = "Confirm Group Creation";
+        public static readonly string Will_be_added_to = "Will be added to...";
+        public static readonly string Already_a_member_of = "Already a member of...";
+        public static readonly string Copy_Memberships_From = "Copy Memberships From";
+        public static readonly string Account_Enabled = "Account Enabled";
+        public static readonly string disabled = "disabled";
+        public static readonly string Click_to_view_help_documentation = "Click to view help documentation";
+        public static readonly string Current_OU = "Current OU";
+        public static readonly string OU_created = "OU created";
+        public static readonly string Confirm_OU_Creation = "Confirm OU Creation";
+        public static readonly string Read_Notifications = "Read Notifications";
+        public static readonly string Create_Google_Authenticator_Token = "Create Google Authenticator Token";
+        public static readonly string Disable_Google_Authenticator = "Disable Google Authenticator";
+        public static readonly string locked_out = "locked out";
+        public static readonly string last_changed = "last changed";
+        public static readonly string password_changed = "password changed";
+        public static readonly string unlocked = "unlocked";
+        public static readonly string Remove_from_favorites = "Remove from favorites";
+        public static readonly string Add_to_favorites = "Add to favorites";
+        public static readonly string End_Edit = "End Edit";
+        public static readonly string No_user_are_locked_out = "No user are locked out";
+        public static readonly string Password_changed = "Password changed";
+        public static readonly string Computer_renamed = "Computer renamed";
         public static readonly string Location = "Location";
         public static readonly string Computer_is_locked_out = "Computer is locked out";
         public static readonly string Computer_is_disabled = "Computer is disabled";

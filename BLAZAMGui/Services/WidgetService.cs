@@ -25,7 +25,7 @@ namespace BLAZAM.Gui.Services
             if (applicationUser != null)
             {
                 if (applicationUser.IsSuperAdmin || applicationUser.CanUnlockUsers)
-                    widgets.Add(new LockedOutUsers() { WidgetType = DashboardWidgetType.LockedOutUsers, Title = AppLocalization["Locked Out Users"] });
+                    widgets.Add(new LockedOutUsers() { WidgetType = DashboardWidgetType.LockedOutUsers, Title = AppLocalization[Lang.Locked_Out_Users] });
                 if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers))
                 {
 

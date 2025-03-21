@@ -79,6 +79,33 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to create this group?.
+        /// </summary>
+        public static string Confirm_Group_Creation {
+            get {
+                return ResourceManager.GetString("Confirm_Group_Creation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to create this OU?.
+        /// </summary>
+        public static string Confirm_OU_Creation {
+            get {
+                return ResourceManager.GetString("Confirm_OU_Creation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to save the changes?.
+        /// </summary>
+        public static string Confirm_Save_Changes {
+            get {
+                return ResourceManager.GetString("Confirm_Save_Changes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} has been created.
         /// </summary>
         public static string Created {
@@ -102,6 +129,15 @@ namespace BLAZAM.Localization {
         public static string Delegate_Function {
             get {
                 return ResourceManager.GetString("Delegate_Function", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to disable Google Authenticator MFA?.
+        /// </summary>
+        public static string Delete_Auth_Token_Confirmation {
+            get {
+                return ResourceManager.GetString("Delete_Auth_Token_Confirmation", resourceCulture);
             }
         }
         
@@ -133,6 +169,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to That name already exists. Please choose a different name.
+        /// </summary>
+        public static string Duplicate_Name_Conflict {
+            get {
+                return ResourceManager.GetString("Duplicate_Name_Conflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not a valid certificate type..
         /// </summary>
         public static string Invalid_Cert_Type {
@@ -142,11 +187,65 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The group has more members you don&apos;t have access to.
+        /// </summary>
+        public static string Lacks_Group_Member_Read_Permission {
+            get {
+                return ResourceManager.GetString("Lacks_Group_Member_Read_Permission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have permission to remove this group member.
+        /// </summary>
+        public static string Lacks_Group_Member_Remove_Permission {
+            get {
+                return ResourceManager.GetString("Lacks_Group_Member_Remove_Permission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} mappings use this Access Level and will be deleted.
         /// </summary>
         public static string Mapping_Use_Access_Level {
             get {
                 return ResourceManager.GetString("Mapping_Use_Access_Level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to navigate away?.
+        /// </summary>
+        public static string Navigate_Away_Confirmation {
+            get {
+                return ResourceManager.GetString("Navigate_Away_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No more widgets to add.
+        /// </summary>
+        public static string No_More_Widgets {
+            get {
+                return ResourceManager.GetString("No_More_Widgets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generating a new authenticator token will invalidate the existing one!.
+        /// </summary>
+        public static string Overwrite_Auth_Token_Confirmation {
+            get {
+                return ResourceManager.GetString("Overwrite_Auth_Token_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rearrange dashboard widgets by dragging items to a new position.
+        /// </summary>
+        public static string Rearrange_Dashboard_Help {
+            get {
+                return ResourceManager.GetString("Rearrange_Dashboard_Help", resourceCulture);
             }
         }
         

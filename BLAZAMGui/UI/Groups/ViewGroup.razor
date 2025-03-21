@@ -103,7 +103,7 @@
                             </MudRadioGroup>
                         </MudStack>
                         <MudStack Row=true>
-                            <MudText Typo="Typo.subtitle2">@AppLocalization["Group Scope"]:</MudText>
+                            <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Group_Scope]:</MudText>
                             <MudSpacer />
                             <MudRadioGroup Disabled="@( !Group.CanEditField(ActiveDirectoryFields.GroupType))"
                                            @bind-Value="Group.IsSecurityGroup">
@@ -117,7 +117,7 @@
                 </Section>
             </MudItem>
             <MudItem xs="12" md="6">
-                <Section Style="min-height:200px;" Title=@AppLocalization["Parent Groups"]>
+                <Section Style="min-height:200px;" Title=@AppLocalization[Lang.Parent_Groups]>
                     <MemberOfList AssignToClicked=@AssignToModal.ShowAsync Model="Group" />
 
                 </Section>

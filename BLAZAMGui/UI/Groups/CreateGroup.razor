@@ -1,6 +1,6 @@
 ﻿@inherits TabbedAppComponentBase
 @attribute [Authorize]
-<AppPageTitle>@AppLocalization["Create Group"]</AppPageTitle>
+<AppPageTitle>@AppLocalization[Lang.Create_Group]</AppPageTitle>
 
 <MudTabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="selectedStep">
     <MudTabPanel>
@@ -8,7 +8,7 @@
             <MudText>
 
 
-                <OUTreeView Label=@AppLocalization["Parent Organizational Unit"]
+                <OUTreeView Label=@AppLocalization[Lang.Parent_Organizational_Unit]
                             SelectedEntryChanged="OUSelected">
                 </OUTreeView>
 

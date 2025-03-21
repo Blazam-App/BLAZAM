@@ -123,6 +123,15 @@
   <data name="Access_Level_Object_Missing_Read" xml:space="preserve">
     <value>Change {0} access to Read to set permissions</value>
   </data>
+  <data name="Confirm_Group_Creation" xml:space="preserve">
+    <value>Are you sure you want to create this group?</value>
+  </data>
+  <data name="Confirm_OU_Creation" xml:space="preserve">
+    <value>Are you sure you want to create this OU?</value>
+  </data>
+  <data name="Confirm_Save_Changes" xml:space="preserve">
+    <value>Are you sure you want to save the changes?</value>
+  </data>
   <data name="Created" xml:space="preserve">
     <value>{0} has been created</value>
   </data>
@@ -135,17 +144,41 @@
   <data name="Deleted" xml:space="preserve">
     <value>{0} has been deleted</value>
   </data>
+  <data name="Delete_Auth_Token_Confirmation" xml:space="preserve">
+    <value>Are you sure you want to disable Google Authenticator MFA?</value>
+  </data>
   <data name="Duplicate_Delegate" xml:space="preserve">
     <value>That delegate already exists.</value>
   </data>
   <data name="Duplicate_Deleted_Delegate" xml:space="preserve">
     <value>That delegate already exists. It has been deleted. Restore it from the trash.</value>
   </data>
+  <data name="Duplicate_Name_Conflict" xml:space="preserve">
+    <value>That name already exists. Please choose a different name</value>
+  </data>
   <data name="Invalid_Cert_Type" xml:space="preserve">
     <value>Not a valid certificate type.</value>
   </data>
+  <data name="Lacks_Group_Member_Read_Permission" xml:space="preserve">
+    <value>The group has more members you don't have access to</value>
+  </data>
+  <data name="Lacks_Group_Member_Remove_Permission" xml:space="preserve">
+    <value>You don't have permission to remove this group member</value>
+  </data>
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>{0} mappings use this Access Level and will be deleted</value>
+  </data>
+  <data name="Navigate_Away_Confirmation" xml:space="preserve">
+    <value>Are you sure you want to navigate away?</value>
+  </data>
+  <data name="No_More_Widgets" xml:space="preserve">
+    <value>No more widgets to add</value>
+  </data>
+  <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
+    <value>Generating a new authenticator token will invalidate the existing one!</value>
+  </data>
+  <data name="Rearrange_Dashboard_Help" xml:space="preserve">
+    <value>Rearrange dashboard widgets by dragging items to a new position</value>
   </data>
   <data name="Super_User_Definition" xml:space="preserve">
     <value>Will have complete and total acceess to the application if enabled</value>
