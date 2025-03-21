@@ -12,6 +12,7 @@ using BLAZAM.Services;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Duo;
+using BLAZAM.Services.Plugins;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using BLAZAM.Update.Services;
@@ -22,7 +23,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MudBlazor;
 using MudBlazor.Services;
-using NuGet.Protocol.Plugins;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
@@ -324,6 +324,9 @@ namespace BLAZAM.Server
             builder.Services.AddSingleton<ConnMonitor>();
 
 
+            builder.Services.AddSingleton<PluginManager>();
+
+
             //Provide notification publishing as a service
             builder.Services.AddSingleton<INotificationPublisher, NotificationPublisher>();
 
@@ -417,37 +420,35 @@ namespace BLAZAM.Server
         private static void InjectPluginServices(WebApplicationBuilder builder)
         {
             var pluginDir = Program.PluginDirectory;
-            
-            Parallel.ForEach(pluginDir.Files.Where(f=>f.Extension.Equals(".dll")), dll=>
+
+            Parallel.ForEach(pluginDir.Files.Where(f => f.Extension.Equals(".dll")), dll =>
             {
                 try
                 {
                     var loadContext = new PluginLoadContext(dll.FullPath);
-                    Assembly assembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(dll.FullPath)));
+                    Assembly pluginAssembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(dll.FullPath)));
                     //Assembly assembly = Assembly.LoadFrom(dll.FullPath);
                     // Get all types in the assembly that implement IPluginBase
-                    var pluginTypes = assembly.GetTypes()
+                    var pluginTypes = pluginAssembly.GetTypes()
                         .Where(type => typeof(IPluginBase).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
 
                     foreach (Type pluginType in pluginTypes)
                     {
                         try
                         {
-                            ApplicationInfo.loadedPlugins.Add(assembly);
-                            continue;
                             //Create an instance of the plugin
-                            //if (Activator.CreateInstance(pluginType) is IPluginBase pluginInstance)
-                            //{
-                            //    // Invoke the InjectServices method
-                            //    pluginInstance.InjectServices(builder);
-                            //    pluginInstance.Assembly = assembly;
-                            //    ApplicationInfo.loadedPlugins.Add(pluginInstance);
+                            if (Activator.CreateInstance(pluginType) is IPluginBase pluginInstance)
+                            {
+                                // Invoke the InjectServices method
+                                pluginInstance.InjectServices(builder);
+                                pluginInstance.Assembly = pluginAssembly;
+                                ApplicationInfo.loadedPlugins.Add(pluginAssembly, pluginInstance);
 
-                            //}
-                            //else
-                            //{
-                            //    Loggers.SystemLogger.Warning($"Warning: Could not create an instance of plugin type: {pluginType.FullName} in {dll.Name}.");
-                            //}
+                            }
+                            else
+                            {
+                                Loggers.SystemLogger.Warning($"Warning: Could not create an instance of plugin type: {pluginType.FullName} in {dll.Name}.");
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -562,7 +563,19 @@ namespace BLAZAM.Server
         private static IEnumerable<Assembly> blazamAssemblies => AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName?.Contains("BLAZAM") == true);
         private static void PreloadServices(WebApplication application)
         {
+            try
+            {
+                if (ApplicationInfo.installationCompleted)
+                {
+                    var pluginManger = application.Services.GetRequiredService<PluginManager>();
+                    pluginManger.RegisterPluginComponents();
+                }
 
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
             try
             {
                 if (ApplicationInfo.installationCompleted)

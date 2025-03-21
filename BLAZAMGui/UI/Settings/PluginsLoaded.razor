@@ -3,7 +3,9 @@
 
 <MudDataGrid Items="ApplicationInfo.LoadedPlugins">
     <Columns>
-        <PropertyColumn Title="@AppLocalization[Lang.Name]" Property="x=>x.FullName"/>
+        <PropertyColumn Title="@AppLocalization[Lang.Name]" Property="x=>x.Value.Name"/>
+        <PropertyColumn Title="@AppLocalization[Lang.Version]" Property="x=>x.Value.Version"/>
+        <PropertyColumn Title="@AppLocalization["Author"]" Property="x=>x.Value.Author"/>
     </Columns>
 </MudDataGrid>
 

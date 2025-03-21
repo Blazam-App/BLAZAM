@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Org.BouncyCastle.Asn1.Cms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,29 +33,33 @@ namespace BLAZAM.Services.Plugins
       
 
     
-        private void RegisterRenderFragments()
+        public void RegisterPluginComponents()
         {
             foreach (var pluginAssembly in ApplicationInfo.loadedPlugins)
             {
                 // Scan for Razor components with PluginRenderFragmentAttribute
-                var componentTypes = pluginAssembly.GetTypes()
-                    .Where(t => typeof(ComponentBase).IsAssignableFrom(t) && t.GetCustomAttribute<PluginRenderFragmentAttribute>() != null);
+                var componentTypes = pluginAssembly.Key.DefinedTypes
+                    .Where(t => t is PluginComponentBase);
 
                 foreach (var componentType in componentTypes)
                 {
                     try
                     {
-                        var attribute = componentType.GetCustomAttribute<PluginRenderFragmentAttribute>();
-                        if (attribute != null)
+                        var componentInstance = Activator.CreateInstance(componentType) as PluginComponentBase;
+
+                        if (componentInstance != null)
                         {
-                            var pageType = attribute.PageType;
+                            
+                        
+                            var pageType = componentInstance.PageType;
                             Context.RegisterPluginComponent(pageType, componentType);
-                            Console.WriteLine($"Registered render fragment {componentType.FullName} for location '{pageType}' from {pluginAssembly.GetName().Name}");
+                            Console.WriteLine($"Registered render fragment {componentType.FullName} for location '{pageType}' from {pluginAssembly.Key.GetName().Name}");
+
                         }
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error registering render fragment for {componentType.FullName} from {pluginAssembly.GetName().Name}: {ex.Message}");
+                        Console.WriteLine($"Error registering render fragment for {componentType.FullName} from {pluginAssembly.Key.GetName().Name}: {ex.Message}");
                     }
                 }
             }

@@ -25,6 +25,7 @@ namespace BLAZAPluginTest
 
         public WebApplicationBuilder InjectServices(WebApplicationBuilder builder)
         {
+            
             return builder;
         }
     }
