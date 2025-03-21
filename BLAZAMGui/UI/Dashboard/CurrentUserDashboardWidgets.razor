@@ -72,28 +72,28 @@
                             <MudCard Class="my-5 " Elevation="1">
                                 <MudCardHeader>
                                     <MudText Typo="Typo.h6">@AppLocalization[widget.Title]</MudText>
-                                        <MudSpacer />
-                                        <AppIconButton Icon="@Icons.Material.Filled.Refresh"
-                                                       Color="Color.Primary"
-                                                       Tooltip=@AppLocalization[Lang.Refresh]
-                                                       OnClick="@(()=>{OnRefreshWidget?.Invoke(widget);})" />
+                                    <MudSpacer />
+                                    <AppIconButton Icon="@Icons.Material.Filled.Refresh"
+                                                   Color="Color.Primary"
+                                                   Tooltip=@AppLocalization[Lang.Refresh]
+                                                   OnClick="@(()=>{OnRefreshWidget?.Invoke(widget);})" />
 
 
-                                        <AppCloseButton Disabled="!_editMode"
-                                                        Tooltip=@AppLocalization[Lang.Remove]
-                                                        OnClick=@(async()=>{await RemoveWidget(context);}) />
+                                    <AppCloseButton Disabled="!_editMode"
+                                                    Tooltip=@AppLocalization[Lang.Remove]
+                                                    OnClick=@(async()=>{await RemoveWidget(context);}) />
 
-                                    </MudCardHeader>
-                                    <CascadingValue Value="this">
+                                </MudCardHeader>
+                                <CascadingValue Value="this">
 
-                                        <DynamicComponent Parameters="@(new Dictionary<string,object>(){
+                                    <DynamicComponent Parameters="@(new Dictionary<string,object>(){
                                     {"ItemsPerPage",context.ItemsPerPage>5?context.ItemsPerPage:5},
                                     {"WidgetType",context.WidgetType}
                                  })"
-                                                          Type="@widget.GetType()" />
-                                    </CascadingValue>
+                                                      Type="@widget.GetType()" />
+                                </CascadingValue>
 
-                                </MudCard>
+                            </MudCard>
                         }
                     }
 
@@ -173,7 +173,9 @@
 }
 else
 {
-<MudProgressCircular Indeterminate=true Color="Color.Primary"/>
+    <MudText Align="Align.Center">
+        <MudProgressCircular Indeterminate=true Color="Color.Primary" />
+    </MudText>
 }
 
 
