@@ -7,7 +7,7 @@ namespace BLAZAM.Database.Models.Rules
         ModifyField,
         SendEmail
     }
-    public class AutomationRuleAction : RecoverableAppDbSetBase
+    public class AutomationRuleAction : AppDbSetBase
     {
         public AutomationRuleActionType ActionType { get; set; }
 

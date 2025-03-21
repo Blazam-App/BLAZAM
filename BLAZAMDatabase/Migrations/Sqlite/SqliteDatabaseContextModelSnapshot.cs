@@ -1501,6 +1501,157 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.ToTable("PermissionMap");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ActiveDirectoryObjectType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("StopOnThisRule")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Trigger")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AutomationRules");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ActionType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ActiveDirectoryObjectAction")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AutomationRuleId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AutomationRuleId");
+
+                    b.ToTable("AutomationRuleActions");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAndFilter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Negate")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Operator")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrFilterId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<TimeSpan?>("TimeFrame")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FieldId");
+
+                    b.HasIndex("OrFilterId");
+
+                    b.ToTable("AutomationRuleAndFilters");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleFieldValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AutomationRuleActionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FieldType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AutomationRuleActionId");
+
+                    b.HasIndex("FieldId");
+
+                    b.ToTable("AutomationRuleFieldValues");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupSid", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AutomationRuleActionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("GroupSid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AutomationRuleActionId");
+
+                    b.ToTable("AutomationRuleGroupSids");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AutomationRuleId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AutomationRuleId");
+
+                    b.ToTable("AutomationRuleOrFilter");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
                 {
                     b.Property<int>("Id")
@@ -2056,6 +2207,73 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("ObjectAccessLevel");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAction", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRule", null)
+                        .WithMany("Actions")
+                        .HasForeignKey("AutomationRuleId");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAndFilter", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
+                        .WithMany()
+                        .HasForeignKey("FieldId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", "OrFilter")
+                        .WithMany("AndFilters")
+                        .HasForeignKey("OrFilterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Field");
+
+                    b.Navigation("OrFilter");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleFieldValue", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRuleAction", "AutomationRuleAction")
+                        .WithMany("FieldValues")
+                        .HasForeignKey("AutomationRuleActionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
+                        .WithMany()
+                        .HasForeignKey("FieldId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AutomationRuleAction");
+
+                    b.Navigation("Field");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupSid", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRuleAction", "AutomationRuleAction")
+                        .WithMany("GroupSids")
+                        .HasForeignKey("AutomationRuleActionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AutomationRuleAction");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRule", "AutomationRule")
+                        .WithMany("Filters")
+                        .HasForeignKey("AutomationRuleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AutomationRule");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplate", "ParentTemplate")
@@ -2227,6 +2445,25 @@ namespace BLAZAM.Common.Migrations.Sqlite
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
                 {
                     b.Navigation("ObjectAccessMappings");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRule", b =>
+                {
+                    b.Navigation("Actions");
+
+                    b.Navigation("Filters");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAction", b =>
+                {
+                    b.Navigation("FieldValues");
+
+                    b.Navigation("GroupSids");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
+                {
+                    b.Navigation("AndFilters");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>

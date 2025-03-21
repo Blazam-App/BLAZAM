@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Database.Models.Rules
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BLAZAM.Database.Models.Rules
 {
     public enum RuleOperator
     {
@@ -12,16 +14,20 @@
         AfterNow
 
     }
-    public class AutomationRuleFilter : RecoverableAppDbSetBase
+    public class AutomationRuleAndFilter : AppDbSetBase
     {
+        [NotMapped]
+        public string Type { get; } = "And";
+        public AutomationRuleOrFilter OrFilter { get; set; }
+        public int OrFilterId { get; set; }
+
         public ActiveDirectoryField Field { get; set; }
-        public object? Value { get; set; }
+        public string? Value { get; set; }
         public RuleOperator Operator { get; set; }
         /// <summary>
         /// If true, the filter should return true if the filter does not match, and false if it does
         /// </summary>
         public bool Negate { get; set; }
         public TimeSpan? TimeFrame { get; set; }
-
     }
 }

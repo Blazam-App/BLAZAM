@@ -8,6 +8,7 @@ using BLAZAM.Database.Models.Audit;
 using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
+using BLAZAM.Database.Models.Rules;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
 using BLAZAM.FileSystem;
@@ -120,6 +121,13 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<WebHookSubscription> WebHookSubscriptions { get; set; }
         public virtual DbSet<WebHookAttempt> WebHookAttempts { get; set; }
 
+        //Autoation Rules
+        public virtual DbSet<AutomationRule> AutomationRules { get; set; }
+        public virtual DbSet<AutomationRuleFieldValue> AutomationRuleFieldValues { get; set; }
+        public virtual DbSet<AutomationRuleOrFilter> AutomationRuleOrFilter { get; set; }
+        public virtual DbSet<AutomationRuleAndFilter> AutomationRuleAndFilters { get; set; }
+        public virtual DbSet<AutomationRuleGroupSid> AutomationRuleGroupSids { get; set; }
+        public virtual DbSet<AutomationRuleAction> AutomationRuleActions { get; set; }
 
 
         //User Tables
