@@ -4,36 +4,39 @@
     <MudStack Spacing="5">
         @if (settings != null)
         {
-            <MudText Typo="Typo.h6">@AppLocalization["Manage Web Application"]</MudText>
-            <SettingsField Label="@AppLocalization["Restart Web Application"]">
+            <MudText Typo="Typo.h6">@AppLocalization[Lang.Manage_Web_Application]</MudText>
+            <SettingsField Label="@AppLocalization[Lang.Restart_Web_Application]">
 
                 <MudButton Color="Color.Error" Variant=Variant.Outlined OnClick=RestartApplication>@AppLocalization["Restart Web Application"]</MudButton>
 
 
             </SettingsField>
-            <SettingsField Label="@AppLocalization["Google Analytics ID"]">
-                <MudText>Set up a GA4 account and enter your tracking ID here to collect data on the usage of your installation.</MudText>
-                <MudTextField Label="@AppLocalization["Google Analytics ID"]" @bind-Value="@settings.AnalyticsId" />
+            <SettingsField Label="@AppLocalization[Lang.Google_Analytics_ID]">
+                <MudText>@AppHelpLocalization[HelpLang.GA4_Instructions]</MudText>
+                <MudTextField Label="@AppLocalization[Lang.Google_Analytics_ID]"
+                              @bind-Value="@settings.AnalyticsId" />
 
             </SettingsField>
 
-            <SettingsField Label="@AppLocalization["Encryption Seed String"]">
+            <SettingsField Label="@AppLocalization[Lang.Encryption_Seed_String]">
 
-                <MudTextField Label="@AppLocalization["Encryption Seed String"]" ReadOnly=true Value="@(ApplicationInfo.InDemoMode&&CurrentUser.Username=="Demo"?AppLocalization["Private"]:Encryption.Instance?.KeySeedString)" />
+                <MudTextField Label="@AppLocalization[Lang.Encryption_Seed_String]"
+                              ReadOnly=true
+                              Value="@(ApplicationInfo.InDemoMode&&CurrentUser.Username=="Demo"?AppLocalization[Lang.Private]:Encryption.Instance?.KeySeedString)" />
 
             </SettingsField>
 
 
 
             <MudDivider Class="my-6" />
-            <MudText Typo="Typo.h6">@AppLocalization["Data Collection Settings"]</MudText>
+            <MudText Typo="Typo.h6">@AppLocalization[Lang.Data_Collection_Settings]</MudText>
 
 
 
 
-            <SettingsField Label="@AppLocalization["Send logs to developer"]">
+            <SettingsField Label="@AppLocalization[Lang.Developer_Logs]">
                 <MudText>
-                    We ask that you allow developer logging so we can quickly and transparently improve Blazam and to aid in our developement efforts.
+                    @AppHelpLocalization[HelpLang.Developer_Logs_Suggestion]
                 </MudText>
                 <MudSwitch Label="@AppLocalization[Lang.Enabled]"
                            UncheckedColor="Color.Error"
@@ -42,10 +45,9 @@
 
             </SettingsField>
 
-            <SettingsField Label="@AppLocalization["Developer Analytics"]">
+            <SettingsField Label="@AppLocalization[Lang.Developer_Analytics]">
                 <MudText>
-                    We ask that you allow developer analytics so we can understand how our app is used to focus our
-                    efforts on what our users think matters most.
+                    @AppHelpLocalization[HelpLang.Developer_Analytics_Suggestion]
                 </MudText>
                 <MudSwitch Label="@AppLocalization[Lang.Enabled]"
                            UncheckedColor="Color.Error"
@@ -55,45 +57,44 @@
             </SettingsField>
         }
         <MudDivider Class="my-6" />
-        <MudText Typo="Typo.h6">@AppLocalization["Logging"]</MudText>
+        <MudText Typo="Typo.h6">@AppLocalization[Lang.Logging]</MudText>
 
 
-        <SettingsField Label="@AppLocalization["Installation Id"]">
+        <SettingsField Label="@AppLocalization[Lang.Installation_Id]">
 
-            <MudTextField ReadOnly=true Label="@AppLocalization["Installation Id"]" Value="@ApplicationInfo.InstallationId" />
+            <MudTextField ReadOnly=true Label="@AppLocalization[Lang.Installation_Id]" Value="@ApplicationInfo.InstallationId" />
         </SettingsField>
 
-        <SettingsField Label=@AppLocalization["Logs"]>
+        <SettingsField Label=@AppLocalization[Lang.Logs]>
 
 
             <MudLink Href="/download/logs" Target="Target.Blank">
-                <MudButton Variant=Variant.Outlined Color="Color.Primary">@AppLocalization["Download Logs"]</MudButton>
+                <MudButton Variant=Variant.Outlined Color="Color.Primary">@AppLocalization[Lang.Download_Logs]</MudButton>
             </MudLink>
-            <MudText>Log Directory: @Loggers.LogPath</MudText>
+            <MudText>@AppLocalization[Lang.Log_Directory]: @Loggers.LogPath</MudText>
 
         </SettingsField>
 
 
 
         <MudDivider Class="my-6" />
-        <MudText Typo="Typo.h6">@AppLocalization["Resource Usage"]</MudText>
+        <MudText Typo="Typo.h6">@AppLocalization[Lang.Resource_Usage]</MudText>
 
 
         <ViewApplicationStatistics />
-       
+
         <MudDivider Class="my-6" />
-        <MudText Typo="Typo.h6">@AppLocalization["Jobs Monitor"]</MudText>
+        <MudText Typo="Typo.h6">@AppLocalization[Lang.Jobs_Monitor]</MudText>
 
         <JobsMonitor />
 
 
         <SettingsField>
 
-            <MudButton
-                ButtonType="ButtonType.Submit"
-            Color="Color.Success">
+            <MudButton ButtonType="ButtonType.Submit"
+                       Color="Color.Success">
                 @AppLocalization[Lang.Save_Changes]
-        </MudButton>
+            </MudButton>
 
         </SettingsField>
     </MudStack>

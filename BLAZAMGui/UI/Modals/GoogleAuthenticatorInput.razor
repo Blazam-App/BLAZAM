@@ -63,7 +63,7 @@ TextChanged="@((key)=>{_=Authenticate();})"
             }
             else if (announce)
             {
-                SnackBarService.Warning(AppLocalization["The token entered is not valid"]);
+                SnackBarService.Warning(AppHelpLocalization[HelpLang.Invalid_Token_Entered]);
             }
         }
     }

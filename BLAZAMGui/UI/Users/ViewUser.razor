@@ -277,7 +277,7 @@
                                     {
                                         <DynamicMudInput T=DateTime?
                                                          Clearable
-                                                         Label="@AppLocalization["Account Expiration"]"
+                                                         Label="@AppLocalization[Lang.Account_Expiration]"
                                                          @bind-Value="@User.ExpireTime"
                                                          Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.AccountExpires)) />
 
@@ -469,7 +469,7 @@
 
                 @if (User.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
                 {
-                    <Section Title=@AppLocalization["Additional Field"]>
+                    <Section Title=@AppLocalization[Lang.Additional_Fields]>
 
                         @foreach (var field in CustomFields)
                         {
@@ -649,7 +649,7 @@
 
     async void SaveChanges()
     {
-        if (await MessageService.Confirm(AppLocalization["Are you sure you want to save the changes?"]))
+        if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_Save_Changes]))
         {
             SavingChanges = true;
             await RefreshEntryComponents();

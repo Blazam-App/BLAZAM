@@ -209,7 +209,7 @@ namespace BLAZAM.Services.Background
                 case NotificationType.PasswordChange:
                     notification.Action = ActiveDirectoryObjectAction.SetPassword;
 
-                    notificationTitle += _appLocalization["Password Reset"];
+                    notificationTitle += _appLocalization[Lang.Password_Changed];
                     notificationBody += _appLocalization["had a password reset at "] + time;
                     var passwordChangeMessage = NotificationType.PasswordChange.ToNotification<PasswordChangedEmailMessage>();
                     passwordChangeMessage.EntryName = source.CanonicalName;
@@ -218,7 +218,7 @@ namespace BLAZAM.Services.Background
                 case NotificationType.LockedOut:
                     var sourceUser = source as IADUser;
                     if (sourceUser == null) return;
-                    notificationTitle += _appLocalization["Locked Out"];
+                    notificationTitle += _appLocalization[Lang.Locked_Out];
                     notificationBody += _appLocalization["has been locked out at "] + sourceUser.LockoutTime?.ToLocalTime();
                     var lockedOutMessage = NotificationType.LockedOut.ToNotification<LockedOutEmailMessage>();
                     lockedOutMessage.EntryName = source.CanonicalName;

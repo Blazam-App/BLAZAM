@@ -54,6 +54,12 @@
         <MudGrid>
             <MudItem xs="12" md="6">
                 <Section Style="min-height:200px;" Title="Group Details">
+                    <MudCard Elevation="2"
+                             Style="width:fit-content;height:fit-content"
+                             Class="relative mx-auto d-block p-1 mb-5">
+
+                        <MudIcon Style="height:150px;min-width:150px;" Icon="@Icons.Material.Filled.Group" />
+                    </MudCard>
                     <MudTextField Label="@AppLocalization[Lang.Group_Name]" @bind-Value="@Group.CanonicalName" Disabled />
 
                     <MudTextField Label="@AppLocalization[Lang.Account_Name]" @bind-Value="@Group.SamAccountName" Disabled />

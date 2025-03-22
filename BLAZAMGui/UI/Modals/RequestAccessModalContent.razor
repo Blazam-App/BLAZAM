@@ -32,7 +32,7 @@
         }
         else
         {
-            <MudAlert Severity="Severity.Info">@AppLocalization["There are no actions available to request for this entry."]</MudAlert>
+            <MudAlert Severity="Severity.Info">@AppHelpLocalization[HelpLang.No_Request_Actions_Available]</MudAlert>
 
         }
     }
@@ -112,7 +112,7 @@
                     }
                 }
             }
-            SnackBarService.Success(AppLocalization["Access request sent"]);
+            SnackBarService.Success(AppLocalization[Lang.Access_request_sent]);
         }
         await Modal.CloseAsync();
         LoadingData = false;

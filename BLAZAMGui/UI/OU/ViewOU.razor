@@ -102,7 +102,7 @@
                     _ = NotificationGenerationService.PostAsync(OU, NotificationType.Modify, CurrentUser.State);
 
                 }
-                SnackBarService.Success(AppLocalization["The changes made to this ou have been saved."]);
+                SnackBarService.Success(AppLocalization[Lang.Changes_have_been_saved]);
                 await RefreshEntryComponents();
 
 

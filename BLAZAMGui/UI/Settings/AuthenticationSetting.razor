@@ -4,7 +4,7 @@
 
 
 
-<MudText Typo="Typo.h4">@AppLocalization["Authentication Settings"] <AppDocumentationButton Page="/admin/settings/authentication" /></MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Authentication_Settings] <AppDocumentationButton Page="/admin/settings/authentication" /></MudText>
 
 <MudForm @ref=Form
          @bind-IsValid=IsValid
@@ -21,7 +21,7 @@
         <SettingsField Label="@AppLocalization[Lang.Session_Timeout]">
 
             <MudNumericField Label="@AppLocalization[Lang.Session_Timeout]"
-                             HelperText=@AppLocalization["Time in minutes"]
+                             HelperText=@AppLocalization[Lang.Time_in_minutes]
                              T="int?"
                              @bind-Value="@settings.SessionTimeout" />
 
@@ -29,13 +29,13 @@
         <MudDivider Class="my-6" />
 
 
-        <SettingsField Label="@AppLocalization["MFA Type"]">
+        <SettingsField Label="@AppLocalization[Lang.MFA_Type]">
             <MudRadioGroup Value="settings.MFAType" ValueChanged="@((MFAType type)=>{MFATypeChanged(type);})">
                 <MudRadio Value="MFAType.CiscoDuo">
-                    @AppLocalization["Cisco Duo"]
+                    @AppLocalization[Lang.Cisco_Duo]
                 </MudRadio>
                 <MudRadio Value="MFAType.GoogleAuthenticator">
-                    @AppLocalization["Google Authenticator"]
+                    @AppLocalization[Lang.Google_Authenticator]
                 </MudRadio>
 
             </MudRadioGroup>
@@ -44,20 +44,20 @@
         </SettingsField>
         @if (settings.MFAType == MFAType.CiscoDuo)
         {
-            <SettingsField Label="@AppLocalization["Duo Security MFA (optional)"]">
+            <SettingsField Label="@AppLocalization[Lang.Duo_Security_MFA]">
 
-                <StatusCheck Status=duoHealthCheckResult Text="@AppLocalization["Duo Health Check"]" />
+                <StatusCheck Status=duoHealthCheckResult Text="@AppLocalization[Lang.Duo_Health_Check]" />
             </SettingsField>
-            <SettingsField Label="@AppLocalization["Duo Enabled"]">
+            <SettingsField Label="@AppLocalization[Lang.Duo_Enabled]">
 
-                <MudSwitch Label=@AppLocalization["Duo Enabled"]
+                <MudSwitch Label=@AppLocalization[Lang.Duo_Enabled]
                            T="bool" @bind-Value="@settings.DuoEnabled"
                            UncheckedColor="Color.Error"
                            Color="Color.Success"
                            Disabled=@((settings.DuoEnabled!=true && duoHealthCheckResult!=true)||(settings.DuoEnabled && settings.RequireMFA)) />
 
             </SettingsField>
-            <SettingsField Label="@AppLocalization["Duo Unreachable Behavior"]">
+            <SettingsField Label="@AppLocalization[Lang.Duo_Unreachable_Behavior]">
 
                 <MudSwitch Label=@AppLocalization[settings.DuoUnreachableBehavior.ToString()]
                            T="DuoUnreachableBehavior"
@@ -68,28 +68,28 @@
                            Disabled=@(duoHealthCheckResult!=true) />
 
             </SettingsField>
-            <SettingsField Label=@AppLocalization["Duo ClientID"]>
+            <SettingsField Label=@AppLocalization[Lang.Duo_ClientID]>
 
-                <MudTextField Label=@AppLocalization["Duo ClientID"] InputType="InputType.Text" @bind-Value="@settings.DuoClientId" />
-
-            </SettingsField>
-            <SettingsField Label=@AppLocalization["Duo ClientSecret"]>
-
-                <MudTextField Label=@AppLocalization["Duo ClientSecret"] InputType="InputType.Password" @bind-Value="@settings.DuoClientSecret" />
+                <MudTextField Label=@AppLocalization[Lang.Duo_ClientID] InputType="InputType.Text" @bind-Value="@settings.DuoClientId" />
 
             </SettingsField>
-            <SettingsField Label=@AppLocalization["Duo ApiHost"]>
+            <SettingsField Label=@AppLocalization[Lang.Duo_ClientSecret]>
 
-                <MudTextField Label=@AppLocalization["Duo ApiHost"] InputType="InputType.Text" @bind-Value="@settings.DuoApiHost" />
+                <MudTextField Label=@AppLocalization[Lang.Duo_ClientSecret] InputType="InputType.Password" @bind-Value="@settings.DuoClientSecret" />
+
+            </SettingsField>
+            <SettingsField Label=@AppLocalization[Lang.Duo_ApiHost]>
+
+                <MudTextField Label=@AppLocalization[Lang.Duo_ApiHost] InputType="InputType.Text" @bind-Value="@settings.DuoApiHost" />
 
             </SettingsField>
 
         }
 
 
-        <SettingsField Label="@AppLocalization["Force MFA"]">
+        <SettingsField Label="@AppLocalization[Lang.Force_MFA]">
 
-            <MudSwitch Label=@AppLocalization["Force MFA"]
+            <MudSwitch Label=@AppLocalization[Lang.Force_MFA]
                        T="bool" @bind-Value="@settings.RequireMFA"
                        Disabled="settings.MFAType==MFAType.CiscoDuo && duoHealthCheckResult!=true"
                        UncheckedColor="Color.Error"

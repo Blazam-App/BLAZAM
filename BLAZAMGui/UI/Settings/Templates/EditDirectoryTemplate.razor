@@ -16,7 +16,7 @@
                                OnClearButtonClick="@(async()=>{
                                                         await ParentTemplateChanged(null);
                                                         })"
-                               Label=@AppLocalization["Parent Template"]
+                               Label=@AppLocalization[Lang.Parent_Template]
                                Values="@dropdownTemplates.OrderBy(t=>t.Name)"
                                Value="@DirectoryTemplate.ParentTemplate"
                                ValueChanged="@ParentTemplateChanged" />
@@ -25,7 +25,7 @@
                               ReadOnly=true
                               @bind-Value=DirectoryTemplate.Id />
 
-                <MudTextField Label="@AppLocalization["Template Name"]"
+                <MudTextField Label="@AppLocalization[Lang.Template_Name]"
                               @bind-Value=DirectoryTemplate.Name />
 
 
@@ -40,8 +40,8 @@
                                Values="@(categories.Count>0?categories:new List<string>())"
                                ValueChanged="@((value)=>{DirectoryTemplate.Category=value;})"
                                @bind-Text=DirectoryTemplate.Category
-                               Label="@AppLocalization["Template Category"]" />
-                <AppModal @ref=categoryModal Title=@AppLocalization["Add Category"]>
+                               Label="@AppLocalization[Lang.Template_Category]" />
+                <AppModal @ref=categoryModal Title=@AppLocalization[Lang.Add_Category]>
                     <AddTemplateCategoryModalContent Categories="@categories"
                                                      CategoryAdded="@(async(newCategory)=>{
                                     DirectoryTemplate.Category=newCategory;
@@ -49,14 +49,14 @@
                                     await InvokeAsync(StateHasChanged);
                                                                                             })" />
                 </AppModal>
-                <MudSwitch Label="@AppLocalization["Visible"]"
+                <MudSwitch Label="@AppLocalization[Lang.Visible]"
                            UncheckedColor="Color.Warning"
                            Color="Color.Success"
                            @bind-Value=@DirectoryTemplate.Visible />
-                <MudExpansionPanel Text=@AppLocalization["Variables"]>
+                <MudExpansionPanel Text=@AppLocalization[Lang.Variables]>
                     <MudStack>
                         <MudText Typo="Typo.h6">
-                            @AppLocalization["Syntax"]
+                            @AppLocalization[Lang.Syntax]
                         </MudText>
                         <MudText>
                             {variable:modifier[argument]}, {variable:modifier}, {variable[argument]}, or just {variable}
@@ -72,7 +72,7 @@
 
                     <VariableTable />
                 </MudExpansionPanel>
-                <Section Title=@AppLocalization["Account and Name"]>
+                <Section Title=@AppLocalization[Lang.Account_and_Name]>
 
                     <MudStack>
                         @{
@@ -90,7 +90,7 @@
                                 <TemplateOverride SourceTemplate="@usernameFromTemplate">
                                     <MudTextField Required="true"
                                                   RequiredError=@AppLocalization["This field is required"]
-                                                  Label=@AppLocalization["Username Format"]
+                                                  Label=@AppLocalization[Lang.Username_Format]
                                                   @bind-Value=DirectoryTemplate.EffectiveUsernameFormula />
                                 </TemplateOverride>
                                 @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveUsernameFormula != DirectoryTemplate.EffectiveUsernameFormula)
@@ -102,7 +102,7 @@
                                 <TemplateOverride SourceTemplate="@displayNameFromTemplate">
                                     <MudTextField Required="true"
                                                   RequiredError=@AppLocalization["This field is required"]
-                                                  Label=@AppLocalization["Display Name Format"]
+                                                  Label=@AppLocalization[Lang.Display_Name_Format]
                                                   @bind-Value=DirectoryTemplate.EffectiveDisplayNameFormula />
                                 </TemplateOverride>
                                 @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveDisplayNameFormula != DirectoryTemplate.EffectiveDisplayNameFormula)
@@ -132,7 +132,7 @@
                         <MudStack Row=true>
 
                             <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@requirePasswordChangeFromTemplate">
-                                <MudSwitch Label=@AppLocalization["Allow Username Override"]
+                                <MudSwitch Label=@AppLocalization[Lang.Allow_Username_Override]
                                            UncheckedColor="Color.Error"
                                            Color="Color.Success"
                                            @bind-Value=DirectoryTemplate.EffectiveAllowUsernameOverride />
@@ -145,7 +145,7 @@
                         <MudStack Row=true>
 
                             <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@requirePasswordChangeFromTemplate">
-                                <MudSwitch Label=@AppLocalization["Require Password Change"]
+                                <MudSwitch Label=@AppLocalization[Lang.Require_Password_Change]
                                            UncheckedColor="Color.Warning"
                                            Color="Color.Success"
                                            @bind-Value=DirectoryTemplate.EffectiveRequirePasswordChange />
@@ -159,7 +159,7 @@
                                           BadgeClass="mud-width-full"
                                           SourceTemplate="@sendWelcomeEmailFromTemplate">
 
-                            <MudSwitch Label="@AppLocalization["Send  Welcome Email"]"
+                            <MudSwitch Label="@AppLocalization[Lang.Send_Welcome_Email]"
                                        UncheckedColor="Color.Error"
                                        Color="Color.Success"
                                        @bind-Value=@DirectoryTemplate.EffectiveSendWelcomeEmail />
@@ -180,7 +180,7 @@
                                           BadgeClass="mud-width-full"
                                           SourceTemplate="@askForAlternateEmailFromTemplate">
 
-                            <MudSwitch Label="@AppLocalization["Ask For Alternate Email"]"
+                            <MudSwitch Label="@AppLocalization[Lang.Ask_For_Alternate_Email]"
                                        UncheckedColor="Color.Error"
                                        Color="Color.Success"
                                        @bind-Value=@DirectoryTemplate.EffectiveAskForAlternateEmail />
@@ -189,7 +189,7 @@
                         {
                             <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.AskForAlternateEmail=null;}) />
                         }
-                        <MudExpansionPanel Text="@AppLocalization["Formula sim"]">
+                        <MudExpansionPanel Text="@AppLocalization[Lang.Formula_sim]">
                             <MudGrid>
                                 <MudItem xs="12" md="6">
                                     <MudStack>
@@ -355,7 +355,7 @@
                                                 }
                                                 else
                                                 {
-                                                    <AppTooltip Text="@AppLocalization["Remove field"]">
+                                                    <AppTooltip Text="@AppLocalization[Lang.Remove_field]">
                                                         <AppCloseButton Disabled=@(!DirectoryTemplate.FieldValues.Contains(cellContext.Item))
                                                                         Tooltip=@AppLocalization[Lang.Remove]
                                                                         OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
@@ -373,7 +373,7 @@
 
                 </Section>
 
-                <Section Title=@AppLocalization["Organizational Unit"]>
+                <Section Title=@AppLocalization[Lang.OU]>
                     @if (SelectedOU != null)
                     {
                         var ouTemplateSource = GetParentOfValue(DirectoryTemplate.EffectiveParentOU, template => template.ParentOU);
@@ -395,7 +395,7 @@
                     }
 
                 </Section>
-                <Section Title=@AppLocalization["Assigned Groups"]>
+                <Section Title=@AppLocalization[Lang.Assigned_Groups]>
 
                     <MudStack>
 
@@ -493,7 +493,7 @@
                     },
                     new TemplateVariable()
                     {
-                        DisplayName = AppLocalization["First Initial"],
+                        DisplayName = AppLocalization[Lang.First_Initial],
                         Value = "{fi}"
                     },
                     new TemplateVariable()
@@ -503,7 +503,7 @@
                     },
                     new TemplateVariable()
                     {
-                        DisplayName = AppLocalization["Middle Initial"],
+                        DisplayName = AppLocalization[Lang.Middle_Initial],
                         Value = "{mi}"
                     },
                     new TemplateVariable()
@@ -513,7 +513,7 @@
                     },
                     new TemplateVariable()
                     {
-                        DisplayName = AppLocalization["Last Initial"],
+                        DisplayName = AppLocalization[Lang.Last_Initial],
                         Value = "{li}"
                     },
                 };

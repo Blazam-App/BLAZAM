@@ -24,7 +24,7 @@
                 Variant=Variant.Filled
                 Color=Color.Success 
                 OnClick="(()=>{OnApply.InvokeAsync();})">
-                @AppLocalization["Apply Update"]
+                @AppLocalization[Lang.Apply_Update]
             </MudButton>
                 @if (ApplicationInfo.InDebugMode)
                 {
@@ -91,11 +91,11 @@
                     //Update is older
                     return Update.Version.ToString();
                 case 0:
-                    return AppLocalization["Current Version"];
+                    return AppLocalization[Lang.Current_Version];
 
                 case -1:
                     //Update is newer
-                    return AppLocalization["Available Update"] + "\r\n" + Update.Version.ToString();
+                    return AppLocalization[Lang.Available_Update] + "\r\n" + Update.Version.ToString();
 
 
             }

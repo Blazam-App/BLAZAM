@@ -79,6 +79,33 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scan the code below from your authenticator app.
+        /// </summary>
+        public static string Authenticator_Setup_One {
+            get {
+                return ResourceManager.GetString("Authenticator_Setup_One", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Then enter the passcode to activate.
+        /// </summary>
+        public static string Authenticator_Setup_Two {
+            get {
+                return ResourceManager.GetString("Authenticator_Setup_Two", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The time of each day to automatically apply an update..
+        /// </summary>
+        public static string Auto_Update_Time_Definition {
+            get {
+                return ResourceManager.GetString("Auto_Update_Time_Definition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to create this group?.
         /// </summary>
         public static string Confirm_Group_Creation {
@@ -133,6 +160,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this API token?.
+        /// </summary>
+        public static string Delete_API_Token_Confirmation {
+            get {
+                return ResourceManager.GetString("Delete_API_Token_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to disable Google Authenticator MFA?.
         /// </summary>
         public static string Delete_Auth_Token_Confirmation {
@@ -147,6 +183,34 @@ namespace BLAZAM.Localization {
         public static string Deleted {
             get {
                 return ResourceManager.GetString("Deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to deny this request?.
+        /// </summary>
+        public static string Deny_Request_Confirmation {
+            get {
+                return ResourceManager.GetString("Deny_Request_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We ask that you allow developer analytics so we can understand how our app is used to focus our
+        ///efforts on what our users think matters most..
+        /// </summary>
+        public static string Developer_Analytics_Suggestion {
+            get {
+                return ResourceManager.GetString("Developer_Analytics_Suggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We ask that you allow developer logging so we can quickly and transparently improve Blazam and to aid in our developement efforts..
+        /// </summary>
+        public static string Developer_Logs_Suggestion {
+            get {
+                return ResourceManager.GetString("Developer_Logs_Suggestion", resourceCulture);
             }
         }
         
@@ -178,11 +242,29 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set up a GA4 account and enter your tracking ID here to collect data on the usage of your installation..
+        /// </summary>
+        public static string GA4_Instructions {
+            get {
+                return ResourceManager.GetString("GA4_Instructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not a valid certificate type..
         /// </summary>
         public static string Invalid_Cert_Type {
             get {
                 return ResourceManager.GetString("Invalid_Cert_Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The token entered is not valid.
+        /// </summary>
+        public static string Invalid_Token_Entered {
+            get {
+                return ResourceManager.GetString("Invalid_Token_Entered", resourceCulture);
             }
         }
         
@@ -205,6 +287,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} has been locked out.
+        /// </summary>
+        public static string Locked_Out {
+            get {
+                return ResourceManager.GetString("Locked_Out", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} mappings use this Access Level and will be deleted.
         /// </summary>
         public static string Mapping_Use_Access_Level {
@@ -223,11 +314,38 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Important updates and changes are posted here..
+        /// </summary>
+        public static string News_Provider_Description {
+            get {
+                return ResourceManager.GetString("News_Provider_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No more widgets to add.
         /// </summary>
         public static string No_More_Widgets {
             get {
                 return ResourceManager.GetString("No_More_Widgets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is nothing new to see here.
+        /// </summary>
+        public static string No_News {
+            get {
+                return ResourceManager.GetString("No_News", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no actions available to request for this entry..
+        /// </summary>
+        public static string No_Request_Actions_Available {
+            get {
+                return ResourceManager.GetString("No_Request_Actions_Available", resourceCulture);
             }
         }
         
@@ -250,6 +368,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Request to {0}.
+        /// </summary>
+        public static string Request_To {
+            get {
+                return ResourceManager.GetString("Request_To", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Will have complete and total acceess to the application if enabled.
         /// </summary>
         public static string Super_User_Definition {
@@ -264,6 +391,54 @@ namespace BLAZAM.Localization {
         public static string Unexpected_Error_Occurred {
             get {
                 return ResourceManager.GetString("Unexpected_Error_Occurred", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The release branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers..
+        /// </summary>
+        public static string Upate_Branch_Definition {
+            get {
+                return ResourceManager.GetString("Upate_Branch_Definition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Active Directory Credentials are validated for updating..
+        /// </summary>
+        public static string Update_Credential_Is_AD {
+            get {
+                return ResourceManager.GetString("Update_Credential_Is_AD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The account running Blazam can write to the application directory.
+        /// This exposes the host machine to unneccessary risk. Change the application identity
+        /// to a lower privileged account to improve security..
+        /// </summary>
+        public static string Update_Credential_Is_Application {
+            get {
+                return ResourceManager.GetString("Update_Credential_Is_Application", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Custom Update Credentials are validated for updating..
+        /// </summary>
+        public static string Update_Credential_Is_Custom {
+            get {
+                return ResourceManager.GetString("Update_Credential_Is_Custom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no credentials configured with write permission to the application directory!
+        ///Try configuring custom update credentials..
+        /// </summary>
+        public static string Update_Credential_Is_Invalid {
+            get {
+                return ResourceManager.GetString("Update_Credential_Is_Invalid", resourceCulture);
             }
         }
         
