@@ -1,0 +1,36 @@
+@using BLAZAM.Database.Models.Rules
+@inherits DatabaseComponentBase
+<MudButton Color="Color.Primary" OnClick="@(()=>{_=createRuleModal?.ShowAsync();})">@AppLocalization[Lang.Create_Rule]</MudButton>
+
+<MudList T="AutomationRule">
+    @foreach (var rule in rules)
+    {
+
+    }
+</MudList>
+<AppModal @ref=createRuleModal Title="@AppLocalization[Lang.Create_Rule]" Options="new(){ MaxWidth=MaxWidth.Large, FullWidth=true}">
+    <CreateNewRule Trigger="Trigger"/>
+</AppModal>
+
+@code {
+    AppModal? createRuleModal;
+
+    private List<AutomationRule> rules = new();
+
+    [Parameter]
+    public NotificationType Trigger { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _ = GetRulesAsync();
+    }
+    private async Task GetRulesAsync()
+    {
+        LoadingData = true;
+
+        rules = await Context.AutomationRules.Where(r => r.Trigger == Trigger).ToListAsync();
+        LoadingData = false;
+    }
+}

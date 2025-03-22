@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Common.Data;
+using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace BLAZAM.Database.Models.Rules
         public bool Enabled { get; set; }
         public bool StopOnThisRule { get; set; }
         public DateTime? ExpirationDate { get; set; }
-        public ActiveDirectoryObjectAction Trigger { get; set; }
+        public NotificationType Trigger { get; set; }
         public ActiveDirectoryObjectType ActiveDirectoryObjectType { get; set; }
         /// <summary>
         /// Or List of Ands

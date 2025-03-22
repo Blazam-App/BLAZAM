@@ -8,7 +8,8 @@
         Unassign,
         Assign,
         PasswordChange,
-        LockedOut
+        LockedOut,
+        Scheduled
     }
 
 }

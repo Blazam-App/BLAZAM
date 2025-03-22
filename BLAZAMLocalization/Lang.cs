@@ -11,6 +11,7 @@ namespace BLAZAM.Localization
         public static readonly string Password_Changed = "Password changed";
         public static readonly string Success = "Success";
         public static readonly string Cancelled = "Cancelled";
+        public static readonly string Create_Rule = "Create Rule";
         public static readonly string Failed = "Failed";
         public static readonly string Queued = "Queued";
         public static readonly string Running = "Running";

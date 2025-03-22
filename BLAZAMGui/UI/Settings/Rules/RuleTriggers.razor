@@ -1,0 +1,34 @@
+@inherits AppComponentBase
+<MudList T="NotificationType" @bind-SelectedValue=SelectedTrigger>
+    @foreach (var trigger in triggerTypes)
+    {
+        <MudListItem Value="trigger">@AppLocalization[trigger.ToString()]</MudListItem>
+    }
+</MudList>
+
+@code {
+    List<NotificationType> triggerTypes = new();
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        foreach (NotificationType type in Enum.GetValues(typeof(NotificationType)))
+        {
+            triggerTypes.Add(type);
+        }
+        triggerTypes = triggerTypes.OrderBy(t => t.ToString()).ToList();
+        SelectedTrigger = triggerTypes.First();
+    }
+    private NotificationType _selectedTrigger;
+    [Parameter]
+    public NotificationType SelectedTrigger
+    {
+        get => _selectedTrigger; set
+        {
+            if (_selectedTrigger == value) return;
+            _selectedTrigger = value;
+            SelectedTriggerChanged.InvokeAsync(value);
+        }
+    }
+    [Parameter]
+    public EventCallback<NotificationType> SelectedTriggerChanged { get; set; }
+}

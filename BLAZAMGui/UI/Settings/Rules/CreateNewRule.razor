@@ -1,0 +1,30 @@
+@inherits AppComponentBase
+@using BLAZAM.Database.Models.Rules
+<MudTextField @bind-Value=@newRule.Name Label="@AppLocalization[Lang.Name]"/>
+<MudSwitch @bind-Value=newRule.Enabled Label="@AppLocalization[Lang.Enabled]" />
+<MudDatePicker Clearable="true" @bind-Date=newRule.ExpirationDate Label="@AppLocalization[Lang.Expires]" />
+<MudText>Trigger: @Trigger.ToString()</MudText>
+<MudDivider/>
+<MudText>Filters</MudText>
+<MudStack Row="true">
+
+    <MudSpacer/>
+    <MudFab StartIcon="@Icons.Material.Filled.Add" />
+
+</MudStack>
+<MudDivider />
+<MudText>Actions</MudText>
+<MudStack Row="true">
+
+    <MudSpacer />
+    <MudFab StartIcon="@Icons.Material.Filled.Add" />
+
+</MudStack>
+<AppModal>
+    <NewAutomatinoTrigger Rule="newRule"/>
+</AppModal>
+@code{
+    [Parameter]
+    public NotificationType Trigger { get; set; }
+    private AutomationRule newRule = new();
+}
