@@ -20,7 +20,7 @@ namespace BLAZAM.Database.Models.Rules
         /// <summary>
         /// Or List of Ands
         /// </summary>
-        public List<AutomationRuleOrFilter> Filters { get; set; }
-        public List<AutomationRuleAction> Actions { get; set; }
+        public List<AutomationRuleOrFilter> Filters { get; set; } = new();
+        public List<AutomationRuleAction> Actions { get; set; } = new();
     }
 }

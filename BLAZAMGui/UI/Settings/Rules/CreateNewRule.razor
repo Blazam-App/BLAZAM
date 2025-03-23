@@ -1,17 +1,60 @@
 @inherits AppComponentBase
 @using BLAZAM.Database.Models.Rules
-<MudTextField @bind-Value=@newRule.Name Label="@AppLocalization[Lang.Name]"/>
+<MudTextField @bind-Value=@newRule.Name Label="@AppLocalization[Lang.Name]" />
 <MudSwitch @bind-Value=newRule.Enabled Label="@AppLocalization[Lang.Enabled]" />
 <MudDatePicker Clearable="true" @bind-Date=newRule.ExpirationDate Label="@AppLocalization[Lang.Expires]" />
 <MudText>Trigger: @Trigger.ToString()</MudText>
-<MudDivider/>
+<MudDivider />
 <MudText>Filters</MudText>
 <MudStack Row="true">
 
-    <MudSpacer/>
-    <MudFab StartIcon="@Icons.Material.Filled.Add" />
+    <MudStack Class="mud-width-full">
+        @foreach (var orFilter in newRule.Filters)
+        {
+            <MudStack Row="true">
+                <MudText>Or Filter</MudText>
+
+                <MudStack Row="true">
+                    <MudStack Class="mud-width-full">
+                        @foreach (var andFilter in orFilter.AndFilters)
+                        {
+                            <MudStack Row="true">
+
+                                <MudText>And Filter</MudText>
+                                <EditAndFitler Filter="andFilter"/>
+                                <MudSpacer />
+                                <MudFab OnClick="@(()=>{RemoveAndFilter(orFilter,andFilter);})" StartIcon="@Icons.Material.Filled.Remove" />
+                            </MudStack>
+
+                        }
+                    </MudStack>
+
+                </MudStack>
+                <MudSpacer />
+
+                <MudFab OnClick="@(()=>{RemoveOrFilter(orFilter);})" StartIcon="@Icons.Material.Filled.Remove" />
+            </MudStack>
+            <MudStack Row="true">
+
+                <MudSpacer />
+                <MudFab OnClick="@(()=>{AddAndFilter(orFilter);})" StartIcon="@Icons.Material.Filled.Add" />
+
+            </MudStack>
+
+        }
+        <MudSpacer />
+
+    </MudStack>
 
 </MudStack>
+<MudStack Row="true">
+
+    <MudSpacer />
+    <MudFab OnClick="AddOrFilter" StartIcon="@Icons.Material.Filled.Add" />
+</MudStack>
+
+
+
 <MudDivider />
 <MudText>Actions</MudText>
 <MudStack Row="true">
@@ -21,10 +64,36 @@
 
 </MudStack>
 <AppModal>
-    <NewAutomatinoTrigger Rule="newRule"/>
+    <NewAutomationTrigger Rule="newRule" />
 </AppModal>
-@code{
+@code {
     [Parameter]
     public NotificationType Trigger { get; set; }
     private AutomationRule newRule = new();
+
+    private void AddAndFilter(AutomationRuleOrFilter orFilter)
+    {
+        orFilter.AndFilters.Add(new());
+    }
+
+    private void RemoveAndFilter(AutomationRuleOrFilter orFilter, AutomationRuleAndFilter andFilter)
+    {
+        orFilter.AndFilters.Remove(andFilter);
+    }
+
+    private void AddOrFilter()
+    {
+        if (newRule != null)
+        {
+            newRule.Filters.Add(new());
+        }
+    }
+
+    private void RemoveOrFilter(AutomationRuleOrFilter orFilter)
+    {
+        if (newRule != null)
+        {
+            newRule.Filters.Remove(orFilter);
+        }
+    }
 }
