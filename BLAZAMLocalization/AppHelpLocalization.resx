@@ -199,6 +199,9 @@ efforts on what our users think matters most.</value>
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>{0} mappings use this Access Level and will be deleted</value>
   </data>
+  <data name="Modify_Name_Redirect" xml:space="preserve">
+    <value>To modify the user's name click the rename button in the toolbar/gear menu</value>
+  </data>
   <data name="Navigate_Away_Confirmation" xml:space="preserve">
     <value>Are you sure you want to navigate away?</value>
   </data>

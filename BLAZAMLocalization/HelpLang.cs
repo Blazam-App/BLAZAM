@@ -1,5 +1,13 @@
 ﻿namespace BLAZAM.Localization
 {
+    /// <summary>
+    /// Collection of available long length string translations
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Some of these strings accept string parameters
+    /// </para>
+    /// </remarks>
     public static class HelpLang
     {
         public static readonly string Mapping_Use_Access_Level = "Mapping_Use_Access_Level";
@@ -7,6 +15,7 @@
         public static readonly string Duplicate_Name_Conflict = "Duplicate_Name_Conflict";
         public static readonly string No_Request_Actions_Available = "No_Request_Actions_Available";
         public static readonly string Overwrite_Auth_Token_Confirmation = "Overwrite_Auth_Token_Confirmation";
+        public static readonly string Modify_Name_Redirect = "Modify_Name_Redirect";
         public static readonly string Delete_Auth_Token_Confirmation = "Delete_Auth_Token_Confirmation";
         public static readonly string Deny_Request_Confirmation = "Deny_Request_Confirmation";
         public static readonly string Delete_API_Token_Confirmation = "Delete_API_Token_Confirmation";

@@ -182,8 +182,8 @@ namespace BLAZAM.Services.Background
         protected override void Execute(object? state)
         {
             using var context = factory.CreateDbContext();
-            Job updateCheckJob = new(AppLocalization["Check for Update"]);
-            JobStep checkForUpdateStep = new(AppLocalization["Execute"], async (step) =>
+            Job updateCheckJob = new(AppLocalization[Lang.Check_for_Update]);
+            JobStep checkForUpdateStep = new(AppLocalization[Lang.Excute], async (step) =>
             {
                 try
                 {

@@ -7,7 +7,7 @@
 @inject NotificationGenerationService NotificationGenerationService
 
 
-<AppPageTitle>@AppLocalization["Confirm User Creation"]</AppPageTitle>
+<AppPageTitle>@AppLocalization[Lang.Confirm_User_Creation]</AppPageTitle>
 
 
 
@@ -55,7 +55,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
     <Section Title=@AppLocalization[Lang.Organization]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.EmployeeId))
         {
-            <MudTextField Label="@AppLocalization["Employee Id"]"
+            <MudTextField Label="@AppLocalization[Lang.Employee_Id]"
                           @bind-Value="@User.EmployeeId"
                           Disabled=true />
         }
@@ -225,18 +225,18 @@ InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
 else
 {
     <MudButton Color="Color.Primary"
-               OnClick="@(()=>{Nav.NavigateTo(User.SearchUri);})">@AppLocalization["Go To User"]</MudButton>
+               OnClick="@(()=>{Nav.NavigateTo(User.SearchUri);})">@AppLocalization[Lang.Go_To_User]</MudButton>
     <MudButton Color="Color.Success"
-               OnClick="@(()=>{Nav.NavigateTo("/create/user",true);})">@AppLocalization["Create Another"]</MudButton>
+               OnClick="@(()=>{Nav.NavigateTo("/create/user",true);})">@AppLocalization[Lang.Create_Another]</MudButton>
 
 }
 <MudButton StartIcon="@Icons.Material.Filled.Print"
            Color="Color.Info"
-           OnClick="Print">@AppLocalization["Print"]</MudButton>
+           OnClick="Print">@AppLocalization[Lang.Print]</MudButton>
 
 
 <AppModal @ref=SendWelcomeModal
-          Title="@AppLocalization["Send login credentials"]">
+          Title="@AppLocalization[Lang.Send_login_credentials]">
     <SendNewUserWelcomeToModalContent OnSubmitEmail="SendWelcomeEmail" />
 </AppModal>
 @code {

@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Runtime.Intrinsics.X86;
 using System.Security;
 using System.Text.RegularExpressions;
@@ -8,12 +10,45 @@ using System.Xml.Linq;
 
 namespace BLAZAM.Localization
 {
+    /// <summary>
+    /// Collection of available string translations
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The names of each static value represents the string almost exactly
+    /// </para>
+    /// <para>
+    /// None of these strings accept string parameters
+    /// </para>
+    /// </remarks>
     public static class Lang
     {
         public static readonly string About = "About";
         public static readonly string Username = "Username";
         public static readonly string Founder = "Founder";
         public static readonly string Founded = "Founded";
+        public static readonly string Go_To_User = "Go To User";
+        public static readonly string Print = "Print";
+        public static readonly string Fetch_News = "Fetch News";
+        public static readonly string Excute = "Execute";
+        public static readonly string Removed_from_Group = "Removed from Group";
+        public static readonly string Added_to_Group = "Added to Group";
+        public static readonly string Check_for_Update = "Check for Update";
+        public static readonly string User_is_locked_out = "User is locked out";
+        public static readonly string Send_login_credentials = "Send login credentials";
+        public static readonly string Create_Another = "Create Another";
+        public static readonly string Confirm_User_Creation = "Confirm User Creation";
+        public static readonly string New_Password = "New Password";
+        public static readonly string Release_Notes = "Release Notes";
+        public static readonly string Current_Template = "Current Template";
+        public static readonly string Add_Member = "Add Member";
+        public static readonly string Printers_registered_to_Active_Directory = "Printer(s) registered to Active Directory";
+        public static readonly string Register_printers_with_Active_Directory = "Register printers with Active Directory";
+        public static readonly string User_locked_out = "User locked out";
+        public static readonly string Group_member_removed = "Group member removed";
+        public static readonly string Object_deleted = "Object deleted";
+        public static readonly string Entry_modified = "Entry modified";
+        public static readonly string Update_Scheduled = "Update Scheduled";
         public static readonly string Dismiss_all = "Dismiss all";
         public static readonly string No_unread_notifications = "No unread notifications";
         public static readonly string Access_request_sent = "Access request sent";
@@ -22,6 +57,7 @@ namespace BLAZAM.Localization
         public static readonly string Failed_to_save_settings = "Failed to save settings";
         public static readonly string Last_Used = "Last Used";
         public static readonly string Is_Revoked = "Is Revoked";
+        public static readonly string User_is_disabled = "User is disabled";
         public static readonly string Never_used = "Never used";
         public static readonly string Dedicated_To = "Dedicated To";
         public static readonly string In_Loving_Memory = "In Loving Memory";

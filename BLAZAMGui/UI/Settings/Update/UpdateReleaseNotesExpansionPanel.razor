@@ -1,7 +1,7 @@
 @using BLAZAM.Update
 @inherits AppComponentBase
 <MudExpansionPanels Elevation=0>
-    <MudExpansionPanel @bind-Expanded=_expanded Text="@AppLocalization["Release Notes"]">
+    <MudExpansionPanel @bind-Expanded=_expanded Text="@AppLocalization[Lang.Release_Notes]">
         @if (_expanded)
         {
             <MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@Update.Release.ReleaseNotes" />

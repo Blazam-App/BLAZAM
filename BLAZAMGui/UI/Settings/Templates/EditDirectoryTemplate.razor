@@ -5,7 +5,7 @@
     <MudForm @ref=Form IsValidChanged="@((val)=>{SaveDisabled = !val;})">
         <CascadingValue Value="DirectoryTemplate">
             <MudStack>
-                <MudText Class="mt-5" Typo="Typo.h6">@AppLocalization["Current Template:"] @originalTemplate.Name</MudText>
+                <MudText Class="mt-5" Typo="Typo.h6">@AppLocalization[Lang.Current_Template]: @originalTemplate.Name</MudText>
                 <MudSelectList T="DirectoryTemplate"
                                AnchorOrigin="Origin.BottomCenter"
                                TransformOrigin="Origin.TopCenter"

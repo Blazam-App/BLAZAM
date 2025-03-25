@@ -7,7 +7,7 @@
             <MudText Typo="Typo.h6">@AppLocalization[Lang.Manage_Web_Application]</MudText>
             <SettingsField Label="@AppLocalization[Lang.Restart_Web_Application]">
 
-                <MudButton Color="Color.Error" Variant=Variant.Outlined OnClick=RestartApplication>@AppLocalization["Restart Web Application"]</MudButton>
+                <MudButton Color="Color.Error" Variant=Variant.Outlined OnClick=RestartApplication>@AppLocalization[Lang.Restart_Web_Application]</MudButton>
 
 
             </SettingsField>
@@ -69,7 +69,8 @@
 
 
             <MudLink Href="/download/logs" Target="Target.Blank">
-                <MudButton Variant=Variant.Outlined Color="Color.Primary">@AppLocalization[Lang.Download_Logs]</MudButton>
+                <MudButton Variant=Variant.Outlined
+                           Color="Color.Primary">@AppLocalization[Lang.Download_Logs]</MudButton>
             </MudLink>
             <MudText>@AppLocalization[Lang.Log_Directory]: @Loggers.LogPath</MudText>
 

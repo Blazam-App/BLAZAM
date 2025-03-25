@@ -101,9 +101,9 @@
 
         <MudButton Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.GroupAdd"
-                   OnClick="@(()=>{_=AssignMemberModal?.ShowAsync();})">@AppLocalization["Add Member..."]</MudButton>
+                   OnClick="@(()=>{_=AssignMemberModal?.ShowAsync();})">@AppLocalization[Lang.Add_Member]</MudButton>
     }
-    <AppModal Color="Color.Dark" Title=@AppLocalization["Add Member..."] @ref=@AssignMemberModal>
+    <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Add_Member] @ref=@AssignMemberModal>
         <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />
     </AppModal>
 }

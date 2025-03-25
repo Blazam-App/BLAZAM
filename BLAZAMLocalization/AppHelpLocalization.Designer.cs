@@ -305,6 +305,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To modify the user&apos;s name click the rename button in the toolbar/gear menu.
+        /// </summary>
+        public static string Modify_Name_Redirect {
+            get {
+                return ResourceManager.GetString("Modify_Name_Redirect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to navigate away?.
         /// </summary>
         public static string Navigate_Away_Confirmation {

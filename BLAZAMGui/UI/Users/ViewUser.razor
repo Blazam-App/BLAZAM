@@ -177,12 +177,12 @@
                             @if (User.Disabled)
                             {
                                 <MudAlert Severity="Severity.Error"
-                                          Class="mud-width-full">@AppLocalization["User is disabled"]</MudAlert>
+                                          Class="mud-width-full">@AppLocalization[Lang.User_is_disabled]</MudAlert>
                             }
                             @if (User.LockedOut)
                             {
                                 <MudAlert Severity="Severity.Warning"
-                                          Class="mud-width-full">@AppLocalization["User is locked out"]</MudAlert>
+                                          Class="mud-width-full">@AppLocalization[Lang.User_is_locked_out]</MudAlert>
                             }
 
 
@@ -223,7 +223,7 @@
                                 @if (EditMode && User?.NewEntry == false)
                                 {
                                     <MudText>
-                                        To modify the user's name click the rename button in the toolbar/gear menu
+                                        @AppHelpLocalization[HelpLang.Modify_Name_Redirect]
                                     </MudText>
                                 }
                             </Section>
@@ -312,7 +312,7 @@
                                             <MudSwitch T=bool
                                                        Color=Color.Success
                                                        ThumbIconColor="@(User.RequirePasswordChange==true?Color.Success:Color.Default)"
-                                                       Label=@AppLocalization["Require Password Change"]
+                                                       Label=@AppLocalization[Lang.Require_Password_Change]
                                                        Value=@User.RequirePasswordChange
                                                        Disabled=@true />
 
@@ -329,7 +329,7 @@
 
 
                                     <MudText Class="py-4">
-                                        To modify the account name or email click the rename button in the toolbar/gear menu
+                                        @AppHelpLocalization[HelpLang.Modify_Name_Redirect]
                                     </MudText>
 
                                 }
