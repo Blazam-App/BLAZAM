@@ -9,10 +9,22 @@
     <MudStack Row="true">
 
         <MudStack Class="mud-width-full">
-            @foreach (var orFilter in newRule.Filters)
+            @{
+            bool first = true;
+        }
+        @foreach (var orFilter in newRule.Filters)
         {
+            @if (!first)
+            {
+                <MudSpacer />
+                <MudText>Or</MudText>
+                <MudSpacer />
+            }
+            else
+            {
+                first = false;
+            }
             <MudStack Row="true">
-                <MudText>Or Filter</MudText>
 
                 <MudStack Row="true">
                     <MudStack Class="mud-width-full">
@@ -23,7 +35,9 @@
                                 <MudText>And Filter</MudText>
                                 <EditAndFitler Filter="andFilter" />
                                 <MudSpacer />
-                                <MudFab OnClick="@(()=>{RemoveAndFilter(orFilter,andFilter);})" StartIcon="@Icons.Material.Filled.Remove" />
+                                <MudFab OnClick="@(()=>{RemoveAndFilter(orFilter,andFilter);})"
+                                        Color="Color.Error"
+                                        StartIcon="@Icons.Material.Filled.Remove" />
                             </MudStack>
 
                         }
@@ -32,12 +46,16 @@
                 </MudStack>
                 <MudSpacer />
 
-                <MudFab OnClick="@(()=>{RemoveOrFilter(orFilter);})" StartIcon="@Icons.Material.Filled.Remove" />
+                <MudFab OnClick="@(()=>{RemoveOrFilter(orFilter);})"
+                        Color="Color.Error"
+                        StartIcon="@Icons.Material.Filled.Remove" />
             </MudStack>
             <MudStack Row="true">
 
                 <MudSpacer />
-                <MudFab OnClick="@(()=>{AddAndFilter(orFilter);})" StartIcon="@Icons.Material.Filled.Add" />
+                <MudFab OnClick="@(()=>{AddAndFilter(orFilter);})"
+                        Color="Color.Success"
+                        StartIcon="@Icons.Material.Filled.Add" />
 
             </MudStack>
 
@@ -50,7 +68,9 @@
 <MudStack Row="true">
 
     <MudSpacer />
-    <MudFab OnClick="AddOrFilter" StartIcon="@Icons.Material.Filled.Add" />
+    <MudFab OnClick="AddOrFilter"
+            Color="Color.Success"
+            StartIcon="@Icons.Material.Filled.Add" />
 </MudStack>
 
 
@@ -58,18 +78,39 @@
 <MudDivider />
 <MudText>Actions</MudText>
 <MudStack Row="true">
+    <MudStack>
 
+        @foreach (var action in newRule.Actions)
+        {
+            <EditRuleAction Action=action />
+            <MudSpacer />
+
+            <MudFab OnClick="@(()=>{RemoveAction(action);})"
+                    Color="Color.Error"
+                    StartIcon="@Icons.Material.Filled.Remove" />
+
+        }
+    </MudStack>
     <MudSpacer />
-    <MudFab StartIcon="@Icons.Material.Filled.Add" />
+    <MudFab OnClick="AddAction"
+            Color="Color.Success"
+            StartIcon="@Icons.Material.Filled.Add" />
 
 </MudStack>
 <AppModal>
     <NewAutomationTrigger Rule="newRule" />
 </AppModal>
 @code {
+
     [Parameter]
     public NotificationType Trigger { get; set; }
     private AutomationRule newRule = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+    }
 
     private void AddAndFilter(AutomationRuleOrFilter orFilter)
     {
@@ -77,12 +118,22 @@
         newFilter.FilterGuid = Guid.NewGuid();
         orFilter.AndFilters.Add(newFilter);
     }
-
+    private void AddAction()
+    {
+        var newAction = new AutomationRuleAction();
+        newAction.ActionGuid = Guid.NewGuid();
+        newRule.Actions.Add(newAction);
+    }
     private void RemoveAndFilter(AutomationRuleOrFilter orFilter, AutomationRuleAndFilter andFilter)
     {
-        var index = orFilter.AndFilters.IndexOf(andFilter);
 
         orFilter.AndFilters.Remove(andFilter);
+    }
+
+    private void RemoveAction(AutomationRuleAction action)
+    {
+
+        newRule.Actions.Remove(action);
     }
 
     private void AddOrFilter()

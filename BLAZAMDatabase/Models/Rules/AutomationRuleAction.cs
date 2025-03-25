@@ -23,6 +23,16 @@ namespace BLAZAM.Database.Models.Rules
         public List<AutomationRuleFieldValue> FieldValues { get; set; }
         public string? MoveTo { get; set; }
         public List<AutomationRuleGroupSid> GroupSids { get; set; }
+        public Guid ActionGuid { get; set; }
 
+        public override bool Equals(object? obj)
+        {
+            if (obj is AutomationRuleAction otherFilter)
+            {
+                return ActionGuid.Equals(otherFilter.ActionGuid);
+
+            }
+            return false;
+        }
     }
 }

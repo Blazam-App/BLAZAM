@@ -1,0 +1,37 @@
+@inherits DatabaseComponentBase
+@using BLAZAM.Database.Models.Rules
+<MudStack Row=true>
+    <MudSelectList T="AutomationRuleActionType"
+                   Values="_actionTypes"
+                   @bind-Value=Action.ActionType />
+    @if (Action.ActionType == AutomationRuleActionType.ModifyField)
+    {
+        <MudSelectList Values="_fields" @bind-Value=_selectedField />
+        @if (_selectedField != null)
+        {
+            
+        }
+    }
+
+</MudStack>
+
+@code {
+    ActiveDirectoryField? _selectedField;
+    private List<ActiveDirectoryField> _fields = new();
+    [Parameter]
+    public AutomationRuleAction Action { get; set; }
+
+
+    private List<AutomationRuleActionType> _actionTypes = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _fields = await Context.ActiveDirectoryFields.ToListAsync();
+        foreach (AutomationRuleActionType enu in Enum.GetValues(typeof(AutomationRuleActionType)))
+        {
+            _actionTypes.Add(enu);
+        }
+    }
+}

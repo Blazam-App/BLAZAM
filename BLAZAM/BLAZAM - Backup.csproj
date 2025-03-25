@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.3.1</AssemblyVersion>
-		<Version>2025.03.25.1736</Version>
+		<Version>2025.03.25.1703</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -129,7 +129,6 @@
 
 	<ItemGroup>
 	  <None Include="..\BLAZAMGui\UI\Settings\Rules\EditOrFilter.razor" Link="EditOrFilter.razor" />
-	  <None Include="..\BLAZAMGui\UI\Settings\Rules\EditRuleAction.razor" Link="EditRuleAction.razor" />
 	  <None Include="..\BLAZAMGui\UI\Settings\Templates\VariableTable.razor" Link="VariableTable.razor" />
 	  <None Include="..\BLAZAMGui\UI\Settings\Update\UpdateReleaseNotesExpansionPanel.razor" Link="UpdateReleaseNotesExpansionPanel.razor" />
 	</ItemGroup>
