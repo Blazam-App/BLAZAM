@@ -142,7 +142,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch
                 {
-                    //I
+                    //Ignoree error
                 }
                 return true;
             }
