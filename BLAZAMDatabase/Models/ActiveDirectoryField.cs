@@ -8,7 +8,7 @@ namespace BLAZAM.Database.Models
     {
         Text, Date, RawData,
         DriveLetter,
-        List
+        StringList,FileTime
     }
     /// <summary>
     /// Represents a built-in standard Active Directory attribute
@@ -70,12 +70,8 @@ namespace BLAZAM.Database.Models
                     switch (FieldName)
                     {
                         case "l":
-                        case "cn":
                         case "company":
                         case "department":
-                        case "description":
-                        case "displayName":
-                        case "distinguishedName":
                         case "employeeId":
                         case "givenname":
                         case "homeDirectory":
@@ -86,12 +82,11 @@ namespace BLAZAM.Database.Models
                         case "mail":
                         case "memberOf":
                         case "middleName":
-                        case "objectSID":
                         case "pager":
                         case "physicalDeliveryOffice":
                         case "postalCode":
                         case "profilePath":
-                        case "samaccountname":
+                        //case "samaccountname":
                         case "scriptPath":
                         case "site":
                         case "sn":
@@ -101,7 +96,7 @@ namespace BLAZAM.Database.Models
                         case "telephoneNumber":
                         case "title":
                         case "thumbnail":
-                        case "userPrincipalName":
+                        //case "userPrincipalName":
                         case "userWorkstations":
 
                             return true;
@@ -110,14 +105,9 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.Computer:
                     switch (FieldName)
                     {
-                        case "cn":
-                        case "description":
-                        case "displayName":
-                        case "distinguishedName":
                         case "memberOf":
-                        case "objectSID":
                         case "operatingSystemVersion":
-                        case "samaccountname":
+                        //case "samaccountname":
                         case "site":
                             return true;
                     }
@@ -126,14 +116,9 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.Group:
                     switch (FieldName)
                     {
-                        case "cn":
-                        case "description":
-                        case "displayName":
-                        case "distinguishedName":
                         case "mail":
                         case "memberOf":
-                        case "objectSID":
-                        case "samaccountname":
+                        //case "samaccountname":
                         case "site":
                         case "groupType":
                             return true;
@@ -143,18 +128,25 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.OU:
                     switch (FieldName)
                     {
-                        case "cn":
-                        case "description":
-                        case "displayName":
-                        case "distinguishedName":
-                        case "objectSID":
                         case "site":
                             return true;
 
 
                     }
                     break;
+                default:
+                    switch (FieldName)
+                    {
+                        case "cn":
+                        case "description":
+                        case "displayName":
+                        case "distinguishedName":
+                        case "objectSID":
+                            return true;
 
+
+                    }
+                    break;
 
             }
             return false;

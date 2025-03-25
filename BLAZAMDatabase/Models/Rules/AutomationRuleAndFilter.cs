@@ -29,5 +29,18 @@ namespace BLAZAM.Database.Models.Rules
         /// </summary>
         public bool Negate { get; set; }
         public TimeSpan? TimeFrame { get; set; }
+
+        public Guid FilterGuid { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is AutomationRuleAndFilter otherFilter){
+                return FilterGuid.Equals(otherFilter.FilterGuid);
+
+            }
+            return false;
+        }
+
+       
     }
 }

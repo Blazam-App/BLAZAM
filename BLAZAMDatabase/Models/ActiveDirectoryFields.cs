@@ -27,7 +27,7 @@
         public static ActiveDirectoryField Description = new() { Id = 18, FieldName = "description", DisplayName = "Description", FieldType = ActiveDirectoryFieldType.Text };
         public static ActiveDirectoryField DisplayName = new() { Id = 19, FieldName = "displayName", DisplayName = "Display Name", FieldType = ActiveDirectoryFieldType.Text };
         public static ActiveDirectoryField DistinguishedName = new() { Id = 20, FieldName = "distinguishedName", DisplayName = "Distinguished Name", FieldType = ActiveDirectoryFieldType.Text };
-        public static ActiveDirectoryField MemberOf = new() { Id = 21, FieldName = "memberOf", DisplayName = "Member Of", FieldType = ActiveDirectoryFieldType.List };
+        public static ActiveDirectoryField MemberOf = new() { Id = 21, FieldName = "memberOf", DisplayName = "Member Of", FieldType = ActiveDirectoryFieldType.StringList };
         public static ActiveDirectoryField Company = new() { Id = 22, FieldName = "company", DisplayName = "Company", FieldType = ActiveDirectoryFieldType.Text };
         public static ActiveDirectoryField Title = new() { Id = 23, FieldName = "title", DisplayName = "Title", FieldType = ActiveDirectoryFieldType.Text };
         public static ActiveDirectoryField UserPrincipalName = new() { Id = 24, FieldName = "userPrincipalName", DisplayName = "User Principal Name", FieldType = ActiveDirectoryFieldType.Text };

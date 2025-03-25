@@ -4,12 +4,12 @@
 <MudSwitch @bind-Value=newRule.Enabled Label="@AppLocalization[Lang.Enabled]" />
 <MudDatePicker Clearable="true" @bind-Date=newRule.ExpirationDate Label="@AppLocalization[Lang.Expires]" />
 <MudText>Trigger: @Trigger.ToString()</MudText>
-<MudDivider />
-<MudText>Filters</MudText>
-<MudStack Row="true">
+    <MudDivider />
+    <MudText>Filters</MudText>
+    <MudStack Row="true">
 
-    <MudStack Class="mud-width-full">
-        @foreach (var orFilter in newRule.Filters)
+        <MudStack Class="mud-width-full">
+            @foreach (var orFilter in newRule.Filters)
         {
             <MudStack Row="true">
                 <MudText>Or Filter</MudText>
@@ -21,7 +21,7 @@
                             <MudStack Row="true">
 
                                 <MudText>And Filter</MudText>
-                                <EditAndFitler Filter="andFilter"/>
+                                <EditAndFitler Filter="andFilter" />
                                 <MudSpacer />
                                 <MudFab OnClick="@(()=>{RemoveAndFilter(orFilter,andFilter);})" StartIcon="@Icons.Material.Filled.Remove" />
                             </MudStack>
@@ -73,11 +73,15 @@
 
     private void AddAndFilter(AutomationRuleOrFilter orFilter)
     {
-        orFilter.AndFilters.Add(new());
+        var newFilter = new AutomationRuleAndFilter();
+        newFilter.FilterGuid = Guid.NewGuid();
+        orFilter.AndFilters.Add(newFilter);
     }
 
     private void RemoveAndFilter(AutomationRuleOrFilter orFilter, AutomationRuleAndFilter andFilter)
     {
+        var index = orFilter.AndFilters.IndexOf(andFilter);
+
         orFilter.AndFilters.Remove(andFilter);
     }
 
@@ -85,7 +89,9 @@
     {
         if (newRule != null)
         {
-            newRule.Filters.Add(new());
+            var newFilter = new AutomationRuleOrFilter();
+            newFilter.FilterGuid = Guid.NewGuid();
+            newRule.Filters.Add(newFilter);
         }
     }
 

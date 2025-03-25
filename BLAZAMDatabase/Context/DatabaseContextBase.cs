@@ -360,7 +360,7 @@ namespace BLAZAM.Database.Context
                     Id = 21,
                     FieldName = "memberOf",
                     DisplayName = "Member Of",
-                    FieldType = ActiveDirectoryFieldType.List
+                    FieldType = ActiveDirectoryFieldType.StringList
                 },
 
                 new ActiveDirectoryField

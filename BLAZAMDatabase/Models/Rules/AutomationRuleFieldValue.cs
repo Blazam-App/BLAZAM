@@ -4,7 +4,6 @@
     {
         public ActiveDirectoryField Field { get; set; }
         public string? Value { get; set; }
-        public ActiveDirectoryFieldType FieldType { get; set; }
         public AutomationRuleAction AutomationRuleAction { get; set; }
         public int AutomationRuleActionId { get; set; }
     }
