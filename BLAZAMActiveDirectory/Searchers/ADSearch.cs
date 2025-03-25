@@ -6,6 +6,7 @@ using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.DirectoryServices;
+using System.Runtime.InteropServices;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -261,6 +262,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 return Results.Cast<TInterface>().ToList();
 
 
+            }
+            catch (COMException ex)
+            {
+                Loggers.ActiveDirectoryLogger.Information("Directory Entry failed to connect {@Error}", ex);
             }
             catch (Exception ex)
             {
