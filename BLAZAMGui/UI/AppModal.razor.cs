@@ -30,10 +30,13 @@ namespace BLAZAM.Gui.UI
             get => Options.CloseButton == true; set
             {
                 if (Options == null)
-                    Options = new();
-                Options.BackdropClick = value;
-                Options.CloseButton = value;
-                Options.CloseOnEscapeKey = value;
+                    Options = new()
+                    {
+                        BackdropClick = value,
+                        CloseButton = value,
+                        CloseOnEscapeKey = value
+                    };
+
                 RefreshView();
             }
         }
@@ -119,17 +122,17 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public MaxWidth? Width { get; set; }
 
-
+       
         protected override void OnInitialized()
         {
             base.OnInitialized();
             YesText = AppLocalization[Lang.Ok];
             if (Options == null)
-                Options = new();
-            if (Width != null)
-            {
-                Options.MaxWidth = Width;
-            }
+                Options = new()
+                {
+                    MaxWidth = Width
+                };
+
             AllowClose = true;
         }
         /// <summary>
@@ -167,21 +170,6 @@ namespace BLAZAM.Gui.UI
             else
                 Close();
         }
-        /// <summary>
-        /// Sets the modal to be fullscreen, disabled by passing false.
-        /// </summary>
-        /// <param name="enabled"></param>
-        public void Fullscreen(bool enabled = true)
-        {
-            var existingOptions = Modal.Options;
-            existingOptions.FullScreen = enabled;
-            existingOptions.FullWidth = enabled;
-            if (enabled)
-            {
-                existingOptions.MaxWidth = MaxWidth.ExtraExtraLarge;
-            }
-            Modal.Options = existingOptions;
-            RefreshView();
-        }
+       
     }
 }
