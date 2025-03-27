@@ -71,3 +71,4 @@ Blazam's Web Installer is the recommended installation method.
 
 [Manual Installation](https://docs.blazam.org/install/manual)
 
+## [Contributing](/CONTRIBUTING.md)
