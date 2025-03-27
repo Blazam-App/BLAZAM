@@ -48,8 +48,8 @@
     public IDirectoryEntryAdapter Model { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        Modal.Options.FullWidth = true;
-        Modal.Options.CloseButton = true;
+        //Modal.Options.FullWidth = true;
+        //Modal.Options.CloseButton = true;
         await base.OnInitializedAsync();
 
         _ = AuditLogger.System.Analytics.ObjectHistoryViewed(Model.ObjectType);

@@ -51,7 +51,7 @@
     private string? authToken;
     private MudDialog? dialog;
     private SecureString? authSecret;
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
     [Parameter]
     public AppEvent? OnAuthenticated { get; set; }
 
