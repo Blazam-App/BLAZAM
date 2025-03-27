@@ -16,9 +16,9 @@ Translation suggestions can be done entirely in browser. Follow the steps below 
 4. Open the appropriate file (example image shows AppLocalization in Spanish![image](https://github.com/user-attachments/assets/12cb1ee8-001b-4c3e-95d3-a79c1d329ec9))
 5. Click edit file ![image](https://github.com/user-attachments/assets/f945d05f-10d4-42fc-821e-7002c724d1ae)
 6. Each translation is stored as an XML object, for example "Account" is... ` <data name="Account" xml:space="preserve">
-    `<value>Cuenta</value>
+    <value>Cuenta</value>
   </data>`
-7. Modify the contents between <value>...</value>
+7. Modify the contents between `<value>...</value>`
 8. Create a pull request
 
 
