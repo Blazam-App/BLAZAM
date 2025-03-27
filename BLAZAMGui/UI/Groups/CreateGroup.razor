@@ -104,8 +104,10 @@
 
     void CreateNewGroup()
     {
+        if (parentOU == null) return;
         LoadingData = true;
-        newGroup = parentOU?.CreateGroup(newGroupName);
+        newGroup = parentOU.CreateGroup(newGroupName);
+
         if(!newDescription.IsNullOrEmpty()){
             newGroup.Description = newDescription;
         }

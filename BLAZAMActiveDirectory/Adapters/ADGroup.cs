@@ -147,7 +147,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public override IJob CommitChanges(IJob? dcr = null)
+        public override IJob CommitChanges(IJob? commitJob = null)
         {
             if (MembersToAdd.Count > 0)
             {
@@ -176,9 +176,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
 
-            dcr = base.CommitChanges(dcr);
+            commitJob = base.CommitChanges(commitJob);
 
-            return dcr;
+            return commitJob;
         }
 
         public override void DiscardChanges()

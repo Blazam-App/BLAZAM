@@ -130,8 +130,6 @@
     string? tokenCreatorUsername;
     GoogleAuthenticatorModal? googleAuthenticatorModal;
     private string? passcode;
-    private SecureString? googleAuthSecret;
-    AuthenticationSettings authSettings;
 
     bool attemptingSignIn = false;
     string redirectUrl;
@@ -140,7 +138,6 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        authSettings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
         redirectUrl = Nav.Uri;
         LoginRequest.ReturnUrl = Nav.Uri;
         var currentUri = new Uri(Nav.Uri);
@@ -238,7 +235,6 @@
                     Nav.NavigateTo(authenticationResult.MFARedirect);
                 break;
             case LoginResultStatus.GoogleAuthenticatorRequested:
-                googleAuthSecret = authenticationResult.MFAToken.ToSecureString();
                 await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken.ToSecureString());
                 break;
             case LoginResultStatus.OK:
