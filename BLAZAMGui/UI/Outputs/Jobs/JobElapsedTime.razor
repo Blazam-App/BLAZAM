@@ -33,7 +33,7 @@
     {
         get
         {
-            if (Step.ElapsedTime == null || !Step.ElapsedTime.HasValue) return AppLocalization["Not finished"];
+            if (Step.ElapsedTime == null || !Step.ElapsedTime.HasValue) return AppLocalization[Lang.Not_finished];
             if (Step.ElapsedTime.Value.TotalSeconds < 1)
             {
                 return Step.ElapsedTime.Value.TotalMilliseconds + "ms";   

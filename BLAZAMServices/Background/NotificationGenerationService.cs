@@ -15,6 +15,7 @@ using BLAZAM.Notifications.Services;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Linq;
 
 namespace BLAZAM.Services.Background
 {
@@ -77,19 +78,23 @@ namespace BLAZAM.Services.Background
 
         }
 
+
         private async Task ProcessUserNotification(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor, AppUser user, NotificationMessage notification, string notificationTitle, NotificationTemplateComponent? emailMessage, bool _emailConfigured)
         {
             //Avoid sending to triggering user if actor is set
             if (user.Id != actor?.Id)
             {
+                //Calculate recipient subscriptions
                 var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
                 var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
 
+                //Publish in app notifications to subscribing subscriptions
                 if (effectiveInAppSubscriptions != null && effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                 {
                     await _notificationPublisher.PublishNotification(user, notification);
                 }
 
+                //Publish email notification to subscribing subscriptions
                 if (effectiveEmailSubscriptions != null && effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                 {
                     if (emailMessage != null)
@@ -113,7 +118,6 @@ namespace BLAZAM.Services.Background
             using var context = Context;
             var webhooks = await context.WebHookSubscriptions.Where(w => w.DeletedAt == null)
                 .Include(w => w.NotificationTypes)
-                .Where(x => x.DeletedAt == null)
                 .ToListAsync();
             if (webhooks.Any(w => w.NotificationTypes.Any(nt => nt.NotificationType == notificationType)))
             {
@@ -186,7 +190,7 @@ namespace BLAZAM.Services.Background
                 case NotificationType.Unassign:
                     notification.Action = ActiveDirectoryObjectAction.Unassign;
 
-                    notificationTitle += _appLocalization["Removed from Group"];
+                    notificationTitle += _appLocalization[Lang.Removed_from_Group];
                     notificationBody += _appLocalization["was removed from"] + " <a href=\"" + target.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
 
                     var groupMemberRemovedMessage = NotificationType.Unassign.ToNotification<EntryUnassignedEmailMessage>();
@@ -197,7 +201,7 @@ namespace BLAZAM.Services.Background
                 case NotificationType.Assign:
                     notification.Action = ActiveDirectoryObjectAction.Assign;
 
-                    notificationTitle += _appLocalization["Added to Group"];
+                    notificationTitle += _appLocalization[Lang.Added_to_Group];
                     notificationBody += _appLocalization["was assigned to"] + " <a href=\"" + target.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
 
                     var groupMemberAssignedMessage = NotificationType.Assign.ToNotification<EntryAssignedEmailMessage>();
@@ -209,7 +213,7 @@ namespace BLAZAM.Services.Background
                 case NotificationType.PasswordChange:
                     notification.Action = ActiveDirectoryObjectAction.SetPassword;
 
-                    notificationTitle += _appLocalization["Password Reset"];
+                    notificationTitle += _appLocalization[Lang.Password_Changed];
                     notificationBody += _appLocalization["had a password reset at "] + time;
                     var passwordChangeMessage = NotificationType.PasswordChange.ToNotification<PasswordChangedEmailMessage>();
                     passwordChangeMessage.EntryName = source.CanonicalName;
@@ -218,7 +222,7 @@ namespace BLAZAM.Services.Background
                 case NotificationType.LockedOut:
                     var sourceUser = source as IADUser;
                     if (sourceUser == null) return;
-                    notificationTitle += _appLocalization["Locked Out"];
+                    notificationTitle += _appLocalization[Lang.Locked_Out];
                     notificationBody += _appLocalization["has been locked out at "] + sourceUser.LockoutTime?.ToLocalTime();
                     var lockedOutMessage = NotificationType.LockedOut.ToNotification<LockedOutEmailMessage>();
                     lockedOutMessage.EntryName = source.CanonicalName;
@@ -289,14 +293,9 @@ namespace BLAZAM.Services.Background
 
                             if (sub.ByEmail)
                             {
-
-                                foreach (var type in sub.NotificationTypes)
-                                {
-                                    if (!effectiveByEmailSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType))
-                                    {
-                                        effectiveByEmailSubscription.NotificationTypes.Add(new() { NotificationType = type.NotificationType });
-                                    }
-                                }
+                                effectiveByEmailSubscription.NotificationTypes.AddRange(from type in sub.NotificationTypes
+                                                                                        where !effectiveByEmailSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType)
+                                                                                        select new SubscriptionNotificationType() { NotificationType = type.NotificationType });
                             }
 
 

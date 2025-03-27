@@ -4,7 +4,7 @@
                           RowsPerPage="@ItemsPerPage"
                           RowsPerPageChanged="@SetRowsPerPage"
                           RowClick=@GoTo
-                          OnChanged="RefreshData"
+                          OnChanged="RefreshDataAsync"
                           T="IADComputer"
                           Loading=LoadingData />
 
@@ -15,7 +15,7 @@
         set => CurrentUser.State.Cache.Set(this.GetType(), value);
     }
 
-    protected override async Task RefreshData()
+    protected override async Task RefreshDataAsync()
     {
         LoadingData = true;
         NewComputers = (await Directory.Computers.FindNewComputersAsync()).Where(u => u.CanRead).ToList();

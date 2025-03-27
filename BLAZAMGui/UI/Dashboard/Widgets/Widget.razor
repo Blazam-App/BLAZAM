@@ -18,26 +18,28 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if (CurrentUserDashboardWidgets?.OnRefreshWidget!=null){
+        if (CurrentUserDashboardWidgets?.OnRefreshWidget != null)
+        {
             CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
            {
                if (widget.WidgetType.Equals(WidgetType))
                {
-                   _ = RefreshData();
+                   _ = RefreshDataAsync();
 
                }
 
            };
         }
-        _=Task.Run(() => { 
-            _ = RefreshData();
+        _ = Task.Run(() =>
+        {
+            _ = RefreshDataAsync();
 
         });
     }
 
-    protected virtual async Task RefreshData()
+    protected virtual async Task RefreshDataAsync()
     {
-        
+
     }
     protected virtual void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
     {
@@ -50,14 +52,15 @@
     {
         Nav.NavigateTo(args.SearchUri);
     }
-  
+
     protected async Task SetRowsPerPage(int rowPerPage)
     {
         try
         {
             CurrentUser.State.Preferences.DashboardWidgets.First(w => w.WidgetType.Equals(WidgetType)).ItemsPerPage = rowPerPage;
             await CurrentUser.State.SaveDashboardWidgets();
-        }catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             Loggers.SystemLogger.Error("Error attempting to set a widgets rows per page preference. {Error}", ex);
         }

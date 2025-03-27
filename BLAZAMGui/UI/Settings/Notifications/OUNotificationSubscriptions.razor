@@ -121,10 +121,10 @@
             </th>
         }
         <th>
-            @AppLocalization["In App"]
+            @AppLocalization[Lang.In_App]
         </th>
         <th>
-            @AppLocalization["To Email"]
+            @AppLocalization[Lang.To_Email]
         </th>
         <th>&nbsp;</th>
         <th>&nbsp;</th>
@@ -293,7 +293,7 @@
                 newSubscription = new();
                 newSubscription.UserId = User.Id;
                 newSubscription.OU = OU?.DN;
-                SnackBarService.Success(AppLocalization["Saved notification subscription"]);
+                SnackBarService.Success(AppLocalization[Lang.Changes_have_been_saved]);
                 await UpdateSubscriptions();
 
 

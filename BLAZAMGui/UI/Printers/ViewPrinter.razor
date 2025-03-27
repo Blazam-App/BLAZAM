@@ -11,11 +11,11 @@
         <SetSubHeader>
 
             <DirectoryEntryViewHeader EditMode="@EditMode"
-            DirectoryEntry="@Printer"
-            OnDelete="@DeleteComputer"
-            OnMove="@(()=>{MoveToModal?.ShowAsync();})"
-            OnRename="@(()=>{RenameModal?.ShowAsync();})"
-            OnToggleEditMode="ToggleEditMode" />
+                                      DirectoryEntry="@Printer"
+                                      OnDelete="@DeleteComputer"
+                                      OnMove="@(()=>{MoveToModal?.ShowAsync();})"
+                                      OnRename="@(()=>{RenameModal?.ShowAsync();})"
+                                      OnToggleEditMode="ToggleEditMode" />
             <LoadingData Loading=SavingChanges />
 
 
@@ -45,13 +45,28 @@
 
 
 
-                    <Section Title=@AppLocalization["Info"]>
+                    <Section Title=@AppLocalization[Lang.Info]>
                         <MudStack Row=true Class="@_fieldMudStackClasses">
-                            <DynamicMudInput T=string Label="@AppLocalization[Lang.Name]" @bind-Value="@Printer.CanonicalName" Disabled=@true />
-                            <DynamicMudInput T=string Label="@AppLocalization["Driver"]" @bind-Value="@Printer.DriverName" Disabled=@true />
-                            <DynamicMudInput T=string Label="@AppLocalization["Driver Version"]" @bind-Value="@Printer.DriverVersion" Disabled=@true />
-                            <DynamicMudInput T=string Label="@AppLocalization["UNC Path"]" @bind-Value="@Printer.UncName" Disabled=@true />
-                            <DynamicMudInput T=string Label="@AppLocalization["Location"]" @bind-Value="@Printer.Location" Disabled=@true />
+                            <DynamicMudInput T=string
+                                             Label="@AppLocalization[Lang.Name]"
+                                             @bind-Value="@Printer.CanonicalName"
+                                             Disabled=@true />
+                            <DynamicMudInput T=string
+                                             Label="@AppLocalization[Lang.Driver]"
+                                             @bind-Value="@Printer.DriverName"
+                                             Disabled=@true />
+                            <DynamicMudInput T=string
+                                             Label="@AppLocalization[Lang.Driver_Version]"
+                                             @bind-Value="@Printer.DriverVersion"
+                                             Disabled=@true />
+                            <DynamicMudInput T=string
+                                             Label="@AppLocalization[Lang.UNC_Path]"
+                                             @bind-Value="@Printer.UncName"
+                                             Disabled=@true />
+                            <DynamicMudInput T=string
+                                             Label="@AppLocalization[Lang.Location]"
+                                             @bind-Value="@Printer.Location"
+                                             Disabled=@true />
 
                         </MudStack>
 

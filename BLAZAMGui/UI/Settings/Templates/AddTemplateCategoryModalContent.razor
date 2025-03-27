@@ -21,7 +21,7 @@
     {
         if (Categories.Contains(newCategory))
         {
-            SnackBarService.Warning(AppLocalization["A category with that name already exists."]);
+            SnackBarService.Warning(AppHelpLocalization[HelpLang.Duplicate_Name_Conflict]);
         }
         await CategoryAdded.InvokeAsync(newCategory);
         

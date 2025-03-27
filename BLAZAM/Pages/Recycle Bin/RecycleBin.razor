@@ -26,7 +26,7 @@
         <MudButton Color="Color.Primary"
                    Variant="@Variant.Outlined"
                    OnClick="@(async()=>{await RestoreSelected();})">
-            @AppLocalization["Restore Selected"]
+            @AppLocalization[Lang.Restore_Selected]
         </MudButton>
 
     </ToolBarContent>
@@ -41,7 +41,7 @@
             </CellTemplate>
         </TemplateColumn>
         <PropertyColumn Property="x => x.CanonicalName" Title=@AppLocalization[Lang.Name] />
-        <PropertyColumn Property="x => x.LastKnownParent" Title=@AppLocalization["Last OU"] />
+        <PropertyColumn Property="x => x.LastKnownParent" Title=@AppLocalization[Lang.Last_OU] />
         <PropertyColumn Property="x => x.LastChanged" Title=@AppLocalization[Lang.Deleted] />
         <TemplateColumn CellClass="d-flex justify-end" Title=@AppLocalization[Lang.Restore]>
             <CellTemplate>

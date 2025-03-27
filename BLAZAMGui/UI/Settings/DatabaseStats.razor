@@ -1,5 +1,6 @@
 ﻿@inherits DatabaseComponentBase
-<MudExpansionPanel Style="background-color: var(--mud-palette-background);" Text="@AppLocalization["Database Stats"]">
+<MudExpansionPanel Style="background-color: var(--mud-palette-background);"
+                   Text="@AppLocalization[Lang.Database_Stats]">
     <MudDataGrid Loading=@LoadingData Items="@tableDataList">
         <Columns>
             <PropertyColumn Property="x=>x.TableName" />
@@ -29,7 +30,7 @@
         {
             LoadingData = true;
             tableDataList = new List<TableData>()
-    {
+        {
         new TableData { TableName = "AccessLevelFieldMapping", Count = Context.AccessLevelFieldMapping.Count() },
         new TableData { TableName = "AccessLevelObjectMapping", Count = Context.AccessLevelObjectMapping.Count() },
         new TableData { TableName = "AccessLevels", Count = Context.AccessLevels.Count() },
@@ -60,7 +61,7 @@
         new TableData { TableName = "UserSettings", Count = Context.UserSettings.Count() },
         new TableData { TableName = "WebHookAttempts", Count = Context.WebHookAttempts.Count() },
         new TableData { TableName = "WebHookSubscriptions", Count = Context.WebHookSubscriptions.Count() }
-    };
+        };
             LoadingData = false;
         });
 

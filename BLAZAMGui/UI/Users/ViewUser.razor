@@ -177,12 +177,12 @@
                             @if (User.Disabled)
                             {
                                 <MudAlert Severity="Severity.Error"
-                                          Class="mud-width-full">@AppLocalization["User is disabled"]</MudAlert>
+                                          Class="mud-width-full">@AppLocalization[Lang.User_is_disabled]</MudAlert>
                             }
                             @if (User.LockedOut)
                             {
                                 <MudAlert Severity="Severity.Warning"
-                                          Class="mud-width-full">@AppLocalization["User is locked out"]</MudAlert>
+                                          Class="mud-width-full">@AppLocalization[Lang.User_is_locked_out]</MudAlert>
                             }
 
 
@@ -223,7 +223,7 @@
                                 @if (EditMode && User?.NewEntry == false)
                                 {
                                     <MudText>
-                                        To modify the user's name click the rename button in the toolbar/gear menu
+                                        @AppHelpLocalization[HelpLang.Modify_Name_Redirect]
                                     </MudText>
                                 }
                             </Section>
@@ -277,7 +277,7 @@
                                     {
                                         <DynamicMudInput T=DateTime?
                                                          Clearable
-                                                         Label="@AppLocalization["Account Expiration"]"
+                                                         Label="@AppLocalization[Lang.Account_Expiration]"
                                                          @bind-Value="@User.ExpireTime"
                                                          Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.AccountExpires)) />
 
@@ -312,7 +312,7 @@
                                             <MudSwitch T=bool
                                                        Color=Color.Success
                                                        ThumbIconColor="@(User.RequirePasswordChange==true?Color.Success:Color.Default)"
-                                                       Label=@AppLocalization["Require Password Change"]
+                                                       Label=@AppLocalization[Lang.Require_Password_Change]
                                                        Value=@User.RequirePasswordChange
                                                        Disabled=@true />
 
@@ -329,7 +329,7 @@
 
 
                                     <MudText Class="py-4">
-                                        To modify the account name or email click the rename button in the toolbar/gear menu
+                                        @AppHelpLocalization[HelpLang.Modify_Name_Redirect]
                                     </MudText>
 
                                 }
@@ -469,7 +469,7 @@
 
                 @if (User.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
                 {
-                    <Section Title=@AppLocalization["Additional Field"]>
+                    <Section Title=@AppLocalization[Lang.Additional_Fields]>
 
                         @foreach (var field in CustomFields)
                         {
@@ -649,7 +649,7 @@
 
     async void SaveChanges()
     {
-        if (await MessageService.Confirm(AppLocalization["Are you sure you want to save the changes?"]))
+        if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_Save_Changes]))
         {
             SavingChanges = true;
             await RefreshEntryComponents();

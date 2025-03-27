@@ -58,40 +58,53 @@
                     <MudGrid>
                         <MudItem xs="12" md="3">
                             <Section FullWidth=false>
+                                <MudCard Elevation="2"
+                                         Style="width:fit-content;height:fit-content"
+                                         Class="relative mx-auto d-block p-1 mb-5">
 
-                                <Section Elevation=0 Title=@AppLocalization[Lang.Info]>
-                                    <MudStack Row=true Class="@_fieldMudStackClasses">
-                                        <DynamicMudInput T=string Label="@AppLocalization[Lang.Name]" @bind-Value="@Computer.CanonicalName" Disabled=@(!EditMode) />
-                                        <DynamicMudInput T=string Label="@AppLocalization[Lang.Operating_System]" @bind-Value="@Computer.OperatingSystem" Disabled=@true />
-                                        <DynamicMudInput T=bool Label="@AppLocalization[Lang.Online]" Value="@(Computer.IsOnline==true)" Disabled=@true />
-                                        <MudStack Row=true>
+                                    <MudIcon Style="min-width:150px;" Icon="@Icons.Material.Filled.Computer" />
+                                </MudCard>
 
-                                            <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
-                                            <MudSpacer />
-                                                <LastLogonTime Typo=Typo.caption DirectoryEntry="Computer" />
-                                        </MudStack>
-                                        @if (Computer.Disabled)
-                                        {
-                                            <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization[Lang.Computer_is_disabled]</MudAlert>
-                                        }
-                                        @if (Computer.LockedOut)
-                                        {
-                                            <MudAlert Severity="Severity.Warning" Class="mud-width-full">@AppLocalization[Lang.Computer_is_locked_out]</MudAlert>
-                                        }
-                                    </MudStack>
+                                <MudStack Row=true>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Name]:</MudText>
+                                    <MudSpacer />
+                                    <MudText>@Computer.CanonicalName</MudText>
 
-                                </Section>
+                                </MudStack>
+                                <MudStack Row=true>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Operating_System]:</MudText>
+                                    <MudSpacer />
+                                    <MudText>@Computer.OperatingSystem</MudText>
 
-                                <Section Title=@AppLocalization[Lang.Groups]>
-                                    <MudStack Row=true Class="@_fieldMudStackClasses">
-                                        <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="Computer" />
+                                </MudStack>
 
-                                    </MudStack>
+                                <MudStack Row=true>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Online]:</MudText>
+                                    <MudSpacer />
+                                    <MudText>
+                                        <StatusCheck Status="@(Computer.IsOnline==true)" />
+                                    </MudText>
+                                </MudStack>
 
-                                </Section>
+                                <MudStack Row=true>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
+                                    <MudSpacer />
+                                    <LastLogonTime Typo=Typo.caption DirectoryEntry="Computer" />
 
+                                </MudStack>
 
-
+                                <MudStack>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Groups]:</MudText>
+                                    <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="Computer" />
+                                </MudStack>
+                                @if (Computer.Disabled)
+                                {
+                                    <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization[Lang.Computer_is_disabled]</MudAlert>
+                                }
+                                @if (Computer.LockedOut)
+                                {
+                                    <MudAlert Severity="Severity.Warning" Class="mud-width-full">@AppLocalization[Lang.Computer_is_locked_out]</MudAlert>
+                                }
                             </Section>
                         </MudItem>
                         <MudItem xs=12 md="9">
@@ -132,7 +145,7 @@
                                 </Section>
                                 @if (Computer.CanReadBitLocker)
                                 {
-                                    <BitLockerViewer Computer="Computer"/>
+                                    <BitLockerViewer Computer="Computer" />
                                 }
                             </MudStack>
 
@@ -211,7 +224,7 @@
 
                     @if (Computer.CanReadAnyCustomFields)
                     {
-                        @if (CustomFields != null && CustomFields.Count>0)
+                        @if (CustomFields != null && CustomFields.Count > 0)
                         {
                             <Section Title=@AppLocalization[Lang.Additional_Fields]>
 
@@ -225,7 +238,7 @@
                                 }
 
 
-                        </Section>
+                            </Section>
                         }
                     }
 
@@ -262,7 +275,7 @@
         await InvokeAsync(StateHasChanged);
         if (Computer != null)
         {
-            Computer.OnOnlineChanged += (async(online) =>
+            Computer.OnOnlineChanged += (async (online) =>
             {
                 await RefreshEntryComponents();
             });
@@ -359,7 +372,7 @@
                         if (DbFactory.DatabaseType == DatabaseType.SQLite)
                         {
                             await NotificationGenerationService.PostAsync(Computer, NotificationType.Modify, CurrentUser.State);
-                           
+
                         }
                         else
                         {

@@ -45,7 +45,7 @@
                  T=IDirectoryEntryAdapter
                  RowClick="@ChildClicked">
         <ToolBarContent>
-            <MudText>@AppLocalization["Current OU"]: @OU.CanonicalName</MudText>
+            <MudText>@AppLocalization[Lang.Current_OU]: @OU.CanonicalName</MudText>
 
             <MudSpacer />
             <MudButton StartIcon="@Icons.Material.Filled.DriveFolderUpload"
@@ -86,7 +86,7 @@
     {
         if (OU != null)
         {
-            if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
+            if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_Save_Changes], AppLocalization[Lang.Save_Changes]))
             {
                 var changes = OU?.Changes;
                 await OU!.CommitChangesAsync();
@@ -102,7 +102,7 @@
                     _ = NotificationGenerationService.PostAsync(OU, NotificationType.Modify, CurrentUser.State);
 
                 }
-                SnackBarService.Success(AppLocalization["The changes made to this ou have been saved."]);
+                SnackBarService.Success(AppLocalization[Lang.Changes_have_been_saved]);
                 await RefreshEntryComponents();
 
 
@@ -119,14 +119,18 @@
     }
     async Task DeleteOU()
     {
-        if (await MessageService.Confirm("Are you sure you want to delete " + OU.CanonicalName + "?", "Delete OU"))
+        if (await MessageService.Confirm("Are you sure you want to delete " + OU?.CanonicalName + "?", "Delete OU"))
         {
             SavingChanges = true;
             await InvokeAsync(StateHasChanged);
             try
             {
+                var ouName = OU.CanonicalName;
                 OU.Delete();
-                SnackBarService.Success(OU.CanonicalName + " has been deleted.");
+                if (ouName != null)
+                {
+                    SnackBarService.Success(AppHelpLocalization[HelpLang.Deleted, ouName]);
+                }
                 await AuditLogger.OU.Deleted(OU);
                 _ = NotificationGenerationService.PostAsync(OU, NotificationType.Delete, CurrentUser.State);
 

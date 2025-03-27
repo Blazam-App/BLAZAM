@@ -5,7 +5,7 @@
                             RowsPerPageChanged="@SetRowsPerPage"
                             RowClick=@GoTo
                             T="IADUser"
-                            OnChanged="RefreshData"
+                            OnChanged="RefreshDataAsync"
                             Loading=LoadingData />
 
 @code {
@@ -15,17 +15,8 @@
         set => CurrentUser.State.Cache.Set("StaleUsers", value);
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-
-
-        _ = RefreshData();
-        await InvokeAsync(StateHasChanged);
-
-    }
-    protected override async Task RefreshData()
+    
+    protected override async Task RefreshDataAsync()
     {
 
         LoadingData = true;
