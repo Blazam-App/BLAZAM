@@ -20,11 +20,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetProperty<byte[]>("thumbnailPhoto");
+                return GetProperty<byte[]>(ActiveDirectoryFields.Thumbnail.FieldName);
             }
             set
             {
-                SetProperty("thumbnailPhoto", value);
+                SetProperty(ActiveDirectoryFields.Thumbnail.FieldName, value);
+                SetProperty(ActiveDirectoryFields.Thumbnail.FieldName, value);
             }
         }
         public string? Pager

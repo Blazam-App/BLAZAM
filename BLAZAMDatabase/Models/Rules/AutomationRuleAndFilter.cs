@@ -2,18 +2,7 @@
 
 namespace BLAZAM.Database.Models.Rules
 {
-    public enum RuleOperator
-    {
-        Equals,
-        Contains,
-        StartsWith,
-        EndsWith,
-        HistoricalTimeFrame,
-        FutureTimeFrame,
-        BeforeNow,
-        AfterNow
 
-    }
     public class AutomationRuleAndFilter : AppDbSetBase
     {
         [NotMapped]
@@ -23,7 +12,7 @@ namespace BLAZAM.Database.Models.Rules
 
         public ActiveDirectoryField Field { get; set; }
         public string? Value { get; set; }
-        public RuleOperator Operator { get; set; }
+        public ActiveDirectoryFieldOperator Operator { get; set; }
         /// <summary>
         /// If true, the filter should return true if the filter does not match, and false if it does
         /// </summary>

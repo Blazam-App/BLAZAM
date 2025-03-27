@@ -4,6 +4,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Database.Models
 {
+    public enum ActiveDirectoryFieldOperator
+    {
+        Equals,
+        Contains,
+        StartsWith,
+        EndsWith,
+        HistoricalTimeFrame,
+        FutureTimeFrame,
+        BeforeNow,
+        AfterNow
+
+    }
     public enum ActiveDirectoryFieldType
     {
         Text, Date, RawData,

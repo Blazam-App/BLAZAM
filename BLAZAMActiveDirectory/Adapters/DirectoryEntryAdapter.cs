@@ -207,11 +207,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("samaccountname");
+                return GetStringProperty(ActiveDirectoryFields.SAMAccountName.FieldName);
             }
             set
             {
-                SetProperty("samaccountname", value);
+                SetProperty(ActiveDirectoryFields.SAMAccountName.FieldName, value);
             }
 
 
@@ -239,7 +239,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var cn = GetStringProperty("cn");
+                var cn = GetStringProperty(ActiveDirectoryFields.CanonicalName.FieldName);
                 if (cn != null)
                 {
                     if (cn.Contains("DEL:"))
@@ -250,7 +250,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                SetProperty("cn", value);
+                SetProperty(ActiveDirectoryFields.CanonicalName.FieldName, value);
             }
         }
 
@@ -277,11 +277,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         return null;
                     }
                 }
-                return GetStringProperty("distinguishedName");
+                return GetStringProperty(ActiveDirectoryFields.DistinguishedName.FieldName);
             }
             set
             {
-                SetProperty("distinguishedName", value);
+                SetProperty(ActiveDirectoryFields.DistinguishedName.FieldName, value);
             }
 
         }
@@ -358,11 +358,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<byte[]>("objectSID");
+                return GetProperty<byte[]>(ActiveDirectoryFields.ObjectSID.FieldName);
             }
             set
             {
-                SetProperty("objectSID", value);
+                SetProperty(ActiveDirectoryFields.ObjectSID.FieldName, value);
             }
 
         }

@@ -1,21 +1,21 @@
 @using BLAZAM.Database.Models.Rules
 @inherits DatabaseComponentBase
 <MudSelectList Values="_fields" @bind-Value="Filter.Field" />
-<MudSelectList Values="_operators" @bind-Value="Filter.Operator" />
+<MudSelectList Values="Filter.Field.GetOperators()" @bind-Value="Filter.Operator" />
 @switch (Filter.Operator)
 {
-    case RuleOperator.HistoricalTimeFrame:
-    case RuleOperator.FutureTimeFrame:
+    case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
+    case ActiveDirectoryFieldOperator.FutureTimeFrame:
         <MudTimePicker @bind-Time=Filter.TimeFrame />
         break;
-    case RuleOperator.Equals:
-    case RuleOperator.Contains:
-    case RuleOperator.StartsWith:
-    case RuleOperator.EndsWith:
+    case ActiveDirectoryFieldOperator.Equals:
+    case ActiveDirectoryFieldOperator.Contains:
+    case ActiveDirectoryFieldOperator.StartsWith:
+    case ActiveDirectoryFieldOperator.EndsWith:
         <MudTextField T="string" @bind-Value=Filter.Value />
         break;
-    case RuleOperator.BeforeNow:
-    case RuleOperator.AfterNow:
+    case ActiveDirectoryFieldOperator.BeforeNow:
+    case ActiveDirectoryFieldOperator.AfterNow:
         <MudText>Will be determined upon rule execution</MudText>
         break;
 }
@@ -25,15 +25,10 @@
     public AutomationRuleAndFilter Filter { get; set; }
 
     private List<ActiveDirectoryField> _fields = new();
-    private List<RuleOperator> _operators = new();
-
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         _fields = await Context.ActiveDirectoryFields.ToListAsync();
-        foreach (RuleOperator enu in Enum.GetValues(typeof(RuleOperator)))
-        {
-            _operators.Add(enu);
-        }
+      
     }
 }

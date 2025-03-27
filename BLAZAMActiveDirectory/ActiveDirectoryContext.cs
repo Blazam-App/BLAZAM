@@ -736,7 +736,7 @@ namespace BLAZAM.ActiveDirectory
                 isDeleteAttributeMod.Name = "isDeleted";
                 isDeleteAttributeMod.Operation = DirectoryAttributeOperation.Delete;
                 DirectoryAttributeModification dnAttributeMod = new();
-                dnAttributeMod.Name = "distinguishedName";
+                dnAttributeMod.Name = ActiveDirectoryFields.DistinguishedName.FieldName;
                 dnAttributeMod.Operation = DirectoryAttributeOperation.Replace;
                 dnAttributeMod.Add(newDN);
                 ModifyRequest request = new(model.DN, new DirectoryAttributeModification[] { isDeleteAttributeMod, dnAttributeMod });

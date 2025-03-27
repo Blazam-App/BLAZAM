@@ -2,8 +2,10 @@
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Logger;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
@@ -326,6 +328,35 @@ namespace BLAZAM.Helpers
         }
 
 
+        public static List<ActiveDirectoryFieldOperator> GetOperators(this IActiveDirectoryField field)
+        {
+            var fieldType = field.FieldType;
+            List<ActiveDirectoryFieldOperator> applicableOperators = new List<ActiveDirectoryFieldOperator>();
 
+            switch (fieldType) {
+                case ActiveDirectoryFieldType.Text:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.Equals);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.StartsWith);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EndsWith);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
+                    break;
+                case ActiveDirectoryFieldType.StringList:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.Equals);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
+                    break;
+                case ActiveDirectoryFieldType.Date:
+                case ActiveDirectoryFieldType.RawData:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.Equals);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.BeforeNow);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.AfterNow);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.HistoricalTimeFrame);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.FutureTimeFrame);
+                    break;
+
+            }
+                  
+            return applicableOperators;
+
+        }
     }
 }

@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
@@ -126,7 +127,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 {
                     VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, pageOffset),
                     PageSize = PageSize,
-                    Sort = new SortOption("cn", SortDirection.Ascending),
+                    Sort = new SortOption(ActiveDirectoryFields.CanonicalName.FieldName, SortDirection.Ascending),
                     SearchScope = SearchScope,
                     SizeLimit = MaxResults,
                     Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
@@ -339,11 +340,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             if (!SearchDeleted)
             {
-                searcher.PropertiesToLoad.Add("samaccountname");
-                searcher.PropertiesToLoad.Add("distinguishedName");
-                searcher.PropertiesToLoad.Add("objectSID");
+                searcher.PropertiesToLoad.Add(ActiveDirectoryFields.SAMAccountName.FieldName);
+                searcher.PropertiesToLoad.Add(ActiveDirectoryFields.DistinguishedName.FieldName);
+                searcher.PropertiesToLoad.Add(ActiveDirectoryFields.ObjectSID.FieldName);
                 searcher.PropertiesToLoad.Add("objectclass");
-                searcher.PropertiesToLoad.Add("cn");
+                searcher.PropertiesToLoad.Add(ActiveDirectoryFields.CanonicalName.FieldName);
                 searcher.PropertiesToLoad.Add("name");
             }
             if (SearchDeleted)

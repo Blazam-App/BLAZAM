@@ -258,18 +258,18 @@
                             <MudStack Class="my-0 py-0">
                                 @foreach (var field in fields.OrderBy(f => f.DisplayName))
                                 {
-                                    @if (field.FieldName != "samaccountname" &&
-                               field.FieldName != "userPrincipalName" &&
+                                    @if (field.FieldName != ActiveDirectoryFields.SAMAccountName.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.UserPrincipalName.FieldName &&
 
-                               field.FieldName != "sn" &&
-                               field.FieldName != "givenname" &&
-                               field.FieldName != "middleName" &&
-                               field.FieldName != "displayName" &&
-                               field.FieldName != "cn" &&
+                               field.FieldName != ActiveDirectoryFields.SN.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.GivenName.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.MiddleName.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.DisplayName.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.CanonicalName.FieldName &&
                                field.FieldName != "site" &&
-                               field.FieldName != "distinguishedName" &&
-                               field.FieldName != "memberOf" &&
-                               field.FieldName != "objectSID" &&
+                               field.FieldName != ActiveDirectoryFields.DistinguishedName.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.MemberOf.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.ObjectSID.FieldName &&
                                !DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field?.Equals(field) == true) &&
                                !DirectoryTemplate.EffectiveFieldValues.Any(f => f.CustomField?.Equals(field) == true) &&
                                field.IsFieldAppropriateForObject(DirectoryTemplate.ObjectType))

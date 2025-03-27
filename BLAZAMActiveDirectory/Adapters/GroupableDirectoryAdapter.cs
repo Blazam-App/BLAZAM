@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
@@ -52,7 +53,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (_memberOf == null)
                 {
-                    _memberOf = Directory.Groups.FindGroupsByDN(GetStringListProperty("memberOf")).OrderBy(g => g.CanonicalName).ToList();
+                    _memberOf = Directory.Groups.FindGroupsByDN(GetStringListProperty(ActiveDirectoryFields.MemberOf.FieldName)).OrderBy(g => g.CanonicalName).ToList();
 
                 }
                 var temp = new List<IADGroup>(_memberOf);
@@ -68,11 +69,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty("displayName");
+                return GetStringProperty(ActiveDirectoryFields.DisplayName.FieldName);
             }
             set
             {
-                SetProperty("displayName", value);
+                SetProperty(ActiveDirectoryFields.DisplayName.FieldName, value);
             }
         }
 
@@ -80,11 +81,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty("mail");
+                return GetStringProperty(ActiveDirectoryFields.Mail.FieldName);
             }
             set
             {
-                SetProperty("mail", value);
+                SetProperty(ActiveDirectoryFields.Mail.FieldName, value);
             }
         }
 
@@ -92,11 +93,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty("description");
+                return GetStringProperty(ActiveDirectoryFields.Description.FieldName);
             }
             set
             {
-                SetProperty("description", value);
+                SetProperty(ActiveDirectoryFields.Description.FieldName, value);
             }
         }
 
@@ -113,7 +114,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     changes.Add(new AuditChangeLog()
                     {
-                        Field = "memberOf",
+                        Field = ActiveDirectoryFields.MemberOf.FieldName,
                         OldValue = _memberOf.Select(m => m.CanonicalName).ToList(),
                         NewValue = MemberOf.Select(m => m.CanonicalName).ToList()
                     });
