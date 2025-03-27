@@ -18,7 +18,7 @@
                 </CellTemplate>
             </TemplateColumn>
             <TemplateColumn Title=@AppLocalization[Lang.Name] Sortable=true Filterable=true Context="templateContext">
-              
+
                 <CellTemplate Context="cellContext">
                     <MudLink Href="@cellContext.Item.SearchUri">
                         @if (cellContext.Item is IADGroup group)
@@ -51,7 +51,7 @@
                                 Text=@AppHelpLocalization[HelpLang.Lacks_Group_Member_Remove_Permission]>
                         <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
-                                   OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
+                                   OnClick="(()=>{RemoveMember(cellContext.Item);})">
                             @AppLocalization[Lang.Remove]
                         </MudButton>
                     </AppTooltip>
@@ -133,7 +133,8 @@ else
     {
         await base.OnInitializedAsync();
         RefreshData();
-        Group.OnModelChanged += () =>
+        
+        Group.OnChangesDiscarded += () =>
         {
             RefreshData();
         };
@@ -149,5 +150,24 @@ else
             LoadingData = false;
         });
 
+    }
+    private void RemoveMember(IGroupableDirectoryAdapter groupMember)
+    {
+
+        Group.UnassignMember(groupMember);
+        if (Members.Contains(groupMember))
+        {
+            Members.Remove(groupMember);
+        }
+    }
+    private void AddMember(IGroupableDirectoryAdapter groupMember)
+    {
+
+        Group.AssignMember(groupMember);
+        if (!Members.Contains(groupMember))
+        {
+            Members.Add(groupMember);
+
+        }
     }
 }
