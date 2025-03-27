@@ -130,7 +130,8 @@ namespace BLAZAM.Gui.UI
             if (Options == null)
                 Options = new()
                 {
-                    MaxWidth = Width
+                    MaxWidth = Width,
+                    CloseButton=true
                 };
 
             AllowClose = true;
