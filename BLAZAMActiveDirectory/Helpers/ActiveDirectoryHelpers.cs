@@ -330,8 +330,9 @@ namespace BLAZAM.Helpers
 
         public static List<ActiveDirectoryFieldOperator> GetOperators(this IActiveDirectoryField field)
         {
-            var fieldType = field.FieldType;
             List<ActiveDirectoryFieldOperator> applicableOperators = new List<ActiveDirectoryFieldOperator>();
+            if (field == null || field.FieldType==null) return applicableOperators;
+            var fieldType = field.FieldType;
 
             switch (fieldType) {
                 case ActiveDirectoryFieldType.Text:

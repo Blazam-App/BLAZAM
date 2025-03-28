@@ -12,18 +12,24 @@
             
         }
     }
-
+    <MudFab OnClick="@(RemovedClicked)"
+            Color="Color.Error"
+            StartIcon="@Icons.Material.Filled.Remove" />
 </MudStack>
 
 @code {
     ActiveDirectoryField? _selectedField;
     private List<ActiveDirectoryField> _fields = new();
+
+    [Parameter]
+    public EventCallback RemovedClicked { get; set; }
     [Parameter]
     public AutomationRuleAction Action { get; set; }
 
 
     private List<AutomationRuleActionType> _actionTypes = new();
 
+   
 
     protected override async Task OnInitializedAsync()
     {

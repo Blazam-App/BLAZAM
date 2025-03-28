@@ -1,101 +1,104 @@
 @inherits AppComponentBase
 @using BLAZAM.Database.Models.Rules
-<MudTextField @bind-Value=@newRule.Name Label="@AppLocalization[Lang.Name]" />
-<MudSwitch @bind-Value=newRule.Enabled Label="@AppLocalization[Lang.Enabled]" />
-<MudDatePicker Clearable="true" @bind-Date=newRule.ExpirationDate Label="@AppLocalization[Lang.Expires]" />
-<MudText>Trigger: @Trigger.ToString()</MudText>
+<MudStack>
+    <MudTextField T="string" Disabled="true" Label="Trigger" Value="Trigger.ToString()" />
+
+    <MudTextField @bind-Value=@newRule.Name Label="@AppLocalization[Lang.Name]" />
+    <MudSwitch @bind-Value=newRule.Enabled Label="@AppLocalization[Lang.Enabled]" />
+    <MudDatePicker Clearable="true" @bind-Date=newRule.ExpirationDate Label="@AppLocalization[Lang.Expires]" />
     <MudDivider />
-    <MudText>Filters</MudText>
+    <MudText Typo="Typo.h6">Filters</MudText>
     <MudStack Row="true">
 
         <MudStack Class="mud-width-full">
             @{
-            bool first = true;
-        }
-        @foreach (var orFilter in newRule.Filters)
-        {
-            @if (!first)
-            {
-                <MudSpacer />
-                <MudText>Or</MudText>
-                <MudSpacer />
+                bool first = true;
             }
-            else
+            @foreach (var orFilter in newRule.Filters)
             {
-                first = false;
-            }
-            <MudStack Row="true">
-
-                <MudStack Row="true">
-                    <MudStack Class="mud-width-full">
-                        @foreach (var andFilter in orFilter.AndFilters)
-                        {
-                            <MudStack Row="true">
-
-                                <MudText>And Filter</MudText>
-                                <EditAndFitler Filter="andFilter" />
-                                <MudSpacer />
-                                <MudFab OnClick="@(()=>{RemoveAndFilter(orFilter,andFilter);})"
-                                        Color="Color.Error"
-                                        StartIcon="@Icons.Material.Filled.Remove" />
-                            </MudStack>
-
-                        }
+                @if (!first)
+                {
+                    <MudStack Row="true" Class="my-4">
+                        <MudSpacer />
+                        <MudText Typo="Typo.h6">@AppLocalization[Lang.or]</MudText>
+                        <MudSpacer />
                     </MudStack>
+                }
+                else
+                {
+                    first = false;
+                }
+                <MudStack Row="true">
+
+                    <MudStack Row="true">
+                        <MudStack Class="mud-width-full">
+                            @foreach (var andFilter in orFilter.AndFilters)
+                            {
+                                <MudStack Row="true">
+
+                                    <MudText>And Filter</MudText>
+                                    <EditAndFitler Filter="andFilter" />
+                                    <MudSpacer />
+                                    <MudButton OnClick="@(()=>{RemoveAndFilter(orFilter,andFilter);})"
+                                               Color="Color.Error"
+                                               StartIcon="@Icons.Material.Filled.Remove">Remove And Filter</MudButton>
+                                </MudStack>
+
+                            }
+                        </MudStack>
+
+                    </MudStack>
+                    <MudSpacer />
+
+                    <MudButton OnClick="@(()=>{RemoveOrFilter(orFilter);})"
+                               Color="Color.Error"
+                               StartIcon="@Icons.Material.Filled.Remove">Remove Or Filter</MudButton>
+                </MudStack>
+                <MudStack Row="true">
+
+                    <MudSpacer />
+                    <MudButton OnClick="@(()=>{AddAndFilter(orFilter);})"
+                               Color="Color.Success"
+                               StartIcon="@Icons.Material.Filled.Add">Add And Filter</MudButton>
 
                 </MudStack>
-                <MudSpacer />
 
-                <MudFab OnClick="@(()=>{RemoveOrFilter(orFilter);})"
-                        Color="Color.Error"
-                        StartIcon="@Icons.Material.Filled.Remove" />
-            </MudStack>
-            <MudStack Row="true">
-
-                <MudSpacer />
-                <MudFab OnClick="@(()=>{AddAndFilter(orFilter);})"
-                        Color="Color.Success"
-                        StartIcon="@Icons.Material.Filled.Add" />
-
-            </MudStack>
-
-        }
-        <MudSpacer />
-
-    </MudStack>
-
-</MudStack>
-<MudStack Row="true">
-
-    <MudSpacer />
-    <MudFab OnClick="AddOrFilter"
-            Color="Color.Success"
-            StartIcon="@Icons.Material.Filled.Add" />
-</MudStack>
-
-
-
-<MudDivider />
-<MudText>Actions</MudText>
-<MudStack Row="true">
-    <MudStack>
-
-        @foreach (var action in newRule.Actions)
-        {
-            <EditRuleAction Action=action />
+            }
             <MudSpacer />
 
-            <MudFab OnClick="@(()=>{RemoveAction(action);})"
-                    Color="Color.Error"
-                    StartIcon="@Icons.Material.Filled.Remove" />
+        </MudStack>
 
-        }
     </MudStack>
-    <MudSpacer />
-    <MudFab OnClick="AddAction"
-            Color="Color.Success"
-            StartIcon="@Icons.Material.Filled.Add" />
+    <MudStack Row="true">
 
+        <MudSpacer />
+        <MudButton OnClick="AddOrFilter"
+                   Color="Color.Success"
+                   StartIcon="@Icons.Material.Filled.Add">Add Or Filter</MudButton>
+    </MudStack>
+
+
+
+    <MudDivider />
+    <MudText Typo="Typo.h6">Actions</MudText>
+    <MudStack Row="true">
+        <MudStack>
+
+            @foreach (var action in newRule.Actions)
+            {
+                <EditRuleAction RemovedClicked="@(()=>{RemoveAction(action);})" Action=action />
+                <MudSpacer />
+
+
+
+            }
+        </MudStack>
+        <MudSpacer />
+        <MudButton OnClick="AddAction"
+                   Color="Color.Success"
+                   StartIcon="@Icons.Material.Filled.Add" />
+
+    </MudStack>
 </MudStack>
 <AppModal>
     <NewAutomationTrigger Rule="newRule" />
@@ -111,7 +114,11 @@
         base.OnInitialized();
 
     }
+    private void RemoveAction(AutomationRuleAction action)
+    {
 
+        newRule.Actions.Remove(action);
+    }
     private void AddAndFilter(AutomationRuleOrFilter orFilter)
     {
         var newFilter = new AutomationRuleAndFilter();
@@ -130,11 +137,7 @@
         orFilter.AndFilters.Remove(andFilter);
     }
 
-    private void RemoveAction(AutomationRuleAction action)
-    {
 
-        newRule.Actions.Remove(action);
-    }
 
     private void AddOrFilter()
     {
