@@ -1,0 +1,44 @@
+@using BLAZAM.Database.Models.Rules
+
+
+<MudStack Row="true">
+
+    <MudStack Row="true">
+        <MudStack Class="mud-width-full">
+            @foreach (var andFilter in Filter.AndFilters)
+            {
+                <MudStack Row="true">
+
+                    <MudText>And Filter</MudText>
+                    <EditAndFitler Filter="andFilter" />
+                    <MudSpacer />
+                    @if (Filter.AndFilters.Count > 1)
+                    {
+                        <MudButton OnClick="@(()=>{RemoveAndFilter(Filter,andFilter);})"
+                                   Color="Color.Error"
+                                   StartIcon="@Icons.Material.Filled.Remove">Remove And Filter</MudButton>
+                    }
+                </MudStack>
+
+            }
+        </MudStack>
+
+    </MudStack>
+    <MudSpacer />
+
+    <MudButton OnClick="@(()=>{_=RemoveClicked.InvokeAsync();})"
+               Color="Color.Error"
+               StartIcon="@Icons.Material.Filled.Remove">Remove Or Filter</MudButton>
+</MudStack>
+@code {
+    [Parameter]
+    public EventCallback RemoveClicked { get; set; }
+    [Parameter]
+    public AutomationRuleOrFilter Filter { get; set; }
+
+    private void RemoveAndFilter(AutomationRuleOrFilter orFilter, AutomationRuleAndFilter andFilter)
+    {
+
+        orFilter.AndFilters.Remove(andFilter);
+    }
+}

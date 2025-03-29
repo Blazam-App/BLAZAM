@@ -11,7 +11,16 @@ namespace BLAZAM.Helpers
         /// <returns></returns>
         public static string TypeIcon(this IDirectoryEntryAdapter adapter)
         {
-            switch (adapter.ObjectType)
+            return adapter.ObjectType.TypeIcon();
+        }  
+        /// <summary>
+        /// Retuns a MudBlazor Icon that represents this <see cref="ActiveDirectoryObjectType"/>
+        /// </summary>
+        /// <param name="adapter"></param>
+        /// <returns></returns>
+        public static string TypeIcon(this ActiveDirectoryObjectType adapter)
+        {
+            switch (adapter)
             {
                 case ActiveDirectoryObjectType.User:
                     return Icons.Material.Filled.Person;
@@ -23,6 +32,10 @@ namespace BLAZAM.Helpers
                     return Icons.Material.Filled.Folder;
                 case ActiveDirectoryObjectType.Printer:
                     return Icons.Material.Filled.Print;
+                case ActiveDirectoryObjectType.BitLocker:
+                    return Icons.Material.Filled.EnhancedEncryption;
+                case ActiveDirectoryObjectType.All:
+                    return Icons.Material.Filled.AccountTree;
                 default:
                     return Icons.Material.Filled.QuestionMark;
             }

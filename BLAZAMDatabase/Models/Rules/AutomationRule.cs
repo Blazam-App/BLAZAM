@@ -51,7 +51,7 @@ namespace BLAZAM.Database.Models.Rules
         /// <summary>
         /// The actions to perform if this rule's filters are applicable to this triggering event
         /// </summary>
-        public List<AutomationRuleAction> Actions { get; set; } = new();
+        public List<AutomationRuleAction> Actions { get; set; } = new() {};
 
         public override string ToString()
         {

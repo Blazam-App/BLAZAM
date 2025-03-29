@@ -1,6 +1,9 @@
 @inherits AppComponentBase
-<MudList T="NotificationType" @bind-SelectedValue=SelectedTrigger>
-    @foreach (var trigger in triggerTypes)
+<MudList Color="Color.Tertiary"
+Dense=true
+T="NotificationType"
+@bind-SelectedValue=SelectedTrigger>
+    @foreach (var trigger in triggerTypes.Where(t => t.IsNotificationAppropriateForObject(SelectedObjectType)))
     {
         <MudListItem Value="trigger">@AppLocalization[trigger.ToString()]</MudListItem>
     }
@@ -16,15 +19,27 @@
             triggerTypes.Add(type);
         }
         triggerTypes = triggerTypes.OrderBy(t => t.ToString()).ToList();
-        SelectedTrigger = triggerTypes.First();
+   
     }
     private NotificationType _selectedTrigger;
+    private ActiveDirectoryObjectType _selectedObjectType;
+    [Parameter]
+    public ActiveDirectoryObjectType SelectedObjectType
+    {
+        get => _selectedObjectType; set
+        {
+            if (_selectedObjectType == value) return;
+            _selectedObjectType = value;
+          
+        }
+    }
     [Parameter]
     public NotificationType SelectedTrigger
     {
         get => _selectedTrigger; set
         {
             if (_selectedTrigger == value) return;
+            
             _selectedTrigger = value;
             SelectedTriggerChanged.InvokeAsync(value);
         }

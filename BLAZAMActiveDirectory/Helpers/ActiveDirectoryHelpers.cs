@@ -3,6 +3,8 @@ using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
+using BLAZAM.Database.Models.Notifications;
+using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Logger;
 using Microsoft.AspNetCore.Mvc;
@@ -359,5 +361,148 @@ namespace BLAZAM.Helpers
             return applicableOperators;
 
         }
+
+        public static bool IsActionAppropriateForObject(this ActiveDirectoryObjectAction action, ActiveDirectoryObjectType type)
+        {
+
+            //var Name = action.ToString();
+            switch (type)
+            {
+                case ActiveDirectoryObjectType.User:
+                case ActiveDirectoryObjectType.Computer:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Unlock:
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Enable:
+                        case ActiveDirectoryObjectAction.Disable:
+                        case ActiveDirectoryObjectAction.Rename:
+                        case ActiveDirectoryObjectAction.SetPassword:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Group:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Unassign:
+                        case ActiveDirectoryObjectAction.Assign:
+                        case ActiveDirectoryObjectAction.Rename:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Printer:
+                case ActiveDirectoryObjectType.OU:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Rename:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.BitLocker:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Delete:
+                            return true;
+                        default:
+                            return false;
+                    }
+
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsActionAppropriateForObject(this ObjectAction action, ActiveDirectoryObjectType type) => IsActionAppropriateForObject(action.Action, type);
+
+
+
+        public static bool IsNotificationAppropriateForObject(this NotificationType notificationType, ActiveDirectoryObjectType type)
+        {
+
+            //var Name = action.ToString();
+            switch (type)
+            {
+                case ActiveDirectoryObjectType.User:
+                case ActiveDirectoryObjectType.Computer:
+                    switch (notificationType)
+                    {
+                        case NotificationType.Modify:
+                        case NotificationType.Delete:
+                        case NotificationType.Create:
+                        case NotificationType.LockedOut:
+                        case NotificationType.PasswordChange:
+                        case NotificationType.Scheduled:
+                        case NotificationType.Assign:
+                        case NotificationType.Unassign:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Group:
+                    switch (notificationType)
+                    {
+                        case NotificationType.Delete:
+                        case NotificationType.Create:
+                        case NotificationType.Unassign:
+                        case NotificationType.Assign:
+                        case NotificationType.Modify:
+                        case NotificationType.Scheduled:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Printer:
+                case ActiveDirectoryObjectType.OU:
+                    switch (notificationType)
+                    {
+                        case NotificationType.Delete:
+                        case NotificationType.Create:
+                        case NotificationType.Modify:
+                        case NotificationType.Scheduled:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.BitLocker:
+                    switch (notificationType)
+                    {
+                        case NotificationType.Delete:
+                        case NotificationType.Scheduled:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.All:
+                    switch (notificationType)
+                    {
+                        case NotificationType.PasswordChange:
+                        case NotificationType.LockedOut:
+                        case NotificationType.Unassign:
+                        case NotificationType.Assign:
+                        case NotificationType.Modify:
+                        case NotificationType.Create:
+                        case NotificationType.Delete:
+                        case NotificationType.Scheduled:
+                            return true;
+                        default:
+                            return false;
+                    }
+                default:
+                    return false;
+            }
+        }
     }
+
+
 }

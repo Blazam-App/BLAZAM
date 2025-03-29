@@ -14,6 +14,9 @@
             @{
                 bool first = true;
             }
+            @if (newRule.Filters.Count==0){
+                <MudText>These rules will be fired each time a {0} is {1}</MudText>
+            }
             @foreach (var orFilter in newRule.Filters)
             {
                 @if (!first)
@@ -28,38 +31,13 @@
                 {
                     first = false;
                 }
-                <MudStack Row="true">
-
-                    <MudStack Row="true">
-                        <MudStack Class="mud-width-full">
-                            @foreach (var andFilter in orFilter.AndFilters)
-                            {
-                                <MudStack Row="true">
-
-                                    <MudText>And Filter</MudText>
-                                    <EditAndFitler Filter="andFilter" />
-                                    <MudSpacer />
-                                    <MudButton OnClick="@(()=>{RemoveAndFilter(orFilter,andFilter);})"
-                                               Color="Color.Error"
-                                               StartIcon="@Icons.Material.Filled.Remove">Remove And Filter</MudButton>
-                                </MudStack>
-
-                            }
-                        </MudStack>
-
-                    </MudStack>
-                    <MudSpacer />
-
-                    <MudButton OnClick="@(()=>{RemoveOrFilter(orFilter);})"
-                               Color="Color.Error"
-                               StartIcon="@Icons.Material.Filled.Remove">Remove Or Filter</MudButton>
-                </MudStack>
+                <EditRuleOrFilter Filter="orFilter" RemoveClicked="@(()=>{RemoveOrFilter(orFilter);})" />
                 <MudStack Row="true">
 
                     <MudSpacer />
                     <MudButton OnClick="@(()=>{AddAndFilter(orFilter);})"
-                               Color="Color.Success"
-                               StartIcon="@Icons.Material.Filled.Add">Add And Filter</MudButton>
+                    Color="Color.Success"
+                    StartIcon="@Icons.Material.Filled.Add">Add And Filter</MudButton>
 
                 </MudStack>
 
@@ -73,8 +51,8 @@
 
         <MudSpacer />
         <MudButton OnClick="AddOrFilter"
-                   Color="Color.Success"
-                   StartIcon="@Icons.Material.Filled.Add">Add Or Filter</MudButton>
+        Color="Color.Success"
+        StartIcon="@Icons.Material.Filled.Add">Add Or Filter</MudButton>
     </MudStack>
 
 
@@ -95,8 +73,8 @@
         </MudStack>
         <MudSpacer />
         <MudButton OnClick="AddAction"
-                   Color="Color.Success"
-                   StartIcon="@Icons.Material.Filled.Add" />
+        Color="Color.Success"
+        StartIcon="@Icons.Material.Filled.Add">Add Action</MudButton>
 
     </MudStack>
 </MudStack>
@@ -109,11 +87,12 @@
     public NotificationType Trigger { get; set; }
     private AutomationRule newRule = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-
+        await base.OnInitializedAsync();
+        newRule.Actions.Add(new() { ActionGuid = Guid.NewGuid() });
     }
+
     private void RemoveAction(AutomationRuleAction action)
     {
 
@@ -131,11 +110,7 @@
         newAction.ActionGuid = Guid.NewGuid();
         newRule.Actions.Add(newAction);
     }
-    private void RemoveAndFilter(AutomationRuleOrFilter orFilter, AutomationRuleAndFilter andFilter)
-    {
 
-        orFilter.AndFilters.Remove(andFilter);
-    }
 
 
 
