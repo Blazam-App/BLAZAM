@@ -43,7 +43,7 @@ namespace BLAZAM.Database.Context
         DbSet<SystemAuditLog> SystemAuditLog { get; set; }
         //DbSet<UserAuditLog> UserAuditLog { get; set; }
         DbSet<AppUser> UserSettings { get; set; }
-
+        Exception? LastSaveError { get; set; }
         /// <summary>
         /// The connection string as set in the ASP Net Core appsettings.json
         /// <para>This should be set before any attempts to connect.</para>

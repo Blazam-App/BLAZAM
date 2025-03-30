@@ -23,8 +23,8 @@
     {
         base.OnInitialized();
         StartingOU = (IADOrganizationalUnit)DirectoryModel.GetParent();
-        Modal.OnYes = MoveTo;
-        Modal.YesText = AppLocalization[Lang.Move];
+        Modal.SetOnYes(MoveTo);
+        Modal.SetYesText(AppLocalization[Lang.Move]);
         Modal.Title = AppLocalization[Lang.Move_To];
 
     }

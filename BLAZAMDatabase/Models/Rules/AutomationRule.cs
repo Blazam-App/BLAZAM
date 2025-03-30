@@ -37,6 +37,7 @@ namespace BLAZAM.Database.Models.Rules
         /// The date at which this rule should stop executing
         /// </summary>
         public DateTime? ExpirationDate { get; set; }
+        public TimeSpan? ScheduledRunTime { get; set; }
         public NotificationType Trigger { get; set; }
         /// <summary>
         /// This rule will only fire for events related to these types of

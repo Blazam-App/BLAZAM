@@ -1,49 +1,26 @@
+
 @inherits AppComponentBase
-<MudList Color="Color.Tertiary"
-Dense=true
-T="NotificationType"
-@bind-SelectedValue=SelectedTrigger>
-    @foreach (var trigger in triggerTypes.Where(t => t.IsNotificationAppropriateForObject(SelectedObjectType)))
+<MudStack Spacing="0">
+    @foreach (var trigger in ViewFilter.GetObjectTypeTriggers())
     {
-        <MudListItem Value="trigger">@AppLocalization[trigger.ToString()]</MudListItem>
+        <MudListItem Class="@(ViewFilter.Trigger==trigger?"mud-selected-item mud-tertiary-text mud-tertiary-hover":"")" 
+        Value="trigger"
+        Dense="true"
+        OnClick="@(()=>{ViewFilter.Trigger=trigger;})"
+        Text=@AppLocalization[trigger.ToString()] />
     }
-</MudList>
+</MudStack>
 
 @code {
-    List<NotificationType> triggerTypes = new();
+    [CascadingParameter]
+    public RuleViewFilter ViewFilter { get; set; }
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        foreach (NotificationType type in Enum.GetValues(typeof(NotificationType)))
-        {
-            triggerTypes.Add(type);
-        }
-        triggerTypes = triggerTypes.OrderBy(t => t.ToString()).ToList();
-   
+       
+        ViewFilter.ObjectTypeChanged += () => {
+            InvokeAsync(StateHasChanged); 
+        };
     }
-    private NotificationType _selectedTrigger;
-    private ActiveDirectoryObjectType _selectedObjectType;
-    [Parameter]
-    public ActiveDirectoryObjectType SelectedObjectType
-    {
-        get => _selectedObjectType; set
-        {
-            if (_selectedObjectType == value) return;
-            _selectedObjectType = value;
-          
-        }
-    }
-    [Parameter]
-    public NotificationType SelectedTrigger
-    {
-        get => _selectedTrigger; set
-        {
-            if (_selectedTrigger == value) return;
-            
-            _selectedTrigger = value;
-            SelectedTriggerChanged.InvokeAsync(value);
-        }
-    }
-    [Parameter]
-    public EventCallback<NotificationType> SelectedTriggerChanged { get; set; }
+    
 }

@@ -3,7 +3,7 @@
     public class AutomationRuleOrFilter:AppDbSetBase
     {
 
-        public List<AutomationRuleAndFilter> AndFilters { get; set; } = new() { new()};
+        public List<AutomationRuleAndFilter> AndFilters { get; set; } = new();
         public AutomationRule AutomationRule { get; set; }
         public int AutomationRuleId { get; set; }
         public Guid FilterGuid { get; set; }

@@ -157,8 +157,8 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Modal.OnYes = AssignToGroup;
-        Modal.YesText = AppLocalization[Lang.Assign];
+        Modal.SetOnYes(AssignToGroup);
+        Modal.SetYesText(AppLocalization[Lang.Assign]);
         Modal.Title = AppLocalization[Lang.Assign_To];
     }
 

@@ -1,6 +1,8 @@
 @using BLAZAM.Database.Models.Rules
 @inherits DatabaseComponentBase
-<MudSelectList Values="_fields" @bind-Value="Filter.Field" />
+<AppTooltip Text="@Filter.Field?.FieldName">
+    <MudSelectList Values="_fields" @bind-Value="Filter.Field" />
+</AppTooltip>
 <MudSelectList Values="Filter.Field.GetOperators()" @bind-Value="Filter.Operator" />
 @switch (Filter.Operator)
 {
@@ -29,6 +31,6 @@
     {
         await base.OnInitializedAsync();
         _fields = await Context.ActiveDirectoryFields.ToListAsync();
-      
+
     }
 }

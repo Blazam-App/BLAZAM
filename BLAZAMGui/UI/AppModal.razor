@@ -21,7 +21,7 @@
     <DialogActions>
         @if (!CancelText.IsNullOrEmpty())
         {
-            <MudButton OnClick="@(()=>{OnCancel.Invoke();})">@CancelText</MudButton>
+            <MudButton Color="CancelColor" OnClick="@(()=>{OnCancel.Invoke();})">@CancelText</MudButton>
 
         }
         @{

@@ -3,34 +3,34 @@
     //TODO Finish custom disable
 }
 <MudAutocomplete Class="@Class"
-                 Style="@Style"
-                 Disabled=@Disabled
-                 T="IDirectoryEntryAdapter"
-                 Label="@Label"
-                 AnchorOrigin="@AnchorOrigin"
-                 TransformOrigin="@TransformOrigin"
-                 @bind-Value="SelectedResult"
-                 @bind-Text=@SearchTerm
-                 @ref=AutoComplete
-                 AutoFocus=@AutoFocus
-                 SearchFunc="@GetResults"
-                 DebounceInterval=500
-                 ResetValueOnEmptyText="true"
-                 MinCharacters="3"
-                 Validation="@Validation"
-                 CoerceText="@(!AllowCustomInput)"
-                 CoerceValue="true"
-                 ItemDisabledFunc="@(CustomDisableFilter??((r)=>false))"
-                 MaxItems=@MaxResults
-                 Clearable=true
-                 Dense=true
-                 ShowProgressIndicator=true
-                 ToStringFunc="item=>item?.CanonicalName"
-                 AdornmentColor="Color.Tertiary"
-                 ProgressIndicatorColor="Color.Secondary"
-                 Adornment="Adornment.Start"
-                 AdornmentIcon="@AdornmentIcon"
-                 Variant="@Variant">
+Style="@Style"
+Disabled=@Disabled
+T="IDirectoryEntryAdapter"
+Label="@Label"
+AnchorOrigin="@AnchorOrigin"
+TransformOrigin="@TransformOrigin"
+@bind-Value="SelectedResult"
+@bind-Text=@SearchTerm
+@ref=AutoComplete
+AutoFocus=@AutoFocus
+SearchFunc="@GetResults"
+DebounceInterval=500
+ResetValueOnEmptyText="true"
+MinCharacters="3"
+Validation="@Validation"
+CoerceText="@(!AllowCustomInput)"
+CoerceValue="true"
+ItemDisabledFunc="@(CustomDisableFilter??((r)=>false))"
+MaxItems=@MaxResults
+Clearable=true
+Dense=true
+ShowProgressIndicator=true
+ToStringFunc="item=>item?.CanonicalName"
+AdornmentColor="Color.Tertiary"
+ProgressIndicatorColor="Color.Secondary"
+Adornment="Adornment.Start"
+AdornmentIcon="@AdornmentIcon"
+Variant="@Variant">
     <ItemTemplate>
 
         <ADAutoCompleteResult Entry="context" />
@@ -194,6 +194,29 @@
     [Parameter]
     public EventCallback<IDirectoryEntryAdapter> SelectedResultChanged { get; set; }
 
+
+
+    private string _selectedSid;
+    [Parameter]
+    public string SelectedSid
+    {
+        get => _selectedSid;
+        set
+        {
+            if (_selectedSid == value)
+                return;
+
+
+            _selectedSid = value;
+
+            SelectedSidChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<string> SelectedSidChanged { get; set; }
+
+
     /// <summary>
     /// Clears the results and entered search term
     /// </summary>
@@ -280,6 +303,15 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        if (!SelectedSid.IsNullOrEmpty())
+        {
+            _ = Task.Run(async () =>
+            {
+                var sidMatch = Directory.FindEntryBySID(SelectedSid.ToSidByteArray());
+                await InvokeAsync(() => { SelectedResult = sidMatch; SearchTerm = sidMatch.CanonicalName; });
+                _ = InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
 

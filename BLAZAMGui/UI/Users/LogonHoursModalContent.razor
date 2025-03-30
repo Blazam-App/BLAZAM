@@ -73,10 +73,9 @@
     {
 
         await base.OnInitializedAsync();
-        Modal.OnYes = SaveChanges;
-        Modal.AllowClose = true;
+        Modal.SetOnYes(SaveChanges);
         Modal.YesEnabled = ()=> { return User.CanEditField(ActiveDirectoryFields.LogonHours); };
-        Modal.YesText = AppLocalization[Lang.Save_Changes];
+        Modal.SetYesText(AppLocalization[Lang.Save_Changes]);
         Modal.Title = AppLocalization[Lang.Logon_Hours];
         schedule = User.LogonHours;
         _=Modal.RefreshView();

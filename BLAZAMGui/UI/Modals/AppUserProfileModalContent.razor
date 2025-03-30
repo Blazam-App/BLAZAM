@@ -75,7 +75,7 @@
         base.OnInitialized();
 
         Modal.SetYesText(AppLocalization[Lang.Save]);
-        Modal.OnYes += SaveSettings;
+        Modal.SetOnYes(SaveSettings);
         Modal.YesEnabled = () => { return !LoadingData; };
         authSettings = Context.AuthenticationSettings.FirstOrDefault();
     }

@@ -20,9 +20,13 @@ namespace BLAZAM.Database.Models.Rules
 
 
         public ActiveDirectoryObjectAction ActiveDirectoryObjectAction { get; set; }
-        public List<AutomationRuleFieldValue> FieldValues { get; set; }
-        public string? MoveTo { get; set; }
-        public List<AutomationRuleGroupSid> GroupSids { get; set; }
+        public List<AutomationRuleFieldValue> FieldValues { get; set; } = new();
+       
+        /// <summary>
+        /// Dynamic JSON data to hold data for actions other than field changes or group assignments
+        /// </summary>
+        public string? Data { get; set; }
+        public List<AutomationRuleGroupSid> GroupSids { get; set; } = new();
         public Guid ActionGuid { get; set; }
 
         public override bool Equals(object? obj)

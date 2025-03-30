@@ -25,7 +25,7 @@ namespace BLAZAM.Database.Context
 {
     public class DatabaseContextBase : DbContext, IDatabaseContext
     {
-
+        public Exception? LastSaveError { get; set; }
         public override void Dispose()
         {
             ApplicationStatistics.RemoveDBContext();
@@ -34,7 +34,7 @@ namespace BLAZAM.Database.Context
         }
 
 
-
+        
 
 
         public DatabaseConnectionString? ConnectionString { get; set; }
@@ -546,6 +546,28 @@ namespace BLAZAM.Database.Context
             {
                 entity.Navigation(e => e.FieldValues).AutoInclude();
                 entity.Navigation(e => e.AssignedGroupSids).AutoInclude();
+
+            }); 
+            modelBuilder.Entity<AutomationRule>(entity =>
+            {
+                entity.Navigation(e => e.Actions).AutoInclude();
+                entity.Navigation(e => e.Filters).AutoInclude();
+
+            });
+            modelBuilder.Entity<AutomationRuleAction>(entity =>
+            {
+                entity.Navigation(e => e.GroupSids).AutoInclude();
+                entity.Navigation(e => e.FieldValues).AutoInclude();
+
+            });
+            modelBuilder.Entity<AutomationRuleOrFilter>(entity =>
+            {
+                entity.Navigation(e => e.AndFilters).AutoInclude();
+
+            });
+            modelBuilder.Entity<AutomationRuleAndFilter>(entity =>
+            {
+                entity.Navigation(e => e.Field).AutoInclude();
 
             });
             modelBuilder.Entity<DirectoryTemplateFieldValue>(entity =>

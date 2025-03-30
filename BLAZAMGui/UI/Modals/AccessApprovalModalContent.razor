@@ -52,8 +52,8 @@
     {
         await base.OnInitializedAsync();
         Modal.Options.MaxWidth = MaxWidth.Large;
-        Modal.YesText = AppLocalization[Lang.Approve];
-        base.Modal.OnYes += async () => { await Approve(); };
+        Modal.SetYesText(AppLocalization[Lang.Approve]);
+        base.Modal.SetOnYes(Approve);
         _ = LoadData();
         await Modal.RefreshView();
 

@@ -25,8 +25,8 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        Modal.OnYes = SaveChanges;
-        Modal.YesText = AppLocalization[Lang.Save_Changes];
+        Modal.SetOnYes(SaveChanges);
+        Modal.SetYesText(AppLocalization[Lang.Save_Changes]);
         Modal.Title = AppLocalization[Lang.Rename_OU];
     }
 

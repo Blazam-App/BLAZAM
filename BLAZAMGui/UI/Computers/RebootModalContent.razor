@@ -37,7 +37,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Modal.OnYes = Execute;
+        Modal.SetOnYes(Execute);
         Modal.Title = AppLocalization[Lang.Reboot_Shutdown];
     }
 

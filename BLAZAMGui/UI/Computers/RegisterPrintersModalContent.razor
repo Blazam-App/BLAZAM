@@ -42,7 +42,7 @@
         Modal.Options.FullWidth = true;
         Modal.Options.MaxWidth = MaxWidth.Large;
 
-        Modal.YesText = AppLocalization[Lang.Next];
+        Modal.SetYesText(AppLocalization[Lang.Next]);
         Modal.Title = AppLocalization[Lang.Register_Printers];
         Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
         base.OnInitialized();

@@ -11,6 +11,7 @@ namespace BLAZAM.Database.Models.Rules
         public int OrFilterId { get; set; }
 
         public ActiveDirectoryField Field { get; set; }
+        public int FieldId { get; set; }
         public string? Value { get; set; }
         public ActiveDirectoryFieldOperator Operator { get; set; }
         /// <summary>

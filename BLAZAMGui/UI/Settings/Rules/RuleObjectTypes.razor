@@ -1,8 +1,9 @@
+
 @inherits AppComponentBase
 <MudList Color="Color.Tertiary"
-         Dense=true
-         T="ActiveDirectoryObjectType"
-         @bind-SelectedValue=SelectedObjectType>
+Dense=true
+T="ActiveDirectoryObjectType"
+@bind-SelectedValue=ViewFiler.ObjectType>
     @foreach (var objectType in objectTypes)
     {
         <MudListItem Icon="@objectType.TypeIcon()" Value="objectType">@AppLocalization[objectType.ToString()]</MudListItem>
@@ -11,22 +12,9 @@
 
 
 @code {
-    private ActiveDirectoryObjectType _selectedObjectType;
-    [Parameter]
-    public ActiveDirectoryObjectType SelectedObjectType
-    {
-        get => _selectedObjectType; set
-        {
-            if (_selectedObjectType == value) return;
-            _selectedObjectType = value;
-            SelectedObjectTypeChanged.InvokeAsync(value);
-
-
-        }
-    }
-
-    [Parameter]
-    public EventCallback<ActiveDirectoryObjectType> SelectedObjectTypeChanged { get; set; }
+    [CascadingParameter]
+    public RuleViewFilter ViewFiler{ get; set; }
+   
 
     private List<ActiveDirectoryObjectType> objectTypes = new();
 
@@ -38,6 +26,6 @@
             objectTypes.Add(type);
         }
         objectTypes = objectTypes.OrderBy(t => t.ToString()).ToList();
-        SelectedObjectType = objectTypes.First();
+        ViewFiler.ObjectType = objectTypes.First();
     }
 }

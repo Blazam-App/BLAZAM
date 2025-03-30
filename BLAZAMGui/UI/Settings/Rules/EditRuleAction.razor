@@ -2,19 +2,75 @@
 @using BLAZAM.Database.Models.Rules
 <MudStack Row=true>
     <MudSelectList T="AutomationRuleActionType"
-                   Values="_actionTypes"
-                   @bind-Value=Action.ActionType />
-    @if (Action.ActionType == AutomationRuleActionType.ModifyField)
+    Values="_actionTypes"
+    @bind-Value=Action.ActionType />
+    @switch (Action.ActionType)
     {
-        <MudSelectList Values="_fields" @bind-Value=_selectedField />
+    case AutomationRuleActionType.ModifyField:
+        <MudSelectList Values="_fields"
+        Value=_selectedField
+        ValueChanged="@((ActiveDirectoryField field)=>{FieldChanged(field);})" />
         @if (_selectedField != null)
         {
-            
+            AutomationRuleFieldValue fieldValue;
+            if (Action.FieldValues.FirstOrDefault() == null)
+            {
+                fieldValue = new() { Field = _selectedField };
+                Action.FieldValues.Add(fieldValue);
+            }
+            else
+            {
+                fieldValue = Action.FieldValues.FirstOrDefault(fv => fv.Field.Id == _selectedField.Id);
+            }
+            switch (Action.FieldValues.FirstOrDefault()?.Field.FieldType)
+            {
+                case ActiveDirectoryFieldType.Text:
+                case ActiveDirectoryFieldType.RawData:
+                case ActiveDirectoryFieldType.StringList:
+                    <MudTextField T="string" @bind-Value=fieldValue.Value />
+                    break;
+                case ActiveDirectoryFieldType.Date:
+                    <MudDatePicker Date="@GetDateTime(fieldValue.Value)"
+                    DateChanged="@((date)=>{fieldValue.Value=date.ToString();})" />
+                    break;
+                case ActiveDirectoryFieldType.DriveLetter:
+                    <HomeDriveSelect @bind-DriveLetter=fieldValue.Value />
+                    break;
+                case ActiveDirectoryFieldType.FileTime:
+                    <MudDatePicker Date="@GetFileTime(fieldValue.Value)"
+                    DateChanged="@((date)=>{fieldValue.Value=date.Value.ToFileTimeUtc().ToString();})" />
+
+                    break;
+            }
         }
+        break;
+    case AutomationRuleActionType.Assign:
+        <ADAutoComplete SelectedSid="@Action.GroupSids.FirstOrDefault()?.GroupSid" SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=true});})" SearchObjectType="ActiveDirectoryObjectType.Group" />
+
+        break;
+    case AutomationRuleActionType.Lockout:
+        break;
+    case AutomationRuleActionType.SendEmail:
+        <MudTextField T="string" @bind-Value=Action.Data/>
+
+        break;
+    case AutomationRuleActionType.Move:
+        <ADAutoComplete SelectedResultChanged="@((result)=>{Action.Data = result.SID.ToSidString();})" SearchObjectType="ActiveDirectoryObjectType.OU" />
+    break;
+        case AutomationRuleActionType.Unassign:
+            <ADAutoComplete SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=false});})" SearchObjectType="ActiveDirectoryObjectType.Group" />
+
+            break;
+        case AutomationRuleActionType.Enable:
+            break;
+        case AutomationRuleActionType.Disable:
+            break;
+        case AutomationRuleActionType.Unlock:
+            break;
     }
     <MudButton OnClick="@(RemovedClicked)"
-            Color="Color.Error"
-            StartIcon="@Icons.Material.Filled.Remove">Remove Action</MudButton>
+    Color="Color.Error"
+    StartIcon="@Icons.Material.Filled.Remove">Remove Action</MudButton>
 </MudStack>
 
 @code {
@@ -29,7 +85,7 @@
 
     private List<AutomationRuleActionType> _actionTypes = new();
 
-   
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,5 +95,19 @@
         {
             _actionTypes.Add(enu);
         }
+    }
+    private void FieldChanged(ActiveDirectoryField field)
+    {
+        if (_selectedField == field) return;
+        _selectedField = field;
+        Action.FieldValues.Clear();
+    }
+    private DateTime? GetFileTime(string? value){
+        if (value.IsNullOrEmpty()) return null;
+        return DateTime.FromFileTimeUtc(long.Parse(value));
+    }
+    private DateTime? GetDateTime(string? value){
+        if (value.IsNullOrEmpty()) return null;
+        return DateTime.Parse(value);
     }
 }

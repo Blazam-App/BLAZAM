@@ -2,36 +2,46 @@
 <MudText Typo="Typo.h4">@AppLocalization[Lang.Rules] <AppDocumentationButton Page="/admin/settings/application" /></MudText>
 
 <MudText>Rules is a concept for automation within Blazam. It would allow automated actions based on filtered event triggers.</MudText>
+<CascadingValue Value="ViewFilter">
+    <MudGrid Class="border-1">
+        <MudItem xs="12" sm="4" md="3" lg="2">
+            <MudStack>
+                <MudCard>
+                    <MudText Typo="Typo.h6" Class="my-3 ps-3">Object Type</MudText>
+                    <MudDivider />
 
-<MudGrid Class="border-1">
-    <MudItem xs="12" sm="4" md="3" lg="2">
-        <MudStack>
+                    <RuleObjectTypes />
+                </MudCard>
+                <MudCard>
+                    <MudText Typo="Typo.h6" Class="my-3 ps-3">Triggers</MudText>
+                    <MudDivider />
+                    <RuleTriggers />
+                </MudCard>
+            </MudStack>
+        </MudItem>
+
+        <MudItem xs="12" sm="8" md="9" lg="10">
             <MudCard>
-                <MudText Typo="Typo.h6" Class="my-3 ps-3">Object Type</MudText>
+                <MudStack Row="true">
+                    <MudText Typo="Typo.h6"
+                             Class="my-3 ps-3">
+                        @AppLocalization[Lang.Rules]: @ViewFilter.ObjectType.ToString()->@ViewFilter.Trigger
+                    </MudText>
+                    <MudSpacer/>
+                    <MudButton Color="Color.Primary" OnClick="@(()=>{CreateRule?.Invoke();})">@AppLocalization[Lang.Create_Rule]</MudButton>
+                </MudStack>
                 <MudDivider />
-
-                <RuleObjectTypes @bind-SelectedObjectType=selectedObjectType />
+                <RulesForTrigger RulesSettings="this" />
             </MudCard>
-            <MudCard>
-                <MudText Typo="Typo.h6" Class="my-3 ps-3">Triggers</MudText>
-                <MudDivider />
-                <RuleTriggers @bind-SelectedTrigger=selectedTrigger SelectedObjectType=selectedObjectType />
-            </MudCard>
-        </MudStack>
-    </MudItem>
 
-    <MudItem xs="12" sm="8" md="9" lg="10">
-        <MudCard>
-
-            Rules
-            <RulesForTrigger Trigger="selectedTrigger" />
-        </MudCard>
-
-    </MudItem>
-</MudGrid>
-
+        </MudItem>
+    </MudGrid>
+</CascadingValue>
 @code {
-    private NotificationType selectedTrigger{
+    public AppEvent? CreateRule { get; set; }
+    private readonly RuleViewFilter ViewFilter = new();
+    private NotificationType selectedTrigger
+    {
         get;
         set;
     }
@@ -39,15 +49,16 @@
     private ActiveDirectoryObjectType selectedObjectType
     {
         get => _selectedObjectType;
-        set {
+        set
+        {
             if (_selectedObjectType == value) return;
-            _selectedObjectType=value;
+            _selectedObjectType = value;
             if (triggerTypes.Count > 0)
             {
                 if (!triggerTypes.Where(t => t.IsNotificationAppropriateForObject(_selectedObjectType)).Any(t => t.Equals(value)))
                 {
-                    selectedTrigger = triggerTypes.First(t => t.IsNotificationAppropriateForObject(_selectedObjectType));
-                    _=InvokeAsync(StateHasChanged);
+
+                    _ = InvokeAsync(StateHasChanged);
                 }
             }
         }
@@ -63,6 +74,7 @@
             triggerTypes.Add(type);
         }
         triggerTypes = triggerTypes.OrderBy(t => t.ToString()).ToList();
-
+        ViewFilter.ObjectTypeChanged += () => InvokeAsync(StateHasChanged);
+        ViewFilter.TriggerChanged += () => InvokeAsync(StateHasChanged);
     }
 }
