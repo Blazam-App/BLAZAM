@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -39,6 +39,7 @@
     <ProjectReference Include="..\BLAZAMActiveDirectory\BLAZAMActiveDirectory.csproj" />
     <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
+    <ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
     <ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
   </ItemGroup>
 

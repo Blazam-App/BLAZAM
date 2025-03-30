@@ -109,7 +109,7 @@ namespace BLAZAM.Gui.UI
             base.OnInitialized();
             try
             {
-
+                userActiveDirectoryService.Context.CurrentUser = CurrentUser.State.ToActiveDirectoryUserState();
                 Directory = userActiveDirectoryService.Context;
             }
             catch (Exception ex)

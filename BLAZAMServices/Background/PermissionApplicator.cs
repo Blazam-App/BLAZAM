@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common;
 using BLAZAM.Common.Data;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace BLAZAM.ActiveDirectory.Services
+namespace BLAZAM.Services.Background
 {
     public class PermissionApplicator
     {

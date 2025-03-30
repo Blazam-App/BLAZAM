@@ -53,7 +53,7 @@
     private SecureString? authSecret;
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter]
-    public AppEvent? OnAuthenticated { get; set; }
+    public AppDelegate? OnAuthenticated { get; set; }
 
     private bool _authenticated;
     protected override void OnInitialized()

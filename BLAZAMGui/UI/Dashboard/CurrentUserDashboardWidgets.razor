@@ -187,7 +187,7 @@ else
     bool _initialized;
     [Inject]
     public WidgetService WidgetService { get; set; }
-    public AppEvent<Widget> OnRefreshWidget { get; set; } = (val) => { };
+    public AppDelegate<Widget> OnRefreshWidget { get; set; } = (val) => { };
     IApplicationUserState _currentUser;
     MudDropContainer<UserDashboardWidget>? widgetContainer;
     List<Widget> allWidgets = new List<Widget>();

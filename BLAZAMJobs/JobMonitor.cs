@@ -2,7 +2,7 @@
 {
     public static class JobMonitor
     {
-        public static AppEvent? OnUpdate { get; set; }
+        public static AppDelegate? OnUpdate { get; set; }
         private static List<IJob> Jobs = new();
         public static List<IJob> AllJobs => Jobs.ToList();
         public static List<IJob> RunningJobs => Jobs.Where(x => x.Result == JobResult.Running).ToList();

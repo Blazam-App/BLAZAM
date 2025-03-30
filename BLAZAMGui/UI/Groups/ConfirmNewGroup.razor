@@ -43,8 +43,16 @@
             {
                 foreach (var assignment in assignTo)
                 {
-                    await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
-                    await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
+                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        {
+                            ActionType = AppEventType.Assign,
+                            Entry = assignment.Member,
+                            Target = assignment.Group,
+                            Actor = CurrentUser.State
+
+                        });
+                    //await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
+                    //await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
                     if (DbFactory.DatabaseType == DatabaseType.SQLite)
                     {
                         await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
@@ -68,7 +76,7 @@
                 }
                 else
                 {
-                    _= NotificationGenerationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
+                    _ = NotificationGenerationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
 
                 }
                 await Confirmed.InvokeAsync(Group);

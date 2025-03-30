@@ -139,7 +139,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return sessionManager.ConnectedSessions;
             });
         }
-        public AppEvent<bool> OnOnlineChanged { get; set; }
+        public AppDelegate<bool> OnOnlineChanged { get; set; }
 
         public List<SharedPrinter> SharedPrinters
         {

@@ -25,7 +25,7 @@ namespace BLAZAM.Session
     public class ApplicationUserState : IApplicationUserState
     {
 
-        public AppEvent OnSettingsChanged { get; set; }
+        public AppDelegate OnSettingsChanged { get; set; }
 
         public ClaimsPrincipal User { get; set; }
 

@@ -6,9 +6,9 @@ namespace BLAZAM.Services.Chat
 {
     public interface IChatService
     {
-        AppEvent<ChatMessage> OnMessagePosted { get; set; }
-        AppEvent<AppUser> OnMessageRead { get; set; }
-        AppEvent<ChatRoom> OnChatRoomCreated { get; set; }
+        AppDelegate<ChatMessage> OnMessagePosted { get; set; }
+        AppDelegate<AppUser> OnMessageRead { get; set; }
+        AppDelegate<ChatRoom> OnChatRoomCreated { get; set; }
         ChatRoom? AppChatRoom { get; }
         IQueryable<ChatRoom> ChatRooms { get; }
 

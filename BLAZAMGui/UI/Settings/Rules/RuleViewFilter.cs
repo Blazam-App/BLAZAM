@@ -50,7 +50,7 @@ namespace BLAZAM.Gui.UI.Settings.Rules
             _trigger = _triggerTypes.First();
         }
 
-        public AppEvent ObjectTypeChanged { get; set; }
-        public AppEvent TriggerChanged { get; set; }
+        public AppDelegate ObjectTypeChanged { get; set; }
+        public AppDelegate TriggerChanged { get; set; }
     }
 }

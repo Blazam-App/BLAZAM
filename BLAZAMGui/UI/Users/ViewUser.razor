@@ -641,6 +641,8 @@
 
             }
         }
+
+
         await AuditLogger.Searched(User);
         LoadingData = false;
         await RefreshEntryComponents();
@@ -665,8 +667,16 @@
 
                     foreach (var assignment in assignTo)
                     {
-                        await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
-                        await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
+                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            {
+                                ActionType = AppEventType.Assign,
+                                Entry = assignment.Member,
+                                Target = assignment.Group,
+                                Actor = CurrentUser.State
+
+                            });
+                        //await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
+                       // await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
                         //Run synchronously if using sqlite
                         if (DbFactory.DatabaseType == DatabaseType.SQLite)
                         {
@@ -683,6 +693,14 @@
 
                     foreach (var assignment in unassignFrom)
                     {
+                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            {
+                                ActionType = AppEventType.Unassign,
+                                Entry = assignment.Member,
+                                Target = assignment.Group,
+                                Actor = CurrentUser.State
+
+                            });
                         await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
                         await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
                         //Run synchronously if using sqlite
@@ -700,7 +718,15 @@
                     }
                     if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                     {
-                        await AuditLogger.User.Changed(User, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
+                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            {
+                                ActionType = AppEventType.Modify,
+                                Entry = User,
+                                Changes =  changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList(),
+                                Actor = CurrentUser.State
+
+                            });
+                        //await AuditLogger.User.Changed(User, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
 
                         //Run synchronously if using sqlite
                         if (DbFactory.DatabaseType == DatabaseType.SQLite)
@@ -755,10 +781,18 @@
 
             try
             {
+             
                 User.Delete();
 
                 SnackBarService.Success(User.DisplayName + " has been deleted.");
-                await AuditLogger.User.Deleted(User);
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        ActionType = AppEventType.Delete,
+                        Entry = User,
+                        Actor = CurrentUser.State
+
+                    });
+                //await AuditLogger.User.Deleted(User);
                 _ = NotificationGenerationService.PostAsync(User, NotificationType.Delete, CurrentUser.State);
 
             }

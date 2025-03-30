@@ -73,6 +73,14 @@
             var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                {
+                    ActionType = AppEventType.Modify,
+                    Entry = userToUnlock,
+                    Changes = changes,
+                    Actor = CurrentUser.State
+
+                });
             await AuditLogger.User.Changed(userToUnlock, changes);
             if (unlockJob.Result == JobResult.Passed)
             {
@@ -97,7 +105,15 @@
             var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
-            await AuditLogger.User.Changed(userToUnlock, changes);
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                {
+                    ActionType = AppEventType.Modify,
+                    Entry = userToUnlock,
+                    Changes = changes,
+                    Actor = CurrentUser.State
+
+                });
+            //await AuditLogger.User.Changed(userToUnlock, changes);
             if (unlockJob.Result == JobResult.Passed)
             {
 

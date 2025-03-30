@@ -355,7 +355,15 @@
                     }
                     if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                     {
-                        await AuditLogger.User.Changed(Computer, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
+                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            {
+                                ActionType = AppEventType.Modify,
+                                Entry = Computer,
+                                Changes = changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList(),
+                                Actor = CurrentUser.State
+
+                            });
+                        //await AuditLogger.User.Changed(Computer, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
                         if (DbFactory.DatabaseType == DatabaseType.SQLite)
                         {
                             await NotificationGenerationService.PostAsync(Computer, NotificationType.Modify, CurrentUser.State);

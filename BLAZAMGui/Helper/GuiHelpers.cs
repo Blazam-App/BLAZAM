@@ -1,5 +1,6 @@
 ﻿
 using ApplicationNews;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Gui.UI.Modals;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
@@ -21,7 +22,17 @@ namespace BLAZAM.Helpers
             }
             return fileBytes;
         }
+        public static ActiveDirectoryUserState ToActiveDirectoryUserState(this IApplicationUserState userState)
+        {
+            return new ActiveDirectoryUserState()
+            {
+                 Username=userState.AuditUsername,
+                 PermissionMappings = userState.PermissionMappings,
+                 IsSuperAdmin=userState.IsSuperAdmin
 
+            };
+            
+        }
         public static async Task<IDialogReference> ShowNewsItemDialog(this NewsItem item, AppDialogService dialogService)
         {
             var dialogParams = new DialogParameters

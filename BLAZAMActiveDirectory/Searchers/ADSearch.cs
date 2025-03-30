@@ -61,7 +61,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// or listen to <see cref="OnSearchCompleted"/>
         /// to confirm search is completed and no more results are coming.</para>
         /// </summary>
-        public AppEvent<IEnumerable<IDirectoryEntryAdapter>> ResultsCollected { get; set; }
+        public AppDelegate<IEnumerable<IDirectoryEntryAdapter>> ResultsCollected { get; set; }
 
         private int PageSize = 40;
 

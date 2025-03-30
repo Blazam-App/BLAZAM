@@ -295,7 +295,14 @@ OnClick="Print">@AppLocalization["Print"]</MudButton>
                 SnackBarService.Success("User has been created");
                 Confirmed = true;
                 await OnConfirmed.InvokeAsync();
-                await AuditLogger.User.Created(User);
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        ActionType = AppEventType.Create,
+                        Entry = User,
+                        Actor = CurrentUser.State
+
+                    });
+                //await AuditLogger.User.Created(User);
                 if (DbFactory.DatabaseType == DatabaseType.SQLite)
                 {
                     await NotificationGenerationService.PostAsync(User, NotificationType.Create, CurrentUser.State);

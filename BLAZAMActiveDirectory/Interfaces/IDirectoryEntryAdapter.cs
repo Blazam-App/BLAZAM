@@ -1,8 +1,8 @@
-﻿using BLAZAM.Common.Data;
+﻿using BLAZAM.ActiveDirectory.Data;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Jobs;
-using BLAZAM.Session.Interfaces;
 using System.DirectoryServices;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
@@ -170,12 +170,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Called when pending changes to this entry are commited
         /// </summary>
-        AppEvent? OnModelCommited { get; set; }
+        AppDelegate? OnModelCommited { get; set; }
 
         /// <summary>
         /// Called when any changes occur to this entry
         /// </summary>
-        AppEvent? OnModelChanged { get; set; }
+        AppDelegate? OnModelChanged { get; set; }
 
         /// <summary>
         /// If <see cref="NewEntry"/> is true, property changes will be
@@ -204,12 +204,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Called when this entry is renamed
         /// </summary>
-        AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+        AppDelegate<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
 
         /// <summary>
         /// Called when this entry is deleted
         /// </summary>
-        AppEvent? OnModelDeleted { get; set; }
+        AppDelegate? OnModelDeleted { get; set; }
         /// <summary>
         /// The directory this entry belongs to
         /// </summary>
@@ -361,7 +361,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Ensures that the <see cref="DirectoryEntry"/> property is not null.
         /// </summary>
         void EnsureDirectoryEntry();
-        void SetCurrentUser(IApplicationUserState user);
+        void SetCurrentUser(ActiveDirectoryUserState user);
         Task<IDirectoryEntryAdapter?> GetParentAsync();
     }
 }

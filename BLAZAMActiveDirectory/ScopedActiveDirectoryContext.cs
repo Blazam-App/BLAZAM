@@ -1,6 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -17,11 +16,10 @@ namespace BLAZAM.ActiveDirectory
         /// Creates a new <see cref="IActiveDirectoryContext"/> scoped to the current Blazor session
         /// </summary>
         /// <param name="contextFactory">The system based context factory</param>
-        /// <param name="currentUser">The current user</param>
-        public ScopedActiveDirectoryContext(IActiveDirectoryContextFactory contextFactory, ICurrentUserStateService currentUser)
+        public ScopedActiveDirectoryContext(IActiveDirectoryContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
-            Context = _contextFactory.CreateActiveDirectoryContext(currentUser);
+            Context = _contextFactory.CreateActiveDirectoryContext();
             ApplicationStatistics.AddADContext();
 
         }

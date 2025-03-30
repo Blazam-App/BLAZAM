@@ -1,4 +1,5 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Data;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -7,7 +8,6 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
-using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
@@ -33,16 +33,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public AppEvent? OnModelChanged { get; set; }
+        public AppDelegate? OnModelChanged { get; set; }
 
 
-        public AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+        public AppDelegate<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
 
 
-        public AppEvent? OnModelCommited { get; set; }
+        public AppDelegate? OnModelCommited { get; set; }
 
 
-        public AppEvent? OnModelDeleted { get; set; }
+        public AppDelegate? OnModelDeleted { get; set; }
 
 
         public virtual List<AuditChangeLog> Changes
@@ -93,12 +93,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         protected IAppDatabaseFactory DbFactory => Directory.Factory;
-        public void SetCurrentUser(IApplicationUserState user)
+        public void SetCurrentUser(ActiveDirectoryUserState user)
         {
             _currentUser = user;
         }
-        protected IApplicationUserState? _currentUser;
-        protected IApplicationUserState? CurrentUser => _currentUser;
+        protected ActiveDirectoryUserState? _currentUser;
+        protected ActiveDirectoryUserState? CurrentUser => _currentUser;
 
         public bool NewEntry { get; set; }
 
@@ -791,7 +791,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 commitJob ??= new Job
                 {
                     Name = "Commit Changes",
-                    User = CurrentUser?.AuditUsername
+                    User = CurrentUser?.Username
                 };
 
 

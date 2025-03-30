@@ -186,8 +186,16 @@
             {
                 foreach (var assignment in assignTo)
                 {
-                    await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
-                    await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
+                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        {
+                            ActionType = AppEventType.Assign,
+                            Entry = assignment.Member,
+                            Target = assignment.Group,
+                            Actor = CurrentUser.State
+
+                        });
+                   // await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
+                   // await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
                     if (DbFactory.DatabaseType == DatabaseType.SQLite)
                     {
                         await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
@@ -202,8 +210,16 @@
 
                 foreach (var assignment in unassignFrom)
                 {
-                    await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
-                    await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
+                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        {
+                            ActionType = AppEventType.Unassign,
+                            Entry = assignment.Member,
+                            Target = assignment.Group,
+                            Actor = CurrentUser.State
+
+                        });
+                    //await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
+                    //await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
                     if (DbFactory.DatabaseType == DatabaseType.SQLite)
                     {
                         await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Unassign, CurrentUser.State, Group);

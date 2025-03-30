@@ -23,7 +23,7 @@ namespace BLAZAM.Jobs
         public virtual WindowsImpersonation Identity { get; set; }
 
         public virtual string? Name { get; set; }
-        public virtual AppEvent<double?> OnProgressUpdated { get; set; }
+        public virtual AppDelegate<double?> OnProgressUpdated { get; set; }
         public virtual double? Progress
         {
             get => progress; set
