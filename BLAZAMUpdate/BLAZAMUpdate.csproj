@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -15,7 +15,7 @@
 		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
-		<PackageReference Include="MudBlazor" Version="8.3.0" />
+		<PackageReference Include="MudBlazor" Version="8.5.0" />
 		<PackageReference Include="Octokit" Version="14.0.0" />
 		<PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.2" />
 		<PackageReference Include="System.Management" Version="9.0.2" />
