@@ -232,7 +232,7 @@
     <value>Es wird versucht, eine Verbindung mit Active Directory herzustellen.</value>
   </data>
   <data name="Audit" xml:space="preserve">
-    <value>Rechnungsprüfung</value>
+    <value>Audit</value>
   </data>
   <data name="Authentication" xml:space="preserve">
     <value>Authentifizierung</value>
