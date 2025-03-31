@@ -45,7 +45,7 @@
                 {
                     ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                         {
-                            ActionType = AppEventType.Assign,
+                            EventType = AppEventType.Assign,
                             Entry = assignment.Member,
                             Target = assignment.Group,
                             Actor = CurrentUser.State
@@ -53,32 +53,20 @@
                         });
                     //await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
                     //await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
-                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                    {
-                        await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
-
-                    }
-                    else
-                    {
-                        _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
-
-                    }
+                   
                 }
 
                 Group = (IADGroup)Directory.GetDirectoryEntryByDN(Group.DN);
 
                 SnackBarService.Success(AppLocalization[Lang.Group_created]);
-                await AuditLogger.Group.Created(Group);
-                if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                {
-                    await NotificationGenerationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        EventType = AppEventType.Create,
+                        Entry = Group,
+                        Actor = CurrentUser.State
 
-                }
-                else
-                {
-                    _ = NotificationGenerationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
-
-                }
+                    });
+               
                 await Confirmed.InvokeAsync(Group);
             }
 

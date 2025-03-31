@@ -12,9 +12,13 @@ using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Notifications;
 using BLAZAM.Notifications.Services;
+using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Octokit;
+using Serilog.Parsing;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.Services.Background
 {
@@ -25,7 +29,7 @@ namespace BLAZAM.Services.Background
         private readonly IStringLocalizer<AppLocalization> _appLocalization;
         private readonly EmailService _emailService;
         private readonly WebHookPublisher _webHookPublisher;
-
+        private object _notificationLock = new();
         public NotificationGenerationService(IAppDatabaseFactory databaseFactory, INotificationPublisher notificationPublisher, IStringLocalizer<AppLocalization> appLocalization, EmailService emailService, WebHookPublisher webHookPublisher)
         {
             _databaseFactory = databaseFactory;
@@ -33,6 +37,115 @@ namespace BLAZAM.Services.Background
             _appLocalization = appLocalization;
             _emailService = emailService;
             _webHookPublisher = webHookPublisher;
+            ApplicationEvents.DirectoryEntryChanged.Delegate += ProcessDirectoryEntryChangedEvent;
+
+        }
+        protected virtual void ProcessDirectoryEntryChangedEvent(DirectoryEntryChangedArgs args)
+        {
+            lock (_notificationLock)
+            {
+                switch (args.ObjectType)
+                {
+                    case ActiveDirectoryObjectType.Printer:
+                    case ActiveDirectoryObjectType.Computer:
+                    case ActiveDirectoryObjectType.BitLocker:
+                    case ActiveDirectoryObjectType.Group:
+                    case ActiveDirectoryObjectType.OU:
+                    case ActiveDirectoryObjectType.User:
+                        switch (args.EventType)
+                        {
+                            case AppEventType.Delete:
+                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
+                                {
+                                    Post(args.Entry, NotificationType.Delete, args.Actor);
+
+                                }
+                                else
+                                {
+                                    _ = PostAsync(args.Entry, NotificationType.Delete, args.Actor);
+
+                                }
+                                break;
+                            case AppEventType.Create:
+                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
+                                {
+                                    Post(args.Entry, NotificationType.Create, args.Actor);
+
+                                }
+                                else
+                                {
+                                    _ = PostAsync(args.Entry, NotificationType.Create, args.Actor);
+
+                                }
+                                break;
+                            case AppEventType.PasswordChange:
+                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
+                                {
+                                    Post(args.Entry, NotificationType.Create, args.Actor);
+
+                                }
+                                else
+                                {
+                                    _=PostAsync(args.Entry, NotificationType.Create, args.Actor);
+
+                                }
+                                break;
+                            case AppEventType.Assign:
+                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
+                                {
+                                    Post(args.Entry, NotificationType.Assign, args.Actor, args.Target);
+
+                                }
+                                else
+                                {
+                                    _ = PostAsync(args.Entry, NotificationType.Assign, args.Actor, args.Target);
+
+                                }
+                                break;
+                            case AppEventType.LockedOut:
+
+                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
+                                {
+                                    Post(args.Entry, NotificationType.LockedOut);
+
+                                }
+                                else
+                                {
+                                    _ = PostAsync(args.Entry, NotificationType.LockedOut);
+
+                                }
+                                break;
+                            case AppEventType.Move:
+                            case AppEventType.Modify:
+                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
+                                {
+                                    Post(args.Entry, NotificationType.Modify,args.Actor);
+
+                                }
+                                else
+                                {
+                                    _ = PostAsync(args.Entry, NotificationType.Modify, args.Actor);
+
+                                }
+                                break;
+                            case AppEventType.Unassign:
+                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
+                                {
+                                    Post(args.Entry, NotificationType.Unassign,args.Actor,args.Target);
+
+                                }
+                                else
+                                {
+                                    _ = PostAsync(args.Entry, NotificationType.Unassign, args.Actor, args.Target);
+
+                                }
+                                break;
+                            case AppEventType.Scheduled:
+                                break;
+                        }
+                        break;
+                }
+            }
         }
         private IDatabaseContext Context => _databaseFactory.CreateDbContext();
 
@@ -48,36 +161,50 @@ namespace BLAZAM.Services.Background
         {
             await Task.Run(async () =>
             {
+                PostAsync(source, notificationType, actor, target);
+            });
+
+        }
+        /// <summary>
+        /// Post a notification to OU subscribers
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="notificationType"></param>
+        /// <param name="actor"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public void Post(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
+        {
+           
                 NotificationMessage notification;
                 string notificationTitle;
                 NotificationTemplateComponent? emailMessage;
                 PackageNotification(source, notificationType, actor, target, out notification, out notificationTitle, out emailMessage);
                 var _emailConfigured = _emailService.IsConfigured;
                 using var context = Context;
-                var users = await context.UserSettings.Include(us => us.NotificationSubscriptions).ToListAsync();
+                var users = context.UserSettings.Include(us => us.NotificationSubscriptions).ToList();
                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                 {
 
 
                     foreach (var user in users)
                     {
-                        await ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
+                        ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
                     }
                 }
                 else
                 {
                     Parallel.ForEach(users, async user =>
                     {
-                        await ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
+                        ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
                     });
                 }
                 PostWebHooks(source, notificationType, actor, target);
 
-            });
+           
 
         }
-
-        private async Task ProcessUserNotification(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor, AppUser user, NotificationMessage notification, string notificationTitle, NotificationTemplateComponent? emailMessage, bool _emailConfigured)
+        private void ProcessUserNotification(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor, AppUser user, NotificationMessage notification, string notificationTitle, NotificationTemplateComponent? emailMessage, bool _emailConfigured)
         {
             //Avoid sending to triggering user if actor is set
             if (user.Id != actor?.Id)
@@ -87,7 +214,7 @@ namespace BLAZAM.Services.Background
 
                 if (effectiveInAppSubscriptions != null && effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                 {
-                    await _notificationPublisher.PublishNotification(user, notification);
+                    _ =  _notificationPublisher.PublishNotification(user, notification);
                 }
 
                 if (effectiveEmailSubscriptions != null && effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
@@ -96,7 +223,7 @@ namespace BLAZAM.Services.Background
                     {
                         if (_emailConfigured && !user.Email.IsNullOrEmpty())
                         {
-                            await _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
+                            _= _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
                         }
                     }
                     else

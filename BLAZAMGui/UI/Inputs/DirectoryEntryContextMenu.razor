@@ -9,7 +9,7 @@
 
         </ChildContent>
         <MenuContents>
-            @if(account.CanUnlock && account.LockedOut)
+            @if (account.CanUnlock && account.LockedOut)
             {
                 <MudMenuItem OnClick="(async()=>{await UnlockAccount(account);})" Icon="@Icons.Material.Outlined.LockOpen">
                     @AppLocalization[Lang.Unlock] @AppLocalization[account.ObjectType.ToString()]
@@ -30,7 +30,9 @@
             }
         </MenuContents>
     </MudContextMenu>
-}else{
+}
+else
+{
     @ChildContent
 }
 
@@ -50,7 +52,14 @@
             var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
-            await AuditLogger.User.Changed(userToUnlock, changes);
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                {
+                    EventType = AppEventType.Modify,
+                    Entry = userToUnlock,
+                    Changes = changes,
+                    Actor = CurrentUser.State
+
+                });
             if (unlockJob.Result == JobResult.Passed)
             {
 
@@ -75,17 +84,16 @@
             var unlockJob = await userToUnlock.CommitChangesAsync();
             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                 {
-                    ActionType = AppEventType.Modify,
+                    EventType = AppEventType.Modify,
                     Entry = userToUnlock,
                     Changes = changes,
                     Actor = CurrentUser.State
 
                 });
-            await AuditLogger.User.Changed(userToUnlock, changes);
             if (unlockJob.Result == JobResult.Passed)
             {
 
-                SnackBarService.Success(userToUnlock.CanonicalName +" " + AppLocalization[Lang.enabled]);
+                SnackBarService.Success(userToUnlock.CanonicalName + " " + AppLocalization[Lang.enabled]);
                 await OnChanged.InvokeAsync();
 
             }
@@ -107,13 +115,13 @@
             var unlockJob = await userToUnlock.CommitChangesAsync();
             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                 {
-                    ActionType = AppEventType.Modify,
+                    EventType = AppEventType.Modify,
                     Entry = userToUnlock,
                     Changes = changes,
                     Actor = CurrentUser.State
 
                 });
-            //await AuditLogger.User.Changed(userToUnlock, changes);
+
             if (unlockJob.Result == JobResult.Passed)
             {
 

@@ -297,21 +297,12 @@ OnClick="Print">@AppLocalization["Print"]</MudButton>
                 await OnConfirmed.InvokeAsync();
                 ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                     {
-                        ActionType = AppEventType.Create,
+                        EventType = AppEventType.Create,
                         Entry = User,
                         Actor = CurrentUser.State
 
                     });
-                //await AuditLogger.User.Created(User);
-                if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                {
-                    await NotificationGenerationService.PostAsync(User, NotificationType.Create, CurrentUser.State);
-
-                }
-                else
-                {
-                    _ = NotificationGenerationService.PostAsync(User, NotificationType.Create, CurrentUser.State);
-                }
+               
                 try
                 {
                     if (DirectoryTemplate?.EffectiveSendWelcomeEmail == true)

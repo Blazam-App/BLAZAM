@@ -12,9 +12,11 @@ namespace BLAZAM.Services.Events
     public enum AppEventType
     {
         All,
+        Search,
         Create,
         Delete,
         Modify,
+        Move,
         Unassign,
         Assign,
         PasswordChange,
@@ -27,9 +29,10 @@ namespace BLAZAM.Services.Events
         public List<AuditChangeLog> Changes { get; set; }
 
         public IDirectoryEntryAdapter? Target { get; set; }
+        public IDirectoryEntryAdapter? Origin { get; set; }
         public IDirectoryEntryAdapter? OriginalEntry { get; set; }
         public ActiveDirectoryObjectType ObjectType { get=>Entry.ObjectType;}
-        public AppEventType ActionType { get; set; }
+        public AppEventType EventType { get; set; }
 
     }
 }

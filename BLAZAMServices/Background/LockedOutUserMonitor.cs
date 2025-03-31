@@ -6,6 +6,8 @@ using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
+using BLAZAM.Services.Events;
+using BLAZAM.Session;
 using Microsoft.Extensions.Localization;
 using Polly;
 
@@ -57,8 +59,14 @@ namespace BLAZAM.Services.Background
 
                             if (user.LockoutTime > DateTime.UtcNow.AddDays(-1))
                             {
-                                _notificationGenerationService.PostAsync(user, NotificationType.LockedOut);
+                                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                                {
+                                    EventType = AppEventType.LockedOut,
+                                    Entry = user,
+                                    Actor = new SystemUserState(dbFactory)
 
+                                });
+                               
                                 RecordLogonEvents(user);
 
                             }

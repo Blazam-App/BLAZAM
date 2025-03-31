@@ -37,6 +37,22 @@ namespace BLAZAM.Services.Audit
               "Added member " + member.DN);
             return true;
         }
+        public async Task<bool> Unassigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
+        {
+            Analytics?.ObjectAssigned(ActiveDirectoryObjectType.Group);
+
+            await Log(c => c.DirectoryEntryAuditLogs,
+               AuditActions.Group_Unassigned,
+            member,
+               null,
+               "Unassigned from " + parent.DN);
+            await Log(c => c.DirectoryEntryAuditLogs,
+              AuditActions.Group_Unassigned,
+           parent,
+              null,
+              "Removed member " + member.DN);
+            return true;
+        }
         public async Task<bool> MemberAdded(IDirectoryEntryAdapter parent, IDirectoryEntryAdapter member)
         {
             await Log(c => c.DirectoryEntryAuditLogs,

@@ -267,7 +267,13 @@
                 await RefreshEntryComponents();
             });
         }
-        await AuditLogger.Searched(Computer);
+        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            {
+                EventType = AppEventType.Search,
+                Entry = Computer,
+                Actor = CurrentUser.State
+
+            });
 
         LoadingData = false;
         await RefreshEntryComponents();
@@ -291,11 +297,16 @@
             await InvokeAsync(StateHasChanged);
             try
             {
+                
                 Computer.Delete(true);
                 SnackBarService.Success(Computer.CanonicalName + " has been deleted.");
-                await AuditLogger.Computer.Deleted(Computer);
-                _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Delete, CurrentUser.State);
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        EventType = AppEventType.Delete,
+                        Entry = Computer,
+                        Actor = CurrentUser.State
 
+                    });
 
             }
             catch (AppException ex)
@@ -324,56 +335,40 @@
                 {
                     foreach (var assignment in assignTo)
                     {
-                        await AuditLogger.Computer.Assigned(assignment.Member, assignment.Group);
-                        await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
-                        if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                        {
-                            await NotificationGenerationService.PostAsync(Computer, NotificationType.Assign, CurrentUser.State, assignment.Group);
+                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            {
+                                EventType = AppEventType.Assign,
+                                Entry = assignment.Member,
+                                Target = assignment.Group,
+                                Actor = CurrentUser.State
 
-                        }
-                        else
-                        {
-                            _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Assign, CurrentUser.State, assignment.Group);
-
-                        }
+                            });
+                        
                     }
 
                     foreach (var assignment in unassignFrom)
                     {
-                        await AuditLogger.Computer.Unassigned(assignment.Member, assignment.Group);
-                        await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
-                        if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                        {
-                            await NotificationGenerationService.PostAsync(Computer, NotificationType.Unassign, CurrentUser.State, assignment.Group);
+                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            {
+                                EventType = AppEventType.Unassign,
+                                Entry = assignment.Member,
+                                Target = assignment.Group,
+                                Actor = CurrentUser.State
 
-                        }
-                        else
-                        {
-                            _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Unassign, CurrentUser.State, assignment.Group);
-
-                        }
+                            });
+                       
                     }
                     if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                     {
                         ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                             {
-                                ActionType = AppEventType.Modify,
+                                EventType = AppEventType.Modify,
                                 Entry = Computer,
                                 Changes = changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList(),
                                 Actor = CurrentUser.State
 
                             });
-                        //await AuditLogger.User.Changed(Computer, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
-                        if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                        {
-                            await NotificationGenerationService.PostAsync(Computer, NotificationType.Modify, CurrentUser.State);
-                           
-                        }
-                        else
-                        {
-                            _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Modify, CurrentUser.State);
-
-                        }
+                     
                     }
                     EditMode = false;
                     SnackBarService.Success("The changes made to this computer have been saved.");

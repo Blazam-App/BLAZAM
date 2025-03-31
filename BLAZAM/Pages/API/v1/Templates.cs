@@ -17,6 +17,7 @@ using Microsoft.Extensions.Localization;
 using MudBlazor;
 using System.Security;
 using System.Text.Json;
+using BLAZAM.Services.Events;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -147,17 +148,14 @@ namespace BLAZAM.Pages.API.v1
 
         private async Task AuditAndNotify(NewUserDetails newUserDetails, DirectoryTemplate? template, IADUser? newUser, SecureString password)
         {
-            await AuditLogger.User.Created(newUser);
-            if (DbFactory.DatabaseType == DatabaseType.SQLite)
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
-                await OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
+                EventType = AppEventType.Create,
+                Entry = newUser,
+                Actor = CurrentUserState
 
-            }
-            else
-            {
-                _ = OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
-
-            }
+            });
+            
 
 
             if (template?.EffectiveSendWelcomeEmail == true)
