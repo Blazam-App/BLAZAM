@@ -142,7 +142,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch
                 {
-                    // handle NullReferenceException
+                    //Ignore error
                 }
                 return true;
             }

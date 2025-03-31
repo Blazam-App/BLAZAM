@@ -1,7 +1,7 @@
 @inherits AppComponentBase
 @inject NotificationGenerationService NotificationGenerationService
 
-<AppPageTitle>@AppLocalization["Confirm Group Creation"]</AppPageTitle>
+<AppPageTitle>@AppLocalization[Lang.Confirm_Group_Creation]</AppPageTitle>
 
 @if (Group != null)
 {
@@ -27,12 +27,12 @@
 
     async Task CommitChanges()
     {
-        if (await MessageService.Confirm("Are you sure you want to create this group?", "Create group"))
+        if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_Group_Creation], AppLocalization[Lang.Create_Group]))
         {
             var assignTo = Group.MembersToAdd;
             disableCreateGroupButton = true;
             await InvokeAsync(StateHasChanged);
-            var createGroupJob = new Job(AppLocalization[Lang.Create_User]);
+            var createGroupJob = new Job(AppLocalization[Lang.Create_Group]);
             createGroupJob.StopOnFailedStep = true;
             createGroupJob.ShowJobDetailsDialog(MessageService);
             var result = await Group.CommitChangesAsync(createGroupJob);
@@ -59,7 +59,7 @@
 
                 Group = (IADGroup)Directory.GetDirectoryEntryByDN(Group.DN);
 
-                SnackBarService.Success(AppLocalization["Group created"]);
+                SnackBarService.Success(AppLocalization[Lang.Group_created]);
                 await AuditLogger.Group.Created(Group);
                 if (DbFactory.DatabaseType == DatabaseType.SQLite)
                 {

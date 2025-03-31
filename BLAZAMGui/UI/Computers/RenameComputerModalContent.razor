@@ -39,8 +39,8 @@ else
         _privateComputerInstance.OnOnlineChanged += ((state) => { InvokeAsync(StateHasChanged); });
         SaveDisabled = false;
         Modal.OnYes = SaveChanges;
-        Modal.YesText = AppLocalization["Rename Computer"];
-        Modal.Title = "Rename Computer";
+        Modal.YesText = AppLocalization[Lang.Rename_Computer];
+        Modal.Title = AppLocalization[Lang.Rename_Computer];
 
         await InvokeAsync(StateHasChanged);
     }
@@ -56,12 +56,12 @@ else
         var possibleConflictingMatch = await Directory.Computers.FindByStringAsync(newName);
         if (Computer.IsOnline != true)
         {
-            SnackBarService.Error("Computer is offline!");
+            SnackBarService.Error(AppLocalization[Lang.Computer_not_reachable]);
             return;
         }
         if (possibleConflictingMatch == null || possibleConflictingMatch.Any(m => m.CanonicalName.Equals(newName)))
         {
-            SnackBarService.Error("That name already exists. Please choose a different name");
+            SnackBarService.Error(AppHelpLocalization[HelpLang.Duplicate_Name_Conflict]);
 
             return;
 
@@ -70,7 +70,7 @@ else
         LoadingData = true;
         if(await Computer.RenameAsync(newName))
         {
-            SnackBarService.Success("Computer has been renamed.");
+            SnackBarService.Success(AppLocalization[Lang.Computer_renamed]);
             Close();
 
         }

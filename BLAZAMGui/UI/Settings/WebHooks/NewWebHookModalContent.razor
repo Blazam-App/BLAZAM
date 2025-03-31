@@ -1,7 +1,7 @@
 @inherits AppModalContent
 <MudForm @ref=Form Model="_newSubscription">
     <MudStack Style="min-width:300px;">
-        <MudText>@AppLocalization["Trigger On"]</MudText>
+        <MudText>@AppLocalization[Lang.Trigger_On]</MudText>
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
             var originalEnum = (NotificationType)type;
@@ -20,10 +20,10 @@
                 @AppLocalization["You must choose at least one notification type."]
             </MudAlert>
         }
-        <MudSelect Label="@AppLocalization["HTTP Method"]"
+        <MudSelect Label="@AppLocalization[Lang.HTTP_Method]"
                    @bind-Value=_newSubscription.WebHookMethod>
-            @* <MudSelectItem Value="WebHookMethod.GET">@AppLocalization["GET"]</MudSelectItem> *@
-                <MudSelectItem Value="WebHookMethod.POST">@AppLocalization["POST"]</MudSelectItem>
+            @* <MudSelectItem Value="WebHookMethod.GET">GET</MudSelectItem> *@
+                <MudSelectItem Value="WebHookMethod.POST">POST</MudSelectItem>
             </MudSelect>
             @if (_newSubscription.WebHookMethod == WebHookMethod.GET)
         {
@@ -42,7 +42,7 @@
 
 
         }
-        <MudTextField Label="@AppLocalization["URL"]"
+        <MudTextField Label="@AppLocalization[Lang.URL]"
                       T="string"
                       Required=true
                       RequiredError="@AppLocalization["You must provide an endpoint Url."]"
@@ -52,7 +52,7 @@
                       @bind-Value=_newSubscription.URL />
 
             <MudSwitch Color="Color.Warning"
-                       Label="@AppLocalization["Ignore SSL Verification"]"
+                   Label="@AppLocalization[Lang.Ignore_SSL_Verification]"
                        @bind-Value=_newSubscription.IgnoreSSLVerification />
             @if (_newSubscription.IgnoreSSLVerification)
             {
@@ -62,15 +62,15 @@
             }
 
    
-        <MudSelect Label="@AppLocalization["Authorization Type"]"
+        <MudSelect Label="@AppLocalization[Lang.Authorization_Type]"
                    @bind-Value=_newSubscription.WebHookAuthorization>
             <MudSelectItem Value="WebHookAuthorization.None">@AppLocalization[Lang.None]</MudSelectItem>
-                <MudSelectItem Value="WebHookAuthorization.Basic">@AppLocalization["Basic"]</MudSelectItem>
-                <MudSelectItem Value="WebHookAuthorization.Bearer">@AppLocalization["Bearer"]</MudSelectItem>
+                <MudSelectItem Value="WebHookAuthorization.Basic">Basic</MudSelectItem>
+                <MudSelectItem Value="WebHookAuthorization.Bearer">Bearer</MudSelectItem>
             </MudSelect>
 
 
-            <MudTextField Label="@AppLocalization["Authorization Token"]"
+            <MudTextField Label="@AppLocalization[Lang.Authorization_Token]"
                           Immediate=true
                           Required=@(_newSubscription.WebHookAuthorization!=WebHookAuthorization.None)
                           RequiredError="@AppLocalization["You must provide a token when authorization is enabled."]"

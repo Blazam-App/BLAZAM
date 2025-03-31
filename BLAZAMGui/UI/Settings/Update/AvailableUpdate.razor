@@ -15,18 +15,16 @@
                 <MudText Color="UpdateColor" Typo="Typo.h6" GutterBottom="true">@Title</MudText>
                 <MudChip Size=Size.Small T="string" Color="@Color.Tertiary">@Update.Branch</MudChip>
             </MudStack>
-            <MudExpansionPanels Elevation=0>
-                <MudExpansionPanel Text="@AppLocalization["Release Notes"]">
-                    <MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@Update.Release.ReleaseNotes" />
-                </MudExpansionPanel>
-            </MudExpansionPanels>
+
+            <UpdateReleaseNotesExpansionPanel Update=@Update/>
+
             @if ((Update.Newer || ApplicationInfo.InDebugMode) && Update.PassesPrerequisiteChecks)
             {
                 <MudButton Class="mx-6" 
                 Variant=Variant.Filled
                 Color=Color.Success 
                 OnClick="(()=>{OnApply.InvokeAsync();})">
-                @AppLocalization["Apply Update"]
+                @AppLocalization[Lang.Apply_Update]
             </MudButton>
                 @if (ApplicationInfo.InDebugMode)
                 {
@@ -71,29 +69,7 @@
     [Parameter]
     public EventCallback OnSchedule { get; set; }
 
-    private Typo ConvertHeaders(Typo from)
-    {
-        switch (from)
-        {
-            case Typo.h1:
-                return Typo.h3;
-
-            case Typo.h2:
-                return Typo.h4;
-            case Typo.h3:
-                return Typo.h5;
-            case Typo.h4:
-                return Typo.h6;
-
-            case Typo.h5:
-                return Typo.h6;
-
-            case Typo.h6:
-                return Typo.h6;
-            default:
-                return from;
-        }
-    }
+   
     private string Timestamp
     {
         get
@@ -115,11 +91,11 @@
                     //Update is older
                     return Update.Version.ToString();
                 case 0:
-                    return AppLocalization["Current Version"];
+                    return AppLocalization[Lang.Current_Version];
 
                 case -1:
                     //Update is newer
-                    return AppLocalization["Available Update"] + "\r\n" + Update.Version.ToString();
+                    return AppLocalization[Lang.Available_Update] + "\r\n" + Update.Version.ToString();
 
 
             }

@@ -35,6 +35,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public AppEvent? OnModelChanged { get; set; }
 
+        public AppEvent? OnChangesDiscarded { get; set; }
+
 
         public AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
 
@@ -997,7 +999,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (SearchResult != null)
                     FetchDirectoryEntry();
 
-                OnModelChanged?.Invoke();
+                OnChangesDiscarded?.Invoke();
             
         }
         private void FetchDirectoryEntry()

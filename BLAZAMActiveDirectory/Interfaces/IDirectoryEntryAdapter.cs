@@ -242,10 +242,28 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         IEnumerable<IDirectoryEntryAdapter> Children { get; }
         IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
 
+
+        /// <summary>
+        /// Permissions inherited by this object
+        /// </summary>
         IList<PermissionMapping> InheritedPermissionMappings { get; }
+        /// <summary>
+        /// Inherited and direct permssions applied to this object
+        /// </summary>
         IList<PermissionMapping> AppliedPermissionMappings { get; }
+
+        /// <summary>
+        /// Permissions directly assigned to this object
+        /// </summary>
         IList<PermissionMapping> DirectPermissionMappings { get; }
+
+
         IList<PermissionMapping> OffspringPermissionMappings { get; }
+
+        /// <summary>
+        /// Called when staged changes have been discarded
+        /// </summary>
+        AppEvent? OnChangesDiscarded { get; set; }
 
 
         /// <summary>
@@ -356,12 +374,26 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <param name="propertyName"></param>
         /// <returns></returns>
         DateTime? GetDateTimeProperty(string propertyName);
+
+        /// <summary>
+        /// Sets a custom property defined in <see cref="CustomActiveDirectoryField"/>'s
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="value"></param>
         void SetCustomProperty(string propertyName, object? value);
         /// <summary>
         /// Ensures that the <see cref="DirectoryEntry"/> property is not null.
         /// </summary>
         void EnsureDirectoryEntry();
+        /// <summary>
+        /// Sets the current user state that should be associated to 
+        /// </summary>
+        /// <param name="user"></param>
         void SetCurrentUser(IApplicationUserState user);
+        /// <summary>
+        /// Gets the parent directory adpater of this object asynchronously
+        /// </summary>
+        /// <returns></returns>
         Task<IDirectoryEntryAdapter?> GetParentAsync();
     }
 }

@@ -37,16 +37,16 @@
  @bind-Value=@(context.Item.Description) />
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Last Used"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Last_Used]">
             <CellTemplate>
                 <MudText>
                     @(context.Item.LastUsedAt != null ?
                         context.Item.LastUsedAt.Value.ToLocalTime() :
-                        AppLocalization["Never used"])
+                        AppLocalization[Lang.Never_used])
                 </MudText>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Is Revoked"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Is_Revoked]">
             <CellTemplate>
                 <MudSwitch Color="Color.Error"
                 Disabled="context.Item.DeletedAt!=null"

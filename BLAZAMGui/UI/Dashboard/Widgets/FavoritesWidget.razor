@@ -26,7 +26,7 @@
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
                 <DirectoryEntryContextMenu Entry="@context.Item"
-                                           OnChanged="RefreshData">
+                                           OnChanged="RefreshDataAsync">
                     <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                         <MudText>@context.Item?.CanonicalName</MudText>
                     </AppTooltip>
@@ -51,7 +51,6 @@
 </MudDataGrid>
 
 
-<LoadingData Loading=LoadingData />
 @code {
     List<IDirectoryEntryAdapter> FavoriteEntries
     {
@@ -59,7 +58,7 @@
         set => CurrentUser.State.Cache.Set(this.GetType(), value);
     }
 
-    protected override async Task RefreshData()
+    protected override async Task RefreshDataAsync()
     {
         LoadingData = true;
         await Task.Run(() =>

@@ -1,3 +1,4 @@
+@using BLAZAM.Database.Models.Audit
 @inherits AppComponentBase
 <MudChart ChartType="ChartType.Line"
           ChartSeries="@LoginSeries"
@@ -37,16 +38,16 @@
 
 
     List<ChartSeries> LoginSeries = new();
-    ChartSeries loginChart = new() { Name = "Daily Logins" };
-    ChartSeries uniqueUsersChart = new() { Name = "Daily Users" };
+    ChartSeries loginChart = new();
+    ChartSeries uniqueUsersChart = new();
     List<LogonAuditLog> logonEntries = new();
     IEnumerable<DateTime> allDates;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        loginChart = new() { Name = AppLocalization["Daily Logins"] };
-        uniqueUsersChart = new() { Name = AppLocalization["Daily Users"] };
+        loginChart = new() { Name = AppLocalization[Lang.Daily_Logins] };
+        uniqueUsersChart = new() { Name = AppLocalization[Lang.Daily_Users] };
         var startDate = EndDate.AddDays(-1 * Days);
         allDates = Enumerable.Range(0, (int)(EndDate - startDate).TotalDays + 1)
                                  .Select(d => startDate.AddDays(d));

@@ -17,7 +17,7 @@
             <PropertyColumn Title="@AppLocalization[Lang.Progress]" Property="x=>x.Progress" />
                 <TemplateColumn Title="@AppLocalization[Lang.Result]">
                     <CellTemplate>
-                        <MudElement>@(context.Item.Result==JobResult.Passed?AppLocalization["No errors"]:context.Item.Result.ToString())</MudElement>
+                        <MudElement>@(context.Item.Result==JobResult.Passed?AppLocalization[Lang.No_errors]:context.Item.Result.ToString())</MudElement>
                     </CellTemplate>
                 </TemplateColumn>
         </Columns>

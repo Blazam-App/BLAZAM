@@ -18,7 +18,7 @@
                 </CellTemplate>
             </TemplateColumn>
             <TemplateColumn Title=@AppLocalization[Lang.Name] Sortable=true Filterable=true Context="templateContext">
-              
+
                 <CellTemplate Context="cellContext">
                     <MudLink Href="@cellContext.Item.SearchUri">
                         @if (cellContext.Item is IADGroup group)
@@ -44,14 +44,14 @@
                     </MudText>
                 </CellTemplate>
             </TemplateColumn>
-            <TemplateColumn Title=@AppLocalization["Remove Member"] Context="templateContext">
+            <TemplateColumn Title=@AppLocalization[Lang.Remove_Member] Context="templateContext">
                 <CellTemplate Context="cellContext">
                     <AppTooltip ShowOnClick=@(!cellContext.Item.CanUnassign)
                                 ShowOnHover=@(!cellContext.Item.CanUnassign)
-                                Text=@AppLocalization["You don't have permission to remove this group member"]>
+                                Text=@AppHelpLocalization[HelpLang.Lacks_Group_Member_Remove_Permission]>
                         <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
-                                   OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
+                                   OnClick="(()=>{RemoveMember(cellContext.Item);})">
                             @AppLocalization[Lang.Remove]
                         </MudButton>
                     </AppTooltip>
@@ -93,7 +93,7 @@
     if (Members.Where(m => !m.CanRead).Count() > 0)
     {
         <MudAlert Class="mud-alert-filled-info">
-            @AppLocalization["The group has more members you don't have access to"]
+            @AppHelpLocalization[HelpLang.Lacks_Group_Member_Read_Permission]
         </MudAlert>
     }
     @if (Group.CanAssign)
@@ -101,9 +101,9 @@
 
         <MudButton Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.GroupAdd"
-                   OnClick="@(()=>{_=AssignMemberModal?.ShowAsync();})">@AppLocalization["Add Member..."]</MudButton>
+                   OnClick="@(()=>{_=AssignMemberModal?.ShowAsync();})">@AppLocalization[Lang.Add_Member]</MudButton>
     }
-    <AppModal Color="Color.Dark" Title=@AppLocalization["Add Member..."] @ref=@AssignMemberModal>
+    <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Add_Member] @ref=@AssignMemberModal>
         <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />
     </AppModal>
 }
@@ -133,7 +133,8 @@ else
     {
         await base.OnInitializedAsync();
         RefreshData();
-        Group.OnModelChanged += () =>
+        
+        Group.OnChangesDiscarded += () =>
         {
             RefreshData();
         };
@@ -149,5 +150,24 @@ else
             LoadingData = false;
         });
 
+    }
+    private void RemoveMember(IGroupableDirectoryAdapter groupMember)
+    {
+
+        Group.UnassignMember(groupMember);
+        if (Members.Contains(groupMember))
+        {
+            Members.Remove(groupMember);
+        }
+    }
+    private void AddMember(IGroupableDirectoryAdapter groupMember)
+    {
+
+        Group.AssignMember(groupMember);
+        if (!Members.Contains(groupMember))
+        {
+            Members.Add(groupMember);
+
+        }
     }
 }

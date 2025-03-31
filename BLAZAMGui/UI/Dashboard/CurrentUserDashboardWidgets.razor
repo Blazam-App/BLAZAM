@@ -3,73 +3,75 @@
 @using MudBlazor.Utilities;
 
 @inherits AppComponentBase
-@if (CurrentUser.State != null && CurrentUser.State.Preferences != null && allWidgets.Count>0)
+@if (_initialized)
 {
-    if (_editMode)
+    @if (CurrentUser.State != null && CurrentUser.State.Preferences != null && allWidgets.Count > 0)
     {
-        <MudAlert Severity="Severity.Info">
-            @AppLocalization["Rearrange dashboard widgets by dragging items to a new position"]
-        </MudAlert>
-    }
-    if (CurrentUser.State?.Preferences?.DashboardWidgets.Count > 0)
-    {
+        if (_editMode)
+        {
+            <MudAlert Severity="Severity.Info">
+                @AppHelpLocalization[HelpLang.Rearrange_Dashboard_Help]
+            </MudAlert>
+        }
+        if (CurrentUser.State?.Preferences?.DashboardWidgets.Count > 0)
+        {
 
-        <MudDropContainer @ref=widgetContainer
-                          T="UserDashboardWidget" Items="CurrentUser.State?.Preferences?.DashboardWidgets.OrderBy(uw => uw.Slot).ThenBy(uw => uw.Order)"
-                          ItemsSelector="ItemSelector"
-                          ItemDraggingClass="mud-info-text"
-                          DisabledClass=""
-                          ItemsClassSelector=@((item,name)=>{return _editMode==false?"cursor-default":"cursor-move";})
-                          ItemDisabled=@((item)=>{return !_editMode;})
-                          ItemDropped="ItemDropped"
-                          Class="d-flex flex-wrap flex-grow-1 mud-width-full  my-5 cursor-">
-            <ChildContent>
+            <MudDropContainer @ref=widgetContainer
+                              T="UserDashboardWidget" Items="CurrentUser.State?.Preferences?.DashboardWidgets.OrderBy(uw => uw.Slot).ThenBy(uw => uw.Order)"
+                              ItemsSelector="ItemSelector"
+                              ItemDraggingClass="mud-info-text"
+                              DisabledClass=""
+                              ItemsClassSelector=@((item,name)=>{return _editMode==false?"cursor-default":"cursor-move";})
+                              ItemDisabled=@((item)=>{return !_editMode;})
+                              ItemDropped="ItemDropped"
+                              Class="d-flex flex-wrap flex-grow-1 mud-width-full  my-5 cursor-">
+                <ChildContent>
 
-                <FlexContainer Spacing="4" Class="mx-auto">
+                    <FlexContainer Spacing="4" Class="mx-auto">
 
-                    <MudCard Class="pa-0 mx-auto mud-theme-transparent border-0" Elevation="0">
-                        <MudList T="MudDropZone<UserDashboardWidget>"
-                                 Class="d-flex flex-column ma-0 mx-auto py-0">
-                            <MudDropZone AllowReorder=true
-                                         T="UserDashboardWidget"
-                                         Identifier="slot1"
-                                         Class="flex-grow-1"
-                                         Style="min-height:150px;min-width:300px;" />
-                        </MudList>
-                    </MudCard>
-                    <MudCard Class="pa-0 mx-auto mud-theme-transparent border-0" Elevation="0">
-                        <MudList T="MudDropZone<UserDashboardWidget>"
-                                 Class="d-flex flex-column ma-0 mx-auto py-0">
-                            <MudDropZone AllowReorder=true
-                                         T="UserDashboardWidget"
-                                         Identifier="slot2"
-                                         Class="flex-grow-1"
-                                         Style="min-height:150px; min-width:300px;" />
-                        </MudList>
-                    </MudCard>
+                        <MudCard Class="pa-0 mx-auto mud-theme-transparent border-0" Elevation="0">
+                            <MudList T="MudDropZone<UserDashboardWidget>"
+                                     Class="d-flex flex-column ma-0 mx-auto py-0">
+                                <MudDropZone AllowReorder=true
+                                             T="UserDashboardWidget"
+                                             Identifier="slot1"
+                                             Class="flex-grow-1"
+                                             Style="min-height:150px;min-width:300px;" />
+                            </MudList>
+                        </MudCard>
+                        <MudCard Class="pa-0 mx-auto mud-theme-transparent border-0" Elevation="0">
+                            <MudList T="MudDropZone<UserDashboardWidget>"
+                                     Class="d-flex flex-column ma-0 mx-auto py-0">
+                                <MudDropZone AllowReorder=true
+                                             T="UserDashboardWidget"
+                                             Identifier="slot2"
+                                             Class="flex-grow-1"
+                                             Style="min-height:150px; min-width:300px;" />
+                            </MudList>
+                        </MudCard>
 
-                </FlexContainer>
-            </ChildContent>
-            <ItemRenderer>
-                @{
+                    </FlexContainer>
+                </ChildContent>
+                <ItemRenderer>
+                    @{
 
 
-                    Widget? widget = null;
-                    try
-                    {
-                        widget = allWidgets.First(w => w.WidgetType == context.WidgetType);
-                    }
-                    catch
-                    {
+                        Widget? widget = null;
+                        try
+                        {
+                            widget = allWidgets.First(w => w.WidgetType == context.WidgetType);
+                        }
+                        catch
+                        {
 
-                    }
-                    if (widget != null)
-                    {
-                        
-                       // <WidgetContainer Widget="widget" Dashboard="this"/>
-                        <MudCard Class="my-5 " Elevation="1">
-                            <MudCardHeader>
-                                <MudText Typo="Typo.h6">@AppLocalization[widget.Title]</MudText>
+                        }
+                        if (widget != null)
+                        {
+
+                            // <WidgetContainer Widget="widget" Dashboard="this"/>
+                            <MudCard Class="my-5 " Elevation="1">
+                                <MudCardHeader>
+                                    <MudText Typo="Typo.h6">@AppLocalization[widget.Title]</MudText>
                                     <MudSpacer />
                                     <AppIconButton Icon="@Icons.Material.Filled.Refresh"
                                                    Color="Color.Primary"
@@ -92,79 +94,88 @@
                                 </CascadingValue>
 
                             </MudCard>
-                    }
-                }
-
-            </ItemRenderer>
-        </MudDropContainer>
-    }
-    else
-    {
-        <MudContainer Class="d-flex flex-wrap flex-grow-1 mud-width-full my-5 ">
-
-            <FlexContainer Spacing="4" Class="mx-auto">
-                <MudCard>
-                    <MudCardContent>
-                        It's lonely in here. Click the + button to add some widgets...
-                    </MudCardContent>
-                </MudCard>
-            </FlexContainer>
-        </MudContainer>
-
-    }
-    if (_editMode)
-    {
-        <MudAlert Severity="Severity.Info">
-            @AppLocalization["Rearrange dashboard widgets by dragging items to a new position"]
-        </MudAlert>
-    }
-    <MudStack Class="d-flex mt-5"
-              Style="justify-content: flex-end;" 
-              Row=true>
-        <AppTooltip Text=@AppLocalization[Lang.Edit]>
-            <MudFab StartIcon="@(_editMode==false?Icons.Material.Filled.Edit:Icons.Material.Filled.EditOff)"
-                    Color="@(_editMode==false?Color.Success:Color.Error)"
-                    OnClick="@(()=>{_editMode = !_editMode; widgetContainer?.Refresh();})" />
-        </AppTooltip>
-        @if (_editMode)
-        {
-            if (allWidgets.Count > CurrentUser.State?.Preferences?.DashboardWidgets.Count)
-            {
-                <MudMenu AnchorOrigin="Origin.BottomRight"
-                         TransformOrigin="Origin.TopRight">
-                    <ActivatorContent>
-                        <AppTooltip Text=@AppLocalization[Lang.Add_Widget]>
-                            <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
-                        </AppTooltip>
-                    </ActivatorContent>
-                    <ChildContent>
-                        @foreach (var widget in allWidgets)
-                        {
-                            @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType) == true)
-                            {
-                                <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
-                            }
-
                         }
-                    </ChildContent>
-                </MudMenu>
-            }
-            else
-            {
-                <AppTooltip Text=@AppLocalization["No more widgets to add"]>
-                    <MudFab Disabled="true" Color="Color.Error" StartIcon="@Icons.Material.Filled.Add" />
-                </AppTooltip>
-            }
+                    }
 
+                </ItemRenderer>
+            </MudDropContainer>
         }
         else
         {
-            <AppTooltip Text=@AppLocalization[Lang.Enable_edit_mode]>
-                <MudFab Disabled="true" Color="Color.Error" StartIcon="@Icons.Material.Filled.Add" />
-            </AppTooltip>
-        }
-    </MudStack>
+            <MudContainer Class="d-flex flex-wrap flex-grow-1 mud-width-full my-5 ">
 
+                <FlexContainer Spacing="4" Class="mx-auto">
+                    <MudCard>
+                        <MudCardContent>
+                            It's lonely in here. Click the + button to add some widgets...
+                        </MudCardContent>
+                    </MudCard>
+                </FlexContainer>
+            </MudContainer>
+
+        }
+        if (_editMode)
+        {
+            <MudAlert Severity="Severity.Info">
+                @AppHelpLocalization[HelpLang.Rearrange_Dashboard_Help]
+
+            </MudAlert>
+        }
+        <MudStack Class="d-flex mt-5"
+                  Style="justify-content: flex-end;"
+                  Row=true>
+            <AppTooltip Text=@AppLocalization[Lang.Edit]>
+                <MudFab StartIcon="@(_editMode==false?Icons.Material.Filled.Edit:Icons.Material.Filled.EditOff)"
+                        Color="@(_editMode==false?Color.Success:Color.Error)"
+                        OnClick="@(()=>{_editMode = !_editMode; widgetContainer?.Refresh();})" />
+            </AppTooltip>
+            @if (_editMode)
+            {
+                if (allWidgets.Count > CurrentUser.State?.Preferences?.DashboardWidgets.Count)
+                {
+                    <MudMenu AnchorOrigin="Origin.BottomRight"
+                             TransformOrigin="Origin.TopRight">
+                        <ActivatorContent>
+                            <AppTooltip Text=@AppLocalization[Lang.Add_Widget]>
+                                <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
+                            </AppTooltip>
+                        </ActivatorContent>
+                        <ChildContent>
+                            @foreach (var widget in allWidgets)
+                            {
+                                @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType) == true)
+                                {
+                                    <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
+                                }
+
+                            }
+                        </ChildContent>
+                    </MudMenu>
+                }
+                else
+                {
+                    <AppTooltip Text=@AppHelpLocalization[HelpLang.No_More_Widgets]>
+                        <MudFab Disabled="true" Color="Color.Error" StartIcon="@Icons.Material.Filled.Add" />
+                    </AppTooltip>
+                }
+
+            }
+            else
+            {
+                <AppTooltip Text=@AppLocalization[Lang.Enable_edit_mode]>
+                    <MudFab Disabled="true" Color="Color.Error" StartIcon="@Icons.Material.Filled.Add" />
+                </AppTooltip>
+            }
+        </MudStack>
+
+    }
+
+}
+else
+{
+    <MudText Align="Align.Center">
+        <MudProgressCircular Indeterminate=true Color="Color.Primary" />
+    </MudText>
 }
 
 
@@ -173,6 +184,7 @@
 
 @code {
     bool _editMode;
+    bool _initialized;
     [Inject]
     public WidgetService WidgetService { get; set; }
     public AppEvent<Widget> OnRefreshWidget { get; set; } = (val) => { };
@@ -189,6 +201,15 @@
         _currentUser = CurrentUser.State;
         await InvokeAsync(StateHasChanged);
 
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            _initialized = true;
+            StateHasChanged();
+        }
     }
     bool ItemSelector(UserDashboardWidget item, string dropzone)
     {

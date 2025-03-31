@@ -48,8 +48,8 @@
     public IDirectoryEntryAdapter Model { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        Modal.Options.FullWidth = true;
-        Modal.Options.CloseButton = true;
+        //Modal.Options.FullWidth = true;
+        //Modal.Options.CloseButton = true;
         await base.OnInitializedAsync();
 
         _ = AuditLogger.System.Analytics.ObjectHistoryViewed(Model.ObjectType);
@@ -83,7 +83,7 @@
                     {
                         Timestamp =account.PasswordLastSet.Value,
                         Target = Model.SamAccountName,
-                        Action = Model.ObjectType.ToString() + " "+AppLocalization["password changed"]+".",
+                        Action = AppLocalization[Model.ObjectType.ToString()] + " "+AppLocalization[Lang.password_changed]+".",
                         Username = AppLocalization[Lang.Active_Directory]
                     });
                 }
@@ -96,7 +96,7 @@
                     {
                         Timestamp = account.LockoutTime.Value,
                         Target = Model.SamAccountName,
-                        Action = Model.ObjectType.ToString() + " " + AppLocalization["locked out"] + ".",
+                        Action = Model.ObjectType.ToString() + " " + AppLocalization[Lang.locked_out] + ".",
                         Username = AppLocalization[Lang.Active_Directory]
                     });
             }
@@ -108,7 +108,7 @@
                     {
                         Timestamp = account.LastChanged.Value,
                         Target = Model.SamAccountName,
-                        Action = Model.ObjectType.ToString() + " " + AppLocalization["last changed"] + ".",
+                            Action = Model.ObjectType.ToString() + " " + AppLocalization[Lang.last_changed] + ".",
                         Username = AppLocalization[Lang.Active_Directory]
                     });
                 }

@@ -3,11 +3,11 @@
 @inherits NotificationTemplateComponent
 
     <EmailTemplateHeader>
-    <strong>@AppLocalization["User locked out"]</strong>
+    <strong>@AppLocalization[Lang.User_locked_out]</strong>
     </EmailTemplateHeader>
    
     <EmailTemplateBody>
-     @EntryName @AppLocalization[" has been locked out"].
+     @AppHelpLocalization[HelpLang.Locked_Out,EntryName]
     <br/>
    
    

@@ -35,7 +35,7 @@
                     Blazam @AppLocalization[Lang.News]
                 </MudText>
                 <MudText Typo="Typo.caption" Class="px-1 py-2" Align="Align.Center">
-                    @AppLocalization["Important updates and changes are posted here."]
+                    @AppHelpLocalization[HelpLang.News_Provider_Description]
                 </MudText>
                 @foreach (var item in unreadItems.OrderByDescending(x => x.UpdatedAt))
                 {
@@ -60,7 +60,7 @@
                     if (unreadItems.Count == 0)
                     {
                         <MudText Align=Align.Center Class="">
-                            @AppLocalization["There is nothing new to see here"]
+                            @AppHelpLocalization[HelpLang.No_News]
                         </MudText>
                     }
                 }
@@ -74,13 +74,13 @@
                                        UncheckedColor="Color.Error"
                                        Color="Color.Success"
                                        Class="ps-2"
-                                       Label="@AppLocalization["Show read"]" />
+                                       Label="@AppLocalization[Lang.Show_read]" />
                         }
                         @if (unreadItems.Count > 0)
                         {
                             <MudSpacer />
                             <MudButton Size="Size.Small" OnClick="MarkAllRead">
-                                @AppLocalization["Mark all read"]
+                                @AppLocalization[Lang.Mark_all_read]
                             </MudButton>
                         }
                     </MudStack>
@@ -111,16 +111,19 @@ else
     {
         get
         {
-            if (latestUpdate == null) return null;
+            if (!AutoUpdateService.IsUpdateAvailable || UpdateService.NewestAvailableUpdate==null) {
+                return null;
+            }
             return new NewsItem
                 {
-                    Title = AppLocalization["Update Available"],
-                    Body = AppLocalization[Lang.Version] + " " + latestUpdate.Version,
+                    Title = AppLocalization[Lang.Update_Available],
+                    Body = AppLocalization[Lang.Version] + " " + UpdateService.NewestAvailableUpdate?.Version +
+                    "<br/> ",
                     Link = "/settings/update",
                     Published = true,
                     UpdatedAt = DateTime.MinValue,
                     CreatedAt = DateTime.MinValue,
-                    Id = ulong.Parse(latestUpdate.Version.ToString().Replace(".", ""))
+                    Id = ulong.Parse(UpdateService.NewestAvailableUpdate.Version.ToString().Replace(".", ""))
                 };
         }
     }
@@ -173,7 +176,6 @@ else
 
         }
         LoadingData = false;
-       // InvokeAsync(StateHasChanged);
 
     }
     private void RefreshUnreadItems()

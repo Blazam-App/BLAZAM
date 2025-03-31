@@ -39,8 +39,8 @@
 
     protected override void OnInitialized()
     {
-        Modal.Options.FullWidth = true;
-        Modal.Options.MaxWidth = MaxWidth.Large;
+        //Modal.Options.FullWidth = true;
+        //Modal.Options.MaxWidth = MaxWidth.Large;
 
         Modal.YesText = AppLocalization[Lang.Next];
         Modal.Title = AppLocalization[Lang.Register_Printers];
@@ -61,7 +61,7 @@
             registerJob = await newPrinter.CommitChangesAsync(registerJob);
             if (registerJob.FailedSteps.Count == 0)
             {
-                SnackBarService.Success(AppLocalization["Printer(s) registered to Active Directory"]); 
+                SnackBarService.Success(AppLocalization[Lang.Printers_registered_to_Active_Directory]);
                 this.Close();
 
             }
