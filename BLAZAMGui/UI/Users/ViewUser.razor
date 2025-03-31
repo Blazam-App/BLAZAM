@@ -210,7 +210,7 @@
 
                                     <DynamicMudInput T=string
                                     Label="@AppLocalization[Lang.Last_Name]"
-                                    @bind-Value="@User.Surname"
+                                    @bind-Value="@User.Sn"
                                     Disabled=!User.NewEntry />
 
                                     <DynamicMudInput T=string
@@ -644,7 +644,7 @@
 
         ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
-                EventType = AppEventType.Search,
+                EventType = ApplicationEventType.Search,
                 Entry = User,
                 Actor = CurrentUser.State
 
@@ -674,7 +674,7 @@
                     {
                         ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                             {
-                                EventType = AppEventType.Assign,
+                                EventType = ApplicationEventType.Assign,
                                 Entry = assignment.Member,
                                 Target = assignment.Group,
                                 Actor = CurrentUser.State
@@ -688,7 +688,7 @@
                     {
                         ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                             {
-                                EventType = AppEventType.Unassign,
+                                EventType = ApplicationEventType.Unassign,
                                 Entry = assignment.Member,
                                 Target = assignment.Group,
                                 Actor = CurrentUser.State
@@ -701,7 +701,7 @@
                     {
                         ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                             {
-                                EventType = AppEventType.Modify,
+                                EventType = ApplicationEventType.Modify,
                                 Entry = User,
                                 Changes =  changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList(),
                                 Actor = CurrentUser.State
@@ -757,7 +757,7 @@
                 SnackBarService.Success(User.DisplayName + " has been deleted.");
                 ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                     {
-                        EventType = AppEventType.Delete,
+                        EventType = ApplicationEventType.Delete,
                         Entry = User,
                         Actor = CurrentUser.State
 

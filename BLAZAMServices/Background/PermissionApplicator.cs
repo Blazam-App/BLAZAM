@@ -176,8 +176,8 @@ namespace BLAZAM.Services.Background
                 userRoles.Add(new Claim(ClaimTypes.WindowsAccountName, directoryUser.SamAccountName));
             if (directoryUser.GivenName != null)
                 userRoles.Add(new Claim(ClaimTypes.GivenName, directoryUser.GivenName));
-            if (directoryUser.Surname != null)
-                userRoles.Add(new Claim(ClaimTypes.Surname, directoryUser.Surname));
+            if (directoryUser.Sn != null)
+                userRoles.Add(new Claim(ClaimTypes.Surname, directoryUser.Sn));
             if (directoryUser.Email != null)
                 userRoles.Add(new Claim(ClaimTypes.Email, directoryUser.Email));
 

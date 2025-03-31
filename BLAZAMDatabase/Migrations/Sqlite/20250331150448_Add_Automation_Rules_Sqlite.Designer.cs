@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Database.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDatabaseContext))]
-    [Migration("20250329192644_Add_Automation_Rules_Sqlite")]
+    [Migration("20250331150448_Add_Automation_Rules_Sqlite")]
     partial class Add_Automation_Rules_Sqlite
     {
         /// <inheritdoc />
@@ -1520,6 +1520,12 @@ namespace BLAZAM.Database.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastExcecuted")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastTriggered")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")

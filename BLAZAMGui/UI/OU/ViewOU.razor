@@ -76,7 +76,7 @@
         await InvokeAsync(StateHasChanged);
         ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
-                EventType = AppEventType.Search,
+                EventType = ApplicationEventType.Search,
                 Entry = OU,
                 Actor = CurrentUser.State
 
@@ -99,7 +99,7 @@
                 EditMode = false;
                 ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                     {
-                        EventType = AppEventType.Modify,
+                        EventType = ApplicationEventType.Modify,
                         Entry = OU,
                         Changes =changes,
                         Actor = CurrentUser.State
@@ -137,7 +137,7 @@
                 }
                 ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                     {
-                        EventType = AppEventType.Delete,
+                        EventType = ApplicationEventType.Delete,
                         Entry = OU,
                         Actor = CurrentUser.State
 

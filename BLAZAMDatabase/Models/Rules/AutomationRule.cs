@@ -17,6 +17,21 @@ namespace BLAZAM.Database.Models.Rules
         /// </summary>
         public string Name { get; set; }
 
+
+        /// <summary>
+        /// The timestamp of the last time this Rule's filters matched an event
+        /// </summary>
+        /// <remarks>
+        /// This is set even if the rule is disabled
+        /// </remarks>
+        public DateTime? LastTriggered { get; set; }
+
+        /// <summary>
+        /// The last time this rule was enabled and executed
+        /// </summary>
+        public DateTime? LastExcecuted { get; set; }
+
+
         /// <summary>
         /// Indicates whether or not this rule is enabled.
         /// </summary>

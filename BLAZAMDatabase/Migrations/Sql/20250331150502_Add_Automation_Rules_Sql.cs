@@ -1,13 +1,12 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BLAZAM.Database.Migrations.MySql
+namespace BLAZAM.Database.Migrations.Sql
 {
     /// <inheritdoc />
-    public partial class Add_Automation_Rules_MySql : Migration
+    public partial class Add_Automation_Rules_Sql : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,35 +16,34 @@ namespace BLAZAM.Database.Migrations.MySql
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Enabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    StopOnThisRule = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastTriggered = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastExcecuted = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Enabled = table.Column<bool>(type: "bit", nullable: false),
+                    StopOnThisRule = table.Column<bool>(type: "bit", nullable: false),
                     Order = table.Column<int>(type: "int", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    ScheduledRunTime = table.Column<TimeSpan>(type: "time(6)", nullable: true),
+                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ScheduledRunTime = table.Column<TimeSpan>(type: "time", nullable: true),
                     Trigger = table.Column<int>(type: "int", nullable: false),
                     ActiveDirectoryObjectType = table.Column<int>(type: "int", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AutomationRules", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleActions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ActionType = table.Column<int>(type: "int", nullable: false),
                     ActiveDirectoryObjectAction = table.Column<int>(type: "int", nullable: false),
-                    Data = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ActionGuid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ActionGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AutomationRuleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -56,17 +54,16 @@ namespace BLAZAM.Database.Migrations.MySql
                         column: x => x.AutomationRuleId,
                         principalTable: "AutomationRules",
                         principalColumn: "Id");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleOrFilter",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     AutomationRuleId = table.Column<int>(type: "int", nullable: false),
-                    FilterGuid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    FilterGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -77,18 +74,16 @@ namespace BLAZAM.Database.Migrations.MySql
                         principalTable: "AutomationRules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleFieldValues",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     FieldId = table.Column<int>(type: "int", nullable: false),
-                    Value = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AutomationRuleActionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -101,51 +96,47 @@ namespace BLAZAM.Database.Migrations.MySql
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AutomationRuleFieldValues_AutomationRuleActions_AutomationRu~",
+                        name: "FK_AutomationRuleFieldValues_AutomationRuleActions_AutomationRuleActionId",
                         column: x => x.AutomationRuleActionId,
                         principalTable: "AutomationRuleActions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleGroupSids",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    GroupSid = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Assigned = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupSid = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Assigned = table.Column<bool>(type: "bit", nullable: false),
                     AutomationRuleActionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AutomationRuleGroupSids", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AutomationRuleGroupSids_AutomationRuleActions_AutomationRule~",
+                        name: "FK_AutomationRuleGroupSids_AutomationRuleActions_AutomationRuleActionId",
                         column: x => x.AutomationRuleActionId,
                         principalTable: "AutomationRuleActions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleAndFilters",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     OrFilterId = table.Column<int>(type: "int", nullable: false),
                     FieldId = table.Column<int>(type: "int", nullable: false),
-                    Value = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Operator = table.Column<int>(type: "int", nullable: false),
-                    Negate = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    TimeFrame = table.Column<TimeSpan>(type: "time(6)", nullable: true),
-                    FilterGuid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    Negate = table.Column<bool>(type: "bit", nullable: false),
+                    TimeFrame = table.Column<TimeSpan>(type: "time", nullable: true),
+                    FilterGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -162,8 +153,7 @@ namespace BLAZAM.Database.Migrations.MySql
                         principalTable: "AutomationRuleOrFilter",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AutomationRuleActions_AutomationRuleId",

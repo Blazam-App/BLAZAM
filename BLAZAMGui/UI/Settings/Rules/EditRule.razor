@@ -159,39 +159,39 @@
     }
     private async Task SaveRule()
     {
-        // if (_workingRule.Filters.Count > 0)
-        // {
-        //     foreach (var orFilter in _workingRule.Filters)
-        //     {
-        //         foreach (var andFilter in orFilter.AndFilters)
-        //         {
-        //             if (andFilter.Field != null)
-        //             {
+        if (_workingRule.Filters.Count > 0)
+        {
+            foreach (var orFilter in _workingRule.Filters)
+            {
+                foreach (var andFilter in orFilter.AndFilters)
+                {
+                    if (andFilter.Field != null)
+                    {
 
-        //                 // andFilter.FieldId = Context.ActiveDirectoryFields.FirstOrDefault(f => f.Id == andFilter.Field.Id).Id;
+                        andFilter.FieldId = andFilter.Field.Id;
 
-        //                 // andFilter.Field = null;
+                        andFilter.Field = Context.ActiveDirectoryFields.First(f => f.Id == andFilter.Field.Id);
 
-        //             }
+                    }
 
                     
 
-        //         }
+                }
 
-        //     }
-        // }
-        // if (_workingRule.Actions.Any(a => a.FieldValues.Count > 0))
-        // {
-        //     foreach (var action in _workingRule.Actions.Where(a => a.FieldValues.Count > 0))
-        //     {
-        //         foreach (var fieldValue in action.FieldValues)
-        //         {
-        //             // fieldValue.FieldId = Context.ActiveDirectoryFields.FirstOrDefault(f => f.Id == fieldValue.Field.Id).Id;
-        //             // fieldValue.Field = null;
+            }
+        }
+        if (_workingRule.Actions.Any(a => a.FieldValues.Count > 0))
+        {
+            foreach (var action in _workingRule.Actions.Where(a => a.FieldValues.Count > 0))
+            {
+                foreach (var fieldValue in action.FieldValues)
+                {
+                    fieldValue.FieldId = fieldValue.Field.Id;
+                    fieldValue.Field = Context.ActiveDirectoryFields.First(f => f.Id == fieldValue.Field.Id);
 
-        //         }
-        //     }
-        // }
+                }
+            }
+        }
         var newRule = false;
         if (_workingRule.Id == 0)
         {

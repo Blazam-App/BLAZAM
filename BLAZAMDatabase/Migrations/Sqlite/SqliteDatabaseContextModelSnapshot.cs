@@ -1519,6 +1519,12 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<DateTime?>("ExpirationDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("LastExcecuted")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastTriggered")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");

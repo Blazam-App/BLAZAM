@@ -35,7 +35,7 @@
                 SnackBarService.Success(AppLocalization[Lang.OU_created]);
                 ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                     {
-                        EventType = AppEventType.Create,
+                        EventType = ApplicationEventType.Create,
                         Entry = OU,
                         Actor = CurrentUser.State
 

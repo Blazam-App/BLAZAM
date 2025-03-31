@@ -150,7 +150,7 @@ namespace BLAZAM.Pages.API.v1
         {
             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
-                EventType = AppEventType.Create,
+                EventType = ApplicationEventType.Create,
                 Entry = newUser,
                 Actor = CurrentUserState
 

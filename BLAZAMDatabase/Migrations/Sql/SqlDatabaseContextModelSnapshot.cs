@@ -1591,6 +1591,12 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<DateTime?>("ExpirationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("LastExcecuted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LastTriggered")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

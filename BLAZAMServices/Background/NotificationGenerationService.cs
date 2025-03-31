@@ -54,7 +54,7 @@ namespace BLAZAM.Services.Background
                     case ActiveDirectoryObjectType.User:
                         switch (args.EventType)
                         {
-                            case AppEventType.Delete:
+                            case ApplicationEventType.Delete:
                                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                                 {
                                     Post(args.Entry, NotificationType.Delete, args.Actor);
@@ -66,7 +66,7 @@ namespace BLAZAM.Services.Background
 
                                 }
                                 break;
-                            case AppEventType.Create:
+                            case ApplicationEventType.Create:
                                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                                 {
                                     Post(args.Entry, NotificationType.Create, args.Actor);
@@ -78,7 +78,7 @@ namespace BLAZAM.Services.Background
 
                                 }
                                 break;
-                            case AppEventType.PasswordChange:
+                            case ApplicationEventType.PasswordChange:
                                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                                 {
                                     Post(args.Entry, NotificationType.Create, args.Actor);
@@ -90,7 +90,7 @@ namespace BLAZAM.Services.Background
 
                                 }
                                 break;
-                            case AppEventType.Assign:
+                            case ApplicationEventType.Assign:
                                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                                 {
                                     Post(args.Entry, NotificationType.Assign, args.Actor, args.Target);
@@ -102,7 +102,7 @@ namespace BLAZAM.Services.Background
 
                                 }
                                 break;
-                            case AppEventType.LockedOut:
+                            case ApplicationEventType.LockedOut:
 
                                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                                 {
@@ -115,8 +115,8 @@ namespace BLAZAM.Services.Background
 
                                 }
                                 break;
-                            case AppEventType.Move:
-                            case AppEventType.Modify:
+                            case ApplicationEventType.Move:
+                            case ApplicationEventType.Modify:
                                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                                 {
                                     Post(args.Entry, NotificationType.Modify,args.Actor);
@@ -128,7 +128,7 @@ namespace BLAZAM.Services.Background
 
                                 }
                                 break;
-                            case AppEventType.Unassign:
+                            case ApplicationEventType.Unassign:
                                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                                 {
                                     Post(args.Entry, NotificationType.Unassign,args.Actor,args.Target);
@@ -140,7 +140,7 @@ namespace BLAZAM.Services.Background
 
                                 }
                                 break;
-                            case AppEventType.Scheduled:
+                            case ApplicationEventType.Scheduled:
                                 break;
                         }
                         break;

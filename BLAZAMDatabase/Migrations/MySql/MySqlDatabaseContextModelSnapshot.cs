@@ -1591,6 +1591,12 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<DateTime?>("ExpirationDate")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<DateTime?>("LastExcecuted")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("LastTriggered")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");

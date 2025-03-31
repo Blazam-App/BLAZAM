@@ -109,7 +109,7 @@
         await InvokeAsync(StateHasChanged);
         ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
-                EventType = AppEventType.Search,
+                EventType = ApplicationEventType.Search,
                 Entry = Printer,
                 Actor = CurrentUser.State
 

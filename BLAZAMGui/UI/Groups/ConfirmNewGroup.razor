@@ -45,7 +45,7 @@
                 {
                     ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                         {
-                            EventType = AppEventType.Assign,
+                            EventType = ApplicationEventType.Assign,
                             Entry = assignment.Member,
                             Target = assignment.Group,
                             Actor = CurrentUser.State
@@ -61,7 +61,7 @@
                 SnackBarService.Success(AppLocalization[Lang.Group_created]);
                 ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                     {
-                        EventType = AppEventType.Create,
+                        EventType = ApplicationEventType.Create,
                         Entry = Group,
                         Actor = CurrentUser.State
 

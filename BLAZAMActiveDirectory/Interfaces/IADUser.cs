@@ -23,7 +23,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         string? State { get; set; }
         string? POBox { get; set; }
         string? StreetAddress { get; set; }
-        string? Surname { get; set; }
+        string? Sn { get; set; }
         string? TelephoneNumber { get; set; }
         string? Title { get; set; }
         string? UserPrincipalName { get; set; }

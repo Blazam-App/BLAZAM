@@ -47,9 +47,9 @@ namespace BLAZAM.Helpers
             }
             return values;
         }
-       
 
-        public static string? GetEventProperty(this EventRecord eventRecord,int index)
+
+        public static string? GetEventProperty(this EventRecord eventRecord, int index)
         {
             try
             {
@@ -82,7 +82,32 @@ namespace BLAZAM.Helpers
             return changes;
 
         }
-
+        public static object GetPropertyValue(this object obj, string propertyName)
+        {
+            var props = obj.GetType().GetProperties();
+            var matchingProp = props.FirstOrDefault(p => p.Name.Equals(propertyName,StringComparison.InvariantCultureIgnoreCase));
+            var propertyValue = matchingProp?.GetValue(obj);
+            return propertyValue;
+        }
+        public static bool PropertyValueEquals(this object obj, string propertyName, object? value)
+        {
+            var propertyValue = obj.GetPropertyValue(propertyName);
+            if (propertyValue == null)
+            {
+                if (value == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return propertyValue.Equals(value);
+            }
+        }
         private static List<AuditChangeLog> BuildAuditChangeLog(object? changed, object? original = null)
         {
             List<AuditChangeLog> changes = new();

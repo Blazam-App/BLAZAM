@@ -85,7 +85,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty(ActiveDirectoryFields.MiddleName.FieldName, value);
             }
         }
-        public string? Surname
+        public string? Sn
         {
             get
             {

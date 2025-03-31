@@ -61,7 +61,7 @@ namespace BLAZAM.Services.Background
                             {
                                 ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                                 {
-                                    EventType = AppEventType.LockedOut,
+                                    EventType = ApplicationEventType.LockedOut,
                                     Entry = user,
                                     Actor = new SystemUserState(dbFactory)
 

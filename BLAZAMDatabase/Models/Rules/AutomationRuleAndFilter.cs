@@ -5,8 +5,7 @@ namespace BLAZAM.Database.Models.Rules
 
     public class AutomationRuleAndFilter : AppDbSetBase
     {
-        [NotMapped]
-        public string Type { get; } = "And";
+   
         public AutomationRuleOrFilter OrFilter { get; set; }
         public int OrFilterId { get; set; }
 
@@ -30,7 +29,6 @@ namespace BLAZAM.Database.Models.Rules
             }
             return false;
         }
-
        
     }
 }

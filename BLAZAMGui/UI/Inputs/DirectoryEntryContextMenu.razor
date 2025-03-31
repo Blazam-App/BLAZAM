@@ -54,7 +54,7 @@ else
             var unlockJob = await userToUnlock.CommitChangesAsync();
             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                 {
-                    EventType = AppEventType.Modify,
+                    EventType = ApplicationEventType.Modify,
                     Entry = userToUnlock,
                     Changes = changes,
                     Actor = CurrentUser.State
@@ -84,7 +84,7 @@ else
             var unlockJob = await userToUnlock.CommitChangesAsync();
             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                 {
-                    EventType = AppEventType.Modify,
+                    EventType = ApplicationEventType.Modify,
                     Entry = userToUnlock,
                     Changes = changes,
                     Actor = CurrentUser.State
@@ -115,7 +115,7 @@ else
             var unlockJob = await userToUnlock.CommitChangesAsync();
             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                 {
-                    EventType = AppEventType.Modify,
+                    EventType = ApplicationEventType.Modify,
                     Entry = userToUnlock,
                     Changes = changes,
                     Actor = CurrentUser.State

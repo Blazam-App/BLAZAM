@@ -25,7 +25,7 @@ Value="@User.MiddleName"
 Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Last_Name]"
-Value="@User.Surname"
+Value="@User.Sn"
 Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Display_Name]"
@@ -297,7 +297,7 @@ OnClick="Print">@AppLocalization["Print"]</MudButton>
                 await OnConfirmed.InvokeAsync();
                 ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                     {
-                        EventType = AppEventType.Create,
+                        EventType = ApplicationEventType.Create,
                         Entry = User,
                         Actor = CurrentUser.State
 

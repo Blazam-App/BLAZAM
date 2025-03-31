@@ -269,7 +269,7 @@
         }
         ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
-                EventType = AppEventType.Search,
+                EventType = ApplicationEventType.Search,
                 Entry = Computer,
                 Actor = CurrentUser.State
 
@@ -302,7 +302,7 @@
                 SnackBarService.Success(Computer.CanonicalName + " has been deleted.");
                 ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                     {
-                        EventType = AppEventType.Delete,
+                        EventType = ApplicationEventType.Delete,
                         Entry = Computer,
                         Actor = CurrentUser.State
 
@@ -337,7 +337,7 @@
                     {
                         ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                             {
-                                EventType = AppEventType.Assign,
+                                EventType = ApplicationEventType.Assign,
                                 Entry = assignment.Member,
                                 Target = assignment.Group,
                                 Actor = CurrentUser.State
@@ -350,7 +350,7 @@
                     {
                         ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                             {
-                                EventType = AppEventType.Unassign,
+                                EventType = ApplicationEventType.Unassign,
                                 Entry = assignment.Member,
                                 Target = assignment.Group,
                                 Actor = CurrentUser.State
@@ -362,7 +362,7 @@
                     {
                         ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                             {
-                                EventType = AppEventType.Modify,
+                                EventType = ApplicationEventType.Modify,
                                 Entry = Computer,
                                 Changes = changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList(),
                                 Actor = CurrentUser.State

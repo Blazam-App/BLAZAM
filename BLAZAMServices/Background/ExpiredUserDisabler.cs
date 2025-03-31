@@ -63,7 +63,7 @@ namespace BLAZAM.Services.Background
                         {
                             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                             {
-                                EventType = AppEventType.Modify,
+                                EventType = ApplicationEventType.Modify,
                                 Entry = user,
                                 Changes = changes,
                                 Actor = new SystemUserState(dbFactory)

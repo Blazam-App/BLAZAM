@@ -34,7 +34,7 @@ namespace BLAZAM.Gui.Helpers
             if (!newUserName.MiddleName.IsNullOrEmpty())
                 newUser.MiddleName = newUserName.MiddleName;
             if (!newUserName.Surname.IsNullOrEmpty())
-                newUser.Surname = newUserName.Surname;
+                newUser.Sn = newUserName.Surname;
 
 
 
