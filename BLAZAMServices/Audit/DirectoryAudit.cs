@@ -62,8 +62,8 @@ namespace BLAZAM.Services.Audit
                     Sid = relatedEntry.SID.ToSidString(),
                     BeforeAction = beforeAction,
                     AfterAction = afterAction,
-                    Username = CurrentUser.AuditUsername,
-                    IpAddress = CurrentUser.IPAddress,
+                    Username = UserStateService.CurrentUserState.AuditUsername,
+                    IpAddress = UserStateService.CurrentUserState.IPAddress,
                 };
                 table.Add(auditEntry);
                 await context.SaveChangesAsync();

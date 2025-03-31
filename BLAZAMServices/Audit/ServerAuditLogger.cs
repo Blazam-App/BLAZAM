@@ -22,11 +22,11 @@ namespace BLAZAM.Services.Audit
             Email=new EmailAudit(factory);
         }
 
-        protected override void ProcessDirectoryEntryChangedEvent(DirectoryEntryChangedArgs args)
+        protected override void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
         {
             if (new SystemUserState(_factory).Equals(args.Actor) == true)
             {
-                base.ProcessDirectoryEntryChangedEvent(args);
+                base.ProcessDirectoryEntryChangedEvent(sender,args);
             }
         }
 

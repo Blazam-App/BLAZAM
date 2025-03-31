@@ -37,7 +37,16 @@ namespace BLAZAM.Services.Background
                     delay = 30 + jitter;
 
                 }
-                Timer = new Timer(Execute, null, TimeSpan.FromSeconds(delay), Interval);
+                if (Interval != TimeSpan.Zero)
+                {
+                    Timer = new Timer(Execute, null, TimeSpan.FromSeconds(delay), Interval);
+                }
+                else
+                {
+                    Task.Delay(delay).ContinueWith((task) => {
+                        Execute();
+                    });
+                }
                 started = true;
             }
         }

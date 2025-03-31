@@ -40,7 +40,7 @@ namespace BLAZAM.Services.Background
             ApplicationEvents.DirectoryEntryChanged.Delegate += ProcessDirectoryEntryChangedEvent;
 
         }
-        protected virtual void ProcessDirectoryEntryChangedEvent(DirectoryEntryChangedArgs args)
+        protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
         {
             lock (_notificationLock)
             {

@@ -20,11 +20,11 @@ namespace BLAZAM.Services.Audit
             Logon = new LogonAudit(factory, userStateService, jSRuntime);
             BitLocker = new BitLockerAudit(factory, userStateService, jSRuntime);
         }
-        protected override void ProcessDirectoryEntryChangedEvent(DirectoryEntryChangedArgs args)
+        protected override void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
         {
             if (_userStateService.CurrentUserState?.Equals(args.Actor)==true)
             {
-                base.ProcessDirectoryEntryChangedEvent(args);
+                base.ProcessDirectoryEntryChangedEvent(sender,args);
             }
         }
 

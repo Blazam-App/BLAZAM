@@ -38,11 +38,13 @@ namespace BLAZAM.Services.Audit
         }
 
         protected static List<Guid> HandledEvents { get; set; } = new();
-        protected virtual void ProcessDirectoryEntryChangedEvent(DirectoryEntryChangedArgs args)
+        protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
         {
             lock (HandledEvents)
             {
-                
+                if (!HandledEvents.Contains(args.Guid))
+                {
+
                     switch (args.ObjectType)
                     {
                         case ActiveDirectoryObjectType.User:
@@ -204,8 +206,7 @@ namespace BLAZAM.Services.Audit
                             }
                             break;
                     }
-                    if (!HandledEvents.Contains(args.Guid))
-                    {
+                   
                         HandledEvents.Add(args.Guid);
                     }
                 

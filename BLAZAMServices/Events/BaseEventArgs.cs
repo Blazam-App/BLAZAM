@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Services.Events
 {
-    public class BaseEventArgs
+    public class BaseEventArgs:EventArgs
     {
         public Guid Guid { get; set; } = Guid.NewGuid();
         public IApplicationUserState Actor { get; set; }

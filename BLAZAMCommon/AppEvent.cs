@@ -11,14 +11,14 @@ namespace BLAZAM
         /// <summary>
         /// Called when permission are changed by an admin
         /// </summary>
-        public AppDelegate Delegate { get; set; }
+        public EventHandler Delegate { get; set; }
 
         /// <summary>
         /// Send event so each user can update permissions
         /// </summary>
         public void Invoke()
         {
-            Delegate?.Invoke();
+            Delegate?.Invoke(null,EventArgs.Empty);
 
         }
     }
@@ -27,14 +27,14 @@ namespace BLAZAM
         /// <summary>
         /// Called when permission are changed by an admin
         /// </summary>
-        public AppDelegate<T> Delegate { get; set; }
+        public EventHandler<T> Delegate { get; set; }
 
         /// <summary>
         /// Send event so each user can update permissions
         /// </summary>
         public void Invoke(T args)
         {
-            Delegate?.Invoke(args);
+            Delegate?.Invoke(null,args);
 
         }
     }
