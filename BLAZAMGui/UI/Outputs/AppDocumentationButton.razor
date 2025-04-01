@@ -1,7 +1,7 @@
 ﻿@inject IStringLocalizer<AppLocalization> AppLocalization
 @if (!Page.IsNullOrEmpty())
 {
-    <AppTooltip Text=@AppLocalization["Click to view help documentation"] RootClass="d-inline align-middle"> 
+    <AppTooltip Text=@AppLocalization[Lang.Click_to_view_help_documentation] RootClass="d-inline align-middle">
         <MudFab StartIcon="@Icon"
                 Href=@("https://docs.blazam.org"+@Page)
                 Target="_blank"
@@ -17,6 +17,12 @@
     [Parameter]
     public string Icon { get; set; } = Icons.Material.Filled.QuestionMark;
 
+    /// <summary>
+    /// The relative URI on the documentation website to link to
+    /// </summary>
+    /// <remarks>
+    /// eg: "/admin/settings/application"
+    /// </remarks>
     [Parameter]
     public string? Page { get; set; }
 

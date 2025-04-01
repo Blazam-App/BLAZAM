@@ -8,7 +8,7 @@
 
     private string StartTime {
         get{
-            if (Step.StartTime == null || !Step.StartTime.HasValue) return AppLocalization["Not started"];
+            if (Step.StartTime == null || !Step.StartTime.HasValue) return AppLocalization[Lang.Not_started];
             return Step.StartTime.Value.ToShortTimeString();
         }
     }

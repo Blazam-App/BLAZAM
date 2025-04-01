@@ -3,19 +3,20 @@
 @if (Text.IsNullOrEmpty())
 {
     <MudAvatar Size="Size.Small" Color="@Color" Variant="Variant.Filled">
-    <MudIcon Icon="@Icon"/>
+        <MudIcon Icon="@Icon"/>
     </MudAvatar>
 }
 else
 {
     <MudChip T="string"
-        Size=Size.Small 
-        Color=@Color
-        Icon="@Icon">@Text</MudChip>
+    Size=Size.Small 
+    Color=@Color
+    Icon="@Icon">@Text</MudChip>
 
 }
 
 @code {
+
     [Parameter]
     public bool? Status { get; set; } = false;  
     [Parameter]

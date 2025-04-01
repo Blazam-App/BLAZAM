@@ -39,9 +39,9 @@ namespace BLAZAM.Services.Background
 
         protected override void Execute(object? obj = null)
         {
-            Job newsCollectionJob = new Job(AppLocalization["Fetch News"]);
+            Job newsCollectionJob = new Job(AppLocalization[Lang.Fetch_News]);
             newsCollectionJob.StopOnFailedStep = true;
-            JobStep collectStep = new JobStep(AppLocalization["Collect data"], async (step) =>
+            JobStep collectStep = new JobStep(AppLocalization[Lang.Excute], async (step) =>
             {
                 try
                 {

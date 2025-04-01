@@ -42,14 +42,14 @@ else
                 @if (Notification.Notification.Title.IsNullOrEmpty())
                 {
                     <MudText Typo="Typo.subtitle2">
-                        @AppLocalization["Request to"] @AppLocalization[Notification.Notification.Action.ToString()]
+                        @AppHelpLocalization[HelpLang.Request_To,@AppLocalization[Notification.Notification.Action.ToString()]]
                     </MudText>
                 }
                 else
                 {
                     <MudText Typo="Typo.subtitle2">
-                        @AppLocalization["Request to"] @AppLocalization[Notification.Notification.Title]
-                    </MudText>
+                        @AppHelpLocalization[HelpLang.Request_To,@AppLocalization[Notification.Notification.Title]]
+                   </MudText>
                 }
 
                 @if (Notification.Notification.Message.IsNullOrEmpty())
@@ -93,7 +93,7 @@ else
 
     </MudCard>
 
-    <AppModal @ref=_approvalModal Title="@AppLocalization["Approve Request"]">
+    <AppModal @ref=_approvalModal Title="@AppLocalization[Lang.Approve_Request]">
         @if (_approvalModal.IsShown)
         {
             <AccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
@@ -146,7 +146,7 @@ else
     }
     private async void DenyRequest()
     {
-        if (await MessageService.Confirm(AppLocalization["Are you sure you want to deny this request?"]))
+        if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Deny_Request_Confirmation]))
         {
             try
             {

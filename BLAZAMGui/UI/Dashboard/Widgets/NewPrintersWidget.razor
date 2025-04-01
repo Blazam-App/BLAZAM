@@ -15,7 +15,7 @@
     }
 
   
-    protected override async Task RefreshData()
+    protected override async Task RefreshDataAsync()
     {
         LoadingData = true;
         NewPrinters = (await Directory.Printers.FindNewPrintersAsync(14, false)).Where(u => u.CanRead).ToList();

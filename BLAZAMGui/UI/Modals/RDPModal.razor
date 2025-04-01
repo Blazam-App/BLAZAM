@@ -13,8 +13,8 @@
     private string computerName="";
     protected override void OnInitialized()
     {
-        Modal.Options.MaxWidth = MaxWidth.ExtraExtraLarge;
-        Modal.Options.FullWidth = true;
+        //Modal.Options.MaxWidth = MaxWidth.ExtraExtraLarge;
+        //Modal.Options.FullWidth = true;
         base.OnInitialized();
         baseRdpUrl = Context.AppSettings.FirstOrDefault()?.MyrtilleURL??"";
         rdpUrl = baseRdpUrl;

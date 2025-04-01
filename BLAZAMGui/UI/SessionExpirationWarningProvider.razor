@@ -3,7 +3,7 @@
 @inject IJSRuntime JSRuntime
 
 
-<AppModal Title=@AppLocalization["Your session is about to expire"]
+<AppModal Title=@AppLocalization[Lang.Your_session_is_about_to_expire]
           @ref="ExpirationWarningModal"
           AllowClose=false
           YesText=@AppLocalization[Lang.Refresh_Session]
@@ -43,14 +43,14 @@
         }
 
         <MudText>
-            @AppLocalization["Session expires in"] @formattedTimeLeft
+            @AppLocalization[Lang.Session_expires_in] @formattedTimeLeft
         </MudText>
 
 
     }
 
 </AppModal>
-<AppModal Title=@AppLocalization["Session Expired"]
+<AppModal Title=@AppLocalization[Lang.Session_Expired]
           @ref="ExpiredModal"
           YesText=@AppLocalization[Lang.Log_In]
           OnYes="@(()=>{Refresh();
@@ -63,7 +63,7 @@
           BackdropClick=false})>
 
 
-    <MudText>@AppLocalization["Your session has expired."]</MudText>
+    <MudText>@AppLocalization[Lang.Your_session_has_expired]</MudText>
 
 
 </AppModal>

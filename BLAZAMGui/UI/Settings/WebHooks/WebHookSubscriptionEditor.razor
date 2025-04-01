@@ -25,42 +25,42 @@
             </TemplateColumn>
 
         }
-        <TemplateColumn Title="@AppLocalization["HTTP Method"]">
+        <TemplateColumn Title="@AppLocalization[Lang.HTTP_Method]">
             <CellTemplate>
                 <MudSelect @bind-Value=context.Item.WebHookMethod>
-                    @* <MudSelectItem Value="WebHookMethod.GET">@AppLocalization["GET"]</MudSelectItem> *@
-                    <MudSelectItem Value="WebHookMethod.POST">@AppLocalization["POST"]</MudSelectItem>
+                    @* <MudSelectItem Value="WebHookMethod.GET">GET</MudSelectItem> *@
+                    <MudSelectItem Value="WebHookMethod.POST">POST</MudSelectItem>
                 </MudSelect>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Style="min-width:100px" Title="@AppLocalization["URL"]">
+        <TemplateColumn Style="min-width:100px" Title="@AppLocalization[Lang.URL]">
             <CellTemplate>
                 <MudTextField T="string" @bind-Value=context.Item.URL />
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Ignore SSL Verification"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Ignore_SSL_Verification]">
             <CellTemplate>
                 <MudSwitch Color="Color.Warning"
                            T="bool" @bind-Value=context.Item.IgnoreSSLVerification />
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Authorization Type"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Authorization_Type]">
             <CellTemplate>
                 <MudSelect @bind-Value=context.Item.WebHookAuthorization>
                     <MudSelectItem Value="WebHookAuthorization.None">@AppLocalization[Lang.None]</MudSelectItem>
-                    <MudSelectItem Value="WebHookAuthorization.Basic">@AppLocalization["Basic"]</MudSelectItem>
-                    <MudSelectItem Value="WebHookAuthorization.Bearer">@AppLocalization["Bearer"]</MudSelectItem>
+                    <MudSelectItem Value="WebHookAuthorization.Basic">Basic</MudSelectItem>
+                    <MudSelectItem Value="WebHookAuthorization.Bearer">Bearer</MudSelectItem>
                 </MudSelect>
             </CellTemplate>
         </TemplateColumn>
 
-        <TemplateColumn Title="@AppLocalization["Authorization Token"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Authorization_Token]">
             <CellTemplate>
 
                 <MudTextField Disabled="context.Item.WebHookAuthorization==WebHookAuthorization.None" T="string" @bind-Value=context.Item.AuthorizationToken />
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Last Message Status"]">
+        <TemplateColumn Title="@AppLocalization[Lang.Last_Message_Status]">
             <CellTemplate>
                 <LastMessageStatus Subscription="context.Item" />
                 @* <StatusCheck StatusFunc="(()=>{return GetLastMessageStatus(context.Item);})"/> *@

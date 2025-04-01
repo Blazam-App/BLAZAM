@@ -54,7 +54,7 @@
             if (unlockJob.Result == JobResult.Passed)
             {
 
-                SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" unlocked"]);
+                SnackBarService.Success(userToUnlock.CanonicalName + " " + AppLocalization[Lang.unlocked]);
                 await OnChanged.InvokeAsync();
             }
             else
@@ -77,7 +77,7 @@
             if (unlockJob.Result == JobResult.Passed)
             {
 
-                SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" enabled"]);
+                SnackBarService.Success(userToUnlock.CanonicalName +" " + AppLocalization[Lang.enabled]);
                 await OnChanged.InvokeAsync();
 
             }
@@ -101,7 +101,7 @@
             if (unlockJob.Result == JobResult.Passed)
             {
 
-                SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" disabled"]);
+                SnackBarService.Success(userToUnlock.CanonicalName + " " + AppLocalization[Lang.disabled]);
                 await OnChanged.InvokeAsync();
 
             }

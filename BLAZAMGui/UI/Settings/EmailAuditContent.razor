@@ -42,10 +42,10 @@
             </CellTemplate>
         </TemplateColumn>
        
-        <PropertyColumn Title=@AppLocalization["Retry Count"]
+        <PropertyColumn Title=@AppLocalization[Lang.Retry_Count]
                         Property="x => x.Retries"
                         Sortable="true" />
-        <TemplateColumn Title=@AppLocalization["Last Attempt Timestamp"]
+        <TemplateColumn Title=@AppLocalization[Lang.Last_Attempt_Timestamp]
                         Filterable="true"
                         Sortable="true"
                         SortBy="x=>x.LastAttemptTimestamp">
@@ -57,7 +57,7 @@
         </TemplateColumn>
     </Columns>
 </MudDataGrid>
-<AppModal Title="@AppLocalization["Email Body"]" @ref=bodyModal>
+<AppModal Title="@AppLocalization[Lang.Email_Body]" @ref=bodyModal>
     @if (emailToPreview!=null)
     {
         <MudText>
@@ -75,7 +75,7 @@
             @((MarkupString)emailToPreview.HtmlBody)
         </MudContainer>
         <MudText>
-            @AppLocalization["Server Response"]: @emailToPreview.ServerResponse
+            @AppLocalization[Lang.Server_Response]: @emailToPreview.ServerResponse
         </MudText>
     }
    

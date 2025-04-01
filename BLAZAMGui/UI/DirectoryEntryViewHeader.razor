@@ -79,7 +79,7 @@ else
 
 
 
-                <AppTooltip Text="@(EditMode?AppLocalization["End Edit"]:AppLocalization[Lang.Edit])">
+                <AppTooltip Text="@(EditMode?AppLocalization[Lang.End_Edit]:AppLocalization[Lang.Edit])">
 
                     <MudToggleIconButton Toggled=EditMode
                                          ToggledChanged="@(async(state)=>{await ToggleEditMode(state);})"
@@ -175,7 +175,7 @@ else
                                        Icon="@Icons.Material.Filled.PlaylistAdd" />
                     </AppTooltip>
                 }
-                <AppTooltip Text="@(IsFavorite?AppLocalization["Remove from favorites"]:AppLocalization["Add to favorites"])">
+                <AppTooltip Text="@AppLocalization[IsFavorite?Lang.Remove_from_favorites : Lang.Add_to_favorites]">
                     <MudIconButton OnClick="@ToggleFavorite"
                                    Icon="@(IsFavorite?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
                                    Color="@(IsFavorite?Color.Warning:Color.Default)" />
@@ -195,7 +195,7 @@ else
                     <MudMenuItem>
                         <MudSwitch T=bool
                                    Color=Color.Success
-                                   Label=@AppLocalization["Account Enabled"]
+                                   Label=@AppLocalization[Lang.Account_Enabled]
                                    @bind-Value=@accountEntry.Enabled
                                    Disabled=@((accountEntry.Disabled && !accountEntry.CanEnable)||(accountEntry.Enabled && !accountEntry.CanDisable)) />
 
@@ -205,7 +205,7 @@ else
 
                 @if (DirectoryEntry.CanEdit)
                 {
-                    <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!EditMode);})">@(EditMode ? AppLocalization["End Edit"] : AppLocalization[Lang.Edit])</MudMenuItem>
+                    <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!EditMode);})">@(AppLocalization[EditMode ? Lang.End_Edit : Lang.Edit])</MudMenuItem>
                 }
                 @if (accountEntry != null && accountEntry.LockedOut && accountEntry.CanUnlock)
                 {
@@ -248,7 +248,9 @@ else
                 }
                 <MudMenuItem Icon="@(IsFavorite?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
                              IconColor="@(IsFavorite?Color.Warning:Color.Default)"
-                             OnClick="@ToggleFavorite">@(IsFavorite ? AppLocalization["Remove from favorites"] : AppLocalization["Add to favorites"])</MudMenuItem>
+                             OnClick="@ToggleFavorite">
+                    @AppLocalization[IsFavorite ? Lang.Remove_from_favorites : Lang.Add_to_favorites]
+                </MudMenuItem>
 
 
 

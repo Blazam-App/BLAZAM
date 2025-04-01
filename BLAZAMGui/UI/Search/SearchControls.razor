@@ -59,7 +59,7 @@
                @bind-Value=SearchService.IncludeDisabled
                UncheckedColor="Color.Error"
                Color=Color.Success>
-        @AppLocalization["Include Disabled"]
+        @AppLocalization[Lang.Include_Disabled]
     </MudSwitch>
 }
 @{
@@ -91,7 +91,7 @@
                     Style="max-width:550px;"
                     AdornmentIcon="@adornmentIcon"
                     Variant="Variant.Filled"
-                    Label=@AppLocalization["Search Directory"]
+                    Label=@AppLocalization[Lang.Search_Directory]
                     SelectedResultChanged="@((result)=>{if(result!=null)SearchService.Search(SearchService.SearchTerm);})"
                     SearchObjectType="@SearchService.SeachObjectType"
                     SearchDisabled=@SearchService.IncludeDisabled

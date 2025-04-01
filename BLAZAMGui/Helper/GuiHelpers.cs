@@ -28,10 +28,14 @@ namespace BLAZAM.Helpers
             {
                 { "Item", item }
             };
-            var options = new DialogOptions();
-            options.MaxWidth = MaxWidth.ExtraExtraLarge;
-            options.CloseButton = true;
-            options.CloseOnEscapeKey = true;
+            var options = new DialogOptions()
+            {
+                MaxWidth = MaxWidth.ExtraExtraLarge,
+                CloseButton = true,
+                CloseOnEscapeKey = true
+
+            };
+
 
             return (await dialogService.ShowMessage<AppNewsItemDialog>(dialogParams, item.Title, options: options));
 

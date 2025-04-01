@@ -2,17 +2,17 @@
 
 @if (!qrCode.IsNullOrEmpty())
 {
-    <MudText>@AppLocalization["Google Authenticator"]</MudText>
+    <MudText>@AppLocalization[Lang.Google_Authenticator]</MudText>
     <MudImage Src="@qrCode" />
 }
 <MudButton Color="Color.Primary"
 Variant="Variant.Filled"
-OnClick="GenerateGoogleAuthToken">@AppLocalization["Create Google Authenticator Token"]</MudButton>
+OnClick="GenerateGoogleAuthToken">@AppLocalization[Lang.Create_Google_Authenticator_Token]</MudButton>
 @if (!qrCode.IsNullOrEmpty())
 {
     <MudButton Color="Color.Error"
     Variant="Variant.Filled"
-    OnClick="DeleteGoogleAuthToken">@AppLocalization["Disable Google Authenticator"]</MudButton>
+    OnClick="DeleteGoogleAuthToken">@AppLocalization[Lang.Disable_Google_Authenticator]</MudButton>
 
 }
 
@@ -60,7 +60,7 @@ OnClick="GenerateGoogleAuthToken">@AppLocalization["Create Google Authenticator 
     {
         //var result  =  await googleAuthenticatorModal.ShowAsync();
 
-        if (qrCode == null || await MessageService.Confirm(AppLocalization["Generating a new authenticator token will invalidate the existing one!"]) == true)
+        if (qrCode == null || await MessageService.Confirm(AppHelpLocalization[HelpLang.Overwrite_Auth_Token_Confirmation]) == true)
         {
 
 
@@ -80,7 +80,7 @@ OnClick="GenerateGoogleAuthToken">@AppLocalization["Create Google Authenticator 
     }
     async Task DeleteGoogleAuthToken()
     {
-        if (await MessageService.Confirm(AppLocalization["Are you sure you want to disable Google Authenticator MFA?"]) == true)
+        if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Delete_Auth_Token_Confirmation]) == true)
         {
             qrCode = null;
             CurrentUser.State.Preferences.AuthenticatorSecret = null;

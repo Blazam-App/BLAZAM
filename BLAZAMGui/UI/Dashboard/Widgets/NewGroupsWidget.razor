@@ -14,7 +14,7 @@
         set => CurrentUser.State.Cache.Set(this.GetType(), value);
     }
 
-    protected override async Task RefreshData()
+    protected override async Task RefreshDataAsync()
     {
         LoadingData = true;
         NewGroups = (await Directory.Groups.FindNewGroupsAsync()).Where(u => u.CanRead).ToList();

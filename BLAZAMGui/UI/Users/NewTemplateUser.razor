@@ -138,7 +138,7 @@
         InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
         )
         {
-            <Section Title=@AppLocalization["Contact Info"]>
+            <Section Title=@AppLocalization[Lang.Contact_Info]>
 
                 @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone))
                 {
@@ -267,7 +267,7 @@
 
 
 
-                    <HomeDriveSelect Label="@AppLocalization["Home Drive"]"
+                    <HomeDriveSelect Label="@AppLocalization[Lang.Home_Drive]"
                                      @bind-DriveLetter="@User.HomeDrive"
                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.HomeDrive))
                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.HomeDrive)) />
@@ -308,7 +308,7 @@
         }
         @if (User.CanReadAnyCustomFields)
         {
-            <Section Title=@AppLocalization["Additional Fields"]>
+            <Section Title=@AppLocalization[Lang.Additional_Fields]>
                 @foreach (var field in DirectoryTemplate.EffectiveFieldValues.Where(f => f.CustomField != null))
                 {
                     @if (field.CustomField != null)

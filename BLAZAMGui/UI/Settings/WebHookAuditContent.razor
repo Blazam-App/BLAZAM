@@ -9,7 +9,7 @@
              SortMode="@SortMode.Multiple"
              Groupable="false">
     <Columns>
-        <TemplateColumn Title=@AppLocalization["Message Id"]
+        <TemplateColumn Title=@AppLocalization[Lang.Message_Id]
                         Filterable="true"
                         Sortable="true"
                         SortBy="x=>x.MessageGuid">
@@ -19,7 +19,7 @@
                 </MudText>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization["Last Attempt Timestamp"]
+        <TemplateColumn Title=@AppLocalization[Lang.Last_Attempt_Timestamp]
                         Filterable="true"
                         Sortable="true"
                         SortBy="x=>x.LastAttemptTimestamp">
@@ -30,7 +30,7 @@
             </CellTemplate>
         </TemplateColumn>
         <PropertyColumn Property="x => x.Uri" />
-        <TemplateColumn Title=@AppLocalization["Delivered"]
+        <TemplateColumn Title=@AppLocalization[Lang.Delivered]
                         Filterable="true"
                         Sortable="true"
                         SortBy="x=>x.Delivered">
@@ -38,7 +38,7 @@
                 <StatusCheck Status="context.Item.Delivered" />
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization["Event Timestamp"]
+        <TemplateColumn Title=@AppLocalization[Lang.Event_Timestamp]
                         Filterable="true"
                         Sortable="true"
                         SortBy="x=>x.EventTimestamp">
@@ -49,12 +49,12 @@
             </CellTemplate>
         </TemplateColumn>
 
-        <PropertyColumn Title=@AppLocalization["Response Code"]
+        <PropertyColumn Title=@AppLocalization[Lang.Response_Code]
                         Property="x => x.ResponseCode"
                         Sortable="true" />
-        <PropertyColumn Title=@AppLocalization["Error Message"]
+        <PropertyColumn Title=@AppLocalization[Lang.Error_Message]
                         Property="x => x.ResponseMessage" />
-        <PropertyColumn Title=@AppLocalization["Retry Count"]
+        <PropertyColumn Title=@AppLocalization[Lang.Retry_Count]
                         Property="x => x.RetryCount"
                         Sortable="true" />
 

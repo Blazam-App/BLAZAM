@@ -59,16 +59,16 @@
         {
             if (widget.WidgetType.Equals(WidgetType))
             {
-                _ = RefreshData();
+                _ = RefreshDataAsync();
 
             }
 
         };
 
-        _ = RefreshData();
+        _ = RefreshDataAsync();
     }
 
-    protected override async Task RefreshData()
+    protected override async Task RefreshDataAsync()
     {
         LoadingData = true;
         await InvokeAsync(StateHasChanged);

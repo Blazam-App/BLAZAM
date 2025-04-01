@@ -85,12 +85,12 @@
         await Modal.RefreshView();
         if (await CurrentUser.State.SaveAllUserSettings())
         {
-            SnackBarService.Success(AppLocalization["Settings saved"]);
+            SnackBarService.Success(AppLocalization[Lang.Settings_saved]);
 
         }
         else
         {
-            SnackBarService.Warning(AppLocalization["Failed to save settings"]);
+            SnackBarService.Warning(AppLocalization[Lang.Failed_to_save_settings]);
 
         }
         LoadingData = false;

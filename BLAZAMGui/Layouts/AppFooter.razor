@@ -11,7 +11,7 @@
                 Class="mud-theme-info"
 
                 Style="width:max-content"
-                Text=@AppLocalization["An automatic update is scheduled. Click for details"]>
+                            Text=@(AppLocalization[Lang.An_automatic_update_is_scheduled]+" "+AppLocalization[Lang.Click_for_details])>
 
                     <MudIcon Color="@Color.Success" Icon=@Icons.Material.Filled.ArrowCircleUp />
                 </AppTooltip>
@@ -19,7 +19,7 @@
             <NotAuthorized>
                 <AppTooltip Class="mud-theme-info"
                 Style="width:max-content"
-                Text=@AppLocalization["An automatic update is scheduled."]>
+                Text=@AppLocalization[Lang.An_automatic_update_is_scheduled]>
 
                     <MudIcon Color="@Color.Success" Icon=@Icons.Material.Filled.ArrowCircleUp />
                 </AppTooltip>
