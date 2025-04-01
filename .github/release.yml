@@ -28,3 +28,9 @@ changelog:
     - title: Dependencies 🔌
       labels:
         - dependencies
+  contributors:
+    - title: "Contributors" 
+    exclude:
+      authors:
+        - dependabot[bot]
+        - github-actions[bot] 
