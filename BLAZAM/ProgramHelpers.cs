@@ -56,19 +56,14 @@ namespace BLAZAM.Server
             {
                 //Attempts to get the windows installation GUID
                 ApplicationInfo.installationId = GetInstallationId();
-
-
             }
             catch
             {
                 //Default to a hash type method on the machine name
                 ApplicationInfo.installationId = Environment.MachineName.ToGuid();
-
             }
 
-            Program.AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Blazam\\");
             Program.PluginDirectory = new SystemDirectory(Program.WritablePath + @"plugins\");
-
 
             //Store the configuration so other pages/objects can easily access it
             Program.Configuration = builder.Configuration;
@@ -78,9 +73,6 @@ namespace BLAZAM.Server
 
             //Gets the application version from he running assembly version
             ApplicationInfo.runningVersion = new ApplicationVersion(Assembly.GetExecutingAssembly());
-
-
-
 
             return builder;
         }
@@ -121,8 +113,6 @@ namespace BLAZAM.Server
                 Console.WriteLine("Failed to get client ID (GUID). Error: " + ex.Message);
                 throw ex;
             }
-
-
         }
         /// <summary>
         /// Injects neccessary services for Blazam
@@ -149,7 +139,6 @@ namespace BLAZAM.Server
                     new CultureInfo("pl"),
                     new CultureInfo("ru"),
                     new CultureInfo("zh-Hans")
-
                  };
 
                 options.SupportedCultures = supportedCultures;
@@ -206,14 +195,7 @@ namespace BLAZAM.Server
             {
                 options.RequireAuthenticatedSignIn = false;
             });
-            /*
-              builder.Services.AddAuthorization(options =>
-              {
-                  // By default, all incoming requests will be authorized according to the default policy.
-                  options.FallbackPolicy = options.DefaultPolicy;
-              });
-              */
-
+        
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
             {
@@ -233,10 +215,7 @@ namespace BLAZAM.Server
                 });
 
             //Inject the database as a service
-
             DatabaseContextBase.Configuration = builder.Configuration;
-
-
 
             builder.Services.AddSingleton<IAppDatabaseFactory, AppDatabaseFactory>();
             builder.Services.AddScoped<IUserDatabaseFactory, UserDatabaseFactory>();
@@ -293,24 +272,14 @@ namespace BLAZAM.Server
             //Provide a JwtTokens as a service
             builder.Services.AddSingleton<WebHookPublisher>();
 
-
-
-
             //Add custom Auth
             builder.Services.AddScoped<AppAuthenticationStateProvider>();
 
             //Add web user application search as a service
             builder.Services.AddScoped<SearchService>();
 
-
-
             //A service to provide the appropriate widgets to users, based on permissions
             builder.Services.AddScoped<WidgetService>();
-
-
-
-
-
 
             //Provide DuoSecurity service
             builder.Services.AddSingleton<IDuoClientProvider, DuoClientProvider>();
@@ -358,8 +327,6 @@ namespace BLAZAM.Server
             });
 
             builder.Services.AddMvc();
-
-
 
             builder.Services.AddSwaggerGen(c =>
             {
@@ -424,7 +391,6 @@ namespace BLAZAM.Server
                 {
                     var loadContext = new PluginLoadContext(dll.FullPath);
                     Assembly assembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(dll.FullPath)));
-                    //Assembly assembly = Assembly.LoadFrom(dll.FullPath);
                     // Get all types in the assembly that implement IPluginBase
                     var pluginTypes = assembly.GetTypes()
                         .Where(type => typeof(IPluginBase).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
@@ -450,7 +416,6 @@ namespace BLAZAM.Server
                         catch (Exception ex)
                         {
                             Loggers.SystemLogger.Error($"Error creating or injecting services for plugin {pluginType.FullName} in {dll.Name}: {ex.Message}");
-                            // Optionally log the full exception: Console.WriteLine(ex);
                         }
                     }
                 }
@@ -536,9 +501,7 @@ namespace BLAZAM.Server
                 if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
                 {
                     Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != false;
-
                 }
-
             }
             catch (Exception ex)
             {
@@ -565,8 +528,6 @@ namespace BLAZAM.Server
             {
                 if (ApplicationInfo.installationCompleted)
                 {
-
-
                     foreach (var assembly in blazamAssemblies)
                     {
                         try
@@ -595,7 +556,6 @@ namespace BLAZAM.Server
 
                                     }
 
-
                                     var metadata = type.GetCustomAttribute<AutoStartBackgroundService>();
 
                                     service?.Start(metadata?.Immediate == true);
@@ -619,7 +579,6 @@ namespace BLAZAM.Server
             catch (Exception ex)
             {
                 Loggers.SystemLogger.Error("Critical error getting loaded assemblies! {Error}", ex);
-
             }
             try
             {
@@ -636,7 +595,6 @@ namespace BLAZAM.Server
                     var context = Program.AppInstance.Services.GetRequiredService<UpdateService>();
                     context.Initialize();
                 }
-
             }
             catch (Exception ex)
             {
@@ -647,9 +605,7 @@ namespace BLAZAM.Server
                 if (ApplicationInfo.installationCompleted)
                 {
                     var context = Program.AppInstance.Services.GetRequiredService<WebHookPublisher>();
-
                 }
-
             }
             catch (Exception ex)
             {
@@ -662,7 +618,6 @@ namespace BLAZAM.Server
                     ApplicationStatistics.Process = ApplicationInfo.runningProcess;
                     ApplicationStatistics.StartResourceUsagePolling();
                 }
-
             }
             catch (Exception ex)
             {
