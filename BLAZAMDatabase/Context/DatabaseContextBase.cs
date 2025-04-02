@@ -13,6 +13,7 @@ using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
+using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Server.Data;
 using Microsoft.Data.SqlClient;
@@ -199,7 +200,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 1,
                     FieldName = "sn",
-                    DisplayName = "Last Name",
+                    DisplayName = Lang.Last_Name,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -207,7 +208,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 2,
                     FieldName = "givenname",
-                    DisplayName = "First Name",
+                    DisplayName = Lang.First_Name,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -215,7 +216,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 3,
                     FieldName = "physicalDeliveryOfficeName",
-                    DisplayName = "Office",
+                    DisplayName = Lang.Office,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -223,7 +224,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 4,
                     FieldName = "employeeId",
-                    DisplayName = "Employee ID",
+                    DisplayName = Lang.Employee_Id,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -247,7 +248,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 7,
                     FieldName = "profilePath",
-                    DisplayName = "Profile Path",
+                    DisplayName = Lang.Profile_Path,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -263,7 +264,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 9,
                     FieldName = "streetAddress",
-                    DisplayName = "Street Address",
+                    DisplayName = Lang.Street_Address,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -271,7 +272,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 10,
                     FieldName = "l",
-                    DisplayName = "City",
+                    DisplayName = Lang.City,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -279,7 +280,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 11,
                     FieldName = "st",
-                    DisplayName = "State",
+                    DisplayName = Lang.State,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -287,7 +288,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 12,
                     FieldName = "postalCode",
-                    DisplayName = "Zip Code",
+                    DisplayName = Lang.Zip_Code,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -295,7 +296,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 13,
                     FieldName = "site",
-                    DisplayName = "Site",
+                    DisplayName = Lang.Site,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -303,7 +304,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 14,
                     FieldName = "name",
-                    DisplayName = "Name",
+                    DisplayName = Lang.Name,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -311,7 +312,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 15,
                     FieldName = "samaccountname",
-                    DisplayName = "Username",
+                    DisplayName = Lang.Username,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -335,7 +336,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 18,
                     FieldName = "description",
-                    DisplayName = "Description",
+                    DisplayName = Lang.Description,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -343,7 +344,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 19,
                     FieldName = "displayName",
-                    DisplayName = "Display Name",
+                    DisplayName = Lang.Display_Name,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -367,7 +368,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 22,
                     FieldName = "company",
-                    DisplayName = "Company",
+                    DisplayName = Lang.Company,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -400,7 +401,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 26,
                     FieldName = "postOfficeBox",
-                    DisplayName = "PO Box",
+                    DisplayName = Lang.PO_Box,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -416,7 +417,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 28,
                     FieldName = "homeDrive",
-                    DisplayName = "Home Drive",
+                    DisplayName = Lang.Home_Drive,
                     FieldType = ActiveDirectoryFieldType.DriveLetter
                 },
 
@@ -424,7 +425,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 29,
                     FieldName = "department",
-                    DisplayName = "Department",
+                    DisplayName = Lang.Department,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -432,7 +433,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 30,
                     FieldName = "middleName",
-                    DisplayName = "Middle Name",
+                    DisplayName = Lang.Middle_Name,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -477,14 +478,14 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 36,
                     FieldName = "userWorkstations",
-                    DisplayName = "Log On To",
+                    DisplayName = Lang.Log_On_To,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
                 new ActiveDirectoryField
                 {
                     Id = 37,
                     FieldName = "logonHours",
-                    DisplayName = "Logon Hours",
+                    DisplayName = Lang.Logon_Hours,
                     FieldType = ActiveDirectoryFieldType.RawData
                 },
                 new ActiveDirectoryField
@@ -493,8 +494,19 @@ namespace BLAZAM.Database.Context
                     FieldName = "groupType",
                     DisplayName = "Group Type and Scope",
                     FieldType = ActiveDirectoryFieldType.RawData
+                },
+                new ActiveDirectoryField {
+                    Id = 39,
+                    FieldName = "uac",
+                    DisplayName = Lang.Enabled,
+                    FieldType = ActiveDirectoryFieldType.Boolean
+                },
+                new ActiveDirectoryField {
+                    Id = 40,
+                    FieldName = "lockoutTime",
+                    DisplayName = Lang.Locked_Out,
+                    FieldType = ActiveDirectoryFieldType.FileTime 
                 }
-
 
             );
 
@@ -577,15 +589,15 @@ namespace BLAZAM.Database.Context
             });
 
             modelBuilder.Entity<ObjectAction>().HasData(
-                  new ObjectAction() { Id = 1, Name = "Assign", Action = ActiveDirectoryObjectAction.Assign },
+                  new ObjectAction() { Id = 1, Name = Lang.Assign, Action = ActiveDirectoryObjectAction.Assign },
                   new ObjectAction() { Id = 2, Name = "UnAssign", Action = ActiveDirectoryObjectAction.Unassign },
-                  new ObjectAction() { Id = 3, Name = "Unlock", Action = ActiveDirectoryObjectAction.Unlock },
-                  new ObjectAction() { Id = 4, Name = "Enable", Action = ActiveDirectoryObjectAction.Enable },
-                  new ObjectAction() { Id = 5, Name = "Disable", Action = ActiveDirectoryObjectAction.Disable },
-                  new ObjectAction() { Id = 6, Name = "Rename", Action = ActiveDirectoryObjectAction.Rename },
-                  new ObjectAction() { Id = 7, Name = "Move", Action = ActiveDirectoryObjectAction.Move },
-                  new ObjectAction() { Id = 8, Name = "Create", Action = ActiveDirectoryObjectAction.Create },
-                  new ObjectAction() { Id = 9, Name = "Delete", Action = ActiveDirectoryObjectAction.Delete },
+                  new ObjectAction() { Id = 3, Name = Lang.Unlock, Action = ActiveDirectoryObjectAction.Unlock },
+                  new ObjectAction() { Id = 4, Name = Lang.Enable, Action = ActiveDirectoryObjectAction.Enable },
+                  new ObjectAction() { Id = 5, Name = Lang.Disable, Action = ActiveDirectoryObjectAction.Disable },
+                  new ObjectAction() { Id = 6, Name = Lang.Rename, Action = ActiveDirectoryObjectAction.Rename },
+                  new ObjectAction() { Id = 7, Name = Lang.Move, Action = ActiveDirectoryObjectAction.Move },
+                  new ObjectAction() { Id = 8, Name = Lang.Create, Action = ActiveDirectoryObjectAction.Create },
+                  new ObjectAction() { Id = 9, Name = Lang.Delete, Action = ActiveDirectoryObjectAction.Delete },
                   new ObjectAction() { Id = 10, Name = "Set Password", Action = ActiveDirectoryObjectAction.SetPassword }
 
             );

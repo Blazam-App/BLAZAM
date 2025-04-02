@@ -91,7 +91,7 @@ namespace BLAZAM.Services.Background
 
         private void ProcessScheduledRule(AutomationRule rule)
         {
-            using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext(){
+            using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext()){
                 ADSearch search = new ADSearch(directory);
                 var results = search.Search();
                 foreach (var entry in results)

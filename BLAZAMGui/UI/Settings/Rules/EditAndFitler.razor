@@ -30,7 +30,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _fields = await Context.ActiveDirectoryFields.ToListAsync();
+        _fields = (await Context.ActiveDirectoryFields.ToListAsync()).OrderBy(f => AppLocalization[f.DisplayName].Value).ToList();
 
     }
 }

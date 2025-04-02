@@ -20,7 +20,8 @@ namespace BLAZAM.Database.Models
     {
         Text, Date, RawData,
         DriveLetter,
-        StringList,FileTime
+        StringList,FileTime,
+        Boolean
     }
     /// <summary>
     /// Represents a built-in standard Active Directory attribute
