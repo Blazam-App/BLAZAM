@@ -132,7 +132,7 @@ namespace BLAZAM.Localization
         public static readonly string Stop_It = "Stop It";
         public static readonly string Rename_Group = "Rename Group";
         public static readonly string Register_Printers = "Register Printers";
-        public static readonly string Locked_Out = "Locked_ Out";
+        public static readonly string Locked_Out = "Locked Out";
         public static readonly string No_matching_results = "No matching entries";
         public static readonly string Group_member_added = "Group member added";
         public static readonly string Expires = "Expires";
