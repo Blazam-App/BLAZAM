@@ -35,7 +35,7 @@ namespace BLAZAM.Database.Context
         }
 
 
-        
+
 
 
         public DatabaseConnectionString? ConnectionString { get; set; }
@@ -195,7 +195,6 @@ namespace BLAZAM.Database.Context
 
             modelBuilder.Entity<ActiveDirectoryField>().HasData(
 
-
                 new ActiveDirectoryField
                 {
                     Id = 1,
@@ -232,7 +231,7 @@ namespace BLAZAM.Database.Context
                 {
                     Id = 5,
                     FieldName = "homeDirectory",
-                    DisplayName = "Home Directory",
+                    DisplayName = Lang.Home_Directory,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
@@ -271,7 +270,7 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 10,
-                    FieldName = "l",
+                    FieldName = "l", // 'l' is the standard LDAP attribute name for Locality (City)
                     DisplayName = Lang.City,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -279,7 +278,7 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 11,
-                    FieldName = "st",
+                    FieldName = "st", // 'st' is the standard LDAP attribute name for State or Province
                     DisplayName = Lang.State,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -295,7 +294,7 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 13,
-                    FieldName = "site",
+                    FieldName = "site", // Note: 'site' is not a standard AD attribute. Check if this is custom.
                     DisplayName = Lang.Site,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -303,7 +302,7 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 14,
-                    FieldName = "name",
+                    FieldName = "name", // Often the same as CN (Canonical Name)
                     DisplayName = Lang.Name,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -311,7 +310,7 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 15,
-                    FieldName = "samaccountname",
+                    FieldName = "samaccountname", // Pre-Windows 2000 logon name
                     DisplayName = Lang.Username,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -319,9 +318,9 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 16,
-                    FieldName = "objectSID",
+                    FieldName = "objectSID", // Security Identifier
                     DisplayName = "SID",
-                    FieldType = ActiveDirectoryFieldType.RawData
+                    FieldType = ActiveDirectoryFieldType.RawData // SID is binary data
                 },
 
                 new ActiveDirectoryField
@@ -351,7 +350,7 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 20,
-                    FieldName = "distinguishedName",
+                    FieldName = "distinguishedName", // Unique identifier within the directory (DN)
                     DisplayName = "Distinguished Name",
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -359,9 +358,9 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 21,
-                    FieldName = "memberOf",
+                    FieldName = "memberOf", // List of groups the object belongs to
                     DisplayName = "Member Of",
-                    FieldType = ActiveDirectoryFieldType.StringList
+                    FieldType = ActiveDirectoryFieldType.StringList // Multi-valued attribute
                 },
 
                 new ActiveDirectoryField
@@ -372,11 +371,10 @@ namespace BLAZAM.Database.Context
                     FieldType = ActiveDirectoryFieldType.Text
                 },
 
-
                 new ActiveDirectoryField
                 {
                     Id = 23,
-                    FieldName = "title",
+                    FieldName = "title", // Job title
                     DisplayName = "Title",
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -384,7 +382,7 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 24,
-                    FieldName = "userPrincipalName",
+                    FieldName = "userPrincipalName", // UPN (e.g., user@domain.com)
                     DisplayName = "User Principal Name",
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -392,7 +390,7 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 25,
-                    FieldName = "telephoneNumber",
+                    FieldName = "telephoneNumber", // Primary work phone number
                     DisplayName = "Telephone Number",
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -408,7 +406,7 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 27,
-                    FieldName = "cn",
+                    FieldName = "cn", // Canonical Name, often the object's common name
                     DisplayName = "Canonical Name",
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -416,9 +414,9 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 28,
-                    FieldName = "homeDrive",
+                    FieldName = "homeDrive", // Drive letter for home directory mapping (e.g., H:)
                     DisplayName = Lang.Home_Drive,
-                    FieldType = ActiveDirectoryFieldType.DriveLetter
+                    FieldType = ActiveDirectoryFieldType.DriveLetter // Assuming custom type or validation needed
                 },
 
                 new ActiveDirectoryField
@@ -432,7 +430,7 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 30,
-                    FieldName = "middleName",
+                    FieldName = "middleName", // Often stored in the 'initials' attribute ('initials')
                     DisplayName = Lang.Middle_Name,
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -448,7 +446,7 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 32,
-                    FieldName = "operatingSystemVersion",
+                    FieldName = "operatingSystemVersion", // For computer objects
                     DisplayName = "OS",
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -456,56 +454,68 @@ namespace BLAZAM.Database.Context
                 new ActiveDirectoryField
                 {
                     Id = 33,
-                    FieldName = "accountExpires",
+                    FieldName = "accountExpires", // Date when the account expires (FILETIME format)
                     DisplayName = "Account Expiration",
-                    FieldType = ActiveDirectoryFieldType.Date
+                    FieldType = ActiveDirectoryFieldType.Date, // Represents a date/time value
+                    PropertyName = "ExpireTime"
                 },
+
                 new ActiveDirectoryField
                 {
                     Id = 34,
-                    FieldName = "manager",
+                    FieldName = "manager", // Distinguished Name (DN) of the user's manager
                     DisplayName = "Manager",
-                    FieldType = ActiveDirectoryFieldType.Text
+                    FieldType = ActiveDirectoryFieldType.Text // Stored as DN string
                 },
+
                 new ActiveDirectoryField
                 {
                     Id = 35,
                     FieldName = "thumbnail",
                     DisplayName = "Photo",
-                    FieldType = ActiveDirectoryFieldType.RawData
+                    FieldType = ActiveDirectoryFieldType.RawData // Binary image data
                 },
+
                 new ActiveDirectoryField
                 {
                     Id = 36,
-                    FieldName = "userWorkstations",
+                    FieldName = "userWorkstations", // List of computer names the user can log on to
                     DisplayName = Lang.Log_On_To,
-                    FieldType = ActiveDirectoryFieldType.Text
+                    FieldType = ActiveDirectoryFieldType.Text // Comma-separated string
                 },
+
                 new ActiveDirectoryField
                 {
                     Id = 37,
-                    FieldName = "logonHours",
+                    FieldName = "logonHours", // Binary data representing allowed logon times
                     DisplayName = Lang.Logon_Hours,
                     FieldType = ActiveDirectoryFieldType.RawData
                 },
+
                 new ActiveDirectoryField
                 {
                     Id = 38,
-                    FieldName = "groupType",
+                    FieldName = "groupType", // Defines group scope (Domain Local, Global, Universal) and type (Security, Distribution)
                     DisplayName = "Group Type and Scope",
-                    FieldType = ActiveDirectoryFieldType.RawData
+                    FieldType = ActiveDirectoryFieldType.RawData // Integer value representing flags
                 },
-                new ActiveDirectoryField {
-                    Id = 39,
-                    FieldName = "uac",
-                    DisplayName = Lang.Enabled,
-                    FieldType = ActiveDirectoryFieldType.Boolean
-                },
-                new ActiveDirectoryField {
+
+                 new ActiveDirectoryField
+                 {
+                     Id = 39,
+                     FieldName = "userAccountControl",
+                     DisplayName = Lang.Enabled,
+                     FieldType = ActiveDirectoryFieldType.Boolean,
+                     PropertyName= Lang.Enabled
+                 },
+
+                new ActiveDirectoryField
+                {
                     Id = 40,
                     FieldName = "lockoutTime",
                     DisplayName = Lang.Locked_Out,
-                    FieldType = ActiveDirectoryFieldType.FileTime 
+                    FieldType = ActiveDirectoryFieldType.FileTime,
+                    PropertyName = "LockedOut"
                 }
 
             );
@@ -559,7 +569,7 @@ namespace BLAZAM.Database.Context
                 entity.Navigation(e => e.FieldValues).AutoInclude();
                 entity.Navigation(e => e.AssignedGroupSids).AutoInclude();
 
-            }); 
+            });
             modelBuilder.Entity<AutomationRule>(entity =>
             {
                 entity.Navigation(e => e.Actions).AutoInclude();

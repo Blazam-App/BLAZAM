@@ -9,6 +9,7 @@ using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Rules;
 using BLAZAM.Helpers;
 using BLAZAM.Localization;
+using BLAZAM.Services.Audit;
 using BLAZAM.Services.Events;
 using Microsoft.Extensions.Localization;
 using Org.BouncyCastle.Asn1.X509;
@@ -25,10 +26,12 @@ namespace BLAZAM.Services.Background
     {
         private List<Timer> ScheduledRules = new();
 
+        public RulesAuditLogger Audit { get; }
 
-        public RulesProcessor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
+        public RulesProcessor(RulesAuditLogger audit, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
             Interval = TimeSpan.Zero;
+            Audit = audit;
         }
 
         protected override void Execute(object? state = null)
@@ -122,7 +125,7 @@ namespace BLAZAM.Services.Background
 
         private bool FiltersPass(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
         {
-            var anyAndTrue = false;
+            var anyOrTrue = false;
             if (ruleForEvent.Filters.Count > 0)
             {
                 foreach (var orFilter in ruleForEvent.Filters)
@@ -130,25 +133,30 @@ namespace BLAZAM.Services.Background
                     var andTrue = true;
                     foreach (var andFilter in orFilter.AndFilters)
                     {
-                        if (FilterTrue(andFilter, entry))
+                        if (!AndFilterTrue(andFilter, entry))
                         {
-                            anyAndTrue = true;
+                            andTrue = false;
 
                         }
                     }
-
+                    if (andTrue)
+                    {
+                        anyOrTrue = true;
+                        break;
+                    }
                 }
             }
             else
             {
-                anyAndTrue = true;
+                anyOrTrue = true;
             }
 
-            return anyAndTrue;
+            return anyOrTrue;
         }
 
         private void ExecuteAction(AutomationRuleAction action, IDirectoryEntryAdapter entry)
         {
+            
             var account = entry as IAccountDirectoryAdapter;
             switch (action.ActionType)
             {
@@ -188,11 +196,15 @@ namespace BLAZAM.Services.Background
                     }
                     break;
             }
+            var changes = entry.Changes;
             var result = entry.CommitChanges();
-
+            if(result.FailedSteps.Count == 0)
+            {
+                Audit.User.Changed(entry,changes);
+            }
         }
 
-        private bool FilterTrue(AutomationRuleAndFilter andFilter, IDirectoryEntryAdapter entry)
+        private bool AndFilterTrue(AutomationRuleAndFilter andFilter, IDirectoryEntryAdapter entry)
         {
             switch (andFilter.Operator)
             {
@@ -213,11 +225,33 @@ namespace BLAZAM.Services.Background
                 case ActiveDirectoryFieldOperator.AfterNow:
                     break;
                 case ActiveDirectoryFieldOperator.BeforeNow:
+                    var propertyValue = entry.GetPropertyValue(andFilter.Field.PropertyName);
+                    if(propertyValue is DateTime dateTime)
+                    {
+                        return dateTime < DateTime.Now;
+                    }else if(propertyValue is long fileTime)
+                    {
+                        return fileTime < DateTime.Now.ToFileTimeUtc();
+                    }
                     break;
                 case ActiveDirectoryFieldOperator.Contains:
                     break;
                 case ActiveDirectoryFieldOperator.FutureTimeFrame:
                     break;
+                case ActiveDirectoryFieldOperator.True:
+                    if(entry.GetPropertyValue(andFilter.Field.PropertyName) is bool boolValue)
+                    {
+                        return boolValue==true;
+                    }
+                    break;
+                case ActiveDirectoryFieldOperator.False:
+                    
+                    if (entry.GetPropertyValue(andFilter.Field.PropertyName) is bool boolValue2)
+                    {
+                        return boolValue2 == false;
+                    }
+                    break;
+                    
 
             }
             return false;

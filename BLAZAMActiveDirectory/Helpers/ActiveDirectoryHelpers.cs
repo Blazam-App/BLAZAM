@@ -355,9 +355,13 @@ namespace BLAZAM.Helpers
                     applicableOperators.Add(ActiveDirectoryFieldOperator.HistoricalTimeFrame);
                     applicableOperators.Add(ActiveDirectoryFieldOperator.FutureTimeFrame);
                     break;
+                case ActiveDirectoryFieldType.Boolean:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.True);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.False);
+                    break;
 
             }
-                  
+
             return applicableOperators;
 
         }

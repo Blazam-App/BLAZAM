@@ -105,11 +105,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("name");
+                return GetStringAttribute("name");
             }
             set
             {
-                SetProperty("name", value);
+                SetAttribute("name", value);
             }
         }
 
@@ -253,7 +253,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var temp = GetStringListProperty("member");
+                var temp = GetStringListAttribute("member");
                 return temp;
             }
         }
@@ -261,13 +261,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var uacRaw = Convert.ToInt32(GetProperty<object>("groupType"));
+                var uacRaw = Convert.ToInt32(GetAttribute<object>("groupType"));
 
                 return uacRaw;
             }
             set
             {
-                SetProperty("groupType", value);
+                SetAttribute("groupType", value);
             }
         }
         /// <summary>

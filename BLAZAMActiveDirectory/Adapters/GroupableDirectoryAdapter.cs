@@ -53,7 +53,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (_memberOf == null)
                 {
-                    _memberOf = Directory.Groups.FindGroupsByDN(GetStringListProperty(ActiveDirectoryFields.MemberOf.FieldName)).OrderBy(g => g.CanonicalName).ToList();
+                    _memberOf = Directory.Groups.FindGroupsByDN(GetStringListAttribute(ActiveDirectoryFields.MemberOf.FieldName)).OrderBy(g => g.CanonicalName).ToList();
 
                 }
                 var temp = new List<IADGroup>(_memberOf);
@@ -69,11 +69,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.DisplayName.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.DisplayName.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.DisplayName.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.DisplayName.FieldName, value);
             }
         }
 
@@ -81,11 +81,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.Mail.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.Mail.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.Mail.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.Mail.FieldName, value);
             }
         }
 
@@ -93,11 +93,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.Description.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.Description.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.Description.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.Description.FieldName, value);
             }
         }
 

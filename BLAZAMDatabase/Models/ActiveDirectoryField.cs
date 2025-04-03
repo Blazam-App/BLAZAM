@@ -13,8 +13,9 @@ namespace BLAZAM.Database.Models
         HistoricalTimeFrame,
         FutureTimeFrame,
         BeforeNow,
-        AfterNow
-
+        AfterNow,
+        False,
+        True
     }
     public enum ActiveDirectoryFieldType
     {
@@ -37,6 +38,8 @@ namespace BLAZAM.Database.Models
 
         [Required]
         public string DisplayName { get; set; }
+
+        public string? PropertyName { get; set; }
 
 
 

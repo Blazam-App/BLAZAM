@@ -63,11 +63,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty("name");
+                return GetStringAttribute("name");
             }
             set
             {
-                SetProperty("name", value);
+                SetAttribute("name", value);
             }
         }
 

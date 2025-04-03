@@ -84,11 +84,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.OperatingSystem.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.OperatingSystem.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.OperatingSystem.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.OperatingSystem.FieldName, value);
             }
 
         }

@@ -355,7 +355,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         /// <param name="propertyName"></param>
         /// <returns></returns>
-        DateTime? GetDateTimeProperty(string propertyName);
+        DateTime? GetDateTimeAttribute(string propertyName);
         void SetCustomProperty(string propertyName, object? value);
         /// <summary>
         /// Ensures that the <see cref="DirectoryEntry"/> property is not null.

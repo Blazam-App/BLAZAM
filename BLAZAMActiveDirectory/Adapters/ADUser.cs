@@ -20,80 +20,80 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetProperty<byte[]>(ActiveDirectoryFields.Thumbnail.FieldName);
+                return GetAttribute<byte[]>(ActiveDirectoryFields.Thumbnail.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.Thumbnail.FieldName, value);
-                SetProperty(ActiveDirectoryFields.Thumbnail.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.Thumbnail.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.Thumbnail.FieldName, value);
             }
         }
         public string? Pager
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.Pager.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.Pager.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.Pager.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.Pager.FieldName, value);
             }
         }
         public string? GivenName
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.GivenName.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.GivenName.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.GivenName.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.GivenName.FieldName, value);
             }
         }
         public string? LogOnTo
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.LogOnTo.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.LogOnTo.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.LogOnTo.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.LogOnTo.FieldName, value);
             }
         }
         public LogonHours? LogonHours
         {
             get
             {
-                var raw = GetProperty<byte[]>(ActiveDirectoryFields.LogonHours.FieldName);
+                var raw = GetAttribute<byte[]>(ActiveDirectoryFields.LogonHours.FieldName);
                 var decoded = new LogonHours(raw);
                 return decoded;
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.LogonHours.FieldName, value?.EncodeLogonHours());
+                SetAttribute(ActiveDirectoryFields.LogonHours.FieldName, value?.EncodeLogonHours());
             }
         }
         public string? MiddleName
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.MiddleName.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.MiddleName.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.MiddleName.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.MiddleName.FieldName, value);
             }
         }
         public string? Sn
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.SN.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.SN.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.SN.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.SN.FieldName, value);
             }
         }
 
@@ -104,33 +104,33 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.Department.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.Department.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.Department.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.Department.FieldName, value);
             }
         }
         public string? PhysicalDeliveryOfficeName
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.PhysicalDeliveryOffice.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.PhysicalDeliveryOffice.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.PhysicalDeliveryOffice.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.PhysicalDeliveryOffice.FieldName, value);
             }
         }
         public string? EmployeeId
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.EmployeeId.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.EmployeeId.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.EmployeeId.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.EmployeeId.FieldName, value);
             }
         }
         public List<FailedADLogonEvent> FailedLogonEvents => this.DomainControllerEventLogs.GetFailedLogonEvents(this, DateTime.UtcNow - TimeSpan.FromDays(5), DateTime.UtcNow);
@@ -139,11 +139,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.HomeDirectory.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.HomeDirectory.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.HomeDirectory.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.HomeDirectory.FieldName, value);
                 if (value == null || value == "") return;
 
 
@@ -201,11 +201,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.ScriptPath.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.ScriptPath.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.ScriptPath.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.ScriptPath.FieldName, value);
             }
         }
 
@@ -228,33 +228,33 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.ProfilePath.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.ProfilePath.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.ProfilePath.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.ProfilePath.FieldName, value);
             }
         }
         public string? HomeDrive
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.HomeDrive.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.HomeDrive.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.HomeDrive.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.HomeDrive.FieldName, value);
             }
         }
         public string? UserPrincipalName
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.UserPrincipalName.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.UserPrincipalName.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.UserPrincipalName.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.UserPrincipalName.FieldName, value);
             }
         }
 
@@ -262,11 +262,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.Title.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.Title.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.Title.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.Title.FieldName, value);
             }
         }
 
@@ -274,11 +274,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.Company.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.Company.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.Company.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.Company.FieldName, value);
             }
         }
 
@@ -286,11 +286,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.TelephoneNumber.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.TelephoneNumber.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.TelephoneNumber.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.TelephoneNumber.FieldName, value);
             }
 
         }
@@ -299,11 +299,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.HomePhone.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.HomePhone.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.HomePhone.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.HomePhone.FieldName, value);
             }
 
         }
@@ -311,66 +311,66 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.StreetAddress.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.StreetAddress.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.StreetAddress.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.StreetAddress.FieldName, value);
             }
         }
         public string? POBox
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.POBox.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.POBox.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.POBox.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.POBox.FieldName, value);
             }
         }
         public string? City
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.City.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.City.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.City.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.City.FieldName, value);
             }
         }
         public string? State
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.State.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.State.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.State.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.State.FieldName, value);
             }
         }
         public string? Zip
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.PostalCode.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.PostalCode.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.PostalCode.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.PostalCode.FieldName, value);
             }
         }
         public string? Site
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.Site.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.Site.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.Site.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.Site.FieldName, value);
             }
         }
 

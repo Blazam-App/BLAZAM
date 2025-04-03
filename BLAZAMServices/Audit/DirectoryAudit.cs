@@ -55,6 +55,7 @@ namespace BLAZAM.Services.Audit
             {
                 using var context = await factory.CreateDbContextAsync();
                 var table = auditTable.Invoke(context);
+                var username = UserStateService?.CurrentUserState?.AuditUsername?? CurrentUser?.AuditUsername ?? string.Empty;
                 var auditEntry = new T()
                 {
                     Action = action,
@@ -62,8 +63,8 @@ namespace BLAZAM.Services.Audit
                     Sid = relatedEntry.SID.ToSidString(),
                     BeforeAction = beforeAction,
                     AfterAction = afterAction,
-                    Username = UserStateService.CurrentUserState.AuditUsername,
-                    IpAddress = UserStateService.CurrentUserState.IPAddress,
+                    Username = username,
+                    IpAddress = UserStateService?.CurrentUserState?.IPAddress,
                 };
                 table.Add(auditEntry);
                 await context.SaveChangesAsync();
