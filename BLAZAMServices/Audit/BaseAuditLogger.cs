@@ -38,7 +38,8 @@ namespace BLAZAM.Services.Audit
         }
 
         protected static List<Guid> HandledEvents { get; set; } = new();
-        protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
+
+        public void ProcessDirectoryEntryChangedEvent(DirectoryEntryChangedArgs args)
         {
             lock (HandledEvents)
             {
@@ -206,12 +207,15 @@ namespace BLAZAM.Services.Audit
                             }
                             break;
                     }
-                   
-                        HandledEvents.Add(args.Guid);
-                    }
-                
+
+                    HandledEvents.Add(args.Guid);
+                }
+
             }
         }
+
+        protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args) => ProcessDirectoryEntryChangedEvent(args);
+
         public async Task Searched(IDirectoryEntryAdapter searchedEntry)
         {
             if (searchedEntry is IADUser)

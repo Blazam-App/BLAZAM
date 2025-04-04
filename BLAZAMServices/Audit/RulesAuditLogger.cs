@@ -21,7 +21,7 @@ namespace BLAZAM.Services.Audit
             BitLocker = new BitLockerAudit(factory) { CurrentUser = new RulesUserState(factory) };
             Email=new EmailAudit(factory);
         }
-
+      
         protected override void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
         {
             //Don't trigger audit on user invoked events

@@ -348,6 +348,7 @@ namespace BLAZAM.Helpers
                     applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
                     break;
                 case ActiveDirectoryFieldType.Date:
+                case ActiveDirectoryFieldType.FileTime:
                 case ActiveDirectoryFieldType.RawData:
                     applicableOperators.Add(ActiveDirectoryFieldOperator.Equals);
                     applicableOperators.Add(ActiveDirectoryFieldOperator.BeforeNow);

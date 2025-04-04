@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace BLAZAM.Database.Migrations.Sqlite
+namespace BLAZAM.Database.Migrations.Sql
 {
     /// <inheritdoc />
-    public partial class Add_Automation_Rules_Sqlite : Migration
+    public partial class Add_Automation_Rules_Sql : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,32 +16,32 @@ namespace BLAZAM.Database.Migrations.Sqlite
             migrationBuilder.AddColumn<string>(
                 name: "PropertyName",
                 table: "CustomActiveDirectoryFields",
-                type: "TEXT",
+                type: "nvarchar(max)",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "PropertyName",
                 table: "ActiveDirectoryFields",
-                type: "TEXT",
+                type: "nvarchar(max)",
                 nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "AutomationRules",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    LastTriggered = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastExcecuted = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Enabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    StopOnThisRule = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Order = table.Column<int>(type: "INTEGER", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    ScheduledRunTime = table.Column<TimeSpan>(type: "TEXT", nullable: true),
-                    Trigger = table.Column<int>(type: "INTEGER", nullable: false),
-                    ActiveDirectoryObjectType = table.Column<int>(type: "INTEGER", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastTriggered = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastExcecuted = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Enabled = table.Column<bool>(type: "bit", nullable: false),
+                    StopOnThisRule = table.Column<bool>(type: "bit", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ScheduledRunTime = table.Column<TimeSpan>(type: "time", nullable: true),
+                    Trigger = table.Column<int>(type: "int", nullable: false),
+                    ActiveDirectoryObjectType = table.Column<int>(type: "int", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -52,13 +52,13 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 name: "AutomationRuleActions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ActionType = table.Column<int>(type: "INTEGER", nullable: false),
-                    ActiveDirectoryObjectAction = table.Column<int>(type: "INTEGER", nullable: false),
-                    Data = table.Column<string>(type: "TEXT", nullable: true),
-                    ActionGuid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    AutomationRuleId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ActionType = table.Column<int>(type: "int", nullable: false),
+                    ActiveDirectoryObjectAction = table.Column<int>(type: "int", nullable: false),
+                    Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ActionGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AutomationRuleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -74,10 +74,10 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 name: "AutomationRuleOrFilter",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    AutomationRuleId = table.Column<int>(type: "INTEGER", nullable: false),
-                    FilterGuid = table.Column<Guid>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AutomationRuleId = table.Column<int>(type: "int", nullable: false),
+                    FilterGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,11 +94,11 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 name: "AutomationRuleFieldValues",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FieldId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: true),
-                    AutomationRuleActionId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FieldId = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AutomationRuleActionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -121,11 +121,11 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 name: "AutomationRuleGroupSids",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    GroupSid = table.Column<string>(type: "TEXT", nullable: false),
-                    Assigned = table.Column<bool>(type: "INTEGER", nullable: false),
-                    AutomationRuleActionId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupSid = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Assigned = table.Column<bool>(type: "bit", nullable: false),
+                    AutomationRuleActionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -142,15 +142,15 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 name: "AutomationRuleAndFilters",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    OrFilterId = table.Column<int>(type: "INTEGER", nullable: false),
-                    FieldId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: true),
-                    Operator = table.Column<int>(type: "INTEGER", nullable: false),
-                    Negate = table.Column<bool>(type: "INTEGER", nullable: false),
-                    TimeFrame = table.Column<TimeSpan>(type: "TEXT", nullable: true),
-                    FilterGuid = table.Column<Guid>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrFilterId = table.Column<int>(type: "int", nullable: false),
+                    FieldId = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Operator = table.Column<int>(type: "int", nullable: false),
+                    Negate = table.Column<bool>(type: "bit", nullable: false),
+                    TimeFrame = table.Column<TimeSpan>(type: "time", nullable: true),
+                    FilterGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -397,8 +397,8 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 33,
-                column: "PropertyName",
-                value: "ExpireTime");
+                columns: new[] { "FieldType", "PropertyName" },
+                values: new object[] { 5, "ExpireTime" });
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
@@ -525,6 +525,13 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 keyValue: 4,
                 column: "DisplayName",
                 value: "Employee ID");
+
+            migrationBuilder.UpdateData(
+                table: "ActiveDirectoryFields",
+                keyColumn: "Id",
+                keyValue: 33,
+                column: "FieldType",
+                value: 1);
         }
     }
 }

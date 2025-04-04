@@ -268,9 +268,9 @@ namespace BLAZAM.Database.Models
         public static ActiveDirectoryField AccountExpires = new()
         {
             Id = 33,
-            FieldName = "accountExpires", // Date when the account expires (FILETIME format)
+            FieldName = "accountExpires", // Date when the account expires
             DisplayName = "Account Expiration",
-            FieldType = ActiveDirectoryFieldType.Date, // Represents a date/time value
+            FieldType = ActiveDirectoryFieldType.FileTime, 
             PropertyName = "ExpireTime"
         };
 

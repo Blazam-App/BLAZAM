@@ -456,7 +456,7 @@ namespace BLAZAM.Database.Context
                     Id = 33,
                     FieldName = "accountExpires", // Date when the account expires (FILETIME format)
                     DisplayName = "Account Expiration",
-                    FieldType = ActiveDirectoryFieldType.Date, // Represents a date/time value
+                    FieldType = ActiveDirectoryFieldType.FileTime, // Represents a date/time value
                     PropertyName = "ExpireTime"
                 },
 

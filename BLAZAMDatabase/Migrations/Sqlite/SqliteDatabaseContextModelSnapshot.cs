@@ -370,7 +370,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                             Id = 33,
                             DisplayName = "Account Expiration",
                             FieldName = "accountExpires",
-                            FieldType = 1,
+                            FieldType = 5,
                             PropertyName = "ExpireTime"
                         },
                         new

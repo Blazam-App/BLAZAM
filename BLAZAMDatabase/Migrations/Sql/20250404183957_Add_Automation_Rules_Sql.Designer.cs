@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Database.Migrations.Sql
 {
     [DbContext(typeof(SqlDatabaseContext))]
-    [Migration("20250403165454_Add_Automation_Rules_Sql")]
+    [Migration("20250404183957_Add_Automation_Rules_Sql")]
     partial class Add_Automation_Rules_Sql
     {
         /// <inheritdoc />
@@ -380,7 +380,7 @@ namespace BLAZAM.Database.Migrations.Sql
                             Id = 33,
                             DisplayName = "Account Expiration",
                             FieldName = "accountExpires",
-                            FieldType = 1,
+                            FieldType = 5,
                             PropertyName = "ExpireTime"
                         },
                         new

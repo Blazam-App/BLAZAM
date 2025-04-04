@@ -82,10 +82,24 @@ namespace BLAZAM.Helpers
             return changes;
 
         }
+        public static object SetPropertyValue(this object obj, string propertyName, object value)
+        {
+            var props = obj.GetType().GetProperties();
+            var matchingProp = props.FirstOrDefault(p => p.Name.Equals(propertyName, StringComparison.InvariantCultureIgnoreCase));
+            if (matchingProp != null)
+            {
+                matchingProp.SetValue(obj, value);
+            }
+            else
+            {
+                Loggers.SystemLogger.Debug("No matching property in {@Object}{@PropertyName}", obj, propertyName);
+            }
+            return true;
+        }
         public static object GetPropertyValue(this object obj, string propertyName)
         {
             var props = obj.GetType().GetProperties();
-            var matchingProp = props.FirstOrDefault(p => p.Name.Equals(propertyName,StringComparison.InvariantCultureIgnoreCase));
+            var matchingProp = props.FirstOrDefault(p => p.Name.Equals(propertyName, StringComparison.InvariantCultureIgnoreCase));
             var propertyValue = matchingProp?.GetValue(obj);
             return propertyValue;
         }
@@ -105,7 +119,11 @@ namespace BLAZAM.Helpers
             }
             else
             {
-                return propertyValue.Equals(value);
+                var propertyStrVal = propertyValue.ToString();
+
+
+                return propertyStrVal.Equals(value.ToString(), StringComparison.InvariantCultureIgnoreCase);
+
             }
         }
         private static List<AuditChangeLog> BuildAuditChangeLog(object? changed, object? original = null)
