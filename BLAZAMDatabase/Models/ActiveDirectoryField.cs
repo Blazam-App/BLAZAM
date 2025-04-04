@@ -14,8 +14,7 @@ namespace BLAZAM.Database.Models
         FutureTimeFrame,
         BeforeNow,
         AfterNow,
-        False,
-        True
+        Boolean
     }
     public enum ActiveDirectoryFieldType
     {

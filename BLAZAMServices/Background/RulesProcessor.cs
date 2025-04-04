@@ -8,7 +8,9 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Rules;
 using BLAZAM.Helpers;
+using BLAZAM.Jobs;
 using BLAZAM.Localization;
+using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Events;
 using Microsoft.Extensions.Localization;
@@ -82,19 +84,25 @@ namespace BLAZAM.Services.Background
                     var applicableRules = rules
                         .Where(r => r.ActiveDirectoryObjectType.Equals(args.Entry.ObjectType)
                     && r.Enabled && r.Trigger.Equals(args.EventType.ToNotificationType())).ToList();
-
+                    var ruleProcessingJob = new Job();
                     foreach (var ruleForEvent in applicableRules)
                     {
-                        ProcessRule(ruleForEvent, args.Entry);
-
+                        var ruleStep = new JobStep(ruleForEvent.Name, (step) =>
+                        {
+                            ProcessRule(ruleForEvent, args.Entry);
+                            return true;
+                        });
+                        ruleProcessingJob.AddStep(ruleStep);
                     }
+                    _=ruleProcessingJob.RunAsync();
                 }
             }
         }
 
         private void ProcessScheduledRule(AutomationRule rule)
         {
-            using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext()){
+            using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
+            {
                 ADSearch search = new ADSearch(directory);
                 var results = search.Search();
                 foreach (var entry in results)
@@ -156,7 +164,7 @@ namespace BLAZAM.Services.Background
 
         private void ExecuteAction(AutomationRuleAction action, IDirectoryEntryAdapter entry)
         {
-            
+
             var account = entry as IAccountDirectoryAdapter;
             switch (action.ActionType)
             {
@@ -189,7 +197,7 @@ namespace BLAZAM.Services.Background
                     {
                         using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
                         var target = directory.OUs.FindOuByDN(action.Data);
-                        if(target!= null)
+                        if (target != null)
                         {
                             entry.MoveTo(target);
                         }
@@ -198,63 +206,103 @@ namespace BLAZAM.Services.Background
             }
             var changes = entry.Changes;
             var result = entry.CommitChanges();
-            if(result.FailedSteps.Count == 0)
+            if (result.FailedSteps.Count == 0)
             {
-                Audit.User.Changed(entry,changes);
+                Audit.User.Changed(entry, changes);
             }
         }
 
-        private bool AndFilterTrue(AutomationRuleAndFilter andFilter, IDirectoryEntryAdapter entry)
+        private static bool AndFilterTrue(AutomationRuleAndFilter andFilter, IDirectoryEntryAdapter entry)
         {
-            switch (andFilter.Operator)
+            var filterTrue = false;
+            try
             {
-                case ActiveDirectoryFieldOperator.Equals:
+                switch (andFilter.Operator)
+                {
+                    case ActiveDirectoryFieldOperator.Equals:
+                        filterTrue = entry.PropertyValueEquals(andFilter.Field.DisplayName, andFilter.Value);
+                        break;
 
-                    return entry.PropertyValueEquals(andFilter.Field.DisplayName, andFilter.Value);
+                    case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
+                        var dateValue3 = entry.GetPropertyValue(andFilter.Field.PropertyName);
+                        if (dateValue3 is DateTime dateTime3)
+                        {
+                            filterTrue = dateTime3 > DateTime.Now - andFilter.TimeFrame;
+                        }
+                        else if (dateValue3 is long fileTime)
+                        {
+                            filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
+                        }
+                        break;
 
-                case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
-                    var value = entry.GetPropertyValue(andFilter.Field.DisplayName);
-                    break;
-                case ActiveDirectoryFieldOperator.StartsWith:
-                    var val = entry.GetPropertyValue(andFilter.Field.FieldName);
-                    return val.ToString().Contains(andFilter.Value.ToString());
+                    case ActiveDirectoryFieldOperator.FutureTimeFrame:
+                        var dateValue4 = entry.GetPropertyValue(andFilter.Field.PropertyName);
+                        if (dateValue4 is DateTime dateTime4)
+                        {
+                            filterTrue = dateTime4 > DateTime.Now - andFilter.TimeFrame;
+                        }
+                        else if (dateValue4 is long fileTime)
+                        {
+                            filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
+                        }
+                        break;
+
+                    case ActiveDirectoryFieldOperator.StartsWith:
+                        filterTrue = entry.GetPropertyValue(andFilter.Field.FieldName).ToString().StartsWith(andFilter.Value.ToString());
+                        break;
+
+                    case ActiveDirectoryFieldOperator.EndsWith:
+                        filterTrue = entry.GetPropertyValue(andFilter.Field.FieldName).ToString().EndsWith(andFilter.Value.ToString());
+                        break;
+
+                    case ActiveDirectoryFieldOperator.AfterNow:
+                        var dateValue = entry.GetPropertyValue(andFilter.Field.PropertyName);
+                        if (dateValue is DateTime dateTime)
+                        {
+                            filterTrue = dateTime > DateTime.Now;
+                        }
+                        else if (dateValue is long fileTime)
+                        {
+                            filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
+                        }
+                        break;
+
+                    case ActiveDirectoryFieldOperator.BeforeNow:
+                        var dateValue2 = entry.GetPropertyValue(andFilter.Field.PropertyName);
+                        if (dateValue2 is DateTime dateTime2)
+                        {
+                            filterTrue = dateTime2 < DateTime.Now;
+                        }
+                        else if (dateValue2 is long fileTime)
+                        {
+                            filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
+                        }
+                        break;
+
+                    case ActiveDirectoryFieldOperator.Contains:
+                        filterTrue = entry.GetPropertyValue(andFilter.Field.FieldName).ToString().Contains(andFilter.Value.ToString());
+                        break;
+
+                    case ActiveDirectoryFieldOperator.Boolean:
+                        if (entry.GetPropertyValue(andFilter.Field.PropertyName) is bool boolValue)
+                        {
+                            filterTrue = boolValue == true;
+                        }
+                        break;
 
 
-                case ActiveDirectoryFieldOperator.EndsWith:
-                    break;
-                case ActiveDirectoryFieldOperator.AfterNow:
-                    break;
-                case ActiveDirectoryFieldOperator.BeforeNow:
-                    var propertyValue = entry.GetPropertyValue(andFilter.Field.PropertyName);
-                    if(propertyValue is DateTime dateTime)
-                    {
-                        return dateTime < DateTime.Now;
-                    }else if(propertyValue is long fileTime)
-                    {
-                        return fileTime < DateTime.Now.ToFileTimeUtc();
-                    }
-                    break;
-                case ActiveDirectoryFieldOperator.Contains:
-                    break;
-                case ActiveDirectoryFieldOperator.FutureTimeFrame:
-                    break;
-                case ActiveDirectoryFieldOperator.True:
-                    if(entry.GetPropertyValue(andFilter.Field.PropertyName) is bool boolValue)
-                    {
-                        return boolValue==true;
-                    }
-                    break;
-                case ActiveDirectoryFieldOperator.False:
-                    
-                    if (entry.GetPropertyValue(andFilter.Field.PropertyName) is bool boolValue2)
-                    {
-                        return boolValue2 == false;
-                    }
-                    break;
-                    
 
+                }
             }
-            return false;
+            catch (Exception ex)
+            {
+                Loggers.RulesLogger.Error("Error checking and filter {@Filter}{@Error}", andFilter, ex);
+            }
+            if (andFilter.Negate)
+            {
+                filterTrue = !filterTrue;
+            }
+            return filterTrue;
         }
 
         private List<AutomationRule> GetRules()

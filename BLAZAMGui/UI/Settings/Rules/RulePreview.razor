@@ -3,7 +3,7 @@
 <MudPaper Elevation="1" Class="pa-4 my-4">
     <MudStack>
         <MudStack Row=true>
-            <MudText>@Rule.Name</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Tertiary">@Rule.Name</MudText>
             <MudSpacer />
             <MudSwitch Label="@AppLocalization[Lang.Enabled]"
                        Color="Color.Success"
@@ -13,6 +13,8 @@
             <AppIconButton Icon="@Icons.Material.Filled.Edit"
                            OnClick="@(EditClicked)" />
         </MudStack>
+        <MudText Class="mt-1"><MudIcon Icon="@Icons.Material.Outlined.HourglassFull" /> Triggers on '@Rule.Trigger.ToString()'</MudText>
+        <MudText Class="mt-2"><MudIcon Icon="@Icons.Material.Outlined.FilterAlt" /> If</MudText>
         @if (Rule.Filters.Count > 0)
         {
             var firstOr = true;
@@ -40,7 +42,7 @@
                                 var str = andFilter.Field?.DisplayName;
                                 @if (!firstAnd)
                                 {
-                                    <MudText Align="Align.Center">@AppLocalization[Lang.And]</MudText>
+                                    <MudText Class="align-self-center" Align="Align.Center">@AppLocalization[Lang.And]</MudText>
 
                                 }
                                 else
@@ -81,9 +83,19 @@
         }else{
             <MudText>This rules will be fired each time a {0} is {1}</MudText>
         }
+        <MudText Class="mt-2"><MudIcon Icon="@Icons.Material.Filled.Login" /> Then</MudText>
+        @{var firstAction=true;}
         @foreach (var action in Rule.Actions)
         {
+            @if (!firstAction)
+            {
+                <MudText Align="Align.Center">@AppLocalization[Lang.And]</MudText>
 
+            }
+            else
+            {
+                firstAction = false;
+            }
             <MudStack Row=true>
                 <MudTextField T="string"
                               ReadOnly="true"

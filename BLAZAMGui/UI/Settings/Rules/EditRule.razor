@@ -2,22 +2,22 @@
 @using BLAZAM.Database.Models.Rules
 <MudStack>
     <MudTextField T="string"
-    Disabled="true"
-    Label="Object Type"
-    Value="_workingRule.ActiveDirectoryObjectType.ToString()" />
+                  Disabled="true"
+                  Label="Object Type"
+                  Value="_workingRule.ActiveDirectoryObjectType.ToString()" />
     <MudTextField T="string"
-    Label="Trigger"
-    Value="_workingRule.Trigger.ToString()" />
+                  Label="Trigger"
+                  Value="_workingRule.Trigger.ToString()" />
 
     <MudTextField @bind-Value=@_workingRule.Name
-    Label="@AppLocalization[Lang.Name]" />
+                  Label="@AppLocalization[Lang.Name]" />
     <MudSwitch Color="Color.Success"
-    UncheckedColor="Color.Error"
-    @bind-Value=_workingRule.Enabled
-    Label="@AppLocalization[Lang.Enabled]" />
+               UncheckedColor="Color.Error"
+               @bind-Value=_workingRule.Enabled
+               Label="@AppLocalization[Lang.Enabled]" />
     <MudDatePicker Clearable="true"
-    @bind-Date=_workingRule.ExpirationDate
-    Label="@AppLocalization[Lang.Expires]" />
+                   @bind-Date=_workingRule.ExpirationDate
+                   Label="@AppLocalization[Lang.Expires]" />
     <MudDivider />
 
     @if (_workingRule.Trigger == NotificationType.Scheduled)
@@ -26,8 +26,8 @@
 
 
         <MudTimePicker Clearable="false"
-        @bind-Time=_workingRule.ScheduledRunTime
-        Label="@AppLocalization[Lang.Time]" />
+                       @bind-Time=_workingRule.ScheduledRunTime
+                       Label="@AppLocalization[Lang.Time]" />
 
     }
     <MudText Typo="Typo.h6">Filters</MudText>
@@ -56,15 +56,8 @@
                     first = false;
                 }
                 <EditRuleOrFilter Filter="orFilter"
-                RemoveClicked="@(()=>{RemoveOrFilter(orFilter);})" />
-                <MudStack Row="true">
+                                  RemoveClicked="@(()=>{RemoveOrFilter(orFilter);})" />
 
-                    <MudSpacer />
-                    <MudButton OnClick="@(()=>{AddAndFilter(orFilter);})"
-                    Color="Color.Success"
-                    StartIcon="@Icons.Material.Filled.Add">Add And Filter</MudButton>
-
-                </MudStack>
 
             }
             <MudSpacer />
@@ -76,8 +69,10 @@
 
         <MudSpacer />
         <MudButton OnClick="AddOrFilter"
-        Color="Color.Success"
-        StartIcon="@Icons.Material.Filled.Add">Add Or Filter</MudButton>
+                   Color="Color.Success"
+                   StartIcon="@Icons.Material.Filled.Add">Add Or Filter</MudButton>
+        <MudSpacer />
+
     </MudStack>
 
 
@@ -98,14 +93,14 @@
         </MudStack>
         <MudSpacer />
         <MudButton OnClick="AddAction"
-        Color="Color.Success"
-        StartIcon="@Icons.Material.Filled.Add">Add Action</MudButton>
+                   Color="Color.Success"
+                   StartIcon="@Icons.Material.Filled.Add">Add Action</MudButton>
 
     </MudStack>
     <MudSwitch Color="Color.Error"
-    UncheckedColor="Color.Success"
-    @bind-Value=_workingRule.StopOnThisRule
-    Label=@(_workingRule.StopOnThisRule?"Stop rule processing on this rule":"Continue processing other rules") />
+               UncheckedColor="Color.Success"
+               @bind-Value=_workingRule.StopOnThisRule
+               Label=@(_workingRule.StopOnThisRule?"Stop rule processing on this rule":"Continue processing other rules") />
 </MudStack>
 @code {
     [Parameter]
@@ -157,6 +152,8 @@
         }
         SnackBarService.Error(Lang.Error);
     }
+
+
     private async Task SaveRule()
     {
         if (_workingRule.Filters.Count > 0)
@@ -174,7 +171,7 @@
 
                     }
 
-                    
+
 
                 }
 
