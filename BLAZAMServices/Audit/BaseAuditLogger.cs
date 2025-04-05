@@ -25,7 +25,7 @@ namespace BLAZAM.Services.Audit
         public BaseAuditLogger(IAppDatabaseFactory factory, IApplicationUserStateService userStateService)
         {
             _factory = factory;
-            ApplicationEvents.DirectoryEntryChanged.Delegate += ProcessDirectoryEntryChangedEvent;
+            ApplicationEvents.DirectoryEntryChanged.Delegate += TriggerDirectoryEntryChangedEvent;
             _userStateService = userStateService;
             System = new SystemAudit(factory);
             User = new UserAudit(factory, userStateService);
@@ -214,7 +214,7 @@ namespace BLAZAM.Services.Audit
             }
         }
 
-        protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args) => ProcessDirectoryEntryChangedEvent(args);
+        protected virtual void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args) => ProcessDirectoryEntryChangedEvent(args);
 
         public async Task Searched(IDirectoryEntryAdapter searchedEntry)
         {

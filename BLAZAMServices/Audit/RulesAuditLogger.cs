@@ -9,20 +9,19 @@ namespace BLAZAM.Services.Audit
 {
     public class RulesAuditLogger : BaseAuditLogger
     {
-        public RulesAuditLogger(IAppDatabaseFactory factory) : base(factory, null)
+        public RulesAuditLogger(IAppDatabaseFactory factory,IApplicationUserState ruleUserState) : base(factory, null)
         {
-
             System = new SystemAudit(factory);
-            User = new UserAudit(factory) { CurrentUser = new RulesUserState(factory) };
-            Group = new GroupAudit(factory) { CurrentUser = new RulesUserState(factory) };
-            Computer = new ComputerAudit(factory) { CurrentUser = new RulesUserState(factory) };
-            OU = new OUAudit(factory) { CurrentUser = new RulesUserState(factory) };
-            Printer = new PrinterAudit(factory) { CurrentUser = new RulesUserState(factory) };
-            BitLocker = new BitLockerAudit(factory) { CurrentUser = new RulesUserState(factory) };
+            User = new UserAudit(factory) { CurrentUser = ruleUserState };
+            Group = new GroupAudit(factory) { CurrentUser = ruleUserState };
+            Computer = new ComputerAudit(factory) { CurrentUser = ruleUserState };
+            OU = new OUAudit(factory) { CurrentUser = ruleUserState };
+            Printer = new PrinterAudit(factory) { CurrentUser = ruleUserState };
+            BitLocker = new BitLockerAudit(factory) { CurrentUser = ruleUserState };
             Email=new EmailAudit(factory);
         }
       
-        protected override void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
+        protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
         {
             //Don't trigger audit on user invoked events
             //if (new SystemUserState(_factory).Equals(args.Actor) == true)

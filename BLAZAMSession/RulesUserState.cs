@@ -10,10 +10,11 @@ namespace BLAZAM.Session
 {
     public class RulesUserState : ApplicationUserState
     {
-        public RulesUserState(IAppDatabaseFactory factory) : base(factory)
+        public RulesUserState(IAppDatabaseFactory factory,string? ruleName=null) : base(factory)
         {
+            var username = "Rules" + " [" + ruleName + "]";
             var identity = new ClaimsIdentity();
-            identity.AddClaim(new Claim(ClaimTypes.Name, "Rules"));
+            identity.AddClaim(new Claim(ClaimTypes.Name, username));
             this.User = new System.Security.Claims.ClaimsPrincipal();
             this.User.AddIdentity(identity);
         }

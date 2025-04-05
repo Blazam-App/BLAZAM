@@ -29,12 +29,11 @@ namespace BLAZAM.Services.Background
     {
         private List<Timer> ScheduledRules = new();
 
-        public RulesAuditLogger Audit { get; }
+        private RulesAuditLogger Audit { get; set; }
 
-        public RulesProcessor(RulesAuditLogger audit, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
+        public RulesProcessor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
             Interval = TimeSpan.Zero;
-            Audit = audit;
         }
 
         protected override void Execute(object? state = null)
@@ -56,7 +55,7 @@ namespace BLAZAM.Services.Background
 
                     if (timeToRun.Value < timeNow)
                     {
-                        timeToRun=timeToRun.Value.Add(TimeSpan.FromDays(1));
+                        timeToRun = timeToRun.Value.Add(TimeSpan.FromDays(1));
                     }
                     var timeFromRun = timeToRun.Value - timeNow;
                     Timer ruleTimer = new Timer((state) => { ProcessScheduledRule(rule); }, null, (int)timeFromRun.TotalMilliseconds, Timeout.Infinite);
@@ -102,6 +101,19 @@ namespace BLAZAM.Services.Background
 
         public void ProcessScheduledRule(AutomationRule rule)
         {
+            List<IDirectoryEntryAdapter> filteredEntries = new();
+            filteredEntries = GetFilteredEntries(rule);
+
+            //Execute matched entries
+            foreach (var entry in filteredEntries)
+            {
+                ProcessRule(rule, entry);
+            }
+        }
+
+        public List<IDirectoryEntryAdapter> GetFilteredEntries(AutomationRule rule)
+        {
+            List<IDirectoryEntryAdapter> matchedEntries;
             using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
             {
                 ADSearch search = new ADSearch(directory);
@@ -110,105 +122,120 @@ namespace BLAZAM.Services.Background
                 //Perform search customization for this rule
 
                 //Has enabled filter
-                if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field.Equals(ActiveDirectoryFields.Enabled) && !a.Negate))&&
+                if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field.Equals(ActiveDirectoryFields.Enabled) && !a.Negate)) &&
                     !rule.Filters.Any(f => f.AndFilters.Any(a => a.Field.Equals(ActiveDirectoryFields.Enabled) && a.Negate)))
                 {
                     search.EnabledOnly = true;
                 }
-                foreach(var andFilters in rule.Filters.Select(x => x.AndFilters))
+                foreach (var andFilters in rule.Filters.Select(x => x.AndFilters))
                 {
                     foreach (var andFilter in andFilters)
                     {
-                        try
-                        {
-                            var fieldValue = new ADFieldValue()
-                            {
-                                Field = andFilter.Field,
-                                Value = andFilter.Value,
-                                Operator = andFilter.Operator,
-                            };
-                            switch (andFilter.Field.FieldType)
-                            {
-                                case ActiveDirectoryFieldType.Text:
-                                    search.Fields.SetPropertyValue(andFilter.Field.PropertyName, andFilter.Value);
-                                    break;
-                                case ActiveDirectoryFieldType.Date:
-                                    if (andFilter.Value != null)
-                                    {
-                                        search.Fields.SetPropertyValue(andFilter.Field.PropertyName, DateTime.Parse(andFilter.Value));
-                                        fieldValue.Value = DateTime.Parse(andFilter.Value);
-                                    }
+                        PrepareADSearch(search, andFilter);
 
-                                    break;
-                                case ActiveDirectoryFieldType.RawData:
-                                    search.Fields.SetPropertyValue(andFilter.Field.PropertyName, andFilter.Value);
-                                    break;
-
-                                case ActiveDirectoryFieldType.FileTime:
-                                    if (andFilter.Value != null)
-                                    {
-                                        search.Fields.SetPropertyValue(andFilter.Field.PropertyName, DateTime.FromFileTimeUtc(long.Parse(andFilter.Value)));
-                                        fieldValue.Value = DateTime.FromFileTimeUtc(long.Parse(andFilter.Value));
-                                    }
-                                    break;
-                                case ActiveDirectoryFieldType.StringList: break;
-                                case ActiveDirectoryFieldType.DriveLetter:
-                                    search.Fields.SetPropertyValue(andFilter.Field.PropertyName, andFilter.Value);
-                                    break;
-                                case ActiveDirectoryFieldType.Boolean:
-                                    fieldValue.Value = "";
-                                    break;
-                            }
-                            search.FieldValues.Add(fieldValue);
-
-                        }
-                        catch (Exception ex)
-                        {
-                            Loggers.RulesLogger.Warning("Unable to set search field value {@Field}{@Value}{@Error}", andFilter.Field, andFilter.Value,ex);
-                        }
-
-                    }
-                    }
-
-
-
-                var results = search.Search();
-                
-                foreach (var entry in results)
-                {
-                    if (FiltersPass(rule, entry))
-                    {
-                        foreach (var action in rule.Actions)
-                        {
-                            ExecuteAction(action, entry);
-
-                        }
                     }
                 }
+                matchedEntries = search.Search();
+
+
+            }
+
+            return matchedEntries;
+        }
+
+        private static void PrepareADSearch(ADSearch search, AutomationRuleAndFilter? andFilter)
+        {
+            try
+            {
+                var fieldValue = new ADFieldValue()
+                {
+                    Field = andFilter.Field,
+                    Value = andFilter.Value,
+                    Operator = andFilter.Operator,
+                };
+                switch (andFilter.Field.FieldType)
+                {
+                    case ActiveDirectoryFieldType.Text:
+                        search.Fields.SetPropertyValue(andFilter.Field.PropertyName, andFilter.Value);
+                        break;
+                    case ActiveDirectoryFieldType.Date:
+                        if (andFilter.Value != null)
+                        {
+                            search.Fields.SetPropertyValue(andFilter.Field.PropertyName, DateTime.Parse(andFilter.Value));
+                            fieldValue.Value = DateTime.Parse(andFilter.Value);
+                        }
+
+                        break;
+                    case ActiveDirectoryFieldType.RawData:
+                        search.Fields.SetPropertyValue(andFilter.Field.PropertyName, andFilter.Value);
+                        break;
+
+                    case ActiveDirectoryFieldType.FileTime:
+                        if (andFilter.Value != null)
+                        {
+                            search.Fields.SetPropertyValue(andFilter.Field.PropertyName, DateTime.FromFileTimeUtc(long.Parse(andFilter.Value)));
+                            fieldValue.Value = DateTime.FromFileTimeUtc(long.Parse(andFilter.Value));
+                        }
+                        break;
+                    case ActiveDirectoryFieldType.StringList: break;
+                    case ActiveDirectoryFieldType.DriveLetter:
+                        search.Fields.SetPropertyValue(andFilter.Field.PropertyName, andFilter.Value);
+                        break;
+                    case ActiveDirectoryFieldType.Boolean:
+                        fieldValue.Value = "";
+                        break;
+                }
+                search.FieldValues.Add(fieldValue);
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.RulesLogger.Warning("Unable to set search field value {@Field}{@Value}{@Error}", andFilter.Field, andFilter.Value, ex);
             }
         }
+
         private void ProcessRule(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
         {
-            if (FiltersPass(ruleForEvent, entry))
+            try
             {
-
+                using var context = dbFactory.CreateDbContext();
+                var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
+                contextRule.LastTriggered = DateTime.UtcNow;
+                context.SaveChanges();
+            }catch(Exception ex)
+            {
+                Loggers.RulesLogger.Error("Error while setting LastTriggered for rule {@Rule}{@Error}", ruleForEvent, ex);
+            }
+            if (OrFiltersPass(ruleForEvent, entry))
+            {
+                try
+                {
+                    using var context = dbFactory.CreateDbContext();
+                    var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
+                    contextRule.LastExcecuted = DateTime.UtcNow;
+                    context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    Loggers.RulesLogger.Error("Error while setting LastExcecuted for rule {@Rule}{@Error}", ruleForEvent, ex);
+                }
                 foreach (var action in ruleForEvent.Actions)
                 {
                     try
                     {
-                        ExecuteAction(action, entry);
+                        ExecuteAction(ruleForEvent, action, entry);
                     }
                     catch (Exception ex)
                     {
-                        Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent, entry, action,ex);
-                            break;
+                        Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent, entry, action, ex);
+                        break;
                     }
                 }
 
             }
         }
 
-        private bool FiltersPass(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
+        private bool OrFiltersPass(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
         {
             var anyOrTrue = false;
             if (ruleForEvent.Filters.Count > 0)
@@ -239,7 +266,7 @@ namespace BLAZAM.Services.Background
             return anyOrTrue;
         }
 
-        private void ExecuteAction(AutomationRuleAction action, IDirectoryEntryAdapter entry)
+        private void ExecuteAction(AutomationRule rule, AutomationRuleAction action, IDirectoryEntryAdapter entry)
         {
             var eventType = ApplicationEventType.All;
             var account = entry as IAccountDirectoryAdapter;
@@ -277,7 +304,7 @@ namespace BLAZAM.Services.Background
                     }
                     break;
                 case AutomationRuleActionType.Move:
-                    eventType = ApplicationEventType.Move;
+                    eventType = ApplicationEventType.Modify;
 
                     if (action.Data != null)
                     {
@@ -294,10 +321,11 @@ namespace BLAZAM.Services.Background
             var result = entry.CommitChanges();
             if (result.FailedSteps.Count == 0)
             {
+                Audit = new(dbFactory, new RulesUserState(dbFactory,rule.Name));
                 //Audit.User.Changed(entry, changes);
                 Audit.ProcessDirectoryEntryChangedEvent(new DirectoryEntryChangedArgs()
                 {
-                    Actor = new RulesUserState(dbFactory),
+                    Actor = new RulesUserState(dbFactory,rule.Name),
                     Changes = changes,
                     Entry = entry,
                     EventType = eventType

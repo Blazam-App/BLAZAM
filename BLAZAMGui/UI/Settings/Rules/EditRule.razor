@@ -1,14 +1,9 @@
 @inherits AppModalContent
 @using BLAZAM.Database.Models.Rules
 <MudStack>
-    <MudTextField T="string"
-                  Disabled="true"
-                  Label="Object Type"
-                  Value="_workingRule.ActiveDirectoryObjectType.ToString()" />
-    <MudTextField T="string"
-                  Label="Trigger"
-                  Value="_workingRule.Trigger.ToString()" />
 
+    <MudSelectList Values="_adObjectTypes" @bind-Value=_workingRule.ActiveDirectoryObjectType />
+    <MudSelectList Values="_triggerTypes" @bind-Value=_workingRule.Trigger />
     <MudTextField @bind-Value=@_workingRule.Name
                   Label="@AppLocalization[Lang.Name]" />
     <MudSwitch Color="Color.Success"
@@ -114,6 +109,10 @@
     public AutomationRule Rule { get; set; } = new();
 
     private AutomationRule _workingRule;
+
+    List<NotificationType> _triggerTypes = new();
+    List<ActiveDirectoryObjectType> _adObjectTypes = new();
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -133,24 +132,35 @@
         {
             _workingRule = await Context.AutomationRules.FirstAsync(r => r.Id.Equals(Rule.Id));
         }
+        foreach (NotificationType enu in Enum.GetValues(typeof(NotificationType)))
+        {
+            _triggerTypes.Add(enu);
+        }
+        foreach (ActiveDirectoryObjectType enu in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
+        {
+            _adObjectTypes.Add(enu);
+        }
     }
     private async Task DeleteRule()
     {
-        using var context = await DbFactory.CreateDbContextAsync();
-        var matchingRule = await context.AutomationRules.FirstOrDefaultAsync(r => r.Id.Equals(_workingRule.Id));
-        if (matchingRule != null)
+        if (await MessageService.Confirm(AppLocalization[Lang.Confirm_deletion]))
         {
-            matchingRule.DeletedAt = DateTime.UtcNow;
-            var result = await context.SaveChangesAsync();
-            if (result > 0)
+            using var context = await DbFactory.CreateDbContextAsync();
+            var matchingRule = await context.AutomationRules.FirstOrDefaultAsync(r => r.Id.Equals(_workingRule.Id));
+            if (matchingRule != null)
             {
-                RulesChanged.InvokeAsync();
+                matchingRule.DeletedAt = DateTime.UtcNow;
+                var result = await context.SaveChangesAsync();
+                if (result > 0)
+                {
+                    RulesChanged.InvokeAsync();
 
-                SnackBarService.Success(Lang.Deleted);
-                return;
+                    SnackBarService.Success(Lang.Deleted);
+                    return;
+                }
             }
+            SnackBarService.Error(Lang.Error);
         }
-        SnackBarService.Error(Lang.Error);
     }
 
 

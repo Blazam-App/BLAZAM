@@ -4,18 +4,26 @@
     <MudStack>
         <MudStack Row=true>
             <MudText Typo="Typo.body2" Color="Color.Tertiary">@Rule.Name</MudText>
-                <MudSpacer />
-                <MudSwitch Label="@AppLocalization[Lang.Enabled]"
-                           Color="Color.Success"
-                           UncheckedColor="Color.Error"
-                           Value="@Rule.Enabled"
-                           ValueChanged="@(async(bool val)=>{await ChangeEnabled(Rule, val);})" />
-                <AppIconButton Icon="@Icons.Material.Filled.Edit"
-                               OnClick="@(EditClicked)" />
-            </MudStack>
-            <MudText Class="mt-1"><MudIcon Icon="@Icons.Material.Outlined.HourglassFull" /> Triggers on '@Rule.Trigger.ToString()'</MudText>
-            <MudText Class="mt-2"><MudIcon Icon="@Icons.Material.Outlined.FilterAlt" /> If</MudText>
-            @if (Rule.Filters.Count > 0)
+            <MudSpacer />
+            <MudSwitch Label="@AppLocalization[Lang.Enabled]"
+                       Color="Color.Success"
+                       UncheckedColor="Color.Error"
+                       Value="@Rule.Enabled"
+                       ValueChanged="@(async(bool val)=>{await ChangeEnabled(Rule, val);})" />
+            <AppIconButton Icon="@Icons.Material.Filled.Edit"
+                           OnClick="@(EditClicked)" />
+            @* <AppIconButton Icon="@Icons.Material.Filled.CopyAll"
+                           OnClick="@(CopyClicked)" /> *@
+        </MudStack>
+        <MudStack Row=true>
+
+        <MudText Typo="Typo.body2">Last Triggered: <DateWithTimeTooltip DateTime="@Rule.LastTriggered" /></MudText>
+        <MudText Typo="Typo.body2">Last Executed: <DateWithTimeTooltip DateTime="@Rule.LastExcecuted" /></MudText>
+        </MudStack>
+
+        <MudText Class="mt-1"><MudIcon Icon="@Icons.Material.Outlined.ElectricBolt" /> Triggers on '@Rule.Trigger.ToString()'</MudText>
+        <MudText Class="mt-2"><MudIcon Icon="@Icons.Material.Outlined.FilterAlt" /> If</MudText>
+        @if (Rule.Filters.Count > 0)
         {
             var firstOr = true;
             @foreach (var orFilters in Rule.Filters)
@@ -30,7 +38,7 @@
                 }
                 <MudStack Row>
 
-                 @if (orFilters.AndFilters.Count > 0)
+                    @if (orFilters.AndFilters.Count > 0)
                     {
 
                         <MudStack>
@@ -138,20 +146,43 @@
         }
         @if (Rule.Trigger == NotificationType.Scheduled)
         {
+            <MudButton Disabled="_loadingFilteredEntries" Color="Color.Primary" OnClick="@(()=>{})">Matches: @filteredEntries.Count</MudButton>
             <MudButton Color="Color.Primary" OnClick="@(()=>{RulesProcessor.ProcessScheduledRule(Rule);})">Run Now</MudButton>
         }
     </MudStack>
 </MudPaper>
 
 @code {
+    private bool _loadingFilteredEntries;
+    private List<IDirectoryEntryAdapter> filteredEntries = new();
     [Parameter]
     public AutomationRule Rule { get; set; }
 
     [Inject]
-    public RulesProcessor RulesProcessor{ get; set; }
+    public RulesProcessor RulesProcessor { get; set; }
 
     [Parameter]
     public EventCallback EditClicked { get; set; }
+
+    [Parameter]
+    public EventCallback CopyClicked { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _ = Task.Run(async () =>
+        {
+
+
+            _loadingFilteredEntries = true;
+            await InvokeAsync(StateHasChanged);
+
+            filteredEntries = RulesProcessor.GetFilteredEntries(Rule);
+            _loadingFilteredEntries = false;
+
+            await InvokeAsync(StateHasChanged);
+        });
+    }
 
     private async Task ChangeEnabled(AutomationRule rule, bool value)
     {

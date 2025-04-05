@@ -48,8 +48,7 @@ namespace BLAZAM.Helpers
             return values;
         }
 
-
-        public static string? GetEventProperty(this EventRecord eventRecord, int index)
+       public static string? GetEventProperty(this EventRecord eventRecord, int index)
         {
             try
             {

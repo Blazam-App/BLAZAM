@@ -55,7 +55,9 @@
 
         break;
     case AutomationRuleActionType.Move:
-        <ADAutoComplete SelectedResultChanged="@((result)=>{Action.Data = result.SID.ToSidString();})" SearchObjectType="ActiveDirectoryObjectType.OU" />
+        <ADAutoComplete SelectedResultChanged="@((result)=>{
+                      Action.Data = result.DN;
+                                                            })" SearchObjectType="ActiveDirectoryObjectType.OU" />
     break;
         case AutomationRuleActionType.Unassign:
             <ADAutoComplete SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=false});})" SearchObjectType="ActiveDirectoryObjectType.Group" />
