@@ -96,7 +96,8 @@ namespace BLAZAM.Database.Migrations.Sql
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FieldId = table.Column<int>(type: "int", nullable: false),
+                    FieldId = table.Column<int>(type: "int", nullable: true),
+                    CustomFieldId = table.Column<int>(type: "int", nullable: true),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AutomationRuleActionId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -107,14 +108,18 @@ namespace BLAZAM.Database.Migrations.Sql
                         name: "FK_AutomationRuleFieldValues_ActiveDirectoryFields_FieldId",
                         column: x => x.FieldId,
                         principalTable: "ActiveDirectoryFields",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AutomationRuleFieldValues_AutomationRuleActions_AutomationRuleActionId",
                         column: x => x.AutomationRuleActionId,
                         principalTable: "AutomationRuleActions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AutomationRuleFieldValues_CustomActiveDirectoryFields_CustomFieldId",
+                        column: x => x.CustomFieldId,
+                        principalTable: "CustomActiveDirectoryFields",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -145,7 +150,8 @@ namespace BLAZAM.Database.Migrations.Sql
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrFilterId = table.Column<int>(type: "int", nullable: false),
-                    FieldId = table.Column<int>(type: "int", nullable: false),
+                    FieldId = table.Column<int>(type: "int", nullable: true),
+                    CustomFieldId = table.Column<int>(type: "int", nullable: true),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Operator = table.Column<int>(type: "int", nullable: false),
                     Negate = table.Column<bool>(type: "bit", nullable: false),
@@ -159,14 +165,18 @@ namespace BLAZAM.Database.Migrations.Sql
                         name: "FK_AutomationRuleAndFilters_ActiveDirectoryFields_FieldId",
                         column: x => x.FieldId,
                         principalTable: "ActiveDirectoryFields",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AutomationRuleAndFilters_AutomationRuleOrFilter_OrFilterId",
                         column: x => x.OrFilterId,
                         principalTable: "AutomationRuleOrFilter",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AutomationRuleAndFilters_CustomActiveDirectoryFields_CustomFieldId",
+                        column: x => x.CustomFieldId,
+                        principalTable: "CustomActiveDirectoryFields",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.UpdateData(
@@ -174,224 +184,224 @@ namespace BLAZAM.Database.Migrations.Sql
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "PropertyName",
-                value: null);
+                value: "Sn");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 2,
                 column: "PropertyName",
-                value: null);
+                value: "GivenName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 3,
                 column: "PropertyName",
-                value: null);
+                value: "PhysicalDeliveryOfficeName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 4,
                 columns: new[] { "DisplayName", "PropertyName" },
-                values: new object[] { "Employee Id", null });
+                values: new object[] { "Employee Id", "EmployeeId" });
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 5,
                 column: "PropertyName",
-                value: null);
+                value: "HomeDirectory");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 6,
                 column: "PropertyName",
-                value: null);
+                value: "ScriptPath");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 7,
                 column: "PropertyName",
-                value: null);
+                value: "ProfilePath");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 8,
                 column: "PropertyName",
-                value: null);
+                value: "HomePhone");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 9,
                 column: "PropertyName",
-                value: null);
+                value: "StreetAddress");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 10,
                 column: "PropertyName",
-                value: null);
+                value: "City");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 11,
                 column: "PropertyName",
-                value: null);
+                value: "State");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 12,
                 column: "PropertyName",
-                value: null);
+                value: "Zip");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 13,
                 column: "PropertyName",
-                value: null);
+                value: "Site");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 14,
                 column: "PropertyName",
-                value: null);
+                value: "Name");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 15,
                 column: "PropertyName",
-                value: null);
+                value: "SAMAccountName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 16,
                 column: "PropertyName",
-                value: null);
+                value: "SID");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 17,
                 column: "PropertyName",
-                value: null);
+                value: "Email");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 18,
                 column: "PropertyName",
-                value: null);
+                value: "Description");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 19,
                 column: "PropertyName",
-                value: null);
+                value: "DisplayName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 20,
                 column: "PropertyName",
-                value: null);
+                value: "DN");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 21,
                 column: "PropertyName",
-                value: null);
+                value: "MemberOf");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 22,
                 column: "PropertyName",
-                value: null);
+                value: "Company");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 23,
                 column: "PropertyName",
-                value: null);
+                value: "Title");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 24,
                 column: "PropertyName",
-                value: null);
+                value: "UserPrincipalName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 25,
                 column: "PropertyName",
-                value: null);
+                value: "TelephoneNumber");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 26,
                 column: "PropertyName",
-                value: null);
+                value: "POBox");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 27,
                 column: "PropertyName",
-                value: null);
+                value: "CanonicalName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 28,
                 column: "PropertyName",
-                value: null);
+                value: "HomeDrive");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 29,
                 column: "PropertyName",
-                value: null);
+                value: "Department");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 30,
                 column: "PropertyName",
-                value: null);
+                value: "MiddleName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 31,
                 column: "PropertyName",
-                value: null);
+                value: "Pager");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 32,
                 column: "PropertyName",
-                value: null);
+                value: "OS");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
@@ -405,49 +415,55 @@ namespace BLAZAM.Database.Migrations.Sql
                 keyColumn: "Id",
                 keyValue: 34,
                 column: "PropertyName",
-                value: null);
+                value: "Manager");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 35,
                 column: "PropertyName",
-                value: null);
+                value: "ThumbnailPhoto");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 36,
                 column: "PropertyName",
-                value: null);
+                value: "LogOnTo");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 37,
                 column: "PropertyName",
-                value: null);
+                value: "LogonHours");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 38,
-                column: "PropertyName",
-                value: null);
+                columns: new[] { "DisplayName", "PropertyName" },
+                values: new object[] { "Group Type", "GroupType" });
 
             migrationBuilder.InsertData(
                 table: "ActiveDirectoryFields",
                 columns: new[] { "Id", "DisplayName", "FieldName", "FieldType", "PropertyName" },
                 values: new object[,]
                 {
-                    { 39, "Enabled", "userAccountControl", 6, "Enabled" },
-                    { 40, "Locked_ Out", "lockoutTime", 5, "LockedOut" }
+                    { 39, "Group Scope", "groupType", 2, "GroupScope" },
+                    { 40, "Enabled", "userAccountControl", 6, "Enabled" },
+                    { 41, "Locked_ Out", "lockoutTime", 5, "LockedOut" }
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AutomationRuleActions_AutomationRuleId",
                 table: "AutomationRuleActions",
                 column: "AutomationRuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AutomationRuleAndFilters_CustomFieldId",
+                table: "AutomationRuleAndFilters",
+                column: "CustomFieldId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AutomationRuleAndFilters_FieldId",
@@ -463,6 +479,11 @@ namespace BLAZAM.Database.Migrations.Sql
                 name: "IX_AutomationRuleFieldValues_AutomationRuleActionId",
                 table: "AutomationRuleFieldValues",
                 column: "AutomationRuleActionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AutomationRuleFieldValues_CustomFieldId",
+                table: "AutomationRuleFieldValues",
+                column: "CustomFieldId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AutomationRuleFieldValues_FieldId",
@@ -511,6 +532,11 @@ namespace BLAZAM.Database.Migrations.Sql
                 keyColumn: "Id",
                 keyValue: 40);
 
+            migrationBuilder.DeleteData(
+                table: "ActiveDirectoryFields",
+                keyColumn: "Id",
+                keyValue: 41);
+
             migrationBuilder.DropColumn(
                 name: "PropertyName",
                 table: "CustomActiveDirectoryFields");
@@ -532,6 +558,13 @@ namespace BLAZAM.Database.Migrations.Sql
                 keyValue: 33,
                 column: "FieldType",
                 value: 1);
+
+            migrationBuilder.UpdateData(
+                table: "ActiveDirectoryFields",
+                keyColumn: "Id",
+                keyValue: 38,
+                column: "DisplayName",
+                value: "Group Type and Scope");
         }
     }
 }

@@ -171,7 +171,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <remarks>Must be called under an identity context that has permission to make these changes</remarks>
         public void SetHomeDirectoryPermissions()
         {
-            if (SamAccountName == null) throw new AppException("Samaccount name is null while setting home directory");
+            if (SAMAccountName == null) throw new AppException("Samaccount name is null while setting home directory");
             if (HomeDirectory == null) throw new AppException("HomeDirectory is null while setting home directory");
             FileSystemRights Rights;
 
@@ -182,7 +182,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             InheritanceFlags none = InheritanceFlags.None;
 
             //set on dir itself
-            FileSystemAccessRule accessRule = new(SamAccountName, Rights, none, PropagationFlags.NoPropagateInherit, AccessControlType.Allow);
+            FileSystemAccessRule accessRule = new(SAMAccountName, Rights, none, PropagationFlags.NoPropagateInherit, AccessControlType.Allow);
             DirectoryInfo dInfo = new(HomeDirectory);
             DirectorySecurity dSecurity = dInfo.GetAccessControl();
             dSecurity.ModifyAccessRule(AccessControlModification.Set, accessRule, out modified);
@@ -192,7 +192,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
             //Add Access rule for the inheritance
-            FileSystemAccessRule accessRule2 = new(SamAccountName, Rights, iFlags, PropagationFlags.InheritOnly, AccessControlType.Allow);
+            FileSystemAccessRule accessRule2 = new(SAMAccountName, Rights, iFlags, PropagationFlags.InheritOnly, AccessControlType.Allow);
             dSecurity.ModifyAccessRule(AccessControlModification.Add, accessRule2, out modified);
 
             dInfo.SetAccessControl(dSecurity);
@@ -209,12 +209,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public override string? SamAccountName
+        public override string? SAMAccountName
         {
-            get => base.SamAccountName;
+            get => base.SAMAccountName;
             set
             {
-                base.SamAccountName = value;
+                base.SAMAccountName = value;
                 if (UserPrincipalName.IsNullOrEmpty())
                     UserPrincipalName = value + "@" + DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.FQDN;
 

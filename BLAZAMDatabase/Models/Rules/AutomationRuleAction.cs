@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Database.Models.Permissions;
+using BLAZAM.Database.Models.Templates;
 
 namespace BLAZAM.Database.Models.Rules
 {

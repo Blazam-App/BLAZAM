@@ -10,7 +10,7 @@
 }
 @if (User != null)
 {
-    <AppPageTitle>@User?.SamAccountName</AppPageTitle>
+    <AppPageTitle>@User?.SAMAccountName</AppPageTitle>
 
     <EditForm OnValidSubmit=SaveChanges Model="User">
         <CascadingValue Value="EditMode">
@@ -241,9 +241,9 @@
 
 
                                         <DynamicMudInput T=string Label="@AppLocalization[Lang.Username]"
-                                        @bind-Value="@User.SamAccountName"
+                                        @bind-Value="@User.SAMAccountName"
                                         Disabled=@(User?.NewEntry==false) />
-                                        <AppCopyButton TextToCopy=@User.SamAccountName />
+                                        <AppCopyButton TextToCopy=@User.SAMAccountName />
 
                                     </MudStack>
 
@@ -549,7 +549,7 @@
             {
                 if (selfAccessLevel != null)
                 {
-                    return User.SamAccountName.Equals(CurrentUser.Username, StringComparison.InvariantCultureIgnoreCase);
+                    return User.SAMAccountName.Equals(CurrentUser.Username, StringComparison.InvariantCultureIgnoreCase);
                 }
             }
             return false;

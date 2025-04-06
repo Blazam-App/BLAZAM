@@ -24,7 +24,7 @@ namespace BLAZAM.Gui.Helpers
             var displayName = template.GenerateDisplayName(newUserName);
             newUser = ou.CreateUser(displayName);
 
-            newUser.SamAccountName = template.GenerateUsername(newUserName);
+            newUser.SAMAccountName = template.GenerateUsername(newUserName);
             newUser.DisplayName = displayName;
             newUser.StagePasswordChange(template.GeneratePassword(newUserName).ToSecureString());
             if (template.EffectiveRequirePasswordChange == true)

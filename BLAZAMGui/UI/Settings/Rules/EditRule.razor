@@ -3,7 +3,7 @@
 <MudStack>
 
     <MudSelectList Values="_adObjectTypes" @bind-Value=_workingRule.ActiveDirectoryObjectType />
-    <MudSelectList Values="_triggerTypes" @bind-Value=_workingRule.Trigger />
+    <MudSelectList Values="_workingRule.ActiveDirectoryObjectType.GetNotificationTypes()" @bind-Value=_workingRule.Trigger />
     <MudTextField @bind-Value=@_workingRule.Name
                   Label="@AppLocalization[Lang.Name]" />
     <MudSwitch Color="Color.Success"
@@ -75,17 +75,17 @@
     <MudDivider />
     <MudText Typo="Typo.h6">Actions</MudText>
     <MudStack Row="true">
-        <MudStack>
+        @if (Rule.Id > 0)
+        {
+            <MudStack>
 
-            @foreach (var action in _workingRule.Actions)
-            {
-                <EditRuleAction RemovedClicked="@(()=>{RemoveAction(action);})" Action=action />
-                <MudSpacer />
-
-
-
-            }
-        </MudStack>
+                @foreach (var action in _workingRule.Actions)
+                {
+                    <EditRuleAction RemovedClicked="@(()=>{RemoveAction(action);})" Action=action />
+                    <MudSpacer />
+                }
+            </MudStack>
+        }
         <MudSpacer />
         <MudButton OnClick="AddAction"
                    Color="Color.Success"
@@ -132,6 +132,7 @@
         {
             _workingRule = await Context.AutomationRules.FirstAsync(r => r.Id.Equals(Rule.Id));
         }
+
         foreach (NotificationType enu in Enum.GetValues(typeof(NotificationType)))
         {
             _triggerTypes.Add(enu);

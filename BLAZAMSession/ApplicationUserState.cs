@@ -496,6 +496,10 @@ namespace BLAZAM.Session
                 return false;
             }
         }
+        public static IApplicationUserState CreateUserState(ClaimsPrincipal user,IAppDatabaseFactory dbFactory)
+        {
+            return new ApplicationUserState(dbFactory) { User = user };
+        }
         private bool HasObjectCreatePermissions(ActiveDirectoryObjectType objectType)
         {
             if (IsSuperAdmin == true) return true;

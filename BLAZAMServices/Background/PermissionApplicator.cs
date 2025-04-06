@@ -167,13 +167,13 @@ namespace BLAZAM.Services.Background
             {
                 userRoles.Add(new Claim(ClaimTypes.Name, directoryUser.DisplayName));
             }
-            else if (directoryUser.SamAccountName != null)
+            else if (directoryUser.SAMAccountName != null)
             {
-                userRoles.Add(new Claim(ClaimTypes.Name, directoryUser.SamAccountName));
+                userRoles.Add(new Claim(ClaimTypes.Name, directoryUser.SAMAccountName));
 
             }
             if (directoryUser.UserPrincipalName != null)
-                userRoles.Add(new Claim(ClaimTypes.WindowsAccountName, directoryUser.SamAccountName));
+                userRoles.Add(new Claim(ClaimTypes.WindowsAccountName, directoryUser.SAMAccountName));
             if (directoryUser.GivenName != null)
                 userRoles.Add(new Claim(ClaimTypes.GivenName, directoryUser.GivenName));
             if (directoryUser.Sn != null)

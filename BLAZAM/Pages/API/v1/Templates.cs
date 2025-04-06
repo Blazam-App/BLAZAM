@@ -110,7 +110,7 @@ namespace BLAZAM.Pages.API.v1
             //Override username if provided
             if (!newUserDetails.Username.IsNullOrEmpty())
             {
-                newUser.SamAccountName = newUserDetails.Username;
+                newUser.SAMAccountName = newUserDetails.Username;
             }
 
             //Store password in memory for later
@@ -256,7 +256,7 @@ namespace BLAZAM.Pages.API.v1
             {
                 NewUserWelcomeEmailMessage message = new();
                 message.Domain = user.Directory.ConnectionSettings?.FQDN;
-                message.Username = user.SamAccountName;
+                message.Username = user.SAMAccountName;
                 message.Password = password;
                 await EmailService.SendMessage(AppLocalization["New Account Details"], message, to);
 

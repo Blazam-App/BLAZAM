@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
+using BLAZAM.Services.Background;
 using BLAZAM.Services.Events;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
@@ -19,15 +20,24 @@ namespace BLAZAM.Services.Audit
             Printer = new PrinterAudit(factory) { CurrentUser = ruleUserState };
             BitLocker = new BitLockerAudit(factory) { CurrentUser = ruleUserState };
             Email=new EmailAudit(factory);
+            ApplicationEvents.DirectoryEntryChanged.Delegate += TriggerDirectoryEntryChangedEvent;
+
         }
-      
+
         protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
         {
-            //Don't trigger audit on user invoked events
-            //if (new SystemUserState(_factory).Equals(args.Actor) == true)
-            //{
-            //    base.ProcessDirectoryEntryChangedEvent(sender,args);
-            //}
+          if(sender!=null && sender is RulesProcessor)
+            {
+                System = new SystemAudit(_factory);
+                User = new UserAudit(_factory) { CurrentUser = args.Actor };
+                Group = new GroupAudit(_factory) { CurrentUser = args.Actor };
+                Computer = new ComputerAudit(_factory) { CurrentUser = args.Actor };
+                OU = new OUAudit(_factory) { CurrentUser = args.Actor };
+                Printer = new PrinterAudit(_factory) { CurrentUser = args.Actor };
+                BitLocker = new BitLockerAudit(_factory) { CurrentUser = args.Actor };
+                Email = new EmailAudit(_factory);
+                base.TriggerDirectoryEntryChangedEvent(sender, args);
+            }
         }
 
     }

@@ -5,12 +5,12 @@ using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
+using Octokit;
 
 namespace BLAZAM.Services.Audit
 {
     public class BaseAuditLogger
     {
-        protected IApplicationUserStateService _userStateService;
         public SystemAudit System;
         public UserAudit User;
         public GroupAudit Group;
@@ -22,19 +22,18 @@ namespace BLAZAM.Services.Audit
         public EmailAudit Email;
         protected readonly IAppDatabaseFactory _factory;
 
-        public BaseAuditLogger(IAppDatabaseFactory factory, IApplicationUserStateService userStateService)
+        public BaseAuditLogger(IAppDatabaseFactory factory, IApplicationUserState userState)
         {
             _factory = factory;
             ApplicationEvents.DirectoryEntryChanged.Delegate += TriggerDirectoryEntryChangedEvent;
-            _userStateService = userStateService;
             System = new SystemAudit(factory);
-            User = new UserAudit(factory, userStateService);
-            Group = new GroupAudit(factory, userStateService);
-            Computer = new ComputerAudit(factory, userStateService);
-            OU = new OUAudit(factory, userStateService);
-            Printer = new PrinterAudit(factory, userStateService);
-            Logon = new LogonAudit(factory, userStateService);
-            BitLocker = new BitLockerAudit(factory, userStateService);
+            User = new UserAudit(factory, userState);
+            Group = new GroupAudit(factory, userState);
+            Computer = new ComputerAudit(factory, userState);
+            OU = new OUAudit(factory, userState);
+            Printer = new PrinterAudit(factory, userState);
+            Logon = new LogonAudit(factory, userState);
+            BitLocker = new BitLockerAudit(factory, userState);
         }
 
         protected static List<Guid> HandledEvents { get; set; } = new();
@@ -45,7 +44,16 @@ namespace BLAZAM.Services.Audit
             {
                 if (!HandledEvents.Contains(args.Guid))
                 {
-
+                    if (args.Actor != null)
+                    {
+                        User = new UserAudit(_factory, args.Actor);
+                        Group = new GroupAudit(_factory, args.Actor);
+                        Computer = new ComputerAudit(_factory, args.Actor);
+                        OU = new OUAudit(_factory, args.Actor);
+                        Printer = new PrinterAudit(_factory, args.Actor);
+                        Logon = new LogonAudit(_factory, args.Actor);
+                        BitLocker = new BitLockerAudit(_factory, args.Actor);
+                    }
                     switch (args.ObjectType)
                     {
                         case ActiveDirectoryObjectType.User:

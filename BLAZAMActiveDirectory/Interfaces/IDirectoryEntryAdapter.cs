@@ -16,7 +16,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// The SAMAccountName property, generally used as the username property
         /// </summary>
-        string? SamAccountName { get; set; }
+        string? SAMAccountName { get; set; }
 
         /// <summary>
         /// The name that displays for this object in ADUC

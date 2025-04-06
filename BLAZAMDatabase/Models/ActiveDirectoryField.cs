@@ -6,7 +6,7 @@ namespace BLAZAM.Database.Models
 {
     public enum ActiveDirectoryFieldOperator
     {
-        Equals,
+        EqualTo,
         Contains,
         StartsWith,
         EndsWith,

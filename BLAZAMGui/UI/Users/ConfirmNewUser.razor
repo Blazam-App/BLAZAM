@@ -33,7 +33,7 @@ Value="@User.DisplayName"
 Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Username]"
-Value="@User.SamAccountName"
+Value="@User.SAMAccountName"
 Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Password]"
@@ -276,7 +276,7 @@ OnClick="Print">@AppLocalization["Print"]</MudButton>
             var createUserJob = new Job(AppLocalization[Lang.Create_User]);
             createUserJob.StopOnFailedStep = true;
 
-            _username = User.SamAccountName;
+            _username = User.SAMAccountName;
             _userPassword = User.NewPassword;
 
 

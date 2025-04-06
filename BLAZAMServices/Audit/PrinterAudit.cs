@@ -7,7 +7,7 @@ namespace BLAZAM.Services.Audit
 {
     public class PrinterAudit : DirectoryAudit
     {
-        public PrinterAudit(IAppDatabaseFactory factory, IApplicationUserStateService? userStateService = null, IJSRuntime? jSRuntime = null) : base(factory, userStateService, jSRuntime)
+        public PrinterAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
         {
         }
 

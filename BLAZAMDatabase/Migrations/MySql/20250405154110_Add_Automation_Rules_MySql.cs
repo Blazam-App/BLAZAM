@@ -1,14 +1,15 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace BLAZAM.Database.Migrations.Sqlite
+namespace BLAZAM.Database.Migrations.MySql
 {
     /// <inheritdoc />
-    public partial class Add_Automation_Rules_Sqlite : Migration
+    public partial class Add_Automation_Rules_MySql : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,49 +17,54 @@ namespace BLAZAM.Database.Migrations.Sqlite
             migrationBuilder.AddColumn<string>(
                 name: "PropertyName",
                 table: "CustomActiveDirectoryFields",
-                type: "TEXT",
-                nullable: true);
+                type: "longtext",
+                nullable: true)
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<string>(
                 name: "PropertyName",
                 table: "ActiveDirectoryFields",
-                type: "TEXT",
-                nullable: true);
+                type: "longtext",
+                nullable: true)
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AutomationRules",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    LastTriggered = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastExcecuted = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Enabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    StopOnThisRule = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Order = table.Column<int>(type: "INTEGER", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    ScheduledRunTime = table.Column<TimeSpan>(type: "TEXT", nullable: true),
-                    Trigger = table.Column<int>(type: "INTEGER", nullable: false),
-                    ActiveDirectoryObjectType = table.Column<int>(type: "INTEGER", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastTriggered = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    LastExcecuted = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    Enabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    StopOnThisRule = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    ScheduledRunTime = table.Column<TimeSpan>(type: "time(6)", nullable: true),
+                    Trigger = table.Column<int>(type: "int", nullable: false),
+                    ActiveDirectoryObjectType = table.Column<int>(type: "int", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AutomationRules", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleActions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ActionType = table.Column<int>(type: "INTEGER", nullable: false),
-                    ActiveDirectoryObjectAction = table.Column<int>(type: "INTEGER", nullable: false),
-                    Data = table.Column<string>(type: "TEXT", nullable: true),
-                    ActionGuid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    AutomationRuleId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ActionType = table.Column<int>(type: "int", nullable: false),
+                    ActiveDirectoryObjectAction = table.Column<int>(type: "int", nullable: false),
+                    Data = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ActionGuid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    AutomationRuleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -68,16 +74,17 @@ namespace BLAZAM.Database.Migrations.Sqlite
                         column: x => x.AutomationRuleId,
                         principalTable: "AutomationRules",
                         principalColumn: "Id");
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleOrFilter",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    AutomationRuleId = table.Column<int>(type: "INTEGER", nullable: false),
-                    FilterGuid = table.Column<Guid>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    AutomationRuleId = table.Column<int>(type: "int", nullable: false),
+                    FilterGuid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -88,17 +95,20 @@ namespace BLAZAM.Database.Migrations.Sqlite
                         principalTable: "AutomationRules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleFieldValues",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FieldId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: true),
-                    AutomationRuleActionId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    FieldId = table.Column<int>(type: "int", nullable: true),
+                    CustomFieldId = table.Column<int>(type: "int", nullable: true),
+                    Value = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AutomationRuleActionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -107,50 +117,59 @@ namespace BLAZAM.Database.Migrations.Sqlite
                         name: "FK_AutomationRuleFieldValues_ActiveDirectoryFields_FieldId",
                         column: x => x.FieldId,
                         principalTable: "ActiveDirectoryFields",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_AutomationRuleFieldValues_AutomationRuleActions_AutomationRuleActionId",
+                        name: "FK_AutomationRuleFieldValues_AutomationRuleActions_AutomationRu~",
                         column: x => x.AutomationRuleActionId,
                         principalTable: "AutomationRuleActions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                    table.ForeignKey(
+                        name: "FK_AutomationRuleFieldValues_CustomActiveDirectoryFields_Custom~",
+                        column: x => x.CustomFieldId,
+                        principalTable: "CustomActiveDirectoryFields",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleGroupSids",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    GroupSid = table.Column<string>(type: "TEXT", nullable: false),
-                    Assigned = table.Column<bool>(type: "INTEGER", nullable: false),
-                    AutomationRuleActionId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    GroupSid = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Assigned = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AutomationRuleActionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AutomationRuleGroupSids", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AutomationRuleGroupSids_AutomationRuleActions_AutomationRuleActionId",
+                        name: "FK_AutomationRuleGroupSids_AutomationRuleActions_AutomationRule~",
                         column: x => x.AutomationRuleActionId,
                         principalTable: "AutomationRuleActions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleAndFilters",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    OrFilterId = table.Column<int>(type: "INTEGER", nullable: false),
-                    FieldId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: true),
-                    Operator = table.Column<int>(type: "INTEGER", nullable: false),
-                    Negate = table.Column<bool>(type: "INTEGER", nullable: false),
-                    TimeFrame = table.Column<TimeSpan>(type: "TEXT", nullable: true),
-                    FilterGuid = table.Column<Guid>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    OrFilterId = table.Column<int>(type: "int", nullable: false),
+                    FieldId = table.Column<int>(type: "int", nullable: true),
+                    CustomFieldId = table.Column<int>(type: "int", nullable: true),
+                    Value = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Operator = table.Column<int>(type: "int", nullable: false),
+                    Negate = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    TimeFrame = table.Column<TimeSpan>(type: "time(6)", nullable: true),
+                    FilterGuid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -159,239 +178,244 @@ namespace BLAZAM.Database.Migrations.Sqlite
                         name: "FK_AutomationRuleAndFilters_ActiveDirectoryFields_FieldId",
                         column: x => x.FieldId,
                         principalTable: "ActiveDirectoryFields",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AutomationRuleAndFilters_AutomationRuleOrFilter_OrFilterId",
                         column: x => x.OrFilterId,
                         principalTable: "AutomationRuleOrFilter",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                    table.ForeignKey(
+                        name: "FK_AutomationRuleAndFilters_CustomActiveDirectoryFields_CustomF~",
+                        column: x => x.CustomFieldId,
+                        principalTable: "CustomActiveDirectoryFields",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "PropertyName",
-                value: null);
+                value: "Sn");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 2,
                 column: "PropertyName",
-                value: null);
+                value: "GivenName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 3,
                 column: "PropertyName",
-                value: null);
+                value: "PhysicalDeliveryOfficeName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 4,
                 columns: new[] { "DisplayName", "PropertyName" },
-                values: new object[] { "Employee Id", null });
+                values: new object[] { "Employee Id", "EmployeeId" });
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 5,
                 column: "PropertyName",
-                value: null);
+                value: "HomeDirectory");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 6,
                 column: "PropertyName",
-                value: null);
+                value: "ScriptPath");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 7,
                 column: "PropertyName",
-                value: null);
+                value: "ProfilePath");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 8,
                 column: "PropertyName",
-                value: null);
+                value: "HomePhone");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 9,
                 column: "PropertyName",
-                value: null);
+                value: "StreetAddress");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 10,
                 column: "PropertyName",
-                value: null);
+                value: "City");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 11,
                 column: "PropertyName",
-                value: null);
+                value: "State");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 12,
                 column: "PropertyName",
-                value: null);
+                value: "Zip");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 13,
                 column: "PropertyName",
-                value: null);
+                value: "Site");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 14,
                 column: "PropertyName",
-                value: null);
+                value: "Name");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 15,
                 column: "PropertyName",
-                value: null);
+                value: "SAMAccountName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 16,
                 column: "PropertyName",
-                value: null);
+                value: "SID");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 17,
                 column: "PropertyName",
-                value: null);
+                value: "Email");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 18,
                 column: "PropertyName",
-                value: null);
+                value: "Description");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 19,
                 column: "PropertyName",
-                value: null);
+                value: "DisplayName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 20,
                 column: "PropertyName",
-                value: null);
+                value: "DN");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 21,
                 column: "PropertyName",
-                value: null);
+                value: "MemberOf");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 22,
                 column: "PropertyName",
-                value: null);
+                value: "Company");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 23,
                 column: "PropertyName",
-                value: null);
+                value: "Title");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 24,
                 column: "PropertyName",
-                value: null);
+                value: "UserPrincipalName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 25,
                 column: "PropertyName",
-                value: null);
+                value: "TelephoneNumber");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 26,
                 column: "PropertyName",
-                value: null);
+                value: "POBox");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 27,
                 column: "PropertyName",
-                value: null);
+                value: "CanonicalName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 28,
                 column: "PropertyName",
-                value: null);
+                value: "HomeDrive");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 29,
                 column: "PropertyName",
-                value: null);
+                value: "Department");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 30,
                 column: "PropertyName",
-                value: null);
+                value: "MiddleName");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 31,
                 column: "PropertyName",
-                value: null);
+                value: "Pager");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 32,
                 column: "PropertyName",
-                value: null);
+                value: "OS");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
@@ -405,49 +429,55 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 keyColumn: "Id",
                 keyValue: 34,
                 column: "PropertyName",
-                value: null);
+                value: "Manager");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 35,
                 column: "PropertyName",
-                value: null);
+                value: "ThumbnailPhoto");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 36,
                 column: "PropertyName",
-                value: null);
+                value: "LogOnTo");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 37,
                 column: "PropertyName",
-                value: null);
+                value: "LogonHours");
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 38,
-                column: "PropertyName",
-                value: null);
+                columns: new[] { "DisplayName", "PropertyName" },
+                values: new object[] { "Group Type", "GroupType" });
 
             migrationBuilder.InsertData(
                 table: "ActiveDirectoryFields",
                 columns: new[] { "Id", "DisplayName", "FieldName", "FieldType", "PropertyName" },
                 values: new object[,]
                 {
-                    { 39, "Enabled", "userAccountControl", 6, "Enabled" },
-                    { 40, "Locked_ Out", "lockoutTime", 5, "LockedOut" }
+                    { 39, "Group Scope", "groupType", 2, "GroupScope" },
+                    { 40, "Enabled", "userAccountControl", 6, "Enabled" },
+                    { 41, "Locked_ Out", "lockoutTime", 5, "LockedOut" }
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AutomationRuleActions_AutomationRuleId",
                 table: "AutomationRuleActions",
                 column: "AutomationRuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AutomationRuleAndFilters_CustomFieldId",
+                table: "AutomationRuleAndFilters",
+                column: "CustomFieldId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AutomationRuleAndFilters_FieldId",
@@ -463,6 +493,11 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 name: "IX_AutomationRuleFieldValues_AutomationRuleActionId",
                 table: "AutomationRuleFieldValues",
                 column: "AutomationRuleActionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AutomationRuleFieldValues_CustomFieldId",
+                table: "AutomationRuleFieldValues",
+                column: "CustomFieldId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AutomationRuleFieldValues_FieldId",
@@ -511,6 +546,11 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 keyColumn: "Id",
                 keyValue: 40);
 
+            migrationBuilder.DeleteData(
+                table: "ActiveDirectoryFields",
+                keyColumn: "Id",
+                keyValue: 41);
+
             migrationBuilder.DropColumn(
                 name: "PropertyName",
                 table: "CustomActiveDirectoryFields");
@@ -532,6 +572,13 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 keyValue: 33,
                 column: "FieldType",
                 value: 1);
+
+            migrationBuilder.UpdateData(
+                table: "ActiveDirectoryFields",
+                keyColumn: "Id",
+                keyValue: 38,
+                column: "DisplayName",
+                value: "Group Type and Scope");
         }
     }
 }

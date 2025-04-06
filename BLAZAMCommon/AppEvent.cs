@@ -32,6 +32,14 @@ namespace BLAZAM
         /// <summary>
         /// Send event so each user can update permissions
         /// </summary>
+        public void Invoke(object sender,T args)
+        {
+            Delegate?.Invoke(sender, args);
+
+        }
+        /// <summary>
+        /// Send event so each user can update permissions
+        /// </summary>
         public void Invoke(T args)
         {
             Delegate?.Invoke(null,args);

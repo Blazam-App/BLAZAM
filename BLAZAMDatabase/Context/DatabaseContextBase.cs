@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Reflection;
 
 namespace BLAZAM.Database.Context
 {
@@ -191,334 +192,10 @@ namespace BLAZAM.Database.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            List<ActiveDirectoryField> activeDirectoryFields = typeof(ActiveDirectoryFields).GetStaticProperties<ActiveDirectoryField>();
 
 
-            modelBuilder.Entity<ActiveDirectoryField>().HasData(
-
-                new ActiveDirectoryField
-                {
-                    Id = 1,
-                    FieldName = "sn",
-                    DisplayName = Lang.Last_Name,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 2,
-                    FieldName = "givenname",
-                    DisplayName = Lang.First_Name,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 3,
-                    FieldName = "physicalDeliveryOfficeName",
-                    DisplayName = Lang.Office,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 4,
-                    FieldName = "employeeId",
-                    DisplayName = Lang.Employee_Id,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 5,
-                    FieldName = "homeDirectory",
-                    DisplayName = Lang.Home_Directory,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 6,
-                    FieldName = "scriptPath",
-                    DisplayName = "Logon Script Path",
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 7,
-                    FieldName = "profilePath",
-                    DisplayName = Lang.Profile_Path,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 8,
-                    FieldName = "homePhone",
-                    DisplayName = "Home Phone Number",
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 9,
-                    FieldName = "streetAddress",
-                    DisplayName = Lang.Street_Address,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 10,
-                    FieldName = "l", // 'l' is the standard LDAP attribute name for Locality (City)
-                    DisplayName = Lang.City,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 11,
-                    FieldName = "st", // 'st' is the standard LDAP attribute name for State or Province
-                    DisplayName = Lang.State,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 12,
-                    FieldName = "postalCode",
-                    DisplayName = Lang.Zip_Code,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 13,
-                    FieldName = "site", // Note: 'site' is not a standard AD attribute. Check if this is custom.
-                    DisplayName = Lang.Site,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 14,
-                    FieldName = "name", // Often the same as CN (Canonical Name)
-                    DisplayName = Lang.Name,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 15,
-                    FieldName = "samaccountname", // Pre-Windows 2000 logon name
-                    DisplayName = Lang.Username,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 16,
-                    FieldName = "objectSID", // Security Identifier
-                    DisplayName = "SID",
-                    FieldType = ActiveDirectoryFieldType.RawData // SID is binary data
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 17,
-                    FieldName = "mail",
-                    DisplayName = "E-Mail Address",
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 18,
-                    FieldName = "description",
-                    DisplayName = Lang.Description,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 19,
-                    FieldName = "displayName",
-                    DisplayName = Lang.Display_Name,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 20,
-                    FieldName = "distinguishedName", // Unique identifier within the directory (DN)
-                    DisplayName = "Distinguished Name",
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 21,
-                    FieldName = "memberOf", // List of groups the object belongs to
-                    DisplayName = "Member Of",
-                    FieldType = ActiveDirectoryFieldType.StringList // Multi-valued attribute
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 22,
-                    FieldName = "company",
-                    DisplayName = Lang.Company,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 23,
-                    FieldName = "title", // Job title
-                    DisplayName = "Title",
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 24,
-                    FieldName = "userPrincipalName", // UPN (e.g., user@domain.com)
-                    DisplayName = "User Principal Name",
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 25,
-                    FieldName = "telephoneNumber", // Primary work phone number
-                    DisplayName = "Telephone Number",
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 26,
-                    FieldName = "postOfficeBox",
-                    DisplayName = Lang.PO_Box,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 27,
-                    FieldName = "cn", // Canonical Name, often the object's common name
-                    DisplayName = "Canonical Name",
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 28,
-                    FieldName = "homeDrive", // Drive letter for home directory mapping (e.g., H:)
-                    DisplayName = Lang.Home_Drive,
-                    FieldType = ActiveDirectoryFieldType.DriveLetter // Assuming custom type or validation needed
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 29,
-                    FieldName = "department",
-                    DisplayName = Lang.Department,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 30,
-                    FieldName = "middleName", // Often stored in the 'initials' attribute ('initials')
-                    DisplayName = Lang.Middle_Name,
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 31,
-                    FieldName = "pager",
-                    DisplayName = "Pager",
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 32,
-                    FieldName = "operatingSystemVersion", // For computer objects
-                    DisplayName = "OS",
-                    FieldType = ActiveDirectoryFieldType.Text
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 33,
-                    FieldName = "accountExpires", // Date when the account expires (FILETIME format)
-                    DisplayName = "Account Expiration",
-                    FieldType = ActiveDirectoryFieldType.FileTime, // Represents a date/time value
-                    PropertyName = "ExpireTime"
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 34,
-                    FieldName = "manager", // Distinguished Name (DN) of the user's manager
-                    DisplayName = "Manager",
-                    FieldType = ActiveDirectoryFieldType.Text // Stored as DN string
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 35,
-                    FieldName = "thumbnail",
-                    DisplayName = "Photo",
-                    FieldType = ActiveDirectoryFieldType.RawData // Binary image data
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 36,
-                    FieldName = "userWorkstations", // List of computer names the user can log on to
-                    DisplayName = Lang.Log_On_To,
-                    FieldType = ActiveDirectoryFieldType.Text // Comma-separated string
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 37,
-                    FieldName = "logonHours", // Binary data representing allowed logon times
-                    DisplayName = Lang.Logon_Hours,
-                    FieldType = ActiveDirectoryFieldType.RawData
-                },
-
-                new ActiveDirectoryField
-                {
-                    Id = 38,
-                    FieldName = "groupType", // Defines group scope (Domain Local, Global, Universal) and type (Security, Distribution)
-                    DisplayName = "Group Type and Scope",
-                    FieldType = ActiveDirectoryFieldType.RawData // Integer value representing flags
-                },
-
-                 new ActiveDirectoryField
-                 {
-                     Id = 39,
-                     FieldName = "userAccountControl",
-                     DisplayName = Lang.Enabled,
-                     FieldType = ActiveDirectoryFieldType.Boolean,
-                     PropertyName= Lang.Enabled
-                 },
-
-                new ActiveDirectoryField
-                {
-                    Id = 40,
-                    FieldName = "lockoutTime",
-                    DisplayName = Lang.Locked_Out,
-                    FieldType = ActiveDirectoryFieldType.FileTime,
-                    PropertyName = "LockedOut"
-                }
-
-            );
+            modelBuilder.Entity<ActiveDirectoryField>().HasData(activeDirectoryFields);
 
 
             modelBuilder.Entity<CustomActiveDirectoryField>()
@@ -539,96 +216,89 @@ namespace BLAZAM.Database.Context
                 entity.Navigation(e => e.ActionMap).AutoInclude();
             });
 
-            modelBuilder.Entity<FieldAccessLevel>().HasData(
-                new FieldAccessLevel() { Id = 1, Name = "Deny", Level = 10 },
-                new FieldAccessLevel() { Id = 2, Name = "Read", Level = 100 },
-                new FieldAccessLevel() { Id = 3, Name = "Edit", Level = 1000 }
-            );
+
+            List<FieldAccessLevel> fieldAccessLevels = typeof(FieldAccessLevels).GetStaticProperties<FieldAccessLevel>();
+
+            modelBuilder.Entity<FieldAccessLevel>().HasData(fieldAccessLevels);
+
+
             modelBuilder.Entity<FieldAccessMapping>(entity =>
             {
                 entity.Navigation(e => e.CustomField).AutoInclude();
                 entity.Navigation(e => e.Field).AutoInclude();
                 entity.Navigation(e => e.FieldAccessLevel).AutoInclude();
             });
+
+            List<ObjectAccessLevel> objectAccessLevels = typeof(ObjectAccessLevels).GetStaticProperties<ObjectAccessLevel>();
+
             modelBuilder.Entity<ObjectAccessLevel>(entity =>
             {
-                entity.HasData(
-                new ObjectAccessLevel() { Id = 1, Name = "Deny", Level = 10 },
-                new ObjectAccessLevel() { Id = 2, Name = "Read", Level = 1000 });
+                entity.HasData(objectAccessLevels);
+            });
 
-                entity.Navigation(e => e.ObjectAccessMappings).AutoInclude();
-            }
-
-            );
             modelBuilder.Entity<ObjectAccessMapping>(entity =>
             {
                 entity.Navigation(e => e.ObjectAccessLevel).AutoInclude();
             });
+
             modelBuilder.Entity<DirectoryTemplate>(entity =>
             {
                 entity.Navigation(e => e.FieldValues).AutoInclude();
                 entity.Navigation(e => e.AssignedGroupSids).AutoInclude();
-
             });
+
             modelBuilder.Entity<AutomationRule>(entity =>
             {
                 entity.Navigation(e => e.Actions).AutoInclude();
                 entity.Navigation(e => e.Filters).AutoInclude();
-
             });
+
             modelBuilder.Entity<AutomationRuleAction>(entity =>
             {
                 entity.Navigation(e => e.GroupSids).AutoInclude();
                 entity.Navigation(e => e.FieldValues).AutoInclude();
-
             });
+
             modelBuilder.Entity<AutomationRuleOrFilter>(entity =>
             {
                 entity.Navigation(e => e.AndFilters).AutoInclude();
-
             });
+
             modelBuilder.Entity<AutomationRuleAndFilter>(entity =>
             {
                 entity.Navigation(e => e.Field).AutoInclude();
-
             });
+
+            modelBuilder.Entity<AutomationRuleFieldValue>(entity =>
+            {
+                entity.Navigation(e => e.Field).AutoInclude();
+                entity.Navigation(e => e.CustomField).AutoInclude();
+            });
+
             modelBuilder.Entity<DirectoryTemplateFieldValue>(entity =>
             {
                 entity.Navigation(e => e.Field).AutoInclude();
                 entity.Navigation(e => e.CustomField).AutoInclude();
             });
 
-            modelBuilder.Entity<ObjectAction>().HasData(
-                  new ObjectAction() { Id = 1, Name = Lang.Assign, Action = ActiveDirectoryObjectAction.Assign },
-                  new ObjectAction() { Id = 2, Name = "UnAssign", Action = ActiveDirectoryObjectAction.Unassign },
-                  new ObjectAction() { Id = 3, Name = Lang.Unlock, Action = ActiveDirectoryObjectAction.Unlock },
-                  new ObjectAction() { Id = 4, Name = Lang.Enable, Action = ActiveDirectoryObjectAction.Enable },
-                  new ObjectAction() { Id = 5, Name = Lang.Disable, Action = ActiveDirectoryObjectAction.Disable },
-                  new ObjectAction() { Id = 6, Name = Lang.Rename, Action = ActiveDirectoryObjectAction.Rename },
-                  new ObjectAction() { Id = 7, Name = Lang.Move, Action = ActiveDirectoryObjectAction.Move },
-                  new ObjectAction() { Id = 8, Name = Lang.Create, Action = ActiveDirectoryObjectAction.Create },
-                  new ObjectAction() { Id = 9, Name = Lang.Delete, Action = ActiveDirectoryObjectAction.Delete },
-                  new ObjectAction() { Id = 10, Name = "Set Password", Action = ActiveDirectoryObjectAction.SetPassword }
 
-            );
+            List<ObjectAction> objectActions = typeof(ObjectActions).GetStaticProperties<ObjectAction>();
+
+            modelBuilder.Entity<ObjectAction>().HasData(objectActions);
+           
             modelBuilder.Entity<ActionAccessMapping>(entity =>
             {
                 entity.Navigation(e => e.ObjectAction).AutoInclude();
             });
 
-
             modelBuilder.Entity<PermissionMapping>(entity =>
             {
                 entity.Navigation(e => e.AccessLevels).AutoInclude();
-
             });
-
 
             modelBuilder.Entity<DirectoryTemplate>(entity =>
             {
-                //entity.Navigation(e => e.ParentTemplate).AutoInclude();
                 entity.Navigation(e => e.AssignedGroupSids).AutoInclude();
-
             });
 
             modelBuilder.Entity<AppSettings>(entity =>
@@ -686,26 +356,20 @@ namespace BLAZAM.Database.Context
             modelBuilder.Entity<AppUser>(entity =>
             {
                 entity.HasIndex(e => e.UserGUID).IsUnique();
-                //entity.Navigation(e => e.Notifications).AutoInclude();
                 entity.Navigation(e => e.ReadNewsItems).AutoInclude();
                 entity.Navigation(e => e.FavoriteEntries).AutoInclude();
                 entity.Navigation(e => e.DashboardWidgets).AutoInclude();
-                // entity.Navigation(e => e.NotificationSubscriptions).AutoInclude();
-
-                //entity.Navigation(e => e.UnreadChatMessages).AutoInclude();
-
             });
+
             modelBuilder.Entity<UserNotification>(entity =>
             {
                 entity.Navigation(e => e.Notification).AutoInclude();
             });
 
-
-
             modelBuilder.Entity<PermissionDelegate>(entity =>
-          {
-              entity.HasIndex(e => e.DelegateSid).IsUnique();
-          });
+            {
+                entity.HasIndex(e => e.DelegateSid).IsUnique();
+            });
 
             modelBuilder.Entity<ChatRoom>(entity =>
             {
@@ -713,30 +377,26 @@ namespace BLAZAM.Database.Context
                 entity.Navigation(e => e.Messages).AutoInclude();
                 entity.Navigation(e => e.Members).AutoInclude();
             });
+
             modelBuilder.Entity<ChatMessage>(entity =>
             {
-
                 entity.Navigation(e => e.User).AutoInclude();
-
             });
+
             modelBuilder.Entity<NotificationSubscription>(entity =>
             {
-
                 entity.Navigation(e => e.NotificationTypes).AutoInclude();
+            });
+
+            modelBuilder.Entity<UnreadChatMessage>(entity =>
+            {
+                entity.Navigation(e => e.ChatMessage).AutoInclude();
 
             });
-            modelBuilder.Entity<UnreadChatMessage>(entity =>
-         {
-             entity.Navigation(e => e.ChatMessage).AutoInclude();
-
-         });
-
-
 
         }
 
-
-
+      
 
         public bool EntityIsTracked<TEntry>(TEntry entry)
         {

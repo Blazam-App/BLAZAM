@@ -201,7 +201,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected SearchResult? SearchResult { get; set; }
 
-        public virtual string? SamAccountName
+        public virtual string? SAMAccountName
         {
 
             get

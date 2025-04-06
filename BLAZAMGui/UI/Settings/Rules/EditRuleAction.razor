@@ -6,59 +6,59 @@
     @bind-Value=Action.ActionType />
     @switch (Action.ActionType)
     {
-    case AutomationRuleActionType.ModifyField:
-        <MudSelectList Values="_fields"
-        Value=_selectedField
-        ValueChanged="@((ActiveDirectoryField field)=>{FieldChanged(field);})" />
-        @if (_selectedField != null)
-        {
-            AutomationRuleFieldValue fieldValue;
-            if (Action.FieldValues.FirstOrDefault() == null)
+        case AutomationRuleActionType.ModifyField:
+            <MudSelectList Values="_fields"
+            Value=_selectedField
+            ValueChanged="@((ActiveDirectoryField field)=>{FieldChanged(field);})" />
+            @if (_selectedField != null)
             {
-                fieldValue = new() { Field = _selectedField };
-                Action.FieldValues.Add(fieldValue);
-            }
-            else
-            {
-                fieldValue = Action.FieldValues.FirstOrDefault(fv => fv.Field.Id == _selectedField.Id);
-            }
-            switch (Action.FieldValues.FirstOrDefault()?.Field.FieldType)
-            {
-                case ActiveDirectoryFieldType.Text:
-                case ActiveDirectoryFieldType.RawData:
-                case ActiveDirectoryFieldType.StringList:
-                    <MudTextField T="string" @bind-Value=fieldValue.Value />
-                    break;
-                case ActiveDirectoryFieldType.Date:
-                    <MudDatePicker Date="@GetDateTime(fieldValue.Value)"
-                    DateChanged="@((date)=>{fieldValue.Value=date.ToString();})" />
-                    break;
-                case ActiveDirectoryFieldType.DriveLetter:
-                    <HomeDriveSelect @bind-DriveLetter=fieldValue.Value />
-                    break;
-                case ActiveDirectoryFieldType.FileTime:
-                    <MudDatePicker Date="@GetFileTime(fieldValue.Value)"
-                    DateChanged="@((date)=>{fieldValue.Value=date.Value.ToFileTimeUtc().ToString();})" />
+                AutomationRuleFieldValue fieldValue;
+                if (Action.FieldValues.FirstOrDefault() == null)
+                {
+                    fieldValue = new() { Field = _selectedField };
+                    Action.FieldValues.Add(fieldValue);
+                }
+                else
+                {
+                    fieldValue = Action.FieldValues.FirstOrDefault(fv => fv.Field.Id == _selectedField.Id);
+                }
+                switch (Action.FieldValues.FirstOrDefault()?.Field.FieldType)
+                {
+                    case ActiveDirectoryFieldType.Text:
+                    case ActiveDirectoryFieldType.RawData:
+                    case ActiveDirectoryFieldType.StringList:
+                        <MudTextField T="string" @bind-Value=fieldValue.Value />
+                        break;
+                    case ActiveDirectoryFieldType.Date:
+                        <MudDatePicker Date="@GetDateTime(fieldValue.Value)"
+                        DateChanged="@((date)=>{fieldValue.Value=date.ToString();})" />
+                        break;
+                    case ActiveDirectoryFieldType.DriveLetter:
+                        <HomeDriveSelect @bind-DriveLetter=fieldValue.Value />
+                        break;
+                    case ActiveDirectoryFieldType.FileTime:
+                        <MudDatePicker Date="@GetFileTime(fieldValue.Value)"
+                        DateChanged="@((date)=>{fieldValue.Value=date.Value.ToFileTimeUtc().ToString();})" />
 
-                    break;
+                        break;
+                }
             }
-        }
-        break;
-    case AutomationRuleActionType.Assign:
-        <ADAutoComplete SelectedSid="@Action.GroupSids.FirstOrDefault()?.GroupSid" SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=true});})" SearchObjectType="ActiveDirectoryObjectType.Group" />
+            break;
+        case AutomationRuleActionType.Assign:
+            <ADAutoComplete SelectedSid="@Action.GroupSids.FirstOrDefault()?.GroupSid" SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=true});})" SearchObjectType="ActiveDirectoryObjectType.Group" />
 
-        break;
-    case AutomationRuleActionType.Lockout:
-        break;
-    case AutomationRuleActionType.SendEmail:
-        <MudTextField T="string" @bind-Value=Action.Data/>
+            break;
+        case AutomationRuleActionType.Lockout:
+            break;
+        case AutomationRuleActionType.SendEmail:
+            <MudTextField T="string" @bind-Value=Action.Data/>
 
-        break;
-    case AutomationRuleActionType.Move:
-        <ADAutoComplete SelectedResultChanged="@((result)=>{
+            break;
+        case AutomationRuleActionType.Move:
+            <ADAutoComplete SelectedResultChanged="@((result)=>{
                       Action.Data = result.DN;
                                                             })" SearchObjectType="ActiveDirectoryObjectType.OU" />
-    break;
+            break;
         case AutomationRuleActionType.Unassign:
             <ADAutoComplete SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=false});})" SearchObjectType="ActiveDirectoryObjectType.Group" />
 
@@ -92,10 +92,14 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _fields = await Context.ActiveDirectoryFields.ToListAsync();
+        _fields = (await Context.ActiveDirectoryFields.ToListAsync()).OrderBy(f => AppLocalization[f.DisplayName].Value).ToList();
         foreach (AutomationRuleActionType enu in Enum.GetValues(typeof(AutomationRuleActionType)))
         {
             _actionTypes.Add(enu);
+        }
+        if (Action.FieldValues.Count > 0)
+        {
+            _selectedField = Action.FieldValues[0].Field;
         }
     }
     private void FieldChanged(ActiveDirectoryField field)

@@ -153,224 +153,256 @@ namespace BLAZAM.Common.Migrations.Sql
                             Id = 1,
                             DisplayName = "Last Name",
                             FieldName = "sn",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Sn"
                         },
                         new
                         {
                             Id = 2,
                             DisplayName = "First Name",
                             FieldName = "givenname",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "GivenName"
                         },
                         new
                         {
                             Id = 3,
                             DisplayName = "Office",
                             FieldName = "physicalDeliveryOfficeName",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "PhysicalDeliveryOfficeName"
                         },
                         new
                         {
                             Id = 4,
                             DisplayName = "Employee Id",
                             FieldName = "employeeId",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "EmployeeId"
                         },
                         new
                         {
                             Id = 5,
                             DisplayName = "Home Directory",
                             FieldName = "homeDirectory",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "HomeDirectory"
                         },
                         new
                         {
                             Id = 6,
                             DisplayName = "Logon Script Path",
                             FieldName = "scriptPath",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "ScriptPath"
                         },
                         new
                         {
                             Id = 7,
                             DisplayName = "Profile Path",
                             FieldName = "profilePath",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "ProfilePath"
                         },
                         new
                         {
                             Id = 8,
                             DisplayName = "Home Phone Number",
                             FieldName = "homePhone",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "HomePhone"
                         },
                         new
                         {
                             Id = 9,
                             DisplayName = "Street Address",
                             FieldName = "streetAddress",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "StreetAddress"
                         },
                         new
                         {
                             Id = 10,
                             DisplayName = "City",
                             FieldName = "l",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "City"
                         },
                         new
                         {
                             Id = 11,
                             DisplayName = "State",
                             FieldName = "st",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "State"
                         },
                         new
                         {
                             Id = 12,
                             DisplayName = "Zip Code",
                             FieldName = "postalCode",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Zip"
                         },
                         new
                         {
                             Id = 13,
                             DisplayName = "Site",
                             FieldName = "site",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Site"
                         },
                         new
                         {
                             Id = 14,
                             DisplayName = "Name",
                             FieldName = "name",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Name"
                         },
                         new
                         {
                             Id = 15,
                             DisplayName = "Username",
                             FieldName = "samaccountname",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "SAMAccountName"
                         },
                         new
                         {
                             Id = 16,
                             DisplayName = "SID",
                             FieldName = "objectSID",
-                            FieldType = 2
+                            FieldType = 2,
+                            PropertyName = "SID"
                         },
                         new
                         {
                             Id = 17,
                             DisplayName = "E-Mail Address",
                             FieldName = "mail",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Email"
                         },
                         new
                         {
                             Id = 18,
                             DisplayName = "Description",
                             FieldName = "description",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Description"
                         },
                         new
                         {
                             Id = 19,
                             DisplayName = "Display Name",
                             FieldName = "displayName",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "DisplayName"
                         },
                         new
                         {
                             Id = 20,
                             DisplayName = "Distinguished Name",
                             FieldName = "distinguishedName",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "DN"
                         },
                         new
                         {
                             Id = 21,
                             DisplayName = "Member Of",
                             FieldName = "memberOf",
-                            FieldType = 4
+                            FieldType = 4,
+                            PropertyName = "MemberOf"
                         },
                         new
                         {
                             Id = 22,
                             DisplayName = "Company",
                             FieldName = "company",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Company"
                         },
                         new
                         {
                             Id = 23,
                             DisplayName = "Title",
                             FieldName = "title",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Title"
                         },
                         new
                         {
                             Id = 24,
                             DisplayName = "User Principal Name",
                             FieldName = "userPrincipalName",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "UserPrincipalName"
                         },
                         new
                         {
                             Id = 25,
                             DisplayName = "Telephone Number",
                             FieldName = "telephoneNumber",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "TelephoneNumber"
                         },
                         new
                         {
                             Id = 26,
                             DisplayName = "PO Box",
                             FieldName = "postOfficeBox",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "POBox"
                         },
                         new
                         {
                             Id = 27,
                             DisplayName = "Canonical Name",
                             FieldName = "cn",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "CanonicalName"
                         },
                         new
                         {
                             Id = 28,
                             DisplayName = "Home Drive",
                             FieldName = "homeDrive",
-                            FieldType = 3
+                            FieldType = 3,
+                            PropertyName = "HomeDrive"
                         },
                         new
                         {
                             Id = 29,
                             DisplayName = "Department",
                             FieldName = "department",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Department"
                         },
                         new
                         {
                             Id = 30,
                             DisplayName = "Middle Name",
                             FieldName = "middleName",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "MiddleName"
                         },
                         new
                         {
                             Id = 31,
                             DisplayName = "Pager",
                             FieldName = "pager",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Pager"
                         },
                         new
                         {
                             Id = 32,
                             DisplayName = "OS",
                             FieldName = "operatingSystemVersion",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "OS"
                         },
                         new
                         {
@@ -385,39 +417,52 @@ namespace BLAZAM.Common.Migrations.Sql
                             Id = 34,
                             DisplayName = "Manager",
                             FieldName = "manager",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Manager"
                         },
                         new
                         {
                             Id = 35,
                             DisplayName = "Photo",
                             FieldName = "thumbnail",
-                            FieldType = 2
+                            FieldType = 2,
+                            PropertyName = "ThumbnailPhoto"
                         },
                         new
                         {
                             Id = 36,
                             DisplayName = "Log On To",
                             FieldName = "userWorkstations",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "LogOnTo"
                         },
                         new
                         {
                             Id = 37,
                             DisplayName = "Logon Hours",
                             FieldName = "logonHours",
-                            FieldType = 2
+                            FieldType = 2,
+                            PropertyName = "LogonHours"
                         },
                         new
                         {
                             Id = 38,
-                            DisplayName = "Group Type and Scope",
+                            DisplayName = "Group Type",
                             FieldName = "groupType",
-                            FieldType = 2
+                            FieldType = 2,
+                            PropertyName = "GroupType"
                         },
                         new
                         {
                             Id = 39,
+                            DisplayName = "Group Scope",
+                            FieldName = "groupType",
+                            FieldType = 2,
+                            PropertyName = "GroupScope"
+                        },
+                        new
+                        {
+                            Id = 40,
                             DisplayName = "Enabled",
                             FieldName = "userAccountControl",
                             FieldType = 6,
@@ -425,7 +470,7 @@ namespace BLAZAM.Common.Migrations.Sql
                         },
                         new
                         {
-                            Id = 40,
+                            Id = 41,
                             DisplayName = "Locked_ Out",
                             FieldName = "lockoutTime",
                             FieldType = 5,
@@ -1679,7 +1724,10 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("FieldId")
+                    b.Property<int?>("CustomFieldId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FieldId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("FilterGuid")
@@ -1702,6 +1750,8 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomFieldId");
+
                     b.HasIndex("FieldId");
 
                     b.HasIndex("OrFilterId");
@@ -1720,7 +1770,10 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<int>("AutomationRuleActionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FieldId")
+                    b.Property<int?>("CustomFieldId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FieldId")
                         .HasColumnType("int");
 
                     b.Property<string>("Value")
@@ -1729,6 +1782,8 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.HasKey("Id");
 
                     b.HasIndex("AutomationRuleActionId");
+
+                    b.HasIndex("CustomFieldId");
 
                     b.HasIndex("FieldId");
 
@@ -2367,17 +2422,21 @@ namespace BLAZAM.Common.Migrations.Sql
 
             modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAndFilter", b =>
                 {
+                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", "CustomField")
+                        .WithMany()
+                        .HasForeignKey("CustomFieldId");
+
                     b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
                         .WithMany()
-                        .HasForeignKey("FieldId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FieldId");
 
                     b.HasOne("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", "OrFilter")
                         .WithMany("AndFilters")
                         .HasForeignKey("OrFilterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CustomField");
 
                     b.Navigation("Field");
 
@@ -2392,13 +2451,17 @@ namespace BLAZAM.Common.Migrations.Sql
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", "CustomField")
+                        .WithMany()
+                        .HasForeignKey("CustomFieldId");
+
                     b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
                         .WithMany()
-                        .HasForeignKey("FieldId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FieldId");
 
                     b.Navigation("AutomationRuleAction");
+
+                    b.Navigation("CustomField");
 
                     b.Navigation("Field");
                 });

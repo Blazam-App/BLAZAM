@@ -19,7 +19,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected const int ADS_GROUP_TYPE_UNIVERSAL_GROUP = 0x8;
         protected const int ADS_GROUP_TYPE_SECURITY_ENABLED = unchecked((int)0x80000000);
 
-        public GroupScope Scope
+        public GroupScope GroupScope
         {
             get
             {
@@ -115,7 +115,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override bool Rename(string newName)
         {
-            SamAccountName = newName;
+            SAMAccountName = newName;
             CommitChanges();
             return base.Rename(newName);
         }

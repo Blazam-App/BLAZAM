@@ -51,6 +51,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return GetDateTimeAttribute("lockoutTime");
 
             }
+            set
+            {
+                if (value!=null)
+                {
+                    SetAttribute("lockoutTime", DateTime.UtcNow);
+                }
+                else
+                {
+
+                    SetAttribute("lockoutTime", 0);
+                }
+            }
         }
 
         public virtual DateTime? LastLogonTimestamp
@@ -92,12 +104,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (value)
                 {
-                    SetAttribute("lockoutTime", DateTime.UtcNow);
+                    LockoutTime = DateTime.UtcNow;
                 }
                 else
                 {
 
-                    SetAttribute("lockoutTime", 0);
+                   LockoutTime = null;
                 }
             }
         }
@@ -321,7 +333,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public bool SetPassword(SecureString password, bool requireChange = false)
         {
-            if (SamAccountName == null) throw new AppException("samaccount name not found!");
+            if (SAMAccountName == null) throw new AppException("samaccount name not found!");
             if (DirectorySettings == null) throw new AppException("Directory settings not found when trying to change directory user password");
 
             var directoryPassword = DirectorySettings.Password.Decrypt();
@@ -348,7 +360,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
 
 
-                        UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
+                        UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
                         if (up != null)
                         {
                             up.SetPassword(password.ToPlainText());

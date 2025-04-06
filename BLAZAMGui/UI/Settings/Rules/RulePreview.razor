@@ -3,26 +3,44 @@
 <MudPaper Elevation="1" Class="pa-4 my-4">
     <MudStack>
         <MudStack Row=true>
-            <MudText Typo="Typo.body2" Color="Color.Tertiary">@Rule.Name</MudText>
+            <MudText Typo="Typo.body2"
+                     Color="Color.Tertiary">@Rule.Name</MudText>
             <MudSpacer />
             <MudSwitch Label="@AppLocalization[Lang.Enabled]"
                        Color="Color.Success"
                        UncheckedColor="Color.Error"
                        Value="@Rule.Enabled"
                        ValueChanged="@(async(bool val)=>{await ChangeEnabled(Rule, val);})" />
-            <AppIconButton Icon="@Icons.Material.Filled.Edit"
+            <AppIconButton Color="Color.Primary"
+                           Icon="@Icons.Material.Filled.Edit"
                            OnClick="@(EditClicked)" />
             @* <AppIconButton Icon="@Icons.Material.Filled.CopyAll"
                            OnClick="@(CopyClicked)" /> *@
         </MudStack>
         <MudStack Row=true>
 
-        <MudText Typo="Typo.body2">Last Triggered: <DateWithTimeTooltip DateTime="@Rule.LastTriggered" /></MudText>
-        <MudText Typo="Typo.body2">Last Executed: <DateWithTimeTooltip DateTime="@Rule.LastExcecuted" /></MudText>
+            <MudText Typo="Typo.body2">
+                Last Triggered: <DateWithTimeTooltip NullText=@AppLocalization[Lang.Never]
+                                                     DateTime="@Rule.LastTriggered" />
+            </MudText>
+            <MudText Typo="Typo.body2">
+                Last Executed: <DateWithTimeTooltip NullText=@AppLocalization[Lang.Never]
+                                                    DateTime="@Rule.LastExcecuted" />
+            </MudText>
         </MudStack>
 
-        <MudText Class="mt-1"><MudIcon Icon="@Icons.Material.Outlined.ElectricBolt" /> Triggers on '@Rule.Trigger.ToString()'</MudText>
-        <MudText Class="mt-2"><MudIcon Icon="@Icons.Material.Outlined.FilterAlt" /> If</MudText>
+        <MudText Class="mt-1">
+            <MudIcon Style=@($"color:{Colors.Yellow.Darken2};" )
+                     Icon="@Icons.Material.Outlined.ElectricBolt" />@($"Triggers on '{AppLocalization[Rule.Trigger.ToString()]}'")
+        </MudText>
+        @if (Rule.Trigger == NotificationType.Scheduled)
+        {
+            <MudText>
+                <MudIcon Color="Color.Info"
+                         Icon="@Icons.Material.Outlined.Schedule" /> At '@Rule.ScheduledRunTime.ToString()'
+            </MudText>
+        }
+        <MudText Class="mt-2"><MudIcon Color="Color.Warning" Icon="@Icons.Material.Outlined.FilterAlt" /> If</MudText>
         @if (Rule.Filters.Count > 0)
         {
             var firstOr = true;
@@ -58,13 +76,25 @@
                                     firstAnd = false;
                                 }
                                 <MudStack Row=true>
+                                    @if (andFilter.Field.FieldType == ActiveDirectoryFieldType.Boolean && andFilter.Negate)
+                                    {
+                                        <MudChip T="string"
+                                                 Text="Not"
+                                                 Color="Color.Error" />
 
+                                    }
                                     <MudTextField T="string"
                                                   ReadOnly="true"
                                                   Label="@AppLocalization[Lang.Field]"
                                                   Value=@str />
                                     @if (andFilter.Field.FieldType != ActiveDirectoryFieldType.Boolean)
                                     {
+                                        if (andFilter.Negate)
+                                        {
+                                            <MudChip T="string"
+                                                     Text="Not"
+                                                     Color="Color.Error" />
+                                        }
                                         <MudTextField T="string"
                                                       ReadOnly="true"
                                                       Label="@AppLocalization[Lang.Operator]"
@@ -77,10 +107,7 @@
                                                           Value=@andFilter.Value?.ToString() />
                                         }
                                     }
-                                    <MudTextField T="string"
-                                                  ReadOnly="true"
-                                                  Label="@AppLocalization[Lang.Negate]"
-                                                  Value=@andFilter.Negate.ToString() />
+
                                 </MudStack>
 
                             }
@@ -96,7 +123,7 @@
         {
             <MudText>This rules will be fired each time a {0} is {1}</MudText>
         }
-        <MudText Class="mt-2"><MudIcon Icon="@Icons.Material.Filled.Login" /> Then</MudText>
+        <MudText Class="mt-2"><MudIcon Color="Color.Success" Icon="@Icons.Material.Filled.Login" /> Then</MudText>
         @{
             var firstAction = true;
         }
@@ -129,7 +156,11 @@
                     <MudTextField T="string"
                                   ReadOnly="true"
                                   Label="@AppLocalization[Lang.Field]"
-                                  Value=@action.FieldValues.FirstOrDefault()?.ToString() />
+                                  Value=@action.FieldValues[0].Field.DisplayName />
+                    <MudTextField T="string"
+                                  ReadOnly="true"
+                                  Label="@AppLocalization[Lang.Value]"
+                                  Value=@action.FieldValues[0].Value?.ToString() />
                 }
                 @if (action.GroupSids.Count > 0)
                 {
@@ -146,13 +177,35 @@
         }
         @if (Rule.Trigger == NotificationType.Scheduled)
         {
-            <MudButton Disabled="_loadingFilteredEntries" Color="Color.Primary" OnClick="@(()=>{})">Matches: @filteredEntries.Count</MudButton>
-            <MudButton Color="Color.Primary" OnClick="@(()=>{RulesProcessor.ProcessScheduledRule(Rule);})">Run Now</MudButton>
+            <MudButton Disabled="_loadingFilteredEntries"
+                       Color="Color.Primary"
+                       OnClick="@(()=>{_matchedPopoverOpen=!_matchedPopoverOpen;})">
+                Matches: @filteredEntries.Count
+            </MudButton>
+
+            @if (_matchedPopoverOpen)
+            {
+                <MudStack Class="mb-4">
+                    @foreach (var entry in filteredEntries)
+                    {
+                        <MudText Align="Align.Center">
+                            <MudLink Target="_blank" Href="@entry.SearchUri">@entry.CanonicalName</MudLink>
+                        </MudText>
+                    }
+                </MudStack>
+            }
+
+
+            <MudButton Color="Color.Primary"
+                       OnClick="@(()=>{RulesProcessor.ProcessScheduledRule(Rule);})">
+                Run Now
+            </MudButton>
         }
     </MudStack>
 </MudPaper>
 
 @code {
+    private bool _matchedPopoverOpen;
     private bool _loadingFilteredEntries;
     private List<IDirectoryEntryAdapter> filteredEntries = new();
     [Parameter]

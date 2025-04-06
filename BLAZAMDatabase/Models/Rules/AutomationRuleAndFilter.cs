@@ -9,8 +9,11 @@ namespace BLAZAM.Database.Models.Rules
         public AutomationRuleOrFilter OrFilter { get; set; }
         public int OrFilterId { get; set; }
 
-        public ActiveDirectoryField Field { get; set; }
-        public int FieldId { get; set; }
+        public ActiveDirectoryField? Field { get; set; }
+        public int? FieldId { get; set; }
+        public CustomActiveDirectoryField? CustomField { get; set; }
+        public int? CustomFieldId { get; set; }
+
         public string? Value { get; set; }
         public ActiveDirectoryFieldOperator Operator { get; set; }
         /// <summary>

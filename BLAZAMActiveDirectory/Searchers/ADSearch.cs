@@ -255,7 +255,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             {
                                 switch (field.Operator)
                                 {
-                                    case ActiveDirectoryFieldOperator.Equals:
+                                    case ActiveDirectoryFieldOperator.EqualTo:
                                         searchValue = $"{field.Value}";
                                         break;
                                     case ActiveDirectoryFieldOperator.StartsWith:

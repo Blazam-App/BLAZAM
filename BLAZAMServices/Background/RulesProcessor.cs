@@ -76,6 +76,7 @@ namespace BLAZAM.Services.Background
         }
         private void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedArgs args)
         {
+            if (sender != null && sender.Equals(this)) return;
             if (args.EventType != ApplicationEventType.Search)
             {
                 var rules = GetRules();
@@ -202,7 +203,8 @@ namespace BLAZAM.Services.Background
                 var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
                 contextRule.LastTriggered = DateTime.UtcNow;
                 context.SaveChanges();
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Loggers.RulesLogger.Error("Error while setting LastTriggered for rule {@Rule}{@Error}", ruleForEvent, ex);
             }
@@ -231,7 +233,7 @@ namespace BLAZAM.Services.Background
                         break;
                     }
                 }
-
+                Loggers.RulesLogger.Debug("Processing for rule {@Rule} has finished", ruleForEvent);
             }
         }
 
@@ -269,13 +271,54 @@ namespace BLAZAM.Services.Background
         private void ExecuteAction(AutomationRule rule, AutomationRuleAction action, IDirectoryEntryAdapter entry)
         {
             var eventType = ApplicationEventType.All;
+            IDirectoryEntryAdapter? target = null;
+            IDirectoryEntryAdapter? origin = null;
             var account = entry as IAccountDirectoryAdapter;
             switch (action.ActionType)
             {
+                case AutomationRuleActionType.Assign:
+                    eventType = ApplicationEventType.Assign;
+                    if (entry is IGroupableDirectoryAdapter groupableEntry)
+                    {
+                        using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
+                        {
+                            var group = directory.Groups.FindGroupBySID(action.GroupSids[0].GroupSid);
+                            if (group != null)
+                            {
+                                target = group;
+                                if (groupableEntry.IsAMemberOf(group))
+                                {
+                                    return;
+                                }
+                                groupableEntry.AssignTo(group);
+                            }
+                        }
+                    }
+                    break;
+                case AutomationRuleActionType.Unassign:
+                    eventType = ApplicationEventType.Unassign;
+                    if (entry is IGroupableDirectoryAdapter groupableEntry2)
+                    {
+                        using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
+                        {
+                            var group = directory.Groups.FindGroupBySID(action.GroupSids[0].GroupSid);
+                            if (group != null)
+                            {
+                                target = group;
+                                if (!groupableEntry2.IsAMemberOf(group))
+                                {
+                                    return;
+                                }
+                                groupableEntry2.UnassignFrom(group);
+                            }
+                        }
+                    }
+                    break;
                 case AutomationRuleActionType.Disable:
                     eventType = ApplicationEventType.Modify;
                     if (account != null)
                     {
+                        if (!account.Enabled) return;
                         account.Enabled = false;
 
                     }
@@ -285,6 +328,8 @@ namespace BLAZAM.Services.Background
 
                     if (account != null)
                     {
+                        if (account.Enabled) return;
+
                         account.Enabled = true;
                     }
                     break;
@@ -293,6 +338,8 @@ namespace BLAZAM.Services.Background
 
                     if (account != null)
                     {
+                        if (!account.LockedOut) return;
+
                         account.LockedOut = false;
                     }
                     break;
@@ -300,20 +347,37 @@ namespace BLAZAM.Services.Background
                     eventType = ApplicationEventType.LockedOut;
                     if (account != null)
                     {
+                        if (account.LockedOut) return;
+
                         account.LockedOut = true;
                     }
                     break;
                 case AutomationRuleActionType.Move:
-                    eventType = ApplicationEventType.Modify;
+                    eventType = ApplicationEventType.Move;
 
                     if (action.Data != null)
                     {
+                        if (entry.GetParent().DN.Equals(action.Data, StringComparison.InvariantCultureIgnoreCase)) return;
+
                         using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-                        var target = directory.OUs.FindOuByDN(action.Data);
-                        if (target != null)
+
+                        var ou = directory.OUs.FindOuByDN(action.Data);
+                        if (ou != null)
                         {
-                            entry.MoveTo(target);
+                            target = ou;
+                            origin = entry.GetParent();
+                            entry.MoveTo(ou);
                         }
+                    }
+                    break;
+                case AutomationRuleActionType.ModifyField:
+                    eventType = ApplicationEventType.Modify;
+                    if (action.FieldValues.Count > 0)
+                    {
+                        var field = action.FieldValues[0].Field;
+                        var existingValue = entry.GetPropertyValue(field.PropertyName);
+                       // if (existingValue.ToString().Equals(action.FieldValues[0].Value, StringComparison.InvariantCultureIgnoreCase)) return;
+                        entry.SetPropertyValue(field.PropertyName, action.FieldValues[0].Value);
                     }
                     break;
             }
@@ -321,15 +385,18 @@ namespace BLAZAM.Services.Background
             var result = entry.CommitChanges();
             if (result.FailedSteps.Count == 0)
             {
-                Audit = new(dbFactory, new RulesUserState(dbFactory,rule.Name));
-                //Audit.User.Changed(entry, changes);
-                Audit.ProcessDirectoryEntryChangedEvent(new DirectoryEntryChangedArgs()
+                Audit = new(dbFactory, new RulesUserState(dbFactory, rule.Name));
+
+                ApplicationEvents.DirectoryEntryChanged.Invoke(this,new()
                 {
-                    Actor = new RulesUserState(dbFactory,rule.Name),
+                    Actor = new RulesUserState(dbFactory, rule.Name),
                     Changes = changes,
                     Entry = entry,
+                    Target = target,
+                    Origin = origin,
                     EventType = eventType
                 });
+              
             }
         }
 
@@ -340,7 +407,7 @@ namespace BLAZAM.Services.Background
             {
                 switch (andFilter.Operator)
                 {
-                    case ActiveDirectoryFieldOperator.Equals:
+                    case ActiveDirectoryFieldOperator.EqualTo:
                         filterTrue = entry.PropertyValueEquals(andFilter.Field.DisplayName, andFilter.Value);
                         break;
 
@@ -401,7 +468,8 @@ namespace BLAZAM.Services.Background
                         break;
 
                     case ActiveDirectoryFieldOperator.Contains:
-                        filterTrue = entry.GetPropertyValue(andFilter.Field.FieldName).ToString().Contains(andFilter.Value.ToString());
+                        var propertyValue = entry.GetPropertyValue(andFilter.Field.PropertyName).ToString();
+                        filterTrue = propertyValue?.Contains(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true;
                         break;
 
                     case ActiveDirectoryFieldOperator.Boolean:

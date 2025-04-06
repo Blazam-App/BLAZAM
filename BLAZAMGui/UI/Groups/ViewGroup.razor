@@ -56,7 +56,7 @@
                 <Section Style="min-height:200px;" Title="Group Details">
                     <MudTextField Label="@AppLocalization[Lang.Group_Name]" @bind-Value="@Group.CanonicalName" Disabled />
 
-                    <MudTextField Label="@AppLocalization[Lang.Account_Name]" @bind-Value="@Group.SamAccountName" Disabled />
+                    <MudTextField Label="@AppLocalization[Lang.Account_Name]" @bind-Value="@Group.SAMAccountName" Disabled />
 
                     <MudTextField Label="@AppLocalization[Lang.Description]" @bind-Value="@Group.Description" Disabled=@(!EditMode || !Group.CanEdit) />
 
@@ -94,12 +94,12 @@
                             <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Group_Type]:</MudText>
                             <MudSpacer />
                             <MudRadioGroup Disabled="@(Group.NewEntryProperties.ContainsKey("groupType") || !Group.CanEditField(ActiveDirectoryFields.GroupType))"
-                                           @bind-Value="Group.Scope">
+                                           @bind-Value="Group.GroupScope">
                                 <MudRadio Value="GroupScope.Universal">@AppLocalization[Lang.Universal]</MudRadio>
                                 <MudRadio Value="GroupScope.Global"
-                                Disabled="@(Group.Scope==GroupScope.DomainLocal)">@AppLocalization[Lang.Global]</MudRadio>
+                                Disabled="@(Group.GroupScope==GroupScope.DomainLocal)">@AppLocalization[Lang.Global]</MudRadio>
                                 <MudRadio Value="GroupScope.DomainLocal" 
-                                Disabled="@(Group.Scope==GroupScope.Global)">@AppLocalization[Lang.Domain_Local]</MudRadio>
+                                Disabled="@(Group.GroupScope==GroupScope.Global)">@AppLocalization[Lang.Domain_Local]</MudRadio>
                             </MudRadioGroup>
                         </MudStack>
                         <MudStack Row=true>

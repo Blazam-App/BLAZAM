@@ -109,11 +109,11 @@ namespace BLAZAM.Helpers
                 {
                     if (fieldValue.Field != null && fieldValue.Value != null)
                         if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
-                            user.HomeDirectory = template.ReplaceVariables(fieldValue.Value, newUserName, user.SamAccountName);
+                            user.HomeDirectory = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
                         else
-                            user.NewEntryProperties[fieldValue.Field.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SamAccountName);
+                            user.NewEntryProperties[fieldValue.Field.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
                     else if (fieldValue.CustomField != null && fieldValue.Value != null)
-                        user.NewEntryProperties[fieldValue.CustomField.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SamAccountName);
+                        user.NewEntryProperties[fieldValue.CustomField.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
                 }
                 catch (Exception ex)
                 {
@@ -338,19 +338,19 @@ namespace BLAZAM.Helpers
 
             switch (fieldType) {
                 case ActiveDirectoryFieldType.Text:
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.Equals);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
                     applicableOperators.Add(ActiveDirectoryFieldOperator.StartsWith);
                     applicableOperators.Add(ActiveDirectoryFieldOperator.EndsWith);
                     applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
                     break;
                 case ActiveDirectoryFieldType.StringList:
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.Equals);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
                     applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
                     break;
                 case ActiveDirectoryFieldType.Date:
                 case ActiveDirectoryFieldType.FileTime:
                 case ActiveDirectoryFieldType.RawData:
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.Equals);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
                     applicableOperators.Add(ActiveDirectoryFieldOperator.BeforeNow);
                     applicableOperators.Add(ActiveDirectoryFieldOperator.AfterNow);
                     applicableOperators.Add(ActiveDirectoryFieldOperator.HistoricalTimeFrame);
@@ -428,81 +428,7 @@ namespace BLAZAM.Helpers
 
 
 
-        public static bool IsNotificationAppropriateForObject(this NotificationType notificationType, ActiveDirectoryObjectType type)
-        {
-
-            //var Name = action.ToString();
-            switch (type)
-            {
-                case ActiveDirectoryObjectType.User:
-                case ActiveDirectoryObjectType.Computer:
-                    switch (notificationType)
-                    {
-                        case NotificationType.Modify:
-                        case NotificationType.Delete:
-                        case NotificationType.Create:
-                        case NotificationType.LockedOut:
-                        case NotificationType.PasswordChange:
-                        case NotificationType.Scheduled:
-                        case NotificationType.Assign:
-                        case NotificationType.Unassign:
-                            return true;
-                        default:
-                            return false;
-                    }
-                case ActiveDirectoryObjectType.Group:
-                    switch (notificationType)
-                    {
-                        case NotificationType.Delete:
-                        case NotificationType.Create:
-                        case NotificationType.Unassign:
-                        case NotificationType.Assign:
-                        case NotificationType.Modify:
-                        case NotificationType.Scheduled:
-                            return true;
-                        default:
-                            return false;
-                    }
-                case ActiveDirectoryObjectType.Printer:
-                case ActiveDirectoryObjectType.OU:
-                    switch (notificationType)
-                    {
-                        case NotificationType.Delete:
-                        case NotificationType.Create:
-                        case NotificationType.Modify:
-                        case NotificationType.Scheduled:
-                            return true;
-                        default:
-                            return false;
-                    }
-                case ActiveDirectoryObjectType.BitLocker:
-                    switch (notificationType)
-                    {
-                        case NotificationType.Delete:
-                        case NotificationType.Scheduled:
-                            return true;
-                        default:
-                            return false;
-                    }
-                case ActiveDirectoryObjectType.All:
-                    switch (notificationType)
-                    {
-                        case NotificationType.PasswordChange:
-                        case NotificationType.LockedOut:
-                        case NotificationType.Unassign:
-                        case NotificationType.Assign:
-                        case NotificationType.Modify:
-                        case NotificationType.Create:
-                        case NotificationType.Delete:
-                        case NotificationType.Scheduled:
-                            return true;
-                        default:
-                            return false;
-                    }
-                default:
-                    return false;
-            }
-        }
+ 
     }
 
 

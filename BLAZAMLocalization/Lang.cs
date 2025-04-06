@@ -9,11 +9,14 @@ namespace BLAZAM.Localization
         public static readonly string Username = "Username";
         public static readonly string Password = "Password";
         public static readonly string Password_Changed = "Password changed";
+        public static readonly string Object_Type = "Object Type";
         public static readonly string Success = "Success";
         public static readonly string Operator = "Operator";
         public static readonly string Cancelled = "Cancelled";
         public static readonly string Create_Rule = "Create Rule";
         public static readonly string Failed = "Failed";
+        public static readonly string Never = "Never";
+        public static readonly string Triggers = "Triggers";
         public static readonly string Queued = "Queued";
         public static readonly string Running = "Running";
         public static readonly string Info = "Info";
