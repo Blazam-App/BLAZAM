@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
     <PackageReference Include="MudBlazor" Version="8.5.0" />
     <PackageReference Include="PreMailer.Net" Version="2.6.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.1" />
     <PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.2" />
     <PackageReference Include="System.Management" Version="9.0.2" />
     <PackageReference Include="System.Security.Permissions" Version="9.0.2" />
