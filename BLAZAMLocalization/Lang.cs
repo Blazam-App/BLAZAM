@@ -32,6 +32,7 @@ namespace BLAZAM.Localization
         public static readonly string Additional_Fields = "Additional Fields";
         public static readonly string API_Tokens = "API Tokens";
         public static readonly string Add_Widget = "Add Widget";
+        public static readonly string Scheduled_Rule = "Scheduled Rule";
         public static readonly string Save = "Save";
         public static readonly string And = "And";
         public static readonly string Or = "Or";

@@ -2,14 +2,22 @@
 @using BLAZAM.Database.Models.Rules
 <MudStack>
 
-    <MudSelectList Values="_adObjectTypes" @bind-Value=_workingRule.ActiveDirectoryObjectType />
-    <MudSelectList Values="_workingRule.ActiveDirectoryObjectType.GetNotificationTypes()" @bind-Value=_workingRule.Trigger />
+    <MudSelectList Label="@AppLocalization[Lang.Object_Type]"
+                   Values="_adObjectTypes"
+                   @bind-Value=_workingRule.ActiveDirectoryObjectType />
+
+    <MudSelectList Label="@AppLocalization[Lang.Triggers]"
+                   Values="_workingRule.ActiveDirectoryObjectType.GetNotificationTypes()"
+                   @bind-Value=_workingRule.Trigger />
+
     <MudTextField @bind-Value=@_workingRule.Name
                   Label="@AppLocalization[Lang.Name]" />
+
     <MudSwitch Color="Color.Success"
                UncheckedColor="Color.Error"
                @bind-Value=_workingRule.Enabled
                Label="@AppLocalization[Lang.Enabled]" />
+
     <MudDatePicker Clearable="true"
                    @bind-Date=_workingRule.ExpirationDate
                    Label="@AppLocalization[Lang.Expires]" />
@@ -25,7 +33,9 @@
                        Label="@AppLocalization[Lang.Time]" />
 
     }
+
     <MudText Typo="Typo.h6">Filters</MudText>
+
     <MudStack Row="true">
 
         <MudStack Class="mud-width-full">
@@ -70,13 +80,11 @@
 
     </MudStack>
 
-
-
     <MudDivider />
+
     <MudText Typo="Typo.h6">Actions</MudText>
     <MudStack Row="true">
-        @if (Rule.Id > 0)
-        {
+
             <MudStack>
 
                 @foreach (var action in _workingRule.Actions)
@@ -85,17 +93,19 @@
                     <MudSpacer />
                 }
             </MudStack>
-        }
+        
         <MudSpacer />
         <MudButton OnClick="AddAction"
                    Color="Color.Success"
                    StartIcon="@Icons.Material.Filled.Add">Add Action</MudButton>
 
     </MudStack>
+
     <MudSwitch Color="Color.Error"
                UncheckedColor="Color.Success"
                @bind-Value=_workingRule.StopOnThisRule
                Label=@(_workingRule.StopOnThisRule?"Stop rule processing on this rule":"Continue processing other rules") />
+
 </MudStack>
 @code {
     [Parameter]
@@ -118,18 +128,20 @@
         await base.OnInitializedAsync();
         Modal.SetYesText(AppLocalization[Rule.Id == 0 ? Lang.Add : Lang.Save_Changes]);
         Modal.SetOnYes(SaveRule);
-        Modal.SetCancelText(AppLocalization[Lang.Delete]);
-        Modal.SetCancelColor(Color.Error);
-        Modal.SetOnCancel(DeleteRule);
+      
         if (Rule.Id == 0)
         {
             Rule.Actions.Add(new() { ActionGuid = Guid.NewGuid() });
             Rule.Trigger = ViewFilter.Trigger;
             Rule.ActiveDirectoryObjectType = ViewFilter.ObjectType;
             _workingRule = Rule;
+
         }
         else
         {
+            Modal.SetCancelText(AppLocalization[Lang.Delete]);
+            Modal.SetCancelColor(Color.Error);
+            Modal.SetOnCancel(DeleteRule);
             _workingRule = await Context.AutomationRules.FirstAsync(r => r.Id.Equals(Rule.Id));
         }
 

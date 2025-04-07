@@ -175,8 +175,7 @@
                 }
             </MudStack>
         }
-        @if (Rule.Trigger == NotificationType.Scheduled)
-        {
+      
             <MudButton Disabled="_loadingFilteredEntries"
                        Color="Color.Primary"
                        OnClick="@(()=>{_matchedPopoverOpen=!_matchedPopoverOpen;})">
@@ -195,7 +194,8 @@
                 </MudStack>
             }
 
-
+        @if (Rule.Trigger == NotificationType.Scheduled)
+        {
             <MudButton Color="Color.Primary"
                        OnClick="@(()=>{RulesProcessor.ProcessScheduledRule(Rule);})">
                 Run Now

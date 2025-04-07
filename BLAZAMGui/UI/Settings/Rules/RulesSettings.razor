@@ -24,8 +24,9 @@
             <MudCard>
                 <MudStack Row="true">
                     <MudText Typo="Typo.h6"
+                    Align="Align.Left"
                              Class="my-3 ps-3">
-                        @AppLocalization[Lang.Rules]: @ViewFilter.ObjectType.ToString()->@ViewFilter.Trigger
+                        @AppLocalization[Lang.Rules]: @ViewFilter.ObjectType.ToString()<MudIcon Class="align-middle" Icon="@Icons.Material.Filled.ArrowRight"/>@ViewFilter.Trigger
                     </MudText>
                     <MudSpacer/>
                     <MudButton Color="Color.Primary" OnClick="@(()=>{CreateRule?.Invoke();})">@AppLocalization[Lang.Create_Rule]</MudButton>

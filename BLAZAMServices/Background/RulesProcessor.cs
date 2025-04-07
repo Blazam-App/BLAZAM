@@ -18,6 +18,7 @@ using Microsoft.Extensions.Localization;
 using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,39 +28,56 @@ namespace BLAZAM.Services.Background
     [AutoStartBackgroundService(true)]
     public class RulesProcessor : ActiveDirectoryBackgroundServiceBase
     {
-        private List<Timer> ScheduledRules = new();
+        private Dictionary<AutomationRule, Timer> ScheduledRules = new();
+        private bool _initialized;
 
         private RulesAuditLogger Audit { get; set; }
 
         public RulesProcessor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
-            Interval = TimeSpan.Zero;
+            Interval = TimeSpan.FromMinutes(5);
         }
 
         protected override void Execute(object? state = null)
         {
-            ApplicationEvents.DirectoryEntryChanged.Delegate += ProcessDirectoryEntryChanged;
+            if (!_initialized)
+            {
+                ApplicationEvents.DirectoryEntryChanged.Delegate += ProcessDirectoryEntryChanged;
+                _initialized = true;
+            }
             ScheduleRules();
         }
 
         private void ScheduleRules()
         {
             var rules = GetRules();
-            var scheduledRules = rules.Where(r => r.Enabled && r.ScheduledRunTime != null && r.Trigger == NotificationType.Scheduled).ToList();
+            var currentTime = DateTime.Now.TimeOfDay;
+            var scheduledRules = rules.Where(
+                                r => r.Enabled
+                            && r.ScheduledRunTime != null
+                            && r.DeletedAt == null
+                            && r.ScheduledRunTime > currentTime
+                            && r.ScheduledRunTime - currentTime < TimeSpan.FromMinutes(11)
+                            && r.Trigger == NotificationType.Scheduled
+                            ).ToList();
             foreach (var rule in scheduledRules)
             {
-                var timeNow = DateTime.Now.TimeOfDay;
-                var timeToRun = rule.ScheduledRunTime;
-                if (timeToRun.HasValue)
+                if (!ScheduledRules.ContainsKey(rule))
                 {
 
-                    if (timeToRun.Value < timeNow)
+                    var timeNow = DateTime.Now.TimeOfDay;
+                    var timeToRun = rule.ScheduledRunTime;
+                    if (timeToRun.HasValue)
                     {
-                        timeToRun = timeToRun.Value.Add(TimeSpan.FromDays(1));
+
+                        if (timeToRun.Value < timeNow)
+                        {
+                            timeToRun = timeToRun.Value.Add(TimeSpan.FromDays(1));
+                        }
+                        var timeFromRun = timeToRun.Value - timeNow;
+                        Timer ruleTimer = new Timer((state) => { ProcessScheduledRule(rule); }, null, (int)timeFromRun.TotalMilliseconds, Timeout.Infinite);
+                        ScheduledRules.Add(rule, ruleTimer);
                     }
-                    var timeFromRun = timeToRun.Value - timeNow;
-                    Timer ruleTimer = new Timer((state) => { ProcessScheduledRule(rule); }, null, (int)timeFromRun.TotalMilliseconds, Timeout.Infinite);
-                    ScheduledRules.Add(ruleTimer);
                 }
             }
         }
@@ -68,9 +86,9 @@ namespace BLAZAM.Services.Background
         public override void Dispose()
         {
             base.Dispose();
-            foreach (var timer in ScheduledRules)
+            foreach (var scheduledRule in ScheduledRules)
             {
-                timer.Dispose();
+                scheduledRule.Value.Dispose();
             }
             ScheduledRules.Clear();
         }
@@ -102,14 +120,30 @@ namespace BLAZAM.Services.Background
 
         public void ProcessScheduledRule(AutomationRule rule)
         {
+            Job scheduledRuleJob = new Job(AppLocalization[Lang.Scheduled_Rule], AppLocalization[Lang.Rules] + " " + rule.Name);
             List<IDirectoryEntryAdapter> filteredEntries = new();
-            filteredEntries = GetFilteredEntries(rule);
 
-            //Execute matched entries
-            foreach (var entry in filteredEntries)
+            JobStep getApplicableEntriesStep = new("Get applicable entries", (step) =>
             {
-                ProcessRule(rule, entry);
-            }
+                filteredEntries = GetFilteredEntries(rule);
+                return true;
+            });
+            scheduledRuleJob.AddStep(getApplicableEntriesStep);
+
+            JobStep execApplicableEntriesStep = new("Execute applicable entries", (step) =>
+            {
+                //Execute matched entries
+                foreach (var entry in filteredEntries)
+                {
+                        ProcessRule(rule, entry);
+                }
+                return true;
+            });
+
+            scheduledRuleJob.AddStep(execApplicableEntriesStep);
+
+           
+            scheduledRuleJob.Run();
         }
 
         public List<IDirectoryEntryAdapter> GetFilteredEntries(AutomationRule rule)
@@ -153,6 +187,7 @@ namespace BLAZAM.Services.Background
                     Field = andFilter.Field,
                     Value = andFilter.Value,
                     Operator = andFilter.Operator,
+                    Negate = andFilter.Negate
                 };
                 switch (andFilter.Field.FieldType)
                 {
@@ -195,46 +230,58 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private void ProcessRule(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
+        private Job ProcessRule(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
         {
-            try
+      
+               Job processRuleJob = new Job($"Run {ruleForEvent.Name} on {entry.CanonicalName}");
+            
+            JobStep executeRule = new("Execute", (step) =>
             {
-                using var context = dbFactory.CreateDbContext();
-                var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
-                contextRule.LastTriggered = DateTime.UtcNow;
-                context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Loggers.RulesLogger.Error("Error while setting LastTriggered for rule {@Rule}{@Error}", ruleForEvent, ex);
-            }
-            if (OrFiltersPass(ruleForEvent, entry))
-            {
+
+
                 try
                 {
                     using var context = dbFactory.CreateDbContext();
                     var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
-                    contextRule.LastExcecuted = DateTime.UtcNow;
+                    contextRule.LastTriggered = DateTime.UtcNow;
                     context.SaveChanges();
                 }
                 catch (Exception ex)
                 {
-                    Loggers.RulesLogger.Error("Error while setting LastExcecuted for rule {@Rule}{@Error}", ruleForEvent, ex);
+                    Loggers.RulesLogger.Error("Error while setting LastTriggered for rule {@Rule}{@Error}", ruleForEvent, ex);
                 }
-                foreach (var action in ruleForEvent.Actions)
+                if (OrFiltersPass(ruleForEvent, entry))
                 {
                     try
                     {
-                        ExecuteAction(ruleForEvent, action, entry);
+                        using var context = dbFactory.CreateDbContext();
+                        var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
+                        contextRule.LastExcecuted = DateTime.UtcNow;
+                        context.SaveChanges();
                     }
                     catch (Exception ex)
                     {
-                        Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent, entry, action, ex);
-                        break;
+                        Loggers.RulesLogger.Error("Error while setting LastExcecuted for rule {@Rule}{@Error}", ruleForEvent, ex);
                     }
+                    foreach (var action in ruleForEvent.Actions)
+                    {
+                        try
+                        {
+                            ExecuteAction(ruleForEvent, action, entry);
+                        }
+                        catch (Exception ex)
+                        {
+                            Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent, entry, action, ex);
+                            break;
+                        }
+                    }
+                    Loggers.RulesLogger.Debug("Processing for rule {@Rule} has finished", ruleForEvent);
                 }
-                Loggers.RulesLogger.Debug("Processing for rule {@Rule} has finished", ruleForEvent);
-            }
+                return true;
+            });
+            processRuleJob.AddStep(executeRule);
+            _=processRuleJob.RunAsync();
+            return processRuleJob;
         }
 
         private bool OrFiltersPass(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
@@ -376,7 +423,7 @@ namespace BLAZAM.Services.Background
                     {
                         var field = action.FieldValues[0].Field;
                         var existingValue = entry.GetPropertyValue(field.PropertyName);
-                       // if (existingValue.ToString().Equals(action.FieldValues[0].Value, StringComparison.InvariantCultureIgnoreCase)) return;
+                        // if (existingValue.ToString().Equals(action.FieldValues[0].Value, StringComparison.InvariantCultureIgnoreCase)) return;
                         entry.SetPropertyValue(field.PropertyName, action.FieldValues[0].Value);
                     }
                     break;
@@ -387,7 +434,7 @@ namespace BLAZAM.Services.Background
             {
                 Audit = new(dbFactory, new RulesUserState(dbFactory, rule.Name));
 
-                ApplicationEvents.DirectoryEntryChanged.Invoke(this,new()
+                ApplicationEvents.DirectoryEntryChanged.Invoke(this, new()
                 {
                     Actor = new RulesUserState(dbFactory, rule.Name),
                     Changes = changes,
@@ -396,7 +443,7 @@ namespace BLAZAM.Services.Background
                     Origin = origin,
                     EventType = eventType
                 });
-              
+
             }
         }
 

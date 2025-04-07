@@ -15,7 +15,7 @@ namespace BLAZAM.Session
             var username = "Rules" + " [" + ruleName + "]";
             var identity = new ClaimsIdentity();
             identity.AddClaim(new Claim(ClaimTypes.Name, username));
-            this.User = new System.Security.Claims.ClaimsPrincipal();
+            this.User = new ClaimsPrincipal();
             this.User.AddIdentity(identity);
         }
     }
