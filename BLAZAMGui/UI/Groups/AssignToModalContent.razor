@@ -69,6 +69,7 @@
                             Label=@AppLocalization[Lang.Copy_Memberships_From]
                             SearchObjectType="ActiveDirectoryObjectType.All"
                             @bind-SelectedResult=@CopyFrom
+                            SearchDisabled=User.CanSearchDisabled
                             CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
 
 
