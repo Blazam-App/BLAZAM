@@ -36,22 +36,17 @@
                 </MudText>
             }
         </MudHidden>
-
-
-
     </MudBreakpointProvider>
     <MudSpacer />
 
     @if (mainLayout?.Header != null)
     {
         @mainLayout.Header.ChildContent
-
     }
     else
     {
         <SearchPageHeader />
     }
-
     <MudSpacer />
     <AuthorizeView Roles="@UserRoles.SuperAdmin">
         <ApplicationNewsProvider />
