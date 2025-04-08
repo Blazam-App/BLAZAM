@@ -130,7 +130,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     Sort = new SortOption("cn", SortDirection.Ascending),
                     SearchScope = SearchScope,
                     SizeLimit = MaxResults,
-                    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
+                    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(objectClass=contact)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
                 };
                 if (EnabledOnly != true)
                 {
@@ -169,6 +169,14 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
 
                         break;
+                    case ActiveDirectoryObjectType.Contact:
+                        searcher.Filter = "(&(objectCategory=person)(objectClass=contact))";
+                        
+                        if (GeneralSearchTerm != null)
+                            FilterQuery = "(|(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
+
+
+                        break;
                     case ActiveDirectoryObjectType.Computer:
                         searcher.Filter = "(&(objectCategory=computer))";
                         if (EnabledOnly == true)
@@ -180,7 +188,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                         break;
                     case ActiveDirectoryObjectType.BitLocker:
-                        searcher.Filter = "(&(objectCategory=*msFVE-RecoveryInformation*))";
+                        searcher.Filter = "(&(objectCategory=msFVE-RecoveryInformation))";
                         if (GeneralSearchTerm != null)
 
                             searcher.Filter = $"(name=*{GeneralSearchTerm}*)";

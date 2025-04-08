@@ -52,7 +52,7 @@ else
         </MudStack>
 
 
-        @if (accountEntry?.LockedOut == true)
+        @if (accountEntry?.LockedOut == true && accountEntry is not IADContact)
         {
             <MudIconButton Disabled=@(!accountEntry.CanUnlock)
                            OnClick=OnUnlock
@@ -63,7 +63,7 @@ else
                         Style="height:32px"
                         Gutters=false
                         Dense=true>
-                @if (accountEntry != null)
+                @if (accountEntry != null && accountEntry is not IADContact)
 
                 {
                     <AppTooltip Text="@AppLocalization[accountEntry.Enabled?"Disable":"Enable"]">
@@ -90,7 +90,7 @@ else
 
                 </AppTooltip>
 
-                @if (accountEntry != null && accountEntry.LockedOut)
+                @if (accountEntry != null && accountEntry is not IADContact && accountEntry.LockedOut)
                 {
                     <AppTooltip Text="@AppLocalization[Lang.Unlock]">
 
@@ -110,7 +110,7 @@ else
                     </AppTooltip>
 
                 }
-                @if (accountEntry != null && accountEntry is not IADComputer)
+                @if (accountEntry != null && accountEntry is not IADContact && accountEntry is not IADComputer)
                 {
                     <AppTooltip Text="@AppLocalization[Lang.Change_Password]">
                         <MudIconButton OnClick="@OnResetPassword"
@@ -190,7 +190,7 @@ else
                      IconColor="@Color.Tertiary"
                      StartIcon="@Icons.Material.Filled.Settings">
 
-                @if (accountEntry != null && ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable)))
+                @if (accountEntry != null && accountEntry is not IADContact && ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable)))
                 {
                     <MudMenuItem>
                         <MudSwitch T=bool
@@ -207,7 +207,7 @@ else
                 {
                     <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!EditMode);})">@(AppLocalization[EditMode ? Lang.End_Edit : Lang.Edit])</MudMenuItem>
                 }
-                @if (accountEntry != null && accountEntry.LockedOut && accountEntry.CanUnlock)
+                @if (accountEntry != null && accountEntry is not IADContact && accountEntry.LockedOut && accountEntry.CanUnlock)
                 {
                     <MudMenuItem OnClick="@OnUnlock">@AppLocalization[Lang.Unlock]</MudMenuItem>
                 }

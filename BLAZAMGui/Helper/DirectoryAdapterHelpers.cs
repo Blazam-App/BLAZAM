@@ -23,6 +23,8 @@ namespace BLAZAM.Helpers
                     return Icons.Material.Filled.Folder;
                 case ActiveDirectoryObjectType.Printer:
                     return Icons.Material.Filled.Print;
+                case ActiveDirectoryObjectType.Contact:
+                    return Icons.Material.Filled.Contacts;
                 default:
                     return Icons.Material.Filled.QuestionMark;
             }

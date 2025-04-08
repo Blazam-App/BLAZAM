@@ -190,6 +190,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         return ActiveDirectoryObjectType.Printer;
                     }
+
+                    if (Classes.Contains("contact"))
+                    {
+                        return ActiveDirectoryObjectType.Contact;
+                    }
                     if (Classes.Contains("msFVE-RecoveryInformation"))
                     {
                         return ActiveDirectoryObjectType.BitLocker;

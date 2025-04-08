@@ -183,6 +183,10 @@ namespace BLAZAM.Helpers
                         {
                             thisObject = new ADUser();
                         }
+                        else if (sr.Properties["objectClass"].Contains("contact"))
+                        {
+                            thisObject = new ADContact();
+                        }
 
                         else if (sr.Properties["objectClass"].Contains("group"))
                         {
@@ -234,6 +238,10 @@ namespace BLAZAM.Helpers
                 else if (sr.Properties["objectClass"].Contains("user"))
                 {
                     thisObject = new ADUser();
+                }
+                else if (sr.Properties["objectClass"].Contains("contact"))
+                {
+                    thisObject = new ADContact();
                 }
 
                 else if (sr.Properties["objectClass"].Contains("group"))
