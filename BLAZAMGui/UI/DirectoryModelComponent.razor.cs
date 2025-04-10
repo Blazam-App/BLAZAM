@@ -8,6 +8,7 @@ namespace BLAZAM.Gui.UI
         protected bool EditMode = false;
 
         protected string _searchTerm;
+        private IGroupableDirectoryAdapter _groupableEntry;
         private IADUser _user;
         private IADGroup _group;
 
@@ -39,56 +40,42 @@ namespace BLAZAM.Gui.UI
             }
         }
         protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = new List<CustomActiveDirectoryField>();
-
-        [Parameter]
-        public IADComputer Computer
-        {
-            get; set;
-        }
         [Parameter]
         public IADUser User
         {
-            get => _user; set
+            get => Entry as IADUser; set => Entry = value;
+        }   
+        [Parameter]
+        public IADContact Contact
+        {
+            get => Entry as IADContact; set => Entry = value;
+        }
+        [Parameter]
+        public IADComputer Computer
+        {
+            get=>Entry as IADComputer; set=>Entry=value;
+        }
+        [Parameter]
+        public IGroupableDirectoryAdapter Entry
+        {
+            get => _groupableEntry; set
             {
-                if (_user == value) return;
-                _user = value;
-                UserChanged.InvokeAsync(_user);
+                if (_groupableEntry == value) return;
+                _groupableEntry = value;
+                EntryChanged.InvokeAsync(_groupableEntry);
                 if (_user != null)
                 {
-                    //if (!_user.NewEntry)
-                    // AuditLogger.User.Searched(_user);
                     RefreshGroupGroupsAsync();
                 }
 
             }
         }
         [Parameter]
-        public EventCallback<IADUser> UserChanged { get; set; }
+        public EventCallback<IGroupableDirectoryAdapter> EntryChanged { get; set; }
         protected List<IADGroup> memberOfGroups = new();
 
         [Parameter]
         public IADOrganizationalUnit OU { get; set; }
-
-        //bool _savingChanges = false;
-        ///// <summary>
-        ///// Indicates whether changes to the model are being saved right now.
-        ///// </summary>
-        //[Parameter]
-        //public bool SavingChanges
-        //{
-        //    get => _savingChanges;
-        //    set
-        //    {
-        //        if (value == _savingChanges) return;
-        //        _savingChanges = value;
-        //        SavingChangesChanged.InvokeAsync(value);
-
-        //    }
-        //}
-        //[Parameter]
-        //public EventCallback<bool> SavingChangesChanged { get; set; }
-
-
 
 
         /// <summary>
@@ -107,8 +94,8 @@ namespace BLAZAM.Gui.UI
             if (Group != null)
                 Group.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
-            if (User != null)
-                User.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
+            if (Entry != null)
+                Entry.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
             if (Computer != null)
                 Computer.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
@@ -130,8 +117,8 @@ namespace BLAZAM.Gui.UI
             LoadingData = true;
             await Task.Run(() =>
             {
-                if (User != null)
-                    memberOfGroups = User.MemberOf;
+                if (Entry != null)
+                    memberOfGroups = Entry.MemberOf;
 
             });
 

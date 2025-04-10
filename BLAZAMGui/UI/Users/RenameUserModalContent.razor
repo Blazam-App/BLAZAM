@@ -1,5 +1,5 @@
 ﻿@inherits AppModalContent
-@if (User != null && _privateUserInstance != null)
+@if (Entry != null && _privateUserInstance != null)
 {
     
 
@@ -29,7 +29,7 @@
 
 
 
-        @if (User.CanEditField(ActiveDirectoryFields.SAMAccountName))
+        @if (Entry.CanEditField(ActiveDirectoryFields.SAMAccountName))
         {
 
 
@@ -38,7 +38,7 @@
 
 
         }
-        @if (User.CanEditField(ActiveDirectoryFields.Mail))
+        @if (Entry.CanEditField(ActiveDirectoryFields.Mail))
         {
 
 
@@ -66,7 +66,7 @@ else
     {
         await base.OnInitializedAsync();
 
-        _privateUserInstance = Directory.Users.FindUserBySID(User.SID.ToSidString());
+        _privateUserInstance = Directory.Users.FindUserBySID(Entry.SID.ToSidString());
 
         SaveDisabled = false;
         Modal.OnYes = SaveChanges;
@@ -93,7 +93,7 @@ else
 
             await _privateUserInstance.CommitChangesAsync();
             SnackBarService.Success("User has been renamed.");
-            User.DirectoryEntry = null;
+            Entry.DirectoryEntry = null;
 
             await DirectoryModelRenamed.InvokeAsync(_privateUserInstance);
             Close();

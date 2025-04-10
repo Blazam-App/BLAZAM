@@ -1,7 +1,7 @@
 ﻿@inherits AppModalContent
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
-    @if (User.CanEditField(ActiveDirectoryFields.LogonHours))
+    @if (Entry.CanEditField(ActiveDirectoryFields.LogonHours))
     {
         <MudSimpleTable Dense=true Hover="true">
             <thead>
@@ -75,7 +75,7 @@
         await base.OnInitializedAsync();
         Modal.OnYes = SaveChanges;
         Modal.AllowClose = true;
-        Modal.YesEnabled = ()=> { return User.CanEditField(ActiveDirectoryFields.LogonHours); };
+        Modal.YesEnabled = ()=> { return Entry.CanEditField(ActiveDirectoryFields.LogonHours); };
         Modal.YesText = AppLocalization[Lang.Save_Changes];
         Modal.Title = AppLocalization[Lang.Logon_Hours];
         schedule = User.LogonHours;
@@ -97,7 +97,7 @@
 
     private void ToggleHour(DayOfWeek day, int hour)
     {
-        if (User.CanEditField(ActiveDirectoryFields.LogonHours))
+        if (Entry.CanEditField(ActiveDirectoryFields.LogonHours))
         {
             schedule.ToggleHour(day, hour);
         }
@@ -112,7 +112,7 @@
 
     private void UpdateSelection(DayOfWeek day, int hour)
     {
-        if (User.CanEditField(ActiveDirectoryFields.LogonHours))
+        if (Entry.CanEditField(ActiveDirectoryFields.LogonHours))
         {
             if (isSelecting)
             {

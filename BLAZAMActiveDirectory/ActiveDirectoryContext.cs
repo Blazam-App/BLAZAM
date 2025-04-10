@@ -116,6 +116,7 @@ namespace BLAZAM.ActiveDirectory
             _ = ConnectAsync();
 
             Users = new ADUserSearcher(this);
+            Contacts = new ADContactSearcher(this);
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
             Printers = new ADPrinterSearcher(this);
@@ -142,6 +143,7 @@ namespace BLAZAM.ActiveDirectory
             EventLogReader = activeDirectoryContextSeed.EventLogReader;
 
             Users = new ADUserSearcher(this);
+            Contacts = new ADContactSearcher(this);
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
             Printers = new ADPrinterSearcher(this);
@@ -176,6 +178,8 @@ namespace BLAZAM.ActiveDirectory
 
 
         public IADUserSearcher Users { get; }
+
+        public IADContactSearcher Contacts { get; }
 
         public IADGroupSearcher Groups { get; }
 

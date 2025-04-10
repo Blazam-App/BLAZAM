@@ -1,0 +1,30 @@
+﻿@inherits Widget
+@attribute [Authorize]
+<NewEntriesWidgetDataGrid Items="@NewContacts"
+                          RowsPerPage="@ItemsPerPage"
+                          RowsPerPageChanged="@SetRowsPerPage"
+                          RowClick=@GoTo
+                          T="IADContact"
+                          OnChanged="RefreshDataAsync"
+                          Loading=LoadingData />
+
+@code {
+    List<IADContact> NewContacts
+    {
+        get => CurrentUser.State.Cache.Get<List<IADContact>>(this.GetType());
+        set => CurrentUser.State.Cache.Set(this.GetType(), value);
+    }
+
+    protected override async Task RefreshDataAsync()
+    {
+        LoadingData = true;
+        NewContacts = (await Directory.Contacts.FindNewContactsAsync(14, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
+
+        LoadingData = false;
+
+    }
+    void GoTo(DataGridRowClickEventArgs<IADContact> args)
+    {
+        Nav.NavigateTo(args.Item.SearchUri);
+    }
+}
