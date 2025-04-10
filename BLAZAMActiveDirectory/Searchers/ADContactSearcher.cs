@@ -39,7 +39,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 ObjectTypeFilter = ActiveDirectoryObjectType.Contact,
                 Fields = new()
                 {
-                    AccountExpires = DateTime.UtcNow
+                    ExpireTime = DateTime.UtcNow
                 }
 
             }.Search<ADContact, IADContact>();

@@ -96,7 +96,7 @@ namespace BLAZAM.Helpers
             }
             return true;
         }
-        public static object GetPropertyValue(this object obj, string propertyName)
+        public static object? GetPropertyValue(this object obj, string propertyName)
         {
             var props = obj.GetType().GetProperties();
             var matchingProp = props.FirstOrDefault(p => p.Name.Equals(propertyName, StringComparison.InvariantCultureIgnoreCase));
@@ -122,7 +122,7 @@ namespace BLAZAM.Helpers
                 var propertyStrVal = propertyValue.ToString();
 
 
-                return propertyStrVal.Equals(value.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                return propertyStrVal?.Equals(value?.ToString(), StringComparison.InvariantCultureIgnoreCase)==true;
 
             }
         }

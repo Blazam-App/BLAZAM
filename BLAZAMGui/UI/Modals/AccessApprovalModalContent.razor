@@ -51,7 +51,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Modal.Options.MaxWidth = MaxWidth.Large;
+        //Modal.Options.MaxWidth = MaxWidth.Large;
         Modal.SetYesText(AppLocalization[Lang.Approve]);
         base.Modal.SetOnYes(Approve);
         _ = LoadData();

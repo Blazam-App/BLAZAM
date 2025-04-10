@@ -373,16 +373,13 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Returns the specified DateTime property in UTC
         /// </summary>
         /// <param name="propertyName"></param>
-        /// <returns></returns>
-        DateTime? GetDateTimeProperty(string propertyName);
-
+        /// <returns></returns>  
+        DateTime? GetDateTimeAttribute(string propertyName);
         /// <summary>
         /// Sets a custom property defined in <see cref="CustomActiveDirectoryField"/>'s
         /// </summary>
         /// <param name="propertyName"></param>
         /// <param name="value"></param>
-        DateTime? GetDateTimeAttribute(string propertyName);
-		
         void SetCustomProperty(string propertyName, object? value);
         /// <summary>
         /// Ensures that the <see cref="DirectoryEntry"/> property is not null.
@@ -392,15 +389,13 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Sets the current user state that should be associated to 
         /// </summary>
-        /// <param name="user"></param>
-        void SetCurrentUser(IApplicationUserState user);
+        /// <param name="user"></param>		
+        void SetCurrentUser(ActiveDirectoryUserState user);
+
         /// <summary>
         /// Gets the parent directory adpater of this object asynchronously
         /// </summary>
         /// <returns></returns>
-		
-        void SetCurrentUser(ActiveDirectoryUserState user);
-		
         Task<IDirectoryEntryAdapter?> GetParentAsync();
     }
 }

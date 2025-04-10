@@ -43,7 +43,7 @@
                 @if (Contact.CanEditField(ActiveDirectoryFields.SAMAccountName))
                 {
                     <MudTextField Label="@AppLocalization[Lang.Username]"
-                    @bind-Value="@_privateEntryInstance.SamAccountName" />
+                    @bind-Value="@_privateEntryInstance.SAMAccountName" />
                 }
                 @if (Entry.CanEditField(ActiveDirectoryFields.Mail))
                 {

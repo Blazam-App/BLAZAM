@@ -29,7 +29,7 @@ namespace BLAZAM.Gui.UI.Settings.Rules
                 _objectType = value;
                 if (!Trigger.IsNotificationAppropriateForObject(value))
                 {
-                    Trigger = GetObjectTypeTriggers().First();
+                    Trigger = GetObjectTypeTriggers().FirstOrDefault();
                 }
                 ObjectTypeChanged?.Invoke();
             }

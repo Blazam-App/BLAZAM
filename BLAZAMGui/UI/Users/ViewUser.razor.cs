@@ -8,6 +8,7 @@ using BLAZAM.FileSystem;
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
+using BLAZAM.Services.Events;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
@@ -64,7 +65,7 @@ namespace BLAZAM.Gui.UI.Users
                 {
                     if (selfAccessLevel != null)
                     {
-                        return GroupableEntry.SamAccountName.Equals(CurrentUser.Username, StringComparison.InvariantCultureIgnoreCase);
+                        return GroupableEntry.SAMAccountName.Equals(CurrentUser.Username, StringComparison.InvariantCultureIgnoreCase);
                     }
                 }
                 return false;
@@ -156,7 +157,13 @@ namespace BLAZAM.Gui.UI.Users
 
                 }
             }
-            await AuditLogger.Searched(GroupableEntry);
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            {
+                EventType = ApplicationEventType.Search,
+                Entry = User,
+                Actor = CurrentUser.State
+
+            });
             LoadingData = false;
             await RefreshEntryComponents();
 
@@ -180,54 +187,41 @@ namespace BLAZAM.Gui.UI.Users
 
                         foreach (var assignment in assignTo)
                         {
-                            await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
-                            await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
-                            //Run synchronously if using sqlite
-                            if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                             {
-                                await NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Assign, CurrentUser.State, assignment.Group);
+                                EventType = ApplicationEventType.Assign,
+                                Entry = assignment.Member,
+                                Target = assignment.Group,
+                                Actor = CurrentUser.State
 
-                            }
-                            else
-                            {
-                                _ = NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Assign, CurrentUser.State, assignment.Group);
+                            });
 
-                            }
 
                         }
 
                         foreach (var assignment in unassignFrom)
                         {
-                            await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
-                            await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
-                            //Run synchronously if using sqlite
-                            if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                             {
-                                await NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Unassign, CurrentUser.State, assignment.Group);
+                                EventType = ApplicationEventType.Unassign,
+                                Entry = assignment.Member,
+                                Target = assignment.Group,
+                                Actor = CurrentUser.State
 
-                            }
-                            else
-                            {
-                                _ = NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Unassign, CurrentUser.State, assignment.Group);
-
-                            }
+                            });
 
                         }
                         if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                         {
-                            await AuditLogger.User.Changed(GroupableEntry, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
-
-                            //Run synchronously if using sqlite
-                            if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                             {
-                                await NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Modify, CurrentUser.State);
+                                EventType = ApplicationEventType.Modify,
+                                Entry = User,
+                                Changes = changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList(),
+                                Actor = CurrentUser.State
 
-                            }
-                            else
-                            {
-                                _ = NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Modify, CurrentUser.State);
+                            });
 
-                            }
                         }
                         EditMode = false;
                         SnackBarService.Success("The changes made to this user have been saved.");
@@ -273,9 +267,13 @@ namespace BLAZAM.Gui.UI.Users
                     GroupableEntry.Delete();
 
                     SnackBarService.Success(GroupableEntry.DisplayName + " has been deleted.");
-                    await AuditLogger.User.Deleted(GroupableEntry);
-                    _ = NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Delete, CurrentUser.State);
+                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.Delete,
+                        Entry = User,
+                        Actor = CurrentUser.State
 
+                    });
                 }
                 catch (AppException ex)
                 {

@@ -376,13 +376,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var bytes = GetProperty<byte[]>("objectGUID");
+                var bytes = GetAttribute<byte[]>("objectGUID");
                 
                 return bytes;
             }
             set
             {
-                SetProperty("objectGUID", value);
+                SetAttribute("objectGUID", value);
             }
 
         }

@@ -134,10 +134,10 @@ else
         await base.OnInitializedAsync();
         RefreshData();
         
-        Group.OnChangesDiscarded += () =>
-        {
-            RefreshData();
-        };
+        // Group.OnChangesDiscarded += () =>
+        // {
+        //     RefreshData();
+        // };
         await InvokeAsync(StateHasChanged);
 
     }
