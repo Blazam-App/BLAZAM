@@ -92,7 +92,7 @@ Options="new(){ MaxWidth=MaxWidth.Large, FullWidth=true,CloseButton=true}">
         if (CurrentUser.State != null)
         {
             // Find the dropped widget
-            var droppedRule = Context.AutomationRules.FirstOrDefault(r => r.Id == dropItem.Item.Id);
+            var droppedRule = await Context.AutomationRules.FirstOrDefaultAsync(r => r.Id == dropItem.Item.Id);
 
             if (droppedRule != null)
             {

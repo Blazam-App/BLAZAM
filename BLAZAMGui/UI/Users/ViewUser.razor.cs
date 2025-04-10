@@ -169,7 +169,7 @@ namespace BLAZAM.Gui.UI.Users
 
         }
 
-        async void SaveChanges()
+        async Task SaveChanges()
         {
             if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_Save_Changes]))
             {

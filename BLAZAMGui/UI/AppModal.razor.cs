@@ -171,8 +171,17 @@ namespace BLAZAM.Gui.UI
         /// </summary>
         public void Close()
         {
-            IsShown = false;
             Modal.CloseAsync();
+            IsShown = false;
+        }
+        /// <summary>
+        /// Hide this modal
+        /// </summary>
+        public async Task CloseAsync()
+        {
+            await Modal.CloseAsync();
+            IsShown = false;
+
         }
         private void YesClicked()
         {

@@ -52,7 +52,7 @@ else
         </MudStack>
 
 
-        @if (accountEntry?.LockedOut == true && accountEntry is not IADContact)
+        @if (accountEntry?.LockedOut == true)
         {
             <MudIconButton Disabled=@(!accountEntry.CanUnlock)
                            OnClick=OnUnlock

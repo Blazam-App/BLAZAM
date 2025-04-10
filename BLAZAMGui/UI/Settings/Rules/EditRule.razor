@@ -190,7 +190,7 @@
 
                         andFilter.FieldId = andFilter.Field.Id;
 
-                        andFilter.Field = Context.ActiveDirectoryFields.First(f => f.Id == andFilter.Field.Id);
+                        andFilter.Field = await Context.ActiveDirectoryFields.FirstAsync(f => f.Id == andFilter.Field.Id);
 
                     }
 
@@ -207,7 +207,7 @@
                 foreach (var fieldValue in action.FieldValues)
                 {
                     fieldValue.FieldId = fieldValue.Field.Id;
-                    fieldValue.Field = Context.ActiveDirectoryFields.First(f => f.Id == fieldValue.Field.Id);
+                    fieldValue.Field = await Context.ActiveDirectoryFields.FirstAsync(f => f.Id == fieldValue.Field.Id);
 
                 }
             }
@@ -224,7 +224,7 @@
 
             SnackBarService.Success(AppLocalization[newRule ? Lang.Created : Lang.Changed]);
             RulesChanged.InvokeAsync();
-            Modal.Close();
+            await Modal.CloseAsync();
 
         }
         else

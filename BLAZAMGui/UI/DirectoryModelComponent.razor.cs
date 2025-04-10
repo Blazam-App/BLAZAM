@@ -9,7 +9,6 @@ namespace BLAZAM.Gui.UI
 
         protected string _searchTerm;
         private IGroupableDirectoryAdapter _groupableEntry;
-        private IADUser _user;
         private IADGroup _group;
 
         [Parameter]
@@ -63,7 +62,7 @@ namespace BLAZAM.Gui.UI
                 if (_groupableEntry == value) return;
                 _groupableEntry = value;
                 EntryChanged.InvokeAsync(_groupableEntry);
-                if (_user != null)
+                if (User != null)
                 {
                     RefreshGroupGroupsAsync();
                 }

@@ -30,7 +30,7 @@ namespace BLAZAM.Services.Background
         private readonly IStringLocalizer<AppLocalization> _appLocalization;
         private readonly EmailService _emailService;
         private readonly WebHookPublisher _webHookPublisher;
-        private object _notificationLock = new();
+        private readonly object _notificationLock = new();
         public NotificationGenerationService(IAppDatabaseFactory databaseFactory, INotificationPublisher notificationPublisher, IStringLocalizer<AppLocalization> appLocalization, EmailService emailService, WebHookPublisher webHookPublisher)
         {
             _databaseFactory = databaseFactory;
