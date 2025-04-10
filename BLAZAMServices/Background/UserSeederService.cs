@@ -84,7 +84,7 @@ namespace BLAZAM.Services.Background
             {
                 context.UserSettings.Add(new()
                 {
-                    Username = user.SamAccountName,
+                    Username = user.SAMAccountName,
                     UserGUID = user.SID.ToSidString(),
                     Email = user.Email
                 });

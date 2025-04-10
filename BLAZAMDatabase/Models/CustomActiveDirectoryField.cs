@@ -19,6 +19,7 @@ namespace BLAZAM.Database.Models
 
         public ActiveDirectoryFieldType FieldType { get; set; } = ActiveDirectoryFieldType.Text;
 
+        public string? PropertyName { get; set; }
 
 
         [Required(ErrorMessageResourceName = "CustomActiveDirectoryField_ObjectTypes", ErrorMessageResourceType = typeof(AppValidationLocalization))]

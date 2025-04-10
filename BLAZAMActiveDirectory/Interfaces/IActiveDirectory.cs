@@ -2,7 +2,6 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
-using BLAZAM.Session.Interfaces;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 
@@ -75,7 +74,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Called when the connection state of the Active Directory server has
         /// changed
         /// </summary>
-        AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
+        AppDelegate<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
 
         /// <summary>
         /// The connection settings as gotten from the <see cref="Factory"/>
@@ -86,7 +85,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// The current web user attached to this connection. If this is a system connection it will be null.
         /// </summary>
-        IApplicationUserState? CurrentUser { get; }
+        ActiveDirectoryUserState? CurrentUser { get; set; }
 
         /// <summary>
         /// Provides an impersonation context to the application domain account.

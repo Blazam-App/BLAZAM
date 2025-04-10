@@ -52,10 +52,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\BLAZAMActiveDirectory\BLAZAMActiveDirectory.csproj" />
 		<ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
 		<ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
 		<ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
 		<ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
+		<ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
 		<ProjectReference Include="..\BLAZAMThemes\BLAZAMThemes.csproj" />
 		<ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
 	</ItemGroup>

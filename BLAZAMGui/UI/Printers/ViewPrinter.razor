@@ -122,7 +122,13 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        await AuditLogger.Searched(Printer);
+        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            {
+                EventType = ApplicationEventType.Search,
+                Entry = Printer,
+                Actor = CurrentUser.State
+
+            });
 
         LoadingData = false;
         await RefreshEntryComponents();

@@ -36,7 +36,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public DateTime? Changed { get; set; }
 
         public DateTime? PasswordLastSet { get; set; }
-        public DateTime? AccountExpires { get; set; }
+        public DateTime? ExpireTime { get; set; }
 
         public string? CN { get => cN; set => cN = value; }
 

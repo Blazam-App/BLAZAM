@@ -33,7 +33,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Modal.OnYes = SaveChanges;
+        Modal.SetOnYes(SaveChanges);
         Modal.Title = "Log On To";
         var data = User.LogOnTo?.Split(',');
         if (data != null)

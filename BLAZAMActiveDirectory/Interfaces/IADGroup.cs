@@ -14,7 +14,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         List<GroupMembership> MembersToRemove { get; }
         List<GroupMembership> MembersToAdd { get; }
         bool IsSecurityGroup { get; set; }
-        GroupScope Scope { get; set; }
+        GroupScope GroupScope { get; set; }
 
         void AssignMember(IGroupableDirectoryAdapter member);
         void UnassignMember(IGroupableDirectoryAdapter member);

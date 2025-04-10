@@ -356,7 +356,7 @@
             WorkingModel = new();
         await LevelsChanged.InvokeAsync();
 
-        ApplicationEvents.InvokePermissionsChanged();
+        ApplicationEvents.PermissionsChanged.Invoke();
         await InvokeAsync(StateHasChanged);
 
     }

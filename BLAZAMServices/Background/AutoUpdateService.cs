@@ -15,9 +15,9 @@ namespace BLAZAM.Services.Background
     public class AutoUpdateService : DatabaseBackgroundServiceBase, IDisposable
     {
 
-        public AppEvent<DateTime?> OnAutoUpdateQueued { get; set; }
-        public AppEvent OnAutoUpdateStarted { get; set; }
-        public AppEvent OnAutoUpdateFailed { get; set; }
+        public AppDelegate<DateTime?> OnAutoUpdateQueued { get; set; }
+        public AppDelegate OnAutoUpdateStarted { get; set; }
+        public AppDelegate OnAutoUpdateFailed { get; set; }
 
         private readonly ApplicationInfo _applicationInfo;
 

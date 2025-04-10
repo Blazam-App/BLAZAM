@@ -34,7 +34,7 @@ else
     bool attemptingImpersonation;
     async void AttemptSignIn()
     {
-        imperonationRequest.Username = User?.SamAccountName;
+        imperonationRequest.Username = User?.SAMAccountName;
         imperonationRequest.Password = "impersonate";
         LoginRequest? authenticationResult = null;
         if (User != null)

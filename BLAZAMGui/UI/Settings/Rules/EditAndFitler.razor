@@ -1,0 +1,63 @@
+@using BLAZAM.Database.Models.Rules
+@inherits DatabaseComponentBase
+<MudBadge Icon="@Icons.Material.Filled.RemoveCircle"
+          OnClick="@RemoveClicked"
+          Color="Color.Error"
+          Overlap="true">
+    <MudAlert Icon="@Icons.Material.Outlined.FilterAlt"
+              Severity="Severity.Normal"
+              Style="@($"height:100%; background-color: var(--mud-palette-warning-lighten)")"
+              Variant="Variant.Outlined">
+
+
+        <AppTooltip Text="@Filter.Field?.FieldName">
+            <MudSelectList Values="_fields"
+                           @bind-Value="Filter.Field" />
+        </AppTooltip>
+        @if (Filter.Field?.FieldType != ActiveDirectoryFieldType.Boolean)
+        {
+            <MudSelectList Values="Filter.Field?.GetOperators()"
+                           @bind-Value="Filter.Operator" />
+
+            @switch (Filter.Operator)
+            {
+                case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
+                case ActiveDirectoryFieldOperator.FutureTimeFrame:
+                    <MudTimePicker @bind-Time=Filter.TimeFrame />
+                    break;
+                case ActiveDirectoryFieldOperator.EqualTo:
+                case ActiveDirectoryFieldOperator.Contains:
+                case ActiveDirectoryFieldOperator.StartsWith:
+                case ActiveDirectoryFieldOperator.EndsWith:
+                    <MudTextField T="string" @bind-Value=Filter.Value />
+                    break;
+                case ActiveDirectoryFieldOperator.BeforeNow:
+                case ActiveDirectoryFieldOperator.AfterNow:
+                    <MudText>Will be determined upon rule execution</MudText>
+                    break;
+            }
+
+        }
+        else
+        {
+            Filter.Value = "true";
+        }
+        <MudSpacer />
+        <MudCheckBox Color="Color.Error" @bind-Value=@Filter.Negate Label="@AppLocalization[Lang.Negate]" />
+    </MudAlert>
+</MudBadge>
+@code {
+    [Parameter]
+    public AutomationRuleAndFilter Filter { get; set; }
+
+    [Parameter]
+    public EventCallback RemoveClicked { get; set; }
+
+    private List<ActiveDirectoryField> _fields = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _fields = (await Context.ActiveDirectoryFields.ToListAsync()).OrderBy(f => AppLocalization[f.DisplayName].Value).ToList();
+
+    }
+}

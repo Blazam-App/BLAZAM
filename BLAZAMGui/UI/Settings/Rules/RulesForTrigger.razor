@@ -1,0 +1,122 @@
+@using BLAZAM.Database.Models.Rules
+@inherits DatabaseComponentBase
+
+
+<MudDropContainer T="AutomationRule"
+@ref=dropContainer
+Items="rules"
+ItemDropped="ItemDropped"
+ItemsSelector="@((item,dropzone) => (item.DeletedAt == null))"
+DraggingClass="mud-alert-text-warning"
+ItemDraggingClass="mud-alert-text-warning"
+Class="d-flex flex-wrap flex-grow-1">
+    <ChildContent>
+        <MudDropZone T="AutomationRule"
+        AllowReorder=true
+        DraggingClass="mud-alert-text-warning"
+        ItemDraggingClass="mud-alert-text-warning"
+        Class="rounded mud-background-gray px-4 flex-grow-1"
+        Identifier="rules">
+
+        </MudDropZone>
+
+    </ChildContent>
+    <ItemRenderer>
+        <RulePreview Rule="context" EditClicked="@(()=>{ selectedRule = context;_=createRuleModal?.ShowAsync();   })" />
+    </ItemRenderer>
+
+</MudDropContainer>
+
+<MudButton Color="Color.Primary"
+OnClick="@CreateNewRule">@AppLocalization[Lang.Create_Rule]</MudButton>
+
+
+
+<AppModal @ref=createRuleModal
+Title="@AppLocalization[Lang.Create_Rule]"
+Options="new(){ MaxWidth=MaxWidth.Large, FullWidth=true,CloseButton=true}">
+    <EditRule RulesChanged="@GetRulesAsync" Rule="selectedRule" ViewFilter="ViewFilter" />
+</AppModal>
+
+@code {
+    EditRule? editRuleContent;
+    MudDropContainer<AutomationRule>? dropContainer;
+    [CascadingParameter]
+    public RuleViewFilter ViewFilter { get; set; }
+
+    [Parameter]
+    public RulesSettings RulesSettings { get; set; }
+
+    AppModal? createRuleModal;
+    AutomationRule selectedRule = new();
+    private List<AutomationRule> rules = new();
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _ = GetRulesAsync();
+        ViewFilter.ObjectTypeChanged += () => GetRulesAsync();
+        ViewFilter.TriggerChanged += () => GetRulesAsync();
+        RulesSettings.CreateRule += () => CreateNewRule();
+    }
+    private void CreateNewRule(){
+        selectedRule = new();
+        selectedRule.Order = rules.Count - 1;
+        _ = createRuleModal?.ShowAsync();
+    }
+    private async Task GetRulesAsync()
+    {
+        LoadingData = true;
+        rules.Clear();
+        Context.ChangeTracker.Clear();
+        rules = await Context.AutomationRules.Where(r => r.Trigger == ViewFilter.Trigger && r.ActiveDirectoryObjectType == ViewFilter.ObjectType).OrderBy(r => r.Order).ToListAsync();
+     
+        if (dropContainer != null)
+        {
+            dropContainer.Items = rules;
+        }
+
+        dropContainer?.Refresh();
+
+
+        LoadingData = false;
+
+    }
+
+    private async Task ItemDropped(MudItemDropInfo<AutomationRule> dropItem)
+    {
+        if (dropItem.Item == null) return;
+        if (CurrentUser.State != null)
+        {
+            // Find the dropped widget
+            var droppedRule = Context.AutomationRules.FirstOrDefault(r => r.Id == dropItem.Item.Id);
+
+            if (droppedRule != null)
+            {
+
+                // **6. Remove from the NEW slot**
+                rules.Remove(droppedRule);
+
+                // **7. Insert into the NEW slot**
+                rules.Insert(dropItem.IndexInZone, droppedRule);
+
+                // **8. Reorder widgets in the NEW slot**
+                for (int i = 0; i < rules.Count; i++)
+                {
+                    rules[i].Order = i;
+                }
+
+                var results = await Context.SaveChangesAsync();
+                if (results > 0)
+                {
+                    SnackBarService.Success(Lang.Changed);
+                }
+
+            }
+        }
+
+    }
+}

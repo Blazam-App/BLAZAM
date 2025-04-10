@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -31,7 +31,6 @@
     <ProjectReference Include="..\BLAZAMJobs\BLAZAMJobs.csproj" />
     <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
     <ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj" />
-    <ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
   </ItemGroup>
 
 </Project>

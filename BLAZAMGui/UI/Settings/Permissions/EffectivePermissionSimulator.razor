@@ -1,5 +1,5 @@
 @using BLAZAM.ActiveDirectory.Services
-
+@using BLAZAM.Services.Background
 @inherits AppComponentBase
 
 <MudText Typo="Typo.h4">
@@ -40,7 +40,7 @@
         var permissionApplicator = new PermissionApplicator(UserStateService, DbFactory, Directory);
         var simUser = new ApplicationUserState(DbFactory);
         await permissionApplicator.LoadPermissions(simUser, selectedUser as IADUser);
-        target.SetCurrentUser(simUser);
+        target.SetCurrentUser(simUser.ToActiveDirectoryUserState());
         simRan = true;
         await InvokeAsync(StateHasChanged);
     }

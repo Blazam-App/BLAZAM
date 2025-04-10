@@ -8,6 +8,7 @@ using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
+using BLAZAM.Services.Events;
 using BLAZAM.Session;
 using Microsoft.Extensions.Localization;
 using System.Security.Cryptography.Xml;
@@ -24,7 +25,7 @@ namespace BLAZAM.Services.Background
         private readonly NotificationGenerationService _notificationGenerationService;
         private readonly ServerAuditLogger _serverAuditLogger;
 
-        public ExpiredUserDisabler(ServerAuditLogger serverAuditLogger, NotificationGenerationService notificationGenerationService, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory,appLocalization)
+        public ExpiredUserDisabler(ServerAuditLogger serverAuditLogger, NotificationGenerationService notificationGenerationService, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
             Interval = TimeSpan.FromMinutes(30);
             _notificationGenerationService = notificationGenerationService;
@@ -36,13 +37,13 @@ namespace BLAZAM.Services.Background
             using var context = dbFactory.CreateDbContext();
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
 
-            var expiredUsers = new List<IADUser>(); 
+            var expiredUsers = new List<IADUser>();
             Job executeJob = new(AppLocalization["Disable Expired Users"]);
             executeJob.StopOnFailedStep = true;
 
             JobStep prepareStep = new(AppLocalization["Collect data"], (state) =>
             {
-                expiredUsers = directory.Users.FindExpiredUsers().Where(u=>u.ExpireTime!=null && u.ExpireTime<DateTime.UtcNow).ToList();
+                expiredUsers = directory.Users.FindExpiredUsers().Where(u => u.ExpireTime != null && u.ExpireTime < DateTime.UtcNow).ToList();
                 return true;
             });
             executeJob.AddStep(prepareStep);
@@ -56,17 +57,23 @@ namespace BLAZAM.Services.Background
                         var original = directory.Users.FindUserBySID(user.SID.ToSidString());
                         user.Enabled = false;
                         List<AuditChangeLog>? changes = new(user.Changes);
-                        var result = user.CommitChanges(); 
-                        
-                        if(result.Result == JobResult.Passed)
+                        var result = user.CommitChanges();
+
+                        if (result.Result == JobResult.Passed)
                         {
-                            _serverAuditLogger.User.Changed(user,changes);
-                            _notificationGenerationService.PostAsync(user, NotificationType.Modify,new SystemUserState(dbFactory));
+                            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            {
+                                EventType = ApplicationEventType.Modify,
+                                Entry = user,
+                                Changes = changes,
+                                Actor = new SystemUserState(dbFactory)
+
+                            });
                         }
 
                     }
                 }
-               
+
                 return true;
             });
             executeJob.AddStep(analyzeStep);

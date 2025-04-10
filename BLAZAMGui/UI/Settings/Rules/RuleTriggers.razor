@@ -1,0 +1,26 @@
+
+@inherits AppComponentBase
+<MudStack Spacing="0">
+    @foreach (var trigger in ViewFilter.GetObjectTypeTriggers())
+    {
+        <MudListItem Class="@(ViewFilter.Trigger==trigger?"mud-selected-item mud-tertiary-text mud-tertiary-hover":"")" 
+        Value="trigger"
+        Dense="true"
+        OnClick="@(()=>{ViewFilter.Trigger=trigger;})"
+        Text=@AppLocalization[trigger.ToString()] />
+    }
+</MudStack>
+
+@code {
+    [CascadingParameter]
+    public RuleViewFilter ViewFilter { get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+       
+        ViewFilter.ObjectTypeChanged += () => {
+            InvokeAsync(StateHasChanged); 
+        };
+    }
+    
+}

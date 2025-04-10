@@ -41,9 +41,9 @@
     List<PermissionMapping> _usedInMappings = new List<PermissionMapping>();
     protected override async Task OnInitializedAsync()
     {
-        //Modal.Options.MaxWidth = MaxWidth.Medium;
-        Modal.YesText = AppLocalization[Lang.Delete];
-        Modal.OnYes += ()=>{ OnConfirm.InvokeAsync(); return Task.CompletedTask; };
+        Modal.Options.MaxWidth = MaxWidth.Medium;
+        Modal.SetYesText(AppLocalization[Lang.Delete]);
+        Modal.SetOnYes(OnConfirm.InvokeAsync);
         await base.OnInitializedAsync();
         await Modal.RefreshView();
 

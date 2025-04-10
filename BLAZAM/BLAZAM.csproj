@@ -128,6 +128,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Include="..\BLAZAMGui\UI\Settings\Rules\EditOrFilter.razor" Link="EditOrFilter.razor" />
+	  <None Include="..\BLAZAMGui\UI\Settings\Rules\EditRuleAction.razor" Link="EditRuleAction.razor" />
+	  <None Include="..\BLAZAMGui\UI\Settings\Templates\VariableTable.razor" Link="VariableTable.razor" />
+	  <None Include="..\BLAZAMGui\UI\Settings\Update\UpdateReleaseNotesExpansionPanel.razor" Link="UpdateReleaseNotesExpansionPanel.razor" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Update="Properties\Resources.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>

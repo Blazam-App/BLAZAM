@@ -63,11 +63,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty("name");
+                return GetStringAttribute("name");
             }
             set
             {
-                SetProperty("name", value);
+                SetAttribute("name", value);
             }
         }
 
@@ -297,7 +297,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             newGroup.Parse(directoryEntry: DirectoryEntry!.Children.Add("CN=" + containerName.Trim(), "group"), directory: Directory);
             newGroup.NewEntry = true;
-            newGroup.SamAccountName = containerName.Trim();
+            newGroup.SAMAccountName = containerName.Trim();
             return newGroup;
 
         }

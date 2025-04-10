@@ -14,7 +14,7 @@ namespace BLAZAM.Session.Interfaces
         /// This user's id as in the database
         /// </summary>
         public int Id { get; }
-        AppEvent OnSettingsChanged { get; set; }
+        AppDelegate OnSettingsChanged { get; set; }
 
         /// <summary>
         /// Returns the combined names of the user, and if applicable, the impersonators username

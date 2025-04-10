@@ -180,6 +180,14 @@ else
                                    Icon="@(IsFavorite?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
                                    Color="@(IsFavorite?Color.Warning:Color.Default)" />
                 </AppTooltip>
+                @if (IsAdmin && ApplicationInfo.InDebugMode)
+                {
+                    <AppTooltip Text="Application Event Toolkit">
+                        <MudIconButton OnClick="@(()=>{_appEventModal?.ShowAsync();})"
+                                       Icon="@(IsFavorite?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
+                                       Color="@(IsFavorite?Color.Warning:Color.Default)" />
+                    </AppTooltip>
+                }
             </MudToolBar>
         </MudHidden>
         <MudSpacer />
@@ -263,10 +271,13 @@ else
             <RequestAccessModalContent Entry="@DirectoryEntry" />
         </AppModal>
     }
-
+    <AppModal @ref=_appEventModal Title="Application Event Toolkit">
+            <AppEventToolkitModalContent DirectoryEntry="@DirectoryEntry" />
+        </AppModal>
 }
 @code {
     private AppModal? _requestAccessModal;
+    private AppModal? _appEventModal;
     private bool _showRequestButton;
     private IDirectoryEntryAdapter? _parentOU;
     [Parameter]

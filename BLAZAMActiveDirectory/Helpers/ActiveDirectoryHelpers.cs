@@ -2,8 +2,12 @@
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
+using BLAZAM.Database.Models.Notifications;
+using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Logger;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
@@ -105,11 +109,11 @@ namespace BLAZAM.Helpers
                 {
                     if (fieldValue.Field != null && fieldValue.Value != null)
                         if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
-                            user.HomeDirectory = template.ReplaceVariables(fieldValue.Value, newUserName, user.SamAccountName);
+                            user.HomeDirectory = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
                         else
-                            user.NewEntryProperties[fieldValue.Field.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SamAccountName);
+                            user.NewEntryProperties[fieldValue.Field.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
                     else if (fieldValue.CustomField != null && fieldValue.Value != null)
-                        user.NewEntryProperties[fieldValue.CustomField.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SamAccountName);
+                        user.NewEntryProperties[fieldValue.CustomField.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
                 }
                 catch (Exception ex)
                 {
@@ -334,6 +338,106 @@ namespace BLAZAM.Helpers
         }
 
 
+        public static List<ActiveDirectoryFieldOperator> GetOperators(this IActiveDirectoryField field)
+        {
+            List<ActiveDirectoryFieldOperator> applicableOperators = new List<ActiveDirectoryFieldOperator>();
+            if (field == null || field.FieldType==null) return applicableOperators;
+            var fieldType = field.FieldType;
 
+            switch (fieldType) {
+                case ActiveDirectoryFieldType.Text:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.StartsWith);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EndsWith);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
+                    break;
+                case ActiveDirectoryFieldType.StringList:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
+                    break;
+                case ActiveDirectoryFieldType.Date:
+                case ActiveDirectoryFieldType.FileTime:
+                case ActiveDirectoryFieldType.RawData:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.BeforeNow);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.AfterNow);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.HistoricalTimeFrame);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.FutureTimeFrame);
+                    break;
+
+            }
+
+            return applicableOperators;
+
+        }
+
+        public static bool IsActionAppropriateForObject(this ActiveDirectoryObjectAction action, ActiveDirectoryObjectType type)
+        {
+
+            //var Name = action.ToString();
+            switch (type)
+            {
+                case ActiveDirectoryObjectType.User:
+                case ActiveDirectoryObjectType.Computer:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Unlock:
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Enable:
+                        case ActiveDirectoryObjectAction.Disable:
+                        case ActiveDirectoryObjectAction.Rename:
+                        case ActiveDirectoryObjectAction.SetPassword:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Group:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Unassign:
+                        case ActiveDirectoryObjectAction.Assign:
+                        case ActiveDirectoryObjectAction.Rename:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Printer:
+                case ActiveDirectoryObjectType.OU:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Rename:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.BitLocker:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Delete:
+                            return true;
+                        default:
+                            return false;
+                    }
+
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsActionAppropriateForObject(this ObjectAction action, ActiveDirectoryObjectType type) => IsActionAppropriateForObject(action.Action, type);
+
+
+
+ 
     }
+
+
 }

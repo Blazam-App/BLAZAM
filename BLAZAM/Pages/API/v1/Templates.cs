@@ -17,6 +17,7 @@ using Microsoft.Extensions.Localization;
 using MudBlazor;
 using System.Security;
 using System.Text.Json;
+using BLAZAM.Services.Events;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -109,7 +110,7 @@ namespace BLAZAM.Pages.API.v1
             //Override username if provided
             if (!newUserDetails.Username.IsNullOrEmpty())
             {
-                newUser.SamAccountName = newUserDetails.Username;
+                newUser.SAMAccountName = newUserDetails.Username;
             }
 
             //Store password in memory for later
@@ -147,17 +148,14 @@ namespace BLAZAM.Pages.API.v1
 
         private async Task AuditAndNotify(NewUserDetails newUserDetails, DirectoryTemplate? template, IADUser? newUser, SecureString password)
         {
-            await AuditLogger.User.Created(newUser);
-            if (DbFactory.DatabaseType == DatabaseType.SQLite)
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
-                await OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
+                EventType = ApplicationEventType.Create,
+                Entry = newUser,
+                Actor = CurrentUserState
 
-            }
-            else
-            {
-                _ = OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
-
-            }
+            });
+            
 
 
             if (template?.EffectiveSendWelcomeEmail == true)
@@ -258,7 +256,7 @@ namespace BLAZAM.Pages.API.v1
             {
                 NewUserWelcomeEmailMessage message = new();
                 message.Domain = user.Directory.ConnectionSettings?.FQDN;
-                message.Username = user.SamAccountName;
+                message.Username = user.SAMAccountName;
                 message.Password = password;
                 await EmailService.SendMessage(AppLocalization["New Account Details"], message, to);
 

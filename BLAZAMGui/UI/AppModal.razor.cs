@@ -66,8 +66,17 @@ namespace BLAZAM.Gui.UI
         }
 
         [Parameter]
+        public Color CancelColor { get; set; }
+        public void SetCancelColor(Color cancelColor)
+        {
+            CancelColor = cancelColor;
+        }
+        [Parameter]
         public OnCancelEvent OnCancel { get; set; }
-
+        public void SetOnCancel(OnCancelEvent onCancel)
+        {
+            OnCancel = onCancel;
+        }
         [Parameter]
         public OnYesEvent OnYes { get; set; }
         public void SetOnYes(OnYesEvent onYes)
@@ -96,6 +105,7 @@ namespace BLAZAM.Gui.UI
 
         [Parameter]
         public string Title { get; set; }
+
 
         [Parameter]
         public EventCallback<MudMessageBox>? ModalChanged { get; set; }

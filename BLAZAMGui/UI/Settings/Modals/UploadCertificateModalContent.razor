@@ -91,8 +91,8 @@
     public AppSettings AppSettings { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        Modal.YesText = AppLocalization[Lang.Upload];
-        Modal.OnYes = Import;
+        Modal.SetYesText(AppLocalization[Lang.Upload]);
+        Modal.SetOnYes(Import);
         await base.OnInitializedAsync();
 
     }

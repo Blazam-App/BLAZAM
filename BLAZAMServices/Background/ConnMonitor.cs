@@ -16,11 +16,11 @@ namespace BLAZAM.Services.Background
         /// <summary>
         /// Called when the database can connect and application settings have been loaded
         /// </summary>
-        public AppEvent<ServiceConnectionState>? OnAppReadyChanged { get; set; }
+        public AppDelegate<ServiceConnectionState>? OnAppReadyChanged { get; set; }
         /// <summary>
         /// Called when the Active Directory connection changes
         /// </summary>
-        public AppEvent<ServiceConnectionState>? OnDirectoryConnectionChanged { get; set; }
+        public AppDelegate<ServiceConnectionState>? OnDirectoryConnectionChanged { get; set; }
 
 
         //public bool RedirectToHttps { get; set; }

@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common;
 using BLAZAM.Common.Data;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace BLAZAM.ActiveDirectory.Services
+namespace BLAZAM.Services.Background
 {
     public class PermissionApplicator
     {
@@ -166,17 +167,17 @@ namespace BLAZAM.ActiveDirectory.Services
             {
                 userRoles.Add(new Claim(ClaimTypes.Name, directoryUser.DisplayName));
             }
-            else if (directoryUser.SamAccountName != null)
+            else if (directoryUser.SAMAccountName != null)
             {
-                userRoles.Add(new Claim(ClaimTypes.Name, directoryUser.SamAccountName));
+                userRoles.Add(new Claim(ClaimTypes.Name, directoryUser.SAMAccountName));
 
             }
             if (directoryUser.UserPrincipalName != null)
-                userRoles.Add(new Claim(ClaimTypes.WindowsAccountName, directoryUser.SamAccountName));
+                userRoles.Add(new Claim(ClaimTypes.WindowsAccountName, directoryUser.SAMAccountName));
             if (directoryUser.GivenName != null)
                 userRoles.Add(new Claim(ClaimTypes.GivenName, directoryUser.GivenName));
-            if (directoryUser.Surname != null)
-                userRoles.Add(new Claim(ClaimTypes.Surname, directoryUser.Surname));
+            if (directoryUser.Sn != null)
+                userRoles.Add(new Claim(ClaimTypes.Surname, directoryUser.Sn));
             if (directoryUser.Email != null)
                 userRoles.Add(new Claim(ClaimTypes.Email, directoryUser.Email));
 

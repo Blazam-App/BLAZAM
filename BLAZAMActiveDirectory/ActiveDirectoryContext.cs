@@ -11,7 +11,6 @@ using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
-using BLAZAM.Session.Interfaces;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
@@ -25,12 +24,11 @@ namespace BLAZAM.ActiveDirectory
     public class ActiveDirectoryContext : IActiveDirectoryContext
     {
         public DomainControllerEventLogReader EventLogReader { get; private set; }
-        public IApplicationUserState? CurrentUser
+        public ActiveDirectoryUserState? CurrentUser
         {
             get
             {
                 if (_currentUser != null) return _currentUser;
-                if (_userStateService.CurrentUserState != null) return _userStateService.CurrentUserState;
                 return null;
             }
             set => _currentUser = value;
@@ -101,7 +99,6 @@ namespace BLAZAM.ActiveDirectory
         /// <param name="context"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
         public ActiveDirectoryContext(IAppDatabaseFactory factory,
-            IApplicationUserStateService userStateService,
             IEncryptionService encryptionService,
             INotificationPublisher notificationPublisher
             )
@@ -110,7 +107,6 @@ namespace BLAZAM.ActiveDirectory
             _encryption = encryptionService;
             _notificationPublisher = notificationPublisher;
             Factory = factory;
-            _userStateService = userStateService;
             SetSystemInstance(this);
             EventLogReader = new(this);
             _ = ConnectAsync();
@@ -133,7 +129,6 @@ namespace BLAZAM.ActiveDirectory
             _encryption = activeDirectoryContextSeed._encryption;
             _notificationPublisher = activeDirectoryContextSeed._notificationPublisher;
             Factory = activeDirectoryContextSeed.Factory;
-            _userStateService = activeDirectoryContextSeed._userStateService;
             ConnectionSettings = activeDirectoryContextSeed.ConnectionSettings;
             RootDirectoryEntry = activeDirectoryContextSeed.RootDirectoryEntry;
             AppRootDirectoryEntry = activeDirectoryContextSeed.AppRootDirectoryEntry;
@@ -207,7 +202,7 @@ namespace BLAZAM.ActiveDirectory
             }
         }
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
-        private IApplicationUserState? _currentUser;
+        private ActiveDirectoryUserState? _currentUser;
         private bool _keepAlive;
 
         public DirectoryConnectionStatus Status
@@ -219,7 +214,7 @@ namespace BLAZAM.ActiveDirectory
                 OnStatusChanged?.Invoke(_status);
             }
         }
-        public AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
+        public AppDelegate<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
 
 
         public Exception? ConnectionException { get; set; }
@@ -228,7 +223,6 @@ namespace BLAZAM.ActiveDirectory
 
         public ADSettings ConnectionSettings { get; private set; }
 
-        private IApplicationUserStateService _userStateService { get; set; }
 
         public WindowsImpersonation? Impersonation
         {
@@ -743,7 +737,7 @@ namespace BLAZAM.ActiveDirectory
                 isDeleteAttributeMod.Name = "isDeleted";
                 isDeleteAttributeMod.Operation = DirectoryAttributeOperation.Delete;
                 DirectoryAttributeModification dnAttributeMod = new();
-                dnAttributeMod.Name = "distinguishedName";
+                dnAttributeMod.Name = ActiveDirectoryFields.DistinguishedName.FieldName;
                 dnAttributeMod.Operation = DirectoryAttributeOperation.Replace;
                 dnAttributeMod.Add(newDN);
                 ModifyRequest request = new(model.DN, new DirectoryAttributeModification[] { isDeleteAttributeMod, dnAttributeMod });

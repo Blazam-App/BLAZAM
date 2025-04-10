@@ -74,7 +74,13 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        await AuditLogger.Searched(OU);
+        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            {
+                EventType = ApplicationEventType.Search,
+                Entry = OU,
+                Actor = CurrentUser.State
+
+            });
         if (OU != null)
         {
             parentOU = (IADOrganizationalUnit?)await OU.GetParentAsync();
@@ -91,18 +97,18 @@
                 var changes = OU?.Changes;
                 await OU!.CommitChangesAsync();
                 EditMode = false;
-                await AuditLogger.OU.Changed(OU, changes);
-                if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                {
-                    await NotificationGenerationService.PostAsync(OU, NotificationType.Modify, CurrentUser.State);
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.Modify,
+                        Entry = OU,
+                        Changes =changes,
+                        Actor = CurrentUser.State
 
-                }
-                else
-                {
-                    _ = NotificationGenerationService.PostAsync(OU, NotificationType.Modify, CurrentUser.State);
 
-                }
-                SnackBarService.Success(AppLocalization[Lang.Changes_have_been_saved]);
+                    });
+                
+                SnackBarService.Success(AppLocalization["The changes made to this ou have been saved."]);
+
                 await RefreshEntryComponents();
 
 
@@ -131,9 +137,14 @@
                 {
                     SnackBarService.Success(AppHelpLocalization[HelpLang.Deleted, ouName]);
                 }
-                await AuditLogger.OU.Deleted(OU);
-                _ = NotificationGenerationService.PostAsync(OU, NotificationType.Delete, CurrentUser.State);
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.Delete,
+                        Entry = OU,
+                        Actor = CurrentUser.State
 
+                    });
+                
 
 
             }

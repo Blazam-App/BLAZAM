@@ -65,7 +65,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Modal.OnYes = AddGroup;
+        Modal.SetOnYes(AddGroup);
     }
 
 }

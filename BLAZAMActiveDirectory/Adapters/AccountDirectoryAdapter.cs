@@ -48,8 +48,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetDateTimeProperty("lockoutTime");
+                return GetDateTimeAttribute("lockoutTime");
 
+            }
+            set
+            {
+                if (value!=null)
+                {
+                    SetAttribute("lockoutTime", DateTime.UtcNow);
+                }
+                else
+                {
+
+                    SetAttribute("lockoutTime", 0);
+                }
             }
         }
 
@@ -57,7 +69,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetDateTimeProperty("lastLogonTimestamp");
+                return GetDateTimeAttribute("lastLogonTimestamp");
 
             }
         }
@@ -92,12 +104,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (value)
                 {
-                    SetProperty("lockoutTime", DateTime.UtcNow);
+                    LockoutTime = DateTime.UtcNow;
                 }
                 else
                 {
 
-                    SetProperty("lockoutTime", 0);
+                   LockoutTime = null;
                 }
             }
         }
@@ -164,7 +176,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var uacRaw = Convert.ToInt32(GetProperty<object>("userAccountControl"));
+                var uacRaw = Convert.ToInt32(GetAttribute<object>("userAccountControl"));
                 if (uacRaw == 0)
                 {
                     UAC = ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
@@ -174,7 +186,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                SetProperty("userAccountControl", value);
+                SetAttribute("userAccountControl", value);
             }
         }
 
@@ -238,14 +250,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetDateTimeProperty("accountExpires");
+                return GetDateTimeAttribute("accountExpires");
             }
             set
             {
 
                 if (value == null)
                     value = CommonHelpers.ADS_NULL_TIME;
-                SetProperty("accountExpires", value?.ToUniversalTime().ToFileTime().ToString());
+                SetAttribute("accountExpires", value?.ToUniversalTime().ToFileTime().ToString());
             }
         }
         public void StageRequirePasswordChange(bool requireChange)
@@ -286,13 +298,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var dateTime = GetDateTimeProperty("pwdLastSet")?.AdsValueToDateTime();
+                var dateTime = GetDateTimeAttribute("pwdLastSet")?.AdsValueToDateTime();
                 if (dateTime.HasValue)
                 {
                     return dateTime.Value;
 
                 }
-                var rawValue = GetProperty<Int32>("pwdLastSet");
+                var rawValue = GetAttribute<Int32>("pwdLastSet");
                 if (rawValue == -1)
                 {
                     return DateTime.UtcNow;
@@ -306,9 +318,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 if (value == null)
-                    SetProperty("pwdLastSet", 0);
+                    SetAttribute("pwdLastSet", 0);
                 else
-                    SetProperty("pwdLastSet", -1);
+                    SetAttribute("pwdLastSet", -1);
 
             }
 
@@ -321,7 +333,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public bool SetPassword(SecureString password, bool requireChange = false)
         {
-            if (SamAccountName == null) throw new AppException("samaccount name not found!");
+            if (SAMAccountName == null) throw new AppException("samaccount name not found!");
             if (DirectorySettings == null) throw new AppException("Directory settings not found when trying to change directory user password");
 
             var directoryPassword = DirectorySettings.Password.Decrypt();
@@ -348,7 +360,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
 
 
-                        UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
+                        UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
                         if (up != null)
                         {
                             up.SetPassword(password.ToPlainText());

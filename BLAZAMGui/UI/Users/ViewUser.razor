@@ -10,7 +10,8 @@
 }
 @if (GroupableEntry != null)
 {
-    <AppPageTitle>@GroupableEntry?.SamAccountName</AppPageTitle>
+    <AppPageTitle>@GroupableEntry?.SAMAccountName</AppPageTitle>
+
 
     <EditForm OnValidSubmit=SaveChanges Model="GroupableEntry">
         <CascadingValue Value="EditMode">
@@ -33,6 +34,7 @@
                                               OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
                                               OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})"
                                               OnUnlock="@Unlock" />
+
                     <LoadingData Loading=SavingChanges />
 
 
@@ -72,8 +74,8 @@
                     }
                 </AppModal>
                 <AppModal Title=@AppLocalization[Lang.Logon_Hours]
-                          @ref=@LogonHoursModal
-                          Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
+                @ref=@LogonHoursModal
+                Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
                     @if (LogonHoursModal?.IsShown == true)
                     {
                         <LogonHoursModalContent Entry="User" />
@@ -86,10 +88,10 @@
                         <Section FullWidth=false>
 
                             <MudCard Elevation="2"
-                                     Style="width:fit-content;height:fit-content"
-                                     Class="relative mx-auto d-block p-1 mb-5"
-                                     @onmouseenter=@(()=>{showRemoveThumbnail=true;})
-                                     @onmouseleave=@(()=>{showRemoveThumbnail=false;})>
+                            Style="width:fit-content;height:fit-content"
+                            Class="relative mx-auto d-block p-1 mb-5"
+                            @onmouseenter=@(()=>{showRemoveThumbnail=true;})
+                            @onmouseleave=@(()=>{showRemoveThumbnail=false;})>
 
                                 @if (Contact?.ThumbnailPhoto != null)
                                 {
@@ -98,9 +100,9 @@
                                     {
 
                                         <MudIconButton OnClick=RemoveThumbnail
-                                                       Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;left:10px"
-                                                       Color=Color.Error
-                                                       Icon="@Icons.Material.Filled.Delete" />
+                                        Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;left:10px"
+                                        Color=Color.Error
+                                        Icon="@Icons.Material.Filled.Delete" />
                                     }
 
                                 }
@@ -117,9 +119,9 @@
                                 @if (showRemoveThumbnail && GroupableEntry?.CanEditField(ActiveDirectoryFields.Thumbnail) == true)
                                 {
                                     <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.ShowAsync();})
-                                                   Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
-                                                   Color=Color.Primary
-                                                   Icon="@Icons.Material.Filled.Upload" />
+                                    Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
+                                    Color=Color.Primary
+                                    Icon="@Icons.Material.Filled.Upload" />
                                 }
                             </MudCard>
 
@@ -185,6 +187,7 @@
                             {
                                 <MudAlert Severity="Severity.Error"
                                           Class="mud-width-full">@AppLocalization[Lang.User_is_disabled]</MudAlert>
+
                             }
                             @if (GroupableEntry is IADUser && Account.LockedOut)
                             {
@@ -226,6 +229,7 @@
                                                       Disabled=!Contact.NewEntry />
 
 
+
                                  </MudStack>
                                  @if (EditMode && GroupableEntry?.NewEntry == false)
                                 {
@@ -249,9 +253,9 @@
 
 
                                          <DynamicMudInput T=string Label="@AppLocalization[Lang.Username]"
-                                                          @bind-Value="@User.SamAccountName"
+                                                          @bind-Value="@User.SAMAccountName"
                                                           Disabled=@(User?.NewEntry==false) />
-                                         <AppCopyButton TextToCopy=@User.SamAccountName />
+                                         <AppCopyButton TextToCopy=@User.SAMAccountName />
 
                                      </MudStack>
 
@@ -448,13 +452,13 @@
                                 <MudStack Row=true Spacing="0">
 
                                     <DynamicMudInput T=string Label="@AppLocalization[Lang.Home_Directory]"
-                                                     @bind-Value="@User.HomeDirectory"
-                                                     Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.HomeDirectory)) />
+                                    @bind-Value="@User.HomeDirectory"
+                                    Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.HomeDirectory)) />
                                     @if (!User.HomeDirectory.IsNullOrEmpty())
                                     {
 
                                         <MudIcon Class="align-middle" Icon="@(homeDirectoryExists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
-                                                 Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
+                                        Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
                                     }
                                     <AppCopyButton TextToCopy=@User.HomeDirectory />
                                 </MudStack>
@@ -513,3 +517,284 @@
 
 
 
+@code {
+    #nullable disable warnings
+    string password;
+
+    [Parameter]
+    public string Password
+    {
+        get => password; set
+        {
+            if (password == value) return;
+            password = value;
+            PasswordChanged.InvokeAsync(password);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<string> PasswordChanged { get; set; }
+
+
+    string confirmPassword;
+    [Parameter]
+    public string ConfirmPassword
+    {
+        get => confirmPassword; set
+        {
+            if (confirmPassword == value) return;
+            confirmPassword = value;
+            ConfirmPasswordChanged.InvokeAsync(confirmPassword);
+        }
+    }
+    [Parameter]
+    public EventCallback<string> ConfirmPasswordChanged { get; set; }
+    AccessLevel? selfAccessLevel;
+    bool homeDirectoryExists;
+    bool showRemoveThumbnail = false;
+    IADUser User => DirectoryEntry as IADUser;
+    GlobalPermissionSettings? _globalPermissionSettings;
+
+    private bool isSelf
+    {
+        get
+        {
+            if (_globalPermissionSettings != null)
+            {
+                if (selfAccessLevel != null)
+                {
+                    return User.SAMAccountName.Equals(CurrentUser.Username, StringComparison.InvariantCultureIgnoreCase);
+                }
+            }
+            return false;
+        }
+    }
+
+
+    private bool CanReadField(IActiveDirectoryField field)
+    {
+        if (!isSelf)
+        {
+            return User.CanReadField(field);
+        }
+        else
+        {
+            if (selfAccessLevel.FieldMap.Any(x => x.Field.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level))
+            {
+                return true;
+            }
+            else if (selfAccessLevel.FieldMap.Any(x => x.CustomField.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level))
+            {
+                return true;
+            }
+            else
+            {
+                return User.CanReadField(field);
+            }
+        }
+    }
+
+    private bool CanEditField(IActiveDirectoryField field)
+    {
+        if (!isSelf)
+        {
+            return User.CanEditField(field);
+        }
+        else
+        {
+            if (selfAccessLevel.FieldMap.Any(x => x.Field.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Read.Level))
+            {
+                return true;
+            }
+            else if (selfAccessLevel.FieldMap.Any(x => x.CustomField.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Read.Level))
+            {
+                return true;
+            }
+            else
+            {
+                return User.CanEditField(field);
+            }
+        }
+    }
+
+
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await InvokeAsync(StateHasChanged);
+
+        if (Context != null)
+        {
+            _globalPermissionSettings = await Context.GlobalPermissionSettings.FirstOrDefaultAsync();
+            selfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
+        }
+
+
+        if (User.HomeDirectory != null)
+        {
+            try
+            {
+
+                await User.Directory.Impersonation.RunAsync(() =>
+
+                {
+                    homeDirectoryExists = new SystemDirectory(User.HomeDirectory).Exists;
+                    return true;
+                });
+
+            }
+
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Warning("Error checking user h-drive: {Message}", ex);
+
+            }
+        }
+
+        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            {
+                EventType = ApplicationEventType.Search,
+                Entry = User,
+                Actor = CurrentUser.State
+
+            });
+        LoadingData = false;
+        await RefreshEntryComponents();
+
+    }
+
+    async void SaveChanges()
+    {
+        if (await MessageService.Confirm(AppLocalization["Are you sure you want to save the changes?"]))
+        {
+            SavingChanges = true;
+            await RefreshEntryComponents();
+            try
+            {
+
+                var changes = User.Changes;
+                var assignTo = User.ToAssignTo;
+                var unassignFrom = User.ToUnassignFrom;
+                var jobResults = await User.CommitChangesAsync();
+                if (jobResults.Result == JobResult.Passed)
+                {
+
+                    foreach (var assignment in assignTo)
+                    {
+                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            {
+                                EventType = ApplicationEventType.Assign,
+                                Entry = assignment.Member,
+                                Target = assignment.Group,
+                                Actor = CurrentUser.State
+
+                            });
+
+
+                    }
+
+                    foreach (var assignment in unassignFrom)
+                    {
+                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            {
+                                EventType = ApplicationEventType.Unassign,
+                                Entry = assignment.Member,
+                                Target = assignment.Group,
+                                Actor = CurrentUser.State
+
+                            });
+
+
+                    }
+                    if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
+                    {
+                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            {
+                                EventType = ApplicationEventType.Modify,
+                                Entry = User,
+                                Changes =  changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList(),
+                                Actor = CurrentUser.State
+
+                            });
+
+                    }
+                    EditMode = false;
+                    SnackBarService.Success("The changes made to this user have been saved.");
+                }
+                else
+                {
+                    await jobResults.ShowJobDetailsDialogAsync(MessageService);
+                }
+            }
+            catch (AppException ex)
+            {
+                SnackBarService.Error(ex.Message);
+
+            }
+            SavingChanges = false;
+
+            await RefreshEntryComponents();
+
+        }
+
+    }
+
+    async Task Unlock()
+    {
+        if (await MessageService.Confirm("Are you sure you want to unlock " + User.DisplayName + "?", "Unlock User"))
+        {
+            var changes = User.Changes;
+            User.LockedOut = false;
+            SnackBarService.Warning(User.DisplayName + " will be unlocked when changes are saved.");
+            await RefreshEntryComponents();
+
+        }
+
+    }
+    async Task DeleteUser()
+    {
+        if (await MessageService.Confirm("Are you sure you want to delete " + User.DisplayName + "?", "Delete User"))
+        {
+            SavingChanges = true;
+            await InvokeAsync(StateHasChanged);
+
+            try
+            {
+             
+                User.Delete();
+
+                SnackBarService.Success(User.DisplayName + " has been deleted.");
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.Delete,
+                        Entry = User,
+                        Actor = CurrentUser.State
+
+                    });
+                
+            }
+            catch (AppException ex)
+            {
+                SnackBarService.Error(ex.Message);
+            }
+            SavingChanges = false;
+
+            await RefreshEntryComponents();
+        }
+    }
+    async Task RemoveThumbnail()
+    {
+
+        User.ThumbnailPhoto = null;
+        SnackBarService.Warning(User.DisplayName + " will have their thumbnail deleted on save.");
+        await RefreshEntryComponents();
+
+    }
+
+
+}

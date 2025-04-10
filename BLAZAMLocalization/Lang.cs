@@ -70,9 +70,14 @@ namespace BLAZAM.Localization
         public static readonly string An_automatic_update_is_scheduled = "An automatic update is scheduled.";
         public static readonly string Password = "Password";
         public static readonly string Password_Changed = "Password changed";
+        public static readonly string Object_Type = "Object Type";
         public static readonly string Success = "Success";
+        public static readonly string Operator = "Operator";
         public static readonly string Cancelled = "Cancelled";
+        public static readonly string Create_Rule = "Create Rule";
         public static readonly string Failed = "Failed";
+        public static readonly string Never = "Never";
+        public static readonly string Triggers = "Triggers";
         public static readonly string Queued = "Queued";
         public static readonly string Running = "Running";
         public static readonly string Info = "Info";
@@ -88,7 +93,10 @@ namespace BLAZAM.Localization
         public static readonly string Additional_Fields = "Additional Fields";
         public static readonly string API_Tokens = "API Tokens";
         public static readonly string Add_Widget = "Add Widget";
+        public static readonly string Scheduled_Rule = "Scheduled Rule";
         public static readonly string Save = "Save";
+        public static readonly string And = "And";
+        public static readonly string Or = "Or";
         public static readonly string Application_logons = "Application logons";
         public static readonly string Audit = "Audit";
         public static readonly string Chat = "Chat";
@@ -143,6 +151,7 @@ namespace BLAZAM.Localization
         public static readonly string Favorites = "Favorites";
         public static readonly string Timestamp = "Timestamp";
         public static readonly string Action = "Action";
+        public static readonly string Data = "Data";
         public static readonly string IP_Address = "IP Address";
         public static readonly string Fields = "Fields";
         public static readonly string Edit = "Edit";
@@ -247,6 +256,7 @@ namespace BLAZAM.Localization
         public static readonly string Required = "Required";
         public static readonly string Editable = "Editable";
         public static readonly string Value = "Value";
+        public static readonly string Negate = "Negate";
         public static readonly string Domain = "Domain";
         public static readonly string Update = "Update";
         public static readonly string Loading = "Loading";
