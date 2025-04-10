@@ -13,7 +13,7 @@ using System.Security.AccessControl;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
-    public class ADContact : AccountDirectoryAdapter, IADContact
+    public class ADContact : GroupableDirectoryAdapter, IADContact
     {
         public byte[]? ThumbnailPhoto
         {

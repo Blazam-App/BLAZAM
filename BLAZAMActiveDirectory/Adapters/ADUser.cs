@@ -13,7 +13,7 @@ using System.Security.AccessControl;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
-    public class ADUser : ADContact, IADUser
+    public class ADUser : AccountDirectoryAdapter, IADUser
     {
       
         public string? LogOnTo

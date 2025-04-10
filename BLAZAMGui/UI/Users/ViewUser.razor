@@ -3,24 +3,24 @@
 @{
     string _fieldMudStackClasses = "flex-wrap gap-10";
 }
-@if (Account?.NewEntry == true)
+@if (GroupableEntry?.NewEntry == true)
 {
     EditMode = true;
 
 }
-@if (Account != null)
+@if (GroupableEntry != null)
 {
-    <AppPageTitle>@Account?.SamAccountName</AppPageTitle>
+    <AppPageTitle>@GroupableEntry?.SamAccountName</AppPageTitle>
 
-    <EditForm OnValidSubmit=SaveChanges Model="Account">
+    <EditForm OnValidSubmit=SaveChanges Model="GroupableEntry">
         <CascadingValue Value="EditMode">
 
-            @if (Account?.NewEntry == false)
+            @if (GroupableEntry?.NewEntry == false)
             {
                 <SetSubHeader @ref="SubHeader">
 
                     <DirectoryEntryViewHeader EditMode="@EditMode"
-                                              DirectoryEntry="@Account"
+                                              DirectoryEntry="@GroupableEntry"
                                               OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
                                               OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
                                               OnDelete="@DeleteUser"
@@ -39,7 +39,7 @@
 
                 </SetSubHeader>
             }
-            <CascadingValue Value="Account">
+            <CascadingValue Value="GroupableEntry">
 
                 <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Upload_Thumbnail_Photo] @ref=@UploadThumbnailModal>
                     <UploadThumbnailModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
@@ -50,7 +50,7 @@
                 <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Move_To] @ref=@MoveToModal>
                     @if (MoveToModal?.IsShown == true)
                     {
-                        <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Account" />
+                        <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="GroupableEntry" />
                     }
                 </AppModal>
                 <AppModal Title=@AppLocalization[Lang.Rename_User] @ref=@RenameModal>
@@ -109,7 +109,7 @@
                                     <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Person" />
 
                                 }
-                                @if (showRemoveThumbnail && Account?.CanEditField(ActiveDirectoryFields.Thumbnail) == true)
+                                @if (showRemoveThumbnail && GroupableEntry?.CanEditField(ActiveDirectoryFields.Thumbnail) == true)
                                 {
                                     <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.ShowAsync();})
                                                    Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
@@ -121,7 +121,7 @@
                             <MudStack Row=true>
                                 <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Created]:</MudText>
                                     <MudSpacer />
-                                    <DateWithTimeTooltip DateTime="Account?.Created" />
+                                    <DateWithTimeTooltip DateTime="GroupableEntry?.Created" />
 
                                 </MudStack>
 
@@ -130,7 +130,7 @@
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Change]:</MudText>
                                     <MudSpacer />
 
-                                    <DateWithTimeTooltip DateTime="Account?.LastChanged" />
+                                    <DateWithTimeTooltip DateTime="GroupableEntry?.LastChanged" />
 
                                 </MudStack>
                                 @if (User!=null)
@@ -164,7 +164,7 @@
                                     <MudSpacer />
 
                                     <MudText Style="text-align:end;"
-                                             Typo="Typo.caption">@Account?.OU.ToPrettyOu()</MudText>
+                                             Typo="Typo.caption">@GroupableEntry?.OU.ToPrettyOu()</MudText>
                                 </MudStack>
 
 
@@ -173,15 +173,15 @@
 
                                 <MudStack>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Groups]:</MudText>
-                                    <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="Account" />
+                                    <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="GroupableEntry" />
                                 </MudStack>
 
-                                @if (Account is IADUser && Account.Disabled)
+                                @if (GroupableEntry is IADUser && Account.Disabled)
                             {
                                 <MudAlert Severity="Severity.Error"
                                           Class="mud-width-full">@AppLocalization[Lang.User_is_disabled]</MudAlert>
                             }
-                            @if (Account is IADUser && Account.LockedOut)
+                            @if (GroupableEntry is IADUser && Account.LockedOut)
                             {
                                 <MudAlert Severity="Severity.Warning"
                                           Class="mud-width-full">@AppLocalization[Lang.User_is_locked_out]</MudAlert>
@@ -222,7 +222,7 @@
 
 
                                  </MudStack>
-                                 @if (EditMode && Account?.NewEntry == false)
+                                 @if (EditMode && GroupableEntry?.NewEntry == false)
                                 {
                                     <MudText>
                                         @AppHelpLocalization[HelpLang.Modify_Name_Redirect]
@@ -252,7 +252,7 @@
 
 
 
-                                     @if (Account?.NewEntry == true)
+                                     @if (GroupableEntry?.NewEntry == true)
                                         {
                                             <DynamicMudInput T=string
                                                              Label="@AppLocalization[Lang.Password]"
@@ -327,7 +327,7 @@
                                         }
 
                                     </MudStack>
-                                    @if (EditMode && !Account.NewEntry)
+                                    @if (EditMode && !GroupableEntry.NewEntry)
                                     {
 
 
@@ -471,7 +471,7 @@
                     </Section>
                 }
 
-                @if (Account.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
+                @if (GroupableEntry.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
                 {
                     <Section Title=@AppLocalization[Lang.Additional_Fields]>
 
@@ -479,7 +479,7 @@
                         {
                             @if (CanReadField(field))
                             {
-                                <CustomDirectoryField Disabled=@(!EditMode || !CanEditField(field)) Entry="Account" Field="@field" />
+                                <CustomDirectoryField Disabled=@(!EditMode || !CanEditField(field)) Entry="GroupableEntry" Field="@field" />
 
                             }
                         }
@@ -495,7 +495,7 @@
         </CascadingValue>
 
     </EditForm>
-    @if ((Account.CanEdit || CurrentUser.State.CanAssign) && Account.HasUnsavedChanges && !Account.NewEntry)
+    @if ((GroupableEntry.CanEdit || CurrentUser.State.CanAssign) && GroupableEntry.HasUnsavedChanges && !GroupableEntry.NewEntry)
     {
 
         <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />

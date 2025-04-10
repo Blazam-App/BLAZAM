@@ -27,7 +27,7 @@ else
     <MudStack Row=true Class="mud-width-full">
 
         <MudStack Spacing="1">
-            @if (groupableEntry != null && DirectoryEntry is not IADComputer)
+            @if (groupableEntry != null && DirectoryEntry is not IADComputer && !groupableEntry.DisplayName.IsNullOrEmpty())
             {
                 <MudText Class="align-middle">
                     @groupableEntry.DisplayName

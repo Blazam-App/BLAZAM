@@ -13,7 +13,7 @@ using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
-    public class AccountDirectoryAdapter : GroupableDirectoryAdapter, IAccountDirectoryAdapter
+    public class AccountDirectoryAdapter : ADContact, IAccountDirectoryAdapter
     {
         private const int ADS_UF_ACCOUNTDISABLE = 0x0002;
         private const int ADS_UF_PASSWD_NOTREQD = 0x0020;

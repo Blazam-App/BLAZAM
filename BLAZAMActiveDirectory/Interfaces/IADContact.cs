@@ -3,7 +3,7 @@ using BLAZAM.Database.Models;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
-    public interface IADContact:IAccountDirectoryAdapter
+    public interface IADContact:IGroupableDirectoryAdapter
     {
         string? City { get; set; }
         string? Company { get; set; }

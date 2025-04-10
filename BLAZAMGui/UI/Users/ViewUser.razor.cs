@@ -50,6 +50,7 @@ namespace BLAZAM.Gui.UI.Users
         AccessLevel? selfAccessLevel;
         bool homeDirectoryExists;
         bool showRemoveThumbnail = false;
+        IGroupableDirectoryAdapter GroupableEntry => DirectoryEntry as IGroupableDirectoryAdapter;
         IAccountDirectoryAdapter Account => DirectoryEntry as IAccountDirectoryAdapter;
         IADUser User => DirectoryEntry as IADUser;
         IADContact Contact => DirectoryEntry as IADContact;
@@ -63,7 +64,7 @@ namespace BLAZAM.Gui.UI.Users
                 {
                     if (selfAccessLevel != null)
                     {
-                        return Account.SamAccountName.Equals(CurrentUser.Username, StringComparison.InvariantCultureIgnoreCase);
+                        return GroupableEntry.SamAccountName.Equals(CurrentUser.Username, StringComparison.InvariantCultureIgnoreCase);
                     }
                 }
                 return false;
@@ -75,7 +76,7 @@ namespace BLAZAM.Gui.UI.Users
         {
             if (!isSelf)
             {
-                return Account.CanReadField(field);
+                return GroupableEntry.CanReadField(field);
             }
             else
             {
@@ -89,7 +90,7 @@ namespace BLAZAM.Gui.UI.Users
                 }
                 else
                 {
-                    return Account.CanReadField(field);
+                    return GroupableEntry.CanReadField(field);
                 }
             }
         }
@@ -98,7 +99,7 @@ namespace BLAZAM.Gui.UI.Users
         {
             if (!isSelf)
             {
-                return Account.CanEditField(field);
+                return GroupableEntry.CanEditField(field);
             }
             else
             {
@@ -112,7 +113,7 @@ namespace BLAZAM.Gui.UI.Users
                 }
                 else
                 {
-                    return Account.CanEditField(field);
+                    return GroupableEntry.CanEditField(field);
                 }
             }
         }
@@ -135,12 +136,12 @@ namespace BLAZAM.Gui.UI.Users
             }
 
 
-            if (Account is IADUser && User.HomeDirectory != null)
+            if (GroupableEntry is IADUser && User.HomeDirectory != null)
             {
                 try
                 {
 
-                    await Account.Directory.Impersonation.RunAsync(() =>
+                    await GroupableEntry.Directory.Impersonation.RunAsync(() =>
 
                     {
                         homeDirectoryExists = new SystemDirectory(User.HomeDirectory).Exists;
@@ -155,7 +156,7 @@ namespace BLAZAM.Gui.UI.Users
 
                 }
             }
-            await AuditLogger.Searched(Account);
+            await AuditLogger.Searched(GroupableEntry);
             LoadingData = false;
             await RefreshEntryComponents();
 
@@ -170,10 +171,10 @@ namespace BLAZAM.Gui.UI.Users
                 try
                 {
 
-                    var changes = Account.Changes;
-                    var assignTo = Account.ToAssignTo;
-                    var unassignFrom = Account.ToUnassignFrom;
-                    var jobResults = await Account.CommitChangesAsync();
+                    var changes = GroupableEntry.Changes;
+                    var assignTo = GroupableEntry.ToAssignTo;
+                    var unassignFrom = GroupableEntry.ToUnassignFrom;
+                    var jobResults = await GroupableEntry.CommitChangesAsync();
                     if (jobResults.Result == JobResult.Passed)
                     {
 
@@ -184,12 +185,12 @@ namespace BLAZAM.Gui.UI.Users
                             //Run synchronously if using sqlite
                             if (DbFactory.DatabaseType == DatabaseType.SQLite)
                             {
-                                await NotificationGenerationService.PostAsync(Account, NotificationType.Assign, CurrentUser.State, assignment.Group);
+                                await NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Assign, CurrentUser.State, assignment.Group);
 
                             }
                             else
                             {
-                                _ = NotificationGenerationService.PostAsync(Account, NotificationType.Assign, CurrentUser.State, assignment.Group);
+                                _ = NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Assign, CurrentUser.State, assignment.Group);
 
                             }
 
@@ -202,29 +203,29 @@ namespace BLAZAM.Gui.UI.Users
                             //Run synchronously if using sqlite
                             if (DbFactory.DatabaseType == DatabaseType.SQLite)
                             {
-                                await NotificationGenerationService.PostAsync(Account, NotificationType.Unassign, CurrentUser.State, assignment.Group);
+                                await NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Unassign, CurrentUser.State, assignment.Group);
 
                             }
                             else
                             {
-                                _ = NotificationGenerationService.PostAsync(Account, NotificationType.Unassign, CurrentUser.State, assignment.Group);
+                                _ = NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Unassign, CurrentUser.State, assignment.Group);
 
                             }
 
                         }
                         if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                         {
-                            await AuditLogger.User.Changed(Account, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
+                            await AuditLogger.User.Changed(GroupableEntry, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
 
                             //Run synchronously if using sqlite
                             if (DbFactory.DatabaseType == DatabaseType.SQLite)
                             {
-                                await NotificationGenerationService.PostAsync(Account, NotificationType.Modify, CurrentUser.State);
+                                await NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Modify, CurrentUser.State);
 
                             }
                             else
                             {
-                                _ = NotificationGenerationService.PostAsync(Account, NotificationType.Modify, CurrentUser.State);
+                                _ = NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Modify, CurrentUser.State);
 
                             }
                         }
@@ -251,10 +252,10 @@ namespace BLAZAM.Gui.UI.Users
 
         async Task Unlock()
         {
-            if (await MessageService.Confirm("Are you sure you want to unlock " + Account.DisplayName + "?", "Unlock User"))
+            if (await MessageService.Confirm("Are you sure you want to unlock " + GroupableEntry.DisplayName + "?", "Unlock User"))
             {
                 Account.LockedOut = false;
-                SnackBarService.Warning(Account.DisplayName + " will be unlocked when changes are saved.");
+                SnackBarService.Warning(GroupableEntry.DisplayName + " will be unlocked when changes are saved.");
                 await RefreshEntryComponents();
 
             }
@@ -262,18 +263,18 @@ namespace BLAZAM.Gui.UI.Users
         }
         async Task DeleteUser()
         {
-            if (await MessageService.Confirm("Are you sure you want to delete " + Account.DisplayName + "?", "Delete User"))
+            if (await MessageService.Confirm("Are you sure you want to delete " + GroupableEntry.DisplayName + "?", "Delete User"))
             {
                 SavingChanges = true;
                 await InvokeAsync(StateHasChanged);
 
                 try
                 {
-                    Account.Delete();
+                    GroupableEntry.Delete();
 
-                    SnackBarService.Success(Account.DisplayName + " has been deleted.");
-                    await AuditLogger.User.Deleted(Account);
-                    _ = NotificationGenerationService.PostAsync(Account, NotificationType.Delete, CurrentUser.State);
+                    SnackBarService.Success(GroupableEntry.DisplayName + " has been deleted.");
+                    await AuditLogger.User.Deleted(GroupableEntry);
+                    _ = NotificationGenerationService.PostAsync(GroupableEntry, NotificationType.Delete, CurrentUser.State);
 
                 }
                 catch (AppException ex)
@@ -289,7 +290,7 @@ namespace BLAZAM.Gui.UI.Users
         {
 
             Contact.ThumbnailPhoto = null;
-            SnackBarService.Warning(Account.DisplayName + " will have their thumbnail deleted on save.");
+            SnackBarService.Warning(GroupableEntry.DisplayName + " will have their thumbnail deleted on save.");
             await RefreshEntryComponents();
 
         }
