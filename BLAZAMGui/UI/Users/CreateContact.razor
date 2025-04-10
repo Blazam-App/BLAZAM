@@ -6,7 +6,7 @@
 @inherits TemplateComponent
 @attribute [Authorize(Roles = UserRoles.CreateContacts)]
 
-@if (newUser != null && !_userCreated)
+@if (newContact != null && !_userCreated)
 {
     <AppNavLock />
 }
@@ -91,7 +91,7 @@
                     </MudPaper>
                 } *@
                 <MudButton Color=Color.Secondary
-                           OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=5;})">
+                           OnClick="@(()=>{custom=true; newContact=null; SelectedTemplate=null; SelectedStep=5;})">
                     @AppLocalization[Lang.Custom]
                 </MudButton>
 
@@ -117,23 +117,23 @@
 
         </MudTabPanel>
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
-                     Disabled="@(newUser==null || _userCreated)">
+                     Disabled="@(newContact==null || _userCreated)">
             <TabContent>
                 @AppLocalization[Lang.Username]
             </TabContent>
             <ChildContent>
                 @{
 
-                    var conflictingEntry = Directory.Users.FindUserByUsername(newUser?.SamAccountName, false, true);
+                    var conflictingEntry = Directory.Users.FindUserByUsername(newContact?.SamAccountName, false, true);
                     bool conflictWarning = false;
-                    if (conflictingEntry != null && conflictingEntry.SamAccountName?.Equals(newUser?.SamAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
+                    if (conflictingEntry != null && conflictingEntry.SamAccountName?.Equals(newContact?.SamAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
                     {
                        _usernameStepValid = false;
                         conflictWarning = true;
                     }
                     else
                     {
-                        if (newUser?.SamAccountName.IsNullOrEmpty() == false)
+                        if (newContact?.SamAccountName.IsNullOrEmpty() == false)
                         {
                             _usernameStepValid = true;
                         }
@@ -146,7 +146,7 @@
                               Immediate="true"
                               Disabled=@(!CurrentUser.State.IsSuperAdmin && SelectedTemplate?.EffectiveAllowUsernameOverride!=true)
                               T=string
-                              @bind-Value=@newUser!.SamAccountName />
+                              @bind-Value=@newContact!.SamAccountName />
                 @if (conflictWarning)
                 {
                     <MudAlert Severity="Severity.Error">
@@ -169,14 +169,14 @@
 
         </MudTabPanel>
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
-                     Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
+                     Disabled="@(newContact==null || !_usernameStepValid || _userCreated)">
             <TabContent>
                 @AppLocalization[Lang.Fields]
             </TabContent>
             <ChildContent>
                 <NewTemplateUser NewUserName="newUserName"
                                  OnValidSubmit=@(()=>{SelectedStep=4;})
-                                 Contact="@newUser"
+                                 Contact="@newContact"
                                   DirectoryTemplate="SelectedTemplate" />
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
@@ -189,7 +189,7 @@
         </MudTabPanel>
 
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
-                     Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
+                     Disabled="@(newContact==null || !_usernameStepValid || _userCreated)">
             <TabContent>
                 @AppLocalization[Lang.Groups]
             </TabContent>
@@ -197,11 +197,11 @@
                 <MemberOfList Target="_blank"
                               AssignToClicked="@(async()=>{await _assignToModal!.ShowAsync();})"
                               Disabled="@(SelectedTemplate?.EffectiveAllowCustomGroups!=true  && !CurrentUser.State.IsSuperAdmin)"
-                              Model="@newUser" />
+                              Model="@newContact" />
                 <AppModal @ref=_assignToModal>
                     <AssignToModalContent ModelChanged=@(async()=>{
                                           await InvokeAsync(StateHasChanged);
-                                          }) DirectoryModel="newUser" />
+                                          }) DirectoryModel="newContact" />
                 </AppModal>
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
@@ -250,7 +250,7 @@
 
         </MudTabPanel>
         <MudTabPanel Class=@(custom==true?"":"d-none")
-                     Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
+                     Disabled="@(newContact==null || !_usernameStepValid || _userCreated)">
             <TabContent>
                 @AppLocalization[Lang.Details]
             </TabContent>
@@ -258,7 +258,7 @@
                 @*TODO: The following binding cause the next button to not update when validation is reached, updates are controlled from
                 this element
                 *@
-                <ViewUser DirectoryEntry="@newUser"
+                <ViewUser DirectoryEntry="@newContact"
                           @bind-ConfirmPassword=@customConfirmPassword
                           @bind-Password=customPassword />
                 <MudButton Color=Color.Primary
@@ -268,7 +268,7 @@
                 <MudButton Color=Color.Success
                            OnClick="@(()=>{
                                             SelectedStep=7;
-                                            if(newUser?.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
+                                            if(newUser!=null && newUser?.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
                                                 newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
                                             })"
                            Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
@@ -279,13 +279,13 @@
         </MudTabPanel>
 
 
-        <MudTabPanel Disabled=@(newUser==null || !_usernameStepValid)>
+        <MudTabPanel Disabled=@(newContact==null || !_usernameStepValid)>
             <TabContent>
 
                 @AppLocalization[Lang.Confirm]
             </TabContent>
             <ChildContent>
-                <ConfirmNewUser @bind-Contact="@newUser"
+                <ConfirmNewUser @bind-Contact="@newContact"
                                 Confirmed="_userCreated"
                                 DirectoryTemplate="SelectedTemplate"
                                 OnConfirmed="UserConfirmed" />
@@ -331,8 +331,8 @@
 
     NewUserName newUserName = new NewUserName();
     IADOrganizationalUnit? selectedOU;
-    IADContact? newUser;
-
+    IADContact? newContact;
+    IADUser? newUser =>newContact as IADUser;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -359,18 +359,18 @@
         {
             if (selectedOU != null)
             {
-                if (newUser == null)
+                if (newContact == null)
                 {
                     if (customUserDisplayName == null) SnackBarService.Error(AppLocalization["No display name was set"]);
                     else
                     {
-                        newUser = selectedOU.CreateContact(customUserDisplayName.Trim());
-                        newUser.DisplayName = customUserDisplayName;
+                        newContact = selectedOU.CreateContact(customUserDisplayName.Trim());
+                        newContact.DisplayName = customUserDisplayName;
                     }
                 }
                 else
                 {
-                    newUser.MoveTo(selectedOU);
+                    newContact.MoveTo(selectedOU);
                 }
                 _userCreated = false;
             }

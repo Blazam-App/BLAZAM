@@ -264,6 +264,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Called when staged changes have been discarded
         /// </summary>
         AppEvent? OnChangesDiscarded { get; set; }
+        byte[]? Guid { get; set; }
 
 
         /// <summary>

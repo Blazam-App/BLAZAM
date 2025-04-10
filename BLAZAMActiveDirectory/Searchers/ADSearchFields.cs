@@ -6,7 +6,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
     public class ADSearchFields
     {
         private string? samAccountName;
-        private string? sID;
+        private string? sid;
+        private byte[]? guid;
+
         private string? dN;
         private string? cN;
         private string? memberOf;
@@ -25,8 +27,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public long? LastLogonTime { get; set; }
 
-        public string? SID { get => sID; set => sID = value.EscapeLdapSearchFilter(); }
-
+        public string? SID { get => sid; set => sid = value.EscapeLdapSearchFilter(); }
+        public byte[]? GUID { get => guid; set => guid = value; }
         public string? DN { get => dN; set => dN = value.EscapeLdapSearchFilter(); }
 
         public DateTime? Created { get; set; }

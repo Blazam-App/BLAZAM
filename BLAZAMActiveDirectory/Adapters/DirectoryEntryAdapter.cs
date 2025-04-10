@@ -373,6 +373,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
+        public virtual byte[]? Guid
+        {
+            get
+            {
+                var bytes = GetProperty<byte[]>("objectGUID");
+                
+                return bytes;
+            }
+            set
+            {
+                SetProperty("objectGUID", value);
+            }
+
+        }
 
         public override string? ToString()
         {

@@ -230,6 +230,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(memberOf=*{Fields.DN})*";
                     if (!Fields.SID.IsNullOrEmpty())
                         FilterQuery += $"(objectSid={Fields.SID})";
+                    if (Fields.GUID!=null)
+                        FilterQuery += $"(objectGUID={Fields.GUID.ToHexADString()})";
                     if (Fields.NestedMemberOf != null)
                         FilterQuery += $"(memberOf:1.2.840.113556.1.4.1941:={Fields.NestedMemberOf.DN})";
                     if (Fields.BitLockerRecoveryId != null)

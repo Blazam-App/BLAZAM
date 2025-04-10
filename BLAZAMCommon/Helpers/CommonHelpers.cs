@@ -8,6 +8,7 @@ using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using System.Text;
 
 namespace BLAZAM.Helpers
 {
@@ -337,7 +338,54 @@ namespace BLAZAM.Helpers
                 return DateTime.SpecifyKind(ads_null_time, DateTimeKind.Utc);
             }
         }
+        public static Guid? ToGuid(this byte[]? guidBytes)
+        {
+            if (null == guidBytes) return null;
+            // Create a SecurityIdentifier object from the input byte array
+            var guid = new Guid(guidBytes);
 
+            // Use the SecurityIdentifier object's Value property to get the string representation of the SID
+            return guid;
+
+        }
+
+        public static string? ToHexADString(this byte[]? byteArray)
+        {
+            if (null == byteArray) return null;
+            // Create a SecurityIdentifier object from the input byte array
+      var hexString = Convert.ToHexString(byteArray);
+            var ldapString = ToLdapHexString(hexString);
+
+            // Use the SecurityIdentifier object's Value property to get the string representation of the SID
+            return ldapString;
+
+        }
+        private static string ToLdapHexString(string? hexString)
+        {
+            if (string.IsNullOrEmpty(hexString))
+            {
+                return string.Empty;
+            }
+
+            // Ensure the hex string has an even number of characters (pairs for bytes)
+            if (hexString.Length % 2 != 0)
+            {
+                throw new ArgumentException("Input hex string must have an even number of characters.", nameof(hexString));
+            }
+
+            // Pre-allocate capacity: original length + one backslash per byte
+            StringBuilder ldapHex = new StringBuilder(hexString.Length + hexString.Length / 2);
+
+            for (int i = 0; i < hexString.Length; i += 2)
+            {
+                ldapHex.Append('\\');
+                ldapHex.Append(hexString[i]);       // Append the first hex char of the pair
+                ldapHex.Append(hexString[i + 1]);   // Append the second hex char of the pair
+                                                    // Or combine: ldapHex.Append(hexString.Substring(i, 2));
+            }
+
+            return ldapHex.ToString();
+        }
         public static string ToSidString(this byte[]? sid)
         {
             if (null == sid) return "";

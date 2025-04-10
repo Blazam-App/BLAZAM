@@ -56,7 +56,7 @@
                 <AppModal Title=@AppLocalization[Lang.Rename_User] @ref=@RenameModal>
                     @if (RenameModal?.IsShown == true)
                     {
-                        <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Entry="User" />
+                        <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Entry="Contact" />
                     }
                 </AppModal>
                 <AppModal Title=@AppLocalization[Lang.Reset_Password] @ref=@ChangePasswordModal>
@@ -104,9 +104,14 @@
                                     }
 
                                 }
-                                else
+                                else if (User != null)
                                 {
                                     <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Person" />
+
+                                }
+                                else if (Contact != null)
+                                {
+                                    <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Contacts" />
 
                                 }
                                 @if (showRemoveThumbnail && GroupableEntry?.CanEditField(ActiveDirectoryFields.Thumbnail) == true)
@@ -133,7 +138,7 @@
                                     <DateWithTimeTooltip DateTime="GroupableEntry?.LastChanged" />
 
                                 </MudStack>
-                                @if (User!=null)
+                                @if (User != null)
                             {
                                 <MudStack Row=true>
 

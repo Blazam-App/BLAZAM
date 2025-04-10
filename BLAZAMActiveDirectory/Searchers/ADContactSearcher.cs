@@ -91,16 +91,16 @@ namespace BLAZAM.ActiveDirectory.Searchers
             var tstamp = threeMonthsAgo.ToString("yyyyMMddHHmmss.fZ");
             string UserSearchFieldsQuery = "(whenChanged>=" + tstamp + ")";
 
-            return SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User, 1000, ignoreDisabledUsers)?.Cast<IADContact>().OrderByDescending(u => u.LastChanged).ToList();
+            return SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.Contact, 1000, ignoreDisabledUsers)?.Cast<IADContact>().OrderByDescending(u => u.LastChanged).ToList();
 
         }
-        public IADContact? FindContactsBySID(string? sid)
+        public IADContact? FindContactsByGUID(byte[]? guid)
         {
-            if (sid == null) return null;
+            if (guid == null) return null;
             return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Contact,
-                Fields = new() { SID = sid },
+                Fields = new() { GUID = guid },
                 ExactMatch = true
 
             }.Search<ADContact, IADContact>().FirstOrDefault();

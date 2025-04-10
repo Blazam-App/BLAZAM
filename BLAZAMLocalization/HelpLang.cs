@@ -18,6 +18,7 @@
         public static readonly string Modify_Name_Redirect = "Modify_Name_Redirect";
         public static readonly string Delete_Auth_Token_Confirmation = "Delete_Auth_Token_Confirmation";
         public static readonly string Deny_Request_Confirmation = "Deny_Request_Confirmation";
+        public static readonly string Discard_Other_Changes_Warning = "Discard_Other_Changes_Warning";
         public static readonly string Delete_API_Token_Confirmation = "Delete_API_Token_Confirmation";
         public static readonly string Developer_Logs_Suggestion = "Developer_Logs_Suggestion";
         public static readonly string Developer_Analytics_Suggestion = "Developer_Analytics_Suggestion";
