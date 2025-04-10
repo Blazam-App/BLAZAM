@@ -54,6 +54,10 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         IADUserSearcher Users { get; }
         /// <summary>
+        /// Provides Contacts search functions
+        /// </summary>
+        IADContactSearcher Contacts { get; }
+        /// <summary>
         /// Provides Printer search functions
         /// </summary>
         IADPrinterSearcher Printers { get; }

@@ -291,6 +291,7 @@ namespace BLAZAM.Localization
         public static readonly string Create_User = "Create User";
         public static readonly string Create_Group = "Create Group";
         public static readonly string Create_OU = "Create OU";
+        public static readonly string Create_Contact = "Create Contact";
         public static readonly string Connection_Type = "Connection Type";
         public static readonly string Show_Deleted = "Show Deleted";
         public static readonly string Rename_Category = "Rename Category";

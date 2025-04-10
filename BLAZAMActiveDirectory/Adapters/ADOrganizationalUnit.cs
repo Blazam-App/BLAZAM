@@ -256,6 +256,32 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 throw ex;
             }
         }
+        /// <summary>
+        /// Creates a new contact under this OU. Note that the returned Directory object
+        /// must execute CommitChanges() to actually create the object in Active
+        /// Directory.
+        /// </summary>
+        /// <param name="containerName">The container name of the new contact</param>
+        /// <returns>An uncommitted contact</returns>
+        public IADContact CreateContact(string containerName)
+        {
+
+            EnsureDirectoryEntry();
+
+            var fullContainerName = "CN=" + containerName.Trim().Replace(",", "\\,");
+            try
+            {
+                IADContact newContact = new ADContact();
+                newContact.Parse(directoryEntry: DirectoryEntry!.Children.Add(fullContainerName, "contact"), directory: Directory);
+                newContact.NewEntry = true;
+                return newContact;
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Error("Error while attempting to create contact: " + fullContainerName + " {@Error}", ex);
+                throw ex;
+            }
+        }
 
         /// <summary>
         /// Creates a new group under this OU. Note that the returned Directory object

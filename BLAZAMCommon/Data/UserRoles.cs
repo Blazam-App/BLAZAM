@@ -11,8 +11,10 @@
             SearchGroups,
             SearchOUs,
             SearchUsers,
+            SearchContacts,
             CreateGroups,
             CreateOUs,
+            CreateContacts,
             CreateUsers,
             SearchPrinters,
             CreatePrinters,
@@ -20,6 +22,8 @@
         };
         public const string Login = "Login";
         public const string SearchUsers = "SearchUsers";
+        public const string SearchContacts = "SearchContacts";
+        public const string CreateContacts = "CreateContacts";
         public const string CreateUsers = "CreateUsers";
         public const string SearchGroups = "SearchGroups";
         public const string CreateGroups = "CreateGroups";

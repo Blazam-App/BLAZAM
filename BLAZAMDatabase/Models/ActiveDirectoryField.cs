@@ -107,6 +107,38 @@ namespace BLAZAM.Database.Models
                             return true;
                     }
                     break;
+                case ActiveDirectoryObjectType.Contact:
+                    switch (FieldName)
+                    {
+                        case "l":
+                        case "cn":
+                        case "company":
+                        case "department":
+                        case "description":
+                        case "displayName":
+                        case "distinguishedName":
+                        case "employeeId":
+                        case "givenname":
+                        case "homePhone":
+                        case "manager":
+                        case "mail":
+                        case "memberOf":
+                        case "middleName":
+                        case "objectSID":
+                        case "pager":
+                        case "physicalDeliveryOffice":
+                        case "postalCode":
+                        case "sn":
+                        case "st":
+                        case "street":
+                        case "streetAddress":
+                        case "telephoneNumber":
+                        case "title":
+                        case "thumbnail":
+
+                            return true;
+                    }
+                    break;
                 case ActiveDirectoryObjectType.Computer:
                     switch (FieldName)
                     {

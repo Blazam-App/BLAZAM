@@ -56,19 +56,19 @@
                 <AppModal Title=@AppLocalization[Lang.Rename_User] @ref=@RenameModal>
                     @if (RenameModal?.IsShown == true)
                     {
-                        <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) User="User" />
+                        <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Entry="User" />
                     }
                 </AppModal>
                 <AppModal Title=@AppLocalization[Lang.Reset_Password] @ref=@ChangePasswordModal>
                     @if (ChangePasswordModal?.IsShown == true)
                     {
-                        <ChangeUserPasswordModalContent User="User" />
+                        <ChangeUserPasswordModalContent Entry="User" />
                     }
                 </AppModal>
                 <AppModal Title=@AppLocalization[Lang.Log_On_To] @ref=@LogOnToModal>
                     @if (LogOnToModal?.IsShown == true)
                     {
-                        <LogOnToModalContent User="User" />
+                        <LogOnToModalContent Entry="User" />
                     }
                 </AppModal>
                 <AppModal Title=@AppLocalization[Lang.Logon_Hours]
@@ -76,7 +76,7 @@
                           Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
                     @if (LogonHoursModal?.IsShown == true)
                     {
-                        <LogonHoursModalContent User="User" />
+                        <LogonHoursModalContent Entry="User" />
                     }
                 </AppModal>
 

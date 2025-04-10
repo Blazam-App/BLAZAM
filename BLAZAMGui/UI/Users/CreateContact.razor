@@ -4,7 +4,7 @@
 @using BLAZAM.Gui.UI.Users
 
 @inherits TemplateComponent
-@attribute [Authorize(Roles = UserRoles.CreateUsers)]
+@attribute [Authorize(Roles = UserRoles.CreateContacts)]
 
 @if (newUser != null && !_userCreated)
 {
@@ -26,7 +26,7 @@
             </TabContent>
             <ChildContent>
 
-                @if (TemplateCategories != null && Templates != null && Templates.Count(t => t.DeletedAt == null && t.Visible) > 0)
+           @*      @if (TemplateCategories != null && Templates != null && Templates.Count(t => t.DeletedAt == null && t.Visible) > 0)
                 {
 
                     <MudCarousel Style="height:50vh"
@@ -54,7 +54,7 @@
                                                Variant="Variant.Filled"
                                                Color="Color.Primary"
                                                Size="Size.Large">@uncategorizedTemplate.Name</MudButton>
-                                }
+                                } 
                             </FlexContainer>
                         </MudCarouselItem>
 
@@ -65,7 +65,7 @@
                                         Size="Size.Small"
                                         OnClick="@(()=>{_templateCarouselIndex=0; SelectedCategory=null;})"
                                         Color="Color.Primary" />
-                                @foreach (var template in TemplatesUserCanUse.Where(t => t.DeletedAt == null && t.Visible))
+                                 @foreach (var template in TemplatesUserCanUse.Where(t => t.DeletedAt == null && t.Visible))
                                 {
                                     <MudButton StartIcon="@Icons.Material.Filled.DynamicForm"
                                                OnClick=@(async()=>{await SetTemplate(template);})
@@ -73,7 +73,7 @@
                                                Color="Color.Primary"
                                                Size="Size.Large">@template.Name</MudButton>
 
-                                }
+                                } 
                             </FlexContainer>
 
                         </MudCarouselItem>
@@ -89,7 +89,7 @@
 
                         </AuthorizeView>
                     </MudPaper>
-                }
+                } *@
                 <MudButton Color=Color.Secondary
                            OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=5;})">
                     @AppLocalization[Lang.Custom]
@@ -107,9 +107,9 @@
             <ChildContent>
 
 
-                <NewUserNameEntry @bind-NewUserName=@newUserName
+@*                 <NewUserNameEntry @bind-NewUserName=@newUserName
                                   OnNext="CreateTemplateUser"
-                                  OnBack="@(()=>{SelectedStep=0;})" />
+                                  OnBack="@(()=>{SelectedStep=0;})" /> *@
 
 
 
@@ -176,8 +176,8 @@
             <ChildContent>
                 <NewTemplateUser NewUserName="newUserName"
                                  OnValidSubmit=@(()=>{SelectedStep=4;})
-                                 Entry="@newUser"
-                                 DirectoryTemplate="SelectedTemplate" />
+                                 Contact="@newUser"
+                                  DirectoryTemplate="SelectedTemplate" />
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
                            OnClick="@(()=>{SelectedStep=2;})">
@@ -285,7 +285,7 @@
                 @AppLocalization[Lang.Confirm]
             </TabContent>
             <ChildContent>
-                <ConfirmNewUser User="@newUser"
+                <ConfirmNewUser @bind-Contact="@newUser"
                                 Confirmed="_userCreated"
                                 DirectoryTemplate="SelectedTemplate"
                                 OnConfirmed="UserConfirmed" />
@@ -331,7 +331,7 @@
 
     NewUserName newUserName = new NewUserName();
     IADOrganizationalUnit? selectedOU;
-    IADUser? newUser;
+    IADContact? newUser;
 
     protected override async Task OnInitializedAsync()
     {
@@ -364,7 +364,7 @@
                     if (customUserDisplayName == null) SnackBarService.Error(AppLocalization["No display name was set"]);
                     else
                     {
-                        newUser = selectedOU.CreateUser(customUserDisplayName.Trim());
+                        newUser = selectedOU.CreateContact(customUserDisplayName.Trim());
                         newUser.DisplayName = customUserDisplayName;
                     }
                 }
@@ -377,47 +377,47 @@
         });
 
     }
-    async void CreateTemplateUser()
-    {
-        if (SelectedTemplate?.ParentOU == null) throw new AppException("Parent OU for template user was not set on creation!");
-        try
-        {
-            LoadingData = true;
-            await InvokeAsync(StateHasChanged);
-            newUser = SelectedTemplate.GenerateTemplateUser(newUserName, Directory);
-            _userCreated = false;
+    // async void CreateTemplateUser()
+    // {
+    //     if (SelectedTemplate?.ParentOU == null) throw new AppException("Parent OU for template user was not set on creation!");
+    //     try
+    //     {
+    //         LoadingData = true;
+    //         await InvokeAsync(StateHasChanged);
+    //         newUser = SelectedTemplate.GenerateTemplateUser(newUserName, Directory);
+    //         _userCreated = false;
 
-            if (IsAdmin || SelectedTemplate.HasEditableFields())
-            {
-                SelectedStep = 2;
-            }
-            else
-            {
-                //Go to confirm step
-                SelectedStep = 7;
+    //         if (IsAdmin || SelectedTemplate.HasEditableFields())
+    //         {
+    //             SelectedStep = 2;
+    //         }
+    //         else
+    //         {
+    //             //Go to confirm step
+    //             SelectedStep = 7;
 
-            }
+    //         }
 
-        }
-        catch (Exception ex)
-        {
+    //     }
+    //     catch (Exception ex)
+    //     {
 
-            Loggers.ActiveDirectoryLogger.Error("Error while creating template user {@Error}", ex);
+    //         Loggers.ActiveDirectoryLogger.Error("Error while creating template user {@Error}", ex);
 
-            SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user: "] + ex.Message);
-        }
-        LoadingData = false;
+    //         SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user: "] + ex.Message);
+    //     }
+    //     LoadingData = false;
 
-        await InvokeAsync(StateHasChanged);
-    }
+    //     await InvokeAsync(StateHasChanged);
+    // }
 
-    async Task SetTemplate(DirectoryTemplate selectedTemplate)
-    {
-        SelectedTemplate = selectedTemplate;
-        custom = false;
-        SelectedStep = 1;
-        await InvokeAsync(StateHasChanged);
-    }
+    // async Task SetTemplate(DirectoryTemplate selectedTemplate)
+    // {
+    //     SelectedTemplate = selectedTemplate;
+    //     custom = false;
+    //     SelectedStep = 1;
+    //     await InvokeAsync(StateHasChanged);
+    // }
     bool AdditionalShow(IDirectoryEntryAdapter entry)
     {
         if (entry is IADOrganizationalUnit ou)

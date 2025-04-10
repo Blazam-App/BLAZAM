@@ -24,6 +24,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
         IADGroup CreateGroup(string containerName);
         IADUser CreateUser(string containerName);
+        IADContact CreateContact(string containerName);
         IADOrganizationalUnit CreateOU(string containerName);
         Task<IEnumerable<IDirectoryEntryAdapter>> GetChildrenAsync();
         Task<bool> HasChildrenAsync();
