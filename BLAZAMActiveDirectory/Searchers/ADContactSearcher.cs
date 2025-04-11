@@ -94,16 +94,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
             return SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.Contact, 1000, ignoreDisabledUsers)?.Cast<IADContact>().OrderByDescending(u => u.LastChanged).ToList();
 
         }
+
         public IADContact? FindContactsByGUID(byte[]? guid)
         {
-            if (guid == null) return null;
-            return new ADSearch(Directory)
-            {
-                ObjectTypeFilter = ActiveDirectoryObjectType.Contact,
-                Fields = new() { GUID = guid },
-                ExactMatch = true
-
-            }.Search<ADContact, IADContact>().FirstOrDefault();
+            return Directory.FindEntryByGuid(guid) as IADContact;
         }
 
         public IADContact? FindContactsByContainerName(string? searchTerm, bool exactMatch = false)

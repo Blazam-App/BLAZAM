@@ -77,7 +77,7 @@ namespace BLAZAM.Services.Background
                 foreach (var user in usersInTable)
                 {
                     if (user == null) continue;
-                    var adUser = directory.GetDirectoryEntryBySid(user.Sid) as IADUser;
+                    var adUser = directory.FindEntryBySid(user.Sid) as IADUser;
                     if (adUser != null && !adUser.LockedOut)
                     {
                         var existing = context.LockedOutUsers.FirstOrDefault(x => x.Sid == user.Sid);

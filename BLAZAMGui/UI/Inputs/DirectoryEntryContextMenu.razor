@@ -11,20 +11,23 @@
         <MenuContents>
             @if (account.CanUnlock && account.LockedOut)
             {
-                <MudMenuItem OnClick="(async()=>{await UnlockAccount(account);})" Icon="@Icons.Material.Outlined.LockOpen">
+                <MudMenuItem OnClick="(async()=>{await UnlockAccount(account);})"
+                             Icon="@Icons.Material.Outlined.LockOpen">
                     @AppLocalization[Lang.Unlock] @AppLocalization[account.ObjectType.ToString()]
                 </MudMenuItem>
 
             }
             @if (account.Enabled)
             {
-                <MudMenuItem OnClick="(async()=>{await DisableAccount(account);})" Icon="@Icons.Material.Outlined.Cancel">
+                <MudMenuItem OnClick="(async()=>{await DisableAccount(account);})"
+                             Icon="@Icons.Material.Outlined.Cancel">
                     @AppLocalization[Lang.Disable] @AppLocalization[account.ObjectType.ToString()]
                 </MudMenuItem>
             }
             @if (account.Disabled)
             {
-                <MudMenuItem OnClick="(async()=>{await EnableAccount(account);})" Icon="@Icons.Material.Outlined.Check">
+                <MudMenuItem OnClick="(async()=>{await EnableAccount(account);})"
+                             Icon="@Icons.Material.Outlined.Check">
                     @AppLocalization[Lang.Enable] @AppLocalization[account.ObjectType.ToString()]
                 </MudMenuItem>
             }

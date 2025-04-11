@@ -9,7 +9,7 @@ namespace BLAZAM.Helpers
 {
     public static class GuiHelpers
     {
-        public static async Task<byte[]?> ToByteArrayAsync(this IBrowserFile file, int maxReadBytes = 5000000)
+        public static async Task<byte[]?> ReadByteArrayAsync(this IBrowserFile file, int maxReadBytes = 5000000)
         {
             byte[] fileBytes;
             using (var stream = file.OpenReadStream(5000000))

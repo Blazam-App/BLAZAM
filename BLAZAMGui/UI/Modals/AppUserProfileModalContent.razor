@@ -101,7 +101,7 @@
 #nullable disable warnings
     async Task UploadProfilePicture(IBrowserFile profilePictureFile)
     {
-        var rawBytes = await profilePictureFile.ToByteArrayAsync();
+        var rawBytes = await profilePictureFile.ReadByteArrayAsync();
 
         if (rawBytes != null)
         {

@@ -104,7 +104,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         /// <param name="sid">The SID in string form to search against</param>
         /// <returns>The matching object in Active Directory, or null</returns>
-        IDirectoryEntryAdapter? GetDirectoryEntryBySid(string sid);
+        IDirectoryEntryAdapter? FindEntryBySid(string sid);
 
         /// <summary>
         /// Searches for an Active Directory object by it's SID
@@ -112,6 +112,18 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <param name="sid">The SID in byte array form to search against</param>
         /// <returns>The matching object in Active Directory, or null</returns>
         IDirectoryEntryAdapter? FindEntryBySID(byte[] sid);
+        /// <summary>
+        /// Searches for an Active Directory object by it's GUID
+        /// </summary>
+        /// <param name="sid">The GUID in byte array form to search against</param>
+        /// <returns>The matching object in Active Directory, or null</returns>
+        IDirectoryEntryAdapter? FindEntryByGuid(byte[] guid);
+        /// <summary>
+        /// Searches for an Active Directory object by it's GUID
+        /// </summary>
+        /// <param name="sid">The GUID in string form to search against</param>
+        /// <returns>The matching object in Active Directory, or null</returns>
+        IDirectoryEntryAdapter? FindEntryByGuid(string guid);
 
 
 

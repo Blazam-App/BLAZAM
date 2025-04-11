@@ -94,7 +94,7 @@
             LoadingData = true;
 
             var _creator = await Context.UserSettings.FirstOrDefaultAsync(x => x.Id == Request.Notification.CreatorId);
-            var _creatorAD = Directory.GetDirectoryEntryBySid(_creator.UserGUID);
+            var _creatorAD = Directory.FindEntryBySid(_creator.UserGUID);
 
             //Prepare delegate
             var _deleg = await Context.PermissionDelegate.FirstOrDefaultAsync(x => x.DelegateSid == _creator.UserGUID.ToSidByteArray());

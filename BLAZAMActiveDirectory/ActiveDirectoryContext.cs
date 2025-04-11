@@ -760,14 +760,27 @@ namespace BLAZAM.ActiveDirectory
 
         }
 
-        public IDirectoryEntryAdapter? FindEntryBySID(byte[] sid) => GetDirectoryEntryBySid(sid.ToSidString());
-        public IDirectoryEntryAdapter? GetDirectoryEntryBySid(string sid)
+        public IDirectoryEntryAdapter? FindEntryBySID(byte[] sid) => FindEntryBySid(sid.ToSidString());
+        public IDirectoryEntryAdapter? FindEntryBySid(string sid)
         {
             var searcher = new ADSearch(this);
             searcher.SearchRoot = RootDirectoryEntry;
             searcher.Fields.SID = sid;
             var result = searcher.Search().FirstOrDefault();
             return result;
+        }
+        public IDirectoryEntryAdapter? FindEntryByGuid(string guid) => FindEntryByGuid(Guid.Parse(guid).ToByteArray());
+
+        public IDirectoryEntryAdapter? FindEntryByGuid(byte[] guid)
+        {
+            if (guid == null) return null;
+            return new ADSearch(this)
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.Contact,
+                Fields = new() { GUID = guid },
+                ExactMatch = true
+
+            }.Search<ADContact, IADContact>().FirstOrDefault();
         }
 
         public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn)

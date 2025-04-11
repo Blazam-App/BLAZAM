@@ -1,36 +1,34 @@
 ﻿@inherits AutoCompleteComponentBase
-@{
-    //TODO Finish custom disable
-}
+
 <MudAutocomplete Class="@Class"
-Style="@Style"
-Disabled=@Disabled
-T="IDirectoryEntryAdapter"
-Label="@Label"
-AnchorOrigin="@AnchorOrigin"
-TransformOrigin="@TransformOrigin"
-@bind-Value="SelectedResult"
-@bind-Text=@SearchTerm
-@ref=AutoComplete
-AutoFocus=@AutoFocus
-SearchFunc="@GetResults"
-DebounceInterval=500
-ResetValueOnEmptyText="true"
-MinCharacters="3"
-Validation="@Validation"
-CoerceText="@(!AllowCustomInput)"
-CoerceValue="true"
-ItemDisabledFunc="@(CustomDisableFilter??((r)=>false))"
-MaxItems=@MaxResults
-Clearable=true
-Dense=true
-ShowProgressIndicator=true
-ToStringFunc="item=>item?.CanonicalName"
-AdornmentColor="Color.Tertiary"
-ProgressIndicatorColor="Color.Secondary"
-Adornment="Adornment.Start"
-AdornmentIcon="@AdornmentIcon"
-Variant="@Variant">
+                 Style="@Style"
+                 Disabled=@Disabled
+                 T="IDirectoryEntryAdapter"
+                 Label="@Label"
+                 AnchorOrigin="@AnchorOrigin"
+                 TransformOrigin="@TransformOrigin"
+                 @bind-Value="SelectedResult"
+                 @bind-Text=@SearchTerm
+                 @ref=AutoComplete
+                 AutoFocus=@AutoFocus
+                 SearchFunc="@GetResults"
+                 DebounceInterval=500
+                 ResetValueOnEmptyText="true"
+                 MinCharacters="3"
+                 Validation="@Validation"
+                 CoerceText="@(!AllowCustomInput)"
+                 CoerceValue="true"
+                 ItemDisabledFunc="@(CustomDisableFilter??((r)=>false))"
+                 MaxItems=@MaxResults
+                 Clearable=true
+                 Dense=true
+                 ShowProgressIndicator=true
+                 ToStringFunc="item=>item?.CanonicalName"
+                 AdornmentColor="Color.Tertiary"
+                 ProgressIndicatorColor="Color.Secondary"
+                 Adornment="Adornment.Start"
+                 AdornmentIcon="@AdornmentIcon"
+                 Variant="@Variant">
     <ItemTemplate>
 
         <ADAutoCompleteResult Entry="context" />
@@ -70,7 +68,7 @@ Variant="@Variant">
 </MudAutocomplete>
 
 @code {
-    #nullable disable warnings
+#nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
     [Parameter]
@@ -116,7 +114,7 @@ Variant="@Variant">
 
     private MudAutocomplete<IDirectoryEntryAdapter>? AutoComplete { get; set; }
 
-    private List<CancellationTokenSource> _cancellationList = new();
+    private readonly List<CancellationTokenSource> _cancellationList = new();
 
     [Parameter]
     public Func<IDirectoryEntryAdapter, bool> CustomResultsFilter { get; set; }
@@ -146,7 +144,16 @@ Variant="@Variant">
         }
     }
 
+    public override void Dispose()
+    {
+        base.Dispose();
+        Task.Run(async () =>
+        {
 
+            await CancelExistingTokens();
+            _cancellationList.Clear();
+        });
+    }
 
     [Parameter]
     public ActiveDirectoryObjectType? SearchObjectType { get; set; }
@@ -186,7 +193,7 @@ Variant="@Variant">
             _selectedResult = value;
 
             SearchService.SearchTerm = _selectedResult != null ? _selectedResult.CanonicalName : "";
-
+            _ = CancelExistingTokens();
             SelectedResultChanged.InvokeAsync(value);
         }
     }
@@ -229,17 +236,20 @@ Variant="@Variant">
 
 
 
-
+    private async Task CancelExistingTokens()
+    {
+        foreach (var source in _cancellationList)
+        {
+            await source.CancelAsync();
+        }
+    }
 
 
     private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText, CancellationToken token)
     {
         var newSource = new CancellationTokenSource();
         token = newSource.Token;
-        foreach (var source in _cancellationList)
-        {
-            await source.CancelAsync();
-        }
+        await CancelExistingTokens();
 
         _cancellationList.Add(newSource);
 
