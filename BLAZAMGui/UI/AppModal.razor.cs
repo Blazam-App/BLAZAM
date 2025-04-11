@@ -162,7 +162,9 @@ namespace BLAZAM.Gui.UI
 
             IsShown = true;
 
-            return await Modal.ShowAsync(null, Options);
+           var @ref = await Modal.ShowAsync(null, Options);
+             await InvokeAsync(StateHasChanged);
+            return @ref;
         }
 
 

@@ -10,7 +10,7 @@
 }
 @if (GroupableEntry != null)
 {
-    <AppPageTitle>@GroupableEntry?.SAMAccountName</AppPageTitle>
+    <AppPageTitle>@Contact?.DisplayName</AppPageTitle>
 
 
     <EditForm OnValidSubmit=SaveChanges Model="GroupableEntry">

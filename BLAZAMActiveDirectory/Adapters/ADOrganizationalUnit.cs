@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
 using System.Web;
@@ -10,8 +11,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
     {
         private IEnumerable<IADOrganizationalUnit>? childOUCache;
 
-
-
+    
         public async Task<bool> HasChildrenAsync()
         {
             return await Task.Run(() =>
@@ -271,7 +271,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             var fullContainerName = "CN=" + containerName.Trim().Replace(",", "\\,");
             try
             {
-                IADContact newContact = new ADContact();
+                ADContact newContact = new ADContact();
                 newContact.Parse(directoryEntry: DirectoryEntry!.Children.Add(fullContainerName, "contact"), directory: Directory);
                 newContact.NewEntry = true;
                 return newContact;

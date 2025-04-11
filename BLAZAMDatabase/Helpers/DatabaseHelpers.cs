@@ -51,6 +51,7 @@ namespace BLAZAM.Helpers
                             return false;
                     }
                 case ActiveDirectoryObjectType.Group:
+                case ActiveDirectoryObjectType.Contact:
                     switch (notificationType)
                     {
                         case NotificationType.Delete:
@@ -85,20 +86,7 @@ namespace BLAZAM.Helpers
                             return false;
                     }
                 case ActiveDirectoryObjectType.All:
-                    switch (notificationType)
-                    {
-                        case NotificationType.PasswordChange:
-                        case NotificationType.LockedOut:
-                        case NotificationType.Unassign:
-                        case NotificationType.Assign:
-                        case NotificationType.Modify:
-                        case NotificationType.Create:
-                        case NotificationType.Delete:
-                        case NotificationType.Scheduled:
-                            return true;
-                        default:
-                            return false;
-                    }
+                    return true;
                 default:
                     return false;
             }

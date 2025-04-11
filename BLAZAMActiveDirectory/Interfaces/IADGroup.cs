@@ -2,7 +2,7 @@
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
-    public interface IADGroup : IGroupableDirectoryAdapter, IComparable
+    public interface IADGroup : IGroupableDirectoryAdapter, IIdentityAdapater, IComparable
     {
         string? GroupName { get; set; }
         bool HasMembers { get; }

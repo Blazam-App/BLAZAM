@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Jobs;
 
 namespace BLAZAM.ActiveDirectory.Adapters
@@ -51,6 +52,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 }
             }
+        }
+
+        public virtual string? SAMAccountName
+        {
+
+            get
+            {
+                return GetStringAttribute(ActiveDirectoryFields.SAMAccountName.FieldName);
+            }
+            set
+            {
+                SetAttribute(ActiveDirectoryFields.SAMAccountName.FieldName, value);
+            }
+
+
         }
 
         public bool IsSecurityGroup

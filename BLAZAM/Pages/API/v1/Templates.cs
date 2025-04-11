@@ -29,13 +29,19 @@ namespace BLAZAM.Pages.API.v1
     {
         private readonly IStringLocalizer<AppLocalization> AppLocalization;
         private readonly EmailService EmailService;
-        private readonly NotificationGenerationService OUNotificationService;
 
-        public Templates(NotificationGenerationService ouNotificationService, EmailService email, IApplicationUserStateService applicationUserStateService, IStringLocalizer<AppLocalization> localizer, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
+        public Templates(NotificationGenerationService ouNotificationService,
+            EmailService email,
+            IApplicationUserStateService applicationUserStateService,
+            IStringLocalizer<AppLocalization> localizer,
+            WebUserAuditLogger audit,
+            IUserDatabaseFactory appDatabaseFactory, 
+            IHttpContextAccessor httpContextAccessor,
+            IActiveDirectoryContextFactory adFactory)
+            : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
         {
             AppLocalization = localizer;
             EmailService = email;
-            OUNotificationService = ouNotificationService;
         }
 
 
@@ -146,12 +152,12 @@ namespace BLAZAM.Pages.API.v1
 
         }
 
-        private async Task AuditAndNotify(NewUserDetails newUserDetails, DirectoryTemplate? template, IADUser? newUser, SecureString password)
+        private async Task AuditAndNotify(NewUserDetails newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
         {
             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
                 EventType = ApplicationEventType.Create,
-                Entry = newUser,
+                Entry = entry,
                 Actor = CurrentUserState
 
             });
@@ -160,15 +166,15 @@ namespace BLAZAM.Pages.API.v1
 
             if (template?.EffectiveSendWelcomeEmail == true)
             {
-                if (template.EffectiveAskForAlternateEmail == true || newUser.Email.IsNullOrEmpty())
+                if (template.EffectiveAskForAlternateEmail == true || entry.Email.IsNullOrEmpty())
                 {
 
-                    await SendWelcomeEmail(newUser, newUserDetails.SendWelcomeEmailTo!, password);
+                    await SendWelcomeEmail(entry, newUserDetails.SendWelcomeEmailTo!, password);
 
                 }
                 else
                 {
-                    await SendWelcomeEmail(newUser, newUser.Email!, password);
+                    await SendWelcomeEmail(entry, entry.Email!, password);
                 }
             }
 

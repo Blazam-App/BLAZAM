@@ -124,16 +124,16 @@
             <ChildContent>
                 @{
 
-                    var conflictingEntry = Directory.Users.FindUserByUsername(newContact?.SAMAccountName, false, true);
+                    var conflictingEntry = Directory.Contacts.FindContactsByString(newContact?.CanonicalName,true);
                     bool conflictWarning = false;
-                    if (conflictingEntry != null && conflictingEntry.SAMAccountName?.Equals(newContact?.SAMAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
+                    if (conflictingEntry != null && conflictingEntry.Any(e=>e.CanonicalName?.Equals(newContact?.CanonicalName, StringComparison.InvariantCultureIgnoreCase) == true))
                     {
                        _usernameStepValid = false;
                         conflictWarning = true;
                     }
                     else
                     {
-                        if (newContact?.SAMAccountName.IsNullOrEmpty() == false)
+                        if (newContact?.CanonicalName.IsNullOrEmpty() == false)
                         {
                             _usernameStepValid = true;
                         }
@@ -141,17 +141,11 @@
                     }
 
                 }
-                <MudTextField Class="mt-5"
-                              Label="@AppLocalization[Lang.Username]"
-                              Immediate="true"
-                              Disabled=@(!CurrentUser.State.IsSuperAdmin && SelectedTemplate?.EffectiveAllowUsernameOverride!=true)
-                              T=string
-                              @bind-Value=@newContact!.SAMAccountName />
+              
                 @if (conflictWarning)
                 {
                     <MudAlert Severity="Severity.Error">
-                        @AppLocalization["An account with that name already exists!"]<br/>
-                        @AppLocalization[Lang.User]: @conflictingEntry.SAMAccountName
+                        @AppLocalization["An account with that name already exists!"]
                         </MudAlert>
                 }
                 <MudButton Disabled=LoadingData

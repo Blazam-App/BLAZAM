@@ -208,20 +208,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected SearchResult? SearchResult { get; set; }
 
-        public virtual string? SAMAccountName
-        {
-
-            get
-            {
-                return GetStringAttribute(ActiveDirectoryFields.SAMAccountName.FieldName);
-            }
-            set
-            {
-                SetAttribute(ActiveDirectoryFields.SAMAccountName.FieldName, value);
-            }
-
-
-        }
+     
 
         public virtual string? ADSPath
         {

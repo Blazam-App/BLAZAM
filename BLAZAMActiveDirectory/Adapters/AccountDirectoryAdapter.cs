@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Exceptions;
+using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
@@ -22,7 +23,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private const int ADS_UF_DONT_EXPIRE_PASSWD = 0x10000;
 
 
+        public virtual string? SAMAccountName
+        {
 
+            get
+            {
+                return GetStringAttribute(ActiveDirectoryFields.SAMAccountName.FieldName);
+            }
+            set
+            {
+                SetAttribute(ActiveDirectoryFields.SAMAccountName.FieldName, value);
+            }
+
+
+        }
 
         public virtual bool CanSetPassword { get => HasActionPermission(ObjectActions.SetPassword); }
 
@@ -246,6 +260,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get => !Disabled;
             set => Disabled = !value;
         }
+
+
+        
+
         public virtual DateTime? ExpireTime
         {
             get

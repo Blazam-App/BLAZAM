@@ -11,7 +11,9 @@
             <ADAutoComplete Disabled=@attemptingImpersonation
                         Label="@AppLocalization[Lang.Impersonate_User]"
                         SearchObjectType="ActiveDirectoryObjectType.User" 
-            @bind-SelectedResult=User />
+                        
+            SelectedResult=User
+            SelectedResultChanged=@((val)=>{User=val as IADUser;}) />
 
 
             <MudButton Disabled=@attemptingImpersonation 
@@ -30,7 +32,7 @@ else
 }
 @code {
     private LoginRequest imperonationRequest = new(){ Impersonation=true};
-    public IDirectoryEntryAdapter? User { get; set; }
+    public IADUser? User { get; set; }
     bool attemptingImpersonation;
     async void AttemptSignIn()
     {

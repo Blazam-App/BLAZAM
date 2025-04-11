@@ -5,7 +5,7 @@ using System.Diagnostics.Eventing.Reader;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
-    public interface IADUser : IAccountDirectoryAdapter
+    public interface IADUser : IAccountDirectoryAdapter, IIdentityAdapater
     {
         string? HomeDirectory { get; set; }
         string? HomeDrive { get; set; }

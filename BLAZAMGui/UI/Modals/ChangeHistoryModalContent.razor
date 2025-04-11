@@ -67,7 +67,7 @@
             _events.Add(new()
                 {
                     Timestamp = Model.Created.Value,
-                    Target = Model.SAMAccountName,
+                    Target = Model.CanonicalName,
                     Action = Model.ObjectType.ToString() + " created",
                     Username = AppLocalization[Lang.Active_Directory]
         });
@@ -82,7 +82,7 @@
                                  _events.Add(new()
                     {
                         Timestamp =account.PasswordLastSet.Value,
-                        Target = Model.SAMAccountName,
+                            Target = Model.CanonicalName,
                         Action = AppLocalization[Model.ObjectType.ToString()] + " "+AppLocalization[Lang.password_changed]+".",
                         Username = AppLocalization[Lang.Active_Directory]
                     });
@@ -95,7 +95,7 @@
                 _events.Add(new()
                     {
                         Timestamp = account.LockoutTime.Value,
-                        Target = Model.SAMAccountName,
+                        Target = Model.CanonicalName,
                         Action = Model.ObjectType.ToString() + " " + AppLocalization[Lang.locked_out] + ".",
                         Username = AppLocalization[Lang.Active_Directory]
                     });
@@ -107,7 +107,7 @@
                 _events.Add(new()
                     {
                         Timestamp = account.LastChanged.Value,
-                        Target = Model.SAMAccountName,
+                            Target = Model.CanonicalName,
                             Action = Model.ObjectType.ToString() + " " + AppLocalization[Lang.last_changed] + ".",
                         Username = AppLocalization[Lang.Active_Directory]
                     });

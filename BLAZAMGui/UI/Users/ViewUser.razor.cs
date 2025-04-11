@@ -65,7 +65,7 @@ namespace BLAZAM.Gui.UI.Users
                 {
                     if (selfAccessLevel != null)
                     {
-                        return GroupableEntry.SAMAccountName.Equals(CurrentUser.Username, StringComparison.InvariantCultureIgnoreCase);
+                        return User?.SAMAccountName.Equals(CurrentUser.Username, StringComparison.InvariantCultureIgnoreCase)==true;
                     }
                 }
                 return false;
@@ -160,7 +160,7 @@ namespace BLAZAM.Gui.UI.Users
             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
-                Entry = User,
+                Entry = Contact,
                 Actor = CurrentUser.State
 
             });

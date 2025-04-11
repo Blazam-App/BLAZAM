@@ -13,11 +13,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     /// </summary>
     public interface IDirectoryEntryAdapter : IDisposable
     {
-        /// <summary>
-        /// The SAMAccountName property, generally used as the username property
-        /// </summary>
-        string? SAMAccountName { get; set; }
-
+  
         /// <summary>
         /// The name that displays for this object in ADUC
         /// </summary>
