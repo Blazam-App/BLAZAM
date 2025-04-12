@@ -104,6 +104,7 @@ namespace BLAZAM.Services.Background
                         .Where(r => r.ActiveDirectoryObjectType.Equals(args.Entry.ObjectType)
                         && r.Trigger.Equals(args.EventType.ToNotificationType())).ToList();
                     var ruleProcessingJob = new Job();
+                    ruleProcessingJob.StopOnFailedStep = true;
                     foreach (var ruleForEvent in applicableRules)
                     {
                         var ruleStep = new JobStep(ruleForEvent.Name, (step) =>
@@ -129,7 +130,7 @@ namespace BLAZAM.Services.Background
                 return true;
             });
             scheduledRuleJob.AddStep(getApplicableEntriesStep);
-
+            scheduledRuleJob.StopOnFailedStep = true;
             JobStep execApplicableEntriesStep = new("Execute applicable entries", (step) =>
             {
                 //Execute matched entries
@@ -276,6 +277,11 @@ namespace BLAZAM.Services.Background
                         }
                     }
                     Loggers.RulesLogger.Debug("Processing for rule {@Rule} has finished", ruleForEvent);
+
+                    if (ruleForEvent.StopOnThisRule)
+                    {
+                        return false;
+                    }
                 }
                 return true;
             });
