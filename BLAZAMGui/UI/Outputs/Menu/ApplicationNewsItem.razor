@@ -1,9 +1,9 @@
 @using ApplicationNews
 @inject AppDialogService MessageService
 <MudContainer 
-           Style="border-radius:0px;"
-           Class="px-1 py-0 cursor-pointer"
-           @onclick="@ShowNews">
+Style="border-radius:0px;"
+Class="px-1 py-0 cursor-pointer"
+@onclick="@OnClick">
     <MudStack Class="mud-width-full pt-1" AlignItems="AlignItems.Start">
         <MudStack Row=true>
             @if (Read)
@@ -42,16 +42,7 @@
 
     [Parameter]
     public EventCallback OnRead { get; set; }
-
-   
-    private async void ShowNews()
-    {
-        var result = await Item.ShowNewsItemDialog(MessageService);
-        if (result.Dialog is AppNewsItemDialog dialog)
-        {
-            dialog.OnAcknowledged += () => OnRead.InvokeAsync();
-        }
-
-
-    }
+    [Parameter]
+    public EventCallback OnClick{ get; set; }
+ 
 }
