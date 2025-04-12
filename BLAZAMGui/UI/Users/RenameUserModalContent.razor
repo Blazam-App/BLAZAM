@@ -3,40 +3,21 @@
 {
     if (_privateEntryInstance != null)
     {
-
-
         <MudStack Class="px-7">
             <MudTextField AutoFocus=true
-            Label="@AppLocalization[Lang.First_Name]"
-            @bind-Value="@_privateEntryInstance.GivenName" />
-
-
-
-
+                          Label="@AppLocalization[Lang.First_Name]"
+                          @bind-Value="@_privateEntryInstance.GivenName" />
 
             <MudTextField Label="@AppLocalization[Lang.Middle_Name]"
-            @bind-Value="@_privateEntryInstance.MiddleName" />
+                          @bind-Value="@_privateEntryInstance.MiddleName" />
 
-
-
-
-
-
-            <MudTextField Label="@AppLocalization[Lang.Last_Name]" @bind-Value="@_privateEntryInstance.Sn" />
-
-
-
-
-
+            <MudTextField Label="@AppLocalization[Lang.Last_Name]"
+                          @bind-Value="@_privateEntryInstance.Sn" />
 
             <MudTextField T="string"
-            Label="@AppLocalization[Lang.Display_Name]"
-            Text="@_privateEntryInstance.DisplayName"
-            TextChanged="DisplayNameChanged" />
-
-
-
-
+                          Label="@AppLocalization[Lang.Display_Name]"
+                          Text="@_privateEntryInstance.DisplayName"
+                          TextChanged="DisplayNameChanged" />
 
             @if (User != null)
             {
@@ -46,26 +27,26 @@
                     <MudTextField Label="@AppLocalization[Lang.Username]"
                                   @bind-Value="@_privateUser.SAMAccountName" />
                 }
-                @if (Entry.CanEditField(ActiveDirectoryFields.Mail))
-                {
-                    <MudTextField Label="@AppLocalization[Lang.Email_Address]"
-                                  @bind-Value="@_privateUser.Email" />
-
-
-
-                }
             }
+            @if (Entry.CanEditField(ActiveDirectoryFields.Mail))
+            {
+                <MudTextField Label="@AppLocalization[Lang.Email_Address]"
+                              @bind-Value="@_privateEntryInstance.Email" />
+
+            }
+
         </MudStack>
     }
 }
 else
 {
-    <MudProgressCircular Indeterminate Color="Color.Primary" />
+    <MudProgressCircular Indeterminate="true"
+                         Color="Color.Primary" />
 }
 <MudAlert Severity="Severity.Info">@AppLocalization[HelpLang.Discard_Other_Changes_Warning]</MudAlert>
 @code {
 
-    #nullable disable warnings
+#nullable disable warnings
     private IADContact _privateEntryInstance;
 
     [Parameter]
@@ -78,7 +59,7 @@ else
         {
             _privateEntryInstance = Directory.Users.FindUserBySID(User.SID.ToSidString());
         }
-        else if(Contact!=null)
+        else if (Contact != null)
         {
             _privateEntryInstance = Directory.Contacts.FindContactsByGUID(Contact.Guid);
 
