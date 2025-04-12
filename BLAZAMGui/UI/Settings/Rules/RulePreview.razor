@@ -4,7 +4,19 @@
     <MudStack>
         <MudStack Row=true>
             <MudText Typo="Typo.body2"
-                     Color="Color.Tertiary">@Rule.Name</MudText>
+                     Color="Color.Tertiary"
+                     Class="align-middle">@Rule.Name</MudText>
+            @if (CompactView)
+            {
+                <MudStack Class="my-0" Row=true>
+
+                    <MudText Typo="Typo.body2"
+                             Class="align-middle">
+                        Last Triggered: <DateWithTimeTooltip NullText=@AppLocalization[Lang.Never]
+                                                             DateTime="@Rule.LastTriggered" />
+                    </MudText>
+                </MudStack>
+            }
             <MudSpacer />
             <MudSwitch Label="@AppLocalization[Lang.Enabled]"
                        Color="Color.Success"
@@ -16,166 +28,173 @@
                            OnClick="@(EditClicked)" />
             @* <AppIconButton Icon="@Icons.Material.Filled.CopyAll"
                            OnClick="@(CopyClicked)" /> *@
-        </MudStack>
-        <MudStack Row=true>
 
-            <MudText Typo="Typo.body2">
-                Last Triggered: <DateWithTimeTooltip NullText=@AppLocalization[Lang.Never]
-                                                     DateTime="@Rule.LastTriggered" />
-            </MudText>
-            <MudText Typo="Typo.body2">
-                Last Executed: <DateWithTimeTooltip NullText=@AppLocalization[Lang.Never]
-                                                    DateTime="@Rule.LastExcecuted" />
-            </MudText>
         </MudStack>
+        @if (!CompactView)
+        {
+            <MudStack Row=true>
 
-        <MudText Class="mt-1">
-            <MudIcon Style=@($"color:{Colors.Yellow.Darken2};" )
-                     Icon="@Icons.Material.Outlined.ElectricBolt" />@($"Triggers on '{AppLocalization[Rule.Trigger.ToString()]}'")
-        </MudText>
-        @if (Rule.Trigger == NotificationType.Scheduled)
-        {
-            <MudText>
-                <MudIcon Color="Color.Info"
-                         Icon="@Icons.Material.Outlined.Schedule" /> At '@Rule.ScheduledRunTime.ToString()'
+                <MudText Typo="Typo.body2">
+                    Last Triggered: <DateWithTimeTooltip NullText=@AppLocalization[Lang.Never]
+                                                         DateTime="@Rule.LastTriggered" />
+                </MudText>
+                <MudText Typo="Typo.body2">
+                    Last Executed: <DateWithTimeTooltip NullText=@AppLocalization[Lang.Never]
+                                                        DateTime="@Rule.LastExcecuted" />
+                </MudText>
+            </MudStack>
+
+            <MudText Class="mt-1">
+                <MudIcon Style=@($"color:{Colors.Yellow.Darken2};" )
+                         Icon="@Icons.Material.Outlined.ElectricBolt" />@($"Triggers on '{AppLocalization[Rule.Trigger.ToString()]}'")
             </MudText>
-        }
-        <MudText Class="mt-2"><MudIcon Color="Color.Warning" Icon="@Icons.Material.Outlined.FilterAlt" /> If</MudText>
-        @if (Rule.Filters.Count > 0)
-        {
-            var firstOr = true;
-            @foreach (var orFilters in Rule.Filters)
+            @if (Rule.Trigger == NotificationType.Scheduled)
             {
-                @if (!firstOr)
+                <MudText>
+                    <MudIcon Color="Color.Info"
+                             Icon="@Icons.Material.Outlined.Schedule" /> At '@Rule.ScheduledRunTime.ToString()'
+                </MudText>
+            }
+            <MudText Class="mt-2"><MudIcon Color="Color.Warning" Icon="@Icons.Material.Outlined.FilterAlt" /> If</MudText>
+            @if (Rule.Filters.Count > 0)
+            {
+                var firstOr = true;
+                @foreach (var orFilters in Rule.Filters)
                 {
-                    <MudText Align="Align.Center">@AppLocalization[Lang.Or]</MudText>
-                }
-                else
-                {
-                    firstOr = false;
-                }
-                <MudStack Row>
-
-                    @if (orFilters.AndFilters.Count > 0)
+                    @if (!firstOr)
                     {
+                        <MudText Align="Align.Center">@AppLocalization[Lang.Or]</MudText>
+                    }
+                    else
+                    {
+                        firstOr = false;
+                    }
+                    <MudStack Row>
 
-                        <MudStack>
-                            @{
-                                var firstAnd = true;
-                            }
-                            @foreach (var andFilter in orFilters.AndFilters)
-                            {
-                                var str = andFilter.Field?.DisplayName;
-                                @if (!firstAnd)
-                                {
-                                    <MudText Class="align-self-center" Align="Align.Center">@AppLocalization[Lang.And]</MudText>
+                        @if (orFilters.AndFilters.Count > 0)
+                        {
 
+                            <MudStack>
+                                @{
+                                    var firstAnd = true;
                                 }
-                                else
+                                @foreach (var andFilter in orFilters.AndFilters)
                                 {
-                                    firstAnd = false;
-                                }
-                                <MudStack Row=true>
-                                    @if (andFilter.Field.FieldType == ActiveDirectoryFieldType.Boolean && andFilter.Negate)
+                                    var str = andFilter.Field?.DisplayName;
+                                    @if (!firstAnd)
                                     {
-                                        <MudChip T="string"
-                                                 Text="Not"
-                                                 Color="Color.Error" />
+                                        <MudText Class="align-self-center" Align="Align.Center">@AppLocalization[Lang.And]</MudText>
 
                                     }
-                                    <MudTextField T="string"
-                                                  ReadOnly="true"
-                                                  Label="@AppLocalization[Lang.Field]"
-                                                  Value=@str />
-                                    @if (andFilter.Field.FieldType != ActiveDirectoryFieldType.Boolean)
+                                    else
                                     {
-                                        if (andFilter.Negate)
+                                        firstAnd = false;
+                                    }
+                                    <MudStack Row=true>
+                                        @if (andFilter.Field.FieldType == ActiveDirectoryFieldType.Boolean && andFilter.Negate)
                                         {
                                             <MudChip T="string"
                                                      Text="Not"
                                                      Color="Color.Error" />
+
                                         }
                                         <MudTextField T="string"
                                                       ReadOnly="true"
-                                                      Label="@AppLocalization[Lang.Operator]"
-                                                      Value=@andFilter.Operator.ToString() />
-                                        @if (andFilter.Value != null)
+                                                      Label="@AppLocalization[Lang.Field]"
+                                                      Value=@str />
+                                        @if (andFilter.Field.FieldType != ActiveDirectoryFieldType.Boolean)
                                         {
+                                            if (andFilter.Negate)
+                                            {
+                                                <MudChip T="string"
+                                                         Text="Not"
+                                                         Color="Color.Error" />
+                                            }
                                             <MudTextField T="string"
                                                           ReadOnly="true"
-                                                          Label="@AppLocalization[Lang.Value]"
-                                                          Value=@andFilter.Value?.ToString() />
+                                                          Label="@AppLocalization[Lang.Operator]"
+                                                          Value=@andFilter.Operator.ToString() />
+                                            @if (andFilter.Value != null)
+                                            {
+                                                <MudTextField T="string"
+                                                              ReadOnly="true"
+                                                              Label="@AppLocalization[Lang.Value]"
+                                                              Value=@andFilter.Value?.ToString() />
+                                            }
                                         }
-                                    }
 
-                                </MudStack>
+                                    </MudStack>
 
-                            }
-                        </MudStack>
+                                }
+                            </MudStack>
 
-                    }
-                </MudStack>
+                        }
+                    </MudStack>
 
-            }
-
-        }
-        else
-        {
-            <MudText>This rules will be fired each time a {0} is {1}</MudText>
-        }
-        <MudText Class="mt-2"><MudIcon Color="Color.Success" Icon="@Icons.Material.Filled.Login" /> Then</MudText>
-        @{
-            var firstAction = true;
-        }
-        @foreach (var action in Rule.Actions)
-        {
-            @if (!firstAction)
-            {
-                <MudText Align="Align.Center">@AppLocalization[Lang.And]</MudText>
+                }
 
             }
             else
             {
-                firstAction = false;
+                <MudText>This rules will be fired each time a {0} is {1}</MudText>
             }
-            <MudStack Row=true>
-                <MudTextField T="string"
-                              ReadOnly="true"
-                              Label="@AppLocalization[Lang.Action]"
-                              Value=@action.ActionType.ToString() />
+            <MudText Class="mt-2"><MudIcon Color="Color.Success" Icon="@Icons.Material.Filled.Login" /> Then</MudText>
 
-                @if (action.Data != null)
+            var firstAction = true;
+
+            @foreach (var action in Rule.Actions)
+            {
+                @if (!firstAction)
                 {
-                    <MudTextField T="string"
-                                  ReadOnly="true"
-                                  Label="@AppLocalization[Lang.Data]"
-                                  Value=@action.Data?.ToString() />
+                    <MudText Align="Align.Center">@AppLocalization[Lang.And]</MudText>
+
                 }
-                @if (action.FieldValues.Count > 0)
+                else
                 {
-                    <MudTextField T="string"
-                                  ReadOnly="true"
-                                  Label="@AppLocalization[Lang.Field]"
-                                  Value=@action.FieldValues[0].Field.DisplayName />
-                    <MudTextField T="string"
-                                  ReadOnly="true"
-                                  Label="@AppLocalization[Lang.Value]"
-                                  Value=@action.FieldValues[0].Value?.ToString() />
+                    firstAction = false;
                 }
-                @if (action.GroupSids.Count > 0)
-                {
+                <MudStack Row=true>
                     <MudTextField T="string"
                                   ReadOnly="true"
-                                  Label="@AppLocalization[Lang.Group]"
-                                  Value=@action.GroupSids.FirstOrDefault()?.GroupSid.ToString() />
-                    <MudTextField T="string"
-                                  ReadOnly="true"
-                                  Label="@AppLocalization[Lang.Assign]"
-                                  Value=@action.GroupSids.FirstOrDefault()?.Assigned.ToString() />
-                }
-            </MudStack>
-        }
-      
+                                  Label="@AppLocalization[Lang.Action]"
+                                  Value=@action.ActionType.ToString() />
+
+                    @if (action.Data != null)
+                    {
+                        <MudTextField T="string"
+                                      ReadOnly="true"
+                                      Label="@AppLocalization[Lang.Data]"
+                                      Value=@action.Data?.ToString() />
+                    }
+                    @if (action.FieldValues.Count > 0)
+                    {
+                        <MudTextField T="string"
+                                      ReadOnly="true"
+                                      Label="@AppLocalization[Lang.Field]"
+                                      Value=@action.FieldValues[0].Field.DisplayName />
+                        <MudTextField T="string"
+                                      ReadOnly="true"
+                                      Label="@AppLocalization[Lang.Value]"
+                                      Value=@action.FieldValues[0].Value?.ToString() />
+                    }
+                    @if (action.GroupSids.Count > 0)
+                    {
+                        <MudTextField T="string"
+                                      ReadOnly="true"
+                                      Label="@AppLocalization[Lang.Group]"
+                                      Value=@action.GroupSids.FirstOrDefault()?.GroupSid.ToString() />
+                        <MudTextField T="string"
+                                      ReadOnly="true"
+                                      Label="@AppLocalization[Lang.Assign]"
+                                      Value=@action.GroupSids.FirstOrDefault()?.Assigned.ToString() />
+                    }
+                </MudStack>
+            }
+            <MudField Label="After Executing">
+                <StatusCheck Text="@AppHelpLocalization[Rule.StopOnThisRule?HelpLang.Stop_On_Rule:HelpLang.Continue_Processing_Rules]"
+                             Status="@(!Rule.StopOnThisRule)" />
+            </MudField>
+
             <MudButton Disabled="_loadingFilteredEntries"
                        Color="Color.Primary"
                        OnClick="@(()=>{_matchedPopoverOpen = !_matchedPopoverOpen;})">
@@ -194,12 +213,13 @@
                 </MudStack>
             }
 
-        @if (Rule.Trigger == NotificationType.Scheduled)
-        {
-            <MudButton Color="Color.Primary"
-                       OnClick="@(()=>{RulesProcessor.ProcessScheduledRule(Rule);})">
-                Run Now
-            </MudButton>
+            @if (Rule.Trigger == NotificationType.Scheduled)
+            {
+                <MudButton Color="Color.Primary"
+                           OnClick="@(()=>{RulesProcessor.ProcessScheduledRule(Rule);})">
+                    Run Now
+                </MudButton>
+            }
         }
     </MudStack>
 </MudPaper>
@@ -211,6 +231,17 @@
     [Parameter]
     public AutomationRule Rule { get; set; }
 
+    bool _compactView;
+    [Parameter]
+    public bool CompactView
+    {
+        get => _compactView; set
+        {
+            if (_compactView == value) return;
+            _compactView = value;
+            _ = InvokeAsync(StateHasChanged);
+        }
+    }
     [Inject]
     public RulesProcessor RulesProcessor { get; set; }
 

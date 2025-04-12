@@ -85,27 +85,27 @@
     <MudText Typo="Typo.h6">Actions</MudText>
     <MudStack Row="true">
 
-            <MudStack>
+        <MudStack>
 
-                @foreach (var action in _workingRule.Actions)
-                {
-                    <EditRuleAction RemovedClicked="@(()=>{RemoveAction(action);})" Action=action />
-                    <MudSpacer />
-                }
-            </MudStack>
-        
+            @foreach (var action in _workingRule.Actions)
+            {
+                <EditRuleAction RemovedClicked="@(()=>{RemoveAction(action);})" Action=action />
+                <MudSpacer />
+            }
+        </MudStack>
+
         <MudSpacer />
         <MudButton OnClick="AddAction"
                    Color="Color.Success"
                    StartIcon="@Icons.Material.Filled.Add">Add Action</MudButton>
 
     </MudStack>
-
-    <MudSwitch Color="Color.Error"
-               UncheckedColor="Color.Success"
-               @bind-Value=_workingRule.StopOnThisRule
-               Label=@(_workingRule.StopOnThisRule?"Stop rule processing on this rule":"Continue processing other rules") />
-
+    <MudField Label="@AppLocalization[Lang.After_Executing]">
+        <MudSwitch Color="Color.Error"
+                   UncheckedColor="Color.Success"
+                   @bind-Value=_workingRule.StopOnThisRule
+                   Label=@(AppHelpLocalization[_workingRule.StopOnThisRule?HelpLang.Stop_On_Rule:HelpLang.Continue_Processing_Rules]) />
+    </MudField>
 </MudStack>
 @code {
     [Parameter]
@@ -128,7 +128,7 @@
         await base.OnInitializedAsync();
         Modal.SetYesText(AppLocalization[Rule.Id == 0 ? Lang.Add : Lang.Save_Changes]);
         Modal.SetOnYes(SaveRule);
-      
+
         if (Rule.Id == 0)
         {
             Rule.Actions.Add(new() { ActionGuid = Guid.NewGuid() });

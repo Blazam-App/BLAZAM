@@ -15,7 +15,10 @@
         public static readonly string Duplicate_Name_Conflict = "Duplicate_Name_Conflict";
         public static readonly string No_Request_Actions_Available = "No_Request_Actions_Available";
         public static readonly string Overwrite_Auth_Token_Confirmation = "Overwrite_Auth_Token_Confirmation";
+        public static readonly string Rename_Reboot_Message = "Rename_Reboot_Message";
         public static readonly string Modify_Name_Redirect = "Modify_Name_Redirect";
+        public static readonly string Stop_On_Rule = "Stop_On_Rule";
+        public static readonly string Continue_Processing_Rules = "Continue_Processing_Rules";
         public static readonly string Delete_Auth_Token_Confirmation = "Delete_Auth_Token_Confirmation";
         public static readonly string Deny_Request_Confirmation = "Deny_Request_Confirmation";
         public static readonly string Discard_Other_Changes_Warning = "Discard_Other_Changes_Warning";

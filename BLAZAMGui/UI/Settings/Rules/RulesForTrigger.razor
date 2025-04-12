@@ -22,7 +22,9 @@ Class="d-flex flex-wrap flex-grow-1">
 
     </ChildContent>
     <ItemRenderer>
-        <RulePreview Rule="context" EditClicked="@(()=>{ selectedRule = context;_=createRuleModal?.ShowAsync();   })" />
+        <RulePreview CompactView="CompactView"
+            Rule="context" 
+            EditClicked="@(()=>{ selectedRule = context;_=createRuleModal?.ShowAsync();   })" />
     </ItemRenderer>
 
 </MudDropContainer>
@@ -46,6 +48,17 @@ Options="new(){ MaxWidth=MaxWidth.Large, FullWidth=true,CloseButton=true}">
 
     [Parameter]
     public RulesSettings RulesSettings { get; set; }
+    bool _compactView;
+    [Parameter]
+    public bool CompactView
+    {
+        get => _compactView; set
+        {
+            if (_compactView == value) return;
+            _compactView = value;
+            dropContainer.Refresh();
+        }
+    }
 
     AppModal? createRuleModal;
     AutomationRule selectedRule = new();

@@ -17,6 +17,14 @@
 
 
     </Section>
+    <Section>
+
+        <MudCheckBox @bind-Value=_rebootAfterRename Label="@AppLocalization[Lang.Reboot]"/>
+        @if (_rebootAfterRename)
+        {
+            <MudDateTimePicker @bind-DateTime=_date />
+        }
+    </Section>
 
 }
 else
@@ -24,7 +32,8 @@ else
     <MudProgressCircular Indeterminate Color="Color.Primary" />
 }
 @code {
-
+    bool _rebootAfterRename;
+    DateTime? _date;
     #nullable disable warnings
     private IADComputer _privateComputerInstance;
     private string newName;
@@ -70,7 +79,21 @@ else
         LoadingData = true;
         if(await Computer.RenameAsync(newName))
         {
-            SnackBarService.Success(AppLocalization[Lang.Computer_renamed]);
+            if (_rebootAfterRename)
+            {
+                var delay = (int)(_date.Value - DateTime.Now).TotalSeconds;
+                if (await Computer.ShutdownAsync(delay, AppHelpLocalization[HelpLang.Rename_Reboot_Message, delay], true, true))
+                {
+                    SnackBarService.Success(AppLocalization[Lang.Computer_renamed]);
+
+                }
+                SnackBarService.Warning(AppLocalization[Lang.Computer_renamed]);
+
+            }
+            else
+            {
+                SnackBarService.Success(AppLocalization[Lang.Computer_renamed]);
+            }
             Close();
 
         }
