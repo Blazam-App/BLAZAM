@@ -374,7 +374,6 @@ namespace BLAZAM.Helpers
         public static bool IsActionAppropriateForObject(this ActiveDirectoryObjectAction action, ActiveDirectoryObjectType type)
         {
 
-            //var Name = action.ToString();
             switch (type)
             {
                 case ActiveDirectoryObjectType.User:
@@ -389,6 +388,17 @@ namespace BLAZAM.Helpers
                         case ActiveDirectoryObjectAction.Disable:
                         case ActiveDirectoryObjectAction.Rename:
                         case ActiveDirectoryObjectAction.SetPassword:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Contact:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Rename:
                             return true;
                         default:
                             return false;
