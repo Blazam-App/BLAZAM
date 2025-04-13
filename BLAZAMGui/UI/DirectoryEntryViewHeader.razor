@@ -105,6 +105,7 @@ else
                     <AppTooltip Text="@AppLocalization[Lang.Assign_To]">
 
                         <MudIconButton OnClick="@OnAssignTo"
+                            Disabled="@(CurrentUser.State?.CanAssign!=true)"
                                        Icon="@Icons.Material.Filled.GroupAdd"
                                        aria-label="assign to" />
                     </AppTooltip>

@@ -17,7 +17,7 @@
                  MinCharacters="3"
                  Validation="@Validation"
                  CoerceText="@(!AllowCustomInput)"
-                 CoerceValue="true"
+                 CoerceValue="false"
                  ItemDisabledFunc="@(CustomDisableFilter??((r)=>false))"
                  MaxItems=@MaxResults
                  Clearable=true
@@ -65,7 +65,8 @@
             More results than shown...
         </MudText>
     </MoreItemsTemplate>
-</MudAutocomplete>
+</MudAutocomplete> 
+
 
 @code {
 #nullable disable warnings
