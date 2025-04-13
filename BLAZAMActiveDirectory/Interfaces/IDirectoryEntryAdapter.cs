@@ -393,6 +393,5 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<IDirectoryEntryAdapter?> GetParentAsync();
-        void ClearPermissionCache();
     }
 }

@@ -566,15 +566,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
         private IList<PermissionMapping> _appliedPermissionMappings;
-        public void ClearPermissionCache()
-        {
-            _appliedPermissionMappings?.Clear();
-        }
+       
         public IList<PermissionMapping> AppliedPermissionMappings
         {
             get
             {
-
                 using var context = DbFactory.CreateDbContext();
                 _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
 
