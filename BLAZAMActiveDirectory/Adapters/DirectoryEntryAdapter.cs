@@ -208,7 +208,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected SearchResult? SearchResult { get; set; }
 
-     
+
 
         public virtual string? ADSPath
         {
@@ -364,7 +364,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 var bytes = GetAttribute<byte[]>("objectGUID");
-                
+
                 return bytes;
             }
             set
@@ -566,16 +566,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
         private IList<PermissionMapping> _appliedPermissionMappings;
-
+        public void ClearPermissionCache()
+        {
+            _appliedPermissionMappings?.Clear();
+        }
         public IList<PermissionMapping> AppliedPermissionMappings
         {
             get
             {
-                if (_appliedPermissionMappings == null)
-                {
-                    using var context = DbFactory.CreateDbContext();
-                    _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
-                }
+
+                using var context = DbFactory.CreateDbContext();
+                _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
+
                 return _appliedPermissionMappings;
             }
         }
@@ -995,21 +997,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual void DiscardChanges()
         {
 
-                DirectoryEntry = null;
-                HasUnsavedChanges = false;
-                NewEntryProperties = new();
-                CommitSteps.Clear();
+            DirectoryEntry = null;
+            HasUnsavedChanges = false;
+            NewEntryProperties = new();
+            CommitSteps.Clear();
 
-                PostCommitSteps.Clear();
-                if (SearchResult != null)
-                    FetchDirectoryEntry();
+            PostCommitSteps.Clear();
+            if (SearchResult != null)
+                FetchDirectoryEntry();
 
-                OnChangesDiscarded?.Invoke();
-            
+            OnChangesDiscarded?.Invoke();
+
         }
         private void FetchDirectoryEntry()
         {
-            if (SearchResult is null) throw new CriticalActiveDirectoryException(Directory,nameof(SearchResult));
+            if (SearchResult is null) throw new CriticalActiveDirectoryException(Directory, nameof(SearchResult));
 
             DirectoryEntry = SearchResult.GetDirectoryEntry();
 
@@ -1152,9 +1154,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             try
             {
-                    if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
-                        return (T?)DirectoryEntry.Properties[propertyName].Value;
-                
+                if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
+                    return (T?)DirectoryEntry.Properties[propertyName].Value;
+
             }
             catch (ArgumentException)
             {
