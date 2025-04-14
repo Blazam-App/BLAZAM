@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -30,7 +30,7 @@
 	  <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
 	  <PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.2" />
 	  <PackageReference Include="System.Management" Version="9.0.2" />
-	  <PackageReference Include="System.Security.Permissions" Version="9.0.2" />
+	  <PackageReference Include="System.Security.Permissions" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>
