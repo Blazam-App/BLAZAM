@@ -45,7 +45,7 @@
 	  <PackageReference Include="System.DirectoryServices" Version="9.0.3" />
 	  <PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.2" />
 	  <PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.2" />
-	  <PackageReference Include="System.Management" Version="9.0.2" />
+	  <PackageReference Include="System.Management" Version="9.0.4" />
 	  <PackageReference Include="System.Security.Permissions" Version="9.0.2" />
   </ItemGroup>
 
