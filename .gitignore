@@ -372,3 +372,5 @@ FodyWeavers.xsd
 /BLAZAM/export
 /BLAZAM/database - blazam - no rules.db
 /BLAZAM/database - Copy.db.blazam.rules
+/BLAZAM/database - no rules.db
+/BLAZAM/database - rules.db
