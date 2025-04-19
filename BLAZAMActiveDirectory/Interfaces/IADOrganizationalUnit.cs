@@ -11,7 +11,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
         IEnumerable<IDirectoryEntryAdapter> SubOUs { get; }
 
-        HashSet<IDirectoryEntryAdapter> CachedTreeViewSubOUs { get; }
         HashSet<IDirectoryEntryAdapter> TreeViewSubOUs { get; }
         bool CanReadUsersInSubOus { get; }
         bool CanCreateUser { get; }

@@ -9,6 +9,7 @@ using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.DirectoryServices;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -334,7 +335,22 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 }
 
                 if (!FilterQuery.IsNullOrEmpty() && ExactMatch)
+                {
                     FilterQuery = FilterQuery.Replace("*", "");
+                    
+                    // Regex pattern:
+                    // \\(      -> Match the opening parenthesis literally (needs escaping)
+                    // anr=    -> Match "anr=" literally
+                    // .*?     -> Match any character (except newline) zero or more times,
+                    //           non-greedily (important to stop at the first closing parenthesis)
+                    // \\)      -> Match the closing parenthesis literally (needs escaping)
+                    // RegexOptions.IgnoreCase -> Make the matching case-insensitive (e.g., matches (Anr=...))
+                    string pattern = @"\(anr=.*?\)"; // Using @ verbatim string simplifies escaping
+
+                    // Replace the matched pattern (the entire anr section) with an empty string
+                    FilterQuery = Regex.Replace(FilterQuery, pattern, string.Empty, RegexOptions.IgnoreCase);
+
+                }
 
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();

@@ -199,7 +199,6 @@
         await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         if (Searcher.Results.Count < 1)
         {
-            Searcher.ExactMatch = false;
             results = await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
 
         }

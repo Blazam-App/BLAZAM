@@ -27,14 +27,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             });
         }
 
-        public HashSet<IDirectoryEntryAdapter> CachedTreeViewSubOUs { get; private set; } = new();
-
         public HashSet<IDirectoryEntryAdapter> TreeViewSubOUs
         {
             get
             {
-                CachedTreeViewSubOUs = SubOUs.ToHashSet();
-                return CachedTreeViewSubOUs;
+               return SubOUs.ToHashSet();
+               
             }
         }
 
