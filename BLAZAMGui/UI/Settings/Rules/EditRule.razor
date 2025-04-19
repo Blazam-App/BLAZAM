@@ -44,7 +44,7 @@
             }
             @if (_workingRule.Filters.Count == 0)
             {
-                <MudText>This rules will be fired each time a {0} is {1}</MudText>
+                <MudText>@AppHelpLocalization[HelpLang.Rule_No_Filter_Warning, AppLocalization[Rule.ActiveDirectoryObjectType.ToString()], AppLocalization[Rule.Trigger.ToString()]]</MudText>
             }
             @foreach (var orFilter in _workingRule.Filters)
             {

@@ -404,6 +404,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This rules will be fired each time a {0} is {1}.
+        /// </summary>
+        public static string Rule_No_Filter_Warning {
+            get {
+                return ResourceManager.GetString("Rule_No_Filter_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do not process any more rules.
         /// </summary>
         public static string Stop_On_Rule {

@@ -48,6 +48,7 @@
         public static readonly string Authenticator_Setup_One = "Authenticator_Setup_One";
         public static readonly string Authenticator_Setup_Two = "Authenticator_Setup_Two";
         public static readonly string Auto_Update_Time_Definition = "Auto_Update_Time_Definition";
+        public static readonly string Rule_No_Filter_Warning = "Rule_No_Filter_Warning";
         public static readonly string Upate_Branch_Definition = "Upate_Branch_Definition";
         public static readonly string Update_Credential_Is_Application = "Update_Credential_Is_Application";
         public static readonly string Update_Credential_Is_AD = "Update_Credential_Is_AD";

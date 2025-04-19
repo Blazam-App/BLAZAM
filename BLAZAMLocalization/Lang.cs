@@ -153,6 +153,8 @@ namespace BLAZAM.Localization
         public static readonly string Timestamp = "Timestamp";
         public static readonly string Action = "Action";
         public static readonly string Data = "Data";
+        public static readonly string Remove_Or_Filter = "Remove Or Filter";
+        public static readonly string Add_And_Filter = "Add And Filter";
         public static readonly string IP_Address = "IP Address";
         public static readonly string Fields = "Fields";
         public static readonly string Edit = "Edit";

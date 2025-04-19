@@ -232,6 +232,9 @@ efforts on what our users think matters most.</value>
   <data name="Request_To" xml:space="preserve">
     <value>Request to {0}</value>
   </data>
+  <data name="Rule_No_Filter_Warning" xml:space="preserve">
+    <value>This rules will be fired each time a {0} is {1}</value>
+  </data>
   <data name="Stop_On_Rule" xml:space="preserve">
     <value>Do not process any more rules</value>
   </data>

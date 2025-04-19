@@ -1,4 +1,5 @@
 @using BLAZAM.Database.Models.Rules
+@inherits AppComponentBase
 <MudStack Row="true">
     <FlexContainer>
         @for (int x = 0; x < Filter.AndFilters.Count; x++)
@@ -7,7 +8,7 @@
             
             @if (x > 0)
             {
-                <MudText Class="align-self-center" Align="Align.Center">And</MudText>
+                <MudText Class="align-self-center" Align="Align.Center">@AppLocalization[Lang.And]</MudText>
 
             }
             <EditAndFitler RemoveClicked="@(()=>{
@@ -19,14 +20,14 @@
                    Color="Color.Success"
                    Variant="Variant.Filled"
                    Style="height:max-content;"
-                   StartIcon="@Icons.Material.Filled.Add">Add And Filter</MudButton>
+                   StartIcon="@Icons.Material.Filled.Add">@AppLocalization[Lang.Add_And_Filter]</MudButton>
     </FlexContainer>
 
     <MudSpacer />
 
     <MudButton OnClick="@RemoveClicked"
                Color="Color.Error"
-               StartIcon="@Icons.Material.Filled.Remove">Remove Or Filter</MudButton>
+               StartIcon="@Icons.Material.Filled.Remove">@AppLocalization[Lang.Remove_Or_Filter]</MudButton>
 </MudStack>
 @code {
     [Parameter]
