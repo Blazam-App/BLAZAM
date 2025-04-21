@@ -60,8 +60,8 @@
 		<PackageReference Include="MailKit" Version="4.11.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.13" />
-		<PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.13" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.13" />
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.15" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.15" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.13">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
