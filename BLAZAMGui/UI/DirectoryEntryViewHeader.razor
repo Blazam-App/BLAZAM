@@ -63,9 +63,10 @@ else
                         Style="height:32px"
                         Gutters=false
                         Dense=true>
-                @if (accountEntry != null && accountEntry is not IADContact)
+                @if (accountEntry != null && (accountEntry is IADUser ||accountEntry is IADComputer) )
 
                 {
+                    var test = "test";
                     <AppTooltip Text="@AppLocalization[accountEntry.Enabled?"Disable":"Enable"]">
 
                         <MudToggleIconButton @bind-Toggled="@accountEntry.Enabled"
@@ -105,7 +106,7 @@ else
                     <AppTooltip Text="@AppLocalization[Lang.Assign_To]">
 
                         <MudIconButton OnClick="@OnAssignTo"
-                            Disabled="@(CurrentUser.State?.CanAssign!=true)"
+                                       Disabled="@(CurrentUser.State?.CanAssign!=true)"
                                        Icon="@Icons.Material.Filled.GroupAdd"
                                        aria-label="assign to" />
                     </AppTooltip>
@@ -221,7 +222,7 @@ else
                     <MudMenuItem OnClick="@OnUnlock">@AppLocalization[Lang.Unlock]</MudMenuItem>
                 }
                 <MudMenuItem OnClick="@OnAssignTo">@AppLocalization[Lang.Assign_To]</MudMenuItem>
-                    @if (accountEntry?.CanSetPassword == true && accountEntry is not IADComputer)
+                @if (accountEntry?.CanSetPassword == true && accountEntry is not IADComputer)
                 {
                     <MudMenuItem OnClick="@OnResetPassword">@AppLocalization[Lang.Change_Password]</MudMenuItem>
                 }
@@ -273,8 +274,8 @@ else
         </AppModal>
     }
     <AppModal @ref=_appEventModal Title="Application Event Toolkit">
-            <AppEventToolkitModalContent DirectoryEntry="@DirectoryEntry" />
-        </AppModal>
+        <AppEventToolkitModalContent DirectoryEntry="@DirectoryEntry" />
+    </AppModal>
 }
 @code {
     private AppModal? _requestAccessModal;
