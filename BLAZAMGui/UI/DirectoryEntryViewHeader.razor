@@ -64,9 +64,7 @@ else
                         Gutters=false
                         Dense=true>
                 @if (accountEntry != null && (accountEntry is IADUser ||accountEntry is IADComputer) )
-
                 {
-                    var test = "test";
                     <AppTooltip Text="@AppLocalization[accountEntry.Enabled?"Disable":"Enable"]">
 
                         <MudToggleIconButton @bind-Toggled="@accountEntry.Enabled"

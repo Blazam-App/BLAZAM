@@ -127,6 +127,10 @@ namespace BLAZAM.Services.Background
         /// <returns>A list of Claim Roles that the user has been privileged</returns>
         public List<Claim> TransformUserRoles(IApplicationUserState user, IADUser directoryUser, string? impersonatorSid = null)
         {
+            using var context = _factory.CreateDbContext();
+            var selfEdit = context.GlobalPermissionSettings.First()?.AllowSelfModification == true;
+            if (user.PermissionDelegates.Count < 1 && !selfEdit)
+                throw new DeniedLoginException();
 
             List<Claim> userRoles = new();
 
@@ -170,12 +174,12 @@ namespace BLAZAM.Services.Background
                 {
                     userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchBitLocker));
                 }
+                
 
             }
 
             //TransformUserRoles returns an empty list if the user has no login rights
-            if (userRoles.Count < 1)
-                throw new DeniedLoginException();
+
 
 
 
