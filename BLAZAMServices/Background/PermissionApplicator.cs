@@ -5,6 +5,7 @@ using BLAZAM.Common;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Server.Helpers;
 using BLAZAM.Session;
@@ -24,7 +25,7 @@ namespace BLAZAM.Services.Background
         protected IAppDatabaseFactory _factory { get; set; }
         protected IActiveDirectoryContext _directory { get; set; }
 
-        public PermissionApplicator(IApplicationUserStateService userStateService, IAppDatabaseFactory factory, IActiveDirectoryContext directory, IHttpContextAccessor? httpContextAccessor=null)
+        public PermissionApplicator(IApplicationUserStateService userStateService, IAppDatabaseFactory factory, IActiveDirectoryContext directory, IHttpContextAccessor? httpContextAccessor = null)
         {
             _httpContextAccessor = httpContextAccessor;
             _userStateService = userStateService;
@@ -41,8 +42,10 @@ namespace BLAZAM.Services.Background
         private void ReloadPermissions()
         {
             var userState = _userStateService.GetUserState(_httpContextAccessor.HttpContext.User);
-            if (userState != null) {
-                if(userState.IsAuthenticated) {
+            if (userState != null)
+            {
+                if (userState.IsAuthenticated)
+                {
                     var sid = userState.Preferences?.UserGUID;
                     if (!sid.IsNullOrEmpty() && sid.StartsWith('S'))
                     {
@@ -92,6 +95,23 @@ namespace BLAZAM.Services.Background
                         }
                     }
                 }
+#pragma warning disable S6966 // Awaitable method should be used
+                if (Context.GlobalPermissionSettings.First()?.AllowSelfModification == true)
+                {
+                    var dbSelfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
+                    if (dbSelfAccessLevel != null)
+                    {
+
+                        webUser.PermissionMappings.Add(new()
+                        {
+                            AccessLevels = new List<AccessLevel>() { dbSelfAccessLevel },
+                            Id = -1,
+                            OU = directoryUser.DN
+                        });
+                    }
+
+                }
+#pragma warning restore S6966 // Awaitable method should be used
 
             }
         }
@@ -105,7 +125,7 @@ namespace BLAZAM.Services.Background
         /// </summary>
         /// <param name="user">The Active Directory user who authenticated</param>
         /// <returns>A list of Claim Roles that the user has been privileged</returns>
-        public List<Claim> TransformUserRoles(IApplicationUserState user, IADUser directoryUser,string? impersonatorSid = null)
+        public List<Claim> TransformUserRoles(IApplicationUserState user, IADUser directoryUser, string? impersonatorSid = null)
         {
 
             List<Claim> userRoles = new();
@@ -158,7 +178,7 @@ namespace BLAZAM.Services.Background
                 throw new DeniedLoginException();
 
 
-         
+
             if (directoryUser.DisplayName != null)
             {
                 userRoles.Add(new Claim(ClaimTypes.Sid, directoryUser.SID.ToSidString()));
@@ -181,7 +201,7 @@ namespace BLAZAM.Services.Background
             if (directoryUser.Email != null)
                 userRoles.Add(new Claim(ClaimTypes.Email, directoryUser.Email));
 
-            if (impersonatorSid != null && impersonatorSid!=String.Empty)
+            if (impersonatorSid != null && impersonatorSid != String.Empty)
             {
                 //Handle Impersonated login
                 userRoles.Add(new Claim(ClaimTypes.UserData, "impersonated"));

@@ -57,67 +57,13 @@ namespace BLAZAM.Gui.UI.Users
         IADContact Contact => DirectoryEntry as IADContact;
         GlobalPermissionSettings? _globalPermissionSettings;
 
-        private bool isSelf
-        {
-            get
-            {
-                if (_globalPermissionSettings != null)
-                {
-                    if (selfAccessLevel != null)
-                    {
-                        return User?.SAMAccountName.Equals(CurrentUser.Username, StringComparison.InvariantCultureIgnoreCase)==true;
-                    }
-                }
-                return false;
-            }
-        }
+       
 
+        private bool CanReadField(IActiveDirectoryField field)=> GroupableEntry.CanReadField(field);
+        
 
-        private bool CanReadField(IActiveDirectoryField field)
-        {
-            if (!isSelf)
-            {
-                return GroupableEntry.CanReadField(field);
-            }
-            else
-            {
-                if (selfAccessLevel.FieldMap.Any(x => x.Field.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level))
-                {
-                    return true;
-                }
-                else if (selfAccessLevel.FieldMap.Any(x => x.CustomField.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level))
-                {
-                    return true;
-                }
-                else
-                {
-                    return GroupableEntry.CanReadField(field);
-                }
-            }
-        }
-
-        private bool CanEditField(IActiveDirectoryField field)
-        {
-            if (!isSelf)
-            {
-                return GroupableEntry.CanEditField(field);
-            }
-            else
-            {
-                if (selfAccessLevel.FieldMap.Any(x => x.Field.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Read.Level))
-                {
-                    return true;
-                }
-                else if (selfAccessLevel.FieldMap.Any(x => x.CustomField.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Read.Level))
-                {
-                    return true;
-                }
-                else
-                {
-                    return GroupableEntry.CanEditField(field);
-                }
-            }
-        }
+        private bool CanEditField(IActiveDirectoryField field)=> GroupableEntry.CanEditField(field);
+        
 
 
 
