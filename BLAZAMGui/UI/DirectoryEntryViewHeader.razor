@@ -111,7 +111,7 @@ else
                     </AppTooltip>
 
                 }
-                @if (accountEntry != null && accountEntry is not IADContact && accountEntry is not IADComputer)
+                @if (accountEntry != null && accountEntry is IADUser)
                 {
                     <AppTooltip Text="@AppLocalization[Lang.Change_Password]">
                         <MudIconButton OnClick="@OnResetPassword"
