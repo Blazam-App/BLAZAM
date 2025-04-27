@@ -7,6 +7,7 @@ using BLAZAM.Database.Models.Rules;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.DirectoryServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -517,7 +518,37 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
     public class ADFieldValue
     {
-        public ActiveDirectoryField Field { get; set; }
+
+        public IActiveDirectoryField? Field
+        {
+            get
+            {
+                if (DefaultField != null)
+                {
+                    return DefaultField;
+                }
+                if (CustomField != null)
+                {
+                    return CustomField;
+                }
+                return null;
+            }
+            set
+            {
+                if (value is CustomActiveDirectoryField field)
+                {
+                    DefaultField = null;
+                    CustomField = field;
+                }
+                else if (value is ActiveDirectoryField field2)
+                {
+                    CustomField = null;
+                    DefaultField = field2;
+                }
+            }
+        }
+        protected ActiveDirectoryField DefaultField { get; set; }
+        protected CustomActiveDirectoryField CustomField { get; set; }
         public ActiveDirectoryFieldOperator Operator { get; set; }
         public bool Negate { get; set; }
         public object? Value { get; set; }

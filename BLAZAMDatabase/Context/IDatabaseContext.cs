@@ -75,7 +75,7 @@ namespace BLAZAM.Database.Context
         DbSet<EmailAuditLog> EmailAuditLog { get; set; }
         DbSet<FailedADLogonEvent> FailedADLogonEvents { get; set; }
         DbSet<AutomationRule> AutomationRules { get; set; }
-        DbSet<AutomationRuleFieldValue> AutomationRuleFieldValues { get; set; }
+        DbSet<AutomationRuleActionFieldValue> AutomationRuleFieldValues { get; set; }
         DbSet<AutomationRuleOrFilter> AutomationRuleOrFilter { get; set; }
         DbSet<AutomationRuleAndFilter> AutomationRuleAndFilters { get; set; }
         DbSet<AutomationRuleGroupSid> AutomationRuleGroupSids { get; set; }

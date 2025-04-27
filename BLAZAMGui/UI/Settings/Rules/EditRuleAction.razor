@@ -12,7 +12,7 @@
             ValueChanged="@((ActiveDirectoryField field)=>{FieldChanged(field);})" />
             @if (_selectedField != null)
             {
-                AutomationRuleFieldValue fieldValue;
+                AutomationRuleActionFieldValue fieldValue;
                 if (Action.FieldValues.FirstOrDefault() == null)
                 {
                     fieldValue = new() { Field = _selectedField };

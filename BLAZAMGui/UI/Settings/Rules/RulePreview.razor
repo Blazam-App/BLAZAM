@@ -56,88 +56,9 @@
                 </MudText>
             }
             <MudText Class="mt-2"><MudIcon Color="Color.Warning" Icon="@Icons.Material.Outlined.FilterAlt" /> If</MudText>
-            @if (Rule.Filters.Count > 0)
-            {
-                var firstOr = true;
-                @foreach (var orFilters in Rule.Filters)
-                {
-                    @if (!firstOr)
-                    {
-                        <MudText Align="Align.Center">@AppLocalization[Lang.Or]</MudText>
-                    }
-                    else
-                    {
-                        firstOr = false;
-                    }
-                    <MudStack Row>
-
-                        @if (orFilters.AndFilters.Count > 0)
-                        {
-
-                            <MudStack>
-                                @{
-                                    var firstAnd = true;
-                                }
-                                @foreach (var andFilter in orFilters.AndFilters)
-                                {
-                                    var str = andFilter.Field?.DisplayName;
-                                    @if (!firstAnd)
-                                    {
-                                        <MudText Class="align-self-center" Align="Align.Center">@AppLocalization[Lang.And]</MudText>
-
-                                    }
-                                    else
-                                    {
-                                        firstAnd = false;
-                                    }
-                                    <MudStack Row=true>
-                                        @if (andFilter.Field.FieldType == ActiveDirectoryFieldType.Boolean && andFilter.Negate)
-                                        {
-                                            <MudChip T="string"
-                                                     Text="Not"
-                                                     Color="Color.Error" />
-
-                                        }
-                                        <MudTextField T="string"
-                                                      ReadOnly="true"
-                                                      Label="@AppLocalization[Lang.Field]"
-                                                      Value=@str />
-                                        @if (andFilter.Field.FieldType != ActiveDirectoryFieldType.Boolean)
-                                        {
-                                            if (andFilter.Negate)
-                                            {
-                                                <MudChip T="string"
-                                                         Text="Not"
-                                                         Color="Color.Error" />
-                                            }
-                                            <MudTextField T="string"
-                                                          ReadOnly="true"
-                                                          Label="@AppLocalization[Lang.Operator]"
-                                                          Value=@andFilter.Operator.ToString() />
-                                            @if (andFilter.Value != null)
-                                            {
-                                                <MudTextField T="string"
-                                                              ReadOnly="true"
-                                                              Label="@AppLocalization[Lang.Value]"
-                                                              Value=@andFilter.Value?.ToString() />
-                                            }
-                                        }
-
-                                    </MudStack>
-
-                                }
-                            </MudStack>
-
-                        }
-                    </MudStack>
-
-                }
-
-            }
-            else
-            {
-                <MudText>This rules will be fired each time a {0} is {1}</MudText>
-            }
+          
+            <RulePreviewFilters Rule="Rule"/>
+            
             <MudText Class="mt-2"><MudIcon Color="Color.Success" Icon="@Icons.Material.Filled.Login" /> Then</MudText>
 
             var firstAction = true;
@@ -203,12 +124,13 @@
 
             @if (_matchedPopoverOpen)
             {
-                <MudStack Class="mb-4">
+                <MudStack Class="mb-4 mud-width-full">
                     @foreach (var entry in filteredEntries)
                     {
-                        <MudText Align="Align.Center">
-                            <MudLink Target="_blank" Href="@entry.SearchUri">@entry.CanonicalName</MudLink>
-                        </MudText>
+                            <MudLink Target="_blank" Href="@entry.SearchUri">
+                                <SearchResult Entry="@entry" Class="mud-width-full"/>
+                                </MudLink>
+
                     }
                 </MudStack>
             }

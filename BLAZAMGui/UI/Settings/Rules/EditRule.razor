@@ -193,6 +193,14 @@
                         andFilter.Field = await Context.ActiveDirectoryFields.FirstAsync(f => f.Id == andFilter.Field.Id);
 
                     }
+                    if (andFilter.CustomField != null)
+                    {
+
+                        andFilter.CustomFieldId = andFilter.CustomField.Id;
+
+                        andFilter.CustomField = await Context.CustomActiveDirectoryFields.FirstAsync(f => f.Id == andFilter.CustomField.Id);
+
+                    }
 
 
 

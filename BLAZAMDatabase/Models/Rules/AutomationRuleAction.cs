@@ -21,7 +21,7 @@ namespace BLAZAM.Database.Models.Rules
 
 
         public ActiveDirectoryObjectAction ActiveDirectoryObjectAction { get; set; }
-        public List<AutomationRuleFieldValue> FieldValues { get; set; } = new();
+        public List<AutomationRuleActionFieldValue> FieldValues { get; set; } = new();
        
         /// <summary>
         /// Dynamic JSON data to hold data for actions other than field changes or group assignments

@@ -1,6 +1,6 @@
 ﻿namespace BLAZAM.Database.Models.Rules
 {
-    public class AutomationRuleFieldValue : AppDbSetBase
+    public class AutomationRuleActionFieldValue : AppDbSetBase
     {
         public ActiveDirectoryField? Field { get; set; }
         public int? FieldId { get; set; }

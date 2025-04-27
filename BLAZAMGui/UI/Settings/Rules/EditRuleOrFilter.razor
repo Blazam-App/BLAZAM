@@ -4,8 +4,8 @@
     <FlexContainer>
         @for (int x = 0; x < Filter.AndFilters.Count; x++)
         {
-                var andFilter = Filter.AndFilters[x];
-            
+            var andFilter = Filter.AndFilters[x];
+
             @if (x > 0)
             {
                 <MudText Class="align-self-center" Align="Align.Center">@AppLocalization[Lang.And]</MudText>
@@ -17,17 +17,17 @@
             <MudSpacer />
         }
         <MudButton OnClick="@(()=>{AddAndFilter();})"
-                   Color="Color.Success"
-                   Variant="Variant.Filled"
-                   Style="height:max-content;"
-                   StartIcon="@Icons.Material.Filled.Add">@AppLocalization[Lang.Add_And_Filter]</MudButton>
+        Color="Color.Success"
+        Variant="Variant.Filled"
+        Style="height:max-content;"
+        StartIcon="@Icons.Material.Filled.Add">@AppLocalization[Lang.Add_And_Filter]</MudButton>
     </FlexContainer>
 
     <MudSpacer />
 
     <MudButton OnClick="@RemoveClicked"
-               Color="Color.Error"
-               StartIcon="@Icons.Material.Filled.Remove">@AppLocalization[Lang.Remove_Or_Filter]</MudButton>
+    Color="Color.Error"
+    StartIcon="@Icons.Material.Filled.Remove">@AppLocalization[Lang.Remove_Or_Filter]</MudButton>
 </MudStack>
 @code {
     [Parameter]
@@ -39,7 +39,11 @@
     {
 
         orFilter.AndFilters.Remove(andFilter);
+        if(orFilter.AndFilters.Count<1){
+            await RemoveClicked.InvokeAsync();
+        }else{
         await InvokeAsync(StateHasChanged);
+        }
     }
     private void AddAndFilter()
     {

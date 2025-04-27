@@ -38,6 +38,10 @@ namespace BLAZAM.Database.Models
         [Required]
         public string DisplayName { get; set; }
 
+
+        /// <summary>
+        /// The name of the reflection property in the IDirectoryEntryAdapter
+        /// </summary>
         public string? PropertyName { get; set; }
 
 

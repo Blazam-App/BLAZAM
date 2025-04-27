@@ -20,10 +20,6 @@ namespace BLAZAM.Database.Models
         /// </summary>
         ActiveDirectoryFieldType FieldType { get; set; }
 
-        /// <summary>
-        /// The name of the reflection property in the IDirectoryEntryAdapter
-        /// </summary>
-        string? PropertyName { get; set; }
 
 
         bool Equals(object? obj);

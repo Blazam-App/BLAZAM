@@ -125,7 +125,7 @@ namespace BLAZAM.Database.Context
 
         //Autoation Rules
         public virtual DbSet<AutomationRule> AutomationRules { get; set; }
-        public virtual DbSet<AutomationRuleFieldValue> AutomationRuleFieldValues { get; set; }
+        public virtual DbSet<AutomationRuleActionFieldValue> AutomationRuleFieldValues { get; set; }
         public virtual DbSet<AutomationRuleOrFilter> AutomationRuleOrFilter { get; set; }
         public virtual DbSet<AutomationRuleAndFilter> AutomationRuleAndFilters { get; set; }
         public virtual DbSet<AutomationRuleGroupSid> AutomationRuleGroupSids { get; set; }
@@ -266,10 +266,11 @@ namespace BLAZAM.Database.Context
 
             modelBuilder.Entity<AutomationRuleAndFilter>(entity =>
             {
+                entity.Navigation(e => e.CustomField).AutoInclude();
                 entity.Navigation(e => e.Field).AutoInclude();
             });
 
-            modelBuilder.Entity<AutomationRuleFieldValue>(entity =>
+            modelBuilder.Entity<AutomationRuleActionFieldValue>(entity =>
             {
                 entity.Navigation(e => e.Field).AutoInclude();
                 entity.Navigation(e => e.CustomField).AutoInclude();

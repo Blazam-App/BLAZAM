@@ -1,0 +1,92 @@
+@using BLAZAM.Database.Models.Rules
+@inherits AppComponentBase
+
+@if (Rule.Filters.Count > 0)
+{
+    var firstOr = true;
+    @foreach (var orFilters in Rule.Filters)
+    {
+        @if (!firstOr)
+        {
+            <MudText Align="Align.Center">@AppLocalization[Lang.Or]</MudText>
+        }
+        else
+        {
+            firstOr = false;
+        }
+        <MudStack Row>
+
+            @if (orFilters.AndFilters.Count > 0)
+            {
+
+                <MudStack>
+                    @{
+                        var firstAnd = true;
+                    }
+                    @foreach (var andFilter in orFilters.AndFilters)
+                    {
+                        var str = andFilter.CurrentField?.DisplayName;
+                        @if (!firstAnd)
+                        {
+                            <MudText Class="align-self-center" Align="Align.Center">@AppLocalization[Lang.And]</MudText>
+
+                        }
+                        else
+                        {
+                            firstAnd = false;
+                        }
+                        <MudStack Row=true>
+                            @if (andFilter.CurrentField.FieldType == ActiveDirectoryFieldType.Boolean && andFilter.Negate)
+                            {
+                                <MudChip T="string"
+                                         Text="Not"
+                                         Color="Color.Error" />
+
+                            }
+                            <MudTextField T="string"
+                                          ReadOnly="true"
+                                          Label="@AppLocalization[Lang.Field]"
+                                          Value=@str />
+                            @if (andFilter.CurrentField.FieldType != ActiveDirectoryFieldType.Boolean)
+                            {
+                                if (andFilter.Negate)
+                                {
+                                    <MudChip T="string"
+                                             Text="Not"
+                                             Color="Color.Error" />
+                                }
+                                <MudTextField T="string"
+                                              ReadOnly="true"
+                                              Label="@AppLocalization[Lang.Operator]"
+                                              Value=@andFilter.Operator.ToString() />
+                                @if (andFilter.Value != null)
+                                {
+                                    <MudTextField T="string"
+                                                  ReadOnly="true"
+                                                  Label="@AppLocalization[Lang.Value]"
+                                                  Value=@andFilter.Value?.ToString() />
+                                }
+                            }
+
+                        </MudStack>
+
+                    }
+                </MudStack>
+
+            }
+        </MudStack>
+
+    }
+
+}
+else
+{
+    <MudText>This rules will be fired each time a {0} is {1}</MudText>
+}
+
+
+
+@code{
+    [Parameter]
+    public AutomationRule Rule { get; set; }
+}

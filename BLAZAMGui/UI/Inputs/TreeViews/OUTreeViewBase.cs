@@ -89,6 +89,11 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             return Color.Default;
         }
 
+        public async Task RefreshViewAcync()
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+
         protected virtual IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(IDirectoryEntryAdapter? parent)
         {
             try

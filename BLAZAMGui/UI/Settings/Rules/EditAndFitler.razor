@@ -1,23 +1,24 @@
 @using BLAZAM.Database.Models.Rules
 @inherits DatabaseComponentBase
 <MudBadge Icon="@Icons.Material.Filled.RemoveCircle"
-          OnClick="@RemoveClicked"
-          Color="Color.Error"
-          Overlap="true">
+OnClick="@RemoveClicked"
+Color="Color.Error"
+Overlap="true">
     <MudAlert Icon="@Icons.Material.Outlined.FilterAlt"
-              Severity="Severity.Normal"
-              Style="@($"height:100%; border-width:2px; border-color: var(--mud-palette-warning-lighten)")"
-              Variant="Variant.Outlined">
+    Severity="Severity.Normal"
+    Style="@($"height:100%; border-width:2px; border-color: var(--mud-palette-warning-lighten)")"
+    Variant="Variant.Outlined">
 
 
         <AppTooltip Text="@Filter.Field?.FieldName">
-            <MudSelectList Values="_fields"
-                           @bind-Value="Filter.Field" />
+            <MudSelectList T="IActiveDirectoryField" 
+                Values="_fields"
+            @bind-Value="Filter.CurrentField" />
         </AppTooltip>
-        @if (Filter.Field?.FieldType != ActiveDirectoryFieldType.Boolean)
+        @if (Filter.CurrentField?.FieldType != ActiveDirectoryFieldType.Boolean)
         {
-            <MudSelectList Values="Filter.Field?.GetOperators()"
-                           @bind-Value="Filter.Operator" />
+            <MudSelectList Values="Filter.CurrentField?.GetOperators()"
+            @bind-Value="Filter.Operator" />
 
             @switch (Filter.Operator)
             {
@@ -53,11 +54,14 @@
     [Parameter]
     public EventCallback RemoveClicked { get; set; }
 
-    private List<ActiveDirectoryField> _fields = new();
+    private List<IActiveDirectoryField> _fields = new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _fields = (await Context.ActiveDirectoryFields.ToListAsync()).OrderBy(f => AppLocalization[f.DisplayName].Value).ToList();
+        _fields = (await Context.ActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList();
+        var customFields = (await Context.CustomActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList();
+        _fields.AddRange(customFields);
 
+        _fields = _fields.OrderBy(f => AppLocalization[f.DisplayName].Value).Cast<IActiveDirectoryField>().ToList();
     }
 }
