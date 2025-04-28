@@ -151,7 +151,7 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) will be allowed to log in to the application..
+        ///   Looks up a localized string similar to Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) with permissions mapped or self-edit enabled..
         /// </summary>
         public static string Delegate_Definition {
             get {
