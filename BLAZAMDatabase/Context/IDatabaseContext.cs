@@ -67,7 +67,7 @@ namespace BLAZAM.Database.Context
         DbSet<ActiveDirectoryFieldObjectType> ActiveDirectoryFieldObjectMappings { get; set; }
         DbSet<NotificationSubscription> NotificationSubscriptions { get; set; }
         DbSet<GlobalPermissionSettings> GlobalPermissionSettings { get; set; }
-        DbSet<GlobalPermissionRequestActions> GlobalPermissionRequestActions { get; set; }
+        DbSet<GlobalPermissionRequestAction> GlobalPermissionRequestActions { get; set; }
         DbSet<ApiToken> ApiTokens { get; set; }
         DbSet<WebHookSubscription> WebHookSubscriptions { get; set; }
         DbSet<WebHookAttempt> WebHookAttempts { get; set; }

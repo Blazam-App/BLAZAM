@@ -449,9 +449,9 @@ namespace BLAZAM.ActiveDirectory
             //Proceed no further if the DB is down
             if (_context.Status != ServiceConnectionState.Up)
             {
-                //When cancelling and retrying a connection, the first Up check above is sometimes no Up,
+                //When cancelling and retrying a connection, the first Up check above is sometimes not Up,
                 //but will be one line later. Confirmed with Debugging (3/18/2025)
-                //This is the least impactful way and avoids any Task waits
+                //This is the least impactful way and avoids any Task waits, discount double-check
 #pragma warning disable S1066 // Mergeable "if" statements should be combined
                 if (_context.Status != ServiceConnectionState.Up)
                 {
