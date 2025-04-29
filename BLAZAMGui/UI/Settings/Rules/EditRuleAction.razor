@@ -7,22 +7,22 @@
     @switch (Action.ActionType)
     {
         case AutomationRuleActionType.ModifyField:
-            <MudSelectList Values="_fields"
+            <MudSelectList T="IActiveDirectoryField" Values="_fields"
             Value=_selectedField
-            ValueChanged="@((ActiveDirectoryField field)=>{FieldChanged(field);})" />
+            ValueChanged="@((IActiveDirectoryField field)=>{FieldChanged(field);})" />
             @if (_selectedField != null)
             {
                 AutomationRuleActionFieldValue fieldValue;
                 if (Action.FieldValues.FirstOrDefault() == null)
                 {
-                    fieldValue = new() { Field = _selectedField };
+                    fieldValue = new() { CurrentField = _selectedField };
                     Action.FieldValues.Add(fieldValue);
                 }
                 else
                 {
-                    fieldValue = Action.FieldValues.FirstOrDefault(fv => fv.Field.Id == _selectedField.Id);
+                    fieldValue = Action.FieldValues.FirstOrDefault(fv => fv.CurrentField.Id == _selectedField.Id);
                 }
-                switch (Action.FieldValues.FirstOrDefault()?.Field.FieldType)
+                switch (Action.FieldValues.FirstOrDefault()?.CurrentField.FieldType)
                 {
                     case ActiveDirectoryFieldType.Text:
                     case ActiveDirectoryFieldType.RawData:
@@ -76,8 +76,8 @@
 </MudStack>
 
 @code {
-    ActiveDirectoryField? _selectedField;
-    private List<ActiveDirectoryField> _fields = new();
+    IActiveDirectoryField? _selectedField;
+    private List<IActiveDirectoryField> _fields = new();
 
     [Parameter]
     public EventCallback RemovedClicked { get; set; }
@@ -92,7 +92,13 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _fields = (await Context.ActiveDirectoryFields.ToListAsync()).OrderBy(f => AppLocalization[f.DisplayName].Value).ToList();
+        _fields = (await Context.ActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList();
+        var customFields = (await Context.CustomActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList();
+        if (customFields.Count > 0)
+        {
+            _fields.AddRange(customFields);
+        }
+        _fields = _fields.OrderBy(f => AppLocalization[f.DisplayName].Value).ToList();
         foreach (AutomationRuleActionType enu in Enum.GetValues(typeof(AutomationRuleActionType)))
         {
             _actionTypes.Add(enu);
@@ -102,7 +108,7 @@
             _selectedField = Action.FieldValues[0].Field;
         }
     }
-    private void FieldChanged(ActiveDirectoryField field)
+    private void FieldChanged(IActiveDirectoryField field)
     {
         if (_selectedField == field) return;
         _selectedField = field;

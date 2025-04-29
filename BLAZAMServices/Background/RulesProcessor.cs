@@ -401,10 +401,10 @@ namespace BLAZAM.Services.Background
                     eventType = ApplicationEventType.Modify;
                     if (action.FieldValues.Count > 0)
                     {
-                        var field = action.FieldValues[0].Field;
-                        var existingValue = entry.GetPropertyValue(field.PropertyName);
-                        // if (existingValue.ToString().Equals(action.FieldValues[0].Value, StringComparison.InvariantCultureIgnoreCase)) return;
-                        entry.SetPropertyValue(field.PropertyName, action.FieldValues[0].Value);
+                        var field = action.FieldValues[0].CurrentField;
+                        var existingValue = entry.GetCustomProperty<object>(field.FieldName);
+                        if (existingValue.ToString().Equals(action.FieldValues[0].Value, StringComparison.InvariantCultureIgnoreCase)) return;
+                        entry.SetCustomProperty(field.FieldName, action.FieldValues[0].Value);
                     }
                     break;
             }
@@ -464,7 +464,7 @@ namespace BLAZAM.Services.Background
                             break;
 
                         case ActiveDirectoryFieldOperator.StartsWith:
-                            filterTrue = entry.GetPropertyValue(andFilter.Field.FieldName).ToString().StartsWith(andFilter.Value.ToString());
+                            filterTrue = entry.GetCustomProperty<string>(andFilter.CurrentField.FieldName).ToString().StartsWith(andFilter.Value.ToString());
                             break;
 
                         case ActiveDirectoryFieldOperator.EndsWith:

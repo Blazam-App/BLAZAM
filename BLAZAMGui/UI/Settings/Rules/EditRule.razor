@@ -21,16 +21,18 @@
     <MudDatePicker Clearable="true"
                    @bind-Date=_workingRule.ExpirationDate
                    Label="@AppLocalization[Lang.Expires]" />
-    <MudDivider />
+    <MudDivider Class="py-3" />
 
     @if (_workingRule.Trigger == NotificationType.Scheduled)
     {
-        <MudText Typo="Typo.h6">Run Time</MudText>
+        <MudText Typo="Typo.h6">@AppLocalization[Lang.Execution_Schedule]</MudText>
 
+        <MudSelectList T=ScheduleInterval? Values="_scheduleTypes" @bind-Value=Rule.ScheduleInterval/>
 
         <MudTimePicker Clearable="false"
                        @bind-Time=_workingRule.ScheduledRunTime
                        Label="@AppLocalization[Lang.Time]" />
+        <MudDivider Class="py-3" />
 
     }
 
@@ -122,6 +124,7 @@
 
     List<NotificationType> _triggerTypes = new();
     List<ActiveDirectoryObjectType> _adObjectTypes = new();
+    List<ScheduleInterval?> _scheduleTypes = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -148,6 +151,10 @@
         foreach (NotificationType enu in Enum.GetValues(typeof(NotificationType)))
         {
             _triggerTypes.Add(enu);
+        } 
+        foreach (ScheduleInterval enu in Enum.GetValues(typeof(ScheduleInterval)))
+        {
+            _scheduleTypes.Add(enu);
         }
         foreach (ActiveDirectoryObjectType enu in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
         {
@@ -214,8 +221,15 @@
             {
                 foreach (var fieldValue in action.FieldValues)
                 {
-                    fieldValue.FieldId = fieldValue.Field.Id;
-                    fieldValue.Field = await Context.ActiveDirectoryFields.FirstAsync(f => f.Id == fieldValue.Field.Id);
+                    
+                    if(fieldValue.CurrentField is ActiveDirectoryField)
+                    {
+                        fieldValue.CurrentField = await Context.ActiveDirectoryFields.FirstAsync(f => f.Id == fieldValue.CurrentFieldId);
+                    }
+                    else if (fieldValue.CurrentField is CustomActiveDirectoryField)
+                    {
+                        fieldValue.CurrentField = await Context.CustomActiveDirectoryFields.FirstAsync(f => f.Id == fieldValue.CurrentFieldId);
+                    }
 
                 }
             }

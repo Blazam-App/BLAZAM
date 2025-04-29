@@ -9,6 +9,15 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Database.Models.Rules
 {
+    public enum ScheduleInterval
+    {
+        Daily,
+        TimeInterval,
+        Weekly,
+        WeekInterval,
+        Monthly,
+        MonthInverval
+    }
     public class AutomationRule : RecoverableAppDbSetBase
     {
 
@@ -52,7 +61,10 @@ namespace BLAZAM.Database.Models.Rules
         /// The date at which this rule should stop executing
         /// </summary>
         public DateTime? ExpirationDate { get; set; }
+
+        public ScheduleInterval? ScheduleInterval { get; set; }
         public TimeSpan? ScheduledRunTime { get; set; }
+        public int? IntervalCount { get; set; }
         public NotificationType Trigger { get; set; }
         /// <summary>
         /// This rule will only fire for events related to these types of

@@ -15,7 +15,7 @@ namespace BLAZAM.Database.Models
             FieldName = "sn",
             DisplayName = Lang.Last_Name,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "Sn"
+            //PropertyName = "Sn"
         };
 
         public static readonly ActiveDirectoryField GivenName = new()
@@ -24,7 +24,7 @@ namespace BLAZAM.Database.Models
             FieldName = "givenname",
             DisplayName = Lang.First_Name,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName= "GivenName"
+            //PropertyName= "GivenName"
         };
 
         public static readonly ActiveDirectoryField PhysicalDeliveryOffice = new()
@@ -33,7 +33,7 @@ namespace BLAZAM.Database.Models
             FieldName = "physicalDeliveryOfficeName",
             DisplayName = Lang.Office,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "PhysicalDeliveryOfficeName"
+            //PropertyName = "PhysicalDeliveryOfficeName"
         };
 
         public static readonly ActiveDirectoryField EmployeeId = new()
@@ -42,7 +42,7 @@ namespace BLAZAM.Database.Models
             FieldName = "employeeId",
             DisplayName = Lang.Employee_Id,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName= "EmployeeId"
+            //PropertyName= "EmployeeId"
         };
 
         public static readonly ActiveDirectoryField HomeDirectory = new()
@@ -51,7 +51,7 @@ namespace BLAZAM.Database.Models
             FieldName = "homeDirectory",
             DisplayName = Lang.Home_Directory,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "HomeDirectory"
+            //PropertyName = "HomeDirectory"
         };
 
         public static readonly ActiveDirectoryField ScriptPath = new()
@@ -60,7 +60,7 @@ namespace BLAZAM.Database.Models
             FieldName = "scriptPath",
             DisplayName = "Logon Script Path",
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "ScriptPath"
+            //PropertyName = "ScriptPath"
         };
 
         public static readonly ActiveDirectoryField ProfilePath = new()
@@ -69,7 +69,7 @@ namespace BLAZAM.Database.Models
             FieldName = "profilePath",
             DisplayName = Lang.Profile_Path,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName= "ProfilePath"
+            //PropertyName= "ProfilePath"
         };
 
         public static readonly ActiveDirectoryField HomePhone = new()
@@ -78,7 +78,7 @@ namespace BLAZAM.Database.Models
             FieldName = "homePhone",
             DisplayName = "Home Phone Number",
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "HomePhone"
+            //PropertyName = "HomePhone"
         };
 
         public static readonly ActiveDirectoryField StreetAddress = new()
@@ -87,7 +87,7 @@ namespace BLAZAM.Database.Models
             FieldName = "streetAddress",
             DisplayName = Lang.Street_Address,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "StreetAddress"
+            //PropertyName = "StreetAddress"
         };
 
         public static readonly ActiveDirectoryField City = new()
@@ -96,7 +96,7 @@ namespace BLAZAM.Database.Models
             FieldName = "l", // 'l' is the standard LDAP attribute name for Locality (City)
             DisplayName = Lang.City,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "City"
+            //PropertyName = "City"
 
         };
 
@@ -106,7 +106,7 @@ namespace BLAZAM.Database.Models
             FieldName = "st", // 'st' is the standard LDAP attribute name for State or Province
             DisplayName = Lang.State,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "State"
+            //PropertyName = "State"
         };
 
         public static readonly ActiveDirectoryField PostalCode = new()
@@ -115,7 +115,7 @@ namespace BLAZAM.Database.Models
             FieldName = "postalCode",
             DisplayName = Lang.Zip_Code,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "Zip"
+            //PropertyName = "Zip"
         };
 
         public static readonly ActiveDirectoryField Site = new()
@@ -124,7 +124,7 @@ namespace BLAZAM.Database.Models
             FieldName = "site", // Note: 'site' is not a standard AD attribute. Check if this is custom.
             DisplayName = Lang.Site,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "Site"
+            //PropertyName = "Site"
         };
 
         public static readonly ActiveDirectoryField Name = new()
@@ -133,7 +133,7 @@ namespace BLAZAM.Database.Models
             FieldName = "name", // Often the same as CN (Canonical Name)
             DisplayName = Lang.Name,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "Name"
+            //PropertyName = "Name"
         };
 
         public static readonly ActiveDirectoryField SAMAccountName = new()
@@ -142,7 +142,7 @@ namespace BLAZAM.Database.Models
             FieldName = "samaccountname", // Pre-Windows 2000 logon name
             DisplayName = Lang.Username,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "SAMAccountName"
+            //PropertyName = "SAMAccountName"
         };
 
         public static readonly ActiveDirectoryField ObjectSID = new()
@@ -151,7 +151,7 @@ namespace BLAZAM.Database.Models
             FieldName = "objectSID", // Security Identifier
             DisplayName = "SID",
             FieldType = ActiveDirectoryFieldType.RawData, // SID is binary data,
-            PropertyName = "SID"
+            //PropertyName = "SID"
         };
 
         public static readonly ActiveDirectoryField Mail = new()
@@ -160,7 +160,7 @@ namespace BLAZAM.Database.Models
             FieldName = "mail",
             DisplayName = "E-Mail Address",
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "Email"
+            //PropertyName = "Email"
         };
 
         public static readonly ActiveDirectoryField Description = new()
@@ -169,7 +169,7 @@ namespace BLAZAM.Database.Models
             FieldName = "description",
             DisplayName = Lang.Description,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "Description"
+            //PropertyName = "Description"
         };
 
         public static readonly ActiveDirectoryField DisplayName = new()
@@ -178,7 +178,7 @@ namespace BLAZAM.Database.Models
             FieldName = "displayName",
             DisplayName = Lang.Display_Name,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "DisplayName"
+            //PropertyName = "DisplayName"
         };
 
         public static readonly ActiveDirectoryField DistinguishedName = new()
@@ -187,7 +187,7 @@ namespace BLAZAM.Database.Models
             FieldName = "distinguishedName", // Unique identifier within the directory (DN)
             DisplayName = "Distinguished Name",
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "DN"
+            //PropertyName = "DN"
         };
 
         public static readonly ActiveDirectoryField MemberOf = new()
@@ -196,7 +196,7 @@ namespace BLAZAM.Database.Models
             FieldName = "memberOf", // List of groups the object belongs to
             DisplayName = "Member Of",
             FieldType = ActiveDirectoryFieldType.StringList,
-            PropertyName = "MemberOf"
+            //PropertyName = "MemberOf"
 
         };
 
@@ -206,7 +206,7 @@ namespace BLAZAM.Database.Models
             FieldName = "company",
             DisplayName = Lang.Company,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "Company"
+            //PropertyName = "Company"
         };
 
         public static readonly ActiveDirectoryField Title = new()
@@ -215,7 +215,7 @@ namespace BLAZAM.Database.Models
             FieldName = "title", // Job title
             DisplayName = "Title",
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "Title"
+            //PropertyName = "Title"
         };
 
         public static readonly ActiveDirectoryField UserPrincipalName = new()
@@ -224,7 +224,7 @@ namespace BLAZAM.Database.Models
             FieldName = "userPrincipalName", // UPN (e.g., user@domain.com)
             DisplayName = "User Principal Name",
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "UserPrincipalName"
+            //PropertyName = "UserPrincipalName"
         };
 
         public static readonly ActiveDirectoryField TelephoneNumber = new()
@@ -233,7 +233,7 @@ namespace BLAZAM.Database.Models
             FieldName = "telephoneNumber", // Primary work phone number
             DisplayName = "Telephone Number",
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "TelephoneNumber"
+            //PropertyName = "TelephoneNumber"
         };
 
         public static readonly ActiveDirectoryField POBox = new()
@@ -242,7 +242,7 @@ namespace BLAZAM.Database.Models
             FieldName = "postOfficeBox",
             DisplayName = Lang.PO_Box,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "POBox"
+            //PropertyName = "POBox"
         };
 
         public static readonly ActiveDirectoryField CanonicalName = new()
@@ -251,7 +251,7 @@ namespace BLAZAM.Database.Models
             FieldName = "cn", // Canonical Name, often the object's common name
             DisplayName = "Canonical Name",
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "CanonicalName"
+            //PropertyName = "CanonicalName"
         };
 
         public static readonly ActiveDirectoryField HomeDrive = new()
@@ -260,7 +260,7 @@ namespace BLAZAM.Database.Models
             FieldName = "homeDrive", // Drive letter for home directory mapping (e.g., H:)
             DisplayName = Lang.Home_Drive,
             FieldType = ActiveDirectoryFieldType.DriveLetter,
-            PropertyName = "HomeDrive"
+            //PropertyName = "HomeDrive"
         };
 
         public static readonly ActiveDirectoryField Department = new()
@@ -269,7 +269,7 @@ namespace BLAZAM.Database.Models
             FieldName = "department",
             DisplayName = Lang.Department,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "Department"
+            //PropertyName = "Department"
         };
 
         public static readonly ActiveDirectoryField MiddleName = new()
@@ -278,7 +278,7 @@ namespace BLAZAM.Database.Models
             FieldName = "middleName", // Often stored in the 'initials' attribute ('initials')
             DisplayName = Lang.Middle_Name,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "MiddleName"
+            //PropertyName = "MiddleName"
         };
 
         public static readonly ActiveDirectoryField Pager = new()
@@ -287,7 +287,7 @@ namespace BLAZAM.Database.Models
             FieldName = "pager",
             DisplayName = "Pager",
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "Pager"
+            //PropertyName = "Pager"
         };
 
         public static readonly ActiveDirectoryField OperatingSystem = new()
@@ -296,7 +296,7 @@ namespace BLAZAM.Database.Models
             FieldName = "operatingSystemVersion", // For computer objects
             DisplayName = "OS",
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "OS"
+            //PropertyName = "OS"
         };
 
         public static readonly ActiveDirectoryField AccountExpires = new()
@@ -305,7 +305,7 @@ namespace BLAZAM.Database.Models
             FieldName = "accountExpires", // Date when the account expires
             DisplayName = "Account Expiration",
             FieldType = ActiveDirectoryFieldType.FileTime, 
-            PropertyName = "ExpireTime"
+            //PropertyName = "ExpireTime"
         };
 
         public static readonly ActiveDirectoryField Manager = new()
@@ -314,7 +314,7 @@ namespace BLAZAM.Database.Models
             FieldName = "manager", // Distinguished Name (DN) of the user's manager
             DisplayName = "Manager",
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "Manager"
+            //PropertyName = "Manager"
         };
 
         public static readonly ActiveDirectoryField Thumbnail = new()
@@ -323,7 +323,7 @@ namespace BLAZAM.Database.Models
             FieldName = "thumbnail",
             DisplayName = "Photo",
             FieldType = ActiveDirectoryFieldType.RawData,
-            PropertyName = "ThumbnailPhoto"
+            //PropertyName = "ThumbnailPhoto"
         };
 
         public static readonly ActiveDirectoryField LogOnTo = new()
@@ -332,7 +332,7 @@ namespace BLAZAM.Database.Models
             FieldName = "userWorkstations", // List of computer names the user can log on to
             DisplayName = Lang.Log_On_To,
             FieldType = ActiveDirectoryFieldType.Text,
-            PropertyName = "LogOnTo"
+            //PropertyName = "LogOnTo"
         };
 
         public static readonly ActiveDirectoryField LogonHours = new()
@@ -341,7 +341,7 @@ namespace BLAZAM.Database.Models
             FieldName = "logonHours", // Binary data representing allowed logon times
             DisplayName = Lang.Logon_Hours,
             FieldType = ActiveDirectoryFieldType.RawData,
-            PropertyName = "LogonHours"
+            //PropertyName = "LogonHours"
         };
 
         public static readonly ActiveDirectoryField GroupType = new()
@@ -350,7 +350,7 @@ namespace BLAZAM.Database.Models
             FieldName = "groupType", // Defines group scope (Domain Local, Global, Universal) and type (Security, Distribution)
             DisplayName = "Group Type",
             FieldType = ActiveDirectoryFieldType.RawData,
-            PropertyName = "GroupType"
+            //PropertyName = "GroupType"
         };
         public static readonly ActiveDirectoryField GroupScope = new()
         {
@@ -358,7 +358,7 @@ namespace BLAZAM.Database.Models
             FieldName = "groupType", // Defines group scope (Domain Local, Global, Universal) and type (Security, Distribution)
             DisplayName = "Group Scope",
             FieldType = ActiveDirectoryFieldType.RawData,
-            PropertyName = "GroupScope"
+            //PropertyName = "GroupScope"
         };
         public static readonly ActiveDirectoryField Enabled = new()
         {
@@ -366,7 +366,7 @@ namespace BLAZAM.Database.Models
             FieldName = "userAccountControl", 
             DisplayName = Lang.Enabled,
             FieldType = ActiveDirectoryFieldType.Boolean,
-            PropertyName = Lang.Enabled
+            //PropertyName = Lang.Enabled
 
         };
 
@@ -376,7 +376,7 @@ namespace BLAZAM.Database.Models
             FieldName = "lockoutTime",
             DisplayName = Lang.Locked_Out,
             FieldType = ActiveDirectoryFieldType.Boolean,
-            PropertyName = "LockedOut"
+            //PropertyName = "LockedOut"
 
         };
 

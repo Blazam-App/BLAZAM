@@ -27,6 +27,7 @@ namespace BLAZAM.Localization
         public static readonly string Username = "Username";
         public static readonly string Founder = "Founder";
         public static readonly string Founded = "Founded";
+        public static readonly string Execution_Schedule = "Execution Schedule";
         public static readonly string Go_To_User = "Go To User";
         public static readonly string Print = "Print";
         public static readonly string Fetch_News = "Fetch News";
