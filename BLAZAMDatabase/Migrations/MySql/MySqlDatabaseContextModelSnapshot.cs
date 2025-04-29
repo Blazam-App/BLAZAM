@@ -34,7 +34,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("FieldMapId");
 
-                    b.ToTable("AccessLevelFieldAccessMapping");
+                    b.ToTable("AccessLevelFieldAccessMapping", (string)null);
                 });
 
             modelBuilder.Entity("AccessLevelObjectAccessMapping", b =>
@@ -49,7 +49,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("ObjectMapId");
 
-                    b.ToTable("AccessLevelObjectAccessMapping");
+                    b.ToTable("AccessLevelObjectAccessMapping", (string)null);
                 });
 
             modelBuilder.Entity("AccessLevelPermissionMapping", b =>
@@ -64,7 +64,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("PermissionMapsId");
 
-                    b.ToTable("AccessLevelPermissionMapping");
+                    b.ToTable("AccessLevelPermissionMapping", (string)null);
                 });
 
             modelBuilder.Entity("AppUserChatRoom", b =>
@@ -79,7 +79,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("MembersId");
 
-                    b.ToTable("AppUserChatRoom");
+                    b.ToTable("AppUserChatRoom", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.ADSettings", b =>
@@ -115,7 +115,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActiveDirectorySettings", t =>
+                    b.ToTable("ActiveDirectorySettings", null, t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "Id = 1");
                         });
@@ -140,12 +140,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int>("FieldType")
                         .HasColumnType("int");
 
-                    b.Property<string>("PropertyName")
-                        .HasColumnType("longtext");
-
                     b.HasKey("Id");
 
-                    b.ToTable("ActiveDirectoryFields");
+                    b.ToTable("ActiveDirectoryFields", (string)null);
 
                     b.HasData(
                         new
@@ -153,328 +150,266 @@ namespace BLAZAM.Common.Migrations.MySql
                             Id = 1,
                             DisplayName = "Last Name",
                             FieldName = "sn",
-                            FieldType = 0,
-                            PropertyName = "Sn"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 2,
                             DisplayName = "First Name",
                             FieldName = "givenname",
-                            FieldType = 0,
-                            PropertyName = "GivenName"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 3,
                             DisplayName = "Office",
                             FieldName = "physicalDeliveryOfficeName",
-                            FieldType = 0,
-                            PropertyName = "PhysicalDeliveryOfficeName"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 4,
-                            DisplayName = "Employee Id",
+                            DisplayName = "Employee ID",
                             FieldName = "employeeId",
-                            FieldType = 0,
-                            PropertyName = "EmployeeId"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 5,
                             DisplayName = "Home Directory",
                             FieldName = "homeDirectory",
-                            FieldType = 0,
-                            PropertyName = "HomeDirectory"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 6,
                             DisplayName = "Logon Script Path",
                             FieldName = "scriptPath",
-                            FieldType = 0,
-                            PropertyName = "ScriptPath"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 7,
                             DisplayName = "Profile Path",
                             FieldName = "profilePath",
-                            FieldType = 0,
-                            PropertyName = "ProfilePath"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 8,
                             DisplayName = "Home Phone Number",
                             FieldName = "homePhone",
-                            FieldType = 0,
-                            PropertyName = "HomePhone"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 9,
                             DisplayName = "Street Address",
                             FieldName = "streetAddress",
-                            FieldType = 0,
-                            PropertyName = "StreetAddress"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 10,
                             DisplayName = "City",
                             FieldName = "l",
-                            FieldType = 0,
-                            PropertyName = "City"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 11,
                             DisplayName = "State",
                             FieldName = "st",
-                            FieldType = 0,
-                            PropertyName = "State"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 12,
                             DisplayName = "Zip Code",
                             FieldName = "postalCode",
-                            FieldType = 0,
-                            PropertyName = "Zip"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 13,
                             DisplayName = "Site",
                             FieldName = "site",
-                            FieldType = 0,
-                            PropertyName = "Site"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 14,
                             DisplayName = "Name",
                             FieldName = "name",
-                            FieldType = 0,
-                            PropertyName = "Name"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 15,
                             DisplayName = "Username",
                             FieldName = "samaccountname",
-                            FieldType = 0,
-                            PropertyName = "SAMAccountName"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 16,
                             DisplayName = "SID",
                             FieldName = "objectSID",
-                            FieldType = 2,
-                            PropertyName = "SID"
+                            FieldType = 2
                         },
                         new
                         {
                             Id = 17,
                             DisplayName = "E-Mail Address",
                             FieldName = "mail",
-                            FieldType = 0,
-                            PropertyName = "Email"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 18,
                             DisplayName = "Description",
                             FieldName = "description",
-                            FieldType = 0,
-                            PropertyName = "Description"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 19,
                             DisplayName = "Display Name",
                             FieldName = "displayName",
-                            FieldType = 0,
-                            PropertyName = "DisplayName"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 20,
                             DisplayName = "Distinguished Name",
                             FieldName = "distinguishedName",
-                            FieldType = 0,
-                            PropertyName = "DN"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 21,
                             DisplayName = "Member Of",
                             FieldName = "memberOf",
-                            FieldType = 4,
-                            PropertyName = "MemberOf"
+                            FieldType = 4
                         },
                         new
                         {
                             Id = 22,
                             DisplayName = "Company",
                             FieldName = "company",
-                            FieldType = 0,
-                            PropertyName = "Company"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 23,
                             DisplayName = "Title",
                             FieldName = "title",
-                            FieldType = 0,
-                            PropertyName = "Title"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 24,
                             DisplayName = "User Principal Name",
                             FieldName = "userPrincipalName",
-                            FieldType = 0,
-                            PropertyName = "UserPrincipalName"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 25,
                             DisplayName = "Telephone Number",
                             FieldName = "telephoneNumber",
-                            FieldType = 0,
-                            PropertyName = "TelephoneNumber"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 26,
                             DisplayName = "PO Box",
                             FieldName = "postOfficeBox",
-                            FieldType = 0,
-                            PropertyName = "POBox"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 27,
                             DisplayName = "Canonical Name",
                             FieldName = "cn",
-                            FieldType = 0,
-                            PropertyName = "CanonicalName"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 28,
                             DisplayName = "Home Drive",
                             FieldName = "homeDrive",
-                            FieldType = 3,
-                            PropertyName = "HomeDrive"
+                            FieldType = 3
                         },
                         new
                         {
                             Id = 29,
                             DisplayName = "Department",
                             FieldName = "department",
-                            FieldType = 0,
-                            PropertyName = "Department"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 30,
                             DisplayName = "Middle Name",
                             FieldName = "middleName",
-                            FieldType = 0,
-                            PropertyName = "MiddleName"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 31,
                             DisplayName = "Pager",
                             FieldName = "pager",
-                            FieldType = 0,
-                            PropertyName = "Pager"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 32,
                             DisplayName = "OS",
                             FieldName = "operatingSystemVersion",
-                            FieldType = 0,
-                            PropertyName = "OS"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 33,
                             DisplayName = "Account Expiration",
                             FieldName = "accountExpires",
-                            FieldType = 5,
-                            PropertyName = "ExpireTime"
+                            FieldType = 1
                         },
                         new
                         {
                             Id = 34,
                             DisplayName = "Manager",
                             FieldName = "manager",
-                            FieldType = 0,
-                            PropertyName = "Manager"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 35,
                             DisplayName = "Photo",
                             FieldName = "thumbnail",
-                            FieldType = 2,
-                            PropertyName = "ThumbnailPhoto"
+                            FieldType = 2
                         },
                         new
                         {
                             Id = 36,
                             DisplayName = "Log On To",
                             FieldName = "userWorkstations",
-                            FieldType = 0,
-                            PropertyName = "LogOnTo"
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 37,
                             DisplayName = "Logon Hours",
                             FieldName = "logonHours",
-                            FieldType = 2,
-                            PropertyName = "LogonHours"
+                            FieldType = 2
                         },
                         new
                         {
                             Id = 38,
-                            DisplayName = "Group Type",
+                            DisplayName = "Group Type and Scope",
                             FieldName = "groupType",
-                            FieldType = 2,
-                            PropertyName = "GroupType"
-                        },
-                        new
-                        {
-                            Id = 39,
-                            DisplayName = "Group Scope",
-                            FieldName = "groupType",
-                            FieldType = 2,
-                            PropertyName = "GroupScope"
-                        },
-                        new
-                        {
-                            Id = 40,
-                            DisplayName = "Enabled",
-                            FieldName = "userAccountControl",
-                            FieldType = 6,
-                            PropertyName = "Enabled"
-                        },
-                        new
-                        {
-                            Id = 41,
-                            DisplayName = "Locked_ Out",
-                            FieldName = "lockoutTime",
-                            FieldType = 5,
-                            PropertyName = "LockedOut"
+                            FieldType = 2
                         });
                 });
 
@@ -499,7 +434,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("CustomActiveDirectoryFieldId");
 
-                    b.ToTable("ActiveDirectoryFieldObjectMappings");
+                    b.ToTable("ActiveDirectoryFieldObjectMappings", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.AppSettings", b =>
@@ -571,7 +506,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppSettings", t =>
+                    b.ToTable("AppSettings", null, t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "Id = 1")
                                 .HasName("CK_Table_Column1");
@@ -615,7 +550,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("DirectoryEntryAuditLogs");
+                    b.ToTable("DirectoryEntryAuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.EmailAuditLog", b =>
@@ -664,7 +599,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailAuditLog");
+                    b.ToTable("EmailAuditLog", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.LogonAuditLog", b =>
@@ -700,7 +635,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("LogonAuditLog");
+                    b.ToTable("LogonAuditLog", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.PermissionsAuditLog", b =>
@@ -736,7 +671,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("PermissionsAuditLog");
+                    b.ToTable("PermissionsAuditLog", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.RequestAuditLog", b =>
@@ -772,7 +707,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("RequestAuditLog");
+                    b.ToTable("RequestAuditLog", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.SettingsAuditLog", b =>
@@ -808,7 +743,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("SettingsAuditLog");
+                    b.ToTable("SettingsAuditLog", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.SystemAuditLog", b =>
@@ -844,7 +779,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("SystemAuditLog");
+                    b.ToTable("SystemAuditLog", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.AuthenticationSettings", b =>
@@ -882,7 +817,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuthenticationSettings", t =>
+                    b.ToTable("AuthenticationSettings", null, t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "Id = 1")
                                 .HasName("CK_Table_Column2");
@@ -927,7 +862,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChatRooms");
+                    b.ToTable("ChatRooms", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Chat.UnreadChatMessage", b =>
@@ -951,7 +886,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("ChatMessageId");
 
-                    b.ToTable("UnreadChatMessages");
+                    b.ToTable("UnreadChatMessages", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.CustomActiveDirectoryField", b =>
@@ -976,12 +911,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int>("FieldType")
                         .HasColumnType("int");
 
-                    b.Property<string>("PropertyName")
-                        .HasColumnType("longtext");
-
                     b.HasKey("Id");
 
-                    b.ToTable("CustomActiveDirectoryFields");
+                    b.ToTable("CustomActiveDirectoryFields", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.EmailSettings", b =>
@@ -1028,7 +960,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailSettings", t =>
+                    b.ToTable("EmailSettings", null, t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "Id = 1")
                                 .HasName("CK_Table_Column3");
@@ -1056,7 +988,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailTemplates");
+                    b.ToTable("EmailTemplates", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.FailedADLogonEvent", b =>
@@ -1082,7 +1014,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("FailedADLogonEvents");
+                    b.ToTable("FailedADLogonEvents", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.GenericSidList", b =>
@@ -1102,7 +1034,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("LockedOutUsers");
+                    b.ToTable("LockedOutUsers", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
@@ -1136,7 +1068,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NotificationSubscriptions");
+                    b.ToTable("NotificationSubscriptions", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionNotificationType", b =>
@@ -1157,7 +1089,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("NotificationSubscriptionId");
 
-                    b.ToTable("SubscriptionNotificationType");
+                    b.ToTable("SubscriptionNotificationType", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionWebHookType", b =>
@@ -1178,7 +1110,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("WebHookSubscriptionId");
 
-                    b.ToTable("SubscriptionWebHookType");
+                    b.ToTable("SubscriptionWebHookType", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookAttempt", b =>
@@ -1235,7 +1167,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("WebHookSubscriptionId");
 
-                    b.ToTable("WebHookAttempts");
+                    b.ToTable("WebHookAttempts", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookSubscription", b =>
@@ -1282,7 +1214,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("WebHookSubscriptions");
+                    b.ToTable("WebHookSubscriptions", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
@@ -1302,7 +1234,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccessLevels");
+                    b.ToTable("AccessLevels", (string)null);
 
                     b.HasData(
                         new
@@ -1338,7 +1270,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("ObjectActionId");
 
-                    b.ToTable("ActionAccessMapping");
+                    b.ToTable("ActionAccessMapping", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.FieldAccessLevel", b =>
@@ -1358,7 +1290,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("FieldAccessLevel");
+                    b.ToTable("FieldAccessLevel", (string)null);
 
                     b.HasData(
                         new
@@ -1409,7 +1341,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("FieldId");
 
-                    b.ToTable("AccessLevelFieldMapping");
+                    b.ToTable("AccessLevelFieldMapping", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestActions", b =>
@@ -1425,7 +1357,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("GlobalPermissionRequestActions");
+                    b.ToTable("GlobalPermissionRequestActions", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
@@ -1444,7 +1376,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("GlobalPermissionSettings");
+                    b.ToTable("GlobalPermissionSettings", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
@@ -1464,7 +1396,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ObjectAccessLevel");
+                    b.ToTable("ObjectAccessLevel", (string)null);
 
                     b.HasData(
                         new
@@ -1505,7 +1437,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("ObjectAccessLevelId");
 
-                    b.ToTable("AccessLevelObjectMapping");
+                    b.ToTable("AccessLevelObjectMapping", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAction", b =>
@@ -1525,7 +1457,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ObjectActionFlag");
+                    b.ToTable("ObjectActionFlag", (string)null);
 
                     b.HasData(
                         new
@@ -1616,7 +1548,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.HasIndex("DelegateSid")
                         .IsUnique();
 
-                    b.ToTable("PermissionDelegate");
+                    b.ToTable("PermissionDelegate", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.PermissionMapping", b =>
@@ -1636,204 +1568,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("PermissionMap");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRule", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActiveDirectoryObjectType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("Enabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime?>("ExpirationDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("LastExcecuted")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("LastTriggered")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<TimeSpan?>("ScheduledRunTime")
-                        .HasColumnType("time(6)");
-
-                    b.Property<bool>("StopOnThisRule")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("Trigger")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AutomationRules");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("ActionGuid")
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("ActionType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ActiveDirectoryObjectAction")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AutomationRuleId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Data")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AutomationRuleId");
-
-                    b.ToTable("AutomationRuleActions");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAndFilter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CustomFieldId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FieldId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("FilterGuid")
-                        .HasColumnType("char(36)");
-
-                    b.Property<bool>("Negate")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("Operator")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrFilterId")
-                        .HasColumnType("int");
-
-                    b.Property<TimeSpan?>("TimeFrame")
-                        .HasColumnType("time(6)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomFieldId");
-
-                    b.HasIndex("FieldId");
-
-                    b.HasIndex("OrFilterId");
-
-                    b.ToTable("AutomationRuleAndFilters");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleFieldValue", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AutomationRuleActionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CustomFieldId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FieldId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AutomationRuleActionId");
-
-                    b.HasIndex("CustomFieldId");
-
-                    b.HasIndex("FieldId");
-
-                    b.ToTable("AutomationRuleFieldValues");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupSid", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Assigned")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("AutomationRuleActionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("GroupSid")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AutomationRuleActionId");
-
-                    b.ToTable("AutomationRuleGroupSids");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AutomationRuleId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("FilterGuid")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AutomationRuleId");
-
-                    b.ToTable("AutomationRuleOrFilter");
+                    b.ToTable("PermissionMap", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
@@ -1897,7 +1632,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("ParentTemplateId");
 
-                    b.ToTable("DirectoryTemplates");
+                    b.ToTable("DirectoryTemplates", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValue", b =>
@@ -1934,7 +1669,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("FieldId");
 
-                    b.ToTable("DirectoryTemplateFieldValues");
+                    b.ToTable("DirectoryTemplateFieldValues", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateGroup", b =>
@@ -1956,7 +1691,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("DirectoryTemplateId");
 
-                    b.ToTable("DirectoryTemplateGroups");
+                    b.ToTable("DirectoryTemplateGroups", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.ApiToken", b =>
@@ -1999,7 +1734,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ApiTokens");
+                    b.ToTable("ApiTokens", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
@@ -2043,7 +1778,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.HasIndex("UserGUID")
                         .IsUnique();
 
-                    b.ToTable("UserSettings");
+                    b.ToTable("UserSettings", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.NotificationMessage", b =>
@@ -2091,7 +1826,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("NotificationMessages");
+                    b.ToTable("NotificationMessages", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.ReadNewsItem", b =>
@@ -2115,7 +1850,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReadNewsItems");
+                    b.ToTable("ReadNewsItems", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserDashboardWidget", b =>
@@ -2146,7 +1881,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserDashboardWidgets");
+                    b.ToTable("UserDashboardWidgets", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserFavoriteEntry", b =>
@@ -2168,7 +1903,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserFavoriteEntries");
+                    b.ToTable("UserFavoriteEntries", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserNotification", b =>
@@ -2194,7 +1929,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserNotifications");
+                    b.ToTable("UserNotifications", (string)null);
                 });
 
             modelBuilder.Entity("BLAZAM.Server.Data.ChatMessage", b =>
@@ -2224,7 +1959,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ChatMessages");
+                    b.ToTable("ChatMessages", (string)null);
                 });
 
             modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>
@@ -2239,7 +1974,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("PermissionsMapsId");
 
-                    b.ToTable("PermissionDelegatePermissionMapping");
+                    b.ToTable("PermissionDelegatePermissionMapping", (string)null);
                 });
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
@@ -2413,81 +2148,6 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("ObjectAccessLevel");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAction", b =>
-                {
-                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRule", null)
-                        .WithMany("Actions")
-                        .HasForeignKey("AutomationRuleId");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAndFilter", b =>
-                {
-                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", "CustomField")
-                        .WithMany()
-                        .HasForeignKey("CustomFieldId");
-
-                    b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
-                        .WithMany()
-                        .HasForeignKey("FieldId");
-
-                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", "OrFilter")
-                        .WithMany("AndFilters")
-                        .HasForeignKey("OrFilterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CustomField");
-
-                    b.Navigation("Field");
-
-                    b.Navigation("OrFilter");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleFieldValue", b =>
-                {
-                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRuleAction", "AutomationRuleAction")
-                        .WithMany("FieldValues")
-                        .HasForeignKey("AutomationRuleActionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", "CustomField")
-                        .WithMany()
-                        .HasForeignKey("CustomFieldId");
-
-                    b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
-                        .WithMany()
-                        .HasForeignKey("FieldId");
-
-                    b.Navigation("AutomationRuleAction");
-
-                    b.Navigation("CustomField");
-
-                    b.Navigation("Field");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupSid", b =>
-                {
-                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRuleAction", "AutomationRuleAction")
-                        .WithMany("GroupSids")
-                        .HasForeignKey("AutomationRuleActionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AutomationRuleAction");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
-                {
-                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRule", "AutomationRule")
-                        .WithMany("Filters")
-                        .HasForeignKey("AutomationRuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AutomationRule");
-                });
-
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplate", "ParentTemplate")
@@ -2659,25 +2319,6 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
                 {
                     b.Navigation("ObjectAccessMappings");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRule", b =>
-                {
-                    b.Navigation("Actions");
-
-                    b.Navigation("Filters");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAction", b =>
-                {
-                    b.Navigation("FieldValues");
-
-                    b.Navigation("GroupSids");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
-                {
-                    b.Navigation("AndFilters");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
