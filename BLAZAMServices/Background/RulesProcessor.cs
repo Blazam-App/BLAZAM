@@ -465,11 +465,11 @@ namespace BLAZAM.Services.Background
                             break;
 
                         case ActiveDirectoryFieldOperator.StartsWith:
-                            filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().StartsWith(andFilter.Value.ToString());
+                            filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().StartsWith(andFilter.Value.ToString(),StringComparison.InvariantCultureIgnoreCase);
                             break;
 
                         case ActiveDirectoryFieldOperator.EndsWith:
-                            filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().EndsWith(andFilter.Value.ToString());
+                            filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().EndsWith(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase);
                             break;
 
                         case ActiveDirectoryFieldOperator.AfterNow:

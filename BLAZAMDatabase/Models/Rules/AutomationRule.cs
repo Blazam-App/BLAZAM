@@ -26,7 +26,6 @@ namespace BLAZAM.Database.Models.Rules
         /// </summary>
         public string Name { get; set; }
 
-
         /// <summary>
         /// The timestamp of the last time this Rule's filters matched an event
         /// </summary>
@@ -45,6 +44,7 @@ namespace BLAZAM.Database.Models.Rules
         /// Indicates whether or not this rule is enabled.
         /// </summary>
         public bool Enabled { get; set; }
+
         /// <summary>
         /// Do not continue with rules with a higher order number
         /// </summary>
@@ -62,17 +62,34 @@ namespace BLAZAM.Database.Models.Rules
         /// </summary>
         public DateTime? ExpirationDate { get; set; }
 
+        /// <summary>
+        /// The schedule interval type defining the periodicity of the schedule
+        /// </summary>
         public ScheduleInterval? ScheduleInterval { get; set; }
+
+        /// <summary>
+        /// The interval time or time of day to run for scheduled rules
+        /// </summary>
         public TimeSpan? ScheduledRunTime { get; set; }
+
+        /// <summary>
+        /// Used for fixed day, week, or month intervals to define repeat schedule per unit
+        /// </summary>
         public int? IntervalCount { get; set; }
+
+        /// <summary>
+        /// What <see cref="NotificationType"/>'s this rule will execute on
+        /// </summary>
         public NotificationType Trigger { get; set; }
+
         /// <summary>
         /// This rule will only fire for events related to these types of
         /// AD objects
         /// </summary>
         public ActiveDirectoryObjectType ActiveDirectoryObjectType { get; set; }
+
         /// <summary>
-        /// Or List of Ands
+        /// Or List of Ands to filter object by
         /// </summary>
         public List<AutomationRuleOrFilter> Filters { get; set; } = new();
 

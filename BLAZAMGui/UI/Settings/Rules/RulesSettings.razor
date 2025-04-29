@@ -1,6 +1,6 @@
 ﻿@inherits AppComponentBase
 <MudText Typo="Typo.h4">@AppLocalization[Lang.Rules] <AppDocumentationButton Page="/admin/settings/application" /></MudText>
-<MudAlert Severity="Severity.Warning">
+<MudAlert Severity="Severity.Warning" Variant="Variant.Filled" Class="mb-3">
     Rules are still in Beta, some filters/actions may not work and action failure is untracked.<br /><br />
     Additionally: Rules currently have no protection against a rule disabling every account in the domain.<br/>
     Caution is advised. Check the "Matches" list to ensure rule filtering is as intended.
