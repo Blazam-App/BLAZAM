@@ -11,8 +11,8 @@ namespace BLAZAM.Database.Models.Rules
 {
     public enum ScheduleInterval
     {
-        Daily,
         TimeInterval,
+        Daily,
         Weekly,
         WeekInterval,
         Monthly,

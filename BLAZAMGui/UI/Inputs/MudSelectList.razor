@@ -7,6 +7,7 @@
 
     }
     <MudMenu Dense=true
+        Disabled="@Disabled"
              Style="@(Style+" min-width:100px;")"
              FullWidth=true
              @ref=_selectMenu
@@ -17,7 +18,7 @@
              TransformOrigin="Origin.TopCenter"
              PopoverClass="minw-max">
         <ActivatorContent>
-            <MudField Label="@Label">
+            <MudField Disabled="@Disabled" Label="@Label">
                 <MudStack Row=true>
                     @if (SelectedValues.Count() > 0 || Value!=null)
                     {

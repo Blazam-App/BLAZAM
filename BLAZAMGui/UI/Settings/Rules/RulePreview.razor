@@ -1,5 +1,6 @@
 @inherits DatabaseComponentBase
 @using BLAZAM.Database.Models.Rules
+@using BLAZAM.Gui.UI.Dashboard.Widgets
 <MudPaper Elevation="1" Class="pa-4 my-4">
     <MudStack>
         <MudStack Row=true>
@@ -26,6 +27,8 @@
             <AppIconButton Color="Color.Primary"
                            Icon="@Icons.Material.Filled.Edit"
                            OnClick="@(EditClicked)" />
+
+
             @* <AppIconButton Icon="@Icons.Material.Filled.CopyAll"
                            OnClick="@(CopyClicked)" /> *@
 
@@ -56,9 +59,9 @@
                 </MudText>
             }
             <MudText Class="mt-2"><MudIcon Color="Color.Warning" Icon="@Icons.Material.Outlined.FilterAlt" /> If</MudText>
-          
-            <RulePreviewFilters Rule="Rule"/>
-            
+
+            <RulePreviewFilters Rule="Rule" />
+
             <MudText Class="mt-2"><MudIcon Color="Color.Success" Icon="@Icons.Material.Filled.Login" /> Then</MudText>
 
             var firstAction = true;
@@ -115,21 +118,30 @@
                 <StatusCheck Text="@AppHelpLocalization[Rule.StopOnThisRule?HelpLang.Stop_On_Rule:HelpLang.Continue_Processing_Rules]"
                              Status="@(!Rule.StopOnThisRule)" />
             </MudField>
+            <MudStack Class="mud-width-full" Row="true">
+                <MudSpacer/>
+                <MudButton Disabled="_loadingFilteredEntries"
+                           Color="Color.Primary"
+                           OnClick="@(()=>{_matchedPopoverOpen = !_matchedPopoverOpen;})">
+                    Matches: @filteredEntries.Count
+                </MudButton>
 
-            <MudButton Disabled="_loadingFilteredEntries"
-                       Color="Color.Primary"
-                       OnClick="@(()=>{_matchedPopoverOpen = !_matchedPopoverOpen;})">
-                Matches: @filteredEntries.Count
-            </MudButton>
+                <AppIconButton Color="Color.Primary"
+                               Icon="@Icons.Material.Filled.Refresh"
+                               OnClick="@LoadFilteredEntries" />
+                <MudSpacer />
 
+            </MudStack>
             @if (_matchedPopoverOpen)
             {
                 <MudStack Class="mb-4 mud-width-full">
                     @foreach (var entry in filteredEntries)
                     {
-                            <MudLink Target="_blank" Href="@entry.SearchUri">
-                                <SearchResult Entry="@entry" Class="mud-width-full"/>
-                                </MudLink>
+                        <MudLink Target="_blank" Href="@entry.SearchUri">
+                            <DirectoryEntryTooltipPopover Entry="entry">
+                                <SearchResult Entry="@entry" Class="mud-width-full" />
+                            </DirectoryEntryTooltipPopover>
+                        </MudLink>
 
                     }
                 </MudStack>
@@ -145,7 +157,6 @@
         }
     </MudStack>
 </MudPaper>
-
 @code {
     private bool _matchedPopoverOpen;
     private bool _loadingFilteredEntries;
@@ -176,20 +187,23 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _ = Task.Run(async () =>
-        {
-
-
-            _loadingFilteredEntries = true;
-            await InvokeAsync(StateHasChanged);
-
-            filteredEntries = RulesProcessor.GetFilteredEntries(Rule);
-            _loadingFilteredEntries = false;
-
-            await InvokeAsync(StateHasChanged);
-        });
+        LoadFilteredEntries();
     }
+    private void LoadFilteredEntries()
+    {
+        _ = Task.Run(async () =>
+    {
 
+
+        _loadingFilteredEntries = true;
+        await InvokeAsync(StateHasChanged);
+
+        filteredEntries = RulesProcessor.GetFilteredEntries(Rule);
+        _loadingFilteredEntries = false;
+
+        await InvokeAsync(StateHasChanged);
+    });
+    }
     private async Task ChangeEnabled(AutomationRule rule, bool value)
     {
         rule.Enabled = value;

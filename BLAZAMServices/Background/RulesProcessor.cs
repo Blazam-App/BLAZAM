@@ -432,15 +432,16 @@ namespace BLAZAM.Services.Background
             var filterTrue = false;
             try
             {
-              
+              if(andFilter.CurrentField is ActiveDirectoryField defaultField)
+                {
                     switch (andFilter.Operator)
                     {
                         case ActiveDirectoryFieldOperator.EqualTo:
-                            filterTrue = entry.PropertyValueEquals(andFilter.Field.DisplayName, andFilter.Value);
+                            filterTrue = entry.PropertyValueEquals(defaultField.PropertyName, andFilter.Value);
                             break;
 
                         case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
-                            var dateValue3 = entry.GetPropertyValue(andFilter.Field.PropertyName);
+                            var dateValue3 = entry.GetPropertyValue(defaultField.PropertyName);
                             if (dateValue3 is DateTime dateTime3)
                             {
                                 filterTrue = dateTime3 > DateTime.Now - andFilter.TimeFrame;
@@ -452,7 +453,7 @@ namespace BLAZAM.Services.Background
                             break;
 
                         case ActiveDirectoryFieldOperator.FutureTimeFrame:
-                            var dateValue4 = entry.GetPropertyValue(andFilter.Field.PropertyName);
+                            var dateValue4 = entry.GetPropertyValue(defaultField.PropertyName);
                             if (dateValue4 is DateTime dateTime4)
                             {
                                 filterTrue = dateTime4 > DateTime.Now - andFilter.TimeFrame;
@@ -464,15 +465,15 @@ namespace BLAZAM.Services.Background
                             break;
 
                         case ActiveDirectoryFieldOperator.StartsWith:
-                            filterTrue = entry.GetCustomProperty<string>(andFilter.CurrentField.FieldName).ToString().StartsWith(andFilter.Value.ToString());
+                            filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().StartsWith(andFilter.Value.ToString());
                             break;
 
                         case ActiveDirectoryFieldOperator.EndsWith:
-                            filterTrue = entry.GetPropertyValue(andFilter.Field.FieldName).ToString().EndsWith(andFilter.Value.ToString());
+                            filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().EndsWith(andFilter.Value.ToString());
                             break;
 
                         case ActiveDirectoryFieldOperator.AfterNow:
-                            var dateValue = entry.GetPropertyValue(andFilter.Field.PropertyName);
+                            var dateValue = entry.GetPropertyValue(defaultField.PropertyName);
                             if (dateValue is DateTime dateTime)
                             {
                                 filterTrue = dateTime > DateTime.Now;
@@ -484,7 +485,7 @@ namespace BLAZAM.Services.Background
                             break;
 
                         case ActiveDirectoryFieldOperator.BeforeNow:
-                            var dateValue2 = entry.GetPropertyValue(andFilter.Field.PropertyName);
+                            var dateValue2 = entry.GetPropertyValue(defaultField.PropertyName);
                             if (dateValue2 is DateTime dateTime2)
                             {
                                 filterTrue = dateTime2 < DateTime.Now;
@@ -496,12 +497,12 @@ namespace BLAZAM.Services.Background
                             break;
 
                         case ActiveDirectoryFieldOperator.Contains:
-                            var propertyValue = entry.GetPropertyValue(andFilter.Field.PropertyName).ToString();
+                            var propertyValue = entry.GetPropertyValue(defaultField.PropertyName).ToString();
                             filterTrue = propertyValue?.Contains(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true;
                             break;
 
                         case ActiveDirectoryFieldOperator.Boolean:
-                            if (entry.GetPropertyValue(andFilter.Field.PropertyName) is bool boolValue)
+                            if (entry.GetPropertyValue(defaultField.PropertyName) is bool boolValue)
                             {
                                 filterTrue = boolValue == true;
                             }
@@ -510,6 +511,77 @@ namespace BLAZAM.Services.Background
 
 
                     }
+                }
+                else if (andFilter.CurrentField is CustomActiveDirectoryField customField)
+                {
+                    switch (andFilter.Operator)
+                    {
+                        case ActiveDirectoryFieldOperator.EqualTo:
+                            filterTrue = entry.GetCustomProperty<object>(customField.FieldName).Equals(andFilter.Value);
+                            break;
+
+                        case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
+                        var raw = entry.GetCustomProperty<object>(customField.FieldName);
+                            var dateValue3 = raw.AdsValueToDateTime();
+                            if (dateValue3 is DateTime dateTime3)
+                            {
+                                filterTrue = dateTime3 > DateTime.Now - andFilter.TimeFrame;
+                            }
+                            break;
+
+                        case ActiveDirectoryFieldOperator.FutureTimeFrame:
+                            var raw2 = entry.GetCustomProperty<object>(customField.FieldName);
+                            var dateValue4 = raw2.AdsValueToDateTime();
+                            if (dateValue4 is DateTime dateTime4)
+                            {
+                                filterTrue = dateTime4 > DateTime.Now - andFilter.TimeFrame;
+                            }
+                            
+                            break;
+
+                        case ActiveDirectoryFieldOperator.StartsWith:
+                            filterTrue = entry.GetPropertyValue(customField.FieldName).ToString().StartsWith(andFilter.Value.ToString());
+                            break;
+
+                        case ActiveDirectoryFieldOperator.EndsWith:
+                            filterTrue = entry.GetPropertyValue(customField.FieldName).ToString().EndsWith(andFilter.Value.ToString());
+                            break;
+
+                        case ActiveDirectoryFieldOperator.AfterNow:
+                            var raw3 = entry.GetCustomProperty<object>(customField.FieldName);
+                            var dateValue = raw3.AdsValueToDateTime();                             if (dateValue is DateTime dateTime)
+                            {
+                                filterTrue = dateTime > DateTime.Now;
+                            }
+                            break;
+
+                        case ActiveDirectoryFieldOperator.BeforeNow:
+                            var raw4 = entry.GetCustomProperty<object>(customField.FieldName);
+                            var dateValue2 = raw4.AdsValueToDateTime();
+                            if (dateValue2 is DateTime dateTime2)
+                            {
+                                filterTrue = dateTime2 < DateTime.Now;
+                            }
+                           
+                            break;
+
+                        case ActiveDirectoryFieldOperator.Contains:
+                            var propertyValue = entry.GetPropertyValue(customField.FieldName).ToString();
+                            filterTrue = propertyValue?.Contains(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true;
+                            break;
+
+                        case ActiveDirectoryFieldOperator.Boolean:
+                            if (entry.GetPropertyValue(customField.FieldName) is bool boolValue)
+                            {
+                                filterTrue = boolValue == true;
+                            }
+                            break;
+
+
+
+                    }
+                }
+                   
                
             }
             catch (Exception ex)

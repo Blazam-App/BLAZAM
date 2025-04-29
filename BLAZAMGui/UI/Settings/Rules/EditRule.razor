@@ -3,35 +3,43 @@
 <MudStack>
 
     <MudSelectList Label="@AppLocalization[Lang.Object_Type]"
-                   Values="_adObjectTypes"
-                   @bind-Value=_workingRule.ActiveDirectoryObjectType />
+    Values="_adObjectTypes"
+    @bind-Value=_workingRule.ActiveDirectoryObjectType />
 
     <MudSelectList Label="@AppLocalization[Lang.Triggers]"
-                   Values="_workingRule.ActiveDirectoryObjectType.GetNotificationTypes()"
-                   @bind-Value=_workingRule.Trigger />
+    Values="_workingRule.ActiveDirectoryObjectType.GetNotificationTypes()"
+    @bind-Value=_workingRule.Trigger />
 
     <MudTextField @bind-Value=@_workingRule.Name
-                  Label="@AppLocalization[Lang.Name]" />
+    Label="@AppLocalization[Lang.Name]" />
 
     <MudSwitch Color="Color.Success"
-               UncheckedColor="Color.Error"
-               @bind-Value=_workingRule.Enabled
-               Label="@AppLocalization[Lang.Enabled]" />
+    UncheckedColor="Color.Error"
+    @bind-Value=_workingRule.Enabled
+    Label="@AppLocalization[Lang.Enabled]" />
 
     <MudDatePicker Clearable="true"
-                   @bind-Date=_workingRule.ExpirationDate
-                   Label="@AppLocalization[Lang.Expires]" />
+    @bind-Date=_workingRule.ExpirationDate
+    Label="@AppLocalization[Lang.Expires]" />
     <MudDivider Class="py-3" />
 
     @if (_workingRule.Trigger == NotificationType.Scheduled)
     {
         <MudText Typo="Typo.h6">@AppLocalization[Lang.Execution_Schedule]</MudText>
 
-        <MudSelectList T=ScheduleInterval? Values="_scheduleTypes" @bind-Value=Rule.ScheduleInterval/>
+        <AppTooltip Text="This feature is still under construction">
+            <MudSelectList T=ScheduleInterval?
+                           Values="_scheduleTypes"
+                           @bind-Value=Rule.ScheduleInterval
+                           Disabled="true" />
+        </AppTooltip>
 
-        <MudTimePicker Clearable="false"
-                       @bind-Time=_workingRule.ScheduledRunTime
-                       Label="@AppLocalization[Lang.Time]" />
+        <MudTimePicker Editable="true"  
+            MinuteSelectionStep="5"
+             ShowToolbar=true
+            Clearable="false"
+        @bind-Time=_workingRule.ScheduledRunTime
+        Label="@AppLocalization[Lang.Time]" />
         <MudDivider Class="py-3" />
 
     }
@@ -63,7 +71,7 @@
                     first = false;
                 }
                 <EditRuleOrFilter Filter="orFilter"
-                                  RemoveClicked="@(()=>{RemoveOrFilter(orFilter);})" />
+                RemoveClicked="@(()=>{RemoveOrFilter(orFilter);})" />
 
 
             }
@@ -76,8 +84,8 @@
 
         <MudSpacer />
         <MudButton OnClick="AddOrFilter"
-                   Color="Color.Success"
-                   StartIcon="@Icons.Material.Filled.Add">Add Or Filter</MudButton>
+        Color="Color.Success"
+        StartIcon="@Icons.Material.Filled.Add">Add Or Filter</MudButton>
         <MudSpacer />
 
     </MudStack>
@@ -98,20 +106,21 @@
 
         <MudSpacer />
         <MudButton OnClick="AddAction"
-                   Color="Color.Success"
-                   StartIcon="@Icons.Material.Filled.Add">Add Action</MudButton>
+        Color="Color.Success"
+        StartIcon="@Icons.Material.Filled.Add">Add Action</MudButton>
 
     </MudStack>
     <MudField Label="@AppLocalization[Lang.After_Executing]">
         <MudSwitch Color="Color.Error"
-                   UncheckedColor="Color.Success"
-                   @bind-Value=_workingRule.StopOnThisRule
-                   Label=@(AppHelpLocalization[_workingRule.StopOnThisRule?HelpLang.Stop_On_Rule:HelpLang.Continue_Processing_Rules]) />
+        UncheckedColor="Color.Success"
+        @bind-Value=_workingRule.StopOnThisRule
+        Label=@(AppHelpLocalization[_workingRule.StopOnThisRule?HelpLang.Stop_On_Rule:HelpLang.Continue_Processing_Rules]) />
     </MudField>
 </MudStack>
+
 @code {
     [Parameter]
-    public EventCallback RulesChanged { get; set; }
+    public EventCallback<AutomationRule> RuleChanged { get; set; }
 
     [Parameter]
     public RuleViewFilter ViewFilter { get; set; }
@@ -137,6 +146,7 @@
             Rule.Actions.Add(new() { ActionGuid = Guid.NewGuid() });
             Rule.Trigger = ViewFilter.Trigger;
             Rule.ActiveDirectoryObjectType = ViewFilter.ObjectType;
+            Rule.ScheduleInterval = ScheduleInterval.Daily;
             _workingRule = Rule;
 
         }
@@ -173,7 +183,7 @@
                 var result = await context.SaveChangesAsync();
                 if (result > 0)
                 {
-                    RulesChanged.InvokeAsync();
+                    RuleChanged.InvokeAsync(Rule);
 
                     SnackBarService.Success(Lang.Deleted);
                     return;
@@ -245,7 +255,7 @@
         {
 
             SnackBarService.Success(AppLocalization[newRule ? Lang.Created : Lang.Changed]);
-            RulesChanged.InvokeAsync();
+            RuleChanged.InvokeAsync(Rule);
             await Modal.CloseAsync();
 
         }

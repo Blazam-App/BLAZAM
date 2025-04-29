@@ -42,7 +42,7 @@ namespace BLAZAM.Database.Models
         /// <summary>
         /// The name of the reflection property in the IDirectoryEntryAdapter
         /// </summary>
-        public string? PropertyName { get; set; }
+        public string PropertyName { get; set; }
 
 
 
