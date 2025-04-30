@@ -33,7 +33,7 @@
     <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageReference Include="MudBlazor" Version="8.5.0" />
+    <PackageReference Include="MudBlazor" Version="8.6.0" />
     <PackageReference Include="Octokit" Version="14.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.3" />
