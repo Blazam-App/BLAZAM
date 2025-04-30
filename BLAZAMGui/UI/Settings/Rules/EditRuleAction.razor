@@ -51,8 +51,9 @@
         case AutomationRuleActionType.Lockout:
             break;
         case AutomationRuleActionType.SendEmail:
-            <MudTextField T="string" @bind-Value=Action.Data/>
-
+            <AppConstructionNotice/>
+            @* <MudTextField Disabled=true T="string" @bind-Value=Action.Data/>*@
+ 
             break;
         case AutomationRuleActionType.Move:
             <ADAutoComplete SelectedResultChanged="@((result)=>{
