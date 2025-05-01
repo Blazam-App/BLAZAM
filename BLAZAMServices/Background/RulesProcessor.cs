@@ -196,7 +196,7 @@ namespace BLAZAM.Services.Background
                 }
                 else if (andFilter.CurrentField is CustomActiveDirectoryField customField)
                 {
-                   search.FieldValues.Add(fieldValue);
+                    search.FieldValues.Add(fieldValue);
                 }
             }
             catch (Exception ex)
@@ -432,7 +432,7 @@ namespace BLAZAM.Services.Background
             var filterTrue = false;
             try
             {
-              if(andFilter.CurrentField is ActiveDirectoryField defaultField)
+                if (andFilter.CurrentField is ActiveDirectoryField defaultField)
                 {
                     switch (andFilter.Operator)
                     {
@@ -465,7 +465,7 @@ namespace BLAZAM.Services.Background
                             break;
 
                         case ActiveDirectoryFieldOperator.StartsWith:
-                            filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().StartsWith(andFilter.Value.ToString(),StringComparison.InvariantCultureIgnoreCase);
+                            filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().StartsWith(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase);
                             break;
 
                         case ActiveDirectoryFieldOperator.EndsWith:
@@ -521,7 +521,7 @@ namespace BLAZAM.Services.Background
                             break;
 
                         case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
-                        var raw = entry.GetCustomProperty<object>(customField.FieldName);
+                            var raw = entry.GetCustomProperty<object>(customField.FieldName);
                             var dateValue3 = raw.AdsValueToDateTime();
                             if (dateValue3 is DateTime dateTime3)
                             {
@@ -536,7 +536,7 @@ namespace BLAZAM.Services.Background
                             {
                                 filterTrue = dateTime4 > DateTime.Now - andFilter.TimeFrame;
                             }
-                            
+
                             break;
 
                         case ActiveDirectoryFieldOperator.StartsWith:
@@ -549,7 +549,7 @@ namespace BLAZAM.Services.Background
 
                         case ActiveDirectoryFieldOperator.AfterNow:
                             var raw3 = entry.GetCustomProperty<object>(customField.FieldName);
-                            var dateValue = raw3.AdsValueToDateTime();                             if (dateValue is DateTime dateTime)
+                            var dateValue = raw3.AdsValueToDateTime(); if (dateValue is DateTime dateTime)
                             {
                                 filterTrue = dateTime > DateTime.Now;
                             }
@@ -562,7 +562,7 @@ namespace BLAZAM.Services.Background
                             {
                                 filterTrue = dateTime2 < DateTime.Now;
                             }
-                           
+
                             break;
 
                         case ActiveDirectoryFieldOperator.Contains:
@@ -581,8 +581,8 @@ namespace BLAZAM.Services.Background
 
                     }
                 }
-                   
-               
+
+
             }
             catch (Exception ex)
             {
@@ -597,8 +597,20 @@ namespace BLAZAM.Services.Background
 
         private List<AutomationRule> GetRules()
         {
-            using var context = dbFactory.CreateDbContext();
-            return context.AutomationRules.Where(r => r.DeletedAt == null && r.Enabled == true && (r.ExpirationDate == null || r.ExpirationDate > DateTime.Now)).ToList();
+            try
+            {
+                using var context = dbFactory.CreateDbContext();
+                return context.AutomationRules.Where(
+                        r => r.DeletedAt == null
+                        && r.Enabled
+                        && (r.ExpirationDate == null || r.ExpirationDate > DateTime.Now)
+                    ).ToList();
+            }
+            catch (Exception ex)
+            {
+                Loggers.RulesLogger.Debug("Error loading rules {@Error}", ex);
+                return [];
+            }
         }
     }
 }

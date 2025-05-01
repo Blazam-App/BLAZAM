@@ -15,7 +15,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.13");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.15");
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
@@ -1576,6 +1576,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<int>("ActiveDirectoryObjectType")
                         .HasColumnType("INTEGER");
 
+                    b.Property<byte?>("DaysOfWeekToRun")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("TEXT");
 
@@ -1628,9 +1631,6 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ActionType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ActiveDirectoryObjectAction")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("AutomationRuleId")

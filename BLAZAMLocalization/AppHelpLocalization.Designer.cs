@@ -404,7 +404,7 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This rules will be fired each time a {0} is {1}.
+        ///   Looks up a localized string similar to This rule will be fired each time a {0} is {1}.
         /// </summary>
         public static string Rule_No_Filter_Warning {
             get {

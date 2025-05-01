@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Database.Migrations.MySql
 {
     [DbContext(typeof(MySqlDatabaseContext))]
-    [Migration("20250429213303_Add_Automation_Rules-MySql")]
+    [Migration("20250501222353_Add_Automation_Rules-MySql")]
     partial class Add_Automation_RulesMySql
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace BLAZAM.Database.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "8.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -1651,6 +1651,9 @@ namespace BLAZAM.Database.Migrations.MySql
                     b.Property<int>("ActiveDirectoryObjectType")
                         .HasColumnType("int");
 
+                    b.Property<byte?>("DaysOfWeekToRun")
+                        .HasColumnType("tinyint unsigned");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)");
 
@@ -1705,9 +1708,6 @@ namespace BLAZAM.Database.Migrations.MySql
                         .HasColumnType("char(36)");
 
                     b.Property<int>("ActionType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ActiveDirectoryObjectAction")
                         .HasColumnType("int");
 
                     b.Property<int?>("AutomationRuleId")

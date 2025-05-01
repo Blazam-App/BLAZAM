@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "8.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -1648,6 +1648,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int>("ActiveDirectoryObjectType")
                         .HasColumnType("int");
 
+                    b.Property<byte?>("DaysOfWeekToRun")
+                        .HasColumnType("tinyint unsigned");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)");
 
@@ -1702,9 +1705,6 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasColumnType("char(36)");
 
                     b.Property<int>("ActionType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ActiveDirectoryObjectAction")
                         .HasColumnType("int");
 
                     b.Property<int?>("AutomationRuleId")

@@ -78,6 +78,17 @@ namespace BLAZAM.Database.Models.Rules
         public int? IntervalCount { get; set; }
 
         /// <summary>
+        /// A single byte acting as a bit array of 7 bits for flagging Sun-Sat.
+        /// <para>
+        /// Only used if <see cref="ScheduleInterval"/> is weekly or weekly interval.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// The last bit is unused.
+        /// </remarks>
+        public byte? DaysOfWeekToRun { get; set; }
+
+        /// <summary>
         /// What <see cref="NotificationType"/>'s this rule will execute on
         /// </summary>
         public NotificationType Trigger { get; set; }

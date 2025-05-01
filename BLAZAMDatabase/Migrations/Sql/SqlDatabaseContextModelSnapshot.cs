@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.Sql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "8.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -1648,6 +1648,9 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<int>("ActiveDirectoryObjectType")
                         .HasColumnType("int");
 
+                    b.Property<byte?>("DaysOfWeekToRun")
+                        .HasColumnType("tinyint");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -1702,9 +1705,6 @@ namespace BLAZAM.Common.Migrations.Sql
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ActionType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ActiveDirectoryObjectAction")
                         .HasColumnType("int");
 
                     b.Property<int?>("AutomationRuleId")
