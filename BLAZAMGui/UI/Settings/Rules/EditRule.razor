@@ -186,6 +186,8 @@
                     RuleChanged.InvokeAsync(Rule);
 
                     SnackBarService.Success(Lang.Deleted);
+                    await Modal.CloseAsync();
+
                     return;
                 }
             }

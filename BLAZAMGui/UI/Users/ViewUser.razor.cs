@@ -3,14 +3,11 @@ using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
-using BLAZAM.Database.Models.Permissions;
+
 using BLAZAM.FileSystem;
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
-using BLAZAM.Localization;
 using BLAZAM.Services.Events;
-using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Users
@@ -48,14 +45,12 @@ namespace BLAZAM.Gui.UI.Users
         }
         [Parameter]
         public EventCallback<string> ConfirmPasswordChanged { get; set; }
-        AccessLevel? selfAccessLevel;
         bool homeDirectoryExists;
         bool showRemoveThumbnail = false;
         IGroupableDirectoryAdapter GroupableEntry => DirectoryEntry as IGroupableDirectoryAdapter;
         IAccountDirectoryAdapter Account => DirectoryEntry as IAccountDirectoryAdapter;
         IADUser User => DirectoryEntry as IADUser;
         IADContact Contact => DirectoryEntry as IADContact;
-        GlobalPermissionSettings? _globalPermissionSettings;
 
        
 
@@ -76,11 +71,7 @@ namespace BLAZAM.Gui.UI.Users
 
             await InvokeAsync(StateHasChanged);
 
-            if (Context != null)
-            {
-                _globalPermissionSettings = await Context.GlobalPermissionSettings.FirstOrDefaultAsync();
-                selfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
-            }
+          
 
 
             if (GroupableEntry is IADUser && User.HomeDirectory != null)

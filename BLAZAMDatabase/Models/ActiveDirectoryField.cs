@@ -105,7 +105,6 @@ namespace BLAZAM.Database.Models
                         case "physicalDeliveryOffice":
                         case "postalCode":
                         case "profilePath":
-                        //case "samaccountname":
                         case "scriptPath":
                         case "site":
                         case "sn":
@@ -115,7 +114,6 @@ namespace BLAZAM.Database.Models
                         case "telephoneNumber":
                         case "title":
                         case "thumbnail":
-                        //case "userPrincipalName":
                         case "userWorkstations":
 
                             return true;
@@ -158,7 +156,6 @@ namespace BLAZAM.Database.Models
                     {
                         case "memberOf":
                         case "operatingSystemVersion":
-                        //case "samaccountname":
                         case "site":
                             return true;
                     }
@@ -169,7 +166,6 @@ namespace BLAZAM.Database.Models
                     {
                         case "mail":
                         case "memberOf":
-                        //case "samaccountname":
                         case "site":
                         case "groupType":
                             return true;

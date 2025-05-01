@@ -3,41 +3,43 @@
 
 
 <MudDropContainer T="AutomationRule"
-                  @ref=dropContainer
-                  Items="rules"
-                  ItemDropped="ItemDropped"
-                  ItemsSelector="@((item,dropzone) => (item.DeletedAt == null))"
-                  DraggingClass="mud-alert-text-warning"
-                  ItemDraggingClass="mud-alert-text-warning"
-                  Class="d-flex flex-wrap flex-grow-1">
+@ref=dropContainer
+Items="rules"
+ItemDropped="ItemDropped"
+ItemsSelector="@((item,dropzone) => (item.DeletedAt == null))"
+DraggingClass="mud-alert-text-warning"
+ItemDraggingClass="mud-alert-text-warning"
+Class="d-flex flex-wrap flex-grow-1">
     <ChildContent>
         <MudDropZone T="AutomationRule"
-                     AllowReorder=true
-                     DraggingClass="mud-alert-text-warning"
-                     ItemDraggingClass="mud-alert-text-warning"
-                     Class="rounded mud-background-gray px-4 flex-grow-1"
-                     Identifier="rules">
+        AllowReorder=true
+        DraggingClass="mud-alert-text-warning"
+        ItemDraggingClass="mud-alert-text-warning"
+        Class="rounded mud-background-gray px-4 flex-grow-1"
+        Identifier="rules">
 
         </MudDropZone>
 
     </ChildContent>
     <ItemRenderer>
         <RulePreview CompactView="CompactView"
-                     Rule="context"
-                     EditClicked="@(()=>{ selectedRule = context;_=createRuleModal?.ShowAsync();   })" />
+        Rule="context"
+        EditClicked="@(()=>{ selectedRule = context;_=createRuleModal?.ShowAsync();   })" />
     </ItemRenderer>
 
 </MudDropContainer>
 
 <MudButton Color="Color.Primary"
-           OnClick="@CreateNewRule">@AppLocalization[Lang.Create_Rule]</MudButton>
+OnClick="@CreateNewRule">@AppLocalization[Lang.Create_Rule]</MudButton>
 
 
 
 <AppModal @ref=createRuleModal
-          Title="@AppLocalization[Lang.Create_Rule]"
-          Options="new(){ MaxWidth=MaxWidth.Large, FullWidth=true,CloseButton=true}">
-    <EditRule RuleChanged="@GetRulesAsync" Rule="selectedRule" ViewFilter="ViewFilter" />
+Title="@AppLocalization[Lang.Create_Rule]"
+Options="new(){ MaxWidth=MaxWidth.Large, FullWidth=true,CloseButton=true}">
+    <EditRule RuleChanged="@GetRulesAsync"
+        Rule="selectedRule"
+        ViewFilter="ViewFilter" />
 </AppModal>
 
 @code {
@@ -79,13 +81,21 @@
     {
         selectedRule = new();
         selectedRule.Order = rules.Count - 1;
-        _ = createRuleModal?.ShowAsync();
+        
+        _ = createRuleModal.ShowAsync();
+      
+        
     }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="rule">If null, will reload all rules</param>
+    /// <returns></returns>
     private async Task GetRulesAsync(AutomationRule? rule = null)
     {
         LoadingData = true;
         Context.ChangeTracker.Clear();
-        if (rule == null)
+        if (rule == null || !rules.Any(r => r.Id == rule.Id))
         {
             rules.Clear();
 
