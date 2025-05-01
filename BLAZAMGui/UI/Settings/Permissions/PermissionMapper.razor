@@ -56,8 +56,10 @@
 
     async Task MappingsChanged()
     {
-        await OUTree?.RefreshViewAcync();
-        await InvokeAsync(StateHasChanged);
+        if(OUTree !=null){
+            await OUTree.RefreshViewAcync();
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
 
