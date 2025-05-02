@@ -42,7 +42,7 @@ Options="new(){ MaxWidth=MaxWidth.Large, FullWidth=true,CloseButton=true}">
         ViewFilter="ViewFilter" />
 </AppModal>
 
-@code {
+    @code {
     EditRule? editRuleContent;
     MudDropContainer<AutomationRule>? dropContainer;
     [CascadingParameter]
@@ -81,10 +81,10 @@ Options="new(){ MaxWidth=MaxWidth.Large, FullWidth=true,CloseButton=true}">
     {
         selectedRule = new();
         selectedRule.Order = rules.Count - 1;
-        
+
         _ = createRuleModal.ShowAsync();
-      
-        
+
+
     }
     /// <summary>
     /// 
@@ -98,7 +98,7 @@ Options="new(){ MaxWidth=MaxWidth.Large, FullWidth=true,CloseButton=true}">
         if (rule == null || !rules.Any(r => r.Id == rule.Id))
         {
             rules.Clear();
-
+            var allrule = await Context.AutomationRules.ToListAsync();
             rules = await Context.AutomationRules.Where(r => r.Trigger == ViewFilter.Trigger && r.ActiveDirectoryObjectType == ViewFilter.ObjectType).OrderBy(r => r.Order).ToListAsync();
         }else{
             rules[rules.FindIndex(r => r.Id == rule.Id)] = await Context.AutomationRules.Where(r => r.Id==rule.Id).FirstAsync();
@@ -106,7 +106,7 @@ Options="new(){ MaxWidth=MaxWidth.Large, FullWidth=true,CloseButton=true}">
         }
         if (dropContainer != null)
         {
-            //dropContainer.Items = rules;
+            dropContainer.Items = rules;
         }
 
         dropContainer?.Refresh();
