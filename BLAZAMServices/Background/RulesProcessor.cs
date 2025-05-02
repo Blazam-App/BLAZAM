@@ -167,7 +167,10 @@ namespace BLAZAM.Services.Background
                 {
                     foreach (var andFilter in andFilters)
                     {
-                        PrepareADSearch(search, andFilter);
+                        if (andFilter.Field?.Equals(ActiveDirectoryFields.Enabled) == false)
+                        {
+                            PrepareADSearch(search, andFilter);
+                        }
 
                     }
                 }
