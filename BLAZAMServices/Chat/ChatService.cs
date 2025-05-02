@@ -13,9 +13,9 @@ namespace BLAZAM.Services.Chat
     {
 
         public IQueryable<ChatRoom> ChatRooms => Context.ChatRooms.AsQueryable();
-        public AppEvent<ChatMessage> OnMessagePosted { get; set; }
-        public AppEvent<AppUser> OnMessageRead { get; set; }
-        public AppEvent<ChatRoom> OnChatRoomCreated { get; set; }
+        public AppDelegate<ChatMessage> OnMessagePosted { get; set; }
+        public AppDelegate<AppUser> OnMessageRead { get; set; }
+        public AppDelegate<ChatRoom> OnChatRoomCreated { get; set; }
 
         public async Task<IQueryable<ChatRoom>> GetChatRoomsAsync()
         {

@@ -34,7 +34,7 @@ namespace BLAZAM.Session
         /// <summary>
         /// Called when a new UserState is added to the cache.
         /// </summary>
-        public AppEvent<IApplicationUserState> UserStateAdded { get; set; }
+        public AppDelegate<IApplicationUserState> UserStateAdded { get; set; }
 
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace BLAZAM.Session
         /// <remarks>
         /// This can happen on timeout or user intitiated logout.
         /// </remarks>
-        public AppEvent<IApplicationUserState> OnUserStateRemoved { get; set; }
+        public AppDelegate<IApplicationUserState> OnUserStateRemoved { get; set; }
 
 
         /// <summary>
@@ -75,7 +75,6 @@ namespace BLAZAM.Session
                 Timeout = context.AuthenticationSettings.FirstOrDefault()?.SessionTimeout;
 
             });
-            ApplicationEvents.PermissionsChanged += (() => { ReloadAllPermissions(); });
         }
 
         private void ReloadAllPermissions()

@@ -30,7 +30,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Called when this computers <see cref="IsOnline"/> status changes
         /// </summary>
-        AppEvent<bool> OnOnlineChanged { get; set; }
+        AppDelegate<bool> OnOnlineChanged { get; set; }
         /// <summary>
         /// The realtime CPU usage percentage
         /// </summary>

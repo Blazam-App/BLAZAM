@@ -28,8 +28,14 @@
 
             _computer = (IADComputer?)(await BitLocker.GetParentAsync());
 
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                {
+                    EventType = ApplicationEventType.Search,
+                    Entry = BitLocker,
+                    Actor = CurrentUser.State
 
-            await AuditLogger.Searched(BitLocker);
+                });
+
         }
         LoadingData = false;
 

@@ -141,11 +141,14 @@
   <data name="Confirm_Save_Changes" xml:space="preserve">
     <value>Are you sure you want to save the changes?</value>
   </data>
+  <data name="Continue_Processing_Rules" xml:space="preserve">
+    <value>Continue processing other rules</value>
+  </data>
   <data name="Created" xml:space="preserve">
     <value>{0} has been created</value>
   </data>
   <data name="Delegate_Definition" xml:space="preserve">
-    <value>Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) will be allowed to log in to the application.</value>
+    <value>Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) with permissions mapped or self-edit enabled.</value>
   </data>
   <data name="Delegate_Function" xml:space="preserve">
     <value>The access allowed to each delegate is controlled by the mapped access level.</value>
@@ -223,8 +226,17 @@ efforts on what our users think matters most.</value>
   <data name="Rearrange_Dashboard_Help" xml:space="preserve">
     <value>Rearrange dashboard widgets by dragging items to a new position</value>
   </data>
+  <data name="Rename_Reboot_Message" xml:space="preserve">
+    <value>An administrator has renamed this workstation. It will reboot in {0} seconds.</value>
+  </data>
   <data name="Request_To" xml:space="preserve">
     <value>Request to {0}</value>
+  </data>
+  <data name="Rule_No_Filter_Warning" xml:space="preserve">
+    <value>This rule will be fired each time a {0} is {1}</value>
+  </data>
+  <data name="Stop_On_Rule" xml:space="preserve">
+    <value>Do not process any more rules</value>
   </data>
   <data name="Super_User_Definition" xml:space="preserve">
     <value>Will have complete and total acceess to the application if enabled</value>

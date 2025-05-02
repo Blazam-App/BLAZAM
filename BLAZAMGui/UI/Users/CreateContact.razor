@@ -1,0 +1,431 @@
+﻿
+@using BLAZAM.Gui.Helpers
+@using BLAZAM.Gui.UI.Groups
+@using BLAZAM.Gui.UI.Users
+
+@inherits TemplateComponent
+@attribute [Authorize(Roles = UserRoles.CreateContacts)]
+
+@if (newContact != null && !_userCreated)
+{
+    <AppNavLock />
+}
+<AppPageTitle>@AppLocalization[Lang.Create_User]</AppPageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudTabs PanelClass="mx-auto w-100"
+             @ref=Tabs
+             Elevation="0"
+             Outlined="true"
+             @bind-ActivePanelIndex="SelectedStep"
+             Centered=true>
+
+        <MudTabPanel>
+            <TabContent>
+                @AppLocalization[Lang.Template]
+            </TabContent>
+            <ChildContent>
+
+           @*      @if (TemplateCategories != null && Templates != null && Templates.Count(t => t.DeletedAt == null && t.Visible) > 0)
+                {
+
+                    <MudCarousel Style="height:50vh"
+                                 ShowArrows=false
+                                 ShowBullets=false
+                                 EnableSwipeGesture=false
+                                 AutoCycle=false
+                                 @bind-SelectedIndex=_templateCarouselIndex
+                                 TData="object">
+                        <MudCarouselItem Class="pa-5">
+                            <FlexContainer>
+
+                                @foreach (var category in TemplateCategoriesUserCanUse)
+                                {
+                                    <MudButton StartIcon="@Icons.Material.Filled.Folder"
+                                               OnClick=@(()=>{SelectedCategory=category; _templateCarouselIndex=1;})
+                                               Variant="Variant.Filled"
+                                               Color="Color.Secondary"
+                                               Size="Size.Large">@category</MudButton>
+                                }
+                                @foreach (var uncategorizedTemplate in TemplatesUserCanUse.Where(t => t.Category.IsNullOrEmpty() && t.DeletedAt == null && t.Visible))
+                                {
+                                    <MudButton StartIcon="@Icons.Material.Filled.DynamicForm"
+                                               OnClick=@(async()=>{await SetTemplate(uncategorizedTemplate);})
+                                               Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               Size="Size.Large">@uncategorizedTemplate.Name</MudButton>
+                                } 
+                            </FlexContainer>
+                        </MudCarouselItem>
+
+                        <MudCarouselItem Class="pa-5">
+
+                            <FlexContainer>
+                                <MudFab StartIcon="@Icons.Material.Filled.ArrowBack"
+                                        Size="Size.Small"
+                                        OnClick="@(()=>{_templateCarouselIndex=0; SelectedCategory=null;})"
+                                        Color="Color.Primary" />
+                                 @foreach (var template in TemplatesUserCanUse.Where(t => t.DeletedAt == null && t.Visible))
+                                {
+                                    <MudButton StartIcon="@Icons.Material.Filled.DynamicForm"
+                                               OnClick=@(async()=>{await SetTemplate(template);})
+                                               Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               Size="Size.Large">@template.Name</MudButton>
+
+                                } 
+                            </FlexContainer>
+
+                        </MudCarouselItem>
+                    </MudCarousel>
+
+                }
+                else
+                {
+                    <MudPaper Width="300px">
+                        <MudText>@AppLocalization["There are no templates available"]</MudText>
+                        <AuthorizeView Roles="@UserRoles.SuperAdmin">
+                            <MudLink Href="/templates">@AppLocalization[Lang.Create_One]</MudLink>
+
+                        </AuthorizeView>
+                    </MudPaper>
+                } *@
+                <MudAlert Severity="Severity.Info">Contact Templates coming in a future update...</MudAlert>
+                <MudButton Color=Color.Secondary
+                           OnClick="@(()=>{custom=true; newContact=null; SelectedTemplate=null; SelectedStep=5;})">
+                    @AppLocalization[Lang.Custom]
+                </MudButton>
+
+            </ChildContent>
+
+        </MudTabPanel>
+
+        <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
+                     Disabled=@( SelectedTemplate==null)>
+            <TabContent>
+                @AppLocalization[Lang.Name]
+            </TabContent>
+            <ChildContent>
+
+
+@*                 <NewUserNameEntry @bind-NewUserName=@newUserName
+                                  OnNext="CreateTemplateUser"
+                                  OnBack="@(()=>{SelectedStep=0;})" /> *@
+
+
+
+            </ChildContent>
+
+        </MudTabPanel>
+        <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
+                     Disabled="@(newContact==null || _userCreated)">
+            <TabContent>
+                @AppLocalization[Lang.Username]
+            </TabContent>
+            <ChildContent>
+                @{
+
+                    var conflictingEntry = Directory.Contacts.FindContactsByString(newContact?.CanonicalName,true);
+                    bool conflictWarning = false;
+                    if (conflictingEntry != null && conflictingEntry.Any(e=>e.CanonicalName?.Equals(newContact?.CanonicalName, StringComparison.InvariantCultureIgnoreCase) == true))
+                    {
+                       _usernameStepValid = false;
+                        conflictWarning = true;
+                    }
+                    else
+                    {
+                        if (newContact?.CanonicalName.IsNullOrEmpty() == false)
+                        {
+                            _usernameStepValid = true;
+                        }
+
+                    }
+
+                }
+              
+                @if (conflictWarning)
+                {
+                    <MudAlert Severity="Severity.Error">
+                        @AppLocalization["An account with that name already exists!"]
+                        </MudAlert>
+                }
+                <MudButton Disabled=LoadingData
+                           Color=Color.Primary
+                           OnClick="@(()=>{SelectedStep=1;})">
+                    @AppLocalization[Lang.Back]
+                </MudButton>
+                <MudButton Color=Color.Success
+                           Disabled="@(conflictWarning)"
+                           OnClick="@(()=>{SelectedStep=3;})">
+                    @AppLocalization[Lang.Next]
+                </MudButton>
+
+            </ChildContent>
+
+        </MudTabPanel>
+        <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
+                     Disabled="@(newContact==null || !_usernameStepValid || _userCreated)">
+            <TabContent>
+                @AppLocalization[Lang.Fields]
+            </TabContent>
+            <ChildContent>
+                <NewTemplateUser NewUserName="newUserName"
+                                 OnValidSubmit=@(()=>{SelectedStep=4;})
+                                 Contact="@newContact"
+                                  DirectoryTemplate="SelectedTemplate" />
+                <MudButton Disabled=LoadingData
+                           Color=Color.Primary
+                           OnClick="@(()=>{SelectedStep=2;})">
+                    @AppLocalization[Lang.Back]
+                </MudButton>
+
+            </ChildContent>
+
+        </MudTabPanel>
+
+        <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
+                     Disabled="@(newContact==null || !_usernameStepValid || _userCreated)">
+            <TabContent>
+                @AppLocalization[Lang.Groups]
+            </TabContent>
+            <ChildContent>
+                <MemberOfList Target="_blank"
+                              AssignToClicked="@(async()=>{await _assignToModal!.ShowAsync();})"
+                              Disabled="@(SelectedTemplate?.EffectiveAllowCustomGroups!=true  && !CurrentUser.State.IsSuperAdmin)"
+                              Model="@newContact" />
+                <AppModal @ref=_assignToModal>
+                    <AssignToModalContent ModelChanged=@(async()=>{
+                                          await InvokeAsync(StateHasChanged);
+                                          }) DirectoryModel="newContact" />
+                </AppModal>
+                <MudButton Disabled=LoadingData
+                           Color=Color.Primary
+                           OnClick="@(()=>{SelectedStep=3;})">
+                    @AppLocalization[Lang.Back]
+                </MudButton>
+                <MudButton Color=Color.Success
+                           OnClick="@(()=>{SelectedStep=7;})">
+                    @AppLocalization[Lang.Next]
+                </MudButton>
+
+            </ChildContent>
+
+        </MudTabPanel>
+
+
+        <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(custom==false || _userCreated)">
+            <TabContent>
+                @AppLocalization[Lang.OU]
+            </TabContent>
+            <ChildContent>
+                <OUTreeView AdditionalVisibilityFilters=@(AdditionalShow)
+                            StartRootExpanded=true
+                            SelectedEntryChanged="OUSelected" />
+
+                <MudTextField Label="@AppLocalization[Lang.Display_Name]"
+                              @bind-Value="@customUserDisplayName" />
+
+
+
+                <MudButton Color=Color.Primary
+                           OnClick="@(()=>{SelectedStep=0;})">
+                    @AppLocalization[Lang.Back]
+                </MudButton>
+                <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()|| selectedOU==null)
+                           Color=Color.Success
+                           OnClick="@(async()=>{
+                                                await CreateCustomUser();
+                                                selectedStep=6;
+                                                })">
+                    @AppLocalization[Lang.Next]
+                </MudButton>
+
+
+            </ChildContent>
+
+        </MudTabPanel>
+        <MudTabPanel Class=@(custom==true?"":"d-none")
+                     Disabled="@(newContact==null || !_usernameStepValid || _userCreated)">
+            <TabContent>
+                @AppLocalization[Lang.Details]
+            </TabContent>
+            <ChildContent>
+                @*TODO: The following binding cause the next button to not update when validation is reached, updates are controlled from
+                this element
+                *@
+                <ViewUser DirectoryEntry="@newContact"
+                          @bind-ConfirmPassword=@customConfirmPassword
+                          @bind-Password=customPassword />
+                <MudButton Color=Color.Primary
+                           OnClick="@(()=>{SelectedStep=4;})">
+                    @AppLocalization[Lang.Back]
+                </MudButton>
+                <MudButton Color=Color.Success
+                           OnClick="@(()=>{
+                                            SelectedStep=7;
+                                            if(newUser!=null && newUser?.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
+                                                newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
+                                            })"
+                           Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
+                    @AppLocalization[Lang.Next]
+                </MudButton>
+            </ChildContent>
+
+        </MudTabPanel>
+
+
+        <MudTabPanel Disabled=@(newContact==null || !_usernameStepValid)>
+            <TabContent>
+
+                @AppLocalization[Lang.Confirm]
+            </TabContent>
+            <ChildContent>
+                <ConfirmNewUser @bind-Contact="@newContact"
+                                Confirmed="_userCreated"
+                                DirectoryTemplate="SelectedTemplate"
+                                OnConfirmed="UserConfirmed" />
+
+            </ChildContent>
+
+        </MudTabPanel>
+    </MudTabs>
+
+</MudContainer>
+
+
+@code {
+    bool _userCreated = false;
+    string customConfirmPassword;
+    string customPassword;
+    bool _usernameStepValid = false;
+    int _templateCarouselIndex = 0;
+    int selectedStep;
+    int SelectedStep
+    {
+        get => selectedStep; set
+
+        {
+            if (selectedStep == value) return;
+            selectedStep = value;
+            InvokeAsync(StateHasChanged);
+
+        }
+    }
+    AppModal? _assignToModal;
+
+    private Task OnSelectedStepChanged(int name)
+    {
+        SelectedStep = name;
+
+        return Task.CompletedTask;
+    }
+
+
+    string? customUserDisplayName;
+    bool? custom = false;
+
+    NewUserName newUserName = new NewUserName();
+    IADOrganizationalUnit? selectedOU;
+    IADContact? newContact;
+    IADUser? newUser =>newContact as IADUser;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    async void OUSelected(IDirectoryEntryAdapter entry)
+    {
+        if (entry is IADOrganizationalUnit ou)
+        {
+            if (ou.CanCreateUser)
+                selectedOU = ou;
+            else
+            {
+                SnackBarService.Warning(AppLocalization["You do not have permission to create users in that location"]);
+            }
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+    async Task CreateCustomUser()
+    {
+        await Task.Run(() =>
+        {
+            if (selectedOU != null)
+            {
+                if (newContact == null)
+                {
+                    if (customUserDisplayName == null) SnackBarService.Error(AppLocalization["No display name was set"]);
+                    else
+                    {
+                        newContact = selectedOU.CreateContact(customUserDisplayName.Trim());
+                        newContact.DisplayName = customUserDisplayName;
+                    }
+                }
+                else
+                {
+                    newContact.MoveTo(selectedOU);
+                }
+                _userCreated = false;
+            }
+        });
+
+    }
+    // async void CreateTemplateUser()
+    // {
+    //     if (SelectedTemplate?.ParentOU == null) throw new AppException("Parent OU for template user was not set on creation!");
+    //     try
+    //     {
+    //         LoadingData = true;
+    //         await InvokeAsync(StateHasChanged);
+    //         newUser = SelectedTemplate.GenerateTemplateUser(newUserName, Directory);
+    //         _userCreated = false;
+
+    //         if (IsAdmin || SelectedTemplate.HasEditableFields())
+    //         {
+    //             SelectedStep = 2;
+    //         }
+    //         else
+    //         {
+    //             //Go to confirm step
+    //             SelectedStep = 7;
+
+    //         }
+
+    //     }
+    //     catch (Exception ex)
+    //     {
+
+    //         Loggers.ActiveDirectoryLogger.Error("Error while creating template user {@Error}", ex);
+
+    //         SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user: "] + ex.Message);
+    //     }
+    //     LoadingData = false;
+
+    //     await InvokeAsync(StateHasChanged);
+    // }
+
+    // async Task SetTemplate(DirectoryTemplate selectedTemplate)
+    // {
+    //     SelectedTemplate = selectedTemplate;
+    //     custom = false;
+    //     SelectedStep = 1;
+    //     await InvokeAsync(StateHasChanged);
+    // }
+    bool AdditionalShow(IDirectoryEntryAdapter entry)
+    {
+        if (entry is IADOrganizationalUnit ou)
+        {
+            if (ou.CanCreateUser) return true;
+            if (ou.CanCreateUserInSubOUs) return true;
+        }
+        return false;
+    }
+    async Task UserConfirmed()
+    {
+        newUserName = new();
+        _userCreated = true;
+        await InvokeAsync(StateHasChanged);
+    }
+}

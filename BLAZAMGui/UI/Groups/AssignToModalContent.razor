@@ -69,6 +69,7 @@
                             Label=@AppLocalization[Lang.Copy_Memberships_From]
                             SearchObjectType="ActiveDirectoryObjectType.All"
                             @bind-SelectedResult=@CopyFrom
+                            SearchDisabled=_searchDisabled
                             CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
 
 
@@ -144,7 +145,7 @@
 
 @code {
 
-#nullable disable warnings
+    #nullable disable warnings
     private HashSet<IADGroup>? _selectedGroups;
 
     /// <summary>
@@ -152,14 +153,15 @@
     /// </summary>
     [Parameter]
     public IGroupableDirectoryAdapter DirectoryModel { get; set; }
-
+    bool _searchDisabled;
     private Dictionary<int, IDirectoryEntryAdapter?> additionalGroups = new Dictionary<int, IDirectoryEntryAdapter?>();
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Modal.OnYes = AssignToGroup;
-        Modal.YesText = AppLocalization[Lang.Assign];
+        Modal.SetOnYes(AssignToGroup);
+        Modal.SetYesText(AppLocalization[Lang.Assign]);
         Modal.Title = AppLocalization[Lang.Assign_To];
+        _searchDisabled = CurrentUser.State.CanSearchDisabled(ActiveDirectoryObjectType.User);
     }
 
 

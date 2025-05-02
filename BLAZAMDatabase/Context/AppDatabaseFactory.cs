@@ -17,8 +17,8 @@ namespace BLAZAM.Database.Context
         private IConfiguration _configuration;
 
         public static DatabaseException DatabaseCreationFailureReason { get; set; }
-        public static AppEvent? OnMigrationApplied { get; set; }
-        public static AppEvent<Exception>? OnFatalError { get; set; }
+        public static AppDelegate? OnMigrationApplied { get; set; }
+        public static AppDelegate<Exception>? OnFatalError { get; set; }
         public static Exception? FatalError { get; private set; }
 
         /// <summary>

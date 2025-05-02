@@ -89,7 +89,7 @@
     {
         base.OnInitialized();
         Modal.SetYesText(AppLocalization[Lang.Add]);
-        Modal.OnYes += SaveSettings;
+        Modal.SetOnYes(SaveSettings);
 
 
     }

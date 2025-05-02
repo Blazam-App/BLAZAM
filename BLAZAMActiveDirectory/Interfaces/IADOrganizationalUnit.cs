@@ -11,7 +11,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
         IEnumerable<IDirectoryEntryAdapter> SubOUs { get; }
 
-        HashSet<IDirectoryEntryAdapter> CachedTreeViewSubOUs { get; }
         HashSet<IDirectoryEntryAdapter> TreeViewSubOUs { get; }
         bool CanReadUsersInSubOus { get; }
         bool CanCreateUser { get; }
@@ -24,6 +23,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
         IADGroup CreateGroup(string containerName);
         IADUser CreateUser(string containerName);
+        IADContact CreateContact(string containerName);
         IADOrganizationalUnit CreateOU(string containerName);
         Task<IEnumerable<IDirectoryEntryAdapter>> GetChildrenAsync();
         Task<bool> HasChildrenAsync();

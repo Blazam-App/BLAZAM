@@ -9,11 +9,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("driverName");
+                return GetStringAttribute("driverName");
             }
             set
             {
-                SetProperty("driverName", value);
+                SetAttribute("driverName", value);
             }
         }
         public string DriverVersion
@@ -21,11 +21,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("driverVersion");
+                return GetStringAttribute("driverVersion");
             }
             set
             {
-                SetProperty("driverVersion", value);
+                SetAttribute("driverVersion", value);
             }
         }
         public string Location
@@ -33,11 +33,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("location");
+                return GetStringAttribute("location");
             }
             set
             {
-                SetProperty("location", value);
+                SetAttribute("location", value);
             }
         }
         public string PortName
@@ -45,11 +45,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("portName");
+                return GetStringAttribute("portName");
             }
             set
             {
-                SetProperty("portName", value);
+                SetAttribute("portName", value);
             }
         }
         public string PrinterName
@@ -57,11 +57,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("printerName");
+                return GetStringAttribute("printerName");
             }
             set
             {
-                SetProperty("printerName", value);
+                SetAttribute("printerName", value);
             }
         }
 
@@ -70,11 +70,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("shortServerName");
+                return GetStringAttribute("shortServerName");
             }
             set
             {
-                SetProperty("shortServerName", value);
+                SetAttribute("shortServerName", value);
             }
         }
         public string ServerName
@@ -82,11 +82,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("serverName");
+                return GetStringAttribute("serverName");
             }
             set
             {
-                SetProperty("serverName", value);
+                SetAttribute("serverName", value);
             }
         }
 
@@ -95,11 +95,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("printLanguage");
+                return GetStringAttribute("printLanguage");
             }
             set
             {
-                SetProperty("printLanguage", value);
+                SetAttribute("printLanguage", value);
             }
         }
 
@@ -108,11 +108,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("printRateUnit");
+                return GetStringAttribute("printRateUnit");
             }
             set
             {
-                SetProperty("printRateUnit", value);
+                SetAttribute("printRateUnit", value);
             }
         }
 
@@ -121,11 +121,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("printShareName");
+                return GetStringAttribute("printShareName");
             }
             set
             {
-                SetProperty("printShareName", value);
+                SetAttribute("printShareName", value);
             }
         }
 
@@ -134,11 +134,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("uNCName");
+                return GetStringAttribute("uNCName");
             }
             set
             {
-                SetProperty("uNCName", value);
+                SetAttribute("uNCName", value);
             }
         }
 
@@ -146,11 +146,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringListProperty("printBinNames");
+                return GetStringListAttribute("printBinNames");
             }
             set
             {
-                SetProperty("printBinNames", value);
+                SetAttribute("printBinNames", value);
             }
         }
 
@@ -158,11 +158,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<bool>("printCollate");
+                return GetAttribute<bool>("printCollate");
             }
             set
             {
-                SetProperty("printCollate", value);
+                SetAttribute("printCollate", value);
             }
         }
 
@@ -170,11 +170,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<bool>("printColor");
+                return GetAttribute<bool>("printColor");
             }
             set
             {
-                SetProperty("printColor", value);
+                SetAttribute("printColor", value);
             }
         }
 
@@ -182,11 +182,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<bool>("printDuplexSupported");
+                return GetAttribute<bool>("printDuplexSupported");
             }
             set
             {
-                SetProperty("printDuplexSupported", value);
+                SetAttribute("printDuplexSupported", value);
             }
         }
 
@@ -194,11 +194,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty("printOrientationsSupported");
+                return GetStringAttribute("printOrientationsSupported");
             }
             set
             {
-                SetProperty("printOrientationsSupported", value);
+                SetAttribute("printOrientationsSupported", value);
             }
         }
 
@@ -206,11 +206,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<bool>("printKeepPrintedJobs");
+                return GetAttribute<bool>("printKeepPrintedJobs");
             }
             set
             {
-                SetProperty("printKeepPrintedJobs", value);
+                SetAttribute("printKeepPrintedJobs", value);
             }
         }
 
@@ -218,11 +218,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringListProperty("printMediaReady");
+                return GetStringListAttribute("printMediaReady");
             }
             set
             {
-                SetProperty("printMediaReady", value);
+                SetAttribute("printMediaReady", value);
             }
         }
 
@@ -230,11 +230,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringListProperty("printMediaSupported");
+                return GetStringListAttribute("printMediaSupported");
             }
             set
             {
-                SetProperty("printMediaSupported", value);
+                SetAttribute("printMediaSupported", value);
             }
         }
 
@@ -242,11 +242,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<int>("printMaxResolutionSupported");
+                return GetAttribute<int>("printMaxResolutionSupported");
             }
             set
             {
-                SetProperty("printMaxResolutionSupported", value);
+                SetAttribute("printMaxResolutionSupported", value);
             }
         }
 
@@ -254,11 +254,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<int>("printMaxXExtent");
+                return GetAttribute<int>("printMaxXExtent");
             }
             set
             {
-                SetProperty("printMaxXExtent", value);
+                SetAttribute("printMaxXExtent", value);
             }
         }
 
@@ -266,11 +266,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<int>("printMinXExtent");
+                return GetAttribute<int>("printMinXExtent");
             }
             set
             {
-                SetProperty("printMinXExtent", value);
+                SetAttribute("printMinXExtent", value);
             }
         }
 
@@ -278,11 +278,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<int>("printMinYExtent");
+                return GetAttribute<int>("printMinYExtent");
             }
             set
             {
-                SetProperty("printMinYExtent", value);
+                SetAttribute("printMinYExtent", value);
             }
         }
 
@@ -290,11 +290,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<int>("printMaxYExtent");
+                return GetAttribute<int>("printMaxYExtent");
             }
             set
             {
-                SetProperty("printMaxYExtent", value);
+                SetAttribute("printMaxYExtent", value);
             }
         }
 
@@ -302,11 +302,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<int>("printPagesPerMinute");
+                return GetAttribute<int>("printPagesPerMinute");
             }
             set
             {
-                SetProperty("printPagesPerMinute", value);
+                SetAttribute("printPagesPerMinute", value);
             }
         }
 
@@ -314,11 +314,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<int>("printRate");
+                return GetAttribute<int>("printRate");
             }
             set
             {
-                SetProperty("printRate", value);
+                SetAttribute("printRate", value);
             }
         }
 
@@ -326,11 +326,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty("printSpooling");
+                return GetStringAttribute("printSpooling");
             }
             set
             {
-                SetProperty("printSpooling", value);
+                SetAttribute("printSpooling", value);
             }
         }
 
@@ -338,11 +338,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<bool>("printStaplingSupported");
+                return GetAttribute<bool>("printStaplingSupported");
             }
             set
             {
-                SetProperty("printStaplingSupported", value);
+                SetAttribute("printStaplingSupported", value);
             }
         }
 
@@ -350,22 +350,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<int>("priority");
+                return GetAttribute<int>("priority");
             }
             set
             {
-                SetProperty("priority", value);
+                SetAttribute("priority", value);
             }
         }
         public int VersionNumber
         {
             get
             {
-                return GetProperty<int>("versionNumber");
+                return GetAttribute<int>("versionNumber");
             }
             set
             {
-                SetProperty("versionNumber", value);
+                SetAttribute("versionNumber", value);
             }
         }
 

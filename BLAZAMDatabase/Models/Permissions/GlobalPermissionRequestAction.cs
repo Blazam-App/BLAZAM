@@ -1,6 +1,6 @@
 ﻿namespace BLAZAM.Database.Models.Permissions
 {
-    public class GlobalPermissionRequestActions : AppDbSetBase
+    public class GlobalPermissionRequestAction : AppDbSetBase
     {
         public ActiveDirectoryObjectAction ObjectAction { get; set; }
 

@@ -50,7 +50,7 @@
 
     List<ActiveDirectoryObjectAction> _objectActions;
     List<ActiveDirectoryObjectAction> _dbAllowedActions;
-    List<GlobalPermissionRequestActions> globalPermissionRequestActions = new();
+    List<GlobalPermissionRequestAction> globalPermissionRequestActions = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,7 +58,7 @@
         _objectActions = ActiveDirectoryObjectAction.Assign.ToList();
         _dbAllowedActions = await Context.GlobalPermissionRequestActions.Select(x => x.ObjectAction).ToListAsync();
         globalPermissionRequestActions = await Context.GlobalPermissionRequestActions.ToListAsync();
-        Modal.OnYes += Submit;
+        Modal.SetOnYes(Submit);
     }
     public async Task Submit()
     {

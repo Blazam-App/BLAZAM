@@ -62,7 +62,7 @@
                     </MudCard>
                     <MudTextField Label="@AppLocalization[Lang.Group_Name]" @bind-Value="@Group.CanonicalName" Disabled />
 
-                    <MudTextField Label="@AppLocalization[Lang.Account_Name]" @bind-Value="@Group.SamAccountName" Disabled />
+                    <MudTextField Label="@AppLocalization[Lang.Account_Name]" @bind-Value="@Group.SAMAccountName" Disabled />
 
                     <MudTextField Label="@AppLocalization[Lang.Description]" @bind-Value="@Group.Description" Disabled=@(!EditMode || !Group.CanEdit) />
 
@@ -100,12 +100,12 @@
                             <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Group_Type]:</MudText>
                             <MudSpacer />
                             <MudRadioGroup Disabled="@(Group.NewEntryProperties.ContainsKey("groupType") || !Group.CanEditField(ActiveDirectoryFields.GroupType))"
-                                           @bind-Value="Group.Scope">
+                                           @bind-Value="Group.GroupScope">
                                 <MudRadio Value="GroupScope.Universal">@AppLocalization[Lang.Universal]</MudRadio>
                                 <MudRadio Value="GroupScope.Global"
-                                Disabled="@(Group.Scope==GroupScope.DomainLocal)">@AppLocalization[Lang.Global]</MudRadio>
+                                Disabled="@(Group.GroupScope==GroupScope.DomainLocal)">@AppLocalization[Lang.Global]</MudRadio>
                                 <MudRadio Value="GroupScope.DomainLocal" 
-                                Disabled="@(Group.Scope==GroupScope.Global)">@AppLocalization[Lang.Domain_Local]</MudRadio>
+                                Disabled="@(Group.GroupScope==GroupScope.Global)">@AppLocalization[Lang.Domain_Local]</MudRadio>
                             </MudRadioGroup>
                         </MudStack>
                         <MudStack Row=true>
@@ -172,7 +172,13 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        await AuditLogger.Searched(Group);
+        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            {
+                EventType = ApplicationEventType.Search,
+                Entry = Group,
+                Actor = CurrentUser.State
+
+            });
 
         LoadingData = false;
         await RefreshEntryComponents();
@@ -192,49 +198,41 @@
             {
                 foreach (var assignment in assignTo)
                 {
-                    await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
-                    await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
-                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                    {
-                        await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
+                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.Assign,
+                            Entry = assignment.Member,
+                            Target = assignment.Group,
+                            Actor = CurrentUser.State
 
-                    }
-                    else
-                    {
-                        _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
-
-                    }
+                        });
+                  
                 }
 
                 foreach (var assignment in unassignFrom)
                 {
-                    await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
-                    await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
-                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                    {
-                        await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Unassign, CurrentUser.State, Group);
+                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.Unassign,
+                            Entry = assignment.Member,
+                            Target = assignment.Group,
+                            Actor = CurrentUser.State
 
-                    }
-                    else
-                    {
-                        _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Unassign, CurrentUser.State, Group);
-
-                    }
+                        });
+                   
                 }
                 if (changes.Any(c => c.Field != "member"))
                 {
-                    await AuditLogger.Group.Changed(Group, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
+                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.Modify,
+                            Entry = Group,
+                            Changes = changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList(),
+                            Actor = CurrentUser.State
 
-                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                    {
-                        await NotificationGenerationService.PostAsync(Group, NotificationType.Modify, CurrentUser.State);
-
-                    }
-                    else
-                    {
-                        _ = NotificationGenerationService.PostAsync(Group, NotificationType.Modify, CurrentUser.State);
-
-                    }
+                        });
+                    
+                   
                 }
                 EditMode = false;
                 SnackBarService.Success("The changes made to this group have been saved.");
@@ -262,9 +260,14 @@
             {
                 Group.Delete();
                 SnackBarService.Success(Group.CanonicalName + " has been deleted.");
-                await AuditLogger.Group.Deleted(Group);
-                _ = NotificationGenerationService.PostAsync(Group, NotificationType.Delete, CurrentUser.State);
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.Delete,
+                        Entry = Group,
+                        Actor = CurrentUser.State
 
+                    });
+               
 
             }
             catch (AppException ex)

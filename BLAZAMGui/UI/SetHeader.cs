@@ -7,7 +7,7 @@ namespace BLAZAM.Gui.UI
         [CascadingParameter]
         public MainLayout? MainLayout { get; set; }
 
-        public AppEvent? OnRefreshRequested { get; set; }
+        public AppDelegate? OnRefreshRequested { get; set; }
 
         [Parameter]
         public RenderFragment? ChildContent { get; set; }
@@ -33,7 +33,7 @@ namespace BLAZAM.Gui.UI
         [CascadingParameter]
         public MainLayout? MainLayout { get; set; }
 
-        public AppEvent? OnRefreshRequested { get; set; }
+        public AppDelegate? OnRefreshRequested { get; set; }
 
         [Parameter]
         public RenderFragment? ChildContent { get; set; }

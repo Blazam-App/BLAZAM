@@ -4,11 +4,24 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Database.Models
 {
+    public enum ActiveDirectoryFieldOperator
+    {
+        EqualTo,
+        Contains,
+        StartsWith,
+        EndsWith,
+        HistoricalTimeFrame,
+        FutureTimeFrame,
+        BeforeNow,
+        AfterNow,
+        Boolean
+    }
     public enum ActiveDirectoryFieldType
     {
         Text, Date, RawData,
         DriveLetter,
-        List
+        StringList,FileTime,
+        Boolean
     }
     /// <summary>
     /// Represents a built-in standard Active Directory attribute
@@ -24,6 +37,12 @@ namespace BLAZAM.Database.Models
 
         [Required]
         public string DisplayName { get; set; }
+
+
+        /// <summary>
+        /// The name of the reflection property in the IDirectoryEntryAdapter
+        /// </summary>
+        public string PropertyName { get; set; }
 
 
 
@@ -70,12 +89,8 @@ namespace BLAZAM.Database.Models
                     switch (FieldName)
                     {
                         case "l":
-                        case "cn":
                         case "company":
                         case "department":
-                        case "description":
-                        case "displayName":
-                        case "distinguishedName":
                         case "employeeId":
                         case "givenname":
                         case "homeDirectory":
@@ -86,12 +101,10 @@ namespace BLAZAM.Database.Models
                         case "mail":
                         case "memberOf":
                         case "middleName":
-                        case "objectSID":
                         case "pager":
                         case "physicalDeliveryOffice":
                         case "postalCode":
                         case "profilePath":
-                        case "samaccountname":
                         case "scriptPath":
                         case "site":
                         case "sn":
@@ -101,8 +114,39 @@ namespace BLAZAM.Database.Models
                         case "telephoneNumber":
                         case "title":
                         case "thumbnail":
-                        case "userPrincipalName":
                         case "userWorkstations":
+
+                            return true;
+                    }
+                    break;
+                case ActiveDirectoryObjectType.Contact:
+                    switch (FieldName)
+                    {
+                        case "l":
+                        case "cn":
+                        case "company":
+                        case "department":
+                        case "description":
+                        case "displayName":
+                        case "distinguishedName":
+                        case "employeeId":
+                        case "givenname":
+                        case "homePhone":
+                        case "manager":
+                        case "mail":
+                        case "memberOf":
+                        case "middleName":
+                        case "objectSID":
+                        case "pager":
+                        case "physicalDeliveryOffice":
+                        case "postalCode":
+                        case "sn":
+                        case "st":
+                        case "street":
+                        case "streetAddress":
+                        case "telephoneNumber":
+                        case "title":
+                        case "thumbnail":
 
                             return true;
                     }
@@ -110,14 +154,8 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.Computer:
                     switch (FieldName)
                     {
-                        case "cn":
-                        case "description":
-                        case "displayName":
-                        case "distinguishedName":
                         case "memberOf":
-                        case "objectSID":
                         case "operatingSystemVersion":
-                        case "samaccountname":
                         case "site":
                             return true;
                     }
@@ -126,14 +164,8 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.Group:
                     switch (FieldName)
                     {
-                        case "cn":
-                        case "description":
-                        case "displayName":
-                        case "distinguishedName":
                         case "mail":
                         case "memberOf":
-                        case "objectSID":
-                        case "samaccountname":
                         case "site":
                         case "groupType":
                             return true;
@@ -143,18 +175,25 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.OU:
                     switch (FieldName)
                     {
-                        case "cn":
-                        case "description":
-                        case "displayName":
-                        case "distinguishedName":
-                        case "objectSID":
                         case "site":
                             return true;
 
 
                     }
                     break;
+                default:
+                    switch (FieldName)
+                    {
+                        case "cn":
+                        case "description":
+                        case "displayName":
+                        case "distinguishedName":
+                        case "objectSID":
+                            return true;
 
+
+                    }
+                    break;
 
             }
             return false;

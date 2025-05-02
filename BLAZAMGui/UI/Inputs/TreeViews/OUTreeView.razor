@@ -4,13 +4,13 @@
 
 <MudTreeView T="IDirectoryEntryAdapter"
              ServerData="GetOUChildrenAsync"
-             Items="RootOU"
+             Items="GuiOU"
              @ref=treeView
              Dense="true"
              SelectionMode="SelectionMode.SingleSelection"
+
              Hover="true"
              MaxHeight="400px"
-             Color="Color.Primary"
              @bind-SelectedValue="SelectedEntry">
     <ItemTemplate>
         <MudTreeViewItem Value="@context.Value"

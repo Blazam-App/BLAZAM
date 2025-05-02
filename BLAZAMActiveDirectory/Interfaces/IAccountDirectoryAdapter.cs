@@ -9,7 +9,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     /// <remarks>
     /// Examples include Active Directory users and computers
     /// </remarks>
-    public interface IAccountDirectoryAdapter : IGroupableDirectoryAdapter
+    public interface IAccountDirectoryAdapter : IADContact,IIdentityAdapater
     {
         /// <summary>
         /// Indicates whether the current web user can enable this <see cref="IAccountDirectoryAdapter"/>
@@ -32,6 +32,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Indicates whether this <see cref="IAccountDirectoryAdapter"/> is disabled
         /// </summary>
         bool Disabled { get; set; }
+
 
         /// <summary>
         /// Indicates whether this <see cref="IAccountDirectoryAdapter"/> is disabled

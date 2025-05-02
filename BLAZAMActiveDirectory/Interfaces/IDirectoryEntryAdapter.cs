@@ -1,8 +1,8 @@
-﻿using BLAZAM.Common.Data;
+﻿using BLAZAM.ActiveDirectory.Data;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Jobs;
-using BLAZAM.Session.Interfaces;
 using System.DirectoryServices;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
@@ -13,11 +13,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     /// </summary>
     public interface IDirectoryEntryAdapter : IDisposable
     {
-        /// <summary>
-        /// The SAMAccountName property, generally used as the username property
-        /// </summary>
-        string? SamAccountName { get; set; }
-
+  
         /// <summary>
         /// The name that displays for this object in ADUC
         /// </summary>
@@ -170,12 +166,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Called when pending changes to this entry are commited
         /// </summary>
-        AppEvent? OnModelCommited { get; set; }
+        AppDelegate? OnModelCommited { get; set; }
 
         /// <summary>
         /// Called when any changes occur to this entry
         /// </summary>
-        AppEvent? OnModelChanged { get; set; }
+        AppDelegate? OnModelChanged { get; set; }
 
         /// <summary>
         /// If <see cref="NewEntry"/> is true, property changes will be
@@ -204,12 +200,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Called when this entry is renamed
         /// </summary>
-        AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+        AppDelegate<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
 
         /// <summary>
         /// Called when this entry is deleted
         /// </summary>
-        AppEvent? OnModelDeleted { get; set; }
+        AppDelegate? OnModelDeleted { get; set; }
         /// <summary>
         /// The directory this entry belongs to
         /// </summary>
@@ -264,6 +260,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Called when staged changes have been discarded
         /// </summary>
         AppEvent? OnChangesDiscarded { get; set; }
+        byte[]? Guid { get; set; }
 
 
         /// <summary>
@@ -372,9 +369,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Returns the specified DateTime property in UTC
         /// </summary>
         /// <param name="propertyName"></param>
-        /// <returns></returns>
-        DateTime? GetDateTimeProperty(string propertyName);
-
+        /// <returns></returns>  
+        DateTime? GetDateTimeAttribute(string propertyName);
         /// <summary>
         /// Sets a custom property defined in <see cref="CustomActiveDirectoryField"/>'s
         /// </summary>
@@ -385,11 +381,13 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Ensures that the <see cref="DirectoryEntry"/> property is not null.
         /// </summary>
         void EnsureDirectoryEntry();
+		
         /// <summary>
         /// Sets the current user state that should be associated to 
         /// </summary>
-        /// <param name="user"></param>
-        void SetCurrentUser(IApplicationUserState user);
+        /// <param name="user"></param>		
+        void SetCurrentUser(ActiveDirectoryUserState user);
+
         /// <summary>
         /// Gets the parent directory adpater of this object asynchronously
         /// </summary>

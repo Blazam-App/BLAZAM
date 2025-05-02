@@ -39,6 +39,12 @@
                             Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
                     @AppLocalization[Lang.Create_User]
                     </MudNavLink>
+            </AuthorizeView> 
+            <AuthorizeView Roles="@UserRoles.CreateContacts">
+                <MudNavLink Href="/create/contact"
+                            Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+                    @AppLocalization[Lang.Create_Contact]
+                    </MudNavLink>
             </AuthorizeView>
             <AuthorizeView Roles="@UserRoles.CreateGroups">
                 <MudNavLink Href="/create/group"

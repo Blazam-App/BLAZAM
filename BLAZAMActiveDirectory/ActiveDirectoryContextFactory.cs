@@ -1,8 +1,8 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Data;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
 using BLAZAM.Notifications.Services;
-using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -12,17 +12,17 @@ namespace BLAZAM.ActiveDirectory
         private readonly ActiveDirectoryContext activeDirectoryContextSeed;
 
 
-        public ActiveDirectoryContextFactory(IAppDatabaseFactory factory, IApplicationUserStateService userStateService, IEncryptionService encryptionService, INotificationPublisher notificationPublisher)
+        public ActiveDirectoryContextFactory(IAppDatabaseFactory factory, IEncryptionService encryptionService, INotificationPublisher notificationPublisher)
         {
 
-            activeDirectoryContextSeed = new ActiveDirectoryContext(factory, userStateService, encryptionService, notificationPublisher);
+            activeDirectoryContextSeed = new ActiveDirectoryContext(factory, encryptionService, notificationPublisher);
         }
 
-        public IActiveDirectoryContext CreateActiveDirectoryContext(ICurrentUserStateService? currentUserStateService = null)
+        public IActiveDirectoryContext CreateActiveDirectoryContext(ActiveDirectoryUserState? currentUserState = null)
         {
             var context = new ActiveDirectoryContext(activeDirectoryContextSeed);
             _ = context.ConnectAsync();
-            context.CurrentUser = currentUserStateService?.State;
+            context.CurrentUser=currentUserState;
             return context;
 
         }

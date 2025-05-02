@@ -133,6 +133,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Continue processing other rules.
+        /// </summary>
+        public static string Continue_Processing_Rules {
+            get {
+                return ResourceManager.GetString("Continue_Processing_Rules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} has been created.
         /// </summary>
         public static string Created {
@@ -142,7 +151,7 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) will be allowed to log in to the application..
+        ///   Looks up a localized string similar to Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) with permissions mapped or self-edit enabled..
         /// </summary>
         public static string Delegate_Definition {
             get {
@@ -377,11 +386,38 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An administrator has renamed this workstation. It will reboot in {0} seconds..
+        /// </summary>
+        public static string Rename_Reboot_Message {
+            get {
+                return ResourceManager.GetString("Rename_Reboot_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request to {0}.
         /// </summary>
         public static string Request_To {
             get {
                 return ResourceManager.GetString("Request_To", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This rule will be fired each time a {0} is {1}.
+        /// </summary>
+        public static string Rule_No_Filter_Warning {
+            get {
+                return ResourceManager.GetString("Rule_No_Filter_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not process any more rules.
+        /// </summary>
+        public static string Stop_On_Rule {
+            get {
+                return ResourceManager.GetString("Stop_On_Rule", resourceCulture);
             }
         }
         

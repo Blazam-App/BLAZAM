@@ -92,8 +92,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
         public IADComputer Host { get; }
-        public AppEvent<IRemoteSession> OnSessionDown { get; set; }
-        public AppEvent<IRemoteSession> OnSessionUpdated { get; set; }
+        public AppDelegate<IRemoteSession> OnSessionDown { get; set; }
+        public AppDelegate<IRemoteSession> OnSessionUpdated { get; set; }
 
         private Timer t;
         public RemoteSession(ITerminalServicesSession session, IADComputer host)

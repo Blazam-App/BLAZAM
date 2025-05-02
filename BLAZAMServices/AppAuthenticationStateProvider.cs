@@ -8,6 +8,7 @@ using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using BLAZAM.Server.Helpers;
 using BLAZAM.Services.Audit;
+using BLAZAM.Services.Background;
 using BLAZAM.Services.Duo;
 using BLAZAM.Services.Exceptions;
 using BLAZAM.Session;

@@ -7,7 +7,7 @@
                  Dense=true
                  Loading=@LoadingData
                  Virtualize=true
-                 Height="300px"
+                 Height="600px"
                  FixedHeader=true
                  SortMode="@SortMode.None"
                  Groupable="false">
@@ -134,10 +134,10 @@ else
         await base.OnInitializedAsync();
         RefreshData();
         
-        Group.OnChangesDiscarded += () =>
-        {
-            RefreshData();
-        };
+        // Group.OnChangesDiscarded += () =>
+        // {
+        //     RefreshData();
+        // };
         await InvokeAsync(StateHasChanged);
 
     }

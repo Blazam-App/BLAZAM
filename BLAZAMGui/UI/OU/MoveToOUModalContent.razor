@@ -23,8 +23,8 @@
     {
         base.OnInitialized();
         StartingOU = (IADOrganizationalUnit)DirectoryModel.GetParent();
-        Modal.OnYes = MoveTo;
-        Modal.YesText = AppLocalization[Lang.Move];
+        Modal.SetOnYes(MoveTo);
+        Modal.SetYesText(AppLocalization[Lang.Move]);
         Modal.Title = AppLocalization[Lang.Move_To];
 
     }
@@ -46,9 +46,17 @@
             DirectoryModel.MoveTo(ouToMoveTo);
 
             SnackBarService.Warning(DirectoryModel.CanonicalName + " has been moved to " + ouToMoveTo.CanonicalName + ", but changes need to be saved.");
-            _ = OUNotificationService.PostAsync(DirectoryModel, NotificationType.Modify, CurrentUser.State);
-            _ = AuditLogger.Moved(DirectoryModel,ouMovedFrom, ouToMoveTo);
-            await ModelChanged.InvokeAsync();
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                {
+                    EventType = ApplicationEventType.Move,
+                    Entry = DirectoryModel,
+                    Target=ouToMoveTo,
+                    Origin = ouMovedFrom,
+                    Actor = CurrentUser.State
+
+                });
+
+             await ModelChanged.InvokeAsync();
             Close();
             return;
 
