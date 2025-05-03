@@ -96,7 +96,7 @@ namespace BLAZAM.Services.Background
                     }
                 }
 #pragma warning disable S6966 // Awaitable method should be used
-                if (Context.GlobalPermissionSettings.First()?.AllowSelfModification == true)
+                if (Context.GlobalPermissionSettings.Any() && Context.GlobalPermissionSettings.First()?.AllowSelfModification == true)
                 {
                     var dbSelfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
                     if (dbSelfAccessLevel != null)
@@ -128,7 +128,7 @@ namespace BLAZAM.Services.Background
         public List<Claim> TransformUserRoles(IApplicationUserState user, IADUser directoryUser, string? impersonatorSid = null)
         {
             using var context = _factory.CreateDbContext();
-            var selfEdit = context.GlobalPermissionSettings.First()?.AllowSelfModification == true;
+            var selfEdit = context.GlobalPermissionSettings.Any() && context.GlobalPermissionSettings.First()?.AllowSelfModification == true;
             if (user.PermissionDelegates.Count < 1 && !selfEdit)
                 throw new DeniedLoginException();
 
