@@ -69,7 +69,7 @@
 
 @code {
     GlobalPermissionSettings settings = new GlobalPermissionSettings();
-    List<GlobalPermissionRequestActions> globalPermissionRequestActions = new List<GlobalPermissionRequestActions>();
+    List<GlobalPermissionRequestAction> globalPermissionRequestActions = new List<GlobalPermissionRequestAction>();
     AccessLevel selfAccessLevel = new();
     protected override async Task OnInitializedAsync()
     {
@@ -107,7 +107,7 @@
             if (!await Context.GlobalPermissionRequestActions.AnyAsync(x => x.ObjectAction == action))
             {
 
-                var requestAction = new GlobalPermissionRequestActions() { ObjectAction = action };
+                var requestAction = new GlobalPermissionRequestAction() { ObjectAction = action };
                 if (requestAction != null)
                 {
                     var ctx = await DbFactory.CreateDbContextAsync();

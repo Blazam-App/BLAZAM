@@ -1,6 +1,7 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Services;
 using BLAZAM.Services.Audit;
+using BLAZAM.Services.Events;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
@@ -68,6 +69,8 @@ namespace BLAZAM.Server.Pages
                     if (result.AuthenticationState.User.Identity?.IsAuthenticated == true)
                         if (result.Impersonation)
                         {
+
+                           
                             await AuditLogger.Logon.Impersonate(User, result.AuthenticationState.User, req.IPAddress);
 
                         }

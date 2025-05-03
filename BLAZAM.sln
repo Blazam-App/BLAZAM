@@ -48,9 +48,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlaywrightTests", "Playwrig
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLAZAMDatabaseTests", "BLAZAMDatabaseTests\BLAZAMDatabaseTests.csproj", "{60BE96F4-78BE-4374-B362-4B469D4943B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLAZAMTestPlugin", "BLAZAPluginTest\BLAZAMTestPlugin.csproj", "{AD8660A8-E6D2-45B9-BBF7-DEF476BC0743}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLAZAMTestPlugin", "BLAZAPluginTest\BLAZAMTestPlugin.csproj", "{AD8660A8-E6D2-45B9-BBF7-DEF476BC0743}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLAZAMPlugins", "BLAZAMPlugins\BLAZAMPlugins.csproj", "{1E1EECFA-4728-49EF-9828-B20D1C9F829A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLAZAMPlugins", "BLAZAMPlugins\BLAZAMPlugins.csproj", "{1E1EECFA-4728-49EF-9828-B20D1C9F829A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

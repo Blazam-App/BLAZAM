@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
 using System.Web;
@@ -10,8 +11,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
     {
         private IEnumerable<IADOrganizationalUnit>? childOUCache;
 
-
-
+    
         public async Task<bool> HasChildrenAsync()
         {
             return await Task.Run(() =>
@@ -27,14 +27,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             });
         }
 
-        public HashSet<IDirectoryEntryAdapter> CachedTreeViewSubOUs { get; private set; } = new();
-
         public HashSet<IDirectoryEntryAdapter> TreeViewSubOUs
         {
             get
             {
-                CachedTreeViewSubOUs = SubOUs.ToHashSet();
-                return CachedTreeViewSubOUs;
+               return SubOUs.ToHashSet();
+               
             }
         }
 
@@ -63,11 +61,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty("name");
+                return GetStringAttribute("name");
             }
             set
             {
-                SetProperty("name", value);
+                SetAttribute("name", value);
             }
         }
 
@@ -256,6 +254,32 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 throw ex;
             }
         }
+        /// <summary>
+        /// Creates a new contact under this OU. Note that the returned Directory object
+        /// must execute CommitChanges() to actually create the object in Active
+        /// Directory.
+        /// </summary>
+        /// <param name="containerName">The container name of the new contact</param>
+        /// <returns>An uncommitted contact</returns>
+        public IADContact CreateContact(string containerName)
+        {
+
+            EnsureDirectoryEntry();
+
+            var fullContainerName = "CN=" + containerName.Trim().Replace(",", "\\,");
+            try
+            {
+                ADContact newContact = new ADContact();
+                newContact.Parse(directoryEntry: DirectoryEntry!.Children.Add(fullContainerName, "contact"), directory: Directory);
+                newContact.NewEntry = true;
+                return newContact;
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Error("Error while attempting to create contact: " + fullContainerName + " {@Error}", ex);
+                throw ex;
+            }
+        }
 
         /// <summary>
         /// Creates a new group under this OU. Note that the returned Directory object
@@ -271,7 +295,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             newGroup.Parse(directoryEntry: DirectoryEntry!.Children.Add("CN=" + containerName.Trim(), "group"), directory: Directory);
             newGroup.NewEntry = true;
-            newGroup.SamAccountName = containerName.Trim();
+            newGroup.SAMAccountName = containerName.Trim();
             return newGroup;
 
         }

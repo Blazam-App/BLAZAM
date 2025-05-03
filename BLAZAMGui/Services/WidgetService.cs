@@ -33,6 +33,12 @@ namespace BLAZAM.Gui.Services
                     widgets.Add(new ChangedPasswordsWidget() { WidgetType = DashboardWidgetType.PasswordsChanged, Title = AppLocalization["Passwords changed in the last 90 days"] });
 
                 }
+                if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchContacts))
+                {
+
+                    widgets.Add(new NewContactsWidget() { WidgetType = DashboardWidgetType.NewContacts, Title = AppLocalization["Contacts created in the last 14 days"] });
+                 
+                }
                 if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers)
                     || applicationUser.HasRole(UserRoles.SearchOUs)
                      || applicationUser.HasRole(UserRoles.SearchGroups)

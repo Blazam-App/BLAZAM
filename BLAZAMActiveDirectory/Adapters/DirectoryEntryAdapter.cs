@@ -1,4 +1,5 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Data;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -7,7 +8,6 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
-using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
@@ -32,19 +32,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-
-        public AppEvent? OnModelChanged { get; set; }
+        public AppDelegate? OnModelChanged { get; set; }
 
         public AppEvent? OnChangesDiscarded { get; set; }
 
 
-        public AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+        public AppDelegate<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
 
 
-        public AppEvent? OnModelCommited { get; set; }
+        public AppDelegate? OnModelCommited { get; set; }
 
 
-        public AppEvent? OnModelDeleted { get; set; }
+        public AppDelegate? OnModelDeleted { get; set; }
 
 
         public virtual List<AuditChangeLog> Changes
@@ -95,12 +94,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         protected IAppDatabaseFactory DbFactory => Directory.Factory;
-        public void SetCurrentUser(IApplicationUserState user)
+        public void SetCurrentUser(ActiveDirectoryUserState user)
         {
             _currentUser = user;
         }
-        protected IApplicationUserState? _currentUser;
-        protected IApplicationUserState? CurrentUser => _currentUser;
+        protected ActiveDirectoryUserState? _currentUser;
+        protected ActiveDirectoryUserState? CurrentUser => _currentUser;
 
         public bool NewEntry { get; set; }
 
@@ -190,6 +189,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         return ActiveDirectoryObjectType.Printer;
                     }
+
+                    if (Classes.Contains("contact"))
+                    {
+                        return ActiveDirectoryObjectType.Contact;
+                    }
                     if (Classes.Contains("msFVE-RecoveryInformation"))
                     {
                         return ActiveDirectoryObjectType.BitLocker;
@@ -204,20 +208,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected SearchResult? SearchResult { get; set; }
 
-        public virtual string? SamAccountName
-        {
 
-            get
-            {
-                return GetStringProperty("samaccountname");
-            }
-            set
-            {
-                SetProperty("samaccountname", value);
-            }
-
-
-        }
 
         public virtual string? ADSPath
         {
@@ -225,13 +216,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 if (DirectoryEntry == null)
-                    return GetStringProperty("adspath");
+                    return GetStringAttribute("adspath");
                 else
                     return DirectoryEntry.Path;
             }
             set
             {
-                SetProperty("adspath", value);
+                SetAttribute("adspath", value);
             }
 
 
@@ -241,7 +232,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var cn = GetStringProperty("cn");
+                var cn = GetStringAttribute(ActiveDirectoryFields.CanonicalName.FieldName);
                 if (cn != null)
                 {
                     if (cn.Contains("DEL:"))
@@ -252,7 +243,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                SetProperty("cn", value);
+                SetAttribute(ActiveDirectoryFields.CanonicalName.FieldName, value);
             }
         }
 
@@ -279,11 +270,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         return null;
                     }
                 }
-                return GetStringProperty("distinguishedName");
+                return GetStringAttribute(ActiveDirectoryFields.DistinguishedName.FieldName);
             }
             set
             {
-                SetProperty("distinguishedName", value);
+                SetAttribute(ActiveDirectoryFields.DistinguishedName.FieldName, value);
             }
 
         }
@@ -292,11 +283,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<DateTime?>("whenCreated");
+                return GetAttribute<DateTime?>("whenCreated");
             }
             set
             {
-                SetProperty("whenCreated", value);
+                SetAttribute("whenCreated", value);
             }
 
         }
@@ -306,7 +297,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var parentDN = GetStringProperty("lastknownparent");
+                var parentDN = GetStringAttribute("lastknownparent");
                 return parentDN != null ? Directory.OUs.FindOuByDN(parentDN) : null;
             }
 
@@ -317,7 +308,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
 
-                return GetProperty<bool>("isdeleted") || _isDeleted;
+                return GetAttribute<bool>("isdeleted") || _isDeleted;
             }
             private set { _isDeleted = value; }
 
@@ -347,11 +338,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetDateTimeProperty("whenChanged");
+                return GetDateTimeAttribute("whenChanged");
             }
             set
             {
-                SetProperty("whenChanged", value);
+                SetAttribute("whenChanged", value);
             }
 
         }
@@ -360,11 +351,25 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetProperty<byte[]>("objectSID");
+                return GetAttribute<byte[]>(ActiveDirectoryFields.ObjectSID.FieldName);
             }
             set
             {
-                SetProperty("objectSID", value);
+                SetAttribute(ActiveDirectoryFields.ObjectSID.FieldName, value);
+            }
+
+        }
+        public virtual byte[]? Guid
+        {
+            get
+            {
+                var bytes = GetAttribute<byte[]>("objectGUID");
+
+                return bytes;
+            }
+            set
+            {
+                SetAttribute("objectGUID", value);
             }
 
         }
@@ -380,7 +385,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (!IsDeleted)
                 {
-                    return GetStringListProperty("objectClass");
+                    return GetStringListAttribute("objectClass");
                 }
                 else
                 {
@@ -561,16 +566,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
         private IList<PermissionMapping> _appliedPermissionMappings;
-
+       
         public IList<PermissionMapping> AppliedPermissionMappings
         {
             get
             {
-                if (_appliedPermissionMappings == null)
-                {
-                    using var context = DbFactory.CreateDbContext();
-                    _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
-                }
+                using var context = DbFactory.CreateDbContext();
+                _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
+
                 return _appliedPermissionMappings;
             }
         }
@@ -793,7 +796,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 commitJob ??= new Job
                 {
                     Name = "Commit Changes",
-                    User = CurrentUser?.AuditUsername
+                    User = CurrentUser?.Username
                 };
 
 
@@ -990,21 +993,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual void DiscardChanges()
         {
 
-                DirectoryEntry = null;
-                HasUnsavedChanges = false;
-                NewEntryProperties = new();
-                CommitSteps.Clear();
+            DirectoryEntry = null;
+            HasUnsavedChanges = false;
+            NewEntryProperties = new();
+            CommitSteps.Clear();
 
-                PostCommitSteps.Clear();
-                if (SearchResult != null)
-                    FetchDirectoryEntry();
+            PostCommitSteps.Clear();
+            if (SearchResult != null)
+                FetchDirectoryEntry();
 
-                OnChangesDiscarded?.Invoke();
-            
+            OnChangesDiscarded?.Invoke();
+
         }
         private void FetchDirectoryEntry()
         {
-            if (SearchResult is null) throw new CriticalActiveDirectoryException(Directory,nameof(SearchResult));
+            if (SearchResult is null) throw new CriticalActiveDirectoryException(Directory, nameof(SearchResult));
 
             DirectoryEntry = SearchResult.GetDirectoryEntry();
 
@@ -1014,7 +1017,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                return GetProperty<T>(propertyName);
+                return GetAttribute<T>(propertyName);
             }
             catch
             {
@@ -1022,12 +1025,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public virtual DateTime? GetDateTimeProperty(string propertyName)
+        public virtual DateTime? GetDateTimeAttribute(string propertyName)
         {
             try
             {
 
-                var com = GetProperty<object>(propertyName);
+                var com = GetAttribute<object>(propertyName);
                 return com?.AdsValueToDateTime();
             }
             catch
@@ -1077,7 +1080,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        protected virtual T? GetProperty<T>(string propertyName)
+        protected virtual T? GetAttribute<T>(string propertyName)
         {
             try
             {
@@ -1147,9 +1150,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             try
             {
-                    if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
-                        return (T?)DirectoryEntry.Properties[propertyName].Value;
-                
+                if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
+                    return (T?)DirectoryEntry.Properties[propertyName].Value;
+
             }
             catch (ArgumentException)
             {
@@ -1171,7 +1174,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-        protected virtual string? GetStringProperty(string propertyName)
+        protected virtual string? GetStringAttribute(string propertyName)
         {
             try
             {
@@ -1191,7 +1194,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-        protected virtual List<string>? GetStringListProperty(string propertyName)
+        protected virtual List<string>? GetStringListAttribute(string propertyName)
         {
             try
             {
@@ -1225,14 +1228,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return null;
             }
         }
-        public virtual void SetCustomProperty(string propertyName, object? value) => SetProperty(propertyName, value);
+        public virtual void SetCustomProperty(string propertyName, object? value) => SetAttribute(propertyName, value);
         /// <summary>
         /// Sets an attribute value. Note that this change is uncommited, <see cref="CommitChanges"/>
         /// must be called afterwards for the change to persist.
         /// </summary>
         /// <param name="propertyName"></param>
         /// <param name="value"></param>
-        protected virtual void SetProperty(string propertyName, object? value)
+        protected virtual void SetAttribute(string propertyName, object? value)
         {
             if (IsDeleted) throw new AppException("Cannot set values for a deleted entry.");
             try

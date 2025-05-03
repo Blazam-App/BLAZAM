@@ -25,9 +25,9 @@ namespace BLAZAM.Update
         /// </summary>
         private CancellationTokenSource cancellationTokenSource { get; set; } = new CancellationTokenSource();
 
-        public static AppEvent OnUpdateStarted { get; set; }
+        public static AppDelegate OnUpdateStarted { get; set; }
 
-        public static AppEvent<Exception> OnUpdateFailed { get; set; }
+        public static AppDelegate<Exception> OnUpdateFailed { get; set; }
 
         /// <summary>
         /// The version of this update
@@ -128,7 +128,7 @@ namespace BLAZAM.Update
         /// <summary>
         /// Called when download progress has changed
         /// </summary>
-        public AppEvent<FileProgress?> DownloadPercentageChanged { get; set; }
+        public AppDelegate<FileProgress?> DownloadPercentageChanged { get; set; }
 
         private readonly ApplicationVersion _runningVersion;
         private readonly Process _runningProcess;

@@ -11,7 +11,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var rawData = GetProperty<byte[]>("msFVE-RecoveryGuid");
+                var rawData = GetAttribute<byte[]>("msFVE-RecoveryGuid");
                 var id = new Guid(rawData);
                 return id;
             }
@@ -23,7 +23,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty("msFVE-RecoveryPassword");
+                return GetStringAttribute("msFVE-RecoveryPassword");
             }
         }
 

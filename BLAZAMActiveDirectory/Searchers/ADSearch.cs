@@ -2,11 +2,15 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Models;
+using BLAZAM.Database.Models.Rules;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.DirectoryServices;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -24,7 +28,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
     {
 
         public ADSearchFields Fields { get; set; } = new();
-
+        public List<ADFieldValue> FieldValues { get; set; } = new();
 
 
         /// <summary>
@@ -61,7 +65,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// or listen to <see cref="OnSearchCompleted"/>
         /// to confirm search is completed and no more results are coming.</para>
         /// </summary>
-        public AppEvent<IEnumerable<IDirectoryEntryAdapter>> ResultsCollected { get; set; }
+        public AppDelegate<IEnumerable<IDirectoryEntryAdapter>> ResultsCollected { get; set; }
 
         private int PageSize = 40;
 
@@ -86,8 +90,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 return Search<T, I>(token);
             });
-        } 
-        
+        }
+
         public async Task<List<IDirectoryEntryAdapter>> SearchAsync()
         {
             return await SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
@@ -102,7 +106,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             return Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         }
 
-       
+
 
         /// <summary>
         /// Executes a search in Active Directory using the configured properties of this object.
@@ -127,10 +131,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 {
                     VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, pageOffset),
                     PageSize = PageSize,
-                    Sort = new SortOption("cn", SortDirection.Ascending),
+                    Sort = new SortOption(ActiveDirectoryFields.CanonicalName.FieldName, SortDirection.Ascending),
                     SearchScope = SearchScope,
                     SizeLimit = MaxResults,
-                    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
+                    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(objectClass=contact)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
                 };
                 if (EnabledOnly != true)
                 {
@@ -144,7 +148,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     case ActiveDirectoryObjectType.All:
                     case null:
                         if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(distinguishedName=" + GeneralSearchTerm + ")(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(mail=*"+GeneralSearchTerm+ "*@*)(anr=*" + GeneralSearchTerm + "*))";
+                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(distinguishedName=" + GeneralSearchTerm + ")(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(mail=*" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
                         break;
                     case ActiveDirectoryObjectType.Printer:
                         searcher.Filter = "(&(objectClass=printQueue))";
@@ -155,7 +159,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     case ActiveDirectoryObjectType.Group:
                         searcher.Filter = "(&(objectCategory=group)(objectClass=group))";
                         if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(mail="+GeneralSearchTerm+"*@*)(anr=*" + GeneralSearchTerm + "*))";
+                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
 
                         break;
                     case ActiveDirectoryObjectType.User:
@@ -165,7 +169,15 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             searcher.Filter = "(&(objectCategory=person)(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
                         }
                         if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(mail="+GeneralSearchTerm+"*@*)(anr=*" + GeneralSearchTerm + "*))";
+                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
+
+
+                        break;
+                    case ActiveDirectoryObjectType.Contact:
+                        searcher.Filter = "(&(objectCategory=person)(objectClass=contact))";
+                        
+                        if (GeneralSearchTerm != null)
+                            FilterQuery = "(|(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
 
 
                         break;
@@ -180,7 +192,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                         break;
                     case ActiveDirectoryObjectType.BitLocker:
-                        searcher.Filter = "(&(objectCategory=*msFVE-RecoveryInformation*))";
+                        searcher.Filter = "(&(objectCategory=msFVE-RecoveryInformation))";
                         if (GeneralSearchTerm != null)
 
                             searcher.Filter = $"(name=*{GeneralSearchTerm}*)";
@@ -212,8 +224,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(samaccountname=*{Fields.SamAccountName}*)";
                     if (Fields.LastLogonTime != null)
                         FilterQuery += $"(lastLogonTimestamp<={Fields.LastLogonTime})(!(lastLogonTimestamp=0))";
-                    if (Fields.AccountExpires != null)
-                        FilterQuery += $"(accountExpires<={Fields.AccountExpires.Value.ToFileTimeUtc().ToString()})(!(accountExpires=0))";
+                    if (Fields.ExpireTime != null)
+                        FilterQuery += $"(accountExpires<={Fields.ExpireTime.Value.ToFileTimeUtc().ToString()})(!(accountExpires=0))";
                     if (Fields.LockoutTime != null)
                         FilterQuery += $"(lockoutTime>={Fields.LockoutTime})";
                     if (!Fields.DN.IsNullOrEmpty())
@@ -222,6 +234,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(memberOf=*{Fields.DN})*";
                     if (!Fields.SID.IsNullOrEmpty())
                         FilterQuery += $"(objectSid={Fields.SID})";
+                    if (Fields.GUID!=null)
+                        FilterQuery += $"(objectGUID={Fields.GUID.ToHexADString()})";
                     if (Fields.NestedMemberOf != null)
                         FilterQuery += $"(memberOf:1.2.840.113556.1.4.1941:={Fields.NestedMemberOf.DN})";
                     if (Fields.BitLockerRecoveryId != null)
@@ -229,11 +243,115 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     if (Fields.PasswordLastSet != null)
                         FilterQuery += $"(pwdLastSet>={Fields.PasswordLastSet.Value.ToFileTimeUtc().ToString()})";
 
+                    if (FieldValues.Count > 0)
+                    {
+                        FilterQuery = "";
+                        foreach (var field in FieldValues)
+                        {
+                            var op = "=";
+                            var searchValue = "";
+                            if (field.Value is DateTime dateTimeValue)
+                            {
+                                switch (field.Field.FieldType)
+                                {
+                                    case ActiveDirectoryFieldType.Date:
+                                        searchValue = dateTimeValue.ToString("yyyyMMddHHmmss.fZ");
+
+                                        break;
+                                    case ActiveDirectoryFieldType.FileTime:
+                                        searchValue = dateTimeValue.ToFileTimeUtc().ToString();
+                                        break;
+
+                                }
+                            }
+                            else if (field.Value is string strValue)
+                            {
+                                switch (field.Operator)
+                                {
+                                    case ActiveDirectoryFieldOperator.EqualTo:
+                                        searchValue = $"{field.Value}";
+                                        break;
+                                    case ActiveDirectoryFieldOperator.StartsWith:
+                                        searchValue = $"{field.Value}*";
+
+                                        break;
+                                    case ActiveDirectoryFieldOperator.EndsWith:
+                                        searchValue = $"*{field.Value}";
+
+                                        break;
+                                    case ActiveDirectoryFieldOperator.Contains:
+                                        searchValue = $"*{field.Value}*";
+
+
+                                        break;
+                                }
+                            }
+                            switch (field.Operator)
+                            {
+                                case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
+                                    break;
+                                case ActiveDirectoryFieldOperator.FutureTimeFrame:
+                                    break;
+                                case ActiveDirectoryFieldOperator.BeforeNow:
+                                    op = "<=";
+                                    switch (field.Field.FieldType)
+                                    {
+                                        case ActiveDirectoryFieldType.Date:
+                                            searchValue = DateTime.Now.ToString("yyyyMMddHHmmss.fZ");
+                                            break;
+                                        case ActiveDirectoryFieldType.FileTime:
+                                            searchValue = DateTime.Now.ToFileTimeUtc().ToString();
+                                            break;
+                                    }
+                                    break;
+                                case ActiveDirectoryFieldOperator.AfterNow:
+                                    op = ">=";
+                                    switch (field.Field.FieldType)
+                                    {
+                                        case ActiveDirectoryFieldType.Date:
+                                            searchValue = DateTime.Now.ToString("yyyyMMddHHmmss.fZ");
+                                            break;
+                                        case ActiveDirectoryFieldType.FileTime:
+                                            searchValue = DateTime.Now.ToFileTimeUtc().ToString();
+                                            break;
+                                    }
+                                    break;
+                                case ActiveDirectoryFieldOperator.Boolean:
+                                    break;
+                            }
+                            if (!searchValue.IsNullOrEmpty())
+                            {
+                                var negateChar =  field.Negate ? "!" : "" ;
+                                FilterQuery += $"({negateChar}{field.Field.FieldName}{op}{searchValue})";
+                                if(field.Field.FieldType == ActiveDirectoryFieldType.Date
+                                    || field.Field.FieldType == ActiveDirectoryFieldType.FileTime)
+                                {
+                                    FilterQuery += $"(!({field.Field.FieldName}=0))";
+                                }
+
+                            }
+                        }
+                    }
 
                 }
 
                 if (!FilterQuery.IsNullOrEmpty() && ExactMatch)
+                {
                     FilterQuery = FilterQuery.Replace("*", "");
+                    
+                    // Regex pattern:
+                    // \\(      -> Match the opening parenthesis literally (needs escaping)
+                    // anr=    -> Match "anr=" literally
+                    // .*?     -> Match any character (except newline) zero or more times,
+                    //           non-greedily (important to stop at the first closing parenthesis)
+                    // \\)      -> Match the closing parenthesis literally (needs escaping)
+                    // RegexOptions.IgnoreCase -> Make the matching case-insensitive (e.g., matches (Anr=...))
+                    string pattern = @"\(anr=.*?\)"; // Using @ verbatim string simplifies escaping
+
+                    // Replace the matched pattern (the entire anr section) with an empty string
+                    FilterQuery = Regex.Replace(FilterQuery, pattern, string.Empty, RegexOptions.IgnoreCase);
+
+                }
 
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
@@ -344,11 +462,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             if (!SearchDeleted)
             {
-                searcher.PropertiesToLoad.Add("samaccountname");
-                searcher.PropertiesToLoad.Add("distinguishedName");
-                searcher.PropertiesToLoad.Add("objectSID");
+                searcher.PropertiesToLoad.Add(ActiveDirectoryFields.SAMAccountName.FieldName);
+                searcher.PropertiesToLoad.Add(ActiveDirectoryFields.DistinguishedName.FieldName);
+                searcher.PropertiesToLoad.Add(ActiveDirectoryFields.ObjectSID.FieldName);
                 searcher.PropertiesToLoad.Add("objectclass");
-                searcher.PropertiesToLoad.Add("cn");
+                searcher.PropertiesToLoad.Add(ActiveDirectoryFields.CanonicalName.FieldName);
                 searcher.PropertiesToLoad.Add("name");
             }
             if (SearchDeleted)
@@ -396,5 +514,43 @@ namespace BLAZAM.ActiveDirectory.Searchers
         }
 
 
+    }
+
+    public class ADFieldValue
+    {
+
+        public IActiveDirectoryField? Field
+        {
+            get
+            {
+                if (DefaultField != null)
+                {
+                    return DefaultField;
+                }
+                if (CustomField != null)
+                {
+                    return CustomField;
+                }
+                return null;
+            }
+            set
+            {
+                if (value is CustomActiveDirectoryField field)
+                {
+                    DefaultField = null;
+                    CustomField = field;
+                }
+                else if (value is ActiveDirectoryField field2)
+                {
+                    CustomField = null;
+                    DefaultField = field2;
+                }
+            }
+        }
+        protected ActiveDirectoryField DefaultField { get; set; }
+        protected CustomActiveDirectoryField CustomField { get; set; }
+        public ActiveDirectoryFieldOperator Operator { get; set; }
+        public bool Negate { get; set; }
+        public object? Value { get; set; }
     }
 }

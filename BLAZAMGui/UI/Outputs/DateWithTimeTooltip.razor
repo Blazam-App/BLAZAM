@@ -1,6 +1,12 @@
-﻿<AppTooltip Text="@_timeOfDay">
-    <MudText Style="text-align:end;" Typo="Typo.caption">@_date</MudText>
-</AppTooltip>
+﻿@if (DateTime != null && DateTime != System.DateTime.MinValue)
+{
+    <AppTooltip Text="@_timeOfDay">
+        <MudText Style="text-align:end;" Typo="Typo.caption">@_date</MudText>
+    </AppTooltip>
+}else if(!NullText.IsNullOrEmpty()){
+    <MudText Style="text-align:end;" Typo="Typo.caption">@NullText</MudText>
+
+}
 @code {
     /// <summary>
     /// The DateTime to display in UTC
@@ -26,6 +32,10 @@
     }
 
     private DateTime? _dateTime;
+
+    [Parameter]
+    public string? NullText { get; set; }
+
 
     private string? _timeOfDay;
     private string? _date;

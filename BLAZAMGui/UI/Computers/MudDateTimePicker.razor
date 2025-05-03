@@ -1,0 +1,33 @@
+@inherits AppComponentBase
+
+
+<MudTimePicker Label="@AppLocalization[Lang.Time]" @bind-Time=Time />
+<MudDatePicker Label="@AppLocalization[Lang.Date]" @bind-Date=Date />
+
+
+@code{
+    TimeSpan? _time;
+    [Parameter]
+    public TimeSpan? Time{ get => _time; set {
+            if (_time == value) return;
+            _time = value;
+            TimeChanged.InvokeAsync(Time);
+        } }
+
+    [Parameter]
+    public EventCallback<TimeSpan?> TimeChanged { get; set; }
+
+    DateTime? _date;
+    [Parameter]
+    public DateTime? Date
+    {
+        get => DateTime.Parse(_time.ToString() + " " + _date.Value.ToLongDateString()); set
+        {
+            if (_date == value) return;
+            _date = value;
+            DateChanged.InvokeAsync(Date);
+        } }
+
+    [Parameter]
+    public EventCallback<DateTime?> DateChanged { get; set; }
+}

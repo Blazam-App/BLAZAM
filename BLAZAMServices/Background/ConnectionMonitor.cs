@@ -19,7 +19,7 @@
         /// The time between ticks of the Monitor Timer in milliseconds.
         /// </summary>
         protected virtual int Interval { get; set; } = 20000;
-        public AppEvent<ServiceConnectionState>? OnConnectedChanged { get; set; }
+        public AppDelegate<ServiceConnectionState>? OnConnectedChanged { get; set; }
 
         protected bool _monitoring;
 

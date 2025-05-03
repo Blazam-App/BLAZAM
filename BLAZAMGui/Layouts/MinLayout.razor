@@ -6,7 +6,7 @@
 <PageTitle>Loading</PageTitle>
 <MudLayout Style="min-height:98vh;">
 
-        <MinAppBar />
+    <MinAppBar />
     <MudContainer Fixed>
         @if (PageHeader != null)
         {
@@ -14,7 +14,8 @@
         }
     </MudContainer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="pt-5">
+        <MudContainer MaxWidth="MaxWidth.Large"
+                      Class="pt-5">
             @Body
 
         </MudContainer>

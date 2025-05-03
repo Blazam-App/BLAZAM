@@ -151,7 +151,7 @@
             }
         }
 
-        settings.AppIcon = await e.ToByteArrayAsync(5000000);
+        settings.AppIcon = await e.ReadByteArrayAsync(5000000);
         //await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
 

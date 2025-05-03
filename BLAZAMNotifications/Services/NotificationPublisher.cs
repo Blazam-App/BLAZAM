@@ -8,8 +8,8 @@ namespace BLAZAM.Notifications.Services
     public class NotificationPublisher : INotificationPublisher
     {
         private readonly IAppDatabaseFactory _databaseFactory;
-        public AppEvent<List<UserNotification>> OnNotificationPublished { get; set; }
-        public AppEvent OnNotificationDeleted { get; set; }
+        public AppDelegate<List<UserNotification>> OnNotificationPublished { get; set; }
+        public AppDelegate OnNotificationDeleted { get; set; }
         public NotificationPublisher(IAppDatabaseFactory databaseFactory)
         {
             _databaseFactory = databaseFactory;

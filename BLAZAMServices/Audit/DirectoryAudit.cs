@@ -10,7 +10,7 @@ namespace BLAZAM.Services.Audit
 {
     public class DirectoryAudit : CommonAudit
     {
-        public DirectoryAudit(IAppDatabaseFactory factory, IApplicationUserStateService userStateService, IJSRuntime? jSRuntime=null) : base(factory,  userStateService, jSRuntime)
+        public DirectoryAudit(IAppDatabaseFactory factory, IApplicationUserState userState, IJSRuntime? jSRuntime=null) : base(factory,  userState, jSRuntime)
         {
         }
 
@@ -55,6 +55,7 @@ namespace BLAZAM.Services.Audit
             {
                 using var context = await factory.CreateDbContextAsync();
                 var table = auditTable.Invoke(context);
+                var username = UserState?.AuditUsername?? CurrentUser?.AuditUsername ?? string.Empty;
                 var auditEntry = new T()
                 {
                     Action = action,
@@ -62,8 +63,8 @@ namespace BLAZAM.Services.Audit
                     Sid = relatedEntry.SID.ToSidString(),
                     BeforeAction = beforeAction,
                     AfterAction = afterAction,
-                    Username = CurrentUser.AuditUsername,
-                    IpAddress = CurrentUser.IPAddress,
+                    Username = username,
+                    IpAddress = UserState?.IPAddress,
                 };
                 table.Add(auditEntry);
                 await context.SaveChangesAsync();

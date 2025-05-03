@@ -91,8 +91,8 @@
     public AppSettings AppSettings { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        Modal.YesText = AppLocalization[Lang.Upload];
-        Modal.OnYes = Import;
+        Modal.SetYesText(AppLocalization[Lang.Upload]);
+        Modal.SetOnYes(Import);
         await base.OnInitializedAsync();
 
     }
@@ -136,7 +136,7 @@
 
     private async void LoadPFX(IBrowserFile e)
     {
-        pfxBytes = await e.ToByteArrayAsync(5000000);
+        pfxBytes = await e.ReadByteArrayAsync(5000000);
 
         await InvokeAsync(StateHasChanged);
 
@@ -146,7 +146,7 @@
 
     private async void LoadCert(IBrowserFile e)
     {
-        crtBytes = await e.ToByteArrayAsync(5000000);
+        crtBytes = await e.ReadByteArrayAsync(5000000);
 
 
         await InvokeAsync(StateHasChanged);
@@ -156,7 +156,7 @@
 
     private async void LoadKey(IBrowserFile e)
     {
-        var bytes = await e.ToByteArrayAsync(5000000);
+        var bytes = await e.ReadByteArrayAsync(5000000);
         if (bytes != null)
             keyBytes = bytes;
 

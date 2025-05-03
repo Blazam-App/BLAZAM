@@ -1,4 +1,5 @@
-﻿using BLAZAM.Session;
+﻿
+using BLAZAM.Session;
 using System.Security.Claims;
 
 namespace BLAZAM.Session.Interfaces
@@ -7,7 +8,7 @@ namespace BLAZAM.Session.Interfaces
     {
         string CurrentUsername { get; }
         IApplicationUserState? CurrentUserState { get; }
-        AppEvent<IApplicationUserState> UserStateAdded { get; set; }
+        AppDelegate<IApplicationUserState> UserStateAdded { get; set; }
         IList<IApplicationUserState> UserStates { get; }
 
 

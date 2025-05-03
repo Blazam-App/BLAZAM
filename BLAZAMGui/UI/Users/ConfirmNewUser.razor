@@ -25,16 +25,17 @@
               Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Last_Name]"
-              Value="@User.Surname"
-              Disabled=true />
+Value="@User.Sn"
+Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Display_Name]"
               Value="@User.DisplayName"
               Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Username]"
-              Value="@User.SamAccountName"
-              Disabled=true />
+Value="@User.SAMAccountName"
+Disabled=true />
+
 
 <MudTextField Label="@AppLocalization[Lang.Password]"
               Value="@User.NewPassword.ToPlainText()"
@@ -277,7 +278,7 @@ else
             var createUserJob = new Job(AppLocalization[Lang.Create_User]);
             createUserJob.StopOnFailedStep = true;
 
-            _username = User.SamAccountName;
+            _username = User.SAMAccountName;
             _userPassword = User.NewPassword;
 
 
@@ -296,27 +297,25 @@ else
                 SnackBarService.Success("User has been created");
                 Confirmed = true;
                 await OnConfirmed.InvokeAsync();
-                await AuditLogger.User.Created(User);
-                if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                {
-                    await NotificationGenerationService.PostAsync(User, NotificationType.Create, CurrentUser.State);
 
-                }
-                else
-                {
-                    _ = NotificationGenerationService.PostAsync(User, NotificationType.Create, CurrentUser.State);
-                }
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.Create,
+                        Entry = User,
+                        Actor = CurrentUser.State
+
+                    });
                 try
                 {
                     if (DirectoryTemplate?.EffectiveSendWelcomeEmail == true)
                     {
-                        if (DirectoryTemplate.EffectiveAskForAlternateEmail == true || User.Email.IsNullOrEmpty())
+                        if (DirectoryTemplate.EffectiveAskForAlternateEmail == true || Entry.Email.IsNullOrEmpty())
                         {
                             await SendWelcomeModal!.ShowAsync();
                         }
                         else
                         {
-                            await SendWelcomeEmail(User.Email!);
+                            await SendWelcomeEmail(Entry.Email!);
                         }
                     }
                 }
@@ -339,7 +338,7 @@ else
         try
         {
             NewUserWelcomeEmailMessage message = new NewUserWelcomeEmailMessage();
-            message.Domain = User.Directory.ConnectionSettings?.FQDN;
+            message.Domain = Entry.Directory.ConnectionSettings?.FQDN;
             message.Username = _username;
             message.Password = _userPassword;
             var html = message.Render();

@@ -27,7 +27,7 @@ else
     <MudStack Row=true Class="mud-width-full">
 
         <MudStack Spacing="1">
-            @if (groupableEntry != null && DirectoryEntry is not IADComputer)
+            @if (groupableEntry != null && DirectoryEntry is not IADComputer && !groupableEntry.DisplayName.IsNullOrEmpty())
             {
                 <MudText Class="align-middle">
                     @groupableEntry.DisplayName
@@ -63,8 +63,7 @@ else
                         Style="height:32px"
                         Gutters=false
                         Dense=true>
-                @if (accountEntry != null)
-
+                @if (accountEntry != null && (accountEntry is IADUser ||accountEntry is IADComputer) )
                 {
                     <AppTooltip Text="@AppLocalization[accountEntry.Enabled?"Disable":"Enable"]">
 
@@ -90,7 +89,7 @@ else
 
                 </AppTooltip>
 
-                @if (accountEntry != null && accountEntry.LockedOut)
+                @if (accountEntry != null && accountEntry is not IADContact && accountEntry.LockedOut)
                 {
                     <AppTooltip Text="@AppLocalization[Lang.Unlock]">
 
@@ -105,12 +104,13 @@ else
                     <AppTooltip Text="@AppLocalization[Lang.Assign_To]">
 
                         <MudIconButton OnClick="@OnAssignTo"
+                                       Disabled="@(CurrentUser.State?.CanAssign!=true)"
                                        Icon="@Icons.Material.Filled.GroupAdd"
                                        aria-label="assign to" />
                     </AppTooltip>
 
                 }
-                @if (accountEntry != null && accountEntry is not IADComputer)
+                @if (accountEntry != null && accountEntry is IADUser)
                 {
                     <AppTooltip Text="@AppLocalization[Lang.Change_Password]">
                         <MudIconButton OnClick="@OnResetPassword"
@@ -180,6 +180,14 @@ else
                                    Icon="@(IsFavorite?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
                                    Color="@(IsFavorite?Color.Warning:Color.Default)" />
                 </AppTooltip>
+                @if (IsAdmin && ApplicationInfo.InDebugMode)
+                {
+                    <AppTooltip Text="Application Event Toolkit">
+                        <MudIconButton OnClick="@(()=>{_appEventModal?.ShowAsync();})"
+                                       Icon="@(IsFavorite?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
+                                       Color="@(IsFavorite?Color.Warning:Color.Default)" />
+                    </AppTooltip>
+                }
             </MudToolBar>
         </MudHidden>
         <MudSpacer />
@@ -190,7 +198,7 @@ else
                      IconColor="@Color.Tertiary"
                      StartIcon="@Icons.Material.Filled.Settings">
 
-                @if (accountEntry != null && ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable)))
+                @if (accountEntry != null && accountEntry is not IADContact && ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable)))
                 {
                     <MudMenuItem>
                         <MudSwitch T=bool
@@ -207,12 +215,12 @@ else
                 {
                     <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!EditMode);})">@(AppLocalization[EditMode ? Lang.End_Edit : Lang.Edit])</MudMenuItem>
                 }
-                @if (accountEntry != null && accountEntry.LockedOut && accountEntry.CanUnlock)
+                @if (accountEntry != null && accountEntry is not IADContact && accountEntry.LockedOut && accountEntry.CanUnlock)
                 {
                     <MudMenuItem OnClick="@OnUnlock">@AppLocalization[Lang.Unlock]</MudMenuItem>
                 }
                 <MudMenuItem OnClick="@OnAssignTo">@AppLocalization[Lang.Assign_To]</MudMenuItem>
-                    @if (accountEntry?.CanSetPassword == true && accountEntry is not IADComputer)
+                @if (accountEntry?.CanSetPassword == true && accountEntry is not IADComputer)
                 {
                     <MudMenuItem OnClick="@OnResetPassword">@AppLocalization[Lang.Change_Password]</MudMenuItem>
                 }
@@ -263,10 +271,13 @@ else
             <RequestAccessModalContent Entry="@DirectoryEntry" />
         </AppModal>
     }
-
+    <AppModal @ref=_appEventModal Title="Application Event Toolkit">
+        <AppEventToolkitModalContent DirectoryEntry="@DirectoryEntry" />
+    </AppModal>
 }
 @code {
     private AppModal? _requestAccessModal;
+    private AppModal? _appEventModal;
     private bool _showRequestButton;
     private IDirectoryEntryAdapter? _parentOU;
     [Parameter]

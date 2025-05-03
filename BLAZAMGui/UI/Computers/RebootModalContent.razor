@@ -3,26 +3,25 @@
 <MudStack>
     <MudRadioGroup @bind-Value=_reboot>
         <MudRadio Value="true">@AppLocalization[Lang.Reboot]</MudRadio>
-            <MudRadio Value="false">@AppLocalization[Lang.Shutdown]</MudRadio>
-        </MudRadioGroup>
-        <MudTextField @bind-Value=_message Label="@AppLocalization[Lang.Message]" />
+        <MudRadio Value="false">@AppLocalization[Lang.Shutdown]</MudRadio>
+    </MudRadioGroup>
+    <MudTextField @bind-Value=_message Label="@AppLocalization[Lang.Message]" />
 
-        <MudTabs>
-            <MudTabPanel Text="@AppLocalization[Lang.Delay]">
-                <MudNumericField Min="0" @bind-Value=_delay Label="@AppLocalization[Lang.Delay_in_seconds]" />
-            </MudTabPanel>
-            <MudTabPanel Text="@AppLocalization[Lang.Timestamp]">
-                <MudTimePicker Label="@AppLocalization[Lang.Time]" @bind-Time=_time />
-                <MudDatePicker Label="@AppLocalization[Lang.Date]" @bind-Date=_date />
-            </MudTabPanel>
-        </MudTabs>
+    <MudTabs>
+        <MudTabPanel Text="@AppLocalization[Lang.Delay]">
+            <MudNumericField Min="0" @bind-Value=_delay Label="@AppLocalization[Lang.Delay_in_seconds]" />
+        </MudTabPanel>
+        <MudTabPanel Text="@AppLocalization[Lang.Timestamp]">
+            <MudDateTimePicker @bind-Date=_date />
 
-    </MudStack>
+        </MudTabPanel>
+    </MudTabs>
+
+</MudStack>
 
 
 
-    @code {
-    TimeSpan? _time;
+@code {
     DateTime? _date;
     bool _reboot = true;
     int _delay;
@@ -37,7 +36,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Modal.OnYes = Execute;
+        Modal.SetOnYes(Execute);
         Modal.Title = AppLocalization[Lang.Reboot_Shutdown];
     }
 
@@ -47,10 +46,10 @@
         {
             if (_date.HasValue && _date.Value > DateTime.MinValue)
             {
-                _date = DateTime.Parse(_time.ToString() + " " + _date.Value.ToLongDateString());
+               
                 _delay = (int)(_date.Value - DateTime.Now).TotalSeconds;
             }
-            if(await Computer.ShutdownAsync(_delay, _message, true, _reboot))
+            if (await Computer.ShutdownAsync(_delay, AppHelpLocalization[HelpLang.Rename_Reboot_Message,_delay], true, _reboot))
             {
                 SnackBarService.Success(AppLocalization[Lang.Reboot_Shutdown_Success]);
                 this.Close();

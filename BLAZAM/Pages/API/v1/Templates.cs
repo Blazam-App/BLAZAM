@@ -17,6 +17,7 @@ using Microsoft.Extensions.Localization;
 using MudBlazor;
 using System.Security;
 using System.Text.Json;
+using BLAZAM.Services.Events;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -28,13 +29,19 @@ namespace BLAZAM.Pages.API.v1
     {
         private readonly IStringLocalizer<AppLocalization> AppLocalization;
         private readonly EmailService EmailService;
-        private readonly NotificationGenerationService OUNotificationService;
 
-        public Templates(NotificationGenerationService ouNotificationService, EmailService email, IApplicationUserStateService applicationUserStateService, IStringLocalizer<AppLocalization> localizer, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
+        public Templates(NotificationGenerationService ouNotificationService,
+            EmailService email,
+            IApplicationUserStateService applicationUserStateService,
+            IStringLocalizer<AppLocalization> localizer,
+            WebUserAuditLogger audit,
+            IUserDatabaseFactory appDatabaseFactory, 
+            IHttpContextAccessor httpContextAccessor,
+            IActiveDirectoryContextFactory adFactory)
+            : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
         {
             AppLocalization = localizer;
             EmailService = email;
-            OUNotificationService = ouNotificationService;
         }
 
 
@@ -109,7 +116,7 @@ namespace BLAZAM.Pages.API.v1
             //Override username if provided
             if (!newUserDetails.Username.IsNullOrEmpty())
             {
-                newUser.SamAccountName = newUserDetails.Username;
+                newUser.SAMAccountName = newUserDetails.Username;
             }
 
             //Store password in memory for later
@@ -145,32 +152,29 @@ namespace BLAZAM.Pages.API.v1
 
         }
 
-        private async Task AuditAndNotify(NewUserDetails newUserDetails, DirectoryTemplate? template, IADUser? newUser, SecureString password)
+        private async Task AuditAndNotify(NewUserDetails newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
         {
-            await AuditLogger.User.Created(newUser);
-            if (DbFactory.DatabaseType == DatabaseType.SQLite)
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
-                await OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
+                EventType = ApplicationEventType.Create,
+                Entry = entry,
+                Actor = CurrentUserState
 
-            }
-            else
-            {
-                _ = OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
-
-            }
+            });
+            
 
 
             if (template?.EffectiveSendWelcomeEmail == true)
             {
-                if (template.EffectiveAskForAlternateEmail == true || newUser.Email.IsNullOrEmpty())
+                if (template.EffectiveAskForAlternateEmail == true || entry.Email.IsNullOrEmpty())
                 {
 
-                    await SendWelcomeEmail(newUser, newUserDetails.SendWelcomeEmailTo!, password);
+                    await SendWelcomeEmail(entry, newUserDetails.SendWelcomeEmailTo!, password);
 
                 }
                 else
                 {
-                    await SendWelcomeEmail(newUser, newUser.Email!, password);
+                    await SendWelcomeEmail(entry, entry.Email!, password);
                 }
             }
 
@@ -258,7 +262,7 @@ namespace BLAZAM.Pages.API.v1
             {
                 NewUserWelcomeEmailMessage message = new();
                 message.Domain = user.Directory.ConnectionSettings?.FQDN;
-                message.Username = user.SamAccountName;
+                message.Username = user.SAMAccountName;
                 message.Password = password;
                 await EmailService.SendMessage(AppLocalization["New Account Details"], message, to);
 

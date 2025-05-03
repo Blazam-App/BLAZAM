@@ -25,7 +25,7 @@ namespace BLAZAM.Session
     public class ApplicationUserState : IApplicationUserState
     {
 
-        public AppEvent OnSettingsChanged { get; set; }
+        public AppDelegate OnSettingsChanged { get; set; }
 
         public ClaimsPrincipal User { get; set; }
 
@@ -495,6 +495,10 @@ namespace BLAZAM.Session
                 Loggers.SystemLogger.Error("Error checking object read permissions {@Error}", ex);
                 return false;
             }
+        }
+        public static IApplicationUserState CreateUserState(ClaimsPrincipal user,IAppDatabaseFactory dbFactory)
+        {
+            return new ApplicationUserState(dbFactory) { User = user };
         }
         private bool HasObjectCreatePermissions(ActiveDirectoryObjectType objectType)
         {

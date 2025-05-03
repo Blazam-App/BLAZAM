@@ -4,7 +4,8 @@
     public enum ActiveDirectoryObjectType
     {
         All, User, Group, Computer, OU, Printer,
-        BitLocker
+        BitLocker,
+        Contact
     }
 
 

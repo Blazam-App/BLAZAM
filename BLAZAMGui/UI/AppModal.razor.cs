@@ -66,8 +66,17 @@ namespace BLAZAM.Gui.UI
         }
 
         [Parameter]
+        public Color CancelColor { get; set; }
+        public void SetCancelColor(Color cancelColor)
+        {
+            CancelColor = cancelColor;
+        }
+        [Parameter]
         public OnCancelEvent OnCancel { get; set; }
-
+        public void SetOnCancel(OnCancelEvent onCancel)
+        {
+            OnCancel = onCancel;
+        }
         [Parameter]
         public OnYesEvent OnYes { get; set; }
         public void SetOnYes(OnYesEvent onYes)
@@ -96,6 +105,7 @@ namespace BLAZAM.Gui.UI
 
         [Parameter]
         public string Title { get; set; }
+
 
         [Parameter]
         public EventCallback<MudMessageBox>? ModalChanged { get; set; }
@@ -151,8 +161,10 @@ namespace BLAZAM.Gui.UI
         {
 
             IsShown = true;
-
-            return await Modal.ShowAsync(null, Options);
+            Modal.CloseAsync(); //Fix for MudBlazor Bug causing modal to no reopen after one click but two, suggesting a state sync issue, remove if fixed
+           var @ref = await Modal.ShowAsync(null, Options);
+             await InvokeAsync(StateHasChanged);
+            return @ref;
         }
 
 
@@ -161,8 +173,17 @@ namespace BLAZAM.Gui.UI
         /// </summary>
         public void Close()
         {
-            IsShown = false;
             Modal.CloseAsync();
+            IsShown = false;
+        }
+        /// <summary>
+        /// Hide this modal
+        /// </summary>
+        public async Task CloseAsync()
+        {
+            await Modal.CloseAsync();
+            IsShown = false;
+
         }
         private void YesClicked()
         {

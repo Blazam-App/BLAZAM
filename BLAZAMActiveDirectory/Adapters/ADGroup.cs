@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Jobs;
 
 namespace BLAZAM.ActiveDirectory.Adapters
@@ -19,7 +20,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected const int ADS_GROUP_TYPE_UNIVERSAL_GROUP = 0x8;
         protected const int ADS_GROUP_TYPE_SECURITY_ENABLED = unchecked((int)0x80000000);
 
-        public GroupScope Scope
+        public GroupScope GroupScope
         {
             get
             {
@@ -51,6 +52,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 }
             }
+        }
+
+        public virtual string? SAMAccountName
+        {
+
+            get
+            {
+                return GetStringAttribute(ActiveDirectoryFields.SAMAccountName.FieldName);
+            }
+            set
+            {
+                SetAttribute(ActiveDirectoryFields.SAMAccountName.FieldName, value);
+            }
+
+
         }
 
         public bool IsSecurityGroup
@@ -105,17 +121,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             get
             {
-                return GetStringProperty("name");
+                return GetStringAttribute("name");
             }
             set
             {
-                SetProperty("name", value);
+                SetAttribute("name", value);
             }
         }
 
         public override bool Rename(string newName)
         {
-            SamAccountName = newName;
+            SAMAccountName = newName;
             CommitChanges();
             return base.Rename(newName);
         }
@@ -253,7 +269,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var temp = GetStringListProperty("member");
+                var temp = GetStringListAttribute("member");
                 return temp;
             }
         }
@@ -261,13 +277,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var uacRaw = Convert.ToInt32(GetProperty<object>("groupType"));
+                var uacRaw = Convert.ToInt32(GetAttribute<object>("groupType"));
 
                 return uacRaw;
             }
             set
             {
-                SetProperty("groupType", value);
+                SetAttribute("groupType", value);
             }
         }
         /// <summary>

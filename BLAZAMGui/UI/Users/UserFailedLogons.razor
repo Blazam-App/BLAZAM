@@ -1,21 +1,21 @@
 @using System.Diagnostics.Eventing.Reader
 @inherits DatabaseComponentBase
 <MudStack Class="mx-auto">
-        <MudDataGrid Elevation=0 Loading=LoadingData Items="_events">
-            <Header>
+    <MudDataGrid Elevation=0 Loading=LoadingData Items="_events">
+        <Header>
             <MudText Typo=Typo.subtitle2 Align="Align.Center" Class="mud-width-full">@AppLocalization["Failed Logons"]</MudText>
 
             </Header>
             <Columns>
                 <PropertyColumn Title=@AppLocalization[Lang.Timestamp] Property="x=>x.Timestamp" />
-            <PropertyColumn Title=@AppLocalization["Workstation Name"] Property="x=>x.WorkstationName" />
-            <PropertyColumn Title=@AppLocalization["Workstation IP"]  Property="x=>x.WorkstationIp" />
+                <PropertyColumn Title=@AppLocalization["Workstation Name"] Property="x=>x.WorkstationName" />
+                <PropertyColumn Title=@AppLocalization["Workstation IP"] Property="x=>x.WorkstationIp" />
             </Columns>
             <NoRecordsContent>
                 @AppLocalization["There are no recent failed attempts"]
-            </NoRecordsContent>
-        </MudDataGrid>
-    </MudStack>
+        </NoRecordsContent>
+    </MudDataGrid>
+</MudStack>
 @code {
     private List<FailedADLogonEvent> _events = new();
 
@@ -27,18 +27,20 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _=Task.Run(() =>
+        _ = Task.Run(() =>
         {
-            LoadingData = true;
-            _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
-            LoadingData = false;
-            LoadingData = true;
+            if (User != null)
+            {
+                LoadingData = true;
+                _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
+                LoadingData = false;
+                LoadingData = true;
 
-            LockedOutUserMonitor.RecordLogonEvents(User);
+                LockedOutUserMonitor.RecordLogonEvents(User);
 
-            _events = Context.FailedADLogonEvents.Where(e=>e.Sid.Equals(User.SID)).OrderByDescending(e=>e.Timestamp).ToList();
-            LoadingData = false;
-
+                _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
+                LoadingData = false;
+            }
             //InvokeAsync(StateHasChanged);
 
         });

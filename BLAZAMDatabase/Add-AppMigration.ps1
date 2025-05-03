@@ -2,9 +2,9 @@
     [string]$Name
 )
 
-$sqlName =  $Name + "Sql";
-$mysqlName =  $Name + "MySql";
-$sqliteName =  $Name + "Sqlite";
+$sqlName =  $Name + "-" + "Sql";
+$mysqlName =  $Name + "-" + "MySql";
+$sqliteName =  $Name + "-" + "Sqlite";
 try {
     Add-Migration -Name $sqliteName -OutputDir Migrations/Sqlite -Context SqliteDatabaseContext
 } catch {
