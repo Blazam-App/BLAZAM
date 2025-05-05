@@ -87,7 +87,7 @@ namespace BLAZAM.Services.Background
                                 }
                                 else
                                 {
-                                    _=PostAsync(args.Entry, NotificationType.Create, args.Actor);
+                                    _ = PostAsync(args.Entry, NotificationType.Create, args.Actor);
 
                                 }
                                 break;
@@ -120,7 +120,7 @@ namespace BLAZAM.Services.Background
                             case ApplicationEventType.Modify:
                                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                                 {
-                                    Post(args.Entry, NotificationType.Modify,args.Actor);
+                                    Post(args.Entry, NotificationType.Modify, args.Actor);
 
                                 }
                                 else
@@ -132,7 +132,7 @@ namespace BLAZAM.Services.Background
                             case ApplicationEventType.Unassign:
                                 if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                                 {
-                                    Post(args.Entry, NotificationType.Unassign,args.Actor,args.Target);
+                                    Post(args.Entry, NotificationType.Unassign, args.Actor, args.Target);
 
                                 }
                                 else
@@ -160,9 +160,9 @@ namespace BLAZAM.Services.Background
         /// <returns></returns>
         public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
         {
-            await Task.Run(async () =>
+            await Task.Run(() =>
             {
-                PostAsync(source, notificationType, actor, target);
+                Post(source, notificationType, actor, target);
             });
 
         }
@@ -176,33 +176,33 @@ namespace BLAZAM.Services.Background
         /// <returns></returns>
         public void Post(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
         {
-           
-                NotificationMessage notification;
-                string notificationTitle;
-                NotificationTemplateComponent? emailMessage;
-                PackageNotification(source, notificationType, actor, target, out notification, out notificationTitle, out emailMessage);
-                var _emailConfigured = _emailService.IsConfigured;
-                using var context = Context;
-                var users = context.UserSettings.Include(us => us.NotificationSubscriptions).ToList();
-                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
+
+            NotificationMessage notification;
+            string notificationTitle;
+            NotificationTemplateComponent? emailMessage;
+            PackageNotification(source, notificationType, actor, target, out notification, out notificationTitle, out emailMessage);
+            var _emailConfigured = _emailService.IsConfigured;
+            using var context = Context;
+            var users = context.UserSettings.Include(us => us.NotificationSubscriptions).ToList();
+            if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
+            {
+
+
+                foreach (var user in users)
                 {
-
-
-                    foreach (var user in users)
-                    {
-                        ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
-                    }
+                    ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
                 }
-                else
+            }
+            else
+            {
+                Parallel.ForEach(users, async user =>
                 {
-                    Parallel.ForEach(users, async user =>
-                    {
-                        ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
-                    });
-                }
-                PostWebHooks(source, notificationType, actor, target);
+                    ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
+                });
+            }
+            PostWebHooks(source, notificationType, actor, target);
 
-           
+
 
         }
         private async Task ProcessUserNotification(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor, AppUser user, NotificationMessage notification, string notificationTitle, NotificationTemplateComponent? emailMessage, bool _emailConfigured)
@@ -217,7 +217,7 @@ namespace BLAZAM.Services.Background
                 //Publish in app notifications to subscribing subscriptions
                 if (effectiveInAppSubscriptions != null && effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                 {
-                    _ =  _notificationPublisher.PublishNotification(user, notification);
+                    _ = _notificationPublisher.PublishNotification(user, notification);
                 }
 
                 //Publish email notification to subscribing subscriptions
@@ -227,7 +227,7 @@ namespace BLAZAM.Services.Background
                     {
                         if (_emailConfigured && !user.Email.IsNullOrEmpty())
                         {
-                            _= _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
+                            _ = _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
                         }
                     }
                     else
