@@ -476,6 +476,14 @@ namespace BLAZAM.Common.Migrations.Sql
                             FieldName = "lockoutTime",
                             FieldType = 6,
                             PropertyName = "LockedOut"
+                        },
+                        new
+                        {
+                            Id = 42,
+                            DisplayName = "OU",
+                            FieldName = "ou",
+                            FieldType = 0,
+                            PropertyName = "OU"
                         });
                 });
 
