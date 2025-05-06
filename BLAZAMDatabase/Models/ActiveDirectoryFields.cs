@@ -380,6 +380,16 @@ namespace BLAZAM.Database.Models
 
         };
 
+        public static readonly ActiveDirectoryField OU = new()
+        {
+            Id = 42,
+            FieldName = "ou",
+            DisplayName = Lang.OU,
+            FieldType = ActiveDirectoryFieldType.Text,
+            PropertyName = "OU"
+
+        };
+
 
 
     }

@@ -16,6 +16,7 @@ using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 using System.DirectoryServices.Protocols;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
 
@@ -362,14 +363,42 @@ namespace BLAZAM.ActiveDirectory
                 switch (ex.ExtendedError)
                 {
                     case -2146893044:
+                        Loggers.ActiveDirectoryLogger.Information("Bad credentials for Active Directory {@Error}", ex);
+
                         Status = DirectoryConnectionStatus.BadCredentials;
                         break;
 
                     case 8235:
+                        Loggers.ActiveDirectoryLogger.Information("Bad configuration for Active Directory {@Error}", ex);
+
                         Status = DirectoryConnectionStatus.BadConfiguration;
                         break;
                     case 8333:
+                        Loggers.ActiveDirectoryLogger.Information("RootOU container not found in Active Directory {@Error}", ex);
+
                         Status = DirectoryConnectionStatus.ContainerNotFound;
+                        break;
+                    default:
+                        Loggers.ActiveDirectoryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+                        Status = DirectoryConnectionStatus.ServerDown;
+                        break;
+                }
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++;
+            }
+            catch (COMException ex)
+            {
+                ConnectionException = ex;
+                switch (ex.HResult)
+                {
+
+                    case -2147023436:
+                        Loggers.ActiveDirectoryLogger.Information("Timeout connecting to Active Directory {@Error}", ex);
+                        Status = DirectoryConnectionStatus.ServerDown;
+                        break;
+                    default:
+                        Loggers.ActiveDirectoryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+                        Status = DirectoryConnectionStatus.ServerDown;
                         break;
                 }
                 if (FailedConnectionAttempts < 10)
@@ -387,9 +416,13 @@ namespace BLAZAM.ActiveDirectory
                 switch (ex.HResult)
                 {
                     case -2147016646:
+                        Loggers.ActiveDirectoryLogger.Information("Encrypted connection error to Active Directory {@Error}", ex);
+
                         Status = DirectoryConnectionStatus.EncryptionError;
                         break;
                     case -2147023570:
+                        Loggers.ActiveDirectoryLogger.Information("Bad credentials for Active Directory {@Error}", ex);
+
                         Status = DirectoryConnectionStatus.BadCredentials;
                         break;
                     default:
@@ -426,8 +459,7 @@ namespace BLAZAM.ActiveDirectory
             ConnectionSettings = ad;
 
             Loggers.ActiveDirectoryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
-            //We need to determine what security options to use when authenticating
-            //based on the settings in the DB
+
 
             if (!ad.IsValid)
             {
