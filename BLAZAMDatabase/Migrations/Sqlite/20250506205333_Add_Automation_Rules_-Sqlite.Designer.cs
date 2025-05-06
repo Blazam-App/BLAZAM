@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Database.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDatabaseContext))]
-    [Migration("20250506165859_Add_Automation_Rules-Sqlite")]
-    partial class Add_Automation_RulesSqlite
+    [Migration("20250506205333_Add_Automation_Rules_-Sqlite")]
+    partial class Add_Automation_Rules_Sqlite
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1694,6 +1694,9 @@ namespace BLAZAM.Database.Migrations.Sqlite
 
                     b.Property<int?>("CustomFieldId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Data")
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("FieldId")
                         .HasColumnType("INTEGER");

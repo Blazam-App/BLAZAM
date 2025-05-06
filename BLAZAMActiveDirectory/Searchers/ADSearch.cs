@@ -142,7 +142,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 {
                     searcher.Filter = searcher.Filter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "");
                 }
-                else if (DisabledOnly==true )
+                else if (DisabledOnly == true)
                 {
                     searcher.Filter = searcher.Filter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "(userAccountControl:1.2.840.113556.1.4.803:=2)");
 
@@ -174,6 +174,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         if (EnabledOnly == true)
                         {
                             searcher.Filter = "(&(objectCategory=person)(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
+                        }
+                        else if (DisabledOnly == true)
+                        {
+                            searcher.Filter = "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=2))";
+
                         }
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
@@ -215,7 +220,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 }
 
 
-
+                
 
                 if (GeneralSearchTerm == null)
                 {

@@ -193,6 +193,11 @@
             Searcher.Cancel();
         SearchService.SearchTerm = SearchTermParameter;
         Searcher.GeneralSearchTerm = SearchService.SearchTerm;
+        if (CurrentUser.State.CanSearchDisabled(ActiveDirectoryObjectType.User)
+    || CurrentUser.State.CanSearchDisabled(ActiveDirectoryObjectType.Computer))
+        {
+            Searcher.EnabledOnly = false;
+        }
         Searcher.ExactMatch = true;
 
         //Try exact  match search first

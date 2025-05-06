@@ -1692,6 +1692,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<int?>("CustomFieldId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Data")
+                        .HasColumnType("TEXT");
+
                     b.Property<int?>("FieldId")
                         .HasColumnType("INTEGER");
 

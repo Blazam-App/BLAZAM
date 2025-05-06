@@ -1770,6 +1770,9 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<int?>("CustomFieldId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Data")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("FieldId")
                         .HasColumnType("int");
 

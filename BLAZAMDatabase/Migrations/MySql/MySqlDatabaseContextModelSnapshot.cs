@@ -1770,6 +1770,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int?>("CustomFieldId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Data")
+                        .HasColumnType("longtext");
+
                     b.Property<int?>("FieldId")
                         .HasColumnType("int");
 

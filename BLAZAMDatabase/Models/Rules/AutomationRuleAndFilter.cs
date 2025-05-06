@@ -11,6 +11,7 @@ namespace BLAZAM.Database.Models.Rules
 
 
         public string? Value { get; set; }
+        public string? Data { get; set; }
         public ActiveDirectoryFieldOperator Operator { get; set; }
         /// <summary>
         /// If true, the filter should return true if the filter does not match, and false if it does
