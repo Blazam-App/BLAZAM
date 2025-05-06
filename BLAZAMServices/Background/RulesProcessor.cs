@@ -162,6 +162,10 @@ namespace BLAZAM.Services.Background
                     !rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate)))
                 {
                     search.EnabledOnly = true;
+                }else if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate)) &&
+                    !rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate)))
+                {
+                    search.DisabledOnly = true;
                 }
                 foreach (var andFilters in rule.Filters.Select(x => x.AndFilters))
                 {

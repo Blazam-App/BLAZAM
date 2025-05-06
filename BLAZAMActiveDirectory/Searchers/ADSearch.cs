@@ -77,6 +77,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public List<IDirectoryEntryAdapter> Results { get; set; } = new();
         public string LdapQuery { get; private set; }
         public bool SearchDeleted { get; set; } = false;
+        public bool DisabledOnly { get; set; }
+
         private IActiveDirectoryContext? _currentUserActiveDirectoryContext;
 
         public ADSearch(IActiveDirectoryContext? currentUserActiveDirectoryContext)
@@ -136,9 +138,14 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     SizeLimit = MaxResults,
                     Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(objectClass=contact)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
                 };
-                if (EnabledOnly != true)
+                if (EnabledOnly == false)
                 {
                     searcher.Filter = searcher.Filter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "");
+                }
+                else if (DisabledOnly==true )
+                {
+                    searcher.Filter = searcher.Filter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "(userAccountControl:1.2.840.113556.1.4.803:=2)");
+
                 }
                 if (SearchDeleted)
                     searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + "(isDeleted=TRUE)" + ")";
