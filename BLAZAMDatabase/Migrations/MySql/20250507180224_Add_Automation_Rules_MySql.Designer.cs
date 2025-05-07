@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Database.Migrations.MySql
 {
     [DbContext(typeof(MySqlDatabaseContext))]
-    [Migration("20250506205445_Add_Automation_Rules_-MySql")]
+    [Migration("20250507180224_Add_Automation_Rules_MySql")]
     partial class Add_Automation_Rules_MySql
     {
         /// <inheritdoc />
@@ -487,6 +487,22 @@ namespace BLAZAM.Database.Migrations.MySql
                             FieldName = "ou",
                             FieldType = 0,
                             PropertyName = "OU"
+                        },
+                        new
+                        {
+                            Id = 43,
+                            DisplayName = "Last Change",
+                            FieldName = "whenChanged",
+                            FieldType = 1,
+                            PropertyName = "LastChanged"
+                        },
+                        new
+                        {
+                            Id = 44,
+                            DisplayName = "Last Logon",
+                            FieldName = "lastLogonTimestamp",
+                            FieldType = 1,
+                            PropertyName = "LastLogonTimestamp"
                         });
                 });
 

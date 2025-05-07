@@ -17,14 +17,18 @@
         </AppTooltip>
         @if (Filter.Field?.Id == ActiveDirectoryFields.OU.Id)
         {
+            if (Filter.Data.IsNullOrEmpty())
+            {
+                Filter.Data = "off";
+            }
             <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.OU"
                             MinCharacters="1"
                             SelectedResult="ou"
-                            SelectedResultChanged="@((ou)=>{Filter.Value=ou.DN;})" />
+                            SelectedResultChanged="OUSelected" />
             <MudSwitch @bind-Value=Filter.Data
-                       Label="Include Sub OU's"
-                       UncheckedColor="@Color.Error"
-                       Color="@Color.Success" />
+                       Label=@(Filter.Data!="on" ? "Include Sub OU's":"Search only this OU")
+                       UncheckedColor="@Color.Success"
+                       Color="@Color.Warning" />
         }
         else
         {
@@ -37,7 +41,7 @@
                 {
                     case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
                     case ActiveDirectoryFieldOperator.FutureTimeFrame:
-                        <MudTimePicker @bind-Time=Filter.TimeFrame />
+                        <MudTimePicker Editable=true @bind-Time=Filter.TimeFrame />
                         break;
                     case ActiveDirectoryFieldOperator.EqualTo:
                     case ActiveDirectoryFieldOperator.Contains:
@@ -80,8 +84,26 @@
         if (Filter.Field?.Id == ActiveDirectoryFields.OU.Id)
         {
             using var directory = DirectoryFactory.CreateActiveDirectoryContext();
-            ou = directory.OUs.FindOuByDN(Filter.Value);
+            if (!Filter.Value.IsNullOrEmpty())
+            {
+                ou = directory.OUs.FindOuByDN(Filter.Value);
+            }
         }
         _fields = _fields.OrderBy(f => AppLocalization[f.DisplayName].Value).Cast<IActiveDirectoryField>().ToList();
+    }
+
+    private void OUSelected(IDirectoryEntryAdapter? newOu)
+
+    {
+        if (newOu != null)
+        {
+            Filter.Value = newOu.DN;
+            ou = newOu as IADOrganizationalUnit;
+        }
+        else
+        {
+            Filter.Value = null;
+            ou = null;
+        }
     }
 }

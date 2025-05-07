@@ -370,7 +370,7 @@ namespace BLAZAM.Database.Models
 
         };
 
-        public static readonly ActiveDirectoryField Locked_Out = new()
+        public static readonly ActiveDirectoryField LockedOut = new()
         {
             Id = 41,
             FieldName = "lockoutTime",
@@ -387,6 +387,26 @@ namespace BLAZAM.Database.Models
             DisplayName = Lang.OU,
             FieldType = ActiveDirectoryFieldType.Text,
             PropertyName = "OU"
+
+        };
+
+        public static readonly ActiveDirectoryField LastChanged = new()
+        {
+            Id = 43,
+            FieldName = "whenChanged",
+            DisplayName = Lang.Last_Change,
+            FieldType = ActiveDirectoryFieldType.Date,
+            PropertyName = "LastChanged"
+
+        };
+
+        public static readonly ActiveDirectoryField LastLogonTimestamp = new()
+        {
+            Id = 44,
+            FieldName = "lastLogonTimestamp",
+            DisplayName = Lang.Last_Logon,
+            FieldType = ActiveDirectoryFieldType.Date,
+            PropertyName = "LastLogonTimestamp"
 
         };
 

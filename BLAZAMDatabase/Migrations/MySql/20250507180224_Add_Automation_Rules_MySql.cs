@@ -464,7 +464,9 @@ namespace BLAZAM.Database.Migrations.MySql
                     { 39, "Group Scope", "groupType", 2, "GroupScope" },
                     { 40, "Enabled", "userAccountControl", 6, "Enabled" },
                     { 41, "Locked Out", "lockoutTime", 6, "LockedOut" },
-                    { 42, "OU", "ou", 0, "OU" }
+                    { 42, "OU", "ou", 0, "OU" },
+                    { 43, "Last Change", "whenChanged", 1, "LastChanged" },
+                    { 44, "Last Logon", "lastLogonTimestamp", 1, "LastLogonTimestamp" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -553,6 +555,16 @@ namespace BLAZAM.Database.Migrations.MySql
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 42);
+
+            migrationBuilder.DeleteData(
+                table: "ActiveDirectoryFields",
+                keyColumn: "Id",
+                keyValue: 43);
+
+            migrationBuilder.DeleteData(
+                table: "ActiveDirectoryFields",
+                keyColumn: "Id",
+                keyValue: 44);
 
             migrationBuilder.DropColumn(
                 name: "PropertyName",
