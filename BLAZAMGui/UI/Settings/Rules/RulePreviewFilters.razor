@@ -58,7 +58,7 @@
                                               ReadOnly="true"
                                               Label="@AppLocalization[Lang.Operator]"
                                               Value=@andFilter.Operator.ToString() />
-                                @if (andFilter.Value != null)
+                                @if (!andFilter.Value.IsNullOrEmpty())
                                 {
                                     <MudTextField T="string"
                                                   ReadOnly="true"

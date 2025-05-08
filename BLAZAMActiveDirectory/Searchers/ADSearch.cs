@@ -7,6 +7,7 @@ using BLAZAM.Database.Models.Rules;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.DirectoryServices;
 using System.Runtime.InteropServices;
@@ -264,17 +265,19 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             var searchValue = "";
                             if (field.Value is DateTime dateTimeValue)
                             {
-                                switch (field.Field.FieldType)
-                                {
-                                    case ActiveDirectoryFieldType.Date:
-                                        searchValue = dateTimeValue.ToString("yyyyMMddHHmmss.fZ");
+                                searchValue = dateTimeValue.ToFileTimeUtc().ToString();
 
-                                        break;
-                                    case ActiveDirectoryFieldType.FileTime:
-                                        searchValue = dateTimeValue.ToFileTimeUtc().ToString();
-                                        break;
+                                //switch (field.Field.FieldType)
+                                //{
+                                //    case ActiveDirectoryFieldType.Date:
+                                //        searchValue = dateTimeValue.ToString("yyyyMMddHHmmss.fZ");
 
-                                }
+                                //        break;
+                                //    case ActiveDirectoryFieldType.FileTime:
+                                //        searchValue = dateTimeValue.ToFileTimeUtc().ToString();
+                                //        break;
+
+                                //}
                             }
                             else if (field.Value is string strValue)
                             {
@@ -302,55 +305,22 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             {
                                 case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
                                     op = ">=";
-                                    switch (field.Field.FieldType)
-                                    {
-                                        case ActiveDirectoryFieldType.Date:
-                                            if (field.Value is TimeSpan timeSpan)
-                                                searchValue = DateTime.Now.Subtract(timeSpan).ToString("yyyyMMddHHmmss.fZ");
-                                            break;
-                                        case ActiveDirectoryFieldType.FileTime:
-                                            if (field.Value is TimeSpan timeSpan2)
-                                                searchValue = DateTime.Now.Subtract(timeSpan2).ToFileTimeUtc().ToString();
-                                            break;
-                                    }
+                                    if (field.Value is TimeSpan timeSpan2)
+                                        searchValue = DateTime.Now.Subtract(timeSpan2).ToFileTimeUtc().ToString();
                                     break;
                                 case ActiveDirectoryFieldOperator.FutureTimeFrame:
                                     op = "<=";
-                                    switch (field.Field.FieldType)
-                                    {
-                                        case ActiveDirectoryFieldType.Date:
-                                            if (field.Value is TimeSpan timeSpan)
-                                                searchValue = DateTime.Now.Add(timeSpan).ToString("yyyyMMddHHmmss.fZ");
-                                            break;
-                                        case ActiveDirectoryFieldType.FileTime:
-                                            if (field.Value is TimeSpan timeSpan2)
-                                                searchValue = DateTime.Now.Add(timeSpan2).ToFileTimeUtc().ToString();
-                                            break;
-                                    }
+                                    if (field.Value is TimeSpan timeSpan3)
+                                        searchValue = DateTime.Now.Add(timeSpan3).ToFileTimeUtc().ToString();
                                     break;
                                 case ActiveDirectoryFieldOperator.BeforeNow:
                                     op = "<=";
-                                    switch (field.Field.FieldType)
-                                    {
-                                        case ActiveDirectoryFieldType.Date:
-                                            searchValue = DateTime.Now.ToString("yyyyMMddHHmmss.fZ");
-                                            break;
-                                        case ActiveDirectoryFieldType.FileTime:
-                                            searchValue = DateTime.Now.ToFileTimeUtc().ToString();
-                                            break;
-                                    }
+                                    searchValue = DateTime.Now.ToFileTimeUtc().ToString();
+
                                     break;
                                 case ActiveDirectoryFieldOperator.AfterNow:
                                     op = ">=";
-                                    switch (field.Field.FieldType)
-                                    {
-                                        case ActiveDirectoryFieldType.Date:
-                                            searchValue = DateTime.Now.ToString("yyyyMMddHHmmss.fZ");
-                                            break;
-                                        case ActiveDirectoryFieldType.FileTime:
-                                            searchValue = DateTime.Now.ToFileTimeUtc().ToString();
-                                            break;
-                                    }
+                                    searchValue = DateTime.Now.ToFileTimeUtc().ToString();
                                     break;
                                 case ActiveDirectoryFieldOperator.Boolean:
                                     break;
@@ -366,15 +336,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
                                         || field.Operator == ActiveDirectoryFieldOperator.HistoricalTimeFrame)
                                     {
                                         var op2 = field.Operator == ActiveDirectoryFieldOperator.FutureTimeFrame ? ">=" : "<=";
-                                        switch (field.Field.FieldType)
-                                        {
-                                            case ActiveDirectoryFieldType.Date:
-                                                FilterQuery += $"({field.Field.FieldName}{op2}{DateTime.Now.ToString("yyyyMMddHHmmss.fZ")})";
-                                                break;
-                                            case ActiveDirectoryFieldType.FileTime:
-                                                FilterQuery += $"({field.Field.FieldName}{op2}{DateTime.Now.ToFileTimeUtc().ToString()})";
-                                                break;
-                                        }
+
+                                       FilterQuery += $"({field.Field.FieldName}{op2}{DateTime.Now.ToFileTimeUtc().ToString()})";
+
 
                                     }
                                     FilterQuery += $"(!({field.Field.FieldName}=0))";
