@@ -220,7 +220,7 @@ namespace BLAZAM.Services.Background
                 var fieldValue = new ADFieldValue()
                 {
                     Field = andFilter.CurrentField,
-                    Value = andFilter.Value,
+                    Value = andFilter.TimeFrame==null?andFilter.Value:andFilter.TimeFrame,
                     Operator = andFilter.Operator,
                     Negate = andFilter.Negate
                 };

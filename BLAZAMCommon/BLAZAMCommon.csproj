@@ -8,13 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Contexts\**" />
     <Compile Remove="Data\Permissions\**" />
+    <EmbeddedResource Remove="Data\Contexts\**" />
     <EmbeddedResource Remove="Data\Permissions\**" />
+    <None Remove="Data\Contexts\**" />
     <None Remove="Data\Permissions\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\Contexts\" />
   </ItemGroup>
 
   <ItemGroup>

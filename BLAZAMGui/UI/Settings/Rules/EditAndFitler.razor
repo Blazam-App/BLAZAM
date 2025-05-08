@@ -41,7 +41,8 @@
                 {
                     case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
                     case ActiveDirectoryFieldOperator.FutureTimeFrame:
-                        <MudTimePicker Editable=true @bind-Time=Filter.TimeFrame />
+                    <MudTimeFramePicker @bind-TimeFrame=Filter.TimeFrame/>
+                        @* <MudTimePicker Editable=true @bind-Time=Filter.TimeFrame /> *@
                         break;
                     case ActiveDirectoryFieldOperator.EqualTo:
                     case ActiveDirectoryFieldOperator.Contains:

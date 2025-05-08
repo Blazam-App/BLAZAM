@@ -1,0 +1,113 @@
+﻿<MudStack Row=true>
+    <MudNumericField T="int"
+                     @bind-Value="count" />
+    <MudSelectList T="TimeUnit"
+                   @bind-Value=selectedTimeUnit
+                   Values="_timeUnits" />
+
+</MudStack>
+@code {
+    private TimeSpan? _timeFrame;
+
+    private List<TimeUnit> _timeUnits = new();
+    private TimeUnit _selectedTimeUnit;
+    private TimeUnit selectedTimeUnit
+    {
+        get => _selectedTimeUnit; set
+        {
+            if (_selectedTimeUnit == value) return;
+            _selectedTimeUnit = value;
+            SetTimeFrame();
+
+        }
+    }
+    private int _count;
+    private int count
+    {
+        get => _count; set
+        {
+            if (_count == value) return;
+            _count = value;
+            SetTimeFrame();
+
+        }
+    }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (TimeFrame != null)
+        {
+            if (TimeFrame.Value.TotalDays > 364)
+            {
+                _selectedTimeUnit = TimeUnit.Year;
+                _count = (int)TimeFrame.Value.TotalDays / 365;
+            }
+            else if (TimeFrame.Value.TotalDays > 29)
+            {
+                _selectedTimeUnit = TimeUnit.Month;
+                _count = (int)TimeFrame.Value.TotalDays / (365 / 12);
+            }
+            else if (TimeFrame.Value.TotalDays > 6)
+            {
+                _selectedTimeUnit = TimeUnit.Week;
+                _count = (int)TimeFrame.Value.TotalDays / 7;
+            }
+            else if (TimeFrame.Value.TotalHours > 23)
+            {
+                _selectedTimeUnit = TimeUnit.Day;
+                _count = (int)TimeFrame.Value.TotalDays;
+            }
+            else if (TimeFrame.Value.TotalMinutes > 59)
+            {
+                _selectedTimeUnit = TimeUnit.Hour;
+                _count = (int)TimeFrame.Value.TotalHours;
+            }
+            else
+            {
+                _selectedTimeUnit = TimeUnit.Minute;
+                _count = (int)TimeFrame.Value.TotalMinutes;
+            }
+        }
+        foreach (TimeUnit val in Enum.GetValues(typeof(TimeUnit)))
+        {
+            _timeUnits.Add(val);
+        }
+    }
+    private void SetTimeFrame()
+    {
+        switch (_selectedTimeUnit)
+        {
+            case TimeUnit.Minute:
+                TimeFrame = TimeSpan.FromMinutes(count);
+                break;
+            case TimeUnit.Hour:
+                TimeFrame = TimeSpan.FromHours(count);
+                break;
+            case TimeUnit.Day:
+                TimeFrame = TimeSpan.FromDays(count);
+                break;
+            case TimeUnit.Week:
+                TimeFrame = TimeSpan.FromDays(count * 7);
+                break;
+            case TimeUnit.Month:
+                TimeFrame = TimeSpan.FromDays(count * (365.0 / 12.0));
+                break;
+            case TimeUnit.Year:
+                TimeFrame = TimeSpan.FromDays(count * 365);
+                break;
+        }
+    }
+    [Parameter]
+    public TimeSpan? TimeFrame
+    {
+        get => _timeFrame; set
+        {
+            if (_timeFrame == value) return;
+            _timeFrame = value;
+            TimeFrameChanged.InvokeAsync(value);
+
+        }
+    }
+    [Parameter]
+    public EventCallback<TimeSpan?> TimeFrameChanged { get; set; }
+}

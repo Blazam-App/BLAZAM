@@ -187,7 +187,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         break;
                     case ActiveDirectoryObjectType.Contact:
                         searcher.Filter = "(&(objectCategory=person)(objectClass=contact))";
-                        
+
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
 
@@ -220,7 +220,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 }
 
 
-                
+
 
                 if (GeneralSearchTerm == null)
                 {
@@ -246,7 +246,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(memberOf=*{Fields.DN})*";
                     if (!Fields.SID.IsNullOrEmpty())
                         FilterQuery += $"(objectSid={Fields.SID})";
-                    if (Fields.GUID!=null)
+                    if (Fields.GUID != null)
                         FilterQuery += $"(objectGUID={Fields.GUID.ToHexADString()})";
                     if (Fields.NestedMemberOf != null)
                         FilterQuery += $"(memberOf:1.2.840.113556.1.4.1941:={Fields.NestedMemberOf.DN})";
@@ -301,8 +301,32 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             switch (field.Operator)
                             {
                                 case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
+                                    op = ">=";
+                                    switch (field.Field.FieldType)
+                                    {
+                                        case ActiveDirectoryFieldType.Date:
+                                            if (field.Value is TimeSpan timeSpan)
+                                                searchValue = DateTime.Now.Subtract(timeSpan).ToString("yyyyMMddHHmmss.fZ");
+                                            break;
+                                        case ActiveDirectoryFieldType.FileTime:
+                                            if (field.Value is TimeSpan timeSpan2)
+                                                searchValue = DateTime.Now.Subtract(timeSpan2).ToFileTimeUtc().ToString();
+                                            break;
+                                    }
                                     break;
                                 case ActiveDirectoryFieldOperator.FutureTimeFrame:
+                                    op = "<=";
+                                    switch (field.Field.FieldType)
+                                    {
+                                        case ActiveDirectoryFieldType.Date:
+                                            if (field.Value is TimeSpan timeSpan)
+                                                searchValue = DateTime.Now.Add(timeSpan).ToString("yyyyMMddHHmmss.fZ");
+                                            break;
+                                        case ActiveDirectoryFieldType.FileTime:
+                                            if (field.Value is TimeSpan timeSpan2)
+                                                searchValue = DateTime.Now.Add(timeSpan2).ToFileTimeUtc().ToString();
+                                            break;
+                                    }
                                     break;
                                 case ActiveDirectoryFieldOperator.BeforeNow:
                                     op = "<=";
@@ -333,12 +357,28 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             }
                             if (!searchValue.IsNullOrEmpty())
                             {
-                                var negateChar =  field.Negate ? "!" : "" ;
+                                var negateChar = field.Negate ? "!" : "";
                                 FilterQuery += $"({negateChar}{field.Field.FieldName}{op}{searchValue})";
-                                if(field.Field.FieldType == ActiveDirectoryFieldType.Date
+                                if (field.Field.FieldType == ActiveDirectoryFieldType.Date
                                     || field.Field.FieldType == ActiveDirectoryFieldType.FileTime)
                                 {
+                                    if(field.Operator== ActiveDirectoryFieldOperator.FutureTimeFrame 
+                                        || field.Operator == ActiveDirectoryFieldOperator.HistoricalTimeFrame)
+                                    {
+                                        var op2 = field.Operator == ActiveDirectoryFieldOperator.FutureTimeFrame ? ">=" : "<=";
+                                        switch (field.Field.FieldType)
+                                        {
+                                            case ActiveDirectoryFieldType.Date:
+                                                FilterQuery += $"({field.Field.FieldName}{op2}{DateTime.Now.ToString("yyyyMMddHHmmss.fZ")})";
+                                                break;
+                                            case ActiveDirectoryFieldType.FileTime:
+                                                FilterQuery += $"({field.Field.FieldName}{op2}{DateTime.Now.ToFileTimeUtc().ToString()})";
+                                                break;
+                                        }
+
+                                    }
                                     FilterQuery += $"(!({field.Field.FieldName}=0))";
+                                    FilterQuery += $"(!({field.Field.FieldName}=9223372036854775807))";
                                 }
 
                             }
@@ -350,7 +390,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 if (!FilterQuery.IsNullOrEmpty() && ExactMatch)
                 {
                     FilterQuery = FilterQuery.Replace("*", "");
-                    
+
                     // Regex pattern:
                     // \\(      -> Match the opening parenthesis literally (needs escaping)
                     // anr=    -> Match "anr=" literally
