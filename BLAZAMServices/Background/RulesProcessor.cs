@@ -176,11 +176,17 @@ namespace BLAZAM.Services.Background
                         .Where(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)) // This part identifies the Filters containing the OU AndFilter
                         .SelectMany(f => f.AndFilters) // This flattens the collection of AndFilters from the matched Filters
                         .Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true); // This selects the specific AndFilters with the OU field
-                    var ouDN = matchingAndFilters.OrderBy(f => f.Value.Length).FirstOrDefault();
-                    var ou = directory.OUs.FindOuByDN(ouDN.Value);
-                    ou.EnsureDirectoryEntry();
-                    var ouDE = ou.DirectoryEntry;
-                    search.SearchRoot = ouDE; 
+                    var ouFilter = matchingAndFilters.OrderBy(f => f.Value.Length).FirstOrDefault();
+                    if (ouFilter != null && ouFilter.Value!=null)
+                    {
+                        var ou = directory.OUs.FindOuByDN(ouFilter.Value);
+                        ou?.EnsureDirectoryEntry();
+                        var ouDE = ou?.DirectoryEntry;
+                        if (ouDE != null)
+                        {
+                            search.SearchRoot = ouDE;
+                        }
+                    }
                 }
 
                 if (rule.ActiveDirectoryObjectType != ActiveDirectoryObjectType.All)
@@ -220,7 +226,7 @@ namespace BLAZAM.Services.Background
                 var fieldValue = new ADFieldValue()
                 {
                     Field = andFilter.CurrentField,
-                    Value = andFilter.TimeFrame==null?andFilter.Value:andFilter.TimeFrame,
+                    Value = andFilter.TimeFrame == null ? andFilter.Value : andFilter.TimeFrame,
                     Operator = andFilter.Operator,
                     Negate = andFilter.Negate
                 };
