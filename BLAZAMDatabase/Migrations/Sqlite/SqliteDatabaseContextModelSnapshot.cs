@@ -1726,8 +1726,8 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<int>("OrFilterId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<TimeSpan?>("TimeFrame")
-                        .HasColumnType("TEXT");
+                    b.Property<long?>("TimeFrame")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Value")
                         .HasColumnType("TEXT");

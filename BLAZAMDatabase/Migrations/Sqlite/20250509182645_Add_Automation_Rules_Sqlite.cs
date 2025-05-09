@@ -1,15 +1,14 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace BLAZAM.Database.Migrations.MySql
+namespace BLAZAM.Database.Migrations.Sqlite
 {
     /// <inheritdoc />
-    public partial class Add_Automation_Rules_MySql : Migration
+    public partial class Add_Automation_Rules_Sqlite : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,49 +16,46 @@ namespace BLAZAM.Database.Migrations.MySql
             migrationBuilder.AddColumn<string>(
                 name: "PropertyName",
                 table: "ActiveDirectoryFields",
-                type: "longtext",
-                nullable: false)
-                .Annotation("MySql:CharSet", "utf8mb4");
+                type: "TEXT",
+                nullable: false,
+                defaultValue: "");
 
             migrationBuilder.CreateTable(
                 name: "AutomationRules",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastTriggered = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    LastExcecuted = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    Enabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    StopOnThisRule = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    Order = table.Column<int>(type: "int", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    ScheduleInterval = table.Column<int>(type: "int", nullable: true),
-                    ScheduledRunTime = table.Column<TimeSpan>(type: "time(6)", nullable: true),
-                    IntervalCount = table.Column<int>(type: "int", nullable: true),
-                    DaysOfWeekToRun = table.Column<byte>(type: "tinyint unsigned", nullable: true),
-                    Trigger = table.Column<int>(type: "int", nullable: false),
-                    ActiveDirectoryObjectType = table.Column<int>(type: "int", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    LastTriggered = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastExcecuted = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Enabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    StopOnThisRule = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Order = table.Column<int>(type: "INTEGER", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ScheduleInterval = table.Column<int>(type: "INTEGER", nullable: true),
+                    ScheduledRunTime = table.Column<TimeSpan>(type: "TEXT", nullable: true),
+                    IntervalCount = table.Column<int>(type: "INTEGER", nullable: true),
+                    DaysOfWeekToRun = table.Column<byte>(type: "INTEGER", nullable: true),
+                    Trigger = table.Column<int>(type: "INTEGER", nullable: false),
+                    ActiveDirectoryObjectType = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AutomationRules", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleActions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ActionType = table.Column<int>(type: "int", nullable: false),
-                    Data = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ActionGuid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    AutomationRuleId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ActionType = table.Column<int>(type: "INTEGER", nullable: false),
+                    Data = table.Column<string>(type: "TEXT", nullable: true),
+                    ActionGuid = table.Column<Guid>(type: "TEXT", nullable: false),
+                    AutomationRuleId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -69,17 +65,16 @@ namespace BLAZAM.Database.Migrations.MySql
                         column: x => x.AutomationRuleId,
                         principalTable: "AutomationRules",
                         principalColumn: "Id");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleOrFilter",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    AutomationRuleId = table.Column<int>(type: "int", nullable: false),
-                    FilterGuid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AutomationRuleId = table.Column<int>(type: "INTEGER", nullable: false),
+                    FilterGuid = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,20 +85,18 @@ namespace BLAZAM.Database.Migrations.MySql
                         principalTable: "AutomationRules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleFieldValues",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Value = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    AutomationRuleActionId = table.Column<int>(type: "int", nullable: false),
-                    FieldId = table.Column<int>(type: "int", nullable: true),
-                    CustomFieldId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Value = table.Column<string>(type: "TEXT", nullable: true),
+                    AutomationRuleActionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    FieldId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CustomFieldId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -114,59 +107,54 @@ namespace BLAZAM.Database.Migrations.MySql
                         principalTable: "ActiveDirectoryFields",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_AutomationRuleFieldValues_AutomationRuleActions_AutomationRu~",
+                        name: "FK_AutomationRuleFieldValues_AutomationRuleActions_AutomationRuleActionId",
                         column: x => x.AutomationRuleActionId,
                         principalTable: "AutomationRuleActions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AutomationRuleFieldValues_CustomActiveDirectoryFields_Custom~",
+                        name: "FK_AutomationRuleFieldValues_CustomActiveDirectoryFields_CustomFieldId",
                         column: x => x.CustomFieldId,
                         principalTable: "CustomActiveDirectoryFields",
                         principalColumn: "Id");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleGroupSids",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    GroupSid = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Assigned = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    AutomationRuleActionId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GroupSid = table.Column<string>(type: "TEXT", nullable: false),
+                    Assigned = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AutomationRuleActionId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AutomationRuleGroupSids", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AutomationRuleGroupSids_AutomationRuleActions_AutomationRule~",
+                        name: "FK_AutomationRuleGroupSids_AutomationRuleActions_AutomationRuleActionId",
                         column: x => x.AutomationRuleActionId,
                         principalTable: "AutomationRuleActions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleAndFilters",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    OrFilterId = table.Column<int>(type: "int", nullable: false),
-                    Value = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Data = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Operator = table.Column<int>(type: "int", nullable: false),
-                    Negate = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    TimeFrame = table.Column<TimeSpan>(type: "time(6)", nullable: true),
-                    FilterGuid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    FieldId = table.Column<int>(type: "int", nullable: true),
-                    CustomFieldId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    OrFilterId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Value = table.Column<string>(type: "TEXT", nullable: true),
+                    Data = table.Column<string>(type: "TEXT", nullable: true),
+                    Operator = table.Column<int>(type: "INTEGER", nullable: false),
+                    Negate = table.Column<bool>(type: "INTEGER", nullable: false),
+                    TimeFrame = table.Column<long>(type: "INTEGER", nullable: true),
+                    FilterGuid = table.Column<Guid>(type: "TEXT", nullable: false),
+                    FieldId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CustomFieldId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -183,12 +171,11 @@ namespace BLAZAM.Database.Migrations.MySql
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AutomationRuleAndFilters_CustomActiveDirectoryFields_CustomF~",
+                        name: "FK_AutomationRuleAndFilters_CustomActiveDirectoryFields_CustomFieldId",
                         column: x => x.CustomFieldId,
                         principalTable: "CustomActiveDirectoryFields",
                         principalColumn: "Id");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.UpdateData(
                 table: "ActiveDirectoryFields",

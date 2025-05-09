@@ -1804,8 +1804,8 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int>("OrFilterId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan?>("TimeFrame")
-                        .HasColumnType("time(6)");
+                    b.Property<long?>("TimeFrame")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Value")
                         .HasColumnType("longtext");
