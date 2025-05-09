@@ -7,7 +7,7 @@
             <MudText Typo="Typo.body2"
                      Color="Color.Tertiary"
                      Class="align-middle">@Rule.Name</MudText>
-            @if (CompactView)
+                @if (CompactView)
             {
                 <MudStack Class="my-0" Row=true>
 
@@ -30,7 +30,7 @@
 
 
             @* <AppIconButton Icon="@Icons.Material.Filled.CopyAll"
-                           OnClick="@(CopyClicked)" /> *@
+            OnClick="@(CopyClicked)" /> *@
 
         </MudStack>
         @if (!CompactView)
@@ -125,24 +125,32 @@
                            OnClick="@(()=>{_matchedPopoverOpen = !_matchedPopoverOpen;})">
                     Matches: @filteredEntries.Count
                 </MudButton>
-
-                <AppIconButton Color="Color.Primary"
-                               Icon="@Icons.Material.Filled.Refresh"
-                               OnClick="@LoadFilteredEntries" />
+                @if (_loadingFilteredEntries)
+                {
+                    <MudProgressCircular Indeterminate=true
+                                         Size="Size.Small"
+                                         Color="Color.Primary" />
+                }
+                else
+                {
+                    <AppIconButton Color="Color.Primary"
+                                   Icon="@Icons.Material.Filled.Refresh"
+                                   OnClick="@LoadFilteredEntries" />
+                }
                 <MudSpacer />
 
             </MudStack>
             @if (_matchedPopoverOpen)
             {
                 <MudDataGrid Elevation="0"
-                            Dense="true"
+                             Dense="true"
                              Items="filteredEntries"
                              RowsPerPage="10">
                     <Columns>
                         <TemplateColumn>
                             <CellTemplate>
                                 <MudLink Target="_blank" Href="@context.Item.SearchUri">
-                                        <SearchResult Entry="@context.Item" Class="mud-width-full" />
+                                    <SearchResult Entry="@context.Item" Class="mud-width-full" />
                                 </MudLink>
                             </CellTemplate>
                         </TemplateColumn>
@@ -154,16 +162,16 @@
                     </PagerContent>
                 </MudDataGrid>
                 @*    <MudStack Class="mb-4 mud-width-full">
-                    @foreach (var entry in filteredEntries)
-                    {
-                        <MudLink Target="_blank" Href="@entry.SearchUri">
-                            <DirectoryEntryTooltipPopover Entry="entry">
-                                <SearchResult Entry="@entry" Class="mud-width-full" />
-                            </DirectoryEntryTooltipPopover>
-                        </MudLink>
+        @foreach (var entry in filteredEntries)
+        {
+        <MudLink Target="_blank" Href="@entry.SearchUri">
+        <DirectoryEntryTooltipPopover Entry="entry">
+        <SearchResult Entry="@entry" Class="mud-width-full" />
+        </DirectoryEntryTooltipPopover>
+        </MudLink>
 
-                    }
-                </MudStack> *@
+        }
+        </MudStack> *@
             }
 
             @if (Rule.Trigger == NotificationType.Scheduled)
