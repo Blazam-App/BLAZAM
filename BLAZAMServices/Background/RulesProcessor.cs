@@ -162,16 +162,49 @@ namespace BLAZAM.Services.Background
                     !rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate)))
                 {
                     search.EnabledOnly = true;
-                }else if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate)) &&
+                }
+                else if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate)) &&
                     !rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate)))
                 {
                     search.DisabledOnly = true;
                 }
+
+                //Has OU scope
+                if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)))
+                {
+                    var matchingAndFilters = rule.Filters
+                        .Where(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)) // This part identifies the Filters containing the OU AndFilter
+                        .SelectMany(f => f.AndFilters) // This flattens the collection of AndFilters from the matched Filters
+                        .Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true); // This selects the specific AndFilters with the OU field
+                    var ouFilter = matchingAndFilters.OrderBy(f => f.Value.Length).FirstOrDefault();
+                    if (ouFilter != null && ouFilter.Value!=null)
+                    {
+                        var ou = directory.OUs.FindOuByDN(ouFilter.Value);
+                        ou?.EnsureDirectoryEntry();
+                        var ouDE = ou?.DirectoryEntry;
+                        if (ouDE != null)
+                        {
+                            search.SearchRoot = ouDE;
+                        }
+                    }
+                }
+
+                if (rule.ActiveDirectoryObjectType != ActiveDirectoryObjectType.All)
+                {
+                    search.ObjectTypeFilter = rule.ActiveDirectoryObjectType;
+                }
+
+
+
+
+
+
                 foreach (var andFilters in rule.Filters.Select(x => x.AndFilters))
                 {
                     foreach (var andFilter in andFilters)
                     {
-                        if (andFilter.Field?.Equals(ActiveDirectoryFields.Enabled) == false)
+                        if (andFilter.Field?.Equals(ActiveDirectoryFields.Enabled) == false
+                            && andFilter.Field?.Equals(ActiveDirectoryFields.OU) == false)
                         {
                             PrepareADSearch(search, andFilter);
                         }
@@ -193,7 +226,7 @@ namespace BLAZAM.Services.Background
                 var fieldValue = new ADFieldValue()
                 {
                     Field = andFilter.CurrentField,
-                    Value = andFilter.Value,
+                    Value = andFilter.TimeFrame == null ? andFilter.Value : andFilter.TimeFrame,
                     Operator = andFilter.Operator,
                     Negate = andFilter.Negate
                 };
@@ -441,6 +474,10 @@ namespace BLAZAM.Services.Background
             {
                 if (andFilter.CurrentField is ActiveDirectoryField defaultField)
                 {
+                    if (andFilter.Field.Equals(ActiveDirectoryFields.OU))
+                    {
+                        return entry.DN.Contains(andFilter.Value);
+                    }
                     switch (andFilter.Operator)
                     {
                         case ActiveDirectoryFieldOperator.EqualTo:

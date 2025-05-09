@@ -158,7 +158,7 @@
     public ActiveDirectoryObjectType? SearchObjectType { get; set; }
 
     protected virtual List<IDirectoryEntryAdapter> results { get; set; } = new List<IDirectoryEntryAdapter>();
-   
+
 
     /// <summary>
     /// Called internally to start a search
@@ -174,7 +174,6 @@
         results.Clear();
 
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         if (!SearchTermParameter.IsNullOrEmpty() && SearchTermParameter?.Length > 0)
             await InvokeSearch();
         else
@@ -199,6 +198,7 @@
         else
             Searcher.Cancel();
         SearchService.SearchTerm = SearchTermParameter;
+        Searcher.EnabledOnly = !SearchService.IncludeDisabled;
         Searcher.GeneralSearchTerm = SearchService.SearchTerm;
         Searcher.ObjectTypeFilter = SearchService.SeachObjectType;
         Searcher.ExactMatch = true;

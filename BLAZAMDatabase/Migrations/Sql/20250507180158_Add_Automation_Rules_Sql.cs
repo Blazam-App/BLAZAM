@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BLAZAM.Database.Migrations.Sql
 {
     /// <inheritdoc />
-    public partial class Add_Automation_RulesSql : Migration
+    public partial class Add_Automation_Rules_Sql : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -148,6 +148,7 @@ namespace BLAZAM.Database.Migrations.Sql
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrFilterId = table.Column<int>(type: "int", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Operator = table.Column<int>(type: "int", nullable: false),
                     Negate = table.Column<bool>(type: "bit", nullable: false),
                     TimeFrame = table.Column<TimeSpan>(type: "time", nullable: true),
@@ -450,7 +451,9 @@ namespace BLAZAM.Database.Migrations.Sql
                     { 39, "Group Scope", "groupType", 2, "GroupScope" },
                     { 40, "Enabled", "userAccountControl", 6, "Enabled" },
                     { 41, "Locked Out", "lockoutTime", 6, "LockedOut" },
-                    { 42, "OU", "ou", 0, "OU" }
+                    { 42, "OU", "ou", 0, "OU" },
+                    { 43, "Last Change", "whenChanged", 1, "LastChanged" },
+                    { 44, "Last Logon", "lastLogonTimestamp", 1, "LastLogonTimestamp" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -539,6 +542,16 @@ namespace BLAZAM.Database.Migrations.Sql
                 table: "ActiveDirectoryFields",
                 keyColumn: "Id",
                 keyValue: 42);
+
+            migrationBuilder.DeleteData(
+                table: "ActiveDirectoryFields",
+                keyColumn: "Id",
+                keyValue: 43);
+
+            migrationBuilder.DeleteData(
+                table: "ActiveDirectoryFields",
+                keyColumn: "Id",
+                keyValue: 44);
 
             migrationBuilder.DropColumn(
                 name: "PropertyName",

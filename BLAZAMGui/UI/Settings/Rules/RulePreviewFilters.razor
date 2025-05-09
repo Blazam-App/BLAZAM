@@ -41,7 +41,6 @@
                                 <MudChip T="string"
                                          Text="Not"
                                          Color="Color.Error" />
-
                             }
                             <MudTextField T="string"
                                           ReadOnly="true"
@@ -59,12 +58,19 @@
                                               ReadOnly="true"
                                               Label="@AppLocalization[Lang.Operator]"
                                               Value=@andFilter.Operator.ToString() />
-                                @if (andFilter.Value != null)
+                                @if (!andFilter.Value.IsNullOrEmpty())
                                 {
                                     <MudTextField T="string"
                                                   ReadOnly="true"
                                                   Label="@AppLocalization[Lang.Value]"
                                                   Value=@andFilter.Value?.ToString() />
+                                }
+                                @if (andFilter.TimeFrame != null)
+                                {
+                                    <MudTextField T="string"
+                                                  ReadOnly="true"
+                                                  Label="@AppLocalization[Lang.Time]"
+                                                  Value=@andFilter.TimeFrame?.ToString() />
                                 }
                             }
 

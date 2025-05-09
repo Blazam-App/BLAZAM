@@ -484,6 +484,22 @@ namespace BLAZAM.Common.Migrations.Sql
                             FieldName = "ou",
                             FieldType = 0,
                             PropertyName = "OU"
+                        },
+                        new
+                        {
+                            Id = 43,
+                            DisplayName = "Last Change",
+                            FieldName = "whenChanged",
+                            FieldType = 1,
+                            PropertyName = "LastChanged"
+                        },
+                        new
+                        {
+                            Id = 44,
+                            DisplayName = "Last Logon",
+                            FieldName = "lastLogonTimestamp",
+                            FieldType = 1,
+                            PropertyName = "LastLogonTimestamp"
                         });
                 });
 
@@ -1769,6 +1785,9 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.Property<int?>("CustomFieldId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Data")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("FieldId")
                         .HasColumnType("int");
