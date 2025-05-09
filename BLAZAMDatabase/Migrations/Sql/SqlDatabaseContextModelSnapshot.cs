@@ -1804,8 +1804,8 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<int>("OrFilterId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan?>("TimeFrame")
-                        .HasColumnType("time");
+                    b.Property<long?>("TimeFrame")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
