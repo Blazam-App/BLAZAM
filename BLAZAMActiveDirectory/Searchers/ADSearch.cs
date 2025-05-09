@@ -7,6 +7,7 @@ using BLAZAM.Database.Models.Rules;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.DirectoryServices;
 using System.Runtime.InteropServices;
@@ -77,6 +78,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public List<IDirectoryEntryAdapter> Results { get; set; } = new();
         public string LdapQuery { get; private set; }
         public bool SearchDeleted { get; set; } = false;
+        public bool DisabledOnly { get; set; }
+
         private IActiveDirectoryContext? _currentUserActiveDirectoryContext;
 
         public ADSearch(IActiveDirectoryContext? currentUserActiveDirectoryContext)
@@ -136,9 +139,14 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     SizeLimit = MaxResults,
                     Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(objectClass=contact)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
                 };
-                if (EnabledOnly != true)
+                if (EnabledOnly == false)
                 {
                     searcher.Filter = searcher.Filter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "");
+                }
+                else if (DisabledOnly == true)
+                {
+                    searcher.Filter = searcher.Filter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "(userAccountControl:1.2.840.113556.1.4.803:=2)");
+
                 }
                 if (SearchDeleted)
                     searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + "(isDeleted=TRUE)" + ")";
@@ -168,6 +176,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         {
                             searcher.Filter = "(&(objectCategory=person)(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
                         }
+                        else if (DisabledOnly == true)
+                        {
+                            searcher.Filter = "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=2))";
+
+                        }
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
 
@@ -175,7 +188,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         break;
                     case ActiveDirectoryObjectType.Contact:
                         searcher.Filter = "(&(objectCategory=person)(objectClass=contact))";
-                        
+
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
 
@@ -234,7 +247,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(memberOf=*{Fields.DN})*";
                     if (!Fields.SID.IsNullOrEmpty())
                         FilterQuery += $"(objectSid={Fields.SID})";
-                    if (Fields.GUID!=null)
+                    if (Fields.GUID != null)
                         FilterQuery += $"(objectGUID={Fields.GUID.ToHexADString()})";
                     if (Fields.NestedMemberOf != null)
                         FilterQuery += $"(memberOf:1.2.840.113556.1.4.1941:={Fields.NestedMemberOf.DN})";
@@ -252,17 +265,19 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             var searchValue = "";
                             if (field.Value is DateTime dateTimeValue)
                             {
-                                switch (field.Field.FieldType)
-                                {
-                                    case ActiveDirectoryFieldType.Date:
-                                        searchValue = dateTimeValue.ToString("yyyyMMddHHmmss.fZ");
+                                searchValue = dateTimeValue.ToFileTimeUtc().ToString();
 
-                                        break;
-                                    case ActiveDirectoryFieldType.FileTime:
-                                        searchValue = dateTimeValue.ToFileTimeUtc().ToString();
-                                        break;
+                                //switch (field.Field.FieldType)
+                                //{
+                                //    case ActiveDirectoryFieldType.Date:
+                                //        searchValue = dateTimeValue.ToString("yyyyMMddHHmmss.fZ");
 
-                                }
+                                //        break;
+                                //    case ActiveDirectoryFieldType.FileTime:
+                                //        searchValue = dateTimeValue.ToFileTimeUtc().ToString();
+                                //        break;
+
+                                //}
                             }
                             else if (field.Value is string strValue)
                             {
@@ -289,44 +304,45 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             switch (field.Operator)
                             {
                                 case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
+                                    op = ">=";
+                                    if (field.Value is TimeSpan timeSpan2)
+                                        searchValue = DateTime.Now.Subtract(timeSpan2).ToFileTimeUtc().ToString();
                                     break;
                                 case ActiveDirectoryFieldOperator.FutureTimeFrame:
+                                    op = "<=";
+                                    if (field.Value is TimeSpan timeSpan3)
+                                        searchValue = DateTime.Now.Add(timeSpan3).ToFileTimeUtc().ToString();
                                     break;
                                 case ActiveDirectoryFieldOperator.BeforeNow:
                                     op = "<=";
-                                    switch (field.Field.FieldType)
-                                    {
-                                        case ActiveDirectoryFieldType.Date:
-                                            searchValue = DateTime.Now.ToString("yyyyMMddHHmmss.fZ");
-                                            break;
-                                        case ActiveDirectoryFieldType.FileTime:
-                                            searchValue = DateTime.Now.ToFileTimeUtc().ToString();
-                                            break;
-                                    }
+                                    searchValue = DateTime.Now.ToFileTimeUtc().ToString();
+
                                     break;
                                 case ActiveDirectoryFieldOperator.AfterNow:
                                     op = ">=";
-                                    switch (field.Field.FieldType)
-                                    {
-                                        case ActiveDirectoryFieldType.Date:
-                                            searchValue = DateTime.Now.ToString("yyyyMMddHHmmss.fZ");
-                                            break;
-                                        case ActiveDirectoryFieldType.FileTime:
-                                            searchValue = DateTime.Now.ToFileTimeUtc().ToString();
-                                            break;
-                                    }
+                                    searchValue = DateTime.Now.ToFileTimeUtc().ToString();
                                     break;
                                 case ActiveDirectoryFieldOperator.Boolean:
                                     break;
                             }
                             if (!searchValue.IsNullOrEmpty())
                             {
-                                var negateChar =  field.Negate ? "!" : "" ;
+                                var negateChar = field.Negate ? "!" : "";
                                 FilterQuery += $"({negateChar}{field.Field.FieldName}{op}{searchValue})";
-                                if(field.Field.FieldType == ActiveDirectoryFieldType.Date
+                                if (field.Field.FieldType == ActiveDirectoryFieldType.Date
                                     || field.Field.FieldType == ActiveDirectoryFieldType.FileTime)
                                 {
+                                    if(field.Operator== ActiveDirectoryFieldOperator.FutureTimeFrame 
+                                        || field.Operator == ActiveDirectoryFieldOperator.HistoricalTimeFrame)
+                                    {
+                                        var op2 = field.Operator == ActiveDirectoryFieldOperator.FutureTimeFrame ? ">=" : "<=";
+
+                                       FilterQuery += $"({field.Field.FieldName}{op2}{DateTime.Now.ToFileTimeUtc().ToString()})";
+
+
+                                    }
                                     FilterQuery += $"(!({field.Field.FieldName}=0))";
+                                    FilterQuery += $"(!({field.Field.FieldName}=9223372036854775807))";
                                 }
 
                             }
@@ -338,7 +354,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 if (!FilterQuery.IsNullOrEmpty() && ExactMatch)
                 {
                     FilterQuery = FilterQuery.Replace("*", "");
-                    
+
                     // Regex pattern:
                     // \\(      -> Match the opening parenthesis literally (needs escaping)
                     // anr=    -> Match "anr=" literally

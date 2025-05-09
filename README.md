@@ -11,10 +11,9 @@
 
 Proudly serving
 
-[![image](https://github.com/user-attachments/assets/8117a971-aa0d-4064-bbad-a836a5035187)](https://logs.blazam.org/#/dashboards?dashboardId=dashboard-14&range=90d&group=1d&apiKey=EpKqcm4TkeEzMvIAxtnc&theme=dark-theme)
+![image](https://github.com/user-attachments/assets/efdb0e8a-9030-4c58-9a2e-8671a94a64fb)
 
 
-Click the image for the latest statistics.
 ## Screenshots
 ![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)
 ![image](https://github.com/user-attachments/assets/cfa35e1f-facb-4c64-8ad4-1a48de5f4a82)

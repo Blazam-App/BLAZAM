@@ -119,7 +119,7 @@
                              Status="@(!Rule.StopOnThisRule)" />
             </MudField>
             <MudStack Class="mud-width-full" Row="true">
-                <MudSpacer/>
+                <MudSpacer />
                 <MudButton Disabled="_loadingFilteredEntries"
                            Color="Color.Primary"
                            OnClick="@(()=>{_matchedPopoverOpen = !_matchedPopoverOpen;})">
@@ -134,7 +134,26 @@
             </MudStack>
             @if (_matchedPopoverOpen)
             {
-                <MudStack Class="mb-4 mud-width-full">
+                <MudDataGrid Elevation="0"
+                            Dense="true"
+                             Items="filteredEntries"
+                             RowsPerPage="10">
+                    <Columns>
+                        <TemplateColumn>
+                            <CellTemplate>
+                                <MudLink Target="_blank" Href="@context.Item.SearchUri">
+                                        <SearchResult Entry="@context.Item" Class="mud-width-full" />
+                                </MudLink>
+                            </CellTemplate>
+                        </TemplateColumn>
+
+
+                    </Columns>
+                    <PagerContent>
+                        <MudDataGridPager T="IDirectoryEntryAdapter" />
+                    </PagerContent>
+                </MudDataGrid>
+                @*    <MudStack Class="mb-4 mud-width-full">
                     @foreach (var entry in filteredEntries)
                     {
                         <MudLink Target="_blank" Href="@entry.SearchUri">
@@ -144,12 +163,13 @@
                         </MudLink>
 
                     }
-                </MudStack>
+                </MudStack> *@
             }
 
             @if (Rule.Trigger == NotificationType.Scheduled)
             {
                 <MudButton Color="Color.Primary"
+                           Disabled="@(!Rule.Enabled)"
                            OnClick="@(()=>{RulesProcessor.ProcessScheduledRule(Rule);})">
                     Run Now
                 </MudButton>
