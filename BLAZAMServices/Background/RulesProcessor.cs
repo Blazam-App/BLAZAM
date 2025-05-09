@@ -149,69 +149,130 @@ namespace BLAZAM.Services.Background
 
         public List<IDirectoryEntryAdapter> GetFilteredEntries(AutomationRule rule)
         {
-            List<IDirectoryEntryAdapter> matchedEntries;
+            List<IDirectoryEntryAdapter> matchedEntries = new();
             using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
             {
-                ADSearch search = new ADSearch(directory);
-
-
-                //Perform search customization for this rule
-
-                //Has enabled filter
-                if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate)) &&
-                    !rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate)))
+                foreach(var orFilter in rule.Filters)
                 {
-                    search.EnabledOnly = true;
-                }
-                else if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate)) &&
-                    !rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate)))
-                {
-                    search.DisabledOnly = true;
-                }
+                    ADSearch search = new ADSearch(directory);
 
-                //Has OU scope
-                if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)))
-                {
-                    var matchingAndFilters = rule.Filters
-                        .Where(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)) // This part identifies the Filters containing the OU AndFilter
-                        .SelectMany(f => f.AndFilters) // This flattens the collection of AndFilters from the matched Filters
-                        .Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true); // This selects the specific AndFilters with the OU field
-                    var ouFilter = matchingAndFilters.OrderBy(f => f.Value.Length).FirstOrDefault();
-                    if (ouFilter != null && ouFilter.Value!=null)
+
+                    //Perform search customization for this rule
+
+                    //Has enabled filter
+                    if (orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate) &&
+                        !orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate))
                     {
-                        var ou = directory.OUs.FindOuByDN(ouFilter.Value);
-                        ou?.EnsureDirectoryEntry();
-                        var ouDE = ou?.DirectoryEntry;
-                        if (ouDE != null)
+                        search.EnabledOnly = true;
+                    }
+                    else if (orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate) &&
+                        !orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate))
+                    {
+                        search.DisabledOnly = true;
+                    }
+
+                    //Has OU scope
+                    if (orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true))
+                    {
+                        var ouFilters = orFilter.AndFilters.Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true) // This part identifies the Filters containing the OU AndFilter
+                            .Select(f => f.Value); // This flattens the collection of AndFilters from the matched Filters
+                        var ouFilter = ouFilters.OrderBy(f => f.Length).FirstOrDefault();
+                        if (ouFilter != null && ouFilter != null)
                         {
-                            search.SearchRoot = ouDE;
+                            var ou = directory.OUs.FindOuByDN(ouFilter);
+                            ou?.EnsureDirectoryEntry();
+                            var ouDE = ou?.DirectoryEntry;
+                            if (ouDE != null)
+                            {
+                                search.SearchRoot = ouDE;
+                            }
                         }
                     }
-                }
 
-                if (rule.ActiveDirectoryObjectType != ActiveDirectoryObjectType.All)
-                {
-                    search.ObjectTypeFilter = rule.ActiveDirectoryObjectType;
-                }
-
-
-
-
-
-
-                foreach (var andFilters in rule.Filters.Select(x => x.AndFilters))
-                {
-                    foreach (var andFilter in andFilters)
+                    if (rule.ActiveDirectoryObjectType != ActiveDirectoryObjectType.All)
                     {
-                        if (andFilter.Field?.Equals(ActiveDirectoryFields.Enabled) == false
-                            && andFilter.Field?.Equals(ActiveDirectoryFields.OU) == false)
-                        {
-                            PrepareADSearch(search, andFilter);
-                        }
-
+                        search.ObjectTypeFilter = rule.ActiveDirectoryObjectType;
                     }
+
+
+
+
+
+
+                    foreach (var andFilters in rule.Filters.Select(x => x.AndFilters))
+                    {
+                        foreach (var andFilter in andFilters)
+                        {
+                            if (andFilter.Field?.Equals(ActiveDirectoryFields.Enabled) == false
+                                && andFilter.Field?.Equals(ActiveDirectoryFields.OU) == false)
+                            {
+                                PrepareADSearch(search, andFilter);
+                            }
+
+                        }
+                    }
+                    matchedEntries.AddRange(search.Search());
                 }
-                matchedEntries = search.Search();
+                //ADSearch search = new ADSearch(directory);
+
+
+                ////Perform search customization for this rule
+
+                ////Has enabled filter
+                //if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate)) &&
+                //    !rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate)))
+                //{
+                //    search.EnabledOnly = true;
+                //}
+                //else if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate)) &&
+                //    !rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate)))
+                //{
+                //    search.DisabledOnly = true;
+                //}
+
+                ////Has OU scope
+                //if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)))
+                //{
+                //    var matchingAndFilters = rule.Filters
+                //        .Where(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)) // This part identifies the Filters containing the OU AndFilter
+                //        .SelectMany(f => f.AndFilters) // This flattens the collection of AndFilters from the matched Filters
+                //        .Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true); // This selects the specific AndFilters with the OU field
+                //    var ouFilter = matchingAndFilters.OrderBy(f => f.Value.Length).FirstOrDefault();
+                //    if (ouFilter != null && ouFilter.Value!=null)
+                //    {
+                //        var ou = directory.OUs.FindOuByDN(ouFilter.Value);
+                //        ou?.EnsureDirectoryEntry();
+                //        var ouDE = ou?.DirectoryEntry;
+                //        if (ouDE != null)
+                //        {
+                //            search.SearchRoot = ouDE;
+                //        }
+                //    }
+                //}
+
+                //if (rule.ActiveDirectoryObjectType != ActiveDirectoryObjectType.All)
+                //{
+                //    search.ObjectTypeFilter = rule.ActiveDirectoryObjectType;
+                //}
+
+
+
+
+
+
+                //foreach (var andFilters in rule.Filters.Select(x => x.AndFilters))
+                //{
+                //    foreach (var andFilter in andFilters)
+                //    {
+                //        if (andFilter.Field?.Equals(ActiveDirectoryFields.Enabled) == false
+                //            && andFilter.Field?.Equals(ActiveDirectoryFields.OU) == false)
+                //        {
+                //            PrepareADSearch(search, andFilter);
+                //        }
+
+                //    }
+                //}
+                //matchedEntries = search.Search();
 
 
             }

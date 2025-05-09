@@ -19,6 +19,7 @@ using BLAZAM.Server.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Reflection;
@@ -268,6 +269,11 @@ namespace BLAZAM.Database.Context
             {
                 entity.Navigation(e => e.CustomField).AutoInclude();
                 entity.Navigation(e => e.Field).AutoInclude();
+                entity.Property(e => e.TimeFrame)
+                .HasConversion(new ValueConverter<TimeSpan?, long?>(
+                        v => v.HasValue ? v.Value.Ticks : (long?)null,
+                        v => v.HasValue ? TimeSpan.FromTicks(v.Value) : (TimeSpan?)null
+                    ));
             });
 
             modelBuilder.Entity<AutomationRuleActionFieldValue>(entity =>
@@ -286,7 +292,7 @@ namespace BLAZAM.Database.Context
             List<ObjectAction> objectActions = typeof(ObjectActions).GetStaticProperties<ObjectAction>();
 
             modelBuilder.Entity<ObjectAction>().HasData(objectActions);
-           
+
             modelBuilder.Entity<ActionAccessMapping>(entity =>
             {
                 entity.Navigation(e => e.ObjectAction).AutoInclude();
@@ -397,7 +403,7 @@ namespace BLAZAM.Database.Context
 
         }
 
-      
+
 
         public bool EntityIsTracked<TEntry>(TEntry entry)
         {
