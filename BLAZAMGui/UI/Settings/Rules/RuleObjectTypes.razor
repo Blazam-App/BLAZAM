@@ -1,20 +1,21 @@
-
 @inherits AppComponentBase
 <MudList Color="Color.Tertiary"
-Dense=true
-T="ActiveDirectoryObjectType"
-@bind-SelectedValue=ViewFiler.ObjectType>
+         Dense=true
+         T="ActiveDirectoryObjectType"
+         @bind-SelectedValue=ViewFiler.ObjectType>
     @foreach (var objectType in objectTypes)
     {
-        <MudListItem Icon="@objectType.TypeIcon()" Value="objectType">@AppLocalization[objectType.ToString()]</MudListItem>
+        <MudListItem Icon="@objectType.TypeIcon()"
+                     OnClick="@(()=>{Nav.NavigateTo($"/rules/{objectType.ToString().ToLower()}/{ViewFiler.Trigger.ToString().ToLower()}");})"
+                     Value="objectType">@AppLocalization[objectType.ToString()]</MudListItem>
     }
 </MudList>
 
 
 @code {
     [CascadingParameter]
-    public RuleViewFilter ViewFiler{ get; set; }
-   
+    public RuleViewFilter ViewFiler { get; set; }
+
 
     private List<ActiveDirectoryObjectType> objectTypes = new();
 
@@ -26,6 +27,6 @@ T="ActiveDirectoryObjectType"
             objectTypes.Add(type);
         }
         objectTypes = objectTypes.OrderBy(t => t.ToString()).ToList();
-        ViewFiler.ObjectType = objectTypes.First();
+        //ViewFiler.ObjectType = objectTypes.First();
     }
 }

@@ -45,23 +45,29 @@
             }
             break;
         case AutomationRuleActionType.Assign:
-            <ADAutoComplete SelectedSid="@Action.GroupSids.FirstOrDefault()?.GroupSid" SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=true});})" SearchObjectType="ActiveDirectoryObjectType.Group" />
+            <ADAutoComplete  MinCharacters="1"
+            SelectedSid="@Action.GroupSids.FirstOrDefault()?.GroupSid"
+            SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=true});})"
+            SearchObjectType="ActiveDirectoryObjectType.Group" />
 
             break;
         case AutomationRuleActionType.Lockout:
             break;
         case AutomationRuleActionType.SendEmail:
-            <AppConstructionNotice/>
+            <AppConstructionNotice />
             @* <MudTextField Disabled=true T="string" @bind-Value=Action.Data/>*@
- 
+
             break;
         case AutomationRuleActionType.Move:
-            <ADAutoComplete SelectedResultChanged="@((result)=>{
-                      Action.Data = result.DN;
-                                                            })" SearchObjectType="ActiveDirectoryObjectType.OU" />
+            <ADAutoComplete MinCharacters="1"
+            SelectedResult="ou"
+            SelectedResultChanged="@OUSelected"
+            SearchObjectType="ActiveDirectoryObjectType.OU" />
             break;
         case AutomationRuleActionType.Unassign:
-            <ADAutoComplete SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=false});})" SearchObjectType="ActiveDirectoryObjectType.Group" />
+            <ADAutoComplete MinCharacters="1"
+                SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=false});})" 
+                SearchObjectType="ActiveDirectoryObjectType.Group" />
 
             break;
         case AutomationRuleActionType.Enable:
@@ -108,18 +114,44 @@
         {
             _selectedField = Action.FieldValues[0].Field;
         }
+        if(Action.ActionType== AutomationRuleActionType.Move){
+            using var directory = DirectoryFactory.CreateActiveDirectoryContext();
+            if (!Action.Data.IsNullOrEmpty())
+            {
+                ou = directory.OUs.FindOuByDN(Action.Data);
+            }
+        }
+
     }
+    private IADOrganizationalUnit? ou;
+    private void OUSelected(IDirectoryEntryAdapter? newOu)
+
+    {
+        if (newOu != null)
+        {
+            Action.Data = newOu.DN;
+            ou = newOu as IADOrganizationalUnit;
+        }
+        else
+        {
+            Action.Data = null;
+            ou = null;
+        }
+    }
+
     private void FieldChanged(IActiveDirectoryField field)
     {
         if (_selectedField == field) return;
         _selectedField = field;
         Action.FieldValues.Clear();
     }
-    private DateTime? GetFileTime(string? value){
+    private DateTime? GetFileTime(string? value)
+    {
         if (value.IsNullOrEmpty()) return null;
         return DateTime.FromFileTimeUtc(long.Parse(value));
     }
-    private DateTime? GetDateTime(string? value){
+    private DateTime? GetDateTime(string? value)
+    {
         if (value.IsNullOrEmpty()) return null;
         return DateTime.Parse(value);
     }

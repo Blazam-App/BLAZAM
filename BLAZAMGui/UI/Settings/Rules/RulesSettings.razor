@@ -26,9 +26,9 @@
                                                             _compactView=val;
                                                             _=InvokeAsync(StateHasChanged);
                                                             })"
-                               Label="Compact View"
-                               Color="Color.Success"
-                               UncheckedColor="Color.Error" />
+                    Label="Compact View"
+                    Color="Color.Success"
+                    UncheckedColor="Color.Error" />
                 </MudCard>
             </MudStack>
         </MudItem>
@@ -37,19 +37,19 @@
             <MudCard>
                 <MudStack Row="true">
                     <MudText Typo="Typo.h6"
-                             Align="Align.Left"
-                             Class="my-3 ps-3">
+                    Align="Align.Left"
+                    Class="my-3 ps-3">
                         @AppLocalization[Lang.Rules]: @ViewFilter.ObjectType.ToString()<MudIcon Class="align-middle" Icon="@Icons.Material.Filled.ArrowRight" />@ViewFilter.Trigger
                     </MudText>
                     <MudSpacer />
                     <MudButton Color="Color.Primary"
-                               OnClick="@(()=>{CreateRule?.Invoke();})">
+                    OnClick="@(()=>{CreateRule?.Invoke();})">
                         @AppLocalization[Lang.Create_Rule]
                     </MudButton>
                 </MudStack>
                 <MudDivider />
                 <RulesForTrigger CompactView="_compactView"
-                                 RulesSettings="this" />
+                RulesSettings="this" />
             </MudCard>
 
         </MudItem>
@@ -58,30 +58,9 @@
 @code {
     bool _compactView;
     public AppDelegate? CreateRule { get; set; }
-    private readonly RuleViewFilter ViewFilter = new();
-    private NotificationType selectedTrigger
-    {
-        get;
-        set;
-    }
-    private ActiveDirectoryObjectType _selectedObjectType;
-    private ActiveDirectoryObjectType selectedObjectType
-    {
-        get => _selectedObjectType;
-        set
-        {
-            if (_selectedObjectType == value) return;
-            _selectedObjectType = value;
-            if (triggerTypes.Count > 0)
-            {
-                if (!triggerTypes.Where(t => t.IsNotificationAppropriateForObject(_selectedObjectType)).Any(t => t.Equals(value)))
-                {
+    [Parameter]
+    public RuleViewFilter ViewFilter { get; set; }
 
-                    _ = InvokeAsync(StateHasChanged);
-                }
-            }
-        }
-    }
     List<NotificationType> triggerTypes = new();
 
 

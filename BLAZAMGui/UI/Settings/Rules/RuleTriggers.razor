@@ -6,7 +6,7 @@
         <MudListItem Class="@(ViewFilter.Trigger==trigger?"mud-selected-item mud-tertiary-text mud-tertiary-hover":"")" 
         Value="trigger"
         Dense="true"
-        OnClick="@(()=>{ViewFilter.Trigger=trigger;})"
+                     OnClick="@(()=>{ViewFilter.Trigger=trigger;Nav.NavigateTo($"/rules/{ViewFilter.ObjectType.ToString().ToLower()}/{trigger.ToString().ToLower()}");})"
         Text=@AppLocalization[trigger.ToString()] />
     }
 </MudStack>

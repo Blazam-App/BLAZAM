@@ -1,12 +1,48 @@
 ﻿@page "/rules"
+@page "/rules/{ObjectTypeParam}/{TriggerParam}"
+@using BLAZAM.Gui.UI.Settings.Rules
 @inherits AppComponentBase
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 <AppPageTitle>@AppLocalization[Lang.Rules]</AppPageTitle>
 <SetHeader>
 
-    </SetHeader>
+</SetHeader>
 
-<BLAZAM.Gui.UI.Settings.Rules.RulesSettings/>
+<BLAZAM.Gui.UI.Settings.Rules.RulesSettings ViewFilter="paramFilter" />
 @code {
+    RuleViewFilter paramFilter = new();
+    [Parameter]
+    public string? ObjectTypeParam { get; set; }
 
+    [Parameter]
+
+    public string? TriggerParam { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (ObjectTypeParam != null)
+        {
+            foreach (ActiveDirectoryObjectType typ in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
+            {
+                if (typ.ToString().Equals(ObjectTypeParam, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    paramFilter.ObjectType = typ;
+
+                }
+            }
+
+        }
+        if (TriggerParam != null)
+        {
+            foreach (NotificationType typ in Enum.GetValues(typeof(NotificationType)))
+            {
+                if (typ.ToString().Equals(TriggerParam, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    paramFilter.Trigger = typ;
+
+                }
+            }
+        }
+    }
 }
