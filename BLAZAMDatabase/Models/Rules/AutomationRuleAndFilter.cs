@@ -29,6 +29,10 @@ namespace BLAZAM.Database.Models.Rules
             }
             return false;
         }
-       
+
+        public override int GetHashCode()
+        {
+            return FilterGuid.GetHashCode();
+        }
     }
 }

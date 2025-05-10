@@ -1,9 +1,7 @@
 @inherits DatabaseComponentBase
 
-@* <UserNotificationPopover UserState="@UserState" @bind-Open="@NotificationsOpen" /> *@
 
-<MudMenu @ref=@_userMenu
-         AnchorOrigin="Origin.BottomRight"
+<MudMenu AnchorOrigin="Origin.BottomRight"
          TransformOrigin="Origin.TopRight"
          ListClass="py-0">
     <ActivatorContent>
@@ -37,7 +35,7 @@
                          Icon="@Icons.Material.Filled.Api">
                 @AppLocalization[Lang.API]
             </MudMenuItem>
-           
+
         </AuthorizeView>
         @if (UserState?.Impersonator == null)
         {
@@ -62,9 +60,9 @@
 </AppModal>
 <AppModal @ref=apiModal
           Options="new(){
-     MaxWidth=MaxWidth.Large,
-CloseButton=true
-}"
+         MaxWidth=MaxWidth.Large,
+        CloseButton=true
+        }"
           Title=@AppLocalization[Lang.API_Tokens]>
     <CascadingValue Value="mainLayout">
         <AppUserApiModalContent />
@@ -73,32 +71,25 @@ CloseButton=true
 @code {
     AppModal? profileModal;
     AppModal? apiModal;
-    MudMenu? _userMenu;
+
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
+
     private IApplicationUserState UserState;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-
 
         UserState = CurrentUser.State;
         await InvokeAsync(StateHasChanged);
         if (UserState != null)
             UserState.OnSettingsChanged += async () =>
         {
-
             await InvokeAsync(StateHasChanged);
         };
-
-
         await InvokeAsync(StateHasChanged);
-
-
     }
-
-
-
 
 }

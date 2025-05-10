@@ -20,9 +20,6 @@
 
                     </MudText>
                     <AuditEntryChanges Align=align AuditEntry="ev" />
-                    @*   <MudText Align=@align Typo="Typo.body2">@ev.BeforeAction</MudText>
-            <MudText Align=@align Typo="Typo.body2">@ev.AfterAction</MudText>
-            *@
                 </MudTimelineItem>
             }
             @{
@@ -43,13 +40,10 @@
 
 @code {
     List<DirectoryEntryAuditLog> _events = new();
-    int _count;
     [Parameter]
     public IDirectoryEntryAdapter Model { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        //Modal.Options.FullWidth = true;
-        //Modal.Options.CloseButton = true;
         await base.OnInitializedAsync();
 
         _ = AuditLogger.System.Analytics.ObjectHistoryViewed(Model.ObjectType);
@@ -70,7 +64,7 @@
                     Target = Model.CanonicalName,
                     Action = Model.ObjectType.ToString() + " created",
                     Username = AppLocalization[Lang.Active_Directory]
-        });
+                });
         }
 
         if (Model is IAccountDirectoryAdapter account)
@@ -79,16 +73,16 @@
             {
                 if (!_events.Any(e => e.Timestamp.Date.Equals(account.PasswordLastSet.Value.Date) && e.Timestamp.Hour.Equals(account.PasswordLastSet.Value.Hour) && e.Timestamp.Minute.Equals(account.PasswordLastSet.Value.Minute)))
                 {
-                                 _events.Add(new()
-                    {
-                        Timestamp =account.PasswordLastSet.Value,
+                    _events.Add(new()
+                        {
+                            Timestamp = account.PasswordLastSet.Value,
                             Target = Model.CanonicalName,
-                        Action = AppLocalization[Model.ObjectType.ToString()] + " "+AppLocalization[Lang.password_changed]+".",
-                        Username = AppLocalization[Lang.Active_Directory]
-                    });
+                            Action = AppLocalization[Model.ObjectType.ToString()] + " " + AppLocalization[Lang.password_changed] + ".",
+                            Username = AppLocalization[Lang.Active_Directory]
+                        });
                 }
 
-   
+
             }
             if (account.LockoutTime.HasValue)
             {
@@ -104,17 +98,16 @@
             {
                 if (!_events.Any(e => e.Timestamp.Date.Equals(account.LastChanged.Value.Date) && e.Timestamp.Hour.Equals(account.LastChanged.Value.Hour) && e.Timestamp.Minute.Equals(account.LastChanged.Value.Minute)))
                 {
-                _events.Add(new()
-                    {
-                        Timestamp = account.LastChanged.Value,
+                    _events.Add(new()
+                        {
+                            Timestamp = account.LastChanged.Value,
                             Target = Model.CanonicalName,
                             Action = Model.ObjectType.ToString() + " " + AppLocalization[Lang.last_changed] + ".",
-                        Username = AppLocalization[Lang.Active_Directory]
-                    });
+                            Username = AppLocalization[Lang.Active_Directory]
+                        });
                 }
             }
         }
-        _events = _events.OrderByDescending(e=>e.Timestamp).ToList();
-        _count = _events.Count;
+        _events = _events.OrderByDescending(e => e.Timestamp).ToList();
     }
 }

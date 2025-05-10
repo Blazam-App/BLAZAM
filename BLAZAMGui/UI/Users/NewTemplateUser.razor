@@ -2,7 +2,7 @@
 @inherits DirectoryModelComponent
 
 <MudElement Class="mx-auto">
-    <MudForm @ref=@form Model="@Entry" @bind-IsValid=IsValid>
+    <MudForm Model="@Entry" @bind-IsValid=IsValid>
 
 
 
@@ -353,7 +353,6 @@
 
 
     #nullable disable warnings
-    MudForm form;
     [Parameter]
     public EventCallback OnValidSubmit { get; set; }
     [Parameter]
