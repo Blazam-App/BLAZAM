@@ -177,7 +177,7 @@ namespace BLAZAM.Services.Background
                         var ouFilters = orFilter.AndFilters.Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true) // This part identifies the Filters containing the OU AndFilter
                             .Select(f => f.Value); // This flattens the collection of AndFilters from the matched Filters
                         var ouFilter = ouFilters.OrderBy(f => f.Length).FirstOrDefault();
-                        if (ouFilter != null && ouFilter != null)
+                        if (ouFilter!=null && !ouFilter.IsNullOrEmpty())
                         {
                             var ou = directory.OUs.FindOuByDN(ouFilter);
                             ou?.EnsureDirectoryEntry();
