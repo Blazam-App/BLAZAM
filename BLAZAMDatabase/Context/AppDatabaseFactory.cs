@@ -281,12 +281,12 @@ namespace BLAZAM.Database.Context
             {
                 OnFatalError?.Invoke(ex);
                 FatalError = ex;
-                throw ex;
+                throw;
             }
             catch (Exception ex)
             {
                 Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
-                throw ex;
+                throw;
             }
 
 

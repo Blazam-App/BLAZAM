@@ -11,7 +11,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
     {
         private IEnumerable<IADOrganizationalUnit>? childOUCache;
 
-    
+
         public async Task<bool> HasChildrenAsync()
         {
             return await Task.Run(() =>
@@ -31,8 +31,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-               return SubOUs.ToHashSet();
-               
+                return SubOUs.ToHashSet();
+
             }
         }
 
@@ -251,7 +251,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             catch (Exception ex)
             {
                 Loggers.ActiveDirectoryLogger.Error("Error while attempting to create user: " + fullContainerName + " {@Error}", ex);
-                throw ex;
+                throw;
             }
         }
         /// <summary>
@@ -277,7 +277,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             catch (Exception ex)
             {
                 Loggers.ActiveDirectoryLogger.Error("Error while attempting to create contact: " + fullContainerName + " {@Error}", ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -352,13 +352,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public override bool Equals(object? obj)
         {
-            if (obj is IADOrganizationalUnit otherOU)
+            if (obj is IADOrganizationalUnit otherOU && otherOU.DN == DN)
             {
-                if (otherOU.DN == DN)
-                {
-                    return true;
-                }
+                return true;
             }
+
             return false;
         }
     }

@@ -4,7 +4,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADPrinter : DirectoryEntryAdapter, IADPrinter
     {
-        public string DriverName
+        public string? DriverName
         {
 
             get
@@ -16,7 +16,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute("driverName", value);
             }
         }
-        public string DriverVersion
+        public string? DriverVersion
         {
 
             get
@@ -28,7 +28,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute("driverVersion", value);
             }
         }
-        public string Location
+        public string? Location
         {
 
             get
@@ -40,7 +40,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute("location", value);
             }
         }
-        public string PortName
+        public string? PortName
         {
 
             get
@@ -52,7 +52,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute("portName", value);
             }
         }
-        public string PrinterName
+        public string? PrinterName
         {
 
             get
@@ -65,7 +65,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public string ShortServerName
+        public string? ShortServerName
         {
 
             get
@@ -77,7 +77,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute("shortServerName", value);
             }
         }
-        public string ServerName
+        public string? ServerName
         {
 
             get
@@ -90,7 +90,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public string PrintLanguage
+        public string? PrintLanguage
         {
 
             get
@@ -103,7 +103,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public string PrintRateUnit
+        public string? PrintRateUnit
         {
 
             get
@@ -116,7 +116,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public string PrintShareName
+        public string? PrintShareName
         {
 
             get
@@ -129,7 +129,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public string UncName
+        public string? UncName
         {
 
             get
@@ -142,7 +142,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public List<string> PrintBinNames
+        public List<string>? PrintBinNames
         {
             get
             {
@@ -190,7 +190,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public string PrintOrientationsSupported
+        public string? PrintOrientationsSupported
         {
             get
             {
@@ -214,7 +214,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public List<string> PrintMediaReady
+        public List<string>? PrintMediaReady
         {
             get
             {
@@ -226,7 +226,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public List<string> PrintMediaSupported
+        public List<string>? PrintMediaSupported
         {
             get
             {
@@ -322,7 +322,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public string PrintSpooling
+        public string? PrintSpooling
         {
             get
             {
