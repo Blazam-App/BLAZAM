@@ -37,64 +37,60 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private void RefreshSessions()
         {
-            if (!Polling)
+
+            if (!Polling && Computer.IsOnline == true)
             {
-                if (Computer.IsOnline == true)
-                {
-                    Loggers.ActiveDirectoryLogger.Information("Getting sessions for " + Computer);
-                    Polling = true;
-                    var impersonation = Computer.Directory.Impersonation;
-                    var success = impersonation.Run(() =>
+                Loggers.ActiveDirectoryLogger.Information("Getting sessions for " + Computer);
+                Polling = true;
+                var impersonation = Computer.Directory.Impersonation;
+                var success = impersonation.Run(() =>
+               {
+                   try
                    {
+                       server = manager.GetRemoteServer(Computer.CanonicalName);
                        try
                        {
-                           server = manager.GetRemoteServer(Computer.CanonicalName);
+                           server.Open();
+
                            try
                            {
-                               server.Open();
-
-                               try
+                               foreach (ITerminalServicesSession session in server.GetSessions())
                                {
-                                   foreach (ITerminalServicesSession session in server.GetSessions())
+                                   if (session.UserAccount != null)
                                    {
-                                       if (session.UserAccount != null)
+                                       if (!session.Server.IsOpen)
+                                           session.Server.Open();
+                                       IRemoteSession s = new RemoteSession(session, Computer);
+                                       s.OnSessionDown += SessionDownEvent;
+                                       if (!ConnectedSessions.Contains(s))
                                        {
-                                           if (!session.Server.IsOpen)
-                                               session.Server.Open();
-                                           IRemoteSession s = new RemoteSession(session, Computer);
-                                           s.OnSessionDown += SessionDownEvent;
-                                           if (!ConnectedSessions.Contains(s))
-                                           {
-                                               ConnectedSessions.Add(s);
-                                               ConnectedSessionsChanged?.Invoke();
-                                           }
+                                           ConnectedSessions.Add(s);
+                                           ConnectedSessionsChanged?.Invoke();
                                        }
                                    }
+                               }
 
-                               }
-                               catch (Win32Exception ex)
-                               {
-                                   Loggers.ActiveDirectoryLogger.Error("Error while collecting sessions for " + Computer + " {@Error}", ex);
-                               }
                            }
-                           catch
+                           catch (Win32Exception ex)
                            {
-
+                               Loggers.ActiveDirectoryLogger.Error("Error while collecting sessions for " + Computer + " {@Error}", ex);
                            }
-
-
-                           Polling = false;
-                           return true;
                        }
-                       catch (Exception ex)
+                       catch
                        {
-                           Loggers.ActiveDirectoryLogger.Error("Error while connecting to TerminalServices on " + Computer + " {@Error}", ex);
-                           return false;
+
                        }
-                   });
-                }
 
 
+                       Polling = false;
+                       return true;
+                   }
+                   catch (Exception ex)
+                   {
+                       Loggers.ActiveDirectoryLogger.Error("Error while connecting to TerminalServices on " + Computer + " {@Error}", ex);
+                       return false;
+                   }
+               });
             }
 
         }

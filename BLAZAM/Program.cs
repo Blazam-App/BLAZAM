@@ -21,7 +21,7 @@ namespace BLAZAM
     /// Handles application initialization, configuration, service injection,
     /// request pipeline setup, and lifecycle management.
     /// </summary>
-    public class Program
+    public static class Program
     {
         /// <summary>
         /// Provides a path to the application's writable directory.
