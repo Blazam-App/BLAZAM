@@ -114,7 +114,6 @@ else
     private List<NewsItem> unreadItems = new();
     private List<NewsItem> readItems = new();
     private MudMenu? newsMenu;
-    private ApplicationUpdate? latestUpdate;
     private NewsItem? appUpdateNewsItem
     {
         get
@@ -208,7 +207,6 @@ else
         unreadItems = ApplicationNewsService.GetUnreadNewsItems(CurrentUser.State);
         if (AutoUpdateService.IsUpdateAvailable)
         {
-            latestUpdate = UpdateService.LatestUpdate;
 
             if (appUpdateNewsItem != null &&
                 !CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id) == true)

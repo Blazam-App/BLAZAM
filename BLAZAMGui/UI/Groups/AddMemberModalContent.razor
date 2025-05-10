@@ -56,7 +56,7 @@
 
     public IADGroup CopyFrom { get => (IADGroup)copyFrom; set => copyFrom = value; }
 
-    IDirectoryEntryAdapter Entry { get; set; }
+   public new IDirectoryEntryAdapter Entry { get; set; }
 
     async Task AssignToGroup()
     {

@@ -3,19 +3,5 @@
 <div class="v-container-padding-padding" style="max-width: 50px;min-width: 25px; overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:'Open Sans',sans-serif;" align="left">
     {{ApplicationLogo}}
 </div>
-@* <div class="v-container-padding-padding" style="width: 1px;height:1px;">
-    {{TrackingImgLink}}
-</div> *@
 
 
-@code {
-    byte[]? appIconBytes;
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        if (StaticAssets.AppIcon() != null)
-            appIconBytes = StaticAssets.AppIcon(250);
-
-    }
-}

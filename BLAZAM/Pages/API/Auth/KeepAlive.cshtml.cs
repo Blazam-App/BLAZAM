@@ -11,12 +11,6 @@ namespace BLAZAM.Server.Pages.API.Auth
     /// </summary>
     public class KeepAliveModel : PageModel
     {
-        private readonly PermissionApplicator _permissionApplicator;
-
-        public KeepAliveModel(PermissionApplicator permissionApplicator)
-        {
-            _permissionApplicator = permissionApplicator;
-        }
 
         public IActionResult OnGet()
         {
