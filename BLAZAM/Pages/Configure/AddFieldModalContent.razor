@@ -12,11 +12,11 @@ Model="newField">
     }
 </MudForm>
 @code {
-    private CustomActiveDirectoryField newField = new();
+    private readonly CustomActiveDirectoryField newField = new();
 
 
 
-    private Dictionary<ActiveDirectoryObjectType, bool> assignedObjectTypes = new();
+    private readonly Dictionary<ActiveDirectoryObjectType, bool> assignedObjectTypes = new();
 
     protected override void OnInitialized()
     {

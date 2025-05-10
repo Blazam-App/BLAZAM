@@ -8,19 +8,21 @@
 
 </SetHeader>
 
-<BLAZAM.Gui.UI.Settings.Rules.RulesSettings ViewFilter="paramFilter" />
+<RulesSettings ViewFilter="paramFilter" />
 @code {
-    RuleViewFilter paramFilter = new();
+    readonly RuleViewFilter paramFilter = new();
     [Parameter]
     public string? ObjectTypeParam { get; set; }
 
     [Parameter]
 
     public string? TriggerParam { get; set; }
-
-    protected override void OnInitialized()
+    protected override void OnAfterRender(bool firstRender)
     {
-        base.OnInitialized();
+        base.OnAfterRender(firstRender);
+        SetFilter();
+    }
+    private void SetFilter(){
         if (ObjectTypeParam != null)
         {
             foreach (ActiveDirectoryObjectType typ in Enum.GetValues(typeof(ActiveDirectoryObjectType)))

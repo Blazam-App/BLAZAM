@@ -126,10 +126,7 @@
 </style>
 
 @code {
-    AppModal? createGoogleAuthenticatorModal;
-    string? tokenCreatorUsername;
     GoogleAuthenticatorModal? googleAuthenticatorModal;
-    private string? passcode;
 
     bool attemptingSignIn = false;
     string redirectUrl;
@@ -231,7 +228,7 @@
                 break;
             case LoginResultStatus.DuoRequested:
                 attemptingSignIn = true;
-                if (authenticationResult != null && authenticationResult.MFARedirect != null)
+                if (authenticationResult.MFARedirect != null)
                     Nav.NavigateTo(authenticationResult.MFARedirect);
                 break;
             case LoginResultStatus.GoogleAuthenticatorRequested:
