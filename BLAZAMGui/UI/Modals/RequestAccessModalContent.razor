@@ -43,8 +43,7 @@
     [Inject]
     private AppAuthenticationStateProvider AppAuthenticationStateProvider { get; set; }
 
-    [Parameter]
-    public IDirectoryEntryAdapter Entry { get; set; }
+
 
     IReadOnlyCollection<ActiveDirectoryObjectAction>? _selectedActions = new List<ActiveDirectoryObjectAction>();
 

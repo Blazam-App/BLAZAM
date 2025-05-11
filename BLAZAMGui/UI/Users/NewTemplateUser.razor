@@ -31,7 +31,7 @@
 
                     <MudTextField Immediate=true
                                   Label="@AppLocalization[Lang.Description]"
-                                  @bind-Value=@Entry.Description
+                                  @bind-Value=@Contact.Description
                                   Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.Description))
                                   Required=@(IsRequiredTemplateField(ActiveDirectoryFields.Description)) />
 
@@ -49,7 +49,7 @@
 
                     <MudTextField Immediate=true
                                   Label="@AppLocalization[Lang.Email_Address]"
-                                  @bind-Value="Entry.Email"
+                                  @bind-Value="Contact.Email"
                                   Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.Mail))
                                   Required=@((DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true)||
                           IsRequiredTemplateField(ActiveDirectoryFields.Mail)) />
