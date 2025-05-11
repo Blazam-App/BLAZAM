@@ -567,14 +567,14 @@ namespace BLAZAM.Server
                 }
                 else
                 {
-                    Loggers.SystemLogger.Warning("Could not create database context during PreRun. Cannot determine Seq logging preference or installation status.");
+                    Loggers.SystemLogger.Information("Could not create database context during PreRun. Cannot determine Seq logging preference or installation status.");
                     ApplicationInfo.installationCompleted = false; // Assume not completed if DB context fails
                 }
             }
             catch (Exception ex)
             {
                 // Log errors during database access but don't prevent startup
-                Loggers.SystemLogger.Error(ex, "Error accessing database during PreRun to configure Seq logging/check installation status.");
+                Loggers.SystemLogger.Information(ex, "Error accessing database during PreRun to configure Seq logging/check installation status.");
                 ApplicationInfo.installationCompleted = false; // Assume not completed on error
             }
 

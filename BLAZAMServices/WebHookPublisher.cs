@@ -47,50 +47,9 @@ namespace BLAZAM.Services
                 {
                     try
                     {
-                        using var context = await _appDatabaseFactory.CreateDbContextAsync();
-                        var undeliveredWebhooks = await context.WebHookAttempts
-                                                                                .Include(w => w.WebHookSubscription)
-                                                                                .Where(w => w.Delivered == false &&
-                                                                                w.RetryCount < 15)
-                                                                                .ToListAsync();
-                        if (undeliveredWebhooks.Count > 0)
+                        if (ApplicationInfo.installationCompleted)
                         {
-                            IJob webhookAttemptJob = new Job("Webhook Retry");
-                            JobStep execStep = null;
-                            if (_appDatabaseFactory.DatabaseType == DatabaseType.SQLite)
-                            {
-
-                                foreach (var attempt in undeliveredWebhooks)
-                                {
-                                    execStep = new JobStep("Execute " + attempt.WebHookSubscription.URL, async (step) =>
-                                    {
-                                        var attemptId = Guid.NewGuid();
-
-                                        await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp, attempt.Body, attempt.EventType, attempt.Signature);
-                                        return true;
-
-                                    });
-                                    webhookAttemptJob.AddStep(execStep);
-                                }
-                            }
-                            else
-                            {
-
-                                execStep = new JobStep("Multi-threaded execute of " + undeliveredWebhooks.Count + " retries", (step) =>
-                                {
-                                    Parallel.ForEachAsync(undeliveredWebhooks, async (attempt, cancel) =>
-                                            {
-                                                var attemptId = Guid.NewGuid();
-
-                                                await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp, attempt.Body, attempt.EventType, attempt.Signature);
-
-                                            });
-                                    return true;
-                                });
-                                webhookAttemptJob.AddStep(execStep);
-
-                            }
-                            await webhookAttemptJob.RunAsync();
+                            await RetryFailedWebhooks();
                         }
                     }
                     catch (Exception ex)
@@ -104,6 +63,55 @@ namespace BLAZAM.Services
             }
         }
 
+        private async Task RetryFailedWebhooks()
+        {
+            using var context = await _appDatabaseFactory.CreateDbContextAsync();
+            var undeliveredWebhooks = await context.WebHookAttempts
+                                                                    .Include(w => w.WebHookSubscription)
+                                                                    .Where(w => w.Delivered == false &&
+                                                                    w.RetryCount < 15)
+                                                                    .ToListAsync();
+            if (undeliveredWebhooks.Count > 0)
+            {
+                IJob webhookAttemptJob = new Job("Webhook Retry");
+                JobStep execStep = null;
+                if (_appDatabaseFactory.DatabaseType == DatabaseType.SQLite)
+                {
+
+                    foreach (var attempt in undeliveredWebhooks)
+                    {
+                        execStep = new JobStep("Execute " + attempt.WebHookSubscription.URL, async (step) =>
+                        {
+                            var attemptId = Guid.NewGuid();
+
+                            await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp, attempt.Body, attempt.EventType, attempt.Signature);
+                            return true;
+
+                        });
+                        webhookAttemptJob.AddStep(execStep);
+                    }
+                }
+                else
+                {
+
+                    execStep = new JobStep("Multi-threaded execute of " + undeliveredWebhooks.Count + " retries", (step) =>
+                    {
+                        Parallel.ForEachAsync(undeliveredWebhooks, async (attempt, cancel) =>
+                        {
+                            var attemptId = Guid.NewGuid();
+
+                            await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp, attempt.Body, attempt.EventType, attempt.Signature);
+
+                        });
+                        return true;
+                    });
+                    webhookAttemptJob.AddStep(execStep);
+
+                }
+                await webhookAttemptJob.RunAsync();
+            }
+
+        }
 
         public async Task PublishWebhook(WebHookSubscription subscription,
             IDirectoryEntryAdapter source,
