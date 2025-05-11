@@ -81,17 +81,24 @@ namespace BLAZAM.Services.Background
                 }
             }
         }
-
-
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            base.Dispose();
-            foreach (var scheduledRule in ScheduledRules)
+
+            if (disposing)
             {
-                scheduledRule.Value.Dispose();
+                foreach (var scheduledRule in ScheduledRules)
+                {
+                    scheduledRule.Value.Dispose();
+                }
+                ScheduledRules.Clear();
             }
-            ScheduledRules.Clear();
+
+
+
+            base.Dispose(disposing);
         }
+
+       
         private void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedArgs args)
         {
             if (sender != null && sender.Equals(this)) return;

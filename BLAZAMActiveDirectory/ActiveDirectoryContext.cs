@@ -426,7 +426,7 @@ namespace BLAZAM.ActiveDirectory
                         Status = DirectoryConnectionStatus.BadCredentials;
                         break;
                     default:
-                        Loggers.ActiveDirectoryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+                        Loggers.ActiveDirectoryLogger.Information("Unexpected Error connecting to Active Directory {@Error}", ex);
                         Status = DirectoryConnectionStatus.ServerDown;
                         break;
                 }

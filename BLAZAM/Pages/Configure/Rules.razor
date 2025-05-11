@@ -11,11 +11,11 @@
 <RulesSettings ViewFilter="paramFilter" />
 @code {
     readonly RuleViewFilter paramFilter = new();
+
     [Parameter]
     public string? ObjectTypeParam { get; set; }
 
     [Parameter]
-
     public string? TriggerParam { get; set; }
     protected override void OnAfterRender(bool firstRender)
     {

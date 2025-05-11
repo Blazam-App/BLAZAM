@@ -16,13 +16,11 @@ namespace BLAZAM.Services.Background
     [AutoStartBackgroundService]
     public class LockedOutUserMonitor : ActiveDirectoryBackgroundServiceBase
     {
-        private NotificationGenerationService _notificationGenerationService;
 
-        public LockedOutUserMonitor(NotificationGenerationService notificationGenerationService, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
+        public LockedOutUserMonitor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
             Interval = TimeSpan.FromMinutes(10);
 
-            _notificationGenerationService = notificationGenerationService;
         }
 
         protected override void Execute(object? state = null)

@@ -159,10 +159,19 @@ namespace BLAZAM.Services.Background
                 return new();
             }
         }
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _httpClient.Dispose();
-            _secondaryHttpClient.Dispose();
+
+            if (disposing)
+            {
+                _httpClient.Dispose();
+                _secondaryHttpClient.Dispose();
+            }
+
+
+
+            base.Dispose(disposing);
         }
+     
     }
 }
