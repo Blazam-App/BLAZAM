@@ -8,7 +8,7 @@ namespace BLAZAM.Gui.UI
         protected bool EditMode = false;
 
         protected string _searchTerm;
-        private IGroupableDirectoryAdapter _groupableEntry;
+        private IDirectoryEntryAdapter _entry;
         private IADGroup _group;
 
         [Parameter]
@@ -55,13 +55,18 @@ namespace BLAZAM.Gui.UI
             get=>Entry as IADComputer; set=>Entry=value;
         }
         [Parameter]
-        public virtual IGroupableDirectoryAdapter Entry
+        public IGroupableDirectoryAdapter GroupableEntry
         {
-            get => _groupableEntry; set
+            get => Entry as IADComputer; set => Entry = value;
+        }
+        [Parameter]
+        public virtual IDirectoryEntryAdapter Entry
+        {
+            get => _entry; set
             {
-                if (_groupableEntry == value) return;
-                _groupableEntry = value;
-                EntryChanged.InvokeAsync(_groupableEntry);
+                if (_entry == value) return;
+                _entry = value;
+                EntryChanged.InvokeAsync(_entry);
                 if (User != null)
                 {
                     RefreshGroupGroupsAsync();
@@ -70,7 +75,7 @@ namespace BLAZAM.Gui.UI
             }
         }
         [Parameter]
-        public EventCallback<IGroupableDirectoryAdapter> EntryChanged { get; set; }
+        public EventCallback<IDirectoryEntryAdapter> EntryChanged { get; set; }
         protected List<IADGroup> memberOfGroups = new();
 
         [Parameter]
@@ -116,8 +121,8 @@ namespace BLAZAM.Gui.UI
             LoadingData = true;
             await Task.Run(() =>
             {
-                if (Entry != null)
-                    memberOfGroups = Entry.MemberOf;
+                if (GroupableEntry != null)
+                    memberOfGroups = GroupableEntry.MemberOf;
 
             });
 

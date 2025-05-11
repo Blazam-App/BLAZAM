@@ -36,6 +36,10 @@ namespace BLAZAM.Database.Context
             {
                 ApplicationInfo.installationCompleted = CheckInstallation();
                 Loggers.InstallationCompleted = ApplicationInfo.installationCompleted;
+                if (ApplicationInfo.installationCompleted)
+                {
+                    SeedData();
+                }
 
             }
             catch (DatabaseException ex)
@@ -44,7 +48,6 @@ namespace BLAZAM.Database.Context
                 OnFatalError?.Invoke(ex);
 
             }
-            SeedData();
             StartDatabaseCache();
 
         }

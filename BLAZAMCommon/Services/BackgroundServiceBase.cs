@@ -11,6 +11,7 @@ namespace BLAZAM.Services.Background
         protected virtual TimeSpan Interval { get; set; } = TimeSpan.FromMinutes(10);
         protected bool started { get; set; }
         protected IStringLocalizer<AppLocalization> AppLocalization;
+        private bool disposedValue;
 
         public BackgroundServiceBase(IStringLocalizer<AppLocalization> appLocalization)
         {
@@ -64,9 +65,27 @@ namespace BLAZAM.Services.Background
             throw new NotImplementedException();
         }
 
-        public virtual void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
-            Timer?.Dispose();
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Timer?.Dispose();
+                }
+
+                
+                disposedValue = true;
+            }
+        }
+
+     
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
