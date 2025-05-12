@@ -357,6 +357,7 @@ namespace BLAZAM.Services.Background
                             Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent, entry, action, ex);
                             break;
                         }
+                        Task.Delay(50).Wait();
                     }
                     Loggers.RulesLogger.Debug("Processing for rule {@Rule} has finished", ruleForEvent);
 
