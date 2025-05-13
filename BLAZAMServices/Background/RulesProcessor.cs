@@ -116,9 +116,9 @@ namespace BLAZAM.Services.Background
                     foreach (var ruleForEvent in applicableRules)
                     {
 
-                        var ruleStep = new JobStep(ruleForEvent.Name, (step) =>
+                        var ruleStep = new JobStep(ruleForEvent.Name, async(step) =>
                         {
-                            ProcessMatchedEntry(ruleForEvent, args.Entry);
+                            await ProcessMatchedEntry(ruleForEvent, args.Entry);
                             return true;
                         });
                         ruleProcessingJob.AddStep(ruleStep);
@@ -142,12 +142,12 @@ namespace BLAZAM.Services.Background
             });
             scheduledRuleJob.AddStep(getApplicableEntriesStep);
             scheduledRuleJob.StopOnFailedStep = true;
-            JobStep execApplicableEntriesStep = new("Execute applicable entries", (step) =>
+            JobStep execApplicableEntriesStep = new("Execute applicable entries", async (step) =>
             {
                 //Execute matched entries
                 foreach (var entry in filteredEntries)
                 {
-                    ProcessMatchedEntry(rule, entry);
+                    await ProcessMatchedEntry(rule, entry);
                 }
                 return true;
             });
@@ -256,7 +256,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private Job ProcessMatchedEntry(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
+        private async Task<bool> ProcessMatchedEntry(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
         {
 
             Job processRuleJob = new Job($"Run {ruleForEvent.Name} on {entry.CanonicalName}");
@@ -302,7 +302,7 @@ namespace BLAZAM.Services.Background
                             Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent, entry.DN, action, ex);
                             break;
                         }
-                        Task.Delay(50).Wait();
+                        //Task.Delay(50).Wait();
                     }
                     Loggers.RulesLogger.Information("Processing for rule {@Rule} has finished {@ElapsedTime}", ruleForEvent,sw.Elapsed);
 
@@ -316,8 +316,7 @@ namespace BLAZAM.Services.Background
                 return true;
             });
             processRuleJob.AddStep(executeRule);
-            _ = processRuleJob.RunAsync();
-            return processRuleJob;
+            return await processRuleJob.RunAsync();
         }
         private void MarkTriggered(AutomationRule rule)
         {
