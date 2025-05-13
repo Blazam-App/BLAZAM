@@ -70,6 +70,7 @@ namespace BLAZAM.Localization
         public static readonly string Click_to_view_API_documentation = "Click to view API documentation";
         public static readonly string An_automatic_update_is_scheduled = "An automatic update is scheduled.";
         public static readonly string Password = "Password";
+        public static readonly string Run_Now = "Run Now";
         public static readonly string After_Executing = "After Executing";
         public static readonly string Password_Changed = "Password changed";
         public static readonly string Object_Type = "Object Type";

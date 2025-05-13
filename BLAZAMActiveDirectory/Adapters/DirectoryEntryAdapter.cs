@@ -437,6 +437,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public IDirectoryEntryAdapter? GetParent()
         {
+
+            EnsureDirectoryEntry();
             if (DirectoryEntry == null || DirectoryEntry.Parent == null) return null;
 
             var parent = DirectoryEntry.Parent.Encapsulate(Directory);
