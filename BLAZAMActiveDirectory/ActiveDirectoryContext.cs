@@ -328,6 +328,7 @@ namespace BLAZAM.ActiveDirectory
 
                 PerformNetworkTests(ad);
 
+
                 if (IsCancelRequested) return;
 
                 InitializeDirectoryEntries(ad);
@@ -432,6 +433,14 @@ namespace BLAZAM.ActiveDirectory
                 }
                 if (FailedConnectionAttempts < 10)
                     FailedConnectionAttempts++;
+            }
+            finally
+            {
+                if (IsCancelRequested==false && Status != DirectoryConnectionStatus.OK)
+                {
+                    Task.Delay(5000).Wait();
+                    Connect();
+                }
             }
         }
         private bool IsCancelRequested
