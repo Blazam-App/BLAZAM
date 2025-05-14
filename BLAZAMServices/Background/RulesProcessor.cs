@@ -197,6 +197,10 @@ namespace BLAZAM.Services.Background
                             {
                                 search.SearchRoot = ouDE;
                             }
+                            else
+                            {
+                                continue;
+                            }
                         }
                     }
 
