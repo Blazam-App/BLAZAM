@@ -130,6 +130,9 @@ namespace BLAZAM.Services.Background
 
         public async Task<bool> ProcessScheduledRule(AutomationRule rule)
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            Loggers.RulesLogger.Information("Executing scheduled rule {@Rule}",rule.Name);
+
             MarkTriggered(rule);
 
             Job scheduledRuleJob = new Job(AppLocalization[Lang.Scheduled_Rule], AppLocalization[Lang.Rules] + " " + rule.Name);
@@ -149,6 +152,8 @@ namespace BLAZAM.Services.Background
                 {
                     await ProcessMatchedEntry(rule, entry);
                 }
+                Loggers.RulesLogger.Information("Processing for scheduled rule {@Rule} has finished {@ElapsedTime}", rule.Name, stopwatch.Elapsed);
+
                 return true;
             });
 
@@ -196,6 +201,10 @@ namespace BLAZAM.Services.Background
                             if (ouDE != null)
                             {
                                 search.SearchRoot = ouDE;
+                            }
+                            else
+                            {
+                                continue;
                             }
                         }
                     }
@@ -260,21 +269,22 @@ namespace BLAZAM.Services.Background
         {
 
             Job processRuleJob = new Job($"Run {ruleForEvent.Name} on {entry.CanonicalName}");
-
+            processRuleJob.ThreadPriority = ThreadPriority.Lowest;
             JobStep executeRule = new("Execute", (step) =>
             {
-                Stopwatch sw = new();
-                    sw.Start();
+                Stopwatch sw = Stopwatch.StartNew();
+                Task.Delay(50).Wait();
 
 
                 try
                 {
-                    Loggers.RulesLogger.Information("Rule {@Rule} processing started.", ruleForEvent);
+                    Loggers.RulesLogger.Information("Rule {@Rule} processing started on {@Entry}.", ruleForEvent.Name,entry.DN);
                     MarkTriggered(ruleForEvent);
+                    Task.Delay(50).Wait();
                 }
                 catch (Exception ex)
                 {
-                    Loggers.RulesLogger.Error("Error while setting LastTriggered for rule {@Rule}{@Error}", ruleForEvent, ex);
+                    Loggers.RulesLogger.Error("Error while setting LastTriggered for rule {@Rule}{@Error}", ruleForEvent.Name, ex);
                 }
                 if (OrFiltersPass(ruleForEvent, entry))
                 {
@@ -284,34 +294,39 @@ namespace BLAZAM.Services.Background
                         var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
                         contextRule.LastExcecuted = DateTime.UtcNow;
                         context.SaveChanges();
+                        Task.Delay(50).Wait();
+
                     }
                     catch (Exception ex)
                     {
-                        Loggers.RulesLogger.Error("Error while setting LastExcecuted for rule {@Rule}{@Error}", ruleForEvent, ex);
+                        Loggers.RulesLogger.Error("Error while setting LastExcecuted for rule {@Rule}{@Error}", ruleForEvent.Name, ex);
                     }
                     foreach (var action in ruleForEvent.Actions)
                     {
                         try
                         {
-                            Loggers.RulesLogger.Debug("Executing {@Rule} on {@Entry} {@ElapsedTime}", ruleForEvent,entry.CanonicalName);
+                            Loggers.RulesLogger.Debug("Executing {@Rule} on {@Entry} {@ElapsedTime}", ruleForEvent.Name,entry.CanonicalName);
 
                             ExecuteAction(ruleForEvent, action, entry);
+                       
+                                Task.Delay(TimeSpan.FromSeconds(1)).Wait();
+                            
                         }
                         catch (Exception ex)
                         {
-                            Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent, entry.DN, action, ex);
+                            Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent.Name, entry.DN, action, ex);
                             break;
                         }
-                        //Task.Delay(50).Wait();
                     }
-                    Loggers.RulesLogger.Information("Processing for rule {@Rule} has finished {@ElapsedTime}", ruleForEvent,sw.Elapsed);
 
                     if (ruleForEvent.StopOnThisRule)
                     {
+                        Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name, entry.DN, sw.Elapsed);
+
                         return false;
                     }
                 }
-                Loggers.RulesLogger.Information("Processing for rule {@Rule} has finished {@ElapsedTime}", ruleForEvent, sw.Elapsed);
+                Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name,entry.DN, sw.Elapsed);
 
                 return true;
             });
