@@ -250,35 +250,38 @@ namespace BLAZAM.ActiveDirectory
 
         private async Task KeepAlive()
         {
-            _keepAlive = true;
-            while (_keepAlive)
+            if (_systemInstance == this)
             {
-                await Task.Delay(30000);
+                _keepAlive = true;
+                while (_keepAlive)
+                {
+                    await Task.Delay(30000);
 
-                if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
-                {
-                    await ConnectAsync();
-                }
-                else if (Status == DirectoryConnectionStatus.OK)
-                {
-                    //Throw away query used to keep connection alive
-                    try
+                    if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
                     {
-                        _ = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
-
+                        await ConnectAsync();
                     }
-                    catch (DirectoryServicesCOMException ex)
+                    else if (Status == DirectoryConnectionStatus.OK)
                     {
-                        //not usernam or password is incorrect
-                        if (ex.HResult != -2147023570)
+                        //Throw away query used to keep connection alive
+                        try
                         {
-                            Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+                            _ = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
 
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+                        catch (DirectoryServicesCOMException ex)
+                        {
+                            //not usernam or password is incorrect
+                            if (ex.HResult != -2147023570)
+                            {
+                                Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+                        }
                     }
                 }
             }
