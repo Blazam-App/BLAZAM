@@ -274,16 +274,12 @@ namespace BLAZAM.Services.Background
             Task.Delay(50).Wait();
 
 
-            try
-            {
-                Loggers.RulesLogger.Information("Rule {@Rule} processing started on {@Entry}.", ruleForEvent.Name, entry.DN);
-                MarkTriggered(ruleForEvent);
-                Task.Delay(50).Wait();
-            }
-            catch (Exception ex)
-            {
-                Loggers.RulesLogger.Error("Error while setting LastTriggered for rule {@Rule}{@Error}", ruleForEvent.Name, ex);
-            }
+
+            Loggers.RulesLogger.Information("Rule {@Rule} processing started on {@Entry}.", ruleForEvent.Name, entry.DN);
+
+            Task.Delay(50).Wait();
+
+
             if (OrFiltersPass(ruleForEvent, entry))
             {
                 try
@@ -292,6 +288,7 @@ namespace BLAZAM.Services.Background
                     var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
                     contextRule.LastExcecuted = DateTime.UtcNow;
                     context.SaveChanges();
+                    context.Dispose();
                     Task.Delay(50).Wait();
 
                 }
