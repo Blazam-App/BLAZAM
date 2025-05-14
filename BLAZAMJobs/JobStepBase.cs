@@ -1,8 +1,10 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Exceptions;
+using System.Collections.Concurrent;
 
 namespace BLAZAM.Jobs
 {
+   
     public class JobStepBase : IJobStepBase
     {
         protected CancellationTokenSource cancellationTokenSource = new();
@@ -46,9 +48,37 @@ namespace BLAZAM.Jobs
 
         public virtual bool StopOnFailedStep { get; set; }
 
+        /// <summary>
+        /// Gets or sets the thread priority for the job and its steps when run asynchronously.
+        /// </summary>
+        public System.Threading.ThreadPriority ThreadPriority { get; set; } = System.Threading.ThreadPriority.Normal;
+
         public virtual async Task<bool> RunAsync()
         {
-            return await Task.Run(() => { return Run(); });
+            // Set thread priority for the task's thread
+            if (ThreadPriority != ThreadPriority.Normal)
+            {
+                Thread thread = new Thread(this.RunBackground);
+                thread.Name = "RunAsyncJob";
+                thread.Priority = ThreadPriority;
+                thread.Start();
+                while(Result!=JobResult.Passed && Result != JobResult.Failed && Result != JobResult.Cancelled)
+                {
+                    await Task.Delay(500);
+                }
+                return Result == JobResult.Passed ;
+            }
+            else
+            {
+                return await Task.Run(() =>
+                {
+                    return Run();
+                });
+            }
+        }
+        private void RunBackground()
+        {
+            _=Run();
         }
         public virtual bool Run()
         {

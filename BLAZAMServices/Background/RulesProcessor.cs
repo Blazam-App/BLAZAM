@@ -131,7 +131,7 @@ namespace BLAZAM.Services.Background
         public async Task<bool> ProcessScheduledRule(AutomationRule rule)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            Loggers.RulesLogger.Information("Executing scheduled rule {@Rule}");
+            Loggers.RulesLogger.Information("Executing scheduled rule {@Rule}",rule.Name);
 
             MarkTriggered(rule);
 
@@ -269,16 +269,18 @@ namespace BLAZAM.Services.Background
         {
 
             Job processRuleJob = new Job($"Run {ruleForEvent.Name} on {entry.CanonicalName}");
-
+            processRuleJob.ThreadPriority = ThreadPriority.Lowest;
             JobStep executeRule = new("Execute", (step) =>
             {
                 Stopwatch sw = Stopwatch.StartNew();
+                Task.Delay(50).Wait();
 
 
                 try
                 {
                     Loggers.RulesLogger.Information("Rule {@Rule} processing started on {@Entry}.", ruleForEvent.Name,entry.DN);
                     MarkTriggered(ruleForEvent);
+                    Task.Delay(50).Wait();
                 }
                 catch (Exception ex)
                 {
@@ -292,6 +294,8 @@ namespace BLAZAM.Services.Background
                         var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
                         contextRule.LastExcecuted = DateTime.UtcNow;
                         context.SaveChanges();
+                        Task.Delay(50).Wait();
+
                     }
                     catch (Exception ex)
                     {
@@ -313,7 +317,6 @@ namespace BLAZAM.Services.Background
                             Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent.Name, entry.DN, action, ex);
                             break;
                         }
-                        //Task.Delay(50).Wait();
                     }
 
                     if (ruleForEvent.StopOnThisRule)
