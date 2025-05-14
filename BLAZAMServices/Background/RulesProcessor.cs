@@ -99,7 +99,7 @@ namespace BLAZAM.Services.Background
             base.Dispose(disposing);
         }
 
-       
+
         private void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedArgs args)
         {
             if (sender != null && sender.Equals(this)) return;
@@ -112,13 +112,15 @@ namespace BLAZAM.Services.Background
                         .Where(r => r.ActiveDirectoryObjectType.Equals(args.Entry.ObjectType)
                         && r.Trigger.Equals(args.EventType.ToNotificationType())).ToList();
                     var ruleProcessingJob = new Job();
+                    ruleProcessingJob.ThreadPriority = ThreadPriority.Lowest;
+
                     ruleProcessingJob.StopOnFailedStep = true;
                     foreach (var ruleForEvent in applicableRules)
                     {
 
-                        var ruleStep = new JobStep(ruleForEvent.Name, async(step) =>
+                        var ruleStep = new JobStep(ruleForEvent.Name, (step) =>
                         {
-                            await ProcessMatchedEntry(ruleForEvent, args.Entry);
+                            ProcessMatchedEntry(ruleForEvent, args.Entry);
                             return true;
                         });
                         ruleProcessingJob.AddStep(ruleStep);
@@ -131,36 +133,37 @@ namespace BLAZAM.Services.Background
         public async Task<bool> ProcessScheduledRule(AutomationRule rule)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            Loggers.RulesLogger.Information("Executing scheduled rule {@Rule}",rule.Name);
+            Loggers.RulesLogger.Information("Executing scheduled rule {@Rule}", rule.Name);
 
             MarkTriggered(rule);
 
             Job scheduledRuleJob = new Job(AppLocalization[Lang.Scheduled_Rule], AppLocalization[Lang.Rules] + " " + rule.Name);
+            scheduledRuleJob.ThreadPriority = ThreadPriority.Lowest;
+
             List<IDirectoryEntryAdapter> filteredEntries = new();
 
-            JobStep getApplicableEntriesStep = new("Get applicable entries", (step) =>
+
+            filteredEntries = GetFilteredEntries(rule);
+
+
+            //Execute matched entries
+            foreach (var entry in filteredEntries)
             {
-                filteredEntries = GetFilteredEntries(rule);
-                return true;
-            });
-            scheduledRuleJob.AddStep(getApplicableEntriesStep);
-            scheduledRuleJob.StopOnFailedStep = true;
-            JobStep execApplicableEntriesStep = new("Execute applicable entries", async (step) =>
-            {
-                //Execute matched entries
-                foreach (var entry in filteredEntries)
+                JobStep execApplicableEntriesStep = new($"Execute on {entry.CanonicalName}", (step) =>
                 {
-                    await ProcessMatchedEntry(rule, entry);
-                }
-                Loggers.RulesLogger.Information("Processing for scheduled rule {@Rule} has finished {@ElapsedTime}", rule.Name, stopwatch.Elapsed);
+                    return ProcessMatchedEntry(rule, entry);
+                });
+                scheduledRuleJob.AddStep(execApplicableEntriesStep);
 
-                return true;
-            });
-
-            scheduledRuleJob.AddStep(execApplicableEntriesStep);
+            }
 
 
-            return await scheduledRuleJob.RunAsync();
+
+
+
+            var result = await scheduledRuleJob.RunAsync();
+            Loggers.RulesLogger.Information("Processing for scheduled rule {@Rule} has finished {@ElapsedTime}", rule.Name, stopwatch.Elapsed);
+            return result;
         }
 
         public List<IDirectoryEntryAdapter> GetFilteredEntries(AutomationRule rule)
@@ -168,7 +171,7 @@ namespace BLAZAM.Services.Background
             List<IDirectoryEntryAdapter> matchedEntries = new();
             using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
             {
-                foreach(var orFilter in rule.Filters)
+                foreach (var orFilter in rule.Filters)
                 {
                     ADSearch search = new ADSearch(directory);
 
@@ -193,7 +196,7 @@ namespace BLAZAM.Services.Background
                         var ouFilters = orFilter.AndFilters.Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true) // This part identifies the Filters containing the OU AndFilter
                             .Select(f => f.Value); // This flattens the collection of AndFilters from the matched Filters
                         var ouFilter = ouFilters.OrderBy(f => f.Length).FirstOrDefault();
-                        if (ouFilter!=null && !ouFilter.IsNullOrEmpty())
+                        if (ouFilter != null && !ouFilter.IsNullOrEmpty())
                         {
                             var ou = directory.OUs.FindOuByDN(ouFilter);
                             ou?.EnsureDirectoryEntry();
@@ -233,7 +236,7 @@ namespace BLAZAM.Services.Background
                     }
                     matchedEntries.AddRange(search.Search());
                 }
-              
+
             }
 
             return matchedEntries;
@@ -265,73 +268,63 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private async Task<bool> ProcessMatchedEntry(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
+        private bool ProcessMatchedEntry(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
         {
+            Stopwatch sw = Stopwatch.StartNew();
+            Task.Delay(50).Wait();
 
-            Job processRuleJob = new Job($"Run {ruleForEvent.Name} on {entry.CanonicalName}");
-            processRuleJob.ThreadPriority = ThreadPriority.Lowest;
-            JobStep executeRule = new("Execute", (step) =>
+
+
+            Loggers.RulesLogger.Information("Rule {@Rule} processing started on {@Entry}.", ruleForEvent.Name, entry.DN);
+
+            Task.Delay(50).Wait();
+
+
+            if (OrFiltersPass(ruleForEvent, entry))
             {
-                Stopwatch sw = Stopwatch.StartNew();
-                Task.Delay(50).Wait();
-
-
                 try
                 {
-                    Loggers.RulesLogger.Information("Rule {@Rule} processing started on {@Entry}.", ruleForEvent.Name,entry.DN);
-                    MarkTriggered(ruleForEvent);
+                    using var context = dbFactory.CreateDbContext();
+                    var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
+                    contextRule.LastExcecuted = DateTime.UtcNow;
+                    context.SaveChanges();
+                    context.Dispose();
                     Task.Delay(50).Wait();
+
                 }
                 catch (Exception ex)
                 {
-                    Loggers.RulesLogger.Error("Error while setting LastTriggered for rule {@Rule}{@Error}", ruleForEvent.Name, ex);
+                    Loggers.RulesLogger.Error("Error while setting LastExcecuted for rule {@Rule}{@Error}", ruleForEvent.Name, ex);
                 }
-                if (OrFiltersPass(ruleForEvent, entry))
+                foreach (var action in ruleForEvent.Actions)
                 {
                     try
                     {
-                        using var context = dbFactory.CreateDbContext();
-                        var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
-                        contextRule.LastExcecuted = DateTime.UtcNow;
-                        context.SaveChanges();
-                        Task.Delay(50).Wait();
+                        Loggers.RulesLogger.Debug("Executing {@Rule} on {@Entry} {@ElapsedTime}", ruleForEvent.Name, entry.CanonicalName);
+
+                        ExecuteAction(ruleForEvent, action, entry);
+
+                        Task.Delay(TimeSpan.FromSeconds(1)).Wait();
 
                     }
                     catch (Exception ex)
                     {
-                        Loggers.RulesLogger.Error("Error while setting LastExcecuted for rule {@Rule}{@Error}", ruleForEvent.Name, ex);
-                    }
-                    foreach (var action in ruleForEvent.Actions)
-                    {
-                        try
-                        {
-                            Loggers.RulesLogger.Debug("Executing {@Rule} on {@Entry} {@ElapsedTime}", ruleForEvent.Name,entry.CanonicalName);
-
-                            ExecuteAction(ruleForEvent, action, entry);
-                       
-                                Task.Delay(TimeSpan.FromSeconds(1)).Wait();
-                            
-                        }
-                        catch (Exception ex)
-                        {
-                            Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent.Name, entry.DN, action, ex);
-                            break;
-                        }
-                    }
-
-                    if (ruleForEvent.StopOnThisRule)
-                    {
-                        Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name, entry.DN, sw.Elapsed);
-
-                        return false;
+                        Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent.Name, entry.DN, action, ex);
+                        break;
                     }
                 }
-                Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name,entry.DN, sw.Elapsed);
 
-                return true;
-            });
-            processRuleJob.AddStep(executeRule);
-            return await processRuleJob.RunAsync();
+                if (ruleForEvent.StopOnThisRule)
+                {
+                    Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name, entry.DN, sw.Elapsed);
+
+                    return false;
+                }
+            }
+            Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name, entry.DN, sw.Elapsed);
+
+            return true;
+
         }
         private void MarkTriggered(AutomationRule rule)
         {
