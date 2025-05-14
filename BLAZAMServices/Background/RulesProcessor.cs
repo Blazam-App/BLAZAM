@@ -19,6 +19,7 @@ using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -75,7 +76,7 @@ namespace BLAZAM.Services.Background
                             timeToRun = timeToRun.Value.Add(TimeSpan.FromDays(1));
                         }
                         var timeFromRun = timeToRun.Value - timeNow;
-                        Timer ruleTimer = new Timer((state) => { ProcessScheduledRule(rule); }, null, (int)timeFromRun.TotalMilliseconds, Timeout.Infinite);
+                        Timer ruleTimer = new Timer(async (state) => { await ProcessScheduledRule(rule); }, null, (int)timeFromRun.TotalMilliseconds, Timeout.Infinite);
                         ScheduledRules.Add(rule, ruleTimer);
                     }
                 }
@@ -114,9 +115,10 @@ namespace BLAZAM.Services.Background
                     ruleProcessingJob.StopOnFailedStep = true;
                     foreach (var ruleForEvent in applicableRules)
                     {
-                        var ruleStep = new JobStep(ruleForEvent.Name, (step) =>
+
+                        var ruleStep = new JobStep(ruleForEvent.Name, async(step) =>
                         {
-                            ProcessRule(ruleForEvent, args.Entry);
+                            await ProcessMatchedEntry(ruleForEvent, args.Entry);
                             return true;
                         });
                         ruleProcessingJob.AddStep(ruleStep);
@@ -126,8 +128,10 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        public void ProcessScheduledRule(AutomationRule rule)
+        public async Task<bool> ProcessScheduledRule(AutomationRule rule)
         {
+            MarkTriggered(rule);
+
             Job scheduledRuleJob = new Job(AppLocalization[Lang.Scheduled_Rule], AppLocalization[Lang.Rules] + " " + rule.Name);
             List<IDirectoryEntryAdapter> filteredEntries = new();
 
@@ -138,12 +142,12 @@ namespace BLAZAM.Services.Background
             });
             scheduledRuleJob.AddStep(getApplicableEntriesStep);
             scheduledRuleJob.StopOnFailedStep = true;
-            JobStep execApplicableEntriesStep = new("Execute applicable entries", (step) =>
+            JobStep execApplicableEntriesStep = new("Execute applicable entries", async (step) =>
             {
                 //Execute matched entries
                 foreach (var entry in filteredEntries)
                 {
-                    ProcessRule(rule, entry);
+                    await ProcessMatchedEntry(rule, entry);
                 }
                 return true;
             });
@@ -151,7 +155,7 @@ namespace BLAZAM.Services.Background
             scheduledRuleJob.AddStep(execApplicableEntriesStep);
 
 
-            scheduledRuleJob.Run();
+            return await scheduledRuleJob.RunAsync();
         }
 
         public List<IDirectoryEntryAdapter> GetFilteredEntries(AutomationRule rule)
@@ -220,68 +224,7 @@ namespace BLAZAM.Services.Background
                     }
                     matchedEntries.AddRange(search.Search());
                 }
-                //ADSearch search = new ADSearch(directory);
-
-
-                ////Perform search customization for this rule
-
-                ////Has enabled filter
-                //if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate)) &&
-                //    !rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate)))
-                //{
-                //    search.EnabledOnly = true;
-                //}
-                //else if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate)) &&
-                //    !rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate)))
-                //{
-                //    search.DisabledOnly = true;
-                //}
-
-                ////Has OU scope
-                //if (rule.Filters.Any(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)))
-                //{
-                //    var matchingAndFilters = rule.Filters
-                //        .Where(f => f.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)) // This part identifies the Filters containing the OU AndFilter
-                //        .SelectMany(f => f.AndFilters) // This flattens the collection of AndFilters from the matched Filters
-                //        .Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true); // This selects the specific AndFilters with the OU field
-                //    var ouFilter = matchingAndFilters.OrderBy(f => f.Value.Length).FirstOrDefault();
-                //    if (ouFilter != null && ouFilter.Value!=null)
-                //    {
-                //        var ou = directory.OUs.FindOuByDN(ouFilter.Value);
-                //        ou?.EnsureDirectoryEntry();
-                //        var ouDE = ou?.DirectoryEntry;
-                //        if (ouDE != null)
-                //        {
-                //            search.SearchRoot = ouDE;
-                //        }
-                //    }
-                //}
-
-                //if (rule.ActiveDirectoryObjectType != ActiveDirectoryObjectType.All)
-                //{
-                //    search.ObjectTypeFilter = rule.ActiveDirectoryObjectType;
-                //}
-
-
-
-
-
-
-                //foreach (var andFilters in rule.Filters.Select(x => x.AndFilters))
-                //{
-                //    foreach (var andFilter in andFilters)
-                //    {
-                //        if (andFilter.Field?.Equals(ActiveDirectoryFields.Enabled) == false
-                //            && andFilter.Field?.Equals(ActiveDirectoryFields.OU) == false)
-                //        {
-                //            PrepareADSearch(search, andFilter);
-                //        }
-
-                //    }
-                //}
-                //matchedEntries = search.Search();
-
-
+              
             }
 
             return matchedEntries;
@@ -313,21 +256,21 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private Job ProcessRule(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
+        private async Task<bool> ProcessMatchedEntry(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
         {
 
             Job processRuleJob = new Job($"Run {ruleForEvent.Name} on {entry.CanonicalName}");
 
             JobStep executeRule = new("Execute", (step) =>
             {
+                Stopwatch sw = new();
+                    sw.Start();
 
 
                 try
                 {
-                    using var context = dbFactory.CreateDbContext();
-                    var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
-                    contextRule.LastTriggered = DateTime.UtcNow;
-                    context.SaveChanges();
+                    Loggers.RulesLogger.Information("Rule {@Rule} processing started.", ruleForEvent);
+                    MarkTriggered(ruleForEvent);
                 }
                 catch (Exception ex)
                 {
@@ -350,28 +293,38 @@ namespace BLAZAM.Services.Background
                     {
                         try
                         {
+                            Loggers.RulesLogger.Debug("Executing {@Rule} on {@Entry} {@ElapsedTime}", ruleForEvent,entry.CanonicalName);
+
                             ExecuteAction(ruleForEvent, action, entry);
                         }
                         catch (Exception ex)
                         {
-                            Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent, entry, action, ex);
+                            Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent, entry.DN, action, ex);
                             break;
                         }
+                        //Task.Delay(50).Wait();
                     }
-                    Loggers.RulesLogger.Debug("Processing for rule {@Rule} has finished", ruleForEvent);
+                    Loggers.RulesLogger.Information("Processing for rule {@Rule} has finished {@ElapsedTime}", ruleForEvent,sw.Elapsed);
 
                     if (ruleForEvent.StopOnThisRule)
                     {
                         return false;
                     }
                 }
+                Loggers.RulesLogger.Information("Processing for rule {@Rule} has finished {@ElapsedTime}", ruleForEvent, sw.Elapsed);
+
                 return true;
             });
             processRuleJob.AddStep(executeRule);
-            _ = processRuleJob.RunAsync();
-            return processRuleJob;
+            return await processRuleJob.RunAsync();
         }
-
+        private void MarkTriggered(AutomationRule rule)
+        {
+            using var context = dbFactory.CreateDbContext();
+            var contextRule = context.AutomationRules.First(r => r.Id.Equals(rule.Id));
+            contextRule.LastTriggered = DateTime.UtcNow;
+            context.SaveChanges();
+        }
         private bool OrFiltersPass(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
         {
             var anyOrTrue = false;
