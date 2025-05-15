@@ -139,23 +139,23 @@ namespace BLAZAM.Services.Background
 
             Job scheduledRuleJob = new Job(AppLocalization[Lang.Scheduled_Rule], AppLocalization[Lang.Rules] + " " + rule.Name);
             scheduledRuleJob.ThreadPriority = ThreadPriority.Lowest;
-
-            List<IDirectoryEntryAdapter> filteredEntries = new();
-
-
-            filteredEntries = GetFilteredEntries(rule);
+                List<IDirectoryEntryAdapter> filteredEntries = new();
 
 
-            //Execute matched entries
-            foreach (var entry in filteredEntries)
-            {
-                JobStep execApplicableEntriesStep = new($"Execute on {entry.CanonicalName}", (step) =>
+                filteredEntries = GetFilteredEntries(rule);
+
+
+                //Execute matched entries
+                foreach (var entry in filteredEntries)
                 {
-                    return ProcessMatchedEntry(rule, entry);
-                });
-                scheduledRuleJob.AddStep(execApplicableEntriesStep);
 
-            }
+                    JobStep execApplicableEntriesStep = new($"Execute on {entry.CanonicalName}", (step) =>
+                    {
+                        return ProcessMatchedEntry(rule, entry, scheduledRuleJob);
+                    });
+                    scheduledRuleJob.AddStep(execApplicableEntriesStep);
+
+                }
 
 
 
@@ -268,7 +268,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private bool ProcessMatchedEntry(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
+        private bool ProcessMatchedEntry(AutomationRule ruleForEvent, IDirectoryEntryAdapter entry, IJob? ruleJob = null)
         {
             Stopwatch sw = Stopwatch.StartNew();
             Task.Delay(50).Wait();
@@ -302,7 +302,7 @@ namespace BLAZAM.Services.Background
                     {
                         Loggers.RulesLogger.Debug("Executing {@Rule} on {@Entry} {@ElapsedTime}", ruleForEvent.Name, entry.CanonicalName);
 
-                        ExecuteAction(ruleForEvent, action, entry);
+                        ExecuteAction(ruleForEvent, action, entry,ruleJob);
 
                         Task.Delay(TimeSpan.FromSeconds(1)).Wait();
 
@@ -364,7 +364,7 @@ namespace BLAZAM.Services.Background
             return anyOrTrue;
         }
 
-        private void ExecuteAction(AutomationRule rule, AutomationRuleAction action, IDirectoryEntryAdapter entry)
+        private void ExecuteAction(AutomationRule rule, AutomationRuleAction action, IDirectoryEntryAdapter entry,IJob? ruleJob=null)
         {
             var eventType = ApplicationEventType.All;
             IDirectoryEntryAdapter? target = null;
