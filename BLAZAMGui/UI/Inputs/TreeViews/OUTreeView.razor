@@ -17,7 +17,7 @@
                          Items=@GetChildren(context)
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.Expanded"
-                         @bind-Selected=context.Selected
+                         Selected=@(context.Value?.Equals(SelectedEntry)==true)
                          Text="@context.Value?.CanonicalName"
                          Icon="@Icons.Material.Filled.Folder"
                          IconColor=@(GetIconColor(context))
