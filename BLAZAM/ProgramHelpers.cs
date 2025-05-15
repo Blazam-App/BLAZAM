@@ -465,7 +465,7 @@ namespace BLAZAM.Server
                 }
                 catch (BadImageFormatException ex) // Catches errors if the DLL is not a valid .NET assembly
                 {
-                    Loggers.SystemLogger.Error(ex, "Error loading assembly {DllName}: Invalid assembly format", dll.Name);
+                    Loggers.SystemLogger.Error(ex, "Error loading assembly {@DllName}: Invalid assembly format", dll.Name);
                 }
                 catch (Exception ex) // Catch-all for other unexpected errors
                 {

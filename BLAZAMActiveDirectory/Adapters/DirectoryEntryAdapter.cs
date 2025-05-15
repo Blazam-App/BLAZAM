@@ -1123,7 +1123,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error("Unexpected error while getting property value. {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error(ex,"Unexpected error while getting property value for {@PropertyName}",propertyName);
                 }
 
 
