@@ -77,7 +77,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Exception while renaming {target.CanonicalName}: {ex.Message}", ex);
+                    Loggers.ActiveDirectoryLogger.Error(ex, ,"Exception while renaming {@Target}", target?.CanonicalName);
                     return false;
                 }
             });

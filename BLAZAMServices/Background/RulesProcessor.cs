@@ -270,7 +270,7 @@ namespace BLAZAM.Services.Background
             }
             catch (Exception ex)
             {
-                Loggers.RulesLogger.Warning("Unable to set search field value {@Field}{@Value}{@Error}", andFilter.Field, andFilter.Value, ex);
+                Loggers.RulesLogger.Warning(ex,"Unable to set search field value {@Field}{@Value}", andFilter.Field, andFilter.Value);
             }
         }
 
@@ -300,7 +300,7 @@ namespace BLAZAM.Services.Background
                 }
                 catch (Exception ex)
                 {
-                    Loggers.RulesLogger.Error("Error while setting LastExcecuted for rule {@Rule}{@Error}", ruleForEvent.Name, ex);
+                    Loggers.RulesLogger.Error(ex,"Error while setting LastExcecuted for rule {@Rule}", ruleForEvent.Name, ex);
                 }
                 foreach (var action in ruleForEvent.Actions)
                 {
@@ -315,7 +315,7 @@ namespace BLAZAM.Services.Background
                     }
                     catch (Exception ex)
                     {
-                        Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent.Name, entry.DN, action, ex);
+                        Loggers.RulesLogger.Error(ex,"Error while executing rule action. {@Rule}{@TargetDN}{@Action}", ruleForEvent.Name, entry.DN, action, ex);
                         break;
                     }
                 }
@@ -665,7 +665,7 @@ namespace BLAZAM.Services.Background
             }
             catch (Exception ex)
             {
-                Loggers.RulesLogger.Error("Error checking and filter {@Filter}{@Error}", andFilter, ex);
+                Loggers.RulesLogger.Error(ex,"Error checking and filter {@Filter}", andFilter);
             }
             if (andFilter.Negate)
             {
@@ -687,7 +687,7 @@ namespace BLAZAM.Services.Background
             }
             catch (Exception ex)
             {
-                Loggers.RulesLogger.Debug("Error loading rules {@Error}", ex);
+                Loggers.RulesLogger.Debug(ex,"Error loading rules");
                 return [];
             }
         }

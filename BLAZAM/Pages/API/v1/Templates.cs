@@ -269,7 +269,7 @@ namespace BLAZAM.Pages.API.v1
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error sending welcome email {@Error}", ex);
+                Loggers.SystemLogger.Error(ex,"Error sending welcome email");
             }
         }
     }

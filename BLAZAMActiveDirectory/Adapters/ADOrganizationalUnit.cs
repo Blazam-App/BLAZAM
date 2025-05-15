@@ -250,7 +250,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error("Error while attempting to create user: " + fullContainerName + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create user in {@ContainerName}", fullContainerName);
                 throw;
             }
         }
@@ -276,7 +276,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error("Error while attempting to create contact: " + fullContainerName + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create contact in {@ContainerName}", fullContainerName);
+
                 throw;
             }
         }

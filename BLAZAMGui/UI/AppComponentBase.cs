@@ -114,7 +114,7 @@ namespace BLAZAM.Gui.UI
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error("Failed to connect to scoped active directory {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex,"Failed to connect to scoped active directory");
 
             }
             Monitor.OnDirectoryConnectionChanged += (status) =>
