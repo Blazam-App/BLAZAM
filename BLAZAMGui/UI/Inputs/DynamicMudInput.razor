@@ -38,7 +38,6 @@
         <MudStack>
             <MudSwitch Color=@Color
                        UncheckedColor=@UncheckedColor
-                      
                        T="T"
                        Label=@Label
                        @bind-Value=@Value
@@ -68,7 +67,6 @@
     [Parameter]
     public Func<T, T> ValueTransformer { get; set; }
 
-    private T? initializedValue;
     [Parameter]
     public T? Value
     {
@@ -132,10 +130,4 @@
 
 
 
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        initializedValue = Value;
-    }
 }

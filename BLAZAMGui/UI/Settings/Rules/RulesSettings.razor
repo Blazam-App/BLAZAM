@@ -1,0 +1,80 @@
+﻿@inherits AppComponentBase
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Rules] <AppDocumentationButton Page="/admin/rules" /></MudText>
+<MudAlert Severity="Severity.Warning" Variant="Variant.Filled" Class="mb-3">
+    Rules are still in Beta, some filters/actions may not work and action failure is untracked.
+    <br /><br />
+    Additionally: Rules currently have no protection against a rule disabling every account in the domain.<br />
+    Caution is advised. Check the "Matches" list to ensure rule filtering is as intended.
+    <br /><br />
+    Therefore, rules are not recommended to be used on production environments at this time.
+</MudAlert>
+<CascadingValue Value="ViewFilter">
+    <MudGrid Class="border-1">
+        <MudItem xs="12" sm="4" md="3" lg="2">
+            <MudStack>
+                <MudCard>
+                    <MudText Typo="Typo.h6" Class="my-3 ps-3">@AppLocalization[Lang.Object_Type]</MudText>
+                    <MudDivider />
+
+                    <RuleObjectTypes />
+                </MudCard>
+                <MudCard>
+                    <MudText Typo="Typo.h6" Class="my-3 ps-3">@AppLocalization[Lang.Triggers]</MudText>
+                    <MudDivider />
+                    <RuleTriggers />
+                </MudCard>
+                <MudCard>
+                    <MudSwitch ValueChanged="@((bool val)=>{
+                                                            _compactView=val;
+                                                            _=InvokeAsync(StateHasChanged);
+                                                            })"
+                    Label="Compact View"
+                    Color="Color.Success"
+                    UncheckedColor="Color.Error" />
+                </MudCard>
+            </MudStack>
+        </MudItem>
+
+        <MudItem xs="12" sm="8" md="9" lg="10">
+            <MudCard>
+                <MudStack Row="true">
+                    <MudText Typo="Typo.h6"
+                    Align="Align.Left"
+                    Class="my-3 ps-3">
+                        @AppLocalization[Lang.Rules]: @ViewFilter.ObjectType.ToString()<MudIcon Class="align-middle" Icon="@Icons.Material.Filled.ArrowRight" />@ViewFilter.Trigger
+                    </MudText>
+                    <MudSpacer />
+                    <MudButton Color="Color.Primary"
+                    OnClick="@(()=>{CreateRule?.Invoke();})">
+                        @AppLocalization[Lang.Create_Rule]
+                    </MudButton>
+                </MudStack>
+                <MudDivider />
+                <RulesForTrigger CompactView="_compactView"
+                RulesSettings="this" />
+            </MudCard>
+
+        </MudItem>
+    </MudGrid>
+</CascadingValue>
+@code {
+    bool _compactView;
+    public AppDelegate? CreateRule { get; set; }
+    [Parameter]
+    public RuleViewFilter ViewFilter { get; set; }
+
+    List<NotificationType> triggerTypes = new();
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        foreach (NotificationType type in Enum.GetValues(typeof(NotificationType)))
+        {
+            triggerTypes.Add(type);
+        }
+        triggerTypes = triggerTypes.OrderBy(t => t.ToString()).ToList();
+        ViewFilter.ObjectTypeChanged += () => InvokeAsync(StateHasChanged);
+        ViewFilter.TriggerChanged += () => InvokeAsync(StateHasChanged);
+    }
+}

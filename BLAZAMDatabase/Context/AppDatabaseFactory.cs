@@ -17,8 +17,8 @@ namespace BLAZAM.Database.Context
         private IConfiguration _configuration;
 
         public static DatabaseException DatabaseCreationFailureReason { get; set; }
-        public static AppEvent? OnMigrationApplied { get; set; }
-        public static AppEvent<Exception>? OnFatalError { get; set; }
+        public static AppDelegate? OnMigrationApplied { get; set; }
+        public static AppDelegate<Exception>? OnFatalError { get; set; }
         public static Exception? FatalError { get; private set; }
 
         /// <summary>
@@ -36,6 +36,10 @@ namespace BLAZAM.Database.Context
             {
                 ApplicationInfo.installationCompleted = CheckInstallation();
                 Loggers.InstallationCompleted = ApplicationInfo.installationCompleted;
+                if (ApplicationInfo.installationCompleted)
+                {
+                    SeedData();
+                }
 
             }
             catch (DatabaseException ex)
@@ -44,7 +48,6 @@ namespace BLAZAM.Database.Context
                 OnFatalError?.Invoke(ex);
 
             }
-            SeedData();
             StartDatabaseCache();
 
         }
@@ -109,11 +112,11 @@ namespace BLAZAM.Database.Context
                 }
                 catch (SqlException ex)
                 {
-                    Loggers.DatabaseLogger.Warning("Error attempting to seed denyAll {@Error}", ex);
+                    Loggers.DatabaseLogger.Warning(ex,"Error attempting to seed denyAll");
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error("Unexpected error attempting to seed denyAll {@Error}", ex);
+                    Loggers.DatabaseLogger.Error(ex,"Unexpected error attempting to seed denyAll");
 
                 }
                 if (saveRequired)
@@ -160,7 +163,7 @@ namespace BLAZAM.Database.Context
                             }
                             catch (Exception ex)
                             {
-                                Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database. {@Error}", ex);
+                                Loggers.DatabaseLogger.Error(ex, "There was an error checking the installation flag in the database.");
                             }
 
                         }
@@ -281,12 +284,12 @@ namespace BLAZAM.Database.Context
             {
                 OnFatalError?.Invoke(ex);
                 FatalError = ex;
-                throw ex;
+                throw;
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
-                throw ex;
+                Loggers.DatabaseLogger.Fatal(ex, "Database Auto-Update Failed!!!!");
+                throw;
             }
 
 
@@ -318,7 +321,7 @@ namespace BLAZAM.Database.Context
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
+                Loggers.DatabaseLogger.Fatal(ex,"Database Auto-Update Failed!!!!");
                
                 FatalError = ex;
                 OnFatalError?.Invoke(ex);

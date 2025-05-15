@@ -96,7 +96,7 @@
 @code {
     MudDataGrid<CustomActiveDirectoryField>? fieldGrid;
     AppModal? addFieldModal;
-    List<CustomActiveDirectoryField> ADFields { get; set; }
+    List<CustomActiveDirectoryField> ADFields { get; set; } = new();
 
     async Task<GridData<CustomActiveDirectoryField>> RefreshData(GridState<CustomActiveDirectoryField> currentState)
     {

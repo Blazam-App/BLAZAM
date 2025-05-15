@@ -134,6 +134,7 @@ a, .btn-link {
     height:min-content;
     margin-top:auto !important;
     margin-bottom:auto !important;
+    vertical-align:middle;
 }
 
 .align-bottom {

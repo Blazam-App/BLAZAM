@@ -83,7 +83,7 @@ namespace BLAZAM.Pages
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Warning("Error attempting to perform Duo MFA {Error}", ex);
+                Loggers.SystemLogger.Warning(ex,"Error attempting to perform Duo MFA");
             }
             return new RedirectResult("/");
 

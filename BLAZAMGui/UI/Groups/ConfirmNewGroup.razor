@@ -43,34 +43,30 @@
             {
                 foreach (var assignment in assignTo)
                 {
-                    await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
-                    await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
-                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                    {
-                        await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
+                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.Assign,
+                            Entry = assignment.Member,
+                            Target = assignment.Group,
+                            Actor = CurrentUser.State
 
-                    }
-                    else
-                    {
-                        _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
-
-                    }
+                        });
+                    //await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
+                    //await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
+                   
                 }
 
                 Group = (IADGroup)Directory.GetDirectoryEntryByDN(Group.DN);
 
                 SnackBarService.Success(AppLocalization[Lang.Group_created]);
-                await AuditLogger.Group.Created(Group);
-                if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                {
-                    await NotificationGenerationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.Create,
+                        Entry = Group,
+                        Actor = CurrentUser.State
 
-                }
-                else
-                {
-                    _= NotificationGenerationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
-
-                }
+                    });
+               
                 await Confirmed.InvokeAsync(Group);
             }
 

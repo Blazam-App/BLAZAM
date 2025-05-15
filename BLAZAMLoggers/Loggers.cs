@@ -20,6 +20,7 @@ namespace BLAZAM.Logger
         public static ILogger DatabaseLogger { get; private set; }
         public static ILogger ActiveDirectoryLogger { get; private set; }
         public static ILogger UpdateLogger { get; private set; }
+        public static ILogger RulesLogger { get; private set; }
         public static ILogger SystemLogger { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -31,6 +32,7 @@ namespace BLAZAM.Logger
             DatabaseLogger = SetupLogger(logPath + @"database\db.txt");
             ActiveDirectoryLogger = SetupLogger(logPath + @"activedirectory\activedirectory.txt");
             UpdateLogger = SetupLogger(logPath + @"update\update.txt", RollingInterval.Month);
+            RulesLogger = SetupLogger(logPath + @"rules\rules.txt");
 
             var systemLoggerBuilder = CreateLogBuilder()
                     .WriteTo.File(logPath + @"system\system.txt",

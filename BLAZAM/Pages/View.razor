@@ -51,7 +51,7 @@
 
             @if (result.IsDeleted)
             {
-                <MudText>Deleted</MudText>
+                <MudText>@AppLocalization[Lang.Deleted]</MudText>
             }
             else
             {
@@ -192,16 +192,18 @@
         else
             Searcher.Cancel();
         SearchService.SearchTerm = SearchTermParameter;
-        //Searcher.EnabledOnly = !SearchService.IncludeDisabled;
         Searcher.GeneralSearchTerm = SearchService.SearchTerm;
-        //Searcher.ObjectTypeFilter = SearchService.SeachObjectType;
+        if (CurrentUser.State.CanSearchDisabled(ActiveDirectoryObjectType.User)
+    || CurrentUser.State.CanSearchDisabled(ActiveDirectoryObjectType.Computer))
+        {
+            Searcher.EnabledOnly = false;
+        }
         Searcher.ExactMatch = true;
 
         //Try exact  match search first
         await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         if (Searcher.Results.Count < 1)
         {
-            Searcher.ExactMatch = false;
             results = await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
 
         }

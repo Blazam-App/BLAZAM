@@ -1,5 +1,5 @@
 ﻿@using BLAZAM.ActiveDirectory.Services
-
+@using BLAZAM.Services.Background
 
 @inherits AppModalContent
 
@@ -28,7 +28,7 @@
         var permissionApplicator = new PermissionApplicator(UserStateService, DbFactory, Directory);
         var simUser = new ApplicationUserState(DbFactory);
         await permissionApplicator.LoadPermissions(simUser, selectedUser as IADUser);
-        simTarget.SetCurrentUser(simUser);
+        simTarget.SetCurrentUser(simUser.ToActiveDirectoryUserState());
         simRan = true;
         await InvokeAsync(StateHasChanged);
     }

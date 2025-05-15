@@ -1,6 +1,7 @@
 @using System.Diagnostics
 @inherits AppComponentBase
-<MudStack Row=true Class=@("relative mud-width-full "+Class)>
+<MudStack Row=true
+          Class=@("relative mud-width-full "+Class)>
 
     <Copyright OnClick="(()=>{_=aboutModal?.ShowAsync();})" />
     @if (AutoUpdateService.IsUpdatedScheduled)
@@ -8,49 +9,38 @@
         <AuthorizeView Roles="@UserRoles.SuperAdmin">
             <Authorized>
                 <AppTooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/update");})
-                Class="mud-theme-info"
-
-                Style="width:max-content"
+                            Class="mud-theme-info"
+                            Style="width:max-content"
                             Text=@(AppLocalization[Lang.An_automatic_update_is_scheduled]+" "+AppLocalization[Lang.Click_for_details])>
-
-                    <MudIcon Color="@Color.Success" Icon=@Icons.Material.Filled.ArrowCircleUp />
+                    <MudIcon Color="@Color.Success"
+                             Icon=@Icons.Material.Filled.ArrowCircleUp />
                 </AppTooltip>
             </Authorized>
             <NotAuthorized>
                 <AppTooltip Class="mud-theme-info"
-                Style="width:max-content"
-                Text=@AppLocalization[Lang.An_automatic_update_is_scheduled]>
+                            Style="width:max-content"
+                            Text=@AppLocalization[Lang.An_automatic_update_is_scheduled]>
 
-                    <MudIcon Color="@Color.Success" Icon=@Icons.Material.Filled.ArrowCircleUp />
+                    <MudIcon Color="@Color.Success"
+                             Icon=@Icons.Material.Filled.ArrowCircleUp />
                 </AppTooltip>
             </NotAuthorized>
         </AuthorizeView>
 
     }
     <MudSpacer />
-    @*
-    <AppTooltip Class="mud-theme-info" Style="width:max-content" Text="@ApplicationInfo.RunningVersion.Version">
-
-    Version: @ApplicationInfo.RunningVersion.ShortVersion
-    </AppTooltip>*@
-
 
 </MudStack>
 <AppModal @ref=aboutModal Options=@(new DialogOptions(){FullWidth=true,
           MaxWidth=MaxWidth.Small,
           CloseButton=true})
           Title=@(AppLocalization[Lang.About]+" Blazam")>
-    <AboutAppModalContent/>
+    <AboutAppModalContent />
 </AppModal>
 @code {
     [Parameter]
     public string? Class { get; set; }
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-    }
 
     AppModal? aboutModal;
 }

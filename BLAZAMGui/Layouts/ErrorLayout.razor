@@ -1,5 +1,4 @@
-﻿
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 @inject NavigationManager Nav
 
 
@@ -8,46 +7,43 @@
 <PageTitle>Error</PageTitle>
 <MudLayout Style="min-height:98vh;">
 
-                <CascadingValue Value="this">
-        <MudAppBar Color=Color.Default Elevation="1" >
+    <CascadingValue Value="this">
+        <MudAppBar Color=Color.Default Elevation="1">
             <MudLink Href="/">
                 <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
             </MudLink>
-            </MudAppBar>
+        </MudAppBar>
 
-                </CascadingValue>
-
-               
-               
+    </CascadingValue>
 
 
-                <MudMainContent Class="mud-height-full">
-  
-
-                    <MudContainer
-                                  MaxWidth="MaxWidth.Large"
-                                  Class="pt-5 pb-10 mud-height-full">
 
 
-                        @Body
 
-                     
+    <MudMainContent Class="mud-height-full">
 
-                    </MudContainer>
 
-                </MudMainContent>
-                <MudAppBar Style="height:35px;" DisableGutters=true
-                Bottom=true 
-                Dense=true Color=Color.Dark Elevation="1">
-                    <MudStack Class="mud-width-full pa-0 ma-0 ps-3" Row=true>
-                        <AppFooter Class="align-middle"/>
-                        
-                      
-                    </MudStack>
-                </MudAppBar>
-               
-         
-    </MudLayout>
+        <MudContainer MaxWidth="MaxWidth.Large"
+                      Class="pt-5 pb-10 mud-height-full">
+            @Body
+        </MudContainer>
+
+    </MudMainContent>
+    <MudAppBar Style="height:35px;"
+               Bottom=true
+               Dense=true
+               Color=Color.Dark
+               Elevation="1">
+        <MudStack Class="mud-width-full pa-0 ma-0 ps-3"
+                  Row=true>
+            <AppFooter Class="align-middle" />
+
+
+        </MudStack>
+    </MudAppBar>
+
+
+</MudLayout>
 
 
 

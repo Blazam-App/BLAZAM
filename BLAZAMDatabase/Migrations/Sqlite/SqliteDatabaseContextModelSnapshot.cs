@@ -15,7 +15,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.13");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.15");
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
@@ -133,6 +133,10 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<int>("FieldType")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("PropertyName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("ActiveDirectoryFields");
@@ -143,266 +147,352 @@ namespace BLAZAM.Common.Migrations.Sqlite
                             Id = 1,
                             DisplayName = "Last Name",
                             FieldName = "sn",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Sn"
                         },
                         new
                         {
                             Id = 2,
                             DisplayName = "First Name",
                             FieldName = "givenname",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "GivenName"
                         },
                         new
                         {
                             Id = 3,
                             DisplayName = "Office",
                             FieldName = "physicalDeliveryOfficeName",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "PhysicalDeliveryOfficeName"
                         },
                         new
                         {
                             Id = 4,
-                            DisplayName = "Employee ID",
+                            DisplayName = "Employee Id",
                             FieldName = "employeeId",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "EmployeeId"
                         },
                         new
                         {
                             Id = 5,
                             DisplayName = "Home Directory",
                             FieldName = "homeDirectory",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "HomeDirectory"
                         },
                         new
                         {
                             Id = 6,
                             DisplayName = "Logon Script Path",
                             FieldName = "scriptPath",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "ScriptPath"
                         },
                         new
                         {
                             Id = 7,
                             DisplayName = "Profile Path",
                             FieldName = "profilePath",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "ProfilePath"
                         },
                         new
                         {
                             Id = 8,
                             DisplayName = "Home Phone Number",
                             FieldName = "homePhone",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "HomePhone"
                         },
                         new
                         {
                             Id = 9,
                             DisplayName = "Street Address",
                             FieldName = "streetAddress",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "StreetAddress"
                         },
                         new
                         {
                             Id = 10,
                             DisplayName = "City",
                             FieldName = "l",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "City"
                         },
                         new
                         {
                             Id = 11,
                             DisplayName = "State",
                             FieldName = "st",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "State"
                         },
                         new
                         {
                             Id = 12,
                             DisplayName = "Zip Code",
                             FieldName = "postalCode",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Zip"
                         },
                         new
                         {
                             Id = 13,
                             DisplayName = "Site",
                             FieldName = "site",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Site"
                         },
                         new
                         {
                             Id = 14,
                             DisplayName = "Name",
                             FieldName = "name",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Name"
                         },
                         new
                         {
                             Id = 15,
                             DisplayName = "Username",
                             FieldName = "samaccountname",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "SAMAccountName"
                         },
                         new
                         {
                             Id = 16,
                             DisplayName = "SID",
                             FieldName = "objectSID",
-                            FieldType = 2
+                            FieldType = 2,
+                            PropertyName = "SID"
                         },
                         new
                         {
                             Id = 17,
                             DisplayName = "E-Mail Address",
                             FieldName = "mail",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Email"
                         },
                         new
                         {
                             Id = 18,
                             DisplayName = "Description",
                             FieldName = "description",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Description"
                         },
                         new
                         {
                             Id = 19,
                             DisplayName = "Display Name",
                             FieldName = "displayName",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "DisplayName"
                         },
                         new
                         {
                             Id = 20,
                             DisplayName = "Distinguished Name",
                             FieldName = "distinguishedName",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "DN"
                         },
                         new
                         {
                             Id = 21,
                             DisplayName = "Member Of",
                             FieldName = "memberOf",
-                            FieldType = 4
+                            FieldType = 4,
+                            PropertyName = "MemberOf"
                         },
                         new
                         {
                             Id = 22,
                             DisplayName = "Company",
                             FieldName = "company",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Company"
                         },
                         new
                         {
                             Id = 23,
                             DisplayName = "Title",
                             FieldName = "title",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Title"
                         },
                         new
                         {
                             Id = 24,
                             DisplayName = "User Principal Name",
                             FieldName = "userPrincipalName",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "UserPrincipalName"
                         },
                         new
                         {
                             Id = 25,
                             DisplayName = "Telephone Number",
                             FieldName = "telephoneNumber",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "TelephoneNumber"
                         },
                         new
                         {
                             Id = 26,
                             DisplayName = "PO Box",
                             FieldName = "postOfficeBox",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "POBox"
                         },
                         new
                         {
                             Id = 27,
                             DisplayName = "Canonical Name",
                             FieldName = "cn",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "CanonicalName"
                         },
                         new
                         {
                             Id = 28,
                             DisplayName = "Home Drive",
                             FieldName = "homeDrive",
-                            FieldType = 3
+                            FieldType = 3,
+                            PropertyName = "HomeDrive"
                         },
                         new
                         {
                             Id = 29,
                             DisplayName = "Department",
                             FieldName = "department",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Department"
                         },
                         new
                         {
                             Id = 30,
                             DisplayName = "Middle Name",
                             FieldName = "middleName",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "MiddleName"
                         },
                         new
                         {
                             Id = 31,
                             DisplayName = "Pager",
                             FieldName = "pager",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Pager"
                         },
                         new
                         {
                             Id = 32,
                             DisplayName = "OS",
                             FieldName = "operatingSystemVersion",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "OS"
                         },
                         new
                         {
                             Id = 33,
                             DisplayName = "Account Expiration",
                             FieldName = "accountExpires",
-                            FieldType = 1
+                            FieldType = 5,
+                            PropertyName = "ExpireTime"
                         },
                         new
                         {
                             Id = 34,
                             DisplayName = "Manager",
                             FieldName = "manager",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "Manager"
                         },
                         new
                         {
                             Id = 35,
                             DisplayName = "Photo",
                             FieldName = "thumbnail",
-                            FieldType = 2
+                            FieldType = 2,
+                            PropertyName = "ThumbnailPhoto"
                         },
                         new
                         {
                             Id = 36,
                             DisplayName = "Log On To",
                             FieldName = "userWorkstations",
-                            FieldType = 0
+                            FieldType = 0,
+                            PropertyName = "LogOnTo"
                         },
                         new
                         {
                             Id = 37,
                             DisplayName = "Logon Hours",
                             FieldName = "logonHours",
-                            FieldType = 2
+                            FieldType = 2,
+                            PropertyName = "LogonHours"
                         },
                         new
                         {
                             Id = 38,
-                            DisplayName = "Group Type and Scope",
+                            DisplayName = "Group Type",
                             FieldName = "groupType",
-                            FieldType = 2
+                            FieldType = 2,
+                            PropertyName = "GroupType"
+                        },
+                        new
+                        {
+                            Id = 39,
+                            DisplayName = "Group Scope",
+                            FieldName = "groupType",
+                            FieldType = 2,
+                            PropertyName = "GroupScope"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            DisplayName = "Enabled",
+                            FieldName = "userAccountControl",
+                            FieldType = 6,
+                            PropertyName = "Enabled"
+                        },
+                        new
+                        {
+                            Id = 41,
+                            DisplayName = "Locked Out",
+                            FieldName = "lockoutTime",
+                            FieldType = 6,
+                            PropertyName = "LockedOut"
+                        },
+                        new
+                        {
+                            Id = 42,
+                            DisplayName = "OU",
+                            FieldName = "ou",
+                            FieldType = 0,
+                            PropertyName = "OU"
+                        },
+                        new
+                        {
+                            Id = 43,
+                            DisplayName = "Last Change",
+                            FieldName = "whenChanged",
+                            FieldType = 1,
+                            PropertyName = "LastChanged"
+                        },
+                        new
+                        {
+                            Id = 44,
+                            DisplayName = "Last Logon",
+                            FieldName = "lastLogonTimestamp",
+                            FieldType = 1,
+                            PropertyName = "LastLogonTimestamp"
                         });
                 });
 
@@ -1288,7 +1378,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.ToTable("AccessLevelFieldMapping");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestActions", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestAction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1499,6 +1589,200 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasKey("Id");
 
                     b.ToTable("PermissionMap");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ActiveDirectoryObjectType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte?>("DaysOfWeekToRun")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("IntervalCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastExcecuted")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastTriggered")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ScheduleInterval")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<TimeSpan?>("ScheduledRunTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("StopOnThisRule")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Trigger")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AutomationRules");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("ActionGuid")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ActionType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AutomationRuleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Data")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AutomationRuleId");
+
+                    b.ToTable("AutomationRuleActions");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleActionFieldValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AutomationRuleActionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CustomFieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("FieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AutomationRuleActionId");
+
+                    b.HasIndex("CustomFieldId");
+
+                    b.HasIndex("FieldId");
+
+                    b.ToTable("AutomationRuleFieldValues");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAndFilter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CustomFieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Data")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("FieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("FilterGuid")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Negate")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Operator")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrFilterId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long?>("TimeFrame")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomFieldId");
+
+                    b.HasIndex("FieldId");
+
+                    b.HasIndex("OrFilterId");
+
+                    b.ToTable("AutomationRuleAndFilters");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupSid", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Assigned")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AutomationRuleActionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("GroupSid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AutomationRuleActionId");
+
+                    b.ToTable("AutomationRuleGroupSids");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AutomationRuleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("FilterGuid")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AutomationRuleId");
+
+                    b.ToTable("AutomationRuleOrFilter");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
@@ -2056,6 +2340,81 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("ObjectAccessLevel");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAction", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRule", null)
+                        .WithMany("Actions")
+                        .HasForeignKey("AutomationRuleId");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleActionFieldValue", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRuleAction", "AutomationRuleAction")
+                        .WithMany("FieldValues")
+                        .HasForeignKey("AutomationRuleActionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", "CustomField")
+                        .WithMany()
+                        .HasForeignKey("CustomFieldId");
+
+                    b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
+                        .WithMany()
+                        .HasForeignKey("FieldId");
+
+                    b.Navigation("AutomationRuleAction");
+
+                    b.Navigation("CustomField");
+
+                    b.Navigation("Field");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAndFilter", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", "CustomField")
+                        .WithMany()
+                        .HasForeignKey("CustomFieldId");
+
+                    b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
+                        .WithMany()
+                        .HasForeignKey("FieldId");
+
+                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", "OrFilter")
+                        .WithMany("AndFilters")
+                        .HasForeignKey("OrFilterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CustomField");
+
+                    b.Navigation("Field");
+
+                    b.Navigation("OrFilter");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupSid", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRuleAction", "AutomationRuleAction")
+                        .WithMany("GroupSids")
+                        .HasForeignKey("AutomationRuleActionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AutomationRuleAction");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRule", "AutomationRule")
+                        .WithMany("Filters")
+                        .HasForeignKey("AutomationRuleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AutomationRule");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplate", "ParentTemplate")
@@ -2227,6 +2586,25 @@ namespace BLAZAM.Common.Migrations.Sqlite
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
                 {
                     b.Navigation("ObjectAccessMappings");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRule", b =>
+                {
+                    b.Navigation("Actions");
+
+                    b.Navigation("Filters");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAction", b =>
+                {
+                    b.Navigation("FieldValues");
+
+                    b.Navigation("GroupSids");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
+                {
+                    b.Navigation("AndFilters");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>

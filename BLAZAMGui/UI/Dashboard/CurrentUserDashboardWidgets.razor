@@ -187,8 +187,7 @@ else
     bool _initialized;
     [Inject]
     public WidgetService WidgetService { get; set; }
-    public AppEvent<Widget> OnRefreshWidget { get; set; } = (val) => { };
-    IApplicationUserState _currentUser;
+    public AppDelegate<Widget> OnRefreshWidget { get; set; } = (val) => { };
     MudDropContainer<UserDashboardWidget>? widgetContainer;
     List<Widget> allWidgets = new List<Widget>();
 
@@ -198,7 +197,6 @@ else
         await InvokeAsync(StateHasChanged);
 
         allWidgets = new List<Widget>(WidgetService.Available());
-        _currentUser = CurrentUser.State;
         await InvokeAsync(StateHasChanged);
 
     }

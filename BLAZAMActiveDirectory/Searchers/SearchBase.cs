@@ -8,8 +8,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// <summary>
         /// Event fired when all results have been collected, or an error occurred
         /// </summary>
-        public AppEvent OnSearchCompleted { get; set; }
-        public AppEvent OnSearchStarted { get; set; }
+        public AppDelegate OnSearchCompleted { get; set; }
+        public AppDelegate OnSearchStarted { get; set; }
         public TimeSpan SearchTime { get => stopwatch.Elapsed; }
         protected Stopwatch stopwatch = new Stopwatch();
         /// <summary>

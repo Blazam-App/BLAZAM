@@ -1,13 +1,50 @@
 ﻿@page "/rules"
+@page "/rules/{ObjectTypeParam}/{TriggerParam}"
+@using BLAZAM.Gui.UI.Settings.Rules
 @inherits AppComponentBase
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 <AppPageTitle>@AppLocalization[Lang.Rules]</AppPageTitle>
 <SetHeader>
 
-    </SetHeader>
-<MudText Typo="Typo.h4">@AppLocalization[Lang.Rules] <AppDocumentationButton Page="/admin/rules" /></MudText>
+</SetHeader>
 
-<MudText>Rules is a concept for automation within Blazam. It would allow automated actions based on filtered event triggers.</MudText>
+<RulesSettings ViewFilter="paramFilter" />
 @code {
+    readonly RuleViewFilter paramFilter = new();
 
+    [Parameter]
+    public string? ObjectTypeParam { get; set; }
+
+    [Parameter]
+    public string? TriggerParam { get; set; }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        SetFilter();
+    }
+    private void SetFilter(){
+        if (ObjectTypeParam != null)
+        {
+            foreach (ActiveDirectoryObjectType typ in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
+            {
+                if (typ.ToString().Equals(ObjectTypeParam, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    paramFilter.ObjectType = typ;
+
+                }
+            }
+
+        }
+        if (TriggerParam != null)
+        {
+            foreach (NotificationType typ in Enum.GetValues(typeof(NotificationType)))
+            {
+                if (typ.ToString().Equals(TriggerParam, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    paramFilter.Trigger = typ;
+
+                }
+            }
+        }
+    }
 }

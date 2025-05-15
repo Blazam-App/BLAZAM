@@ -11,7 +11,7 @@
             @foreach (var map in inheritedMappings)
             {
                 <MudCard>
-                    <PermissionMapEditor  MappingsChanged=@MappingsChanged Map="map" ReadOnly=true />
+                    <PermissionMapEditor MappingsChanged=@InvokeMappingsChanged Map="map" ReadOnly=true />
                 </MudCard>
             }
         </MudExpansionPanel>
@@ -19,14 +19,14 @@
     }
     @foreach (var map in appliedMappings)
     {
-        <PermissionMapEditor MappingsChanged="@(async()=>{await RefreshData();})" Map="map" />
+        <PermissionMapEditor MappingsChanged="InvokeMappingsChanged" Map="map" />
     }
     @if (NewMapping != null)
     {
-        <PermissionMapEditor MappingsChanged="@(async()=>{await RefreshData();})" Map="NewMapping" />
+        <PermissionMapEditor MappingsChanged="InvokeMappingsChanged" Map="NewMapping" />
     }else
     {
-    <MudButton OnClick="AddNewMapping" Color="Color.Success">Add new mapping</MudButton>
+        <MudButton OnClick="AddNewMapping" Color="Color.Success">Add new mapping</MudButton>
     }
 </MudCard>
 
@@ -66,6 +66,14 @@
         {
             await RefreshData();
         }
+    }
+
+
+    async Task InvokeMappingsChanged()
+    {
+        await RefreshData();
+        await InvokeAsync(StateHasChanged);
+        await MappingsChanged.InvokeAsync();
     }
     async Task RefreshData()
     {

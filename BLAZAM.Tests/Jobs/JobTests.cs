@@ -19,13 +19,13 @@ namespace BLAZAM.Tests.Jobs
                 var step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
                 var step6 = new JobStep("Nested Step Throws", (step) => { Task.Delay(200).Wait(); throw new AppException("Test exception"); return false; });
 
-                job.Steps.Add(step1);
-                job.Steps.Add(step2);
-                job.Steps.Add(step3);
-                job2.Steps.Add(step4);
-                job2.Steps.Add(step5);
-                job2.Steps.Add(step6);
-                job.Steps.Add(job2);
+                job.AddStep(step1);
+                job.AddStep(step2);
+                job.AddStep(step3);
+                job2.AddStep(step4);
+                job2.AddStep(step5);
+                job2.AddStep(step6);
+                job.AddStep(job2);
                 return job;
             }
         }

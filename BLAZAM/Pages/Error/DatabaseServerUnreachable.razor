@@ -1,7 +1,7 @@
 ﻿
 @inject  IDatabaseContext Context
 @code {
-    bool installed = ApplicationInfo.installationCompleted;
+    readonly bool installed = ApplicationInfo.installationCompleted;
     
 }
 <h3>Database Server is Unreachable</h3>

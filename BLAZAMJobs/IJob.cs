@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Jobs
+﻿using System.Collections.Concurrent;
+
+namespace BLAZAM.Jobs
 {
     /// <summary>
     /// A flexible multi step Job that can have actions as trackable steps.
@@ -47,6 +49,10 @@
         /// </summary>
         IList<IJobStep> PassedSteps { get; }
 
+        /// <summary>
+        /// Adds a step to the job. Steps can be added while the job is running.
+        /// </summary>
+        /// <param name="step">The step to add.</param>
         void AddStep(IJobStep step);
 
 
@@ -55,5 +61,7 @@
         /// Waits for the job to finish execution synchronously.
         /// </summary>
         void Wait();
+
+        Task WaitAsync();
     }
 }

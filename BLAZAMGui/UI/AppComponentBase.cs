@@ -109,12 +109,12 @@ namespace BLAZAM.Gui.UI
             base.OnInitialized();
             try
             {
-
+                userActiveDirectoryService.Context.CurrentUser = CurrentUser.State.ToActiveDirectoryUserState();
                 Directory = userActiveDirectoryService.Context;
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error("Failed to connect to scoped active directory {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex,"Failed to connect to scoped active directory");
 
             }
             Monitor.OnDirectoryConnectionChanged += (status) =>

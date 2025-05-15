@@ -11,7 +11,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Modal.OnYes = OnSubmit;
+        Modal.SetOnYes(OnSubmit);
     }
     string sendToEmail;
 

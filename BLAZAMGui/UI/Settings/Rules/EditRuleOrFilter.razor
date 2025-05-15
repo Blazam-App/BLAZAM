@@ -1,0 +1,54 @@
+@using BLAZAM.Database.Models.Rules
+@inherits AppComponentBase
+<MudStack Row="true">
+    <FlexContainer>
+        @for (int x = 0; x < Filter.AndFilters.Count; x++)
+        {
+            var andFilter = Filter.AndFilters[x];
+
+            @if (x > 0)
+            {
+                <MudText Class="align-self-center" Align="Align.Center">@AppLocalization[Lang.And]</MudText>
+
+            }
+            <EditAndFitler RemoveClicked="@(()=>{
+                                                _=RemoveAndFilter(Filter, andFilter);
+                                                })" Filter="andFilter" />
+            <MudSpacer />
+        }
+        <MudButton OnClick="@(()=>{AddAndFilter();})"
+        Color="Color.Success"
+        Variant="Variant.Filled"
+        Style="height:max-content;"
+        StartIcon="@Icons.Material.Filled.Add">@AppLocalization[Lang.Add_And_Filter]</MudButton>
+    </FlexContainer>
+
+    <MudSpacer />
+
+    <MudButton OnClick="@RemoveClicked"
+    Color="Color.Error"
+    StartIcon="@Icons.Material.Filled.Remove">@AppLocalization[Lang.Remove_Or_Filter]</MudButton>
+</MudStack>
+@code {
+    [Parameter]
+    public EventCallback RemoveClicked { get; set; }
+    [Parameter]
+    public AutomationRuleOrFilter Filter { get; set; }
+
+    private async Task RemoveAndFilter(AutomationRuleOrFilter orFilter, AutomationRuleAndFilter andFilter)
+    {
+
+        orFilter.AndFilters.Remove(andFilter);
+        if(orFilter.AndFilters.Count<1){
+            await RemoveClicked.InvokeAsync();
+        }else{
+        await InvokeAsync(StateHasChanged);
+        }
+    }
+    private void AddAndFilter()
+    {
+        var newFilter = new AutomationRuleAndFilter();
+        newFilter.FilterGuid = Guid.NewGuid();
+        Filter.AndFilters.Add(newFilter);
+    }
+}

@@ -11,12 +11,12 @@ using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
-using BLAZAM.Session.Interfaces;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 using System.DirectoryServices.Protocols;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
 
@@ -25,12 +25,11 @@ namespace BLAZAM.ActiveDirectory
     public class ActiveDirectoryContext : IActiveDirectoryContext
     {
         public DomainControllerEventLogReader EventLogReader { get; private set; }
-        public IApplicationUserState? CurrentUser
+        public ActiveDirectoryUserState? CurrentUser
         {
             get
             {
                 if (_currentUser != null) return _currentUser;
-                if (_userStateService.CurrentUserState != null) return _userStateService.CurrentUserState;
                 return null;
             }
             set => _currentUser = value;
@@ -101,7 +100,6 @@ namespace BLAZAM.ActiveDirectory
         /// <param name="context"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
         public ActiveDirectoryContext(IAppDatabaseFactory factory,
-            IApplicationUserStateService userStateService,
             IEncryptionService encryptionService,
             INotificationPublisher notificationPublisher
             )
@@ -110,12 +108,12 @@ namespace BLAZAM.ActiveDirectory
             _encryption = encryptionService;
             _notificationPublisher = notificationPublisher;
             Factory = factory;
-            _userStateService = userStateService;
             SetSystemInstance(this);
             EventLogReader = new(this);
             _ = ConnectAsync();
 
             Users = new ADUserSearcher(this);
+            Contacts = new ADContactSearcher(this);
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
             Printers = new ADPrinterSearcher(this);
@@ -132,7 +130,6 @@ namespace BLAZAM.ActiveDirectory
             _encryption = activeDirectoryContextSeed._encryption;
             _notificationPublisher = activeDirectoryContextSeed._notificationPublisher;
             Factory = activeDirectoryContextSeed.Factory;
-            _userStateService = activeDirectoryContextSeed._userStateService;
             ConnectionSettings = activeDirectoryContextSeed.ConnectionSettings;
             RootDirectoryEntry = activeDirectoryContextSeed.RootDirectoryEntry;
             AppRootDirectoryEntry = activeDirectoryContextSeed.AppRootDirectoryEntry;
@@ -142,6 +139,7 @@ namespace BLAZAM.ActiveDirectory
             EventLogReader = activeDirectoryContextSeed.EventLogReader;
 
             Users = new ADUserSearcher(this);
+            Contacts = new ADContactSearcher(this);
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
             Printers = new ADPrinterSearcher(this);
@@ -177,6 +175,8 @@ namespace BLAZAM.ActiveDirectory
 
         public IADUserSearcher Users { get; }
 
+        public IADContactSearcher Contacts { get; }
+
         public IADGroupSearcher Groups { get; }
 
         public IADOUSearcher OUs { get; }
@@ -203,7 +203,7 @@ namespace BLAZAM.ActiveDirectory
             }
         }
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
-        private IApplicationUserState? _currentUser;
+        private ActiveDirectoryUserState? _currentUser;
         private bool _keepAlive;
 
         public DirectoryConnectionStatus Status
@@ -215,7 +215,7 @@ namespace BLAZAM.ActiveDirectory
                 OnStatusChanged?.Invoke(_status);
             }
         }
-        public AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
+        public AppDelegate<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
 
 
         public Exception? ConnectionException { get; set; }
@@ -224,7 +224,6 @@ namespace BLAZAM.ActiveDirectory
 
         public ADSettings ConnectionSettings { get; private set; }
 
-        private IApplicationUserStateService _userStateService { get; set; }
 
         public WindowsImpersonation? Impersonation
         {
@@ -251,35 +250,38 @@ namespace BLAZAM.ActiveDirectory
 
         private async Task KeepAlive()
         {
-            _keepAlive = true;
-            while (_keepAlive)
+            if (_systemInstance == this)
             {
-                await Task.Delay(30000);
+                _keepAlive = true;
+                while (_keepAlive)
+                {
+                    await Task.Delay(30000);
 
-                if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
-                {
-                    await ConnectAsync();
-                }
-                else if (Status == DirectoryConnectionStatus.OK)
-                {
-                    //Throw away query used to keep connection alive
-                    try
+                    if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
                     {
-                        _ = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
-
+                        await ConnectAsync();
                     }
-                    catch (DirectoryServicesCOMException ex)
+                    else if (Status == DirectoryConnectionStatus.OK)
                     {
-                        //not usernam or password is incorrect
-                        if (ex.HResult != -2147023570)
+                        //Throw away query used to keep connection alive
+                        try
                         {
-                            Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+                            _ = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
 
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+                        catch (DirectoryServicesCOMException ex)
+                        {
+                            //not usernam or password is incorrect
+                            if (ex.HResult != -2147023570)
+                            {
+                                Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+                        }
                     }
                 }
             }
@@ -329,6 +331,7 @@ namespace BLAZAM.ActiveDirectory
 
                 PerformNetworkTests(ad);
 
+
                 if (IsCancelRequested) return;
 
                 InitializeDirectoryEntries(ad);
@@ -364,14 +367,42 @@ namespace BLAZAM.ActiveDirectory
                 switch (ex.ExtendedError)
                 {
                     case -2146893044:
+                        Loggers.ActiveDirectoryLogger.Information("Bad credentials for Active Directory {@Error}", ex);
+
                         Status = DirectoryConnectionStatus.BadCredentials;
                         break;
 
                     case 8235:
+                        Loggers.ActiveDirectoryLogger.Information("Bad configuration for Active Directory {@Error}", ex);
+
                         Status = DirectoryConnectionStatus.BadConfiguration;
                         break;
                     case 8333:
+                        Loggers.ActiveDirectoryLogger.Information("RootOU container not found in Active Directory {@Error}", ex);
+
                         Status = DirectoryConnectionStatus.ContainerNotFound;
+                        break;
+                    default:
+                        Loggers.ActiveDirectoryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+                        Status = DirectoryConnectionStatus.ServerDown;
+                        break;
+                }
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++;
+            }
+            catch (COMException ex)
+            {
+                ConnectionException = ex;
+                switch (ex.HResult)
+                {
+
+                    case -2147023436:
+                        Loggers.ActiveDirectoryLogger.Information("Timeout connecting to Active Directory {@Error}", ex);
+                        Status = DirectoryConnectionStatus.ServerDown;
+                        break;
+                    default:
+                        Loggers.ActiveDirectoryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+                        Status = DirectoryConnectionStatus.ServerDown;
                         break;
                 }
                 if (FailedConnectionAttempts < 10)
@@ -389,18 +420,30 @@ namespace BLAZAM.ActiveDirectory
                 switch (ex.HResult)
                 {
                     case -2147016646:
+                        Loggers.ActiveDirectoryLogger.Information("Encrypted connection error to Active Directory {@Error}", ex);
+
                         Status = DirectoryConnectionStatus.EncryptionError;
                         break;
                     case -2147023570:
+                        Loggers.ActiveDirectoryLogger.Information("Bad credentials for Active Directory {@Error}", ex);
+
                         Status = DirectoryConnectionStatus.BadCredentials;
                         break;
                     default:
-                        Loggers.ActiveDirectoryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+                        Loggers.ActiveDirectoryLogger.Information("Unexpected Error connecting to Active Directory {@Error}", ex);
                         Status = DirectoryConnectionStatus.ServerDown;
                         break;
                 }
                 if (FailedConnectionAttempts < 10)
                     FailedConnectionAttempts++;
+            }
+            finally
+            {
+                if (IsCancelRequested==false && Status != DirectoryConnectionStatus.OK)
+                {
+                    Task.Delay(5000).Wait();
+                    Connect();
+                }
             }
         }
         private bool IsCancelRequested
@@ -428,8 +471,7 @@ namespace BLAZAM.ActiveDirectory
             ConnectionSettings = ad;
 
             Loggers.ActiveDirectoryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
-            //We need to determine what security options to use when authenticating
-            //based on the settings in the DB
+
 
             if (!ad.IsValid)
             {
@@ -451,9 +493,9 @@ namespace BLAZAM.ActiveDirectory
             //Proceed no further if the DB is down
             if (_context.Status != ServiceConnectionState.Up)
             {
-                //When cancelling and retrying a connection, the first Up check above is sometimes no Up,
+                //When cancelling and retrying a connection, the first Up check above is sometimes not Up,
                 //but will be one line later. Confirmed with Debugging (3/18/2025)
-                //This is the least impactful way and avoids any Task waits
+                //This is the least impactful way and avoids any Task waits, discount double-check
 #pragma warning disable S1066 // Mergeable "if" statements should be combined
                 if (_context.Status != ServiceConnectionState.Up)
                 {
@@ -739,7 +781,7 @@ namespace BLAZAM.ActiveDirectory
                 isDeleteAttributeMod.Name = "isDeleted";
                 isDeleteAttributeMod.Operation = DirectoryAttributeOperation.Delete;
                 DirectoryAttributeModification dnAttributeMod = new();
-                dnAttributeMod.Name = "distinguishedName";
+                dnAttributeMod.Name = ActiveDirectoryFields.DistinguishedName.FieldName;
                 dnAttributeMod.Operation = DirectoryAttributeOperation.Replace;
                 dnAttributeMod.Add(newDN);
                 ModifyRequest request = new(model.DN, new DirectoryAttributeModification[] { isDeleteAttributeMod, dnAttributeMod });
@@ -762,14 +804,27 @@ namespace BLAZAM.ActiveDirectory
 
         }
 
-        public IDirectoryEntryAdapter? FindEntryBySID(byte[] sid) => GetDirectoryEntryBySid(sid.ToSidString());
-        public IDirectoryEntryAdapter? GetDirectoryEntryBySid(string sid)
+        public IDirectoryEntryAdapter? FindEntryBySID(byte[] sid) => FindEntryBySid(sid.ToSidString());
+        public IDirectoryEntryAdapter? FindEntryBySid(string sid)
         {
             var searcher = new ADSearch(this);
             searcher.SearchRoot = RootDirectoryEntry;
             searcher.Fields.SID = sid;
             var result = searcher.Search().FirstOrDefault();
             return result;
+        }
+        public IDirectoryEntryAdapter? FindEntryByGuid(string guid) => FindEntryByGuid(Guid.Parse(guid).ToByteArray());
+
+        public IDirectoryEntryAdapter? FindEntryByGuid(byte[] guid)
+        {
+            if (guid == null) return null;
+            return new ADSearch(this)
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.Contact,
+                Fields = new() { GUID = guid },
+                ExactMatch = true
+
+            }.Search<ADContact, IADContact>().FirstOrDefault();
         }
 
         public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn)

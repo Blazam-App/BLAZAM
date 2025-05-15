@@ -30,17 +30,23 @@
         </ActivatorContent>
 
         <ChildContent>
-            <MudContainer Class="px-0" Style="width:300px;">
-                <MudText Typo=Typo.h6 Class="py-2" Align="Align.Center">
+            <MudContainer Class="px-0"
+                          Style="width:300px;">
+                <MudText Typo=Typo.h6
+                         Class="py-2"
+                         Align="Align.Center">
                     Blazam @AppLocalization[Lang.News]
                 </MudText>
-                <MudText Typo="Typo.caption" Class="px-1 py-2" Align="Align.Center">
+                <MudText Typo="Typo.caption"
+                         Class="px-1 py-2"
+                         Align="Align.Center">
                     @AppHelpLocalization[HelpLang.News_Provider_Description]
                 </MudText>
                 @foreach (var item in unreadItems.OrderByDescending(x => x.UpdatedAt))
                 {
                     <ApplicationNewsItem Item=item
                                          Read=false
+                                         OnClick="@(()=>{ ShowNews(item); })"
                                          OnRead="@(()=>{
                                             RefreshItems();
                                             })" />
@@ -50,7 +56,9 @@
                 {
                     foreach (var item in readItems.OrderByDescending(x => x.UpdatedAt))
                     {
-                        <ApplicationNewsItem Item="item" Read=true />
+                        <ApplicationNewsItem Item="item"
+                                             Read=true
+                                             OnClick="@(()=>{ ShowNews(item); })" />
                         <MudDivider />
 
                     }
@@ -59,7 +67,7 @@
                 {
                     if (unreadItems.Count == 0)
                     {
-                        <MudText Align=Align.Center Class="">
+                        <MudText Align=Align.Center>
                             @AppHelpLocalization[HelpLang.No_News]
                         </MudText>
                     }
@@ -106,19 +114,19 @@ else
     private List<NewsItem> unreadItems = new();
     private List<NewsItem> readItems = new();
     private MudMenu? newsMenu;
-    private ApplicationUpdate? latestUpdate;
     private NewsItem? appUpdateNewsItem
     {
         get
         {
-            if (!AutoUpdateService.IsUpdateAvailable || UpdateService.NewestAvailableUpdate==null) {
+            if (!AutoUpdateService.IsUpdateAvailable || UpdateService.NewestAvailableUpdate == null)
+            {
                 return null;
             }
             return new NewsItem
                 {
                     Title = AppLocalization[Lang.Update_Available],
                     Body = AppLocalization[Lang.Version] + " " + UpdateService.NewestAvailableUpdate?.Version +
-                    "<br/> ",
+                                    "<br/> ",
                     Link = "/settings/update",
                     Published = true,
                     UpdatedAt = DateTime.MinValue,
@@ -131,9 +139,9 @@ else
     {
         await base.OnInitializedAsync();
         ApplicationNewsService.OnNewItemsAvailable += RefreshItems;
-        
+
         RefreshItems();
-        
+
 
     }
 
@@ -145,6 +153,20 @@ else
         {
             newsMenu?.OpenMenuAsync(new());
         }
+    }
+    private async Task ShowNews(NewsItem newItem)
+    {
+        if (newsMenu != null)
+        {
+            await newsMenu.CloseAllMenusAsync();
+        }
+        var result = await newItem.ShowNewsItemDialog(MessageService);
+        if (result.Dialog is AppNewsItemDialog dialog)
+        {
+            dialog.OnAcknowledged += () => RefreshItems();
+        }
+
+
     }
     private async void MarkAllRead()
     {
@@ -185,10 +207,9 @@ else
         unreadItems = ApplicationNewsService.GetUnreadNewsItems(CurrentUser.State);
         if (AutoUpdateService.IsUpdateAvailable)
         {
-            latestUpdate = UpdateService.LatestUpdate;
 
             if (appUpdateNewsItem != null &&
-                !CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id)==true)
+                !CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id) == true)
             {
                 unreadItems.Insert(0, appUpdateNewsItem);
             }
@@ -199,10 +220,10 @@ else
     {
         readItems = ApplicationNewsService.GetReadNewsItems(CurrentUser.State);
 
-        if (appUpdateNewsItem != null && CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id)==true)
+        if (appUpdateNewsItem != null && CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id) == true)
         {
             readItems.Insert(0, appUpdateNewsItem);
         }
     }
- 
+
 }

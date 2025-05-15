@@ -13,13 +13,13 @@ namespace BLAZAM.Notifications.Services
     public static class SnackbarBroadcastService
     {
 
-        public static AppEvent<NotificationMessage>? OnInfoBroadcast { get; set; }
+        public static AppDelegate<NotificationMessage>? OnInfoBroadcast { get; set; }
 
-        public static AppEvent<NotificationMessage>? OnSuccessBroadcast { get; set; }
+        public static AppDelegate<NotificationMessage>? OnSuccessBroadcast { get; set; }
 
-        public static AppEvent<NotificationMessage>? OnErrorBroadcast { get; set; }
+        public static AppDelegate<NotificationMessage>? OnErrorBroadcast { get; set; }
 
-        public static AppEvent<NotificationMessage>? OnWarningBroadcast { get; set; }
+        public static AppDelegate<NotificationMessage>? OnWarningBroadcast { get; set; }
 
         public static void Info(string message, string? title = null)
         {

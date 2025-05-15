@@ -1,5 +1,6 @@
 ﻿@inherits AppComponentBase
-<MudIconButton Icon="@Icons.Material.Filled.ContentCopy" OnClick="@(async()=>{await CopyToClipboard(TextToCopy);})" />
+<MudIconButton Icon="@Icons.Material.Filled.ContentCopy"
+OnClick="@(async()=>{await CopyToClipboard(TextToCopy);})" />
 
 @code {
     [Parameter]

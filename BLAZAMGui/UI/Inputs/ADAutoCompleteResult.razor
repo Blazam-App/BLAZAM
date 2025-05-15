@@ -71,22 +71,4 @@
     [Parameter]
     public bool Disabled { get; set; } = false;
 
-    private string typeIcon = Icons.Material.Filled.QuestionMark;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        _ = Task.Run(async () =>
-        {
-            await Task.Delay(10);
-            await LoadTypeIcon();
-
-        });
-
-    }
-    private async Task LoadTypeIcon()
-    {
-        typeIcon = Entry.TypeIcon();
-        await InvokeAsync(StateHasChanged);
-    }
 }

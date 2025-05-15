@@ -18,40 +18,39 @@
             </MudHidden>
         }
         <MudLink Href="/">
-            <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+            <MudImage Class="app-icon"
+                      Src="@StaticAssets.ApplicationIconUri" />
         </MudLink>
-        <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert=true>
+        <MudHidden Breakpoint="Breakpoint.MdAndUp"
+                   Invert=true>
             @if (DatabaseCache.ApplicationSettings?.AppName != DatabaseCache.ApplicationSettings?.AppAbbreviation)
             {
                 <AppTooltip Text="@DatabaseCache.ApplicationSettings?.AppName">
-                    <MudText Align="Align.Center" Class="px-3 align-middle">
+                    <MudText Align="Align.Center"
+                             Class="px-3 align-middle">
                         @DatabaseCache.ApplicationSettings?.AppAbbreviation
                     </MudText>
                 </AppTooltip>
             }
             else
             {
-                <MudText Align="Align.Center" Class="px-3 align-middle">
+                <MudText Align="Align.Center"
+                         Class="px-3 align-middle">
                     @DatabaseCache.ApplicationSettings?.AppAbbreviation
                 </MudText>
             }
         </MudHidden>
-
-
-
     </MudBreakpointProvider>
     <MudSpacer />
 
     @if (mainLayout?.Header != null)
     {
         @mainLayout.Header.ChildContent
-
     }
     else
     {
         <SearchPageHeader />
     }
-
     <MudSpacer />
     <AuthorizeView Roles="@UserRoles.SuperAdmin">
         <ApplicationNewsProvider />

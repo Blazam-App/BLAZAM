@@ -126,10 +126,7 @@
 </style>
 
 @code {
-    AppModal? createGoogleAuthenticatorModal;
-    string? tokenCreatorUsername;
     GoogleAuthenticatorModal? googleAuthenticatorModal;
-    private string? passcode;
 
     bool attemptingSignIn = false;
     string redirectUrl;
@@ -171,7 +168,7 @@
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error attempting logon {@Error}", ex);
+                Loggers.SystemLogger.Error(ex,"Error attempting logon");
                 SnackBarService.Info(ex.Message);
             }
 
@@ -231,7 +228,7 @@
                 break;
             case LoginResultStatus.DuoRequested:
                 attemptingSignIn = true;
-                if (authenticationResult != null && authenticationResult.MFARedirect != null)
+                if (authenticationResult.MFARedirect != null)
                     Nav.NavigateTo(authenticationResult.MFARedirect);
                 break;
             case LoginResultStatus.GoogleAuthenticatorRequested:

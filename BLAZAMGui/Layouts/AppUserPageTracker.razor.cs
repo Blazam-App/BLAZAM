@@ -25,7 +25,8 @@ namespace BLAZAM.Gui.Layouts
             }
             catch
             {
-
+                //Ignore any errors tracking navigation because it's low prioirty data
+                //when compared to auditting
             }
         }
     }

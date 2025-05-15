@@ -5,6 +5,7 @@ using BLAZAM.Database.Models.Audit;
 using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
+using BLAZAM.Database.Models.Rules;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Server.Data;
@@ -42,7 +43,7 @@ namespace BLAZAM.Database.Context
         DbSet<SystemAuditLog> SystemAuditLog { get; set; }
         //DbSet<UserAuditLog> UserAuditLog { get; set; }
         DbSet<AppUser> UserSettings { get; set; }
-
+        Exception? LastSaveError { get; set; }
         /// <summary>
         /// The connection string as set in the ASP Net Core appsettings.json
         /// <para>This should be set before any attempts to connect.</para>
@@ -66,13 +67,19 @@ namespace BLAZAM.Database.Context
         DbSet<ActiveDirectoryFieldObjectType> ActiveDirectoryFieldObjectMappings { get; set; }
         DbSet<NotificationSubscription> NotificationSubscriptions { get; set; }
         DbSet<GlobalPermissionSettings> GlobalPermissionSettings { get; set; }
-        DbSet<GlobalPermissionRequestActions> GlobalPermissionRequestActions { get; set; }
+        DbSet<GlobalPermissionRequestAction> GlobalPermissionRequestActions { get; set; }
         DbSet<ApiToken> ApiTokens { get; set; }
         DbSet<WebHookSubscription> WebHookSubscriptions { get; set; }
         DbSet<WebHookAttempt> WebHookAttempts { get; set; }
         DbSet<GenericSidList> LockedOutUsers { get; set; }
         DbSet<EmailAuditLog> EmailAuditLog { get; set; }
         DbSet<FailedADLogonEvent> FailedADLogonEvents { get; set; }
+        DbSet<AutomationRule> AutomationRules { get; set; }
+        DbSet<AutomationRuleActionFieldValue> AutomationRuleFieldValues { get; set; }
+        DbSet<AutomationRuleOrFilter> AutomationRuleOrFilter { get; set; }
+        DbSet<AutomationRuleAndFilter> AutomationRuleAndFilters { get; set; }
+        DbSet<AutomationRuleGroupSid> AutomationRuleGroupSids { get; set; }
+        DbSet<AutomationRuleAction> AutomationRuleActions { get; set; }
 
         void Export(string directory);
     }

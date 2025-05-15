@@ -1,0 +1,110 @@
+@using BLAZAM.Database.Models.Rules
+@inherits DatabaseComponentBase
+<MudBadge Icon="@Icons.Material.Filled.RemoveCircle"
+          OnClick="@RemoveClicked"
+          Color="Color.Error"
+          Overlap="true">
+    <MudAlert Icon="@Icons.Material.Outlined.FilterAlt"
+              Severity="Severity.Normal"
+              Style="@($"height:100%; border-width:2px; border-color: var(--mud-palette-warning-lighten)")"
+              Variant="Variant.Outlined">
+
+
+        <AppTooltip Text="@Filter.Field?.FieldName">
+            <MudSelectList T="IActiveDirectoryField"
+                           Values="_fields"
+                           @bind-Value="Filter.CurrentField" />
+        </AppTooltip>
+        @if (Filter.Field?.Id == ActiveDirectoryFields.OU.Id)
+        {
+            if (Filter.Data.IsNullOrEmpty())
+            {
+                Filter.Data = "off";
+            }
+            <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.OU"
+                            MinCharacters="1"
+                            SelectedResult="ou"
+                            SelectedResultChanged="OUSelected" />
+            <MudSwitch @bind-Value=Filter.Data
+                       Label=@(Filter.Data!="on" ? "Include Sub OU's":"Search only this OU")
+                       UncheckedColor="@Color.Success"
+                       Color="@Color.Warning" />
+        }
+        else
+        {
+            if (Filter.CurrentField?.FieldType != ActiveDirectoryFieldType.Boolean)
+            {
+                <MudSelectList Values="Filter.CurrentField?.GetOperators()"
+                               @bind-Value="Filter.Operator" />
+
+                @switch (Filter.Operator)
+                {
+                    case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
+                    case ActiveDirectoryFieldOperator.FutureTimeFrame:
+                    <MudTimeFramePicker @bind-TimeFrame=Filter.TimeFrame/>
+                        @* <MudTimePicker Editable=true @bind-Time=Filter.TimeFrame /> *@
+                        break;
+                    case ActiveDirectoryFieldOperator.EqualTo:
+                    case ActiveDirectoryFieldOperator.Contains:
+                    case ActiveDirectoryFieldOperator.StartsWith:
+                    case ActiveDirectoryFieldOperator.EndsWith:
+                        <MudTextField T="string" @bind-Value=Filter.Value />
+                        break;
+                    case ActiveDirectoryFieldOperator.BeforeNow:
+                    case ActiveDirectoryFieldOperator.AfterNow:
+                        <MudText>Will be determined upon rule execution</MudText>
+                        break;
+                }
+
+            }
+            else
+            {
+                Filter.Value = "true";
+            }
+            <MudSpacer />
+            <MudCheckBox Color="Color.Error" @bind-Value=@Filter.Negate Label="@AppLocalization[Lang.Negate]" />
+        }
+    </MudAlert>
+</MudBadge>
+@code {
+    [Parameter]
+    public AutomationRuleAndFilter Filter { get; set; }
+
+    [Parameter]
+    public EventCallback RemoveClicked { get; set; }
+
+    private IADOrganizationalUnit? ou;
+
+    private List<IActiveDirectoryField> _fields = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _fields = (await Context.ActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList();
+        var customFields = (await Context.CustomActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList();
+        _fields.AddRange(customFields);
+        if (Filter.Field?.Id == ActiveDirectoryFields.OU.Id)
+        {
+            using var directory = DirectoryFactory.CreateActiveDirectoryContext();
+            if (!Filter.Value.IsNullOrEmpty())
+            {
+                ou = directory.OUs.FindOuByDN(Filter.Value);
+            }
+        }
+        _fields = _fields.OrderBy(f => AppLocalization[f.DisplayName].Value).Cast<IActiveDirectoryField>().ToList();
+    }
+
+    private void OUSelected(IDirectoryEntryAdapter? newOu)
+
+    {
+        if (newOu != null)
+        {
+            Filter.Value = newOu.DN;
+            ou = newOu as IADOrganizationalUnit;
+        }
+        else
+        {
+            Filter.Value = null;
+            ou = null;
+        }
+    }
+}

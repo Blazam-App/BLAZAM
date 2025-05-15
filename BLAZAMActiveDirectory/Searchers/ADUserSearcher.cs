@@ -61,7 +61,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 EnabledOnly = ignoreDisabledUsers,
                 Fields = new()
                 {
-                    AccountExpires = DateTime.UtcNow
+                    ExpireTime = DateTime.UtcNow
                 }
 
             }.Search<ADUser, IADUser>();
