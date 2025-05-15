@@ -87,7 +87,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                    }
                    catch (Exception ex)
                    {
-                       Loggers.ActiveDirectoryLogger.Error("Error while connecting to TerminalServices on " + Computer + " {@Error}", ex);
+                       Loggers.ActiveDirectoryLogger.Error(ex,"Error while connecting to TerminalServices on {@Computer}", Computer.CanonicalName);
                        return false;
                    }
                });

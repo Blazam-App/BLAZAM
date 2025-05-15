@@ -110,8 +110,9 @@ namespace BLAZAM.Services.Background
                 {
                     var applicableRules = rules
                         .Where(r => r.ActiveDirectoryObjectType.Equals(args.Entry.ObjectType)
-                        && r.Trigger.Equals(args.EventType.ToNotificationType())).ToList();
-                    var ruleProcessingJob = new Job();
+                        && r.Trigger.Equals(args.EventType.ToNotificationType()))
+                        .OrderBy(r=>r.Order).ToList();
+                    var ruleProcessingJob = new Job("Process entry change rules");
                     ruleProcessingJob.ThreadPriority = ThreadPriority.Lowest;
 
                     ruleProcessingJob.StopOnFailedStep = true;
@@ -130,7 +131,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        public async Task<bool> ProcessScheduledRule(AutomationRule rule)
+        public async Task<IJob> ProcessScheduledRule(AutomationRule rule)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             Loggers.RulesLogger.Information("Executing scheduled rule {@Rule}", rule.Name);
@@ -139,31 +140,36 @@ namespace BLAZAM.Services.Background
 
             Job scheduledRuleJob = new Job(AppLocalization[Lang.Scheduled_Rule], AppLocalization[Lang.Rules] + " " + rule.Name);
             scheduledRuleJob.ThreadPriority = ThreadPriority.Lowest;
-
-            List<IDirectoryEntryAdapter> filteredEntries = new();
-
-
-            filteredEntries = GetFilteredEntries(rule);
+                List<IDirectoryEntryAdapter> filteredEntries = new();
 
 
-            //Execute matched entries
-            foreach (var entry in filteredEntries)
-            {
-                JobStep execApplicableEntriesStep = new($"Execute on {entry.CanonicalName}", (step) =>
+                filteredEntries = GetFilteredEntries(rule);
+
+
+                //Execute matched entries
+                foreach (var entry in filteredEntries)
                 {
-                    return ProcessMatchedEntry(rule, entry);
-                });
-                scheduledRuleJob.AddStep(execApplicableEntriesStep);
+                Job entryJob = new Job($"Execute on {entry.CanonicalName}");
+                    JobStep execApplicableEntriesStep = new($"Execute", (step) =>
+                    {
+                        return ProcessMatchedEntry(rule, entry, entryJob);
+                    });
+                entryJob.AddStep(execApplicableEntriesStep);
+                scheduledRuleJob.AddStep(entryJob);
+                }
+            JobStep logCompletionStep = new("Log completion", (step) =>
+            {
+                Loggers.RulesLogger.Information("Processing for scheduled rule {@Rule} has finished {@ElapsedTime}", rule.Name, stopwatch.Elapsed);
+                return true;
+            });
+            scheduledRuleJob.AddStep(logCompletionStep);
 
-            }
 
 
 
-
-
-            var result = await scheduledRuleJob.RunAsync();
-            Loggers.RulesLogger.Information("Processing for scheduled rule {@Rule} has finished {@ElapsedTime}", rule.Name, stopwatch.Elapsed);
-            return result;
+           _=scheduledRuleJob.RunAsync();
+            return scheduledRuleJob;
+           
         }
 
         public List<IDirectoryEntryAdapter> GetFilteredEntries(AutomationRule rule)
@@ -264,11 +270,11 @@ namespace BLAZAM.Services.Background
             }
             catch (Exception ex)
             {
-                Loggers.RulesLogger.Warning("Unable to set search field value {@Field}{@Value}{@Error}", andFilter.Field, andFilter.Value, ex);
+                Loggers.RulesLogger.Warning(ex,"Unable to set search field value {@Field}{@Value}", andFilter.Field, andFilter.Value);
             }
         }
 
-        private bool ProcessMatchedEntry(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
+        private bool ProcessMatchedEntry(AutomationRule ruleForEvent, IDirectoryEntryAdapter entry, IJob? ruleJob = null)
         {
             Stopwatch sw = Stopwatch.StartNew();
             Task.Delay(50).Wait();
@@ -294,7 +300,7 @@ namespace BLAZAM.Services.Background
                 }
                 catch (Exception ex)
                 {
-                    Loggers.RulesLogger.Error("Error while setting LastExcecuted for rule {@Rule}{@Error}", ruleForEvent.Name, ex);
+                    Loggers.RulesLogger.Error(ex,"Error while setting LastExcecuted for rule {@Rule}", ruleForEvent.Name, ex);
                 }
                 foreach (var action in ruleForEvent.Actions)
                 {
@@ -302,14 +308,14 @@ namespace BLAZAM.Services.Background
                     {
                         Loggers.RulesLogger.Debug("Executing {@Rule} on {@Entry} {@ElapsedTime}", ruleForEvent.Name, entry.CanonicalName);
 
-                        ExecuteAction(ruleForEvent, action, entry);
+                        ExecuteAction(ruleForEvent, action, entry,ruleJob);
 
-                        Task.Delay(TimeSpan.FromSeconds(1)).Wait();
+                        Task.Delay(250).Wait();
 
                     }
                     catch (Exception ex)
                     {
-                        Loggers.RulesLogger.Error("Error while executing rule action. {@Rule}{@TargetDN}{@Action}{@Error}", ruleForEvent.Name, entry.DN, action, ex);
+                        Loggers.RulesLogger.Error(ex,"Error while executing rule action. {@Rule}{@TargetDN}{@Action}", ruleForEvent.Name, entry.DN, action, ex);
                         break;
                     }
                 }
@@ -364,7 +370,7 @@ namespace BLAZAM.Services.Background
             return anyOrTrue;
         }
 
-        private void ExecuteAction(AutomationRule rule, AutomationRuleAction action, IDirectoryEntryAdapter entry)
+        private void ExecuteAction(AutomationRule rule, AutomationRuleAction action, IDirectoryEntryAdapter entry,IJob? ruleJob=null)
         {
             var eventType = ApplicationEventType.All;
             IDirectoryEntryAdapter? target = null;
@@ -478,7 +484,7 @@ namespace BLAZAM.Services.Background
                     break;
             }
             var changes = entry.Changes;
-            var result = entry.CommitChanges();
+            var result = entry.CommitChanges(ruleJob);
             if (result.FailedSteps.Count == 0)
             {
                 Audit = new(dbFactory, new RulesUserState(dbFactory, rule.Name));
@@ -659,7 +665,7 @@ namespace BLAZAM.Services.Background
             }
             catch (Exception ex)
             {
-                Loggers.RulesLogger.Error("Error checking and filter {@Filter}{@Error}", andFilter, ex);
+                Loggers.RulesLogger.Error(ex,"Error checking and filter {@Filter}", andFilter);
             }
             if (andFilter.Negate)
             {
@@ -681,7 +687,7 @@ namespace BLAZAM.Services.Background
             }
             catch (Exception ex)
             {
-                Loggers.RulesLogger.Debug("Error loading rules {@Error}", ex);
+                Loggers.RulesLogger.Debug(ex,"Error loading rules");
                 return [];
             }
         }

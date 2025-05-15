@@ -11,8 +11,7 @@
 
 Proudly serving
 
-![image](https://github.com/user-attachments/assets/efdb0e8a-9030-4c58-9a2e-8671a94a64fb)
-
+![image](https://github.com/user-attachments/assets/0f86540f-ab2e-4a2c-816f-ca2ca027a8b9)
 
 ## Screenshots
 ![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)

@@ -51,7 +51,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error("Search failed {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex, "Search failed");
             }
             return null;
         }

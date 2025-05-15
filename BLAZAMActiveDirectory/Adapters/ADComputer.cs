@@ -186,7 +186,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex,"Error renaming computer");
             }
             return false;
 
@@ -263,7 +263,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     catch (Exception ex)
                     {
-                        Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
+                        Loggers.ActiveDirectoryLogger.Error(ex,"Error pinging computer");
                     }
                     x++;
                 } while (x < retries);
@@ -275,7 +275,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error looking up DNS info for computer");
 
             }
         }

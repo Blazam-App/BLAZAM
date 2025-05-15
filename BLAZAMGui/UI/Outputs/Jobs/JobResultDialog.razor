@@ -4,9 +4,9 @@
 <MudDialog>
     <DialogContent>
         <JobDetails Job="Job" />
-        @if (Job.Result == JobResult.Running)
+        @if (Job.Result == JobResult.Running && Job.Progress.HasValue)
         {
-            <MudProgressLinear Value=@(Job.Progress!.Value) Max="100" />
+            <MudProgressLinear Value=@(Job.Progress.Value) Max="100" />
         }
         <MudStack Row=true>
             <JobStartTime Step="Job as IJobStep" />

@@ -168,7 +168,7 @@
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error attempting logon {@Error}", ex);
+                Loggers.SystemLogger.Error(ex,"Error attempting logon");
                 SnackBarService.Info(ex.Message);
             }
 

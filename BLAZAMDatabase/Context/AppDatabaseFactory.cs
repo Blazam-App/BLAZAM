@@ -112,11 +112,11 @@ namespace BLAZAM.Database.Context
                 }
                 catch (SqlException ex)
                 {
-                    Loggers.DatabaseLogger.Warning("Error attempting to seed denyAll {@Error}", ex);
+                    Loggers.DatabaseLogger.Warning(ex,"Error attempting to seed denyAll");
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error("Unexpected error attempting to seed denyAll {@Error}", ex);
+                    Loggers.DatabaseLogger.Error(ex,"Unexpected error attempting to seed denyAll");
 
                 }
                 if (saveRequired)
@@ -163,7 +163,7 @@ namespace BLAZAM.Database.Context
                             }
                             catch (Exception ex)
                             {
-                                Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database. {@Error}", ex);
+                                Loggers.DatabaseLogger.Error(ex, "There was an error checking the installation flag in the database.");
                             }
 
                         }
@@ -288,7 +288,7 @@ namespace BLAZAM.Database.Context
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
+                Loggers.DatabaseLogger.Fatal(ex, "Database Auto-Update Failed!!!!");
                 throw;
             }
 
@@ -321,7 +321,7 @@ namespace BLAZAM.Database.Context
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
+                Loggers.DatabaseLogger.Fatal(ex,"Database Auto-Update Failed!!!!");
                
                 FatalError = ex;
                 OnFatalError?.Invoke(ex);

@@ -272,7 +272,12 @@
     {
         _ruleRunning = true;
         await InvokeAsync(StateHasChanged);
-        await RulesProcessor.ProcessScheduledRule(Rule);
+        var job = await RulesProcessor.ProcessScheduledRule(Rule);
+        job.OnProgressUpdated += (progress)=>
+        {
+            LoadFilteredEntries();
+        };
+        await job.WaitAsync();
 
         _ruleRunning = false;
         await InvokeAsync(StateHasChanged);

@@ -399,7 +399,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             catch (Exception ex)
             {
 
-                Loggers.ActiveDirectoryLogger.Error("Error setting entry password {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex,"Error setting entry password");
                 if (!Debugger.IsAttached)
                     throw new AppException("Unable to set password", ex);
                 else return true;

@@ -54,7 +54,7 @@ namespace BLAZAM.Server.Pages
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error setting ip address for login request {@Error}", ex);
+                Loggers.SystemLogger.Error(ex,"Error setting ip address for login request");
             }
             try
             {
