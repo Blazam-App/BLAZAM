@@ -1,6 +1,7 @@
 ﻿
 
 using BLAZAM.Helpers;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -17,9 +18,9 @@ namespace BLAZAM.Jobs
 
         public string? User { get; set; } 
 
-        private IList<IJobStep> _steps = [];
+        private ConcurrentQueue<IJobStep> _queue = new ConcurrentQueue<IJobStep>();
 
-        public IList<IJobStep> Steps => _steps;
+        public IList<IJobStep> Steps { get; } = [];
 
         public DateTime ScheduledRunTime
         {
@@ -112,8 +113,13 @@ namespace BLAZAM.Jobs
                 jobStep.User = User;
                 jobStep.NestedJob = true;
             }
-            Steps.Add(step);
 
+            _queue.Enqueue(step);
+            Steps.Add(step);
+            if (Result == JobResult.Passed || (Result == JobResult.Failed && !StopOnFailedStep))
+            {
+                ExecuteStep(step);
+            }
         }
         private bool Execute()
         {
@@ -121,63 +127,103 @@ namespace BLAZAM.Jobs
 
             runScheduler?.Dispose();
             FailedSteps.Clear();
+            PassedSteps.Clear();
             StartTime = DateTime.Now;
             Result = JobResult.Running;
 
-            Progress = 0;
+            int completedStepsCount = 0;
 
-            if (cancelToken.IsCancellationRequested)
+            // Process steps from the queue until it's empty or cancelled/failed
+            while (_queue.TryDequeue(out var step))
             {
-                Cancel();
-
-                return false;
-            }
-
-            for (int i = 0; i < Steps.Count; i++)
-            {
-                Steps[i].OnProgressUpdated += ((val) => { OnProgressUpdated?.Invoke(val); });
-                if (!Steps[i].Run() && Result != JobResult.Cancelled)
+                if (cancelToken.IsCancellationRequested)
                 {
-                    FailedSteps.Add(Steps[i]);
-                    if (StopOnFailedStep || Steps[i].StopOnFailedStep)
-                    {
-                        Result = JobResult.Failed;
-                        Cancel();
-                        break;
+                    // Re-enqueue the step if cancelled before running it
+                    _queue.Enqueue(step); // Put it back in case the job is resumed or retried
+                    Cancel(); // Call Cancel to propagate cancellation
+                    return false; // Exit execution
+                }
 
-                    }
+                step.OnProgressUpdated += ((val) => { OnProgressUpdated?.Invoke(val); });
+
+                if (!ExecuteStep(step)) break;
+
+
+                completedStepsCount++;
+
+                // Update progress based on completed steps vs. current total steps in the bag
+                // This progress can be non-linear if steps are added during execution.
+                if (Steps.Count > 0)
+                {
+                    Progress = (double)completedStepsCount / Steps.Count * 100.0;
                 }
                 else
                 {
-                    PassedSteps.Add(Steps[i]);
-
+                    Progress = 100.0; // Handle case where no steps were initially added but job is run
                 }
-                Progress = 100.0 / Steps.Count * (i + 1);
-                if (cancelToken.IsCancellationRequested)
-                {
-                    Cancel();
-                    return false;
-                }
-
             }
-            if (Result != JobResult.Cancelled)
+
+
+            
+
+            // Finalize job result after the loop
+            if (Result == JobResult.Running) // Only set final result if not already cancelled or failed by StopOnFailedStep
             {
                 if (FailedSteps.Count > 0)
                 {
                     Result = JobResult.Failed;
                 }
-                else
+                else if (Steps.All(s => s.Result == JobResult.Passed))
                 {
                     Result = JobResult.Passed;
                 }
+                else
+                {
+                    // If the loop finished without explicit failure or cancellation,
+                    // but not all steps are marked as Passed, this might indicate an issue
+                    // or that some steps are still running (though synchronous Run() should prevent this).
+                    // Treat as failed or incomplete.
+                    Result = JobResult.Failed;
+                }
             }
+
+
             EndTime = DateTime.Now;
 
+            // Ensure progress is 100 at the end, even if failed or cancelled
             Progress = 100;
 
-            return FailedSteps.Count < 1;
-        }
 
+            return FailedSteps.Count < 1 && Result != JobResult.Cancelled;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="step"></param>
+        /// <returns>False if the job should stop, true if it should continue.</returns>
+        private bool ExecuteStep(IJobStep step)
+        {
+            Result = JobResult.Running;
+            if (!step.Run() && step.Result != JobResult.Cancelled)
+            {
+                FailedSteps.Add(step);
+                if (StopOnFailedStep || step.StopOnFailedStep)
+                {
+                    Result = JobResult.Failed;
+                    return false; // Stop processing further steps on failure
+                }
+            }
+            else if (step.Result == JobResult.Passed)
+            {
+                PassedSteps.Add(step);
+            }
+            else if (step.Result == JobResult.Cancelled)
+            {
+                Result = JobResult.Cancelled;
+                return false; // Stop processing further steps on failure
+            }
+            return true;
+        }
         public void Wait()
         {
             while (Result == JobResult.Running)
@@ -188,15 +234,23 @@ namespace BLAZAM.Jobs
 
         public override void Cancel()
         {
-            if (Progress == null || Progress < 100)
+            // Prevent multiple cancellations or cancelling after completion
+            if (Result == JobResult.Running || Result == JobResult.NotRun)
             {
                 cancellationTokenSource.Cancel();
-                foreach (var step in Steps)
+                // Propagate cancellation to individual steps (Cancel method should handle if step is running)
+                foreach (var step in _queue) // Iterate the ConcurrentBag for cancellation propagation
                 {
                     step.Cancel();
                 }
                 Result = JobResult.Cancelled;
-                // EndTime = DateTime.Now;
+                // EndTime might be set by the executing task, but setting it here
+                // provides an immediate timestamp for the cancellation request.
+                if (EndTime == null)
+                {
+                    EndTime = DateTime.Now;
+                }
+                // Set progress to 100 immediately on cancellation
                 Progress = 100;
             }
         }
