@@ -912,10 +912,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 }
+                var result = false;
+                if(commitJob.Result!=JobResult.Running && commitJob.Result != JobResult.Cancelled)
+                {
+                    result = commitJob.Run();
 
-
-                var result = commitJob.Run();
-
+                }
+                else
+                {
+                    result = true;
+                }
 
 
                 if (result)

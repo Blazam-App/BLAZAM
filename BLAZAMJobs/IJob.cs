@@ -61,5 +61,7 @@ namespace BLAZAM.Jobs
         /// Waits for the job to finish execution synchronously.
         /// </summary>
         void Wait();
+
+        Task WaitAsync();
     }
 }

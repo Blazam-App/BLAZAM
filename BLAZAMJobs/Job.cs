@@ -231,6 +231,13 @@ namespace BLAZAM.Jobs
                 Task.Delay(100).Wait();
             }
         }
+        public async Task WaitAsync()
+        {
+            while (Result == JobResult.Running)
+            {
+                await Task.Delay(100);
+            }
+        }
 
         public override void Cancel()
         {
