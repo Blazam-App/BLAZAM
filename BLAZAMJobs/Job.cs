@@ -146,7 +146,11 @@ namespace BLAZAM.Jobs
 
                 step.OnProgressUpdated += ((val) => { OnProgressUpdated?.Invoke(val); });
 
-                if (!ExecuteStep(step)) break;
+                if (!ExecuteStep(step))
+                {
+                    Cancel();
+                    break;
+                }
 
 
                 completedStepsCount++;
@@ -242,7 +246,7 @@ namespace BLAZAM.Jobs
         public override void Cancel()
         {
             // Prevent multiple cancellations or cancelling after completion
-            if (Result == JobResult.Running || Result == JobResult.NotRun)
+            if (Result == JobResult.Running || Result == JobResult.NotRun || Result == JobResult.Failed)
             {
                 cancellationTokenSource.Cancel();
                 // Propagate cancellation to individual steps (Cancel method should handle if step is running)
