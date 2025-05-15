@@ -29,7 +29,6 @@ changelog:
       labels:
         - dependencies
   contributors:
-    - title: "Contributors" 
     exclude:
       authors:
         - dependabot[bot]
