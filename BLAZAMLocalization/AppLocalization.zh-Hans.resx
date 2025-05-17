@@ -154,7 +154,7 @@
     <value>活动目录设置</value>
   </data>
   <data name="Add" xml:space="preserve">
-    <value>加</value>
+    <value>增加</value>
   </data>
   <data name="Add Members" xml:space="preserve">
     <value>添加成员</value>
@@ -181,7 +181,7 @@
     <value>管理员密码</value>
   </data>
   <data name="All" xml:space="preserve">
-    <value>都</value>
+    <value>全部</value>
   </data>
   <data name="Allow" xml:space="preserve">
     <value>允许</value>
@@ -319,31 +319,31 @@
     <value>复制模板</value>
   </data>
   <data name="CPU" xml:space="preserve">
-    <value>中央处理器</value>
+    <value>CPU</value>
   </data>
   <data name="CPU Chart" xml:space="preserve">
     <value>CPU 图表</value>
   </data>
   <data name="Create" xml:space="preserve">
-    <value>创造</value>
+    <value>新建</value>
   </data>
   <data name="Create Access Level" xml:space="preserve">
     <value>创建访问级别</value>
   </data>
   <data name="Create Group" xml:space="preserve">
-    <value>创建组</value>
+    <value>新建组</value>
   </data>
   <data name="Create New Delegation Target" xml:space="preserve">
     <value>创建新的委派目标</value>
   </data>
   <data name="Create OU" xml:space="preserve">
-    <value>创建 OU</value>
+    <value>新建 OU</value>
   </data>
   <data name="Create User" xml:space="preserve">
-    <value>创建用户</value>
+    <value>新建用户</value>
   </data>
   <data name="Created" xml:space="preserve">
-    <value>创建</value>
+    <value>已创建</value>
   </data>
   <data name="Current OU" xml:space="preserve">
     <value>当前 OU</value>
@@ -370,7 +370,7 @@
     <value>数据库类型</value>
   </data>
   <data name="Delegates" xml:space="preserve">
-    <value>代表</value>
+    <value>授权</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>删除</value>
@@ -379,10 +379,10 @@
     <value>删除访问级别</value>
   </data>
   <data name="Delgate Name" xml:space="preserve">
-    <value>德尔盖特名称</value>
+    <value>委派名称</value>
   </data>
   <data name="Deny" xml:space="preserve">
-    <value>否认</value>
+    <value>禁止</value>
   </data>
   <data name="Department" xml:space="preserve">
     <value>部门</value>
@@ -391,7 +391,7 @@
     <value>描述</value>
   </data>
   <data name="Details" xml:space="preserve">
-    <value>详</value>
+    <value>详细信息</value>
   </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>放弃更改</value>
@@ -496,7 +496,7 @@
     <value>组</value>
   </data>
   <data name="Home" xml:space="preserve">
-    <value>家</value>
+    <value>首页</value>
   </data>
   <data name="Home Directory" xml:space="preserve">
     <value>主目录</value>
@@ -562,7 +562,7 @@
     <value>登录</value>
   </data>
   <data name="Logs" xml:space="preserve">
-    <value>原木</value>
+    <value>日志</value>
   </data>
   <data name="Main" xml:space="preserve">
     <value>主要</value>
@@ -580,7 +580,7 @@
     <value>成员</value>
   </data>
   <data name="Memory" xml:space="preserve">
-    <value>记忆</value>
+    <value>内存</value>
   </data>
   <data name="Middle Initial" xml:space="preserve">
     <value>中间首字母</value>
@@ -625,13 +625,13 @@
     <value>办公室</value>
   </data>
   <data name="Ok" xml:space="preserve">
-    <value>还行</value>
+    <value>确定</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>在线</value>
   </data>
   <data name="Oops" xml:space="preserve">
-    <value>哎呀</value>
+    <value>Oops</value>
   </data>
   <data name="Operating System" xml:space="preserve">
     <value>操作系统</value>
@@ -646,10 +646,10 @@
     <value>组织单位</value>
   </data>
   <data name="OU" xml:space="preserve">
-    <value>或</value>
+    <value>OU</value>
   </data>
   <data name="Pass Change" xml:space="preserve">
-    <value>通行证变更</value>
+    <value>密码变更</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>密码</value>
@@ -664,7 +664,7 @@
     <value>邮政信箱</value>
   </data>
   <data name="Port" xml:space="preserve">
-    <value>港口</value>
+    <value>端口</value>
   </data>
   <data name="Preferences" xml:space="preserve">
     <value>偏好</value>
@@ -685,7 +685,7 @@
     <value>打印机</value>
   </data>
   <data name="Profile" xml:space="preserve">
-    <value>轮廓</value>
+    <value>配置文件</value>
   </data>
   <data name="Profile Path" xml:space="preserve">
     <value>配置文件路径</value>
@@ -748,7 +748,7 @@
     <value>回复显示名称</value>
   </data>
   <data name="Require change" xml:space="preserve">
-    <value>需要更改</value>
+    <value>下次登录修改密码</value>
   </data>
   <data name="Require the user to change their password at next logon" xml:space="preserve">
     <value>要求用户在下次登录时更改其密码</value>
@@ -781,7 +781,7 @@
     <value>运行</value>
   </data>
   <data name="Save" xml:space="preserve">
-    <value>救</value>
+    <value>保存</value>
   </data>
   <data name="Save Changes" xml:space="preserve">
     <value>保存更改</value>
@@ -826,7 +826,7 @@
     <value>SMTP 服务器</value>
   </data>
   <data name="SMTP Username" xml:space="preserve">
-    <value>短信用户名</value>
+    <value>SMTP用户名</value>
   </data>
   <data name="SSL Certificate" xml:space="preserve">
     <value>SSL证书</value>
@@ -835,7 +835,7 @@
     <value>开始时间</value>
   </data>
   <data name="State" xml:space="preserve">
-    <value>州</value>
+    <value>省</value>
   </data>
   <data name="Stop It" xml:space="preserve">
     <value>停下</value>
@@ -886,7 +886,7 @@
     <value>未知委托</value>
   </data>
   <data name="Unlock" xml:space="preserve">
-    <value>开锁</value>
+    <value>解锁</value>
   </data>
   <data name="Up to date" xml:space="preserve">
     <value>最新的</value>
@@ -931,10 +931,10 @@
     <value>使用 SMTP 身份验证</value>
   </data>
   <data name="Use SSL" xml:space="preserve">
-    <value>使用安全识别系统</value>
+    <value>使用SSL加密</value>
   </data>
   <data name="Use TLS" xml:space="preserve">
-    <value>使用红绿灯</value>
+    <value>使用TLS加密</value>
   </data>
   <data name="User" xml:space="preserve">
     <value>用户</value>
@@ -970,7 +970,7 @@
     <value>应用程序登录</value>
   </data>
   <data name="Block" xml:space="preserve">
-    <value>块</value>
+    <value>禁用</value>
   </data>
   <data name="Bypass" xml:space="preserve">
     <value>旁路</value>
@@ -1000,7 +1000,7 @@
     <value>Duo 无法访问行为</value>
   </data>
   <data name="Favorites" xml:space="preserve">
-    <value>收藏 夹</value>
+    <value>收藏夹</value>
   </data>
   <data name="Installation Id" xml:space="preserve">
     <value>安装 ID</value>
@@ -1012,7 +1012,7 @@
     <value>被锁定的用户</value>
   </data>
   <data name="Logging" xml:space="preserve">
-    <value>伐木</value>
+    <value>登陆</value>
   </data>
   <data name="Notifications" xml:space="preserve">
     <value>通知</value>
@@ -1096,7 +1096,7 @@
     <value>有效权限</value>
   </data>
   <data name="Enable" xml:space="preserve">
-    <value>使</value>
+    <value>启用</value>
   </data>
   <data name="Error Message" xml:space="preserve">
     <value>错误信息</value>
