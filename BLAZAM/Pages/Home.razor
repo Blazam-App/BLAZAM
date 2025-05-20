@@ -78,8 +78,9 @@
     private async Task testJob()
     {
         var test = TestJob;
+        //test.StopOnFailedStep = true;
         await test.ShowJobDetailsDialogAsync(MessageService);
-        _ = await test.RunAsync();
+        _ = test.RunAsync();
 
 
     }

@@ -40,8 +40,18 @@ namespace BLAZAM.Jobs
                 OnProgressUpdated?.Invoke(progress);
             }
         }
+        private JobResult _result { get; set; } = JobResult.NotRun;
+        public virtual JobResult Result
+        {
+            get => _result; protected set
+            {
+                if (value == _result) return;
 
-        public virtual JobResult Result { get; protected set; } = JobResult.NotRun;
+                _result = value;
+
+                OnProgressUpdated?.Invoke(Progress);
+            }
+        }
 
         public virtual DateTime? StartTime { get; protected set; }
 
