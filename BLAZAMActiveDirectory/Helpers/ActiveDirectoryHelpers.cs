@@ -267,7 +267,7 @@ namespace BLAZAM.Helpers
                 }
                 if (thisObject != null)
                 {
-                    thisObject.Parse(directory: context, directoryEntry: sr);
+                    thisObject.Parse(directory: context, directoryEntry: sr.ToIDirectoryEntry());
 
                     return thisObject;
 
@@ -290,34 +290,34 @@ namespace BLAZAM.Helpers
         {
             IDirectoryEntryAdapter? thisObject = null;
 
-            if (sr.Properties["objectClass"].Contains("top"))
+            if (sr.PropertyContains("objectClass", "top"))
             {
-                if (sr.Properties["objectClass"].Contains("computer"))
+                if (sr.PropertyContains("objectClass","computer"))
                 {
                     thisObject = new ADComputer();
                 }
-                else if (sr.Properties["objectClass"].Contains("user"))
+                else if (sr.PropertyContains("objectClass", "user"))
                 {
                     thisObject = new ADUser();
                 }
-                else if (sr.Properties["objectClass"].Contains("contact"))
+                else if (sr.PropertyContains("objectClass", "contact"))
                 {
                     thisObject = new ADContact();
                 }
 
-                else if (sr.Properties["objectClass"].Contains("group"))
+                else if (sr.PropertyContains("objectClass", "group"))
                 {
                     thisObject = new ADGroup();
                 }
-                else if (sr.Properties["objectClass"].Contains("printQueue"))
+                else if (sr.PropertyContains("objectClass", "printQueue"))
                 {
                     thisObject = new ADPrinter();
                 }
-                else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
+                else if (sr.PropertyContains("objectClass", "msFVE-RecoveryInformation"))
                 {
                     thisObject = new ADBitLockerRecovery();
                 }
-                else if (sr.Properties["objectClass"].Contains("organizationalUnit") || sr.Properties["objectClass"].Contains("container"))
+                else if (sr.PropertyContains("objectClass", "organizationalUnit") || sr.PropertyContains("objectClass", "container"))
                 {
                     thisObject = new ADOrganizationalUnit();
                 }

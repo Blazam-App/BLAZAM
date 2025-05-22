@@ -159,7 +159,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Collects all deleted object from the Active Directory recycle bin
         /// </summary>
         /// <returns></returns>
-        DirectoryEntry GetDeleteObjectsEntry();
+        IDirectoryEntry GetDeleteObjectsEntry();
 
         /// <summary>
         /// Returns the directory entry of the given Base distinguished
@@ -168,7 +168,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         /// <param name="baseDN"></param>
         /// <returns></returns>
-        DirectoryEntry GetDirectoryEntry(string? baseDN = null);
+        IDirectoryEntry GetDirectoryEntry(string? baseDN = null);
 
         /// <summary>
         /// Restores an Active Directory object from the recycle bin

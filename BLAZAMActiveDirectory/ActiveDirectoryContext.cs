@@ -88,7 +88,7 @@ namespace BLAZAM.ActiveDirectory
         /// <remarks>
         /// Caution should be used when providing this to the UI
         /// </remarks>
-        public DirectoryEntry RootDirectoryEntry { get; private set; }
+        public IDirectoryEntry RootDirectoryEntry { get; private set; }
 
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace BLAZAM.ActiveDirectory
 
         }
 
-        public DirectoryEntry GetDirectoryEntry(string? baseDN = null)
+        public IDirectoryEntry GetDirectoryEntry(string? baseDN = null)
         {
             if (baseDN == null || baseDN == "")
                 baseDN = ConnectionSettings?.ApplicationBaseDN;
@@ -158,16 +158,16 @@ namespace BLAZAM.ActiveDirectory
                 ConnectionSettings?.Username,
                  _encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 AuthType
-                );
+                ).ToIDirectoryEntry();
         }
         /// <summary>
         /// Gets the root entry for deleted objects in Active Directory
         /// </summary>
         /// <returns></returns>
-        public DirectoryEntry GetDeleteObjectsEntry() => new(LDAP_PROTO + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.FQDN.FqdnToDN(),
+        public IDirectoryEntry GetDeleteObjectsEntry() => new DirectoryEntry(LDAP_PROTO + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.FQDN.FqdnToDN(),
                 ConnectionSettings?.Username,
                 _encryption.DecryptObject<string>(ConnectionSettings?.Password),
-                AuthenticationTypes.FastBind | AuthenticationTypes.Secure);
+                AuthenticationTypes.FastBind | AuthenticationTypes.Secure).ToIDirectoryEntry();
 
 
 
@@ -571,7 +571,7 @@ namespace BLAZAM.ActiveDirectory
                 LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(),
                 ad.Username,
                 pass,
-                AuthType);
+                AuthType).ToIDirectoryEntry();
 
             Loggers.ActiveDirectoryLogger.Information("Root Active Directory context connected");
         }

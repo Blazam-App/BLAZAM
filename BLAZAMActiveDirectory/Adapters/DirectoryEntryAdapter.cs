@@ -60,7 +60,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     object? currentValue = null;
                     try
                     {
-                        currentValue = DirectoryEntry?.Properties[prop.Key].Value;
+                        currentValue = DirectoryEntry?.GetPropertyValue(prop.Key);
                     }
                     catch
                     {
@@ -70,7 +70,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         changes.Add(new AuditChangeLog()
                         {
                             Field = prop.Key,
-                            OldValue = DirectoryEntry?.Properties[prop.Key].Value,
+                            OldValue = DirectoryEntry?.GetPropertyValue(prop.Key),
                             NewValue = prop.Value
                         });
                 }
@@ -402,7 +402,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 if (DirectoryEntry != null)
-                    DirectoryEntry.Properties["objectclass"].Value = value;
+                    DirectoryEntry.SetPropertyValue("objectclass",value);
                 else
                     Loggers.ActiveDirectoryLogger.Error("Error setting objectClass for " + DN);
 
@@ -821,21 +821,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-                             if (!DirectoryEntry.Properties.Contains(p.Key)
-                                 || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
+                             if (!DirectoryEntry.ContainsProperty(p.Key)
+                                 || DirectoryEntry.GetPropertyValue(p.Key)?.Equals(p.Value) != true)
                              {
                                  if (p.Value == null
                              || p.Value is string strValue && strValue.IsNullOrEmpty()
                              || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
                                  {
 
-                                     DirectoryEntry.Properties[p.Key].Clear();
+                                     DirectoryEntry.ClearPropertyValue(p.Key);
 
 
                                  }
                                  else
                                  {
-                                     DirectoryEntry.Properties[p.Key].Value = p.Value;
+                                     DirectoryEntry.SetPropertyValue(p.Key, p.Value);
 
                                  }
                              }
@@ -869,7 +869,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                || p.Value is DateTime dateValue && dateValue == DateTime.MinValue) continue;
                         propertyStep = new JobStep("Set " + p.Key, (step) =>
                         {
-                            DirectoryEntry.Properties[p.Key].Value = p.Value;
+                            DirectoryEntry.SetPropertyValue(p.Key, p.Value);
                             return true;
                         });
                         propertyJob.AddStep(propertyStep);
@@ -959,7 +959,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if (forceDeleteChildren)
                         {
                             var children = DirectoryEntry.Children;
-                            foreach (DirectoryEntry child in children)
+                            foreach (IDirectoryEntry child in children)
                             {
                                 DirectoryEntry?.Children.Remove(child);
                             }
@@ -1017,7 +1017,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (SearchResult is null) throw new CriticalActiveDirectoryException(Directory, nameof(SearchResult));
 
-            DirectoryEntry = SearchResult.GetDirectoryEntry();
+            DirectoryEntry = SearchResult.GetDirectoryEntry().ToIDirectoryEntry();
 
         }
 
@@ -1158,14 +1158,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             try
             {
-                if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
-                    return (T?)DirectoryEntry.Properties[propertyName].Value;
+                if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
+                    return (T?)DirectoryEntry.GetPropertyValue(propertyName);
 
             }
             catch (ArgumentException)
             {
-                var temp = DirectoryEntry?.Properties[propertyName];
-                var temp2 = (T?)temp?.Value;
+                var temp = DirectoryEntry?.GetPropertyValue(propertyName);
+                var temp2 = (T?)temp;
                 return temp2;
             }
             catch (InvalidCastException ex)
@@ -1281,7 +1281,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private void SetNewProperty(string propertyName, object? value)
         {
-            if (value != null && !value.Equals(DirectoryEntry?.Properties[propertyName]?.Value))
+            if (value != null && !value.Equals(DirectoryEntry?.GetPropertyValue(propertyName)))
             {
                 NewEntryProperties[propertyName] = value;
 
@@ -1309,7 +1309,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
 
-                DirectoryEntry?.Properties[propertyName].Remove(value);
+                DirectoryEntry?.RemovePropertyValue(propertyName,value);
 
                 HasUnsavedChanges = true;
 
@@ -1324,7 +1324,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                DirectoryEntry?.Properties[propertyName].Add(value);
+                DirectoryEntry?.AddPropertyValue(propertyName,value);
                 HasUnsavedChanges = true;
 
             }

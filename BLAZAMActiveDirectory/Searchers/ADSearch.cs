@@ -54,7 +54,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// <summary>
         /// The search root and authenticated <see cref="DirectoryEntry"/>
         /// </summary>
-        public DirectoryEntry SearchRoot { get; set; }
+        public IDirectoryEntry SearchRoot { get; set; }
         /// <summary>
         /// Indicates whether the search is single level or recursive default is recursive
         /// </summary>
@@ -130,7 +130,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 SearchRoot ??= ActiveDirectoryContext.SystemInstance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
                 var pageOffset = 1;
 
-                searcher = new DirectorySearcher(SearchRoot)
+                searcher = new DirectorySearcher((SearchRoot as AdapterDirectoryEntry)?.UnderlyingEntry)
                 {
                     VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, pageOffset),
                     PageSize = PageSize,
