@@ -1,14 +1,8 @@
-﻿using AngleSharp.Common;
+﻿
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Helpers;
-using Pomelo.EntityFrameworkCore.MySql.Metadata.Internal;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.DirectoryServices;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
