@@ -108,7 +108,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// The .NET underlying object for this entry
         /// </summary>
-        DirectoryEntry? DirectoryEntry { get; set; }
+        IDirectoryEntry? DirectoryEntry { get; set; }
 
         /// <summary>
         /// The full Active Directory Services path including LDAP server name
@@ -311,7 +311,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <param name="result"></param>
         /// <param name="directory"></param>
         /// <returns></returns>
-        void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry = null, SearchResult? searchResult = null);
+        void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null);
 
         /// <summary>
         /// Move this entry to a new <see cref="IADOrganizationalUnit"/>

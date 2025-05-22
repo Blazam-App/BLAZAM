@@ -207,7 +207,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected DomainControllerEventLogReader? DomainControllerEventLogs;
 
 
-        public override void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
+        public override void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
         {
             base.Parse(directory, directoryEntry, searchResult);
             DomainControllerEventLogs = new DomainControllerEventLogReader(directory);

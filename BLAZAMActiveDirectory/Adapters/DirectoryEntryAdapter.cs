@@ -148,7 +148,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public DirectoryEntry? DirectoryEntry { get; set; }
+        public IDirectoryEntry? DirectoryEntry { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -664,7 +664,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             }
                             if (thisObject != null)
                             {
-                                thisObject.Parse(directory: Directory, directoryEntry: child);
+                                thisObject.Parse(directory: Directory, directoryEntry: child.ToIDirectoryEntry());
                                 lock (directoryEntries)
                                 {
                                     directoryEntries.Add(thisObject);
@@ -757,7 +757,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public virtual void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
+        public virtual void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
         {
             Directory = directory;
 

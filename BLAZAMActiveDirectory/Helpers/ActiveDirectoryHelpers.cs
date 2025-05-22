@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -278,6 +279,66 @@ namespace BLAZAM.Helpers
                 }
             }
             return null;
+        }
+        /// <summary>
+        /// Encapsulates a raw DirectoryEntry within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
+        /// </summary>
+        /// <param name="r"></param>
+        /// <returns>A <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
+
+        public static IDirectoryEntryAdapter? Encapsulate(this IDirectoryEntry sr, IActiveDirectoryContext context)
+        {
+            IDirectoryEntryAdapter? thisObject = null;
+
+            if (sr.Properties["objectClass"].Contains("top"))
+            {
+                if (sr.Properties["objectClass"].Contains("computer"))
+                {
+                    thisObject = new ADComputer();
+                }
+                else if (sr.Properties["objectClass"].Contains("user"))
+                {
+                    thisObject = new ADUser();
+                }
+                else if (sr.Properties["objectClass"].Contains("contact"))
+                {
+                    thisObject = new ADContact();
+                }
+
+                else if (sr.Properties["objectClass"].Contains("group"))
+                {
+                    thisObject = new ADGroup();
+                }
+                else if (sr.Properties["objectClass"].Contains("printQueue"))
+                {
+                    thisObject = new ADPrinter();
+                }
+                else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
+                {
+                    thisObject = new ADBitLockerRecovery();
+                }
+                else if (sr.Properties["objectClass"].Contains("organizationalUnit") || sr.Properties["objectClass"].Contains("container"))
+                {
+                    thisObject = new ADOrganizationalUnit();
+                }
+                if (thisObject != null)
+                {
+                    thisObject.Parse(directory: context, directoryEntry: sr);
+
+                    return thisObject;
+
+                }
+                else
+                {
+                    Loggers.ActiveDirectoryLogger.Warning("Unable to match ad object type. {Object}", sr);
+
+                }
+            }
+            return null;
+        }
+        public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry)
+        {
+            return new AdapterDirectoryEntry(entry);
         }
         /// <summary>
         /// Encapsulates a raw DirectoryEntry search's <see cref="DirectoryEntries"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
