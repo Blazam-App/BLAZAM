@@ -40,7 +40,7 @@
     {
         _ = Task.Run(() =>
         {
-            if (User != null)
+            if (_user != null)
             {
                 LoadingData = true;
                 _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
