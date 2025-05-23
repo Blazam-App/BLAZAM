@@ -87,6 +87,51 @@ namespace BLAZAM.Services
             await PostCustomEvent("object_password_reset", objectType.ToString());
         }
 
+        public async Task InstallationFinalized()
+        {
+            await PostCustomEvent("installation_finalized");
+        }
+
+        public async Task RuleCreated(string ruleName)
+        {
+            await PostCustomEvent("rule_created", ruleName);
+        }
+
+        public async Task RuleExecuted(string ruleName, bool success)
+        {
+            await PostCustomEvent("rule_executed", new { ruleName, success });
+        }
+
+        public async Task WebhookCreated(string webhookName)
+        {
+            await PostCustomEvent("webhook_created", webhookName);
+        }
+
+        public async Task WebhookExecuted(string webhookName, bool success)
+        {
+            await PostCustomEvent("webhook_executed", new { webhookName, success });
+        }
+
+        public async Task AccessRequestCreated(string requestDetails)
+        {
+            await PostCustomEvent("access_request_created", requestDetails);
+        }
+
+        public async Task AccessRequestApproved(string requestDetails)
+        {
+            await PostCustomEvent("access_request_approved", requestDetails);
+        }
+
+        public async Task AccessRequestDenied(string requestDetails)
+        {
+            await PostCustomEvent("access_request_denied", requestDetails);
+        }
+
+        public async Task NotificationDismissed(string notificationType)
+        {
+            await PostCustomEvent("notification_dismissed", notificationType);
+        }
+
         public async Task PostCustomEvent(string eventName, object? data = null)
         {
             try

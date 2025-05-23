@@ -1,5 +1,6 @@
 @inherits AppModalContent
 @using BLAZAM.Database.Models.Rules
+@inject BLAZAM.Services.Analytics AnalyticsService
 <MudStack>
     @if (_workingRule != null)
     {
@@ -254,6 +255,7 @@
         {
             Context.AutomationRules.Add(_workingRule);
             newRule = true;
+            await AnalyticsService.RuleCreated(_workingRule.Name);
         }
         var result = await Context.SaveChangesAsync();
         if (result > 0)

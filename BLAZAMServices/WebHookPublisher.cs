@@ -30,12 +30,14 @@ namespace BLAZAM.Services
 
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IAppDatabaseFactory _appDatabaseFactory;
+        private readonly Analytics _analyticsService;
 
         private bool _running;
-        public WebHookPublisher(IHttpClientFactory httpClientFactory, IAppDatabaseFactory appDatabaseFactory)
+        public WebHookPublisher(IHttpClientFactory httpClientFactory, IAppDatabaseFactory appDatabaseFactory, Analytics analyticsService)
         {
             _httpClientFactory = httpClientFactory;
             _appDatabaseFactory = appDatabaseFactory;
+            _analyticsService = analyticsService;
             _ = Run();
         }
         private async Task Run()
@@ -247,7 +249,8 @@ namespace BLAZAM.Services
 
                 var response = await httpClient.SendAsync(request);
 
-
+                // Analytics call for webhook execution
+                await _analyticsService.WebhookExecuted(subscription.URL, response.IsSuccessStatusCode);
 
 
 

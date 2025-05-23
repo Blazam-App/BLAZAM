@@ -31,12 +31,14 @@ namespace BLAZAM.Services.Background
     {
         private Dictionary<AutomationRule, Timer> ScheduledRules = new();
         private bool _initialized;
+        private readonly BLAZAM.Services.Analytics _analyticsService;
 
         private RulesAuditLogger Audit { get; set; }
 
-        public RulesProcessor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
+        public RulesProcessor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization, BLAZAM.Services.Analytics analyticsService) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
             Interval = TimeSpan.FromMinutes(5);
+            _analyticsService = analyticsService;
         }
 
         protected override void Execute(object? state = null)
@@ -288,6 +290,7 @@ namespace BLAZAM.Services.Background
 
             if (OrFiltersPass(ruleForEvent, entry))
             {
+                _ = _analyticsService.RuleExecuted(ruleForEvent.Name, true);
                 try
                 {
                     using var context = dbFactory.CreateDbContext();

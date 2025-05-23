@@ -1,4 +1,5 @@
 @inherits DatabaseComponentBase
+@inject BLAZAM.Services.Analytics AnalyticsService
 <MudDataGrid Items="_subscriptions"
              Virtualize=true
              Dense="true"
@@ -122,6 +123,10 @@
         {
             Context.WebHookSubscriptions.Add(_newSubscription);
             await Context.SaveChangesAsync();
+            if (Context.Entry(_newSubscription).State == Microsoft.EntityFrameworkCore.EntityState.Unchanged || Context.Entry(_newSubscription).State == Microsoft.EntityFrameworkCore.EntityState.Modified) //Ensures SaveChanges was successful
+            {
+                await AnalyticsService.WebhookCreated(_newSubscription.URL); // Or _newSubscription.Id.ToString() if preferred
+            }
             await GetSubscriptions();
         }
         catch (Exception ex)
