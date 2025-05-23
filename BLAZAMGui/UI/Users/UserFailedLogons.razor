@@ -27,9 +27,9 @@
 
         {
             if (_user!=null && _user.Equals(value)) return;
-            if (value is IADUser)
+            if (value is IADUser adUser)
             {
-                _user = value as IADUser;
+                _user = adUser;
                 LoadFailedLogons();
             }
 
