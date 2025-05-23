@@ -29,7 +29,6 @@ namespace BLAZAM.Services.Background
     {
         private Dictionary<AutomationRule, Timer> ScheduledRules = new();
         private bool _initialized;
-        private readonly BLAZAM.Services.Analytics _analyticsService;
 
         private RulesAuditLogger Audit { get; set; }
 

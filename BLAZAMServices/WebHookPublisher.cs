@@ -30,7 +30,6 @@ namespace BLAZAM.Services
 
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IAppDatabaseFactory _appDatabaseFactory;
-        private readonly Analytics _analyticsService;
 
         private bool _running;
         public WebHookPublisher(IHttpClientFactory httpClientFactory, IAppDatabaseFactory appDatabaseFactory)
