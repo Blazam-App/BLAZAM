@@ -7,9 +7,12 @@
     <MudStack Row=true Class="mud-width-full">
 
         <MudStack Spacing="1">
-            <MudSkeleton Height="25px" Width="150px" />
-            <MudSkeleton Width="150px" />
+            <MudSkeleton Height="25px" Width="200px" />
+            <MudSkeleton Width="200px" />
         </MudStack>
+        <MudSkeleton Class="ms-5 my-auto" SkeletonType="SkeletonType.Circle" Height="25px" Width="25px"/>
+        <MudSkeleton Class="my-auto" SkeletonType="SkeletonType.Circle" Height="25px" Width="25px"/>
+        <MudSkeleton Class="my-auto" SkeletonType="SkeletonType.Circle" Height="25px" Width="25px" />
     </MudStack>
 
 }
@@ -337,18 +340,21 @@ else
 
         await base.OnInitializedAsync();
         LoadingData = true;
+
         _showRequestButton = (await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowAccessRequest == true
         && await Context.GlobalPermissionRequestActions.CountAsync() > 0;
         _parentOU = await DirectoryEntry.GetParentAsync();
+        LoadingData = false;
+
     }
-    protected override void OnAfterRender(bool firstRender)
-    {
-        base.OnAfterRender(firstRender);
-        if (firstRender)
-        {
-            LoadingData = false;
-        }
-    }
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     base.OnAfterRender(firstRender);
+    //     if (LoadingData)
+    //     {
+    //         LoadingData = false;
+    //     }
+    // }
 
     private async Task ToggleEditMode(bool editEnabled)
     {

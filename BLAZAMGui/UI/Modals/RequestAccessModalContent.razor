@@ -3,6 +3,7 @@
 @using BLAZAM.EmailMessage.Email.Notifications
 @inherits AppModalContent
 @inject NotificationGenerationService notificationGenerationService
+@inject BLAZAM.Services.Analytics AnalyticsService
 
 @if (_objectActions != null && _objectActions.Count > 0)
 {
@@ -95,6 +96,7 @@
                 notificationGenerationService.PackageRequest(Entry, action, CurrentUser.State,  out notification);
                
                 _=NotificationPublisher.PublishNotification(adminUsers, notification);
+                await AnalyticsService.AccessRequestCreated(notification.Title);
 
                 
                 var requestEmail = new AccessRequestEmailMessage(); 

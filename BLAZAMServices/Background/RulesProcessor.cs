@@ -15,8 +15,6 @@ using BLAZAM.Services.Audit;
 using BLAZAM.Services.Events;
 using BLAZAM.Session;
 using Microsoft.Extensions.Localization;
-using Org.BouncyCastle.Asn1.X509;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;

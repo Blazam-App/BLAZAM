@@ -251,7 +251,6 @@ namespace BLAZAM.Services
 
 
 
-
                 if (response.IsSuccessStatusCode)
                 {
                     thisMessage.Delivered = true;
