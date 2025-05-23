@@ -49,62 +49,62 @@
             <CellTemplate>
                 <MudSelect @bind-Value=context.Item.WebHookAuthorization>
                     <MudSelectItem Value="WebHookAuthorization.None">@AppLocalization[Lang.None]</MudSelectItem>
-                    <MudSelectItem Value="WebHookAuthorization.Basic">Basic</MudSelectItem>
-                    <MudSelectItem Value="WebHookAuthorization.Bearer">Bearer</MudSelectItem>
-                </MudSelect>
-            </CellTemplate>
-        </TemplateColumn>
+                        <MudSelectItem Value="WebHookAuthorization.Basic">Basic</MudSelectItem>
+                        <MudSelectItem Value="WebHookAuthorization.Bearer">Bearer</MudSelectItem>
+                    </MudSelect>
+                </CellTemplate>
+            </TemplateColumn>
 
-        <TemplateColumn Title="@AppLocalization[Lang.Authorization_Token]">
-            <CellTemplate>
+            <TemplateColumn Title="@AppLocalization[Lang.Authorization_Token]">
+                <CellTemplate>
 
-                <MudTextField Disabled="context.Item.WebHookAuthorization==WebHookAuthorization.None" T="string" @bind-Value=context.Item.AuthorizationToken />
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization[Lang.Last_Message_Status]">
-            <CellTemplate>
-                <LastMessageStatus Subscription="context.Item" />
-                @* <StatusCheck StatusFunc="(()=>{return GetLastMessageStatus(context.Item);})"/> *@
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization[Lang.Delete]">
-            <CellTemplate>
+                    <MudTextField Disabled="context.Item.WebHookAuthorization==WebHookAuthorization.None" T="string" @bind-Value=context.Item.AuthorizationToken />
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@AppLocalization[Lang.Last_Message_Status]">
+                <CellTemplate>
+                    <LastMessageStatus Subscription="context.Item" />
+                    @* <StatusCheck StatusFunc="(()=>{return GetLastMessageStatus(context.Item);})"/> *@
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@AppLocalization[Lang.Delete]">
+                <CellTemplate>
 
-                <MudFab StartIcon="@Icons.Material.Filled.Delete"
-                        Color="Color.Error"
-                        Size="Size.Small"
-                        IconSize="Size.Small"
-                        OnClick="@(async()=>{await Delete(context.Item);})" />
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization[Lang.Save]">
-            <CellTemplate>
+                    <MudFab StartIcon="@Icons.Material.Filled.Delete"
+                            Color="Color.Error"
+                            Size="Size.Small"
+                            IconSize="Size.Small"
+                            OnClick="@(async()=>{await Delete(context.Item);})" />
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@AppLocalization[Lang.Save]">
+                <CellTemplate>
 
-                <MudFab StartIcon="@Icons.Material.Filled.Save"
-                        Size="Size.Small"
-                        IconSize="Size.Small"
-                        Color="Color.Success"
-                        OnClick="Save" />
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-    <NoRecordsContent>
-        <MudText>@AppLocalization["There are no Webhook subscriptions."]</MudText>
-    </NoRecordsContent>
-</MudDataGrid>
-<AppTooltip Text="@AppLocalization["Add new subscription"]">
-    <MudFab StartIcon="@Icons.Material.Filled.Add"
-            Class="right mt-5"
-            Color="Color.Success"
-            OnClick="@(()=>{webhookModal?.ShowAsync();})" />
-</AppTooltip>
-<AppModal @ref=webhookModal
-          Options="new(){ CloseButton=true, MaxWidth=MaxWidth.Medium}"
-          Title="@AppLocalization["Add new Webhook Subscription"]">
-    <NewWebHookModalContent OnCreateNewSubscription="AddSubscription" />
-</AppModal>
+                    <MudFab StartIcon="@Icons.Material.Filled.Save"
+                            Size="Size.Small"
+                            IconSize="Size.Small"
+                            Color="Color.Success"
+                            OnClick="Save" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <NoRecordsContent>
+            <MudText>@AppLocalization["There are no Webhook subscriptions."]</MudText>
+        </NoRecordsContent>
+    </MudDataGrid>
+    <AppTooltip Text="@AppLocalization["Add new subscription"]">
+        <MudFab StartIcon="@Icons.Material.Filled.Add"
+                Class="right mt-5"
+                Color="Color.Success"
+                OnClick="@(()=>{webhookModal?.ShowAsync();})" />
+    </AppTooltip>
+    <AppModal @ref=webhookModal
+              Options="new(){ CloseButton=true, MaxWidth=MaxWidth.Medium}"
+              Title="@AppLocalization["Add new Webhook Subscription"]">
+        <NewWebHookModalContent OnCreateNewSubscription="AddSubscription" />
+    </AppModal>
 
-@code {
+    @code {
     AppModal? webhookModal;
     [Parameter]
     public AppUser User { get; set; }
@@ -123,10 +123,9 @@
         {
             Context.WebHookSubscriptions.Add(_newSubscription);
             await Context.SaveChangesAsync();
-            if (Context.Entry(_newSubscription).State == Microsoft.EntityFrameworkCore.EntityState.Unchanged || Context.Entry(_newSubscription).State == Microsoft.EntityFrameworkCore.EntityState.Modified) //Ensures SaveChanges was successful
-            {
-                await AnalyticsService.WebhookCreated(_newSubscription.URL); // Or _newSubscription.Id.ToString() if preferred
-            }
+
+            await AnalyticsService.WebhookCreated(_newSubscription.URL); // Or _newSubscription.Id.ToString() if preferred
+
             await GetSubscriptions();
         }
         catch (Exception ex)

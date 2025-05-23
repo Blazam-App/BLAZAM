@@ -15,8 +15,6 @@ using BLAZAM.Services.Audit;
 using BLAZAM.Services.Events;
 using BLAZAM.Session;
 using Microsoft.Extensions.Localization;
-using Org.BouncyCastle.Asn1.X509;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -35,10 +33,9 @@ namespace BLAZAM.Services.Background
 
         private RulesAuditLogger Audit { get; set; }
 
-        public RulesProcessor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization, BLAZAM.Services.Analytics analyticsService) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
+        public RulesProcessor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
             Interval = TimeSpan.FromMinutes(5);
-            _analyticsService = analyticsService;
         }
 
         protected override void Execute(object? state = null)
@@ -290,7 +287,6 @@ namespace BLAZAM.Services.Background
 
             if (OrFiltersPass(ruleForEvent, entry))
             {
-                _ = _analyticsService.RuleExecuted(ruleForEvent.Name, true);
                 try
                 {
                     using var context = dbFactory.CreateDbContext();
