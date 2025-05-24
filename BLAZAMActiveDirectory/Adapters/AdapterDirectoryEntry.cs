@@ -75,7 +75,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             UnderlyingEntry.CommitChanges();
         }
 
-        public object Invoke(string methodName, params object[]? args)
+        public object? Invoke(string methodName, params object[]? args)
         {
             return UnderlyingEntry.Invoke(methodName, args);
         }

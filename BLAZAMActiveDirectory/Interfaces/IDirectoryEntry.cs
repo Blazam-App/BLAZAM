@@ -20,7 +20,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         void CommitChanges();
         void RefreshCache();
         void Close();
-        object Invoke(string methodName, params object[]? args);
+        object? Invoke(string methodName, params object[]? args);
         void Rename(string newName);
         void MoveTo(IDirectoryEntry newParent);
         void SetPropertyValue(string propertyName, object? value);
