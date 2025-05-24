@@ -326,7 +326,8 @@
                                             <DynamicMudInput T=DateTime?
                                                              Clearable=true
                                                              Label="@AppLocalization[Lang.Account_Expiration]"
-                                                             @bind-Value="@User.ExpireTime"
+                                                             Value="@User.ExpireTime?.ToLocalTime()"
+                                                             ValueChanged="@((value)=>{User.ExpireTime=value;})"
                                                              Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.AccountExpires)) />
 
 
