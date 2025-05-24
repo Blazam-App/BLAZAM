@@ -110,18 +110,46 @@
     {
         get
         {
-            if (Value is DateTime time)
-                if (time != DateTime.MinValue)
-                    return time;
-            return null;
+            if (Value is DateTime timeUtc && timeUtc.Kind == DateTimeKind.Utc)
+            {
+                // Ensure we don't try to convert DateTime.MinValue from UTC to Local,
+                // as it can cause issues depending on the local timezone offset.
+                // DateTime.MinValue should typically represent a non-set or null state here.
+                if (timeUtc == DateTime.MinValue)
+                    return null; 
+                return timeUtc.ToLocalTime(); // Convert UTC from model to Local Time for UI
+            }
+            if (Value is DateTime timeUnspecified) // Handle cases where DateTimeKind might be Unspecified
+            {
+                 if (timeUnspecified == DateTime.MinValue)
+                    return null;
+                // Assuming Unspecified should be treated as UTC if coming from the model,
+                // or consider if it should be an error or logged.
+                // For now, let's assume it should be converted as if it were UTC.
+                // Alternatively, if Unspecified means it's already effectively local, no conversion needed.
+                // Given the backend saves UTC, this path (Value being Unspecified) is less likely
+                // for valid dates loaded from AD but could happen if Value is set from elsewhere.
+                // Safest bet if Value is Unspecified is to treat it as local if it's not MinValue
+                if (timeUnspecified.Kind == DateTimeKind.Unspecified)
+                    return timeUnspecified; // Treat as already local if Unspecified
+                
+                return timeUnspecified.ToLocalTime(); // Defaulting to convert if not explicitly Local
+            }
+            return null; // If Value is not a DateTime or is null
         }
         set
         {
-
-            if (value is T tValue)
-                Value = tValue;
+            // 'value' comes from MudDatePicker, assume it's Local Time or Unspecified (treated as Local)
+            if (value is DateTime timeLocal)
+            {
+                // If MudDatePicker returns Unspecified, assume it's intended as Local
+                var dtToConvert = DateTime.SpecifyKind(timeLocal, DateTimeKind.Local);
+                Value = (T)(object)dtToConvert.ToUniversalTime(); // Convert Local from UI to UTC for model
+            }
             else if (value is null)
-                Value = default;
+            {
+                Value = default(T); // This will set User.ExpireTime to null
+            }
         }
     }
 
