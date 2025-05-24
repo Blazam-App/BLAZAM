@@ -36,7 +36,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// The application scoped directory entry root
         /// </summary>
-        DirectoryEntry? AppRootDirectoryEntry { get; }
+        IDirectoryEntry? AppRootDirectoryEntry { get; }
 
         /// <summary>
         /// Provides OU search functions

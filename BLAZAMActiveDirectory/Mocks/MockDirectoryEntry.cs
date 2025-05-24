@@ -95,6 +95,10 @@ namespace BLAZAM.ActiveDirectory.Mocks // Or your preferred testing namespace
 
         public object? GetPropertyValue(string propertyName)
         {
+            var array  = GetPropertyValues(propertyName);
+            if(array != null && array.Length > 1){
+                return array;
+            }
             // .Value behavior: returns the first value if collection, or the value itself.
             // If property doesn't exist or has no values, behavior can vary.
             // For mock, we'll return first or null.
@@ -120,13 +124,28 @@ namespace BLAZAM.ActiveDirectory.Mocks // Or your preferred testing namespace
         /// <summary>
         /// Helper for testing to get all values of a multi-valued property.
         /// </summary>
-        public List<object?> GetPropertyValues(string propertyName)
+        public object?[] GetPropertyValues(string propertyName)
         {
             if (_properties.TryGetValue(propertyName, out var values))
             {
-                return new List<object?>(values);
+                try
+                {
+                    var first = values[0];
+                    var typee = first.GetType();
+                    if(first!=null && first is List<object> list){
+                        if (list.Count > 1)
+                        {
+                            return list.ToArray();
+                        }
+                    }
+                   
+                }
+                catch
+                {
+                    //do nothing
+                }
             }
-            return new List<object?>();
+            return default;
         }
 
 

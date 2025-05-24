@@ -80,7 +80,7 @@ namespace BLAZAM.ActiveDirectory
         /// <summary>
 
         /// </summary>
-        public DirectoryEntry? AppRootDirectoryEntry { get; private set; }
+        public IDirectoryEntry? AppRootDirectoryEntry { get; private set; }
 
         /// <summary>
         /// The domain directory entry root
@@ -564,7 +564,7 @@ namespace BLAZAM.ActiveDirectory
                 LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN,
                 ad.Username,
                 pass,
-                AuthType);
+                AuthType).ToIDirectoryEntry();
             Loggers.ActiveDirectoryLogger.Information("App Active Directory context connected");
 
             RootDirectoryEntry = new DirectoryEntry(
