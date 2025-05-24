@@ -16,7 +16,7 @@ namespace BLAZAMActiveDirectoryTests
             var status = Directory.Status;
             var appRoot = Directory.AppRootDirectoryEntry;
             var newUsers = Directory.Users.FindNewUsers();
-            var objType = newUsers.First()?.ObjectType;
+            var objType = newUsers?.First()?.ObjectType;
 
 
             Assert.True(settings.IsValid);
@@ -48,7 +48,7 @@ namespace BLAZAMActiveDirectoryTests
         {
             
             var newGroups = Directory.Groups.FindNewGroups();
-            var objType = newGroups.First()?.ObjectType;
+            var objType = newGroups?.First()?.ObjectType;
 
 
             Assert.True(objType == ActiveDirectoryObjectType.Group);

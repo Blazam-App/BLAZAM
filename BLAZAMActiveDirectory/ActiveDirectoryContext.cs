@@ -7,7 +7,6 @@ using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
-using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;

@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services; // For WmiFactory
 using BLAZAM.Helpers;
 using System;
@@ -470,7 +471,7 @@ namespace BLAZAM.ActiveDirectory.Mocks
         public List<IADContact> FindNewContacts(int maxAgeInDays = 14, bool ignoreDisabledUsers = true)
         {
             return GetBaseQuery()
-                .Where(c => MockSearchPredicates.IsRecentlyCreated(c.Created, maxAgeInDays))
+                .Where(c => c.ObjectType==ActiveDirectoryObjectType.Contact && MockSearchPredicates.IsRecentlyCreated(c.Created, maxAgeInDays))
                 .ToList();
         }
         public Task<List<IADContact>> FindNewContactsAsync(int maxAgeInDays = 14, bool ignoreDisabledUsers = true)
