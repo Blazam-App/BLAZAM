@@ -95,7 +95,7 @@
 
                                 @if (Contact?.ThumbnailPhoto != null)
                                 {
-                                    <Base64Image Style="max-height:150px;max-width:150px;" Data="Contact.ThumbnailPhoto.ReizeRawImage(150)" />
+                                    <Base64Image Style="max-height:150px;max-width:150px;" Data="Contact.ThumbnailPhoto.ResizeRawImage(150)" />
                                     @if (showRemoveThumbnail && CanEditField(ActiveDirectoryFields.Thumbnail))
                                     {
 

@@ -1,4 +1,5 @@
-﻿using BLAZAM.Logger; // Added
+﻿
+using BLAZAM.Logger;
 using System; // Added for ArgumentNullException, ArgumentException, IEquatable
 using System.Collections.Generic; // Added for EqualityComparer
 using System.IO; // Added for Path, DirectoryInfo, FileInfo, FileMode, FileAccess, FileShare, File, IOException

@@ -176,7 +176,7 @@ namespace BLAZAM.FileSystem
             }
             catch (Exception ex) // Catches FileNotFoundException, UnauthorizedAccessException, IOException, etc.
             {
-                Loggers.SystemLogger.Error(ex, "SystemFile.OpenReadStream: Error opening read stream for {FilePath}.", FullPath);
+                Loggers.SystemLogger.Debug(ex, "SystemFile.OpenReadStream: Error opening read stream for {FilePath}.", FullPath);
                 return null;
             }
         }

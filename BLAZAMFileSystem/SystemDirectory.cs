@@ -1,4 +1,5 @@
-﻿using BLAZAM.Logger; // Added
+﻿
+using BLAZAM.Logger;
 using System; // Added for ArgumentException, etc.
 using System.Collections.Generic; // Added for List
 using System.IO; // Added for Path, Directory, File, etc.

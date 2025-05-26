@@ -343,7 +343,7 @@ namespace BLAZAM.Services
             //Return the authenticationstate
             if (authenticationState != null)
             {
-                if (loginReq.ResultType == LoginResultType.Success) // This check might be redundant if only success path reaches here with non-null authState
+                if (loginReq.AuthenticationResult ==  LoginResultStatus.OK) // This check might be redundant if only success path reaches here with non-null authState
                 {
                     Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: User {UserName} successfully logged in. Final ClaimsPrincipal Name: {PrincipalName}", loginReq.Username, authenticationState?.User?.Identity?.Name);
                 }

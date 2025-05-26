@@ -68,7 +68,7 @@ namespace BLAZAM.Session
                 if (State != null && State.IsAuthenticated)
                 {
                     State.IPAddress = _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(); // Added null conditional for HttpContext
-                    Loggers.SystemLogger.Info("CurrentUserStateService.RetryGetCurrentUserState: Successfully populated UserState for SID {UserSid}. IPAddress: {IPAddress}", State.User?.FindFirstValue(ClaimTypes.Sid) ?? "N/A", State.IPAddress ?? "N/A");
+                    Loggers.SystemLogger.Information("CurrentUserStateService.RetryGetCurrentUserState: Successfully populated UserState for SID {UserSid}. IPAddress: {IPAddress}", State.User?.FindFirstValue(ClaimTypes.Sid) ?? "N/A", State.IPAddress ?? "N/A");
                     _retryTimer?.Dispose();
                 }
             }

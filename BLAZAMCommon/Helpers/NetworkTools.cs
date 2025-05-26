@@ -33,7 +33,7 @@ namespace BLAZAM.Helpers
             }
             catch (PingException ex)
             {
-                Loggers.SystemLogger.Info(ex, "NetworkTools.PingHost: PingException occurred for host {HostNameOrAddress}.", hostNameOrAddress);
+                Loggers.SystemLogger.Information(ex, "NetworkTools.PingHost: PingException occurred for host {HostNameOrAddress}.", hostNameOrAddress);
                 // PingException is caught, and pingable remains false.
             }
             return pingable;
@@ -88,7 +88,7 @@ namespace BLAZAM.Helpers
                     }
                     catch (SocketException ex)
                     {
-                        Loggers.SystemLogger.Info(ex, "NetworkTools.IsAnyPortOpen: SocketException occurred trying to connect to host {HostNameOrAddress} on port {Port}.", hostNameOrAddress, port);
+                        Loggers.SystemLogger.Information(ex, "NetworkTools.IsAnyPortOpen: SocketException occurred trying to connect to host {HostNameOrAddress} on port {Port}.", hostNameOrAddress, port);
                         // SocketException is caught, portOpen remains false for this port, loop continues.
                     }
                     finally

@@ -92,7 +92,7 @@ namespace BLAZAM.Helpers
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                Loggers.SystemLogger.Info(ex, "CommonHelpers.GetEventProperty: ArgumentOutOfRangeException accessing property at index {PropertyIndex} for event ID {EventId}.", index, eventRecord?.RecordId);
+                Loggers.SystemLogger.Information(ex, "CommonHelpers.GetEventProperty: ArgumentOutOfRangeException accessing property at index {PropertyIndex} for event ID {EventId}.", index, eventRecord?.RecordId);
                 return null;
             }
         }
@@ -504,7 +504,7 @@ namespace BLAZAM.Helpers
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Info(ex, "CommonHelpers.AdsValueToDateTime: Generic exception converting value '{AdsiValue}'.", value?.ToString() ?? "null");
+                Loggers.SystemLogger.Information(ex, "CommonHelpers.AdsValueToDateTime: Generic exception converting value '{AdsiValue}'.", value?.ToString() ?? "null");
                 return null; // Return null on any other unexpected error
             }
 

@@ -38,7 +38,7 @@ namespace BLAZAM.Services
         {
             if (configuration == null)
             {
-                Loggers.SystemLogger.Critical("IConfiguration configuration is null in EncryptionService constructor.");
+                Loggers.SystemLogger.Fatal("IConfiguration configuration is null in EncryptionService constructor.");
                 throw new ArgumentNullException(nameof(configuration));
             }
 
@@ -46,7 +46,7 @@ namespace BLAZAM.Services
 
             if (string.IsNullOrEmpty(encryptionKey))
             {
-                Loggers.SystemLogger.Critical("EncryptionKey is null or empty in application configuration. EncryptionService cannot be initialized.");
+                Loggers.SystemLogger.Fatal("EncryptionKey is null or empty in application configuration. EncryptionService cannot be initialized.");
                 throw new InvalidOperationException("EncryptionKey is missing from configuration.");
             }
 
