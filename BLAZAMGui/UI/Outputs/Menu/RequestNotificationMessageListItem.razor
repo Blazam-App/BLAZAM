@@ -1,4 +1,5 @@
 ﻿@inherits DatabaseComponentBase
+@inject BLAZAM.Services.Analytics AnalyticsService
 @if (LoadingData)
 {
     <MudCard Class="py-3"
@@ -153,7 +154,7 @@ else
                 if (await NotificationPublisher.DeleteNotification(Notification.Notification, Notification.User))
                 {
                     SnackBarService.Info(AppLocalization[Lang.Request_Denied]);
-
+                    await AnalyticsService.AccessRequestDenied(Notification.Notification.Title);
                 }
 
 

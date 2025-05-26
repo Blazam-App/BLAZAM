@@ -1,5 +1,7 @@
-﻿
+﻿using BLAZAM.Logger; // Added
 using Microsoft.AspNetCore.Components;
+using System; // Added
+using System.Linq; // Added for Regex.Matches(...).Select
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -9,25 +11,38 @@ using System.Text.RegularExpressions;
 
 namespace BLAZAM.Helpers
 {
+    /// <summary>
+    /// Provides extension methods and utility functions for string manipulation and conversion.
+    /// </summary>
     public static class StringHelpers
     {
         /// <summary>
-        /// Replaces new line characters with HTML break tags
+        /// Replaces new line characters (CRLF and LF) with HTML break tags (&lt;br&gt;).
         /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
+        /// <param name="input">The input string. If null, an empty MarkupString is returned.</param>
+        /// <returns>A <see cref="MarkupString"/> with new lines converted to HTML breaks.</returns>
         public static MarkupString ToMarkupString(this string input)
         {
+            if (input == null)
+            {
+                Loggers.SystemLogger.Debug("StringHelpers.ToMarkupString: input string was null. Returning empty MarkupString.");
+                return (MarkupString)string.Empty;
+            }
             return (MarkupString)input.Replace("\r\n", "<br>").Replace("\n", "<br>");
         }
+
         /// <summary>
-        /// Hash code that doesn't change with application
-        /// restarts
+        /// Generates a consistent hash code for a string that does not change with application restarts.
         /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
+        /// <param name="input">The input string. If null, 0 is returned.</param>
+        /// <returns>An integer hash code. Returns 0 if the input string is null.</returns>
         public static int GetAppHashCode(this string input)
         {
+            if (input == null)
+            {
+                Loggers.SystemLogger.Debug("StringHelpers.GetAppHashCode: input string was null. Returning 0.");
+                return 0;
+            }
             unchecked // Overflow is fine, just wrap
             {
                 int hash = 17;
@@ -39,35 +54,49 @@ namespace BLAZAM.Helpers
             }
         }
 
-
-
-
-
+        /// <summary>
+        /// Determines whether a string is null or an empty string.
+        /// </summary>
+        /// <param name="str">The string to test.</param>
+        /// <returns>True if the string is null or empty; otherwise, false.</returns>
         public static bool IsNullOrEmpty(this string? str)
         {
-            return str == null || str.Length < 1;
+            return string.IsNullOrEmpty(str); // System.String.IsNullOrEmpty handles both null and empty.
         }
+
         /// <summary>
-        /// Checks if a url is a relative path or direct to localhost
+        /// Checks if a URL is local to the host (relative path or localhost).
         /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
+        /// <param name="url">The URL string to check.</param>
+        /// <returns>True if the URL is local; otherwise, false.</returns>
         public static bool IsUrlLocalToHost(this string url)
         {
+            if (string.IsNullOrEmpty(url))
+            {
+                Loggers.SystemLogger.Debug("StringHelpers.IsUrlLocalToHost: url is null or empty. Returning true as per original logic for empty string.");
+                return true;
+            }
             if (url.StartsWith("https://localhost")) return true;
-            if (url == "") return true;
+            // Original logic for empty string was handled by the IsNullOrEmpty check above.
             return url[0] == '/' && (url.Length == 1 ||
                     url[1] != '/' && url[1] != '\\') ||   // "/" or "/foo" but not "//" or "/\"
                     url.Length > 1 &&
                      url[0] == '~' && url[1] == '/';   // "~/" or "~/foo"
         }
+
         /// <summary>
-        /// Creates a consistent GUID based on a string input
+        /// Creates a consistent GUID from a string input using MD5 hashing.
         /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
+        /// <param name="input">The input string. Must not be null.</param>
+        /// <returns>A <see cref="Guid"/> generated from the input string.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the input string is null.</exception>
         public static Guid ToGuid(this string input)
         {
+            if (input == null)
+            {
+                Loggers.SystemLogger.Warning("StringHelpers.ToGuid: input string was null. Cannot create Guid. Throwing ArgumentNullException.");
+                throw new ArgumentNullException(nameof(input));
+            }
             // Use MD5 hash to get a 16-byte hash of the string
             using (MD5 md5 = MD5.Create())
             {
@@ -76,11 +105,12 @@ namespace BLAZAM.Helpers
                 return new Guid(hash);
             }
         }
+
         /// <summary>
-        /// Converts this <see cref="SecureString"/> to plain text
+        /// Converts a <see cref="SecureString"/> to its plain text representation.
         /// </summary>
-        /// <param name="secureString"></param>
-        /// <returns></returns>
+        /// <param name="secureString">The SecureString to convert. If null, an empty string is returned.</param>
+        /// <returns>The plain text string.</returns>
         public static string ToPlainText(this SecureString? secureString)
         {
             if (secureString == null) return string.Empty;
@@ -91,23 +121,33 @@ namespace BLAZAM.Helpers
                 if (plainText == null)
                     plainText = string.Empty;
                 return plainText;
-
             }
             finally
             {
                 Marshal.ZeroFreeBSTR(bstrPtr);
             }
         }
+
         /// <summary>
-        /// Converts this plain text to a <see cref="SecureString"/>
+        /// Converts a plain text string to a <see cref="SecureString"/>.
         /// </summary>
-        /// <param name="plainText"></param>
-        /// <returns></returns>
+        /// <param name="plainText">The plain text string to convert. If null, an empty SecureString is returned.</param>
+        /// <returns>A SecureString representation of the input.</returns>
         public static SecureString ToSecureString(this string plainText)
         {
+            if (plainText == null)
+            {
+                Loggers.SystemLogger.Debug("StringHelpers.ToSecureString: plainText was null. Returning new empty SecureString.");
+                return new SecureString();
+            }
             return new NetworkCredential("", plainText).SecurePassword;
         }
 
+        /// <summary>
+        /// Formats an LDAP OU path into a more human-readable, slash-delimited format (e.g., /TopOU/SubOU).
+        /// </summary>
+        /// <param name="ou">The LDAP OU string (e.g., OU=SubOU,OU=TopOU,DC=domain,DC=com).</param>
+        /// <returns>A user-friendly OU path, or null if the input is null.</returns>
         public static string? ToPrettyOu(this string? ou)
         {
             if (ou == null) return null;
@@ -117,17 +157,21 @@ namespace BLAZAM.Helpers
             ouComponents.Reverse();
             return "/" + string.Join("/", ouComponents);
         }
+
         /// <summary>
-        /// Converts this FQDN into it's equivalent Distinguished Name
+        /// Converts a Fully Qualified Domain Name (FQDN) into its equivalent Distinguished Name (DN) format.
         /// </summary>
-        /// <param name="fqdn"></param>
-        /// <returns></returns>
+        /// <param name="fqdn">The FQDN string (e.g., sub.domain.com). If null or empty, an empty string is returned.</param>
+        /// <returns>The DN string (e.g., DC=sub,DC=domain,DC=com), or an empty string if input is null or empty.</returns>
         public static string FqdnToDN(this string fqdn)
         {
+            if (string.IsNullOrEmpty(fqdn))
+            {
+                Loggers.SystemLogger.Warning("StringHelpers.FqdnToDN: fqdn is null or empty. Cannot convert to DN. Returning string.Empty.");
+                return string.Empty;
+            }
             // Split the FQDN into its domain components
             string[] domainComponents = fqdn.Split('.');
-
-
 
             // Build the DN by appending each reversed domain component as a RDN (relative distinguished name)
             StringBuilder dnBuilder = new();

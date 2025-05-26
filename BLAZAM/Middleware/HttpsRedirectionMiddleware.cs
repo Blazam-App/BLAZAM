@@ -1,5 +1,7 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
+using BLAZAM.Logger;
+using System;
 
 namespace BLAZAM.Server.Middleware
 {
@@ -15,57 +17,54 @@ namespace BLAZAM.Server.Middleware
         /// <summary>
         /// Creates a new HTTPS redirect middleware to ensure users are using a secure connection
         /// </summary>
-        /// <param name="next"></param>
-        /// <param name="applicationInfo"></param>
+        /// <param name="next">The next middleware in the pipeline.</param>
+        /// <param name="applicationInfo">Application information service.</param>
+        /// <exception cref="ArgumentNullException">Thrown if applicationInfo is null.</exception>
         public HttpsRedirectionMiddleware(
             RequestDelegate next,
             ApplicationInfo applicationInfo)
         {
             _next = next;
-            _applicationInfo = applicationInfo;
+            _applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo), "ApplicationInfo applicationInfo is null in HttpsRedirectionMiddleware constructor.");
+            if (applicationInfo == null) // This check is technically redundant due to the ?? throw but good for explicit logging if desired.
+            {
+                Loggers.SystemLogger.Error("ApplicationInfo applicationInfo is null in HttpsRedirectionMiddleware constructor.");
+                // The throw above already handles the exception.
+            }
         }
         /// <summary>
         /// Checks the database cache for a true ForceHTTPS and if so an request is HTTP redirect to HTTPS
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">The HTTP context.</param>
         /// <returns></returns>
         public async Task InvokeAsync(HttpContext context)
         {
             bool forceHttps;
-            // If the value is not cached, retrieve it from the database.
+            // Check ForceHTTPS status from cached application settings.
             if (_applicationInfo.InstallationCompleted)
             {
-
-                if (DatabaseCache.ApplicationSettings != null)
+                if (DatabaseCache.ApplicationSettings == null)
                 {
-                    forceHttps = DatabaseCache.ApplicationSettings.ForceHTTPS;
+                    Loggers.SystemLogger.Information("HttpsRedirectionMiddleware: DatabaseCache.ApplicationSettings is null. Assuming ForceHTTPS is false. This might be expected during initial setup or if settings are not yet loaded.");
+                    forceHttps = false;
                 }
                 else
                 {
-                    forceHttps = false;
+                    forceHttps = DatabaseCache.ApplicationSettings.ForceHTTPS;
                 }
-
-
-
-
-
 
                 // If the ForceHttps flag is set to true, redirect to HTTPS.
                 if (forceHttps
                     && !context.Request.IsHttps)
                 {
                     string httpsUrl = "https://" + context.Request.Host + context.Request.Path;
+                    Loggers.SystemLogger.Information("HttpsRedirectionMiddleware: Redirecting HTTP request {RequestPath} to HTTPS ({HttpsUrl}) based on ForceHTTPS setting.", context.Request.Path, httpsUrl);
                     context.Response.Redirect(httpsUrl);
                     return;
                 }
-
             }
             // If the ForceHttps flag is not set or if the request is already HTTPS, proceed with the request.
             await _next(context);
         }
-
-
-
     }
-
 }

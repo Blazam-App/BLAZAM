@@ -1,5 +1,6 @@
 @using BLAZAM.Common.Exceptions
 @inherits AppModalContent
+@inject BLAZAM.Services.Analytics AnalyticsService
 
 <MudSimpleTable Class="mud-width-full p-5 m-5">
     <thead>
@@ -73,6 +74,11 @@
         try
         {
             await Context.SaveChangesAsync();
+            // Check if SaveChanges was successful before sending analytics
+            // This can be tricky as SaveChangesAsync returns int and doesn't throw by default on concurrency issues if not configured.
+            // A simple proxy for success here is just proceeding if no exception was caught before this point.
+            // A more robust check might involve checking entity states if possible, but let's keep it simple first.
+            await AnalyticsService.AccessRequestApproved($"Approved: {Request.Notification.Title}");
             await OnApproved.InvokeAsync();
             await Modal.CloseAsync();
 
