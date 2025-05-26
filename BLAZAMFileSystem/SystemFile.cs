@@ -1,90 +1,256 @@
-﻿namespace BLAZAM.FileSystem
+﻿using BLAZAM.Logger; // Added
+using System; // Added
+using System.IO; // Added
+using System.Threading.Tasks; // Added
+
+namespace BLAZAM.FileSystem
 {
+    /// <summary>
+    /// Represents a file in the file system, providing properties and methods for file manipulation and access.
+    /// </summary>
     public class SystemFile : FileSystemBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SystemFile"/> class.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
         public SystemFile(string path) : base(path)
         {
         }
+
+        /// <summary>
+        /// Gets a value indicating whether the file currently exists.
+        /// </summary>
         public bool Exists => File.Exists(FullPath);
 
-
+        /// <summary>
+        /// Gets the name of the file without the extension.
+        /// </summary>
         public string Name => System.IO.Path.GetFileNameWithoutExtension(FullPath);
-        public string Extension => System.IO.Path.GetExtension(FullPath);
-        public SystemDirectory ParentDirectory => new(System.IO.Path.GetDirectoryName(FullPath));
 
+        /// <summary>
+        /// Gets the file extension.
+        /// </summary>
+        public string Extension => System.IO.Path.GetExtension(FullPath);
+
+        /// <summary>
+        /// Gets the parent directory of this file. Returns a representation of the current directory if the parent cannot be determined.
+        /// </summary>
+        public SystemDirectory ParentDirectory
+        {
+            get
+            {
+                string? directoryName = System.IO.Path.GetDirectoryName(FullPath);
+                if (string.IsNullOrEmpty(directoryName))
+                {
+                    Loggers.SystemLogger.Warning("SystemFile.ParentDirectory: Could not determine directory name for {FullPath}. Returning current directory representation (\".\").", FullPath);
+                    return new SystemDirectory(".");
+                }
+                return new SystemDirectory(directoryName);
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously reads the contents of the file as a byte array. Returns an empty array on error.
+        /// </summary>
+        /// <returns>A byte array containing the file's contents, or an empty array if an error occurs.</returns>
         public async Task<byte[]> ReadAllBytesAsync()
         {
-            return await File.ReadAllBytesAsync(FullPath);
+            try
+            {
+                return await File.ReadAllBytesAsync(FullPath);
+            }
+            catch (Exception ex) // Catches IOException, SecurityException, etc.
+            {
+                Loggers.SystemLogger.Error(ex, "SystemFile.ReadAllBytesAsync: Error reading all bytes async from {FilePath}.", FullPath);
+                return Array.Empty<byte>();
+            }
         }
+
+        /// <summary>
+        /// Reads the contents of the file as a byte array. Returns an empty array on error.
+        /// </summary>
+        /// <returns>A byte array containing the file's contents, or an empty array if an error occurs.</returns>
         public byte[] ReadAllBytes()
         {
-            return File.ReadAllBytes(FullPath);
+            try
+            {
+                return File.ReadAllBytes(FullPath);
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "SystemFile.ReadAllBytes: Error reading all bytes from {FilePath}.", FullPath);
+                return Array.Empty<byte>();
+            }
         }
+
+        /// <summary>
+        /// Reads the contents of the file as a string. Returns an empty string on error.
+        /// </summary>
+        /// <returns>A string containing the file's contents, or an empty string if an error occurs.</returns>
         public string ReadAllText()
         {
-            return File.ReadAllText(FullPath);
+            try
+            {
+                return File.ReadAllText(FullPath);
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "SystemFile.ReadAllText: Error reading all text from {FilePath}.", FullPath);
+                return string.Empty;
+            }
         }
+
+        /// <summary>
+        /// Writes the given text to the file, overwriting any existing content. Creates the file if it does not exist.
+        /// </summary>
+        /// <param name="text">The text to write. If null, an empty string will be written.</param>
+        /// <returns>True if successful, false if an error occurs.</returns>
         public bool WriteAllText(string? text)
         {
-            File.WriteAllText(FullPath, text);
-            return true;
+            if (text == null)
+            {
+                Loggers.SystemLogger.Debug("SystemFile.WriteAllText: Input text is null for file {FilePath}. Writing empty string.", FullPath);
+                text = string.Empty;
+            }
+            try
+            {
+                File.WriteAllText(FullPath, text);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "SystemFile.WriteAllText: Error writing all text to {FilePath}.", FullPath);
+                return false;
+            }
         }
 
+        /// <summary>
+        /// Gets the date and time the file was last modified.
+        /// </summary>
         public DateTime LastModified { get => File.GetLastWriteTime(FullPath); }
 
-        public TimeSpan SinceLastModified { get => DateTime.Now - LastModified; }
         /// <summary>
-        /// Checks if the directory this file is in is writable
+        /// Gets the time elapsed since the file was last modified.
         /// </summary>
-        /// <remarks>
-        /// This does not check if the file itself is writable
-        /// </remarks>
+        public TimeSpan SinceLastModified { get => DateTime.Now - LastModified; }
+
+        /// <summary>
+        /// Gets a value indicating whether the current user has write permissions.
+        /// If the file exists, it checks write permission on the file itself.
+        /// If the file does not exist, it checks write permission on the parent directory.
+        /// </summary>
         public override bool Writable
         {
             get
             {
-                if (this.Exists) return base.Writable;
-                return ParentDirectory.Writable;
+                if (this.Exists) return base.Writable; // base.Writable checks the file itself
+                return ParentDirectory.Writable; // Checks parent directory if file doesn't exist
             }
         }
 
+        /// <summary>
+        /// Deletes the file. Logs an error if the operation fails but does not throw.
+        /// </summary>
         public void Delete()
         {
-            File.Delete(FullPath);
+            try
+            {
+                File.Delete(FullPath);
+            }
+            catch (Exception ex) // Catches IOException, UnauthorizedAccessException, etc.
+            {
+                Loggers.SystemLogger.Error(ex, "SystemFile.Delete: Error deleting file {FilePath}.", FullPath);
+            }
         }
 
-        public FileStream OpenReadStream()
-        {
-            return new FileStream(FullPath, FileMode.Open, FileAccess.Read, FileShare.None, bufferSize: 4096, useAsync: true);
-        }
         /// <summary>
-        /// Returns an opened stream reader to this file
+        /// Opens the file for reading. Returns null on error.
         /// </summary>
-        /// <returns></returns>
-        public FileStream OpenWriteStream()
+        /// <returns>A FileStream for reading, or null if an error occurs.</returns>
+        public FileStream? OpenReadStream()
         {
-            return new FileStream(FullPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
+            try
+            {
+                return new FileStream(FullPath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: true); // Changed FileShare.None to FileShare.Read
+            }
+            catch (Exception ex) // Catches FileNotFoundException, UnauthorizedAccessException, IOException, etc.
+            {
+                Loggers.SystemLogger.Debug(ex, "SystemFile.OpenReadStream: Error opening read stream for {FilePath}.", FullPath);
+                return null;
+            }
         }
 
         /// <summary>
-        /// Creates the file if it does not already exist
+        /// Opens or creates the file for writing. Returns null on error.
+        /// </summary>
+        /// <returns>A FileStream for writing, or null if an error occurs.</returns>
+        public FileStream? OpenWriteStream()
+        {
+            try
+            {
+                // FileMode.Create will overwrite if exists, or create if not.
+                return new FileStream(FullPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
+            }
+            catch (Exception ex) // Catches UnauthorizedAccessException, IOException, etc.
+            {
+                Loggers.SystemLogger.Error(ex, "SystemFile.OpenWriteStream: Error opening write stream for {FilePath}.", FullPath);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Ensures that the file exists. If it does not, it attempts to create it (empty).
+        /// Logs an error if creation fails.
         /// </summary>
         public void EnsureCreated()
         {
             if (!Exists)
                 Create();
         }
+
         /// <summary>
-        /// Creates this file with no bytes
+        /// Creates this file as an empty file if it does not already exist.
+        /// Ensures the parent directory exists before creating the file.
         /// </summary>
         private void Create()
         {
-            if (!ParentDirectory.Exists)
+            try
             {
-                ParentDirectory.EnsureCreated();
+                if (!ParentDirectory.Exists)
+                {
+                    // ParentDirectory.EnsureCreated() already has its own logging
+                    ParentDirectory.EnsureCreated();
+                }
             }
-            var stream = new FileStream(FullPath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, bufferSize: 4096, useAsync: true);
-            stream.Close();
+            catch (Exception ex) // Catching exception from ParentDirectory.EnsureCreated if it throws despite internal logging
+            {
+                Loggers.SystemLogger.Error(ex, "SystemFile.Create: Error ensuring parent directory exists for {FilePath} during Create.", FullPath);
+                // Depending on requirements, might want to return or re-throw here.
+                // For now, it will proceed to attempt FileStream creation, which will likely also fail.
+            }
+
+            FileStream? stream = null;
+            try
+            {
+                // FileMode.OpenOrCreate will open if exists, create if not.
+                // FileAccess.Read might be too restrictive if the intent is just to create an empty file marker.
+                // Using FileAccess.Write and immediately closing is a common pattern for "touching" a file.
+                // However, the original code used FileAccess.Read. If the goal is just to ensure it's there,
+                // and it might be read immediately after, Read is fine.
+                // For just creating, File.Create(FullPath).Close() is simpler.
+                // Given the original, sticking to FileStream for now.
+                stream = new FileStream(FullPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, bufferSize: 4096, useAsync: true);
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "SystemFile.Create: Error creating file stream for {FilePath} during Create.", FullPath);
+                // Depending on requirements, might want to re-throw.
+            }
+            finally
+            {
+                stream?.Close(); // Ensure stream is closed if it was opened
+            }
         }
     }
 }

@@ -1,70 +1,61 @@
 ﻿using BLAZAM.Common;
 using BLAZAM.Database.Context;
+using BLAZAM.Helpers; // Added for GetAppHashCode
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Claims;
+using System; // Added
+using System.Collections.Generic; // Added
+using System.Linq; // Added
+using System.Security.Claims; // Added
+using System.Threading; // Added for Timer
+using System.Threading.Tasks; // Added for Task
 
 namespace BLAZAM.Session
 {
     /// <summary>
-    /// A stateful "session" store for the application's user session state. This class is a "hack" for Blazor Server
-    /// to allow it to behave as if there is a persistent user web session between reloads on the client. Using this
-    /// class data can be persisted over the course of an entire user's login session. In the context of this app,
-    /// this class's primary purpose is to cache the user permission for logged in ActiveDirectory users.
-    /// Each logged in user's ClaimsPrincipal is cached at login, retrieved on reload, and removed either on logout,
-    /// or after 3x the Timeout set in the AuthenticationSettings in the Database. Of note: On webapp restart, if a
-    /// valid ClaimsPrincipal still exists in the user's browser cookies for a logged in user when they reload any 
-    /// page the cache is updated with the missing ClaimsPrincipal.
+    /// Manages in-memory user session states for the Blazor Server application, providing a way to cache user-specific data and permissions across interactions. It handles state creation, retrieval, and cleanup of stale sessions.
     /// </summary>
     public class ApplicationUserStateService : IApplicationUserStateService
     {
-
+        /// <summary>
+        /// Gets the singleton instance of the ApplicationUserStateService.
+        /// </summary>
         public static IApplicationUserStateService Instance { get; private set; }
 
         private IHttpContextAccessor _httpContextAccessor { get; set; }
-
         private readonly IAppDatabaseFactory _factory;
-
         private int? Timeout { get; set; }
-
         private List<MFARequest> _mfaLoginQueue = new();
 
-        /// <summary>
-        /// Called when a new UserState is added to the cache.
-        /// </summary>
+        /// <summary>Event triggered when a new <see cref="IApplicationUserState"/> is added to the cache. Primarily for internal use or advanced scenarios.</summary>
         public AppDelegate<IApplicationUserState> UserStateAdded { get; set; }
 
-
-        /// <summary>
-        /// Called when a UserState is removeed from the cache. 
-        /// </summary>
-        /// <remarks>
-        /// This can happen on timeout or user intitiated logout.
-        /// </remarks>
+        /// <summary>Event triggered when an <see cref="IApplicationUserState"/> is removed from the cache, either due to timeout or explicit logout.</summary>
         public AppDelegate<IApplicationUserState> OnUserStateRemoved { get; set; }
 
-
-        /// <summary>
-        /// A cached list of user states for logged in users. This allows easy, cached access to the users permissions and DirectryEntry
-        /// </summary>
+        /// <summary>Gets the list of currently cached <see cref="IApplicationUserState"/> objects. Use with caution; direct manipulation is not recommended.</summary>
         public IList<IApplicationUserState> UserStates { get; private set; } = new List<IApplicationUserState>();
-
-
 
         private Timer t;
 
-
-        /// <summary>
-        /// A service to provide stateful user session data storage for runtime. Caches all logged in users.
-        /// Raises a UserStateAdded event when a new state is added to the cache for processing in other modules.
-        /// </summary>
-        /// <param name="httpContextAccessor">An HTTP Context Accessor to get the current ClaimsPrincipal of the current session.
-        /// This Principal is persisted via the browser authentication cookie</param>
-        /// <param name="factory">Database Context Factory for accessing the Authentication Setting - SessionTimeout</param>
+        /// <summary>Initializes a new instance of the <see cref="ApplicationUserStateService"/> class.</summary> 
+        /// <param name="httpContextAccessor">Accessor for the current HTTP context, used to retrieve the user's ClaimsPrincipal.</param> 
+        /// <param name="factory">Factory for creating database context instances.</param> 
+        /// <exception cref="ArgumentNullException">Thrown if httpContextAccessor or factory is null.</exception>
         public ApplicationUserStateService(IHttpContextAccessor httpContextAccessor, IAppDatabaseFactory factory)
         {
+            if (httpContextAccessor == null)
+            {
+                Loggers.SystemLogger.Error("ApplicationUserStateService.Constructor: IHttpContextAccessor httpContextAccessor is null.");
+                throw new ArgumentNullException(nameof(httpContextAccessor));
+            }
+            if (factory == null)
+            {
+                Loggers.SystemLogger.Error("ApplicationUserStateService.Constructor: IAppDatabaseFactory factory is null.");
+                throw new ArgumentNullException(nameof(factory));
+            }
             Instance = this;
             _httpContextAccessor = httpContextAccessor;
             _factory = factory;
@@ -73,40 +64,43 @@ namespace BLAZAM.Session
             {
                 using var context = await factory.CreateDbContextAsync();
                 Timeout = context.AuthenticationSettings.FirstOrDefault()?.SessionTimeout;
-
             });
         }
 
         private void ReloadAllPermissions()
         {
-         
+            // Method body not implemented in original, left as is.
         }
 
         /// <summary>
-        /// Ticker to check for stale user states that haven't been accessed for
-        /// 3X the sessionTimeout set for the application in the database
+        /// Periodically checks for and removes stale user states based on session timeout settings.
         /// </summary>
-        /// <param name="state">The UserStates List object</param>
+        /// <param name="state">The UserStates List object, passed by the Timer.</param>
         private void Tick(object? state)
         {
-            if (state is List<IApplicationUserState> userStates)
+            try
             {
-                var temp = new List<IApplicationUserState>(userStates);
-                var now = DateTime.UtcNow;
-                temp.ForEach(x =>
+                if (state is List<IApplicationUserState> userStates)
                 {
-                    if ((now - x.LastAccessed).TotalMinutes > Timeout * 3)
+                    var temp = new List<IApplicationUserState>(userStates); // Iterate over a copy
+                    var now = DateTime.UtcNow;
+                    temp.ForEach(x =>
                     {
-                        userStates.Remove(x);
-
-                    }
-                });
+                        if (Timeout.HasValue && (now - x.LastAccessed).TotalMinutes > Timeout * 3)
+                        {
+                            userStates.Remove(x); // Remove from original list
+                            OnUserStateRemoved?.Invoke(x); // Invoke event
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Warning(ex, "ApplicationUserStateService.Tick: Exception during stale user state cleanup task.");
             }
         }
-        /// <summary>
-        /// Gets the current UserState cached object of the currently 
-        /// logged in user, referenced by the users browser authentication cookie
-        /// </summary>
+
+        /// <summary>Gets the <see cref="IApplicationUserState"/> for the currently authenticated user, based on the HTTP context. Returns null if no user context is available or an error occurs.</summary>
         public IApplicationUserState? CurrentUserState
         {
             get
@@ -115,89 +109,86 @@ namespace BLAZAM.Session
                 {
                     return GetUserState(_httpContextAccessor.HttpContext?.User);
                 }
-                catch (NullReferenceException)
+                catch (NullReferenceException ex) // Catch specific Exception ex
                 {
+                    Loggers.SystemLogger.Debug(ex, "ApplicationUserStateService.CurrentUserState_get: NullReferenceException encountered. CurrentUser or HttpContext might be null initially.");
                     return null;
                 }
                 catch (Exception ex)
                 {
-                    Loggers.SystemLogger.Error("Unexpected error trying to retrieve current user state from httpContext{@Error}", ex);
+                    Loggers.SystemLogger.Error(ex, "Unexpected error trying to retrieve current user state from httpContext{@Error}", ex.Message); // Use ex.Message
                     return null;
                 }
-
             }
         }
 
+        /// <summary>Gets the username of the current user, if available; otherwise, an empty string.</summary>
         public string CurrentUsername
         {
             get
             {
                 try
                 {
-                    var cu = CurrentUserState;
-                    if (cu != null)
-                    {
-                        return cu.User?.Identity?.Name;
-                    }
+                    return CurrentUserState?.User?.Identity?.Name ?? ""; // Simplified
                 }
-                catch
+                catch (Exception ex) // Catching potential exceptions from CurrentUserState or its properties
                 {
-
+                    Loggers.SystemLogger.Warning(ex, "ApplicationUserStateService.CurrentUsername_get: Exception accessing CurrentUserState properties.");
+                    return "";
                 }
-                return "";
             }
         }
 
-
-        /// <summary>
-        /// Get the matching cached user state for a given ClaimsPrincipal. 
-        /// This principal is usually attained via the browser authentication cookie.
-        /// </summary>
-        /// <param name="userClaim">The users ClaimsPrincipal to match against.</param>
-        /// <returns></returns>
+        /// <summary>Retrieves or creates and caches an <see cref="IApplicationUserState"/> for the given <see cref="ClaimsPrincipal"/>. Updates LastAccessed time for existing states.</summary> 
+        /// <param name="userClaim">The user's <see cref="ClaimsPrincipal"/>. If null, the method returns null.</param> 
+        /// <returns>The cached or newly created <see cref="IApplicationUserState"/>, or null if userClaim is null.</returns>
         public IApplicationUserState? GetUserState(ClaimsPrincipal userClaim)
         {
-            //Null check
-            if (userClaim == null) return null;
-
-            //Prepare empty application user state in case we don't find or make one
-            IApplicationUserState? existingState;
-
-            //Search existing user stated for matching principals
-            existingState = UserStates.Where(s => s.User.FindFirstValue(ClaimTypes.Sid) == userClaim.FindFirstValue(ClaimTypes.Sid)
-            && s.User.FindFirstValue(ClaimTypes.Actor) == userClaim.FindFirstValue(ClaimTypes.Actor)).FirstOrDefault();
-
-            //Search null check
-            if (existingState == null)
+            if (userClaim == null)
             {
-
-               
-                //Create a new cached state since the one we're looking for appears to be missing
-                existingState = CreateUserState(userClaim);
-                AddUserState(existingState);
-
+                Loggers.SystemLogger.Debug("ApplicationUserStateService.GetUserState: userClaim parameter is null. Returning null.");
+                return null;
             }
 
-            //Update the last accessed time since this code only runs when this specific user is logged in and making requests
+            IApplicationUserState? existingState;
+            existingState = UserStates.FirstOrDefault(s => s.User.FindFirstValue(ClaimTypes.Sid) == userClaim.FindFirstValue(ClaimTypes.Sid)
+                                                       && s.User.FindFirstValue(ClaimTypes.Actor) == userClaim.FindFirstValue(ClaimTypes.Actor));
+
+            if (existingState == null)
+            {
+                existingState = CreateUserState(userClaim);
+                Loggers.SystemLogger.Information("ApplicationUserStateService.GetUserState: No existing ApplicationUserState found for SID {UserSid}, ActorSID {ActorSid}. Creating and caching new state.", userClaim.FindFirstValue(ClaimTypes.Sid) ?? "N/A", userClaim.FindFirstValue(ClaimTypes.Actor) ?? "N/A");
+                AddUserState(existingState); // This will also invoke UserStateAdded
+            }
             existingState.LastAccessed = DateTime.UtcNow;
-
-
             return existingState;
         }
+
         private void AddUserState(IApplicationUserState state)
         {
             UserStates.Add(state);
+            UserStateAdded?.Invoke(state); // Invoke event after adding
         }
-        public void SetMFAUserState(string mfaToken, IApplicationUserState state, string returnURL= "/")
+
+        /// <summary>Stores an MFA request temporarily, associating an MFA token with a user state and return URL. Typically used during an MFA challenge flow.</summary> 
+        /// <param name="mfaToken">The MFA token (e.g., Duo state).</param> 
+        /// <param name="state">The user state associated with this MFA attempt.</param> 
+        /// <param name="returnURL">The URL to return to after MFA completion.</param>
+        public void SetMFAUserState(string mfaToken, IApplicationUserState state, string returnURL = "/")
         {
+            Loggers.SystemLogger.Information("ApplicationUserStateService.SetMFAUserState: Adding MFA request to queue for UserGUID {UserGUID}, MFAToken (hash): {MFATokenHash}.", state?.User?.FindFirstValue(ClaimTypes.Sid) ?? "Unknown", mfaToken?.GetAppHashCode().ToString() ?? "N/A");
             MFARequest mfaRequest = new(mfaToken, returnURL, state);
             _mfaLoginQueue.Add(mfaRequest);
             Task.Delay(90000).ContinueWith((val) =>
             {
                 _mfaLoginQueue.Remove(mfaRequest);
             });
-            SetUserState(state);
+            SetUserState(state); // Ensure state is managed if not already
         }
+
+        /// <summary>Retrieves and removes an <see cref="MFARequest"/> from the queue based on the MFA token.</summary> 
+        /// <param name="mfaToken">The MFA token to search for.</param> 
+        /// <returns>The <see cref="MFARequest"/> if found; otherwise, null.</returns>
         public MFARequest? GetMFARequest(string mfaToken)
         {
             var request = _mfaLoginQueue.FirstOrDefault(q => q.mfaToken.Equals(mfaToken));
@@ -207,49 +198,69 @@ namespace BLAZAM.Session
             }
             return request;
         }
+
+        /// <summary>Adds or updates an <see cref="IApplicationUserState"/> in the cache. Typically called internally or upon login.</summary> 
+        /// <param name="state">The user state to cache.</param>
         public void SetUserState(IApplicationUserState state)
         {
             if (state != null)
-                if (UserStates.Count == 0 || !UserStates.Contains(state))
+            {
+                if (!UserStates.Contains(state)) // Check if it's already there before adding
                 {
                     AddUserState(state);
                 }
-
-
+            }
         }
+
+        /// <summary>Removes a specific <see cref="IApplicationUserState"/> instance from the cache.</summary> 
+        /// <param name="state">The user state to remove. If null, a warning is logged.</param>
         public void RemoveUserState(IApplicationUserState state)
         {
+            if (state == null)
+            {
+                Loggers.SystemLogger.Warning("ApplicationUserStateService.RemoveUserState: 'state' parameter is null. Cannot remove.");
+                return;
+            }
             try
             {
-                if (state != null)
-                    if (UserStates.Count > 0 && UserStates.Contains(state))
-                        UserStates.Remove(state);
+                if (UserStates.Contains(state)) // Check before removing
+                {
+                    UserStates.Remove(state);
+                    OnUserStateRemoved?.Invoke(state); // Invoke event
+                }
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error trying to remove user state {@Error}", ex);
+                Loggers.SystemLogger.Error(ex, "Error trying to remove user state {@Error}", ex.Message); // Use ex.Message
             }
-
         }
 
+        /// <summary>Removes the <see cref="IApplicationUserState"/> associated with the given <see cref="ClaimsPrincipal"/> from the cache.</summary> 
+        /// <param name="currentUser">The ClaimsPrincipal whose state should be removed.</param>
         public void RemoveUserState(ClaimsPrincipal currentUser) => RemoveUserState(GetUserState(currentUser));
 
+        /// <summary>Creates a new <see cref="IApplicationUserState"/> instance for the given <see cref="ClaimsPrincipal"/>.</summary> 
+        /// <param name="user">The user's ClaimsPrincipal.</param> 
+        /// <returns>A new <see cref="IApplicationUserState"/> instance.</returns>
         public IApplicationUserState CreateUserState(ClaimsPrincipal user)
         {
             return new ApplicationUserState(_factory) { User = user };
         }
     }
+
+    /// <summary>
+    /// Provides extension methods for registering session-related services.
+    /// </summary>
     public static class ApplicationUserStateServiceHelpers
     {
+        /// <summary>
+        /// Adds session services, including <see cref="IApplicationUserStateService"/> as a singleton and <see cref="ICurrentUserStateService"/> as scoped, to the specified <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+        /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
         public static IServiceCollection AddSessionServices(this IServiceCollection services)
         {
-            //Provide UserStates as a service
-            //This service is a "hack" for Blazor Server not having, in a real sense, sessions
-            //It allows data to persist between refreshes/reloading page navigations per logged
-            //in user principal
             services.AddSingleton<IApplicationUserStateService, ApplicationUserStateService>();
-
-
             services.AddScoped<ICurrentUserStateService, CurrentUserStateService>();
             return services;
         }

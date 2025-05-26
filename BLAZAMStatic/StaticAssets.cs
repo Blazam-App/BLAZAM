@@ -24,14 +24,14 @@ namespace BLAZAM.Static
             var dbIcon = DatabaseCache.AppIcon;
             if (dbIcon != null)
             {
-                return dbIcon.ReizeRawImage(size);
+                return dbIcon.ResizeRawImage(size);
             }
             else
             {
                 var defIcon = GetDefaultIcon();
                 if (defIcon != null)
                 {
-                    return defIcon.ReizeRawImage(size);
+                    return defIcon.ResizeRawImage(size);
                 }
             }
             return null;

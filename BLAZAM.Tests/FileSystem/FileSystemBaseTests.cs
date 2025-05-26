@@ -12,7 +12,7 @@ namespace BLAZAM.Tests.FileSystem
 
             // Act and Assert
 #pragma warning disable CS8604 // Possible null reference argument.
-            Assert.Throws<ArgumentException>(() => new FileSystemBase(path));
+            Assert.Throws<ArgumentNullException>(() => new FileSystemBase(path));
 #pragma warning restore CS8604 // Possible null reference argument.
         }
 
