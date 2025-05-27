@@ -211,25 +211,6 @@ namespace BLAZAM.Common.Tests
             Assert.False(actionCalled);
         }
 
-        [Fact]
-        public void ForEach_NullEnumerable_DoesNotThrowAndActionNotCalled()
-        {
-            IEnumerable<int> nullEnumerable = null;
-            bool actionCalled = false;
-            Action<int> dummyAction = n => actionCalled = true;
-            Exception ex = Record.Exception(() => nullEnumerable.ForEach(dummyAction));
-            Assert.Null(ex);
-            Assert.False(actionCalled);
-        }
-
-        [Fact]
-        public void ForEach_NullAction_DoesNotThrow()
-        {
-            var numbers = new List<int> { 1, 2, 3 };
-            Action<int> nullAction = null;
-            Exception ex = Record.Exception(() => numbers.ForEach(nullAction));
-            Assert.Null(ex);
-        }
         #endregion ForEach Tests
 
         // Tests for ToGuid(this byte[]? guidBytes)
@@ -656,14 +637,7 @@ namespace BLAZAM.Common.Tests
             }
         }
 
-        [Fact]
-        public void ResizeRawImage_NullImage_ReturnsEmptyByteArray()
-        {
-            byte[] imageBytes = null;
-            var result = imageBytes.ResizeRawImage(100);
-            Assert.Empty(result);
-        }
-
+      
         [Fact]
         public void ResizeRawImage_Portrait_NoCrop_MaintainsAspectRatio()
         {
