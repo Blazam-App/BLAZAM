@@ -21,7 +21,6 @@ namespace BLAZAM.Helpers
         {
             if (string.IsNullOrWhiteSpace(hostNameOrAddress))
             {
-                Loggers.SystemLogger.Warning("NetworkTools.PingHost: hostNameOrAddress parameter is null or whitespace. Returning false.");
                 return false;
             }
             bool pingable = false;
@@ -33,7 +32,6 @@ namespace BLAZAM.Helpers
             }
             catch (PingException ex)
             {
-                Loggers.SystemLogger.Information(ex, "NetworkTools.PingHost: PingException occurred for host {HostNameOrAddress}.", hostNameOrAddress);
                 // PingException is caught, and pingable remains false.
             }
             return pingable;
@@ -60,12 +58,10 @@ namespace BLAZAM.Helpers
         {
             if (string.IsNullOrWhiteSpace(hostNameOrAddress))
             {
-                Loggers.SystemLogger.Warning("NetworkTools.IsAnyPortOpen: hostNameOrAddress parameter is null or whitespace. Returning false.");
                 return false;
             }
             if (ports == null || ports.Length == 0)
             {
-                Loggers.SystemLogger.Warning("NetworkTools.IsAnyPortOpen: ports array is null or empty for host {HostNameOrAddress}. Returning false.", hostNameOrAddress);
                 return false;
             }
 
@@ -75,6 +71,10 @@ namespace BLAZAM.Helpers
 
             foreach (int port in ports)
             {
+                if(port < 1 || port > 65535)
+                {
+                    throw new ArgumentOutOfRangeException("Ports must be between 1-65535");
+                }
                 using (TcpClient client = new())
                 {
                     try
@@ -88,7 +88,6 @@ namespace BLAZAM.Helpers
                     }
                     catch (SocketException ex)
                     {
-                        Loggers.SystemLogger.Information(ex, "NetworkTools.IsAnyPortOpen: SocketException occurred trying to connect to host {HostNameOrAddress} on port {Port}.", hostNameOrAddress, port);
                         // SocketException is caught, portOpen remains false for this port, loop continues.
                     }
                     finally

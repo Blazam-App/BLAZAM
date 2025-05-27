@@ -1,5 +1,4 @@
-﻿using BLAZAM.Logger;
-using System;
+﻿using System;
 
 namespace BLAZAM.Helpers
 {
@@ -38,16 +37,14 @@ namespace BLAZAM.Helpers
         /// <returns>The total number of differing bits.</returns>
         /// <exception cref="ArgumentNullException">Thrown if either input array is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the input arrays do not have the same length.</exception>
-        public static int BitDifference(this byte[] a, byte[] b)
+        public static int BitDifference(this byte[]? a, byte[]? b)
         {
             if (a == null)
             {
-                Loggers.SystemLogger.Warning("ByteHelpers.BitDifference: Parameter 'a' (byte array) is null.");
                 throw new ArgumentNullException(nameof(a));
             }
             if (b == null)
             {
-                Loggers.SystemLogger.Warning("ByteHelpers.BitDifference: Parameter 'b' (byte array) is null.");
                 throw new ArgumentNullException(nameof(b));
             }
 
