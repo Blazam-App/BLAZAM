@@ -282,6 +282,7 @@ namespace BLAZAM.Server
             builder.Services.AddScoped<WebUserAuditLogger>(); // Scoped logger for web user actions
             builder.Services.AddSingleton<ServerAuditLogger>(); // Singleton logger for server-side events
             builder.Services.AddScoped<GoogleAuthenticatorService>(); // Service for Google Authenticator MFA
+            builder.Services.AddScoped<Analytics>(); // Service for Google Analytics of user actions
             builder.Services.AddScoped<JwtTokenService>(); // Service for creating and managing JWTs
             builder.Services.AddSingleton<WebHookPublisher>(); // Service for publishing webhook events
             builder.Services.AddScoped<AppAuthenticationStateProvider>(); // Custom Blazor authentication state provider

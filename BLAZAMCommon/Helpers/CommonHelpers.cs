@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Logger; // Added
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using System; // Added
@@ -43,12 +42,10 @@ namespace BLAZAM.Helpers
         {
             if (changes == null)
             {
-                Loggers.SystemLogger.Warning("CommonHelpers.GetValueChangesString: 'changes' list is null.");
                 return string.Empty;
             }
             if (valueSelector == null)
             {
-                Loggers.SystemLogger.Warning("CommonHelpers.GetValueChangesString: 'valueSelector' func is null.");
                 return string.Empty;
             }
 
@@ -79,12 +76,11 @@ namespace BLAZAM.Helpers
         /// <param name="eventRecord">The event record.</param>
         /// <param name="index">The zero-based index of the property.</param>
         /// <returns>The string representation of the property value, or null if the property is not found or an error occurs.</returns>
-        public static string? GetEventProperty(this EventRecord eventRecord, int index)
+        public static string? GetEventProperty(this EventRecord? eventRecord, int index)
         {
             if (eventRecord == null)
             {
-                Loggers.SystemLogger.Warning("CommonHelpers.GetEventProperty: 'eventRecord' is null.");
-                return null;
+               return null;
             }
             try
             {
@@ -92,7 +88,6 @@ namespace BLAZAM.Helpers
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                Loggers.SystemLogger.Information(ex, "CommonHelpers.GetEventProperty: ArgumentOutOfRangeException accessing property at index {PropertyIndex} for event ID {EventId}.", index, eventRecord?.RecordId);
                 return null;
             }
         }
@@ -111,11 +106,7 @@ namespace BLAZAM.Helpers
                 // If original is null, any property in 'changed' is considered a new value, but our current BuildAuditChangeLog handles this.
                 // If 'changed' is also null, ReferenceEquals handles it.
             }
-            if (changed == null && original != null)
-            {
-                Loggers.SystemLogger.Warning("CommonHelpers.GetChanges: 'changed' object is null while 'original' is not. Cannot compare types or values if 'changed' is null.");
-                // Proceeding to BuildAuditChangeLog which will treat all original properties as "removed" (oldValue set, newValue null).
-            }
+           
 
             // Check if both objects are null or same reference
             if (ReferenceEquals(changed, original))
@@ -138,11 +129,10 @@ namespace BLAZAM.Helpers
         /// <param name="propertyName">The name of the property to set.</param>
         /// <param name="value">The value to set the property to.</param>
         /// <returns>True if the property was found and set; false otherwise (e.g., if obj is null or property not found).</returns>
-        public static bool SetPropertyValue(this object obj, string propertyName, object value)
+        public static bool SetPropertyValue(this object? obj, string propertyName, object value)
         {
             if (obj == null)
             {
-                Loggers.SystemLogger.Warning("CommonHelpers.SetPropertyValue: 'obj' is null.");
                 return false;
             }
             var props = obj.GetType().GetProperties();
@@ -154,7 +144,6 @@ namespace BLAZAM.Helpers
             }
             else
             {
-                Loggers.SystemLogger.Debug("CommonHelpers.SetPropertyValue: No matching property '{PropertyName}' in object of type {ObjectType}.", propertyName, obj.GetType().FullName);
                 return false;
             }
         }
@@ -165,11 +154,10 @@ namespace BLAZAM.Helpers
         /// <param name="obj">The object from which to get the property value.</param>
         /// <param name="propertyName">The name of the property to get.</param>
         /// <returns>The value of the property, or null if the object is null or the property is not found.</returns>
-        public static object? GetPropertyValue(this object obj, string propertyName)
+        public static object? GetPropertyValue(this object? obj, string propertyName)
         {
             if (obj == null)
             {
-                Loggers.SystemLogger.Warning("CommonHelpers.GetPropertyValue: 'obj' is null.");
                 return null;
             }
             var props = obj.GetType().GetProperties();
@@ -185,12 +173,11 @@ namespace BLAZAM.Helpers
         /// <param name="propertyName">The name of the property to compare.</param>
         /// <param name="value">The value to compare against.</param>
         /// <returns>True if the property value equals the given value (case-insensitive for strings); false otherwise, or if obj is null.</returns>
-        public static bool PropertyValueEquals(this object obj, string propertyName, object? value)
+        public static bool PropertyValueEquals(this object? obj, string propertyName, object? value)
         {
             if (obj == null)
             {
-                Loggers.SystemLogger.Warning("CommonHelpers.PropertyValueEquals: 'obj' is null.");
-                return false; // If obj is null, it cannot have a property that equals value (unless value is also null, but this simplifies)
+               return false; // If obj is null, it cannot have a property that equals value (unless value is also null, but this simplifies)
             }
             var propertyValue = obj.GetPropertyValue(propertyName);
             if (propertyValue == null)
@@ -258,12 +245,10 @@ namespace BLAZAM.Helpers
         {
             if (archive == null)
             {
-                Loggers.SystemLogger.Error("CommonHelpers.AddToZip: 'archive' (ZipArchive) is null.");
                 return;
             }
             if (directory == null)
             {
-                Loggers.SystemLogger.Error("CommonHelpers.AddToZip: 'directory' (SystemDirectory) is null.");
                 return;
             }
 
@@ -271,7 +256,6 @@ namespace BLAZAM.Helpers
             {
                 if (file == null)
                 {
-                    Loggers.SystemLogger.Warning("CommonHelpers.AddToZip: Encountered a null file in directory.Files list for directory {DirectoryPath}.", directory.FullPath);
                     continue;
                 }
                 try
@@ -285,7 +269,6 @@ namespace BLAZAM.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Loggers.SystemLogger.Error(ex, "CommonHelpers.AddToZip: Error processing file {FilePath} for zipping. Message: {ErrorMessage}", file?.FullPath ?? "N/A", ex.Message);
                 }
             }
 
@@ -304,12 +287,10 @@ namespace BLAZAM.Helpers
         {
             if (memoryStream == null)
             {
-                Loggers.SystemLogger.Error("CommonHelpers.SaveTo: 'memoryStream' is null.");
-                return;
+               return;
             }
             if (destinationFile == null)
             {
-                Loggers.SystemLogger.Error("CommonHelpers.SaveTo: 'destinationFile' (SystemFile) is null.");
                 return;
             }
 
@@ -344,7 +325,6 @@ namespace BLAZAM.Helpers
         {
             if (rawImage == null)
             {
-                Loggers.SystemLogger.Warning("CommonHelpers.ResizeRawImage: 'rawImage' (byte[]) is null.");
                 return Array.Empty<byte>();
             }
             using (var image = Image.Load(rawImage))
@@ -379,12 +359,10 @@ namespace BLAZAM.Helpers
         {
             if (enumerable == null)
             {
-                Loggers.SystemLogger.Warning("CommonHelpers.ForEach: 'enumerable' is null.");
                 return;
             }
             if (action == null)
             {
-                Loggers.SystemLogger.Warning("CommonHelpers.ForEach: 'action' is null.");
                 return;
             }
 
@@ -435,12 +413,16 @@ namespace BLAZAM.Helpers
             if (value == null) return null;
             try
             {
+                var maxFileTime = DateTime.Parse("Sunday, November 16, 4769 9:46:40 AM Z");
+                if (value > maxFileTime)
+                {
+                    return null;
+                }
                 long fileTime = value.Value.ToUniversalTime().ToFileTimeUtc();
                 return fileTime;
             }
             catch (Exception ex) // More specific exception handling could be added if needed
             {
-                Loggers.SystemLogger.Warning(ex, "CommonHelpers.DateTimeToAdsValue: Exception converting DateTime {DateTimeValue} to AdsValue.", value);
                 return null;
             }
         }
@@ -459,8 +441,7 @@ namespace BLAZAM.Helpers
                 if (value == null) return null;
 
                 Int64 longInt = Int64.MinValue;
-                try
-                {
+              
                     // Attempt to parse if it's a string representation of a long
                     if (value is string s && long.TryParse(s, out long parsedLong))
                     {
@@ -470,15 +451,7 @@ namespace BLAZAM.Helpers
                     {
                          longInt = convertibleValue.ToInt64(CultureInfo.InvariantCulture);
                     }
-                }
-                catch (FormatException ex)
-                {
-                    Loggers.SystemLogger.Debug(ex, "CommonHelpers.AdsValueToDateTime: FormatException parsing value '{AdsiValue}'. Likely a COM object.", value?.ToString() ?? "null");
-                }
-                catch (OverflowException ex) // Could happen if value is a very large number not fitting in long
-                {
-                     Loggers.SystemLogger.Debug(ex, "CommonHelpers.AdsValueToDateTime: OverflowException parsing value '{AdsiValue}'.", value?.ToString() ?? "null");
-                }
+               
 
 
                 if (longInt != Int64.MinValue && longInt != 0)
@@ -493,18 +466,13 @@ namespace BLAZAM.Helpers
                         long dV = ((long)v.HighPart << 32) + v.LowPart;
                         if (dV != 0) // Avoid converting 0 FILETIME to 1601/01/01 if it represents "no date"
                             dateTime = DateTime.FromFileTimeUtc(dV);
-                        else
-                             Loggers.SystemLogger.Debug("CommonHelpers.AdsValueToDateTime: IADsLargeInteger value resulted in a 0 dV (FILETIME). Treating as null DateTime. Original HighPart: {HighPart}, LowPart: {LowPart}", v.HighPart, v.LowPart);
+                       
                     }
-                    else if (!(value is string) && !(value is IConvertible)) // If it wasn't parseable as long, wasn't string, not IConvertible, and not IADsLargeInteger
-                    {
-                        Loggers.SystemLogger.Debug("CommonHelpers.AdsValueToDateTime: Value '{AdsiValue}' was not a parseable long, not a DateTime, not a string representation of a long, not IConvertible to long, and not an IADsLargeInteger. Type: {ValueType}", value?.ToString() ?? "null", value?.GetType().FullName ?? "null");
-                    }
+                   
                 }
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Information(ex, "CommonHelpers.AdsValueToDateTime: Generic exception converting value '{AdsiValue}'.", value?.ToString() ?? "null");
                 return null; // Return null on any other unexpected error
             }
 
@@ -540,7 +508,6 @@ namespace BLAZAM.Helpers
             }
             catch (ArgumentException ex) // Handles cases where byte array is not 16 bytes
             {
-                Loggers.SystemLogger.Warning(ex, "CommonHelpers.ToGuid: Invalid byte array provided for GUID conversion. Length: {Length}", guidBytes.Length);
                 return null;
             }
         }
@@ -573,7 +540,6 @@ namespace BLAZAM.Helpers
             if (hexString.Length % 2 != 0)
             {
                 // Log this as it indicates a programming error or unexpected data
-                Loggers.SystemLogger.Error("CommonHelpers.ToLdapHexString: Input hex string '{HexString}' must have an even number of characters.", hexString);
                 throw new ArgumentException("Input hex string must have an even number of characters.", nameof(hexString));
             }
 
@@ -602,7 +568,6 @@ namespace BLAZAM.Helpers
             }
             catch (ArgumentException ex) // Handles invalid SID byte arrays
             {
-                Loggers.SystemLogger.Warning(ex, "CommonHelpers.ToSidString: Invalid byte array provided for SID conversion.");
                 return ""; // Or throw, depending on desired error handling
             }
         }
@@ -624,7 +589,6 @@ namespace BLAZAM.Helpers
             }
             catch (ArgumentException ex) // Handles invalid SID string formats
             {
-                Loggers.SystemLogger.Warning(ex, "CommonHelpers.ToSidByteArray: Invalid SID string provided for conversion: {SidString}", sidString);
                 return Array.Empty<byte>(); // Or throw
             }
         }

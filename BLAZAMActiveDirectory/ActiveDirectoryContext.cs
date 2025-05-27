@@ -582,7 +582,7 @@ namespace BLAZAM.ActiveDirectory
 
             if (!NetworkTools.IsPortOpen(ad.ServerAddress, ad.ServerPort))
             {
-                Loggers.ActiveDirectoryLogger.Warning("Active Directory port is not open");
+                Loggers.ActiveDirectoryLogger.Debug("Active Directory port is not open");
 
                 Status = DirectoryConnectionStatus.ServerDown;
                 if (FailedConnectionAttempts < 10)

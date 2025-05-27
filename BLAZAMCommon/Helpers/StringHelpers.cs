@@ -1,5 +1,4 @@
-﻿using BLAZAM.Logger; // Added
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using System; // Added
 using System.Linq; // Added for Regex.Matches(...).Select
 using System.Net;
@@ -21,11 +20,10 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="input">The input string. If null, an empty MarkupString is returned.</param>
         /// <returns>A <see cref="MarkupString"/> with new lines converted to HTML breaks.</returns>
-        public static MarkupString ToMarkupString(this string input)
+        public static MarkupString ToMarkupString(this string? input)
         {
             if (input == null)
             {
-                Loggers.SystemLogger.Debug("StringHelpers.ToMarkupString: input string was null. Returning empty MarkupString.");
                 return (MarkupString)string.Empty;
             }
             return (MarkupString)input.Replace("\r\n", "<br>").Replace("\n", "<br>");
@@ -40,7 +38,6 @@ namespace BLAZAM.Helpers
         {
             if (input == null)
             {
-                Loggers.SystemLogger.Debug("StringHelpers.GetAppHashCode: input string was null. Returning 0.");
                 return 0;
             }
             unchecked // Overflow is fine, just wrap
@@ -73,7 +70,6 @@ namespace BLAZAM.Helpers
         {
             if (string.IsNullOrEmpty(url))
             {
-                Loggers.SystemLogger.Debug("StringHelpers.IsUrlLocalToHost: url is null or empty. Returning true as per original logic for empty string.");
                 return true;
             }
             if (url.StartsWith("https://localhost")) return true;
@@ -94,7 +90,6 @@ namespace BLAZAM.Helpers
         {
             if (input == null)
             {
-                Loggers.SystemLogger.Warning("StringHelpers.ToGuid: input string was null. Cannot create Guid. Throwing ArgumentNullException.");
                 throw new ArgumentNullException(nameof(input));
             }
             // Use MD5 hash to get a 16-byte hash of the string
@@ -137,7 +132,6 @@ namespace BLAZAM.Helpers
         {
             if (plainText == null)
             {
-                Loggers.SystemLogger.Debug("StringHelpers.ToSecureString: plainText was null. Returning new empty SecureString.");
                 return new SecureString();
             }
             return new NetworkCredential("", plainText).SecurePassword;
@@ -167,7 +161,6 @@ namespace BLAZAM.Helpers
         {
             if (string.IsNullOrEmpty(fqdn))
             {
-                Loggers.SystemLogger.Warning("StringHelpers.FqdnToDN: fqdn is null or empty. Cannot convert to DN. Returning string.Empty.");
                 return string.Empty;
             }
             // Split the FQDN into its domain components
