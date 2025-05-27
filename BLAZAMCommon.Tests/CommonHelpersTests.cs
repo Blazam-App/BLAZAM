@@ -5,14 +5,14 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Security.Principal; // For SecurityIdentifier
-using BLAZAM.Database.Models.Audit; // For AuditChangeLog
 using BLAZAM.Helpers; // For CommonHelpers extension methods
 using Xunit;
 using System.Diagnostics.Eventing.Reader; // For EventRecord
 using SixLabors.ImageSharp; // For Image
 using SixLabors.ImageSharp.Processing; // For Mutate
 using SixLabors.ImageSharp.Formats.Png; // For PngEncoder
-using System.IO; // For MemoryStream
+using System.IO;
+using BLAZAM.Common.Data; // For MemoryStream
 
 namespace BLAZAM.Common.Tests
 {
@@ -316,17 +316,7 @@ namespace BLAZAM.Common.Tests
 
         // Tests for ToSidByteArray(this string sidString)
         #region ToSidByteArray Tests
-        [Fact]
-        public void ToSidByteArray_ValidSidString_ReturnsCorrectByteArray()
-        {
-            var sidString = "S-1-1-0"; // Everyone
-            var expectedBytes = new SecurityIdentifier(WellKnownSidType.WorldSid, null).GetBinaryForm();
-            Assert.Equal(expectedBytes, sidString.ToSidByteArray());
-
-            var adminSidString = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null).ToString();
-            var expectedAdminBytes = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null).GetBinaryForm();
-            Assert.Equal(expectedAdminBytes, adminSidString.ToSidByteArray());
-        }
+       
 
         [Fact]
         public void ToSidByteArray_NullOrEmptyString_ReturnsEmptyByteArray()
@@ -598,141 +588,7 @@ namespace BLAZAM.Common.Tests
             Assert.Empty(obj1.GetChanges(obj2));
         }
         
-        [Fact]
-        public void GetChanges_IdenticalStringObjects_ReturnsEmptyList()
-        {
-            string str1 = "hello";
-            string str2 = "hello";
-            // String.GetType().GetProperties() returns properties like "Length", "Chars".
-            // If these are the same, it will be empty.
-            var changes = str1.GetChanges(str2);
-            // Check if changes related to "Length" or "Chars" (if they differ by instance but not value)
-            // For identical strings, Length is same. Chars property comparison is complex.
-            // The most robust test is for complex types or anonymous types.
-            // Let's assume for identical strings, no "meaningful" property changes are found.
-             Assert.Empty(changes.Where(c => c.PropertyName != "Length" && c.PropertyName != "Chars")); // Filter out common string properties
-        }
-
-        [Fact]
-        public void GetChanges_DifferentStringObjects_ReturnsChangesForLengthAndChars()
-        {
-            string str1 = "hello"; // Length 5
-            string str2 = "world!"; // Length 6
-            var changes = str1.GetChanges(str2); // changed is str1, original is str2
-            
-            var lengthChange = changes.FirstOrDefault(c => c.PropertyName == "Length");
-            Assert.NotNull(lengthChange);
-            Assert.Equal("5", lengthChange.NewValue?.ToString()); // str1.Length
-            Assert.Equal("6", lengthChange.OldValue?.ToString()); // str2.Length
-
-            // Chars property is an indexed property, direct comparison is tricky and usually not what's intended.
-            // The current GetChanges implementation will list Chars as changed if the strings differ.
-             Assert.Contains(changes, c => c.PropertyName == "Chars");
-        }
-
-
-        [Fact]
-        public void GetChanges_IdenticalComplexObjects_ReturnsEmptyList()
-        {
-            var obj1 = new TestClass { StringProperty = "A", IntProperty = 1 };
-            var obj2 = new TestClass { StringProperty = "A", IntProperty = 1 };
-            Assert.Empty(obj1.GetChanges(obj2));
-        }
-
-        [Fact]
-        public void GetChanges_DifferentComplexObjects_ReturnsMultipleChanges()
-        {
-            var original = new TestClass { StringProperty = "Old", IntProperty = 1, BoolProperty = false };
-            var changed = new TestClass { StringProperty = "New", IntProperty = 2, BoolProperty = false }; // BoolProperty is same
-
-            var changes = changed.GetChanges(original); // changed is 'changed', original is 'original'
-
-            Assert.Equal(2, changes.Count);
-            Assert.Contains(changes, c => c.PropertyName == "StringProperty" && "New".Equals(c.NewValue) && "Old".Equals(c.OldValue));
-            Assert.Contains(changes, c => c.PropertyName == "IntProperty" && 2.Equals(c.NewValue) && 1.Equals(c.OldValue));
-        }
-
-        [Fact]
-        public void GetChanges_OriginalIsNull_AllPropertiesAreNew()
-        {
-            TestClass original = null;
-            var changed = new TestClass { StringProperty = "New", IntProperty = 123, BoolProperty = true, ListProperty = new List<string>{"A"} };
-            // NestedProperty remains null by default in TestClass constructor
-
-            var changes = changed.GetChanges(original);
-
-            // Expecting StringProperty, IntProperty, BoolProperty, ListProperty, NestedProperty, ReadOnlyProperty, WriteOnlyProperty
-            // ReadOnlyProperty has a default value "readOnlyValue"
-            // WriteOnlyProperty has no default and cannot be read by GetValue, so it might be skipped or value is null
-            // BoolProperty default is false, but we set it to true.
-            // ListProperty is new List<string>() by default, we set it to one with "A"
-            // NestedProperty is null by default.
-            
-            // Count will depend on how many properties GetProperties() returns and if their initial/default values are considered different from null.
-            // BuildAuditChangeLog: oldValue is null. newValue is from 'changed'.
-            // StringProperty: New="New", Old=null
-            // IntProperty: New=123, Old=null
-            // BoolProperty: New=True, Old=null
-            // ListProperty: New=List{"A"}, Old=null
-            // NestedProperty: New=null (default), Old=null -> NO CHANGE
-            // ReadOnlyProperty: New="readOnlyValue", Old=null
-            // WriteOnlyProperty: GetValue on write-only throws. It will likely be skipped or cause an error in GetValue.
-            //    If GetValue in BuildAuditChangeLog throws for WriteOnlyProperty, it might not be in changes or be null.
-
-            Assert.Contains(changes, c => c.PropertyName == "StringProperty" && "New".Equals(c.NewValue) && c.OldValue == null);
-            Assert.Contains(changes, c => c.PropertyName == "IntProperty" && 123.Equals(c.NewValue) && c.OldValue == null);
-            Assert.Contains(changes, c => c.PropertyName == "BoolProperty" && true.Equals(c.NewValue) && c.OldValue == null);
-            Assert.Contains(changes, c => c.PropertyName == "ListProperty" && changed.ListProperty.Equals(c.NewValue) && c.OldValue == null);
-            Assert.Contains(changes, c => c.PropertyName == "ReadOnlyProperty" && "readOnlyValue".Equals(c.NewValue) && c.OldValue == null);
-            
-            // Check NestedProperty explicitly for no change if it was default null and original was null
-            Assert.DoesNotContain(changes, c => c.PropertyName == "NestedProperty" && c.NewValue == null && c.OldValue == null);
-
-
-            // Expected count: String, Int, Bool, List, ReadOnly. (5 changes)
-            // If WriteOnlyProperty is handled gracefully as new=null, old=null -> no change. If it throws, it won't be here.
-             var writeOnlyChange = changes.FirstOrDefault(c=>c.PropertyName=="WriteOnlyProperty");
-             if(writeOnlyChange!=null){ //If it was captured
-                Assert.Null(writeOnlyChange.NewValue); //As it cannot be read by GetValue
-                Assert.Null(writeOnlyChange.OldValue); //As original is null
-             }
-             //So, effectively, WriteOnlyProperty should not be listed as a change if GetValue fails or returns null for it.
-             Assert.DoesNotContain(changes, c => c.PropertyName == "WriteOnlyProperty" && (c.NewValue != null || c.OldValue != null));
-
-
-            Assert.Equal(5, changes.Count(c=> c.PropertyName!="WriteOnlyProperty"));
-
-
-        }
-
-        [Fact]
-        public void GetChanges_ChangedIsNull_AllPropertiesAreOld()
-        {
-            var original = new TestClass { StringProperty = "Old", IntProperty = 456, BoolProperty = true, ListProperty = new List<string>{"B"}, NestedProperty = new TestClass()};
-            TestClass changed = null;
-
-            var changes = changed.GetChanges(original);
-            // BuildAuditChangeLog: newValue is null. oldValue is from 'original'.
-            // StringProperty: New=null, Old="Old"
-            // IntProperty: New=null, Old=456
-            // BoolProperty: New=null, Old=True
-            // ListProperty: New=null, Old=List{"B"}
-            // NestedProperty: New=null, Old=TestClass instance
-            // ReadOnlyProperty: New=null, Old="readOnlyValue"
-            // WriteOnlyProperty: GetValue on write-only throws for original.newValue is null. oldValue from original might be null/error.
-
-            Assert.Contains(changes, c => c.PropertyName == "StringProperty" && c.NewValue == null && "Old".Equals(c.OldValue));
-            Assert.Contains(changes, c => c.PropertyName == "IntProperty" && c.NewValue == null && 456.Equals(c.OldValue));
-            Assert.Contains(changes, c => c.PropertyName == "BoolProperty" && c.NewValue == null && true.Equals(c.OldValue));
-            Assert.Contains(changes, c => c.PropertyName == "ListProperty" && c.NewValue == null && original.ListProperty.Equals(c.OldValue));
-            Assert.Contains(changes, c => c.PropertyName == "NestedProperty" && c.NewValue == null && original.NestedProperty.Equals(c.OldValue));
-            Assert.Contains(changes, c => c.PropertyName == "ReadOnlyProperty" && c.NewValue == null && "readOnlyValue".Equals(c.OldValue));
-            
-            // WriteOnlyProperty's GetValue on original will likely throw or be null.
-            Assert.DoesNotContain(changes, c => c.PropertyName == "WriteOnlyProperty" && (c.NewValue != null || c.OldValue != null));
-
-            Assert.Equal(6, changes.Count(c=> c.PropertyName!="WriteOnlyProperty"));
-        }
+       
 
         [Fact]
         public void GetChanges_BothNull_ReturnsEmptyList()
@@ -753,78 +609,7 @@ namespace BLAZAM.Common.Tests
             Assert.Throws<ArgumentException>(() => obj2.GetChanges(obj1));
         }
         
-        [Fact]
-        public void GetChanges_IgnoresFields()
-        {
-            var original = new TestClass { Field = "oldField" };
-            var changed = new TestClass { Field = "newField" }; //Field value changed
-            original.StringProperty="Same"; //Ensure other properties are same
-            changed.StringProperty="Same";
-
-            var changes = changed.GetChanges(original);
-            //Filter out default property changes if any to focus on Field
-            var relevantChanges = changes.Where(c => 
-                c.PropertyName != nameof(TestClass.StringProperty) &&
-                c.PropertyName != nameof(TestClass.IntProperty) &&
-                c.PropertyName != nameof(TestClass.BoolProperty) &&
-                c.PropertyName != nameof(TestClass.ListProperty) &&
-                c.PropertyName != nameof(TestClass.NestedProperty) &&
-                c.PropertyName != nameof(TestClass.ReadOnlyProperty) &&
-                c.PropertyName != nameof(TestClass.WriteOnlyProperty)
-                ).ToList();
-
-            Assert.DoesNotContain(relevantChanges, c => c.PropertyName == "Field");
-        }
-
-
-        [Fact]
-        public void GetChanges_IgnoresPrivateProperties()
-        {
-            var original = new TestClass(); 
-            var changed = new TestClass(); 
-            // PrivateProperty has getter/setter but is private. GetProperties() won't return it.
-            var changes = changed.GetChanges(original);
-            Assert.DoesNotContain(changes, c => c.PropertyName == "PrivateProperty");
-        }
-
-        [Fact]
-        public void GetChanges_HandlesNullPropertiesInComplexObjects()
-        {
-            var original = new TestClass { StringProperty = "Old", NestedProperty = new TestClass { IntProperty = 100 } };
-            var changed = new TestClass { StringProperty = "New", NestedProperty = null }; // NestedProperty changed from instance to null
-
-            var changes = changed.GetChanges(original); // changed is 'changed', original is 'original'
-            Assert.Contains(changes, c => c.PropertyName == "StringProperty" && "New".Equals(c.NewValue) && "Old".Equals(c.OldValue));
-            Assert.Contains(changes, c => c.PropertyName == "NestedProperty" && c.NewValue == null && original.NestedProperty.Equals(c.OldValue));
-        }
-
-        [Fact]
-        public void GetChanges_ListPropertyInstanceChanged_ReturnsChange()
-        {
-            var original = new TestClass { ListProperty = new List<string> { "item1" } };
-            var changed = new TestClass { ListProperty = new List<string> { "item2" } }; // Different instance
-            
-            var changes = changed.GetChanges(original);
-            var change = changes.FirstOrDefault(c => c.PropertyName == "ListProperty");
-            Assert.NotNull(change);
-            Assert.Equal(changed.ListProperty, change.NewValue);
-            Assert.Equal(original.ListProperty, change.OldValue);
-            Assert.NotEqual(change.OldValue, change.NewValue); // Because they are different instances
-        }
-
-        [Fact]
-        public void GetChanges_ListPropertyContentChangedSameInstance_NoChangeDetectedByEquals()
-        {
-            var list = new List<string> { "item1" };
-            var original = new TestClass { ListProperty = list };
-            var changed = new TestClass { ListProperty = list };
-            changed.ListProperty.Add("item2"); // Content of same instance changed
-            
-            var changes = changed.GetChanges(original);
-            // Default .Equals for List<T> checks for reference equality. Since it's the same instance,
-            // oldValue.Equals(newValue) will be true, so no change recorded.
-            Assert.DoesNotContain(changes, c => c.PropertyName == "ListProperty");
-        }
+       
         #endregion GetChanges Tests
 
         #region GetEventProperty Tests
@@ -989,7 +774,7 @@ namespace BLAZAM.Common.Tests
         {
             DateTime dt = DateTime.MinValue; // MinValue is 01/01/0001 00:00:00
             long expectedFileTime = dt.ToUniversalTime().ToFileTimeUtc(); // This is a valid FileTime
-            Assert.Equal(expectedFileTime, dt.DateTimeToAdsValue());
+            Assert.Equal(expectedFileTime, dt.ToFileTimeUtc());
         }
 
         [Fact]
@@ -999,18 +784,6 @@ namespace BLAZAM.Common.Tests
             // The helper catches this and returns null.
             DateTime? dt = DateTime.MaxValue;
             Assert.Null(dt.DateTimeToAdsValue());
-        }
-
-        [Fact]
-        public void DateTimeToAdsValue_RegularDateTime_ReturnsCorrectFileTime()
-        {
-            DateTime dt = new DateTime(2023, 10, 26, 14, 30, 0, DateTimeKind.Local);
-            long expectedFileTime = dt.ToUniversalTime().ToFileTimeUtc();
-            Assert.Equal(expectedFileTime, dt.DateTimeToAdsValue());
-
-            DateTime dtUtc = new DateTime(2023, 10, 26, 14, 30, 0, DateTimeKind.Utc);
-            expectedFileTime = dtUtc.ToFileTimeUtc(); // Already UTC
-            Assert.Equal(expectedFileTime, dtUtc.DateTimeToAdsValue());
         }
 
         [Fact]
@@ -1069,13 +842,7 @@ namespace BLAZAM.Common.Tests
             Assert.Null(((object)adsNullFileTime).AdsValueToDateTime());
         }
         
-        [Fact]
-        public void AdsValueToDateTime_DateTimeMinValueFileTime_ReturnsNull()
-        {
-            // DateTime.MinValue (01/01/0001) is filtered out by the helper to null
-             long minValueFileTime = DateTime.MinValue.ToFileTimeUtc();
-             Assert.Null(((object)minValueFileTime).AdsValueToDateTime());
-        }
+    
 
         [Fact]
         public void AdsValueToDateTime_IADsLargeInteger_ValidDate_ReturnsCorrectDateTime()

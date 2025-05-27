@@ -493,8 +493,7 @@ namespace BLAZAM.Helpers
                         long dV = ((long)v.HighPart << 32) + v.LowPart;
                         if (dV != 0) // Avoid converting 0 FILETIME to 1601/01/01 if it represents "no date"
                             dateTime = DateTime.FromFileTimeUtc(dV);
-                        else
-                             Loggers.SystemLogger.Debug("CommonHelpers.AdsValueToDateTime: IADsLargeInteger value resulted in a 0 dV (FILETIME). Treating as null DateTime. Original HighPart: {HighPart}, LowPart: {LowPart}", v.HighPart, v.LowPart);
+                       
                     }
                     else if (!(value is string) && !(value is IConvertible)) // If it wasn't parseable as long, wasn't string, not IConvertible, and not IADsLargeInteger
                     {
