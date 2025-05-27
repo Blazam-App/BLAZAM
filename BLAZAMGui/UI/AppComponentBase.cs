@@ -84,7 +84,6 @@ namespace BLAZAM.Gui.UI
         [Inject]
         protected AppSnackBarService SnackBarService { get; set; }
 
-        [Inject]
         private ScopedActiveDirectoryContext userActiveDirectoryService { get; set; }
         private bool _loadingData = true;
         /// <summary>
@@ -108,7 +107,8 @@ namespace BLAZAM.Gui.UI
         {
             base.OnInitialized();
             try
-            {
+            { 
+                userActiveDirectoryService = new ScopedActiveDirectoryContext(DirectoryFactory);
                 userActiveDirectoryService.Context.CurrentUser = CurrentUser.State.ToActiveDirectoryUserState();
                 Directory = userActiveDirectoryService.Context;
             }
@@ -162,6 +162,7 @@ namespace BLAZAM.Gui.UI
         public virtual void Dispose()
         {
             this.Directory?.Dispose();
+            userActiveDirectoryService.Dispose();
         }
 
         /// <summary>
