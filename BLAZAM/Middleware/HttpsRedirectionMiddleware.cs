@@ -25,12 +25,8 @@ namespace BLAZAM.Server.Middleware
             ApplicationInfo applicationInfo)
         {
             _next = next;
-            _applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo), "ApplicationInfo applicationInfo is null in HttpsRedirectionMiddleware constructor.");
-            if (applicationInfo == null) // This check is technically redundant due to the ?? throw but good for explicit logging if desired.
-            {
-                Loggers.SystemLogger.Error("ApplicationInfo applicationInfo is null in HttpsRedirectionMiddleware constructor.");
-                // The throw above already handles the exception.
-            }
+            _applicationInfo = applicationInfo;
+           
         }
         /// <summary>
         /// Checks the database cache for a true ForceHTTPS and if so an request is HTTP redirect to HTTPS
