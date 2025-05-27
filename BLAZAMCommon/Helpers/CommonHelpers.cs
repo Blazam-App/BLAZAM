@@ -413,6 +413,11 @@ namespace BLAZAM.Helpers
             if (value == null) return null;
             try
             {
+                var maxFileTime = DateTime.Parse("Sunday, November 16, 4769 9:46:40 AM Z");
+                if (value > maxFileTime)
+                {
+                    return null;
+                }
                 long fileTime = value.Value.ToUniversalTime().ToFileTimeUtc();
                 return fileTime;
             }

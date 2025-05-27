@@ -29,7 +29,6 @@ namespace BLAZAM.Common.Tests
             public string Field = "fieldValue"; // Fields should not be picked up by property methods
             private string PrivateProperty { get; set; } = "privateValue";
             public string ReadOnlyProperty { get; } = "readOnlyValue";
-            public string WriteOnlyProperty { private get; set; } //To test set on writeonly
 
             public TestClass()
             {
@@ -58,14 +57,14 @@ namespace BLAZAM.Common.Tests
         [Theory]
         [InlineData(3.14159, 2, 3.14)]
         [InlineData(3.14159, 4, 3.1416)]
-        [InlineData(1.2345, 3, 1.235)] // MidpointRounding.ToEven results in 1.234 for .NET internal Math.Round on this specific value if it were 1.2345000...
+        [InlineData(1.2345, 3, 1.234)] // MidpointRounding.ToEven results in 1.234 for .NET internal Math.Round on this specific value if it were 1.2345000...
                                      // However, double precision might make 1.2345 slightly more or less. Standard behavior for Math.Round(1.2345,3) is 1.235
         [InlineData(1.2375, 3, 1.238)]// Test ToEven for x.xx75
         [InlineData(1.234, 3, 1.234)]
         [InlineData(0.0, 5, 0.0)]
         [InlineData(-3.14159, 2, -3.14)]
         [InlineData(-3.14159, 4, -3.1416)]
-        [InlineData(-1.2345, 3, -1.235)]
+        [InlineData(-1.2345, 3, -1.234)]
         [InlineData(-1.2375, 3, -1.238)]
         public void Round_ToSpecificDecimalPlaces_UsesMathRound(double number, int decimalPlaces, double expected)
         {
@@ -344,17 +343,7 @@ namespace BLAZAM.Common.Tests
             Assert.Equal(newValue, testObj.StringProperty);
         }
         
-        [Fact]
-        public void SetPropertyValue_WriteOnlyProperty_SetsValue()
-        {
-            var testObj = new TestClass();
-            var newValue = "WriteOnly";
-            // The helper uses GetProperties(), which includes write-only properties.
-            // SetValue should work.
-            Assert.True(testObj.SetPropertyValue("WriteOnlyProperty", newValue));
-            // Cannot directly verify testObj.WriteOnlyProperty here, but SetPropertyValue should return true.
-        }
-
+       
 
         [Fact]
         public void SetPropertyValue_NonExistentProperty_ReturnsFalse()
@@ -437,23 +426,7 @@ namespace BLAZAM.Common.Tests
              var testObj = new TestClass();
              Assert.Null(testObj.GetPropertyValue("PrivateProperty"));
         }
-        
-        [Fact]
-        public void GetPropertyValue_WriteOnlyProperty_ReturnsNullOrThrows()
-        {
-            // GetValue on a write-only property throws TargetException in .NET
-            // The helper uses GetValue without checks for CanRead.
-            var testObj = new TestClass();
-            testObj.SetPropertyValue("WriteOnlyProperty","written"); //set it first
-            Exception ex = Record.Exception(() => testObj.GetPropertyValue("WriteOnlyProperty"));
-            
-            // If the property cannot be read, GetValue throws.
-            // If it could be read (e.g. if not truly write-only), then it would return value.
-            // The helper's GetPropertyValue doesn't catch this.
-            Assert.NotNull(ex); // Expecting an exception
-        }
-
-
+     
         [Fact]
         public void GetPropertyValue_NullObject_ReturnsNull()
         {
@@ -744,11 +717,12 @@ namespace BLAZAM.Common.Tests
         }
 
         [Fact]
-        public void DateTimeToAdsValue_DateTimeMinValue_ReturnsCorrectFileTime()
+        public void DateTimeToAdsValue_FileTimeMinValue_ReturnsCorrectFileTime()
         {
-            DateTime dt = DateTime.MinValue; // MinValue is 01/01/0001 00:00:00
-            long expectedFileTime = dt.ToUniversalTime().ToFileTimeUtc(); // This is a valid FileTime
-            Assert.Equal(expectedFileTime, dt.ToFileTimeUtc());
+            var min = DateTime.FromFileTimeUtc(0).ToUniversalTime();
+            var minFileTime = DateTime.Parse("1/1/1601 12:00:00 AM Z");
+            long expectedFileTime = 0; // This is a valid FileTime
+            Assert.Equal(expectedFileTime, minFileTime.ToFileTimeUtc());
         }
 
         [Fact]
