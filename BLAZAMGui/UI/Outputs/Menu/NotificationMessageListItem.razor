@@ -1,5 +1,4 @@
 ﻿@inherits AppComponentBase
-@inject BLAZAM.Services.Analytics AnalyticsService
 <MudCard Class="py-3" Elevation="2">
     <MudStack Row=true Class="px-4">
         <MudIcon Icon="@Icons.Material.Outlined.EventNote"
@@ -19,7 +18,7 @@
             <AppCloseButton TooltipPlacement="Placement.Left" Tooltip="@AppLocalization[Lang.Dismiss]" OnClick="@(async () =>
         {
             await CurrentUser.State.MarkRead(Notification);
-            await AnalyticsService.NotificationDismissed(Notification.Notification.MessageType.ToString());
+            await Analytics.NotificationDismissed(Notification.Notification.MessageType.ToString());
             await InvokeAsync(StateHasChanged);
         })" />
         }

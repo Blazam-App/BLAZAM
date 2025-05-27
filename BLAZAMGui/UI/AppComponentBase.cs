@@ -84,6 +84,9 @@ namespace BLAZAM.Gui.UI
         [Inject]
         protected AppSnackBarService SnackBarService { get; set; }
 
+        [Inject]
+        protected Analytics Analytics { get; set; }
+
         private ScopedActiveDirectoryContext userActiveDirectoryService { get; set; }
         private bool _loadingData = true;
         /// <summary>
