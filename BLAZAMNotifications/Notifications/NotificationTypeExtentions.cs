@@ -45,19 +45,9 @@ namespace BLAZAM.Notifications.Notifications
                     Loggers.SystemLogger.Warning("NotificationTypeExtentions.ToNotification: Unknown or unhandled NotificationType '{Type}' encountered. Returning default(T).", type);
                     return default; // Return default(T) directly from here
             }
-            // This part is only reached if a known type was handled and notificationTemplate was set.
-            // If a default case returned, this is skipped.
-            // The original logic of checking notificationTemplate != null before casting is fine,
-            // but it's somewhat redundant now if the default case handles unknown types.
-            // However, keeping it doesn't hurt and handles a hypothetical future case where a known type might still result in a null template.
-            if (notificationTemplate != null)
-            {
-                return (T?)notificationTemplate;
-            }
-            // This return is now only reachable if a known type resulted in a null notificationTemplate,
-            // or if the switch statement was somehow bypassed (which it shouldn't be).
-            // The default case already handled unknown types.
-            return default;
+
+            return (T?)notificationTemplate;
+
         }
     }
 }
