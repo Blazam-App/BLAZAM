@@ -26,11 +26,8 @@ namespace BLAZAM.Services
         /// <exception cref="ArgumentNullException">Thrown if currentUserStateService is null.</exception>
         public JwtTokenService(ICurrentUserStateService currentUserStateService)
         {
-            if (currentUserStateService == null)
-            {
-                Loggers.SystemLogger.Error("ICurrentUserStateService currentUserStateService is null in JwtTokenService constructor.");
-                throw new ArgumentNullException(nameof(currentUserStateService));
-            }
+            ArgumentNullException.ThrowIfNull(currentUserStateService);
+
             _currentUserStateService = currentUserStateService;
         }
 

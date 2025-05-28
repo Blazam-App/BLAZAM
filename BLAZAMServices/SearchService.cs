@@ -51,16 +51,11 @@ namespace BLAZAM.Services
         /// <exception cref="ArgumentNullException">Thrown if userStateService or nav is null.</exception>
         public SearchService(IApplicationUserStateService userStateService, NavigationManager nav)
         {
-            if (userStateService == null)
-            {
-                Loggers.SystemLogger.Error("IApplicationUserStateService userStateService is null in SearchService constructor.");
-                throw new ArgumentNullException(nameof(userStateService));
-            }
-            if (nav == null)
-            {
-                Loggers.SystemLogger.Error("NavigationManager nav is null in SearchService constructor.");
-                throw new ArgumentNullException(nameof(nav));
-            }
+            ArgumentNullException.ThrowIfNull(userStateService);
+
+            ArgumentNullException.ThrowIfNull(nav);
+
+          
 
             _userStateService = userStateService;
             _nav = nav;

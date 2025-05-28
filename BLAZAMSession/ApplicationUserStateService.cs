@@ -46,16 +46,10 @@ namespace BLAZAM.Session
         /// <exception cref="ArgumentNullException">Thrown if httpContextAccessor or factory is null.</exception>
         public ApplicationUserStateService(IHttpContextAccessor httpContextAccessor, IAppDatabaseFactory factory)
         {
-            if (httpContextAccessor == null)
-            {
-                Loggers.SystemLogger.Error("ApplicationUserStateService.Constructor: IHttpContextAccessor httpContextAccessor is null.");
-                throw new ArgumentNullException(nameof(httpContextAccessor));
-            }
-            if (factory == null)
-            {
-                Loggers.SystemLogger.Error("ApplicationUserStateService.Constructor: IAppDatabaseFactory factory is null.");
-                throw new ArgumentNullException(nameof(factory));
-            }
+            ArgumentNullException.ThrowIfNull(httpContextAccessor);
+
+            ArgumentNullException.ThrowIfNull(factory);
+
             Instance = this;
             _httpContextAccessor = httpContextAccessor;
             _factory = factory;

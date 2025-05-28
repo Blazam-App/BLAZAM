@@ -17,11 +17,9 @@ namespace BLAZAM.Notifications.Services
         /// <exception cref="ArgumentNullException">Thrown if snackbar service is null.</exception>
         public AppSnackBarService(ISnackbar snackbar)
         {
-            if (snackbar == null)
-            {
-                Loggers.SystemLogger.Error("AppSnackBarService: ISnackbar snackbar is null in constructor.");
-                throw new ArgumentNullException(nameof(snackbar));
-            }
+            ArgumentNullException.ThrowIfNull(snackbar);
+
+           
             _snackbar = snackbar;
         }
 

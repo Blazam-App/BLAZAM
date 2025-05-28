@@ -31,11 +31,8 @@ namespace BLAZAM.Notifications.Services
         /// <exception cref="ArgumentNullException">Thrown if databaseFactory is null.</exception>
         public NotificationPublisher(IAppDatabaseFactory databaseFactory)
         {
-            if (databaseFactory == null)
-            {
-                Loggers.SystemLogger.Error("NotificationPublisher: IAppDatabaseFactory databaseFactory is null in constructor.");
-                throw new ArgumentNullException(nameof(databaseFactory));
-            }
+            ArgumentNullException.ThrowIfNull(databaseFactory);
+
             _databaseFactory = databaseFactory;
         }
 

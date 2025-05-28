@@ -18,11 +18,8 @@ namespace BLAZAM.Services
         /// <exception cref="ArgumentNullException">If applicationLifetime is null.</exception>
         public ApplicationManager(IHostApplicationLifetime applicationLifetime)
         {
-            if (applicationLifetime == null)
-            {
-                Loggers.SystemLogger.Error("IHostApplicationLifetime applicationLifetime is null in ApplicationManager constructor.");
-                throw new ArgumentNullException(nameof(applicationLifetime));
-            }
+            ArgumentNullException.ThrowIfNull(applicationLifetime);
+
             ApplicationLifetime = applicationLifetime;
         }
 
