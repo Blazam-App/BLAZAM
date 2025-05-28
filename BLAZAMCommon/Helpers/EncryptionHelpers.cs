@@ -1,6 +1,4 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Logger; // Added
-using System; // Added
 
 namespace BLAZAM.Helpers
 {
@@ -22,7 +20,6 @@ namespace BLAZAM.Helpers
         {
             if (input == null)
             {
-                Loggers.SystemLogger.Debug("EncryptionHelpers.Decrypt<T>: input string was null. Returning default(T).");
                 return default(T);
             }
             return Encryption.Instance.DecryptObject<T>(input);
@@ -40,7 +37,6 @@ namespace BLAZAM.Helpers
         {
             if (input == null)
             {
-                Loggers.SystemLogger.Debug("EncryptionHelpers.Decrypt: input string was null. Returning string.Empty.");
                 return string.Empty;
             }
             var str = Encryption.Instance.DecryptObject<string>(input);
@@ -59,7 +55,6 @@ namespace BLAZAM.Helpers
         {
             if (input == null)
             {
-                Loggers.SystemLogger.Debug("EncryptionHelpers.Encrypt: input object was null. Returning null.");
                 return null;
             }
             return Encryption.Instance.EncryptObject(input);

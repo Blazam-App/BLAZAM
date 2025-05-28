@@ -155,7 +155,7 @@ namespace BLAZAM.Common.Tests
         public void IsPortOpen_WhenPortIsActuallyOpen_ReturnsTrue()
         {
             int port = 0;
-            TcpListener listener = null;
+            TcpListener? listener = null;
             try
             {
                 port = GetAvailablePort();
@@ -179,7 +179,7 @@ namespace BLAZAM.Common.Tests
         public void IsAnyPortOpen_WhenOnePortIsActuallyOpen_ReturnsTrue()
         {
             int openPort = 0;
-            TcpListener listener = null;
+            TcpListener? listener = null;
             var testPorts = new[] { 65501, 0, 65502 }; // Placeholder for openPort
 
             try
@@ -206,7 +206,7 @@ namespace BLAZAM.Common.Tests
         public void IsAnyPortOpen_WhenOnePortIsActuallyOpenAndOthersAreInvalid_ThrowsArgumentOutOfRangeException()
         {
             int openPort = 0;
-            TcpListener listener = null;
+            TcpListener? listener = null;
             // Array contains an invalid port (0) which should cause ArgumentOutOfRangeException
             // before the open port is successfully checked if the invalid one is hit first by iteration.
             // The iteration order of `int[]` is deterministic (index 0, 1, 2...).

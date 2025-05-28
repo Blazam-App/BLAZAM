@@ -36,11 +36,8 @@ namespace BLAZAM.Services
         /// <exception cref="InvalidOperationException">Thrown if the EncryptionKey is missing from configuration.</exception>
         public EncryptionService(IConfiguration configuration)
         {
-            if (configuration == null)
-            {
-                Loggers.SystemLogger.Fatal("IConfiguration configuration is null in EncryptionService constructor.");
-                throw new ArgumentNullException(nameof(configuration));
-            }
+            ArgumentNullException.ThrowIfNull(configuration);
+
 
             var encryptionKey = configuration.GetValue<string>("EncryptionKey");
 

@@ -98,11 +98,8 @@ namespace BLAZAM.Session
         /// <exception cref="ArgumentNullException">If factory is null.</exception>
         public ApplicationUserState(IAppDatabaseFactory factory)
         {
-            if (factory == null)
-            {
-                Loggers.SystemLogger.Error("ApplicationUserState.Constructor: IAppDatabaseFactory factory is null.");
-                throw new ArgumentNullException(nameof(factory));
-            }
+            ArgumentNullException.ThrowIfNull(factory);
+            
             _dbFactory = factory;
         }
 

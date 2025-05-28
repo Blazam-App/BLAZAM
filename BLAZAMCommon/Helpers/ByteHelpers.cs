@@ -39,15 +39,10 @@ namespace BLAZAM.Helpers
         /// <exception cref="ArgumentException">Thrown if the input arrays do not have the same length.</exception>
         public static int BitDifference(this byte[]? a, byte[]? b)
         {
-            if (a == null)
-            {
-                throw new ArgumentNullException(nameof(a));
-            }
-            if (b == null)
-            {
-                throw new ArgumentNullException(nameof(b));
-            }
+            ArgumentNullException.ThrowIfNull(a);
+            ArgumentNullException.ThrowIfNull(b);
 
+           
             // Check that the arrays have the same length
             if (a.Length != b.Length) throw new ArgumentException("Arrays must have the same length");
 

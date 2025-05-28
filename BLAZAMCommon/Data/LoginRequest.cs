@@ -133,7 +133,8 @@ namespace BLAZAM.Common.Data
             return this;
         }
         [JsonIgnore]
-        public AuthenticationState AuthenticationState { get; set; }
+        public AuthenticationState? AuthenticationState { get; set; }
+
         public LoginRequest Success(AuthenticationState result)
         {
             AuthenticationResult = LoginResultStatus.OK;

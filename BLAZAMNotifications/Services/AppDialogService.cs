@@ -49,11 +49,8 @@ namespace BLAZAM.Notifications.Services
         /// <exception cref="ArgumentNullException">Thrown if dialog service is null.</exception>
         public AppDialogService(IDialogService dialog)
         {
-            if (dialog == null)
-            {
-                Loggers.SystemLogger.Error("AppDialogService: IDialogService dialog is null in constructor.");
-                throw new ArgumentNullException(nameof(dialog));
-            }
+            ArgumentNullException.ThrowIfNull(dialog);
+
             _dialog = dialog;
         }
 
