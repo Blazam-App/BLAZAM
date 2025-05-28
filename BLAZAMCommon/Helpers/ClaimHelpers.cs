@@ -1,7 +1,4 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Logger; // Added
-using System; // Added
-using System.Collections.Generic; // Added for IList
 using System.Security.Claims;
 
 namespace BLAZAM.Server.Helpers
@@ -20,7 +17,6 @@ namespace BLAZAM.Server.Helpers
         {
             if (claims == null)
             {
-                Loggers.SystemLogger.Warning("ClaimHelpers.AddSuperAdmin: 'claims' parameter is null.");
                 throw new ArgumentNullException(nameof(claims));
             }
             claims.Add(new Claim(ClaimTypes.Role, UserRoles.SuperAdmin));
@@ -35,7 +31,6 @@ namespace BLAZAM.Server.Helpers
         {
             if (claims == null)
             {
-                Loggers.SystemLogger.Warning("ClaimHelpers.AddAllRoles: 'claims' parameter is null.");
                 throw new ArgumentNullException(nameof(claims));
             }
             foreach (var role in UserRoles.All)

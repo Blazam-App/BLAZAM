@@ -1,14 +1,10 @@
 ﻿using BLAZAM.Common.Data;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using System; // Added
 using System.Collections;
-using System.Collections.Generic; // Added
 using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
-using System.IO; // Added for MemoryStream, Stream
 using System.IO.Compression;
-using System.Linq; // Added for FirstOrDefault
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
