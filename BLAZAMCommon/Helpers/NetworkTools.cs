@@ -10,7 +10,7 @@ namespace BLAZAM.Helpers
     /// <summary>
     /// Provides utility methods for network-related operations like pinging hosts and checking port statuses.
     /// </summary>
-    public class NetworkTools
+    public static class NetworkTools
     {
         /// <summary>
         /// Attempts a single ping request.
@@ -30,7 +30,7 @@ namespace BLAZAM.Helpers
                 PingReply reply = pinger.Send(hostNameOrAddress, 1000, new byte[32]);
                 pingable = reply.Status == IPStatus.Success;
             }
-            catch (PingException ex)
+            catch (PingException)
             {
                 // PingException is caught, and pingable remains false.
             }
@@ -73,7 +73,7 @@ namespace BLAZAM.Helpers
             {
                 if(port < 1 || port > 65535)
                 {
-                    throw new ArgumentOutOfRangeException("Ports must be between 1-65535");
+                    throw new ArgumentOutOfRangeException(nameof(ports),"Ports must be between 1-65535");
                 }
                 using (TcpClient client = new())
                 {
@@ -86,7 +86,7 @@ namespace BLAZAM.Helpers
                         portOpen = true; // Port is open
                         break; // Exit loop since one open port is found
                     }
-                    catch (SocketException ex)
+                    catch (SocketException)
                     {
                         // SocketException is caught, portOpen remains false for this port, loop continues.
                     }

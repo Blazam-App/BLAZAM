@@ -105,7 +105,7 @@ namespace BLAZAM.Services
             if (undeliveredWebhooks.Count > 0)
             {
                 IJob webhookAttemptJob = new Job("Webhook Retry");
-                JobStep execStep = null;
+                JobStep? execStep = null;
                 if (_appDatabaseFactory.DatabaseType == DatabaseType.SQLite)
                 {
 

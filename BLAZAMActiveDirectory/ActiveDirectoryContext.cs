@@ -34,7 +34,7 @@ namespace BLAZAM.ActiveDirectory
             }
             set => _currentUser = value;
         }
-        private CancellationTokenSource _connectionCTS = new();
+        private CancellationTokenSource? _connectionCTS = new();
 
         private const string LDAP_PROTO = "LDAP://";
         private readonly WmiFactory _wmiFactory;
@@ -250,42 +250,45 @@ namespace BLAZAM.ActiveDirectory
 
         private async Task KeepAlive()
         {
-            if (_systemInstance == this)
+            if (_systemInstance != this)
             {
-                _keepAlive = true;
-                while (_keepAlive)
+                return;
+            }
+
+            _keepAlive = true;
+            while (_keepAlive)
+            {
+                await Task.Delay(30000);
+
+                if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
                 {
-                    await Task.Delay(30000);
-
-                    if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
+                    await ConnectAsync();
+                }
+                else if (Status == DirectoryConnectionStatus.OK)
+                {
+                    //Throw away query used to keep connection alive
+                    try
                     {
-                        await ConnectAsync();
+                        _ = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
+
                     }
-                    else if (Status == DirectoryConnectionStatus.OK)
+                    catch (DirectoryServicesCOMException ex)
                     {
-                        //Throw away query used to keep connection alive
-                        try
-                        {
-                            _ = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
-
-                        }
-                        catch (DirectoryServicesCOMException ex)
-                        {
-                            //not usernam or password is incorrect
-                            if (ex.HResult != -2147023570)
-                            {
-                                Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
-
-                            }
-                        }
-                        catch (Exception ex)
+                        //not usernam or password is incorrect
+                        if (ex.HResult != -2147023570)
                         {
                             Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
                     }
                 }
             }
         }
+
 
 
         public async Task ConnectAsync()
@@ -439,7 +442,7 @@ namespace BLAZAM.ActiveDirectory
             }
             finally
             {
-                if (IsCancelRequested==false && Status != DirectoryConnectionStatus.OK)
+                if (IsCancelRequested == false && Status != DirectoryConnectionStatus.OK)
                 {
                     Task.Delay(5000).Wait();
                     Connect();

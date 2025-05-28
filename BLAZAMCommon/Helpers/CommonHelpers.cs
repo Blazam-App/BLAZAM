@@ -267,7 +267,7 @@ namespace BLAZAM.Helpers
                         fs.CopyTo(es);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                 }
             }
@@ -421,7 +421,7 @@ namespace BLAZAM.Helpers
                 long fileTime = value.Value.ToUniversalTime().ToFileTimeUtc();
                 return fileTime;
             }
-            catch (Exception ex) // More specific exception handling could be added if needed
+            catch (Exception) // More specific exception handling could be added if needed
             {
                 return null;
             }
@@ -432,7 +432,7 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="value">The ADSI date/time object.</param>
         /// <returns>A nullable DateTime in UTC, or null if conversion fails or the ADSI value represents a null/zero time.</returns>
-        public static DateTime? AdsValueToDateTime(this object value)
+        public static DateTime? AdsValueToDateTime(this object? value)
         {
             DateTime? dateTime = null;
             try
@@ -471,7 +471,7 @@ namespace BLAZAM.Helpers
                    
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null; // Return null on any other unexpected error
             }
@@ -506,7 +506,7 @@ namespace BLAZAM.Helpers
             {
                 return new Guid(guidBytes);
             }
-            catch (ArgumentException ex) // Handles cases where byte array is not 16 bytes
+            catch (ArgumentException) // Handles cases where byte array is not 16 bytes
             {
                 return null;
             }
@@ -566,7 +566,7 @@ namespace BLAZAM.Helpers
                 var securityIdentifier = new SecurityIdentifier(sid, 0);
                 return securityIdentifier.Value;
             }
-            catch (ArgumentException ex) // Handles invalid SID byte arrays
+            catch (ArgumentException) // Handles invalid SID byte arrays
             {
                 return ""; // Or throw, depending on desired error handling
             }
@@ -587,7 +587,7 @@ namespace BLAZAM.Helpers
                 securityIdentifier.GetBinaryForm(sidBytes, 0);
                 return sidBytes;
             }
-            catch (ArgumentException ex) // Handles invalid SID string formats
+            catch (ArgumentException) // Handles invalid SID string formats
             {
                 return Array.Empty<byte>(); // Or throw
             }
