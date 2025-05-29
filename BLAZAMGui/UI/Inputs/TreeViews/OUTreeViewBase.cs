@@ -176,10 +176,10 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                         {
 
                             openThis.Children = GetChildren(openThis);
-                            var child = openThis.Children.Where(
+                            var child = openThis.Children.FirstOrDefault(
                                 c => SelectedEntry.DN?.Contains(c.Value.DN) == true
                                                             && !SelectedEntry.DN.Equals(c.Value.DN)
-                                                            ).FirstOrDefault();
+                                                            );
                             if (child != null)
                             {
                                 if (!SelectedEntry.Equals(RootOU.First().Value))
@@ -190,7 +190,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                             }
                             else
                             {
-                                var matchingOU = openThis.Children.Where(c => SelectedEntry.DN.Equals(c.Value.DN)).FirstOrDefault();
+                                var matchingOU = openThis.Children.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
                                 if (matchingOU != null)
                                     matchingOU.Selected = true;
                                 break;
