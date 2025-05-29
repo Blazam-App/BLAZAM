@@ -22,7 +22,7 @@ namespace BLAZAM.Common.Tests
         [InlineData(128, 1)] // 10000000
         public void BitCount_ShouldReturnCorrectCount(byte n, int expected)
         {
-            Assert.Equal(expected, n.BitCount());
+            Assert.Equal(expected, ByteHelpers.BitCount(n));
         }
 
         // Tests for BitDifference
