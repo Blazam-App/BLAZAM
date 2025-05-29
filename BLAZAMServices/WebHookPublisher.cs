@@ -8,6 +8,7 @@ using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System; // Added for ArgumentNullException
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,6 +16,9 @@ using System.Text;
 
 namespace BLAZAM.Services
 {
+    /// <summary>
+    /// Manages the publishing and retrying of webhook notifications to subscribed endpoints.
+    /// </summary>
     public class WebHookPublisher : IDisposable
     {
         internal static readonly UTF8Encoding SafeUTF8Encoding = new(false, true);
@@ -32,16 +36,33 @@ namespace BLAZAM.Services
         private readonly IAppDatabaseFactory _appDatabaseFactory;
 
         private bool _running;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebHookPublisher"/> class.
+        /// </summary>
+        /// <param name="httpClientFactory">Factory for creating HTTP clients.</param>
+        /// <param name="appDatabaseFactory">Factory for creating database contexts.</param>
+        /// <exception cref="ArgumentNullException">Thrown if httpClientFactory or appDatabaseFactory is null.</exception>
         public WebHookPublisher(IHttpClientFactory httpClientFactory, IAppDatabaseFactory appDatabaseFactory)
         {
+            ArgumentNullException.ThrowIfNull(httpClientFactory);
+
+            ArgumentNullException.ThrowIfNull(appDatabaseFactory);
+
+            
             _httpClientFactory = httpClientFactory;
             _appDatabaseFactory = appDatabaseFactory;
             _ = Run();
         }
+
+        /// <summary>
+        /// Starts the background task that periodically retries failed webhooks.
+        /// </summary>
         private async Task Run()
         {
             if (!_running)
             {
+                Loggers.SystemLogger.Information("WebHookPublisher.Run: Background webhook retry task started.");
                 _running = true;
                 while (_running)
                 {
@@ -63,6 +84,9 @@ namespace BLAZAM.Services
             }
         }
 
+        /// <summary>
+        /// Retrieves and attempts to resend webhooks that previously failed delivery.
+        /// </summary>
         private async Task RetryFailedWebhooks()
         {
             using var context = await _appDatabaseFactory.CreateDbContextAsync();
@@ -71,10 +95,12 @@ namespace BLAZAM.Services
                                                                     .Where(w => w.Delivered == false &&
                                                                     w.RetryCount < 15)
                                                                     .ToListAsync();
+            Loggers.SystemLogger.Information("WebHookPublisher.RetryFailedWebhooks: Found {Count} undelivered webhooks to retry.", undeliveredWebhooks.Count);
+
             if (undeliveredWebhooks.Count > 0)
             {
                 IJob webhookAttemptJob = new Job("Webhook Retry");
-                JobStep execStep = null;
+                JobStep? execStep = null;
                 if (_appDatabaseFactory.DatabaseType == DatabaseType.SQLite)
                 {
 
@@ -109,43 +135,49 @@ namespace BLAZAM.Services
 
                 }
                 await webhookAttemptJob.RunAsync();
+                Loggers.SystemLogger.Information("WebHookPublisher.RetryFailedWebhooks: Webhook retry job {JobStatus}. Passed: {PassedCount}, Failed: {FailedCount}", webhookAttemptJob.Result, webhookAttemptJob.PassedSteps.Count, webhookAttemptJob.FailedSteps.Count);
             }
-
         }
 
+        /// <summary>
+        /// Constructs and sends a new webhook notification based on a triggering event.
+        /// </summary>
+        /// <param name="subscription">The webhook subscription details.</param>
+        /// <param name="source">The directory entry that is the source of the event.</param>
+        /// <param name="notificationType">The type of notification.</param>
+        /// <param name="actor">The user state of the actor who initiated the event, if applicable.</param>
+        /// <param name="target">An optional target directory entry related to the event.</param>
         public async Task PublishWebhook(WebHookSubscription subscription,
             IDirectoryEntryAdapter source,
             NotificationType notificationType,
             IApplicationUserState? actor = null,
             IDirectoryEntryAdapter? target = null)
         {
+            var eventType = source.ObjectType.ToString().ToLower() + "." + notificationType.ToString().ToLower();
+            Loggers.SystemLogger.Information("WebHookPublisher.PublishWebhook: Publishing webhook for subscription ID {SubscriptionId}, EventType {EventType}, Source: {SourceDN}", subscription.Id, eventType, source?.DN ?? "N/A");
+
             IJob webhookAttemptJob = new Job("Publish Webhook");
             JobStep execStep = new("Execute", async (step) =>
             {
                 var msgId = Guid.NewGuid();
                 var eventTimestamp = DateTime.UtcNow;
-
-                var eventType = source.ObjectType.ToString().ToLower() + "." + notificationType.ToString().ToLower();
-
-
                 string? signature = null;
 
                 Dictionary<string, object?> payload = new()
                 {
                     { "timestamp", eventTimestamp.ToString(webhookDateTimeFormat)},
-
                     { "type", eventType}
                 };
                 var attemptId = Guid.NewGuid();
                 Dictionary<string, object?> data = new()
-            {
+                {
                   { "id", msgId },
                   { "actor", actor?.Username }, // Use ?. to handle null actor
                     { "entry", source?.CanonicalName }, // Use ?. to handle null source
                     { "entryOU", source?.OU }, // Use ?. to handle null source
                     { "entryDN", source?.DN }, // Use ?. to handle null source
                     { "entryType", source?.ObjectType.ToString()}, // Use ?. to handle null source
-            };
+                };
                 if (target != null)
                 {
                     data.Add("target", target.CanonicalName);
@@ -166,17 +198,25 @@ namespace BLAZAM.Services
                     }
                     var bytekey = Convert.FromBase64String(key);
                     signature = Sign(bytekey, msgId.ToString(), DateTime.UtcNow, payloadString);
-
                 }
-
                 await SendWebHook(subscription, msgId, attemptId, eventTimestamp, eventType, payloadString, signature);
-
                 return true;
             });
             webhookAttemptJob.AddStep(execStep);
             var result = await webhookAttemptJob.RunAsync();
+            Loggers.SystemLogger.Information("WebHookPublisher.PublishWebhook: Publish job for subscription ID {SubscriptionId} completed with status {JobStatus}.", subscription.Id, webhookAttemptJob.Result);
         }
 
+        /// <summary>
+        /// Sends the actual webhook HTTP request and handles the response, including saving attempt details.
+        /// </summary>
+        /// <param name="subscription">The webhook subscription.</param>
+        /// <param name="msgId">The unique message ID for this webhook event.</param>
+        /// <param name="attemptId">The unique ID for this specific attempt.</param>
+        /// <param name="eventTimestamp">The timestamp of the original event.</param>
+        /// <param name="eventType">The type of the event (e.g., "user.created").</param>
+        /// <param name="payloadString">The JSON serialized payload.</param>
+        /// <param name="signature">The optional signature for the payload.</param>
         private async Task SendWebHook(WebHookSubscription subscription, Guid msgId, Guid attemptId, DateTime eventTimestamp, string eventType, string payloadString, string? signature)
         {
             var httpClientHandler = new HttpClientHandler();
@@ -185,15 +225,13 @@ namespace BLAZAM.Services
 
             var thisMessage = await context.WebHookAttempts.FirstOrDefaultAsync(a => a.MessageGuid == msgId);
 
-
-
             var request = new HttpRequestMessage
             {
                 RequestUri = new Uri(subscription.URL),
                 Method = subscription.WebHookMethod == WebHookMethod.GET ? HttpMethod.Get : HttpMethod.Post,
                 Content = new StringContent(payloadString, Encoding.UTF8, "application/json")
-
             };
+            Loggers.SystemLogger.Debug("WebHookPublisher.SendWebHook: Sending webhook attempt ID {AttemptId} to {RequestUri} via {RequestMethod}.", attemptId, request.RequestUri, request.Method);
 
             request.Headers.Add(UNBRANDED_ID_HEADER_KEY, msgId.ToString());
             request.Headers.Add(UNBRANDED_ATTEMPT_ID_HEADER_KEY, attemptId.ToString());
@@ -201,8 +239,8 @@ namespace BLAZAM.Services
             request.Headers.Add(UNBRANDED_ATTEMPT_TIMESTAMP_HEADER_KEY, DateTime.UtcNow.ToString(webhookDateTimeFormat));
             if (!signature.IsNullOrEmpty())
             {
+                Loggers.SystemLogger.Debug("WebHookPublisher.SendWebHook: Added signature to webhook attempt ID {AttemptId}.", attemptId);
                 request.Headers.Add(UNBRANDED_SIGNATURE_HEADER_KEY, signature);
-
             }
             // Add authorization header if needed
             if (subscription.WebHookAuthorization == WebHookAuthorization.Basic)
@@ -234,7 +272,6 @@ namespace BLAZAM.Services
                     };
                     thisMessage = webHookAttempt;
                     context.WebHookAttempts.Add(thisMessage);
-
                 }
                 else
                 {
@@ -244,16 +281,11 @@ namespace BLAZAM.Services
                 }
                 await context.SaveChangesAsync();
 
-
                 var response = await httpClient.SendAsync(request);
-
-
-
-
-
 
                 if (response.IsSuccessStatusCode)
                 {
+                    Loggers.SystemLogger.Information("WebHookPublisher.SendWebHook: Webhook attempt ID {AttemptId} sent successfully to {RequestUri}. Status: {StatusCode}", attemptId, request.RequestUri, response.StatusCode);
                     thisMessage.Delivered = true;
                     thisMessage.ResponseCode = response.StatusCode;
                     thisMessage.ResponseMessage = null;
@@ -261,10 +293,13 @@ namespace BLAZAM.Services
                 }
                 else
                 {
-                    Loggers.SystemLogger.Information("Webhook failed {Subscription}", subscription);
+                    // Capture response message for logging if available
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    thisMessage.ResponseMessage = responseContent; // Store it first
+                    Loggers.SystemLogger.Warning("WebHookPublisher.SendWebHook: Webhook attempt ID {AttemptId} failed for subscription {SubscriptionId} to {RequestUri}. Status: {StatusCode}, Response: {ResponseMessage}", attemptId, subscription.Id, request.RequestUri, response.StatusCode, thisMessage.ResponseMessage);
                     thisMessage.Delivered = false;
                     thisMessage.ResponseCode = response.StatusCode;
-                    thisMessage.ResponseMessage = null;
+                    // thisMessage.ResponseMessage is already set
                     await context.SaveChangesAsync();
                 }
             }
@@ -277,7 +312,6 @@ namespace BLAZAM.Services
                         thisMessage.ResponseCode = HttpStatusCode.UnprocessableEntity;
                         thisMessage.ResponseMessage = ex.InnerException.Message;
                     }
-
                 }
                 else
                 {
@@ -295,6 +329,11 @@ namespace BLAZAM.Services
             }
         }
 
+        /// <summary>
+        /// Creates an HttpClient instance, optionally configured to ignore SSL certificate validation errors.
+        /// </summary>
+        /// <param name="ignoreSSL">True to ignore SSL errors; false otherwise.</param>
+        /// <returns>An HttpClient instance.</returns>
         private HttpClient CreateAPIClient(bool ignoreSSL)
         {
             if (!ignoreSSL)
@@ -375,6 +414,14 @@ namespace BLAZAM.Services
         //    return timestamp;
         //}
 
+        /// <summary>
+        /// Generates an HMACSHA256 signature for the webhook payload.
+        /// </summary>
+        /// <param name="key">The secret key (Base64 decoded).</param>
+        /// <param name="msgId">The message ID.</param>
+        /// <param name="timestamp">The timestamp of the event.</param>
+        /// <param name="payload">The JSON payload string.</param>
+        /// <returns>A versioned signature string (e.g., "v1,ActualSignatureBase64").</returns>
         public string Sign(byte[] key, string msgId, DateTimeOffset timestamp, string payload)
         {
             var toSign = $"{msgId}.{timestamp.ToUnixTimeSeconds().ToString()}.{payload}";
@@ -387,8 +434,12 @@ namespace BLAZAM.Services
             }
         }
 
+        /// <summary>
+        /// Stops the background webhook retry task.
+        /// </summary>
         public void Dispose()
         {
+            Loggers.SystemLogger.Information("WebHookPublisher.Run: Background webhook retry task stopping.");
             _running = false;
         }
     }

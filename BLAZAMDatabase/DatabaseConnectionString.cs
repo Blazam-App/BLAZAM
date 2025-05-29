@@ -46,12 +46,12 @@ namespace BLAZAM.Common.Data.Database
             {
                 if (Value != null)
                 {
-                    string search = "Data Source=";
-                    int startIndex = Value.IndexOf(search);
+                    string search = "data source=";
+                    int startIndex = Value.ToLower().IndexOf(search);
                     if (startIndex == -1)
                     {
-                        search = "Server=";
-                        startIndex = Value.IndexOf(search);
+                        search = "server=";
+                        startIndex = Value.ToLower().IndexOf(search);
                     }
                     if (startIndex >= 0)
                     {
@@ -80,14 +80,14 @@ namespace BLAZAM.Common.Data.Database
                 {
                     if (FileBased) return "File Based";
 
-                    string search = "Initial Catalog=";
-                    int startIndex = Value.IndexOf(search);
+                    string search = "initial catalog=";
+                    int startIndex = Value.ToLower().IndexOf(search);
                     if (startIndex == -1)
                     {
                         try
                         {
-                            search = "Database=";
-                            startIndex = Value.IndexOf(search);
+                            search = "database=";
+                            startIndex = Value.ToLower().IndexOf(search);
                         }
                         catch
                         {
@@ -101,6 +101,12 @@ namespace BLAZAM.Common.Data.Database
                         if (endIndex >= 0)
                         {
                             return Value.Substring(startIndex, endIndex - startIndex);
+
+                        }
+
+                        if (endIndex == -1)
+                        {
+                            return Value.Substring(startIndex);
 
                         }
 

@@ -49,15 +49,15 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public List<IADUser> FindSubUsersByDN(string searchTerm) => SearchObjects(searchTerm, "", ActiveDirectoryObjectType.User, 1000, true, SearchScope.OneLevel).Cast<IADUser>().ToList();
 
-        public List<IADComputer> FindSubComputerByDN(string searchTerm)
+        public List<IADComputer> FindSubComputerByDN(string searchBaseDN)
         {
             var search = NewSearch;
-            search.GeneralSearchTerm = searchTerm;
+            search.GeneralSearchTerm = searchBaseDN;
             var temp = search.Search<ADComputer, IADComputer>();
             return temp;
         }
 
-        public List<IADGroup> FindSubGroupsByDN(string searchTerm) => SearchObjects(searchTerm, "", ActiveDirectoryObjectType.Group, 1000, true, SearchScope.OneLevel).Cast<IADGroup>().ToList();
+        public List<IADGroup> FindSubGroupsByDN(string searchBaseDN) => SearchObjects(searchBaseDN, "", ActiveDirectoryObjectType.Group, 1000, true, SearchScope.OneLevel).Cast<IADGroup>().ToList();
 
 
 
