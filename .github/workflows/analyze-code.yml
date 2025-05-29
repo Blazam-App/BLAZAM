@@ -50,7 +50,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Blazam-App_BLAZAM" /o:"blazam-app" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.scanner.scanAll=false /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=coverage.opencover.xml
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Blazam-App_BLAZAM" /o:"blazam-app" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.scanner.scanAll=false /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=.\coverage\*\coverage.cobertura.xml
           dotnet build 
-          coverlet .\BLAZAM.Tests\bin\Debug\net8.0\BLAZAM.Tests.dll -t "dotnet" -a "test --filter FullyQualifiedName!~PlaywrightTests --no-build" -f=opencover  -o="coverage.opencover.xml"
+          dotnet test --collect:"XPlat Code Coverage" --results-directory ".\coverage\" --filter "FullyQualifiedName!~PlaywrightTests" --no-build
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}" 
