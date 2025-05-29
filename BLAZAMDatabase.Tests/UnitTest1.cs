@@ -1,6 +1,6 @@
 using BLAZAM.Common.Data.Database;
 
-namespace BLAZAMDatabaseTests
+namespace BLAZAMDatabase.Tests
 {
     public class UnitTest1
     {
