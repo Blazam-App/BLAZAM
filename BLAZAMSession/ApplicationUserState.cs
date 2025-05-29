@@ -21,39 +21,25 @@ namespace BLAZAM.Session
     /// </summary>
     public class ApplicationUserState : IApplicationUserState
     {
-        /// <summary>
-        /// Event triggered when user settings are changed and saved.
-        /// </summary>
+
         public AppDelegate OnSettingsChanged { get; set; }
 
-        /// <summary>
-        /// Gets or sets the primary <see cref="ClaimsPrincipal"/> representing the authenticated user.
-        /// </summary>
+
         public ClaimsPrincipal User { get; set; }
 
-        /// <summary>
-        /// Gets or sets the <see cref="ClaimsPrincipal"/> of the user performing impersonation, if any.
-        /// </summary>
+
         public ClaimsPrincipal? Impersonator { get; set; }
 
-        /// <summary>
-        /// Gets or sets the list of permission delegates associated with the user.
-        /// </summary>
+
         public List<PermissionDelegate> PermissionDelegates { get; set; } = new();
 
-        /// <summary>
-        /// Gets or sets the list of permission mappings applicable to the user.
-        /// </summary>
+
         public List<PermissionMapping> PermissionMappings { get; set; } = new();
 
-        /// <summary>
-        /// Gets or sets the timestamp of the user's last access or activity.
-        /// </summary>
+ 
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
 
-        /// <summary>
-        /// Gets or sets the IP address from which the user accessed the application.
-        /// </summary>
+   
         public string? IPAddress { get; set; }
 
         /// <summary>
@@ -61,24 +47,14 @@ namespace BLAZAM.Session
         /// </summary>
         public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries ?? new List<UserFavoriteEntry>();
 
-        /// <summary>
-        /// Gets the list of news items marked as read by the user. Returns an empty list if preferences are not loaded.
-        /// </summary>
+   
         public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems ?? new List<ReadNewsItem>(); // Corrected to List
 
-        /// <summary>
-        /// Gets the database ID of the user's application settings. Returns 0 if preferences are not loaded.
-        /// </summary>
         public int Id => Preferences != null ? Preferences.Id : 0;
 
-        /// <summary>
-        /// Gets or sets the per-session cache for this user state.
-        /// </summary>
+   
         public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
 
-        /// <summary>
-        /// Gets or sets the authentication ticket associated with the user's session.
-        /// </summary>
         public AuthenticationTicket? Ticket { get; set; }
 
         /// <summary>
@@ -103,16 +79,12 @@ namespace BLAZAM.Session
             _dbFactory = factory;
         }
 
-        /// <summary>Gets the application-specific preferences for the user. Fetches from database if not already loaded. Returns null if user is not authenticated.</summary>
+        
         public AppUser? Preferences
         {
             get
             {
-                if (User?.Identity?.IsAuthenticated != true)
-                {
-                    Loggers.SystemLogger.Debug("ApplicationUserState.Preferences_get: User is not authenticated. Returning null for Preferences.");
-                    return null;
-                }
+               
                 if (userSettings == null)
                 {
                     GetUserSettingFromDB();
@@ -121,9 +93,7 @@ namespace BLAZAM.Session
             }
         }
 
-        /// <summary>Marks a specific user notification as read.</summary> 
-        /// <param name="notification">The notification to mark as read. Must not be null.</param> 
-        /// <returns>True if successful, false otherwise (e.g., if notification is null, not found, or DB error).</returns>
+
         public async Task<bool> MarkRead(UserNotification notification)
         {
             if (notification == null)
@@ -161,8 +131,7 @@ namespace BLAZAM.Session
             return false;
         }
 
-        /// <summary>Marks all unread notifications (excluding access requests) as read for the current user.</summary> 
-        /// <returns>True if successful and at least one notification was marked read, false otherwise or on DB error.</returns>
+
         public async Task<bool> MarkAllRead()
         {
             try
@@ -195,12 +164,12 @@ namespace BLAZAM.Session
             return false;
         }
 
-        /// <summary>Loads or creates the user's application settings from the database. Associates settings with UserGUID from ClaimsPrincipal.</summary>
+
         public void GetUserSettingFromDB()
         {
             try
             {
-                if (User == null || User.Identity?.IsAuthenticated != true) return; // Added authentication check
+                
                 using var context = _dbFactory.CreateDbContext();
                 userSettings = context.UserSettings
                     .Include(x => x.NotificationSubscriptions)
@@ -237,8 +206,6 @@ namespace BLAZAM.Session
             }
         }
 
-        /// <summary>Saves all user settings including basic preferences, read news items, and dashboard widgets. Logs errors on failure.</summary> 
-        /// <returns>True if all save operations are initiated (actual success depends on async operations), false otherwise (currently always true).</returns>
         public async Task<bool> SaveAllUserSettings()
         {
             await SaveBasicUserPreferences();
@@ -248,7 +215,6 @@ namespace BLAZAM.Session
             return true;
         }
 
-        /// <summary>Saves basic user preferences (theme, dark mode, profile picture, search settings, favorites, authenticator secret, email). Logs errors on failure.</summary>
         public async Task SaveBasicUserPreferences()
         {
             if (Preferences != null)
@@ -300,7 +266,6 @@ namespace BLAZAM.Session
             }
         }
 
-        /// <summary>Saves the user's dashboard widget configurations. Logs errors on failure.</summary>
         public async Task SaveDashboardWidgets()
         {
             if (Preferences != null)
@@ -345,12 +310,10 @@ namespace BLAZAM.Session
             }
         }
 
-        /// <summary>Gets a value indicating whether the user has SuperAdmin privileges. Returns false if user is not authenticated.</summary>
         public bool IsSuperAdmin
         {
             get
             {
-                if (User?.Identity?.IsAuthenticated != true) { Loggers.SystemLogger.Debug("IsSuperAdmin_get: User not authenticated."); return false; }
                 if (User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin)) return true;
                 if (PermissionDelegates != null)
                     return PermissionDelegates.Any(p => p.IsSuperAdmin);
@@ -358,13 +321,10 @@ namespace BLAZAM.Session
             }
         }
 
-        /// <summary>Gets the username from the User's ClaimsPrincipal Identity.</summary>
-        public string? Username => User?.Identity?.Name; // Simplified
+        public string? Username => User?.Identity?.Name; 
 
-        /// <summary>Gets a value indicating whether the user is authenticated.</summary>
-        public bool IsAuthenticated => User?.Identity?.IsAuthenticated == true; // Simplified, catch block removed as direct prop access is safe
+        public bool IsAuthenticated => User?.Identity?.IsAuthenticated == true; 
 
-        /// <summary>Gets the username for audit logging, including impersonator information if applicable.</summary>
         public string? AuditUsername
         {
             get
@@ -378,20 +338,16 @@ namespace BLAZAM.Session
             }
         }
 
-        /// <summary>
-        /// Gets or sets the last URI visited by the user, for state restoration purposes.
-        /// </summary>
+        
         public string LastUri { get; set; }
 
-        /// <summary>
-        /// Returns the hash code for this instance, based on the User's hash code.
-        /// </summary>
+        
         public override int GetHashCode()
         {
-            return User?.GetHashCode() ?? 0; // Handle User potentially being null
+            return User?.GetHashCode() ?? 0; 
         }
 
-        /// <summary>Determines whether the specified object is equal to the current ApplicationUserState, based on User's SID and Actor SID claims.</summary>
+        
         public override bool Equals(object? obj)
         {
             if (obj == null) return false;
@@ -409,35 +365,32 @@ namespace BLAZAM.Session
             return false;
         }
 
-        /// <summary>Checks if the user has a specific role claim.</summary> 
-        /// <param name="userRole">The role to check for.</param> 
-        /// <returns>True if the user has the role, false otherwise or if user is not authenticated.</returns>
+       
         public bool HasRole(string userRole)
         {
-            if (User?.Identity?.IsAuthenticated != true) return false;
+            
             return User.HasClaim(ClaimTypes.Role, userRole);
         }
 
-        /// <summary>Checks if the user has read permissions for User objects. Returns false if user is not authenticated.</summary>
-        public bool HasUserPrivilege { get { if (User?.Identity?.IsAuthenticated != true) return false; return HasObjectReadPermissions(ActiveDirectoryObjectType.User); } }
-        /// <summary>Checks if the user has read permissions for BitLocker objects. Returns false if user is not authenticated.</summary>
-        public bool HasBitLockerPrivilege { get { if (User?.Identity?.IsAuthenticated != true) return false; return HasObjectReadPermissions(ActiveDirectoryObjectType.BitLocker); } }
-        /// <summary>Checks if the user has create permissions for User objects. Returns false if user is not authenticated.</summary>
-        public bool HasCreateUserPrivilege { get { if (User?.Identity?.IsAuthenticated != true) return false; return HasObjectCreatePermissions(ActiveDirectoryObjectType.User); } }
-        /// <summary>Checks if the user has read permissions for Group objects. Returns false if user is not authenticated.</summary>
-        public bool HasGroupPrivilege { get { if (User?.Identity?.IsAuthenticated != true) return false; return HasObjectReadPermissions(ActiveDirectoryObjectType.Group); } }
-        /// <summary>Checks if the user has create permissions for Group objects. Returns false if user is not authenticated.</summary>
-        public bool HasCreateGroupPrivilege { get { if (User?.Identity?.IsAuthenticated != true) return false; return HasObjectCreatePermissions(ActiveDirectoryObjectType.Group); } }
-        /// <summary>Checks if the user has read permissions for OU objects. Returns false if user is not authenticated.</summary>
-        public bool HasOUPrivilege { get { if (User?.Identity?.IsAuthenticated != true) return false; return HasObjectReadPermissions(ActiveDirectoryObjectType.OU); } }
-        /// <summary>Checks if the user has create permissions for OU objects. Returns false if user is not authenticated.</summary>
-        public bool HasCreateOUPrivilege { get { if (User?.Identity?.IsAuthenticated != true) return false; return HasObjectCreatePermissions(ActiveDirectoryObjectType.OU); } }
-        /// <summary>Checks if the user has read permissions for Computer objects. Returns false if user is not authenticated.</summary>
-        public bool HasComputerPrivilege { get { if (User?.Identity?.IsAuthenticated != true) return false; return HasObjectReadPermissions(ActiveDirectoryObjectType.Computer); } }
-        /// <summary>Checks if the user has permission to unlock User accounts. Returns false if user is not authenticated.</summary>
-        public bool CanUnlockUsers { get { if (User?.Identity?.IsAuthenticated != true) return false; return HasObjectActionPermission(ActiveDirectoryObjectType.User, ObjectActions.Unlock); } }
-        /// <summary>Checks if the user has permission to assign Group memberships. Returns false if user is not authenticated.</summary>
-        public bool CanAssign { get { if (User?.Identity?.IsAuthenticated != true) return false; return HasObjectActionPermission(ActiveDirectoryObjectType.Group, ObjectActions.Assign); } }
+        public bool HasUserPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.User);
+
+        public bool HasBitLockerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.BitLocker);
+
+        public bool HasCreateUserPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.User); 
+        
+        public bool HasGroupPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Group);
+
+        public bool HasCreateGroupPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.Group);
+
+        public bool HasOUPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.OU);
+
+        public bool HasCreateOUPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.OU);
+
+        public bool HasComputerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Computer);
+
+        public bool CanUnlockUsers => HasObjectActionPermission(ActiveDirectoryObjectType.User, ObjectActions.Unlock);
+
+        public bool CanAssign => HasObjectActionPermission(ActiveDirectoryObjectType.Group, ObjectActions.Assign);
 
         /// <summary>
         /// Gets or sets the Duo authentication state string, used during MFA flow.
@@ -449,10 +402,12 @@ namespace BLAZAM.Session
         /// </summary>
         public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions ?? new List<NotificationSubscription>(); set { if(userSettings!=null) userSettings.NotificationSubscriptions = value; } } // Added null check for userSettings in setter
 
-        /// <summary>Checks if the user has a specific action permission on a given object type, without OU context. Returns false if user is not authenticated.</summary>
+        /// <summary>
+        /// Checks if the user has a specific action permission on a given object type, without OU context.
+        /// </summary>
         private bool HasObjectActionPermission(ActiveDirectoryObjectType objectType, ObjectAction actionType)
         {
-            if (User?.Identity?.IsAuthenticated != true) return false; // Added auth check
+            
             return HasPermission(objectType,
                 p => p.Where(pm =>
                    pm.AccessLevels.Any(al => al.ActionMap.Any(am =>
@@ -467,10 +422,11 @@ namespace BLAZAM.Session
                    );
         }
 
-        /// <summary>Checks if the user has permission for a specific object type based on allow/deny selectors, without OU context. Returns false if user is not authenticated.</summary>
+        /// <summary>
+        /// Checks if the user has permission for a specific object type based on allow/deny selectors, without OU context.
+        /// </summary>
         private bool HasPermission(ActiveDirectoryObjectType objectType, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null)
         {
-            if (User?.Identity?.IsAuthenticated != true) { Loggers.SystemLogger.Debug("HasPermission (ObjectType): User not authenticated for ObjectType {ObjectType}.", objectType); return false; }
             if (IsSuperAdmin) return true;
             var baseSearch = PermissionMappings;
             try
@@ -509,18 +465,17 @@ namespace BLAZAM.Session
             return false;
         }
 
-        /// <summary>Checks if the user can search for disabled objects of a specific type. Returns false if user is not authenticated.</summary>
+
         public bool CanSearchDisabled(ActiveDirectoryObjectType objectType)
         {
-            if (User?.Identity?.IsAuthenticated != true) { Loggers.SystemLogger.Debug("CanSearchDisabled: User not authenticated."); return false; }
-            if (IsSuperAdmin == true) return true;
+             if (IsSuperAdmin == true) return true;
             return PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == objectType && om.AllowDisabled))) == true;
         }
 
-        /// <summary>Checks if the user has read permissions for a specific object type. Returns false if user is not authenticated.</summary>
+        /// <summary>Checks if the user has read permissions for a specific object type.
         private bool HasObjectReadPermissions(ActiveDirectoryObjectType objectType)
         {
-            if (User?.Identity?.IsAuthenticated != true) return false; // Added auth check
+            
             try
             {
                 if (IsSuperAdmin == true) return true;
@@ -547,10 +502,9 @@ namespace BLAZAM.Session
             return new ApplicationUserState(dbFactory) { User = user };
         }
 
-        /// <summary>Checks if the user has create permissions for a specific object type. Returns false if user is not authenticated.</summary>
+        /// <summary>Checks if the user has create permissions for a specific object type.</summary>
         private bool HasObjectCreatePermissions(ActiveDirectoryObjectType objectType)
         {
-            if (User?.Identity?.IsAuthenticated != true) return false; // Added auth check
             if (IsSuperAdmin == true) return true;
             return PermissionMappings.Any(
                         m => m.AccessLevels.Any(
@@ -562,10 +516,8 @@ namespace BLAZAM.Session
                         );
         }
 
-        /// <summary>Checks if the user has permission on a specific DN target based on allow/deny selectors and OU hierarchy. Returns false if user is not authenticated.</summary>
         public bool HasPermission(string dnTarget, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector, bool nestedSearch)
         {
-            if (User?.Identity?.IsAuthenticated != true) { Loggers.SystemLogger.Debug("PermissionCheck: User not authenticated for DN {DNTarget}.", dnTarget); return false; }
             if (IsSuperAdmin) return true;
 
             IOrderedEnumerable<PermissionMapping>? baseSearch = null;
@@ -630,10 +582,8 @@ namespace BLAZAM.Session
             return false;
         }
 
-        /// <summary>Checks if the user has a specific action permission on a given DN target and object type. Returns false if user is not authenticated.</summary>
         public bool HasActionPermission(string dnTarget, ObjectAction action, ActiveDirectoryObjectType objectType)
         {
-            if (User?.Identity?.IsAuthenticated != true) { Loggers.SystemLogger.Debug("HasActionPermission: User not authenticated for DN {DNTarget}, Action {Action}, ObjectType {ObjectType}.", dnTarget, action?.Name, objectType); return false; }
             return HasPermission(dnTarget, p => p.Where(pm =>
                pm.AccessLevels.Any(al => al.ActionMap.Any(am =>
               am.AllowOrDeny && am.ObjectAction.Id == action.Id &&
