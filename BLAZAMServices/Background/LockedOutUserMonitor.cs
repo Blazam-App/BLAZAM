@@ -114,7 +114,7 @@ namespace BLAZAM.Services.Background
                     if (matching == null)
                     {
 
-                        if (existing.Count() > 9)
+                        if (existing.Count > 9)
                         {
                             context.FailedADLogonEvents.Remove(existing.First());
                             existing.Remove(existing.First());

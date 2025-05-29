@@ -22,20 +22,23 @@ namespace BLAZAM.Common.Data.Database
             //ConnectionString = ConnectionString.Replace("%temp%", Path.GetTempPath().Substring(0, Path.GetTempPath().Length-1));
             DatabaseType = dbType;
         }
+
         /// <summary>
         /// The type of database calculated from this ConnectionString
         /// </summary>
-        public DatabaseType DatabaseType;
+        public DatabaseType DatabaseType { get; set; }
 
         /// <summary>
         /// Returns true if the <see cref="ServerAddress"/> ends with ".db"
         /// </summary>
         public bool FileBased => ServerAddress.EndsWith(".db");
+
         /// <summary>
         /// Returns a file that points to the <see cref="ServerAddress"/>.
         /// This should only be used for SQLite.
         /// </summary>
         public SystemFile File => new(AddressComponent);
+
         /// <summary>
         /// The full ConnectionString to the database
         /// </summary>
