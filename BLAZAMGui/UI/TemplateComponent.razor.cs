@@ -102,7 +102,7 @@ namespace BLAZAM.Gui.UI
                 _templateIdParameter = value;
                 if (value == null || value > 0)
                 {
-                    var cachedTemplate = Templates.Where(t => t.Id == value).FirstOrDefault();
+                    var cachedTemplate = Templates.FirstOrDefault(t => t.Id == value);
                     if (cachedTemplate != null)
                     {
                         SelectedTemplate = cachedTemplate;
@@ -133,7 +133,7 @@ namespace BLAZAM.Gui.UI
                 }
                 if (TemplateIdParameter != 0)
                 {
-                    SelectedTemplate = Templates.Where(t => t.Id == TemplateIdParameter).FirstOrDefault();
+                    SelectedTemplate = Templates.FirstOrDefault(t => t.Id == TemplateIdParameter);
                 }
                 await InvokeAsync(StateHasChanged);
                 Header?.OnRefreshRequested?.Invoke();

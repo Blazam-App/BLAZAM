@@ -107,7 +107,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
         delegateToRestore.DeletedAt = null;
         await Context.SaveChangesAsync();
         SnackBarService.Success(AppLocalization[Lang.Delegate_restored]);
-        if (AllDelegates.Where(l => l.DeletedAt != null).Count() < 1)
+        if (AllDelegates.Count(l => l.DeletedAt != null) < 1)
         {
             await trashModal.CloseAsync();
         }

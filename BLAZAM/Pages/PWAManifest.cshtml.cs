@@ -11,20 +11,20 @@ namespace BLAZAM.Pages
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class ManifestIcon
     {
-        public string src;
-        public string sizes;
-        public string type;
+        public string src { get; set; }
+        public string sizes { get; set; }
+        public string type { get; set; }
     }
     public class PWAManifest
     {
-        public string short_name = "Blazam";
-        public string name = "Blazam";
-        public List<ManifestIcon> icons = new();
-        public string start_url = ".";
-        public string display = "minimal-ui";
-        public string theme_color = "#000000";
-        public string background_color = "#FFFFFF";
-        public string description = "The modern Active Directory management tool.";
+        public string short_name { get; set; } = "Blazam";
+        public string name { get; set; } = "Blazam";
+        public List<ManifestIcon> icons { get; set; } = new();
+        public string start_url { get; set; } = ".";
+        public string display { get; set; } = "minimal-ui";
+        public string theme_color { get; set; } = "#000000";
+        public string background_color { get; set; } = "#FFFFFF";
+        public string description { get; set; } = "The modern Active Directory management tool.";
 
     }
     [Produces("application/json")]

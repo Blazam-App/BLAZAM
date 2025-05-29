@@ -32,30 +32,14 @@ namespace BLAZAM.Server.Middleware
                 Loggers.SystemLogger.Debug("UserStateMiddleware: httpContext is null.");
                 return _next(httpContext);
             }
-            if (httpContext.User == null)
-            {
-                Loggers.SystemLogger.Debug("UserStateMiddleware: httpContext.User is null.");
-                // Continue execution as other parts might handle it or it's an anonymous context.
-            }
-            if (httpContext.User?.Identity == null) // Combined User and Identity check for this log
-            {
-                Loggers.SystemLogger.Debug("UserStateMiddleware: httpContext.User.Identity is null.");
-                // Continue execution
-            }
+            
 
             if (httpContext.User != null && httpContext.User.Identity != null) //Proceed if User and Identity are not null
             {
-                if (httpContext.User.Identity.Name == null)
-                {
-                    Loggers.SystemLogger.Debug("UserStateMiddleware: httpContext.User.Identity.Name is null.");
-                }
+               
 
                 var state = userStateService.GetUserState(httpContext.User);
-                if (state == null)
-                {
-                    Loggers.SystemLogger.Debug("UserStateMiddleware: state from userStateService.GetUserState is null for user {UserName}.", httpContext.User.Identity.Name ?? "Unknown");
-                }
-                else // Only assign if state is not null
+                if (state != null)
                 {
                     currentUserStateService.State = state;
                 }
@@ -63,10 +47,6 @@ namespace BLAZAM.Server.Middleware
                 if (httpContext.Connection != null &&
                     httpContext.Connection.RemoteIpAddress != null)
                 {
-                    if (currentUserStateService.State == null) 
-                    {
-                        Loggers.SystemLogger.Debug("UserStateMiddleware: currentUserStateService.State is null before IPAddress check for user {UserName}.", httpContext.User.Identity.Name ?? "Unknown");
-                    }
                    
                     if (currentUserStateService.State != null &&
                         currentUserStateService.State.IPAddress != httpContext.Connection.RemoteIpAddress.ToString())

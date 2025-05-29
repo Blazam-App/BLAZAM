@@ -85,7 +85,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void GetValueChangesString_NullList_ReturnsEmptyString()
         {
-            List<AuditChangeLog> changes = null;
+            List<AuditChangeLog>? changes = null;
             Func<AuditChangeLog, object?> selector = c => c.NewValue;
             Assert.Equal(string.Empty, changes.GetValueChangesString(selector));
         }
@@ -97,7 +97,7 @@ namespace BLAZAM.Common.Tests
             {
                 new AuditChangeLog { Field = "Field1", NewValue = "val1" }
             };
-            Func<AuditChangeLog, object?> selector = null;
+            Func<AuditChangeLog, object?>? selector = null;
             Assert.Equal(string.Empty, changes.GetValueChangesString(selector));
         }
 
@@ -151,7 +151,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void IsNullOrEmpty_NullCollection_ReturnsTrue()
         {
-            ICollection collection = null;
+            ICollection? collection = null;
             Assert.True(collection.IsNullOrEmpty());
         }
 
@@ -225,7 +225,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void ToGuid_NullByteArray_ReturnsNull()
         {
-            byte[] bytes = null;
+            byte[]? bytes = null;
             Assert.Null(bytes.ToGuid());
         }
 
@@ -252,7 +252,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void ToHexADString_NullByteArray_ReturnsNull()
         {
-            byte[] byteArray = null;
+            byte[]? byteArray = null;
             Assert.Null(byteArray.ToHexADString());
         }
 
@@ -282,7 +282,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void ToSidString_NullByteArray_ReturnsEmptyString()
         {
-            byte[] sid = null;
+            byte[]? sid = null;
             Assert.Equal(string.Empty, sid.ToSidString());
         }
 
@@ -301,7 +301,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void ToSidByteArray_NullOrEmptyString_ReturnsEmptyByteArray()
         {
-            string nullSid = null;
+            string? nullSid = null;
             Assert.Empty(nullSid.ToSidByteArray());
 
             string emptySid = string.Empty;
@@ -368,7 +368,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void SetPropertyValue_NullObject_ReturnsFalse()
         {
-            TestClass testObj = null;
+            TestClass? testObj = null;
             Assert.False(testObj.SetPropertyValue("StringProperty", "value"));
         }
         
@@ -430,7 +430,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void GetPropertyValue_NullObject_ReturnsNull()
         {
-            TestClass testObj = null;
+            TestClass? testObj = null;
             Assert.Null(testObj.GetPropertyValue("StringProperty"));
         }
         #endregion GetPropertyValue Tests
@@ -500,7 +500,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void PropertyValueEquals_NullObject_ReturnsFalse()
         {
-            TestClass testObj = null;
+            TestClass? testObj = null;
             Assert.False(testObj.PropertyValueEquals("StringProperty", "TestValue"));
         }
 
@@ -547,8 +547,8 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void GetChanges_BothNull_ReturnsEmptyList()
         {
-            TestClass obj1 = null;
-            TestClass obj2 = null;
+            TestClass? obj1 = null;
+            TestClass? obj2 = null;
             Assert.Empty(obj1.GetChanges(obj2));
         }
         
@@ -570,7 +570,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void GetEventProperty_NullEventRecord_ReturnsNull()
         {
-            EventRecord eventRecord = null;
+            EventRecord? eventRecord = null;
             Assert.Null(eventRecord.GetEventProperty(0));
         }
 
@@ -737,7 +737,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void AdsValueToDateTime_NullObject_ReturnsNull()
         {
-            object value = null;
+            object? value = null;
             Assert.Null(value.AdsValueToDateTime());
         }
 

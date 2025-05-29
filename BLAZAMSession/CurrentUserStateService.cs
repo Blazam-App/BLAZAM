@@ -37,16 +37,11 @@ namespace BLAZAM.Session
         /// <exception cref="ArgumentNullException">Thrown if applicationUserStateService or httpContextAccessor is null.</exception>
         public CurrentUserStateService(IApplicationUserStateService applicationUserStateService, IHttpContextAccessor httpContextAccessor)
         {
-            if (applicationUserStateService == null)
-            {
-                Loggers.SystemLogger.Error("CurrentUserStateService.Constructor: IApplicationUserStateService applicationUserStateService is null.");
-                throw new ArgumentNullException(nameof(applicationUserStateService));
-            }
-            if (httpContextAccessor == null)
-            {
-                Loggers.SystemLogger.Error("CurrentUserStateService.Constructor: IHttpContextAccessor httpContextAccessor is null.");
-                throw new ArgumentNullException(nameof(httpContextAccessor));
-            }
+            ArgumentNullException.ThrowIfNull(applicationUserStateService);
+            
+            ArgumentNullException.ThrowIfNull(httpContextAccessor);
+
+           
 
             _httpContextAccessor = httpContextAccessor;
             _applicationUserStateService = applicationUserStateService;

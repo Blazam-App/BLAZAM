@@ -22,8 +22,7 @@ namespace BLAZAM.FileSystem
         /// <exception cref="ArgumentException">Thrown if the path is invalid or cannot be resolved to a full path.</exception>
         public FileSystemBase(string path)
         {
-            if (path is null) // Changed from ArgumentException to ArgumentNullException for null path
-                throw new ArgumentNullException(nameof(path));
+            ArgumentNullException.ThrowIfNull(path);
 
             string originalPath = path; // Store original path for logging
             path = path.Replace("%temp%", Path.GetTempPath());

@@ -61,7 +61,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void BitDifference_OneNullArray_ShouldThrowArgumentNullException()
         {
-            byte[] arr1 = null;
+            byte[]? arr1 = null;
             var arr2 = new byte[] { 0b11110000 };
             Assert.Throws<ArgumentNullException>(() => arr1.BitDifference(arr2));
             Assert.Throws<ArgumentNullException>(() => arr2.BitDifference(arr1));

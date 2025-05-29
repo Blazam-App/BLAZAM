@@ -53,7 +53,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void ToMarkupString_NullString_ReturnsEmptyMarkupString()
         {
-            string input = null;
+            string? input = null;
             var expected = (MarkupString)"";
             Assert.Equal(expected, input.ToMarkupString());
             Assert.True(input.ToMarkupString().Value.Length == 0);
@@ -88,7 +88,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void GetAppHashCode_NullString_ReturnsZero()
         {
-            string input = null;
+            string? input = null;
             Assert.Equal(0, input.GetAppHashCode());
         }
 
@@ -177,7 +177,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void ToGuid_NullString_ThrowsArgumentNullException()
         {
-            string input = null;
+            string? input = null;
             Assert.Throws<ArgumentNullException>(() => input.ToGuid());
         }
         #endregion ToGuid Tests

@@ -45,16 +45,11 @@ namespace BLAZAM.Services
         /// <exception cref="ArgumentNullException">Thrown if httpClientFactory or appDatabaseFactory is null.</exception>
         public WebHookPublisher(IHttpClientFactory httpClientFactory, IAppDatabaseFactory appDatabaseFactory)
         {
-            if (httpClientFactory == null)
-            {
-                Loggers.SystemLogger.Error("IHttpClientFactory httpClientFactory is null in WebHookPublisher constructor.");
-                throw new ArgumentNullException(nameof(httpClientFactory));
-            }
-            if (appDatabaseFactory == null)
-            {
-                Loggers.SystemLogger.Error("IAppDatabaseFactory appDatabaseFactory is null in WebHookPublisher constructor.");
-                throw new ArgumentNullException(nameof(appDatabaseFactory));
-            }
+            ArgumentNullException.ThrowIfNull(httpClientFactory);
+
+            ArgumentNullException.ThrowIfNull(appDatabaseFactory);
+
+            
             _httpClientFactory = httpClientFactory;
             _appDatabaseFactory = appDatabaseFactory;
             _ = Run();
@@ -105,7 +100,7 @@ namespace BLAZAM.Services
             if (undeliveredWebhooks.Count > 0)
             {
                 IJob webhookAttemptJob = new Job("Webhook Retry");
-                JobStep execStep = null;
+                JobStep? execStep = null;
                 if (_appDatabaseFactory.DatabaseType == DatabaseType.SQLite)
                 {
 

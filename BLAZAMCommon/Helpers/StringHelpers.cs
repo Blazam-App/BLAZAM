@@ -88,10 +88,8 @@ namespace BLAZAM.Helpers
         /// <exception cref="ArgumentNullException">Thrown if the input string is null.</exception>
         public static Guid ToGuid(this string input)
         {
-            if (input == null)
-            {
-                throw new ArgumentNullException(nameof(input));
-            }
+            ArgumentNullException.ThrowIfNull(input);
+            
             // Use MD5 hash to get a 16-byte hash of the string
             using (MD5 md5 = MD5.Create())
             {

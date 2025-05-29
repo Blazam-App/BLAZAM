@@ -15,10 +15,10 @@ namespace BLAZAM.Server.Helpers
         /// <exception cref="ArgumentNullException">Thrown if the claims collection is null.</exception>
         public static void AddSuperAdmin(this IList<Claim> claims)
         {
-            if (claims == null)
-            {
-                throw new ArgumentNullException(nameof(claims));
-            }
+
+            ArgumentNullException.ThrowIfNull(claims);
+
+            
             claims.Add(new Claim(ClaimTypes.Role, UserRoles.SuperAdmin));
         }
 
@@ -29,10 +29,9 @@ namespace BLAZAM.Server.Helpers
         /// <exception cref="ArgumentNullException">Thrown if the claims collection is null.</exception>
         public static void AddAllRoles(this IList<Claim> claims)
         {
-            if (claims == null)
-            {
-                throw new ArgumentNullException(nameof(claims));
-            }
+
+            ArgumentNullException.ThrowIfNull(claims);
+
             foreach (var role in UserRoles.All)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));

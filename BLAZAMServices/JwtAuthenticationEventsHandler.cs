@@ -27,16 +27,11 @@ namespace BLAZAM.Services
         /// <exception cref="ArgumentNullException">Thrown if userStateService or dbFactory is null.</exception>
         public JwtAuthenticationEventsHandler(IApplicationUserStateService userStateService, IAppDatabaseFactory dbFactory)
         {
-            if (userStateService == null)
-            {
-                Loggers.SystemLogger.Error("IApplicationUserStateService userStateService is null in JwtAuthenticationEventsHandler constructor.");
-                throw new ArgumentNullException(nameof(userStateService));
-            }
-            if (dbFactory == null)
-            {
-                Loggers.SystemLogger.Error("IAppDatabaseFactory dbFactory is null in JwtAuthenticationEventsHandler constructor.");
-                throw new ArgumentNullException(nameof(dbFactory));
-            }
+            ArgumentNullException.ThrowIfNull(userStateService);
+
+            ArgumentNullException.ThrowIfNull(dbFactory);
+
+           
             _userStateService = userStateService;
             _dbFactory = dbFactory;
         }
