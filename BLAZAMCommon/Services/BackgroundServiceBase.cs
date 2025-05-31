@@ -57,6 +57,7 @@ namespace BLAZAM.Services.Background
         public virtual void Stop()
         {
             Timer?.Dispose();
+            Timer = null;
             started = false;
         }
 
@@ -72,9 +73,11 @@ namespace BLAZAM.Services.Background
                 if (disposing)
                 {
                     Timer?.Dispose();
+                    Timer = null;
+
                 }
 
-                
+
                 disposedValue = true;
             }
         }
