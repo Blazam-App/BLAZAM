@@ -65,6 +65,11 @@ namespace BLAZAM.Common.Data.Database
                             return Value.Substring(startIndex, endIndex - startIndex);
 
                         }
+                        if (endIndex == -1)
+                        {
+                            return Value.Substring(startIndex);
+
+                        }
 
                     }
 

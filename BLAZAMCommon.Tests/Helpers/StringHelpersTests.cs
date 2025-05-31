@@ -2,9 +2,9 @@ using System;
 using Xunit;
 using BLAZAM.Helpers; // For StringHelpers
 using Microsoft.AspNetCore.Components; // For MarkupString
-using System.Text; // For Encoding in GetAppHashCode long string test
+using System.Text;
 
-namespace BLAZAM.Common.Tests
+namespace BLAZAMCommon.Tests.Helpers
 {
     public class StringHelpersTests
     {

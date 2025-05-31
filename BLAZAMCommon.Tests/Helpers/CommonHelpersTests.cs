@@ -12,9 +12,9 @@ using SixLabors.ImageSharp; // For Image
 using SixLabors.ImageSharp.Processing; // For Mutate
 using SixLabors.ImageSharp.Formats.Png; // For PngEncoder
 using System.IO;
-using BLAZAM.Common.Data; // For MemoryStream
+using BLAZAM.Common.Data;
 
-namespace BLAZAM.Common.Tests
+namespace BLAZAMCommon.Tests.Helpers
 {
     public class CommonHelpersTests
     {
@@ -58,7 +58,7 @@ namespace BLAZAM.Common.Tests
         [InlineData(3.14159, 2, 3.14)]
         [InlineData(3.14159, 4, 3.1416)]
         [InlineData(1.2345, 3, 1.234)] // MidpointRounding.ToEven results in 1.234 for .NET internal Math.Round on this specific value if it were 1.2345000...
-                                     // However, double precision might make 1.2345 slightly more or less. Standard behavior for Math.Round(1.2345,3) is 1.235
+                                       // However, double precision might make 1.2345 slightly more or less. Standard behavior for Math.Round(1.2345,3) is 1.235
         [InlineData(1.2375, 3, 1.238)]// Test ToEven for x.xx75
         [InlineData(1.234, 3, 1.234)]
         [InlineData(0.0, 5, 0.0)]
@@ -131,7 +131,7 @@ namespace BLAZAM.Common.Tests
             var expected = "Tags=Item1,Item2,;Status=Value3;Categories=Item3,100,;";
             Assert.Equal(expected, changes.GetValueChangesString(selector));
         }
-        
+
         [Fact]
         public void GetValueChangesString_SelectorReturnsNull_FieldEqualsEmptySemiColon()
         {
@@ -140,7 +140,7 @@ namespace BLAZAM.Common.Tests
                 new AuditChangeLog { Field = "NullableField", NewValue = null }
             };
             // Selector directly returns the NewValue which is null
-            Func<AuditChangeLog, object?> selector = c => c.NewValue; 
+            Func<AuditChangeLog, object?> selector = c => c.NewValue;
             var expected = "NullableField=;";
             Assert.Equal(expected, changes.GetValueChangesString(selector));
         }
@@ -232,14 +232,14 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void ToGuid_ByteArrayNot16Bytes_ReturnsNull()
         {
-            var bytes15 = new byte[15]; 
+            var bytes15 = new byte[15];
             Assert.Null(bytes15.ToGuid());
 
-            var bytes17 = new byte[17]; 
+            var bytes17 = new byte[17];
             Assert.Null(bytes17.ToGuid());
         }
         #endregion ToGuid Tests
-        
+
         // Tests for ToHexADString(this byte[]? byteArray)
         #region ToHexADString Tests
         [Fact]
@@ -275,7 +275,7 @@ namespace BLAZAM.Common.Tests
 
             var adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
             var adminSidBytes = new byte[adminSid.BinaryLength];
-            adminSid.GetBinaryForm(adminSidBytes,0);
+            adminSid.GetBinaryForm(adminSidBytes, 0);
             Assert.Equal(adminSid.ToString(), adminSidBytes.ToSidString());
         }
 
@@ -289,14 +289,14 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void ToSidString_InvalidSidByteArray_ReturnsEmptyString()
         {
-            var invalidSidBytes = new byte[] { 1, 2, 3, 4, 5 }; 
+            var invalidSidBytes = new byte[] { 1, 2, 3, 4, 5 };
             Assert.Equal(string.Empty, invalidSidBytes.ToSidString());
         }
         #endregion ToSidString Tests
 
         // Tests for ToSidByteArray(this string sidString)
         #region ToSidByteArray Tests
-       
+
 
         [Fact]
         public void ToSidByteArray_NullOrEmptyString_ReturnsEmptyByteArray()
@@ -318,7 +318,7 @@ namespace BLAZAM.Common.Tests
             Assert.Empty(alsoInvalid.ToSidByteArray());
         }
         #endregion ToSidByteArray Tests
-        
+
         // Tests for SetPropertyValue(this object obj, string propertyName, object value)
         #region SetPropertyValue Tests
         [Fact]
@@ -342,8 +342,8 @@ namespace BLAZAM.Common.Tests
             Assert.True(testObj.SetPropertyValue("stringproperty", newValue));
             Assert.Equal(newValue, testObj.StringProperty);
         }
-        
-       
+
+
 
         [Fact]
         public void SetPropertyValue_NonExistentProperty_ReturnsFalse()
@@ -351,7 +351,7 @@ namespace BLAZAM.Common.Tests
             var testObj = new TestClass();
             Assert.False(testObj.SetPropertyValue("NonExistent", "value"));
         }
-        
+
         [Fact]
         public void SetPropertyValue_ReadOnlyProperty_ThrowsExceptionAndValueNotChanged()
         {
@@ -360,7 +360,7 @@ namespace BLAZAM.Common.Tests
             // SetValue on a readonly property typically throws.
             // The current CommonHelpers.SetPropertyValue does not catch this.
             var ex = Assert.ThrowsAny<Exception>(() => testObj.SetPropertyValue("ReadOnlyProperty", "newValue"));
-            Assert.True(ex is System.ArgumentException || ex is System.Reflection.TargetException || ex.InnerException is System.ArgumentException); //Actual exception can vary
+            Assert.True(ex is ArgumentException || ex is TargetException || ex.InnerException is ArgumentException); //Actual exception can vary
             Assert.Equal(originalValue, testObj.ReadOnlyProperty); // Ensure it wasn't changed
         }
 
@@ -371,21 +371,21 @@ namespace BLAZAM.Common.Tests
             TestClass? testObj = null;
             Assert.False(testObj.SetPropertyValue("StringProperty", "value"));
         }
-        
+
         [Fact]
         public void SetPropertyValue_Field_ReturnsFalse()
         {
             var testObj = new TestClass();
             var originalFieldValue = testObj.Field;
             Assert.False(testObj.SetPropertyValue("Field", "newFieldValue"));
-            Assert.Equal(originalFieldValue, testObj.Field); 
+            Assert.Equal(originalFieldValue, testObj.Field);
         }
 
         [Fact]
         public void SetPropertyValue_PrivateProperty_ReturnsFalse()
         {
-             var testObj = new TestClass();
-             Assert.False(testObj.SetPropertyValue("PrivateProperty", "newValue"));
+            var testObj = new TestClass();
+            Assert.False(testObj.SetPropertyValue("PrivateProperty", "newValue"));
         }
         #endregion SetPropertyValue Tests
 
@@ -412,21 +412,21 @@ namespace BLAZAM.Common.Tests
             var testObj = new TestClass();
             Assert.Null(testObj.GetPropertyValue("NonExistent"));
         }
-        
+
         [Fact]
         public void GetPropertyValue_Field_ReturnsNull()
         {
             var testObj = new TestClass();
             Assert.Null(testObj.GetPropertyValue("Field"));
         }
-        
+
         [Fact]
         public void GetPropertyValue_PrivateProperty_ReturnsNull()
         {
-             var testObj = new TestClass();
-             Assert.Null(testObj.GetPropertyValue("PrivateProperty"));
+            var testObj = new TestClass();
+            Assert.Null(testObj.GetPropertyValue("PrivateProperty"));
         }
-     
+
         [Fact]
         public void GetPropertyValue_NullObject_ReturnsNull()
         {
@@ -467,7 +467,7 @@ namespace BLAZAM.Common.Tests
             Assert.False(testObj.PropertyValueEquals("IntProperty", 456)); // Compares "123" with "456"
             Assert.False(testObj.PropertyValueEquals("BoolProperty", false)); // Compares "True" with "False"
         }
-        
+
         [Fact]
         public void PropertyValueEquals_DifferentTypeComparisonButSameStringValue_ReturnsTrue()
         {
@@ -510,7 +510,7 @@ namespace BLAZAM.Common.Tests
             var testObj = new TestClass();
             Assert.False(testObj.PropertyValueEquals("NonExistentProperty", "TestValue"));
         }
-        
+
         [Fact]
         public void PropertyValueEquals_NonExistentProperty_NullValue_ReturnsTrue() // GetPropertyValue returns null, then compares null with null
         {
@@ -518,7 +518,7 @@ namespace BLAZAM.Common.Tests
             Assert.True(testObj.PropertyValueEquals("NonExistentProperty", null));
         }
         #endregion PropertyValueEquals Tests
-        
+
         // Tests for GetChanges(this object changed, object? original)
         #region GetChanges Tests
         [Fact]
@@ -541,8 +541,8 @@ namespace BLAZAM.Common.Tests
             // As above, int has no properties, so no changes will be detected by GetProperties().
             Assert.Empty(obj1.GetChanges(obj2));
         }
-        
-       
+
+
 
         [Fact]
         public void GetChanges_BothNull_ReturnsEmptyList()
@@ -551,7 +551,7 @@ namespace BLAZAM.Common.Tests
             TestClass? obj2 = null;
             Assert.Empty(obj1.GetChanges(obj2));
         }
-        
+
         private class AnotherTestClass { public string AnotherProperty { get; set; } }
 
         [Fact]
@@ -562,8 +562,8 @@ namespace BLAZAM.Common.Tests
             Assert.Throws<ArgumentException>(() => obj1.GetChanges(obj2));
             Assert.Throws<ArgumentException>(() => obj2.GetChanges(obj1));
         }
-        
-       
+
+
         #endregion GetChanges Tests
 
         #region GetEventProperty Tests
@@ -610,7 +610,7 @@ namespace BLAZAM.Common.Tests
             }
         }
 
-      
+
         [Fact]
         public void ResizeRawImage_Portrait_NoCrop_MaintainsAspectRatio()
         {
@@ -688,7 +688,7 @@ namespace BLAZAM.Common.Tests
                 Assert.Equal(maxDimension, image.Height);
             }
         }
-        
+
         [Fact]
         public void ResizeRawImage_SquareImage_CropToSquare_MaintainsSizeAndResizes()
         {
@@ -746,7 +746,7 @@ namespace BLAZAM.Common.Tests
         {
             DateTime now = DateTime.UtcNow;
             long fileTime = now.ToFileTimeUtc();
-            DateTime? result = ((object)fileTime).AdsValueToDateTime();
+            DateTime? result = fileTime.AdsValueToDateTime();
             Assert.NotNull(result);
             // Precision loss can occur with FileTime, so compare with tolerance
             Assert.Equal(now.Year, result.Value.Year);
@@ -756,14 +756,14 @@ namespace BLAZAM.Common.Tests
             Assert.Equal(now.Minute, result.Value.Minute);
             Assert.Equal(now.Second, result.Value.Second);
         }
-        
+
         [Fact]
         public void AdsValueToDateTime_StringOfValidLongFileTime_ReturnsCorrectDateTime()
         {
             DateTime now = DateTime.UtcNow;
             long fileTime = now.ToFileTimeUtc();
             string fileTimeString = fileTime.ToString();
-            DateTime? result = ((object)fileTimeString).AdsValueToDateTime();
+            DateTime? result = fileTimeString.AdsValueToDateTime();
             Assert.NotNull(result);
             Assert.Equal(now.Year, result.Value.Year);
             Assert.Equal(now.Month, result.Value.Month);
@@ -779,18 +779,18 @@ namespace BLAZAM.Common.Tests
         {
             long fileTime = 0L;
             // The helper considers 0L as a "null" or "no date" scenario.
-            Assert.Null(((object)fileTime).AdsValueToDateTime());
+            Assert.Null(fileTime.AdsValueToDateTime());
         }
-        
+
         [Fact]
         public void AdsValueToDateTime_ADsNullTimeEquivalentLong_ReturnsNull()
         {
             long adsNullFileTime = CommonHelpers.ADS_NULL_TIME.ToFileTimeUtc();
             // This will convert to ADS_NULL_TIME, which the helper then converts to null.
-            Assert.Null(((object)adsNullFileTime).AdsValueToDateTime());
+            Assert.Null(adsNullFileTime.AdsValueToDateTime());
         }
-        
-    
+
+
 
         [Fact]
         public void AdsValueToDateTime_IADsLargeInteger_ValidDate_ReturnsCorrectDateTime()
@@ -804,7 +804,7 @@ namespace BLAZAM.Common.Tests
                 LowPart = (int)(fileTime & 0xFFFFFFFF)
             };
 
-            DateTime? result = ((object)adsLargeInt).AdsValueToDateTime();
+            DateTime? result = adsLargeInt.AdsValueToDateTime();
             Assert.NotNull(result);
             Assert.Equal(now.Year, result.Value.Year);
             Assert.Equal(now.Month, result.Value.Month);
@@ -816,9 +816,9 @@ namespace BLAZAM.Common.Tests
         public void AdsValueToDateTime_IADsLargeInteger_ZeroDate_ReturnsNull()
         {
             var adsLargeInt = new CommonHelpers.ADsLargeInteger { HighPart = 0, LowPart = 0 };
-            Assert.Null(((object)adsLargeInt).AdsValueToDateTime());
+            Assert.Null(adsLargeInt.AdsValueToDateTime());
         }
-        
+
         [Fact]
         public void AdsValueToDateTime_IADsLargeInteger_ADsNullTimeDate_ReturnsNull()
         {
@@ -828,7 +828,7 @@ namespace BLAZAM.Common.Tests
                 HighPart = (int)(adsNullFileTime >> 32),
                 LowPart = (int)(adsNullFileTime & 0xFFFFFFFF)
             };
-            Assert.Null(((object)adsLargeInt).AdsValueToDateTime());
+            Assert.Null(adsLargeInt.AdsValueToDateTime());
         }
 
 
@@ -838,7 +838,7 @@ namespace BLAZAM.Common.Tests
             object value = new object();
             Assert.Null(value.AdsValueToDateTime());
         }
-        
+
         [Fact]
         public void AdsValueToDateTime_AlreadyDateTimeObject_ReturnsSameDateTime()
         {
