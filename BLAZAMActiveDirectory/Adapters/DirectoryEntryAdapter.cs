@@ -664,7 +664,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             }
                             if (thisObject != null)
                             {
-                                thisObject.Parse(directory: Directory, directoryEntry: child.ToIDirectoryEntry());
+                                thisObject.Parse(directory: Directory, directoryEntry: child.ToIDirectoryEntry(Directory));
                                 lock (directoryEntries)
                                 {
                                     directoryEntries.Add(thisObject);
@@ -1017,7 +1017,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (SearchResult is null) throw new CriticalActiveDirectoryException(Directory, nameof(SearchResult));
 
-            DirectoryEntry = SearchResult.GetDirectoryEntry().ToIDirectoryEntry();
+            DirectoryEntry = SearchResult.GetDirectoryEntry().ToIDirectoryEntry(Directory);
 
         }
 

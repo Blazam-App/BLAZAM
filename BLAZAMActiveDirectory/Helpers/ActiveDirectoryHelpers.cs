@@ -267,7 +267,7 @@ namespace BLAZAM.Helpers
                 }
                 if (thisObject != null)
                 {
-                    thisObject.Parse(directory: context, directoryEntry: sr.ToIDirectoryEntry());
+                    thisObject.Parse(directory: context, directoryEntry: sr.ToIDirectoryEntry(context));
 
                     return thisObject;
 
@@ -339,6 +339,10 @@ namespace BLAZAM.Helpers
         public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry)
         {
             return new AdapterDirectoryEntry(entry);
+        }
+        public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry, IActiveDirectoryContext directory)
+        {
+            return new AdapterDirectoryEntry(entry,directory);
         }
         /// <summary>
         /// Encapsulates a raw DirectoryEntry search's <see cref="DirectoryEntries"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type

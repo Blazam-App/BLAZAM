@@ -157,7 +157,7 @@ namespace BLAZAM.ActiveDirectory
                 ConnectionSettings?.Username,
                  _encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 AuthType
-                ).ToIDirectoryEntry();
+                ).ToIDirectoryEntry(this);
         }
         /// <summary>
         /// Gets the root entry for deleted objects in Active Directory
@@ -166,7 +166,7 @@ namespace BLAZAM.ActiveDirectory
         public IDirectoryEntry GetDeleteObjectsEntry() => new DirectoryEntry(LDAP_PROTO + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.FQDN.FqdnToDN(),
                 ConnectionSettings?.Username,
                 _encryption.DecryptObject<string>(ConnectionSettings?.Password),
-                AuthenticationTypes.FastBind | AuthenticationTypes.Secure).ToIDirectoryEntry();
+                AuthenticationTypes.FastBind | AuthenticationTypes.Secure).ToIDirectoryEntry(this);
 
 
 
@@ -563,14 +563,14 @@ namespace BLAZAM.ActiveDirectory
                 LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN,
                 ad.Username,
                 pass,
-                AuthType).ToIDirectoryEntry();
+                AuthType).ToIDirectoryEntry(this);
             Loggers.ActiveDirectoryLogger.Information("App Active Directory context connected");
 
             RootDirectoryEntry = new DirectoryEntry(
                 LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(),
                 ad.Username,
                 pass,
-                AuthType).ToIDirectoryEntry();
+                AuthType).ToIDirectoryEntry(this);
 
             Loggers.ActiveDirectoryLogger.Information("Root Active Directory context connected");
         }
