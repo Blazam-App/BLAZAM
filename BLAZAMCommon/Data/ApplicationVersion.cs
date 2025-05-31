@@ -46,7 +46,7 @@ namespace BLAZAM.Common.Data
         /// <param name="shortVersion"></param>
         public ApplicationVersion(Assembly executingAssembly)
         {
-            string[]? assemblyVersion = (executingAssembly.GetName().Version?.ToString().Split(".")) ?? throw new AppException("The assembly version of the running app could not be read.");
+            string[]? assemblyVersion = (executingAssembly.GetName()?.Version?.ToString().Split(".")) ?? throw new AppException("The assembly version of the running app could not be read.");
             AssemblyVersion = new Version(int.Parse(assemblyVersion[0]), int.Parse(assemblyVersion[1]), int.Parse(assemblyVersion[2]));
             var fileInfo = FileVersionInfo.GetVersionInfo(executingAssembly.Location);
             var productVersion = fileInfo.ProductVersion;
@@ -79,6 +79,10 @@ namespace BLAZAM.Common.Data
         public ApplicationVersion(string fullVersionString)
         {
             string[] versionFragments = fullVersionString.Split('.');
+            if (versionFragments.Length < 3)
+            {
+                throw new ArgumentException("Version should have at least three components");
+            }
             AssemblyVersion = new Version(versionFragments[0] + "." + versionFragments[1] + "." + versionFragments[2]);
             if (versionFragments.Length > 3)
             {
@@ -103,33 +107,40 @@ namespace BLAZAM.Common.Data
             get
             {
                 DateTime release = DateTime.MinValue;
-                var buildNumberParts = BuildNumber.Split('.');
-                string year = "";
-                string month = "";
-                string day = "";
-                string time = "";
-                for (int x = 0; x < buildNumberParts.Length; x++)
+                try
                 {
-                    switch (x)
+                    var buildNumberParts = BuildNumber.Split('.');
+                    string year = "";
+                    string month = "";
+                    string day = "";
+                    string time = "";
+                    for (int x = 0; x < buildNumberParts.Length; x++)
                     {
-                        case 0:
-                            year = buildNumberParts[x];
-                            break;
-                        case 1:
-                            month = buildNumberParts[x];
+                        switch (x)
+                        {
+                            case 0:
+                                year = buildNumberParts[x];
+                                break;
+                            case 1:
+                                month = buildNumberParts[x];
 
-                            break;
-                        case 2:
-                            day = buildNumberParts[x];
+                                break;
+                            case 2:
+                                day = buildNumberParts[x];
 
-                            break;
-                        case 3:
-                            time = buildNumberParts[x];
-                            time = time.Insert(2, ":");
-                            break;
+                                break;
+                            case 3:
+                                time = buildNumberParts[x];
+                                time = time.Insert(2, ":");
+                                break;
+                        }
                     }
+                    DateTime.TryParse((month + "/" + day + "/" + year + " " + time + " Z"), out release);
                 }
-                DateTime.TryParse((month + "/" + day + "/" + year + " " + time + " Z"), out release);
+                catch
+                {
+                    //return default
+                }
                 return release;
             }
         }

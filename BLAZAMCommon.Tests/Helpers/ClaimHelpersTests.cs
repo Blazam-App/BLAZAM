@@ -6,13 +6,13 @@ using BLAZAM.Common.Data; // For UserRoles
 using BLAZAM.Helpers; // For ClaimHelpers extension methods
 using Xunit;
 
-namespace BLAZAM.Common.Tests
+namespace BLAZAMCommon.Tests.Helpers
 {
     public class ClaimHelpersTests
     {
-      
 
 
-       
+
+
     }
 }
