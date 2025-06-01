@@ -402,7 +402,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 if (DirectoryEntry != null)
-                    DirectoryEntry.SetPropertyValue("objectclass",value);
+                    DirectoryEntry.SetPropertyValue("objectclass", value);
                 else
                     Loggers.ActiveDirectoryLogger.Error("Error setting objectClass for " + DN);
 
@@ -568,7 +568,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
         private IList<PermissionMapping> _appliedPermissionMappings;
-       
+
         public IList<PermissionMapping> AppliedPermissionMappings
         {
             get
@@ -913,7 +913,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 }
                 var result = false;
-                if(commitJob.Result!=JobResult.Running && commitJob.Result != JobResult.Cancelled)
+                if (commitJob.Result != JobResult.Running && commitJob.Result != JobResult.Cancelled)
                 {
                     result = commitJob.Run();
 
@@ -1123,7 +1123,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error(ex,"Unexpected error while getting property value for {@PropertyName}",propertyName);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
                 }
 
 
@@ -1159,7 +1159,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
                 if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
-                    return (T?)DirectoryEntry.GetPropertyValue(propertyName);
+                {
+                    var val = DirectoryEntry.GetPropertyValue(propertyName);
+                    if (val is null)
+                    {
+                        return default;
+                    }
+                    else{
+                        return (T?)val;
+                    }
+                }
 
             }
             catch (ArgumentException)
@@ -1309,7 +1318,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
 
-                DirectoryEntry?.RemovePropertyValue(propertyName,value);
+                DirectoryEntry?.RemovePropertyValue(propertyName, value);
 
                 HasUnsavedChanges = true;
 
@@ -1324,7 +1333,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                DirectoryEntry?.AddPropertyValue(propertyName,value);
+                DirectoryEntry?.AddPropertyValue(propertyName, value);
                 HasUnsavedChanges = true;
 
             }

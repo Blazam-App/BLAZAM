@@ -338,11 +338,11 @@ namespace BLAZAM.Helpers
         }
         public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry)
         {
-            return new AdapterDirectoryEntry(entry);
+            return new LdapDirectoryEntry(entry);
         }
         public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry, IActiveDirectoryContext directory)
         {
-            return new AdapterDirectoryEntry(entry,directory);
+            return new LdapDirectoryEntry(entry,directory);
         }
         /// <summary>
         /// Encapsulates a raw DirectoryEntry search's <see cref="DirectoryEntries"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type

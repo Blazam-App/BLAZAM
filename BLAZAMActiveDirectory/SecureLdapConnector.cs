@@ -16,13 +16,13 @@ namespace BLAZAM.ActiveDirectory
         /// <param name="settings">The ADSettings object containing connection parameters.</param>
         /// <param name="connection">The established LdapConnection object if successful, otherwise null.</param>
         /// <returns>True if the connection was successful, otherwise false.</returns>
-        public static bool Connect(ADSettings settings, out LdapConnection? connection)
+        public static LdapConnection? Connect(ADSettings settings)
         {
-            connection = null;
+            LdapConnection connection = null;
             if (settings == null)
             {
                 Console.WriteLine("ADSettings object is null.");
-                return false;
+                return connection;
             }
 
             // Optional: Check the IsValid property from ADSettings, though the individual Connect methods will also fail if parameters are bad.
@@ -35,17 +35,17 @@ namespace BLAZAM.ActiveDirectory
             if (string.IsNullOrEmpty(settings.ServerAddress))
             {
                 Console.WriteLine("ServerAddress in ADSettings is null or empty.");
-                return false;
+                return connection;
             }
             if (string.IsNullOrEmpty(settings.Username))
             {
                 Console.WriteLine("Username in ADSettings is null or empty.");
-                return false;
+                return connection;
             }
             if (string.IsNullOrEmpty(settings.Password))
             {
                 Console.WriteLine("Password in ADSettings is null or empty.");
-                return false;
+                return connection;
             }
 
 
@@ -55,12 +55,12 @@ namespace BLAZAM.ActiveDirectory
             if (settings.ServerPort == 636) // Common LDAPS port
             {
                 Console.WriteLine($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting LDAPS connection.");
-                return ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password, out connection);
+                ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password, out connection);
             }
             else if (settings.ServerPort == 389) // Common LDAP port, suitable for StartTLS
             {
                 Console.WriteLine($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting StartTLS connection.");
-                return ConnectWithStartTls(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password.Decrypt(), out connection);
+                ConnectWithStartTls(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password.Decrypt(), out connection);
             }
             else
             {
@@ -68,9 +68,9 @@ namespace BLAZAM.ActiveDirectory
                 // For this example, we'll try LDAPS as a default secure method if UseTLS is true and port is non-standard.
                 // Alternatively, you could throw an error or require more specific configuration.
                 Console.WriteLine($"ADSettings: UseTLS is true, port is {settings.ServerPort} (non-standard for TLS inference). Attempting LDAPS as a fallback secure method.");
-                return ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password, out connection);
+                ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password, out connection);
             }
-
+            return connection;
         }
 
 
@@ -244,86 +244,6 @@ namespace BLAZAM.ActiveDirectory
             }
         }
 
-        // --- Example Usage ---
-        public static void MainTest()
-        {
-            // Example ADSettings object
-            var settings = new ADSettings
-            {
-                ServerAddress = "your-ldap-server.example.com", // Replace
-                ServerPort = 636, // Or 389 for StartTLS
-                Username = "your_username", // Replace (e.g., "cn=admin,dc=example,dc=com" or "user@example.com")
-                Password = "your_password", // Replace
-                UseTLS = true,
-                ApplicationBaseDN = "dc=example,dc=com", // Replace
-                FQDN = "example.com" // Replace
-            };
-
-            Console.WriteLine("\n--- Testing Connection with ADSettings ---");
-            if (Connect(settings, out LdapConnection? settingsConnection))
-            {
-                Console.WriteLine("Connection with ADSettings successful!");
-                try
-                {
-                    SearchRequest searchRequest = new SearchRequest(
-                        settings.ApplicationBaseDN,
-                        "(objectClass=*)",
-                        System.DirectoryServices.Protocols.SearchScope.Base,
-                        null);
-                    SearchResponse searchResponse = (SearchResponse)settingsConnection.SendRequest(searchRequest);
-                    Console.WriteLine($"Search Result using ADSettings connection: {searchResponse.ResultCode}, Entries: {searchResponse.Entries.Count}");
-                }
-                catch (Exception ex) { Console.WriteLine($"Error during search with ADSettings connection: {ex.Message}"); }
-                finally { settingsConnection?.Dispose(); }
-            }
-            else
-            {
-                Console.WriteLine("Connection with ADSettings failed.");
-            }
-
-
-            // Original LDAPS Test (can be kept for direct testing or removed)
-            string ldapHost = "your-ldap-server.example.com";
-            string username = "your_username";
-            string password = "your_password";
-            string searchBase = "dc=example,dc=com";
-
-            Console.WriteLine("\n--- Testing LDAPS Connection (Direct) ---");
-            if (ConnectWithLdaps(ldapHost, 636, username, password, out LdapConnection? ldapsConnection))
-            {
-                Console.WriteLine("LDAPS Connection object created and bound.");
-                try
-                {
-                    SearchRequest searchRequest = new SearchRequest(searchBase, "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, null);
-                    SearchResponse searchResponse = (SearchResponse)ldapsConnection.SendRequest(searchRequest);
-                    Console.WriteLine($"LDAPS Search Result: {searchResponse.ResultCode}, Entries: {searchResponse.Entries.Count}");
-                }
-                catch (Exception ex) { Console.WriteLine($"Error during LDAPS search: {ex.Message}"); }
-                finally { ldapsConnection?.Dispose(); }
-            }
-            else
-            {
-                Console.WriteLine("LDAPS Connection failed.");
-            }
-
-            // Original StartTLS Test (can be kept for direct testing or removed)
-            Console.WriteLine("\n--- Testing StartTLS Connection (Direct) ---");
-            if (ConnectWithStartTls(ldapHost, 389, username, password, out LdapConnection? startTlsConnection))
-            {
-                Console.WriteLine("StartTLS Connection object created, secured, and bound.");
-                try
-                {
-                    SearchRequest searchRequest = new SearchRequest(searchBase, "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, null);
-                    SearchResponse searchResponse = (SearchResponse)startTlsConnection.SendRequest(searchRequest);
-                    Console.WriteLine($"StartTLS Search Result: {searchResponse.ResultCode}, Entries: {searchResponse.Entries.Count}");
-                }
-                catch (Exception ex) { Console.WriteLine($"Error during StartTLS search: {ex.Message}"); }
-                finally { startTlsConnection?.Dispose(); }
-            }
-            else
-            {
-                Console.WriteLine("StartTLS Connection failed.");
-            }
-        }
+      
     }
 }

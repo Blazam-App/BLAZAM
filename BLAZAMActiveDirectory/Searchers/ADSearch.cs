@@ -130,7 +130,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 SearchRoot ??= ActiveDirectoryContext.SystemInstance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
                 var pageOffset = 1;
 
-                searcher = new DirectorySearcher((SearchRoot as AdapterDirectoryEntry)?.UnderlyingEntry)
+                searcher = new DirectorySearcher((SearchRoot as LdapDirectoryEntry)?.UnderlyingEntry)
                 {
                     VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, pageOffset),
                     PageSize = PageSize,
