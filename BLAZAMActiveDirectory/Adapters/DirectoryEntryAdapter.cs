@@ -1290,7 +1290,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private void SetNewProperty(string propertyName, object? value)
         {
-            if (value != null && !value.Equals(DirectoryEntry?.GetPropertyValue(propertyName)))
+            var existingValue = DirectoryEntry?.GetPropertyValue(propertyName);
+            if (value != null && !value.Equals(existingValue))
             {
                 NewEntryProperties[propertyName] = value;
 

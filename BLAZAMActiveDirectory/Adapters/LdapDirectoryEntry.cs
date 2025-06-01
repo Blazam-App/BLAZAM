@@ -1,6 +1,8 @@
 ﻿
 using Azure;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Helpers;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections;
@@ -32,18 +34,28 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public void SetPropertyValue(string propertyName, object? value)
         {
+            Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
+            DirectoryCache.Clear(DN);
+            return;
             UnderlyingEntry.Properties[propertyName].Value = value;
         }
         public void RemovePropertyValue(string propertyName, object? value)
         {
+            Invoke(propertyName, DirectoryAttributeOperation.Delete, value);
+            return;
             UnderlyingEntry.Properties[propertyName].Remove(value);
         }
         public void AddPropertyValue(string propertyName, object? value)
         {
+            Invoke(propertyName, DirectoryAttributeOperation.Add, value);
+            return;
+
             UnderlyingEntry.Properties[propertyName].Add(value);
         }
         public void ClearPropertyValue(string propertyName)
         {
+            Invoke(propertyName, DirectoryAttributeOperation.Replace, null);
+            return;
             UnderlyingEntry.Properties[propertyName].Clear();
         }
         public bool ContainsProperty(string propertyName)
@@ -62,153 +74,124 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private string? DN => UnderlyingEntry.Properties["distinguishedName"].Value?.ToString();
 
-        private Dictionary<string, object?> attributeCache = new();
-       
-        // Flag to indicate if all attributes for this entry have been fetched and cached.
-        private bool allAttributesFetchedAndCached = false;
-
-        // Lock object for thread-safe cache population.
-        private readonly object cacheLock = new object();
 
         private object? Search(string attributeName)
         {
-            lock (cacheLock)
+
+            var existingCache = DirectoryCache.GetEntryCache(DN);
+            if (existingCache == null) existingCache = new(new());
+            if (existingCache.Attributes.ContainsKey(attributeName.ToLower()))
             {
-                if (attributeCache.ContainsKey(attributeName.ToLower()))
-                {
-                    return attributeCache[attributeName.ToLower()];
-                }
-                using var ldapConnection = SecureLdapConnector.Connect(Directory.ConnectionSettings);
-                // Verify the connection is secure. This is crucial for unicodePwd modifications.
-                // This is a conceptual check; the LdapConnection should have been established securely.
-                if (!ldapConnection.SessionOptions.SecureSocketLayer)
-                {
-                    // Log error: "Password operations require a secure LDAP connection (SSL/TLS or StartTLS)."
-                    // Depending on your error handling strategy, you might throw an exception here.
-                    return null;
-                }
-
-
-                // First, find the schema naming context
-                var rootDseRequest = new SearchRequest("", "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, "schemaNamingContext");
-                var rootDseResponse = (SearchResponse)ldapConnection.SendRequest(rootDseRequest);
-                if (rootDseResponse.Entries.Count == 0)
-                {
-                    throw new Exception("Could not read RootDSE to find schema naming context.");
-                }
-                string schemaNamingContext = rootDseResponse.Entries[0].Attributes["schemaNamingContext"][0].ToString();
-
-                //var schemaInfo = GetSchemaInfo(ldapConnection, schemaNamingContext, attributeName);
-
-
-
-                // Search request to get ALL user attributes for the specified DN
-                SearchRequest allAttributesSearchRequest = new SearchRequest(
-                    DN,                                 // The DN of the object
-                    "(objectClass=*)",                  // Filter to match the object
-                    System.DirectoryServices.Protocols.SearchScope.Base, // Target a specific object
-                    null                                // Request all user attributes
-                );
-
-                //// Construct a search request for the specific entry and attribute
-                //SearchRequest searchRequest = new SearchRequest(
-                //    DN, // The DN of the object
-                //    $"({attributeName}=*)", // A filter to ensure the attribute exists (can be simplified if you know it exists)
-                //                            // More simply, if you just want the object and its attributes, you can use "(objectClass=*)"
-                //                            // or a more specific filter if needed.
-                //    System.DirectoryServices.Protocols.SearchScope.Base,    // We are targeting a specific object
-                //    attributeName        // Specify only the attribute you want
-                //);
-
-                SearchResponse searchResponse = (SearchResponse)ldapConnection.SendRequest(allAttributesSearchRequest);
-
-
-
-                SearchResultEntry entry = searchResponse.Entries[0];
-                foreach (string currentAttributeLdapName in entry.Attributes.AttributeNames)
-                {
-                    // Skip if already processed (e.g., by a direct cache hit before lock or an alias)
-                    if (attributeCache.ContainsKey(currentAttributeLdapName.ToLower()))
-                    {
-                        continue;
-                    }
-
-                    DirectoryAttribute directoryAttribute = entry.Attributes[currentAttributeLdapName];
-                    AttributeSchemaInfo schemaInfo= GetSchemaInfo(ldapConnection, schemaNamingContext, currentAttributeLdapName);
-
-                    if (schemaInfo == null)
-                    {
-                        // Schema not found for this attribute.
-                        // Cache null for this attribute, consistent with original behavior for unresolvable schema.
-                        attributeCache[currentAttributeLdapName.ToLower()] = null;
-                        // Log: $"Schema not found for attribute '{currentAttributeLdapName}'. Caching as null."
-                        Console.WriteLine($"Warning: Schema not found for attribute '{currentAttributeLdapName}'. It will be cached as null.");
-                        continue;
-                    }
-
-                    try
-                    {
-                        if (directoryAttribute.Count == 0)
-                        {
-                            attributeCache[currentAttributeLdapName.ToLower()] = null;
-                        }
-                        else if (schemaInfo.IsSingleValued)
-                        {
-                            // Assuming ConvertSingleValue is accessible
-                            attributeCache[currentAttributeLdapName.ToLower()] = ConvertSingleValue(directoryAttribute[0], schemaInfo);
-                        }
-                        else
-                        {
-                            List<object> values = new List<object>();
-                            foreach (object rawValue in directoryAttribute)
-                            {
-                                values.Add(ConvertSingleValue(rawValue, schemaInfo));
-                            }
-                            attributeCache[currentAttributeLdapName.ToLower()] = values.ToArray();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Log: $"Error converting attribute '{currentAttributeLdapName}': {ex.Message}. Caching as null."
-                        Console.WriteLine($"Error converting attribute '{currentAttributeLdapName}': {ex.Message}. It will be cached as null.");
-                        attributeCache[currentAttributeLdapName.ToLower()] = null; // Cache null if conversion fails
-                    }
-                }
-
-                
-                //if (searchResponse.Entries.Count > 0 && searchResponse.Entries[0].Attributes.Contains(attributeName))
-                //{
-                //    DirectoryAttribute attribute = searchResponse.Entries[0].Attributes[attributeName];
-
-                //    if (attribute.Count == 0) return null; // No value
-
-                //    if (schemaInfo.IsSingleValued)
-                //    {
-                //        var val = ConvertSingleValue(attribute[0], schemaInfo);
-                //        attributeCache[attributeName] = val;
-                //        return val;
-                //    }
-                //    else
-                //    {
-                //        // Handle multi-valued attributes
-                //        List<object> values = new List<object>();
-                //        foreach (object rawValue in attribute)
-                //        {
-                //            values.Add(ConvertSingleValue(rawValue, schemaInfo));
-                //        }
-                //        attributeCache[attributeName] = values.ToArray();
-                //        return values.ToArray(); // Or List<object>
-                //    }
-                //}
-
-
-                //attributeCache[attributeName] = null;
-                return attributeCache[attributeName.ToLower()]; // Attribute not found on the object or no value
-
+                return existingCache.Attributes[attributeName.ToLower()];
+            }
+            using var ldapConnection = SecureLdapConnector.Connect(Directory.ConnectionSettings);
+            // Verify the connection is secure. This is crucial for unicodePwd modifications.
+            // This is a conceptual check; the LdapConnection should have been established securely.
+            if (!ldapConnection.LdapConnection.SessionOptions.SecureSocketLayer)
+            {
+                // Log error: "Password operations require a secure LDAP connection (SSL/TLS or StartTLS)."
+                // Depending on your error handling strategy, you might throw an exception here.
+                return null;
             }
 
+
+            // First, find the schema naming context
+            var rootDseRequest = new SearchRequest("", "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, "schemaNamingContext");
+            var rootDseResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(rootDseRequest);
+            if (rootDseResponse.Entries.Count == 0)
+            {
+                throw new Exception("Could not read RootDSE to find schema naming context.");
+            }
+            string schemaNamingContext = rootDseResponse.Entries[0].Attributes["schemaNamingContext"][0].ToString();
+
+            //var schemaInfo = GetSchemaInfo(ldapConnection, schemaNamingContext, attributeName);
+
+
+
+            // Search request to get ALL user attributes for the specified DN
+            SearchRequest allAttributesSearchRequest = new SearchRequest(
+                DN,                                 // The DN of the object
+                "(objectClass=*)",                  // Filter to match the object
+                System.DirectoryServices.Protocols.SearchScope.Base, // Target a specific object
+                null                                // Request all user attributes
+            );
+
+            //// Construct a search request for the specific entry and attribute
+            //SearchRequest searchRequest = new SearchRequest(
+            //    DN, // The DN of the object
+            //    $"({attributeName}=*)", // A filter to ensure the attribute exists (can be simplified if you know it exists)
+            //                            // More simply, if you just want the object and its attributes, you can use "(objectClass=*)"
+            //                            // or a more specific filter if needed.
+            //    System.DirectoryServices.Protocols.SearchScope.Base,    // We are targeting a specific object
+            //    attributeName        // Specify only the attribute you want
+            //);
+
+            SearchResponse searchResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(allAttributesSearchRequest);
+
+
+
+            SearchResultEntry entry = searchResponse.Entries[0];
+            foreach (string currentAttributeLdapName in entry.Attributes.AttributeNames)
+            {
+                // Skip if already processed (e.g., by a direct cache hit before lock or an alias)
+
+                if (existingCache.Attributes.ContainsKey(currentAttributeLdapName.ToLower()))
+                {
+                    continue;
+                }
+
+                DirectoryAttribute directoryAttribute = entry.Attributes[currentAttributeLdapName];
+                AttributeSchemaInfo schemaInfo = GetSchemaInfo(ldapConnection, schemaNamingContext, currentAttributeLdapName);
+
+                if (schemaInfo == null)
+                {
+                    // Schema not found for this attribute.
+                    // Cache null for this attribute, consistent with original behavior for unresolvable schema.
+                    existingCache.Attributes[currentAttributeLdapName.ToLower()] = null;
+                    // Log: $"Schema not found for attribute '{currentAttributeLdapName}'. Caching as null."
+                    Console.WriteLine($"Warning: Schema not found for attribute '{currentAttributeLdapName}'. It will be cached as null.");
+                    continue;
+                }
+
+                try
+                {
+                    if (directoryAttribute.Count == 0)
+                    {
+                        existingCache.Attributes[currentAttributeLdapName.ToLower()] = null;
+                    }
+                    else if (schemaInfo.IsSingleValued)
+                    {
+                        // Assuming ConvertSingleValue is accessible
+                        existingCache.Attributes[currentAttributeLdapName.ToLower()] = ConvertSingleValue(directoryAttribute[0], schemaInfo);
+                    }
+                    else
+                    {
+                        List<object> values = new List<object>();
+                        foreach (object rawValue in directoryAttribute)
+                        {
+                            values.Add(ConvertSingleValue(rawValue, schemaInfo));
+                        }
+                        existingCache.Attributes[currentAttributeLdapName.ToLower()] = values.ToArray();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log: $"Error converting attribute '{currentAttributeLdapName}': {ex.Message}. Caching as null."
+                    Console.WriteLine($"Error converting attribute '{currentAttributeLdapName}': {ex.Message}. It will be cached as null.");
+                    existingCache.Attributes[currentAttributeLdapName.ToLower()] = null; // Cache null if conversion fails
+                }
+            }
+            if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
+            {
+                existingCache.Attributes[attributeName] = null;
+            }
+            DirectoryCache.SetEntryCache(DN, existingCache.Attributes);
+            return existingCache.Attributes[attributeName.ToLower()]; // Attribute not found on the object or no value
+
+
+
         }
-        private AttributeSchemaInfo GetSchemaInfo(LdapConnection ldapConnection, string schemaNamingContext, string attributeLdapDisplayName)
+        private AttributeSchemaInfo GetSchemaInfo(AppLdapConnection ldapConnection, string schemaNamingContext, string attributeLdapDisplayName)
         {
             SearchRequest schemaSearchRequest = new SearchRequest(
                 schemaNamingContext,
@@ -219,7 +202,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             try
             {
-                SearchResponse schemaSearchResponse = (SearchResponse)ldapConnection.SendRequest(schemaSearchRequest);
+                SearchResponse schemaSearchResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(schemaSearchRequest);
                 if (schemaSearchResponse.Entries.Count > 0)
                 {
                     SearchResultEntry schemaEntry = schemaSearchResponse.Entries[0];
@@ -482,7 +465,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             // Verify the connection is secure. This is crucial for unicodePwd modifications.
             // This is a conceptual check; the LdapConnection should have been established securely.
-            if (!ldapConnection.SessionOptions.SecureSocketLayer)
+            if (!ldapConnection.LdapConnection.SessionOptions.SecureSocketLayer)
             {
                 // Log error: "Password operations require a secure LDAP connection (SSL/TLS or StartTLS)."
                 // Depending on your error handling strategy, you might throw an exception here.
@@ -507,7 +490,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
             var modifyRequest = new ModifyRequest(DN, attributeModification);
-            ModifyResponse modifyResponse = (ModifyResponse)ldapConnection.SendRequest(modifyRequest);
+            ModifyResponse modifyResponse = (ModifyResponse)ldapConnection.LdapConnection.SendRequest(modifyRequest);
 
             // Check the result code from the LDAP server
             if (modifyResponse.ResultCode == ResultCode.Success)

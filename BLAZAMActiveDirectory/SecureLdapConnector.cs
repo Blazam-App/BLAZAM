@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.DirectoryServices.Protocols;
 using System.Net; // Required for NetworkCredential
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers; // Added for ADSettings
 
@@ -8,6 +10,9 @@ namespace BLAZAM.ActiveDirectory
 {
     public static class SecureLdapConnector
     {
+        private static Timer? _disposerTimer = null;
+        private static object _lock = new object();
+        private static List<AppLdapConnection> _connectionPool = new();
         /// <summary>
         /// Establishes a secure LDAP connection based on ADSettings.
         /// It will choose LDAPS if port is typically 636 and UseTLS is true,
@@ -16,13 +21,25 @@ namespace BLAZAM.ActiveDirectory
         /// <param name="settings">The ADSettings object containing connection parameters.</param>
         /// <param name="connection">The established LdapConnection object if successful, otherwise null.</param>
         /// <returns>True if the connection was successful, otherwise false.</returns>
-        public static LdapConnection? Connect(ADSettings settings)
+        public static AppLdapConnection? Connect(ADSettings settings)
         {
+            lock (_lock)
+            {
+                foreach (var conn in _connectionPool)
+                {
+                    if (conn.Expires != null)
+                    {
+                        conn.Expires = null;
+                        return conn;
+                    }
+                }
+
+            }
             LdapConnection connection = null;
             if (settings == null)
             {
                 Console.WriteLine("ADSettings object is null.");
-                return connection;
+                return default;
             }
 
             // Optional: Check the IsValid property from ADSettings, though the individual Connect methods will also fail if parameters are bad.
@@ -35,17 +52,17 @@ namespace BLAZAM.ActiveDirectory
             if (string.IsNullOrEmpty(settings.ServerAddress))
             {
                 Console.WriteLine("ServerAddress in ADSettings is null or empty.");
-                return connection;
+                return default;
             }
             if (string.IsNullOrEmpty(settings.Username))
             {
                 Console.WriteLine("Username in ADSettings is null or empty.");
-                return connection;
+                return default;
             }
             if (string.IsNullOrEmpty(settings.Password))
             {
                 Console.WriteLine("Password in ADSettings is null or empty.");
-                return connection;
+                return default;
             }
 
 
@@ -70,7 +87,43 @@ namespace BLAZAM.ActiveDirectory
                 Console.WriteLine($"ADSettings: UseTLS is true, port is {settings.ServerPort} (non-standard for TLS inference). Attempting LDAPS as a fallback secure method.");
                 ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password, out connection);
             }
-            return connection;
+            var appConnection = new AppLdapConnection(connection);
+            lock (_lock)
+            {
+                if (_disposerTimer == null)
+                {
+                    _disposerTimer = new Timer(CleanPool,null,30000,30000);
+                }
+                _connectionPool.Add(appConnection);
+            }
+            return appConnection;
+        }
+
+        private static void CleanPool(object? state)
+        {
+            lock (_lock)
+            {
+                try
+                {
+                    var count = _connectionPool.Count;
+                    for (int i = 0; i < count; i++)
+                    {
+                        if (!_connectionPool[i].IsDisposed && _connectionPool[i].Expires != null && _connectionPool[i].Expires < DateTime.Now)
+                        {
+                            _connectionPool[i].DisposeNow();
+                            _connectionPool.RemoveAt(i);
+                            i--;
+                            count--;
+                        }
+
+                    }
+                }
+                catch(Exception ex)
+                {
+
+                }
+
+            }
         }
 
 
@@ -244,6 +297,6 @@ namespace BLAZAM.ActiveDirectory
             }
         }
 
-      
+
     }
 }
