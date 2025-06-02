@@ -25,7 +25,7 @@ namespace BLAZAM.Common.Data
                 bool returnValue = LogonUser(username,
                         domain,
                         phPassword,
-                        LOGON32_LOGON_INTERACTIVE,
+                        LOGON32_LOGON_NEW_CREDENTIALS,
                         LOGON32_PROVIDER_DEFAULT,
                         out safeAccessTokenHandle);
 

@@ -52,7 +52,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLAZAMTestPlugin", "BLAZAPl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLAZAMPlugins", "BLAZAMPlugins\BLAZAMPlugins.csproj", "{1E1EECFA-4728-49EF-9828-B20D1C9F829A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLAZAMActiveDirectoryTests", "BLAZAMActiveDirectoryTests\BLAZAMActiveDirectoryTests.csproj", "{BD3AEEEB-2D88-4C13-B28D-92663880D37A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLAZAMActiveDirectoryTests", "BLAZAMActiveDirectoryTests\BLAZAMActiveDirectoryTests.csproj", "{BD3AEEEB-2D88-4C13-B28D-92663880D37A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
