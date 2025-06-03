@@ -342,7 +342,7 @@ namespace BLAZAM.Helpers
         }
         public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry, IActiveDirectoryContext directory)
         {
-            return new LdapDirectoryEntry(entry,directory);
+            return new LdapDirectoryEntry(entry.Properties["distinuishedName"].Value?.ToString(),directory);
         }
         /// <summary>
         /// Encapsulates a raw DirectoryEntry search's <see cref="DirectoryEntries"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
@@ -369,6 +369,130 @@ namespace BLAZAM.Helpers
                 }
             }
             return objects;
+        }
+
+
+
+        /// <summary>
+        /// Encapsulates a <see cref="System.DirectoryServices.Protocols.SearchResultEntryCollection"/> within a list of <see cref="IDirectoryEntryAdapter"/> of the appropriate entry type.
+        /// </summary>
+        /// <param name="searchResultEntries">The collection of search result entries from System.DirectoryServices.Protocols.</param>
+        /// <param name="context">The Active Directory context.</param>
+        /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond to the directory object type they encapsulate.</returns>
+        public static List<IDirectoryEntryAdapter> Encapsulate(this System.DirectoryServices.Protocols.SearchResultEntryCollection searchResultEntries, IActiveDirectoryContext context)
+        {
+            List<IDirectoryEntryAdapter> objects = new List<IDirectoryEntryAdapter>();
+
+            if (searchResultEntries == null || context == null)
+            {
+                Loggers.ActiveDirectoryLogger.Warning("Encapsulate called with null searchResultEntries or context.");
+                return objects;
+            }
+
+            try
+            {
+                foreach (System.DirectoryServices.Protocols.SearchResultEntry sre in searchResultEntries)
+                {
+                    if (sre == null || sre.Attributes == null) continue;
+
+                    IDirectoryEntryAdapter? thisObject = null;
+                    List<string> objectClasses = new List<string>();
+
+                    if (sre.Attributes.Contains("objectClass"))
+                    {
+                        foreach (var val in sre.Attributes["objectClass"].GetValues(typeof(byte[])))
+                        {
+                            if (val is byte[] bytes)
+                            {
+                                objectClasses.Add(Encoding.UTF8.GetString(bytes).ToLowerInvariant());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Loggers.ActiveDirectoryLogger.Warning("SearchResultEntry {DN} does not contain objectClass attribute.", sre.DistinguishedName);
+                        continue;
+                    }
+
+                    // Determine object type based on objectClass values
+                    if (objectClasses.Contains("top")) // Basic check
+                    {
+                        if (objectClasses.Contains("computer"))
+                        {
+                            thisObject = new ADComputer();
+                        }
+                        else if (objectClasses.Contains("user"))
+                        {
+                            thisObject = new ADUser();
+                        }
+                        else if (objectClasses.Contains("contact"))
+                        {
+                            thisObject = new ADContact();
+                        }
+                        else if (objectClasses.Contains("group"))
+                        {
+                            thisObject = new ADGroup();
+                        }
+                        else if (objectClasses.Contains("printqueue")) // Note: printQueue is often lowercase from S.DS.P
+                        {
+                            thisObject = new ADPrinter();
+                        }
+                        else if (objectClasses.Contains("msfve-recoveryinformation")) // Note: msFVE-RecoveryInformation is often lowercase
+                        {
+                            thisObject = new ADBitLockerRecovery();
+                        }
+                        else if (objectClasses.Contains("organizationalunit") || objectClasses.Contains("container"))
+                        {
+                            thisObject = new ADOrganizationalUnit();
+                        }
+                        // Add more types if necessary, e.g. "container" could be a generic DirectoryEntryAdapter if no specific OU logic needed
+
+                        if (thisObject != null)
+                        {
+                            // This Parse method signature needs to be created in DirectoryEntryAdapter and its children
+                            thisObject.Parse(context, sre);
+                            objects.Add(thisObject);
+                        }
+                        else
+                        {
+                            Loggers.ActiveDirectoryLogger.Debug("Unrecognized or unhandled object type for DN: {DN}, ObjectClasses: {ObjectClasses}", sre.DistinguishedName, string.Join(", ", objectClasses));
+                        }
+                    }
+                    else
+                    {
+                        Loggers.ActiveDirectoryLogger.Debug("Object {DN} does not contain 'top' in objectClass, skipping.", sre.DistinguishedName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Error("Error encapsulating SearchResultEntryCollection: {@Error}", ex);
+                // Depending on desired behavior, might clear objects or throw
+            }
+            return objects;
+        }
+
+
+
+
+        /// <summary>
+        /// Extracts the parent distinguished name from a given DN.
+        /// </summary>
+        /// <param name="dn">The distinguished name.</param>
+        /// <returns>The parent DN, or null if no parent exists (e.g., for a domain root) or if the DN is invalid.</returns>
+        public static string? GetParentDN(string? dn)
+        {
+            if (string.IsNullOrEmpty(dn))
+            {
+                return null;
+            }
+
+            int commaIndex = dn.IndexOf(',');
+            if (commaIndex > 0 && commaIndex < dn.Length - 1)
+            {
+                return dn.Substring(commaIndex + 1);
+            }
+            return null; // No parent DN found (could be a domain root or malformed DN)
         }
 
         public static string? EscapeLdapSearchFilter(this string? input)

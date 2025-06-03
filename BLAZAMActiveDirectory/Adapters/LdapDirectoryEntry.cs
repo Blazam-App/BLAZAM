@@ -22,9 +22,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             UnderlyingEntry = underlyingEntry;
         }
-        public LdapDirectoryEntry(DirectoryEntry underlyingEntry, IActiveDirectoryContext directory)
+        public LdapDirectoryEntry(string dn, IActiveDirectoryContext directory)
         {
-            UnderlyingEntry = underlyingEntry;
+            DN = dn;
             Directory = directory;
         }
 
@@ -37,26 +37,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
             DirectoryCache.Clear(DN);
             return;
-            UnderlyingEntry.Properties[propertyName].Value = value;
         }
         public void RemovePropertyValue(string propertyName, object? value)
         {
             Invoke(propertyName, DirectoryAttributeOperation.Delete, value);
             return;
-            UnderlyingEntry.Properties[propertyName].Remove(value);
         }
         public void AddPropertyValue(string propertyName, object? value)
         {
             Invoke(propertyName, DirectoryAttributeOperation.Add, value);
             return;
-
-            UnderlyingEntry.Properties[propertyName].Add(value);
         }
         public void ClearPropertyValue(string propertyName)
         {
             Invoke(propertyName, DirectoryAttributeOperation.Replace, null);
             return;
-            UnderlyingEntry.Properties[propertyName].Clear();
         }
         public bool ContainsProperty(string propertyName)
         {
@@ -69,10 +64,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public object? GetPropertyValue(string propertyName)
         {
             return Search(propertyName);
-            return UnderlyingEntry.Properties[propertyName].Value;
         }
 
-        private string? DN => UnderlyingEntry.Properties["distinguishedName"].Value?.ToString();
+        private string? DN { get; set; }
 
 
         private object? Search(string attributeName)
@@ -373,13 +367,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public string SchemaClassName => UnderlyingEntry.SchemaClassName;
 
-        public string Name => UnderlyingEntry.Name;
+        public string Name => GetPropertyValue("name").ToString();
 
         public IDirectoryEntry Parent
         {
             get
             {
-                return new LdapDirectoryEntry(UnderlyingEntry.Parent, Directory);
+                return new LdapDirectoryEntry(DN, Directory);
             }
         }
 

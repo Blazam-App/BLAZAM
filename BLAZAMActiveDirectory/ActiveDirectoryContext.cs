@@ -163,10 +163,13 @@ namespace BLAZAM.ActiveDirectory
         /// Gets the root entry for deleted objects in Active Directory
         /// </summary>
         /// <returns></returns>
-        public IDirectoryEntry GetDeleteObjectsEntry() => new DirectoryEntry(LDAP_PROTO + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.FQDN.FqdnToDN(),
-                ConnectionSettings?.Username,
-                _encryption.DecryptObject<string>(ConnectionSettings?.Password),
-                AuthenticationTypes.FastBind | AuthenticationTypes.Secure).ToIDirectoryEntry(this);
+        public IDirectoryEntry GetDeleteObjectsEntry()
+        {
+            if (ConnectionSettings == null || ConnectionSettings.FQDN == null)
+                throw new InvalidOperationException("Connection settings or FQDN not available to construct Deleted Objects path.");
+            string deletedObjectsDN = "CN=Deleted Objects," + ConnectionSettings.FQDN.FqdnToDN();
+            return new LdapDirectoryEntry(deletedObjectsDN, this);
+        }
 
 
 
@@ -557,22 +560,16 @@ namespace BLAZAM.ActiveDirectory
 
         private void InitializeDirectoryEntries(ADSettings? ad)
         {
-            var pass = _encryption.DecryptObject<string>(ad.Password);
+            if (ad == null) throw new ArgumentNullException(nameof(ad), "ADSettings cannot be null for initializing directory entries.");
+            if (string.IsNullOrEmpty(ad.ApplicationBaseDN)) throw new InvalidOperationException("ApplicationBaseDN is not configured.");
+            if (ad.FQDN == null || string.IsNullOrEmpty(ad.FQDN.FqdnToDN())) throw new InvalidOperationException("FQDN is not configured properly to derive root DN.");
 
-            AppRootDirectoryEntry = new DirectoryEntry(
-                LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN,
-                ad.Username,
-                pass,
-                AuthType).ToIDirectoryEntry(this);
-            Loggers.ActiveDirectoryLogger.Information("App Active Directory context connected");
+            // AppRootDirectoryEntry might be null if ApplicationBaseDN is not set, handle appropriately or ensure it's always set.
+            AppRootDirectoryEntry = new LdapDirectoryEntry(ad.ApplicationBaseDN, this);
+            Loggers.ActiveDirectoryLogger.Information("App Active Directory context connected using LdapDirectoryEntry for DN: {DN}", ad.ApplicationBaseDN);
 
-            RootDirectoryEntry = new DirectoryEntry(
-                LDAP_PROTO + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(),
-                ad.Username,
-                pass,
-                AuthType).ToIDirectoryEntry(this);
-
-            Loggers.ActiveDirectoryLogger.Information("Root Active Directory context connected");
+            RootDirectoryEntry = new LdapDirectoryEntry(ad.FQDN.FqdnToDN(), this);
+            Loggers.ActiveDirectoryLogger.Information("Root Active Directory context connected using LdapDirectoryEntry for DN: {DN}", ad.FQDN.FqdnToDN());
         }
 
         private void PerformNetworkTests(ADSettings? ad)
