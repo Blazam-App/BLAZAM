@@ -50,7 +50,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Blazam-App_BLAZAM" /o:"blazam-app" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.scanner.scanAll=false /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=coverage.opencover.xml
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Blazam-App_BLAZAM" /o:"blazam-app" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.scanner.scanAll=false /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=".\coverage\coverage1.opencover.xml,.\coverage\coverage2.opencover.xml,.\coverage\coverage3.opencover.xml" /d:sonar.coverage.exclusions="**/*.razor.cs,**/*.razor.g.cs,**/_Imports.razor.g.cs"
           dotnet build 
-          coverlet .\BLAZAM.Tests\bin\Debug\net8.0\BLAZAM.Tests.dll -t "dotnet" -a "test --filter FullyQualifiedName!~PlaywrightTests --no-build" -f=opencover  -o="coverage.opencover.xml"
+           coverlet .\BLAZAM.Tests\bin\Debug\net8.0\BLAZAM.Tests.dll -t "dotnet" -a "test --filter FullyQualifiedName~BLAZAM.Tests --no-build" -f=opencover  -o=".\coverage\coverage1.opencover.xml"
+          coverlet .\BLAZAMCommon.Tests\bin\Debug\net8.0\BLAZAMCommon.Tests.dll -t "dotnet" -a "test --filter FullyQualifiedName~BLAZAMCommon.Tests --no-build" -f=opencover -o=".\coverage\coverage2.opencover.xml"
+          coverlet .\BLAZAMDatabase.Tests\bin\Debug\net8.0\BLAZAMDatabase.Tests.dll -t "dotnet" -a "test --filter FullyQualifiedName~BLAZAMDatabase.Tests --no-build" -f=opencover -o=".\coverage\coverage3.opencover.xml"
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}" 

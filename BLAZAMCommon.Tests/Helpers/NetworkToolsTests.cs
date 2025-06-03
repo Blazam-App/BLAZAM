@@ -4,9 +4,9 @@ using BLAZAM.Helpers; // For NetworkTools
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks; // For Task.Delay in some tests if needed
-using System.Linq; // For Enumerable.Range
+using System.Linq;
 
-namespace BLAZAM.Common.Tests
+namespace BLAZAMCommon.Tests.Helpers
 {
     public class NetworkToolsTests
     {
@@ -131,11 +131,11 @@ namespace BLAZAM.Common.Tests
             // This exception is not caught by the SocketException handler in NetworkTools.
             Assert.Throws<ArgumentOutOfRangeException>(() => NetworkTools.IsAnyPortOpen("127.0.0.1", portsWithInvalid));
         }
-        
+
         [Fact]
         public void IsAnyPortOpen_ArrayWithOnlyValidButClosedPorts_ReturnsFalse()
         {
-             Assert.False(NetworkTools.IsAnyPortOpen("127.0.0.1", new[] { 65500, 65001, 65002 }));
+            Assert.False(NetworkTools.IsAnyPortOpen("127.0.0.1", new[] { 65500, 65001, 65002 }));
         }
 
         #endregion IsAnyPortOpen Tests
@@ -201,7 +201,7 @@ namespace BLAZAM.Common.Tests
                 listener?.Stop();
             }
         }
-        
+
         [Fact]
         public void IsAnyPortOpen_WhenOnePortIsActuallyOpenAndOthersAreInvalid_ThrowsArgumentOutOfRangeException()
         {
@@ -217,7 +217,7 @@ namespace BLAZAM.Common.Tests
             try
             {
                 openPort = GetAvailablePort();
-                portsWithInvalidFirst[1] = openPort; 
+                portsWithInvalidFirst[1] = openPort;
 
                 listener = new TcpListener(IPAddress.Loopback, openPort);
                 listener.Start(); // Start listener on a valid port

@@ -1,8 +1,8 @@
 using System;
 using Xunit;
-using BLAZAM.Helpers; // Updated namespace based on the file content provided
+using BLAZAM.Helpers;
 
-namespace BLAZAM.Common.Tests
+namespace BLAZAMCommon.Tests.Helpers
 {
     public class ByteHelpersTests
     {
@@ -41,7 +41,7 @@ namespace BLAZAM.Common.Tests
             var arr2 = new byte[] { 0b00001111 };
             Assert.Equal(8, arr1.BitDifference(arr2));
         }
-        
+
         [Fact]
         public void BitDifference_SubSetArraySameLength_ShouldReturnCorrectDifference()
         {
@@ -93,7 +93,7 @@ namespace BLAZAM.Common.Tests
             var expected = new byte[] { 1, 2, 3, 4 };
             Assert.Equal(expected, number.ToByteArray());
         }
-        
+
         [Fact]
         public void ToByteArray_PositiveInteger_WithExplicitLength4_ShouldReturnCorrectByteArray_BigEndian()
         {
@@ -133,7 +133,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void ToByteArray_ShorterLength_ShouldTruncateAtEnd_BigEndian()
         {
-            int number = 0x01020304; 
+            int number = 0x01020304;
             // Initial BigEndian: {1, 2, 3, 4}
             // Array.Resize(ref byteArray, 2) truncates to {1, 2}
             var expected = new byte[] { 1, 2 };
@@ -143,7 +143,7 @@ namespace BLAZAM.Common.Tests
         [Fact]
         public void ToByteArray_LongerLength_ShouldPadWithZerosAtEnd_BigEndian()
         {
-            int number = 0x01020304; 
+            int number = 0x01020304;
             // Initial BigEndian: {1, 2, 3, 4}
             // Array.Resize(ref byteArray, 6) pads to {1, 2, 3, 4, 0, 0}
             var expected = new byte[] { 1, 2, 3, 4, 0, 0 };

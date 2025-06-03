@@ -38,7 +38,7 @@
                 }
 
             }
-            @if (Model.MemberOf.Where(group => !group.CanRead).Count() > 0)
+            @if (Model.MemberOf.Count(group => !group.CanRead) > 0)
             {
                 <MudListItem Text="The user is in more groups you don't have access to" />
             }

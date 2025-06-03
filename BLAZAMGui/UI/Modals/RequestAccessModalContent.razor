@@ -7,7 +7,7 @@
 
 @if (_objectActions != null && _objectActions.Count > 0)
 {
-    if (globalPermissionRequestActions.Count() > 0)
+    if (globalPermissionRequestActions.Count > 0)
     {
         @if (_dbAllowedActions.Any(x => x.IsActionAppropriateForObject(Entry.ObjectType)))
         {
