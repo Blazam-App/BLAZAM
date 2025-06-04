@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.DirectoryServices;
+using System.DirectoryServices.Protocols;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace BLAZAM.ActiveDirectory.Mocks // Or your preferred testing namespace
             Path = path;
             NativeGuid = Guid.NewGuid().ToString();
             SchemaClassName = "user"; // Default, can be changed
-            AuthenticationType = AuthenticationTypes.None;
+            AuthenticationType = AuthType.Anonymous;
             UsePropertyCache = false;
             Parent = null; // Can be set in tests
             Children = new MockDirectoryEntries(this); // Pass current mock as potential parent
@@ -43,9 +44,9 @@ namespace BLAZAM.ActiveDirectory.Mocks // Or your preferred testing namespace
         public string Name { get; set; }
         public IDirectoryEntry? Parent { get; set; }
         public IDirectoryEntries Children { get; set; }
-        public AuthenticationTypes AuthenticationType { get; set; }
+        public AuthType AuthenticationType { get; set; }
         public bool UsePropertyCache { get; set; }
-
+        public string? DN { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void SetPropertyValue(string propertyName, object? value)
         {

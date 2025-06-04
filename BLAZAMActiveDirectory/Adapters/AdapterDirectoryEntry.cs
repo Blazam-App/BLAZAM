@@ -8,6 +8,8 @@ using System.Text;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
+#pragma warning disable CA1416 // Validate platform compatibility
+
     public class AdapterDirectoryEntry : IDirectoryEntry
     {
         public readonly DirectoryEntry UnderlyingEntry;
@@ -22,7 +24,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             UnderlyingEntry = underlyingEntry;
             Directory = directory;
         }
-
+        public string? DN { get => GetPropertyValue("disinguishedName").ToString(); set { /*donothing*/ } } 
         public string Path { get => UnderlyingEntry.Path; set => UnderlyingEntry.Path = value; }
 
         public string? NativeGuid => UnderlyingEntry.NativeGuid;
@@ -69,7 +71,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public IDirectoryEntries Children => new AdapterDirectoryEntries(UnderlyingEntry.Children);
 
-        public AuthenticationTypes AuthenticationType { get => UnderlyingEntry.AuthenticationType; set => UnderlyingEntry.AuthenticationType = value; }
+        public AuthType AuthenticationType { get => (AuthType)UnderlyingEntry.AuthenticationType; }
         public bool UsePropertyCache { get => UnderlyingEntry.UsePropertyCache; set => UnderlyingEntry.UsePropertyCache = value; }
 
         public void Close()
@@ -208,4 +210,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 UnderlyingDirectoryEntries.Remove(dEntry);
         }
     }
+#pragma warning restore CA1416 // Validate platform compatibility
+
 }

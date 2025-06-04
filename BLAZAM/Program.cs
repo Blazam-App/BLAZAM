@@ -30,7 +30,7 @@ namespace BLAZAM
         /// <returns>
         /// A SystemDirectory object representing the path, e.g., C:\inetpub\blazam\writable\
         /// </returns>
-        internal static SystemDirectory WritablePath => new(ApplicationInfo.tempDirectory + @"writable\");
+        internal static SystemDirectory WritablePath => new(ApplicationInfo.tempDirectory + $"writable{Path.DirectorySeparatorChar}");
 
    
         /// <summary>
@@ -98,7 +98,7 @@ namespace BLAZAM
             }
 
             // Setup local file logging and Seq logging using Serilog.
-            Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
+            Loggers.SetupLoggers(WritablePath + $"logs{Path.DirectorySeparatorChar}", ApplicationInfo.runningVersion.ToString());
             // Integrate Serilog with the ASP.NET Core host logging.
             builder.Host.UseSerilog(Log.Logger);
 
@@ -125,7 +125,7 @@ namespace BLAZAM
             AppInstance.PreRun(); // Custom extension method likely defined elsewhere
 
             // Re-setup loggers - perhaps needed if PreRun modified paths or settings?
-            Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
+            Loggers.SetupLoggers(WritablePath + $"logs{Path.DirectorySeparatorChar}", ApplicationInfo.runningVersion.ToString());
 
             // Enable Serilog request logging to log details about incoming HTTP requests.
             AppInstance.UseSerilogRequestLogging(configureOptions => configureOptions.Logger = Loggers.RequestLogger);

@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
@@ -10,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.DirectoryServices;
+using System.DirectoryServices.Protocols;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
@@ -58,7 +60,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// <summary>
         /// Indicates whether the search is single level or recursive default is recursive
         /// </summary>
-        public SearchScope SearchScope { get; set; } = SearchScope.Subtree;
+        public System.DirectoryServices.Protocols.SearchScope SearchScope { get; set; } = System.DirectoryServices.Protocols.SearchScope.Subtree;
 
         /// <summary>
         /// The realtime results of this search. 
@@ -76,7 +78,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         private List<SearchResult> _searchResults = new();
 
         public List<IDirectoryEntryAdapter> Results { get; set; } = new();
-        public string LdapQuery { get; private set; }
+        public string LdapFilter { get; private set; }
         public bool SearchDeleted { get; set; } = false;
         public bool DisabledOnly { get; set; }
 
@@ -128,28 +130,33 @@ namespace BLAZAM.ActiveDirectory.Searchers
             try
             {
                 SearchRoot ??= ActiveDirectoryContext.SystemInstance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
+
+                LdapFilter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(objectClass=contact)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))";
+
+
+
                 var pageOffset = 1;
 
-                searcher = new DirectorySearcher((SearchRoot as LdapDirectoryEntry)?.UnderlyingEntry)
-                {
-                    VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, pageOffset),
-                    PageSize = PageSize,
-                    Sort = new SortOption(ActiveDirectoryFields.CanonicalName.FieldName, SortDirection.Ascending),
-                    SearchScope = SearchScope,
-                    SizeLimit = MaxResults,
-                    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(objectClass=contact)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
-                };
+                //searcher = new DirectorySearcher((SearchRoot as LdapDirectoryEntry)?.UnderlyingEntry)
+                //{
+                //    VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, pageOffset),
+                //    PageSize = PageSize,
+                //    Sort = new SortOption(ActiveDirectoryFields.CanonicalName.FieldName, SortDirection.Ascending),
+                //    SearchScope = SearchScope,
+                //    SizeLimit = MaxResults,
+                //    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(objectClass=contact)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
+                //};
                 if (EnabledOnly == false)
                 {
-                    searcher.Filter = searcher.Filter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "");
+                    LdapFilter = LdapFilter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "");
                 }
                 else if (DisabledOnly == true)
                 {
-                    searcher.Filter = searcher.Filter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "(userAccountControl:1.2.840.113556.1.4.803:=2)");
+                    LdapFilter = LdapFilter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "(userAccountControl:1.2.840.113556.1.4.803:=2)");
 
                 }
                 if (SearchDeleted)
-                    searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + "(isDeleted=TRUE)" + ")";
+                    LdapFilter = LdapFilter.Substring(0, LdapFilter.Length - 1) + "(isDeleted=TRUE)" + ")";
 
                 switch (ObjectTypeFilter)
                 {
@@ -159,26 +166,26 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(distinguishedName=" + GeneralSearchTerm + ")(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(mail=*" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
                         break;
                     case ActiveDirectoryObjectType.Printer:
-                        searcher.Filter = "(&(objectClass=printQueue))";
+                        LdapFilter = "(&(objectClass=printQueue))";
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*))";
 
                         break;
                     case ActiveDirectoryObjectType.Group:
-                        searcher.Filter = "(&(objectCategory=group)(objectClass=group))";
+                        LdapFilter = "(&(objectCategory=group)(objectClass=group))";
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
 
                         break;
                     case ActiveDirectoryObjectType.User:
-                        searcher.Filter = "(&(objectCategory=person)(objectClass=user))";
+                        LdapFilter = "(&(objectCategory=person)(objectClass=user))";
                         if (EnabledOnly == true)
                         {
-                            searcher.Filter = "(&(objectCategory=person)(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
+                            LdapFilter = "(&(objectCategory=person)(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
                         }
                         else if (DisabledOnly == true)
                         {
-                            searcher.Filter = "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=2))";
+                            LdapFilter = "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=2))";
 
                         }
                         if (GeneralSearchTerm != null)
@@ -187,7 +194,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                         break;
                     case ActiveDirectoryObjectType.Contact:
-                        searcher.Filter = "(&(objectCategory=person)(objectClass=contact))";
+                        LdapFilter = "(&(objectCategory=person)(objectClass=contact))";
 
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
@@ -195,25 +202,25 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                         break;
                     case ActiveDirectoryObjectType.Computer:
-                        searcher.Filter = "(&(objectCategory=computer))";
+                        LdapFilter = "(&(objectCategory=computer))";
                         if (EnabledOnly == true)
                         {
-                            searcher.Filter = "(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
+                            LdapFilter = "(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
                         }
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(distinguishedName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*))";
 
                         break;
                     case ActiveDirectoryObjectType.BitLocker:
-                        searcher.Filter = "(&(objectCategory=msFVE-RecoveryInformation))";
+                        LdapFilter = "(&(objectCategory=msFVE-RecoveryInformation))";
                         if (GeneralSearchTerm != null)
 
-                            searcher.Filter = $"(name=*{GeneralSearchTerm}*)";
+                            LdapFilter = $"(name=*{GeneralSearchTerm}*)";
 
                         break;
                     case ActiveDirectoryObjectType.OU:
-                        searcher.VirtualListView = null;
-                        searcher.Filter = "(&(objectCategory=organizationalUnit))";
+                       // searcher.VirtualListView = null;
+                        LdapFilter = "(&(objectCategory=organizationalUnit))";
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(distinguishedName=" + GeneralSearchTerm + ")(ou=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*))";
 
@@ -266,18 +273,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             if (field.Value is DateTime dateTimeValue)
                             {
                                 searchValue = dateTimeValue.ToFileTimeUtc().ToString();
-
-                                //switch (field.Field.FieldType)
-                                //{
-                                //    case ActiveDirectoryFieldType.Date:
-                                //        searchValue = dateTimeValue.ToString("yyyyMMddHHmmss.fZ");
-
-                                //        break;
-                                //    case ActiveDirectoryFieldType.FileTime:
-                                //        searchValue = dateTimeValue.ToFileTimeUtc().ToString();
-                                //        break;
-
-                                //}
                             }
                             else if (field.Value is string strValue)
                             {
@@ -369,16 +364,26 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 }
 
+
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
-                PrepareSearcher(searcher);
+                // Construct a search request for the specific entry and attribute
+                SearchRequest searchRequest = new SearchRequest(
+                    SearchRoot.DN, // The DN of the search base
+                    LdapFilter, // A filter 
+                    SearchScope,    
+                    "distinguishedName"        // Specify only the attribute you want
+                );
+                PrepareSearcher(searchRequest);
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
+                using (var connection = _currentUserActiveDirectoryContext.Connect()) {
 
-                PerformSearch<TObject, TInterface>(searcher, PageSize);
+                    PerformSearch<TObject, TInterface>(connection, searchRequest, PageSize);
 
+                }
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
@@ -425,78 +430,80 @@ namespace BLAZAM.ActiveDirectory.Searchers
             Results.Clear();
         }
 
-        private void PerformSearch<TObject, TInterface>(DirectorySearcher searcher, int pageSize) where TObject : IDirectoryEntryAdapter, TInterface, new()
+        private void PerformSearch<TObject, TInterface>(AppLdapConnection searcher,SearchRequest searchRequest, int pageSize) where TObject : IDirectoryEntryAdapter, TInterface, new()
         {
-
-            bool moreResults = true;
-            SearchState = SearchState.Collecting;
-            SearchResultCollection lastResults;
-            try
-            {
-                if (cancellationToken?.IsCancellationRequested == true) return;
-
-                lastResults = searcher.FindAll();
-                if (cancellationToken?.IsCancellationRequested == true) return;
-
-                var count = lastResults.Count;
-            }
-            catch
-            {
-                searcher.VirtualListView = null;
-                lastResults = searcher.FindAll();
-            }
-
+            SearchResponse? lastResults = (SearchResponse)searcher.LdapConnection.SendRequest(searchRequest);
             AddResults<TObject, TInterface>(lastResults);
 
-            if (ObjectTypeFilter != ActiveDirectoryObjectType.OU)
-            {
-                var approxTotal = searcher.VirtualListView?.ApproximateTotal;
-                var progress = 0;
-                if (approxTotal != null && approxTotal > 0)
-                    progress = _searchResults.Count / approxTotal.Value;
-            }
-            if (lastResults.Count < pageSize)
-                moreResults = false;
+            //bool moreResults = true;
+            //SearchState = SearchState.Collecting;
+            //SearchResultCollection lastResults;
+            //try
+            //{
+            //    if (cancellationToken?.IsCancellationRequested == true) return;
 
-            while (moreResults && cancellationToken?.IsCancellationRequested != true && searcher.VirtualListView != null)
-            {
-                if (searcher.VirtualListView != null)
-                    searcher.VirtualListView.Offset += pageSize;
-                //else
-                //    throw new ApplicationException("The searcher lost it's VirtualListView in the middle of searching!");
-                lastResults = searcher.FindAll();
-                AddResults<TObject, TInterface>(lastResults);
-                if (searcher.VirtualListView == null || lastResults.Count < pageSize)
-                    moreResults = false;
+            //    lastResults = searcher.FindAll();
+            //    if (cancellationToken?.IsCancellationRequested == true) return;
 
-            }
+            //    var count = lastResults.Count;
+            //}
+            //catch
+            //{
+            //    searcher.VirtualListView = null;
+            //    lastResults = searcher.FindAll();
+            //}
+
+            //AddResults<TObject, TInterface>(lastResults);
+
+            //if (ObjectTypeFilter != ActiveDirectoryObjectType.OU)
+            //{
+            //    var approxTotal = searcher.VirtualListView?.ApproximateTotal;
+            //    var progress = 0;
+            //    if (approxTotal != null && approxTotal > 0)
+            //        progress = _searchResults.Count / approxTotal.Value;
+            //}
+            //if (lastResults.Count < pageSize)
+            //    moreResults = false;
+
+            //while (moreResults && cancellationToken?.IsCancellationRequested != true && searcher.VirtualListView != null)
+            //{
+            //    if (searcher.VirtualListView != null)
+            //        searcher.VirtualListView.Offset += pageSize;
+            //    //else
+            //    //    throw new ApplicationException("The searcher lost it's VirtualListView in the middle of searching!");
+            //    lastResults = searcher.FindAll();
+            //    AddResults<TObject, TInterface>(lastResults);
+            //    if (searcher.VirtualListView == null || lastResults.Count < pageSize)
+            //        moreResults = false;
+
+            //}
 
 
         }
 
-        private void PrepareSearcher(DirectorySearcher searcher)
+        private void PrepareSearcher(SearchRequest searcher)
         {
             if (!SearchDeleted)
             {
-                searcher.PropertiesToLoad.Add(ActiveDirectoryFields.SAMAccountName.FieldName);
-                searcher.PropertiesToLoad.Add(ActiveDirectoryFields.DistinguishedName.FieldName);
-                searcher.PropertiesToLoad.Add(ActiveDirectoryFields.ObjectSID.FieldName);
-                searcher.PropertiesToLoad.Add("objectclass");
-                searcher.PropertiesToLoad.Add(ActiveDirectoryFields.CanonicalName.FieldName);
-                searcher.PropertiesToLoad.Add("name");
+                searcher.Attributes.Add(ActiveDirectoryFields.SAMAccountName.FieldName);
+                searcher.Attributes.Add(ActiveDirectoryFields.DistinguishedName.FieldName);
+                searcher.Attributes.Add(ActiveDirectoryFields.ObjectSID.FieldName);
+                searcher.Attributes.Add("objectclass");
+                searcher.Attributes.Add(ActiveDirectoryFields.CanonicalName.FieldName);
+                searcher.Attributes.Add("name");
             }
             if (SearchDeleted)
             {
-                searcher.Tombstone = true;
-                searcher.VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, 1);
+               // searcher.Tombstone = true;
+               // searcher.VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, 1);
 
             }
 
 
             //searcher.Asynchronous = true;
             searcher.SizeLimit = MaxResults;
-            searcher.Filter = searcher.Filter?.Substring(0, searcher.Filter.Length - 1) + FilterQuery + ")";
-            LdapQuery = searcher.Filter;
+            LdapFilter = LdapFilter?.Substring(0, LdapFilter.Length - 1) + FilterQuery + ")";
+            searcher.Filter = LdapFilter;
         }
         /// <summary>
         /// Cancels the current search if still running
@@ -511,17 +518,17 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
 
 
-        private void AddResults<T, I>(SearchResultCollection lastResults) where T : I, IDirectoryEntryAdapter, new()
+        private void AddResults<T, I>(SearchResponse lastResults) where T : I, IDirectoryEntryAdapter, new()
         {
             List<IDirectoryEntryAdapter> last;
             if (_currentUserActiveDirectoryContext != null)
             {
-                last = lastResults.Encapsulate(_currentUserActiveDirectoryContext);
+                last = lastResults.Entries.Encapsulate(_currentUserActiveDirectoryContext);
 
             }
             else
             {
-                last = lastResults.Encapsulate(ActiveDirectoryContext.SystemInstance);
+                last = lastResults.Entries.Encapsulate(ActiveDirectoryContext.SystemInstance);
             }
             Results.AddRange(last);
 

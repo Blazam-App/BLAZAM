@@ -371,7 +371,7 @@ namespace BLAZAM.ActiveDirectory.Mocks // Or your preferred testing namespace
                         entry.SetPropertyValue(ActiveDirectoryFields.Department.FieldName, departments[random.Next(departments.Length)]);
                         entry.SetPropertyValue(ActiveDirectoryFields.Description.FieldName, $"Mock user account for {commonName}");
                         entry.SetPropertyValue("userAccountControl", 512); // Enabled, Normal Account
-                        entry.SetPropertyValue(ActiveDirectoryFields.ObjectSID.FieldName, new SecurityIdentifier(WellKnownSidType.WorldSid, null).Translate(typeof(NTAccount)).Value + "-" + random.Next(1000000, 9999999)); // Simplistic SID
+                        entry.SetPropertyValue(ActiveDirectoryFields.ObjectSID.FieldName, ("S-1").ToSidByteArray()); // Simplistic SID
                         entry.SetPropertyValue(ActiveDirectoryFields.DistinguishedName.FieldName, userDN);
                         entry.SetPropertyValue("whenCreated", DateTime.UtcNow.AddDays(-random.Next(1, 90)));
                         AddMockDirectoryEntry(entry, ActiveDirectoryObjectType.User);
@@ -556,12 +556,7 @@ namespace BLAZAM.ActiveDirectory.Mocks // Or your preferred testing namespace
             byte[] sidBytes;
             try
             {
-                // A simple way to convert string SID to bytes for comparison if stored as bytes
-                // This is a placeholder; real SID string to byte conversion is more complex.
-                // For a mock, you'd typically ensure SIDs are stored and queried consistently.
-                var securityIdentifier = new System.Security.Principal.SecurityIdentifier(sid);
-                sidBytes = new byte[securityIdentifier.BinaryLength];
-                securityIdentifier.GetBinaryForm(sidBytes, 0);
+                sidBytes = sid.ToSidByteArray();
             }
             catch
             {
@@ -700,6 +695,14 @@ namespace BLAZAM.ActiveDirectory.Mocks // Or your preferred testing namespace
             // Cleanup mock resources if any
         }
 
+        AppLdapConnection? IActiveDirectoryContext.Connect()
+        {
+            throw new NotImplementedException();
+        }
 
+        Task<AppLdapConnection?> IActiveDirectoryContext.ConnectAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

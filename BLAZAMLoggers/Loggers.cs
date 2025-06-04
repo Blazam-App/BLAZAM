@@ -28,14 +28,14 @@ namespace BLAZAM.Logger
         {
             _logPath = logPath;
             _applicationVersion = applicationVersion;
-            RequestLogger = SetupLogger(logPath + @"requests\requests.txt");
-            DatabaseLogger = SetupLogger(logPath + @"database\db.txt");
-            ActiveDirectoryLogger = SetupLogger(logPath + @"activedirectory\activedirectory.txt");
-            UpdateLogger = SetupLogger(logPath + @"update\update.txt", RollingInterval.Month);
-            RulesLogger = SetupLogger(logPath + @"rules\rules.txt");
+            RequestLogger = SetupLogger(logPath + $"requests{Path.DirectorySeparatorChar}requests.txt");
+            DatabaseLogger = SetupLogger(logPath + $"database{Path.DirectorySeparatorChar}db.txt");
+            ActiveDirectoryLogger = SetupLogger(logPath + $"activedirectory{Path.DirectorySeparatorChar}activedirectory.txt");
+            UpdateLogger = SetupLogger(logPath + $"update{Path.DirectorySeparatorChar}update.txt", RollingInterval.Month);
+            RulesLogger = SetupLogger(logPath + $"rules{Path.DirectorySeparatorChar}rules.txt");
 
             var systemLoggerBuilder = CreateLogBuilder()
-                    .WriteTo.File(logPath + @"system\system.txt",
+                    .WriteTo.File(logPath + $"system{Path.DirectorySeparatorChar}system.txt",
                     rollingInterval: RollingInterval.Hour,
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}",
                     retainedFileTimeLimit: TimeSpan.FromDays(30))

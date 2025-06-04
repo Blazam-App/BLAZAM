@@ -11,9 +11,11 @@ using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
+using System.Collections;
 using System.Data;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -464,7 +466,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (CurrentUser == null) return false;
                 if (DN == null)
                 {
-                    throw new AppException("The directory object " + ADSPath + " did not load a distinguished name.");
+                    throw new AppException("The directory object " + DN + " did not load a distinguished name.");
                 }
                 return CurrentUser.HasPermission(DN, allowSelector, denySelector, nestedSearch);
             }
@@ -751,19 +753,34 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
             throw new AppException("The field provided is invalid");
-
-
-
         }
 
 
-        public virtual void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
+        public virtual void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null, SearchResultEntry? searchResultEntry=null)
         {
             Directory = directory;
 
             if (searchResult != null)
                 SearchResult = searchResult;
+            if(searchResultEntry != null)
+            {
+                //Pull containing attributes
+                foreach (DictionaryEntry item in searchResultEntry.Attributes)
+                {
+                    var attriubute = item.Value as DirectoryAttribute;
+                    if (attriubute != null)
+                    {
+                        if (attriubute.Name.Equals("distinguishedname", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            var dn = attriubute.GetValues(typeof(string))[0].ToString();
+                            DirectoryEntry = new LdapDirectoryEntry(dn,directory);
+                        }
+                        var name = attriubute.Name;
+                        var values = attriubute.GetValues(typeof(string));
 
+                    }
+                }
+            }
             if (directoryEntry != null)
             {
                 DirectoryEntry = directoryEntry;
@@ -1052,37 +1069,37 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
         {
             var list = new List<T?>();
-            var dcs = new List<DomainController>(Directory.DomainControllers);
+            //var dcs = new List<DomainController>(Directory.DomainControllers);
 
-            Parallel.ForEach(dcs, dc =>
-            {
-                try
-                {
-                    if (dc.IsPingable())
-                    {
-                        var searcher = dc.GetDirectorySearcher();
-                        searcher.Filter = "(distinguishedName=" + this.DN + ")";
-                        searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
-                        searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
-                        var searchResult = searcher.FindOne();
-                        if (searchResult != null)
-                        {
-                            var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
-                            lock (list)
-                            {
-                                list.Add((T)value);
-                            }
-                        }
-                    }
-                }
-                catch
-                {
-                    lock (list)
-                    {
-                        list.Add(default);
-                    }
-                }
-            });
+            //Parallel.ForEach(dcs, dc =>
+            //{
+            //    try
+            //    {
+            //        if (dc.IsPingable())
+            //        {
+            //            var searcher = dc.GetDirectorySearcher();
+            //            searcher.Filter = "(distinguishedName=" + this.DN + ")";
+            //            searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
+            //            searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
+            //            var searchResult = searcher.FindOne();
+            //            if (searchResult != null)
+            //            {
+            //                var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
+            //                lock (list)
+            //                {
+            //                    list.Add((T)value);
+            //                }
+            //            }
+            //        }
+            //    }
+            //    catch
+            //    {
+            //        lock (list)
+            //        {
+            //            list.Add(default);
+            //        }
+            //    }
+            //});
 
             return list;
         }

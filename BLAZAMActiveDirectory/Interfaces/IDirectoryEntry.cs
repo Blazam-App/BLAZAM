@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
+using System.DirectoryServices.Protocols;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,8 +36,9 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
         // Additional properties/methods based on potential usage in DirectoryEntryAdapter
         // bool Exists(string path); // Static method on DirectoryEntry, not suitable for interface instance method
-        AuthenticationTypes AuthenticationType { get; set; } // Property on DirectoryEntry
+        AuthType AuthenticationType { get; } // Property on DirectoryEntry
         bool UsePropertyCache { get; set; } // Property on DirectoryEntry
+        string? DN { get; set; }
         // Options property (DirectoryEntryConfiguration Options) might be too complex to add unless needed
     }
 }

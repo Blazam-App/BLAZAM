@@ -4,6 +4,7 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Jobs;
 using System.DirectoryServices;
+using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -311,7 +312,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <param name="result"></param>
         /// <param name="directory"></param>
         /// <returns></returns>
-        void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null);
+        void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null, SearchResultEntry? searchResultEntry = null);
 
         /// <summary>
         /// Move this entry to a new <see cref="IADOrganizationalUnit"/>

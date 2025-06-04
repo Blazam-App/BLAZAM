@@ -10,6 +10,7 @@ using System.Data;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.Protocols;
 using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
@@ -207,9 +208,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected DomainControllerEventLogReader? DomainControllerEventLogs;
 
 
-        public override void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
+        public override void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null, SearchResultEntry? searchResultEntry = null)
         {
-            base.Parse(directory, directoryEntry, searchResult);
+            base.Parse(directory, directoryEntry, searchResult,searchResultEntry);
             DomainControllerEventLogs = new DomainControllerEventLogReader(directory);
         }
 

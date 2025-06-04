@@ -41,7 +41,7 @@
                     {
                         //if (!directoryInfo.Exists) throw new DirectoryNotFoundException("Directory " + Path + " does not exist!");
 
-                        testFilePath = System.IO.Path.GetFullPath(FullPath + "\\test.txt");
+                        testFilePath = System.IO.Path.GetFullPath(FullPath + Path.DirectorySeparatorChar + "test.txt");
                         // Attempt to create a test file within the directory.
 
                         using (File.Create(testFilePath))

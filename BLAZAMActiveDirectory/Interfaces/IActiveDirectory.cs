@@ -92,10 +92,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         WindowsImpersonation Impersonation { get; }
 
-        /// <summary>
-        /// A list of the domain controllers that are members of the domain that was connected
-        /// </summary>
-        List<DomainController> DomainControllers { get; }
         DomainControllerEventLogReader EventLogReader { get; }
         Exception? ConnectionException { get; set; }
 
@@ -144,7 +140,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// server connectivity.
         /// </summary>
         /// <returns></returns>
-        void Connect();
+        AppLdapConnection? Connect();
 
         /// <summary>
         /// Connects to an Active Directory server asynchronously.
@@ -153,7 +149,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// server connectivity.
         /// </summary>
         /// <returns></returns>
-        Task ConnectAsync();
+        Task<AppLdapConnection?> ConnectAsync();
 
         /// <summary>
         /// Collects all deleted object from the Active Directory recycle bin

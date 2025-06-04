@@ -76,7 +76,7 @@ namespace BLAZAM.Server
             }
 
             // Define the path for application plugins based on the writable path.
-            Program.PluginDirectory = new SystemDirectory(Program.WritablePath + @"plugins\");
+            Program.PluginDirectory = new SystemDirectory(Program.WritablePath + $"plugins{Path.DirectorySeparatorChar}");
 
             // Store the configuration manager instance globally for easy access (use with caution).
             Program.Configuration = builder.Configuration;

@@ -4,7 +4,8 @@ using System.DirectoryServices.Protocols;
 using System.Net; // Required for NetworkCredential
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
-using BLAZAM.Helpers; // Added for ADSettings
+using BLAZAM.Helpers;
+using BLAZAM.Logger; // Added for ADSettings
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -38,7 +39,7 @@ namespace BLAZAM.ActiveDirectory
             LdapConnection connection = null;
             if (settings == null)
             {
-                Console.WriteLine("ADSettings object is null.");
+                Loggers.ActiveDirectoryLogger.Information("ADSettings object is null.");
                 return default;
             }
 
@@ -51,17 +52,17 @@ namespace BLAZAM.ActiveDirectory
 
             if (string.IsNullOrEmpty(settings.ServerAddress))
             {
-                Console.WriteLine("ServerAddress in ADSettings is null or empty.");
+                Loggers.ActiveDirectoryLogger.Information   ("ServerAddress in ADSettings is null or empty.");
                 return default;
             }
             if (string.IsNullOrEmpty(settings.Username))
             {
-                Console.WriteLine("Username in ADSettings is null or empty.");
+                Loggers.ActiveDirectoryLogger.Information("Username in ADSettings is null or empty.");
                 return default;
             }
             if (string.IsNullOrEmpty(settings.Password))
             {
-                Console.WriteLine("Password in ADSettings is null or empty.");
+                Loggers.ActiveDirectoryLogger.Information("Password in ADSettings is null or empty.");
                 return default;
             }
 
@@ -71,12 +72,12 @@ namespace BLAZAM.ActiveDirectory
             // We'll infer the method based on common port usage when UseTLS is true.
             if (settings.ServerPort == 636) // Common LDAPS port
             {
-                Console.WriteLine($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting LDAPS connection.");
+                Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting LDAPS connection.");
                 ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password, out connection);
             }
             else if (settings.ServerPort == 389) // Common LDAP port, suitable for StartTLS
             {
-                Console.WriteLine($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting StartTLS connection.");
+                Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting StartTLS connection.");
                 ConnectWithStartTls(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password.Decrypt(), out connection);
             }
             else
@@ -84,7 +85,7 @@ namespace BLAZAM.ActiveDirectory
                 // If UseTLS is true but port is neither 389 nor 636, it's ambiguous.
                 // For this example, we'll try LDAPS as a default secure method if UseTLS is true and port is non-standard.
                 // Alternatively, you could throw an error or require more specific configuration.
-                Console.WriteLine($"ADSettings: UseTLS is true, port is {settings.ServerPort} (non-standard for TLS inference). Attempting LDAPS as a fallback secure method.");
+                Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort} (non-standard for TLS inference). Attempting LDAPS as a fallback secure method.");
                 ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password, out connection);
             }
             var appConnection = new AppLdapConnection(connection);
@@ -141,7 +142,7 @@ namespace BLAZAM.ActiveDirectory
             connection = null;
             if (string.IsNullOrEmpty(ldapServerHost) || ldapServerPort <= 0 || string.IsNullOrEmpty(username) || password == null)
             {
-                Console.WriteLine("ConnectWithLdaps: Invalid parameters (host, port, username, or password).");
+                Loggers.ActiveDirectoryLogger.Information("ConnectWithLdaps: Invalid parameters (host, port, username, or password).");
                 return false;
             }
 
@@ -162,18 +163,18 @@ namespace BLAZAM.ActiveDirectory
                 connection.Credential = credential;
 
                 // 5. Bind to the server (establish the connection and authenticate)
-                Console.WriteLine($"Attempting LDAPS connection to {ldapServerHost}:{ldapServerPort} as {username}...");
+                Loggers.ActiveDirectoryLogger.Information($"Attempting LDAPS connection to {ldapServerHost}:{ldapServerPort} as {username}...");
                 connection.Bind();
 
-                Console.WriteLine("LDAPS connection successful!");
+                Loggers.ActiveDirectoryLogger.Information("LDAPS connection successful!");
                 return true;
             }
             catch (LdapException ldapEx)
             {
-                Console.WriteLine($"LDAP Exception during LDAPS connection: {ldapEx.Message} (ErrorCode: {ldapEx.ErrorCode})");
+                Loggers.ActiveDirectoryLogger.Debug($"LDAP Exception during LDAPS connection: {ldapEx.Message} (ErrorCode: {ldapEx.ErrorCode})");
                 if (ldapEx.ServerErrorMessage != null)
                 {
-                    Console.WriteLine($"Server Error Message: {ldapEx.ServerErrorMessage}");
+                    Loggers.ActiveDirectoryLogger.Debug($"Server Error Message: {ldapEx.ServerErrorMessage}");
                 }
                 if (connection != null)
                 {
@@ -184,7 +185,7 @@ namespace BLAZAM.ActiveDirectory
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"General Exception during LDAPS connection: {ex.Message}");
+                Loggers.ActiveDirectoryLogger.Error($"General Exception during LDAPS connection: {ex.Message}");
                 if (connection != null)
                 {
                     connection.Dispose();
@@ -208,7 +209,7 @@ namespace BLAZAM.ActiveDirectory
             connection = null;
             if (string.IsNullOrEmpty(ldapServerHost) || ldapServerPort <= 0 || string.IsNullOrEmpty(username) || password == null)
             {
-                Console.WriteLine("ConnectWithStartTls: Invalid parameters (host, port, username, or password).");
+                Loggers.ActiveDirectoryLogger.Debug("ConnectWithStartTls: Invalid parameters (host, port, username, or password).");
                 return false;
             }
 
@@ -228,23 +229,24 @@ namespace BLAZAM.ActiveDirectory
                 connection.AuthType = AuthType.Negotiate;
                 connection.SessionOptions.Signing = true;
                 connection.SessionOptions.Sealing = true;
+                connection.SessionOptions.VerifyServerCertificate = (state,crt) => { return true; };
 
 
 
                 // 5. Bind to the server
-                Console.WriteLine($"Attempting initial connection to {ldapServerHost}:{ldapServerPort} for StartTLS as {username}...");
+                Loggers.ActiveDirectoryLogger.Debug($"Attempting initial connection to {ldapServerHost}:{ldapServerPort} for StartTLS as {username}...");
                 connection.Bind();
 
 
-                Console.WriteLine("StartTLS successful! Connection is now secure.");
+                Loggers.ActiveDirectoryLogger.Debug("StartTLS successful! Connection is now secure.");
                 return true;
             }
             catch (LdapException ldapEx)
             {
-                Console.WriteLine($"LDAP Exception during StartTLS connection: {ldapEx.Message} (ErrorCode: {ldapEx.ErrorCode})");
+                Loggers.ActiveDirectoryLogger.Debug($"LDAP Exception during StartTLS connection: {ldapEx.Message} (ErrorCode: {ldapEx.ErrorCode})");
                 if (ldapEx.ServerErrorMessage != null)
                 {
-                    Console.WriteLine($"Server Error Message: {ldapEx.ServerErrorMessage}");
+                    Loggers.ActiveDirectoryLogger.Debug($"Server Error Message: {ldapEx.ServerErrorMessage}");
                 }
                 if (connection != null)
                 {
@@ -255,7 +257,7 @@ namespace BLAZAM.ActiveDirectory
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"General Exception during StartTLS connection: {ex.Message}");
+                Loggers.ActiveDirectoryLogger.Warning($"General Exception during StartTLS connection: {ex.Message}");
                 if (connection != null)
                 {
                     connection.Dispose();

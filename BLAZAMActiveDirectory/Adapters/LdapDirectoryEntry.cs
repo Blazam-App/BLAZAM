@@ -1,4 +1,5 @@
 ﻿
+using AngleSharp.Dom;
 using Azure;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
@@ -55,7 +56,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public bool ContainsProperty(string propertyName)
         {
-            return UnderlyingEntry.Properties.Contains(propertyName);
+            var existingCache = DirectoryCache.GetEntryCache(DN);
+            if (existingCache == null) existingCache = new(new());
+            if (existingCache.Attributes.ContainsKey(propertyName.ToLower()))
+            {
+                return existingCache.Attributes.ContainsKey(propertyName.ToLower());
+            }
+            else
+            {
+                Search(propertyName);
+                return existingCache.Attributes.ContainsKey(propertyName.ToLower());
+
+            }
         }
         public bool PropertyContains(string propertyName, object value)
         {
@@ -66,7 +78,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return Search(propertyName);
         }
 
-        private string? DN { get; set; }
+        public string? DN { get; set; }
 
 
         private object? Search(string attributeName)
@@ -379,7 +391,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public IDirectoryEntries Children => new AdapterDirectoryEntries(UnderlyingEntry.Children);
 
-        public AuthenticationTypes AuthenticationType { get => UnderlyingEntry.AuthenticationType; set => UnderlyingEntry.AuthenticationType = value; }
+        public AuthType AuthenticationType { get => Directory.Connect().LdapConnection.AuthType; }
         public bool UsePropertyCache { get => UnderlyingEntry.UsePropertyCache; set => UnderlyingEntry.UsePropertyCache = value; }
 
         public void Close()
@@ -542,7 +554,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (disposing)
                 {
-                    UnderlyingEntry.Dispose();
+                    UnderlyingEntry?.Dispose();
                 }
 
                 disposedValue = true;

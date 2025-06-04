@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -162,124 +163,8 @@ namespace BLAZAM.Helpers
             ouComponents.Reverse();
             return string.Join("/", ouComponents);
         }
-        /// <summary>
-        /// Encapsulates a raw DirectoryEntry search's <see cref="SearchResultCollection"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
-        /// </summary>
-        /// <param name="r"></param>
-        /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
-        public static List<IDirectoryEntryAdapter> Encapsulate(this SearchResultCollection r, IActiveDirectoryContext context)
-        {
-            List<IDirectoryEntryAdapter> objects = new();
-
-
-            if (r != null && r.Count > 0)
-            {
-
-                IDirectoryEntryAdapter? thisObject = null;
-                foreach (SearchResult sr in r)
-                {
-                    if (sr.Properties["objectClass"].Contains("top"))
-                    {
-                        if (sr.Properties["objectClass"].Contains("computer"))
-                        {
-                            thisObject = new ADComputer();
-                        }
-                        else if (sr.Properties["objectClass"].Contains("user"))
-                        {
-                            thisObject = new ADUser();
-                        }
-                        else if (sr.Properties["objectClass"].Contains("contact"))
-                        {
-                            thisObject = new ADContact();
-                        }
-
-                        else if (sr.Properties["objectClass"].Contains("group"))
-                        {
-                            thisObject = new ADGroup();
-                        }
-                        else if (sr.Properties["objectClass"].Contains("printQueue"))
-                        {
-                            thisObject = new ADPrinter();
-                        }
-                        else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
-                        {
-                            thisObject = new ADBitLockerRecovery();
-                        }
-                        else if (sr.Properties["objectClass"].Contains("organizationalUnit") || sr.Properties["objectClass"].Contains("container"))
-                        {
-                            thisObject = new ADOrganizationalUnit();
-                        }
-                        if (thisObject != null)
-                        {
-                            thisObject.Parse(directory: context, searchResult: sr);
-
-
-                            objects.Add(thisObject);
-
-                        }
-                    }
-                    thisObject = null;
-
-                }
-            }
-            return objects;
-        }
-        /// <summary>
-        /// Encapsulates a raw DirectoryEntry within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
-        /// </summary>
-        /// <param name="r"></param>
-        /// <returns>A <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
-
-        public static IDirectoryEntryAdapter? Encapsulate(this DirectoryEntry sr, IActiveDirectoryContext context)
-        {
-            IDirectoryEntryAdapter? thisObject = null;
-
-            if (sr.Properties["objectClass"].Contains("top"))
-            {
-                if (sr.Properties["objectClass"].Contains("computer"))
-                {
-                    thisObject = new ADComputer();
-                }
-                else if (sr.Properties["objectClass"].Contains("user"))
-                {
-                    thisObject = new ADUser();
-                }
-                else if (sr.Properties["objectClass"].Contains("contact"))
-                {
-                    thisObject = new ADContact();
-                }
-
-                else if (sr.Properties["objectClass"].Contains("group"))
-                {
-                    thisObject = new ADGroup();
-                }
-                else if (sr.Properties["objectClass"].Contains("printQueue"))
-                {
-                    thisObject = new ADPrinter();
-                }
-                else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
-                {
-                    thisObject = new ADBitLockerRecovery();
-                }
-                else if (sr.Properties["objectClass"].Contains("organizationalUnit") || sr.Properties["objectClass"].Contains("container"))
-                {
-                    thisObject = new ADOrganizationalUnit();
-                }
-                if (thisObject != null)
-                {
-                    thisObject.Parse(directory: context, directoryEntry: sr.ToIDirectoryEntry(context));
-
-                    return thisObject;
-
-                }
-                else
-                {
-                    Loggers.ActiveDirectoryLogger.Warning("Unable to match ad object type. {Object}", sr);
-
-                }
-            }
-            return null;
-        }
+      
+     
         /// <summary>
         /// Encapsulates a raw DirectoryEntry within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
         /// </summary>
@@ -344,33 +229,7 @@ namespace BLAZAM.Helpers
         {
             return new LdapDirectoryEntry(entry.Properties["distinuishedName"].Value?.ToString(),directory);
         }
-        /// <summary>
-        /// Encapsulates a raw DirectoryEntry search's <see cref="DirectoryEntries"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
-        /// </summary>
-        /// <remarks>
-        /// This is used when getting child objects from a OU
-        /// </remarks>
-        /// <param name="r"></param>
-        /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
-        public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r, IActiveDirectoryContext context)
-        {
-            List<IDirectoryEntryAdapter> objects = new();
-
-
-            if (r != null)
-            {
-
-                foreach (DirectoryEntry sr in r)
-                {
-                    var encapsulated = Encapsulate(sr, context);
-                    if (encapsulated != null)
-                        objects.Add(encapsulated);
-
-                }
-            }
-            return objects;
-        }
-
+       
 
 
         /// <summary>
@@ -393,75 +252,7 @@ namespace BLAZAM.Helpers
             {
                 foreach (System.DirectoryServices.Protocols.SearchResultEntry sre in searchResultEntries)
                 {
-                    if (sre == null || sre.Attributes == null) continue;
-
-                    IDirectoryEntryAdapter? thisObject = null;
-                    List<string> objectClasses = new List<string>();
-
-                    if (sre.Attributes.Contains("objectClass"))
-                    {
-                        foreach (var val in sre.Attributes["objectClass"].GetValues(typeof(byte[])))
-                        {
-                            if (val is byte[] bytes)
-                            {
-                                objectClasses.Add(Encoding.UTF8.GetString(bytes).ToLowerInvariant());
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Loggers.ActiveDirectoryLogger.Warning("SearchResultEntry {DN} does not contain objectClass attribute.", sre.DistinguishedName);
-                        continue;
-                    }
-
-                    // Determine object type based on objectClass values
-                    if (objectClasses.Contains("top")) // Basic check
-                    {
-                        if (objectClasses.Contains("computer"))
-                        {
-                            thisObject = new ADComputer();
-                        }
-                        else if (objectClasses.Contains("user"))
-                        {
-                            thisObject = new ADUser();
-                        }
-                        else if (objectClasses.Contains("contact"))
-                        {
-                            thisObject = new ADContact();
-                        }
-                        else if (objectClasses.Contains("group"))
-                        {
-                            thisObject = new ADGroup();
-                        }
-                        else if (objectClasses.Contains("printqueue")) // Note: printQueue is often lowercase from S.DS.P
-                        {
-                            thisObject = new ADPrinter();
-                        }
-                        else if (objectClasses.Contains("msfve-recoveryinformation")) // Note: msFVE-RecoveryInformation is often lowercase
-                        {
-                            thisObject = new ADBitLockerRecovery();
-                        }
-                        else if (objectClasses.Contains("organizationalunit") || objectClasses.Contains("container"))
-                        {
-                            thisObject = new ADOrganizationalUnit();
-                        }
-                        // Add more types if necessary, e.g. "container" could be a generic DirectoryEntryAdapter if no specific OU logic needed
-
-                        if (thisObject != null)
-                        {
-                            // This Parse method signature needs to be created in DirectoryEntryAdapter and its children
-                            thisObject.Parse(context, sre);
-                            objects.Add(thisObject);
-                        }
-                        else
-                        {
-                            Loggers.ActiveDirectoryLogger.Debug("Unrecognized or unhandled object type for DN: {DN}, ObjectClasses: {ObjectClasses}", sre.DistinguishedName, string.Join(", ", objectClasses));
-                        }
-                    }
-                    else
-                    {
-                        Loggers.ActiveDirectoryLogger.Debug("Object {DN} does not contain 'top' in objectClass, skipping.", sre.DistinguishedName);
-                    }
+                   objects.Add(sre.Encapsulate(context));
                 }
             }
             catch (Exception ex)
@@ -470,6 +261,80 @@ namespace BLAZAM.Helpers
                 // Depending on desired behavior, might clear objects or throw
             }
             return objects;
+        }
+
+        private static IDirectoryEntryAdapter? Encapsulate(this SearchResultEntry sre, IActiveDirectoryContext context )
+        {
+            if (sre == null || sre.Attributes == null) return default;
+
+            IDirectoryEntryAdapter? thisObject = null;
+            List<string> objectClasses = new List<string>();
+
+            if (sre.Attributes.Contains("objectClass"))
+            {
+                foreach (var val in sre.Attributes["objectClass"].GetValues(typeof(byte[])))
+                {
+                    if (val is byte[] bytes)
+                    {
+                        objectClasses.Add(Encoding.UTF8.GetString(bytes).ToLowerInvariant());
+                    }
+                }
+            }
+            else
+            {
+                Loggers.ActiveDirectoryLogger.Warning("SearchResultEntry {DN} does not contain objectClass attribute.", sre.DistinguishedName);
+                return default; 
+            }
+
+            // Determine object type based on objectClass values
+            if (objectClasses.Contains("top")) // Basic check
+            {
+                if (objectClasses.Contains("computer"))
+                {
+                    thisObject = new ADComputer();
+                }
+                else if (objectClasses.Contains("user"))
+                {
+                    thisObject = new ADUser();
+                }
+                else if (objectClasses.Contains("contact"))
+                {
+                    thisObject = new ADContact();
+                }
+                else if (objectClasses.Contains("group"))
+                {
+                    thisObject = new ADGroup();
+                }
+                else if (objectClasses.Contains("printqueue")) // Note: printQueue is often lowercase from S.DS.P
+                {
+                    thisObject = new ADPrinter();
+                }
+                else if (objectClasses.Contains("msfve-recoveryinformation")) // Note: msFVE-RecoveryInformation is often lowercase
+                {
+                    thisObject = new ADBitLockerRecovery();
+                }
+                else if (objectClasses.Contains("organizationalunit") || objectClasses.Contains("container"))
+                {
+                    thisObject = new ADOrganizationalUnit();
+                }
+                // Add more types if necessary, e.g. "container" could be a generic DirectoryEntryAdapter if no specific OU logic needed
+
+                if (thisObject != null)
+                {
+                    // This Parse method signature needs to be created in DirectoryEntryAdapter and its children
+                    thisObject.Parse(context, searchResultEntry: sre);
+                    return thisObject;
+                }
+                else
+                {
+                    Loggers.ActiveDirectoryLogger.Debug("Unrecognized or unhandled object type for DN: {DN}, ObjectClasses: {ObjectClasses}", sre.DistinguishedName, string.Join(", ", objectClasses));
+                }
+            }
+            else
+            {
+                Loggers.ActiveDirectoryLogger.Debug("Object {DN} does not contain 'top' in objectClass, skipping.", sre.DistinguishedName);
+            }
+            return default;
         }
 
 
