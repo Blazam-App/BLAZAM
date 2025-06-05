@@ -5,6 +5,7 @@ using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Helpers;
+using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections;
 using System.DirectoryServices;
@@ -19,10 +20,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public readonly DirectoryEntry UnderlyingEntry;
         protected IActiveDirectoryContext Directory { get; set; }
         private bool disposedValue;
-        public LdapDirectoryEntry(DirectoryEntry underlyingEntry)
-        {
-            UnderlyingEntry = underlyingEntry;
-        }
         public LdapDirectoryEntry(string dn, IActiveDirectoryContext directory)
         {
             DN = dn;
@@ -78,7 +75,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return Search(propertyName);
         }
 
-        public string? DN { get; set; }
+        public string DN { get; set; }
 
 
         private object? Search(string attributeName)
@@ -90,17 +87,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 return existingCache.Attributes[attributeName.ToLower()];
             }
+            Loggers.ActiveDirectoryLogger.Information("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}",Directory !=null && Directory.ConnectionSettings!=null);
             using var ldapConnection = SecureLdapConnector.Connect(Directory.ConnectionSettings);
-            // Verify the connection is secure. This is crucial for unicodePwd modifications.
-            // This is a conceptual check; the LdapConnection should have been established securely.
-            if (!ldapConnection.LdapConnection.SessionOptions.SecureSocketLayer)
-            {
-                // Log error: "Password operations require a secure LDAP connection (SSL/TLS or StartTLS)."
-                // Depending on your error handling strategy, you might throw an exception here.
-                return null;
-            }
-
-
+           
             // First, find the schema naming context
             var rootDseRequest = new SearchRequest("", "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, "schemaNamingContext");
             var rootDseResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(rootDseRequest);
@@ -122,15 +111,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 null                                // Request all user attributes
             );
 
-            //// Construct a search request for the specific entry and attribute
-            //SearchRequest searchRequest = new SearchRequest(
-            //    DN, // The DN of the object
-            //    $"({attributeName}=*)", // A filter to ensure the attribute exists (can be simplified if you know it exists)
-            //                            // More simply, if you just want the object and its attributes, you can use "(objectClass=*)"
-            //                            // or a more specific filter if needed.
-            //    System.DirectoryServices.Protocols.SearchScope.Base,    // We are targeting a specific object
-            //    attributeName        // Specify only the attribute you want
-            //);
+ 
 
             SearchResponse searchResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(allAttributesSearchRequest);
 

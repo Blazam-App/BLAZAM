@@ -209,7 +209,7 @@ namespace BLAZAM.ActiveDirectory
             connection = null;
             if (string.IsNullOrEmpty(ldapServerHost) || ldapServerPort <= 0 || string.IsNullOrEmpty(username) || password == null)
             {
-                Loggers.ActiveDirectoryLogger.Debug("ConnectWithStartTls: Invalid parameters (host, port, username, or password).");
+                Loggers.ActiveDirectoryLogger.Information("ConnectWithStartTls: Invalid parameters (host, port, username, or password).");
                 return false;
             }
 
@@ -227,26 +227,26 @@ namespace BLAZAM.ActiveDirectory
                 connection.Credential = credential;
                 connection.SessionOptions.ProtocolVersion = 3;
                 connection.AuthType = AuthType.Negotiate;
-                connection.SessionOptions.Signing = true;
+                //connection.SessionOptions.Signing = true;
                 connection.SessionOptions.Sealing = true;
                 connection.SessionOptions.VerifyServerCertificate = (state,crt) => { return true; };
 
 
 
                 // 5. Bind to the server
-                Loggers.ActiveDirectoryLogger.Debug($"Attempting initial connection to {ldapServerHost}:{ldapServerPort} for StartTLS as {username}...");
+                Loggers.ActiveDirectoryLogger.Information($"Attempting initial connection to {ldapServerHost}:{ldapServerPort} for StartTLS as {username}...");
                 connection.Bind();
 
 
-                Loggers.ActiveDirectoryLogger.Debug("StartTLS successful! Connection is now secure.");
+                Loggers.ActiveDirectoryLogger.Information("StartTLS successful! Connection is now secure.");
                 return true;
             }
             catch (LdapException ldapEx)
             {
-                Loggers.ActiveDirectoryLogger.Debug($"LDAP Exception during StartTLS connection: {ldapEx.Message} (ErrorCode: {ldapEx.ErrorCode})");
+                Loggers.ActiveDirectoryLogger.Information(ldapEx,"LDAP Exception during StartTLS connection: {@ldapEx}");
                 if (ldapEx.ServerErrorMessage != null)
                 {
-                    Loggers.ActiveDirectoryLogger.Debug($"Server Error Message: {ldapEx.ServerErrorMessage}");
+                    Loggers.ActiveDirectoryLogger.Information($"Server Error Message: {ldapEx.ServerErrorMessage}");
                 }
                 if (connection != null)
                 {

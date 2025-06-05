@@ -223,7 +223,7 @@ namespace BLAZAM.Helpers
         }
         public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry)
         {
-            return new LdapDirectoryEntry(entry);
+            return null;
         }
         public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry, IActiveDirectoryContext directory)
         {
