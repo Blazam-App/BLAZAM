@@ -422,6 +422,7 @@ namespace BLAZAM.Database.Context
         /// <returns></returns>
         private ServiceConnectionState TestConnection()
         {
+            Loggers.DatabaseLogger.Information("Testing Database Connection");
             if (ConnectionString != null)
             {
                 //Check for db connection
@@ -430,22 +431,34 @@ namespace BLAZAM.Database.Context
                     //Handle SQLite
                     if (Database.IsSqlite())
                     {
+                        Loggers.DatabaseLogger.Information("SQLite configuration detected.");
+
                         if (ConnectionString.File.Writable)
                         {
+                            Loggers.DatabaseLogger.Information("SQLite file/directory is writeablee");
+
                             if (ConnectionString.File.Exists)
+                            {
+                                Loggers.DatabaseLogger.Information("SQLite file exists. Returning Status Up.");
+
                                 return ServiceConnectionState.Up;
+                            }
                         }
                         else
                         {
+                            Loggers.DatabaseLogger.Information("The Sqlite database folder is not writable by the current server user.");
+
                             DownReason = new("The Sqlite database folder is not writable by the current server user.");
                         }
                         return ServiceConnectionState.Down;
                     }
 
+                    Loggers.DatabaseLogger.Information("Not SQLite, checking database server port.");
 
                     if (NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort))
                     {
 
+                        Loggers.DatabaseLogger.Information("Database server port is open.");
 
 
                         Database.OpenConnection();
@@ -459,6 +472,8 @@ namespace BLAZAM.Database.Context
                     }
                     else
                     {
+                        Loggers.DatabaseLogger.Information("Database server port is not open or reachable.");
+
                         DownReason = new("The database port is not open or is not reachable.");
 
                         Database.CloseConnection();

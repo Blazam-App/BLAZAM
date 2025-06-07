@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.FileSystem
+﻿using Serilog;
+
+namespace BLAZAM.FileSystem
 {
     public class FileSystemBase : IEquatable<FileSystemBase?>
     {
@@ -51,14 +53,16 @@
                         }
                     }
                 }
-                catch (UnauthorizedAccessException)
+                catch (UnauthorizedAccessException ex)
                 {
+                    Log.Error(ex, "FILE CHECK ERROR");
                     // Handle unauthorized access or log an error as needed
                     return false;
                 }
-                catch (IOException)
+                catch (IOException ex)
                 {
                     // Handle other IO exceptions or log an error as needed
+                    Log.Error(ex, "FILE CHECK ERROR");
 
                     return false;
                 }

@@ -26,18 +26,18 @@ namespace BLAZAM.ActiveDirectory
         /// <returns>True if the connection was successful, otherwise false.</returns>
         public static AppLdapConnection? Connect(ADSettings settings)
         {
-            lock (_lock)
-            {
-                foreach (var conn in _connectionPool)
-                {
-                    if (conn.Expires != null)
-                    {
-                        conn.Expires = null;
-                        return conn;
-                    }
-                }
+            //lock (_lock)
+            //{
+            //    foreach (var conn in _connectionPool)
+            //    {
+            //        if (conn.Expires != null)
+            //        {
+            //            conn.Expires = null;
+            //            return conn;
+            //        }
+            //    }
 
-            }
+            //}
             LdapConnection connection = null;
             if (settings == null)
             {
@@ -150,14 +150,16 @@ namespace BLAZAM.ActiveDirectory
 
             try
             {
-                TestConnectionMethods(ldapServerHost, ldapServerPort, username, password);
+                //TestConnectionMethods(ldapServerHost, ldapServerPort, username, password);
 
                 // 1. Create LdapConnection object targeting the LDAPS port
                 LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier(ldapServerHost, ldapServerPort);
                 connection = new LdapConnection(identifier);
 
                 // 2. Specify that SSL should be used
+                connection.AuthType = AuthType.Basic;
                 connection.SessionOptions.SecureSocketLayer = true;
+                connection.SessionOptions.ProtocolVersion = 3;
 
                 // 3. (Optional but Recommended) Configure server certificate validation
                 // connection.SessionOptions.VerifyServerCertificate = new VerifyServerCertificateCallback(ServerCallback);
@@ -166,7 +168,6 @@ namespace BLAZAM.ActiveDirectory
                     Loggers.ActiveDirectoryLogger.Information($"Server certificate presented. Subject: {cert.Subject}. Accepting for test purposes.");
                     return true;
                 };
-
                 // 4. Provide credentials
                 NetworkCredential credential = new NetworkCredential(username, password);
                 connection.Credential = credential;
@@ -204,6 +205,19 @@ namespace BLAZAM.ActiveDirectory
             }
         }
 
+        private static void NewMethod(LdapConnection? connection)
+        {
+
+
+            // 3. (Optional but Recommended) Configure server certificate validation
+            // connection.SessionOptions.VerifyServerCertificate = new VerifyServerCertificateCallback(ServerCallback);
+            connection.SessionOptions.VerifyServerCertificate = (conn, cert) =>
+            {
+                Loggers.ActiveDirectoryLogger.Information($"Server certificate presented. Subject: {cert.Subject}. Accepting for test purposes.");
+                return true;
+            };
+        }
+
         /// <summary>
         /// Establishes a secure LDAP connection using StartTLS.
         /// </summary>
@@ -226,7 +240,7 @@ namespace BLAZAM.ActiveDirectory
 
             try
             {
-                TestConnectionMethods(ldapServerHost, ldapServerPort, username, password);
+                //TestConnectionMethods(ldapServerHost, ldapServerPort, username, password);
                 // 1. Create LdapConnection object targeting the standard LDAP port
                 LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier(ldapServerHost, ldapServerPort);
                 connection = new LdapConnection(identifier);

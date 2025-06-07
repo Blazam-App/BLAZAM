@@ -103,7 +103,7 @@ namespace BLAZAM
             builder.Host.UseSerilog(Log.Logger);
 
             // Log the application start event with the process name.
-            Log.Warning("Application Starting {@ProcessName}", ApplicationInfo.runningProcess.ProcessName);
+            Loggers.SystemLogger.Warning("Application Starting {@ProcessName}", ApplicationInfo.runningProcess.ProcessName);
 
             // Register application services with the dependency injection container.
             builder.InjectServices(); // Custom extension method likely defined elsewhere
@@ -193,9 +193,8 @@ namespace BLAZAM
 
             // Block the main thread until the application is shut down (e.g., Ctrl+C or service stop).
             AppInstance.WaitForShutdown();
-
             // Log application shutdown event.
-            Log.Information("Application Shutting Down");
+            Loggers.SystemLogger.Information("Application Shutting Down");
         }
 
         /// <summary>
