@@ -124,11 +124,12 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
         Searcher = new ADSearch(Directory);
         SearchService.SearchTerm = SearchTermParameter;
         Searcher.GeneralSearchTerm = SearchTermParameter;
 
-        await base.OnInitializedAsync();
+        LoadingData = false;
 
 
 

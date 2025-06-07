@@ -18,8 +18,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
     public class LdapDirectoryEntry : IDirectoryEntry
     {
         public readonly DirectoryEntry UnderlyingEntry;
+        private static Dictionary<string, AttributeSchemaInfo> _schemaCache { get; } = new();
         protected IActiveDirectoryContext Directory { get; set; }
         private bool disposedValue;
+        private static readonly object _namingContextLock = new();
+        private static readonly object _schemaLock = new();
+        private static string _namingContextCache;
+
         public LdapDirectoryEntry(string dn, IActiveDirectoryContext directory)
         {
             DN = dn;
@@ -68,7 +73,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public bool PropertyContains(string propertyName, object value)
         {
-            return UnderlyingEntry.Properties[propertyName].Contains(value);
+            var val = GetPropertyValue(propertyName);
+            if (val is object[] array)
+            {
+                return array.Contains(value);
+            }
+            else
+            {
+                return value.Equals(val);
+            }
         }
         public object? GetPropertyValue(string propertyName)
         {
@@ -87,19 +100,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 return existingCache.Attributes[attributeName.ToLower()];
             }
-            Loggers.ActiveDirectoryLogger.Information("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}",Directory !=null && Directory.ConnectionSettings!=null);
+            Loggers.ActiveDirectoryLogger.Information("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}", Directory != null && Directory.ConnectionSettings != null);
             using var ldapConnection = SecureLdapConnector.Connect(Directory.ConnectionSettings);
-           
-            // First, find the schema naming context
-            var rootDseRequest = new SearchRequest("", "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, "schemaNamingContext");
-            var rootDseResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(rootDseRequest);
-            if (rootDseResponse.Entries.Count == 0)
-            {
-                throw new Exception("Could not read RootDSE to find schema naming context.");
-            }
-            string schemaNamingContext = rootDseResponse.Entries[0].Attributes["schemaNamingContext"][0].ToString();
+            string schemaNamingContext = GetNamingContext(ldapConnection);
 
-            //var schemaInfo = GetSchemaInfo(ldapConnection, schemaNamingContext, attributeName);
 
 
 
@@ -111,7 +115,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 null                                // Request all user attributes
             );
 
- 
+
 
             SearchResponse searchResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(allAttributesSearchRequest);
 
@@ -178,42 +182,81 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         }
-        private AttributeSchemaInfo GetSchemaInfo(AppLdapConnection ldapConnection, string schemaNamingContext, string attributeLdapDisplayName)
+
+        private static string GetNamingContext(AppLdapConnection? ldapConnection)
         {
+            if (!_namingContextCache.IsNullOrEmpty())
+            {
+                return _namingContextCache;
+            }
+            lock (_namingContextLock)
+            {
+                if (!string.IsNullOrEmpty(_namingContextCache))
+                    return _namingContextCache;
+                // First, find the schema naming context
+                var rootDseRequest = new SearchRequest("", "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, "schemaNamingContext");
+                var rootDseResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(rootDseRequest);
+                if (rootDseResponse.Entries.Count == 0)
+                {
+                    throw new Exception("Could not read RootDSE to find schema naming context.");
+                }
+                string schemaNamingContext = rootDseResponse.Entries[0].Attributes["schemaNamingContext"][0].ToString();
+
+                _namingContextCache = schemaNamingContext;
+                return _namingContextCache;
+            }
+
+        }
+
+        private AttributeSchemaInfo GetSchemaInfo(AppLdapConnection ldapConnection, string schemaNamingContext, string propertyName)
+        {
+            if (_schemaCache.ContainsKey(propertyName))
+            {
+                return _schemaCache[propertyName];
+            }
             SearchRequest schemaSearchRequest = new SearchRequest(
                 schemaNamingContext,
-                $"(&(objectClass=attributeSchema)(ldapDisplayName={attributeLdapDisplayName}))",
+                $"(&(objectClass=attributeSchema)(ldapDisplayName={propertyName}))",
                 System.DirectoryServices.Protocols.SearchScope.Subtree,
                 "attributeSyntax", "oMSyntax", "isSingleValued", "oMObjectClass", "cn" // "cn" can be useful for debugging
             );
 
             try
             {
-                SearchResponse schemaSearchResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(schemaSearchRequest);
-                if (schemaSearchResponse.Entries.Count > 0)
+                lock (_schemaCache)
                 {
-                    SearchResultEntry schemaEntry = schemaSearchResponse.Entries[0];
-                    return new AttributeSchemaInfo
+                    if (_schemaCache.ContainsKey(propertyName))
                     {
-                        AtttributeName = attributeLdapDisplayName, // Use the name we looked up by
-                        AttributeSyntax = schemaEntry.Attributes["attributeSyntax"][0].ToString(),
-                        OMSyntax = int.Parse(schemaEntry.Attributes["oMSyntax"][0].ToString()),
-                        IsSingleValued = bool.Parse(schemaEntry.Attributes["isSingleValued"][0].ToString()),
-                        OMObjectClass = schemaEntry.Attributes.Contains("omObjectClass") && schemaEntry.Attributes["omObjectClass"][0] is byte[] omocBytes
-                                        ? Encoding.UTF8.GetString(omocBytes)
-                                        : (schemaEntry.Attributes.Contains("omObjectClass") ? schemaEntry.Attributes["omObjectClass"][0]?.ToString() : null)
-                    };
-                }
-                else
-                {
-                    // Log: $"Schema not found for attribute '{attributeLdapDisplayName}'."
-                    Console.WriteLine($"Warning: Schema not found for attribute '{attributeLdapDisplayName}'.");
+                        return _schemaCache[propertyName];
+                    }
+                    SearchResponse schemaSearchResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(schemaSearchRequest);
+                    if (schemaSearchResponse.Entries.Count > 0)
+                    {
+                        SearchResultEntry schemaEntry = schemaSearchResponse.Entries[0];
+                        var info = new AttributeSchemaInfo
+                        {
+                            AtttributeName = propertyName, // Use the name we looked up by
+                            AttributeSyntax = schemaEntry.Attributes["attributeSyntax"][0].ToString(),
+                            OMSyntax = int.Parse(schemaEntry.Attributes["oMSyntax"][0].ToString()),
+                            IsSingleValued = bool.Parse(schemaEntry.Attributes["isSingleValued"][0].ToString()),
+                            OMObjectClass = schemaEntry.Attributes.Contains("omObjectClass") && schemaEntry.Attributes["omObjectClass"][0] is byte[] omocBytes
+                                            ? Encoding.UTF8.GetString(omocBytes)
+                                            : (schemaEntry.Attributes.Contains("omObjectClass") ? schemaEntry.Attributes["omObjectClass"][0]?.ToString() : null)
+                        };
+                        _schemaCache.Add(propertyName, info);
+
+                    }
+                    else
+                    {
+                        // Log: $"Schema not found for attribute '{attributeLdapDisplayName}'."
+                        Console.WriteLine($"Warning: Schema not found for attribute '{propertyName}'.");
+                    }
                 }
             }
             catch (Exception ex)
             {
                 // Log: $"Error fetching schema for attribute '{attributeLdapDisplayName}': {ex.Message}"
-                Console.WriteLine($"Error fetching schema for attribute '{attributeLdapDisplayName}': {ex.Message}. Schema will be considered not found.");
+                Console.WriteLine($"Error fetching schema for attribute '{propertyName}': {ex.Message}. Schema will be considered not found.");
             }
             return null;
         }
@@ -360,7 +403,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public string SchemaClassName => UnderlyingEntry.SchemaClassName;
 
-        public string Name => GetPropertyValue("name").ToString();
+        public string Name => GetPropertyValue("name")?.ToString();
 
         public IDirectoryEntry Parent
         {

@@ -14,6 +14,8 @@ namespace BLAZAM.ActiveDirectory
         private static Timer? _disposerTimer = null;
         private static object _lock = new object();
         private static List<AppLdapConnection> _connectionPool = new();
+        private static bool _testsPerformed;
+
         /// <summary>
         /// Establishes a secure LDAP connection based on ADSettings.
         /// It will choose LDAPS if port is typically 636 and UseTLS is true,
@@ -52,7 +54,7 @@ namespace BLAZAM.ActiveDirectory
 
             if (string.IsNullOrEmpty(settings.ServerAddress))
             {
-                Loggers.ActiveDirectoryLogger.Information   ("ServerAddress in ADSettings is null or empty.");
+                Loggers.ActiveDirectoryLogger.Information("ServerAddress in ADSettings is null or empty.");
                 return default;
             }
             if (string.IsNullOrEmpty(settings.Username))
@@ -73,12 +75,12 @@ namespace BLAZAM.ActiveDirectory
             if (settings.ServerPort == 636) // Common LDAPS port
             {
                 Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting LDAPS connection.");
-                ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password, out connection);
+                ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username+"@"+settings.FQDN, settings.Password.Decrypt(), out connection);
             }
             else if (settings.ServerPort == 389) // Common LDAP port, suitable for StartTLS
             {
                 Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting StartTLS connection.");
-                ConnectWithStartTls(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password.Decrypt(), out connection);
+                ConnectWithStartTls(settings.ServerAddress, settings.ServerPort, settings.Username + "@" + settings.FQDN, settings.Password.Decrypt(), out connection);
             }
             else
             {
@@ -93,7 +95,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 if (_disposerTimer == null)
                 {
-                    _disposerTimer = new Timer(CleanPool,null,30000,30000);
+                    _disposerTimer = new Timer(CleanPool, null, 30000, 30000);
                 }
                 _connectionPool.Add(appConnection);
             }
@@ -119,7 +121,7 @@ namespace BLAZAM.ActiveDirectory
 
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 
                 }
@@ -148,6 +150,8 @@ namespace BLAZAM.ActiveDirectory
 
             try
             {
+                TestConnectionMethods(ldapServerHost, ldapServerPort, username, password);
+
                 // 1. Create LdapConnection object targeting the LDAPS port
                 LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier(ldapServerHost, ldapServerPort);
                 connection = new LdapConnection(identifier);
@@ -157,6 +161,11 @@ namespace BLAZAM.ActiveDirectory
 
                 // 3. (Optional but Recommended) Configure server certificate validation
                 // connection.SessionOptions.VerifyServerCertificate = new VerifyServerCertificateCallback(ServerCallback);
+                connection.SessionOptions.VerifyServerCertificate = (conn, cert) =>
+                {
+                    Loggers.ActiveDirectoryLogger.Information($"Server certificate presented. Subject: {cert.Subject}. Accepting for test purposes.");
+                    return true;
+                };
 
                 // 4. Provide credentials
                 NetworkCredential credential = new NetworkCredential(username, password);
@@ -217,91 +226,7 @@ namespace BLAZAM.ActiveDirectory
 
             try
             {
-                // Define connection scenarios to test
-                var scenarios = new[] { "Plain", "StartTLS", "LDAPS" };
-                // Define authentication types to test
-                var authTypes = new[] { AuthType.Basic, AuthType.Ntlm, AuthType.Negotiate, AuthType.Anonymous };
-
-                // Loop through every combination
-                foreach (var scenario in scenarios)
-                {
-                    foreach (var authType in authTypes)
-                    {
-                        // Use a new LdapConnection for each attempt
-                        LdapConnection connection2 = null;
-                        // Set port based on scenario. LDAPS typically uses 636.
-                        int currentPort = (scenario == "LDAPS") ? 636 : ldapServerPort;
-
-                        Loggers.ActiveDirectoryLogger.Information($"========== TESTING: Scenario={scenario}, Auth={authType}, Port={currentPort} ==========");
-
-                        try
-                        {
-                            // 1. Create LdapConnection object for this specific test
-                            LdapDirectoryIdentifier identifier2 = new LdapDirectoryIdentifier(ldapServerHost, currentPort);
-                            connection2 = new LdapConnection(identifier2);
-
-                            // 2. Provide credentials
-                            NetworkCredential credential2 = new NetworkCredential(username, password);
-                            connection2.Credential = credential2;
-                            connection2.SessionOptions.ProtocolVersion = 3;
-                            connection2.AuthType = authType;
-
-                            // 3. Configure connection options based on the current scenario
-                            switch (scenario)
-                            {
-                                case "LDAPS":
-                                    connection2.SessionOptions.SecureSocketLayer = true;
-                                    break;
-                                case "StartTLS":
-                                    connection2.SessionOptions.StartTransportLayerSecurity(null);
-                                    break;
-                                case "Plain":
-                                    // Explicitly disable security for plain text test
-                                    connection2.SessionOptions.SecureSocketLayer = false;
-                                    connection2.SessionOptions.StartTransportLayerSecurity(null);
-                                    break;
-                            }
-
-                            // 4. (For Diagnostics) Bypass server certificate validation to isolate other errors.
-                            // WARNING: This is insecure and should ONLY be used for testing.
-                            connection2.SessionOptions.VerifyServerCertificate = (conn, cert) => {
-                                Loggers.ActiveDirectoryLogger.Information($"Server certificate presented for {scenario}/{authType}. Subject: {cert.Subject}. Accepting for test purposes.");
-                                return true;
-                            };
-
-                            // 5. Bind to the server
-                            Loggers.ActiveDirectoryLogger.Information($"Attempting Bind() to {ldapServerHost}:{currentPort} as {username}...");
-                            connection2.Bind();
-
-                            Loggers.ActiveDirectoryLogger.Information($"========== SUCCESS: Scenario={scenario}, Auth={authType} ==========");
-                            // If you want the method to return true on the first success, you can do it here.
-                            // return true;
-                        }
-                        catch (LdapException ldapEx)
-                        {
-                            // Log the full LdapException, which includes error codes and server messages.
-                            Loggers.ActiveDirectoryLogger.Information(ldapEx, $"LDAP Exception on {scenario}/{authType}: {@ldapEx}");
-                            if (ldapEx.ServerErrorMessage != null)
-                            {
-                                Loggers.ActiveDirectoryLogger.Information($"Server Error Message: {ldapEx.ServerErrorMessage}");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            // Log the full General Exception. ex.ToString() is critical as it includes the InnerException.
-                            Loggers.ActiveDirectoryLogger.Warning($"General Exception on {scenario}/{authType}: {ex.ToString()}");
-                        }
-                        finally
-                        {
-                            // Always dispose of the connection object to release resources
-                            if (connection2 != null)
-                            {
-                                connection2.Dispose();
-                            }
-                            Loggers.ActiveDirectoryLogger.Information($"========== FINISHED TEST: Scenario={scenario}, Auth={authType} ==========\n");
-                        }
-                    }
-                }
+                TestConnectionMethods(ldapServerHost, ldapServerPort, username, password);
                 // 1. Create LdapConnection object targeting the standard LDAP port
                 LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier(ldapServerHost, ldapServerPort);
                 connection = new LdapConnection(identifier);
@@ -313,9 +238,9 @@ namespace BLAZAM.ActiveDirectory
                 NetworkCredential credential = new NetworkCredential(username, password);
                 connection.Credential = credential;
                 connection.SessionOptions.ProtocolVersion = 3;
-                connection.AuthType = AuthType.Basic;
-                //connection.SessionOptions.Signing = true;
-                //connection.SessionOptions.Sealing = true;
+                connection.AuthType = AuthType.Negotiate;
+                connection.SessionOptions.Signing = true;
+                connection.SessionOptions.Sealing = true;
                 //connection.SessionOptions.VerifyServerCertificate = (state,crt) => { return true; };
 
 
@@ -325,12 +250,12 @@ namespace BLAZAM.ActiveDirectory
                 connection.Bind();
 
 
-                Loggers.ActiveDirectoryLogger.Information("StartTLS successful! Connection is now secure.");
+                //Loggers.ActiveDirectoryLogger.Information("StartTLS successful! Connection is now secure.");
                 return true;
             }
             catch (LdapException ldapEx)
             {
-                Loggers.ActiveDirectoryLogger.Information(ldapEx,"LDAP Exception during StartTLS connection: {@ldapEx}");
+                Loggers.ActiveDirectoryLogger.Information(ldapEx, "LDAP Exception during StartTLS connection: {@ldapEx}");
                 if (ldapEx.ServerErrorMessage != null)
                 {
                     Loggers.ActiveDirectoryLogger.Information($"Server Error Message: {ldapEx.ServerErrorMessage}");
@@ -352,6 +277,109 @@ namespace BLAZAM.ActiveDirectory
                 }
                 return false;
             }
+        }
+
+        private static void TestConnectionMethods(string ldapServerHost, int ldapServerPort, string username, string password)
+        {
+            if (!_testsPerformed)
+            {
+                // Define connection scenarios to test
+                var scenarios = new[] { "Plain", "StartTLS", "LDAPS" };
+                // Define authentication types to test
+                var authTypes = new[] { AuthType.Basic };
+
+                bool[]? boolOptions = new[] { false, true };
+                // Loop through every combination
+                foreach (var authType in authTypes)
+                {
+                    foreach (var sslOption in boolOptions)
+                    {
+                        foreach (var signingOption in boolOptions)
+                        {
+                            foreach (var tlsOption in boolOptions)
+                            {
+                                foreach (var certOption in boolOptions)
+                                {
+                                    foreach (var sealingOption in boolOptions)
+                                    {
+                                        var optionsString = $"Signing ={signingOption}, TLS ={tlsOption}, SSL ={sslOption}, Sealing ={sealingOption}, IgnoreCert ={certOption}, Auth ={authType}";
+                                        //Use a new LdapConnection for each attempt
+                                        LdapConnection connection2 = null;
+                                        // Set port based on scenario. LDAPS typically uses 636.
+
+                                        Loggers.ActiveDirectoryLogger.Information($"========== TESTING {optionsString} ==========");
+
+
+                                        try
+                                        {
+                                            // 1. Create LdapConnection object for this specific test
+                                            LdapDirectoryIdentifier identifier2 = new LdapDirectoryIdentifier(ldapServerHost, ldapServerPort);
+                                            connection2 = new LdapConnection(identifier2);
+
+                                            // 2. Provide credentials
+                                            NetworkCredential credential2 = new NetworkCredential(username, password);
+                                            connection2.Credential = credential2;
+                                            connection2.SessionOptions.ProtocolVersion = 3;
+                                            connection2.AuthType = authType;
+
+                                            connection2.SessionOptions.SecureSocketLayer = sslOption;
+                                            connection2.SessionOptions.Signing = signingOption;
+                                            connection2.SessionOptions.Sealing = sealingOption;
+
+                                            if (certOption)
+                                            {
+                                                connection2.SessionOptions.VerifyServerCertificate = (conn, cert) =>
+                                                {
+                                                    Loggers.ActiveDirectoryLogger.Information($"Server certificate presented for {optionsString}. Subject: {cert.Subject}. Accepting for test purposes.");
+                                                    return true;
+                                                };
+                                            }
+                                            if (tlsOption)
+                                            {
+                                                connection2.SessionOptions.StartTransportLayerSecurity(null);
+                                            }
+                                            // 4. (For Diagnostics) Bypass server certificate validation to isolate other errors.
+                                            // WARNING: This is insecure and should ONLY be used for testing.
+
+
+                                            // 5. Bind to the server
+                                            Loggers.ActiveDirectoryLogger.Information($"Attempting Bind() to {ldapServerHost}:{ldapServerPort} as {username}...");
+                                            connection2.Bind();
+
+                                            Loggers.ActiveDirectoryLogger.Information($"========== SUCCESS:{optionsString} ==========");
+
+                                        }
+                                        catch (LdapException ldapEx)
+                                        {
+                                            // Log the full LdapException, which includes error codes and server messages.
+                                            Loggers.ActiveDirectoryLogger.Information(ldapEx, $"LDAP Exception on {optionsString}: {@ldapEx}");
+                                            if (ldapEx.ServerErrorMessage != null)
+                                            {
+                                                Loggers.ActiveDirectoryLogger.Information($"Server Error Message: {ldapEx.ServerErrorMessage}");
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            // Log the full General Exception. ex.ToString() is critical as it includes the InnerException.
+                                            Loggers.ActiveDirectoryLogger.Warning($"General Exception on {optionsString}: {ex.ToString()}");
+                                        }
+                                        finally
+                                        {
+                                            // Always dispose of the connection object to release resources
+                                            if (connection2 != null)
+                                            {
+                                                connection2.Dispose();
+                                            }
+                                            Loggers.ActiveDirectoryLogger.Information($"========== FINISHED TEST: {optionsString} ==========\n");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            _testsPerformed = true;
         }
 
         /// <summary>
