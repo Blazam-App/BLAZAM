@@ -9,6 +9,7 @@ BLAZAM_ZIP_FILENAME="blazam-stable-v1.4.0.2025.05.15.2236.zip" # Filename from t
 DOWNLOAD_URL="https://github.com/Blazam-App/BLAZAM/releases/download/${BLAZAM_RELEASE_TAG}/${BLAZAM_ZIP_FILENAME}"
 
 INSTALL_DIR="/opt/blazam"
+DATA_DIR="/var/lib/blazam"
 APP_USER="blazamuser"
 SERVICE_NAME="blazam"
 DOTNET_EXECUTABLE="/usr/bin/dotnet"
@@ -41,16 +42,16 @@ configure_database() {
 
     log_info "Please select the database type Blazam will use."
     log_warn "SQLite is recommended for simple, self-contained deployments."
-    
+
     # PS3 is the prompt for the select menu
     PS3="Enter the number for your choice: "
-    
+
     select choice in "SQLite (Recommended)" "Microsoft SQL Server" "MySQL / MariaDB" "PostgreSQL"; do
         case $choice in
             "SQLite")
                 DB_TYPE="Sqlite"
-                DB_CONN_STR="Data Source=Blazam.db"
-                log_info "SQLite selected. Database will be created in ${INSTALL_DIR}/Blazam.db"
+                DB_CONN_STR="Data Source=${DATA_DIR}/Blazam.db"
+                log_info "SQLite selected. Database will be created in ${DATA_DIR}/Blazam.db"
                 break
                 ;;
             "Microsoft SQL Server")
@@ -65,7 +66,7 @@ configure_database() {
                 ;;
             "MySQL / MariaDB")
                 # Blazam uses the Pomelo provider, which identifies as "MySql"
-                DB_TYPE="MySql" 
+                DB_TYPE="MySql"
                 read -r -p "Enter Server address/IP: " DB_SERVER
                 read -r -p "Enter Database Name: " DB_NAME
                 read -r -p "Enter User ID: " DB_USER
@@ -84,7 +85,7 @@ configure_database() {
                 DB_CONN_STR="Host=${DB_SERVER};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASS};"
                 break
                 ;;
-            *) 
+            *)
                 echo "Invalid option $REPLY. Please try again."
                 ;;
         esac
@@ -211,9 +212,13 @@ else
     log_info "User '${APP_USER}' already exists."
 fi
 
-# 4. Create Installation Directory
+# 4. Create Application and Data Directories
 log_info "Creating installation directory '${INSTALL_DIR}'..."
 mkdir -p "${INSTALL_DIR}"
+
+# <--- MODIFIED: Create data directory
+log_info "Creating data directory '${DATA_DIR}' for persistent data..."
+mkdir -p "${DATA_DIR}"
 
 # 5. Download and Extract Blazam
 log_info "Downloading Blazam from ${DOWNLOAD_URL}..."
@@ -224,9 +229,15 @@ log_info "Extracting Blazam to ${INSTALL_DIR}..."
 unzip -o "${BLAZAM_ZIP_FILENAME}" -d "${INSTALL_DIR}"
 
 # 6. Set Permissions
-log_info "Setting permissions for ${INSTALL_DIR}..."
+log_info "Setting permissions for application directory: ${INSTALL_DIR}..."
 chown -R "${APP_USER}":"${APP_USER}" "${INSTALL_DIR}"
 chmod -R 750 "${INSTALL_DIR}"
+
+# <--- MODIFIED: Set permissions for data directory
+log_info "Setting permissions for data directory: ${DATA_DIR}..."
+chown -R "${APP_USER}":"${APP_USER}" "${DATA_DIR}"
+chmod -R 750 "${DATA_DIR}"
+
 
 # 7. Configure appsettings.json
 log_info "Starting interactive database configuration..."
