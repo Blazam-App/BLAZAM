@@ -46,7 +46,7 @@ configure_database() {
     # PS3 is the prompt for the select menu
     PS3="Enter the number for your choice: "
 
-    select choice in "SQLite (Recommended)" "Microsoft SQL Server" "MySQL / MariaDB" "PostgreSQL"; do
+    select choice in "SQLite" "Microsoft SQL Server" "MySQL / MariaDB" "PostgreSQL"; do
         case $choice in
             "SQLite")
                 DB_TYPE="Sqlite"
@@ -174,7 +174,6 @@ log_info "Found target library: ${TARGET_LIB_PATH}"
 if [[ -L "${LINK_PATH}" ]] && [[ "$(readlink "${LINK_PATH}")" == "${TARGET_LIB_PATH}" ]]; then
   log_info "Success: Symbolic link already exists and is correct. Nothing to do."
   ls -l "${LINK_PATH}"
-  exit 0
 fi
 
 log_info "Creating/updating symbolic link..."

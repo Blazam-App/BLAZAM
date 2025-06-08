@@ -498,41 +498,6 @@ namespace BLAZAM.ActiveDirectory
             return connection;
 
 
-            //var search = new ADSearch(this)
-            //{
-            //    ObjectTypeFilter = ActiveDirectoryObjectType.User,
-            //    SearchRoot = RootDirectoryEntry,
-            //    Fields = new()
-            //    {
-            //        SamAccountName = ad.Username
-            //    },
-            //    ExactMatch = true
-            //};
-            //var results = search.Search<ADUser, IADUser>();
-
-
-            //if (results.Count > 0)
-            //{
-            //    Loggers.ActiveDirectoryLogger.Information("Active Directory test passed");
-            //    ConnectionException = null;
-
-            //    Status = DirectoryConnectionStatus.OK;
-            //    KeepAlive();
-            //    //TryGetDomainControllers();
-            //    FailedConnectionAttempts = 0;
-            //    //return;
-
-            //}
-            //else
-            //{
-            //    Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
-
-            //    Status = DirectoryConnectionStatus.BadConfiguration;
-            //    if (FailedConnectionAttempts < 10)
-            //        FailedConnectionAttempts++;
-            //    throw new CriticalActiveDirectoryException(this, "Active Directory test failed");
-
-            //}
         }
 
         private void InitializeDirectoryEntries(ADSettings? ad)

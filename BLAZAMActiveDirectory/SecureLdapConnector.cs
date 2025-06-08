@@ -161,13 +161,7 @@ namespace BLAZAM.ActiveDirectory
                 connection.SessionOptions.SecureSocketLayer = true;
                 connection.SessionOptions.ProtocolVersion = 3;
 
-                // 3. (Optional but Recommended) Configure server certificate validation
-                // connection.SessionOptions.VerifyServerCertificate = new VerifyServerCertificateCallback(ServerCallback);
-                connection.SessionOptions.VerifyServerCertificate = (conn, cert) =>
-                {
-                    Loggers.ActiveDirectoryLogger.Information($"Server certificate presented. Subject: {cert.Subject}. Accepting for test purposes.");
-                    return true;
-                };
+               
                 // 4. Provide credentials
                 NetworkCredential credential = new NetworkCredential(username, password);
                 connection.Credential = credential;
