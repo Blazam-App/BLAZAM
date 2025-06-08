@@ -75,12 +75,12 @@ namespace BLAZAM.ActiveDirectory
             if (settings.ServerPort == 636) // Common LDAPS port
             {
                 Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting LDAPS connection.");
-                ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username+"@"+settings.FQDN, settings.Password.Decrypt(), out connection);
+                ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password.Decrypt(), out connection);
             }
             else if (settings.ServerPort == 389) // Common LDAP port, suitable for StartTLS
             {
                 Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting StartTLS connection.");
-                ConnectWithStartTls(settings.ServerAddress, settings.ServerPort, settings.Username + "@" + settings.FQDN, settings.Password.Decrypt(), out connection);
+                ConnectWithStartTls(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password.Decrypt(), out connection);
             }
             else
             {
@@ -150,7 +150,7 @@ namespace BLAZAM.ActiveDirectory
 
             try
             {
-                //TestConnectionMethods(ldapServerHost, ldapServerPort, username, password);
+                TestConnectionMethods(ldapServerHost, ldapServerPort, username, password);
 
                 // 1. Create LdapConnection object targeting the LDAPS port
                 LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier(ldapServerHost, ldapServerPort);
@@ -205,19 +205,6 @@ namespace BLAZAM.ActiveDirectory
             }
         }
 
-        private static void NewMethod(LdapConnection? connection)
-        {
-
-
-            // 3. (Optional but Recommended) Configure server certificate validation
-            // connection.SessionOptions.VerifyServerCertificate = new VerifyServerCertificateCallback(ServerCallback);
-            connection.SessionOptions.VerifyServerCertificate = (conn, cert) =>
-            {
-                Loggers.ActiveDirectoryLogger.Information($"Server certificate presented. Subject: {cert.Subject}. Accepting for test purposes.");
-                return true;
-            };
-        }
-
         /// <summary>
         /// Establishes a secure LDAP connection using StartTLS.
         /// </summary>
@@ -240,7 +227,7 @@ namespace BLAZAM.ActiveDirectory
 
             try
             {
-                //TestConnectionMethods(ldapServerHost, ldapServerPort, username, password);
+                TestConnectionMethods(ldapServerHost, ldapServerPort, username, password);
                 // 1. Create LdapConnection object targeting the standard LDAP port
                 LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier(ldapServerHost, ldapServerPort);
                 connection = new LdapConnection(identifier);
@@ -258,7 +245,7 @@ namespace BLAZAM.ActiveDirectory
                 //connection.SessionOptions.VerifyServerCertificate = (state,crt) => { return true; };
 
 
-
+                
                 // 5. Bind to the server
                 Loggers.ActiveDirectoryLogger.Information($"Attempting initial connection to {ldapServerHost}:{ldapServerPort} for StartTLS as {username}...");
                 connection.Bind();
@@ -297,6 +284,8 @@ namespace BLAZAM.ActiveDirectory
         {
             if (!_testsPerformed)
             {
+                _testsPerformed = true;
+
                 // Define connection scenarios to test
                 var scenarios = new[] { "Plain", "StartTLS", "LDAPS" };
                 // Define authentication types to test
@@ -331,14 +320,17 @@ namespace BLAZAM.ActiveDirectory
                                             connection2 = new LdapConnection(identifier2);
 
                                             // 2. Provide credentials
-                                            NetworkCredential credential2 = new NetworkCredential(username, password);
-                                            connection2.Credential = credential2;
+                                            
+                                            connection2.Credential = new NetworkCredential(username, password);
                                             connection2.SessionOptions.ProtocolVersion = 3;
                                             connection2.AuthType = authType;
+                                            connection2.SessionOptions.ReferralChasing = ReferralChasingOptions.None;
 
                                             connection2.SessionOptions.SecureSocketLayer = sslOption;
-                                            connection2.SessionOptions.Signing = signingOption;
-                                            connection2.SessionOptions.Sealing = sealingOption;
+                                            if(signingOption)
+                                                connection2.SessionOptions.Signing = signingOption;
+                                            if(sealingOption)
+                                                connection2.SessionOptions.Sealing = sealingOption;
 
                                             if (certOption)
                                             {
@@ -393,7 +385,6 @@ namespace BLAZAM.ActiveDirectory
                     }
                 }
             }
-            _testsPerformed = true;
         }
 
         /// <summary>

@@ -23,6 +23,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.10" />
     <PackageReference Include="MudBlazor" Version="8.6.0" />
+    <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="4.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.1" />
     <PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.4" />
     <PackageReference Include="System.Management" Version="9.0.4" />
