@@ -628,18 +628,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     List<IDirectoryEntryAdapter> directoryEntries = new();
                     var children = DirectoryEntry.Children;
-                    var list = new List<DirectoryEntry>();
-                    foreach (DirectoryEntry child in children)
+                    var list = new List<IDirectoryEntry>();
+                    foreach (IDirectoryEntry child in children)
                     {
                         list.Add(child);
                     }
-                    Parallel.ForEach<DirectoryEntry>(list, child =>
+                    Parallel.ForEach<IDirectoryEntry>(list, child =>
                     {
                         DirectoryEntryAdapter? thisObject = null;
 
-                        if (child.Properties["objectClass"].Contains("top"))
+                        if (child.PropertyContains("objectClass","top"))
                         {
-                            var objectClass = child.Properties["objectClass"];
+                            var objectClass = child.GetPropertyValue("objectClass")as string[];
                             if (objectClass.Contains("computer"))
                             {
                                 thisObject = new ADComputer();
@@ -667,7 +667,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             }
                             if (thisObject != null)
                             {
-                                thisObject.Parse(directory: Directory, directoryEntry: child.ToIDirectoryEntry(Directory));
+                                thisObject.Parse(directory: Directory, directoryEntry: child);
                                 lock (directoryEntries)
                                 {
                                     directoryEntries.Add(thisObject);
