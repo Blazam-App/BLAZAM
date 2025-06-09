@@ -379,7 +379,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
-                using (var connection = _currentUserActiveDirectoryContext.Connect()) {
+                using (var connection = SecureLdapConnector.Connect(_currentUserActiveDirectoryContext.ConnectionSettings)) {
 
                     PerformSearch<TObject, TInterface>(connection, searchRequest, PageSize);
 
@@ -488,9 +488,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 searcher.Attributes.Add(ActiveDirectoryFields.SAMAccountName.FieldName);
                 searcher.Attributes.Add(ActiveDirectoryFields.DistinguishedName.FieldName);
                 searcher.Attributes.Add(ActiveDirectoryFields.ObjectSID.FieldName);
+                searcher.Attributes.Add(ActiveDirectoryFields.DisplayName.FieldName);
+                searcher.Attributes.Add(ActiveDirectoryFields.Name.FieldName);
                 searcher.Attributes.Add("objectclass");
                 searcher.Attributes.Add(ActiveDirectoryFields.CanonicalName.FieldName);
-                searcher.Attributes.Add("name");
             }
             if (SearchDeleted)
             {

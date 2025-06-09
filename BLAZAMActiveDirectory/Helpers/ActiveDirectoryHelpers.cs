@@ -221,6 +221,43 @@ namespace BLAZAM.Helpers
             }
             return null;
         }
+        /// <summary>
+        /// Extracts the parent Distinguished Name (DN) from a given DN string.
+        /// </summary>
+        /// <param name="dn">The DN string to parse.</param>
+        /// <returns>The parent DN string, or null if no parent exists.</returns>
+        /// <example>
+        /// <code>
+        /// string userDn = "CN=John Doe,CN=Users,DC=example,DC=com";
+        /// string parentDn = userDn.GetParentDn();
+        /// // parentDn is now "CN=Users,DC=example,DC=com"
+        ///
+        /// string escapedDn = @"CN=Smith\, John,OU=Accounting,DC=example,DC=com";
+        /// string escapedParent = escapedDn.GetParentDn();
+        /// // escapedParent is now "OU=Accounting,DC=example,DC=com"
+        /// </code>
+        /// </example>
+        public static string? GetParentDn(this string dn)
+        {
+            if (string.IsNullOrWhiteSpace(dn))
+            {
+                return null;
+            }
+
+            // This regex uses a negative lookbehind to find the first comma
+            // that is not preceded by a backslash. It will split the DN
+            // into a maximum of two parts at that first valid delimiter.
+            var match = Regex.Match(dn, @"(?<!\\),");
+
+            // If no match is found, there is no parent DN.
+            if (!match.Success)
+            {
+                return null;
+            }
+
+            // The parent DN is the substring starting right after the matched comma.
+            return dn.Substring(match.Index + 1);
+        }
         public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry)
         {
             return null;

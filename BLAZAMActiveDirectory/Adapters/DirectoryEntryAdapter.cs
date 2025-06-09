@@ -11,6 +11,7 @@ using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
+using Novell.Directory.Ldap.Utilclass;
 using System.Collections;
 using System.Data;
 using System.DirectoryServices;
@@ -430,7 +431,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        public virtual string? OU { get => DN.DnToOu() ?? ADSPath.DnToOu(); }
+        public virtual string? OU { get => DN.DnToOu(); }
 
         public async Task<IDirectoryEntryAdapter?> GetParentAsync() => await Task.Run(() =>
         {
@@ -764,22 +765,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SearchResult = searchResult;
             if(searchResultEntry != null)
             {
-                //Pull containing attributes
-                foreach (DictionaryEntry item in searchResultEntry.Attributes)
-                {
-                    var attriubute = item.Value as DirectoryAttribute;
-                    if (attriubute != null)
-                    {
-                        if (attriubute.Name.Equals("distinguishedname", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            var dn = attriubute.GetValues(typeof(string))[0].ToString();
-                            DirectoryEntry = new LdapDirectoryEntry(dn,directory);
-                        }
-                        var name = attriubute.Name;
-                        var values = attriubute.GetValues(typeof(string));
-
-                    }
-                }
+                DirectoryEntry = new LdapDirectoryEntry(searchResultEntry.Attributes["distinguishedname"].GetValues(typeof(string))[0].ToString(), directory); 
+                
             }
             if (directoryEntry != null)
             {

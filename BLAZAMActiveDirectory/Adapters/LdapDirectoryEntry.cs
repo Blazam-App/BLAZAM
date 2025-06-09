@@ -91,6 +91,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public string DN { get; set; }
 
 
+        private bool _propertiesCollected = false;
         private object? Search(string attributeName)
         {
 
@@ -98,6 +99,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (existingCache == null) existingCache = new(new());
             if (existingCache.Attributes.ContainsKey(attributeName.ToLower()))
             {
+                return existingCache.Attributes[attributeName.ToLower()];
+            }else if (_propertiesCollected)
+            {
+                if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
+                {
+                    existingCache.Attributes[attributeName.ToLower()] = null;
+                }
                 return existingCache.Attributes[attributeName.ToLower()];
             }
             Loggers.ActiveDirectoryLogger.Information("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}", Directory != null && Directory.ConnectionSettings != null);
@@ -124,12 +132,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             SearchResultEntry entry = searchResponse.Entries[0];
             foreach (string currentAttributeLdapName in entry.Attributes.AttributeNames)
             {
-                // Skip if already processed (e.g., by a direct cache hit before lock or an alias)
-
-                if (existingCache.Attributes.ContainsKey(currentAttributeLdapName.ToLower()))
-                {
-                    continue;
-                }
+                      
 
                 DirectoryAttribute directoryAttribute = entry.Attributes[currentAttributeLdapName];
                 AttributeSchemaInfo schemaInfo = GetSchemaInfo(ldapConnection, schemaNamingContext, currentAttributeLdapName);
@@ -174,9 +177,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
             {
-                existingCache.Attributes[attributeName] = null;
+                existingCache.Attributes[attributeName.ToLower()] = null;
             }
             DirectoryCache.SetEntryCache(DN, existingCache.Attributes);
+            _propertiesCollected = true;
             return existingCache.Attributes[attributeName.ToLower()]; // Attribute not found on the object or no value
 
 
@@ -409,7 +413,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return new LdapDirectoryEntry(DN, Directory);
+                return new LdapDirectoryEntry(DN.GetParentDn(), Directory);
             }
         }
 

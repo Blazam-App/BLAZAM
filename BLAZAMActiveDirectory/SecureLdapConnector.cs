@@ -26,18 +26,6 @@ namespace BLAZAM.ActiveDirectory
         /// <returns>True if the connection was successful, otherwise false.</returns>
         public static AppLdapConnection? Connect(ADSettings settings)
         {
-            //lock (_lock)
-            //{
-            //    foreach (var conn in _connectionPool)
-            //    {
-            //        if (conn.Expires != null)
-            //        {
-            //            conn.Expires = null;
-            //            return conn;
-            //        }
-            //    }
-
-            //}
             LdapConnection connection = null;
             if (settings == null)
             {
