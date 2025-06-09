@@ -7,6 +7,7 @@ using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Novell.Directory.Ldap;
 using System.Collections;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
@@ -29,6 +30,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             DN = dn;
             Directory = directory;
+        }
+        public LdapDirectoryEntry(SearchResultEntry sre, IActiveDirectoryContext directory)
+        {
+            DN = sre.DistinguishedName;
+            Directory = directory;
+            Dictionary<string, object> entryAttributes = new();
+
+           
         }
 
         public string Path { get => UnderlyingEntry.Path; set => UnderlyingEntry.Path = value; }

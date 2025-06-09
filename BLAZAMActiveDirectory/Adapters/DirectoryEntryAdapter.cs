@@ -639,7 +639,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                         if (child.PropertyContains("objectClass","top"))
                         {
-                            var objectClass = child.GetPropertyValue("objectClass")as string[];
+                            var raw = child.GetPropertyValue("objectClass");
+                            var objectClass = raw as object[];
                             if (objectClass.Contains("computer"))
                             {
                                 thisObject = new ADComputer();

@@ -482,18 +482,27 @@ namespace BLAZAM.ActiveDirectory
             {
                 Loggers.ActiveDirectoryLogger.Information("Performing Active Directory connection test");
 
-             if(AppRootDirectoryEntry?.Name.IsNullOrEmpty()==true || RootDirectoryEntry?.Name.IsNullOrEmpty() == true)
-                {
-                    Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
+             //if(AppRootDirectoryEntry?.Name.IsNullOrEmpty()==true || RootDirectoryEntry?.Name.IsNullOrEmpty() == true)
+             //   {
+             //       Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
 
-                    Status = DirectoryConnectionStatus.BadConfiguration;
-                    if (FailedConnectionAttempts < 10)
-                        FailedConnectionAttempts++;
-                    throw new CriticalActiveDirectoryException(this, "Active Directory test failed");
-                }
+             //       Status = DirectoryConnectionStatus.BadConfiguration;
+             //       if (FailedConnectionAttempts < 10)
+             //           FailedConnectionAttempts++;
+             //       throw new CriticalActiveDirectoryException(this, "Active Directory test failed");
+             //   }
 
             }
             var connection = SecureLdapConnector.Connect(ad);
+            if (connection.LdapConnection==null)
+            {
+                Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
+
+                Status = DirectoryConnectionStatus.BadConfiguration;
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++;
+                throw new CriticalActiveDirectoryException(this, "Active Directory test failed");
+            }
             Status = DirectoryConnectionStatus.OK;
             return connection;
 
