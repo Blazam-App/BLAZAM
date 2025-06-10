@@ -143,7 +143,7 @@ namespace BLAZAM.ActiveDirectory
                 // 1. Create LdapConnection object targeting the LDAPS port
                 LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier(ldapServerHost, ldapServerPort);
                 connection = new LdapConnection(identifier);
-
+                
                 // 2. Specify that SSL should be used
                 connection.AuthType = AuthType.Basic;
                 connection.SessionOptions.SecureSocketLayer = true;
@@ -153,7 +153,6 @@ namespace BLAZAM.ActiveDirectory
                 // 4. Provide credentials
                 NetworkCredential credential = new NetworkCredential(username, password);
                 connection.Credential = credential;
-
                 // 5. Bind to the server (establish the connection and authenticate)
                 Loggers.ActiveDirectoryLogger.Information($"Attempting LDAPS connection to {ldapServerHost}:{ldapServerPort} as {username}...");
                 connection.Bind();
@@ -221,9 +220,9 @@ namespace BLAZAM.ActiveDirectory
                 NetworkCredential credential = new NetworkCredential(username, password);
                 connection.Credential = credential;
                 connection.SessionOptions.ProtocolVersion = 3;
-                connection.AuthType = AuthType.Negotiate;
-                connection.SessionOptions.Signing = true;
-                connection.SessionOptions.Sealing = true;
+                connection.AuthType = AuthType.Basic;
+                //connection.SessionOptions.Signing = true;
+                //connection.SessionOptions.Sealing = true;
                 //connection.SessionOptions.VerifyServerCertificate = (state,crt) => { return true; };
 
 
