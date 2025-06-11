@@ -27,7 +27,7 @@ namespace BLAZAM.ActiveDirectory.Data
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects)
-                    LdapConnection.Dispose();
+                    LdapConnection?.Dispose();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
@@ -50,7 +50,7 @@ namespace BLAZAM.ActiveDirectory.Data
         }
         public void Dispose()
         {
-            Expires = DateTime.Now.AddMinutes(1);
+            Expires = DateTime.Now.AddMinutes(0.1);
            
         }
     }

@@ -12,7 +12,11 @@ namespace BLAZAM.ActiveDirectory.Services
         private static ConcurrentDictionary<string, EntryCache> DirectoryEntries = new();
         public static EntryCache? GetEntryCache(string dn)
         {
-            if (DirectoryEntries.ContainsKey(dn) && DateTime.Now - DirectoryEntries[dn].LastUpdated < TimeSpan.FromMinutes(2)) return DirectoryEntries[dn];
+            if (DirectoryEntries.ContainsKey(dn) && DateTime.Now - DirectoryEntries[dn].LastUpdated < TimeSpan.FromMinutes(2))
+            {
+                DirectoryEntries[dn].LastUpdated = DateTime.Now;
+                return DirectoryEntries[dn];
+            }
             return null;
         }
         public static void SetEntryCache(string dn, Dictionary<string, object?> attributes)
