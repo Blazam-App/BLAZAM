@@ -56,7 +56,23 @@ namespace BLAZAM.ActiveDirectory
                 return default;
             }
 
+            lock (_lock)
+            {
+                try
+                {
+                    var conn = _connectionPool.First(c => c.IsDisposed == false && c.Expires != null);
+                    if (conn != null && conn.LdapConnection != null)
+                    {
+                        conn.Expires = null;
+                        return conn;
+                    }
+                }
+                catch (Exception ex)
+                {
 
+                }
+
+            }
 
             // Typically, port 636 is for LDAPS, and 389 is for LDAP (which can be upgraded with StartTLS).
             // We'll infer the method based on common port usage when UseTLS is true.

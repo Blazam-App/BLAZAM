@@ -1006,7 +1006,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual void DiscardChanges()
         {
 
-            DirectoryEntry = null;
+            //DirectoryEntry = null;
             HasUnsavedChanges = false;
             NewEntryProperties = new();
             CommitSteps.Clear();
