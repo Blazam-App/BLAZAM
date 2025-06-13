@@ -78,7 +78,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 Search(propertyName);
                 existingCache = DirectoryCache.GetEntryCache(DN);
-                return existingCache?.Attributes.ContainsKey(propertyName.ToLower())==true;
+                return existingCache?.Attributes.ContainsKey(propertyName.ToLower()) == true;
 
             }
         }
@@ -104,7 +104,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private bool _propertiesCollected = false;
 
-   
+
         private object? Search(string attributeName)
         {
 
@@ -146,7 +146,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-            SearchResponse searchResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(allAttributesSearchRequest);
+            SearchResponse searchResponse = (SearchResponse)ldapConnection.SendRequest(allAttributesSearchRequest);
 
 
 
@@ -184,7 +184,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         List<object> values = new List<object>();
                         foreach (object rawValue in directoryAttribute)
                         {
-                            values.Add(ConvertSingleValue(rawValue,currentAttributeLdapName));
+                            values.Add(ConvertSingleValue(rawValue, currentAttributeLdapName));
                         }
                         existingCache.Attributes[currentAttributeLdapName.ToLower()] = values.ToArray();
                     }
@@ -219,7 +219,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         // First, find the schema naming context
                         var rootDseRequest = new SearchRequest("", "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, "schemaNamingContext");
-                        var rootDseResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(rootDseRequest);
+                        var rootDseResponse = (SearchResponse)ldapConnection.SendRequest(rootDseRequest);
                         if (rootDseResponse.Entries.Count == 0)
                         {
                             throw new AppException("Could not read RootDSE to find schema naming context.");
@@ -234,6 +234,46 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private void GetSchemaInfo(AppLdapConnection ldapConnection, string propertyName)
         {
+            if (_schemaCache.IsNullOrEmpty())
+            {
+                SearchRequest schemaSearchRequest = new SearchRequest(
+                   _namingContextCache,
+                   $"(objectClass=attributeSchema)",
+                   System.DirectoryServices.Protocols.SearchScope.Subtree,
+                   "attributeSyntax", "oMSyntax", "isSingleValued", "oMObjectClass", "cn" // "cn" can be useful for debugging
+               );
+
+                try
+                {
+
+                    if (!_schemaCache.ContainsKey(propertyName))
+                    {
+
+
+                        SearchResponse schemaSearchResponse = (SearchResponse)ldapConnection.SendRequest(schemaSearchRequest);
+                        if (schemaSearchResponse.Entries.Count > 0)
+                        {
+                            foreach (SearchResultEntry entry in schemaSearchResponse.Entries)
+                            {
+                                AddSchemaCacheEntry(propertyName, entry);
+                            }
+
+
+                        }
+                        else
+                        {
+                            // Log: $"Schema not found for attribute '{attributeLdapDisplayName}'."
+                            Console.WriteLine($"Warning: Schema not found for attribute '{propertyName}'.");
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log: $"Error fetching schema for attribute '{attributeLdapDisplayName}': {ex.Message}"
+                    Console.WriteLine($"Error fetching schema for attribute '{propertyName}': {ex.Message}. Schema will be considered not found.");
+                }
+            }
             if (!_schemaCache.ContainsKey(propertyName))
             {
 
@@ -246,34 +286,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 try
                 {
-                    lock (_schemaCache)
+                    if (!_schemaCache.ContainsKey(propertyName))
                     {
-                        if (!_schemaCache.ContainsKey(propertyName))
+                        SearchResponse schemaSearchResponse = (SearchResponse)ldapConnection.SendRequest(schemaSearchRequest);
+                        if (schemaSearchResponse.Entries.Count > 0)
                         {
-
-
-                            SearchResponse schemaSearchResponse = (SearchResponse)ldapConnection.LdapConnection.SendRequest(schemaSearchRequest);
-                            if (schemaSearchResponse.Entries.Count > 0)
-                            {
-                                SearchResultEntry schemaEntry = schemaSearchResponse.Entries[0];
-                                var info = new AttributeSchemaInfo
-                                {
-                                    AtttributeName = propertyName, // Use the name we looked up by
-                                    AttributeSyntax = schemaEntry.Attributes["attributeSyntax"][0].ToString(),
-                                    OMSyntax = int.Parse(schemaEntry.Attributes["oMSyntax"][0].ToString()),
-                                    IsSingleValued = bool.Parse(schemaEntry.Attributes["isSingleValued"][0].ToString()),
-                                    OMObjectClass = schemaEntry.Attributes.Contains("omObjectClass") && schemaEntry.Attributes["omObjectClass"][0] is byte[] omocBytes
-                                                    ? Encoding.UTF8.GetString(omocBytes)
-                                                    : (schemaEntry.Attributes.Contains("omObjectClass") ? schemaEntry.Attributes["omObjectClass"][0]?.ToString() : null)
-                                };
-                                _schemaCache.Add(propertyName, info);
-
-                            }
-                            else
-                            {
-                                // Log: $"Schema not found for attribute '{attributeLdapDisplayName}'."
-                                Console.WriteLine($"Warning: Schema not found for attribute '{propertyName}'.");
-                            }
+                            AddSchemaCacheEntry(propertyName, schemaSearchResponse.Entries[0]);
+                        }
+                        else
+                        {
+                            // Log: $"Schema not found for attribute '{attributeLdapDisplayName}'."
+                            Console.WriteLine($"Warning: Schema not found for attribute '{propertyName}'.");
                         }
                     }
                 }
@@ -284,6 +307,25 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
             }
         }
+
+        private static void AddSchemaCacheEntry(string propertyName, SearchResultEntry entry)
+        {
+            var info = new AttributeSchemaInfo
+            {
+                AtttributeName = propertyName, // Use the name we looked up by
+                AttributeSyntax = entry.Attributes["attributeSyntax"][0].ToString(),
+                OMSyntax = int.Parse(entry.Attributes["oMSyntax"][0].ToString()),
+                IsSingleValued = bool.Parse(entry.Attributes["isSingleValued"][0].ToString()),
+                OMObjectClass = entry.Attributes.Contains("omObjectClass") && entry.Attributes["omObjectClass"][0] is byte[] omocBytes
+                                ? Encoding.UTF8.GetString(omocBytes)
+                                : (entry.Attributes.Contains("omObjectClass") ? entry.Attributes["omObjectClass"][0]?.ToString() : null)
+            };
+            lock (_schemaCache)
+            {
+                _schemaCache.Add(propertyName, info);
+            }
+        }
+
         private static object ConvertSingleValue(object rawValue, string propertyName)
         {
             var schemaInfo = _schemaCache[propertyName];
@@ -545,13 +587,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
             var modifyRequest = new ModifyRequest(DN, attributeModification);
-            ModifyResponse modifyResponse = (ModifyResponse)ldapConnection.LdapConnection.SendRequest(modifyRequest);
+            ModifyResponse modifyResponse = (ModifyResponse)ldapConnection.SendRequest(modifyRequest);
 
             // Check the result code from the LDAP server
             if (modifyResponse.ResultCode == ResultCode.Success)
             {
-
-
                 return true;
             }
             else
@@ -608,15 +648,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
             // 4. Call the generalized method. The parent DN stays the same.
             PerformModifyDN(newRdn, parentDn);
 
-           // 5. AFTER the rename succeeds, update the displayName by reusing
-    // the existing private Invoke method.
-    if (!Invoke("displayName", DirectoryAttributeOperation.Replace, newName))
-    {
-        // The rename itself succeeded, but the secondary displayName update failed.
-        // We log this as a warning because the primary goal was met.
-        Loggers.ActiveDirectoryLogger.Warning(
-            "Object {DN} was renamed successfully, but updating its displayName attribute failed.", this.DN);
-    }
+            // 5. AFTER the rename succeeds, update the displayName by reusing
+            // the existing private Invoke method.
+            if (!Invoke("displayName", DirectoryAttributeOperation.Replace, newName))
+            {
+                // The rename itself succeeded, but the secondary displayName update failed.
+                // We log this as a warning because the primary goal was met.
+                Loggers.ActiveDirectoryLogger.Warning(
+                    "Object {DN} was renamed successfully, but updating its displayName attribute failed.", this.DN);
+            }
         }
 
         public void MoveTo(IDirectoryEntry newParent)
@@ -669,7 +709,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
                 // Send the request
-                connection.LdapConnection.SendRequest(request);
+                connection.SendRequest(request);
 
                 // On success, update the object's state to its new DN
                 this.DN = newRdn + "," + newParentDn;
@@ -739,7 +779,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 null // Request all attributes
             );
 
-            var response = (SearchResponse)connection.LdapConnection.SendRequest(request);
+            var response = (SearchResponse)connection.SendRequest(request);
 
             foreach (SearchResultEntry entry in response.Entries)
             {
@@ -759,7 +799,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             var request = new AddRequest(newEntryDn, schemaClassName);
 
             using var connection = SecureLdapConnector.Connect(_directory.ConnectionSettings);
-            connection.LdapConnection.SendRequest(request);
+            connection.SendRequest(request);
 
             return new LdapDirectoryEntry(newEntryDn, _directory);
         }
@@ -789,7 +829,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             using var connection = SecureLdapConnector.Connect(_directory.ConnectionSettings);
             var request = new SearchRequest(_parentDn, filter, System.DirectoryServices.Protocols.SearchScope.OneLevel, null);
-            var response = (SearchResponse)connection.LdapConnection.SendRequest(request);
+            var response = (SearchResponse)connection.SendRequest(request);
 
             if (response.Entries.Count > 0)
             {
@@ -806,7 +846,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             var request = new DeleteRequest(entry.DN);
             using var connection = SecureLdapConnector.Connect(_directory.ConnectionSettings);
-            connection.LdapConnection.SendRequest(request);
+            connection.SendRequest(request);
         }
 
     }

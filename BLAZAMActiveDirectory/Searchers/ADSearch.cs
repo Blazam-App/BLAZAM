@@ -432,7 +432,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         private void PerformSearch<TObject, TInterface>(AppLdapConnection searcher,SearchRequest searchRequest, int pageSize) where TObject : IDirectoryEntryAdapter, TInterface, new()
         {
-            SearchResponse? lastResults = (SearchResponse)searcher.LdapConnection.SendRequest(searchRequest);
+            SearchResponse? lastResults = (SearchResponse)searcher.SendRequest(searchRequest);
             AddResults<TObject, TInterface>(lastResults);
 
             //bool moreResults = true;

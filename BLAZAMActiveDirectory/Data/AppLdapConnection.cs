@@ -19,6 +19,9 @@ namespace BLAZAM.ActiveDirectory.Data
         {
             LdapConnection = ldapConnection;
         }
+        public DirectoryResponse SendRequest(DirectoryRequest request) {
+            return LdapConnection.SendRequest(request);    
+        }
 
         protected virtual void Dispose(bool disposing)
         {
