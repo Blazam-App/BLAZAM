@@ -904,8 +904,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 }
-                commitJob.AddStep(commitStep);
-                commitJob.AddStep(commitStep);
+                //commitJob.AddStep(commitStep);
+                //commitJob.AddStep(commitStep);
                 if (NewEntry
                     && PostCommitSteps.Count > 0)
                 {
@@ -913,7 +913,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         commitJob.AddStep(step);
                     }
-                    commitJob.AddStep(commitStep);
+                    //commitJob.AddStep(commitStep);
 
 
                 }

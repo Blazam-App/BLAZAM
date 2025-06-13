@@ -10,6 +10,7 @@ namespace BLAZAM.ActiveDirectory.Services
     internal static class DirectoryCache
     {
         private static ConcurrentDictionary<string, EntryCache> DirectoryEntries = new();
+        
         public static EntryCache? GetEntryCache(string dn)
         {
             if (DirectoryEntries.ContainsKey(dn) && DateTime.Now - DirectoryEntries[dn].LastUpdated < TimeSpan.FromMinutes(2))

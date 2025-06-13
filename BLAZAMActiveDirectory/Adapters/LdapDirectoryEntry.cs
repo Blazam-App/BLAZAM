@@ -9,7 +9,6 @@ using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Novell.Directory.Ldap;
-using System.Collections;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Text;
@@ -49,7 +48,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public void SetPropertyValue(string propertyName, object? value)
         {
             Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
-            DirectoryCache.Clear(DN);
             return;
         }
         public void RemovePropertyValue(string propertyName, object? value)
@@ -130,8 +128,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
             Loggers.ActiveDirectoryLogger.Information("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}", Directory != null && Directory.ConnectionSettings != null);
-            using var ldapConnection = SecureLdapConnector.Connect(Directory.ConnectionSettings);
-            GetNamingContext(ldapConnection);
+            GetNamingContext();
 
 
 
@@ -145,8 +142,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             );
 
 
-
-            SearchResponse searchResponse = (SearchResponse)ldapConnection.SendRequest(allAttributesSearchRequest);
+            var searchResponse = SendRequestAndGetResponse<SearchResponse>(allAttributesSearchRequest);
 
 
 
@@ -156,7 +152,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 DirectoryAttribute directoryAttribute = entry.Attributes[currentAttributeLdapName];
-                GetSchemaInfo(ldapConnection, currentAttributeLdapName);
+                GetSchemaInfo(currentAttributeLdapName);
 
                 if (_schemaCache.ContainsKey(currentAttributeLdapName) && _schemaCache[currentAttributeLdapName] == null)
                 {
@@ -208,7 +204,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-        private static void GetNamingContext(AppLdapConnection? ldapConnection)
+        private void GetNamingContext()
         {
             if (_namingContextCache.IsNullOrEmpty())
             {
@@ -219,7 +215,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         // First, find the schema naming context
                         var rootDseRequest = new SearchRequest("", "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, "schemaNamingContext");
-                        var rootDseResponse = (SearchResponse)ldapConnection.SendRequest(rootDseRequest);
+                        var rootDseResponse = SendRequestAndGetResponse<SearchResponse>(rootDseRequest);
                         if (rootDseResponse.Entries.Count == 0)
                         {
                             throw new AppException("Could not read RootDSE to find schema naming context.");
@@ -232,7 +228,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        private void GetSchemaInfo(AppLdapConnection ldapConnection, string propertyName)
+        private void GetSchemaInfo(string propertyName)
         {
             if (_schemaCache.IsNullOrEmpty())
             {
@@ -249,8 +245,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if (!_schemaCache.ContainsKey(propertyName))
                     {
 
-
-                        SearchResponse schemaSearchResponse = (SearchResponse)ldapConnection.SendRequest(schemaSearchRequest);
+                        var schemaSearchResponse = SendRequestAndGetResponse<SearchResponse>(schemaSearchRequest);
                         if (schemaSearchResponse.Entries.Count > 0)
                         {
                             foreach (SearchResultEntry entry in schemaSearchResponse.Entries)
@@ -288,7 +283,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     if (!_schemaCache.ContainsKey(propertyName))
                     {
-                        SearchResponse schemaSearchResponse = (SearchResponse)ldapConnection.SendRequest(schemaSearchRequest);
+                        var schemaSearchResponse = SendRequestAndGetResponse<SearchResponse>(schemaSearchRequest);
                         if (schemaSearchResponse.Entries.Count > 0)
                         {
                             AddSchemaCacheEntry(propertyName, schemaSearchResponse.Entries[0]);
@@ -396,8 +391,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     // GeneralizedTime: yyyyMMddHHmmss.0Z  or yyyyMMddHHmmss.fZ (f can be multiple digits)
                     // UTCTime: yyMMddHHmmssZ or yyyyMMddHHmmssZ
                     // Need to handle potential variations and milliseconds carefully.
-                    if (System.DateTime.TryParseExact(timeStr.TrimEnd('Z'),
-                        new string[] { "yyyyMMddHHmmss.f", "yyyyMMddHHmmss", "yyMMddHHmmss" },
+                    if (DateTime.TryParseExact(timeStr.TrimEnd('Z'),
+                        ["yyyyMMddHHmmss.f", "yyyyMMddHHmmss", "yyMMddHHmmss"],
                         System.Globalization.CultureInfo.InvariantCulture,
                         System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
                         out DateTime dt))
@@ -405,8 +400,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         return dt;
                     }
                     // Try with explicit Z for older formats if ParseExact with TrimEnd('Z') fails on some inputs
-                    if (System.DateTime.TryParseExact(timeStr,
-                        new string[] { "yyyyMMddHHmmss.0Z", "yyyyMMddHHmmssZ", "yyMMddHHmmssZ" },
+                    if (DateTime.TryParseExact(timeStr,
+                        ["yyyyMMddHHmmss.0Z", "yyyyMMddHHmmssZ", "yyMMddHHmmssZ"],
                         System.Globalization.CultureInfo.InvariantCulture,
                         System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
                         out DateTime dtWithZ))
@@ -558,17 +553,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private bool Invoke(string attributeName, DirectoryAttributeOperation operation, object? value = null)
         {
 
-            using var ldapConnection = SecureLdapConnector.Connect(Directory.ConnectionSettings);
-
-            //// Verify the connection is secure. This is crucial for unicodePwd modifications.
-            //// This is a conceptual check; the LdapConnection should have been established securely.
-            //if (!ldapConnection.LdapConnection.SessionOptions.SecureSocketLayer)
-            //{
-            //    // Log error: "Password operations require a secure LDAP connection (SSL/TLS or StartTLS)."
-            //    // Depending on your error handling strategy, you might throw an exception here.
-            //    return false;
-            //}
-
 
             var attributeModification = new DirectoryAttributeModification
             {
@@ -587,11 +571,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
             var modifyRequest = new ModifyRequest(DN, attributeModification);
-            ModifyResponse modifyResponse = (ModifyResponse)ldapConnection.SendRequest(modifyRequest);
+            var modifyResponse = SendRequestAndGetResponse<ModifyResponse>(modifyRequest);
 
             // Check the result code from the LDAP server
             if (modifyResponse.ResultCode == ResultCode.Success)
             {
+                // Invalidate the cache for this entry upon successful modification.
+                RefreshCache();
                 return true;
             }
             else
@@ -620,8 +606,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public void RefreshCache()
         {
-            throw new NotImplementedException();
-            //UnderlyingEntry.RefreshCache();
+            // Invalidate the cache for this entry upon successful modification.
+            DirectoryCache.Clear(DN);
+            _ = Search("cn");
 
         }
         public void Rename(string newName)
@@ -690,12 +677,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             // Store the original DN for logging and cache clearing
             string oldDn = this.DN;
 
-            // Connect to the directory server
-            using var connection = SecureLdapConnector.Connect(this.Directory.ConnectionSettings);
-            if (connection == null)
-            {
-                throw new Exception("Failed to connect to the directory server to perform the move/rename operation.");
-            }
+
 
             // Create and configure the ModifyDNRequest
             var request = new ModifyDNRequest
@@ -709,14 +691,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
                 // Send the request
-                connection.SendRequest(request);
-
+                var response = SendRequestAndGetResponse<ModifyDNResponse>(request);
                 // On success, update the object's state to its new DN
                 this.DN = newRdn + "," + newParentDn;
 
                 // Invalidate the cache for both the old and new DNs
                 DirectoryCache.Clear(oldDn);
-                DirectoryCache.Clear(this.DN);
+                RefreshCache();
+
             }
             catch (DirectoryException ex)
             {
@@ -725,6 +707,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 throw;
             }
         }
+
+        /// <summary>
+        /// A generic helper method to send a directory request and return the correctly typed response.
+        /// This consolidates connection handling and response casting.
+        /// </summary>
+        /// <typeparam name="T">The expected DirectoryResponse type.</typeparam>
+        /// <param name="request">The DirectoryRequest to be sent.</param>
+        /// <returns>The resulting DirectoryResponse, cast to the specified type.</returns>
+        private T SendRequestAndGetResponse<T>(DirectoryRequest request) where T : DirectoryResponse
+        {
+            using var connection = SecureLdapConnector.Connect(Directory.ConnectionSettings);
+            return (T)connection?.SendRequest(request);
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -746,118 +742,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
-    }
-
-    /// <summary>
-    /// A collection of directory entries that uses System.DirectoryServices.Protocols
-    /// to interact with the LDAP server.
-    /// </summary>
-    public class LdapDirectoryEntries : IDirectoryEntries
-    {
-        private readonly string _parentDn;
-        private readonly IActiveDirectoryContext _directory;
-
-        public LdapDirectoryEntries(string parentDn, IActiveDirectoryContext directory)
-        {
-            _parentDn = parentDn;
-            _directory = directory;
-        }
-
-        /// <summary>
-        /// Gets an enumerator that iterates through the child entries.
-        /// </summary>
-        /// <returns>An IEnumerator for the collection of child IDirectoryEntry objects.</returns>
-        public IEnumerator GetEnumerator()
-        {
-            using var connection = SecureLdapConnector.Connect(_directory.ConnectionSettings);
-            if (connection == null) yield break;
-
-            var request = new SearchRequest(
-                _parentDn,
-                "(objectClass=*)", // Filter to find all objects
-                System.DirectoryServices.Protocols.SearchScope.OneLevel, // Search only the immediate children
-                null // Request all attributes
-            );
-
-            var response = (SearchResponse)connection.SendRequest(request);
-
-            foreach (SearchResultEntry entry in response.Entries)
-            {
-                yield return new LdapDirectoryEntry(entry.DistinguishedName, _directory);
-            }
-        }
-
-        /// <summary>
-        /// Adds a new entry to the directory under the current parent DN.
-        /// </summary>
-        /// <param name="name">The RDN of the new object (e.g., "CN=New User").</param>
-        /// <param name="schemaClassName">The primary object class of the new entry (e.g., "user").</param>
-        /// <returns>The newly created directory entry.</returns>
-        public IDirectoryEntry Add(string name, string schemaClassName)
-        {
-            string newEntryDn = name + "," + _parentDn;
-            var request = new AddRequest(newEntryDn, schemaClassName);
-
-            using var connection = SecureLdapConnector.Connect(_directory.ConnectionSettings);
-            connection.SendRequest(request);
-
-            return new LdapDirectoryEntry(newEntryDn, _directory);
-        }
-
-        /// <summary>
-        /// Finds a child entry by its name (RDN value).
-        /// </summary>
-        /// <param name="name">The name of the entry to find (e.g., "CN=John Doe").</param>
-        /// <returns>The found directory entry.</returns>
-        public IDirectoryEntry Find(string name)
-        {
-            return Find(name, null);
-        }
-
-        /// <summary>
-        /// Finds a child entry by its name and optionally by its schema class.
-        /// </summary>
-        /// <param name="name">The name of the entry to find (e.g., "CN=John Doe").</param>
-        /// <param name="schemaClassName">The schema class to filter by (optional).</param>
-        /// <returns>The found directory entry.</returns>
-        public IDirectoryEntry Find(string name, string schemaClassName)
-        {
-            string filter = "(&(objectClass=*)(|(cn=" + name + ")(ou=" + name + ")))";
-            if (!string.IsNullOrEmpty(schemaClassName))
-                filter = "(&(objectClass=" + schemaClassName + ")(|(cn=" + name + ")(ou=" + name + ")))";
-
-
-            using var connection = SecureLdapConnector.Connect(_directory.ConnectionSettings);
-            var request = new SearchRequest(_parentDn, filter, System.DirectoryServices.Protocols.SearchScope.OneLevel, null);
-            var response = (SearchResponse)connection.SendRequest(request);
-
-            if (response.Entries.Count > 0)
-            {
-                return new LdapDirectoryEntry(response.Entries[0].DistinguishedName, _directory);
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Removes a child entry from the directory.
-        /// </summary>
-        /// <param name="entry">The directory entry to remove.</param>
-        public void Remove(IDirectoryEntry entry)
-        {
-            var request = new DeleteRequest(entry.DN);
-            using var connection = SecureLdapConnector.Connect(_directory.ConnectionSettings);
-            connection.SendRequest(request);
-        }
-
-    }
-    public class AttributeSchemaInfo
-    {
-        public string AtttributeName { get; set; }
-        public string AttributeSyntax { get; set; } // e.g., "2.5.5.12"
-        public int OMSyntax { get; set; }          // e.g., 64
-        public string OMObjectClass { get; set; }   // Dotted OID string if OMSyntax is 127
-        public byte[] OMObjectClassBytes { get; set; }
-        public bool IsSingleValued { get; set; }
     }
 
 }

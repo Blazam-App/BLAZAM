@@ -93,7 +93,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringAttribute(ActiveDirectoryFields.Description.FieldName);
+                var raw = GetStringListAttribute(ActiveDirectoryFields.Description.FieldName);
+                return raw?.FirstOrDefault();
             }
             set
             {
