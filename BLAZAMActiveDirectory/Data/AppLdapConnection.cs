@@ -53,7 +53,7 @@ namespace BLAZAM.ActiveDirectory.Data
         }
         public void Dispose()
         {
-            Expires = DateTime.Now.AddMinutes(0.1);
+            Expires = DateTime.Now.AddMinutes(1);
            
         }
     }

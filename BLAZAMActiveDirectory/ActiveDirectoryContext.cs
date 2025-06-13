@@ -376,7 +376,9 @@ namespace BLAZAM.ActiveDirectory
             catch (CriticalActiveDirectoryException ex)
             {
                 ConnectionException = ex;
-
+                Status = DirectoryConnectionStatus.BadConfiguration;
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++;
             }
             catch (Exception ex)
             {

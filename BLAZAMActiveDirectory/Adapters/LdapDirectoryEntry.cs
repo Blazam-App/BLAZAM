@@ -511,13 +511,24 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private bool InvokeRemove(object[]? args)
         {
             var value = args[0].ToString();
-            return Invoke("member", DirectoryAttributeOperation.Delete, value);
+            if(Invoke("member", DirectoryAttributeOperation.Delete, value))
+            {
+                DirectoryCache.Clear(value);
+                return true;
+            }
+            return false;
         }
 
         private bool InvokeAdd(object[]? args)
         {
             var value = args[0].ToString();
-            return Invoke("member", DirectoryAttributeOperation.Add, value);
+
+            if (Invoke("member", DirectoryAttributeOperation.Add, value))
+            {
+                DirectoryCache.Clear(value);
+                return true;
+            }
+            return false;
         }
 
 

@@ -201,7 +201,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                SetAttribute("userAccountControl", value);
+                SetAttribute("userAccountControl", value.ToString());
             }
         }
 
@@ -337,9 +337,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 if (value == null)
-                    SetAttribute("pwdLastSet", 0);
+                    SetAttribute("pwdLastSet", "0");
                 else
-                    SetAttribute("pwdLastSet", -1);
+                    SetAttribute("pwdLastSet", "-1");
 
             }
 

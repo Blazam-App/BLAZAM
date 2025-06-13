@@ -13,9 +13,9 @@ namespace BLAZAM.ActiveDirectory.Services
         
         public static EntryCache? GetEntryCache(string dn)
         {
-            if (DirectoryEntries.ContainsKey(dn) && DateTime.Now - DirectoryEntries[dn].LastUpdated < TimeSpan.FromMinutes(2))
+            if (DirectoryEntries.ContainsKey(dn) && DateTime.Now - DirectoryEntries[dn].Created < TimeSpan.FromMinutes(2))
             {
-                DirectoryEntries[dn].LastUpdated = DateTime.Now;
+                //DirectoryEntries[dn].LastUpdated = DateTime.Now;
                 return DirectoryEntries[dn];
             }
             return null;
@@ -34,13 +34,13 @@ namespace BLAZAM.ActiveDirectory.Services
     }
     internal class EntryCache
     {
-        internal DateTime LastUpdated { get; set; }
+        internal DateTime Created { get; set; }
         internal Dictionary<string, object?> Attributes { get; set; }
 
         public EntryCache(Dictionary<string, object?> attributes)
         {
             Attributes = attributes;
-            LastUpdated = DateTime.Now;
+            Created = DateTime.Now;
         }
     }
 }

@@ -72,38 +72,38 @@ namespace BLAZAM.ActiveDirectory
 
                 }
 
-            }
 
-            // Typically, port 636 is for LDAPS, and 389 is for LDAP (which can be upgraded with StartTLS).
-            // We'll infer the method based on common port usage when UseTLS is true.
-            if (settings.ServerPort == 636) // Common LDAPS port
-            {
-                Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting LDAPS connection.");
-                ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password.Decrypt(), out connection);
-            }
-            else if (settings.ServerPort == 389) // Common LDAP port, suitable for StartTLS
-            {
-                Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting StartTLS connection.");
-                ConnectWithStartTls(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password.Decrypt(), out connection);
-            }
-            else
-            {
-                // If UseTLS is true but port is neither 389 nor 636, it's ambiguous.
-                // For this example, we'll try LDAPS as a default secure method if UseTLS is true and port is non-standard.
-                // Alternatively, you could throw an error or require more specific configuration.
-                Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort} (non-standard for TLS inference). Attempting LDAPS as a fallback secure method.");
-                ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password, out connection);
-            }
-            var appConnection = new AppLdapConnection(connection);
-            lock (_lock)
-            {
-                if (_disposerTimer == null)
+
+                // Typically, port 636 is for LDAPS, and 389 is for LDAP (which can be upgraded with StartTLS).
+                // We'll infer the method based on common port usage when UseTLS is true.
+                if (settings.ServerPort == 636) // Common LDAPS port
                 {
-                    _disposerTimer = new Timer(CleanPool, null, 30000, 30000);
+                    Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting LDAPS connection.");
+                    ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password.Decrypt(), out connection);
                 }
-                _connectionPool.Add(appConnection);
+                else if (settings.ServerPort == 389) // Common LDAP port, suitable for StartTLS
+                {
+                    Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting StartTLS connection.");
+                    ConnectWithStartTls(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password.Decrypt(), out connection);
+                }
+                else
+                {
+                    // If UseTLS is true but port is neither 389 nor 636, it's ambiguous.
+                    // For this example, we'll try LDAPS as a default secure method if UseTLS is true and port is non-standard.
+                    // Alternatively, you could throw an error or require more specific configuration.
+                    Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort} (non-standard for TLS inference). Attempting LDAPS as a fallback secure method.");
+                    ConnectWithLdaps(settings.ServerAddress, settings.ServerPort, settings.Username, settings.Password, out connection);
+                }
+                var appConnection = new AppLdapConnection(connection);
+           
+                    if (_disposerTimer == null)
+                    {
+                        _disposerTimer = new Timer(CleanPool, null, 30000, 30000);
+                    }
+                    _connectionPool.Add(appConnection);
+                
+                return appConnection;
             }
-            return appConnection;
         }
 
         private static void CleanPool(object? state)
@@ -239,10 +239,10 @@ namespace BLAZAM.ActiveDirectory
                 connection.AuthType = AuthType.Basic;
                 //connection.SessionOptions.Signing = true;
                 //connection.SessionOptions.Sealing = true;
-                //connection.SessionOptions.VerifyServerCertificate = (state,crt) => { return true; };
-
-
-                
+               connection.SessionOptions.VerifyServerCertificate = (state,crt) => { return true; };
+            
+                    connection.SessionOptions.StartTransportLayerSecurity(null);
+               
                 // 5. Bind to the server
                 Loggers.ActiveDirectoryLogger.Information($"Attempting initial connection to {ldapServerHost}:{ldapServerPort} for StartTLS as {username}...");
                 connection.Bind();
@@ -253,6 +253,10 @@ namespace BLAZAM.ActiveDirectory
             }
             catch (LdapException ldapEx)
             {
+                if (ldapEx.ErrorCode == 82)
+                {
+                    throw new CriticalActiveDirectoryException(null,"Certificate provided by Active Directory is not trusted by the machine running Blazam.");
+                }
                 Loggers.ActiveDirectoryLogger.Information(ldapEx, "LDAP Exception during StartTLS connection: {@ldapEx}");
                 if (ldapEx.ServerErrorMessage != null)
                 {
