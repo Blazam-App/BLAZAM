@@ -791,7 +791,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         private IJobStep commitStep => new JobStep("Save directory entry", (step) =>
                 {
-                    DirectoryEntry?.CommitChanges();
+                    //DirectoryEntry?.CommitChanges();
 
                     return true;
                 });
@@ -845,7 +845,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                  }
                              }
 
-                             DirectoryEntry.CommitChanges();
+                             //DirectoryEntry.CommitChanges();
                              return true;
                          });
                         propertyJob.AddStep(propertyStep);
@@ -1315,7 +1315,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual bool Rename(string newName)
         {
             newName = newName.Replace(",", "\\,");
-            DirectoryEntry?.Rename("cn=" + newName);
+            DirectoryEntry?.Rename(newName);
             OnDirectoryModelRenamed?.Invoke(this);
             return true;
         }

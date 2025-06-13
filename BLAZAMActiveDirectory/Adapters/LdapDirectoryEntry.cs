@@ -13,6 +13,7 @@ using System.Collections;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Text;
+using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BLAZAM.ActiveDirectory.Adapters
@@ -102,6 +103,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         private bool _propertiesCollected = false;
+
+   
         private object? Search(string attributeName)
         {
 
@@ -323,7 +326,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         // Example: SID
                         if (string.Equals(schemaInfo.AtttributeName, "objectSid", StringComparison.OrdinalIgnoreCase))
                         {
-                            return new System.Security.Principal.SecurityIdentifier(bytesOctet, 0).ToString();
+                            return bytesOctet;
                         }
                         // Example: GUID
                         if (string.Equals(schemaInfo.AtttributeName, "objectGUID", StringComparison.OrdinalIgnoreCase) ||
@@ -515,14 +518,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             using var ldapConnection = SecureLdapConnector.Connect(Directory.ConnectionSettings);
 
-            // Verify the connection is secure. This is crucial for unicodePwd modifications.
-            // This is a conceptual check; the LdapConnection should have been established securely.
-            if (!ldapConnection.LdapConnection.SessionOptions.SecureSocketLayer)
-            {
-                // Log error: "Password operations require a secure LDAP connection (SSL/TLS or StartTLS)."
-                // Depending on your error handling strategy, you might throw an exception here.
-                return false;
-            }
+            //// Verify the connection is secure. This is crucial for unicodePwd modifications.
+            //// This is a conceptual check; the LdapConnection should have been established securely.
+            //if (!ldapConnection.LdapConnection.SessionOptions.SecureSocketLayer)
+            //{
+            //    // Log error: "Password operations require a secure LDAP connection (SSL/TLS or StartTLS)."
+            //    // Depending on your error handling strategy, you might throw an exception here.
+            //    return false;
+            //}
 
 
             var attributeModification = new DirectoryAttributeModification
@@ -574,26 +577,114 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-        public void MoveTo(IDirectoryEntry newParent)
-        {
-            if (newParent is AdapterDirectoryEntry adapterDirectoryEntry)
-            {
-                UnderlyingEntry.MoveTo(adapterDirectoryEntry.UnderlyingEntry);
-
-            }
-        }
 
         public void RefreshCache()
         {
-            UnderlyingEntry.RefreshCache();
+            throw new NotImplementedException();
+            //UnderlyingEntry.RefreshCache();
 
         }
-
         public void Rename(string newName)
         {
-            UnderlyingEntry.Rename(newName);
+            // 1. Validate the new name
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                throw new ArgumentException("The new name cannot be null or empty.", nameof(newName));
+            }
+
+            // 2. Extract the parent DN and current RDN
+            var match = Regex.Match(this.DN, @"(?<!\\),");
+            if (!match.Success)
+            {
+                throw new InvalidOperationException("Cannot rename a top-level entry.");
+            }
+            string parentDn = this.DN.Substring(match.Index + 1);
+            string oldRdn = this.DN.Substring(0, match.Index);
+
+            // 3. Construct the new RDN, preserving the RDN type (e.g., "CN", "OU")
+            string rdnType = oldRdn.Substring(0, oldRdn.IndexOf('='));
+            string newRdn = rdnType + "=" + newName;
+
+            // 4. Call the generalized method. The parent DN stays the same.
+            PerformModifyDN(newRdn, parentDn);
+
+           // 5. AFTER the rename succeeds, update the displayName by reusing
+    // the existing private Invoke method.
+    if (!Invoke("displayName", DirectoryAttributeOperation.Replace, newName))
+    {
+        // The rename itself succeeded, but the secondary displayName update failed.
+        // We log this as a warning because the primary goal was met.
+        Loggers.ActiveDirectoryLogger.Warning(
+            "Object {DN} was renamed successfully, but updating its displayName attribute failed.", this.DN);
+    }
         }
 
+        public void MoveTo(IDirectoryEntry newParent)
+        {
+            // 1. Validate the new parent
+            if (newParent == null || string.IsNullOrWhiteSpace(newParent.DN))
+            {
+                throw new ArgumentNullException(nameof(newParent), "New parent entry and its DN cannot be null.");
+            }
+
+            // 2. Extract the current RDN
+            var match = Regex.Match(this.DN, @"(?<!\\),");
+            if (!match.Success)
+            {
+                throw new InvalidOperationException("Cannot move a top-level entry.");
+            }
+            string rdn = this.DN.Substring(0, match.Index);
+
+            // 3. Call the generalized method. The RDN stays the same.
+            PerformModifyDN(rdn, newParent.DN);
+        }
+
+        /// <summary>
+        /// Performs a generic ModifyDN operation, which is the underlying protocol request
+        /// for both moving and renaming an entry.
+        /// </summary>
+        /// <param name="newRdn">The new Relative Distinguished Name for the object.</param>
+        /// <param name="newParentDn">The new parent container's Distinguished Name.</param>
+        private void PerformModifyDN(string newRdn, string newParentDn)
+        {
+            // Store the original DN for logging and cache clearing
+            string oldDn = this.DN;
+
+            // Connect to the directory server
+            using var connection = SecureLdapConnector.Connect(this.Directory.ConnectionSettings);
+            if (connection == null)
+            {
+                throw new Exception("Failed to connect to the directory server to perform the move/rename operation.");
+            }
+
+            // Create and configure the ModifyDNRequest
+            var request = new ModifyDNRequest
+            {
+                DistinguishedName = oldDn,
+                NewParentDistinguishedName = newParentDn,
+                NewName = newRdn,
+                DeleteOldRdn = true
+            };
+
+            try
+            {
+                // Send the request
+                connection.LdapConnection.SendRequest(request);
+
+                // On success, update the object's state to its new DN
+                this.DN = newRdn + "," + newParentDn;
+
+                // Invalidate the cache for both the old and new DNs
+                DirectoryCache.Clear(oldDn);
+                DirectoryCache.Clear(this.DN);
+            }
+            catch (DirectoryException ex)
+            {
+                // Log the specific error and re-throw to notify the caller
+                Loggers.ActiveDirectoryLogger.Error(ex, "ModifyDN operation failed for {OldDN}", oldDn);
+                throw;
+            }
+        }
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
