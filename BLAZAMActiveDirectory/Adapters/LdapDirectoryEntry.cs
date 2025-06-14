@@ -37,6 +37,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             DN = sre.DistinguishedName;
             Directory = directory;
             Dictionary<string, object> entryAttributes = new();
+            var cache = DirectoryCache.GetEntryCache(DN);
+            if (cache == null) cache = new EntryCache(entryAttributes);
+            ProcessAttributes(cache , sre);
 
 
         }
@@ -147,6 +150,24 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
             SearchResultEntry entry = searchResponse.Entries[0];
+            
+            ProcessAttributes(existingCache, entry);
+
+            if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
+            {
+                existingCache.Attributes[attributeName.ToLower()] = null;
+            }
+
+            _propertiesCollected = true;
+            
+            return existingCache.Attributes[attributeName.ToLower()]; // Attribute not found on the object or no value
+
+
+
+        }
+
+        private void ProcessAttributes(EntryCache? existingCache, SearchResultEntry entry)
+        {
             foreach (string currentAttributeLdapName in entry.Attributes.AttributeNames)
             {
 
@@ -173,7 +194,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     else if (_schemaCache[currentAttributeLdapName].IsSingleValued)
                     {
                         // Assuming ConvertSingleValue is accessible
-                        existingCache.Attributes[currentAttributeLdapName.ToLower()] = ConvertSingleValue(directoryAttribute[0], currentAttributeLdapName);
+                        var attrName = currentAttributeLdapName.ToLower();
+                        var attEnum = directoryAttribute.GetEnumerator();
+                        attEnum.MoveNext();
+                        object attr = attEnum.Current;
+                        existingCache.Attributes[attrName] = ConvertSingleValue(attr, attrName);
                     }
                     else
                     {
@@ -192,16 +217,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     existingCache.Attributes[currentAttributeLdapName.ToLower()] = null; // Cache null if conversion fails
                 }
             }
-            if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
-            {
-                existingCache.Attributes[attributeName.ToLower()] = null;
-            }
+           
             DirectoryCache.SetEntryCache(DN, existingCache.Attributes);
-            _propertiesCollected = true;
-            return existingCache.Attributes[attributeName.ToLower()]; // Attribute not found on the object or no value
-
-
-
         }
 
         private void GetNamingContext()
@@ -308,12 +325,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             var info = new AttributeSchemaInfo
             {
                 AtttributeName = propertyName, // Use the name we looked up by
-                AttributeSyntax = entry.Attributes["attributeSyntax"][0].ToString(),
                 OMSyntax = int.Parse(entry.Attributes["oMSyntax"][0].ToString()),
-                IsSingleValued = bool.Parse(entry.Attributes["isSingleValued"][0].ToString()),
-                OMObjectClass = entry.Attributes.Contains("omObjectClass") && entry.Attributes["omObjectClass"][0] is byte[] omocBytes
-                                ? Encoding.UTF8.GetString(omocBytes)
-                                : (entry.Attributes.Contains("omObjectClass") ? entry.Attributes["omObjectClass"][0]?.ToString() : null)
+                IsSingleValued = bool.Parse(entry.Attributes["isSingleValued"][0].ToString())
             };
             lock (_schemaCache)
             {

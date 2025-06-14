@@ -17,7 +17,7 @@
                 {
                     case UpdateCredential.Application:
                         <MudAlert Icon="@Icons.Material.Filled.Warning" Class="mud-alert-filled-warning">
-                           @AppHelpLocalization[HelpLang.Update_Credential_Is_Application]
+                            @AppHelpLocalization[HelpLang.Update_Credential_Is_Application]
                         </MudAlert>
                         break;
                     case UpdateCredential.Active_Directory:
@@ -56,12 +56,18 @@
             }
             <SettingsField Label="@AppLocalization[Lang.Application_Credentials]">
 
-                <MudTextField T="string" Label="@AppLocalization[Lang.Application_Credentials]" Disabled=true Value="@WindowsIdentity.GetCurrent().Name.ToString().Replace('_',' ')" />
+                <MudTextField T="string"
+                              Label="@AppLocalization[Lang.Application_Credentials]"
+                              Disabled=true
+                              Value="@Environment.UserName" />
             </SettingsField>
 
             <SettingsField Label="@AppLocalization[Lang.Update_Credential_Source]">
 
-                <MudTextField T="string" Label="@AppLocalization[Lang.Update_Credential_Source]" Disabled=true Value="@updateCredential?.ToString().Replace('_',' ')" />
+                <MudTextField T="string"
+                              Label="@AppLocalization[Lang.Update_Credential_Source]"
+                              Disabled=true
+                              Value="@updateCredential?.ToString().Replace('_',' ')" />
             </SettingsField>
 
             <SettingsField Label="@AppLocalization[Lang.Update_Credentials]">

@@ -70,7 +70,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// </summary>
         public AppDelegate<IEnumerable<IDirectoryEntryAdapter>> ResultsCollected { get; set; }
 
-        private int PageSize = 40;
+        private int PageSize = 100;
 
         public ActiveDirectoryObjectType? ObjectTypeFilter { get; set; }
         public bool? EnabledOnly { get; set; }
@@ -131,7 +131,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 SearchRoot ??= ActiveDirectoryContext.SystemInstance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
 
-                LdapFilter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(objectClass=contact)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))";
+                LdapFilter = "(&(|(objectClass=user)(objectClass=group)(objectClass=contact)(objectCategory=computer)(objectClass=organizationalUnit)(objectClass=printQueue)))";
 
 
 
@@ -148,11 +148,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 //};
                 if (EnabledOnly == false)
                 {
-                    LdapFilter = LdapFilter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "");
+                    //LdapFilter = LdapFilter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "");
                 }
                 else if (DisabledOnly == true)
                 {
-                    LdapFilter = LdapFilter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "(userAccountControl:1.2.840.113556.1.4.803:=2)");
+                    //LdapFilter = LdapFilter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "(userAccountControl:1.2.840.113556.1.4.803:=2)");
 
                 }
                 if (SearchDeleted)
@@ -181,11 +181,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         LdapFilter = "(&(objectCategory=person)(objectClass=user))";
                         if (EnabledOnly == true)
                         {
-                            LdapFilter = "(&(objectCategory=person)(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
+                            //LdapFilter = "(&(objectCategory=person)(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
                         }
                         else if (DisabledOnly == true)
                         {
-                            LdapFilter = "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=2))";
+                            //LdapFilter = "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=2))";
 
                         }
                         if (GeneralSearchTerm != null)
@@ -205,7 +205,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         LdapFilter = "(&(objectCategory=computer))";
                         if (EnabledOnly == true)
                         {
-                            LdapFilter = "(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
+                            //LdapFilter = "(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
                         }
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(distinguishedName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*))";
@@ -219,7 +219,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                         break;
                     case ActiveDirectoryObjectType.OU:
-                       // searcher.VirtualListView = null;
+                        // searcher.VirtualListView = null;
                         LdapFilter = "(&(objectCategory=organizationalUnit))";
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(distinguishedName=" + GeneralSearchTerm + ")(ou=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*))";
@@ -327,12 +327,12 @@ namespace BLAZAM.ActiveDirectory.Searchers
                                 if (field.Field.FieldType == ActiveDirectoryFieldType.Date
                                     || field.Field.FieldType == ActiveDirectoryFieldType.FileTime)
                                 {
-                                    if(field.Operator== ActiveDirectoryFieldOperator.FutureTimeFrame 
+                                    if (field.Operator == ActiveDirectoryFieldOperator.FutureTimeFrame
                                         || field.Operator == ActiveDirectoryFieldOperator.HistoricalTimeFrame)
                                     {
                                         var op2 = field.Operator == ActiveDirectoryFieldOperator.FutureTimeFrame ? ">=" : "<=";
 
-                                       FilterQuery += $"({field.Field.FieldName}{op2}{DateTime.Now.ToFileTimeUtc().ToString()})";
+                                        FilterQuery += $"({field.Field.FieldName}{op2}{DateTime.Now.ToFileTimeUtc().ToString()})";
 
 
                                     }
@@ -372,14 +372,15 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 SearchRequest searchRequest = new SearchRequest(
                     SearchRoot.DN, // The DN of the search base
                     LdapFilter, // A filter 
-                    SearchScope,    
+                    SearchScope,
                     "distinguishedName"        // Specify only the attribute you want
                 );
                 PrepareSearcher(searchRequest);
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
-                using (var connection = SecureLdapConnector.Connect(_currentUserActiveDirectoryContext.ConnectionSettings)) {
+                using (var connection = SecureLdapConnector.Connect(_currentUserActiveDirectoryContext.ConnectionSettings))
+                {
 
                     PerformSearch<TObject, TInterface>(connection, searchRequest, PageSize);
 
@@ -430,10 +431,47 @@ namespace BLAZAM.ActiveDirectory.Searchers
             Results.Clear();
         }
 
-        private void PerformSearch<TObject, TInterface>(AppLdapConnection searcher,SearchRequest searchRequest, int pageSize) where TObject : IDirectoryEntryAdapter, TInterface, new()
+        private void PerformSearch<TObject, TInterface>(AppLdapConnection searcher, SearchRequest searchRequest, int pageSize) where TObject : IDirectoryEntryAdapter, TInterface, new()
         {
-            SearchResponse? lastResults = (SearchResponse)searcher.SendRequest(searchRequest);
-            AddResults<TObject, TInterface>(lastResults);
+            //SearchResponse? lastResults = (SearchResponse)searcher.SendRequest(searchRequest);
+            //AddResults<TObject, TInterface>(lastResults);
+            //return;
+            // 1. Create the page result request control, specifying the page size.
+            var pageRequestControl = new PageResultRequestControl(pageSize);
+
+            // Add the control to the SearchRequest's controls collection.
+            searchRequest.Controls.Add(pageRequestControl);
+     
+            do
+            {
+                // Check for cancellation before each page request.
+                if (cancellationToken?.IsCancellationRequested == true) break;
+
+                // 2. Send the request and get a single page of results.
+                SearchResponse searchResponse = (SearchResponse)searcher.SendRequest(searchRequest);
+       
+                // Find the page response control returned by the server.
+                PageResultResponseControl? pageResponseControl = searchResponse.Controls
+                    .OfType<PageResultResponseControl>()
+                    .FirstOrDefault();
+
+                // Add the retrieved entries to your results collection.
+                AddResults<TObject, TInterface>(searchResponse);
+
+                // 3. Check if the server sent back a 'cookie'.
+                // An empty cookie means this is the last page of results.
+                if (pageResponseControl == null || pageResponseControl.Cookie.Length == 0 || Results.Count >= MaxResults)
+                {
+                    break; // Exit the loop if there are no more pages.
+                }
+
+                // 4. Update the request control with the new cookie for the next iteration.
+                pageRequestControl.Cookie = pageResponseControl.Cookie;
+
+            } while (true); // The loop is controlled by the break statement inside.
+
+
+
 
             //bool moreResults = true;
             //SearchState = SearchState.Collecting;
@@ -490,14 +528,17 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 searcher.Attributes.Add(ActiveDirectoryFields.ObjectSID.FieldName);
                 searcher.Attributes.Add(ActiveDirectoryFields.DisplayName.FieldName);
                 searcher.Attributes.Add(ActiveDirectoryFields.Name.FieldName);
+                searcher.Attributes.Add(ActiveDirectoryFields.LastLogonTimestamp.FieldName);
+                searcher.Attributes.Add("userAccountControl");
                 searcher.Attributes.Add("objectclass");
+                searcher.Attributes.Add("objectguid");
                 searcher.Attributes.Add(ActiveDirectoryFields.CanonicalName.FieldName);
             }
-            if (SearchDeleted)
+            else
             {
-               // searcher.Tombstone = true;
-               // searcher.VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, 1);
+                searcher.Attributes.Add("*");
 
+                searcher.Controls.Add(new ShowDeletedControl());
             }
 
 
@@ -531,7 +572,19 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 last = lastResults.Entries.Encapsulate(ActiveDirectoryContext.SystemInstance);
             }
-            Results.AddRange(last);
+            if (EnabledOnly == true)
+            {
+                Results.AddRange(last.Where(l => l is not IAccountDirectoryAdapter || (l as IAccountDirectoryAdapter).Enabled));
+
+            }
+            else if (DisabledOnly)
+            {
+                Results.AddRange(last.Where(l=>l is not IAccountDirectoryAdapter || (l as IAccountDirectoryAdapter).Disabled));
+            }
+            else
+            {
+                Results.AddRange(last);
+            }
 
             ResultsCollected?.Invoke(last);
 

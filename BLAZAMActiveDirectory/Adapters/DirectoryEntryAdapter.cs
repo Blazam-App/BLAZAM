@@ -295,13 +295,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-
+        private IADOrganizationalUnit? _lastKnownParent;
         public virtual IADOrganizationalUnit? LastKnownParent
         {
             get
             {
+                if (_lastKnownParent != null) return _lastKnownParent;
                 var parentDN = GetStringAttribute("lastknownparent");
-                return parentDN != null ? Directory.OUs.FindOuByDN(parentDN) : null;
+                _lastKnownParent = parentDN != null ? Directory.OUs.FindOuByDN(parentDN) : null;
+                return _lastKnownParent;
             }
 
         }
@@ -386,21 +388,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (!IsDeleted)
-                {
-                    return GetStringListAttribute("objectClass");
-                }
-                else
-                {
-                    try
-                    {
-                        return SearchResult?.Properties["objectclass"].Cast<string>().ToList();
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                        return null;
-                    }
-                }
+
+
+                return GetStringListAttribute("objectClass");
             }
             set
             {
@@ -637,7 +627,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         DirectoryEntryAdapter? thisObject = null;
 
-                        if (child.PropertyContains("objectClass","top"))
+                        if (child.PropertyContains("objectClass", "top"))
                         {
                             var raw = child.GetPropertyValue("objectClass");
                             var objectClass = raw as object[];
@@ -758,16 +748,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public virtual void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null, SearchResultEntry? searchResultEntry=null)
+        public virtual void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null, SearchResultEntry? searchResultEntry = null)
         {
             Directory = directory;
 
             if (searchResult != null)
                 SearchResult = searchResult;
-            if(searchResultEntry != null)
+            if (searchResultEntry != null)
             {
-                DirectoryEntry = new LdapDirectoryEntry(searchResultEntry.Attributes["distinguishedname"].GetValues(typeof(string))[0].ToString(), directory); 
-                
+                DirectoryEntry = new LdapDirectoryEntry(searchResultEntry, directory);
+
             }
             if (directoryEntry != null)
             {
@@ -1170,7 +1160,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         return default;
                     }
-                    else{
+                    else
+                    {
                         return (T?)val;
                     }
                 }
