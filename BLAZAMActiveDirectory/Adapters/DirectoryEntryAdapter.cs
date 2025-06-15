@@ -1126,15 +1126,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return default;
 
             }
-            if (DirectoryEntry == null)
-            {
-                if (SearchResult != null && SearchResult.Properties.Contains(propertyName))
-                    return (T?)SearchResult.Properties[propertyName][0];
-                else
-                {
-                    FetchDirectoryEntry();
-                }
-            }
+
+            //Check for exising edits to this entry
             try
             {
                 if (NewEntryProperties.ContainsKey(propertyName))
@@ -1167,18 +1160,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
 
             }
-            catch (ArgumentException)
-            {
-                var temp = DirectoryEntry?.GetPropertyValue(propertyName);
-                var temp2 = (T?)temp;
-                return temp2;
-            }
-            catch (InvalidCastException ex)
-            {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-
-            }
-
             catch
             {
                 return default;

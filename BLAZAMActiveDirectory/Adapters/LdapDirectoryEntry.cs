@@ -72,7 +72,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public void ClearPropertyValue(string propertyName)
         {
-            Invoke(propertyName, DirectoryAttributeOperation.Replace, null);
+            Invoke(propertyName, DirectoryAttributeOperation.Delete, null);
             return;
         }
         public bool ContainsProperty(string propertyName)
@@ -159,7 +159,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             SearchResultEntry entry = searchResponse.Entries[0];
             
             ProcessAttributes(existingCache, entry);
-
+            if (!existingCache.Attributes.ContainsKey("isdeleted"))
+            {
+                existingCache.Attributes["isdeleted"] = false;
+            }
             if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
             {
                 existingCache.Attributes[attributeName.ToLower()] = null;
@@ -341,7 +344,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        private static object ConvertSingleValue(object rawValue, string propertyName)
+        private static object? ConvertSingleValue(object rawValue, string propertyName)
         {
             var schemaInfo = _schemaCache[propertyName];
             if (rawValue == null) return null;
@@ -441,6 +444,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         {
                             if (schemaInfo.AtttributeName.Equals("accountExpires", StringComparison.OrdinalIgnoreCase) ||
                                 schemaInfo.AtttributeName.Equals("pwdLastSet", StringComparison.OrdinalIgnoreCase) ||
+                                schemaInfo.AtttributeName.Equals("lockoutTime", StringComparison.OrdinalIgnoreCase) ||
                                 schemaInfo.AtttributeName.Contains("Logon")) // lastLogon, lastLogonTimestamp
                                 return null; // Or a specific "Never" representation
                         }
@@ -458,8 +462,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 case 66: // NT Security Descriptor
                     if (rawValue is byte[] bytesSD)
                     {
-                        // Can convert to System.Security.AccessControl.RawSecurityDescriptor
-                        // return new System.Security.AccessControl.RawSecurityDescriptor(bytesSD, 0);
                         // For simplicity, returning as string representation or bytes
                         return Convert.ToBase64String(bytesSD); // Or process further
                     }
@@ -599,8 +601,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 attributeModification.Add(str);
 
+            }else if (value is int integer)
+            {
+                attributeModification.Add(integer.ToString());
             }
-
+            
             var modifyRequest = new ModifyRequest(DN, attributeModification);
             var modifyResponse = SendRequestAndGetResponse<ModifyResponse>(modifyRequest);
 
