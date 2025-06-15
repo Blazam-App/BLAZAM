@@ -31,12 +31,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             DN = dn;
             Directory = directory;
+            Dictionary<string, object?> entryAttributes = new();
+            entryAttributes["distinguishedname"] = dn;
+            var cached = DirectoryCache.GetEntryCache(dn);
+            if (cached == null)
+            {
+                DirectoryCache.SetEntryCache(dn, entryAttributes);
+            }
         }
         public LdapDirectoryEntry(SearchResultEntry sre, IActiveDirectoryContext directory)
         {
             DN = sre.DistinguishedName;
             Directory = directory;
-            Dictionary<string, object> entryAttributes = new();
+            Dictionary<string, object?> entryAttributes = new();
             var cache = DirectoryCache.GetEntryCache(DN);
             if (cache == null) cache = new EntryCache(entryAttributes);
             ProcessAttributes(cache , sre);

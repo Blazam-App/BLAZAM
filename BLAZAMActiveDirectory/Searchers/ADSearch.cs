@@ -530,7 +530,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 searcher.Attributes.Add(ActiveDirectoryFields.Name.FieldName);
                 searcher.Attributes.Add(ActiveDirectoryFields.LastLogonTimestamp.FieldName);
                 searcher.Attributes.Add("userAccountControl");
+                searcher.Attributes.Add("lockouttime");
                 searcher.Attributes.Add("objectclass");
+                searcher.Attributes.Add("isdeleted");
+                searcher.Attributes.Add("whencreated");
                 searcher.Attributes.Add("objectguid");
                 searcher.Attributes.Add(ActiveDirectoryFields.CanonicalName.FieldName);
             }

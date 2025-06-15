@@ -194,7 +194,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 var uacRaw = Convert.ToInt32(GetAttribute<object>("userAccountControl"));
                 if (uacRaw == 0)
                 {
-                    UAC = ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
+                    //UAC = ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
                     return ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
                 }
                 return uacRaw;

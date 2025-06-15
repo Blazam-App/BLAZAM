@@ -5,7 +5,8 @@ using System.Net; // Required for NetworkCredential
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
-using BLAZAM.Logger; // Added for ADSettings
+using BLAZAM.Logger;
+using Microsoft.PowerShell.Commands; // Added for ADSettings
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -16,6 +17,18 @@ namespace BLAZAM.ActiveDirectory
         private static List<AppLdapConnection> _connectionPool = new();
         private static bool _testsPerformed;
 
+
+        public static int Count
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return _connectionPool.Count;
+                }
+            }
+        }
+        public static AppEvent? OnCountChanged { get; set; } = new();
         /// <summary>
         /// Establishes a secure LDAP connection based on ADSettings.
         /// It will choose LDAPS if port is typically 636 and UseTLS is true,
@@ -74,38 +87,39 @@ namespace BLAZAM.ActiveDirectory
             }
 
 
-                // Typically, port 636 is for LDAPS, and 389 is for LDAP (which can be upgraded with StartTLS).
-                // We'll infer the method based on common port usage when UseTLS is true.
-                if (settings.ServerPort == 636) // Common LDAPS port
-                {
-                    Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting LDAPS connection.");
-                    ConnectWithLdaps(settings, out connection);
-                }
-                else if (settings.ServerPort == 389) // Common LDAP port, suitable for StartTLS
-                {
-                    Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting StartTLS connection.");
-                    ConnectWithStartTls(settings, out connection);
-                }
-                else
-                {
-                    // If UseTLS is true but port is neither 389 nor 636, it's ambiguous.
-                    // For this example, we'll try LDAPS as a default secure method if UseTLS is true and port is non-standard.
-                    // Alternatively, you could throw an error or require more specific configuration.
-                    Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort} (non-standard for TLS inference). Attempting LDAPS as a fallback secure method.");
-                    ConnectWithLdaps(settings, out connection);
-                }
-                var appConnection = new AppLdapConnection(connection);
+            // Typically, port 636 is for LDAPS, and 389 is for LDAP (which can be upgraded with StartTLS).
+            // We'll infer the method based on common port usage when UseTLS is true.
+            if (settings.ServerPort == 636) // Common LDAPS port
+            {
+                Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting LDAPS connection.");
+                ConnectWithLdaps(settings, out connection);
+            }
+            else if (settings.ServerPort == 389) // Common LDAP port, suitable for StartTLS
+            {
+                Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting StartTLS connection.");
+                ConnectWithStartTls(settings, out connection);
+            }
+            else
+            {
+                // If UseTLS is true but port is neither 389 nor 636, it's ambiguous.
+                // For this example, we'll try LDAPS as a default secure method if UseTLS is true and port is non-standard.
+                // Alternatively, you could throw an error or require more specific configuration.
+                Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort} (non-standard for TLS inference). Attempting LDAPS as a fallback secure method.");
+                ConnectWithLdaps(settings, out connection);
+            }
+            var appConnection = new AppLdapConnection(connection);
 
-                if (_disposerTimer == null)
-                {
-                    _disposerTimer = new Timer(CleanPool, null, 30000, 30000);
-                }
+            if (_disposerTimer == null)
+            {
+                _disposerTimer = new Timer(CleanPool, null, 30000, 30000);
+            }
             lock (_lock)
             {
                 _connectionPool.Add(appConnection);
+                OnCountChanged?.Invoke();
             }
-                return appConnection;
-            
+            return appConnection;
+
         }
 
         private static void CleanPool(object? state)
@@ -123,9 +137,11 @@ namespace BLAZAM.ActiveDirectory
                             _connectionPool.RemoveAt(i);
                             i--;
                             count--;
+                            OnCountChanged?.Invoke();
                         }
 
                     }
+                    
                 }
                 catch (Exception ex)
                 {
