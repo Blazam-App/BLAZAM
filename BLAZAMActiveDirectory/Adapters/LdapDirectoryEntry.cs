@@ -9,6 +9,7 @@ using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Novell.Directory.Ldap;
+using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Text;
@@ -46,7 +47,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Dictionary<string, object?> entryAttributes = new();
             var cache = DirectoryCache.GetEntryCache(DN);
             if (cache == null) cache = new EntryCache(entryAttributes);
-            ProcessAttributes(cache , sre);
+            ProcessAttributes(cache, sre);
 
 
         }
@@ -157,7 +158,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
             SearchResultEntry entry = searchResponse.Entries[0];
-            
+
             ProcessAttributes(existingCache, entry);
             if (!existingCache.Attributes.ContainsKey("isdeleted"))
             {
@@ -169,7 +170,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
             _propertiesCollected = true;
-            
+
             return existingCache.Attributes[attributeName.ToLower()]; // Attribute not found on the object or no value
 
 
@@ -208,14 +209,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         var attEnum = directoryAttribute.GetEnumerator();
                         attEnum.MoveNext();
                         object attr = attEnum.Current;
+                        var conversionWatch = Stopwatch.StartNew();
+
                         existingCache.Attributes[attrName] = ConvertSingleValue(attr, attrName);
+                        conversionWatch.Stop();
+                        Debug.WriteLine($"Converting {currentAttributeLdapName} took {conversionWatch.Elapsed.ToString()}");
                     }
                     else
                     {
                         List<object> values = new List<object>();
                         foreach (object rawValue in directoryAttribute)
                         {
+                            var conversionWatch = Stopwatch.StartNew();
+
                             values.Add(ConvertSingleValue(rawValue, currentAttributeLdapName));
+                            conversionWatch.Stop();
+                            Debug.WriteLine($"Converting {currentAttributeLdapName} took {conversionWatch.Elapsed.ToString()}");
                         }
                         existingCache.Attributes[currentAttributeLdapName.ToLower()] = values.ToArray();
                     }
@@ -227,7 +236,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     existingCache.Attributes[currentAttributeLdapName.ToLower()] = null; // Cache null if conversion fails
                 }
             }
-           
+
             DirectoryCache.SetEntryCache(DN, existingCache.Attributes);
         }
 
@@ -259,41 +268,44 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (_schemaCache.IsNullOrEmpty())
             {
-                SearchRequest schemaSearchRequest = new SearchRequest(
-                   _namingContextCache,
-                   $"(objectClass=attributeSchema)",
-                   System.DirectoryServices.Protocols.SearchScope.Subtree,
-                   "attributeSyntax", "oMSyntax", "isSingleValued", "oMObjectClass", "cn" // "cn" can be useful for debugging
-               );
-
-                try
+                lock (_schemaLock)
                 {
+                    SearchRequest schemaSearchRequest = new SearchRequest(
+                       _namingContextCache,
+                       $"(objectClass=attributeSchema)",
+                       System.DirectoryServices.Protocols.SearchScope.Subtree,
+                       "attributeSyntax", "oMSyntax", "isSingleValued", "oMObjectClass", "cn" // "cn" can be useful for debugging
+                   );
 
-                    if (!_schemaCache.ContainsKey(propertyName))
+                    try
                     {
 
-                        var schemaSearchResponse = SendRequestAndGetResponse<SearchResponse>(schemaSearchRequest);
-                        if (schemaSearchResponse.Entries.Count > 0)
+                        if (!_schemaCache.ContainsKey(propertyName))
                         {
-                            foreach (SearchResultEntry entry in schemaSearchResponse.Entries)
+
+                            var schemaSearchResponse = SendRequestAndGetResponse<SearchResponse>(schemaSearchRequest);
+                            if (schemaSearchResponse.Entries.Count > 0)
                             {
-                                AddSchemaCacheEntry(propertyName, entry);
+                                foreach (SearchResultEntry entry in schemaSearchResponse.Entries)
+                                {
+                                    AddSchemaCacheEntry(propertyName, entry);
+                                }
+
+
+                            }
+                            else
+                            {
+                                // Log: $"Schema not found for attribute '{attributeLdapDisplayName}'."
+                                Console.WriteLine($"Warning: Schema not found for attribute '{propertyName}'.");
                             }
 
-
                         }
-                        else
-                        {
-                            // Log: $"Schema not found for attribute '{attributeLdapDisplayName}'."
-                            Console.WriteLine($"Warning: Schema not found for attribute '{propertyName}'.");
-                        }
-
                     }
-                }
-                catch (Exception ex)
-                {
-                    // Log: $"Error fetching schema for attribute '{attributeLdapDisplayName}': {ex.Message}"
-                    Console.WriteLine($"Error fetching schema for attribute '{propertyName}': {ex.Message}. Schema will be considered not found.");
+                    catch (Exception ex)
+                    {
+                        // Log: $"Error fetching schema for attribute '{attributeLdapDisplayName}': {ex.Message}"
+                        Console.WriteLine($"Error fetching schema for attribute '{propertyName}': {ex.Message}. Schema will be considered not found.");
+                    }
                 }
             }
             if (!_schemaCache.ContainsKey(propertyName))
@@ -308,9 +320,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 try
                 {
+
+                    var schemaSearchResponse = SendRequestAndGetResponse<SearchResponse>(schemaSearchRequest);
                     if (!_schemaCache.ContainsKey(propertyName))
                     {
-                        var schemaSearchResponse = SendRequestAndGetResponse<SearchResponse>(schemaSearchRequest);
                         if (schemaSearchResponse.Entries.Count > 0)
                         {
                             AddSchemaCacheEntry(propertyName, schemaSearchResponse.Entries[0]);
@@ -377,8 +390,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 case 2: // Integer
                 case 10: // Integer / Enumeration
-                    if (rawValue is byte[] bytesInt) return BitConverter.ToInt32(bytesInt, 0); // If raw BER encoded integer
-                    return Convert.ToInt32(rawValue); // If string or other numeric
+                    if (rawValue is byte[] bytesInt)
+                    {
+                        // Decode the byte array (which represents a string) into a string first.
+                        var stringValue = System.Text.Encoding.UTF8.GetString(bytesInt);
+                        // Then, parse the resulting string to an integer.
+                        return int.Parse(stringValue);
+                    }
+                    // If the rawValue is already a string or a numeric type, this will work.
+                    return Convert.ToInt32(rawValue);
 
                 case 4: // Octet String (e.g., SID, GUID)
                     if (rawValue is byte[] bytesOctet)
@@ -499,7 +519,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public IDirectoryEntries Children => new LdapDirectoryEntries(DN, Directory);
 
-        public AuthType AuthenticationType { get
+        public AuthType AuthenticationType
+        {
+            get
             {
                 using var connection = Directory.Connect();
                 return connection.LdapConnection.AuthType;
@@ -538,7 +560,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private bool InvokeRemove(object[]? args)
         {
             var value = args[0].ToString();
-            if(Invoke("member", DirectoryAttributeOperation.Delete, value))
+            if (Invoke("member", DirectoryAttributeOperation.Delete, value))
             {
                 DirectoryCache.Clear(value);
                 return true;
@@ -606,11 +628,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 attributeModification.Add(str);
 
-            }else if (value is int integer)
+            }
+            else if (value is int integer)
             {
                 attributeModification.Add(integer.ToString());
             }
-            
+
             var modifyRequest = new ModifyRequest(DN, attributeModification);
             var modifyResponse = SendRequestAndGetResponse<ModifyResponse>(modifyRequest);
 

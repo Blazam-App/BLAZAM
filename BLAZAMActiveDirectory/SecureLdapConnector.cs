@@ -6,7 +6,6 @@ using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using Microsoft.PowerShell.Commands; // Added for ADSettings
 
 namespace BLAZAM.ActiveDirectory
 {
