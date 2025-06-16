@@ -47,8 +47,8 @@ namespace BLAZAM.ActiveDirectory
             get
             {
                 AuthType _authType = AuthType.Negotiate;
-              
-             
+
+
                 return _authType;
 
             }
@@ -88,7 +88,10 @@ namespace BLAZAM.ActiveDirectory
             Factory = factory;
             SetSystemInstance(this);
             EventLogReader = new(this);
-            _ = ConnectAsync();
+            Task.Run(async () =>
+            {
+                using var connection = await ConnectAsync();
+            });
 
             Users = new ADUserSearcher(this);
             Contacts = new ADContactSearcher(this);
@@ -130,7 +133,7 @@ namespace BLAZAM.ActiveDirectory
             if (baseDN == null || baseDN == "")
                 baseDN = ConnectionSettings?.ApplicationBaseDN;
 
-            return new LdapDirectoryEntry(baseDN,this);
+            return new LdapDirectoryEntry(baseDN, this);
         }
         /// <summary>
         /// Gets the root entry for deleted objects in Active Directory
@@ -213,7 +216,7 @@ namespace BLAZAM.ActiveDirectory
             _systemInstance = context;
         }
 
-       
+
 
 
         private async Task KeepAlive()
@@ -237,7 +240,7 @@ namespace BLAZAM.ActiveDirectory
                             _ = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
 
                         }
-                      
+
                         catch (Exception ex)
                         {
                             Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
@@ -287,7 +290,7 @@ namespace BLAZAM.ActiveDirectory
 
                     if (IsCancelRequested) return null;
 
-                    
+
 
                     GetConnectionSettings(context, out ad);
                 }
@@ -404,14 +407,12 @@ namespace BLAZAM.ActiveDirectory
                 if (FailedConnectionAttempts < 10)
                     FailedConnectionAttempts++;
             }
-            finally
+            if (IsCancelRequested == false && Status != DirectoryConnectionStatus.OK)
             {
-                if (IsCancelRequested==false && Status != DirectoryConnectionStatus.OK)
-                {
-                    Task.Delay(5000).Wait();
-                    Connect();
-                }
+                Task.Delay(5000).Wait();
+                return Connect();
             }
+
             return null;
         }
         private bool IsCancelRequested
@@ -484,19 +485,19 @@ namespace BLAZAM.ActiveDirectory
             {
                 Loggers.ActiveDirectoryLogger.Information("Performing Active Directory connection test");
 
-             //if(AppRootDirectoryEntry?.Name.IsNullOrEmpty()==true || RootDirectoryEntry?.Name.IsNullOrEmpty() == true)
-             //   {
-             //       Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
+                //if(AppRootDirectoryEntry?.Name.IsNullOrEmpty()==true || RootDirectoryEntry?.Name.IsNullOrEmpty() == true)
+                //   {
+                //       Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
 
-             //       Status = DirectoryConnectionStatus.BadConfiguration;
-             //       if (FailedConnectionAttempts < 10)
-             //           FailedConnectionAttempts++;
-             //       throw new CriticalActiveDirectoryException(this, "Active Directory test failed");
-             //   }
+                //       Status = DirectoryConnectionStatus.BadConfiguration;
+                //       if (FailedConnectionAttempts < 10)
+                //           FailedConnectionAttempts++;
+                //       throw new CriticalActiveDirectoryException(this, "Active Directory test failed");
+                //   }
 
             }
             var connection = SecureLdapConnector.Connect(ad);
-            if (connection.LdapConnection==null)
+            if (connection.LdapConnection == null)
             {
                 Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
 
@@ -647,7 +648,7 @@ namespace BLAZAM.ActiveDirectory
                             try
                             {
                                 Loggers.ActiveDirectoryLogger.Information("Authenticating Active Directory credentials");
-                            throw new AppException("AD Auth not implemented");
+                                throw new AppException("AD Auth not implemented");
 
                                 //var _authenticatedContext = new LdapDirectoryEntry(ConnectionSettings.ApplicationBaseDN, loginReq.Username, loginReq.Password, AuthType);
                                 //_ = _authenticatedContext.AuthenticationType;

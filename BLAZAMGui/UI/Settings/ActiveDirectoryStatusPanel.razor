@@ -88,6 +88,7 @@
     bool _portStatus;
     bool? _credStatus=null;
     bool showProgress = true;
+    private AppLdapConnection? _connection;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -100,17 +101,18 @@
     {
         base.Dispose();
         _monitoring = false;
+        _connection?.Dispose();
     }
     public async Task RefreshStatuses()
     {
         await Directory.CancelConnection();
         ResetStatus();
-        _ = Directory.ConnectAsync();
+        using var connection = await Directory.ConnectAsync();
     }
     public void ResetStatus()
     {
         //Directory = DirectoryFactory.CreateActiveDirectoryContext();
-        Directory.ConnectAsync();
+
         _portStatus = false;
         _credStatus = null;
         showProgress = true;

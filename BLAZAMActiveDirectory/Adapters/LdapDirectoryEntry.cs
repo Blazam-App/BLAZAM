@@ -499,7 +499,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public IDirectoryEntries Children => new LdapDirectoryEntries(DN, Directory);
 
-        public AuthType AuthenticationType { get => Directory.Connect().LdapConnection.AuthType; }
+        public AuthType AuthenticationType { get
+            {
+                using var connection = Directory.Connect();
+                return connection.LdapConnection.AuthType;
+            }
+        }
         public bool UsePropertyCache { get; set; }
 
         public void Close()
