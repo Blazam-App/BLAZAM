@@ -9,6 +9,7 @@ using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Novell.Directory.Ldap;
+using Novell.Directory.Ldap.Utilclass;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
@@ -52,7 +53,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-        public string Path { get => UnderlyingEntry.Path; set => UnderlyingEntry.Path = value; }
+        public string Path
+        {
+            get
+            {  // Construct the full LDAP path using the connection context and the object's DN.
+               // This replaces the dependency on the old UnderlyingEntry.Path.
+                if (Directory?.ConnectionSettings != null && !string.IsNullOrEmpty(DN))
+                {
+                    return $"LDAP://{Directory.ConnectionSettings.ServerAddress}:{Directory.ConnectionSettings.ServerPort}/{DN}";
+                }
+                // Fallback to returning just the DN if context is unavailable.
+                return DN;
+            }
+            set => UnderlyingEntry.Path = value;
+        }
 
         public string? NativeGuid => GetPropertyValue("nativeGuid")?.ToString();
 
@@ -139,27 +153,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
             Loggers.ActiveDirectoryLogger.Information("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}", Directory != null && Directory.ConnectionSettings != null);
-            GetNamingContext();
 
+            GetAllAttributes(existingCache);
 
-
-
-            // Search request to get ALL user attributes for the specified DN
-            SearchRequest allAttributesSearchRequest = new SearchRequest(
-                DN,                                 // The DN of the object
-                "(objectClass=*)",                  // Filter to match the object
-                System.DirectoryServices.Protocols.SearchScope.Base, // Target a specific object
-                null                                // Request all user attributes
-            );
-
-
-            var searchResponse = SendRequestAndGetResponse<SearchResponse>(allAttributesSearchRequest);
-
-
-
-            SearchResultEntry entry = searchResponse.Entries[0];
-
-            ProcessAttributes(existingCache, entry);
             if (!existingCache.Attributes.ContainsKey("isdeleted"))
             {
                 existingCache.Attributes["isdeleted"] = false;
@@ -177,8 +173,30 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
+        private void GetAllAttributes(EntryCache? existingCache)
+        {
+            // Search request to get ALL user attributes for the specified DN
+            SearchRequest allAttributesSearchRequest = new SearchRequest(
+                DN,                                 // The DN of the object
+                "(objectClass=*)",                  // Filter to match the object
+                System.DirectoryServices.Protocols.SearchScope.Base, // Target a specific object
+                null                                // Request all user attributes
+            );
+
+
+            var searchResponse = SendRequestAndGetResponse<SearchResponse>(allAttributesSearchRequest);
+
+
+
+            SearchResultEntry entry = searchResponse.Entries[0];
+
+            ProcessAttributes(existingCache, entry);
+        }
+
         private void ProcessAttributes(EntryCache? existingCache, SearchResultEntry entry)
         {
+            GetNamingContext();
+
             foreach (string currentAttributeLdapName in entry.Attributes.AttributeNames)
             {
 
@@ -531,12 +549,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public void Close()
         {
-            UnderlyingEntry.Close();
+            //Nothing stays open
         }
 
         public void CommitChanges()
         {
-            UnderlyingEntry.CommitChanges();
+            //This layer is stateful in real time
         }
 
         public object? Invoke(string methodName, params object[]? args)
@@ -728,6 +746,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             // 3. Call the generalized method. The RDN stays the same.
             PerformModifyDN(rdn, newParent.DN);
+
         }
 
         /// <summary>
@@ -761,6 +780,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 // Invalidate the cache for both the old and new DNs
                 DirectoryCache.Clear(oldDn);
+                DirectoryCache.Clear(newParentDn);
                 RefreshCache();
 
             }

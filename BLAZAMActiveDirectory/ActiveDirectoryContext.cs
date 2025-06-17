@@ -16,6 +16,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -706,42 +707,46 @@ namespace BLAZAM.ActiveDirectory
             if (ConnectionSettings is null) throw new AppException("Active Directory Connection Settings are missing for this enttry");
             string newDN = "CN=" + model.CanonicalName + "," + newOU.DN;
 
-            LdapConnection connection = new(
-                new LdapDirectoryIdentifier(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort),
-                new NetworkCredential()
-                {
-                    Domain = ConnectionSettings.FQDN,
-                    UserName = ConnectionSettings.Username,
-                    SecurePassword = _encryption.DecryptObject<string>(ConnectionSettings.Password)?.ToSecureString()
-                },
-                System.DirectoryServices.Protocols.AuthType.Negotiate);
+            // 1. Create a modification to remove the 'isDeleted' attribute.
+            DirectoryAttributeModification isDeleteAttributeMod = new();
+            isDeleteAttributeMod.Name = "isDeleted";
+            isDeleteAttributeMod.Operation = DirectoryAttributeOperation.Delete;
 
-            using (connection)
+            // 2. Create a modification to set the new distinguished name (DN), effectively moving the object.
+            DirectoryAttributeModification dnAttributeMod = new();
+            dnAttributeMod.Name = ActiveDirectoryFields.DistinguishedName.FieldName;
+            dnAttributeMod.Operation = DirectoryAttributeOperation.Replace;
+            dnAttributeMod.Add(newDN);
+
+            // Build the request with both modifications.
+            var request = new ModifyRequest(model.DN, new DirectoryAttributeModification[] { isDeleteAttributeMod, dnAttributeMod });
+
+            // Add the 'ShowDeletedControl' to allow operations on the "Deleted Objects" container.
+            request.Controls.Add(new ShowDeletedControl());
+
+            try
             {
-                connection.Bind();
-                connection.SessionOptions.ProtocolVersion = 3;
-                DirectoryAttributeModification isDeleteAttributeMod = new();
-                isDeleteAttributeMod.Name = "isDeleted";
-                isDeleteAttributeMod.Operation = DirectoryAttributeOperation.Delete;
-                DirectoryAttributeModification dnAttributeMod = new();
-                dnAttributeMod.Name = ActiveDirectoryFields.DistinguishedName.FieldName;
-                dnAttributeMod.Operation = DirectoryAttributeOperation.Replace;
-                dnAttributeMod.Add(newDN);
-                ModifyRequest request = new(model.DN, new DirectoryAttributeModification[] { isDeleteAttributeMod, dnAttributeMod });
-                request.Controls.Add(new ShowDeletedControl());
 
-                try
+                using (AppLdapConnection connection = SecureLdapConnector.Connect(ConnectionSettings))
                 {
-                    ModifyResponse response = (ModifyResponse)connection.SendRequest(request);
+                    var response = (ModifyResponse)connection.SendRequest(request);
                     if (response.ResultCode == ResultCode.Success)
                     {
                         return true;
                     }
+                    else
+                    {
+                        // Log the failure reason from the response for better diagnostics.
+                        Loggers.ActiveDirectoryLogger.Warning(
+                            "Failed to restore {Name}. AD responded with: {Code} - {Message}",
+                            model.CanonicalName, response.ResultCode, response.ErrorMessage);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Loggers.ActiveDirectoryLogger.Error("Error attempting to restore " + model.CanonicalName + "{@Error}", ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                // Preserved exception logging, updated for structured logging.
+                Loggers.ActiveDirectoryLogger.Error(ex, "An exception occurred while attempting to restore {Name}", model.CanonicalName);
             }
             return false;
 
