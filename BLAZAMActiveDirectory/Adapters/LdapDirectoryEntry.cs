@@ -8,12 +8,14 @@ using BLAZAM.Common.Exceptions;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -175,6 +177,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private void GetAllAttributes(EntryCache? existingCache)
         {
+            Debug.WriteLine($"Getting all attributes for {DN}");
+            var conversionWatch = Stopwatch.StartNew();
+
             // Search request to get ALL user attributes for the specified DN
             SearchRequest allAttributesSearchRequest = new SearchRequest(
                 DN,                                 // The DN of the object
@@ -191,14 +196,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
             SearchResultEntry entry = searchResponse.Entries[0];
 
             ProcessAttributes(existingCache, entry);
+            conversionWatch.Stop();
+            Debug.WriteLine($"Attribute collection for {DN} took {conversionWatch.Elapsed.ToString()}");
+
         }
 
         private void ProcessAttributes(EntryCache? existingCache, SearchResultEntry entry)
         {
             GetNamingContext();
+            var attributeCollectionLog = new Dictionary<string, TimeSpan>();
 
             foreach (string currentAttributeLdapName in entry.Attributes.AttributeNames)
             {
+                var conversionWatch = Stopwatch.StartNew();
 
 
                 DirectoryAttribute directoryAttribute = entry.Attributes[currentAttributeLdapName];
@@ -211,6 +221,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     existingCache.Attributes[currentAttributeLdapName.ToLower()] = null;
                     // Log: $"Schema not found for attribute '{currentAttributeLdapName}'. Caching as null."
                     Console.WriteLine($"Warning: Schema not found for attribute '{currentAttributeLdapName}'. It will be cached as null.");
+                    conversionWatch.Stop();
+                    attributeCollectionLog.Add(currentAttributeLdapName,conversionWatch.Elapsed);
                     continue;
                 }
 
@@ -227,22 +239,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         var attEnum = directoryAttribute.GetEnumerator();
                         attEnum.MoveNext();
                         object attr = attEnum.Current;
-                        var conversionWatch = Stopwatch.StartNew();
 
                         existingCache.Attributes[attrName] = ConvertSingleValue(attr, attrName);
-                        conversionWatch.Stop();
-                        Debug.WriteLine($"Converting {currentAttributeLdapName} took {conversionWatch.Elapsed.ToString()}");
                     }
                     else
                     {
                         List<object> values = new List<object>();
                         foreach (object rawValue in directoryAttribute)
                         {
-                            var conversionWatch = Stopwatch.StartNew();
 
                             values.Add(ConvertSingleValue(rawValue, currentAttributeLdapName));
-                            conversionWatch.Stop();
-                            Debug.WriteLine($"Converting {currentAttributeLdapName} took {conversionWatch.Elapsed.ToString()}");
                         }
                         existingCache.Attributes[currentAttributeLdapName.ToLower()] = values.ToArray();
                     }
@@ -253,7 +259,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     Console.WriteLine($"Error converting attribute '{currentAttributeLdapName}': {ex.Message}. It will be cached as null.");
                     existingCache.Attributes[currentAttributeLdapName.ToLower()] = null; // Cache null if conversion fails
                 }
+                conversionWatch.Stop();
+                attributeCollectionLog.Add(currentAttributeLdapName, conversionWatch.Elapsed);
             }
+            Debug.WriteLine($"Atribute collection log for {DN}:{JsonConvert.SerializeObject(attributeCollectionLog.OrderByDescending(t=>t.Value))}");
 
             DirectoryCache.SetEntryCache(DN, existingCache.Attributes);
         }
