@@ -1,19 +1,23 @@
 ﻿
 using AngleSharp.Dom;
+using AngleSharp.Io;
 using Azure;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Services;
+using BLAZAM.Common.Data;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Caching.Memory;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
+using System.IO;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -69,11 +73,109 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set => UnderlyingEntry.Path = value;
         }
+        private bool _isNew = false;
+        // NEW: Private constructor for creating a new, in-memory entry.
+        private LdapDirectoryEntry(string proposedDn, IActiveDirectoryContext directory, bool isNew)
+        {
+            DN = proposedDn;
+           Directory = directory;
+            _isNew = isNew;
+            // Immediately place a new attribute dictionary into the static DirectoryCache for this proposed DN.
+            var initialAttributes = new Dictionary<string, object?> { { "distinguishedname", proposedDn } };
+            DirectoryCache.SetEntryCache(proposedDn, initialAttributes);
+         }
+                // NEW: Static factory method to create a new directory entry in memory.
+        /// <summary>
+        /// Creates a new directory entry in memory. Call CommitChanges() to save it to the directory.
+        /// </summary>
+        /// <param name="objectType">The type of object to create (e.g., User, Group).</param>
+        /// <param name="name">The name of the new object (e.g., "John Doe", "Sales Team").</param>
+        /// <param name="parent">The parent container entry where this object will be created.</param>
+        /// <param name="directory">The Active Directory context.</param>
+        /// <returns>An uncommitted LdapDirectoryEntry instance.</returns>
+        public static LdapDirectoryEntry Create(ActiveDirectoryObjectType objectType, string name, string parentDn, IActiveDirectoryContext directory)
+        {
+            // Determine RDN prefix (e.g., CN, OU)
+            string rdnPrefix = objectType == ActiveDirectoryObjectType.OU ? "OU" : "CN";
+            string rdn = $"{rdnPrefix}={name}";
+            string proposedDn = $"{rdn},{parentDn}";
+
+            var newEntry = new LdapDirectoryEntry(proposedDn, directory, true);
+
+            // Pre-populate mandatory and default attributes into the DirectoryCache
+            newEntry.SetDefaultAttributes(objectType, name);
+
+            return newEntry;
+        }
+
+        // NEW: Helper to set default attributes based on object type.
+        private void SetDefaultAttributes(ActiveDirectoryObjectType objectType, string name)
+        {
+            // Sets the essential attributes to define an object's name and class,
+            // plus safe, standard defaults for behavioral attributes like UAC and Group Type.
+            switch (objectType)
+            {
+                case ActiveDirectoryObjectType.User:
+                    SetPropertyValue("objectClass", new[] { "top", "person", "organizationalPerson", "user" });
+                    SetPropertyValue("cn", name);
+                    // Set UAC to 514, which is the bitwise combination of:
+                    // 512 (NORMAL_ACCOUNT) | 2 (ACCOUNTDISABLE)
+                    SetPropertyValue("userAccountControl", "514");
+                    break;
+
+                case ActiveDirectoryObjectType.Group:
+                    SetPropertyValue("objectClass", new[] { "top", "group" });
+                    SetPropertyValue("cn", name);
+                    SetPropertyValue("name", name);
+                    SetPropertyValue("sAMAccountName", name);
+
+                    // Set GroupType to -2147483644, the value for a Global Security Group.
+                    SetPropertyValue("groupType", "-2147483644");
+                    break;
+
+                case ActiveDirectoryObjectType.Computer:
+                    SetPropertyValue("objectClass", new[] { "top", "person", "organizationalPerson", "user", "computer" });
+                    SetPropertyValue("cn", name);
+                    SetPropertyValue("name", name);
+                    // The sAMAccountName for a computer account must end with a '$'.
+                    SetPropertyValue("sAMAccountName", name + "$");
+
+                    // Set UAC to 4096, the value for a WORKSTATION_TRUST_ACCOUNT.
+                    SetPropertyValue("userAccountControl", "4096");
+                    break;
+
+                case ActiveDirectoryObjectType.Contact:
+                    SetPropertyValue("objectClass", new[] { "top", "person", "organizationalPerson", "contact" });
+                    SetPropertyValue("cn", name);
+                    SetPropertyValue("name", name);
+                    SetPropertyValue("displayName", name);
+                    break;
+
+                case ActiveDirectoryObjectType.OU:
+                    SetPropertyValue("objectClass", new[] { "top", "organizationalUnit" });
+                    // The RDN for an Organizational Unit is 'ou'.
+                    SetPropertyValue("ou", name);
+                    break;
+
+                default:
+                    throw new ArgumentException("Unsupported object type for creation.", nameof(objectType));
+            }
+        }
 
         public string? NativeGuid => GetPropertyValue("nativeGuid")?.ToString();
 
         public void SetPropertyValue(string propertyName, object? value)
         {
+            // NEW: If the object is a new in-memory placeholder, update its entry in the DirectoryCache.
+            if (_isNew)
+            {
+                var cacheEntry = DirectoryCache.GetEntryCache(this.DN);
+                if (cacheEntry != null)
+                {
+                    cacheEntry.Attributes[propertyName.ToLower()] = value;
+                }
+                return;
+            }
             Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
             return;
         }
@@ -121,6 +223,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public object? GetPropertyValue(string propertyName)
         {
+            // This avoids a pointless LDAP search for an object that doesn't exist yet.
+            if (_isNew)
+            {
+                var cacheEntry = DirectoryCache.GetEntryCache(this.DN);
+                cacheEntry.Attributes.TryGetValue(propertyName.ToLower(), out var value);
+                return value;
+            }
             return Search(propertyName);
         }
 
@@ -177,9 +286,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private void GetAllAttributes(EntryCache? existingCache)
         {
-            Debug.WriteLine($"Getting all attributes for {DN}");
-            var conversionWatch = Stopwatch.StartNew();
-
+           
             // Search request to get ALL user attributes for the specified DN
             SearchRequest allAttributesSearchRequest = new SearchRequest(
                 DN,                                 // The DN of the object
@@ -196,8 +303,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             SearchResultEntry entry = searchResponse.Entries[0];
 
             ProcessAttributes(existingCache, entry);
-            conversionWatch.Stop();
-            Debug.WriteLine($"Attribute collection for {DN} took {conversionWatch.Elapsed.ToString()}");
+          
 
         }
 
@@ -208,9 +314,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             foreach (string currentAttributeLdapName in entry.Attributes.AttributeNames)
             {
-                var conversionWatch = Stopwatch.StartNew();
-
-
+             
                 DirectoryAttribute directoryAttribute = entry.Attributes[currentAttributeLdapName];
                 GetSchemaInfo(currentAttributeLdapName);
 
@@ -221,8 +325,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     existingCache.Attributes[currentAttributeLdapName.ToLower()] = null;
                     // Log: $"Schema not found for attribute '{currentAttributeLdapName}'. Caching as null."
                     Console.WriteLine($"Warning: Schema not found for attribute '{currentAttributeLdapName}'. It will be cached as null.");
-                    conversionWatch.Stop();
-                    attributeCollectionLog.Add(currentAttributeLdapName,conversionWatch.Elapsed);
+                  
                     continue;
                 }
 
@@ -259,11 +362,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     Console.WriteLine($"Error converting attribute '{currentAttributeLdapName}': {ex.Message}. It will be cached as null.");
                     existingCache.Attributes[currentAttributeLdapName.ToLower()] = null; // Cache null if conversion fails
                 }
-                conversionWatch.Stop();
-                attributeCollectionLog.Add(currentAttributeLdapName, conversionWatch.Elapsed);
+              
             }
-            Debug.WriteLine($"Atribute collection log for {DN}:{JsonConvert.SerializeObject(attributeCollectionLog.OrderByDescending(t=>t.Value))}");
-
+           
             DirectoryCache.SetEntryCache(DN, existingCache.Attributes);
         }
 
@@ -563,7 +664,47 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public void CommitChanges()
         {
-            //This layer is stateful in real time
+            if (_isNew)
+            {
+                var attributesToCommit = DirectoryCache.GetEntryCache(this.DN)?.Attributes;
+                if (attributesToCommit == null)
+                {
+                    throw new InvalidOperationException("Cannot commit a new entry because its attribute cache is missing.");
+                }
+
+                var addRequest = new AddRequest(DN);
+
+                foreach (var attr in attributesToCommit)
+                {
+                    // distinguishedName is part of the request DN, not an attribute in the payload.
+                    if (attr.Key.Equals("distinguishedname", StringComparison.OrdinalIgnoreCase)) continue;
+
+                    var dirAttr = new DirectoryAttribute(attr.Key);
+                    if (attr.Value is string strValue) dirAttr.Add(strValue);
+                    else if (attr.Value is byte[] byteValue) dirAttr.Add(byteValue);
+                    else if (attr.Value is string[] strArray)
+                    {
+                        foreach (var val in strArray) dirAttr.Add(val);
+                    }
+                    else if (attr.Value != null) dirAttr.Add(attr.Value.ToString());
+
+                    if (dirAttr.Count > 0)
+                        addRequest.Attributes.Add(dirAttr);
+                }
+
+                if (addRequest.Attributes.Count == 0) throw new InvalidOperationException("Cannot commit a new entry with no attributes.");
+
+                var response = SendRequestAndGetResponse<AddResponse>(addRequest);
+                if (response.ResultCode == ResultCode.Success)
+                {
+                    _isNew = false; // The object is now "live".
+                    RefreshCache(); // Refresh the cache with any server-side generated attributes.
+                }
+                else
+                {
+                    throw new DirectoryException($"Failed to create entry. LDAP Error: {response.ResultCode} - {response.ErrorMessage}");
+                }
+            }
         }
 
         public object? Invoke(string methodName, params object[]? args)

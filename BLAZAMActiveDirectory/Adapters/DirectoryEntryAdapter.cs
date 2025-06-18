@@ -851,6 +851,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 else
                 {
 
+                    var ou = GetParent();
+                    var ouEntry = ou.DirectoryEntry;
+                    var newUser = ouEntry.Children.Add(DN, "user");
                     if (DirectoryEntry == null)
                     {
                         Loggers.ActiveDirectoryLogger.Error("The directory entry for new entry " + DN +

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BLAZAM.ActiveDirectory.Adapters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,30 +23,50 @@ namespace BLAZAM.Gui.Helpers
             var ou = directory.OUs.FindOuByString(template.EffectiveParentOU).FirstOrDefault();
             if (ou == null) throw new AppException("OU could not be found for new user");
             var displayName = template.GenerateDisplayName(newUserName);
-            newUser = ou.CreateUser(displayName);
-
-            newUser.SAMAccountName = template.GenerateUsername(newUserName);
-            newUser.DisplayName = displayName;
-            newUser.StagePasswordChange(template.GeneratePassword(newUserName).ToSecureString());
-            if (template.EffectiveRequirePasswordChange == true)
-                newUser.StageRequirePasswordChange(true);
-            if (!newUserName.GivenName.IsNullOrEmpty())
-                newUser.GivenName = newUserName.GivenName;
-            if (!newUserName.MiddleName.IsNullOrEmpty())
-                newUser.MiddleName = newUserName.MiddleName;
-            if (!newUserName.Surname.IsNullOrEmpty())
-                newUser.Sn = newUserName.Surname;
 
 
-
-            template.EffectiveAssignedGroupSids.ForEach(sid =>
+            var fullContainerName = "CN=" + displayName.Trim().Replace(",", "\\,")+","+ou.DN;
+            try
             {
-                var group = directory.Groups.FindGroupBySID(sid.GroupSid);
-                if (group != null)
-                    newUser.AssignTo(group);
+                newUser = new ADUser();
+                newUser.Parse(directoryEntry: LdapDirectoryEntry.Create(ActiveDirectoryObjectType.User, displayName.Trim().Replace(",", "\\,"), template.EffectiveParentOU, directory), directory: directory);
+                newUser.NewEntry = true;
+                newUser.Enabled = true;
+                newUser.DisplayName = displayName;
+                newUser.SAMAccountName = template.GenerateUsername(newUserName);
+                newUser.DisplayName = displayName;
+                newUser.StagePasswordChange(template.GeneratePassword(newUserName).ToSecureString());
+                if (template.EffectiveRequirePasswordChange == true)
+                    newUser.StageRequirePasswordChange(true);
+                if (!newUserName.GivenName.IsNullOrEmpty())
+                    newUser.GivenName = newUserName.GivenName;
+                if (!newUserName.MiddleName.IsNullOrEmpty())
+                    newUser.MiddleName = newUserName.MiddleName;
+                if (!newUserName.Surname.IsNullOrEmpty())
+                    newUser.Sn = newUserName.Surname;
 
-            });
-            return newUser;
+
+
+                template.EffectiveAssignedGroupSids.ForEach(sid =>
+                {
+                    var group = directory.Groups.FindGroupBySID(sid.GroupSid);
+                    if (group != null)
+                        newUser.AssignTo(group);
+
+                });
+                return newUser;
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create user in {@ContainerName}", fullContainerName);
+                throw;
+            }
+
+            //newUser = ou.CreateUser(displayName);
+
+
+
+            
         }
     }
 }
