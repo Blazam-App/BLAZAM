@@ -396,6 +396,27 @@ namespace BLAZAM.Helpers
             }
             return null; // No parent DN found (could be a domain root or malformed DN)
         }
+        public static string Rdn(this IDirectoryEntryAdapter entry)
+        {
+            var dn = entry.DN;
+            return DnToRdn(dn);
+        }
+        public static string Rdn(this LdapDirectoryEntry entry)
+        {
+            var dn = entry.DN;
+            return DnToRdn(dn);
+        }
+
+        private static string DnToRdn(string? dn)
+        {
+            var match = Regex.Match(dn, @"(?<!\\),");
+            if (!match.Success)
+            {
+                throw new InvalidOperationException("Cannot move a top-level entry.");
+            }
+            string rdn = dn.Substring(0, match.Index);
+            return rdn;
+        }
 
         public static string? EscapeLdapSearchFilter(this string? input)
         {

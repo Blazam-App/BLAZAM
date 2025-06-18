@@ -370,7 +370,7 @@
                             newUser = new ADUser();
                             newUser.Parse(directoryEntry:LdapDirectoryEntry.Create(ActiveDirectoryObjectType.User,customUserDisplayName.Trim(),selectedOU.DN,Directory), directory: Directory);
                             newUser.NewEntry = true;
-                            newUser.Enabled = true;
+                           // newUser.Enabled = true;
                             newUser.DisplayName = customUserDisplayName;
                         }
                         catch (Exception ex)

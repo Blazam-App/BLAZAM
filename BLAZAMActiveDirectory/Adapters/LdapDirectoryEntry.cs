@@ -7,6 +7,7 @@ using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Exceptions;
+using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -117,7 +118,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 case ActiveDirectoryObjectType.User:
                     SetPropertyValue("objectClass", new[] { "top", "person", "organizationalPerson", "user" });
-                    SetPropertyValue("cn", name);
+                    SetPropertyValue(ActiveDirectoryFields.CanonicalName.FieldName, name);
+                    
                     // Set UAC to 514, which is the bitwise combination of:
                     // 512 (NORMAL_ACCOUNT) | 2 (ACCOUNTDISABLE)
                     SetPropertyValue("userAccountControl", "514");
@@ -125,8 +127,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 case ActiveDirectoryObjectType.Group:
                     SetPropertyValue("objectClass", new[] { "top", "group" });
-                    SetPropertyValue("cn", name);
-                    SetPropertyValue("name", name);
+                    SetPropertyValue(ActiveDirectoryFields.CanonicalName.FieldName, name);
+                    SetPropertyValue(ActiveDirectoryFields.Name.FieldName, name);
                     SetPropertyValue("sAMAccountName", name);
 
                     // Set GroupType to -2147483644, the value for a Global Security Group.
@@ -135,8 +137,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 case ActiveDirectoryObjectType.Computer:
                     SetPropertyValue("objectClass", new[] { "top", "person", "organizationalPerson", "user", "computer" });
-                    SetPropertyValue("cn", name);
-                    SetPropertyValue("name", name);
+                    SetPropertyValue(ActiveDirectoryFields.CanonicalName.FieldName, name);
+                    SetPropertyValue(ActiveDirectoryFields.Name.FieldName, name);
                     // The sAMAccountName for a computer account must end with a '$'.
                     SetPropertyValue("sAMAccountName", name + "$");
 
@@ -146,15 +148,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 case ActiveDirectoryObjectType.Contact:
                     SetPropertyValue("objectClass", new[] { "top", "person", "organizationalPerson", "contact" });
-                    SetPropertyValue("cn", name);
-                    SetPropertyValue("name", name);
+                    SetPropertyValue(ActiveDirectoryFields.CanonicalName.FieldName, name);
+                    SetPropertyValue(ActiveDirectoryFields.Name.FieldName, name);
                     SetPropertyValue("displayName", name);
                     break;
 
                 case ActiveDirectoryObjectType.OU:
                     SetPropertyValue("objectClass", new[] { "top", "organizationalUnit" });
                     // The RDN for an Organizational Unit is 'ou'.
-                    SetPropertyValue("ou", name);
+                    SetPropertyValue(ActiveDirectoryFields.OU.FieldName, name);
                     break;
 
                 default:
@@ -678,6 +680,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     // distinguishedName is part of the request DN, not an attribute in the payload.
                     if (attr.Key.Equals("distinguishedname", StringComparison.OrdinalIgnoreCase)) continue;
+                    if (attr.Key.Equals("cn", StringComparison.OrdinalIgnoreCase)) continue;
+                   // if (attr.Key.Equals("objectClass", StringComparison.OrdinalIgnoreCase)) continue;
+                    if (attr.Key.Equals("name", StringComparison.OrdinalIgnoreCase)) continue;
 
                     var dirAttr = new DirectoryAttribute(attr.Key);
                     if (attr.Value is string strValue) dirAttr.Add(strValue);
@@ -887,17 +892,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
             // 2. Extract the current RDN
-            var match = Regex.Match(this.DN, @"(?<!\\),");
-            if (!match.Success)
-            {
-                throw new InvalidOperationException("Cannot move a top-level entry.");
-            }
-            string rdn = this.DN.Substring(0, match.Index);
+            string rdn = this.Rdn();
 
             // 3. Call the generalized method. The RDN stays the same.
             PerformModifyDN(rdn, newParent.DN);
 
         }
+
+       
 
         /// <summary>
         /// Performs a generic ModifyDN operation, which is the underlying protocol request

@@ -781,7 +781,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         private IJobStep commitStep => new JobStep("Save directory entry", (step) =>
                 {
-                    //DirectoryEntry?.CommitChanges();
+                    DirectoryEntry?.CommitChanges();
 
                     return true;
                 });
@@ -845,7 +845,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         commitJob.AddStep(propertyJob);
                     }
-                    commitJob.AddStep(commitStep);
+                    //commitJob.AddStep(commitStep);
 
                 }
                 else
@@ -853,7 +853,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     var ou = GetParent();
                     var ouEntry = ou.DirectoryEntry;
-                    var newUser = ouEntry.Children.Add(DN, "user");
+                    //var newUser = ouEntry.Children.Add(this.Rdn(), "user");
                     if (DirectoryEntry == null)
                     {
                         Loggers.ActiveDirectoryLogger.Error("The directory entry for new entry " + DN +
@@ -876,6 +876,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         commitJob.AddStep(propertyJob);
                     }
+                    commitJob.AddStep(commitStep);
                 }
 
 
@@ -1108,27 +1109,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private T? GetValue<T>(string propertyName)
         {
 
-            if (NewEntry)
-            {
-                try
-                {
-                    if (NewEntryProperties.ContainsKey(propertyName))
-                        return (T)NewEntryProperties[propertyName];
-                }
-                catch (InvalidCastException ex)
-                {
-                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-                }
-                catch (Exception ex)
-                {
-                    Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
-                }
+            //if (NewEntry)
+            //{
+            //    try
+            //    {
+            //        if (NewEntryProperties.ContainsKey(propertyName))
+            //            return (T)NewEntryProperties[propertyName];
+            //    }
+            //    catch (InvalidCastException ex)
+            //    {
+            //        throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
+            //    }
 
 
 
-                return default;
+            //    return default;
 
-            }
+            //}
 
             //Check for exising edits to this entry
             try

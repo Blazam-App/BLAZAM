@@ -243,7 +243,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
                 IADUser newUser = new ADUser();
-                newUser.Parse(directoryEntry: DirectoryEntry!.Children.Add(fullContainerName, "user"), directory: Directory);
+                newUser.Parse(directoryEntry: LdapDirectoryEntry.Create(ActiveDirectoryObjectType.User,containerName,DN,Directory), directory: Directory);
                 newUser.NewEntry = true;
                 newUser.Enabled = true;
                 return newUser;
