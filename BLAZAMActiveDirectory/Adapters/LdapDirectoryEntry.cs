@@ -770,19 +770,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             // The password for unicodePwd must be a UTF-16LE encoded string, enclosed in double quotes.
 
-            string formattedPassword = "\"" + newPassword + "a\"";
-            byte[] newPasswordBytes = Encoding.Unicode.GetBytes(formattedPassword);
+            //string formattedPassword = "\"" + newPassword + "a\"";
+            //byte[] newPasswordBytes = Encoding.Unicode.GetBytes(formattedPassword);
 
             string formattedPassword2 = "\"" + newPassword + "\"";
             byte[] newPasswordBytes2 = Encoding.Unicode.GetBytes(formattedPassword2);
 
-            if (Invoke("unicodePw", DirectoryAttributeOperation.Replace, newPasswordBytes))
+            if (Invoke("unicodePwd", DirectoryAttributeOperation.Replace, newPasswordBytes2))
             {
-                if(Invoke("unicodePw", DirectoryAttributeOperation.Replace, newPasswordBytes2))
-                {
-                    SetPropertyValue("pwdLastSet", DateTime.Now);
-                    return true;
-                }
+                //if(Invoke("unicodePwd", DirectoryAttributeOperation.Replace, newPasswordBytes2))
+                //{
+                //    SetPropertyValue("pwdLastSet", DateTime.Now);
+                //    return true;
+                //}
+                return true;
             }
             return false;
 

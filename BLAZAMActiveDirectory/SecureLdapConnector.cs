@@ -15,7 +15,7 @@ namespace BLAZAM.ActiveDirectory
         private static object _lock = new object();
         private static List<AppLdapConnection> _connectionPool = new();
         private static bool _testsPerformed;
-
+        private static readonly object _tlsLock = new();
 
         public static int Count
         {
@@ -132,7 +132,9 @@ namespace BLAZAM.ActiveDirectory
                     {
                         if (!_connectionPool[i].IsDisposed && _connectionPool[i].Expires != null && _connectionPool[i].Expires < DateTime.Now)
                         {
+
                             _connectionPool[i].DisposeNow();
+
                             _connectionPool.RemoveAt(i);
                             i--;
                             count--;
@@ -140,7 +142,7 @@ namespace BLAZAM.ActiveDirectory
                         }
 
                     }
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -254,9 +256,9 @@ namespace BLAZAM.ActiveDirectory
                 connection.SessionOptions.ProtocolVersion = 3;
                 if (OperatingSystem.IsWindows())
                 {
-                    connection.AuthType = AuthType.Negotiate;
-                    connection.SessionOptions.Signing = true;
-                    connection.SessionOptions.Sealing = true;
+                    connection.AuthType = AuthType.Ntlm;
+                    //connection.SessionOptions.Signing = true;
+                    //connection.SessionOptions.Sealing = true;
                 }
                 else
                 {
@@ -264,22 +266,27 @@ namespace BLAZAM.ActiveDirectory
 
                 }
                 connection.SessionOptions.ReferralChasing = ReferralChasingOptions.None;
-              
+
                 connection.SessionOptions.VerifyServerCertificate = (state, crt) =>
                 {
                     return true;
                 };
+                lock (_tlsLock)
+                {
+                    Task.Delay(50).Wait();
 
-                //connection.SessionOptions.StartTransportLayerSecurity(null);
-                connection.Credential = credential;
+                    connection.SessionOptions.StartTransportLayerSecurity(null);
+                    //Task.Delay(50).Wait();
 
-                // 5. Bind to the server
-                Loggers.ActiveDirectoryLogger.Information($"Attempting initial connection to {settings.ServerAddress}:{settings.ServerPort} for StartTLS as {settings.Username}...");
-                connection.Bind();
+                }
+                    connection.Credential = credential;
 
-
-                //Loggers.ActiveDirectoryLogger.Information("StartTLS successful! Connection is now secure.");
-                return true;
+                    // 5. Bind to the server
+                    Loggers.ActiveDirectoryLogger.Information($"Attempting initial connection to {settings.ServerAddress}:{settings.ServerPort} for StartTLS as {settings.Username}...");
+                    connection.Bind();
+                    connection.AutoBind = true;
+                    return true;
+                
             }
             catch (LdapException ldapEx)
             {

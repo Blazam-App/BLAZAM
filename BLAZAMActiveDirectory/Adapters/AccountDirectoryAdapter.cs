@@ -374,7 +374,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         ContextType.Domain,
                         DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
                         DirectorySettings.Username + "@" + DirectorySettings.FQDN,
-                        directoryPassword
+                        DirectorySettings.Password.Decrypt()
                         ))
                     {
 
