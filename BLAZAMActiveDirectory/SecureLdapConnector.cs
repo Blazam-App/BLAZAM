@@ -255,7 +255,8 @@ namespace BLAZAM.ActiveDirectory
                 if (OperatingSystem.IsWindows())
                 {
                     connection.AuthType = AuthType.Negotiate;
-
+                    connection.SessionOptions.Signing = true;
+                    connection.SessionOptions.Sealing = true;
                 }
                 else
                 {
@@ -263,8 +264,7 @@ namespace BLAZAM.ActiveDirectory
 
                 }
                 connection.SessionOptions.ReferralChasing = ReferralChasingOptions.None;
-                //connection.SessionOptions.Signing = true;
-                //connection.SessionOptions.Sealing = true;
+              
                 connection.SessionOptions.VerifyServerCertificate = (state, crt) =>
                 {
                     return true;

@@ -31,11 +31,12 @@ namespace BLAZAM.Gui.Helpers
                 newUser = new ADUser();
                 newUser.Parse(directoryEntry: LdapDirectoryEntry.Create(ActiveDirectoryObjectType.User, displayName.Trim().Replace(",", "\\,"), template.EffectiveParentOU, directory), directory: directory);
                 newUser.NewEntry = true;
-                newUser.Enabled = true;
+                //newUser.Enabled = true;
                 newUser.DisplayName = displayName;
                 newUser.SAMAccountName = template.GenerateUsername(newUserName);
                 newUser.DisplayName = displayName;
                 newUser.StagePasswordChange(template.GeneratePassword(newUserName).ToSecureString());
+                newUser.StageEnable();
                 if (template.EffectiveRequirePasswordChange == true)
                     newUser.StageRequirePasswordChange(true);
                 if (!newUserName.GivenName.IsNullOrEmpty())

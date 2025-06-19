@@ -407,6 +407,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
+        public void StageEnable()
+        {
+            
+            PostCommitSteps.Add(new JobStep("Enable", (JobStep? step) =>
+            {
+                Enabled = true;
+                DirectoryEntry.SetPropertyValue("userAccountControl", UAC);
+                return true;
+
+                Enabled = true;
+                return true;
+            }));
+
+
+        }
 
         public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
         {

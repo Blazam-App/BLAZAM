@@ -697,6 +697,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         addRequest.Attributes.Add(dirAttr);
                 }
 
+              
                 if (addRequest.Attributes.Count == 0) throw new InvalidOperationException("Cannot commit a new entry with no attributes.");
 
                 var response = SendRequestAndGetResponse<AddResponse>(addRequest);
@@ -777,7 +778,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             if (Invoke("unicodePw", DirectoryAttributeOperation.Replace, newPasswordBytes))
             {
-                return Invoke("unicodePw", DirectoryAttributeOperation.Replace, newPasswordBytes2);
+                if(Invoke("unicodePw", DirectoryAttributeOperation.Replace, newPasswordBytes2))
+                {
+                    SetPropertyValue("pwdLastSet", DateTime.Now);
+                    return true;
+                }
             }
             return false;
 
