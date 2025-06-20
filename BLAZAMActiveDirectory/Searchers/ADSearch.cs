@@ -381,7 +381,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 using (var connection = SecureLdapConnector.Connect(_currentUserActiveDirectoryContext.ConnectionSettings))
                 {
-
+                    if (connection == null) { 
+                        return new List<TInterface>();
+                    }
                     PerformSearch<TObject, TInterface>(connection, searchRequest, PageSize);
 
                 }

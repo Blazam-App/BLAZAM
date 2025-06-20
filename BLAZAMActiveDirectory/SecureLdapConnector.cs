@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.DirectoryServices.Protocols;
 using System.Net; // Required for NetworkCredential
 using BLAZAM.ActiveDirectory.Data;
@@ -12,16 +13,17 @@ namespace BLAZAM.ActiveDirectory
     public static class SecureLdapConnector
     {
         private static Timer? _disposerTimer = null;
-        private static object _lock = new object();
+        private static readonly object _poolLock = new object();
         private static List<AppLdapConnection> _connectionPool = new();
         private static bool _testsPerformed;
+        private static Random _random;
         private static readonly object _tlsLock = new();
 
         public static int Count
         {
             get
             {
-                lock (_lock)
+                lock (_poolLock)
                 {
                     return _connectionPool.Count;
                 }
@@ -38,6 +40,12 @@ namespace BLAZAM.ActiveDirectory
         /// <returns>True if the connection was successful, otherwise false.</returns>
         public static AppLdapConnection? Connect(ADSettings settings)
         {
+            if(_random == null)
+            {
+                _random = new Random();
+            }
+            var delay = _random.Next(0, 50);
+            Task.Delay(delay).Wait();
             LdapConnection connection = null;
             if (settings == null)
             {
@@ -68,7 +76,7 @@ namespace BLAZAM.ActiveDirectory
                 return default;
             }
 
-            lock (_lock)
+            lock (_poolLock)
             {
                 try
                 {
@@ -79,58 +87,68 @@ namespace BLAZAM.ActiveDirectory
                         return conn;
                     }
                 }
+                catch (InvalidOperationException)
+                {
+                    //Ignore no sequence elements error after filtering pool
+                }
                 catch (Exception ex)
                 {
 
                 }
-            }
 
 
-            // Typically, port 636 is for LDAPS, and 389 is for LDAP (which can be upgraded with StartTLS).
-            // We'll infer the method based on common port usage when UseTLS is true.
-            if (settings.ServerPort == 636) // Common LDAPS port
-            {
-                Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting LDAPS connection.");
-                ConnectWithLdaps(settings, out connection);
-            }
-            else if (settings.ServerPort == 389) // Common LDAP port, suitable for StartTLS
-            {
-                Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting StartTLS connection.");
-                ConnectWithStartTls(settings, out connection);
-            }
-            else
-            {
-                // If UseTLS is true but port is neither 389 nor 636, it's ambiguous.
-                // For this example, we'll try LDAPS as a default secure method if UseTLS is true and port is non-standard.
-                // Alternatively, you could throw an error or require more specific configuration.
-                Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort} (non-standard for TLS inference). Attempting LDAPS as a fallback secure method.");
-                ConnectWithLdaps(settings, out connection);
-            }
-            var appConnection = new AppLdapConnection(connection);
 
-            if (_disposerTimer == null)
-            {
-                _disposerTimer = new Timer(CleanPool, null, 30000, 30000);
-            }
-            lock (_lock)
-            {
+                // Typically, port 636 is for LDAPS, and 389 is for LDAP (which can be upgraded with StartTLS).
+                // We'll infer the method based on common port usage when UseTLS is true.
+                if (settings.ServerPort == 636) // Common LDAPS port
+                {
+                    Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting LDAPS connection.");
+                    ConnectWithLdaps(settings, out connection);
+                }
+                else if (settings.ServerPort == 389) // Common LDAP port, suitable for StartTLS
+                {
+                    Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting StartTLS connection.");
+                    ConnectWithStartTls(settings, out connection);
+                }
+                else
+                {
+                    // If UseTLS is true but port is neither 389 nor 636, it's ambiguous.
+                    // For this example, we'll try LDAPS as a default secure method if UseTLS is true and port is non-standard.
+                    // Alternatively, you could throw an error or require more specific configuration.
+                    Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort} (non-standard for TLS inference). Attempting LDAPS as a fallback secure method.");
+                    ConnectWithLdaps(settings, out connection);
+                }
+                if (connection == null)
+                    return null;
+                var appConnection = new AppLdapConnection(connection);
+
+                if (_disposerTimer == null)
+                {
+                    _disposerTimer = new Timer(CleanPool, null, 30000, 30000);
+                }
+
+
                 _connectionPool.Add(appConnection);
                 OnCountChanged?.Invoke();
+                return appConnection;
+
             }
-            return appConnection;
 
         }
 
         private static void CleanPool(object? state)
         {
-            lock (_lock)
+            lock (_poolLock)
             {
                 try
                 {
                     var count = _connectionPool.Count;
                     for (int i = 0; i < count; i++)
                     {
-                        if (!_connectionPool[i].IsDisposed && _connectionPool[i].Expires != null && _connectionPool[i].Expires < DateTime.Now)
+                        if (!_connectionPool[i].IsDisposed 
+                            && _connectionPool[i].Expires != null 
+                            && _connectionPool[i].Expires < DateTime.Now 
+                            && _connectionPool.Count(x=>x.Expires!=null && !x.IsDisposed)>25)
                         {
 
                             _connectionPool[i].DisposeNow();
@@ -246,47 +264,82 @@ namespace BLAZAM.ActiveDirectory
                 //TestConnectionMethods(settings);
                 // 1. Create LdapConnection object targeting the standard LDAP port
                 LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier(settings.ServerAddress, settings.ServerPort);
-                connection = new LdapConnection(identifier);
+                var currentConnection = new LdapConnection(identifier);
 
                 // 2. (Optional but Recommended) Configure server certificate validation
                 // connection.SessionOptions.VerifyServerCertificate = new VerifyServerCertificateCallback(ServerCallback);
 
                 // 3. Provide credentials
                 NetworkCredential credential = new NetworkCredential(settings.Username, settings.Password.Decrypt().ToSecureString(), settings.FQDN);
-                connection.SessionOptions.ProtocolVersion = 3;
+                currentConnection.SessionOptions.ProtocolVersion = 3;
+                currentConnection.Timeout = TimeSpan.FromSeconds(5);
+                currentConnection.SessionOptions.TcpKeepAlive = true;
                 if (OperatingSystem.IsWindows())
                 {
-                    connection.AuthType = AuthType.Ntlm;
+                    currentConnection.AuthType = AuthType.Negotiate;
                     //connection.SessionOptions.Signing = true;
                     //connection.SessionOptions.Sealing = true;
                 }
                 else
                 {
-                    connection.AuthType = AuthType.Basic;
+                    currentConnection.AuthType = AuthType.Basic;
 
                 }
-                connection.SessionOptions.ReferralChasing = ReferralChasingOptions.None;
+                currentConnection.SessionOptions.ReferralChasing = ReferralChasingOptions.None;
 
-                connection.SessionOptions.VerifyServerCertificate = (state, crt) =>
+                currentConnection.SessionOptions.VerifyServerCertificate = (state, crt) =>
                 {
                     return true;
                 };
                 lock (_tlsLock)
                 {
-                    Task.Delay(50).Wait();
+                    var tlsStarted = false;
+                    int attempts = 0;
 
-                    connection.SessionOptions.StartTransportLayerSecurity(null);
-                    //Task.Delay(50).Wait();
+                    while (!tlsStarted && attempts < 5)
+                    {
+                        attempts++;
+                        // Create a Task for the blocking operation
+                        // Use a CancellationTokenSource to allow for cancellation attempts if the task gets "stuck"
+                        using (var cancellationTokenSource = new CancellationTokenSource())
+                        {
+                            var connectionTask = Task.Run(() =>
+                            {
+                                try
+                                {
+                                    Task.Delay(200).Wait();
 
-                }
-                    connection.Credential = credential;
+                                    currentConnection.SessionOptions.StartTransportLayerSecurity(null);
+                                    //Task.Delay(100).Wait();
+
+                                    tlsStarted = true;
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    Loggers.ActiveDirectoryLogger.Warning($"StartTransportLayerSecurity was cancelled for {settings.ServerAddress}:{settings.ServerPort}.");
+                                    throw; // Re-throw to be caught outside
+                                }
+                            }, cancellationTokenSource.Token);
+                            var timeout = Stopwatch.StartNew();
+                            while (currentConnection.SessionOptions.SecureSocketLayer == false &&  timeout.Elapsed<TimeSpan.FromSeconds(10))
+                            {
+                                Task.Delay(50).Wait();
+                            }
+                            timeout.Stop();
+                            timeout = null;
+
+                        }
+                    }
+
+                    currentConnection.Credential = credential;
 
                     // 5. Bind to the server
                     Loggers.ActiveDirectoryLogger.Information($"Attempting initial connection to {settings.ServerAddress}:{settings.ServerPort} for StartTLS as {settings.Username}...");
-                    connection.Bind();
-                    connection.AutoBind = true;
+                    currentConnection.Bind();
+                    currentConnection.AutoBind = true;
+                    connection = currentConnection;
                     return true;
-                
+                }
             }
             catch (LdapException ldapEx)
             {

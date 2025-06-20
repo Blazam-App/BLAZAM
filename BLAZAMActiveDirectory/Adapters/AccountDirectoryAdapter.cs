@@ -354,7 +354,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (SAMAccountName == null) throw new AppException("samaccount name not found!");
             if (DirectorySettings == null) throw new AppException("Directory settings not found when trying to change directory user password");
-
+          
             var directoryPassword = DirectorySettings.Password.Decrypt();
             if (directoryPassword == null) return false;
 
@@ -366,38 +366,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     Invoke("SetPassword", new[] { password.ToPlainText() });
                     return true;
                 }
-                catch (Exception ex)
+                catch (DirectoryOperationException ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Warning("Could not set password via Invoke {@Error}", ex);
-                    //The following works outside the domain but may have issues with certs
-                    using (PrincipalContext pContext = new(
-                        ContextType.Domain,
-                        DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
-                        DirectorySettings.Username + "@" + DirectorySettings.FQDN,
-                        DirectorySettings.Password.Decrypt()
-                        ))
+                    // Check for the password complexity error
+                    if (ex.Response.ResultCode == ResultCode.UnwillingToPerform &&
+                        ex.Response.ErrorMessage.Contains("0000052D"))
                     {
-
-
-                        UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
-                        if (up != null)
-                        {
-                            up.SetPassword(password.ToPlainText());
-                            if (requireChange)
-                                up.ExpirePasswordNow();
-                            if (NewEntry)
-                                up.PasswordNotRequired = false;
-                            up.Save();
-
-                        }
+                       throw new PasswordPolicyViolationException();
                     }
-
-
-                    return true;
+                    else if (ex.Response.ResultCode == ResultCode.ConstraintViolation &&
+     ex.Response.ErrorMessage.Contains("0000052F"))
+                    {
+                        throw new AccountDisabledConstraintViolationException();
+                    }
+                    else
+                    {
+                         Loggers.ActiveDirectoryLogger.Error(ex, "An unexpected directory operation error occurred setting entry password");
+                    }
                 }
-
+                return false;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not AppException)
             {
 
                 Loggers.ActiveDirectoryLogger.Error(ex,"Error setting entry password");

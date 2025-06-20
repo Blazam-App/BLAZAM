@@ -92,6 +92,21 @@ namespace BLAZAM.ActiveDirectory
             Task.Run(async () =>
             {
                 using var connection = await ConnectAsync();
+                if (!_initializedConnections)
+                {
+                    _initializedConnections = true;
+
+                    var connections = new List<AppLdapConnection?>();
+                    for (int i = 0; i < 25; i++)
+                    {
+                        var initConnection = SecureLdapConnector.Connect(ConnectionSettings);
+                        connections.Add(initConnection);
+                    }
+                    foreach (var conn in connections)
+                    {
+                        conn?.Dispose();
+                    }
+                }
             });
 
             Users = new ADUserSearcher(this);
@@ -184,6 +199,7 @@ namespace BLAZAM.ActiveDirectory
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
         private ActiveDirectoryUserState? _currentUser;
         private bool _keepAlive;
+        private static bool _initializedConnections;
 
         public DirectoryConnectionStatus Status
         {

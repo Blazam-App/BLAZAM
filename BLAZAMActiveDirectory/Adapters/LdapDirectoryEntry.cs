@@ -454,21 +454,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     var schemaSearchResponse = SendRequestAndGetResponse<SearchResponse>(schemaSearchRequest);
                     if (!_schemaCache.ContainsKey(propertyName))
                     {
-                        if (schemaSearchResponse.Entries.Count > 0)
+                        if (schemaSearchResponse != null && schemaSearchResponse.Entries.Count > 0)
                         {
                             AddSchemaCacheEntry(propertyName, schemaSearchResponse.Entries[0]);
                         }
                         else
                         {
                             // Log: $"Schema not found for attribute '{attributeLdapDisplayName}'."
-                            Console.WriteLine($"Warning: Schema not found for attribute '{propertyName}'.");
+                            Loggers.ActiveDirectoryLogger.Information($"Warning: Schema not found for attribute '{propertyName}'.");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     // Log: $"Error fetching schema for attribute '{attributeLdapDisplayName}': {ex.Message}"
-                    Console.WriteLine($"Error fetching schema for attribute '{propertyName}': {ex.Message}. Schema will be considered not found.");
+                    Loggers.ActiveDirectoryLogger.Warning($"Error fetching schema for attribute '{propertyName}': {ex.Message}. Schema will be considered not found.");
                 }
             }
         }

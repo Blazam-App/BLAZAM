@@ -30,7 +30,7 @@ namespace BLAZAM.ActiveDirectory.Data
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects)
-                    LdapConnection.SessionOptions.StopTransportLayerSecurity();
+                    LdapConnection?.SessionOptions.StopTransportLayerSecurity();
                     LdapConnection?.Dispose();
                 }
 
