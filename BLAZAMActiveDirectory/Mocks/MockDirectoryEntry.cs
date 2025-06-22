@@ -47,6 +47,7 @@ namespace BLAZAM.ActiveDirectory.Mocks // Or your preferred testing namespace
         public IDirectoryEntries Children { get; set; }
         public AuthType AuthenticationType { get; set; }
         public CipherAlgorithmType EncryptionType { get; set; }
+        public bool SslEnabled{ get; set; }
         public bool UsePropertyCache { get; set; }
         public string? DN { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

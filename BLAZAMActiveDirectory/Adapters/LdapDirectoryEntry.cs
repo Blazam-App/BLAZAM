@@ -276,9 +276,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 existingCache = new(new());
             }
-
+            if (_isNew) return null;
             Loggers.ActiveDirectoryLogger.Information("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}", Directory != null && Directory.ConnectionSettings != null);
-
+            
             GetAllAttributes(existingCache);
 
             if (!existingCache.Attributes.ContainsKey("isdeleted"))
@@ -669,12 +669,24 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return connection.LdapConnection.AuthType;
             }
         } 
+        public bool SslEnabled { get
+            {
+                using var connection = Directory.Connect();
+                return connection?.LdapConnection.SessionOptions.SecureSocketLayer??false;
+            } }
         public CipherAlgorithmType EncryptionType
         {
             get
             {
                 using var connection = Directory.Connect();
-                return connection?.LdapConnection.SessionOptions.SslInformation?.AlgorithmIdentifier??CipherAlgorithmType.None;
+                try
+                {
+                    return connection?.LdapConnection.SessionOptions.SslInformation?.AlgorithmIdentifier ?? CipherAlgorithmType.None;
+                }
+                catch (Exception ex)
+                {
+                    return CipherAlgorithmType.Null;
+                }
             }
         }
         public bool UsePropertyCache { get; set; }

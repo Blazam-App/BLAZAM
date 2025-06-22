@@ -34,6 +34,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
            AuthType AuthenticationType { get; }
         CipherAlgorithmType EncryptionType { get; }
+        bool SslEnabled { get; }
         bool UsePropertyCache { get; set; } 
         string? DN { get; set; }
        

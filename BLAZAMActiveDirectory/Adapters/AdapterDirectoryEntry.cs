@@ -74,6 +74,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public AuthType AuthenticationType { get => (AuthType)UnderlyingEntry.AuthenticationType; }
         public CipherAlgorithmType EncryptionType { get => CipherAlgorithmType.None; }
+        public bool SslEnabled { get =>false; }
         public bool UsePropertyCache { get => UnderlyingEntry.UsePropertyCache; set => UnderlyingEntry.UsePropertyCache = value; }
 
         public void Close()

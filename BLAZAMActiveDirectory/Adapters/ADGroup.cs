@@ -171,7 +171,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     MembersToAdd.ForEach(g =>
                     {
-                        g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
+                        g.Group.Invoke("Add", new object[] { g.Member.DN });
 
                     });
                     return true;
@@ -185,7 +185,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     MembersToRemove.ForEach(g =>
                     {
-                        g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
+                        g.Group.Invoke("Remove", new object[] { g.Member.DN });
                     });
                     return true;
                 }));

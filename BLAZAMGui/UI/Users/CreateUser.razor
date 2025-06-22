@@ -364,21 +364,16 @@
                     if (customUserDisplayName == null) SnackBarService.Error(AppLocalization["No display name was set"]);
                     else
                     {
-                        var fullContainerName = "CN=" + customUserDisplayName.Trim().Replace(",", "\\,");
                         try
                         {
-                            newUser = new ADUser();
-                            newUser.Parse(directoryEntry:LdapDirectoryEntry.Create(ActiveDirectoryObjectType.User,customUserDisplayName.Trim(),selectedOU.DN,Directory), directory: Directory);
-                            newUser.NewEntry = true;
-                           // newUser.Enabled = true;
-                            newUser.DisplayName = customUserDisplayName;
+                            newUser = selectedOU.CreateUser(customUserDisplayName);
+
                         }
                         catch (Exception ex)
                         {
-                            Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create user in {@ContainerName}", fullContainerName);
+                            Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create user in {@ContainerName}", customUserDisplayName);
                             throw;
                         }
-                        //newUser = selectedOU.CreateUser(customUserDisplayName.Trim());
                         
                     }
                 }

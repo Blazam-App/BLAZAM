@@ -28,9 +28,9 @@ namespace BLAZAM.Gui.Helpers
             var fullContainerName = "CN=" + displayName.Trim().Replace(",", "\\,")+","+ou.DN;
             try
             {
-                newUser = new ADUser();
-                newUser.Parse(directoryEntry: LdapDirectoryEntry.Create(ActiveDirectoryObjectType.User, displayName.Trim().Replace(",", "\\,"), template.EffectiveParentOU, directory), directory: directory);
-                newUser.NewEntry = true;
+                newUser = ou.CreateUser(displayName.Trim());
+
+               
                 //newUser.Enabled = true;
                 newUser.DisplayName = displayName;
                 newUser.SAMAccountName = template.GenerateUsername(newUserName);

@@ -13,7 +13,6 @@ namespace BLAZAM.ActiveDirectory.Services
         
         public static EntryCache? GetEntryCache(string dn)
         {
-           // return null;
             if (DirectoryEntries.ContainsKey(dn) && DateTime.Now - DirectoryEntries[dn].Created < TimeSpan.FromMinutes(2))
             {
                 //DirectoryEntries[dn].LastUpdated = DateTime.Now;
