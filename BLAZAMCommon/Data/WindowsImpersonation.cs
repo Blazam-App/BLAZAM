@@ -25,7 +25,7 @@ namespace BLAZAM.Common.Data
                 bool returnValue = LogonUser(username,
                         domain,
                         phPassword,
-                        LOGON32_LOGON_INTERACTIVE,
+                        LOGON32_LOGON_NEW_CREDENTIALS,
                         LOGON32_PROVIDER_DEFAULT,
                         out safeAccessTokenHandle);
 
@@ -73,8 +73,11 @@ namespace BLAZAM.Common.Data
         /// <param name="user"></param>
         public WindowsImpersonation(WindowsImpersonationUser user)
         {
-            impersonationUser = user;
-            ApplicationIdentity = WindowsIdentity.GetCurrent();
+            if (OperatingSystem.IsWindows())
+            {
+                impersonationUser = user;
+                ApplicationIdentity = WindowsIdentity.GetCurrent();
+            }
         }
         /// <summary>
         /// Runs the provided action asynchronously as the <see cref="WindowsImpersonationUser"/>
@@ -97,44 +100,51 @@ namespace BLAZAM.Common.Data
             T? result = default;
             try
             {
-                var impersonatedToken = ImpersonatedToken;
-
-
-                if (impersonatedToken == null) throw new AppException("The impersonation user is invalid. Check settings.");
-
-
-                // Check the identity.
-                Loggers.ActiveDirectoryLogger.Information("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
-
-                try
+                if (OperatingSystem.IsWindows())
                 {
+                    var impersonatedToken = ImpersonatedToken;
 
-                    WindowsIdentity.RunImpersonated(
-                      impersonatedToken,
-                      () =>
-                      {
-                          // Check the identity.
-                          var impersonatedIdentity = WindowsIdentity.GetCurrent();
-                          if (impersonationUser.Username != ApplicationIdentity.Name && impersonatedIdentity.Name.Equals(ApplicationIdentity.Name))
+
+                    if (impersonatedToken == null) throw new AppException("The impersonation user is invalid. Check settings.");
+
+
+                    // Check the identity.
+                    Loggers.ActiveDirectoryLogger.Information("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
+
+                    try
+                    {
+
+                        WindowsIdentity.RunImpersonated(
+                          impersonatedToken,
+                          () =>
                           {
-                              var exception = new AppException("Impersonation running as application identity");
-                              ExceptionDispatchInfo.SetCurrentStackTrace(exception);
-                              Loggers.ActiveDirectoryLogger.Error("Impersonation running as application identity  {@Error}", exception);
+                              // Check the identity.
+                              var impersonatedIdentity = WindowsIdentity.GetCurrent();
+                              if (impersonationUser.Username != ApplicationIdentity.Name && impersonatedIdentity.Name.Equals(ApplicationIdentity.Name))
+                              {
+                                  var exception = new AppException("Impersonation running as application identity");
+                                  ExceptionDispatchInfo.SetCurrentStackTrace(exception);
+                                  Loggers.ActiveDirectoryLogger.Error("Impersonation running as application identity  {@Error}", exception);
 
+                              }
+                              Loggers.ActiveDirectoryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);
+                              result = task.Invoke();
                           }
-                          Loggers.ActiveDirectoryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);
-                          result = task.Invoke();
-                      }
-                      );
+                          );
 
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.ActiveDirectoryLogger.Error("Error running impersonated action " + impersonationUser.Username + " {@Error}", ex);
+                    }
+                    finally
+                    {
+                        impersonatedToken?.Close();
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Loggers.ActiveDirectoryLogger.Error("Error running impersonated action " + impersonationUser.Username + " {@Error}", ex);
-                }
-                finally
-                {
-                    impersonatedToken?.Close();
+                    result = task.Invoke();
                 }
             }
             catch (Exception ex)

@@ -8,7 +8,7 @@ using static System.Formats.Asn1.AsnWriter;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
-    internal class WmiConnection
+    internal class WmiConnection : IRemoteManagementConnection
     {
         private const string DriveStatsQuery = "SELECT DeviceID,FreeSpace,Size,Description,DriveType,FileSystem,MediaType,VolumeDirty,VolumeSerialNumber FROM Win32_LogicalDisk";
         private const string TotalMemoryQuery = "SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem";
@@ -83,9 +83,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             });
 
         }
-        public async Task<bool> ShutdownAsync(int delaySeconds=0, string? message=null, bool force = true, bool reboot = false)
+        public async Task<bool> ShutdownAsync(int delaySeconds = 0, string? message = null, bool force = true, bool reboot = false)
         {
-            return await Task.Run(() => {
+            return await Task.Run(() =>
+            {
                 try
                 {
                     // Use WMI to initiate the shutdown.
@@ -153,7 +154,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     return false;
                 }
             });
-          
+
 
 
         }

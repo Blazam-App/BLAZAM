@@ -45,7 +45,7 @@ namespace BLAZAM.Services.Background
             JobStep analyzeStep = new(AppLocalization["Analyze data"], (state) =>
             {
                 using var context = dbFactory.CreateDbContext();
-                foreach (var user in lockedOutUsers)
+                foreach (var user in  lockedOutUsers)
                 {
                     if (user == null) continue;
                     if (user.LockedOut)

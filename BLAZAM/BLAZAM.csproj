@@ -5,8 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
-		<AssemblyVersion>1.4.1</AssemblyVersion>
-		<Version>2025.06.19.0220</Version>
+		<AssemblyVersion>1.4.0</AssemblyVersion>
+		<Version>2025.06.22.0804</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -165,6 +165,10 @@
 
 	<ItemGroup>
 	  <Folder Include="Plugins\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\BLAZAMGui\UI\Dashboard\LdapCount.razor" Link="LdapCount.razor" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
