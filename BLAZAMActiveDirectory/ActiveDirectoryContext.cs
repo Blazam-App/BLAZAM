@@ -32,7 +32,7 @@ namespace BLAZAM.ActiveDirectory
             }
             set => _currentUser = value;
         }
-        private CancellationTokenSource _connectionCTS = new();
+        private CancellationTokenSource? _connectionCTS = new();
 
         private const string LDAP_PROTO = "LDAP://";
         private readonly WmiFactory _wmiFactory;
@@ -238,34 +238,37 @@ namespace BLAZAM.ActiveDirectory
 
         private async Task KeepAlive()
         {
-            if (_systemInstance == this)
+            if (_systemInstance != this)
             {
-                _keepAlive = true;
-                while (_keepAlive)
+                return;
+            }
+
+            _keepAlive = true;
+            while (_keepAlive)
+            {
+                await Task.Delay(30000);
+
+                if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
                 {
-                    await Task.Delay(30000);
-
-                    if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
+                    await ConnectAsync();
+                }
+                else if (Status == DirectoryConnectionStatus.OK)
+                {
+                    //Throw away query used to keep connection alive
+                    try
                     {
-                        await ConnectAsync();
+                        _ = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
+
                     }
-                    else if (Status == DirectoryConnectionStatus.OK)
+
+                    catch (Exception ex)
                     {
-                        //Throw away query used to keep connection alive
-                        try
-                        {
-                            _ = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
-
-                        }
-
-                        catch (Exception ex)
-                        {
-                            Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
-                        }
+                        Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
                     }
                 }
             }
         }
+
 
 
         public async Task<AppLdapConnection?> ConnectAsync()
@@ -552,7 +555,7 @@ namespace BLAZAM.ActiveDirectory
 
             if (!NetworkTools.IsPortOpen(ad.ServerAddress, ad.ServerPort))
             {
-                Loggers.ActiveDirectoryLogger.Warning("Active Directory port is not open");
+                Loggers.ActiveDirectoryLogger.Debug("Active Directory port is not open");
 
                 Status = DirectoryConnectionStatus.ServerDown;
                 if (FailedConnectionAttempts < 10)

@@ -46,8 +46,8 @@
             </TemplateColumn>
             <TemplateColumn Title=@AppLocalization[Lang.Remove_Member] Context="templateContext">
                 <CellTemplate Context="cellContext">
-                    <AppTooltip ShowOnClick=@(!cellContext.Item.CanUnassign)
-                                ShowOnHover=@(!cellContext.Item.CanUnassign)
+                    <AppTooltip ShowOnClick=@(!Group.CanUnassign)
+                                ShowOnHover=@(!Group.CanUnassign)
                                 Text=@AppHelpLocalization[HelpLang.Lacks_Group_Member_Remove_Permission]>
                         <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
@@ -66,28 +66,28 @@
     {
 
         <MudText Align="Align.End">
-            @AppLocalization[Lang.Groups]: @Members.Where(m => m is IADGroup).Count()
-        </MudText>
+            @AppLocalization[Lang.Groups]: @Members.Count(m => m is IADGroup)
+            </MudText>
     }
     @if (Members.Any(m => m is IADUser))
     {
 
         <MudText Align="Align.End">
-            @AppLocalization[Lang.Users]: @Members.Where(m => m is IADUser).Count()
+            @AppLocalization[Lang.Users]: @Members.Count(m => m is IADUser)
         </MudText>
     }
     @if (Members.Any(m => m is IADComputer))
     {
 
         <MudText Align="Align.End">
-            @AppLocalization[Lang.Computers]: @Members.Where(m => m is IADComputer).Count()
+            @AppLocalization[Lang.Computers]: @Members.Count(m => m is IADComputer)
         </MudText>
     }
     @if (Members.Any(m => m is IADPrinter))
     {
 
         <MudText Align="Align.End">
-            @AppLocalization[Lang.Printers]: @Members.Where(m => m is IADPrinter).Count()
+            @AppLocalization[Lang.Printers]: @Members.Count(m => m is IADPrinter)
         </MudText>
     }
     if (Members.Where(m => !m.CanRead).Count() > 0)

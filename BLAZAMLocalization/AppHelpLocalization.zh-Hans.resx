@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Access_Level_Definition" xml:space="preserve">
+    <value>访问级别是可以应用于特定 OU 的特定委托的权限模板。</value>
+  </data>
+  <data name="Access_Level_Object_Missing_Read" xml:space="preserve">
+    <value>将 {0} 访问权限更改为读取以设置权限</value>
+  </data>
+  <data name="Authenticator_Setup_One" xml:space="preserve">
+    <value>从您的身份验证器应用程序扫描下面的代码</value>
+  </data>
+  <data name="Authenticator_Setup_Two" xml:space="preserve">
+    <value>然后输入密码以激活</value>
+  </data>
+  <data name="Auto_Update_Time_Definition" xml:space="preserve">
+    <value>每天自动应用更新的时间。</value>
+  </data>
+  <data name="Confirm_Group_Creation" xml:space="preserve">
+    <value>您确定要创建此组吗？</value>
+  </data>
+  <data name="Confirm_OU_Creation" xml:space="preserve">
+    <value>您确定要创建此 OU 吗？</value>
+  </data>
+  <data name="Confirm_Save_Changes" xml:space="preserve">
+    <value>您确定要保存更改吗？</value>
+  </data>
+  <data name="Continue_Processing_Rules" xml:space="preserve">
+    <value>继续处理其他规则</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>已创建 {0}</value>
+  </data>
+  <data name="Delegate_Definition" xml:space="preserve">
+    <value>委托是您批准的应用程序用户。只有您在此处定义的用户，或以下 Active Directory 组（或嵌套组）中具有映射权限或启用自编辑的用户。</value>
+  </data>
+  <data name="Delegate_Function" xml:space="preserve">
+    <value>授予每个委托的访问权限由映射的访问级别控制。</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>已删除 {0}</value>
+  </data>
+  <data name="Delete_API_Token_Confirmation" xml:space="preserve">
+    <value>您确定要删除此 API 令牌吗？</value>
+  </data>
+  <data name="Delete_Auth_Token_Confirmation" xml:space="preserve">
+    <value>您确定要禁用 Google Authenticator MFA 吗？</value>
+  </data>
+  <data name="Deny_Request_Confirmation" xml:space="preserve">
+    <value>您确定要拒绝此请求吗？</value>
+  </data>
+  <data name="Developer_Analytics_Suggestion" xml:space="preserve">
+    <value>我们要求您允许开发人员分析，以便我们了解我们的应用程序是如何使用的，从而将我们的工作重点放在我们的用户认为最重要的事情上。</value>
+  </data>
+  <data name="Developer_Logs_Suggestion" xml:space="preserve">
+    <value>我们要求您允许开发人员日志记录，以便我们可以快速透明地改进 Blazam 并帮助我们的开发工作。</value>
+  </data>
+  <data name="Duplicate_Delegate" xml:space="preserve">
+    <value>该委托已存在。</value>
+  </data>
+  <data name="Duplicate_Deleted_Delegate" xml:space="preserve">
+    <value>该委托已存在。它已被删除。从回收站恢复它。</value>
+  </data>
+  <data name="Duplicate_Name_Conflict" xml:space="preserve">
+    <value>该名称已存在。请选择其他名称</value>
+  </data>
+  <data name="GA4_Instructions" xml:space="preserve">
+    <value>设置 GA4 帐户并在此处输入您的跟踪 ID 以收集有关您安装使用情况的数据。</value>
+  </data>
+  <data name="Invalid_Cert_Type" xml:space="preserve">
+    <value>不是有效的证书类型。</value>
+  </data>
+  <data name="Invalid_Token_Entered" xml:space="preserve">
+    <value>输入的令牌无效</value>
+  </data>
+  <data name="Lacks_Group_Member_Read_Permission" xml:space="preserve">
+    <value>该组还有更多您无权访问的成员</value>
+  </data>
+  <data name="Lacks_Group_Member_Remove_Permission" xml:space="preserve">
+    <value>您无权删除此组成员</value>
+  </data>
+  <data name="Locked_Out" xml:space="preserve">
+    <value>已锁定 {0}</value>
+  </data>
+  <data name="Mapping_Use_Access_Level" xml:space="preserve">
+    <value>{0} 映射使用此访问级别并将被删除</value>
+  </data>
+  <data name="Modify_Name_Redirect" xml:space="preserve">
+    <value>要修改用户名，请单击工具栏/齿轮菜单中的重命名按钮</value>
+  </data>
+  <data name="Navigate_Away_Confirmation" xml:space="preserve">
+    <value>您确定要离开吗？</value>
+  </data>
+  <data name="News_Provider_Description" xml:space="preserve">
+    <value>重要更新和更改在此处发布。</value>
+  </data>
+  <data name="No_More_Widgets" xml:space="preserve">
+    <value>没有更多小部件可添加</value>
+  </data>
+  <data name="No_News" xml:space="preserve">
+    <value>这里没有什么新鲜事</value>
+  </data>
+  <data name="No_Request_Actions_Available" xml:space="preserve">
+    <value>此条目没有可请求的操作。</value>
+  </data>
+  <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
+    <value>生成新的身份验证器令牌将使现有令牌无效！</value>
+  </data>
+  <data name="Rearrange_Dashboard_Help" xml:space="preserve">
+    <value>通过将项目拖动到新位置来重新排列仪表板小部件</value>
+  </data>
+  <data name="Rename_Reboot_Message" xml:space="preserve">
+    <value>管理员已重命名此工作站。它将在 {0} 秒后重新启动。</value>
+  </data>
+  <data name="Request_To" xml:space="preserve">
+    <value>请求 {0}</value>
+  </data>
+  <data name="Rule_No_Filter_Warning" xml:space="preserve">
+    <value>每当 {0} 为 {1} 时，此规则就会触发</value>
+  </data>
+  <data name="Stop_On_Rule" xml:space="preserve">
+    <value>不要再处理任何规则</value>
+  </data>
+  <data name="Super_User_Definition" xml:space="preserve">
+    <value>如果启用，将拥有对应用程序的完全和全部访问权限</value>
+  </data>
+  <data name="Unexpected_Error_Occurred" xml:space="preserve">
+    <value>发生意外错误。</value>
+  </data>
+  <data name="Upate_Branch_Definition" xml:space="preserve">
+    <value>发布分支是推荐的分支。仅建议测试安装选择 Nightly。Dev 仅供开发人员使用。</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>已更新 {0}</value>
+  </data>
+  <data name="Update_Credential_Is_AD" xml:space="preserve">
+    <value>Active Directory 凭据已验证可用于更新。</value>
+  </data>
+  <data name="Update_Credential_Is_Application" xml:space="preserve">
+    <value>运行 Blazam 的帐户可以写入应用程序目录。
+这会使主机面临不必要的风险。更改应用程序标识
+为权限较低的帐户以提高安全性。</value>
+  </data>
+  <data name="Update_Credential_Is_Custom" xml:space="preserve">
+    <value>自定义更新凭据已验证可用于更新。</value>
+  </data>
+  <data name="Update_Credential_Is_Invalid" xml:space="preserve">
+    <value>没有配置具有应用程序目录写入权限的凭据！
+尝试配置自定义更新凭据。</value>
+  </data>
+</root>

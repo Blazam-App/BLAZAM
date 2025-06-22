@@ -1,12 +1,12 @@
 ﻿@inherits AppComponentBase
-@if (Model != null)
+@if (Model != null && !LoadingData)
 {
     @if (Model.MemberOf.Count > 0)
     {
         <MudList Disabled=false
-                 T="string"
-                 Dense=true
-                 Style="max-height:200px; overflow-y:auto;">
+        T="string"
+        Dense=true
+        Style="max-height:200px; overflow-y:auto;">
             @foreach (IADGroup g in Model.MemberOf.Where(group => group.CanRead).OrderBy(g => g.CanonicalName))
             {
                 if (g.CanRead)
@@ -16,20 +16,20 @@
                             <MudStack Row=true>
 
                                 <MudLink Target="@Target"
-                                        Underline="Underline.None"
-                                         Class="align-middle"
-                                         Href="@g.SearchUri">
+                                Underline="Underline.None"
+                                Class="align-middle"
+                                Href="@g.SearchUri">
                                     <GroupWithDescriptionTooltip Group="@g" />
                                 </MudLink>
                                 @if (g.CanUnassign)
                                 {
                                     <MudSpacer />
                                     <MudIconButton Disabled=@Disabled
-                                                   Size="Size.Small"
-                                                   OnClick="@(()=>{Model.UnassignFrom(g);})"
-                                                   Class="align-end align-middle"
-                                                   Color=Color.Error
-                                                   Icon="@Icons.Material.Filled.Close" />
+                                    Size="Size.Small"
+                                    OnClick="@(()=>{Model.UnassignFrom(g);})"
+                                    Class="align-end align-middle"
+                                    Color=Color.Error
+                                    Icon="@Icons.Material.Filled.Close" />
                                 }
                             </MudStack>
                         </ChildContent>
@@ -38,7 +38,7 @@
                 }
 
             }
-            @if (Model.MemberOf.Where(group => !group.CanRead).Count() > 0)
+            @if (Model.MemberOf.Count(group => !group.CanRead) > 0)
             {
                 <MudListItem Text="The user is in more groups you don't have access to" />
             }
@@ -53,11 +53,13 @@
     {
 
         <MudButton Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.GroupAdd"
-                   OnClick="@(()=>{AssignToClicked.InvokeAsync();})">
+        StartIcon="@Icons.Material.Filled.GroupAdd"
+        OnClick="@(()=>{AssignToClicked.InvokeAsync();})">
             @AppLocalization[Lang.Assign_To]
         </MudButton>
     }
+}else if(LoadingData){
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary"/>
 }
 @code {
     [CascadingParameter]
@@ -70,4 +72,14 @@
     public IGroupableDirectoryAdapter Model { get; set; }
     [Parameter]
     public EventCallback AssignToClicked { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _ = Task.Run(() => {
+            _ = Model.MemberOf;
+            LoadingData =false;
+            InvokeAsync(StateHasChanged);
+        });
+    }
 }

@@ -3,6 +3,7 @@
 @layout InstallLayout
 @inherits DatabaseComponentBase
 @inject ApplicationManager ApplicationManager
+@inject BLAZAM.Services.Analytics AnalyticsService
 
 <PageTitle>Install - Blazam</PageTitle>
 
@@ -182,6 +183,7 @@ else
             }catch{
                 //Ignore logging errors
             }
+            await AnalyticsService.InstallationFinalized();
             Nav.NavigateTo("/home", true);
 
             ApplicationManager.Restart();

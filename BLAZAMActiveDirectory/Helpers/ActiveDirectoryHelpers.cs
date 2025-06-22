@@ -20,6 +20,8 @@ namespace BLAZAM.Helpers
 {
     public static class ActiveDirectoryHelpers
     {
+        private const string OBJECT_CLASS = "objectClass";
+
         /// <summary>
         /// Returns true if the domain controller is reachable by this web
         /// server, otherwise returns false.
@@ -47,9 +49,9 @@ namespace BLAZAM.Helpers
         public static IEnumerable<IDirectoryEntryAdapter> MoveToTop(this IEnumerable<IDirectoryEntryAdapter> enumerable, Func<IDirectoryEntryAdapter, bool> matchingPredicate)
         {
             var list = enumerable.ToList();
-            if (list.Count() < 1) return list;
+            if (list.Count < 1) return list;
             List<IDirectoryEntryAdapter> mathingItems = new();
-            for (int x = 0; x < list.Count(); x++)
+            for (int x = 0; x < list.Count; x++)
             {
 
                 if (matchingPredicate.Invoke(list[x]))

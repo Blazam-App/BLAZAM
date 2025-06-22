@@ -42,7 +42,7 @@
                 using (var memoryStream = new MemoryStream())
                 {
                     await stream.CopyToAsync(memoryStream);
-                    newThumbnail = memoryStream.ToArray().ReizeRawImage(250);
+                    newThumbnail = memoryStream.ToArray().ResizeRawImage(250);
                 }
             }
         }

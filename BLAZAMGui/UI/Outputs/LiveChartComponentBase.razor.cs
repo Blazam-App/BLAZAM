@@ -5,7 +5,7 @@ namespace BLAZAM.Gui.UI.Outputs
 {
     public class LiveChartComponentBase : AppComponentBase
     {
-        public InterpolationOption LineInterpolation = InterpolationOption.Straight;
+        public InterpolationOption LineInterpolation { get; set; } = InterpolationOption.Straight;
         [Parameter]
         public Func<double> PollFunc { get; set; }
         [Parameter]

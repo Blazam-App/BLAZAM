@@ -16,6 +16,7 @@ namespace BLAZAM.Gui.UI.Users
     {
 #nullable disable warnings
         string password;
+        bool showFailedLogons;
 
         [Parameter]
         public string Password

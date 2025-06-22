@@ -547,7 +547,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
 
 
-            //searcher.Asynchronous = true;
             searcher.SizeLimit = MaxResults;
             LdapFilter = LdapFilter?.Substring(0, LdapFilter.Length - 1) + FilterQuery + ")";
             searcher.Filter = LdapFilter;
@@ -629,8 +628,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 }
             }
         }
-        protected ActiveDirectoryField DefaultField { get; set; }
-        protected CustomActiveDirectoryField CustomField { get; set; }
+        protected ActiveDirectoryField? DefaultField { get; set; }
+        protected CustomActiveDirectoryField? CustomField { get; set; }
         public ActiveDirectoryFieldOperator Operator { get; set; }
         public bool Negate { get; set; }
         public object? Value { get; set; }

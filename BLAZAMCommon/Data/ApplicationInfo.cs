@@ -16,12 +16,12 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// The running Blazam version
         /// </summary>
-        public static ApplicationVersion runningVersion;
+        public static ApplicationVersion runningVersion { get; set; }
 
         /// <summary>
         /// The process of the running application
         /// </summary>
-        public static Process runningProcess;
+        public static Process runningProcess { get; set; }
 
         /// <summary>
         /// The root directory of the running web application
@@ -30,7 +30,7 @@ namespace BLAZAM.Common.Data
         /// eg: C:\inetpub\blazam\
         /// </returns>
         /// 
-        public static SystemDirectory applicationRoot;
+        public static SystemDirectory applicationRoot { get; set; }
 
         /// <summary>
         /// The temporary file directry
@@ -38,7 +38,7 @@ namespace BLAZAM.Common.Data
         /// <returns>
         /// eg: C:\Users\user\appdata\temp\
         /// </returns>
-        public static SystemDirectory tempDirectory;
+        public static SystemDirectory tempDirectory { get; set; }
 
         /// <summary>
         /// A collection of active listening address's with port
@@ -51,12 +51,12 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// A static access to <see cref="InDebugMode"/>
         /// </summary>
-        public static bool inDebugMode;
+        public static bool inDebugMode { get; set; }
 
         /// <summary>
         /// A static access to <see cref="InDemoMode"/>
         /// </summary>
-        public static bool inDemoMode;
+        public static bool inDemoMode { get; set; }
         /// <summary>
         /// A static access to <see cref="InstallationId"/>
         /// </summary>
@@ -70,7 +70,7 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// A local store of the .Net web application Services
         /// </summary>
-        public static IServiceProvider services;
+        public static IServiceProvider services { get; set; }
 
 
         /// <summary>

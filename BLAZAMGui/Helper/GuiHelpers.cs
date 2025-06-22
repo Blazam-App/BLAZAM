@@ -12,7 +12,7 @@ namespace BLAZAM.Helpers
         public static async Task<byte[]?> ReadByteArrayAsync(this IBrowserFile file, int maxReadBytes = 5000000)
         {
             byte[] fileBytes;
-            using (var stream = file.OpenReadStream(5000000))
+            using (var stream = file.OpenReadStream(maxReadBytes))
             {
                 using (var memoryStream = new MemoryStream())
                 {

@@ -23,7 +23,7 @@ namespace BLAZAM.Common.Data
         /// This value is automatically stored as SecureString to prevent memory sniff exposure
         /// </remarks>
         [Required]
-        public string? Password { get => password.ToPlainText(); set => password = value?.ToSecureString(); }
+        public string? Password { get => password==null?null:password.ToPlainText(); set => password = value?.ToSecureString(); }
         public SecureString? SecurePassword => password;
         /// <summary>
         /// The relative url to return to after login success
@@ -133,7 +133,8 @@ namespace BLAZAM.Common.Data
             return this;
         }
         [JsonIgnore]
-        public AuthenticationState AuthenticationState { get; set; }
+        public AuthenticationState? AuthenticationState { get; set; }
+
         public LoginRequest Success(AuthenticationState result)
         {
             AuthenticationResult = LoginResultStatus.OK;
