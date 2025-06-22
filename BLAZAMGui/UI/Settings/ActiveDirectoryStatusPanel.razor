@@ -1,4 +1,5 @@
 ﻿@using System.DirectoryServices;
+@using System.Security.Authentication
 @inherits AppComponentBase
 <MudCard Class="ma-5 mx-auto pa-3">
     <MudCardHeader>
@@ -39,6 +40,15 @@
         <MudItem xs="4">
             <StatusCheck Status=@GetConnectionTypeStatus()
             Text="@GetConnectionType()" />
+        </MudItem>
+
+
+        <MudItem xs="8">
+            @AppLocalization[Lang.Connection_Type]
+        </MudItem>
+        <MudItem xs="4">
+            <StatusCheck Status=@GetEncryptionTypeStatus()
+                         Text="@GetEncryptionType()" />
         </MudItem>
     </MudGrid>
     @if (Directory.Status != DirectoryConnectionStatus.OK && Directory.Status != DirectoryConnectionStatus.Connecting)
@@ -205,6 +215,19 @@
             authType.Equals(AuthenticationTypes.SecureSocketsLayer) ||
             authType.Equals(AuthenticationTypes.Secure)) return true;
         return authType.Equals(AuthenticationTypes.Secure | AuthenticationTypes.SecureSocketsLayer);
+    }
+    private bool? GetEncryptionTypeStatus()
+    {
+        if (Directory.Status != DirectoryConnectionStatus.OK) return false;
+        if (Directory.AppRootDirectoryEntry == null) return false;
+        var authType = Directory.AppRootDirectoryEntry.EncryptionType;
+        if (authType.Equals(CipherAlgorithmType.Aes256) ||
+            authType.Equals(CipherAlgorithmType.Aes192)) return true;
+        return false;
+    }
+    private string? GetEncryptionType(){
+        if (Directory.Status != DirectoryConnectionStatus.OK) return null;
+        return Directory.AppRootDirectoryEntry?.EncryptionType.ToString();
     }
     private string? GetConnectionType()
     {

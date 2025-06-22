@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Linq;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -45,6 +46,7 @@ namespace BLAZAM.ActiveDirectory.Mocks // Or your preferred testing namespace
         public IDirectoryEntry? Parent { get; set; }
         public IDirectoryEntries Children { get; set; }
         public AuthType AuthenticationType { get; set; }
+        public CipherAlgorithmType EncryptionType { get; set; }
         public bool UsePropertyCache { get; set; }
         public string? DN { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

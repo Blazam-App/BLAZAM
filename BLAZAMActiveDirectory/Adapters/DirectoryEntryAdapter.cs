@@ -621,10 +621,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     var list = new List<IDirectoryEntry>();
                     foreach (IDirectoryEntry child in children)
                     {
-                        list.Add(child);
-                    }
-                    Parallel.ForEach<IDirectoryEntry>(list, child =>
-                    {
+                    //    list.Add(child);
+                    //}
+                    //Parallel.ForEach<IDirectoryEntry>(list, child =>
+                    //{
                         DirectoryEntryAdapter? thisObject = null;
 
                         if (child.PropertyContains("objectClass", "top"))
@@ -667,7 +667,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             }
 
                         }
-                    });
+                    }//);
                     CachedChildren = directoryEntries.OrderBy(x => x.CanonicalName).ThenBy(x => x.ObjectType);
                 }
                 return CachedChildren;

@@ -12,13 +12,26 @@ namespace BLAZAM.ActiveDirectory.Data
     public class AppLdapConnection:IDisposable
     {
         public LdapConnection LdapConnection { get; set; }
+
+        private Timer? _keepAliveTime = null;
         public bool IsDisposed;
         public DateTime? Expires;
 
         public AppLdapConnection(LdapConnection ldapConnection)
         {
+            if (ldapConnection == null) throw new ArgumentNullException("ldapConnection");
             LdapConnection = ldapConnection;
+            _keepAliveTime = new Timer(KeepAlive, null, 30000, 30000);
+
         }
+
+        private void KeepAlive(object? state)
+        {
+            var whoAmIRequest = new SearchRequest("", "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, "user");
+            var response = SendRequest(whoAmIRequest);
+            
+        }
+
         public DirectoryResponse SendRequest(DirectoryRequest request) {
             return LdapConnection.SendRequest(request);    
         }
@@ -29,6 +42,10 @@ namespace BLAZAM.ActiveDirectory.Data
             {
                 if (disposing)
                 {
+                    if (_keepAliveTime != null)
+                    {
+                        _keepAliveTime.Dispose();
+                    }
                     // TODO: dispose managed state (managed objects)
                     LdapConnection?.SessionOptions.StopTransportLayerSecurity();
                     LdapConnection?.Dispose();

@@ -1,5 +1,6 @@
 // Import necessary namespaces for various functionalities like data handling,
 // database operations, server configuration, logging, security, etc.
+using BLAZAM.ActiveDirectory;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -193,6 +194,10 @@ namespace BLAZAM
 
             // Block the main thread until the application is shut down (e.g., Ctrl+C or service stop).
             AppInstance.WaitForShutdown();
+
+
+            SecureLdapConnector.ClearPool();
+
             // Log application shutdown event.
             Loggers.SystemLogger.Information("Application Shutting Down");
         }

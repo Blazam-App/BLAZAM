@@ -514,7 +514,7 @@ namespace BLAZAM.ActiveDirectory
 
             }
             var connection = SecureLdapConnector.Connect(ad);
-            if (connection.LdapConnection == null)
+            if (connection?.LdapConnection == null)
             {
                 Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
 

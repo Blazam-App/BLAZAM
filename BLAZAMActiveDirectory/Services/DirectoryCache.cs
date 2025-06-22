@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Services
 {
-    internal static class DirectoryCache
+    public static class DirectoryCache
     {
         private static ConcurrentDictionary<string, EntryCache> DirectoryEntries = new();
         
         public static EntryCache? GetEntryCache(string dn)
         {
+           // return null;
             if (DirectoryEntries.ContainsKey(dn) && DateTime.Now - DirectoryEntries[dn].Created < TimeSpan.FromMinutes(2))
             {
                 //DirectoryEntries[dn].LastUpdated = DateTime.Now;
@@ -24,6 +25,11 @@ namespace BLAZAM.ActiveDirectory.Services
         {
             DirectoryEntries[dn] = new EntryCache(attributes);
         }
+        public static void ClearAll()
+        {
+            DirectoryEntries.Clear();
+            
+        }
         public static void Clear(string dn)
         {
             if (DirectoryEntries.ContainsKey(dn))
@@ -32,7 +38,7 @@ namespace BLAZAM.ActiveDirectory.Services
             }
         }
     }
-    internal class EntryCache
+    public class EntryCache
     {
         internal DateTime Created { get; set; }
         internal Dictionary<string, object?> Attributes { get; set; }

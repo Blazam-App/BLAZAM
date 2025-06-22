@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.IO;
+using System.Security.Authentication;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -83,6 +84,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             _isNew = isNew;
             // Immediately place a new attribute dictionary into the static DirectoryCache for this proposed DN.
             var initialAttributes = new Dictionary<string, object?> { { "distinguishedname", proposedDn } };
+            _attributeCache = initialAttributes;
             DirectoryCache.SetEntryCache(proposedDn, initialAttributes);
          }
                 // NEW: Static factory method to create a new directory entry in memory.
@@ -239,12 +241,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         private bool _propertiesCollected = false;
-
+        private Dictionary<string, object?> _attributeCache=new();
 
         private object? Search(string attributeName)
         {
 
             var existingCache = DirectoryCache.GetEntryCache(DN);
+            //var existingCache = new EntryCache(_attributeCache);
+            //if (_attributeCache.ContainsKey(attributeName))
+            //{
+            //    return _attributeCache[attributeName];
+            //}
+            //else if (_propertiesCollected)
+            //{
+            //    _attributeCache[attributeName] = null;
+            //    return null;
+            //}
             if (existingCache != null)
             {
                 if (existingCache.Attributes.ContainsKey(attributeName.ToLower()))
@@ -366,7 +378,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
               
             }
-           
+            _attributeCache = existingCache.Attributes;
             DirectoryCache.SetEntryCache(DN, existingCache.Attributes);
         }
 
@@ -655,6 +667,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 using var connection = Directory.Connect();
                 return connection.LdapConnection.AuthType;
+            }
+        } 
+        public CipherAlgorithmType EncryptionType
+        {
+            get
+            {
+                using var connection = Directory.Connect();
+                return connection?.LdapConnection.SessionOptions.SslInformation?.AlgorithmIdentifier??CipherAlgorithmType.None;
             }
         }
         public bool UsePropertyCache { get; set; }

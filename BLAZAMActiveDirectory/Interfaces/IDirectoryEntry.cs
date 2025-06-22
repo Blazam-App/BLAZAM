@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Linq;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,13 +32,10 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         void AddPropertyValue(string propertyName, object? value);
         bool PropertyContains(string propertyName, object value);
 
-        //void MoveTo(IDirectoryEntry newParent, string? newName); // System.DirectoryServices.DirectoryEntry also has this overload
-
-        // Additional properties/methods based on potential usage in DirectoryEntryAdapter
-        // bool Exists(string path); // Static method on DirectoryEntry, not suitable for interface instance method
-        AuthType AuthenticationType { get; } // Property on DirectoryEntry
-        bool UsePropertyCache { get; set; } // Property on DirectoryEntry
+           AuthType AuthenticationType { get; }
+        CipherAlgorithmType EncryptionType { get; }
+        bool UsePropertyCache { get; set; } 
         string? DN { get; set; }
-        // Options property (DirectoryEntryConfiguration Options) might be too complex to add unless needed
+       
     }
 }

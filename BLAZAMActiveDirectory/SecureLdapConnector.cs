@@ -78,11 +78,14 @@ namespace BLAZAM.ActiveDirectory
 
             lock (_poolLock)
             {
+                AppLdapConnection? conn = null;
                 try
                 {
-                    var conn = _connectionPool.First(c => c.IsDisposed == false && c.Expires != null);
+                   conn = _connectionPool.First(c => c.IsDisposed == false && c.Expires != null);
                     if (conn != null && conn.LdapConnection != null)
                     {
+                        var whoAmIRequest = new SearchRequest("", "(objectClass=*)", SearchScope.Base, settings.ApplicationBaseDN);
+                        conn.LdapConnection.SendRequest(whoAmIRequest);
                         conn.Expires = null;
                         return conn;
                     }
@@ -93,7 +96,13 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (Exception ex)
                 {
-
+                    // The connection is dead. Dispose of it permanently and try the next one.
+                    if (conn != null)
+                    {
+                        conn.DisposeNow();
+                        _connectionPool.Remove(conn);
+                        OnCountChanged?.Invoke();
+                    }
                 }
 
 
@@ -160,6 +169,41 @@ namespace BLAZAM.ActiveDirectory
                         }
 
                     }
+
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// Clears the pool of connections closing all active sessions
+        /// </summary>
+        public static void ClearPool()
+        {
+            lock (_poolLock)
+            {
+                try
+                {
+                    var count = _connectionPool.Count;
+                    for (int i = 0; i < count; i++)
+                    {
+                        
+
+                            _connectionPool[i].DisposeNow();
+
+                           // _connectionPool.RemoveAt(i);
+                           // i--;
+                          //  count--;
+                           // OnCountChanged?.Invoke();
+                        
+
+                    }
+                    _connectionPool.Clear();
+                    OnCountChanged?.Invoke();
 
                 }
                 catch (Exception ex)
@@ -307,7 +351,7 @@ namespace BLAZAM.ActiveDirectory
                             {
                                 try
                                 {
-                                    Task.Delay(200).Wait();
+                                    //Task.Delay(200).Wait();
 
                                     currentConnection.SessionOptions.StartTransportLayerSecurity(null);
                                     //Task.Delay(100).Wait();
@@ -321,9 +365,14 @@ namespace BLAZAM.ActiveDirectory
                                 }
                             }, cancellationTokenSource.Token);
                             var timeout = Stopwatch.StartNew();
-                            while (currentConnection.SessionOptions.SecureSocketLayer == false &&  timeout.Elapsed<TimeSpan.FromSeconds(10))
+                            while (currentConnection.SessionOptions.SecureSocketLayer == false && timeout.Elapsed < TimeSpan.FromSeconds(10))
                             {
                                 Task.Delay(50).Wait();
+                            }
+
+                            if (!currentConnection.SessionOptions.SecureSocketLayer)
+                            {
+                                return false;
                             }
                             timeout.Stop();
                             timeout = null;

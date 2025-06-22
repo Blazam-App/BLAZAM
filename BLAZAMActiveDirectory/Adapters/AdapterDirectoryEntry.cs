@@ -4,6 +4,7 @@ using BLAZAM.Helpers;
 using System.Collections;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
+using System.Security.Authentication;
 using System.Text;
 
 namespace BLAZAM.ActiveDirectory.Adapters
@@ -72,6 +73,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public IDirectoryEntries Children => new AdapterDirectoryEntries(UnderlyingEntry.Children);
 
         public AuthType AuthenticationType { get => (AuthType)UnderlyingEntry.AuthenticationType; }
+        public CipherAlgorithmType EncryptionType { get => CipherAlgorithmType.None; }
         public bool UsePropertyCache { get => UnderlyingEntry.UsePropertyCache; set => UnderlyingEntry.UsePropertyCache = value; }
 
         public void Close()
