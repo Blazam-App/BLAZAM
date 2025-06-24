@@ -1,6 +1,6 @@
 ﻿@inherits AppComponentBase
 <MudStack>
-   
+
     <div id="@_elementID" class="gauge-container">
         <span class="label">@Title</span>
 
@@ -8,44 +8,44 @@
 </MudStack>
 <style>
     .gauge-container {
-        width: 150px;
-        height: 150px;
-        display: block;
-        float: left;
-        padding: 10px;
-        margin: 7px;
-        border-radius: 3px;
-        position: relative;
+    width: 150px;
+    height: 150px;
+    display: block;
+    float: left;
+    padding: 10px;
+    margin: 7px;
+    border-radius: 3px;
+    position: relative;
     }
 
-        .gauge-container > .label {
-            position: absolute;
-            right: 0;
-            top: 0;
-            display: inline-block;
-            
-            font-family: monospace;
-            font-size: 0.8em;
-            padding: 5px 10px;
-        }
-        .gauge-container > .gauge .dial {
-            stroke: #eee;
-            stroke-width: 2;
-            fill: rgba(0,0,0,0);
-        }
+    .gauge-container > .label {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: inline-block;
 
-        .gauge-container > .gauge .value {
-            stroke: rgb(47, 227, 255);
-            stroke-width: 2;
-            fill: rgba(0,0,0,0);
-        }
+    font-family: monospace;
+    font-size: 0.8em;
+    padding: 5px 10px;
+    }
+    .gauge-container > .gauge .dial {
+    stroke: #eee;
+    stroke-width: 2;
+    fill: rgba(0,0,0,0);
+    }
 
-        .gauge-container > .gauge .value-text {
-            fill: rgb(47, 227, 255);
-            font-family: sans-serif;
-            font-weight: bold;
-            font-size: 1em;
-        }
+    .gauge-container > .gauge .value {
+    stroke: rgb(47, 227, 255);
+    stroke-width: 2;
+    fill: rgba(0,0,0,0);
+    }
+
+    .gauge-container > .gauge .value-text {
+    fill: rgb(47, 227, 255);
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 1em;
+    }
 </style>
 
 @code {
@@ -57,7 +57,7 @@
     [Parameter]
     public double MaxValue { get; set; } = 100;
 
-    public RollingAverage AverageValue = new Common.Data.RollingAverage(3);
+    public RollingAverage AverageValue { get; set; } = new Common.Data.RollingAverage(3);
     [Parameter]
     public string? Title { get; set; }
 

@@ -310,7 +310,7 @@
                                         <TemplateColumn StickyLeft=true Title=@AppLocalization[Lang.Name]>
                                             <CellTemplate Context="cellContext">
                                                 @{
-                                                    var fromTemplateName = dropdownTemplates.Where(ot => ot.FieldValues.Contains(cellContext.Item)).FirstOrDefault();
+                                                    var fromTemplateName = dropdownTemplates.FirstOrDefault(ot => ot.FieldValues.Contains(cellContext.Item));
                                                 }
                                                 <TemplateOverride SourceTemplate="@fromTemplateName">
                                                     <AppTooltip Text="@cellContext.Item.FieldName">
@@ -402,7 +402,7 @@
                         @foreach (var group in DirectoryTemplate.EffectiveAssignedGroupSids)
                         {
 
-                            var groupFromTemplate = dropdownTemplates.Where(ot => ot.AssignedGroupSids.Contains(group)).FirstOrDefault();
+                            var groupFromTemplate = dropdownTemplates.FirstOrDefault(ot => ot.AssignedGroupSids.Contains(group));
                             <TemplateOverride SourceTemplate="@groupFromTemplate">
 
 
@@ -638,7 +638,7 @@
             DirectoryTemplate.FieldValues.Add((DirectoryTemplateFieldValue)fieldValue.Clone(Context));
         }
 
-        var fieldToModify = DirectoryTemplate.FieldValues.Where(fv => (fv.Field != null && fv.Field.Equals(fieldValue.Field)) || (fv.CustomField != null && fv.CustomField.Equals(fieldValue.CustomField))).FirstOrDefault();
+        var fieldToModify = DirectoryTemplate.FieldValues.FirstOrDefault(fv => (fv.Field != null && fv.Field.Equals(fieldValue.Field)) || (fv.CustomField != null && fv.CustomField.Equals(fieldValue.CustomField)));
         return fieldToModify;
     }
 

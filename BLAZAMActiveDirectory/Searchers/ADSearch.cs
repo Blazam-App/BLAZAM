@@ -266,18 +266,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             if (field.Value is DateTime dateTimeValue)
                             {
                                 searchValue = dateTimeValue.ToFileTimeUtc().ToString();
-
-                                //switch (field.Field.FieldType)
-                                //{
-                                //    case ActiveDirectoryFieldType.Date:
-                                //        searchValue = dateTimeValue.ToString("yyyyMMddHHmmss.fZ");
-
-                                //        break;
-                                //    case ActiveDirectoryFieldType.FileTime:
-                                //        searchValue = dateTimeValue.ToFileTimeUtc().ToString();
-                                //        break;
-
-                                //}
                             }
                             else if (field.Value is string strValue)
                             {
@@ -462,8 +450,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 if (searcher.VirtualListView != null)
                     searcher.VirtualListView.Offset += pageSize;
-                //else
-                //    throw new ApplicationException("The searcher lost it's VirtualListView in the middle of searching!");
+                
                 lastResults = searcher.FindAll();
                 AddResults<TObject, TInterface>(lastResults);
                 if (searcher.VirtualListView == null || lastResults.Count < pageSize)
@@ -493,7 +480,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
 
 
-            //searcher.Asynchronous = true;
             searcher.SizeLimit = MaxResults;
             searcher.Filter = searcher.Filter?.Substring(0, searcher.Filter.Length - 1) + FilterQuery + ")";
             LdapQuery = searcher.Filter;
@@ -563,8 +549,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 }
             }
         }
-        protected ActiveDirectoryField DefaultField { get; set; }
-        protected CustomActiveDirectoryField CustomField { get; set; }
+        protected ActiveDirectoryField? DefaultField { get; set; }
+        protected CustomActiveDirectoryField? CustomField { get; set; }
         public ActiveDirectoryFieldOperator Operator { get; set; }
         public bool Negate { get; set; }
         public object? Value { get; set; }

@@ -1,5 +1,6 @@
 @using BLAZAM.Database.Models.Rules
 @inherits DatabaseComponentBase
+
 <MudBadge Icon="@Icons.Material.Filled.RemoveCircle"
           OnClick="@RemoveClicked"
           Color="Color.Error"
@@ -8,7 +9,8 @@
               Severity="Severity.Normal"
               Style="@($"height:100%; border-width:2px; border-color: var(--mud-palette-warning-lighten)")"
               Variant="Variant.Outlined">
-
+        @if (!LoadingData)
+        {
 
         <AppTooltip Text="@Filter.Field?.FieldName">
             <MudSelectList T="IActiveDirectoryField"
@@ -41,7 +43,7 @@
                 {
                     case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
                     case ActiveDirectoryFieldOperator.FutureTimeFrame:
-                    <MudTimeFramePicker @bind-TimeFrame=Filter.TimeFrame/>
+                        <MudTimeFramePicker @bind-TimeFrame=Filter.TimeFrame />
                         @* <MudTimePicker Editable=true @bind-Time=Filter.TimeFrame /> *@
                         break;
                     case ActiveDirectoryFieldOperator.EqualTo:
@@ -64,8 +66,15 @@
             <MudSpacer />
             <MudCheckBox Color="Color.Error" @bind-Value=@Filter.Negate Label="@AppLocalization[Lang.Negate]" />
         }
+        }
+        else
+        {
+            <LoadingData Loading=LoadingData />
+
+        }
     </MudAlert>
-</MudBadge>
+    </MudBadge>
+
 @code {
     [Parameter]
     public AutomationRuleAndFilter Filter { get; set; }
@@ -84,13 +93,17 @@
         _fields.AddRange(customFields);
         if (Filter.Field?.Id == ActiveDirectoryFields.OU.Id)
         {
+            LoadingData = true;
             using var directory = DirectoryFactory.CreateActiveDirectoryContext();
             if (!Filter.Value.IsNullOrEmpty())
             {
                 ou = directory.OUs.FindOuByDN(Filter.Value);
             }
+
         }
         _fields = _fields.OrderBy(f => AppLocalization[f.DisplayName].Value).Cast<IActiveDirectoryField>().ToList();
+        LoadingData = false;
+
     }
 
     private void OUSelected(IDirectoryEntryAdapter? newOu)

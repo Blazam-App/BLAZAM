@@ -11,15 +11,15 @@ namespace BLAZAM.Services.Audit
 {
     public class BaseAuditLogger
     {
-        public SystemAudit System;
-        public UserAudit User;
-        public GroupAudit Group;
-        public ComputerAudit Computer;
-        public OUAudit OU;
-        public PrinterAudit Printer;
-        public LogonAudit Logon;
-        public BitLockerAudit BitLocker;
-        public EmailAudit Email;
+        public SystemAudit System { get; set; }
+        public UserAudit User { get; set; }
+        public GroupAudit Group { get; set; }
+        public ComputerAudit Computer { get; set; }
+        public OUAudit OU { get; set; }
+        public PrinterAudit Printer { get; set; }
+        public LogonAudit Logon { get; set; }
+        public BitLockerAudit BitLocker { get; set; }
+        public EmailAudit Email { get; set; }
         protected readonly IAppDatabaseFactory _factory;
 
         public BaseAuditLogger(IAppDatabaseFactory factory, IApplicationUserState userState)

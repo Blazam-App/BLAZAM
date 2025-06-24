@@ -885,7 +885,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 foreach (var step in CommitSteps)
                 {
                     commitJob.AddStep(step);
-                    //commitJob.AddStep(step);
 
 
                 }

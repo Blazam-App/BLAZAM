@@ -24,14 +24,32 @@
                 case "authentication":
                     activeTabIndex = 1;
                     break;
+                case "directory":
+                case "activedirectory":
+                    activeTabIndex = 2;
+                    break;
+                case "db":
+                case "database":
+                    activeTabIndex = 3;
+                    break;
+                case "email":
+                    activeTabIndex = 4;
+                    break;
                 case "update":
                     activeTabIndex = 5;
+                    break;
+                case "activity":
+                case "useractivity":
+                    activeTabIndex = 6;
+                    break;
+                case "system":
+                    activeTabIndex = 7;
                     break;
             }
         }
     }
     <MudTabs ActivePanelIndex="@activeTabIndex">
-        <MudTabPanel>
+        <MudTabPanel OnClick="@(()=>{Nav.NavigateTo("/settings/application");})">
             <ChildContent>
                 <ApplicationSettings />
 
@@ -40,7 +58,7 @@
                 @AppLocalization[Lang.Application]
             </TabContent>
         </MudTabPanel>
-        <MudTabPanel>
+        <MudTabPanel OnClick="@(()=>{Nav.NavigateTo("/settings/authentication");})">
             <ChildContent>
                 <AuthenticationSetting />
 
@@ -51,7 +69,7 @@
 
 
         </MudTabPanel>
-        <MudTabPanel>
+        <MudTabPanel OnClick="@(()=>{Nav.NavigateTo("/settings/activedirectory");})">
             <ChildContent>
                 <DirectorySettings />
 
@@ -62,7 +80,7 @@
 
 
         </MudTabPanel>
-        <MudTabPanel>
+        <MudTabPanel OnClick="@(()=>{Nav.NavigateTo("/settings/database");})">
             <ChildContent>
                 <DatabaseStatus />
 
@@ -73,7 +91,7 @@
 
 
         </MudTabPanel>
-        <MudTabPanel>
+        <MudTabPanel OnClick="@(()=>{Nav.NavigateTo("/settings/email");})">
             <ChildContent>
                 <EmailSettings />
 
@@ -84,7 +102,7 @@
 
 
         </MudTabPanel>
-        <MudTabPanel>
+        <MudTabPanel OnClick="@(()=>{Nav.NavigateTo("/settings/update");})">
             <ChildContent>
                 <UpdateSettings />
 
@@ -95,7 +113,7 @@
 
 
         </MudTabPanel>
-        <MudTabPanel>
+        <MudTabPanel OnClick="@(()=>{Nav.NavigateTo("/settings/useractivity");})">
             <ChildContent>
                 <UserActivity />
 
@@ -107,7 +125,7 @@
 
         </MudTabPanel>
 
-        <MudTabPanel>
+        <MudTabPanel OnClick="@(()=>{Nav.NavigateTo("/settings/system");})">
             <ChildContent>
                 <SystemSettings />
 

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,6 +7,12 @@
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Resouces\**" />
+    <EmbeddedResource Remove="Resouces\**" />
+    <None Remove="Resouces\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4">
@@ -18,32 +24,39 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="DuoUniversal" Version="1.3.0" />
-    <PackageReference Include="MailKit" Version="4.12.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.15" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.15" />
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.15" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.15" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.15" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.15">
+    <PackageReference Include="MailKit" Version="4.12.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.17" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.17" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.17">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageReference Include="MudBlazor" Version="8.6.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="MudBlazor" Version="8.8.0" />
     <PackageReference Include="Octokit" Version="14.0.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.1" />
-    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.4" />
-    <PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.4" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.4" />
-    <PackageReference Include="System.Management" Version="9.0.4" />
-    <PackageReference Include="System.Security.Permissions" Version="9.0.4" />
+    <PackageReference Include="PreMailer.Net" Version="2.7.0" />
+    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.1" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.6" />
+    <PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.6" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.6" />
+    <PackageReference Include="System.Management" Version="9.0.6" />
+    <PackageReference Include="System.Security.Permissions" Version="9.0.6" />
     <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -54,7 +67,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resouces\" />
+    <Reference Include="ApplicationNews">
+      <HintPath>..\BLAZAMServices\ApplicationNews.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

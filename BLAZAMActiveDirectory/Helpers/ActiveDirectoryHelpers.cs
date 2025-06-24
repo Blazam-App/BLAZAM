@@ -18,6 +18,8 @@ namespace BLAZAM.Helpers
 {
     public static class ActiveDirectoryHelpers
     {
+        private const string OBJECT_CLASS = "objectClass";
+
         /// <summary>
         /// Returns true if the domain controller is reachable by this web
         /// server, otherwise returns false.
@@ -45,9 +47,9 @@ namespace BLAZAM.Helpers
         public static IEnumerable<IDirectoryEntryAdapter> MoveToTop(this IEnumerable<IDirectoryEntryAdapter> enumerable, Func<IDirectoryEntryAdapter, bool> matchingPredicate)
         {
             var list = enumerable.ToList();
-            if (list.Count() < 1) return list;
+            if (list.Count < 1) return list;
             List<IDirectoryEntryAdapter> mathingItems = new();
-            for (int x = 0; x < list.Count(); x++)
+            for (int x = 0; x < list.Count; x++)
             {
 
                 if (matchingPredicate.Invoke(list[x]))
@@ -177,34 +179,34 @@ namespace BLAZAM.Helpers
                 IDirectoryEntryAdapter? thisObject = null;
                 foreach (SearchResult sr in r)
                 {
-                    if (sr.Properties["objectClass"].Contains("top"))
+                    if (sr.Properties[OBJECT_CLASS].Contains("top"))
                     {
-                        if (sr.Properties["objectClass"].Contains("computer"))
+                        if (sr.Properties[OBJECT_CLASS].Contains("computer"))
                         {
                             thisObject = new ADComputer();
                         }
-                        else if (sr.Properties["objectClass"].Contains("user"))
+                        else if (sr.Properties[OBJECT_CLASS].Contains("user"))
                         {
                             thisObject = new ADUser();
                         }
-                        else if (sr.Properties["objectClass"].Contains("contact"))
+                        else if (sr.Properties[OBJECT_CLASS].Contains("contact"))
                         {
                             thisObject = new ADContact();
                         }
 
-                        else if (sr.Properties["objectClass"].Contains("group"))
+                        else if (sr.Properties[OBJECT_CLASS].Contains("group"))
                         {
                             thisObject = new ADGroup();
                         }
-                        else if (sr.Properties["objectClass"].Contains("printQueue"))
+                        else if (sr.Properties[OBJECT_CLASS].Contains("printQueue"))
                         {
                             thisObject = new ADPrinter();
                         }
-                        else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
+                        else if (sr.Properties[OBJECT_CLASS].Contains("msFVE-RecoveryInformation"))
                         {
                             thisObject = new ADBitLockerRecovery();
                         }
-                        else if (sr.Properties["objectClass"].Contains("organizationalUnit") || sr.Properties["objectClass"].Contains("container"))
+                        else if (sr.Properties[OBJECT_CLASS].Contains("organizationalUnit") || sr.Properties[OBJECT_CLASS].Contains("container"))
                         {
                             thisObject = new ADOrganizationalUnit();
                         }
@@ -233,34 +235,34 @@ namespace BLAZAM.Helpers
         {
             IDirectoryEntryAdapter? thisObject = null;
 
-            if (sr.Properties["objectClass"].Contains("top"))
+            if (sr.Properties[OBJECT_CLASS].Contains("top"))
             {
-                if (sr.Properties["objectClass"].Contains("computer"))
+                if (sr.Properties[OBJECT_CLASS].Contains("computer"))
                 {
                     thisObject = new ADComputer();
                 }
-                else if (sr.Properties["objectClass"].Contains("user"))
+                else if (sr.Properties[OBJECT_CLASS].Contains("user"))
                 {
                     thisObject = new ADUser();
                 }
-                else if (sr.Properties["objectClass"].Contains("contact"))
+                else if (sr.Properties[OBJECT_CLASS].Contains("contact"))
                 {
                     thisObject = new ADContact();
                 }
 
-                else if (sr.Properties["objectClass"].Contains("group"))
+                else if (sr.Properties[OBJECT_CLASS].Contains("group"))
                 {
                     thisObject = new ADGroup();
                 }
-                else if (sr.Properties["objectClass"].Contains("printQueue"))
+                else if (sr.Properties[OBJECT_CLASS].Contains("printQueue"))
                 {
                     thisObject = new ADPrinter();
                 }
-                else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
+                else if (sr.Properties[OBJECT_CLASS].Contains("msFVE-RecoveryInformation"))
                 {
                     thisObject = new ADBitLockerRecovery();
                 }
-                else if (sr.Properties["objectClass"].Contains("organizationalUnit") || sr.Properties["objectClass"].Contains("container"))
+                else if (sr.Properties[OBJECT_CLASS].Contains("organizationalUnit") || sr.Properties[OBJECT_CLASS].Contains("container"))
                 {
                     thisObject = new ADOrganizationalUnit();
                 }

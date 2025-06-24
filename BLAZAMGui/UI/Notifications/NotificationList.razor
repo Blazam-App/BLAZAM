@@ -4,7 +4,7 @@
 
     <LoadingData Loading="LoadingData" />
 
-    @if (messages.Where(m => !m.IsRead).Count() < 1 || messages.Where(m => !m.IsRead) == null)
+    @if (messages.Count(m => !m.IsRead) < 1 || messages.Where(m => !m.IsRead) == null)
     {
         <MudCard Class="py-3" Elevation="2">
             <MudStack Row=true Class="px-4">
@@ -28,7 +28,7 @@
         }
     }
 
-    @if (messages.Where(m => m.IsRead).Count() > 0)
+    @if (messages.Count(m => m.IsRead) > 0)
     {
         <MudCard Class="py-3 cursor-pointer" Elevation="2" @onclick=@(()=>{_showRead = !_showRead; })>
             <MudStack Row=true Class="px-4">

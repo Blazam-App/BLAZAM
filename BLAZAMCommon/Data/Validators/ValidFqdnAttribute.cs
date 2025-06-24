@@ -18,7 +18,9 @@ namespace BLAZAM.Common.Data.Validators
             if (value is string strValue)
             {
                 if (!strValue.IsNullOrEmpty())
-                    if (Regex.IsMatch(strValue, "^(?!:\\/\\/)(?=.{1,255}$)((.{1,63}\\.){1,127}(?![0-9]*$)[a-z0-9-]+\\.?)", RegexOptions.IgnoreCase))
+                    if (Regex.IsMatch(strValue,
+                        "^(?!:\\/\\/)(?=.{1,255}$)(([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.){1,127}(?![0-9]*$)([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))$",
+                        RegexOptions.IgnoreCase))
                         return ValidationResult.Success;
 
             }

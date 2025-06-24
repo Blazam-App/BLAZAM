@@ -8,7 +8,7 @@ namespace BLAZAM.Common.Data
     public class Encryption
     {
         private const string OldSalt = "BLAZAM_SALT";
-        public static Encryption Instance;
+        public static Encryption Instance { get; set; }
 
 
 

@@ -137,7 +137,7 @@ namespace BLAZAM.Services.Background
                     client.RequireTLS = settings.UseTLS;
 
                     // Connect to the server
-                    await client.ConnectAsync(settings.SMTPServer, settings.SMTPPort, settings.UseTLS);
+                    await client.ConnectAsync(settings.SMTPServer, settings.SMTPPort);
 
                     if (settings.UseSMTPAuth)
                     {

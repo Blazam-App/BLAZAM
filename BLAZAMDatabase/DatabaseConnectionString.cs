@@ -22,20 +22,23 @@ namespace BLAZAM.Common.Data.Database
             //ConnectionString = ConnectionString.Replace("%temp%", Path.GetTempPath().Substring(0, Path.GetTempPath().Length-1));
             DatabaseType = dbType;
         }
+
         /// <summary>
         /// The type of database calculated from this ConnectionString
         /// </summary>
-        public DatabaseType DatabaseType;
+        public DatabaseType DatabaseType { get; set; }
 
         /// <summary>
         /// Returns true if the <see cref="ServerAddress"/> ends with ".db"
         /// </summary>
         public bool FileBased => ServerAddress.EndsWith(".db");
+
         /// <summary>
         /// Returns a file that points to the <see cref="ServerAddress"/>.
         /// This should only be used for SQLite.
         /// </summary>
         public SystemFile File => new(AddressComponent);
+
         /// <summary>
         /// The full ConnectionString to the database
         /// </summary>
@@ -46,12 +49,12 @@ namespace BLAZAM.Common.Data.Database
             {
                 if (Value != null)
                 {
-                    string search = "Data Source=";
-                    int startIndex = Value.IndexOf(search);
+                    string search = "data source=";
+                    int startIndex = Value.ToLower().IndexOf(search);
                     if (startIndex == -1)
                     {
-                        search = "Server=";
-                        startIndex = Value.IndexOf(search);
+                        search = "server=";
+                        startIndex = Value.ToLower().IndexOf(search);
                     }
                     if (startIndex >= 0)
                     {
@@ -60,6 +63,11 @@ namespace BLAZAM.Common.Data.Database
                         if (endIndex >= 0)
                         {
                             return Value.Substring(startIndex, endIndex - startIndex);
+
+                        }
+                        if (endIndex == -1)
+                        {
+                            return Value.Substring(startIndex);
 
                         }
 
@@ -80,14 +88,14 @@ namespace BLAZAM.Common.Data.Database
                 {
                     if (FileBased) return "File Based";
 
-                    string search = "Initial Catalog=";
-                    int startIndex = Value.IndexOf(search);
+                    string search = "initial catalog=";
+                    int startIndex = Value.ToLower().IndexOf(search);
                     if (startIndex == -1)
                     {
                         try
                         {
-                            search = "Database=";
-                            startIndex = Value.IndexOf(search);
+                            search = "database=";
+                            startIndex = Value.ToLower().IndexOf(search);
                         }
                         catch
                         {
@@ -101,6 +109,12 @@ namespace BLAZAM.Common.Data.Database
                         if (endIndex >= 0)
                         {
                             return Value.Substring(startIndex, endIndex - startIndex);
+
+                        }
+
+                        if (endIndex == -1)
+                        {
+                            return Value.Substring(startIndex);
 
                         }
 

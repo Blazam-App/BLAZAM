@@ -28,12 +28,13 @@ namespace BLAZAMCommon.Tests
             var result = encryption.EncryptObject(test);
             Assert.NotEqual<string>(test, result);
         }
-        [Fact]
-        public void CanDecrypt()
+        [Theory]
+        [InlineData("0qHlU8ZdxuW4Vp3BiNRJubp0mzxFXRf8+pyaUdSENv4=")] //v1 cipher for 'test'
+        [InlineData("2uv1tseTTAnOhMPwFKNWb/zfv/xMoESDSTC1TmzoopM=,2Ter+TnKcEsPAd9E/ex0QrUvIQg3R7qywZCZDECTOBk=")] //v3 cipher for 'test'
+        public void CanDecrypt(string cipherText)
         {
-            var test = "0qHlU8ZdxuW4Vp3BiNRJubp0mzxFXRf8+pyaUdSENv4=";
             var expected = "test";
-            var result = encryption.DecryptObject<string>(test);
+            var result = encryption.DecryptObject<string>(cipherText);
             Assert.Equal(expected, result);
         }
 

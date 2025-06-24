@@ -82,7 +82,7 @@
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
-    if (Members.Where(m => !m.CanRead).Count() > 0)
+    if (Members.Count(m => !m.CanRead) > 0)
     {
         <MudAlert Class="mud-alert-filled-info">
             @AppHelpLocalization[HelpLang.Lacks_Group_Member_Read_Permission]
