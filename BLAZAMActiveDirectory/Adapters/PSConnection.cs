@@ -171,11 +171,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private Collection<PSObject>? RunScript(string script)
         {
-            return directory.Impersonation.Run(() => {
+   
                 using (PowerShell psInstance = PowerShell.Create())
                 {
                     psInstance.AddScript(script);
-
                     try
                     {
                         Collection<PSObject> psResults = psInstance.Invoke();
@@ -205,7 +204,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     return null;
                 }
-            });
             
         }
 
