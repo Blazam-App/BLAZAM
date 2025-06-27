@@ -14,6 +14,7 @@
 ## A demo of the Linux beta has been published. 
 
 It's running on Ubuntu Server 2024 with 2 cores of a very weak CPU and 2GB of memory and sits at 4.7GB storage for OS and app... 
+
 The windows demo is Windows Server 2022 with 4 cores of the same CPU and 3GB of memory and sits at 34GB storage for OS and app...
 
 Find the Linux demo at https://beta.blazam.org
