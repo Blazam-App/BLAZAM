@@ -258,13 +258,13 @@ configure_blazam_appsettings() {
     # Use jq to modify the JSON file, converting port strings to numbers
     jq \
       --arg key "$encryption_key" \
-      --arg httpport_str "$BLAZAM_INTERNAL_PORT" \
-      --arg httpsport_str "$BLAZAM_INTERNAL_HTTPS_PORT" \
+      --arg httpport "$BLAZAM_INTERNAL_PORT" \
+      --arg httpsport "$BLAZAM_INTERNAL_HTTPS_PORT" \
       --arg dbtype "$DB_TYPE" \
       --arg connstr "$DB_CONN_STR" \
       '.EncryptionKey = $key |
-       .HTTPPort = ($httpport_str | tonumber) |
-       .HTTPSPort = ($httpsport_str | tonumber) |
+       .HTTPPort = $httpport |
+       .HTTPSPort = $httpsport |
        .ListeningAddress = "localhost" |
        .DatabaseType = $dbtype |
        .ConnectionStrings.DBConnectionString = $connstr' \
