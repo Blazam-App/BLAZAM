@@ -21,7 +21,7 @@ namespace BLAZAM.ActiveDirectory.Data
         {
             if (ldapConnection == null) throw new ArgumentNullException("ldapConnection");
             LdapConnection = ldapConnection;
-            _keepAliveTime = new Timer(KeepAlive, null, 30000, 30000);
+           // _keepAliveTime = new Timer(KeepAlive, null, 30000, 30000);
 
         }
 
