@@ -64,8 +64,10 @@ namespace BLAZAM.Services.Background
                                     Actor = new SystemUserState(dbFactory)
 
                                 });
-                               
-                                RecordLogonEvents(user);
+                                if (OperatingSystem.IsWindows())
+                                {
+                                    RecordLogonEvents(user);
+                                }
 
                             }
                         }

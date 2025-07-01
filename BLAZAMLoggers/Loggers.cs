@@ -64,6 +64,7 @@ namespace BLAZAM.Logger
                              .Enrich.WithProperty("Application Name", "Blazam")
                              .Enrich.WithProperty("Installation Type", InstallationType)
                              .Enrich.WithProperty("Installation Id", InstallationId)
+                             .Enrich.WithProperty("OS",OperatingSystem.IsWindows()?"Windows":OperatingSystem.IsLinux()?"Linux":"Unknown")
                              .Enrich.WithProperty("Installation Completed", InstallationCompleted)
                              .Enrich.WithProperty("Database Type", DatabaseType)
                                .Enrich.WithProperty("Application Version", _applicationVersion);
