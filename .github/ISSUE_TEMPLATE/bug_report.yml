@@ -1,7 +1,8 @@
 # .github/ISSUE_TEMPLATE/bug_report.yml
 name: Bug Report
 description: Report a bug in Blazam to help us improve.
-title: "[Bug]: "
+title: ""
+type: "Bug"
 labels: ["bug"]
 assignees:
   - jacobsen9026
@@ -54,6 +55,8 @@ body:
       options:
         - "IIS"
         - "Windows Service"
+        - "Linux Proxied"
+        - "Linux Direct"
         - "Other (Please specify below)"
     validations:
       required: true
