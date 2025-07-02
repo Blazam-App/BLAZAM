@@ -1,7 +1,6 @@
 # .github/ISSUE_TEMPLATE/bug_report.yml
 name: Bug Report
 description: Report a bug in Blazam to help us improve.
-title: ""
 type: "Bug"
 labels: ["bug"]
 assignees:
