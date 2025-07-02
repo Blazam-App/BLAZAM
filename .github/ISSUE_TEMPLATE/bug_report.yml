@@ -1,0 +1,76 @@
+# .github/ISSUE_TEMPLATE/bug_report.yml
+name: Bug Report
+description: Report a bug in Blazam to help us improve.
+title: "[Bug]: "
+labels: ["bug"]
+assignees:
+  - jacobsen9026
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please provide as much detail as possible.
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: "When I do X, I expect Y to happen, but instead Z happens."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to Reproduce
+      description: Provide the exact steps to reproduce the behavior. This is crucial for us to fix the issue.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "### Environment"
+
+  - type: input
+    id: blazam-version
+    attributes:
+      label: Blazam Version
+      description: "What version of Blazam are you running?"
+      placeholder: "e.g., 2.5.1"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: running-environment
+    attributes:
+      label: Running Environment
+      description: "How is the application being hosted?"
+      options:
+        - "IIS"
+        - "Windows Service"
+        - "Other (Please specify below)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots & Logs
+      description: "If applicable, add screenshots to help explain your problem. You can also paste relevant log file snippets here. Please drag and drop files or paste content directly."
+      placeholder: "Drag and drop images or paste log output here."
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here, such as browser version, operating system, or what you have already tried to do to fix it.
+    validations:
+      required: false
