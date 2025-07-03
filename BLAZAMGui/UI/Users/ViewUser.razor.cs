@@ -95,13 +95,16 @@ namespace BLAZAM.Gui.UI.Users
 
                 }
             }
-            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            if (Contact != null && !Contact.NewEntry)
             {
-                EventType = ApplicationEventType.Search,
-                Entry = Contact,
-                Actor = CurrentUser.State
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                {
+                    EventType = ApplicationEventType.Search,
+                    Entry = Contact,
+                    Actor = CurrentUser.State
 
-            });
+                });
+            }
             LoadingData = false;
             await RefreshEntryComponents();
 
