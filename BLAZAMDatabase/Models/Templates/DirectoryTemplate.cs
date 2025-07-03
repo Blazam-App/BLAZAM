@@ -251,6 +251,7 @@ namespace BLAZAM.Database.Models.Templates
         {
             if (toParse.IsNullOrEmpty()) return "";
             var regex = new Regex(@"\{(?<var>\w+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
+            if (!regex.IsMatch(toParse)) return "";
             return regex.Replace(toParse, match =>
             {
                 var variable = match.Groups["var"].Value.ToLower();
@@ -260,11 +261,11 @@ namespace BLAZAM.Database.Models.Templates
                 switch (variable)
                 {
                     case "fn": return ProcessVariable(newUser?.GivenName, modifier, arg);
-                    case "fi": return ProcessVariable(newUser?.GivenName?.Substring(0, 1), modifier, arg);
+                    case "fi": return ProcessVariable(Substring(newUser?.GivenName,0, 1), modifier, arg);
                     case "mn": return ProcessVariable(newUser?.MiddleName, modifier, arg);
-                    case "mi": return ProcessVariable(newUser?.MiddleName?.Substring(0, 1), modifier, arg);
+                    case "mi": return ProcessVariable(Substring(newUser?.MiddleName, 0, 1), modifier, arg);
                     case "ln": return ProcessVariable(newUser?.Surname, modifier, arg);
-                    case "li": return ProcessVariable(newUser?.Surname?.Substring(0, 1), modifier, arg);
+                    case "li": return ProcessVariable(Substring(newUser?.Surname, 0, 1), modifier, arg);
                     case "username": return username ?? ReplaceVariables(EffectiveUsernameFormula, newUser).Replace(" ", "");
                     case "alphanum":
                         var ch = RandomLetterOrDigit();
@@ -281,26 +282,38 @@ namespace BLAZAM.Database.Models.Templates
         }
         private string ProcessVariable(string? value, string? modifier, string? argument)
         {
-            if (value == null) return null;
+            // Return empty string for null/empty input for consistency and safety.
+            if (string.IsNullOrEmpty(value)) return string.Empty;
+
+            // The "regex" modifier is special because it uses the argument for its pattern,
+            // so we handle it as a distinct case.
+            if (modifier == "regex")
+            {
+                if (!string.IsNullOrEmpty(argument))
+                {
+                    var regex = new Regex(argument);
+                    return regex.Match(value).Value;
+                }
+                // If :regex is specified with no argument, return the original value.
+                return value;
+            }
+
+            // First, apply the length constraint from the argument.
+            if (!string.IsNullOrEmpty(argument))
+            {
+                if (int.TryParse(argument, out int number) && number > 0)
+                {
+                    // Add a safety check to prevent an ArgumentOutOfRangeException
+                    if (number <= value.Length)
+                    {
+                        value = value.Substring(0, number);
+                    }
+                }
+            }
+
+            // Second, apply the case modifier to the (now possibly truncated) value.
             switch (modifier)
             {
-                case "":
-                case null:
-                    if (argument != null)
-                    {
-                        var number = 0;
-                        int.TryParse(argument, out number);
-                        if (number != 0)
-                        {
-                            value = value.Substring(0, number);
-                        }
-
-                    }
-                    break;
-                case "regex":
-                    var regex = new Regex(argument);
-                    value = regex.Match(value).Value;
-                    break;
                 case "u":
                     value = value.ToUpper();
                     break;
@@ -308,9 +321,15 @@ namespace BLAZAM.Database.Models.Templates
                     value = value.ToLower();
                     break;
             }
+
+            // Return the final processed value.
             return value;
         }
-
+        private  string Substring(string? str, int start, int count)
+        {
+            if (str == null || str.IsNullOrEmpty()) return "";
+            return str.Substring(start, count);
+        }
         private static readonly Random _random = new();
 
         private static string RandomLetterOrDigit()

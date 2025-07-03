@@ -481,6 +481,16 @@ namespace BLAZAM.Database.Context
                     }
 
                 }
+
+              
+                catch (ObjectDisposedException ex)
+                {
+                    Loggers.DatabaseLogger.Information(ex,"Attempted to access a disposed Database object");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Loggers.DatabaseLogger.Information(ex,"Attempted to access a Database object in an invalid way");
+                }
                 catch (SqlException ex)
                 {
                     switch (ex.Number)
