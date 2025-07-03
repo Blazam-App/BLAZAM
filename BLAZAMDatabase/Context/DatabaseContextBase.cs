@@ -428,7 +428,7 @@ namespace BLAZAM.Database.Context
                 try
                 {
                     //Handle SQLite
-                    if (Database.IsSqlite())
+                    if (ConnectionString.FileBased)
                     {
                         if (ConnectionString.File.Writable)
                         {
