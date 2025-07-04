@@ -428,7 +428,7 @@ namespace BLAZAM.Database.Context
                 try
                 {
                     //Handle SQLite
-                    if (Database.IsSqlite())
+                    if (ConnectionString.FileBased)
                     {
                         if (ConnectionString.File.Writable)
                         {
@@ -445,16 +445,11 @@ namespace BLAZAM.Database.Context
 
                     if (NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort))
                     {
+                        if (Database.CanConnect())
+                        {
 
-
-
-                        Database.OpenConnection();
-
-
-                        Database.CloseConnection();
-
-
-                        return ServiceConnectionState.Up;
+                            return ServiceConnectionState.Up;
+                        }
 
                     }
                     else
@@ -465,6 +460,16 @@ namespace BLAZAM.Database.Context
                         // return DatabaseStatus.TablesMissing;
                     }
 
+                }
+
+
+                catch (ObjectDisposedException ex)
+                {
+                    Loggers.DatabaseLogger.Information(ex, "Attempted to access a disposed Database object");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Loggers.DatabaseLogger.Information(ex, "Attempted to access a Database object in an invalid way");
                 }
                 catch (SqlException ex)
                 {
