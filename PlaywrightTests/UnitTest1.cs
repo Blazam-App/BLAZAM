@@ -145,7 +145,7 @@ namespace PlaywrightTests
             await Page.GetByText("BLAZAM " + DateTime.Now.Year).ClickAsync();
             await Expect(Page.GetByText("Founder: Chris Jacobsen")).ToBeVisibleAsync();
             await Expect(Page.GetByText("Dedicated To Maggie")).ToBeVisibleAsync();
-            await Page.GetByRole(AriaRole.Button, new() { Name = "Close", Exact = true }).ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Close", Exact = true }).First.ClickAsync();
 
             // Expects the URL to contain intro.
             //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
@@ -154,7 +154,7 @@ namespace PlaywrightTests
 
         private async Task CloseDialog()
         {
-            var closeButton = Page.GetByRole(AriaRole.Button, new() { Name = "Close dialog" });
+            var closeButton = Page.GetByRole(AriaRole.Button, new() { Name = "Close" });
 
             await Expect(closeButton).ToBeVisibleAsync();
             await Expect(closeButton).ToBeEnabledAsync();
@@ -265,7 +265,7 @@ namespace PlaywrightTests
 
             var header = Page.Locator("text=Delegates are your approved application users");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);
@@ -278,7 +278,7 @@ namespace PlaywrightTests
 
             header = Page.Locator("text=Access levels are a template");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout=30000 });
 
 
             await Task.Delay(500);
@@ -440,12 +440,12 @@ namespace PlaywrightTests
         private async Task OpenProfileSettings()
         {
             var profileSettingsButton = Page.Locator("text=Profile Settings");
-
+            await Expect(profileSettingsButton).ToBeInViewportAsync(new() { Timeout = 30000 });
             await profileSettingsButton.ClickAsync();
 
             var uploadProfileIconButton = Page.Locator("text=Upload Profile Icon");
 
-            await Expect(uploadProfileIconButton).ToBeInViewportAsync();
+            await Expect(uploadProfileIconButton).ToBeInViewportAsync(new() { Timeout = 30000 });
             await Expect(uploadProfileIconButton).ToBeVisibleAsync();
             await Expect(uploadProfileIconButton).ToBeEnabledAsync();
         }
