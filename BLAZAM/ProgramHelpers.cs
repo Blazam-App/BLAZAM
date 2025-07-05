@@ -662,7 +662,10 @@ namespace BLAZAM.Server
                                         var metadata = type.GetCustomAttribute<AutoStartBackgroundService>();
                                         Loggers.SystemLogger.Information("Starting background service: {ServiceType} (Immediate: {ImmediateStart})", type.FullName, metadata?.Immediate == true);
                                         // Start the service (implementation likely handles actual background task execution)
-                                        service.Start(metadata?.Immediate == true);
+                                        if (metadata.RunOnLinux == true || OperatingSystem.IsLinux() == false)
+                                        {
+                                            service.Start(metadata?.Immediate == true);
+                                        }
                                     }
                                     else
                                     {

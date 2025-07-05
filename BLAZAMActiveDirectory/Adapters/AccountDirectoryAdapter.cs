@@ -273,9 +273,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
 
-                if (value == null)
+                if (value == null || !value.HasValue)
                     value = CommonHelpers.ADS_NULL_TIME;
-                SetAttribute("accountExpires", value?.ToUniversalTime().ToFileTime().ToString());
+                var dateTime = value.Value;
+                if(dateTime.Kind == DateTimeKind.Unspecified)
+                {
+                    dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Local);
+                }
+                SetAttribute("accountExpires", dateTime.ToUniversalTime().ToFileTime().ToString());
             }
         }
         public void StageRequirePasswordChange(bool requireChange)

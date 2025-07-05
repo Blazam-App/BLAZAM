@@ -50,7 +50,7 @@ namespace BLAZAM.Helpers
                 return hash;
             }
         }
-
+     
         /// <summary>
         /// Determines whether a string is null or an empty string.
         /// </summary>

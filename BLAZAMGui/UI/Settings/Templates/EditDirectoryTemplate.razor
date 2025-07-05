@@ -251,7 +251,7 @@
 
 
                     <MudDrawerContainer Class="mud-height-full"
-                                        Style="min-height:200px">
+                                        Style="min-height:350px">
                         <MudDrawer @bind-Open="@fieldDrawerOpen"
                                    Elevation="0"
                                    Variant="@DrawerVariant.Persistent">
@@ -287,13 +287,13 @@
                                     }
 
                                 }
+                                <MudElement Class="py-5 my-5"/>
                             </MudStack>
                         </MudDrawer>
 
 
 
-                        <div class="d-flex justify-center align-center mud-height-full">
-                            <MudStack>
+                            <MudStack Class="d-flex justify-center align-center mud-height-full">
                                 <MudDataGrid Items="@DirectoryTemplate.EffectiveFieldValues.OrderBy(fv => fv.FieldDisplayName)"
                                              Dense=true
                                              Striped=true
@@ -368,7 +368,6 @@
                                 </MudDataGrid>
 
                             </MudStack>
-                        </div>
                     </MudDrawerContainer>
 
                 </Section>

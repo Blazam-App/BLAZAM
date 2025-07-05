@@ -403,6 +403,11 @@ namespace BLAZAM.ActiveDirectory
                         Loggers.ActiveDirectoryLogger.Information("Timeout connecting to Active Directory {@Error}", ex);
                         Status = DirectoryConnectionStatus.ServerDown;
                         break;
+                    case -2147016646:
+                        Loggers.ActiveDirectoryLogger.Information("Encrypted connection error to Active Directory {@Error}", ex);
+
+                        Status = DirectoryConnectionStatus.EncryptionError;
+                        break;
                     default:
                         Loggers.ActiveDirectoryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
                         Status = DirectoryConnectionStatus.ServerDown;

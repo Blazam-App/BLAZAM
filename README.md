@@ -11,7 +11,15 @@
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
 
-Proudly serving
+## A demo of the Linux beta has been published. 
+
+It's running on Ubuntu Server 2024 with 2 cores of a very weak CPU and 2GB of memory and sits at 4.7GB storage for OS and app... 
+
+The windows demo is Windows Server 2022 with 4 cores of the same CPU and 3GB of memory and sits at 34GB storage for OS and app...
+
+Find the Linux demo at https://beta.blazam.org
+
+## Proudly serving
 
 ![image](https://github.com/user-attachments/assets/0f86540f-ab2e-4a2c-816f-ca2ca027a8b9)
 
@@ -73,7 +81,9 @@ Proudly serving
 [blazam.org](https://blazam.org)
 
 ## Try the Live Demo
-[blazam.org/demo](https://blazam.org/demo)
+[Windows Hosted Demo](https://blazam.org/demo)
+
+ [Linux Hosted Demo](https://beta.blazam.org)
 
 ## View the Documentation
 [docs.blazam.org](https://docs.blazam.org)
