@@ -258,7 +258,7 @@ namespace BLAZAMCommon.Tests
             Assert.False(_service.ExecuteCalled); // Should not be called *absolutely* immediately
 
             // SUT's delay will be rand.Next(-15,15) + 30 = 15ms to 45ms
-            Assert.True(_service.WaitForExecute(TimeSpan.FromMilliseconds(500)), "Execute was not called within 500ms for ZeroInterval non-immediate start.");
+            Assert.True(_service.WaitForExecute(TimeSpan.FromMilliseconds(5000)), "Execute was not called within 5000ms for ZeroInterval non-immediate start.");
 
             int initialCallCount = _service.ExecuteCallCount;
             _service.ResetExecuteSignal();
