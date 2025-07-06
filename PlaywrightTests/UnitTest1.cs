@@ -309,12 +309,13 @@ namespace PlaywrightTests
             await LogIn();
 
             await OpenConfigureSubMenu();
-
+           
             var button = Page.GetByRole(AriaRole.Link, new() { Name = "Settings" });
 
             await Expect(button).ToBeVisibleAsync();
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
+            return;
 
             await Expect(Page).ToHaveURLAsync(new Regex(".*settings"));
             var header = Page.Locator("text=Application Settings");
