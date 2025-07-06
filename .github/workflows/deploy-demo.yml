@@ -29,7 +29,7 @@ jobs:
       - name: Shutdown Demo Website
         shell: pwsh
         run: |
-          New-Item -Path C:\inetpub\wwwroot -Name "app_offline.htm" -ItemType "file"
+          New-Item -Path C:\inetpub\wwwroot -Name "app_offline.htm" -ItemType "file" -ErrorAction Continue
 
       - name: dotnet publish
         run: dotnet publish -c Release -o C:\inetpub\wwwroot BLAZAM/BLAZAM.csproj

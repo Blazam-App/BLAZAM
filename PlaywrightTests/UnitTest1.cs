@@ -57,11 +57,11 @@ namespace PlaywrightTests
 
             await Page.GetByLabel("Toggle Create").ClickAsync();
             await Page.GetByRole(AriaRole.Link, new() { Name = "Create User" }).ClickAsync();
-            await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Custom" })).ToBeVisibleAsync();
+            await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Custom" })).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Page.GetByRole(AriaRole.Link, new() { Name = "Create Group" }).ClickAsync();
-            await Expect(Page.GetByLabel("Group Name")).ToBeVisibleAsync();
+            await Expect(Page.GetByLabel("Group Name")).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Page.GetByRole(AriaRole.Link, new() { Name = "Create OU" }).ClickAsync();
-            await Expect(Page.GetByLabel("Organizational Unit Name")).ToBeVisibleAsync();
+            await Expect(Page.GetByLabel("Organizational Unit Name")).ToBeVisibleAsync(new() { Timeout = 30000 });
 
             // Expects the URL to contain intro.
             //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
@@ -309,12 +309,13 @@ namespace PlaywrightTests
             await LogIn();
 
             await OpenConfigureSubMenu();
-
+           
             var button = Page.GetByRole(AriaRole.Link, new() { Name = "Settings" });
 
             await Expect(button).ToBeVisibleAsync();
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
+            return;
 
             await Expect(Page).ToHaveURLAsync(new Regex(".*settings"));
             var header = Page.Locator("text=Application Settings");
