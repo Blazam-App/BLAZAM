@@ -10,6 +10,7 @@ using System.Data;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.Protocols;
 using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
@@ -193,23 +194,23 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 var uacRaw = Convert.ToInt32(GetAttribute<object>("userAccountControl"));
                 if (uacRaw == 0)
                 {
-                    UAC = ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
+                    //UAC = ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
                     return ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
                 }
                 return uacRaw;
             }
             set
             {
-                SetAttribute("userAccountControl", value);
+                SetAttribute("userAccountControl", value.ToString());
             }
         }
 
         protected DomainControllerEventLogReader? DomainControllerEventLogs;
 
 
-        public override void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
+        public override void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null, SearchResultEntry? searchResultEntry = null)
         {
-            base.Parse(directory, directoryEntry, searchResult);
+            base.Parse(directory, directoryEntry, searchResult,searchResultEntry);
             DomainControllerEventLogs = new DomainControllerEventLogReader(directory);
         }
 
@@ -341,9 +342,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 if (value == null)
-                    SetAttribute("pwdLastSet", 0);
+                    SetAttribute("pwdLastSet", "0");
                 else
-                    SetAttribute("pwdLastSet", -1);
+                    SetAttribute("pwdLastSet", "-1");
 
             }
 
@@ -358,7 +359,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (SAMAccountName == null) throw new AppException("samaccount name not found!");
             if (DirectorySettings == null) throw new AppException("Directory settings not found when trying to change directory user password");
-
+          
             var directoryPassword = DirectorySettings.Password.Decrypt();
             if (directoryPassword == null) return false;
 
@@ -370,38 +371,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     Invoke("SetPassword", new[] { password.ToPlainText() });
                     return true;
                 }
-                catch (Exception ex)
+                catch (DirectoryOperationException ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Warning("Could not set password via Invoke {@Error}", ex);
-                    //The following works outside the domain but may have issues with certs
-                    using (PrincipalContext pContext = new(
-                        ContextType.Domain,
-                        DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
-                        DirectorySettings.Username + "@" + DirectorySettings.FQDN,
-                        directoryPassword
-                        ))
+                    // Check for the password complexity error
+                    if (ex.Response.ResultCode == ResultCode.UnwillingToPerform &&
+                        ex.Response.ErrorMessage.Contains("0000052D"))
                     {
-
-
-                        UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
-                        if (up != null)
-                        {
-                            up.SetPassword(password.ToPlainText());
-                            if (requireChange)
-                                up.ExpirePasswordNow();
-                            if (NewEntry)
-                                up.PasswordNotRequired = false;
-                            up.Save();
-
-                        }
+                       throw new PasswordPolicyViolationException();
                     }
-
-
-                    return true;
+                    else if (ex.Response.ResultCode == ResultCode.ConstraintViolation &&
+     ex.Response.ErrorMessage.Contains("0000052F"))
+                    {
+                        throw new AccountDisabledConstraintViolationException();
+                    }
+                    else
+                    {
+                         Loggers.ActiveDirectoryLogger.Error(ex, "An unexpected directory operation error occurred setting entry password");
+                    }
                 }
-
+                return false;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not AppException)
             {
 
                 Loggers.ActiveDirectoryLogger.Error(ex,"Error setting entry password");
@@ -409,6 +399,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     throw new AppException("Unable to set password", ex);
                 else return true;
             }
+
+        }
+        public void StageEnable()
+        {
+            
+            PostCommitSteps.Add(new JobStep("Enable", (JobStep? step) =>
+            {
+                Enabled = true;
+                DirectoryEntry.SetPropertyValue("userAccountControl", UAC);
+                return true;
+
+                Enabled = true;
+                return true;
+            }));
+
 
         }
 

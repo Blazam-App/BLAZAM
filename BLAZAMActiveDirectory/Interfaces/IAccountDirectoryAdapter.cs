@@ -91,6 +91,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         bool SetPassword(SecureString password, bool requireChange = false);
 
 
+        void StageEnable();
         void StagePasswordChange(SecureString newPassword, bool requireChange = false);
         void StageRequirePasswordChange(bool requireChange);
     }

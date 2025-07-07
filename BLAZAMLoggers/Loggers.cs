@@ -22,34 +22,24 @@ namespace BLAZAM.Logger
         public static ILogger UpdateLogger { get; private set; }
         public static ILogger RulesLogger { get; private set; }
         public static ILogger SystemLogger { get; set; }
+        public static ILogger AspNetLogger{ get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         public static void SetupLoggers(string logPath, string applicationVersion = "1.0")
         {
             _logPath = logPath;
             _applicationVersion = applicationVersion;
-            RequestLogger = SetupLogger(logPath + @"requests\requests.txt");
-            DatabaseLogger = SetupLogger(logPath + @"database\db.txt");
-            ActiveDirectoryLogger = SetupLogger(logPath + @"activedirectory\activedirectory.txt");
-            UpdateLogger = SetupLogger(logPath + @"update\update.txt", RollingInterval.Month);
-            RulesLogger = SetupLogger(logPath + @"rules\rules.txt");
+            RequestLogger = SetupLogger(logPath + $"requests{Path.DirectorySeparatorChar}requests.txt");
+            DatabaseLogger = SetupLogger(logPath + $"database{Path.DirectorySeparatorChar}db.txt");
+            ActiveDirectoryLogger = SetupLogger(logPath + $"activedirectory{Path.DirectorySeparatorChar}activedirectory.txt");
+            UpdateLogger = SetupLogger(logPath + $"update{Path.DirectorySeparatorChar}update.txt", RollingInterval.Month);
+            RulesLogger = SetupLogger(logPath + $"rules{Path.DirectorySeparatorChar}rules.txt");
+            AspNetLogger = SetupLogger(logPath + $"aspnet{Path.DirectorySeparatorChar}aspnet.txt");
+            SystemLogger = SetupLogger(logPath + $"system{Path.DirectorySeparatorChar}system.txt");
 
-            var systemLoggerBuilder = CreateLogBuilder()
-                    .WriteTo.File(logPath + @"system\system.txt",
-                    rollingInterval: RollingInterval.Hour,
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}",
-                    retainedFileTimeLimit: TimeSpan.FromDays(30))
-                    .WriteTo.Logger(lc =>
-                    {
-                        //lc.WriteTo.Console();
-                        lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
-                    });
-            if (SendToSeqServer)
-            {
-                systemLoggerBuilder.WriteTo.Seq(SeqServerUri, apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning);
-            }
-            Log.Logger = systemLoggerBuilder.CreateLogger();
-            SystemLogger = Log.Logger;
+          
+           
+            Log.Logger = AspNetLogger;
 
             //Serilog.Debugging.SelfLog.Enable(Console.Error);
         }

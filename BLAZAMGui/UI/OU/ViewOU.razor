@@ -74,15 +74,15 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
-            {
-                EventType = ApplicationEventType.Search,
-                Entry = OU,
-                Actor = CurrentUser.State
-
-            });
         if (OU != null)
         {
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                {
+                    EventType = ApplicationEventType.Search,
+                    Entry = OU,
+                    Actor = CurrentUser.State
+
+                });
             parentOU = (IADOrganizationalUnit?)await OU.GetParentAsync();
         }
         LoadingData = false;
@@ -101,12 +101,12 @@
                     {
                         EventType = ApplicationEventType.Modify,
                         Entry = OU,
-                        Changes =changes,
+                        Changes = changes,
                         Actor = CurrentUser.State
 
 
                     });
-                
+
                 SnackBarService.Success(AppLocalization["The changes made to this ou have been saved."]);
 
                 await RefreshEntryComponents();
@@ -144,7 +144,7 @@
                         Actor = CurrentUser.State
 
                     });
-                
+
 
 
             }
