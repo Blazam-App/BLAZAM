@@ -10,9 +10,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.17" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="8.0.17" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.17" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.17">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -20,8 +20,8 @@
     <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
-    <PackageReference Include="MudBlazor" Version="8.8.0" />
-    <PackageReference Include="MudBlazor.Markdown" Version="8.7.0" />
+    <PackageReference Include="MudBlazor" Version="8.9.0" />
+    <PackageReference Include="MudBlazor.Markdown" Version="8.9.0" />
     <PackageReference Include="PreMailer.Net" Version="2.7.2" />
     <PackageReference Include="Serilog" Version="4.3.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />

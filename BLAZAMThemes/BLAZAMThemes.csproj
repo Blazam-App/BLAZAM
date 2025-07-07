@@ -13,7 +13,7 @@
     <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
-    <PackageReference Include="MudBlazor" Version="8.8.0" />
+    <PackageReference Include="MudBlazor" Version="8.9.0" />
     <PackageReference Include="MudBlazor.ThemeManager" Version="3.0.0" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.6" />
   </ItemGroup>
