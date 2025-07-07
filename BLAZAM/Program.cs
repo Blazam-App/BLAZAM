@@ -107,7 +107,7 @@ namespace BLAZAM
             Loggers.SystemLogger.Warning("Application Starting {@ProcessName}", ApplicationInfo.runningProcess.ProcessName);
 
             // Register application services with the dependency injection container.
-            builder.InjectServices(); // Custom extension method likely defined elsewhere
+            builder.InjectServices();
 
             // Add Cross-Origin Resource Sharing (CORS) services.
             builder.Services.AddCors();
@@ -123,7 +123,7 @@ namespace BLAZAM
             ApplicationInfo.services = AppInstance.Services;
 
             // Perform pre-run tasks (e.g., database migrations, initial setup).
-            AppInstance.PreRun(); // Custom extension method likely defined elsewhere
+            AppInstance.PreRun();
 
             // Re-setup loggers - perhaps needed if PreRun modified paths or settings?
             Loggers.SetupLoggers(WritablePath + $"logs{Path.DirectorySeparatorChar}", ApplicationInfo.runningVersion.ToString());
@@ -135,7 +135,7 @@ namespace BLAZAM
             // Order is important here.
 
             // Configure exception handling based on the environment.
-            if (!AppInstance.Environment.IsDevelopment() && !ApplicationInfo.inDebugMode)
+            if (!IsDevelopment && !ApplicationInfo.inDebugMode)
             {
                 // Use a generic error handler page for production.
                 AppInstance.UseExceptionHandler("/Error");
@@ -155,7 +155,7 @@ namespace BLAZAM
             // Custom middleware to manage user state.
             AppInstance.UseMiddleware<UserStateMiddleware>();
             // Redirect HTTP requests to HTTPS.
-            AppInstance.UseMiddleware<HttpsRedirectionMiddleware>(); // Use built-in middleware instead? AppInstance.UseHttpsRedirection();
+            AppInstance.UseMiddleware<HttpsRedirectionMiddleware>();
             // Custom middleware to redirect based on application status (e.g., maintenance mode).
             AppInstance.UseMiddleware<ApplicationStatusRedirectMiddleware>();
             // Enable serving static files (like CSS, JS, images) from wwwroot.
