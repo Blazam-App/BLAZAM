@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.4.3</AssemblyVersion>
-		<Version>2025.07.10.1408</Version>
+		<Version>2025.07.10.2114</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
