@@ -119,7 +119,7 @@ namespace BLAZAM.Common.Data
                           {
                               var exception = new AppException("Impersonation running as application identity");
                               ExceptionDispatchInfo.SetCurrentStackTrace(exception);
-                              Loggers.ActiveDirectoryLogger.Error("Impersonation running as application identity  {@Error}", exception);
+                              Loggers.ActiveDirectoryLogger.Information("Impersonation running as application identity  {@Error}", exception);
 
                           }
                           Loggers.ActiveDirectoryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);

@@ -251,7 +251,7 @@ namespace BLAZAM.Database.Models.Templates
         {
             if (toParse.IsNullOrEmpty()) return "";
             var regex = new Regex(@"\{(?<var>\w+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
-            if (!regex.IsMatch(toParse)) return "";
+            if (!regex.IsMatch(toParse)) return toParse;
             return regex.Replace(toParse, match =>
             {
                 var variable = match.Groups["var"].Value.ToLower();
