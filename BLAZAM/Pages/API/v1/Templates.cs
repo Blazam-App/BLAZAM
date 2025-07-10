@@ -109,46 +109,56 @@ namespace BLAZAM.Pages.API.v1
                 MiddleName = newUserDetails.MiddleName,
                 Surname = newUserDetails.LastName
             };
-
-            //Generate IADUser
-            var newUser = template.GenerateTemplateUser(newUserName, Directory);
-
-            //Override username if provided
-            if (!newUserDetails.Username.IsNullOrEmpty())
+            try
             {
-                newUser.SAMAccountName = newUserDetails.Username;
+                var  customOU = Directory.OUs.FindOuByDN(newUserDetails.OU);
+                if(customOU==null && template.EffectiveParentOU == null)
+                {
+                    return new BadRequestObjectResult("There was no OU provided by API call or template!");
+                }
+                //Generate IADUser
+                var newUser = template.GenerateTemplateUser(newUserName, Directory,customOU);
+
+                //Override username if provided
+                if (!newUserDetails.Username.IsNullOrEmpty())
+                {
+                    newUser.SAMAccountName = newUserDetails.Username;
+                }
+
+                //Store password in memory for later
+                var password = newUser.NewPassword.ToPlainText().ToSecureString();
+
+                //Set each field in template
+                template.PopulateFields(newUser, newUserName);
+
+                //Set API provided fields
+                SetFields(newUserDetails, newUser);
+
+                //Set API provided groups
+                AssignGroups(newUserDetails, newUser);
+
+                //Prepare commit job
+                Job createUserJob = new(AppLocalization[Lang.Create_User]);
+
+                createUserJob.StopOnFailedStep = true;
+
+                //Commmit
+                var result = await newUser.CommitChangesAsync(createUserJob);
+
+                if (result.FailedSteps.Count > 0)
+                    return new UnprocessableEntityObjectResult(result.FailedSteps.Select(s => s.Exception?.InnerException != null ? s.Exception.InnerException.Message : s.Exception?.Message));
+
+
+                newUser = (IADUser)Directory.GetDirectoryEntryByDN(newUser.DN);
+
+                await AuditAndNotify(newUserDetails, template, newUser, password);
+
+                return new CreatedResult(newUser.OU, newUser.DN);
             }
-
-            //Store password in memory for later
-            var password = newUser.NewPassword.ToPlainText().ToSecureString();
-
-            //Set each field in template
-            template.PopulateFields(newUser, newUserName);
-
-            //Set API provided fields
-            SetFields(newUserDetails, newUser);
-
-            //Set API provided groups
-            AssignGroups(newUserDetails, newUser);
-
-            //Prepare commit job
-            Job createUserJob = new(AppLocalization[Lang.Create_User]);
-
-            createUserJob.StopOnFailedStep = true;
-
-            //Commmit
-            var result = await newUser.CommitChangesAsync(createUserJob);
-
-            if (result.FailedSteps.Count > 0)
-                return new UnprocessableEntityObjectResult(result.FailedSteps.Select(s => s.Exception?.InnerException != null ? s.Exception.InnerException.Message : s.Exception?.Message));
-
-
-            newUser = (IADUser)Directory.GetDirectoryEntryByDN(newUser.DN);
-
-            await AuditAndNotify(newUserDetails, template, newUser, password);
-
-            return new CreatedResult(newUser.OU, newUser.DN);
-
+            catch (Exception ex)
+            {
+                return new UnprocessableEntityObjectResult(ex.Message);
+            }
 
         }
 
