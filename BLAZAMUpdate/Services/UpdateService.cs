@@ -391,7 +391,7 @@ namespace BLAZAM.Update.Services
                    {
                        var exception = new AppException("Impersonation running as application identity");
                        ExceptionDispatchInfo.SetCurrentStackTrace(exception);
-                       Loggers.ActiveDirectoryLogger.Error("Impersonation running as application identity  {@Error}", exception);
+                       Loggers.ActiveDirectoryLogger.Information("Impersonation running as application identity  {@Error}", exception);
                        return false;
                    }
                    if (ApplicationInfo.applicationRoot.Writable)

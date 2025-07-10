@@ -165,7 +165,14 @@ namespace BLAZAM.Tests.Gui
             var result = _template.ReplaceVariables("{alpha:l}", _testUser);
             Assert.Matches("^[a-z]$", result);
         }
-
+        
+        [Fact]
+        public void ShouldReturnInputWithNoVariables()
+        {
+            var result = _template.ReplaceVariables("novariables", _testUser);
+            Assert.Matches("novariables", result);
+        }
+          
         [Fact]
         public void ShouldSubstituteNumeric()
         {
