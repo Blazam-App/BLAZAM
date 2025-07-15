@@ -92,6 +92,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
+        public string? LapsPassword
+        {
+            get
+            {
+                return GetStringAttribute("msLAPS-Password");
+            }
+        }
+        public DateTime? LapsPasswordExpiration
+        {
+            get
+            {
+                return GetDateTimeAttribute("msLAPS-PasswordExpirationTime");
+            }
+        }
         public IPHostEntry? IPHostEntry { get; set; }
 
         /// <summary>

@@ -77,6 +77,28 @@
                                     <MudText>@Computer.OperatingSystem</MudText>
 
                                 </MudStack>
+                                @if (Computer.CanReadField(ActiveDirectoryFields.LapsPassword))
+                                {
+                                    <MudStack Row=true>
+                                    <MudText Typo="Typo.subtitle2">@Lang.LAPS_Password:</MudsText>
+                                        <MudSpacer />
+                                        <AppTooltip ShowOnFocus="false" ShowOnHover="true" Placement="Placement.Right">
+                                            <TooltipContent>
+                                                @if (Computer.LapsPasswordExpiration.HasValue)
+                                                {
+                                                    <MudText>Expires: @Computer.LapsPasswordExpiration.Value.ToLocalTime()</MudText>
+                                                }
+                                                else
+                                                {
+                                                    <MudText>Expiration not set</MudText>
+                                                }
+                                            </TooltipContent>
+                                            <ChildContent>
+                                                <MudTextField Variant="Variant.Text" @bind-Value="Computer.LapsPassword" ReadOnly="true" />
+                                            </ChildContent>
+                                        </AppTooltip>
+                                    </MudStack>
+                                }
 
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Online]:</MudText>
