@@ -156,6 +156,7 @@ namespace BLAZAM.Database.Models
                     {
                         case "memberOf":
                         case "operatingSystemVersion":
+                        case "msLAPS-Password":
                         case "site":
                             return true;
                     }

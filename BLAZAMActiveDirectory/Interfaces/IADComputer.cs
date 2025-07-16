@@ -15,6 +15,16 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// This computer's Operating System
         /// </summary>
         string? OperatingSystem { get; set; }
+
+        /// <summary>
+        /// The LAPS password for this computer
+        /// </summary>
+        string? LapsPassword { get; }
+
+        /// <summary>
+        /// The expiration time for the LAPS password
+        /// </summary>
+        DateTime? LapsPasswordExpiration { get; }
         /// <summary>
         /// Indiates whether this computer is reachable by the server. 
         /// Null indicates that the check has not yet completed.
