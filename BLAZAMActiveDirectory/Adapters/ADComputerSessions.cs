@@ -102,7 +102,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 session.Dispose();
             }
             ConnectedSessions.Clear();
-            server.Close();
+            server?.Close();
         }
 
 

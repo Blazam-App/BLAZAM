@@ -54,7 +54,7 @@
                             <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Computer="Computer" />
                         }
                     </AppModal>
-
+                    
                     <MudGrid>
                         <MudItem xs="12" md="3">
                             <Section FullWidth=false>
@@ -77,6 +77,7 @@
                                     <MudText>@Computer.OperatingSystem</MudText>
 
                                 </MudStack>
+                              
 
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Online]:</MudText>
@@ -146,6 +147,28 @@
                                 @if (Computer.CanReadBitLocker)
                                 {
                                     <BitLockerViewer Computer="Computer" />
+                                }
+                                  @if (!Computer.LapsPassword.IsNullOrEmpty() && Computer.CanReadField(ActiveDirectoryFields.LapsPassword))
+                                {
+                                    <Section Title=@AppLocalization[Lang.LAPS_Password]>
+
+                                        <AppTooltip ShowOnFocus="false" ShowOnHover="true" Placement="Placement.Right">
+                                            <TooltipContent>
+                                                @if (Computer.LapsPasswordExpiration.HasValue)
+                                                {
+                                                    <MudText>Expires: @Computer.LapsPasswordExpiration.Value.ToLocalTime()</MudText>
+                                                }
+                                                else
+                                                {
+                                                    <MudText>Expiration not set</MudText>
+                                                }
+                                            </TooltipContent>
+                                            <ChildContent>
+                                                <MudTextField Variant="Variant.Text" Value="Computer.LapsPassword" ReadOnly="true" />
+                                            </ChildContent>
+                                        </AppTooltip>
+                                    </Section>
+                                   
                                 }
                             </MudStack>
 
