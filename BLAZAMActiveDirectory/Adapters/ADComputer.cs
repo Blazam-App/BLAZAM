@@ -1,9 +1,11 @@
 ﻿
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
+using System.Data.Entity.Core.Common.CommandTrees;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -20,9 +22,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 if (CanonicalName == null) return null;
-                if (_wmiConnection==null)
+                if (_wmiConnection == null)
                 {
-                    _wmiConnection= new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
+                    _wmiConnection = new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
                 }
                 return _wmiConnection;
             }
@@ -47,7 +49,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return false;
             }
 
-            
+
             if (wmiConnection != null)
             {
                 return await wmiConnection.RenameComputerAsync(newName);
@@ -96,7 +98,38 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringAttribute(ActiveDirectoryFields.LapsPassword.FieldName);
+                string? pass = null;
+                object? value = null;
+                if (System.OperatingSystem.IsWindows())
+                {
+                    value = GetAttribute<object>("msLAPS-EncryptedPassword");
+                }
+                if (value is null)
+                {
+                    value = GetStringAttribute(ActiveDirectoryFields.LapsPassword.FieldName);
+                }
+                if (value is byte[] bytes)
+                {
+                    try
+                    {
+                        var decryptor = new LapsDecryptor();
+                        string decryptedJson = decryptor.Decrypt(bytes);
+
+                        // The result is a JSON string, you'll need to parse it to get the password.
+                        // Example JSON: {"n":"Administrator","t":"1d8e1c6a2e4bfe8","p":"YourPasswordHere"}
+                        // You can use a JSON parsing library like System.Text.Json to extract the password.
+                        return decryptedJson;
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.ActiveDirectoryLogger.Information(ex, "Error decrypting LAPS password for {@Computer}", DN);
+                    }
+                }
+                else if (value is string str)
+                {
+                    return str;
+                }
+                return pass;
             }
         }
         public DateTime? LapsPasswordExpiration
@@ -200,7 +233,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex,"Error renaming computer");
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error renaming computer");
             }
             return false;
 
@@ -277,7 +310,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     catch (Exception ex)
                     {
-                        Loggers.ActiveDirectoryLogger.Error(ex,"Error pinging computer");
+                        Loggers.ActiveDirectoryLogger.Error(ex, "Error pinging computer");
                     }
                     x++;
                 } while (x < retries);
