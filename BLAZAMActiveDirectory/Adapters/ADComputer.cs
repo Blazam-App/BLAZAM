@@ -96,7 +96,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringAttribute("msLAPS-Password");
+                return GetStringAttribute(ActiveDirectoryFields.LapsPassword.FieldName);
             }
         }
         public DateTime? LapsPasswordExpiration
