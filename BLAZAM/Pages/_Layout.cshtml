@@ -16,13 +16,13 @@
     <base href="~/" />
 
     <link rel="icon" type="image/x-icon" href=@StaticAssets.FaviconUri>
-    <link href="css/site.css" rel="stylesheet" />
-    <link href="BLAZAM.styles.css" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" asp-append-version="true" />
+    <link href="BLAZAM.styles.css" rel="stylesheet" asp-append-version="true" />
 
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
-    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
-    <link href="_content/MudBlazor.Markdown/MudBlazor.Markdown.min.css" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="_content/MudBlazor.Markdown/MudBlazor.Markdown.min.css" rel="stylesheet" asp-append-version="true" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 
@@ -101,88 +101,23 @@
         </script>
     }
 
-    <script src="~/js/blazam.js"></script>
+    <script src="~/js/blazam.js" asp-append-version="true"></script>
     <script src="~/lib/svg-gauge/dist/gauge.min.js"></script>
 
 
 
-    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-    <script src="_content/MudBlazor.Markdown/MudBlazor.Markdown.min.js"></script>
-    @*  <script>
-        const reconnectModal = document.getElementById('components-reconnect-modal');
-
-        if (reconnectModal) {
-            // --- CORRECTED LOGIC ---
-            // State variables are declared once, in the top-level scope of the script.
-            let isPollingStarted = false;
-            let attemptCount = 1;
-
-            const config = { attributes: true, attributeFilter: ['class'] };
-
-            const callback = (mutationList, observer) => {
-                if (isPollingStarted) {
-                    return;
-                }
-
-                for (const mutation of mutationList) {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                        const isVisible = !reconnectModal.classList.contains('components-reconnect-hide');
-                        const isRejected = reconnectModal.classList.contains('components-reconnect-rejected');
-
-                        if (isVisible && isRejected) {
-                            isPollingStarted = true;
-                            observer.disconnect();
-
-                            console.log('Reconnect modal is visible and rejected. Starting server check.');
-
-                            // The attemptCount is no longer declared here.
-
-                            const attemptCounterElement = document.getElementById('reconnect-attempt-counter');
-
-                            async function attemptReload() {
-                                try {
-                                    if (attemptCounterElement) {
-                                        // It now uses the attemptCount from the outer scope.
-                                        attemptCounterElement.textContent = attemptCount;
-                                    }
-
-                                    const response = await fetch('/');
-                                    if (response.ok) {
-                                        location.reload();
-                                    }
-                                } catch (error) {
-                                    console.log(`Server still offline, attempt #${attemptCount} failed.`);
-                                    attemptCount++;
-                                }
-                            }
-
-                            attemptReload();
-                            setInterval(attemptReload, 10000);
-                        }
-                    }
-                }
-            };
-
-            const observer = new MutationObserver(callback);
-            observer.observe(reconnectModal, config);
-        }
-    </script> *@
+    <script src="_content/MudBlazor/MudBlazor.min.js" asp-append-version="true"></script>
+    <script src="_content/MudBlazor.Markdown/MudBlazor.Markdown.min.js" asp-append-version="true"></script>
+  
     <script>
             const reconnectModal = document.getElementById('components-reconnect-modal');
 
         // Wait until a 'reload' button appears
         new MutationObserver((mutations, observer) => {
-            //console.log("DOM changed");
             let refreshButton = document.querySelector('#components-reconnect-modal .rejected #serverBackOnline');
             const isVisible = !reconnectModal.classList.contains('components-reconnect-hide');
-            //console.log("Visible:");
-            //console.log(isVisible);
-            //console.log(reconnectModal);
             if (isVisible) {
-                //console.log("Reconnect modal visible");
                 if(refreshButton.offsetParent != null){
-                    //console.log("Refresh visible");
-                    //console.log(refreshButton)
                     // Now every 10 seconds, see if the server appears to be back, and if so, reload
                     async function attemptReload() {
                         await fetch(''); // Check the server really is back
