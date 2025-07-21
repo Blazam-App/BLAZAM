@@ -17,7 +17,7 @@
                 {
                     case UpdateCredential.Application:
                         <MudAlert Icon="@Icons.Material.Filled.Warning" Class="mud-alert-filled-warning">
-                           @AppHelpLocalization[HelpLang.Update_Credential_Is_Application]
+                            @AppHelpLocalization[HelpLang.Update_Credential_Is_Application]
                         </MudAlert>
                         break;
                     case UpdateCredential.Active_Directory:
@@ -180,7 +180,7 @@
     UpdateCredential? updateCredential = null;
     ManualApplicationUpdater? appUpdateComponent;
     AppSettings? settings = new AppSettings();
-    List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev };
+    List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev, ApplicationReleaseBranches.BetaDev };
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -209,20 +209,22 @@
 
     protected override async Task Save()
     {
-        if ((newUpdatePassword == null && updatePasswordInDb is null) == false)
+
+
+
+        if (settings != null)
         {
-
-
-            if (settings != null && newUpdatePassword != null && !newUpdatePassword.Equals(updatePasswordInDb))
+            if (newUpdatePassword != null && !newUpdatePassword.Equals(updatePasswordInDb))
             {
-
                 settings.UpdatePassword = newUpdatePassword.Encrypt();
 
                 updatePasswordInDb = settings.UpdatePassword;
-                await AuditLogger.System.SettingsChanged("Update", settings.GetChanges(originalSettings));
-                await base.Save();
             }
+            await base.Save();
+            await AuditLogger.System.SettingsChanged("Update", settings.GetChanges(originalSettings));
+
         }
+
 
         await InvokeAsync(StateHasChanged);
 
