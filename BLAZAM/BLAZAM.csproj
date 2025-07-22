@@ -166,6 +166,10 @@
 	<ItemGroup>
 	  <Folder Include="Plugins\" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\BLAZAMGui\UI\Dashboard\LdapCount.razor" Link="LdapCount.razor" />
+	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
 	</Target>

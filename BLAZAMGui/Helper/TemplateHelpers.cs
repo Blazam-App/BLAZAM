@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BLAZAM.ActiveDirectory.Adapters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,7 @@ namespace BLAZAM.Gui.Helpers
                 newUser.SAMAccountName = template.GenerateUsername(newUserName);
                 newUser.DisplayName = displayName;
                 newUser.StagePasswordChange(template.GeneratePassword(newUserName).ToSecureString());
+              newUser.StageEnable();
                 if (template.EffectiveRequirePasswordChange == true)
                     newUser.StageRequirePasswordChange(true);
                 if (!newUserName.GivenName.IsNullOrEmpty())
@@ -39,7 +41,6 @@ namespace BLAZAM.Gui.Helpers
                     newUser.MiddleName = newUserName.MiddleName;
                 if (!newUserName.Surname.IsNullOrEmpty())
                     newUser.Sn = newUserName.Surname;
-
 
 
                 template.EffectiveAssignedGroupSids.ForEach(sid =>
@@ -54,13 +55,11 @@ namespace BLAZAM.Gui.Helpers
             catch (Exception ex)
             {
                 Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create user in {@ContainerName}", parentOU.DN);
+
                 throw;
             }
 
             //newUser = ou.CreateUser(displayName);
-
-
-
 
         }
     }

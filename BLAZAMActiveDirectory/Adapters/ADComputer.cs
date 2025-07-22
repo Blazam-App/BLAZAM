@@ -16,15 +16,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
     {
 
         private ADComputerSessions? sessionManager;
-        private WmiConnection? _wmiConnection;
-        private WmiConnection? wmiConnection
+        private IRemoteManagementConnection? _wmiConnection;
+        private IRemoteManagementConnection? wmiConnection
         {
             get
             {
                 if (CanonicalName == null) return null;
                 if (_wmiConnection == null)
                 {
-                    _wmiConnection = new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
+                    _wmiConnection= new PSConnection(Directory, this);
                 }
                 return _wmiConnection;
             }
@@ -255,7 +255,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     try
                     {
-                        if (SearchResult != null && !_pingCancellationTokenSource.IsCancellationRequested && CanonicalName != null)
+                        if (DirectoryEntry != null && !_pingCancellationTokenSource.IsCancellationRequested && CanonicalName != null)
                         {
                             Ping(timeout);
                         }
