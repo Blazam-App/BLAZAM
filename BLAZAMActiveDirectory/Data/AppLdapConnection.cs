@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.Connections;
+﻿using BLAZAM.Logger;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,9 @@ namespace BLAZAM.ActiveDirectory.Data
                         {
                             LdapConnection?.SessionOptions.StopTransportLayerSecurity();
                         }
+                    }
+                    catch(Exception ex) {
+                        Loggers.ActiveDirectoryLogger.Information(ex, "Error when stopping TLS");
                     }
                     finally
                     {
