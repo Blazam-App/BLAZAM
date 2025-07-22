@@ -289,6 +289,7 @@ namespace BLAZAM.Localization
         public static readonly string Pass_Change = "Pass Change";
         public static readonly string Lockout_Time = "Lockout Time";
         public static readonly string Last_Logon = "Last Logon";
+        public static readonly string LAPS_Password = "LAPS Password";
         public static readonly string API = "API";
         public static readonly string Sign_Out = "Sign Out";
         public static readonly string Documentation = "Documentation";

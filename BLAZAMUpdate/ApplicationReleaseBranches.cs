@@ -8,5 +8,6 @@
         public const string Stable = "Release";
         public const string Nightly = "Nightly1";
         public const string Dev = "Dev1";
+        public const string BetaDev = "BetaDev";
     }
 }

@@ -65,7 +65,9 @@ namespace BLAZAM.Pages.API.v1
         ///       ]
         ///       "groups": [
         ///          {
-        ///            "S-1-5-21-1004336348-1177238915-682003330-512"
+        ///            "S-1-5-21-1004336348-1177238915-682003330-512",
+        ///            "CN=Group Name,OU=Somewhere,DC=example,DC=org",
+        ///            "Another Group Name"
         ///         }
         ///       ]
         ///     }
@@ -109,46 +111,59 @@ namespace BLAZAM.Pages.API.v1
                 MiddleName = newUserDetails.MiddleName,
                 Surname = newUserDetails.LastName
             };
-
-            //Generate IADUser
-            var newUser = template.GenerateTemplateUser(newUserName, Directory);
-
-            //Override username if provided
-            if (!newUserDetails.Username.IsNullOrEmpty())
+            try
             {
-                newUser.SAMAccountName = newUserDetails.Username;
+                var customOU = Directory.OUs.FindOuByDN(newUserDetails.OU);
+                if (customOU == null && template.EffectiveParentOU == null)
+                {
+                    return new BadRequestObjectResult("There was no OU provided by API call or template!");
+                }
+                //Generate IADUser
+                var newUser = template.GenerateTemplateUser(newUserName, Directory, customOU);
+
+                //Override username if provided
+                if (!newUserDetails.Username.IsNullOrEmpty())
+                {
+                    newUser.SAMAccountName = newUserDetails.Username;
+                }
+
+                //Store password in memory for later
+                var password = newUser.NewPassword.ToPlainText().ToSecureString();
+
+                //Set each field in template
+                template.PopulateFields(newUser, newUserName);
+
+                //Set API provided fields
+                SetFields(newUserDetails, newUser);
+
+                //Set API provided groups
+                AssignGroups(newUserDetails, newUser);
+
+                //Prepare commit job
+                Job createUserJob = new(AppLocalization[Lang.Create_User]);
+
+                createUserJob.StopOnFailedStep = true;
+
+                //Commmit
+                var result = await newUser.CommitChangesAsync(createUserJob);
+
+                if (result.FailedSteps.Count > 0)
+                    return new UnprocessableEntityObjectResult(result.FailedSteps.Select(s => s.Exception?.InnerException != null ? s.Exception.InnerException.Message : s.Exception?.Message));
+
+
+                newUser = (IADUser)Directory.GetDirectoryEntryByDN(newUser.DN);
+
+                await AuditAndNotify(newUserDetails, template, newUser, password);
+
+                return new CreatedResult(newUser.OU, newUser.DN);
             }
-
-            //Store password in memory for later
-            var password = newUser.NewPassword.ToPlainText().ToSecureString();
-
-            //Set each field in template
-            template.PopulateFields(newUser, newUserName);
-
-            //Set API provided fields
-            SetFields(newUserDetails, newUser);
-
-            //Set API provided groups
-            AssignGroups(newUserDetails, newUser);
-
-            //Prepare commit job
-            Job createUserJob = new(AppLocalization[Lang.Create_User]);
-
-            createUserJob.StopOnFailedStep = true;
-
-            //Commmit
-            var result = await newUser.CommitChangesAsync(createUserJob);
-
-            if (result.FailedSteps.Count > 0)
-                return new UnprocessableEntityObjectResult(result.FailedSteps.Select(s => s.Exception?.InnerException != null ? s.Exception.InnerException.Message : s.Exception?.Message));
-
-
-            newUser = (IADUser)Directory.GetDirectoryEntryByDN(newUser.DN);
-
-            await AuditAndNotify(newUserDetails, template, newUser, password);
-
-            return new CreatedResult(newUser.OU, newUser.DN);
-
+            catch (DirectorySearchUniquenessException ex) {
+                return new UnprocessableEntityObjectResult("Multiple groups match the provided search term: "+ ex.SearchTerm);
+            }
+            catch (Exception ex)
+            {
+                return new UnprocessableEntityObjectResult(ex.Message);
+            }
 
         }
 
@@ -211,7 +226,28 @@ namespace BLAZAM.Pages.API.v1
             {
                 foreach (var groupSid in newUserDetails.Groups)
                 {
-                    var group = (IADGroup)Directory.GetDirectoryEntryByDN(groupSid);
+                    var group = (IADGroup)Directory.FindEntryBySid(groupSid);
+                    if(group == null)
+                    {
+                        group = (IADGroup)Directory.GetDirectoryEntryByDN(groupSid);
+                    }
+                    if (group == null)
+                    {
+                        group = (IADGroup)Directory.GetDirectoryEntryByDN(groupSid);
+                    }
+                    if (group == null)
+                    {
+                        var matches = Directory.Groups.FindGroupByString(groupSid,true);
+                        if (matches != null && matches.Count > 0)
+                        {
+                            if (matches.Count > 1)
+                            {
+                                throw new DirectorySearchUniquenessException(groupSid);
+                            }
+                            group = matches.First();
+                        }
+
+                    }
                     if (group != null)
                     {
                         newUser?.AssignTo(group);

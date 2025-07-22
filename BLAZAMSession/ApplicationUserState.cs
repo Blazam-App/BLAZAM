@@ -180,13 +180,16 @@ namespace BLAZAM.Session
 
                 if (userSettings == null)
                 {
-                    userSettings = new AppUser();
-                    string? email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-                    if (email != null) userSettings.Email = email;
-                    userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
-                    userSettings.Username = Username; // Assuming Username property is correctly populated
-                    context.UserSettings.Add(userSettings);
-                    context.SaveChanges();
+                    if (User.FindFirstValue(ClaimTypes.Sid) != null)
+                    {
+                        userSettings = new AppUser();
+                        string? email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+                        if (email != null) userSettings.Email = email;
+                        userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
+                        userSettings.Username = Username; // Assuming Username property is correctly populated
+                        context.UserSettings.Add(userSettings);
+                        context.SaveChanges();
+                    }
                 }
                 else if (string.IsNullOrEmpty(userSettings.Email)) // Check if existing settings email is empty
                 {

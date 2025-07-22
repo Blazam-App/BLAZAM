@@ -16,9 +16,181 @@
 <component type="typeof(App)" render-mode="Server" />
 
 
+<div id="components-reconnect-modal" class="my-reconnect-modal components-reconnect-hide absolute">
+    <div class="show">
+        <div class="mud-overlay-scrim mud-overlay-absolute mud-overlay-is-open" style="z-index: 1300;"></div>
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 1301;">
+            <div class="mud-dialog mud-dialog-width-sm mud-elevation-24 mud-paper">
+                <div class="mud-dialog-content py-5 px-8">
+                    <p id="reconnect-title" class="mud-typography mud-typography-h6 text-center">Connection Lost</p>
+                    <div class="d-flex justify-center my-4">
+                        <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="mud-progress-circular mud-primary-text mud-progress-medium mud-progress-indeterminate">
+                            <svg class="mud-progress-circular-svg" viewBox="22 22 44 44">
+                                <circle class="mud-progress-circular-circle mud-progress-indeterminate" cx="44" cy="44" r="20" fill="none" stroke-width="3"></circle>
+                            </svg>
+                            <div class="mud-progress-circular-percentage mud-progress-circular-indeterminate-child"></div>
+                        </div>
+                    </div>
+                    <p id="reconnect-message" class="mud-typography mud-typography-body1 text-center my-4">Attempting to reconnect...</p>
+                    <span id="components-reconnect-current-attempt">1</span><span>/8</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="failed">
+        <div class="mud-overlay-scrim mud-overlay-absolute mud-overlay-is-open" style="z-index: 1300;"></div>
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 1301;">
+            <div class="mud-dialog mud-dialog-width-sm mud-elevation-24 mud-paper">
+                <div class="mud-dialog-title">
+                    <p id="reconnect-failed-title" class="mud-typography mud-typography-h6 text-center mud-error-text pt-4">Connection Failed</p>
+                </div>
+                <div class="mud-dialog-content">
+                    <p id="reconnect-failed-message" class="mud-typography mud-typography-body1 text-center my-4 px-4">Could not reconnect to Blazam. Please check your network connection.</p>
+                </div>
+                <div class="mud-dialog-actions pa-4 d-flex justify-center">
+                    <button id="reconnect-refresh-button" onclick="window.location.reload();" class="mud-button-root mud-button mud-button-filled mud-button-filled-primary mud-button-filled-size-medium mud-ripple">
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rejected">
+        <div class="mud-overlay-scrim mud-overlay-absolute mud-overlay-is-open" style="z-index: 1300;"></div>
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 1301;">
+            <div class="mud-dialog mud-dialog-width-sm mud-elevation-24 mud-paper">
+                <div class="mud-dialog-title">
+                    <p id="reconnect-rejected-title" class="mud-typography mud-typography-h6 text-center mud-error-text pt-4">Connection Rejected</p>
+                </div>
+                <div class="mud-dialog-content">
+                    <p id="reconnect-rejected-message" class="mud-typography mud-typography-body1 text-center my-4 px-4">The connection was rejected. Another connection is already active.</p>
+                </div>
+                <div class="mud-dialog-actions pa-4 d-flex justify-center">
+                    <button id="reconnect-rejected-refresh-button" onclick="window.location.reload();" class="mud-button-root mud-button mud-button-filled mud-button-filled-primary mud-button-filled-size-medium mud-ripple">
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Translations for the reconnect dialog
+    const translations = {
+        'en': {
+            'connectionLost': 'Connection Lost',
+            'attemptingReconnect': 'Attempting to reconnect...',
+            'connectionFailed': 'Connection Failed',
+            'couldNotReconnect': 'Could not reconnect to Blazam. Please check your network connection.',
+            'refresh': 'Refresh',
+            'connectionRejected': 'Connection Rejected',
+            'connectionRejectedMessage': 'The connection was rejected. Another connection is already active.'
+        },
+        'fr': {
+            'connectionLost': 'Connexion perdue',
+            'attemptingReconnect': 'Tentative de reconnexion...',
+            'connectionFailed': 'Échec de la connexion',
+            'couldNotReconnect': 'Impossible de se reconnecter à Blazam. Veuillez vérifier votre connexion réseau.',
+            'refresh': 'Rafraîchir',
+            'connectionRejected': 'Connexion rejetée',
+            'connectionRejectedMessage': 'La connexion a été rejetée. Une autre connexion est déjà active.'
+        },
+        'de': {
+            'connectionLost': 'Verbindung verloren',
+            'attemptingReconnect': 'Versuche, die Verbindung wiederherzustellen...',
+            'connectionFailed': 'Verbindung fehlgeschlagen',
+            'couldNotReconnect': 'Konnte keine Verbindung zu Blazam herstellen. Bitte überprüfen Sie Ihre Netzwerkverbindung.',
+            'refresh': 'Aktualisieren',
+            'connectionRejected': 'Verbindung abgelehnt',
+            'connectionRejectedMessage': 'Die Verbindung wurde abgelehnt. Eine andere Verbindung ist bereits aktiv.'
+        },
+        'hi': {
+            'connectionLost': 'कनेक्शन टूट गया',
+            'attemptingReconnect': 'पुनः कनेक्ट करने का प्रयास किया जा रहा है...',
+            'connectionFailed': 'कनेक्शन विफल',
+            'couldNotReconnect': 'ब्लाज़म से पुनः कनेक्ट नहीं हो सका। कृपया अपना नेटवर्क कनेक्शन जांचें।',
+            'refresh': 'ताज़ा करें',
+            'connectionRejected': 'कनेक्शन अस्वीकृत',
+            'connectionRejectedMessage': 'कनेक्शन अस्वीकार कर दिया गया था। एक और कनेक्शन पहले से ही सक्रिय है।'
+        },
+        'it': {
+            'connectionLost': 'Connessione persa',
+            'attemptingReconnect': 'Tentativo di riconnessione...',
+            'connectionFailed': 'Connessione non riuscita',
+            'couldNotReconnect': 'Impossibile riconnettersi a Blazam. Controlla la tua connessione di rete.',
+            'refresh': 'Aggiorna',
+            'connectionRejected': 'Connessione rifiutata',
+            'connectionRejectedMessage': 'La connessione è stata respinta. Un\'altra connessione è già attiva.'
+        },
+        'ja': {
+            'connectionLost': '接続が失われました',
+            'attemptingReconnect': '再接続を試みています...',
+            'connectionFailed': '接続に失敗しました',
+            'couldNotReconnect': 'Blazamに再接続できませんでした。ネットワーク接続を確認してください。',
+            'refresh': '更新',
+            'connectionRejected': '接続が拒否されました',
+            'connectionRejectedMessage': '接続は拒否されました。別の接続がすでにアクティブです。'
+        },
+        'ko': {
+            'connectionLost': '연결이 끊어졌습니다',
+            'attemptingReconnect': '재연결 시도 중...',
+            'connectionFailed': '연결 실패',
+            'couldNotReconnect': 'Blazam에 다시 연결할 수 없습니다. 네트워크 연결을 확인하십시오.',
+            'refresh': '새로 고침',
+            'connectionRejected': '연결이 거부되었습니다',
+            'connectionRejectedMessage': '연결이 거부되었습니다. 다른 연결이 이미 활성 상태입니다.'
+        },
+        'pl': {
+            'connectionLost': 'Utracono połączenie',
+            'attemptingReconnect': 'Próba ponownego połączenia...',
+            'connectionFailed': 'Połączenie nie powiodło się',
+            'couldNotReconnect': 'Nie można ponownie połączyć się z Blazam. Sprawdź połączenie sieciowe.',
+            'refresh': 'Odśwież',
+            'connectionRejected': 'Połączenie odrzucone',
+            'connectionRejectedMessage': 'Połączenie zostało odrzucone. Inne połączenie jest już aktywne.'
+        },
+        'ru': {
+            'connectionLost': 'Соединение потеряно',
+            'attemptingReconnect': 'Попытка переподключения...',
+            'connectionFailed': 'Сбой подключения',
+            'couldNotReconnect': 'Не удалось переподключиться к Blazam. Пожалуйста, проверьте ваше сетевое соединение.',
+            'refresh': 'Обновить',
+            'connectionRejected': 'Соединение отклонено',
+            'connectionRejectedMessage': 'Соединение было отклонено. Другое соединение уже активно.'
+        },
+        'es': {
+            'connectionLost': 'Conexión perdida',
+            'attemptingReconnect': 'Intentando reconectar...',
+            'connectionFailed': 'Error de conexión',
+            'couldNotReconnect': 'No se pudo reconectar a Blazam. Por favor, compruebe su conexión de red.',
+            'refresh': 'Actualizar',
+            'connectionRejected': 'Conexión rechazada',
+            'connectionRejectedMessage': 'La conexión fue rechazada. Otra conexión ya está activa.'
+        }
+    };
+
+    function setReconnectLanguage() {
+        // Get the user's browser language, defaulting to 'en'
+        const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
+        const lang = translations[userLang] ? userLang : 'en';
+        const t = translations[lang];
+
+        // Update the text content of the elements
+        document.getElementById('reconnect-title').textContent = t.connectionLost;
+        document.getElementById('reconnect-message').textContent = t.attemptingReconnect;
+        document.getElementById('reconnect-failed-title').textContent = t.connectionFailed;
+        document.getElementById('reconnect-failed-message').textContent = t.couldNotReconnect;
+        document.getElementById('reconnect-refresh-button').textContent = t.refresh;
+        document.getElementById('reconnect-rejected-title').textContent = t.connectionRejected;
+        document.getElementById('reconnect-rejected-message').textContent = t.connectionRejectedMessage;
+        document.getElementById('reconnect-rejected-refresh-button').textContent = t.refresh;
+    }
+
+    // Run the function when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', setReconnectLanguage);
+</script>
 
 
-
-   
 
 

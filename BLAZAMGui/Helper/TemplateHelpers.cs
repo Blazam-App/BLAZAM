@@ -17,26 +17,22 @@ namespace BLAZAM.Gui.Helpers
         /// <param name="directory">The directory to create the use under</param>
         /// <returns></returns>
         /// <exception cref="AppException"></exception>
-        public static IADUser GenerateTemplateUser(this DirectoryTemplate template, NewUserName newUserName, IActiveDirectoryContext directory)
+        public static IADUser GenerateTemplateUser(this DirectoryTemplate template, NewUserName newUserName, IActiveDirectoryContext directory, IADOrganizationalUnit? parentOU = null)
         {
             IADUser? newUser;
-            var ou = directory.OUs.FindOuByString(template.EffectiveParentOU).FirstOrDefault();
-            if (ou == null) throw new AppException("OU could not be found for new user");
-            var displayName = template.GenerateDisplayName(newUserName);
-
-
-            var fullContainerName = "CN=" + displayName.Trim().Replace(",", "\\,")+","+ou.DN;
-            try
+            if (parentOU == null)
             {
-                newUser = ou.CreateUser(displayName.Trim());
+                parentOU = directory.OUs.FindOuByString(template.EffectiveParentOU).FirstOrDefault();
+            }
+            if (parentOU == null) throw new AppException("OU could not be found for new user");
+            var displayName = template.GenerateDisplayName(newUserName);
+            try {
+                newUser = parentOU.CreateUser(displayName);
 
-               
-                //newUser.Enabled = true;
-                newUser.DisplayName = displayName;
                 newUser.SAMAccountName = template.GenerateUsername(newUserName);
                 newUser.DisplayName = displayName;
                 newUser.StagePasswordChange(template.GeneratePassword(newUserName).ToSecureString());
-                newUser.StageEnable();
+              newUser.StageEnable();
                 if (template.EffectiveRequirePasswordChange == true)
                     newUser.StageRequirePasswordChange(true);
                 if (!newUserName.GivenName.IsNullOrEmpty())
@@ -45,7 +41,6 @@ namespace BLAZAM.Gui.Helpers
                     newUser.MiddleName = newUserName.MiddleName;
                 if (!newUserName.Surname.IsNullOrEmpty())
                     newUser.Sn = newUserName.Surname;
-
 
 
                 template.EffectiveAssignedGroupSids.ForEach(sid =>
@@ -59,15 +54,13 @@ namespace BLAZAM.Gui.Helpers
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create user in {@ContainerName}", fullContainerName);
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create user in {@ContainerName}", parentOU.DN);
+
                 throw;
             }
 
             //newUser = ou.CreateUser(displayName);
 
-
-
-            
         }
     }
 }
