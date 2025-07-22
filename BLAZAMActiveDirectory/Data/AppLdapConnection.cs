@@ -47,8 +47,17 @@ namespace BLAZAM.ActiveDirectory.Data
                         _keepAliveTime.Dispose();
                     }
                     // TODO: dispose managed state (managed objects)
-                    LdapConnection?.SessionOptions.StopTransportLayerSecurity();
-                    LdapConnection?.Dispose();
+                    try
+                    {
+                        if (LdapConnection?.SessionOptions.SecureSocketLayer == true)
+                        {
+                            LdapConnection?.SessionOptions.StopTransportLayerSecurity();
+                        }
+                    }
+                    finally
+                    {
+                        LdapConnection?.Dispose();
+                    }
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
