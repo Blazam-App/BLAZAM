@@ -14,14 +14,16 @@ namespace BLAZAM.ActiveDirectory.Data
     {
         public LdapConnection LdapConnection { get; set; }
 
+        private readonly bool _startedTLS;
         private Timer? _keepAliveTime = null;
         public bool IsDisposed;
         public DateTime? Expires;
 
-        public AppLdapConnection(LdapConnection ldapConnection)
+        public AppLdapConnection(LdapConnection ldapConnection, bool startedTLS)
         {
             if (ldapConnection == null) throw new ArgumentNullException("ldapConnection");
             LdapConnection = ldapConnection;
+            _startedTLS = startedTLS;
            // _keepAliveTime = new Timer(KeepAlive, null, 30000, 30000);
 
         }
@@ -50,7 +52,7 @@ namespace BLAZAM.ActiveDirectory.Data
                     // TODO: dispose managed state (managed objects)
                     try
                     {
-                        if (LdapConnection?.SessionOptions.SecureSocketLayer == true)
+                        if (_startedTLS)
                         {
                             LdapConnection?.SessionOptions.StopTransportLayerSecurity();
                         }

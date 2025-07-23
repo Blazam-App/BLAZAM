@@ -40,7 +40,8 @@ namespace BLAZAM.ActiveDirectory
         /// <returns>True if the connection was successful, otherwise false.</returns>
         public static AppLdapConnection? Connect(ADSettings settings)
         {
-            if(_random == null)
+            bool startedTLS = false;
+            if (_random == null)
             {
                 _random = new Random();
             }
@@ -118,6 +119,7 @@ namespace BLAZAM.ActiveDirectory
                 {
                     Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting StartTLS connection.");
                     ConnectWithStartTls(settings, out connection);
+                    startedTLS = true;
                 }
                 else
                 {
@@ -129,7 +131,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 if (connection == null)
                     return null;
-                var appConnection = new AppLdapConnection(connection);
+                var appConnection = new AppLdapConnection(connection,startedTLS);
 
                 if (_disposerTimer == null)
                 {
