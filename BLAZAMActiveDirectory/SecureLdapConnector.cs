@@ -7,6 +7,8 @@ using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -82,7 +84,7 @@ namespace BLAZAM.ActiveDirectory
                 AppLdapConnection? conn = null;
                 try
                 {
-                   conn = _connectionPool.First(c => c.IsDisposed == false && c.Expires != null);
+                    conn = _connectionPool.First(c => c.IsDisposed == false && c.Expires != null);
                     if (conn != null && conn.LdapConnection != null)
                     {
                         var whoAmIRequest = new SearchRequest("", "(objectClass=*)", SearchScope.Base, settings.ApplicationBaseDN);
@@ -131,7 +133,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 if (connection == null)
                     return null;
-                var appConnection = new AppLdapConnection(connection,startedTLS);
+                var appConnection = new AppLdapConnection(connection, startedTLS);
 
                 if (_disposerTimer == null)
                 {
@@ -156,10 +158,10 @@ namespace BLAZAM.ActiveDirectory
                     var count = _connectionPool.Count;
                     for (int i = 0; i < count; i++)
                     {
-                        if (!_connectionPool[i].IsDisposed 
-                            && _connectionPool[i].Expires != null 
-                            && _connectionPool[i].Expires < DateTime.Now 
-                            && _connectionPool.Count(x=>x.Expires!=null && !x.IsDisposed)>25)
+                        if (!_connectionPool[i].IsDisposed
+                            && _connectionPool[i].Expires != null
+                            && _connectionPool[i].Expires < DateTime.Now
+                            && _connectionPool.Count(x => x.Expires != null && !x.IsDisposed) > 25)
                         {
 
                             _connectionPool[i].DisposeNow();
@@ -193,15 +195,15 @@ namespace BLAZAM.ActiveDirectory
                     var count = _connectionPool.Count;
                     for (int i = 0; i < count; i++)
                     {
-                        
 
-                            _connectionPool[i].DisposeNow();
 
-                           // _connectionPool.RemoveAt(i);
-                           // i--;
-                          //  count--;
-                           // OnCountChanged?.Invoke();
-                        
+                        _connectionPool[i].DisposeNow();
+
+                        // _connectionPool.RemoveAt(i);
+                        // i--;
+                        //  count--;
+                        // OnCountChanged?.Invoke();
+
 
                     }
                     _connectionPool.Clear();
@@ -337,60 +339,18 @@ namespace BLAZAM.ActiveDirectory
                 {
                     return true;
                 };
-                lock (_tlsLock)
-                {
-                    var tlsStarted = false;
-                    int attempts = 0;
 
-                    while (!tlsStarted && attempts < 5)
-                    {
-                        attempts++;
-                        // Create a Task for the blocking operation
-                        // Use a CancellationTokenSource to allow for cancellation attempts if the task gets "stuck"
-                        using (var cancellationTokenSource = new CancellationTokenSource())
-                        {
-                            var connectionTask = Task.Run(() =>
-                            {
-                                try
-                                {
-                                    //Task.Delay(200).Wait();
+                if (!StartTls(currentConnection)) return false;
 
-                                    currentConnection.SessionOptions.StartTransportLayerSecurity(null);
-                                    //Task.Delay(100).Wait();
 
-                                    tlsStarted = true;
-                                }
-                                catch (OperationCanceledException)
-                                {
-                                    Loggers.ActiveDirectoryLogger.Warning($"StartTransportLayerSecurity was cancelled for {settings.ServerAddress}:{settings.ServerPort}.");
-                                    throw; // Re-throw to be caught outside
-                                }
-                            }, cancellationTokenSource.Token);
-                            var timeout = Stopwatch.StartNew();
-                            while (currentConnection.SessionOptions.SecureSocketLayer == false && timeout.Elapsed < TimeSpan.FromSeconds(10))
-                            {
-                                Task.Delay(50).Wait();
-                            }
+                currentConnection.Credential = credential;
 
-                            if (!currentConnection.SessionOptions.SecureSocketLayer)
-                            {
-                                return false;
-                            }
-                            timeout.Stop();
-                            timeout = null;
-
-                        }
-                    }
-
-                    currentConnection.Credential = credential;
-
-                    // 5. Bind to the server
-                    Loggers.ActiveDirectoryLogger.Information($"Attempting initial connection to {settings.ServerAddress}:{settings.ServerPort} for StartTLS as {settings.Username}...");
-                    currentConnection.Bind();
-                    currentConnection.AutoBind = true;
-                    connection = currentConnection;
-                    return true;
-                }
+                // 5. Bind to the server
+                Loggers.ActiveDirectoryLogger.Information($"Attempting initial connection to {settings.ServerAddress}:{settings.ServerPort} for StartTLS as {settings.Username}...");
+                currentConnection.Bind();
+                currentConnection.AutoBind = true;
+                connection = currentConnection;
+                return true;
             }
             catch (LdapException ldapEx)
             {
@@ -422,6 +382,106 @@ namespace BLAZAM.ActiveDirectory
             }
         }
 
+        private static bool StartTls(LdapConnection currentConnection)
+        {
+            lock (_tlsLock)
+            {
+                var tlsStarted = false;
+                int attempts = 0;
+
+                while (!tlsStarted && attempts < 5)
+                {
+                    attempts++;
+                    // Create a Task for the blocking operation
+                    // Use a CancellationTokenSource to allow for cancellation attempts if the task gets "stuck"
+                    using (var cancellationTokenSource = new CancellationTokenSource())
+                    {
+                        var connectionTask = Task.Run(() =>
+                        {
+                            try
+                            {
+                                //Task.Delay(200).Wait();
+
+                                currentConnection.SessionOptions.StartTransportLayerSecurity(null);
+                                //Task.Delay(100).Wait();
+
+                                tlsStarted = true;
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                Loggers.ActiveDirectoryLogger.Warning($"StartTransportLayerSecurity was cancelled for {currentConnection.SessionOptions.HostName}.");
+                                throw; // Re-throw to be caught outside
+                            }
+                        }, cancellationTokenSource.Token);
+                        var timeout = Stopwatch.StartNew();
+                        while (currentConnection.SessionOptions.SecureSocketLayer == false && timeout.Elapsed < TimeSpan.FromSeconds(10))
+                        {
+                            Task.Delay(50).Wait();
+                        }
+
+                        if (!currentConnection.SessionOptions.SecureSocketLayer)
+                        {
+                            return false;
+                        }
+                        timeout.Stop();
+
+                    }
+                }
+
+
+                return true;
+            }
+        }
+        public static bool StopTls(LdapConnection currentConnection)
+        {
+            lock (_tlsLock)
+            {
+                var tlsStarted = false;
+                int attempts = 0;
+
+                while (!tlsStarted && attempts < 5)
+                {
+                    attempts++;
+                    // Create a Task for the blocking operation
+                    // Use a CancellationTokenSource to allow for cancellation attempts if the task gets "stuck"
+                    using (var cancellationTokenSource = new CancellationTokenSource())
+                    {
+                        var connectionTask = Task.Run(() =>
+                        {
+                            try
+                            {
+                                //Task.Delay(200).Wait();
+
+                                currentConnection.SessionOptions.StopTransportLayerSecurity();
+                                //Task.Delay(100).Wait();
+
+                                tlsStarted = true;
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                Loggers.ActiveDirectoryLogger.Warning($"StopTransportLayerSecurity was cancelled for {currentConnection.SessionOptions.HostName}.");
+                                throw; // Re-throw to be caught outside
+                            }
+                        }, cancellationTokenSource.Token);
+                        var timeout = Stopwatch.StartNew();
+                        while (currentConnection.SessionOptions.SecureSocketLayer == false && timeout.Elapsed < TimeSpan.FromSeconds(10))
+                        {
+                            Task.Delay(50).Wait();
+                        }
+
+                        if (!currentConnection.SessionOptions.SecureSocketLayer)
+                        {
+                            return false;
+                        }
+                        timeout.Stop();
+
+                    }
+                }
+
+
+                return true;
+            }
+        }
         private static void TestConnectionMethods(ADSettings settings)
         {
             if (!_testsPerformed)

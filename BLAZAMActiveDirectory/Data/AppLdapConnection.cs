@@ -54,7 +54,7 @@ namespace BLAZAM.ActiveDirectory.Data
                     {
                         if (_startedTLS)
                         {
-                            LdapConnection?.SessionOptions.StopTransportLayerSecurity();
+                            SecureLdapConnector.StopTls(LdapConnection);
                         }
                     }
                     catch(Exception ex) {
