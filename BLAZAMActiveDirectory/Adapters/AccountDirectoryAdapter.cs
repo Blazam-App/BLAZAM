@@ -87,6 +87,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
+          public virtual DateTime? PasswordExpirationTime
+        {
+            get
+            {
+                return GetDateTimeAttribute("msDS-UserPasswordExpiryTimeComputed");
+
+            }
+        }
 
         public DateTime? LastLogonTime
         {

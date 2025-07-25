@@ -720,7 +720,11 @@ namespace BLAZAM.ActiveDirectory
                             }
                             catch (DirectoryServicesCOMException ex)
                             {
-                                Loggers.ActiveDirectoryLogger.Error("Error authenticating user: {Message} {@Error}", ex.Message, ex);
+                                Loggers.ActiveDirectoryLogger.Information("Error authenticating user: {Message} {@Error}", ex.Message, ex);
+                                if(ex.ExtendedErrorMessage.Contains("data 773, v4563"))
+                                {
+                                    return findUser;
+                                }
                                 switch (ex.Message)
                                 {
                                     case "The user name or password is incorrect.":

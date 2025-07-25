@@ -1107,6 +1107,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <param name="propertyName">The requested attribute</param>
         /// <returns>The attribute value</returns>
         private T? GetValue<T>(string propertyName)
+
         {
 
             if (NewEntry)
@@ -1154,18 +1155,28 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return default;
 
             }
-
+            
             try
             {
-                if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
-                    return (T?)DirectoryEntry.Properties[propertyName].Value;
-
+                if (DirectoryEntry != null)
+                {
+                    
+                    if (DirectoryEntry.Properties.Contains(propertyName))
+                        return (T?)DirectoryEntry.Properties[propertyName].Value;
+                    else
+                    {
+                        DirectoryEntry.RefreshCache(new string[] { propertyName });
+                        if (DirectoryEntry.Properties.Contains(propertyName))
+                            return (T?)DirectoryEntry.Properties[propertyName].Value;
+                    }
+                }
             }
-            catch (ArgumentException)
+            catch (ArgumentException ex)
             {
-                var temp = DirectoryEntry?.Properties[propertyName];
-                var temp2 = (T?)temp?.Value;
-                return temp2;
+                Loggers.ActiveDirectoryLogger.Information(ex, "Argument Exception getting an entry's attribute. {@Error} {@Attribute}", propertyName);
+                //var temp = DirectoryEntry?.Properties[propertyName];
+                //var temp2 = (T?)temp?.Value;
+                //return temp2;
             }
             catch (InvalidCastException ex)
             {
