@@ -16,13 +16,13 @@
     <base href="~/" />
 
     <link rel="icon" type="image/x-icon" href=@StaticAssets.FaviconUri>
-    <link href="css/site.css" rel="stylesheet" />
-    <link href="BLAZAM.styles.css" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" asp-append-version="true" />
+    <link href="BLAZAM.styles.css" rel="stylesheet" asp-append-version="true" />
 
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
-    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
-    <link href="_content/MudBlazor.Markdown/MudBlazor.Markdown.min.css" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="_content/MudBlazor.Markdown/MudBlazor.Markdown.min.css" rel="stylesheet" asp-append-version="true" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 
@@ -33,6 +33,8 @@
 
 <body>
     @RenderBody()
+
+
 
     <div id="blazor-error-ui">
         @if (!ApplicationInfo.inDebugMode)
@@ -99,29 +101,15 @@
         </script>
     }
 
-    <script src="~/js/blazam.js"></script>
+    <script src="~/js/blazam.js" asp-append-version="true"></script>
     <script src="~/lib/svg-gauge/dist/gauge.min.js"></script>
 
 
- 
-    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-    <script src="_content/MudBlazor.Markdown/MudBlazor.Markdown.min.js"></script>
 
-    <script>
-        // Wait until a 'reload' button appears
-        new MutationObserver((mutations, observer) => {
-            if (document.querySelector('#components-reconnect-modal h5 a')) {
-                // Now every 10 seconds, see if the server appears to be back, and if so, reload
-                async function attemptReload() {
-                    await fetch(''); // Check the server really is back
-                    location.reload();
-                }
-                observer.disconnect();
-                attemptReload();
-                setInterval(attemptReload, 10000);
-            }
-        }).observe(document.body, { childList: true, subtree: true });
-    </script>
+    <script src="_content/MudBlazor/MudBlazor.min.js" asp-append-version="true"></script>
+    <script src="_content/MudBlazor.Markdown/MudBlazor.Markdown.min.js" asp-append-version="true"></script>
+  
+    <script src="~/js/reconnect.js" asp-append-version="true"></script>
     <script>
         if('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js', {scope: '/'})
