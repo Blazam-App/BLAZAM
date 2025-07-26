@@ -51,6 +51,14 @@
                                              Label="@AppLocalization[Lang.Name]"
                                              @bind-Value="@Printer.CanonicalName"
                                              Disabled=@true />
+                            @if (Printer.CanReadField(ActiveDirectoryFields.Manager))
+                            {
+                                <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.User"
+                                                Label="@AppLocalization[Lang.Manager]"
+                                                SelectedResult=Printer.Manager
+                                                SelectedResultChanged="@((user)=>{Printer.Manager=user as IADUser;})"
+                                                Disabled=@(!EditMode || !Printer.CanEditField(ActiveDirectoryFields.Manager)) />
+                            }
                             <DynamicMudInput T=string
                                              Label="@AppLocalization[Lang.Driver]"
                                              @bind-Value="@Printer.DriverName"

@@ -71,6 +71,15 @@
                                     <MudText>@Computer.CanonicalName</MudText>
 
                                 </MudStack>
+
+                                @if (Computer.CanReadField(ActiveDirectoryFields.Manager))
+                                {
+                                    <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.User"
+                                                    Label="@AppLocalization[Lang.Manager]"
+                                                    SelectedResult=Computer.Manager
+                                                    SelectedResultChanged="@((user)=>{Computer.Manager=user as IADUser;})"
+                                                    Disabled=@(!EditMode || !Computer.CanEditField(ActiveDirectoryFields.Manager)) />
+                                }
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Operating_System]:</MudText>
                                     <MudSpacer />
