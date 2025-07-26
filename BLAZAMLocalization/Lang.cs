@@ -189,6 +189,7 @@ namespace BLAZAM.Localization
         public static readonly string Organization = "Organization";
         public static readonly string Department = "Department";
         public static readonly string Company = "Company";
+        public static readonly string Manager = "Manager";
         public static readonly string Office = "Office";
         public static readonly string City = "City";
         public static readonly string State = "State";
