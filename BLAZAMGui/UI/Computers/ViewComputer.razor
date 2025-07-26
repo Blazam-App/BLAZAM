@@ -80,13 +80,15 @@
                                                     SelectedResultChanged="@((user)=>{Computer.Manager=user as IADUser;})"
                                                     Disabled=@(!EditMode || !Computer.CanEditField(ActiveDirectoryFields.Manager)) />
                                 }
+                                @if (Computer.CanReadField(ActiveDirectoryFields.OperatingSystem))
+                                {
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Operating_System]:</MudText>
                                     <MudSpacer />
                                     <MudText>@Computer.OperatingSystem</MudText>
 
                                 </MudStack>
-                              
+                                }
 
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Online]:</MudText>
