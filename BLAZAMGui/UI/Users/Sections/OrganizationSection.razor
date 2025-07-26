@@ -1,0 +1,75 @@
+﻿@inherits DirectoryModelComponentElement
+
+
+
+
+
+
+
+
+
+@if (GroupableEntry.CanReadField(ActiveDirectoryFields.EmployeeId) ||
+      GroupableEntry.CanReadField(ActiveDirectoryFields.Department) ||
+      GroupableEntry.CanReadField(ActiveDirectoryFields.Company) ||
+      GroupableEntry.CanReadField(ActiveDirectoryFields.Manager) ||
+      GroupableEntry.CanReadField(ActiveDirectoryFields.Title) ||
+      GroupableEntry.CanReadField(ActiveDirectoryFields.PhysicalDeliveryOffice)
+      )
+{
+    <ViewSection Title=@AppLocalization[Lang.Organization]>
+
+
+        @if (GroupableEntry.CanReadField(ActiveDirectoryFields.Description))
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Description]"
+                             @bind-Value="@Contact.Description"
+                             Disabled=@(!EditMode || !GroupableEntry.CanEditField(ActiveDirectoryFields.Description)) />
+        }
+        @if (GroupableEntry.CanReadField(ActiveDirectoryFields.EmployeeId))
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Employee_Id]"
+                             @bind-Value="@Contact.EmployeeId"
+                             Disabled=@(!EditMode || !GroupableEntry.CanEditField(ActiveDirectoryFields.EmployeeId)) />
+        }
+        @if (GroupableEntry.CanReadField(ActiveDirectoryFields.Department))
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Department]"
+                             @bind-Value="@Contact.Department"
+                             Disabled=@(!EditMode || !GroupableEntry.CanEditField(ActiveDirectoryFields.Department)) />
+        }
+        @if (GroupableEntry.CanReadField(ActiveDirectoryFields.Company))
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Company]"
+                             @bind-Value="@Contact.Company"
+                             Disabled=@(!EditMode || !GroupableEntry.CanEditField(ActiveDirectoryFields.Company)) />
+        }
+        @if (GroupableEntry.CanReadField(ActiveDirectoryFields.Manager))
+        {
+            <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.User"
+                            Label="@AppLocalization[Lang.Manager]"
+                            SelectedResult=Contact.Manager
+                            SelectedResultChanged="@((user)=>{Contact.Manager=user as IADUser;})"
+                            Disabled=@(!EditMode || !GroupableEntry.CanEditField(ActiveDirectoryFields.Manager)) />
+        }
+        @if (GroupableEntry.CanReadField(ActiveDirectoryFields.Title))
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Job_Title]"
+                             @bind-Value="@Contact.Title"
+                             Disabled=@(!EditMode || !GroupableEntry.CanEditField(ActiveDirectoryFields.Title)) />
+        }
+        @if (GroupableEntry.CanReadField(ActiveDirectoryFields.PhysicalDeliveryOffice))
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Office]"
+                             @bind-Value="@Contact.PhysicalDeliveryOfficeName"
+                             Disabled=@(!EditMode || !GroupableEntry.CanEditField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
+        }
+    </ViewSection>
+}
+@code {
+}

@@ -291,6 +291,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
+        private IADUser? _manager;
+        public virtual IADUser? Manager
+        {
+            get
+            {
+                if (_manager == null)
+                {
+                    var dn = GetStringAttribute(ActiveDirectoryFields.Manager.FieldName);
+
+                    var user = Directory.Users.FindUserByDN(dn);
+                    _manager = user;
+                }
+                return _manager;
+            }
+            set
+            {
+                _manager = value;
+                SetAttribute(ActiveDirectoryFields.Manager.FieldName, value?.DN);
+            }
+
+        }
 
 
         public virtual IADOrganizationalUnit? LastKnownParent
@@ -568,7 +589,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
         private IList<PermissionMapping> _appliedPermissionMappings;
-       
+
         public IList<PermissionMapping> AppliedPermissionMappings
         {
             get
@@ -912,7 +933,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 }
                 var result = false;
-                if(commitJob.Result!=JobResult.Running && commitJob.Result != JobResult.Cancelled)
+                if (commitJob.Result != JobResult.Running && commitJob.Result != JobResult.Cancelled)
                 {
                     result = commitJob.Run();
 
@@ -1123,7 +1144,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error(ex,"Unexpected error while getting property value for {@PropertyName}",propertyName);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
                 }
 
 

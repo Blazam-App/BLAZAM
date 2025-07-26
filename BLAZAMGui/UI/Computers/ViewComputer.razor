@@ -14,7 +14,6 @@
             <DirectoryEntryViewHeader EditMode="@EditMode"
                                       DirectoryEntry="@Computer"
                                       OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
-                                      OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
                                       OnDelete="@DeleteComputer"
                                       OnDisable="@(async()=>{Computer.Enabled=false; await RefreshEntryComponents();})"
                                       OnEnable="@(async()=>{Computer.Enabled=true; await RefreshEntryComponents();})"
@@ -71,13 +70,24 @@
                                     <MudText>@Computer.CanonicalName</MudText>
 
                                 </MudStack>
+
+                                @if (Computer.CanReadField(ActiveDirectoryFields.Manager))
+                                {
+                                    <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.User"
+                                                    Label="@AppLocalization[Lang.Manager]"
+                                                    SelectedResult=Computer.Manager
+                                                    SelectedResultChanged="@((user)=>{Computer.Manager=user as IADUser;})"
+                                                    Disabled=@(!EditMode || !Computer.CanEditField(ActiveDirectoryFields.Manager)) />
+                                }
+                                @if (Computer.CanReadField(ActiveDirectoryFields.OperatingSystem))
+                                {
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Operating_System]:</MudText>
                                     <MudSpacer />
                                     <MudText>@Computer.OperatingSystem</MudText>
 
                                 </MudStack>
-                              
+                                }
 
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Online]:</MudText>

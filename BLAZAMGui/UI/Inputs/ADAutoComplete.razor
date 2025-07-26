@@ -177,9 +177,9 @@
     [Parameter]
     public EventCallback<IEnumerable<IDirectoryEntryAdapter>> SearchResultsChanged { get; set; }
 
-    private IDirectoryEntryAdapter _selectedResult;
+    private IDirectoryEntryAdapter? _selectedResult;
     [Parameter]
-    public IDirectoryEntryAdapter SelectedResult
+    public IDirectoryEntryAdapter? SelectedResult
     {
         get => _selectedResult;
         set
@@ -200,7 +200,7 @@
     }
 
     [Parameter]
-    public EventCallback<IDirectoryEntryAdapter> SelectedResultChanged { get; set; }
+    public EventCallback<IDirectoryEntryAdapter?> SelectedResultChanged { get; set; }
 
 
 

@@ -1,0 +1,121 @@
+﻿@using System.Text
+<MudPaper Elevation="Elevation" Class="@PaperClass" Style="@CombinedStyle">
+
+    @{
+        RenderFragment headerFragment =
+        @<MudElement class="@HeaderWrapperClass">
+            <MudElement class="@HeaderClass">
+                <MudText Color="TextColor" Class="section-title-text">@Title</MudText>
+            </MudElement>
+        </MudElement>;
+    }
+
+    @if (IsHeaderAtTop)
+    {
+        @headerFragment
+    }
+
+    <MudStack Row="@(!Stack)" Spacing="1" Class=@(Stack==false?"flex-wrap gap-10":"")>
+        @ChildContent
+    </MudStack>
+
+
+    @if (!IsHeaderAtTop)
+    {
+        @headerFragment
+    }
+</MudPaper>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter]
+    public bool Stack { get; set; }
+
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public HeaderPosition SectionHeaderPosition { get; set; } = HeaderPosition.TopCenter;
+
+    [Parameter]
+    public int Elevation { get; set; } = 2;
+
+    [Parameter]
+    public Color TextColor { get; set; } = Color.Secondary;
+
+    [Parameter]
+    public bool FullWidth { get; set; } = true;
+
+    [Parameter]
+    public string Style { get; set; } = string.Empty;
+
+    private bool IsHeaderAtTop => SectionHeaderPosition is HeaderPosition.TopLeft or HeaderPosition.TopRight or HeaderPosition.TopCenter;
+
+    private string PaperClass
+    {
+        get
+        {
+            var sb = new StringBuilder("section px-4 py-3");
+            if (FullWidth)
+            {
+                sb.Append(" mud-width-full");
+            }
+            return sb.ToString();
+        }
+    }
+
+    private string CombinedStyle
+    {
+        get
+        {
+            var sb = new StringBuilder("overflow: hidden;");
+            if (!string.IsNullOrWhiteSpace(Style))
+            {
+                sb.Append(' ').Append(Style);
+            }
+            return sb.ToString();
+        }
+    }
+
+    private string HeaderWrapperClass
+    {
+        get
+        {
+            var sb = new StringBuilder("section-title-wrapper");
+            if (IsHeaderAtTop)
+            {
+                sb.Append(" pos-top");
+            }
+            else
+            {
+                sb.Append(" pos-bottom");
+            }
+            return sb.ToString();
+        }
+    }
+
+    private string HeaderClass
+    {
+        get
+        {
+            var sb = new StringBuilder("section-title");
+            if (SectionHeaderPosition is HeaderPosition.TopLeft)
+            {
+                sb.Append(" align-left");
+            }
+            else if (SectionHeaderPosition is HeaderPosition.TopCenter)
+            {
+                sb.Append(" align-middle");
+            }
+            else
+            {
+                sb.Append(" align-right");
+            }
+            return sb.ToString();
+        }
+    }
+
+    public enum HeaderPosition { TopLeft, TopRight, TopCenter }
+}
