@@ -1,0 +1,69 @@
+﻿@inherits DirectoryModelComponentElement
+
+
+
+
+
+
+
+<ViewSection FullWidth=false Title=@AppLocalization[Lang.Name]>
+
+
+        <AppTooltip Disabled=@(!EditMode || GroupableEntry.NewEntry) Text=@AppHelpLocalization[HelpLang.Modify_Name_Redirect]>
+
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.First_Name]"
+                             @bind-Value="@Contact.GivenName"
+                             Disabled=!Contact.NewEntry />
+        </AppTooltip>
+
+        <AppTooltip Disabled=@(!EditMode || GroupableEntry.NewEntry) Text=@AppHelpLocalization[HelpLang.Modify_Name_Redirect]>
+
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Middle_Name]"
+                             @bind-Value="@Contact.MiddleName"
+                             Disabled=!Contact.NewEntry />
+        </AppTooltip>
+
+        <AppTooltip Disabled=@(!EditMode || GroupableEntry.NewEntry) Text=@AppHelpLocalization[HelpLang.Modify_Name_Redirect]>
+
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Last_Name]"
+                             @bind-Value="@Contact.Sn"
+                             Disabled=!Contact.NewEntry />
+        </AppTooltip>
+
+        <AppTooltip Disabled=@(!EditMode || GroupableEntry.NewEntry) Text=@AppHelpLocalization[HelpLang.Modify_Name_Redirect]>
+
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Display_Name]"
+                             @bind-Value="@Contact.DisplayName"
+                             Disabled=!Contact.NewEntry />
+        </AppTooltip>
+
+        @if (User == null && Contact != null)
+        {
+            <AppTooltip Disabled=@(!EditMode || GroupableEntry.NewEntry) Text=@AppHelpLocalization[HelpLang.Modify_Name_Redirect]>
+
+                <MudStack Row=true Spacing="0">
+                    <DynamicMudInput T=string Label="@AppLocalization[Lang.Email_Address]"
+                                     @bind-Value="@Contact.Email"
+                                     Disabled=@(Contact?.NewEntry==false) />
+                    <AppCopyButton TextToCopy=@Contact.Email />
+
+                </MudStack>
+            </AppTooltip>
+
+        }
+
+
+    @if (EditMode && GroupableEntry?.NewEntry == false)
+    {
+        <MudAlert Severity="Severity.Info">
+            @AppHelpLocalization[HelpLang.Modify_Name_Redirect]
+        </MudAlert>
+    }
+</ViewSection>
+
+@code {
+}

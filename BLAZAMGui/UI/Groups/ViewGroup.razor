@@ -13,7 +13,6 @@
         <DirectoryEntryViewHeader EditMode="@EditMode"
                                   DirectoryEntry="@Group"
                                   OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
-                                  OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
                                   OnDelete="@DeleteGroup"
                                   OnMove="@(()=>{MoveToModal?.ShowAsync();})"
                                   OnRename="@(()=>{RenameModal?.ShowAsync();})"
@@ -53,7 +52,7 @@
 
         <MudGrid>
             <MudItem xs="12" md="6">
-                <Section Style="min-height:200px;" Title="Group Details">
+                <ViewSection Stack="true" Style="min-height:200px;" Title="Group Details">
                     <MudCard Elevation="2"
                              Style="width:fit-content;height:fit-content"
                              Class="relative mx-auto d-block p-1 mb-5">
@@ -66,6 +65,14 @@
 
                     <MudTextField Label="@AppLocalization[Lang.Description]" @bind-Value="@Group.Description" Disabled=@(!EditMode || !Group.CanEdit) />
 
+                    @if (Group.CanReadField(ActiveDirectoryFields.Manager))
+                    {
+                        <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.User"
+                                        Label="@AppLocalization[Lang.Manager]"
+                                        SelectedResult=Group.Manager
+                                        SelectedResultChanged="@((user)=>{Group.Manager=user as IADUser;})"
+                                        Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Manager)) />
+                    }
 
                     <MudTextField Label="@AppLocalization[Lang.Email_Address]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
 
@@ -85,6 +92,7 @@
 
                     </MudStack>
 
+                    
 
                     <MudStack Row=true>
                         <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.OU]:</MudText>
@@ -120,22 +128,22 @@
                         </MudStack>
                     }
 
-                </Section>
+                </ViewSection>
             </MudItem>
             <MudItem xs="12" md="6">
-                <Section Style="min-height:200px;" Title=@AppLocalization[Lang.Parent_Groups]>
+                <ViewSection Style="min-height:200px;" Title=@AppLocalization[Lang.Parent_Groups]>
                     <MemberOfList AssignToClicked=@AssignToModal.ShowAsync Model="Group" />
 
-                </Section>
+                </ViewSection>
             </MudItem>
 
 
 
             <MudItem xs="12" md="12">
-                <Section Style="min-height:200px;" Title=@AppLocalization[Lang.Members]>
+                <ViewSection Stack="true" Style="min-height:200px;" Title=@AppLocalization[Lang.Members]>
                     <GroupMembersDataGrid Group="Group" />
 
-                </Section>
+                </ViewSection>
             </MudItem>
 
         </MudGrid>

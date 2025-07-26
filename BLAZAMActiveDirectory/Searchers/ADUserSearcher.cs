@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Helpers;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -41,6 +42,23 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     SamAccountName = searchTerm
                 },
                 ExactMatch = exactMatch
+
+            }.Search<ADUser, IADUser>().FirstOrDefault();
+
+        }
+
+        public IADUser? FindUserByDN(string? dn, bool ignoreDisabledUsers = true)
+        {
+            if (dn.IsNullOrEmpty()) return null;
+            return new ADSearch(Directory)
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.User,
+                EnabledOnly = ignoreDisabledUsers,
+                Fields = new()
+                {
+                    DN = dn
+                },
+                ExactMatch = true
 
             }.Search<ADUser, IADUser>().FirstOrDefault();
 

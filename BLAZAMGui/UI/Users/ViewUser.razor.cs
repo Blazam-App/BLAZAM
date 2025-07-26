@@ -16,7 +16,6 @@ namespace BLAZAM.Gui.UI.Users
     {
 #nullable disable warnings
         string password;
-        bool showFailedLogons;
 
         [Parameter]
         public string Password
@@ -46,8 +45,6 @@ namespace BLAZAM.Gui.UI.Users
         }
         [Parameter]
         public EventCallback<string> ConfirmPasswordChanged { get; set; }
-        bool homeDirectoryExists;
-        bool showRemoveThumbnail = false;
         IGroupableDirectoryAdapter GroupableEntry => DirectoryEntry as IGroupableDirectoryAdapter;
         IAccountDirectoryAdapter Account => DirectoryEntry as IAccountDirectoryAdapter;
         IADUser User => DirectoryEntry as IADUser;
@@ -75,26 +72,7 @@ namespace BLAZAM.Gui.UI.Users
           
 
 
-            if (GroupableEntry is IADUser && User.HomeDirectory != null)
-            {
-                try
-                {
-
-                    await GroupableEntry.Directory.Impersonation.RunAsync(() =>
-
-                    {
-                        homeDirectoryExists = new SystemDirectory(User.HomeDirectory).Exists;
-                        return true;
-                    });
-
-                }
-
-                catch (Exception ex)
-                {
-                    Loggers.ActiveDirectoryLogger.Warning("Error checking user h-drive: {Message}", ex);
-
-                }
-            }
+           
             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
@@ -222,14 +200,7 @@ namespace BLAZAM.Gui.UI.Users
                 await RefreshEntryComponents();
             }
         }
-        async Task RemoveThumbnail()
-        {
-
-            Contact.ThumbnailPhoto = null;
-            SnackBarService.Warning(GroupableEntry.DisplayName + " will have their thumbnail deleted on save.");
-            await RefreshEntryComponents();
-
-        }
+     
 
 
     }
