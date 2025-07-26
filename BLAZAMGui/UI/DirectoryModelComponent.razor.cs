@@ -57,7 +57,7 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public IGroupableDirectoryAdapter GroupableEntry
         {
-            get => Entry as IADComputer; set => Entry = value;
+            get => Entry as IGroupableDirectoryAdapter; set => Entry = value;
         }
         [Parameter]
         public virtual IDirectoryEntryAdapter Entry

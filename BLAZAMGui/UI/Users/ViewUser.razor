@@ -1,8 +1,7 @@
 ﻿@using BLAZAM.Common.Data.Database
+@using BLAZAM.Gui.UI.Users.Sections
 @inherits DirectoryEntryViewBase
-@{
-    string _fieldMudStackClasses = "flex-wrap gap-10";
-}
+
 @if (GroupableEntry?.NewEntry == true)
 {
     EditMode = true;
@@ -23,7 +22,6 @@
                     <DirectoryEntryViewHeader EditMode="@EditMode"
                                               DirectoryEntry="@GroupableEntry"
                                               OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
-                                              OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
                                               OnDelete="@DeleteUser"
                                               OnDisable="@(async()=>{Account.Enabled=false; await RefreshEntryComponents();})"
                                               OnEnable="@(async()=>{Account.Enabled=true; await RefreshEntryComponents();})"
@@ -42,534 +40,72 @@
                 </SetSubHeader>
             }
             <CascadingValue Value="GroupableEntry">
+                <CascadingValue Value="DirectoryEntry">
 
-                <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Upload_Thumbnail_Photo] @ref=@UploadThumbnailModal>
-                    <UploadThumbnailModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
-                </AppModal>
-                <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Assign_To] @ref=@AssignToModal>
-                    <AssignToModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Contact" />
-                </AppModal>
-                <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Move_To] @ref=@MoveToModal>
-                    @if (MoveToModal?.IsShown == true)
-                    {
-                        <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="GroupableEntry" />
-                    }
-                </AppModal>
-                <AppModal Title=@AppLocalization[Lang.Rename_User] @ref=@RenameModal>
-                    @if (RenameModal?.IsShown == true)
-                    {
-                        <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Entry="Contact" />
-                    }
-                </AppModal>
-                <AppModal Title=@AppLocalization[Lang.Reset_Password] @ref=@ChangePasswordModal>
-                    @if (ChangePasswordModal?.IsShown == true)
-                    {
-                        <ChangeUserPasswordModalContent Entry="User" />
-                    }
-                </AppModal>
-                <AppModal Title=@AppLocalization[Lang.Log_On_To] @ref=@LogOnToModal>
-                    @if (LogOnToModal?.IsShown == true)
-                    {
-                        <LogOnToModalContent Entry="User" />
-                    }
-                </AppModal>
-                <AppModal Title=@AppLocalization[Lang.Logon_Hours]
-                          @ref=@LogonHoursModal
-                          Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
-                    @if (LogonHoursModal?.IsShown == true)
-                    {
-                        <LogonHoursModalContent Entry="User" />
-                    }
-                </AppModal>
+                   
+                    <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Assign_To] @ref=@AssignToModal>
+                        <AssignToModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Contact" />
+                    </AppModal>
+                    <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Move_To] @ref=@MoveToModal>
+                        @if (MoveToModal?.IsShown == true)
+                        {
+                            <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="GroupableEntry" />
+                        }
+                    </AppModal>
+                    <AppModal Title=@AppLocalization[Lang.Rename_User] @ref=@RenameModal>
+                        @if (RenameModal?.IsShown == true)
+                        {
+                            <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Entry="Contact" />
+                        }
+                    </AppModal>
+                    <AppModal Title=@AppLocalization[Lang.Reset_Password] @ref=@ChangePasswordModal>
+                        @if (ChangePasswordModal?.IsShown == true)
+                        {
+                            <ChangeUserPasswordModalContent Entry="User" />
+                        }
+                    </AppModal>
 
-                <MudGrid>
-                    <MudItem xs="12" md="3">
-
-                        <Section FullWidth=false>
-
-                            <MudCard Elevation="2"
-                                     Style="width:fit-content;height:fit-content"
-                                     Class="relative mx-auto d-block p-1 mb-5"
-                                     @onmouseenter=@(()=>{showRemoveThumbnail=true;})
-                                     @onmouseleave=@(()=>{showRemoveThumbnail=false;})>
-
-                                @if (Contact?.ThumbnailPhoto != null)
-                                {
-                                    <Base64Image Style="max-height:150px;max-width:150px;" Data="Contact.ThumbnailPhoto.ResizeRawImage(150)" />
-                                    @if (showRemoveThumbnail && CanEditField(ActiveDirectoryFields.Thumbnail))
-                                    {
-
-                                        <MudIconButton OnClick=RemoveThumbnail
-                                                       Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;left:10px"
-                                                       Color=Color.Error
-                                                       Icon="@Icons.Material.Filled.Delete" />
-                                    }
-
-                                }
-                                else if (User != null)
-                                {
-                                    <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Person" />
-
-                                }
-                                else if (Contact != null)
-                                {
-                                    <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Contacts" />
-
-                                }
-                                @if (showRemoveThumbnail && GroupableEntry?.CanEditField(ActiveDirectoryFields.Thumbnail) == true)
-                                {
-                                    <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.ShowAsync();})
-                                                   Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
-                                                   Color=Color.Primary
-                                                   Icon="@Icons.Material.Filled.Upload" />
-                                }
-                            </MudCard>
-
-                            <MudStack Row=true>
-                                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Created]:</MudText>
-                                <MudSpacer />
-                                <DateWithTimeTooltip DateTime="GroupableEntry?.Created" />
-
-                            </MudStack>
-
-                            <MudStack Row=true>
-
-                                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Change]:</MudText>
-                                <MudSpacer />
-
-                                <DateWithTimeTooltip DateTime="GroupableEntry?.LastChanged" />
-
-                            </MudStack>
-                            @if (User != null)
-                            {
-                                <MudStack Row=true>
-
-                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Pass_Change]:</MudText>
-                                    <MudSpacer />
-                                    <DateWithTimeTooltip DateTime="User?.PasswordLastSet" />
-
-
-                                </MudStack>
-
-                                <MudStack Row=true>
-
-                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
-                                    <MudSpacer />
-                                    <LastLogonTime Typo=Typo.caption DirectoryEntry="Account" />
-                                </MudStack>
-                                @if (Account?.LockedOut == true)
-                                {
-                                    <MudStack Row=true>
-                                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Lockout_Time]:</MudText>
-                                        <MudSpacer />
-                                        <DateWithTimeTooltip DateTime="Account?.LockoutTime" />
-                                    </MudStack>
-                                }
-                            }
-                            <MudStack Row=true>
-                                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.OU]:</MudText>
-                                <MudSpacer />
-
-                                <MudText Style="text-align:end;"
-                                         Typo="Typo.caption">@GroupableEntry?.OU.ToPrettyOu()</MudText>
-                            </MudStack>
-
-
-
-
-
+                    <MudGrid>
+                        <MudItem xs="12" md="3">
+                            <DetailsSection AssignToClicked=@(()=>{AssignToModal?.ShowAsync();})/>
+                           
+                        </MudItem>
+                        <MudItem xs=12 md="9">
                             <MudStack>
-                                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Groups]:</MudText>
-                                <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="GroupableEntry" />
+
+                                <NameSection />
+
+                                <AccountSection />
+
                             </MudStack>
 
-                            @if (GroupableEntry is IADUser && Account.Disabled)
-                            {
-                                <MudAlert Severity="Severity.Error"
-                                          Class="mud-width-full">@AppLocalization[Lang.User_is_disabled]</MudAlert>
+                        </MudItem>
+                    </MudGrid>
 
-                            }
-                            @if (GroupableEntry is IADUser && Account.LockedOut)
-                            {
-                                <MudAlert Severity="Severity.Warning"
-                                          Class="mud-width-full">@AppLocalization[Lang.User_is_locked_out]</MudAlert>
-                            }
+                    <OrganizationSection />
 
+                    <ContactInfoSection />
+
+                    <ProfileSection />
+
+                    @if (GroupableEntry.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
+                    {
+                        <Section Title=@AppLocalization[Lang.Additional_Fields]>
+
+                            @foreach (var field in CustomFields)
+                            {
+                                @if (CanReadField(field))
+                                {
+                                    <CustomDirectoryField Disabled=@(!EditMode || !CanEditField(field)) Entry="GroupableEntry" Field="@field" />
+
+                                }
+                            }
 
 
                         </Section>
-                    </MudItem>
-                    <MudItem xs=12 md="9">
-                        <MudStack>
+                    }
 
-                            <Section FullWidth=false Title=@AppLocalization[Lang.Name]>
-
-
-                                <MudStack Row Class="@_fieldMudStackClasses">
-
-                                    <AppTooltip Disabled=@(!EditMode || GroupableEntry.NewEntry) Text=@AppHelpLocalization[HelpLang.Modify_Name_Redirect]>
-
-                                        <DynamicMudInput T=string
-                                                         Label="@AppLocalization[Lang.First_Name]"
-                                                         @bind-Value="@Contact.GivenName"
-                                                         Disabled=!Contact.NewEntry />
-                                    </AppTooltip>
-
-                                    <AppTooltip Disabled=@(!EditMode || GroupableEntry.NewEntry) Text=@AppHelpLocalization[HelpLang.Modify_Name_Redirect]>
-
-                                        <DynamicMudInput T=string
-                                                         Label="@AppLocalization[Lang.Middle_Name]"
-                                                         @bind-Value="@Contact.MiddleName"
-                                                         Disabled=!Contact.NewEntry />
-                                    </AppTooltip>
-
-                                    <AppTooltip Disabled=@(!EditMode || GroupableEntry.NewEntry) Text=@AppHelpLocalization[HelpLang.Modify_Name_Redirect]>
-
-                                        <DynamicMudInput T=string
-                                                         Label="@AppLocalization[Lang.Last_Name]"
-                                                         @bind-Value="@Contact.Sn"
-                                                         Disabled=!Contact.NewEntry />
-                                    </AppTooltip>
-
-                                    <AppTooltip Disabled=@(!EditMode || GroupableEntry.NewEntry) Text=@AppHelpLocalization[HelpLang.Modify_Name_Redirect]>
-
-                                        <DynamicMudInput T=string
-                                                         Label="@AppLocalization[Lang.Display_Name]"
-                                                         @bind-Value="@Contact.DisplayName"
-                                                         Disabled=!Contact.NewEntry />
-                                    </AppTooltip>
-
-                                    @if (User == null && Contact != null)
-                                    {
-                                        <AppTooltip Disabled=@(!EditMode || GroupableEntry.NewEntry) Text=@AppHelpLocalization[HelpLang.Modify_Name_Redirect]>
-
-                                            <MudStack Row=true Spacing="0">
-                                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Email_Address]"
-                                                                 @bind-Value="@Contact.Email"
-                                                                 Disabled=@(Contact?.NewEntry==false) />
-                                                <AppCopyButton TextToCopy=@Contact.Email />
-
-                                            </MudStack>
-                                        </AppTooltip>
-
-                                    }
-
-
-                                </MudStack>
-                                @if (EditMode && GroupableEntry?.NewEntry == false)
-                                {
-                                    <MudAlert Severity="Severity.Info">
-                                        @AppHelpLocalization[HelpLang.Modify_Name_Redirect]
-                                    </MudAlert>
-                                }
-                            </Section>
-
-
-                            @if (User != null)
-                            {
-                                <Section Title="@AppLocalization[Lang.Account]">
-
-                                    <MudStack Row Class="@_fieldMudStackClasses">
-
-
-
-                                        <AppTooltip Disabled=@(!EditMode || GroupableEntry.NewEntry) Text=@AppHelpLocalization[HelpLang.Modify_Name_Redirect]>
-
-                                            <MudStack Row=true Spacing="0">
-
-
-                                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Username]"
-                                                                 @bind-Value="@User.SAMAccountName"
-                                                                 Disabled=@(User?.NewEntry==false) />
-                                                <AppCopyButton TextToCopy=@User.SAMAccountName />
-
-                                            </MudStack>
-                                        </AppTooltip>
-
-
-
-                                        @if (GroupableEntry?.NewEntry == true)
-                                        {
-                                            <DynamicMudInput T=string
-                                                             Label="@AppLocalization[Lang.Password]"
-                                                             @bind-Value="@Password"
-                                                             InputType="InputType.Password" />
-
-                                            <DynamicMudInput T=string
-                                                             Label="@AppLocalization[Lang.Confirm_Password]"
-                                                             @bind-Value="@ConfirmPassword"
-                                                             InputType="InputType.Password" />
-                                        }
-
-                                        <AppTooltip Disabled=@(!EditMode || GroupableEntry.NewEntry) Text=@AppHelpLocalization[HelpLang.Modify_Name_Redirect]>
-                                            <MudStack Row=true Spacing="0">
-                                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Email_Address]"
-                                                                 @bind-Value="@Contact.Email"
-                                                                 Disabled=@(Contact?.NewEntry==false) />
-                                                <AppCopyButton TextToCopy=@Contact.Email />
-
-                                            </MudStack>
-                                        </AppTooltip>
-
-                                        @if (EditMode && !GroupableEntry.NewEntry)
-                                        {
-
-
-                                            <MudAlert Severity="Severity.Info">
-                                                @AppHelpLocalization[HelpLang.Modify_Name_Redirect]
-                                            </MudAlert>
-
-                                        }
-
-                                        @if (CanReadField(ActiveDirectoryFields.AccountExpires))
-                                        {
-                                            <DynamicMudInput T=DateTime?
-                                                             Clearable=true
-                                                             Label="@AppLocalization[Lang.Account_Expiration]"
-                                                             Value="@User.ExpireTime?.ToLocalTime()"
-                                                             ValueChanged="@((value)=>{User.ExpireTime=value;})"
-                                                             Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.AccountExpires)) />
-
-
-                                        }
-
-                                        <MudStack Row=true Spacing="3" Class="mx-auto">
-
-                                            @if (CanReadField(ActiveDirectoryFields.LogOnTo))
-                                            {
-                                                <MudButton Variant="Variant.Filled"
-                                                           Color="@(User.LogOnTo == null || User.LogOnTo == String.Empty?Color.Primary:Color.Warning)"
-                                                           OnClick="@(()=>{LogOnToModal?.ShowAsync();})"
-                                                           Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.LogOnTo))>
-                                                    @AppLocalization[Lang.Log_On_To]
-                                                </MudButton>
-
-                                            }
-
-                                            @if (CanReadField(ActiveDirectoryFields.LogonHours))
-                                            {
-                                                <MudButton Variant="Variant.Filled"
-                                                           Color="@(Color.Primary)"
-                                                           OnClick="@(()=>{LogonHoursModal?.ShowAsync();})"
-                                                           Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.LogonHours))>
-                                                    @AppLocalization[Lang.Logon_Hours]
-                                                </MudButton>
-
-                                            }
-                                            @if (Account.CanSetPassword)
-                                            {
-                                                <MudSwitch T=bool
-                                                           Color=Color.Success
-                                                           ThumbIconColor="@(Account.RequirePasswordChange==true?Color.Success:Color.Default)"
-                                                           Label=@AppLocalization[Lang.Require_Password_Change]
-                                                           Value=@Account.RequirePasswordChange
-                                                           Disabled=@true />
-
-                                            }
-                                        </MudStack>
-                                        @if (CurrentUser.State.IsSuperAdmin)
-                                        {
-
-                                            @if (showFailedLogons)
-                                            {
-                                                <UserFailedLogons />
-                                            }
-                                            else
-                                            {
-                                                <MudText Class="mud-width-full" Align="Align.Center">
-                                                    <MudButton Color=Color.Primary
-                                                               Variant=Variant.Filled
-                                                               OnClick="@(()=>{showFailedLogons=true;})">
-                                                        Show Failed Logons
-                                                    </MudButton>
-                                                </MudText>
-                                            }
-                                        }
-
-                                    </MudStack>
-
-
-                                </Section>
-                            }
-
-
-                        </MudStack>
-
-                    </MudItem>
-                </MudGrid>
-
-
-
-                @if (CanReadField(ActiveDirectoryFields.EmployeeId) ||
-            CanReadField(ActiveDirectoryFields.Department) ||
-            CanReadField(ActiveDirectoryFields.Company) ||
-            CanReadField(ActiveDirectoryFields.Manager) ||
-            CanReadField(ActiveDirectoryFields.Title) ||
-            CanReadField(ActiveDirectoryFields.PhysicalDeliveryOffice)
-            )
-                {
-                    <Section Title=@AppLocalization[Lang.Organization]>
-                        <MudStack Row Class="@_fieldMudStackClasses">
-
-                            @if (CanReadField(ActiveDirectoryFields.Description))
-                            {
-                                <DynamicMudInput T=string
-                                                 Label="@AppLocalization[Lang.Description]"
-                                                 @bind-Value="@Contact.Description"
-                                                 Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Description)) />
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.EmployeeId))
-                            {
-                                <DynamicMudInput T=string
-                                                 Label="@AppLocalization[Lang.Employee_Id]"
-                                                 @bind-Value="@Contact.EmployeeId"
-                                                 Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.EmployeeId)) />
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.Department))
-                            {
-                                <DynamicMudInput T=string
-                                                 Label="@AppLocalization[Lang.Department]"
-                                                 @bind-Value="@Contact.Department"
-                                                 Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Department)) />
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.Company))
-                            {
-                                <DynamicMudInput T=string
-                                                 Label="@AppLocalization[Lang.Company]"
-                                                 @bind-Value="@Contact.Company"
-                                                 Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Company)) />
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.Manager))
-                            {
-                                <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.User"
-                                                Label="@AppLocalization[Lang.Manager]"
-                                                SelectedResult=Contact.Manager
-                                                SelectedResultChanged="@((user)=>{Contact.Manager=user as IADUser;})"
-                                                Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Manager)) />
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.Title))
-                            {
-                                <DynamicMudInput T=string
-                                                 Label="@AppLocalization[Lang.Job_Title]"
-                                                 @bind-Value="@Contact.Title"
-                                                 Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.Title)) />
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.PhysicalDeliveryOffice))
-                            {
-                                <DynamicMudInput T=string
-                                                 Label="@AppLocalization[Lang.Office]"
-                                                 @bind-Value="@Contact.PhysicalDeliveryOfficeName"
-                                                 Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
-                            }
-                        </MudStack>
-                    </Section>
-                }
-
-                @if (CanReadField(ActiveDirectoryFields.HomePhone) ||
-            CanReadField(ActiveDirectoryFields.StreetAddress) ||
-            CanReadField(ActiveDirectoryFields.POBox) ||
-            CanReadField(ActiveDirectoryFields.City) ||
-            CanReadField(ActiveDirectoryFields.State) ||
-            CanReadField(ActiveDirectoryFields.PostalCode)
-            )
-                {
-                    <Section Title=@AppLocalization[Lang.Contact_Info]>
-                        <MudStack Row Class="@_fieldMudStackClasses">
-
-                            @if (CanReadField(ActiveDirectoryFields.HomePhone))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Home_Phone]" @bind-Value="@Contact.HomePhone" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.HomePhone)) />
-
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.StreetAddress))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Street_Address]" @bind-Value="@Contact.StreetAddress" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.StreetAddress)) />
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.POBox))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization[Lang.PO_Box]" @bind-Value="@Contact.POBox" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.POBox)) />
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.City))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization[Lang.City]" @bind-Value="@Contact.City" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.City)) />
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.State))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization[Lang.State]" @bind-Value="@Contact.State" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.State)) />
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.PostalCode))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Zip_Code]" @bind-Value="@Contact.Zip" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.PostalCode)) />
-                            }
-                        </MudStack>
-
-                    </Section>
-                }
-
-
-                @if (User != null &&
-            (CanReadField(ActiveDirectoryFields.HomeDirectory) ||
-            CanReadField(ActiveDirectoryFields.HomeDrive) ||
-            CanReadField(ActiveDirectoryFields.ScriptPath) ||
-            CanReadField(ActiveDirectoryFields.ProfilePath))
-            )
-                {
-                    <Section Title=@AppLocalization[Lang.Profile]>
-                        <MudStack Row Class="@_fieldMudStackClasses">
-
-                            @if (CanReadField(ActiveDirectoryFields.HomeDirectory))
-                            {
-                                <MudStack Row=true Spacing="0">
-
-                                    <DynamicMudInput T=string Label="@AppLocalization[Lang.Home_Directory]"
-                                                     @bind-Value="@User.HomeDirectory"
-                                                     Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.HomeDirectory)) />
-                                    @if (!User.HomeDirectory.IsNullOrEmpty())
-                                    {
-
-                                        <MudIcon Class="align-middle" Icon="@(homeDirectoryExists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
-                                                 Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
-                                    }
-                                    <AppCopyButton TextToCopy=@User.HomeDirectory />
-                                </MudStack>
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.HomeDrive))
-                            {
-                                <HomeDriveSelect Label="@AppLocalization[Lang.Home_Drive]" @bind-DriveLetter="@User.HomeDrive" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.HomeDrive)) />
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.ScriptPath))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Script_Path]" @bind-Value="@User.ScriptPath" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.ScriptPath)) />
-                            }
-                            @if (CanReadField(ActiveDirectoryFields.ProfilePath))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization[Lang.Profile_Path]" @bind-Value="@User.ProfilePath" Disabled=@(!EditMode || !CanEditField(ActiveDirectoryFields.ProfilePath)) />
-                            }
-                        </MudStack>
-
-                    </Section>
-                }
-
-                @if (GroupableEntry.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
-                {
-                    <Section Title=@AppLocalization[Lang.Additional_Fields]>
-
-                        @foreach (var field in CustomFields)
-                        {
-                            @if (CanReadField(field))
-                            {
-                                <CustomDirectoryField Disabled=@(!EditMode || !CanEditField(field)) Entry="GroupableEntry" Field="@field" />
-
-                            }
-                        }
-
-
-                    </Section>
-                }
-
-
-
-
+                </CascadingValue>
             </CascadingValue>
         </CascadingValue>
 

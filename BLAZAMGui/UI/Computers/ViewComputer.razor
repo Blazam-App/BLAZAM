@@ -14,7 +14,6 @@
             <DirectoryEntryViewHeader EditMode="@EditMode"
                                       DirectoryEntry="@Computer"
                                       OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
-                                      OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
                                       OnDelete="@DeleteComputer"
                                       OnDisable="@(async()=>{Computer.Enabled=false; await RefreshEntryComponents();})"
                                       OnEnable="@(async()=>{Computer.Enabled=true; await RefreshEntryComponents();})"
