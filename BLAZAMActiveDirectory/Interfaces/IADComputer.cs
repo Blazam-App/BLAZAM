@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
 using System.Net;
+using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -19,7 +20,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// The LAPS password for this computer
         /// </summary>
-        string? LapsPassword { get; }
+        SecureString? LapsPassword { get; }
 
         /// <summary>
         /// The expiration time for the LAPS password
