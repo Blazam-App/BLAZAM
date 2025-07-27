@@ -55,7 +55,7 @@ namespace BLAZAM.Common.Data
         /// </summary>
         public bool Impersonation { get; set; } = false;
         /// <summary>
-        /// To prevent a security hole, the impersonator identity is passed as a check to ensure this is not a XSS attack or an user without the appropriate privileges.
+        /// To prevent a security hole, the impersonator identity is passed as a check to ensure this is not a XSS attack or a user without the appropriate privileges.
         /// </summary>
         public ClaimsPrincipal? ImpersonatorClaims { get; set; }
 
@@ -67,6 +67,7 @@ namespace BLAZAM.Common.Data
         public string? MFAToken { get; set; }
         public string? MFARedirect { get; set; }
 
+        
         public LoginResultStatus? AuthenticationResult { get; set; } = null;
 
 
