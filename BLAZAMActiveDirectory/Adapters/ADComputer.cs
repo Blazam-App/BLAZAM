@@ -4,11 +4,14 @@ using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
+using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using System.Data.Entity.Core.Common.CommandTrees;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Security;
+using System.Text.Json.Nodes;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -94,45 +97,67 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
-        public string? LapsPassword
+        private SecureString? _lapsCache;
+        public SecureString? LapsPassword
         {
             get
             {
+                if (_lapsCache != null) return _lapsCache;
                 string? pass = null;
                 object? value = null;
                 if (System.OperatingSystem.IsWindows())
                 {
                     value = GetAttribute<object>("msLAPS-EncryptedPassword");
+                    if (value is byte[] bytes)
+                    {
+                        try
+                        {
+                            return Directory.Impersonation.Run(() =>
+                            {
+                                string decryptedPassword = String.Empty;
+                                var decryptor = new LapsDecryptor();
+                                var decryptedJson = decryptor.Decrypt(bytes);
+                                decryptedPassword = FormatLAPSJson(decryptedJson);
+
+                                _lapsCache = decryptedPassword.ToSecureString();
+                                return _lapsCache;
+                            });
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Loggers.ActiveDirectoryLogger.Information(ex, "Error decrypting LAPS password for {@Computer}", DN);
+                        }
+                    }
                 }
                 if (value is null)
                 {
-                    value = GetStringAttribute(ActiveDirectoryFields.LapsPassword.FieldName);
-                }
-                if (value is byte[] bytes)
-                {
-                    try
+                    var str = GetStringAttribute(ActiveDirectoryFields.LapsPassword.FieldName);
+                    if (!str.IsNullOrEmpty())
                     {
-                        return Directory.Impersonation.Run(() => {
-                            string decryptedPassword = String.Empty;
-                            var decryptor = new LapsDecryptor();
-                            decryptedPassword = decryptor.Decrypt(bytes);
-
-                            return decryptedPassword;
-                        });
-                       
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.ActiveDirectoryLogger.Information(ex, "Error decrypting LAPS password for {@Computer}", DN);
+                        str = FormatLAPSJson(str);
+                        _lapsCache = str.ToSecureString();
+                        return _lapsCache;
                     }
                 }
-                else if (value is string str)
-                {
-                    return str;
-                }
-                return pass;
+                return null;
             }
         }
+
+        private static string FormatLAPSJson(string decryptedJson)
+        {
+            // Parse the string into a JsonNode object
+            var jsonNode = JsonNode.Parse(decryptedJson);
+
+            // Extract the values for keys "n" (name) and "p" (password)
+            string username = jsonNode["n"].GetValue<string>();
+            string password = jsonNode["p"].GetValue<string>();
+
+            // Format the final string
+            string result = $"{username}: {password}";
+            return result;
+        }
+
         public DateTime? LapsPasswordExpiration
         {
             get
