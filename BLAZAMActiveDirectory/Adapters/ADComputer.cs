@@ -112,13 +112,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     try
                     {
+                        string decryptedPassword=String.Empty;
                         var decryptor = new LapsDecryptor();
-                        string decryptedJson = decryptor.Decrypt(bytes);
-
-                        // The result is a JSON string, you'll need to parse it to get the password.
-                        // Example JSON: {"n":"Administrator","t":"1d8e1c6a2e4bfe8","p":"YourPasswordHere"}
-                        // You can use a JSON parsing library like System.Text.Json to extract the password.
-                        return decryptedJson;
+                        decryptedPassword = decryptor.Decrypt(bytes);
+                        
+                        return decryptedPassword;
                     }
                     catch (Exception ex)
                     {
