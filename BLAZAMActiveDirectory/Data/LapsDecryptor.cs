@@ -116,9 +116,7 @@ namespace BLAZAM.ActiveDirectory.Data
                 {
                     throw new Win32Exception((int)ret);
                 }
-                tcs.Task.ContinueWith((tsk) => {
-                    return tsk.Result;
-                });
+                return tcs.Task.GetAwaiter().GetResult();
 
             }
             finally
@@ -126,7 +124,6 @@ namespace BLAZAM.ActiveDirectory.Data
                 Marshal.FreeHGlobal(alloc); // Ensure memory is freed
             }
 
-            return "";
 
 
         }

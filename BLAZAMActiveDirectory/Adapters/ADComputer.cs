@@ -112,11 +112,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     try
                     {
-                        string decryptedPassword=String.Empty;
-                        var decryptor = new LapsDecryptor();
-                        decryptedPassword = decryptor.Decrypt(bytes);
-                        
-                        return decryptedPassword;
+                        return Directory.Impersonation.Run(() => {
+                            string decryptedPassword = String.Empty;
+                            var decryptor = new LapsDecryptor();
+                            decryptedPassword = decryptor.Decrypt(bytes);
+
+                            return decryptedPassword;
+                        });
+                       
                     }
                     catch (Exception ex)
                     {
