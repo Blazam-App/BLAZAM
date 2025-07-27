@@ -117,7 +117,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                 string decryptedPassword = String.Empty;
                                 var decryptor = new LapsDecryptor();
                                 var decryptedJson = decryptor.Decrypt(bytes);
-                                decryptedPassword = FormatLAPSJson(decryptedJson);
+                                decryptedPassword = decryptedJson;
+                                //decryptedPassword = FormatLAPSJson(decryptedJson);
 
                                 _lapsCache = decryptedPassword.ToSecureString();
                                 return _lapsCache;
