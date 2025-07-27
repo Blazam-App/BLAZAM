@@ -158,8 +158,7 @@
                                 {
                                     <BitLockerViewer Computer="Computer" />
                                 }
-                                  @if (!Computer.LapsPassword.IsNullOrEmpty() && Computer.CanReadField(ActiveDirectoryFields.LapsPassword))
-                                {
+
                                     <Section Title=@AppLocalization[Lang.LAPS_Password]>
 
                                         <AppTooltip ShowOnFocus="false" ShowOnHover="true" Placement="Placement.Right">
@@ -179,7 +178,7 @@
                                         </AppTooltip>
                                     </Section>
                                    
-                                }
+                                
                             </MudStack>
 
                         </MudItem>
