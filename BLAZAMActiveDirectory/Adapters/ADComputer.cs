@@ -117,10 +117,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                 string decryptedPassword = String.Empty;
                                 var decryptor = new LapsDecryptor();
                                 var decryptedJson = decryptor.Decrypt(bytes);
-                                decryptedPassword = decryptedJson;
-                                //decryptedPassword = FormatLAPSJson(decryptedJson);
+                                //decryptedPassword = decryptedJson;
+                                try
+                                {
+                                    decryptedPassword = FormatLAPSJson(decryptedJson);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Loggers.ActiveDirectoryLogger.Debug(ex, "Error parsing LAPS JSON {@Error} {@JSON}", decryptedJson);
 
-                                _lapsCache = decryptedPassword.ToSecureString();
+                                }
+                                if (!decryptedPassword.IsNullOrEmpty())
+                                {
+                                    _lapsCache = decryptedPassword.ToSecureString();
+                                }
                                 return _lapsCache;
                             });
 
@@ -145,10 +155,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        private static string FormatLAPSJson(string decryptedJson)
+        public static string? FormatLAPSJson(string lapsJson)
         {
+
             // Parse the string into a JsonNode object
-            var jsonNode = JsonNode.Parse(decryptedJson);
+            var jsonNode = JsonNode.Parse(lapsJson);
 
             // Extract the values for keys "n" (name) and "p" (password)
             string username = jsonNode["n"].GetValue<string>();
@@ -157,6 +168,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             // Format the final string
             string result = $"{username}: {password}";
             return result;
+
         }
 
         public DateTime? LapsPasswordExpiration
