@@ -1310,6 +1310,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
+
+        protected DateTime? SetFileTimeAttribute(string attribute, DateTime? value)
+        {
+            if (value == null || !value.HasValue)
+                value = CommonHelpers.ADS_NULL_TIME;
+            var dateTime = value.Value;
+            if (dateTime.Kind == DateTimeKind.Unspecified)
+            {
+                dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Local);
+            }
+            SetAttribute(attribute, dateTime.ToUniversalTime().ToFileTime().ToString());
+            return value;
+        }
+
+
         private void SetNewProperty(string propertyName, object? value)
         {
             if (value != null && !value.Equals(DirectoryEntry?.Properties[propertyName]?.Value))
