@@ -170,11 +170,13 @@
                                                      ReadOnly="true" />
 
                                     <DynamicMudInput T=DateTime? Label="@AppLocalization[Lang.Expires]"
-                                                     @bind-Value="@Computer.LapsPasswordExpiration"/>
+                                                     @bind-Value="@Computer.LapsPasswordExpiration"
+                                                     Disabled=@(!EditMode|| !Computer.CanEditField(ActiveDirectoryFields.LapsPassword))/>
 
                                     <MudButton Color="Color.Secondary"
                                                Variant="Variant.Filled"
-                                               OnClick="ExpireLapsPassword">Expire Now</MudButton>
+                                               OnClick="ExpireLapsPassword"
+                                               Disabled="@(!Computer.CanEditField(ActiveDirectoryFields.LapsPassword))">Expire Now</MudButton>
 
 
                                 </ViewSection>
