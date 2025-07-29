@@ -110,6 +110,11 @@ namespace BLAZAM.ActiveDirectory.Mocks
             return GetBaseQuery(ignoreDisabledUsers)
                 .FirstOrDefault(u => MockSearchPredicates.IsMatch(u.SAMAccountName, searchTerm, exactMatch));
         }
+        public IADUser? FindUserByDN(string? searchTerm, bool ignoreDisabledUsers = true)
+        {
+            return GetBaseQuery(ignoreDisabledUsers)
+                .FirstOrDefault(u => MockSearchPredicates.IsMatch(u.SAMAccountName, searchTerm,true));
+        }
 
         public List<IADUser>? FindNewUsers(int maxAgeInDays = 14, bool ignoreDisabledUsers = true)
         {
@@ -117,6 +122,7 @@ namespace BLAZAM.ActiveDirectory.Mocks
                 .Where(u => MockSearchPredicates.IsRecentlyCreated(u.Created, maxAgeInDays))
                 .ToList();
         }
+
         public Task<List<IADUser>> FindNewUsersAsync(int maxAgeInDays = 14, bool ignoreDisabledUsers = true)
             => Task.FromResult(FindNewUsers(maxAgeInDays, ignoreDisabledUsers) ?? new List<IADUser>());
 

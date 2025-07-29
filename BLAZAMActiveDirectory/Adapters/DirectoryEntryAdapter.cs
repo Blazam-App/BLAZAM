@@ -642,10 +642,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     var list = new List<IDirectoryEntry>();
                     foreach (IDirectoryEntry child in children)
                     {
-                    //    list.Add(child);
-                    //}
-                    //Parallel.ForEach<IDirectoryEntry>(list, child =>
-                    //{
+                        //    list.Add(child);
+                        //}
+                        //Parallel.ForEach<IDirectoryEntry>(list, child =>
+                        //{
                         DirectoryEntryAdapter? thisObject = null;
 
                         if (child.PropertyContains("objectClass", "top"))
@@ -1147,30 +1147,30 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-            //    return default;
+                //    return default;
 
-            //}
+                //}
 
-            //Check for exising edits to this entry
+                //Check for exising edits to this entry
+                try
+                {
+                    if (NewEntryProperties.ContainsKey(propertyName))
+                        return (T)NewEntryProperties[propertyName];
+                }
+                catch (InvalidCastException ex)
+                {
+                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+
+                }
+                catch
+                {
+                    return default;
+
+                }
+            }
             try
             {
-                if (NewEntryProperties.ContainsKey(propertyName))
-                    return (T)NewEntryProperties[propertyName];
-            }
-            catch (InvalidCastException ex)
-            {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-
-            }
-            catch
-            {
-                return default;
-
-            }
-            
-            try
-            {          
-            if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
+                if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
                 {
                     var val = DirectoryEntry.GetPropertyValue(propertyName);
                     if (val is null)
@@ -1189,6 +1189,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return default;
             }
             return default;
+
 
         }
 
