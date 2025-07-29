@@ -426,7 +426,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         {
 
                             var schemaSearchResponse = SendRequestAndGetResponse<SearchResponse>(schemaSearchRequest);
-                            if (schemaSearchResponse.Entries.Count > 0)
+                            if (schemaSearchResponse != null && schemaSearchResponse.Entries.Count > 0)
                             {
                                 foreach (SearchResultEntry entry in schemaSearchResponse.Entries)
                                 {
@@ -991,7 +991,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <returns>The resulting DirectoryResponse, cast to the specified type.</returns>
         private T SendRequestAndGetResponse<T>(DirectoryRequest request) where T : DirectoryResponse
         {
-            using var connection = SecureLdapConnector.Connect(Directory.ConnectionSettings);
+            using var connection = LdapConnectionFactory.Connect(Directory.ConnectionSettings);
             return (T)connection?.SendRequest(request);
         }
 

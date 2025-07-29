@@ -73,7 +73,6 @@
     </Columns>
 </MudDataGrid>
 
-<MudButton OnClick="ClearADCache">Clear AD Cache/Connecions</MudButton>
 <MudCard Class="mud-theme-dark">
     <MudCardHeader>
         User
@@ -155,11 +154,5 @@
                 Message = "This is a test notification",
                 Title = "Test"
             });
-    }
-    private void ClearADCache()
-    {
-        SecureLdapConnector.ClearPool();
-
-        DirectoryCache.ClearAll();
     }
 }

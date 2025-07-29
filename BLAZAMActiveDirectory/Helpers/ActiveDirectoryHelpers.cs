@@ -41,7 +41,7 @@ namespace BLAZAM.Helpers
             //Provide a per-user Active Directory connection as a service
             services.AddSingleton<IActiveDirectoryContextFactory, ActiveDirectoryContextFactory>();
 
-            services.AddScoped<ScopedActiveDirectoryContext>();
+            //services.AddScoped<ScopedActiveDirectoryContext>();
 
             return services;
         }

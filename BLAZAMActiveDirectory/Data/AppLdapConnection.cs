@@ -24,14 +24,27 @@ namespace BLAZAM.ActiveDirectory.Data
             if (ldapConnection == null) throw new ArgumentNullException("ldapConnection");
             LdapConnection = ldapConnection;
             _startedTLS = startedTLS;
-           // _keepAliveTime = new Timer(KeepAlive, null, 30000, 30000);
+            Random random = new Random();
+            
+            _keepAliveTime = new Timer(KeepAlive, null, random.Next(25000,35000), random.Next(29000,31000));
 
         }
 
         private void KeepAlive(object? state)
         {
-            var whoAmIRequest = new SearchRequest("", "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, "user");
-            var response = SendRequest(whoAmIRequest);
+            var whoAmIRequest = new SearchRequest("", "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base);
+            try
+            {
+                var response = SendRequest(whoAmIRequest);
+                if (response == null || response.ResultCode != ResultCode.Success)
+                {
+                    DisposeNow();
+                }
+            }
+            catch (Exception ex)
+            {
+                DisposeNow();
+            }
             
         }
 
@@ -54,7 +67,7 @@ namespace BLAZAM.ActiveDirectory.Data
                     {
                         if (_startedTLS)
                         {
-                            SecureLdapConnector.StopTls(LdapConnection);
+                            //SecureLdapConnector.StopTls(LdapConnection);
                         }
                     }
                     catch(Exception ex) {

@@ -1,8 +1,8 @@
-<MudText>Ldap Count:@SecureLdapConnector.Count</MudText>
+<MudText>Ldap Count: ?</MudText>
 @code{
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        SecureLdapConnector.OnCountChanged.Delegate+= (a,b) => InvokeAsync(StateHasChanged);
+        //LdapConnectionFactory.OnCountChanged.Delegate+= (a,b) => InvokeAsync(StateHasChanged);
     }
 }

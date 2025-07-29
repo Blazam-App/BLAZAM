@@ -379,7 +379,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
-                using (var connection = SecureLdapConnector.Connect(_currentUserActiveDirectoryContext.ConnectionSettings))
+                using (var connection = LdapConnectionFactory.Connect(_currentUserActiveDirectoryContext.ConnectionSettings))
                 {
                     if (connection == null) { 
                         return new List<TInterface>();

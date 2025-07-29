@@ -704,5 +704,10 @@ namespace BLAZAM.ActiveDirectory.Mocks // Or your preferred testing namespace
         {
             throw new NotImplementedException();
         }
+
+        public AppLdapConnection? GetConnection()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

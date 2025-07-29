@@ -35,6 +35,7 @@ namespace BLAZAM.ActiveDirectory
         private CancellationTokenSource? _connectionCTS = new();
 
         private const string LDAP_PROTO = "LDAP://";
+        private readonly ILdapConnectionFactory _ldapFactory;
         private readonly WmiFactory _wmiFactory;
         private readonly IEncryptionService _encryption;
         private readonly INotificationPublisher _notificationPublisher;
@@ -97,10 +98,10 @@ namespace BLAZAM.ActiveDirectory
                     _initializedConnections = true;
 
                     var connections = new List<AppLdapConnection?>();
-                    for (int i = 0; i < 25; i++)
+                    for (int i = 0; i < LdapConnectionFactory.PoolSize-1; i++)
                     {
-                        var initConnection = SecureLdapConnector.Connect(ConnectionSettings);
-                        connections.Add(initConnection);
+                        var initconnection = LdapConnectionFactory.Connect(ConnectionSettings);
+                        connections.Add(initconnection);
                     }
                     foreach (var conn in connections)
                     {
@@ -510,18 +511,9 @@ namespace BLAZAM.ActiveDirectory
             {
                 Loggers.ActiveDirectoryLogger.Information("Performing Active Directory connection test");
 
-                //if(AppRootDirectoryEntry?.Name.IsNullOrEmpty()==true || RootDirectoryEntry?.Name.IsNullOrEmpty() == true)
-                //   {
-                //       Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
-
-                //       Status = DirectoryConnectionStatus.BadConfiguration;
-                //       if (FailedConnectionAttempts < 10)
-                //           FailedConnectionAttempts++;
-                //       throw new CriticalActiveDirectoryException(this, "Active Directory test failed");
-                //   }
-
+               
             }
-            var connection = SecureLdapConnector.Connect(ad);
+            var connection = LdapConnectionFactory.Connect(ad);
             if (connection?.LdapConnection == null)
             {
                 Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
@@ -751,7 +743,7 @@ namespace BLAZAM.ActiveDirectory
             try
             {
 
-                using (AppLdapConnection connection = SecureLdapConnector.Connect(ConnectionSettings))
+                using (AppLdapConnection connection = LdapConnectionFactory.Connect(ConnectionSettings))
                 {
                     var response = (ModifyResponse)connection.SendRequest(request);
                     if (response.ResultCode == ResultCode.Success)

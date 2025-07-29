@@ -196,7 +196,7 @@ namespace BLAZAM
             AppInstance.WaitForShutdown();
 
 
-            SecureLdapConnector.ClearPool();
+            LdapConnectionFactory.ClearPool();
 
             // Log application shutdown event.
             Loggers.SystemLogger.Information("Application Shutting Down");

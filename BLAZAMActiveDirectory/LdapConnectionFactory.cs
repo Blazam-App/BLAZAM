@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.DirectoryServices.Protocols;
 using System.Net; // Required for NetworkCredential
 using BLAZAM.ActiveDirectory.Data;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
@@ -12,13 +13,17 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BLAZAM.ActiveDirectory
 {
-    public static class SecureLdapConnector
+    public static class LdapConnectionFactory
     {
+        public static readonly int PoolSize = 10;
         private static Timer? _disposerTimer = null;
         private static readonly object _poolLock = new object();
+        private static ADSettings? _connectionSettingsCache = null;
         private static List<AppLdapConnection> _connectionPool = new();
         private static bool _testsPerformed;
         private static Random _random;
+        private static bool disposedValue;
+        private static Guid Guid = Guid.NewGuid();
         private static readonly object _tlsLock = new();
 
         public static int Count
@@ -55,7 +60,7 @@ namespace BLAZAM.ActiveDirectory
                 Loggers.ActiveDirectoryLogger.Information("ADSettings object is null.");
                 return default;
             }
-
+            _connectionSettingsCache = settings;
             // Optional: Check the IsValid property from ADSettings, though the individual Connect methods will also fail if parameters are bad.
             // if (!settings.IsValid)
             // {
@@ -104,6 +109,7 @@ namespace BLAZAM.ActiveDirectory
                     {
                         conn.DisposeNow();
                         _connectionPool.Remove(conn);
+                        ApplicationStatistics.SetLdapConnectionCount(Guid, _connectionPool.Count);
                         OnCountChanged?.Invoke();
                     }
                 }
@@ -142,6 +148,8 @@ namespace BLAZAM.ActiveDirectory
 
 
                 _connectionPool.Add(appConnection);
+
+                ApplicationStatistics.SetLdapConnectionCount(Guid, _connectionPool.Count);
                 OnCountChanged?.Invoke();
                 return appConnection;
 
@@ -161,17 +169,33 @@ namespace BLAZAM.ActiveDirectory
                         if (!_connectionPool[i].IsDisposed
                             && _connectionPool[i].Expires != null
                             && _connectionPool[i].Expires < DateTime.Now
-                            && _connectionPool.Count(x => x.Expires != null && !x.IsDisposed) > 25)
+                            && _connectionPool.Count(x => x.Expires != null && !x.IsDisposed) > PoolSize)
                         {
 
                             _connectionPool[i].DisposeNow();
 
                             _connectionPool.RemoveAt(i);
+
+                            ApplicationStatistics.SetLdapConnectionCount(Guid, _connectionPool.Count);
                             i--;
                             count--;
                             OnCountChanged?.Invoke();
                         }
 
+                    }
+                    if (_connectionPool.Count < PoolSize && _connectionSettingsCache != null)
+                    {
+                        for (int i = 0; i < PoolSize - _connectionPool.Count; i++)
+                        {
+                            var conn = Connect(_connectionSettingsCache);
+                            if (conn != null)
+                            {
+                                conn.Dispose();
+                                _connectionPool.Add(conn);
+
+                                ApplicationStatistics.SetLdapConnectionCount(Guid, _connectionPool.Count);
+                            }
+                        }
                     }
 
                 }
@@ -207,6 +231,8 @@ namespace BLAZAM.ActiveDirectory
 
                     }
                     _connectionPool.Clear();
+
+                    ApplicationStatistics.SetLdapConnectionCount(Guid, _connectionPool.Count);
                     OnCountChanged?.Invoke();
 
                 }
@@ -621,6 +647,33 @@ namespace BLAZAM.ActiveDirectory
             }
         }
 
+        //protected virtual void Dispose(bool disposing)
+        //{
+        //    if (!disposedValue)
+        //    {
+        //        if (disposing)
+        //        {
 
+        //            ClearPool();
+        //        }
+
+
+        //        disposedValue = true;
+        //    }
+        //}
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~LdapConnectionFactory()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        //public void Dispose()
+        //{
+        //    // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //    Dispose(disposing: true);
+        //    GC.SuppressFinalize(this);
+        //}
     }
 }
