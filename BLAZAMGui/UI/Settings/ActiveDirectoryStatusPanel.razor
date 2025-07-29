@@ -157,57 +157,66 @@
                         await InvokeAsync(StateHasChanged);
 
                     }
-
-                    if (Directory.PortOpen)
-                    {
-                        _portStatus = true;
-                        await InvokeAsync(StateHasChanged);
-                        if (Directory.Status == DirectoryConnectionStatus.OK)
+                    
+                    try{
+                  
+                        if (Directory.PortOpen)
                         {
-                            _credStatus = true;
+                            _portStatus = true;
+                            await InvokeAsync(StateHasChanged);
+                            if (Directory.Status == DirectoryConnectionStatus.OK)
+                            {
+                                _credStatus = true;
 
-                            showProgress = false;
-                            // Directory.DomainControllers.ForEach(async dc =>
-                            // {
-                            //     try
-                            //     {
-                            //         if (dc.Domain != null)
-                            //         {
-                            //             if (dc.Domain.DomainMode != null)
-                            //             {
-                            //                 _domain = dc.Domain;
-                            //             }
-                            //         }
-                            //     }catch(Exception ex)
-                            //     {
-                            //         Loggers.ActiveDirectryLogger.Information("Unable to contact domain from domain controller. {@Error}", ex);
-                            //     }
-                            // });
+                                showProgress = false;
+                                // Directory.DomainControllers.ForEach(async dc =>
+                                // {
+                                //     try
+                                //     {
+                                //         if (dc.Domain != null)
+                                //         {
+                                //             if (dc.Domain.DomainMode != null)
+                                //             {
+                                //                 _domain = dc.Domain;
+                                //             }
+                                //         }
+                                //     }catch(Exception ex)
+                                //     {
+                                //         Loggers.ActiveDirectryLogger.Information("Unable to contact domain from domain controller. {@Error}", ex);
+                                //     }
+                                // });
 
-                            await InvokeAsync(DirectoryConnected.InvokeAsync);
+                                await InvokeAsync(DirectoryConnected.InvokeAsync);
+
+                            }
+                            else
+                            {
+                                _credStatus = false;
+                            }
+                        }
+                        else
+                        {
+                            _portStatus = false;
+                        }
+
+
+                        if (Directory.Status == DirectoryConnectionStatus.Connecting)
+                        {
+                            showProgress = true;
 
                         }
                         else
                         {
-                            _credStatus = false;
+
+                            showProgress = false;
                         }
                     }
-                    else
+                    catch (UnresolvableAddressException ex)
                     {
-                        _portStatus = false;
+                        //ignore DNS errors, will show from Directory.ConnectionException
                     }
 
-
-                    if (Directory.Status == DirectoryConnectionStatus.Connecting)
-                    {
-                        showProgress = true;
-
-                    }
-                    else
-                    {
-
-                        showProgress = false;
-                    }
+                   
 
                     await InvokeAsync(StateHasChanged);
                     await Task.Delay(1000);

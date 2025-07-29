@@ -4,11 +4,16 @@ using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
+using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using Newtonsoft.Json;
 using System.Data.Entity.Core.Common.CommandTrees;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Security;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -94,49 +99,81 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
-        public string? LapsPassword
+        private LapsCredential? _lapsCredential;
+        public SecureString? LapsPassword
         {
             get
             {
-                string? pass = null;
-                object? value = null;
-                if (System.OperatingSystem.IsWindows())
-                {
-                    value = GetAttribute<object>("msLAPS-EncryptedPassword");
-                }
-                if (value is null)
-                {
-                    value = GetStringAttribute(ActiveDirectoryFields.LapsPassword.FieldName);
-                }
+                if (_lapsCredential != null) return _lapsCredential.Password;
+                return GetLapsCredentials()?.Password;
+            }
+        }
+        public SecureString? LapsUsername
+        {
+            get
+            {
+                if (_lapsCredential != null) return _lapsCredential.AccountName;
+                return GetLapsCredentials()?.AccountName;
+            }
+        }
+
+        private LapsCredential? GetLapsCredentials()
+        {
+            string? pass = null;
+            object? value = null;
+            if (System.OperatingSystem.IsWindows())
+            {
+                value = GetAttribute<object>("msLAPS-EncryptedPassword");
                 if (value is byte[] bytes)
                 {
                     try
                     {
-                        var decryptor = new LapsDecryptor();
-                        string decryptedJson = decryptor.Decrypt(bytes);
+                        return Directory.Impersonation.Run(() =>
+                        {
+                            string decryptedPassword = String.Empty;
+                            var decryptor = new LapsDecryptor();
+                            var decryptedJson = decryptor.Decrypt(bytes).ToSecureString();
+                            //decryptedPassword = decryptedJson;
+                            _lapsCredential = new LapsCredential(decryptedJson);
 
-                        // The result is a JSON string, you'll need to parse it to get the password.
-                        // Example JSON: {"n":"Administrator","t":"1d8e1c6a2e4bfe8","p":"YourPasswordHere"}
-                        // You can use a JSON parsing library like System.Text.Json to extract the password.
-                        return decryptedJson;
+                            return _lapsCredential;
+                        });
+
                     }
                     catch (Exception ex)
                     {
                         Loggers.ActiveDirectoryLogger.Information(ex, "Error decrypting LAPS password for {@Computer}", DN);
                     }
                 }
-                else if (value is string str)
-                {
-                    return str;
-                }
-                return pass;
             }
+            if (value is null)
+            {
+                var str = GetSecureStringAttribute(ActiveDirectoryFields.LapsPassword.FieldName);
+                if (str != null)
+                {
+                    _lapsCredential = new(str);
+                    return _lapsCredential;
+                }
+            }
+            return null;
         }
+
+        private SecureString? GetSecureStringAttribute(string fieldName)
+        {
+            var temp = GetStringAttribute(fieldName);
+            if (temp != null) return temp.ToSecureString();
+            return null;
+        }
+
         public DateTime? LapsPasswordExpiration
         {
             get
             {
                 return GetDateTimeAttribute("msLAPS-PasswordExpirationTime");
+            }
+            set
+            {
+                SetFileTimeAttribute("msLAPS-PasswordExpirationTime", value);
             }
         }
         public IPHostEntry? IPHostEntry { get; set; }

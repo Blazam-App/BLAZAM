@@ -199,7 +199,7 @@ else
 
             <MudMenu Class="align-self-end"
                      IconColor="@Color.Tertiary"
-                     StartIcon="@Icons.Material.Filled.Settings">
+                     Icon="@Icons.Material.Filled.Settings">
 
                 @if (accountEntry != null && accountEntry is not IADContact && ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable)))
                 {
@@ -295,10 +295,6 @@ else
 
     [Parameter]
     public EventCallback OnRename { get; set; }
-
-
-    [Parameter]
-    public EventCallback OnChangeThumbnail { get; set; }
 
 
 

@@ -5,7 +5,7 @@
     string _fieldMudStackClasses = "flex-wrap gap-10";
 }
 <AppPageTitle>@Computer?.CanonicalName</AppPageTitle>
-@if (Computer != null)
+    @if (Computer != null)
 {
     <EditForm OnValidSubmit=SaveChanges Context="editContext" Model="Computer">
 
@@ -14,7 +14,6 @@
             <DirectoryEntryViewHeader EditMode="@EditMode"
                                       DirectoryEntry="@Computer"
                                       OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
-                                      OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
                                       OnDelete="@DeleteComputer"
                                       OnDisable="@(async()=>{Computer.Enabled=false; await RefreshEntryComponents();})"
                                       OnEnable="@(async()=>{Computer.Enabled=true; await RefreshEntryComponents();})"
@@ -54,10 +53,10 @@
                             <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Computer="Computer" />
                         }
                     </AppModal>
-                    
+
                     <MudGrid>
                         <MudItem xs="12" md="3">
-                            <Section FullWidth=false>
+                            <ViewSection Stack=true FullWidth=false>
                                 <MudCard Elevation="2"
                                          Style="width:fit-content;height:fit-content"
                                          Class="relative mx-auto d-block p-1 mb-5">
@@ -67,38 +66,49 @@
 
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Name]:</MudText>
-                                    <MudSpacer />
-                                    <MudText>@Computer.CanonicalName</MudText>
+                                        <MudSpacer />
+                                        <MudText>@Computer.CanonicalName</MudText>
 
-                                </MudStack>
-                                <MudStack Row=true>
-                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Operating_System]:</MudText>
-                                    <MudSpacer />
-                                    <MudText>@Computer.OperatingSystem</MudText>
+                                    </MudStack>
 
-                                </MudStack>
-                              
+                                    @if (Computer.CanReadField(ActiveDirectoryFields.Manager))
+                                {
+                                    <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.User"
+                                                    Label="@AppLocalization[Lang.Manager]"
+                                                    SelectedResult=Computer.Manager
+                                                    SelectedResultChanged="@((user)=>{Computer.Manager=user as IADUser;})"
+                                                    Disabled=@(!EditMode || !Computer.CanEditField(ActiveDirectoryFields.Manager)) />
+                                }
+                                @if (Computer.CanReadField(ActiveDirectoryFields.OperatingSystem))
+                                {
+                                    <MudStack Row=true>
+                                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Operating_System]:</MudText>
+                                            <MudSpacer />
+                                            <MudText>@Computer.OperatingSystem</MudText>
+
+                                        </MudStack>
+                                }
 
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Online]:</MudText>
-                                    <MudSpacer />
-                                    <MudText>
-                                        <StatusCheck Status="@(Computer.IsOnline==true)" />
-                                    </MudText>
-                                </MudStack>
+                                        <MudSpacer />
+                                        <MudText>
+                                            <StatusCheck Status="@(Computer.IsOnline==true)" />
+                                        </MudText>
+                                    </MudStack>
 
-                                <MudStack Row=true>
-                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
-                                    <MudSpacer />
-                                    <LastLogonTime Typo=Typo.caption DirectoryEntry="Computer" />
+                                    <MudStack Row=true>
+                                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
+                                        <MudSpacer />
+                                        <LastLogonTime Typo=Typo.caption DirectoryEntry="Computer" />
 
-                                </MudStack>
+                                    </MudStack>
 
-                                <MudStack>
-                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Groups]:</MudText>
-                                    <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="Computer" />
-                                </MudStack>
-                                @if (Computer.Disabled)
+                                    <MudStack>
+                                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Groups]:</MudText>
+                                        <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="Computer" />
+                                    </MudStack>
+                                    @if (Computer.Disabled)
                                 {
                                     <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization[Lang.Computer_is_disabled]</MudAlert>
                                 }
@@ -106,12 +116,12 @@
                                 {
                                     <MudAlert Severity="Severity.Warning" Class="mud-width-full">@AppLocalization[Lang.Computer_is_locked_out]</MudAlert>
                                 }
-                            </Section>
+                            </ViewSection>
                         </MudItem>
                         <MudItem xs=12 md="9">
                             <MudStack>
 
-                                <Section Title=@AppLocalization[Lang.Live_Stats]>
+                                <ViewSection Title=@AppLocalization[Lang.Live_Stats]>
 
                                     <MudStack Row=true Class="@_fieldMudStackClasses">
                                         @if (Computer.IsOnline == true)
@@ -126,10 +136,10 @@
 
                                         }
                                     </MudStack>
-                                </Section>
+                                </ViewSection>
 
 
-                                <Section Title=@AppLocalization[Lang.Services]>
+                                <ViewSection Title=@AppLocalization[Lang.Services]>
 
                                     <MudStack Row=true Class="@_fieldMudStackClasses">
                                         @if (Computer.IsOnline == true)
@@ -143,33 +153,35 @@
                                         }
 
                                     </MudStack>
-                                </Section>
+                                </ViewSection>
                                 @if (Computer.CanReadBitLocker)
                                 {
                                     <BitLockerViewer Computer="Computer" />
                                 }
-                                  @if (!Computer.LapsPassword.IsNullOrEmpty() && Computer.CanReadField(ActiveDirectoryFields.LapsPassword))
-                                {
-                                    <Section Title=@AppLocalization[Lang.LAPS_Password]>
 
-                                        <AppTooltip ShowOnFocus="false" ShowOnHover="true" Placement="Placement.Right">
-                                            <TooltipContent>
-                                                @if (Computer.LapsPasswordExpiration.HasValue)
-                                                {
-                                                    <MudText>Expires: @Computer.LapsPasswordExpiration.Value.ToLocalTime()</MudText>
-                                                }
-                                                else
-                                                {
-                                                    <MudText>Expiration not set</MudText>
-                                                }
-                                            </TooltipContent>
-                                            <ChildContent>
-                                                <MudTextField Variant="Variant.Text" Value="Computer.LapsPassword" ReadOnly="true" />
-                                            </ChildContent>
-                                        </AppTooltip>
-                                    </Section>
-                                   
-                                }
+                                <ViewSection Title="LAPS">
+
+                                    <DynamicMudInput T=string Label="@AppLocalization[Lang.Username]"
+                                                     Value="@Computer.LapsUsername.ToPlainText()"
+                                                     ReadOnly="true" />
+
+                                    <DynamicMudInput T=string Label="@AppLocalization[Lang.Password]"
+                                                     Value="@Computer.LapsPassword.ToPlainText()"
+                                                     ReadOnly="true" />
+
+                                    <DynamicMudInput T=DateTime? Label="@AppLocalization[Lang.Expires]"
+                                                     @bind-Value="@Computer.LapsPasswordExpiration"
+                                                     Disabled=@(!EditMode|| !Computer.CanEditField(ActiveDirectoryFields.LapsPassword))/>
+
+                                    <MudButton Color="Color.Secondary"
+                                               Variant="Variant.Filled"
+                                               OnClick="ExpireLapsPassword"
+                                               Disabled="@(!Computer.CanEditField(ActiveDirectoryFields.LapsPassword))">Expire Now</MudButton>
+
+
+                                </ViewSection>
+
+
                             </MudStack>
 
                         </MudItem>
@@ -187,7 +199,7 @@
 
                     @if (OperatingSystem.IsWindows())
                     {
-                        <Section Title=@AppLocalization[Lang.Drive_Details]>
+                        <ViewSection Title=@AppLocalization[Lang.Drive_Details]>
                             <MudStack Row=true Class="@_fieldMudStackClasses">
                                 @if (Computer.IsOnline == true)
                                 {
@@ -200,7 +212,7 @@
                                 }
 
                             </MudStack>
-                        </Section>
+                        </ViewSection>
                     }
 
 
@@ -210,7 +222,7 @@
 
                     @if (OperatingSystem.IsWindows())
                     {
-                        <Section Title=@AppLocalization[Lang.Sessions]>
+                        <ViewSection Title=@AppLocalization[Lang.Sessions]>
 
                             <MudStack Row=true Class="@_fieldMudStackClasses">
                                 @if (Computer.IsOnline == true)
@@ -231,12 +243,12 @@
 
                             </MudStack>
 
-                        </Section>
+                        </ViewSection>
                     }
 
                     @if (OperatingSystem.IsWindows())
                     {
-                        <Section Title=@AppLocalization[Lang.Printers]>
+                        <ViewSection Title=@AppLocalization[Lang.Printers]>
 
                             <MudStack Row=true Class="@_fieldMudStackClasses">
                                 @if (Computer.IsOnline == true)
@@ -250,13 +262,13 @@
                                 }
                             </MudStack>
 
-                        </Section>
+                        </ViewSection>
                     }
                     @if (Computer.CanReadAnyCustomFields)
                     {
                         @if (CustomFields != null && CustomFields.Count > 0)
                         {
-                            <Section Title=@AppLocalization[Lang.Additional_Fields]>
+                            <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
 
                                 @foreach (var field in CustomFields)
                                 {
@@ -268,7 +280,7 @@
                                 }
 
 
-                            </Section>
+                            </ViewSection>
                         }
                     }
 
@@ -328,6 +340,14 @@
         if (Computer != null && await MessageService.Confirm("Are you sure you want to unlock " + Computer?.CanonicalName + "?", "Unlock Computer"))
         {
             Computer.LockedOut = false;
+        }
+
+    }
+    async Task ExpireLapsPassword()
+    {
+        if (Computer != null && await MessageService.Confirm("Are you sure you want to expire the LAPS password for " + Computer?.CanonicalName + "?", "Expire Password"))
+        {
+            Computer.LapsPasswordExpiration = DateTime.Now;
         }
 
     }

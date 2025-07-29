@@ -294,6 +294,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
+        private IADUser? _manager;
+        public virtual IADUser? Manager
+        {
+            get
+            {
+                if (_manager == null)
+                {
+                    var dn = GetStringAttribute(ActiveDirectoryFields.Manager.FieldName);
+
+                    var user = Directory.Users.FindUserByDN(dn);
+                    _manager = user;
+                }
+                return _manager;
+            }
+            set
+            {
+                _manager = value;
+                SetAttribute(ActiveDirectoryFields.Manager.FieldName, value?.DN);
+            }
+
+        }
 
         private IADOrganizationalUnit? _lastKnownParent;
         public virtual IADOrganizationalUnit? LastKnownParent
@@ -1106,23 +1127,23 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <param name="propertyName">The requested attribute</param>
         /// <returns>The attribute value</returns>
         private T? GetValue<T>(string propertyName)
-        {
 
-            //if (NewEntry)
-            //{
-            //    try
-            //    {
-            //        if (NewEntryProperties.ContainsKey(propertyName))
-            //            return (T)NewEntryProperties[propertyName];
-            //    }
-            //    catch (InvalidCastException ex)
-            //    {
-            //        throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
-            //    }
+        {
+            if (NewEntry)
+            {
+                try
+                {
+                    if (NewEntryProperties.ContainsKey(propertyName))
+                        return (T)NewEntryProperties[propertyName];
+                }
+                catch (InvalidCastException ex)
+                {
+                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+                }
+                catch (Exception ex)
+                {
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
+                }
 
 
 
@@ -1146,10 +1167,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return default;
 
             }
-
+            
             try
-            {
-                if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
+            {          
+            if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
                 {
                     var val = DirectoryEntry.GetPropertyValue(propertyName);
                     if (val is null)
@@ -1267,6 +1288,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
+
+
+        protected DateTime? SetFileTimeAttribute(string attribute, DateTime? value)
+        {
+            if (value == null || !value.HasValue)
+                value = CommonHelpers.ADS_NULL_TIME;
+            var dateTime = value.Value;
+            if (dateTime.Kind == DateTimeKind.Unspecified)
+            {
+                dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Local);
+            }
+            SetAttribute(attribute, dateTime.ToUniversalTime().ToFileTime().ToString());
+            return value;
+        }
+
 
         private void SetNewProperty(string propertyName, object? value)
         {

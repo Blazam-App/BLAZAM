@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
 using System.Net;
+using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -19,12 +20,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// The LAPS password for this computer
         /// </summary>
-        string? LapsPassword { get; }
+        SecureString? LapsPassword { get; }
 
         /// <summary>
         /// The expiration time for the LAPS password
         /// </summary>
-        DateTime? LapsPasswordExpiration { get; }
+        DateTime? LapsPasswordExpiration { get; set; }
         /// <summary>
         /// Indiates whether this computer is reachable by the server. 
         /// Null indicates that the check has not yet completed.
@@ -59,6 +60,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// All shared printers on this computer
         /// </summary>
         List<SharedPrinter> SharedPrinters { get; }
+        SecureString? LapsUsername { get; }
 
         Task<List<IADBitLockerRecovery>?> GetBitLockerRecoveryAsync();
 

@@ -330,6 +330,15 @@ namespace BLAZAM.ActiveDirectory
                 return CreateConnection(ad);
 
             }
+            catch (UnresolvableAddressException ex)
+            {
+                ConnectionException = ex;
+
+                Loggers.ActiveDirectoryLogger.Warning("Unable to decrypt Active Directory password {@Error}", ex);
+                Status = DirectoryConnectionStatus.ServerDown;
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++;
+            }
             catch (DirectoryOperationException ex)
             {
                 ConnectionException = ex;
@@ -549,7 +558,9 @@ namespace BLAZAM.ActiveDirectory
         private void PerformNetworkTests(ADSettings? ad)
         {
             Loggers.ActiveDirectoryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
-
+            
+            NetworkTools.ResolveHostIP(ad.ServerAddress);
+            
             if (!NetworkTools.IsPortOpen(ad.ServerAddress, ad.ServerPort))
             {
                 Loggers.ActiveDirectoryLogger.Debug("Active Directory port is not open");
@@ -681,6 +692,19 @@ namespace BLAZAM.ActiveDirectory
                                 //return findUser;
 
                             }
+                            catch (DirectoryServicesCOMException ex)
+                            {
+                                Loggers.ActiveDirectoryLogger.Information("Error authenticating user: {Message} {@Error}", ex.Message, ex);
+                                if(ex.ExtendedErrorMessage.Contains("data 773, v4563"))
+                                {
+                                    return findUser;
+                                }
+                                switch (ex.Message)
+                                {
+                                    case "The user name or password is incorrect.":
+                                        stopWatch.Stop();
+                                        }
+                                        }
 
                             catch (Exception ex)
                             {

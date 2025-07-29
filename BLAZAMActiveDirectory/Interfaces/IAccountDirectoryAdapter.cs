@@ -80,6 +80,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         bool PasswordNotRequired { get; set; }
         bool RequirePasswordChange { get; set; }
         DateTime? LastLogonTimestamp { get; }
+        DateTime? PasswordExpirationTime { get; }
 
         /// <summary>
         /// Changes the password for this entry immediately

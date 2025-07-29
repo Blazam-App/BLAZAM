@@ -262,6 +262,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         AppEvent? OnChangesDiscarded { get; set; }
         byte[]? Guid { get; set; }
+        IADUser? Manager { get; set; }
 
 
         /// <summary>

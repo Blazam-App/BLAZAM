@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks; // For Task.Delay in some tests if needed
 using System.Linq;
+using BLAZAM.Common.Exceptions;
 
 namespace BLAZAMCommon.Tests.Helpers
 {
@@ -19,12 +20,18 @@ namespace BLAZAMCommon.Tests.Helpers
         }
 
         [Fact]
-        public void PingHost_NonExistentHost_ReturnsFalse()
+        public void PingHost_NonExistentHost_ReturnsCorrectException()
         {
             // Using a TLD that is reserved for testing/documentation (RFC 2606 / RFC 6761)
             // or a clearly fake one.
-            Assert.False(NetworkTools.PingHost("nonexistent-domain-for-blazam-tests.example.com"));
-            Assert.False(NetworkTools.PingHost("another-unlikely-hostname-blazam.blazam"));
+            Assert.Throws<UnresolvableAddressException>(() =>
+            {
+                NetworkTools.PingHost("nonexistent-domain-for-blazam-tests.example.com");
+            });
+            Assert.Throws<UnresolvableAddressException>(() =>
+            {
+                NetworkTools.PingHost("another-unlikely-hostname-blazam.blazam");
+            });
         }
 
         [Fact]
@@ -236,5 +243,95 @@ namespace BLAZAMCommon.Tests.Helpers
         }
 
         #endregion Positive Port Open Tests
+
+        #region DNS Resolution Tests
+        /// <summary>
+        /// Tests that when a valid IP address string is passed, the method
+        /// correctly parses and returns the corresponding IPAddress object.
+        /// This covers both IPv4 and IPv6 addresses.
+        /// </summary>
+        [Theory]
+        [InlineData("127.0.0.1")]
+        [InlineData("8.8.8.8")]
+        [InlineData("::1")]
+        [InlineData("2001:4860:4860::8888")]
+        public void ResolveHostIP_WithValidIpAddress_ReturnsParsedIPAddress(string ipAddressString)
+        {
+            // Arrange
+            var expectedIp = IPAddress.Parse(ipAddressString);
+
+            // Act
+            var result = NetworkTools.ResolveHostIP(ipAddressString);
+
+            // Assert
+            Assert.Equal(expectedIp, result);
+        }
+
+        /// <summary>
+        /// Tests that a known, resolvable hostname like "localhost" returns a valid IPAddress.
+        /// "localhost" is used because it resolves locally without needing an internet connection.
+        /// </summary>
+        [Fact]
+        public void ResolveHostIP_WithValidHostname_ReturnsAnIPAddress()
+        {
+            // Arrange
+            var hostName = "localhost";
+
+            // Act
+            var result = NetworkTools.ResolveHostIP(hostName);
+
+            // Assert
+            Assert.NotNull(result);
+            // localhost can resolve to 127.0.0.1 (Loopback) or ::1 (IPv6Loopback)
+            Assert.True(result.Equals(IPAddress.Loopback) || result.Equals(IPAddress.IPv6Loopback));
+        }
+
+        /// <summary>
+        /// Tests that an unresolvable or invalid hostname causes the method
+        /// to catch a SocketException and correctly return null.
+        /// </summary>
+        [Fact]
+        public void ResolveHostIP_WithInvalidHostname_ReturnsNull()
+        {
+            // Arrange
+            var invalidHostName = "this-is-not-a-valid-hostname.invalid";
+
+            // Act
+            var result = NetworkTools.ResolveHostIP(invalidHostName);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        /// <summary>
+        /// This test verifies that passing a null input is not handled by the
+        /// catch block and correctly throws an ArgumentNullException. This highlights
+        /// an unhandled edge case in the current implementation.
+        /// </summary>
+        [Fact]
+        public void ResolveHostIP_WithNullInput_ThrowsArgumentNullException()
+        {
+            // Arrange
+            string? hostName = null;
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => NetworkTools.ResolveHostIP(hostName!));
+        }
+
+        /// <summary>
+        /// This test verifies that passing an empty string is not handled by the
+        /// catch block and correctly throws an ArgumentException. This highlights
+        /// another unhandled edge case.
+        /// </summary>
+        [Fact]
+        public void ResolveHostIP_WithEmptyStringInput_ThrowsArgumentException()
+        {
+            // Arrange
+            var hostName = string.Empty;
+
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => NetworkTools.ResolveHostIP(hostName));
+        }
+        #endregion
     }
 }

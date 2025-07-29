@@ -1,5 +1,5 @@
 @inherits AppComponentBase
-<Section Title=@AppLocalization[Lang.BitLocker]>
+<ViewSection Title=@AppLocalization[Lang.BitLocker]>
 
     <MudStack Row=true Class="@Class">
         <MudDataGrid T=IADBitLockerRecovery Items="_recoveries">
@@ -10,7 +10,7 @@
         </MudDataGrid>
 
     </MudStack>
-</Section>
+</ViewSection>
 
 @code{
     [Parameter]

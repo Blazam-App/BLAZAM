@@ -88,6 +88,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
+          public virtual DateTime? PasswordExpirationTime
+        {
+            get
+            {
+                return GetDateTimeAttribute("msDS-UserPasswordExpiryTimeComputed");
+
+            }
+        }
 
         public DateTime? LastLogonTime
         {
@@ -273,17 +281,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-
-                if (value == null || !value.HasValue)
-                    value = CommonHelpers.ADS_NULL_TIME;
-                var dateTime = value.Value;
-                if(dateTime.Kind == DateTimeKind.Unspecified)
-                {
-                    dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Local);
-                }
-                SetAttribute("accountExpires", dateTime.ToUniversalTime().ToFileTime().ToString());
+                value = SetFileTimeAttribute("accountExpires",value);
             }
         }
+
+
         public void StageRequirePasswordChange(bool requireChange)
         {
             PostCommitSteps.Add(new JobStep("Require Password Change", (JobStep? step) =>

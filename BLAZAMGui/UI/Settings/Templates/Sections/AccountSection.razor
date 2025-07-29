@@ -1,0 +1,230 @@
+﻿@inherits AppComponentBase
+<ViewSection Title=@AppLocalization[Lang.Account_and_Name]>
+
+    <MudStack>
+
+        <MudStack Row=true>
+            <MudStack Row=true>
+                <TemplateOverride SourceTemplate="@usernameFromTemplate">
+                    <MudTextField Required="true"
+                    RequiredError=@AppLocalization["This field is required"]
+                    Label=@AppLocalization[Lang.Username_Format]
+                    @bind-Value=DirectoryTemplate.EffectiveUsernameFormula />
+                </TemplateOverride>
+                @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveUsernameFormula != DirectoryTemplate.EffectiveUsernameFormula)
+                {
+                    <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.UsernameFormula=null;}) />
+                }
+            </MudStack>
+            <MudStack Row=true>
+                <TemplateOverride SourceTemplate="@displayNameFromTemplate">
+                    <MudTextField Required="true"
+                    RequiredError=@AppLocalization["This field is required"]
+                    Label=@AppLocalization[Lang.Display_Name_Format]
+                    @bind-Value=DirectoryTemplate.EffectiveDisplayNameFormula />
+                </TemplateOverride>
+                @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveDisplayNameFormula != DirectoryTemplate.EffectiveDisplayNameFormula)
+                {
+                    <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.DisplayNameFormula=null;}) />
+                }
+            </MudStack>
+
+
+
+
+        </MudStack>
+        <MudStack Row=true>
+
+            <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@passwordFromTemplateName">
+                <MudTextField Required="true"
+                RequiredError=@AppLocalization["This field is required"]
+                FullWidth=true
+                Label=@AppLocalization[Lang.Password]
+                @bind-Value=DirectoryTemplate.EffectivePasswordFormula />
+            </TemplateOverride>
+            @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectivePasswordFormula != DirectoryTemplate.EffectivePasswordFormula)
+            {
+                <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.PasswordFormula=null;}) />
+            }
+        </MudStack>
+        <MudStack Row=true>
+
+            <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@requirePasswordChangeFromTemplate">
+                <MudSwitch Label=@AppLocalization[Lang.Allow_Username_Override]
+                UncheckedColor="Color.Error"
+                Color="Color.Success"
+                @bind-Value=DirectoryTemplate.EffectiveAllowUsernameOverride />
+            </TemplateOverride>
+            @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveAllowUsernameOverride != DirectoryTemplate.EffectiveAllowUsernameOverride)
+            {
+                <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.AllowUsernameOverride=null;}) />
+            }
+        </MudStack>
+        <MudStack Row=true>
+
+            <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@requirePasswordChangeFromTemplate">
+                <MudSwitch Label=@AppLocalization[Lang.Require_Password_Change]
+                UncheckedColor="Color.Warning"
+                Color="Color.Success"
+                @bind-Value=DirectoryTemplate.EffectiveRequirePasswordChange />
+            </TemplateOverride>
+            @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveRequirePasswordChange != DirectoryTemplate.EffectiveRequirePasswordChange)
+            {
+                <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.RequirePasswordChange=null;}) />
+            }
+        </MudStack>
+        <TemplateOverride Class="mud-width-full"
+        BadgeClass="mud-width-full"
+        SourceTemplate="@sendWelcomeEmailFromTemplate">
+
+            <MudSwitch Label="@AppLocalization[Lang.Send_Welcome_Email]"
+            UncheckedColor="Color.Error"
+            Color="Color.Success"
+            @bind-Value=@DirectoryTemplate.EffectiveSendWelcomeEmail />
+            @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveSendWelcomeEmail != DirectoryTemplate.EffectiveSendWelcomeEmail)
+            {
+                <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.SendWelcomeEmail=null;}) />
+            }
+            @if (DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true &&
+            (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id) && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
+            {
+                <MudAlert Severity="Severity.Warning">
+                    @AppLocalization["Send Email is true while ask for email is false, you have also set an email value. Welcome Emails will be sent to the email generated by Blazam! This is likely unintended behavior!"]
+                </MudAlert>
+            }
+        </TemplateOverride>
+
+        <TemplateOverride Class="mud-width-full"
+        BadgeClass="mud-width-full"
+        SourceTemplate="@askForAlternateEmailFromTemplate">
+
+            <MudSwitch Label="@AppLocalization[Lang.Ask_For_Alternate_Email]"
+            UncheckedColor="Color.Error"
+            Color="Color.Success"
+            @bind-Value=@DirectoryTemplate.EffectiveAskForAlternateEmail />
+        </TemplateOverride>
+        @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveAskForAlternateEmail != DirectoryTemplate.EffectiveAskForAlternateEmail)
+        {
+            <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.AskForAlternateEmail=null;}) />
+        }
+        <MudExpansionPanel Text="@AppLocalization[Lang.Formula_sim]">
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudStack>
+
+
+                        <MudTextField T="string"
+                        Label="@AppLocalization[Lang.First_Name]"
+                        @bind-Value="@_testFirstName" />
+                        <MudTextField T="string"
+                        Label="@AppLocalization[Lang.Middle_Name]"
+                        @bind-Value="@_testMiddleName" />
+                        <MudTextField T="string"
+                        Label="@AppLocalization[Lang.Last_Name]"
+                        @bind-Value="@_testLastName" />
+
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudStack>
+
+                        @{
+                            var testName = new NewUserName()
+                                    {
+                                        GivenName = _testFirstName,
+                                        MiddleName = _testMiddleName,
+                                        Surname = _testLastName
+                                    };
+                        }
+                        <MudTextField T="string"
+                        Label="@AppLocalization[Lang.Username]"
+                        Value="@(DirectoryTemplate.EffectiveUsernameFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveUsernameFormula,testName):null)" />
+                        <MudTextField T="string"
+                        Label="@AppLocalization[Lang.Display_Name]"
+                        Value="@(DirectoryTemplate.EffectiveDisplayNameFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveDisplayNameFormula,testName):null)" />
+                        <MudTextField T="string"
+                        Label="@AppLocalization[Lang.Password]"
+                        Value="@(DirectoryTemplate.EffectivePasswordFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectivePasswordFormula,testName):null)" />
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+
+
+        </MudExpansionPanel>
+
+    </MudStack>
+
+    <MudElement Class="d-flex flex-wrap gap-5">
+
+
+
+
+
+
+
+    </MudElement>
+
+</ViewSection>
+
+@code {
+    [CascadingParameter]
+    public DirectoryTemplate DirectoryTemplate{ get; set; }
+    [CascadingParameter]
+    public IDatabaseContext Context{ get; set; }
+
+    DirectoryTemplate usernameFromTemplate;
+    DirectoryTemplate displayNameFromTemplate;
+    DirectoryTemplate passwordFromTemplateName;
+    DirectoryTemplate allowUsernameOverrideFromTemplate;
+    DirectoryTemplate requirePasswordChangeFromTemplate;
+    DirectoryTemplate sendWelcomeEmailFromTemplate;
+    DirectoryTemplate askForAlternateEmailFromTemplate;
+
+    string _testFirstName;
+    string _testMiddleName;
+    string _testLastName;
+    protected override async Task OnInitializedAsync(){
+         await base.OnInitializedAsync();
+         usernameFromTemplate = GetParentOfValue<string?>(DirectoryTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
+         displayNameFromTemplate = GetParentOfValue<string?>(DirectoryTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
+         passwordFromTemplateName = GetParentOfValue<string?>(DirectoryTemplate.EffectivePasswordFormula, template => template.PasswordFormula); ;
+         allowUsernameOverrideFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange); ;
+         requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange); ;
+         sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail); ;
+         askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); ;
+
+     }
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="valueSelector"></param>
+    /// <returns>Null if the value comes from the current
+    ///  template, otherwise the source template</returns>
+    private DirectoryTemplate? GetParentOfValue<T>(T? value, Func<DirectoryTemplate, T?> valueSelector)
+    {
+        var templateCursor = DirectoryTemplate;
+        var templateValue = valueSelector.Invoke(templateCursor);
+        if (!EqualityComparer<T>.Default.Equals(templateValue, default(T)) && templateValue.Equals(value))
+            return null;
+        while (templateCursor?.ParentTemplateId != null)
+        {
+            if (templateCursor.ParentTemplate == null)
+            {
+                templateCursor.ParentTemplate = Context.DirectoryTemplates.FirstOrDefault(t => t.Id == templateCursor.ParentTemplateId);
+            }
+            templateCursor = templateCursor.ParentTemplate;
+            if (templateCursor != null)
+            {
+                var templateCursorValue = valueSelector.Invoke(templateCursor);
+                if (!EqualityComparer<T?>.Default.Equals(templateCursorValue, default(T?)) && templateCursorValue.Equals(value))
+                {
+                    return templateCursor;
+
+                }
+            }
+        }
+
+        return null;
+    }
+}

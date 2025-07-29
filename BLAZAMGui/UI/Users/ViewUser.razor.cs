@@ -16,7 +16,6 @@ namespace BLAZAM.Gui.UI.Users
     {
 #nullable disable warnings
         string password;
-        bool showFailedLogons;
 
         [Parameter]
         public string Password
@@ -46,8 +45,6 @@ namespace BLAZAM.Gui.UI.Users
         }
         [Parameter]
         public EventCallback<string> ConfirmPasswordChanged { get; set; }
-        bool homeDirectoryExists;
-        bool showRemoveThumbnail = false;
         IGroupableDirectoryAdapter GroupableEntry => DirectoryEntry as IGroupableDirectoryAdapter;
         IAccountDirectoryAdapter Account => DirectoryEntry as IAccountDirectoryAdapter;
         IADUser User => DirectoryEntry as IADUser;
@@ -73,6 +70,7 @@ namespace BLAZAM.Gui.UI.Users
             await InvokeAsync(StateHasChanged);
 
           
+
 
 
             if (GroupableEntry is IADUser && User.HomeDirectory != null)
@@ -225,14 +223,7 @@ namespace BLAZAM.Gui.UI.Users
                 await RefreshEntryComponents();
             }
         }
-        async Task RemoveThumbnail()
-        {
-
-            Contact.ThumbnailPhoto = null;
-            SnackBarService.Warning(GroupableEntry.DisplayName + " will have their thumbnail deleted on save.");
-            await RefreshEntryComponents();
-
-        }
+     
 
 
     }
