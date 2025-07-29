@@ -33,7 +33,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             ActiveDirectoryObjectType? searchType,
             int returnCount = 5,
             bool? enabledOnly = true,
-            SearchScope searchScope = SearchScope.Subtree
+            System.DirectoryServices.Protocols.SearchScope searchScope = System.DirectoryServices.Protocols.SearchScope.Subtree
             )
         {
             try

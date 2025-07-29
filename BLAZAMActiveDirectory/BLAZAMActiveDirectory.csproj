@@ -27,6 +27,10 @@
     <PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.6" />
     <PackageReference Include="System.Management" Version="9.0.6" />
     <PackageReference Include="System.Security.Permissions" Version="9.0.6" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.10" />
+    <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>

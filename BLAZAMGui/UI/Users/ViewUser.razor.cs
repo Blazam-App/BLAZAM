@@ -72,14 +72,37 @@ namespace BLAZAM.Gui.UI.Users
           
 
 
-           
-            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
-            {
-                EventType = ApplicationEventType.Search,
-                Entry = Contact,
-                Actor = CurrentUser.State
 
-            });
+            if (GroupableEntry is IADUser && User.HomeDirectory != null)
+            {
+                try
+                {
+
+                    await GroupableEntry.Directory.Impersonation.RunAsync(() =>
+
+                    {
+                        homeDirectoryExists = new SystemDirectory(User.HomeDirectory).Exists;
+                        return true;
+                    });
+
+                }
+
+                catch (Exception ex)
+                {
+                    Loggers.ActiveDirectoryLogger.Warning("Error checking user h-drive: {Message}", ex);
+
+                }
+            }
+            if (Contact != null && !Contact.NewEntry)
+            {
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                {
+                    EventType = ApplicationEventType.Search,
+                    Entry = Contact,
+                    Actor = CurrentUser.State
+
+                });
+            }
             LoadingData = false;
             await RefreshEntryComponents();
 
