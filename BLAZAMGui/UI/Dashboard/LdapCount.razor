@@ -1,0 +1,8 @@
+<MudText>Ldap Count: ?</MudText>
+@code{
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        //LdapConnectionFactory.OnCountChanged.Delegate+= (a,b) => InvokeAsync(StateHasChanged);
+    }
+}

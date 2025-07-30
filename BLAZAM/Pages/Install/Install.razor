@@ -86,8 +86,11 @@ else
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        if (ApplicationInfo.InstallationCompleted)
+        if (ApplicationInfo.InstallationCompleted){
+            Loggers.SystemLogger.Information("Redirecting from insall to index page.");
+
             Nav.NavigateTo("/");
+        }
     }
 
     protected override async Task OnInitializedAsync()

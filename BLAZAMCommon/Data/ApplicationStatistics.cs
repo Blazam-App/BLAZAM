@@ -16,6 +16,20 @@ namespace BLAZAM.Common.Data
                 ADContextCount--;
 
         }
+        private static readonly Dictionary<Guid, int> _ldapConnecions = new Dictionary<Guid, int>();
+        public static void SetLdapConnectionCount(Guid guid,int connecionCount)
+        {
+            _ldapConnecions[guid] = connecionCount;
+        }
+
+        public static void RemoveLdapConnectionPool(Guid guid)
+        {
+            _ldapConnecions.Remove(guid);
+        }
+        public static int GetLdapConnectionCount()
+        {
+            return _ldapConnecions.Sum(x => x.Value);
+        }
 
 
         public static int DBContextCount { get; private set; }

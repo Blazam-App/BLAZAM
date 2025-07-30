@@ -75,7 +75,7 @@
 
     [CascadingParameter]
     public SearchService SearchParameters { get; set; }
-
+    bool _initialized;
     string ModelsTypeName = "Search";
     protected string SearchIcon { get; set; } = "";
     string? _searchTermParameter;
@@ -88,15 +88,19 @@
         get => _searchTermParameter; set
         {
             if (_searchTermParameter == HttpUtility.UrlDecode(value)) return;
-            LoadingData = true;
+            //LoadingData = false;
             Searcher?.Cancel();
             _searchTermParameter = HttpUtility.UrlDecode(value);
-            Task.Run(async () =>
+            if (_initialized)
             {
-                await PerformSearch();
-                if (_searchTermParameter.IsNullOrEmpty())
-                    LoadingData = false;
-            });
+                Task.Run(async () =>
+                {
+                    if (!SearchTermParameter.IsNullOrEmpty())
+                    {
+                        await PerformSearch();
+                    }
+                });
+            }
 
 
         }
@@ -123,11 +127,12 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
         Searcher = new ADSearch(Directory);
         SearchService.SearchTerm = SearchTermParameter;
         Searcher.GeneralSearchTerm = SearchTermParameter;
 
-        await base.OnInitializedAsync();
+        LoadingData = false;
 
 
 
@@ -143,6 +148,12 @@
              {
                  results.AddRange(batch.Where(r => r.CanRead));
              });
+
+        if (!SearchTermParameter.IsNullOrEmpty())
+        {
+            await PerformSearch();
+        }
+        _initialized = true;
     }
     /// <summary>
     /// Filter for searching objects of only this type

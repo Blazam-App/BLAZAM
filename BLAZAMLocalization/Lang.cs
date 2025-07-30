@@ -305,6 +305,7 @@ namespace BLAZAM.Localization
         public static readonly string Main = "Main";
         public static readonly string Error = "Error";
         public static readonly string System = "System";
+        public static readonly string Encrypted = "Encrypted";
         public static readonly string Create_User = "Create User";
         public static readonly string Create_Group = "Create Group";
         public static readonly string Create_OU = "Create OU";
