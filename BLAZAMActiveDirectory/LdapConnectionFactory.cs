@@ -5,6 +5,7 @@ using System.DirectoryServices.Protocols;
 using System.Net; // Required for NetworkCredential
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Common.Data;
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
@@ -220,7 +221,6 @@ namespace BLAZAM.ActiveDirectory
                     for (int i = 0; i < count; i++)
                     {
 
-
                         _connectionPool[i].DisposeNow();
 
                         // _connectionPool.RemoveAt(i);
@@ -350,9 +350,9 @@ namespace BLAZAM.ActiveDirectory
                 currentConnection.SessionOptions.TcpKeepAlive = true;
                 if (OperatingSystem.IsWindows())
                 {
-                    currentConnection.AuthType = AuthType.Negotiate;
-                    //connection.SessionOptions.Signing = true;
-                    //connection.SessionOptions.Sealing = true;
+                    //currentConnection.AuthType = AuthType.Negotiate;
+                    currentConnection.SessionOptions.Signing = true;
+                    currentConnection.SessionOptions.Sealing = true;
                 }
                 else
                 {
@@ -366,7 +366,7 @@ namespace BLAZAM.ActiveDirectory
                     return true;
                 };
 
-                if (!StartTls(currentConnection)) return false;
+                if (OperatingSystem.IsLinux() && !StartTls(currentConnection)) return false;
 
 
                 currentConnection.Credential = credential;
@@ -410,6 +410,7 @@ namespace BLAZAM.ActiveDirectory
 
         private static bool StartTls(LdapConnection currentConnection)
         {
+            if (OperatingSystem.IsWindows()) throw new AppException("Windows should use the signing and sealing options, not directly call StartTLS");
             lock (_tlsLock)
             {
                 var tlsStarted = false;
@@ -460,53 +461,56 @@ namespace BLAZAM.ActiveDirectory
         }
         public static bool StopTls(LdapConnection currentConnection)
         {
-            lock (_tlsLock)
+            if (OperatingSystem.IsLinux())
             {
-                var tlsStarted = false;
-                int attempts = 0;
-
-                while (!tlsStarted && attempts < 5)
+                lock (_tlsLock)
                 {
-                    attempts++;
-                    // Create a Task for the blocking operation
-                    // Use a CancellationTokenSource to allow for cancellation attempts if the task gets "stuck"
-                    using (var cancellationTokenSource = new CancellationTokenSource())
+                    var tlsStarted = false;
+                    int attempts = 0;
+
+                    while (!tlsStarted && attempts < 5)
                     {
-                        var connectionTask = Task.Run(() =>
+                        attempts++;
+                        // Create a Task for the blocking operation
+                        // Use a CancellationTokenSource to allow for cancellation attempts if the task gets "stuck"
+                        using (var cancellationTokenSource = new CancellationTokenSource())
                         {
-                            try
+                            var connectionTask = Task.Run(() =>
                             {
-                                //Task.Delay(200).Wait();
+                                try
+                                {
+                                    //Task.Delay(200).Wait();
 
-                                currentConnection.SessionOptions.StopTransportLayerSecurity();
-                                //Task.Delay(100).Wait();
+                                    currentConnection.SessionOptions.StopTransportLayerSecurity();
+                                    //Task.Delay(100).Wait();
 
-                                tlsStarted = true;
-                            }
-                            catch (OperationCanceledException)
+                                    tlsStarted = true;
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    Loggers.ActiveDirectoryLogger.Warning($"StopTransportLayerSecurity was cancelled for {currentConnection.SessionOptions.HostName}.");
+                                    throw; // Re-throw to be caught outside
+                                }
+                            }, cancellationTokenSource.Token);
+                            var timeout = Stopwatch.StartNew();
+                            while (currentConnection.SessionOptions.SecureSocketLayer == false && timeout.Elapsed < TimeSpan.FromSeconds(10))
                             {
-                                Loggers.ActiveDirectoryLogger.Warning($"StopTransportLayerSecurity was cancelled for {currentConnection.SessionOptions.HostName}.");
-                                throw; // Re-throw to be caught outside
+                                Task.Delay(50).Wait();
                             }
-                        }, cancellationTokenSource.Token);
-                        var timeout = Stopwatch.StartNew();
-                        while (currentConnection.SessionOptions.SecureSocketLayer == false && timeout.Elapsed < TimeSpan.FromSeconds(10))
-                        {
-                            Task.Delay(50).Wait();
-                        }
 
-                        if (!currentConnection.SessionOptions.SecureSocketLayer)
-                        {
-                            return false;
-                        }
-                        timeout.Stop();
+                            if (!currentConnection.SessionOptions.SecureSocketLayer)
+                            {
+                                return false;
+                            }
+                            timeout.Stop();
 
+                        }
                     }
+
                 }
-
-
-                return true;
             }
+            return true;
+
         }
         private static void TestConnectionMethods(ADSettings settings)
         {

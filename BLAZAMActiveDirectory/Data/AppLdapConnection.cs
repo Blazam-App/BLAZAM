@@ -67,7 +67,7 @@ namespace BLAZAM.ActiveDirectory.Data
                     {
                         if (_startedTLS)
                         {
-                            //SecureLdapConnector.StopTls(LdapConnection);
+                            LdapConnectionFactory.StopTls(LdapConnection);
                         }
                     }
                     catch(Exception ex) {
