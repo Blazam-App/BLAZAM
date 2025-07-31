@@ -1,4 +1,4 @@
-﻿@inherits AppComponentBase
+﻿@inherits DatabaseComponentBase
 <ViewSection Title=@AppLocalization[Lang.Account_and_Name]>
 
     <MudStack>
@@ -169,8 +169,6 @@
 @code {
     [CascadingParameter]
     public DirectoryTemplate DirectoryTemplate{ get; set; }
-    [CascadingParameter]
-    public IDatabaseContext Context{ get; set; }
 
     DirectoryTemplate usernameFromTemplate;
     DirectoryTemplate displayNameFromTemplate;
