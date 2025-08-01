@@ -106,7 +106,7 @@ namespace BLAZAM.Helpers
             return portOpen;
         }
 
-        private static IPAddress? TryResolveHostIP(string hostNameOrAddress)
+        public static IPAddress? TryResolveHostIP(string hostNameOrAddress)
         {
             try
             {
