@@ -42,7 +42,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="MudBlazor" Version="8.8.0" />
+    <PackageReference Include="MudBlazor" Version="8.9.0" />
     <PackageReference Include="Octokit" Version="14.0.0" />
     <PackageReference Include="PreMailer.Net" Version="2.7.2" />
     <PackageReference Include="Serilog" Version="4.3.0" />
