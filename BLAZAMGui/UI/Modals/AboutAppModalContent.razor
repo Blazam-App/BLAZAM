@@ -23,10 +23,10 @@
     <MudText Align="Align.Center">
         <MudBreakpointProvider>
             <MudHidden Breakpoint="Breakpoint.SmAndUp">
-                <MudImage Width="250" Src="/img/maggie.png" />
+                <MudImage Width="250" Src=@imageSrc />
             </MudHidden>
             <MudHidden Breakpoint="Breakpoint.Xs">
-                <MudImage Width="350" Src="/img/maggie.png" />
+                <MudImage Width="350" Src=@imageSrc />
             </MudHidden>
         </MudBreakpointProvider>
 
@@ -46,5 +46,24 @@
 
 
     }
+    private const string ThumbnailPath = "/static/img/maggieThumb.png";
+    private const string FullResolutionPath = "/static/img/maggie.png";
 
+    private string imageSrc = ThumbnailPath; // Start by showing the thumbnail
+
+    // OnAfterRenderAsync is called after the component has rendered
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Give the browser a moment to render the thumbnail
+            await Task.Delay(1);
+
+            // Change the image source to the full-resolution version
+            imageSrc = FullResolutionPath;
+
+            // Notify Blazor that the state has changed to trigger a re-render
+            StateHasChanged();
+        }
+    }
 }
