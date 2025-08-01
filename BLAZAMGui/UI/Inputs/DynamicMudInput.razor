@@ -21,6 +21,7 @@
                          Immediate=@Immediate
                          HideSpinButtons="false"
                          @bind-Value="@Value"
+                         ReadOnly=@ReadOnly
                          Clearable=@Clearable />
         break;
 
@@ -29,6 +30,7 @@
                       HelperText="@HelperText"
                       Immediate=@Immediate
                       Clearable=@Clearable
+                      ReadOnly=@ReadOnly
                       Value=Value
                       ValueChanged="@((changed)=>{Value =changed;})"
                       Disabled=@Disabled
@@ -39,6 +41,7 @@
             <MudSwitch Color=@Color
                        UncheckedColor=@UncheckedColor
                        T="T"
+                       ReadOnly=@ReadOnly
                        Label=@Label
                        @bind-Value=@Value
                        Disabled=@Disabled />
@@ -48,6 +51,7 @@
     case "DateTime":
         <MudDatePicker Clearable=@Clearable
                        HelperText="@HelperText"
+                       ReadOnly=@ReadOnly
                        Label="@Label"
                        Date="@dateValue"
                        DateChanged=@((date) =>{dateValue = date;})
@@ -102,6 +106,11 @@
     /// </summary>
     [Parameter]
     public bool Clearable { get; set; }
+    /// <summary>
+    /// Will be a read only field if applicable
+    /// </summary>
+    [Parameter]
+    public bool ReadOnly { get; set; }
 
     [Parameter]
     public bool Immediate { get; set; } = true;

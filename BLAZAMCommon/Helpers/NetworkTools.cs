@@ -1,4 +1,5 @@
-﻿using BLAZAM.Logger; // Added
+﻿using BLAZAM.Common.Data.Validators;
+using BLAZAM.Logger; // Added
 using System; // Added
 using System.Linq; // Added for ports.Length
 using System.Net;
@@ -24,10 +25,14 @@ namespace BLAZAM.Helpers
                 return false;
             }
             bool pingable = false;
+            
+            IPAddress? ip = TryResolveHostIP(hostNameOrAddress);
+            if (ip == null) return false;
+
             Ping pinger = new();
             try
             {
-                PingReply reply = pinger.Send(hostNameOrAddress, 1000, new byte[32]);
+                PingReply reply = pinger.Send(ip, 1000, new byte[32]);
                 pingable = reply.Status == IPStatus.Success;
             }
             catch (PingException)
@@ -66,14 +71,16 @@ namespace BLAZAM.Helpers
             }
 
             bool portOpen = false;
-            IPAddress? ip;
-            IPAddress.TryParse(hostNameOrAddress, out ip);
+
+
+            IPAddress? ip = TryResolveHostIP(hostNameOrAddress);
+            if (ip == null) return false;
 
             foreach (int port in ports)
             {
-                if(port < 1 || port > 65535)
+                if (port < 1 || port > 65535)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(ports),"Ports must be between 1-65535");
+                    throw new ArgumentOutOfRangeException(nameof(ports), "Ports must be between 1-65535");
                 }
                 using (TcpClient client = new())
                 {
@@ -97,6 +104,38 @@ namespace BLAZAM.Helpers
                 }
             }
             return portOpen;
+        }
+
+        public static IPAddress? TryResolveHostIP(string hostNameOrAddress)
+        {
+            try
+            {
+                return ResolveHostIP(hostNameOrAddress);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static IPAddress? ResolveHostIP(string hostNameOrAddress)
+        {
+            if(hostNameOrAddress == null) throw new ArgumentNullException(nameof(hostNameOrAddress));
+            if(hostNameOrAddress == String.Empty) throw new ArgumentException(nameof(hostNameOrAddress));
+            IPAddress? ip;
+            var validator = new ValidIpAttribute();
+            if (validator.IsValid(hostNameOrAddress)) return IPAddress.Parse(hostNameOrAddress);
+            try
+            {
+                IPAddress[] addresses = Dns.GetHostAddresses(hostNameOrAddress);
+
+                // Return the first address found (often the IPv4 address).
+                return addresses.FirstOrDefault();
+            }
+            catch (SocketException ex) when (ex.ErrorCode==11001)
+            {
+                throw new UnresolvableAddressException(hostNameOrAddress);
+            }
         }
     }
 }

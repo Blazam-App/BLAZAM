@@ -410,7 +410,14 @@ namespace BLAZAM.Database.Models
 
         };
 
-
+        public static readonly ActiveDirectoryField LapsPassword = new()
+        {
+            Id = 45,
+            FieldName = "msLAPS-Password",
+            DisplayName = Lang.LAPS_Password,
+            FieldType = ActiveDirectoryFieldType.Text,
+            PropertyName = "LapsPassword"
+        };
 
     }
 }

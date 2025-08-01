@@ -23,7 +23,7 @@
 @code {
     byte[]? newThumbnail;
     [Parameter]
-    public IADUser DirectoryModel { get; set; }
+    public IADUser DirectoryEntry { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -61,9 +61,9 @@
     {
         try
         {
-            DirectoryModel.ThumbnailPhoto = newThumbnail;
+            DirectoryEntry.ThumbnailPhoto = newThumbnail;
 
-            SnackBarService.Warning("Thumbnail changed for " + DirectoryModel.DisplayName + " but changes need to be saved.");
+            SnackBarService.Warning("Thumbnail changed for " + DirectoryEntry.DisplayName + " but changes need to be saved.");
         }
         catch
         {

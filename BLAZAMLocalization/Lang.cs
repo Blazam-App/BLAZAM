@@ -189,6 +189,7 @@ namespace BLAZAM.Localization
         public static readonly string Organization = "Organization";
         public static readonly string Department = "Department";
         public static readonly string Company = "Company";
+        public static readonly string Manager = "Manager";
         public static readonly string Office = "Office";
         public static readonly string City = "City";
         public static readonly string State = "State";
@@ -289,6 +290,7 @@ namespace BLAZAM.Localization
         public static readonly string Pass_Change = "Pass Change";
         public static readonly string Lockout_Time = "Lockout Time";
         public static readonly string Last_Logon = "Last Logon";
+        public static readonly string LAPS_Password = "LAPS Password";
         public static readonly string API = "API";
         public static readonly string Sign_Out = "Sign Out";
         public static readonly string Documentation = "Documentation";

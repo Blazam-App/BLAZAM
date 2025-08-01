@@ -537,6 +537,9 @@
   <data name="Last Logon" xml:space="preserve">
     <value>Last Logon</value>
   </data>
+  <data name="LAPS_Password" xml:space="preserve">
+    <value>LAPS Password</value>
+  </data>
   <data name="Last Name" xml:space="preserve">
     <value>Last Name</value>
   </data>

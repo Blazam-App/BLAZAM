@@ -1,11 +1,10 @@
 ﻿using BLAZAM.Database.Context;
-using BLAZAM.Logger; // Added
+using BLAZAM.Logger; 
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System; // Added
 
 namespace BLAZAM.Helpers
 {
@@ -87,7 +86,7 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="httpContext">The current HttpContext.</param>
         /// <returns>A TimeSpan representing the session timeout, or null if it cannot be determined or an error occurs.</returns>
-        public static TimeSpan? SessionTimeout(this HttpContext httpContext)
+        public static TimeSpan? GetSessionTimeout(this HttpContext httpContext)
         {
             if (httpContext == null)
             {

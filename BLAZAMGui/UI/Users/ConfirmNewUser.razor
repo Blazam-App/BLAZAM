@@ -276,7 +276,7 @@ else
             await InvokeAsync(StateHasChanged);
 
             var createUserJob = new Job(AppLocalization[Lang.Create_User]);
-            createUserJob.StopOnFailedStep = true;
+            createUserJob.StopOnFailedStep = false;
 
             _username = User.SAMAccountName;
             _userPassword = User.NewPassword;

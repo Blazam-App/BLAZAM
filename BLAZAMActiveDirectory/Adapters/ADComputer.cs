@@ -1,12 +1,19 @@
 ﻿
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
+using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using Newtonsoft.Json;
+using System.Data.Entity.Core.Common.CommandTrees;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Security;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -20,9 +27,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 if (CanonicalName == null) return null;
-                if (_wmiConnection==null)
+                if (_wmiConnection == null)
                 {
-                    _wmiConnection= new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
+                    _wmiConnection = new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
                 }
                 return _wmiConnection;
             }
@@ -47,7 +54,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return false;
             }
 
-            
+
             if (wmiConnection != null)
             {
                 return await wmiConnection.RenameComputerAsync(newName);
@@ -91,6 +98,83 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute(ActiveDirectoryFields.OperatingSystem.FieldName, value);
             }
 
+        }
+        private LapsCredential? _lapsCredential;
+        public SecureString? LapsPassword
+        {
+            get
+            {
+                if (_lapsCredential != null) return _lapsCredential.Password;
+                return GetLapsCredentials()?.Password;
+            }
+        }
+        public SecureString? LapsUsername
+        {
+            get
+            {
+                if (_lapsCredential != null) return _lapsCredential.AccountName;
+                return GetLapsCredentials()?.AccountName;
+            }
+        }
+
+        private LapsCredential? GetLapsCredentials()
+        {
+            string? pass = null;
+            object? value = null;
+            if (System.OperatingSystem.IsWindows())
+            {
+                value = GetAttribute<object>("msLAPS-EncryptedPassword");
+                if (value is byte[] bytes)
+                {
+                    try
+                    {
+                        return Directory.Impersonation.Run(() =>
+                        {
+                            string decryptedPassword = String.Empty;
+                            var decryptor = new LapsDecryptor();
+                            var decryptedJson = decryptor.Decrypt(bytes).ToSecureString();
+                            //decryptedPassword = decryptedJson;
+                            _lapsCredential = new LapsCredential(decryptedJson);
+
+                            return _lapsCredential;
+                        });
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.ActiveDirectoryLogger.Information(ex, "Error decrypting LAPS password for {@Computer}", DN);
+                    }
+                }
+            }
+            if (value is null)
+            {
+                var str = GetSecureStringAttribute(ActiveDirectoryFields.LapsPassword.FieldName);
+                if (str != null)
+                {
+                    _lapsCredential = new(str);
+                    return _lapsCredential;
+                }
+            }
+            return null;
+        }
+
+        private SecureString? GetSecureStringAttribute(string fieldName)
+        {
+            var temp = GetStringAttribute(fieldName);
+            if (temp != null) return temp.ToSecureString();
+            return null;
+        }
+
+        public DateTime? LapsPasswordExpiration
+        {
+            get
+            {
+                return GetDateTimeAttribute("msLAPS-PasswordExpirationTime");
+            }
+            set
+            {
+                SetFileTimeAttribute("msLAPS-PasswordExpirationTime", value);
+            }
         }
         public IPHostEntry? IPHostEntry { get; set; }
 
@@ -186,7 +270,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex,"Error renaming computer");
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error renaming computer");
             }
             return false;
 
@@ -263,7 +347,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     catch (Exception ex)
                     {
-                        Loggers.ActiveDirectoryLogger.Error(ex,"Error pinging computer");
+                        Loggers.ActiveDirectoryLogger.Error(ex, "Error pinging computer");
                     }
                     x++;
                 } while (x < retries);

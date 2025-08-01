@@ -8,7 +8,7 @@
 }
 
 .mud-primary-text {
-    color: var(--mud-palette-primary) !important;
+    color: var(--mud-palettfae-primary) !important;
     --mud-ripple-color: var(--mud-palette-primary) !important
 }
 

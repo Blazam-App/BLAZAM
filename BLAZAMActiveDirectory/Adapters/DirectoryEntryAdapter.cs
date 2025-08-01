@@ -291,6 +291,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
+        private IADUser? _manager;
+        public virtual IADUser? Manager
+        {
+            get
+            {
+                if (_manager == null)
+                {
+                    var dn = GetStringAttribute(ActiveDirectoryFields.Manager.FieldName);
+
+                    var user = Directory.Users.FindUserByDN(dn);
+                    _manager = user;
+                }
+                return _manager;
+            }
+            set
+            {
+                _manager = value;
+                SetAttribute(ActiveDirectoryFields.Manager.FieldName, value?.DN);
+            }
+
+        }
 
 
         public virtual IADOrganizationalUnit? LastKnownParent
@@ -568,7 +589,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
         private IList<PermissionMapping> _appliedPermissionMappings;
-       
+
         public IList<PermissionMapping> AppliedPermissionMappings
         {
             get
@@ -912,7 +933,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 }
                 var result = false;
-                if(commitJob.Result!=JobResult.Running && commitJob.Result != JobResult.Cancelled)
+                if (commitJob.Result != JobResult.Running && commitJob.Result != JobResult.Cancelled)
                 {
                     result = commitJob.Run();
 
@@ -1107,6 +1128,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <param name="propertyName">The requested attribute</param>
         /// <returns>The attribute value</returns>
         private T? GetValue<T>(string propertyName)
+
         {
 
             if (NewEntry)
@@ -1122,7 +1144,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error(ex,"Unexpected error while getting property value for {@PropertyName}",propertyName);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
                 }
 
 
@@ -1154,18 +1176,28 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return default;
 
             }
-
+            
             try
             {
-                if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
-                    return (T?)DirectoryEntry.Properties[propertyName].Value;
-
+                if (DirectoryEntry != null)
+                {
+                    
+                    if (DirectoryEntry.Properties.Contains(propertyName))
+                        return (T?)DirectoryEntry.Properties[propertyName].Value;
+                    else
+                    {
+                        DirectoryEntry.RefreshCache(new string[] { propertyName });
+                        if (DirectoryEntry.Properties.Contains(propertyName))
+                            return (T?)DirectoryEntry.Properties[propertyName].Value;
+                    }
+                }
             }
-            catch (ArgumentException)
+            catch (ArgumentException ex)
             {
-                var temp = DirectoryEntry?.Properties[propertyName];
-                var temp2 = (T?)temp?.Value;
-                return temp2;
+                Loggers.ActiveDirectoryLogger.Information(ex, "Argument Exception getting an entry's attribute. {@Error} {@Attribute}", propertyName);
+                //var temp = DirectoryEntry?.Properties[propertyName];
+                //var temp2 = (T?)temp?.Value;
+                //return temp2;
             }
             catch (InvalidCastException ex)
             {
@@ -1277,6 +1309,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
+
+
+        protected DateTime? SetFileTimeAttribute(string attribute, DateTime? value)
+        {
+            if (value == null || !value.HasValue)
+                value = CommonHelpers.ADS_NULL_TIME;
+            var dateTime = value.Value;
+            if (dateTime.Kind == DateTimeKind.Unspecified)
+            {
+                dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Local);
+            }
+            SetAttribute(attribute, dateTime.ToUniversalTime().ToFileTime().ToString());
+            return value;
+        }
+
 
         private void SetNewProperty(string propertyName, object? value)
         {

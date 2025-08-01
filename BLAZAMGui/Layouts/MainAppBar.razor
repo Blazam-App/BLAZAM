@@ -17,10 +17,12 @@
                                OnClick="@((e) => {mainLayout.DrawerOpen = !mainLayout.DrawerOpen; })" />
             </MudHidden>
         }
-        <MudLink Href="/">
-            <MudImage Class="app-icon"
-                      Src="@StaticAssets.ApplicationIconUri" />
-        </MudLink>
+        <MudHidden Breakpoint="Breakpoint.Xs">
+            <MudLink Href="/">
+                <MudImage Class="app-icon"
+                          Src="@StaticAssets.ApplicationIconUri" />
+            </MudLink>
+        </MudHidden>
         <MudHidden Breakpoint="Breakpoint.MdAndUp"
                    Invert=true>
             @if (DatabaseCache.ApplicationSettings?.AppName != DatabaseCache.ApplicationSettings?.AppAbbreviation)
