@@ -161,7 +161,7 @@ namespace BLAZAM.Gui.UI
         {
 
             IsShown = true;
-            Modal.CloseAsync(); //Fix for MudBlazor Bug causing modal to no reopen after one click but two, suggesting a state sync issue, remove if fixed
+            //Modal.CloseAsync(); //Fix for MudBlazor Bug causing modal to no reopen after one click but two, suggesting a state sync issue, remove if fixed
            var @ref = await Modal.ShowAsync(null, Options);
              await InvokeAsync(StateHasChanged);
             return @ref;
