@@ -15,6 +15,9 @@
     <MudBreakpointProvider>
         <MudHidden Breakpoint="Breakpoint.MdAndUp">
             <MudStack Row=true>
+                <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                               Color="Color.Inherit"
+                               OnClick="@((e) => {mainLayout.DrawerOpen = !mainLayout.DrawerOpen; })" />
                 <MudImage Class="app-icon"
                           Src="@StaticAssets.ApplicationIconUri" />
                 <MudText Align="Align.Center"
@@ -38,19 +41,19 @@
                 <MudNavLink Href="/create/user"
                             Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
                     @AppLocalization[Lang.Create_User]
-                    </MudNavLink>
-            </AuthorizeView> 
+                </MudNavLink>
+            </AuthorizeView>
             <AuthorizeView Roles="@UserRoles.CreateContacts">
                 <MudNavLink Href="/create/contact"
                             Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
                     @AppLocalization[Lang.Create_Contact]
-                    </MudNavLink>
+                </MudNavLink>
             </AuthorizeView>
             <AuthorizeView Roles="@UserRoles.CreateGroups">
                 <MudNavLink Href="/create/group"
                             Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
                     @AppLocalization[Lang.Create_Group]
-                            </MudNavLink>
+                </MudNavLink>
             </AuthorizeView>
             <AuthorizeView Roles="@UserRoles.CreateOUs">
                 <MudNavLink Href="/create/ou"
@@ -71,7 +74,7 @@
             <MudNavLink Href="/settings">
                 @AppLocalization[Lang.Settings]
             </MudNavLink>
-          
+
             <MudNavLink Href="/permissions">
                 @AppLocalization[Lang.Permissions]
             </MudNavLink>
@@ -119,6 +122,8 @@
 
 
 @code {
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
     private bool collapseNavMenu = true;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
     [Parameter]

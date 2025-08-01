@@ -19,15 +19,16 @@
         var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
         if (timeLeft.HasValue && timeLeft.Value.TotalMilliseconds < 0)
         {
-            ExpirationWarningModal.Close();
+           
             if (ExpiredModal != null)
             {
                 ExpiredModal.AllowClose = false;
                 _=ExpiredModal.ShowAsync();
             }
+            //ExpirationWarningModal.Close();
         }
         string formattedTimeLeft = "";
-        if (timeLeft != null)
+        if (timeLeft != null && timeLeft.Value.TotalSeconds>0)
         {
 
             if (timeLeft.Value.Hours > 0)
@@ -57,7 +58,6 @@
           return Task.CompletedTask;
            })"
           Options=@(new DialogOptions{
-          BackgroundClass="blur-background",
           CloseButton=false,
           CloseOnEscapeKey=false,
           BackdropClick=false})>
@@ -84,9 +84,11 @@
         {
             _ticket = CurrentUser.State?.Ticket;
             var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
-            if (timeLeft > TimeSpan.FromSeconds(0) && timeLeft < TimeSpan.FromMinutes(2) && ExpirationWarningModal?.IsShown == false)
+            if (timeLeft > TimeSpan.FromSeconds(1) && timeLeft < TimeSpan.FromMinutes(2) && ExpirationWarningModal?.IsShown == false)
             {
-                await InvokeAsync(async () => { await ExpirationWarningModal.ShowAsync(); });
+                await InvokeAsync(async () => {
+                    await ExpirationWarningModal.ShowAsync(); 
+                });
 
             }
         }

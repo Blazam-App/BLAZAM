@@ -20,18 +20,20 @@
             <TemplateColumn Title=@AppLocalization[Lang.Name] Sortable=true Filterable=true Context="templateContext">
 
                 <CellTemplate Context="cellContext">
-                    <MudLink Href="@cellContext.Item.SearchUri">
-                        @if (cellContext.Item is IADGroup group)
-                        {
-                            <GroupWithDescriptionTooltip Group="group" />
-                        }
-                        else
-                        {
-                            <MudElement>
-                                @cellContext.Item.CanonicalName
-                            </MudElement>
-                        }
-                    </MudLink>
+                    <DirectoryEntryContextMenu Entry="cellContext.Item" OnChanged="RefreshData">
+                        <MudLink Href="@cellContext.Item.SearchUri">
+                            @if (cellContext.Item is IADGroup group)
+                            {
+                                <GroupWithDescriptionTooltip Group="group" />
+                            }
+                            else
+                            {
+                                <MudElement>
+                                    @cellContext.Item.CanonicalName
+                                </MudElement>
+                            }
+                        </MudLink>
+                    </DirectoryEntryContextMenu>
                 </CellTemplate>
             </TemplateColumn>
             <TemplateColumn Sortable=true Filterable=true Context="templateContext">
@@ -67,7 +69,7 @@
 
         <MudText Align="Align.End">
             @AppLocalization[Lang.Groups]: @Members.Count(m => m is IADGroup)
-            </MudText>
+        </MudText>
     }
     @if (Members.Any(m => m is IADUser))
     {
@@ -133,7 +135,7 @@ else
     {
         await base.OnInitializedAsync();
         RefreshData();
-        
+
         // Group.OnChangesDiscarded += () =>
         // {
         //     RefreshData();

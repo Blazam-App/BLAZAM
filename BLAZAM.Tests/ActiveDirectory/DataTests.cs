@@ -1,35 +1,32 @@
 ﻿
-using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Data;
-using BLAZAM.Tests.Mocks;
-using BLAZAM.Update;
+using BLAZAM.Helpers;
+using System.Security;
 
 namespace BLAZAM.Tests.ActiveDirectory
 {
     public class DataTests
     {
-     
         [Fact]
-        public async Task FormatLapsJson_Parses_Correctly()
+        public void LapsCredential_Constructor_ParsesJsonCorrectly()
         {
-            var decryptor = new LapsDecryptor();
+            // Arrange
+            // Example JSON: {"n":"TestAccount","t":"01D9F7A2B6C0A000","p":"TestPassword"}
+            string json = "{\"n\":\"TestAccount\",\"t\":\"01D9F7A2B6C0A000\",\"p\":\"TestPassword\"}";
+            SecureString secureJson = new SecureString();
+            foreach (char c in json)
+                secureJson.AppendChar(c);
 
-            var input = "{\"n\":\"Administrator\",\"t\":\"1dbf5e53cfa9dcc\",\"p\":\"f@k34@$$w0rd\"}";
+            // Act
+            var credential = new LapsCredential(secureJson);
 
-            var output = ADComputer.FormatLAPSJson(input);
-            Assert.Equal(output, "Administrator: f@k34@$$w0rd");
-        }
-        [Fact]
-        public async Task FormatLapsJson_Fails_Correctly()
-        {
-            var decryptor = new LapsDecryptor();
-
-            var input = "";
-
-            Assert.ThrowsAny<Exception>(() => {
-            var output = ADComputer.FormatLAPSJson(input);
-
-            });
+            // Assert
+            Assert.Equal("TestAccount", credential.AccountName.ToPlainText());
+            Assert.Equal("TestPassword", credential.Password.ToPlainText());
+            // Check CreationTime is parsed correctly
+            long fileTime = long.Parse("01D9F7A2B6C0A000", System.Globalization.NumberStyles.HexNumber);
+            var expectedDate = DateTime.FromFileTimeUtc(fileTime);
+            Assert.Equal(expectedDate, credential.CreationTime);
         }
     }
 }

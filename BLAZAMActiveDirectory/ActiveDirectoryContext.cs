@@ -344,6 +344,15 @@ namespace BLAZAM.ActiveDirectory
                 PerformConnectionTests(ad);
 
             }
+            catch (UnresolvableAddressException ex)
+            {
+                ConnectionException = ex;
+
+                Loggers.ActiveDirectoryLogger.Warning("Unable to decrypt Active Directory password {@Error}", ex);
+                Status = DirectoryConnectionStatus.ServerDown;
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++;
+            }
             catch (DirectoryOperationException ex)
             {
                 ConnectionException = ex;
@@ -587,7 +596,9 @@ namespace BLAZAM.ActiveDirectory
         private void PerformNetworkTests(ADSettings? ad)
         {
             Loggers.ActiveDirectoryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
-
+            
+            NetworkTools.ResolveHostIP(ad.ServerAddress);
+            
             if (!NetworkTools.IsPortOpen(ad.ServerAddress, ad.ServerPort))
             {
                 Loggers.ActiveDirectoryLogger.Debug("Active Directory port is not open");
