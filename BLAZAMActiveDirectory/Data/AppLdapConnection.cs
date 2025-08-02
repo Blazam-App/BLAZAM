@@ -1,4 +1,5 @@
-﻿using BLAZAM.Logger;
+﻿using BLAZAM.Common.Data;
+using BLAZAM.Logger;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
@@ -10,11 +11,12 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Data
 {
-    public class AppLdapConnection:IDisposable
+    public class AppLdapConnection : IDisposable
     {
         public LdapConnection LdapConnection { get; set; }
 
         private readonly bool _startedTLS;
+        internal readonly Guid Guid = Guid.NewGuid();
         private Timer? _keepAliveTime = null;
         public bool IsDisposed;
         public DateTime? Expires;
@@ -25,9 +27,10 @@ namespace BLAZAM.ActiveDirectory.Data
             LdapConnection = ldapConnection;
             _startedTLS = startedTLS;
             Random random = new Random();
-            
-            _keepAliveTime = new Timer(KeepAlive, null, random.Next(25000,35000), random.Next(29000,31000));
 
+            _keepAliveTime = new Timer(KeepAlive, null, random.Next(25000, 35000), random.Next(29000, 31000));
+
+            ApplicationStatistics.AddLdapConnection(Guid);
         }
 
         private void KeepAlive(object? state)
@@ -45,11 +48,12 @@ namespace BLAZAM.ActiveDirectory.Data
             {
                 DisposeNow();
             }
-            
+
         }
 
-        public DirectoryResponse SendRequest(DirectoryRequest request) {
-            return LdapConnection.SendRequest(request);    
+        public DirectoryResponse SendRequest(DirectoryRequest request)
+        {
+            return LdapConnection.SendRequest(request);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -70,7 +74,8 @@ namespace BLAZAM.ActiveDirectory.Data
                             LdapConnectionFactory.StopTls(LdapConnection);
                         }
                     }
-                    catch(Exception ex) {
+                    catch (Exception ex)
+                    {
                         Loggers.ActiveDirectoryLogger.Information(ex, "Error when stopping TLS");
                     }
                     finally
@@ -81,6 +86,8 @@ namespace BLAZAM.ActiveDirectory.Data
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
+                ApplicationStatistics.RemoveLdapConnection(Guid);
+
                 IsDisposed = true;
             }
         }
@@ -100,7 +107,7 @@ namespace BLAZAM.ActiveDirectory.Data
         public void Dispose()
         {
             Expires = DateTime.Now.AddMinutes(1);
-           
+
         }
     }
 }

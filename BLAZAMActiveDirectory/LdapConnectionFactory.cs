@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.DirectoryServices.Protocols;
-using System.Net; // Required for NetworkCredential
+using System.Net; 
 using BLAZAM.ActiveDirectory.Data;
-using BLAZAM.Common.Data;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -110,7 +105,6 @@ namespace BLAZAM.ActiveDirectory
                     {
                         conn.DisposeNow();
                         _connectionPool.Remove(conn);
-                        ApplicationStatistics.SetLdapConnectionCount(Guid, _connectionPool.Count);
                         OnCountChanged?.Invoke();
                     }
                 }
@@ -150,7 +144,6 @@ namespace BLAZAM.ActiveDirectory
 
                 _connectionPool.Add(appConnection);
 
-                ApplicationStatistics.SetLdapConnectionCount(Guid, _connectionPool.Count);
                 OnCountChanged?.Invoke();
                 return appConnection;
 
@@ -177,7 +170,6 @@ namespace BLAZAM.ActiveDirectory
 
                             _connectionPool.RemoveAt(i);
 
-                            ApplicationStatistics.SetLdapConnectionCount(Guid, _connectionPool.Count);
                             i--;
                             count--;
                             OnCountChanged?.Invoke();
@@ -194,7 +186,6 @@ namespace BLAZAM.ActiveDirectory
                                 conn.Dispose();
                                 _connectionPool.Add(conn);
 
-                                ApplicationStatistics.SetLdapConnectionCount(Guid, _connectionPool.Count);
                             }
                         }
                     }
@@ -232,7 +223,7 @@ namespace BLAZAM.ActiveDirectory
                     }
                     _connectionPool.Clear();
 
-                    ApplicationStatistics.SetLdapConnectionCount(Guid, _connectionPool.Count);
+
                     OnCountChanged?.Invoke();
 
                 }
