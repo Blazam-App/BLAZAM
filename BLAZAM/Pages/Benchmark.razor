@@ -69,7 +69,7 @@ s
     {
 
         bool result = false;
-        dir.Connect();
+        dir.CheckConnect();
         Random r = new Random();
 
         userBench = dir.Users.FindUsersByString("c").First();

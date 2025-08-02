@@ -25,7 +25,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <returns>An IEnumerator for the collection of child IDirectoryEntry objects.</returns>
         public IEnumerator GetEnumerator()
         {
-            using var connection = LdapConnectionFactory.Connect(_directory.ConnectionSettings);
+            using var connection = _directory.GetConnection();
             if (connection == null) yield break;
 
             var request = new SearchRequest(
@@ -54,7 +54,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             string newEntryDn = name + "," + _parentDn;
             var request = new AddRequest(newEntryDn, schemaClassName);
 
-            using var connection = LdapConnectionFactory.Connect(_directory.ConnectionSettings);
+            using var connection = _directory.GetConnection();
             connection.SendRequest(request);
 
             return new LdapDirectoryEntry(newEntryDn, _directory);
@@ -83,7 +83,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 filter = "(&(objectClass=" + schemaClassName + ")(|(cn=" + name + ")(ou=" + name + ")))";
 
 
-            using var connection = LdapConnectionFactory.Connect(_directory.ConnectionSettings);
+            using var connection = _directory.GetConnection();
             var request = new SearchRequest(_parentDn, filter, System.DirectoryServices.Protocols.SearchScope.OneLevel, null);
             var response = (SearchResponse)connection.SendRequest(request);
 
@@ -101,7 +101,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public void Remove(IDirectoryEntry entry)
         {
             var request = new DeleteRequest(entry.DN);
-            using var connection = LdapConnectionFactory.Connect(_directory.ConnectionSettings);
+            using var connection = _directory.GetConnection();
             connection.SendRequest(request);
         }
 

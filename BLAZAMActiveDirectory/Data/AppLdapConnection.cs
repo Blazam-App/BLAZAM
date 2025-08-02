@@ -55,7 +55,12 @@ namespace BLAZAM.ActiveDirectory.Data
         {
             return LdapConnection.SendRequest(request);
         }
-
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~AppLdapConnection()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
         protected virtual void Dispose(bool disposing)
         {
             if (!IsDisposed)

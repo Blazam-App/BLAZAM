@@ -665,20 +665,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                using var connection = Directory.Connect();
+                using var connection = Directory.CheckConnect();
                 return connection.LdapConnection.AuthType;
             }
         } 
         public bool SslEnabled { get
             {
-                using var connection = Directory.Connect();
+                using var connection = Directory.CheckConnect();
                 return connection?.LdapConnection.SessionOptions.SecureSocketLayer??false;
             } }
         public CipherAlgorithmType EncryptionType
         {
             get
             {
-                using var connection = Directory.Connect();
+                using var connection = Directory.CheckConnect();
                 try
                 {
                     return connection?.LdapConnection.SessionOptions.SslInformation?.AlgorithmIdentifier ?? CipherAlgorithmType.None;
@@ -991,7 +991,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <returns>The resulting DirectoryResponse, cast to the specified type.</returns>
         private T SendRequestAndGetResponse<T>(DirectoryRequest request) where T : DirectoryResponse
         {
-            using var connection = LdapConnectionFactory.Connect(Directory.ConnectionSettings);
+            using var connection = Directory.GetConnection();
             return (T)connection?.SendRequest(request);
         }
 

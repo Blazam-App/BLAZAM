@@ -22,6 +22,7 @@ namespace BLAZAM.ActiveDirectory
 {
     public class ActiveDirectoryContext : IActiveDirectoryContext
     {
+        private readonly LdapConnectionFactory LdapConnectionFactory = new();
         public DomainControllerEventLogReader EventLogReader { get; private set; }
         public ActiveDirectoryUserState? CurrentUser
         {
@@ -35,7 +36,6 @@ namespace BLAZAM.ActiveDirectory
         private CancellationTokenSource? _connectionCTS = new();
 
         private const string LDAP_PROTO = "LDAP://";
-        private readonly ILdapConnectionFactory _ldapFactory;
         private readonly WmiFactory _wmiFactory;
         private readonly IEncryptionService _encryption;
         private readonly INotificationPublisher _notificationPublisher;
@@ -92,13 +92,13 @@ namespace BLAZAM.ActiveDirectory
             EventLogReader = new(this);
             Task.Run(async () =>
             {
-                using var connection = await ConnectAsync();
+                using var connection = await CheckConnectionAsync();
                 if (!_initializedConnections)
                 {
                     _initializedConnections = true;
 
                     var connections = new List<AppLdapConnection?>();
-                    for (int i = 0; i < LdapConnectionFactory.PoolSize-1; i++)
+                    for (int i = 0; i < LdapConnectionFactory.PoolSize - 1; i++)
                     {
                         var initconnection = LdapConnectionFactory.Connect(ConnectionSettings);
                         connections.Add(initconnection);
@@ -233,56 +233,35 @@ namespace BLAZAM.ActiveDirectory
         {
             _systemInstance = context;
         }
-
-
-
-
-        private async Task KeepAlive()
+        public async Task<AppLdapConnection> GetConnectionAsync()
         {
-            if (_systemInstance != this)
+            if (ConnectionSettings == null)
             {
-                return;
+                throw new InvalidOperationException("Active Directory Connection Settings are not configured.");
             }
-
-            _keepAlive = true;
-            while (_keepAlive)
+            return await LdapConnectionFactory.ConnectAsync(ConnectionSettings);
+        }
+        public AppLdapConnection GetConnection()
+        {
+            if (ConnectionSettings == null)
             {
-                await Task.Delay(30000);
-
-                if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
-                {
-                    await ConnectAsync();
-                }
-                else if (Status == DirectoryConnectionStatus.OK)
-                {
-                    //Throw away query used to keep connection alive
-                    try
-                    {
-                        _ = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
-
-                    }
-
-                    catch (Exception ex)
-                    {
-                        Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
-                    }
-                }
+                throw new InvalidOperationException("Active Directory Connection Settings are not configured.");
             }
+            return LdapConnectionFactory.Connect(ConnectionSettings);
         }
 
 
-
-        public async Task<AppLdapConnection?> ConnectAsync()
+        public async Task<AppLdapConnection?> CheckConnectionAsync()
         {
             Status = DirectoryConnectionStatus.Connecting;
             return await Task.Run(() =>
             {
-                return Connect();
+                return CheckConnect();
 
             });
 
         }
-        public async Task CancelConnection()
+        public async Task CancelCheckConnection()
         {
             if (_connectionCTS != null)
             {
@@ -294,7 +273,7 @@ namespace BLAZAM.ActiveDirectory
         /// <summary>
         /// Attempts a connection to the Active Directory server
         /// </summary>
-        public AppLdapConnection? Connect()
+        public AppLdapConnection? CheckConnect()
         {
 
             //Set status flag
@@ -445,7 +424,7 @@ namespace BLAZAM.ActiveDirectory
             if (IsCancelRequested == false && Status != DirectoryConnectionStatus.OK)
             {
                 Task.Delay(5000).Wait();
-                return Connect();
+                return CheckConnect();
             }
 
             return null;
@@ -520,7 +499,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 Loggers.ActiveDirectoryLogger.Information("Performing Active Directory connection test");
 
-               
+
             }
             var connection = LdapConnectionFactory.Connect(ad);
             if (connection?.LdapConnection == null)
@@ -558,9 +537,9 @@ namespace BLAZAM.ActiveDirectory
         private void PerformNetworkTests(ADSettings? ad)
         {
             Loggers.ActiveDirectoryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
-            
+
             NetworkTools.ResolveHostIP(ad.ServerAddress);
-            
+
             if (!NetworkTools.IsPortOpen(ad.ServerAddress, ad.ServerPort))
             {
                 Loggers.ActiveDirectoryLogger.Debug("Active Directory port is not open");
@@ -609,6 +588,7 @@ namespace BLAZAM.ActiveDirectory
         {
             // Cleanup
             _keepAlive = false;
+            LdapConnectionFactory.Dispose();
             _connectionCTS?.Dispose();
             _connectionCTS = null;
             _context?.Dispose();

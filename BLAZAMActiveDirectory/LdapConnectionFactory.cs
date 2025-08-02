@@ -9,20 +9,19 @@ using BLAZAM.Logger;
 
 namespace BLAZAM.ActiveDirectory
 {
-    public static class LdapConnectionFactory
+    public class LdapConnectionFactory : IDisposable
     {
-        public static readonly int PoolSize = 10;
-        private static Timer? _disposerTimer = null;
+        public readonly int PoolSize = 10;
+        private Timer? _disposerTimer = null;
         private static readonly object _poolLock = new object();
         private static ADSettings? _connectionSettingsCache = null;
-        private static List<AppLdapConnection> _connectionPool = new();
-        private static bool _testsPerformed;
+        private List<AppLdapConnection> _connectionPool = new();
         private static Random _random;
-        private static bool disposedValue;
-        private static Guid Guid = Guid.NewGuid();
+        private bool disposedValue;
+        private bool disposedValue1;
         private static readonly object _tlsLock = new();
 
-        public static int Count
+        public int Count
         {
             get
             {
@@ -33,6 +32,7 @@ namespace BLAZAM.ActiveDirectory
             }
         }
         public static AppEvent? OnCountChanged { get; set; } = new();
+
         /// <summary>
         /// Establishes a secure LDAP connection based on ADSettings.
         /// It will choose LDAPS if port is typically 636 and UseTLS is true,
@@ -41,7 +41,21 @@ namespace BLAZAM.ActiveDirectory
         /// <param name="settings">The ADSettings object containing connection parameters.</param>
         /// <param name="connection">The established LdapConnection object if successful, otherwise null.</param>
         /// <returns>True if the connection was successful, otherwise false.</returns>
-        public static AppLdapConnection? Connect(ADSettings settings)
+        public async Task<AppLdapConnection?> ConnectAsync(ADSettings settings)
+        {
+
+            return await Task.Run(() => Connect(settings));
+
+        }
+        /// <summary>
+        /// Establishes a secure LDAP connection based on ADSettings.
+        /// It will choose LDAPS if port is typically 636 and UseTLS is true,
+        /// or StartTLS if port is typically 389 and UseTLS is true.
+        /// </summary>
+        /// <param name="settings">The ADSettings object containing connection parameters.</param>
+        /// <param name="connection">The established LdapConnection object if successful, otherwise null.</param>
+        /// <returns>True if the connection was successful, otherwise false.</returns>
+        public AppLdapConnection? Connect(ADSettings settings)
         {
             bool startedTLS = false;
             if (_random == null)
@@ -151,7 +165,7 @@ namespace BLAZAM.ActiveDirectory
 
         }
 
-        private static void CleanPool(object? state)
+        private void CleanPool(object? state)
         {
             lock (_poolLock)
             {
@@ -202,7 +216,7 @@ namespace BLAZAM.ActiveDirectory
         /// <summary>
         /// Clears the pool of connections closing all active sessions
         /// </summary>
-        public static void ClearPool()
+        public void ClearPool()
         {
             lock (_poolLock)
             {
@@ -213,11 +227,6 @@ namespace BLAZAM.ActiveDirectory
                     {
 
                         _connectionPool[i].DisposeNow();
-
-                        // _connectionPool.RemoveAt(i);
-                        // i--;
-                        //  count--;
-                        // OnCountChanged?.Invoke();
 
 
                     }
@@ -503,159 +512,21 @@ namespace BLAZAM.ActiveDirectory
             return true;
 
         }
-        private static void TestConnectionMethods(ADSettings settings)
+
+        protected virtual void Dispose(bool disposing)
         {
-            if (!_testsPerformed)
+            if (!disposedValue)
             {
-                _testsPerformed = true;
-
-                // Define connection scenarios to test
-                var scenarios = new[] { "Plain", "StartTLS", "LDAPS" };
-                // Define authentication types to test
-                var authTypes = new[] { AuthType.Basic };
-
-                bool[]? boolOptions = new[] { false, true };
-                // Loop through every combination
-                foreach (var authType in authTypes)
+                if (disposing)
                 {
-                    foreach (var sslOption in boolOptions)
-                    {
-                        foreach (var signingOption in boolOptions)
-                        {
-                            foreach (var tlsOption in boolOptions)
-                            {
-                                foreach (var certOption in boolOptions)
-                                {
-                                    foreach (var sealingOption in boolOptions)
-                                    {
-                                        var optionsString = $"Signing ={signingOption}, TLS ={tlsOption}, SSL ={sslOption}, Sealing ={sealingOption}, IgnoreCert ={certOption}, Auth ={authType}";
-                                        //Use a new LdapConnection for each attempt
-                                        LdapConnection connection2 = null;
-                                        // Set port based on scenario. LDAPS typically uses 636.
-
-                                        Loggers.ActiveDirectoryLogger.Information($"========== TESTING {optionsString} ==========");
-
-
-                                        try
-                                        {
-                                            // 1. Create LdapConnection object for this specific test
-                                            LdapDirectoryIdentifier identifier2 = new LdapDirectoryIdentifier(settings.ServerAddress, settings.ServerPort);
-                                            connection2 = new LdapConnection(identifier2);
-
-                                            // 2. Provide credentials
-
-                                            connection2.Credential = new NetworkCredential(settings.Username, settings.Password.Decrypt().ToSecureString());
-                                            connection2.SessionOptions.ProtocolVersion = 3;
-                                            connection2.AuthType = authType;
-                                            connection2.SessionOptions.ReferralChasing = ReferralChasingOptions.None;
-
-                                            connection2.SessionOptions.SecureSocketLayer = sslOption;
-                                            if (signingOption)
-                                                connection2.SessionOptions.Signing = signingOption;
-                                            if (sealingOption)
-                                                connection2.SessionOptions.Sealing = sealingOption;
-
-                                            if (certOption)
-                                            {
-                                                connection2.SessionOptions.VerifyServerCertificate = (conn, cert) =>
-                                                {
-                                                    Loggers.ActiveDirectoryLogger.Information($"Server certificate presented for {optionsString}. Subject: {cert.Subject}. Accepting for test purposes.");
-                                                    return true;
-                                                };
-                                            }
-                                            if (tlsOption)
-                                            {
-                                                connection2.SessionOptions.StartTransportLayerSecurity(null);
-                                            }
-                                            // 4. (For Diagnostics) Bypass server certificate validation to isolate other errors.
-                                            // WARNING: This is insecure and should ONLY be used for testing.
-
-
-                                            // 5. Bind to the server
-                                            Loggers.ActiveDirectoryLogger.Information($"Attempting Bind() to {settings.ServerAddress}:{settings.ServerPort} as {settings.Username}...");
-                                            connection2.Bind();
-
-                                            Loggers.ActiveDirectoryLogger.Information($"========== SUCCESS:{optionsString} ==========");
-
-                                        }
-                                        catch (LdapException ldapEx)
-                                        {
-                                            // Log the full LdapException, which includes error codes and server messages.
-                                            Loggers.ActiveDirectoryLogger.Information(ldapEx, $"LDAP Exception on {optionsString}: {@ldapEx}");
-                                            if (ldapEx.ServerErrorMessage != null)
-                                            {
-                                                Loggers.ActiveDirectoryLogger.Information($"Server Error Message: {ldapEx.ServerErrorMessage}");
-                                            }
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            // Log the full General Exception. ex.ToString() is critical as it includes the InnerException.
-                                            Loggers.ActiveDirectoryLogger.Warning($"General Exception on {optionsString}: {ex.ToString()}");
-                                        }
-                                        finally
-                                        {
-                                            // Always dispose of the connection object to release resources
-                                            if (connection2 != null)
-                                            {
-                                                connection2.Dispose();
-                                            }
-                                            Loggers.ActiveDirectoryLogger.Information($"========== FINISHED TEST: {optionsString} ==========\n");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    // TODO: dispose managed state (managed objects)
                 }
+                ClearPool();
+                disposedValue = true;
             }
         }
 
-        /// <summary>
-        /// Optional: Custom server certificate validation callback.
-        /// Use with caution, especially in production.
-        /// For production, ensure your LDAP server has a valid certificate from a trusted CA.
-        /// </summary>
-        private static bool ServerCallback(LdapConnection connection, System.Security.Cryptography.X509Certificates.X509Certificate certificate)
-        {
-            Console.WriteLine($"Server certificate issued to: {certificate.Subject}");
-            Console.WriteLine($"Server certificate issued by: {certificate.Issuer}");
-
-            System.Security.Cryptography.X509Certificates.X509Chain chain = new System.Security.Cryptography.X509Certificates.X509Chain();
-            System.Security.Cryptography.X509Certificates.X509ChainPolicy chainPolicy = new System.Security.Cryptography.X509Certificates.X509ChainPolicy
-            {
-                RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.NoCheck
-            };
-            bool isValid = chain.Build(new System.Security.Cryptography.X509Certificates.X509Certificate2(certificate));
-            if (isValid)
-            {
-                Console.WriteLine("Server certificate is valid according to system validation within callback.");
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("Server certificate is INVALID according to system validation within callback.");
-                foreach (var status in chain.ChainStatus)
-                {
-                    Console.WriteLine($"  - {status.Status}: {status.StatusInformation}");
-                }
-                return false;
-            }
-        }
-
-        //protected virtual void Dispose(bool disposing)
-        //{
-        //    if (!disposedValue)
-        //    {
-        //        if (disposing)
-        //        {
-
-        //            ClearPool();
-        //        }
-
-
-        //        disposedValue = true;
-        //    }
-        //}
+ 
 
         // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         // ~LdapConnectionFactory()
@@ -664,11 +535,11 @@ namespace BLAZAM.ActiveDirectory
         //     Dispose(disposing: false);
         // }
 
-        //public void Dispose()
-        //{
-        //    // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //    Dispose(disposing: true);
-        //    GC.SuppressFinalize(this);
-        //}
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
-}
+    }

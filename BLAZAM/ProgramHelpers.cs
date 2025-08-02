@@ -1,4 +1,5 @@
 ﻿// Import necessary namespaces for various functionalities
+using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Services; // Active Directory related services
 using BLAZAM.Common.Attributes; // Custom attributes like AutoStartBackgroundService
 using BLAZAM.Common.Conventions; // Custom routing conventions

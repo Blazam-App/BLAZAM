@@ -103,7 +103,7 @@
     #nullable disable warnings
 
         [Parameter]
-        public EventCallback DirectoryConnected { get; set; }
+        public EventCallback DirectoryConnected {get; set; }
 
         bool _monitoring = false;
         bool? _portStatus = null;
@@ -126,9 +126,9 @@
     }
     public async Task RefreshStatuses()
     {
-        await Directory.CancelConnection();
+        await Directory.CancelCheckConnection();
         ResetStatus();
-        using var connection = await Directory.ConnectAsync();
+        using var connection = await Directory.GetConnectionAsync();
     }
     public void ResetStatus()
     {

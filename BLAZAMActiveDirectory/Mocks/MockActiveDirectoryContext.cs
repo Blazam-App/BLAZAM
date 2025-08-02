@@ -614,7 +614,7 @@ namespace BLAZAM.ActiveDirectory.Mocks // Or your preferred testing namespace
             return Task.CompletedTask;
         }
 
-        public Task CancelConnection()
+        public Task CancelCheckConnection()
         {
             Status = DirectoryConnectionStatus.Unconfigured; // Or some other status indicating cancellation
             OnStatusChanged?.Invoke(Status);
@@ -695,17 +695,22 @@ namespace BLAZAM.ActiveDirectory.Mocks // Or your preferred testing namespace
             // Cleanup mock resources if any
         }
 
-        AppLdapConnection? IActiveDirectoryContext.Connect()
+        AppLdapConnection? IActiveDirectoryContext.CheckConnect()
         {
             throw new NotImplementedException();
         }
 
-        Task<AppLdapConnection?> IActiveDirectoryContext.ConnectAsync()
+        Task<AppLdapConnection?> IActiveDirectoryContext.CheckConnectionAsync()
         {
             throw new NotImplementedException();
         }
 
         public AppLdapConnection? GetConnection()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AppLdapConnection> GetConnectionAsync()
         {
             throw new NotImplementedException();
         }

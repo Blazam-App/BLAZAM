@@ -140,7 +140,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// server connectivity.
         /// </summary>
         /// <returns></returns>
-        AppLdapConnection? Connect();
+        AppLdapConnection? CheckConnect();
 
         /// <summary>
         /// Connects to an Active Directory server asynchronously.
@@ -149,7 +149,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// server connectivity.
         /// </summary>
         /// <returns></returns>
-        Task<AppLdapConnection?> ConnectAsync();
+        Task<AppLdapConnection?> CheckConnectionAsync();
 
         /// <summary>
         /// Collects all deleted object from the Active Directory recycle bin
@@ -180,6 +180,9 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <param name="dn">The DN to search for</param>
         /// <returns>The matching entry, otherwise null</returns>
         IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn);
-        Task CancelConnection();
+        Task CancelCheckConnection();
+        AppLdapConnection GetConnection();
+        Task<AppLdapConnection> GetConnectionAsync();
+        void Dispose();
     }
 }
