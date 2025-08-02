@@ -11,6 +11,7 @@ namespace BLAZAM.Logger
         public static bool SendToSeqServer { get; set; } = true;
         public static bool? InstallationCompleted { get; set; } = null;
         public static string SeqServerUri { get; set; }
+        public static string SecondarySeqServerUri { get; set; }
         public static string InstallationId { get; set; }
         public static string InstallationType { get; set; }
         public static string DatabaseType { get; set; }
@@ -102,7 +103,21 @@ namespace BLAZAM.Logger
             }
         }
 
-    
+        private static ILogger? _pluginManager;
+        public static ILogger PluginLogger
+        {
+            get
+            {
+                EnsureLogger(ref _pluginManager);
+                return _pluginManager;
+            }
+            private set
+            {
+                _pluginManager = value;
+            }
+        }
+
+   
 
         public static void SetupLoggers(string logPath, string applicationVersion = "1.0")
         {
@@ -112,6 +127,7 @@ namespace BLAZAM.Logger
             DatabaseLogger = SetupLogger(logPath + @"database\db.txt");
             ActiveDirectoryLogger = SetupLogger(logPath + @"activedirectory\activedirectory.txt");
             UpdateLogger = SetupLogger(logPath + @"update\update.txt", RollingInterval.Month);
+            PluginLogger = SetupLogger(logPath + @"plugins\plugins.txt", RollingInterval.Month);
             RulesLogger = SetupLogger(logPath + @"rules\rules.txt");
 
             var systemLoggerBuilder = CreateLogBuilder()
@@ -136,7 +152,7 @@ namespace BLAZAM.Logger
 
         internal static LoggerConfiguration CreateLogBuilder()
         {
-            return new LoggerConfiguration()
+           var config =  new LoggerConfiguration()
                                 .Enrich.FromLogContext()
                                .Enrich.WithMachineName()
                                .Enrich.WithEnvironmentName()
@@ -148,9 +164,11 @@ namespace BLAZAM.Logger
                              .Enrich.WithProperty("Installation Completed", InstallationCompleted)
                              .Enrich.WithProperty("Database Type", DatabaseType)
                                .Enrich.WithProperty("Application Version", _applicationVersion);
+          
+            return config;
         }
 
-        private static Serilog.ILogger SetupLogger(string logFilePath, RollingInterval rollingInterval = RollingInterval.Hour)
+        public static ILogger SetupLogger(string logFilePath, RollingInterval rollingInterval = RollingInterval.Hour)
         {
             var loggerBuilder = CreateLogBuilder()
                 .WriteTo.File(logFilePath,

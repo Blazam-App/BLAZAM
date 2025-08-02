@@ -1,7 +1,8 @@
-﻿using System.Diagnostics;
+﻿using BLAZAM.Global.Exceptions;
+using System.Diagnostics;
 using System.Reflection;
 
-namespace BLAZAM.Common.Data
+namespace BLAZAM.Global.Data
 {
     /// <summary>
     /// A representation of a version of the app.
@@ -135,7 +136,7 @@ namespace BLAZAM.Common.Data
                                 break;
                         }
                     }
-                    DateTime.TryParse((month + "/" + day + "/" + year + " " + time + " Z"), out release);
+                    DateTime.TryParse(month + "/" + day + "/" + year + " " + time + " Z", out release);
                 }
                 catch
                 {

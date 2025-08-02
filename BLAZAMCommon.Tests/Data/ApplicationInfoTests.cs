@@ -28,7 +28,6 @@ namespace BLAZAMCommon.Tests.Data
         private readonly Guid _originalInstallationId = ApplicationInfo.installationId;
         private readonly IServiceProvider _originalServices = ApplicationInfo.services;
         private readonly ConfigurationManager _originalConfiguration = ApplicationInfo.configuration;
-        private readonly List<IPluginBase> _originalLoadedPlugins = ApplicationInfo.loadedPlugins;
         private readonly bool _originalInstallationCompleted = ApplicationInfo.installationCompleted;
 
         public ApplicationInfoTests()
@@ -41,7 +40,6 @@ namespace BLAZAMCommon.Tests.Data
             }
             // Reset static lists to new instances to avoid interference between tests
             ApplicationInfo.listeningAddresses = new List<string>();
-            ApplicationInfo.loadedPlugins = new List<IPluginBase>();
         }
 
         public void Dispose()
@@ -57,7 +55,6 @@ namespace BLAZAMCommon.Tests.Data
             ApplicationInfo.installationId = _originalInstallationId;
             ApplicationInfo.services = _originalServices;
             ApplicationInfo.configuration = _originalConfiguration;
-            ApplicationInfo.loadedPlugins = _originalLoadedPlugins;
             ApplicationInfo.installationCompleted = _originalInstallationCompleted;
         }
 
@@ -119,9 +116,6 @@ namespace BLAZAMCommon.Tests.Data
             ApplicationInfo.services = mockServices;
             Assert.Same(mockServices, ApplicationInfo.services);
 
-            ApplicationInfo.loadedPlugins = mockPlugins;
-            Assert.Same(mockPlugins, ApplicationInfo.loadedPlugins);
-            Assert.True(ApplicationInfo.LoadedPlugins.SequenceEqual(mockPlugins));
 
 
             ApplicationInfo.installationCompleted = true;

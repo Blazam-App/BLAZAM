@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
-using BLAZAM.Common.Data; // Assuming AppException is in this namespace or accessible
-using BLAZAM.Common.Exceptions;
 using Moq;
 using Xunit;
 

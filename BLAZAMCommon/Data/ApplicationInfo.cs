@@ -1,4 +1,5 @@
-﻿using BLAZAM.Plugins;
+﻿
+using BLAZAM.Plugins;
 using Microsoft.AspNetCore.Builder;
 using System.Diagnostics;
 using System.Reflection;
@@ -111,7 +112,6 @@ namespace BLAZAM.Common.Data
         /// </summary>
         public static Microsoft.Extensions.Configuration.ConfigurationManager configuration;
 
-
         
         public static SystemDirectory pluginDirectory => new SystemDirectory(applicationRoot.ToString() + @"/plugins/");
         public SystemDirectory PluginDirectory => new SystemDirectory(ApplicationRoot.ToString() + @"/plugins/");
@@ -119,12 +119,12 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// A list of plugins that were found
         /// </summary>
-        public Dictionary<Assembly, IPluginBase> loadedPlugins { get => LoadedPlugins; set => LoadedPlugins = value; }
-            
-            /// <summary>
+        public static Dictionary<Assembly, IPluginBase> loadedPlugins { get; set; } = new();
+
+        /// <summary>
         /// A list of plugins that were found
         /// </summary>
-        public static Dictionary<Assembly, IPluginBase> LoadedPlugins { get; set; } = new();
+        public Dictionary<Assembly, IPluginBase> LoadedPlugins { get => LoadedPlugins; set => LoadedPlugins = value; }
 
         /// <summary>
         /// A collection of active listening address's with port

@@ -1,6 +1,6 @@
 @inherits SettingsComponents
 <MudText Typo="Typo.h4">@AppLocalization[Lang.System_Settings]</MudText>
-<MudForm @onsubmit="Save">
+ <MudForm @onsubmit="Save">
     <MudStack Spacing="5">
         @if (settings != null)
         {
@@ -82,12 +82,17 @@
         <MudText Typo="Typo.h6">@AppLocalization[Lang.Resource_Usage]</MudText>
 
 
-        <ViewApplicationStatistics />
+         <ViewApplicationStatistics /> 
 
         <MudDivider Class="my-6" />
         <MudText Typo="Typo.h6">@AppLocalization[Lang.Jobs_Monitor]</MudText>
 
         <JobsMonitor />
+
+
+        <MudDivider Class="my-6" />
+
+        
 
 
         <SettingsField>
@@ -99,7 +104,7 @@
 
         </SettingsField>
     </MudStack>
-</MudForm>
+</MudForm> 
 @code {
 #nullable disable warnings
     AppSettings? settings = new AppSettings();
@@ -110,15 +115,6 @@
 
         settings = await Context.AppSettings.FirstOrDefaultAsync();
         LoadingData = false;
-    }
-
-    string processMemory
-    {
-        get
-        {
-            ApplicationInfo.RunningProcess.Refresh();
-            return new ByteSize((double)ApplicationInfo.RunningProcess.WorkingSet64).ToString();
-        }
     }
 
     [Inject] ApplicationManager applicationManager { get; set; }
