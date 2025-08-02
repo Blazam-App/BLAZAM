@@ -7,7 +7,7 @@
                  Dense=true
                  Loading=@LoadingData
                  Virtualize=true
-                 Height="300px"
+                 Height="600px"
                  FixedHeader=true
                  SortMode="@SortMode.None"
                  Groupable="false">
@@ -18,20 +18,22 @@
                 </CellTemplate>
             </TemplateColumn>
             <TemplateColumn Title=@AppLocalization[Lang.Name] Sortable=true Filterable=true Context="templateContext">
-              
+
                 <CellTemplate Context="cellContext">
-                    <MudLink Href="@cellContext.Item.SearchUri">
-                        @if (cellContext.Item is IADGroup group)
-                        {
-                            <GroupWithDescriptionTooltip Group="group" />
-                        }
-                        else
-                        {
-                            <MudElement>
-                                @cellContext.Item.CanonicalName
-                            </MudElement>
-                        }
-                    </MudLink>
+                    <DirectoryEntryContextMenu Entry="cellContext.Item" OnChanged="RefreshData">
+                        <MudLink Href="@cellContext.Item.SearchUri">
+                            @if (cellContext.Item is IADGroup group)
+                            {
+                                <GroupWithDescriptionTooltip Group="group" />
+                            }
+                            else
+                            {
+                                <MudElement>
+                                    @cellContext.Item.CanonicalName
+                                </MudElement>
+                            }
+                        </MudLink>
+                    </DirectoryEntryContextMenu>
                 </CellTemplate>
             </TemplateColumn>
             <TemplateColumn Sortable=true Filterable=true Context="templateContext">
@@ -44,14 +46,14 @@
                     </MudText>
                 </CellTemplate>
             </TemplateColumn>
-            <TemplateColumn Title=@AppLocalization["Remove Member"] Context="templateContext">
+            <TemplateColumn Title=@AppLocalization[Lang.Remove_Member] Context="templateContext">
                 <CellTemplate Context="cellContext">
-                    <AppTooltip ShowOnClick=@(!cellContext.Item.CanUnassign)
-                                ShowOnHover=@(!cellContext.Item.CanUnassign)
-                                Text=@AppLocalization["You don't have permission to remove this group member"]>
+                    <AppTooltip ShowOnClick=@(!Group.CanUnassign)
+                                ShowOnHover=@(!Group.CanUnassign)
+                                Text=@AppHelpLocalization[HelpLang.Lacks_Group_Member_Remove_Permission]>
                         <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
-                                   OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
+                                   OnClick="(()=>{RemoveMember(cellContext.Item);})">
                             @AppLocalization[Lang.Remove]
                         </MudButton>
                     </AppTooltip>
@@ -66,34 +68,34 @@
     {
 
         <MudText Align="Align.End">
-            @AppLocalization[Lang.Groups]: @Members.Where(m => m is IADGroup).Count()
+            @AppLocalization[Lang.Groups]: @Members.Count(m => m is IADGroup)
         </MudText>
     }
     @if (Members.Any(m => m is IADUser))
     {
 
         <MudText Align="Align.End">
-            @AppLocalization[Lang.Users]: @Members.Where(m => m is IADUser).Count()
+            @AppLocalization[Lang.Users]: @Members.Count(m => m is IADUser)
         </MudText>
     }
     @if (Members.Any(m => m is IADComputer))
     {
 
         <MudText Align="Align.End">
-            @AppLocalization[Lang.Computers]: @Members.Where(m => m is IADComputer).Count()
+            @AppLocalization[Lang.Computers]: @Members.Count(m => m is IADComputer)
         </MudText>
     }
     @if (Members.Any(m => m is IADPrinter))
     {
 
         <MudText Align="Align.End">
-            @AppLocalization[Lang.Printers]: @Members.Where(m => m is IADPrinter).Count()
+            @AppLocalization[Lang.Printers]: @Members.Count(m => m is IADPrinter)
         </MudText>
     }
     if (Members.Where(m => !m.CanRead).Count() > 0)
     {
         <MudAlert Class="mud-alert-filled-info">
-            @AppLocalization["The group has more members you don't have access to"]
+            @AppHelpLocalization[HelpLang.Lacks_Group_Member_Read_Permission]
         </MudAlert>
     }
     @if (Group.CanAssign)
@@ -101,9 +103,9 @@
 
         <MudButton Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.GroupAdd"
-                   OnClick="@(()=>{_=AssignMemberModal?.ShowAsync();})">@AppLocalization["Add Member..."]</MudButton>
+                   OnClick="@(()=>{_=AssignMemberModal?.ShowAsync();})">@AppLocalization[Lang.Add_Member]</MudButton>
     }
-    <AppModal Color="Color.Dark" Title=@AppLocalization["Add Member..."] @ref=@AssignMemberModal>
+    <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Add_Member] @ref=@AssignMemberModal>
         <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />
     </AppModal>
 }
@@ -133,10 +135,11 @@ else
     {
         await base.OnInitializedAsync();
         RefreshData();
-        Group.OnModelChanged += () =>
-        {
-            RefreshData();
-        };
+
+        // Group.OnChangesDiscarded += () =>
+        // {
+        //     RefreshData();
+        // };
         await InvokeAsync(StateHasChanged);
 
     }
@@ -149,5 +152,24 @@ else
             LoadingData = false;
         });
 
+    }
+    private void RemoveMember(IGroupableDirectoryAdapter groupMember)
+    {
+
+        Group.UnassignMember(groupMember);
+        if (Members.Contains(groupMember))
+        {
+            Members.Remove(groupMember);
+        }
+    }
+    private void AddMember(IGroupableDirectoryAdapter groupMember)
+    {
+
+        Group.AssignMember(groupMember);
+        if (!Members.Contains(groupMember))
+        {
+            Members.Add(groupMember);
+
+        }
     }
 }

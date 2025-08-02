@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Helpers;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -46,6 +47,23 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         }
 
+        public IADUser? FindUserByDN(string? dn, bool ignoreDisabledUsers = true)
+        {
+            if (dn.IsNullOrEmpty()) return null;
+            return new ADSearch(Directory)
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.User,
+                EnabledOnly = ignoreDisabledUsers,
+                Fields = new()
+                {
+                    DN = dn
+                },
+                ExactMatch = true
+
+            }.Search<ADUser, IADUser>().FirstOrDefault();
+
+        }
+
         public async Task<List<IADUser>> FindLockedOutUsersAsync(bool ignoreDisabledUsers = true)
         {
             return await Task.Run(() =>
@@ -61,7 +79,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 EnabledOnly = ignoreDisabledUsers,
                 Fields = new()
                 {
-                    AccountExpires = DateTime.UtcNow
+                    ExpireTime = DateTime.UtcNow
                 }
 
             }.Search<ADUser, IADUser>();

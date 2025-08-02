@@ -134,6 +134,7 @@ a, .btn-link {
     height:min-content;
     margin-top:auto !important;
     margin-bottom:auto !important;
+    vertical-align:middle;
 }
 
 .align-bottom {
@@ -177,3 +178,106 @@ a, .btn-link {
 #jsd-widget{
     position:relative !important;
 }
+
+.my-reconnect-modal > div {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    overflow: hidden;
+    background-color: #FFFB;
+    text-align: center;
+    font-weight: bold;
+}
+
+.components-reconnect-hide > div {
+    display: none;
+}
+
+.components-reconnect-show > div {
+    display: none;
+}
+
+.components-reconnect-show > .show {
+    display: block;
+}
+
+.components-reconnect-failed > div {
+    display: none;
+}
+
+.components-reconnect-failed > .failed {
+    display: block;
+}
+
+.components-reconnect-rejected > div {
+    display: none;
+}
+
+.components-reconnect-rejected > .rejected {
+    display: block;
+}
+.section {
+    position: relative;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+.section-title-wrapper {
+    position: relative;
+    z-index: 1; /* Ensures the title appears above the content's border */
+}
+
+    .section-title-wrapper.pos-top {
+        /* A negative margin pulls the following content (section-content) upwards */
+        margin-bottom: -1.1em;
+    }
+
+    .section-title-wrapper.pos-bottom {
+        /* A negative margin pulls the title itself upwards */
+        margin-top: -1.1em;
+    }
+
+.section-title {
+    max-width: fit-content;
+    /* Use MudBlazor's theme variable for the background to "cut out" the border line */
+    /*padding: 0 8px;*/
+    display:flex;
+}
+
+.section-title-text {
+    font-weight: bold !important;
+    text-decoration: underline;
+    padding-bottom: 9px;
+}
+
+.section-title.align-left {
+    /*margin-left: 20px;*/
+    float: left;
+}
+
+.section-title.align-middle {
+    margin-left: auto;
+    margin-right:auto;
+    
+}
+
+
+.section-title.align-right {
+    /*margin-right: 20px;*/
+    float: right;
+}
+
+/* A clearfix to contain the floated title element */
+.section-title-wrapper::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#blazor-error-ui{
+    max-height:min-content;
+}
+
+

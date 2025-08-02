@@ -4,7 +4,7 @@
 
 <MudDialog @ref=dialog>
     <TitleContent>
-        <MudText Align="Align.Center">@AppLocalization["Google Authenticator Token"]</MudText>
+        <MudText Align="Align.Center">@AppLocalization[Lang.Create_Google_Authenticator_Token]</MudText>
     </TitleContent>
     <DialogContent>
 
@@ -12,9 +12,9 @@
         {
             if (!registrationUri.IsNullOrEmpty())
             {
-                <MudText Align="Align.Center">@AppLocalization["Scan the code below from your authenticator app"]</MudText>
+                <MudText Align="Align.Center">@AppHelpLocalization[HelpLang.Authenticator_Setup_One]</MudText>
                 <MudText Align="Align.Center"> <MudImage Src="@registrationUri" /></MudText>
-                <MudText Align="Align.Center">@AppLocalization["Then enter the passcode to activate"]</MudText>
+                <MudText Align="Align.Center">@AppHelpLocalization[HelpLang.Authenticator_Setup_Two]</MudText>
             }
             <GoogleAuthenticatorInput @ref=googleAuthInput 
                 @bind-Authenticated="_authenticated" 
@@ -51,9 +51,9 @@
     private string? authToken;
     private MudDialog? dialog;
     private SecureString? authSecret;
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
     [Parameter]
-    public AppEvent? OnAuthenticated { get; set; }
+    public AppDelegate? OnAuthenticated { get; set; }
 
     private bool _authenticated;
     protected override void OnInitialized()

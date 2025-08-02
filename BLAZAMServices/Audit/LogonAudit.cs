@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
+using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
 using System.Security.Claims;
@@ -8,24 +9,24 @@ namespace BLAZAM.Services.Audit
 {
     public class LogonAudit : CommonAudit
     {
-        public LogonAudit(IAppDatabaseFactory factory, IApplicationUserStateService? userStateService = null, IJSRuntime? jSRuntime = null) : base(factory, userStateService, jSRuntime)
+        public LogonAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
         {
         }
 
         public async Task<bool> AttemptedPersonation(string? iPAddress = null)
         {
-            CurrentUser = UserStateService?.CurrentUserState;
+            CurrentUser = UserState;
             return await Log("Attempted Personation", iPAddress);
         }
 
         public async Task<bool> AttemptedLogin(ClaimsPrincipal user, string? iPAddress = null)
         {
-            CurrentUser = UserStateService?.CreateUserState(user);
+            CurrentUser = ApplicationUserState.CreateUserState(user,factory);
             return await Log("Attempted Login", iPAddress);
         }
         public async Task<bool> Impersonate(ClaimsPrincipal impersonator, ClaimsPrincipal impersonateee, string? ipAddress = null)
         {
-            CurrentUser = UserStateService?.CreateUserState(impersonateee);
+            CurrentUser = ApplicationUserState.CreateUserState(impersonateee, factory);
             if (CurrentUser != null)
             {
                 CurrentUser.Impersonator = impersonator;
@@ -34,7 +35,7 @@ namespace BLAZAM.Services.Audit
         }
         public async Task<bool> Login(ClaimsPrincipal user, string? ipAddress = null)
         {
-            CurrentUser = UserStateService?.CreateUserState(user);
+            CurrentUser = ApplicationUserState.CreateUserState(user,factory);
             return await Log("Login", ipAddress);
         }
         public async Task<bool> Logout() => await Log("Logout");

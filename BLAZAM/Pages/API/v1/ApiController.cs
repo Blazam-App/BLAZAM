@@ -62,7 +62,7 @@ namespace BLAZAM.Pages.API.v1
             UserStateService = applicationUserStateService;
             CurrentUserState = UserStateService.CurrentUserState;
 
-            Directory = adFactory.CreateActiveDirectoryContext();
+            Directory = adFactory.CreateActiveDirectoryContext(CurrentUserState.ToActiveDirectoryUserState());
             DbFactory = appDatabaseFactory;
           
 

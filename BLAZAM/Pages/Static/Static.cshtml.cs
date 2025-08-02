@@ -1,0 +1,68 @@
+using BLAZAM.Database.Context;
+using BLAZAM.Static;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace BLAZAM.Server.Pages
+{
+    public class StaticModel : PageModel
+    {
+
+        [BindProperty(SupportsGet = true)]
+        public string Method { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string Data { get; set; }
+
+
+        protected IDatabaseContext Context { get; private set; }
+
+
+        public StaticModel(IUserDatabaseFactory factory)
+        {
+            Context = factory.CreateDbContext();
+
+        }
+
+
+        public async Task<IActionResult> OnGet()
+        {
+            return await Task.Run(() =>
+            {
+                var expires = DateTime.UtcNow.AddDays(1);
+                Response.Headers.Append("Cache-Control", "public,max-age=86400");
+                Response.Headers.Append("Expires", expires.ToString("R"));
+
+                switch (Method.ToLower())
+                {
+                    case "img":
+                        return GetImg(Data);
+
+                }
+                return NotFound();
+            });
+
+
+
+        }
+
+
+        public IActionResult GetImg(string data)
+        {
+            switch (data.ToLower())
+            {
+                case "appicon.png":
+                    return File(StaticAssets.AppIcon(), "image/png");
+                case "maggie.png":
+                    return File(StaticAssets.Maggie(), "image/png");
+                case "maggiethumb.png":
+                    return File(StaticAssets.Maggie(300), "image/png");
+                case "favicon.ico":
+                    return File(StaticAssets.AppIcon(100), "image/x-icon");
+            }
+
+            return null;
+        }
+
+    }
+}

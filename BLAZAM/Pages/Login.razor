@@ -29,39 +29,39 @@
 
 
     <form onsubmit="@(async()=>{await AttemptSignIn();})"
-          class="login-form"
-          method="post"
-          action="/signin"
-          id="login-form">
+    class="login-form"
+    method="post"
+    action="/signin"
+    id="login-form">
         <MudContainer Style="max-width:300px;"
-                      Class="py-4">
+        Class="py-4">
             @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
             {
 
 
 
                 <MudTextField Disabled=@attemptingSignIn
-                              Class="justify-center"
-                              AutoFocus=true
-                              Label=@AppLocalization[Lang.Username]
-                              name="Username"
-                              @bind-Value=LoginRequest.Username />
+                Class="justify-center"
+                AutoFocus=true
+                Label=@AppLocalization[Lang.Username]
+                name="Username"
+                @bind-Value=LoginRequest.Username />
 
                 <MudTextField Disabled=@attemptingSignIn
-                              Class="justify-center"
-                              Label=@AppLocalization[Lang.Password]
-                              name="Password"
-                              InputType="InputType.Password"
-                              @bind-Value=LoginRequest.Password />
+                Class="justify-center"
+                Label=@AppLocalization[Lang.Password]
+                name="Password"
+                InputType="InputType.Password"
+                @bind-Value=LoginRequest.Password />
 
                 <MudTextField Class="d-none"
-                              name="ReturnUrl"
-                              Value="@redirectUrl" />
+                name="ReturnUrl"
+                Value="@redirectUrl" />
 
                 <MudButton OnClick=@(()=>{attemptingSignIn=true;})
-                           Class="my-5"
-                           ButtonType=ButtonType.Submit
-                           Color="Color.Primary">
+                Class="my-5"
+                ButtonType=ButtonType.Submit
+                Color="Color.Primary">
                     @AppLocalization[Lang.Log_In]
                 </MudButton>
 
@@ -90,7 +90,7 @@
                         <MudMenuItem OnClick=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</MudMenuItem>
                     </MudMenu>
                 </MudButtonGroup>
-
+               
             }
 
         </MudContainer>
@@ -102,35 +102,32 @@
 
     </MudElement>
 
-
+   
 
 
 </MudContainer>
 <style>
     .brand-icon {
-        position: fixed;
-        left: 5px;
-        top: 5px;
+    position: fixed;
+    left: 5px;
+    top: 5px;
     }
 
-        .brand-icon img {
-            max-width: 65px;
-            max-height: 65px;
-        }
+    .brand-icon img {
+    max-width: 65px;
+    max-height: 65px;
+    }
 
     .login-form input {
-        max-width: 300px;
-        margin-left: auto;
-        margin-right: auto;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
     }
 </style>
 
 @code {
-    AppModal? createGoogleAuthenticatorModal;
-    string? tokenCreatorUsername;
     GoogleAuthenticatorModal? googleAuthenticatorModal;
-    private string? passcode;
-
+    AppModal? _expiredPasswordModal;
     bool attemptingSignIn = false;
     string redirectUrl;
     bool DemoCustomLogin = false;
@@ -171,7 +168,7 @@
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error attempting logon {@Error}", ex);
+                Loggers.SystemLogger.Error(ex,"Error attempting logon");
                 SnackBarService.Info(ex.Message);
             }
 
@@ -231,16 +228,18 @@
                 break;
             case LoginResultStatus.DuoRequested:
                 attemptingSignIn = true;
-                if (authenticationResult != null && authenticationResult.MFARedirect != null)
+                if (authenticationResult.MFARedirect != null)
                     Nav.NavigateTo(authenticationResult.MFARedirect);
                 break;
             case LoginResultStatus.GoogleAuthenticatorRequested:
                 await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken.ToSecureString());
                 break;
             case LoginResultStatus.OK:
-                attemptingSignIn = true;
+                
+                
+                  attemptingSignIn = true;
 
-                Nav.NavigateTo(redirectUrl, true);
+                    Nav.NavigateTo(redirectUrl, true);
 
                 break;
         }

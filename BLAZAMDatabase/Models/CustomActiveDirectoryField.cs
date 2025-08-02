@@ -20,7 +20,6 @@ namespace BLAZAM.Database.Models
         public ActiveDirectoryFieldType FieldType { get; set; } = ActiveDirectoryFieldType.Text;
 
 
-
         [Required(ErrorMessageResourceName = "CustomActiveDirectoryField_ObjectTypes", ErrorMessageResourceType = typeof(AppValidationLocalization))]
         public List<ActiveDirectoryFieldObjectType> ObjectTypes { get; set; } = new();
 
@@ -28,14 +27,14 @@ namespace BLAZAM.Database.Models
 
         public override string? ToString()
         {
-            return FieldName;
+            return DisplayName;
         }
 
 
         public override int GetHashCode()
         {
-            if (FieldName == null) return Id.GetHashCode();
-            return FieldName.GetHashCode();
+            if (DisplayName == null) return Id.GetHashCode();
+            return DisplayName.GetHashCode();
         }
 
 
@@ -45,7 +44,7 @@ namespace BLAZAM.Database.Models
             {
                 var other = obj as CustomActiveDirectoryField;
 
-                if (other.FieldName == FieldName)
+                if (other.Id == Id)
                 {
                     return true;
                 }

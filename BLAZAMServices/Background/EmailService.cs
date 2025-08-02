@@ -137,7 +137,7 @@ namespace BLAZAM.Services.Background
                     client.RequireTLS = settings.UseTLS;
 
                     // Connect to the server
-                    await client.ConnectAsync(settings.SMTPServer, settings.SMTPPort, settings.UseTLS);
+                    await client.ConnectAsync(settings.SMTPServer, settings.SMTPPort);
 
                     if (settings.UseSMTPAuth)
                     {
@@ -269,7 +269,7 @@ namespace BLAZAM.Services.Background
             }
             catch (EmailException ex)
             {
-                throw ex;
+                throw;
 
 
             }
@@ -288,7 +288,7 @@ namespace BLAZAM.Services.Background
             }
             catch (EmailException ex)
             {
-                throw ex;
+                throw;
 
 
             }
@@ -306,13 +306,13 @@ namespace BLAZAM.Services.Background
             }
             catch (EmailException ex)
             {
-                throw ex;
+                throw;
 
 
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
         public async Task<bool> SendTestEmail(string to)
@@ -329,7 +329,7 @@ namespace BLAZAM.Services.Background
             }
             catch (EmailException ex)
             {
-                throw ex;
+                throw;
 
 
             }

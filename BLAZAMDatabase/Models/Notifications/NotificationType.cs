@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Database.Models.Notifications
+﻿using System.Runtime.CompilerServices;
+
+namespace BLAZAM.Database.Models.Notifications
 {
     public enum NotificationType
     {
@@ -8,7 +10,8 @@
         Unassign,
         Assign,
         PasswordChange,
-        LockedOut
+        LockedOut,
+        Scheduled
     }
 
 }

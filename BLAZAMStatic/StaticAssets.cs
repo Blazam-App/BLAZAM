@@ -12,11 +12,11 @@ namespace BLAZAM.Static
         /// <summary>
         /// "/static/img/appicon.png"
         /// </summary>
-        public static string ApplicationIconUri = "/static/img/appicon.png";
+        public static readonly string ApplicationIconUri = "/static/img/appicon.png";
         /// <summary>
         /// "/static/img/favicon.ico"
         /// </summary>
-        public static string FaviconUri = "/static/img/favicon.ico";
+        public static readonly string FaviconUri = "/static/img/favicon.ico";
 
         public static byte[]? AppIcon(int size = 250)
         {
@@ -24,14 +24,14 @@ namespace BLAZAM.Static
             var dbIcon = DatabaseCache.AppIcon;
             if (dbIcon != null)
             {
-                return dbIcon.ReizeRawImage(size);
+                return dbIcon.ResizeRawImage(size);
             }
             else
             {
                 var defIcon = GetDefaultIcon();
                 if (defIcon != null)
                 {
-                    return defIcon.ReizeRawImage(size);
+                    return defIcon.ResizeRawImage(size);
                 }
             }
             return null;

@@ -47,8 +47,8 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Modal.OnYes = AssignToGroup;
-        Modal.YesText = AppLocalization[Lang.Assign];
+        Modal.SetOnYes(AssignToGroup);
+        Modal.SetYesText(AppLocalization[Lang.Assign]);
         Modal.Title = "Assign Member";
     }
 
@@ -56,7 +56,7 @@
 
     public IADGroup CopyFrom { get => (IADGroup)copyFrom; set => copyFrom = value; }
 
-    IDirectoryEntryAdapter Entry { get; set; }
+   public new IDirectoryEntryAdapter Entry { get; set; }
 
     async Task AssignToGroup()
     {

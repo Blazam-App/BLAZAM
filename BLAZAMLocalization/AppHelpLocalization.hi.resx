@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Access_Level_Definition" xml:space="preserve">
+    <value>पहुँच स्तर अनुमतियों का एक खाका है जिसे विशिष्ट प्रतिनिधियों के लिए विशिष्ट OU पर लागू किया जा सकता है।</value>
+  </data>
+  <data name="Access_Level_Object_Missing_Read" xml:space="preserve">
+    <value>अनुमतियाँ सेट करने के लिए {0} पहुँच को पठन में बदलें</value>
+  </data>
+  <data name="Authenticator_Setup_One" xml:space="preserve">
+    <value>अपने प्रमाणक ऐप से नीचे दिए गए कोड को स्कैन करें</value>
+  </data>
+  <data name="Authenticator_Setup_Two" xml:space="preserve">
+    <value>फिर सक्रिय करने के लिए पासकोड दर्ज करें</value>
+  </data>
+  <data name="Auto_Update_Time_Definition" xml:space="preserve">
+    <value>प्रत्येक दिन का वह समय जब कोई अपडेट स्वचालित रूप से लागू किया जाए।</value>
+  </data>
+  <data name="Confirm_Group_Creation" xml:space="preserve">
+    <value>क्या आप वाकई इस समूह को बनाना चाहते हैं?</value>
+  </data>
+  <data name="Confirm_OU_Creation" xml:space="preserve">
+    <value>क्या आप वाकई इस OU को बनाना चाहते हैं?</value>
+  </data>
+  <data name="Confirm_Save_Changes" xml:space="preserve">
+    <value>क्या आप वाकई परिवर्तनों को सहेजना चाहते हैं?</value>
+  </data>
+  <data name="Continue_Processing_Rules" xml:space="preserve">
+    <value>अन्य नियमों को संसाधित करना जारी रखें</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>{0} बनाया गया है</value>
+  </data>
+  <data name="Delegate_Definition" xml:space="preserve">
+    <value>प्रतिनिधि आपके अनुमोदित एप्लिकेशन उपयोगकर्ता हैं। केवल वे उपयोगकर्ता जिन्हें आप यहाँ परिभाषित करते हैं, या निम्नलिखित सक्रिय निर्देशिका समूहों (या नेस्टेड समूहों) में उपयोगकर्ता जिनके पास अनुमतियाँ मैप की गई हैं या स्व-संपादन सक्षम है।</value>
+  </data>
+  <data name="Delegate_Function" xml:space="preserve">
+    <value>प्रत्येक प्रतिनिधि को दी गई पहुँच मैप किए गए पहुँच स्तर द्वारा नियंत्रित होती है।</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>{0} हटा दिया गया है</value>
+  </data>
+  <data name="Delete_API_Token_Confirmation" xml:space="preserve">
+    <value>क्या आप वाकई इस API टोकन को हटाना चाहते हैं?</value>
+  </data>
+  <data name="Delete_Auth_Token_Confirmation" xml:space="preserve">
+    <value>क्या आप वाकई Google प्रमाणक MFA को अक्षम करना चाहते हैं?</value>
+  </data>
+  <data name="Deny_Request_Confirmation" xml:space="preserve">
+    <value>क्या आप वाकई इस अनुरोध को अस्वीकार करना चाहते हैं?</value>
+  </data>
+  <data name="Developer_Analytics_Suggestion" xml:space="preserve">
+    <value>हम आपसे डेवलपर एनालिटिक्स की अनुमति देने का अनुरोध करते हैं ताकि हम समझ सकें कि हमारे ऐप का उपयोग कैसे किया जाता है ताकि हमारे प्रयासों को उन चीज़ों पर केंद्रित किया जा सके जो हमारे उपयोगकर्ताओं के विचार में सबसे महत्वपूर्ण हैं।</value>
+  </data>
+  <data name="Developer_Logs_Suggestion" xml:space="preserve">
+    <value>हम आपसे डेवलपर लॉगिंग की अनुमति देने का अनुरोध करते हैं ताकि हम Blazam को तेज़ी से और पारदर्शी रूप से सुधार सकें और हमारे विकास प्रयासों में सहायता कर सकें।</value>
+  </data>
+  <data name="Duplicate_Delegate" xml:space="preserve">
+    <value>वह प्रतिनिधि पहले से मौजूद है।</value>
+  </data>
+  <data name="Duplicate_Deleted_Delegate" xml:space="preserve">
+    <value>वह प्रतिनिधि पहले से मौजूद है। इसे हटा दिया गया है। इसे ट्रैश से पुनर्स्थापित करें।</value>
+  </data>
+  <data name="Duplicate_Name_Conflict" xml:space="preserve">
+    <value>वह नाम पहले से मौजूद है। कृपया कोई दूसरा नाम चुनें</value>
+  </data>
+  <data name="GA4_Instructions" xml:space="preserve">
+    <value>एक GA4 खाता सेट करें और अपनी स्थापना के उपयोग पर डेटा एकत्र करने के लिए यहाँ अपनी ट्रैकिंग आईडी दर्ज करें।</value>
+  </data>
+  <data name="Invalid_Cert_Type" xml:space="preserve">
+    <value>मान्य प्रमाणपत्र प्रकार नहीं है।</value>
+  </data>
+  <data name="Invalid_Token_Entered" xml:space="preserve">
+    <value>दर्ज किया गया टोकन मान्य नहीं है</value>
+  </data>
+  <data name="Lacks_Group_Member_Read_Permission" xml:space="preserve">
+    <value>समूह में और सदस्य हैं जिन तक आपकी पहुँच नहीं है</value>
+  </data>
+  <data name="Lacks_Group_Member_Remove_Permission" xml:space="preserve">
+    <value>आपके पास इस समूह सदस्य को हटाने की अनुमति नहीं है</value>
+  </data>
+  <data name="Locked_Out" xml:space="preserve">
+    <value>{0} को लॉक कर दिया गया है</value>
+  </data>
+  <data name="Mapping_Use_Access_Level" xml:space="preserve">
+    <value>{0} मैपिंग इस पहुँच स्तर का उपयोग करते हैं और हटा दिए जाएँगे</value>
+  </data>
+  <data name="Modify_Name_Redirect" xml:space="preserve">
+    <value>उपयोगकर्ता का नाम संशोधित करने के लिए टूलबार/गियर मेनू में नाम बदलें बटन पर क्लिक करें</value>
+  </data>
+  <data name="Navigate_Away_Confirmation" xml:space="preserve">
+    <value>क्या आप वाकई नेविगेट करना चाहते हैं?</value>
+  </data>
+  <data name="News_Provider_Description" xml:space="preserve">
+    <value>महत्वपूर्ण अपडेट और परिवर्तन यहाँ पोस्ट किए जाते हैं।</value>
+  </data>
+  <data name="No_More_Widgets" xml:space="preserve">
+    <value>जोड़ने के लिए और विजेट नहीं हैं</value>
+  </data>
+  <data name="No_News" xml:space="preserve">
+    <value>यहाँ देखने के लिए कुछ भी नया नहीं है</value>
+  </data>
+  <data name="No_Request_Actions_Available" xml:space="preserve">
+    <value>इस प्रविष्टि के लिए अनुरोध करने के लिए कोई कार्रवाई उपलब्ध नहीं है।</value>
+  </data>
+  <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
+    <value>एक नया प्रमाणक टोकन जनरेट करने से मौजूदा टोकन अमान्य हो जाएगा!</value>
+  </data>
+  <data name="Rearrange_Dashboard_Help" xml:space="preserve">
+    <value>आइटम को नई स्थिति में खींचकर डैशबोर्ड विजेट को पुनर्व्यवस्थित करें</value>
+  </data>
+  <data name="Rename_Reboot_Message" xml:space="preserve">
+    <value>एक व्यवस्थापक ने इस कार्य केंद्र का नाम बदल दिया है। यह {0} सेकंड में रीबूट होगा।</value>
+  </data>
+  <data name="Request_To" xml:space="preserve">
+    <value>{0} से अनुरोध करें</value>
+  </data>
+  <data name="Rule_No_Filter_Warning" xml:space="preserve">
+    <value>यह नियम हर बार तब फायर होगा जब कोई {0} {1} होगा</value>
+  </data>
+  <data name="Stop_On_Rule" xml:space="preserve">
+    <value>और नियम संसाधित न करें</value>
+  </data>
+  <data name="Super_User_Definition" xml:space="preserve">
+    <value>सक्षम होने पर एप्लिकेशन तक पूर्ण और कुल पहुँच होगी</value>
+  </data>
+  <data name="Unexpected_Error_Occurred" xml:space="preserve">
+    <value>एक अप्रत्याशित त्रुटि हुई है।</value>
+  </data>
+  <data name="Upate_Branch_Definition" xml:space="preserve">
+    <value>रिलीज़ शाखा अनुशंसित शाखा है। नाइटली चुनना केवल परीक्षण प्रतिष्ठानों के लिए अनुशंसित है। देव केवल डेवलपर्स के लिए है।</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>{0} अपडेट किया गया है</value>
+  </data>
+  <data name="Update_Credential_Is_AD" xml:space="preserve">
+    <value>सक्रिय निर्देशिका क्रेडेंशियल अपडेट करने के लिए मान्य हैं।</value>
+  </data>
+  <data name="Update_Credential_Is_Application" xml:space="preserve">
+    <value>Blazam चलाने वाला खाता एप्लिकेशन निर्देशिका में लिख सकता है।
+यह होस्ट मशीन को अनावश्यक जोखिम में डालता है। एप्लिकेशन पहचान बदलें
+सुरक्षा में सुधार के लिए कम विशेषाधिकार प्राप्त खाते में।</value>
+  </data>
+  <data name="Update_Credential_Is_Custom" xml:space="preserve">
+    <value>कस्टम अपडेट क्रेडेंशियल अपडेट करने के लिए मान्य हैं।</value>
+  </data>
+  <data name="Update_Credential_Is_Invalid" xml:space="preserve">
+    <value>एप्लिकेशन निर्देशिका में लिखने की अनुमति के साथ कोई क्रेडेंशियल कॉन्फ़िगर नहीं किया गया है!
+कस्टम अपडेट क्रेडेंशियल कॉन्फ़िगर करने का प्रयास करें।</value>
+  </data>
+</root>

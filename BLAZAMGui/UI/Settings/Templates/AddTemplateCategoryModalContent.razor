@@ -13,15 +13,15 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Modal.OnYes = Submit;
-        Modal.YesText = AppLocalization[Lang.Add];
+        Modal.SetOnYes(Submit);
+        Modal.SetYesText(AppLocalization[Lang.Add]);
         _=Modal.RefreshView();
     }
     private async Task Submit()
     {
         if (Categories.Contains(newCategory))
         {
-            SnackBarService.Warning(AppLocalization["A category with that name already exists."]);
+            SnackBarService.Warning(AppHelpLocalization[HelpLang.Duplicate_Name_Conflict]);
         }
         await CategoryAdded.InvokeAsync(newCategory);
         

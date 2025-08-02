@@ -1,0 +1,50 @@
+@using BLAZAM.Update
+@inherits AppComponentBase
+<MudExpansionPanels Elevation=0>
+    <MudExpansionPanel @bind-Expanded=_expanded Text="@AppLocalization[Lang.Release_Notes]">
+        @if (_expanded)
+        {
+            <MudMarkdown Props=Props Value="@Update.Release.ReleaseNotes" />
+        }
+    </MudExpansionPanel>
+</MudExpansionPanels>
+
+@code {
+    [Parameter]
+    public ApplicationUpdate Update { get; set; }
+
+    private bool _expanded;
+
+     private static readonly MudMarkdownProps Props = new()
+    {
+         Heading =
+        {
+           OverrideTypo=ConvertHeaders,
+        },
+    };
+
+
+    private static Typo ConvertHeaders(Typo from)
+    {
+        switch (from)
+        {
+            case Typo.h1:
+                return Typo.h3;
+
+            case Typo.h2:
+                return Typo.h4;
+            case Typo.h3:
+                return Typo.h5;
+            case Typo.h4:
+                return Typo.h6;
+
+            case Typo.h5:
+                return Typo.h6;
+
+            case Typo.h6:
+                return Typo.h6;
+            default:
+                return from;
+        }
+    }
+}

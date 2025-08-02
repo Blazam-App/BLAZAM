@@ -30,10 +30,13 @@ namespace BLAZAM.Gui.UI
             get => Options.CloseButton == true; set
             {
                 if (Options == null)
-                    Options = new();
-                Options.BackdropClick = value;
-                Options.CloseButton = value;
-                Options.CloseOnEscapeKey = value;
+                    Options = new()
+                    {
+                        BackdropClick = value,
+                        CloseButton = value,
+                        CloseOnEscapeKey = value
+                    };
+
                 RefreshView();
             }
         }
@@ -63,8 +66,17 @@ namespace BLAZAM.Gui.UI
         }
 
         [Parameter]
+        public Color CancelColor { get; set; }
+        public void SetCancelColor(Color cancelColor)
+        {
+            CancelColor = cancelColor;
+        }
+        [Parameter]
         public OnCancelEvent OnCancel { get; set; }
-
+        public void SetOnCancel(OnCancelEvent onCancel)
+        {
+            OnCancel = onCancel;
+        }
         [Parameter]
         public OnYesEvent OnYes { get; set; }
         public void SetOnYes(OnYesEvent onYes)
@@ -94,6 +106,7 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public string Title { get; set; }
 
+
         [Parameter]
         public EventCallback<MudMessageBox>? ModalChanged { get; set; }
 
@@ -119,18 +132,24 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public MaxWidth? Width { get; set; }
 
-
+       
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            YesText = AppLocalization[Lang.Ok];
-            if (Options == null)
-                Options = new();
-            if (Width != null)
+            if (YesText.IsNullOrEmpty())
             {
-                Options.MaxWidth = Width;
+                YesText = AppLocalization[Lang.Ok];
             }
-            AllowClose = true;
+            if (Options == null)
+            {
+                Options = new()
+                {
+                    MaxWidth = Width,
+                    CloseButton = true
+                };
+            }
+
+            //AllowClose = true;
         }
         /// <summary>
         /// Re-renders the modal with the latest property values
@@ -147,8 +166,10 @@ namespace BLAZAM.Gui.UI
         {
 
             IsShown = true;
-
-            return await Modal.ShowAsync(null, Options);
+            Modal.CloseAsync(); //Fix for MudBlazor Bug causing modal to no reopen after one click but two, suggesting a state sync issue, remove if fixed
+           var @ref = await Modal.ShowAsync(null, Options);
+             await InvokeAsync(StateHasChanged);
+            return @ref;
         }
 
 
@@ -157,8 +178,17 @@ namespace BLAZAM.Gui.UI
         /// </summary>
         public void Close()
         {
-            IsShown = false;
             Modal.CloseAsync();
+            IsShown = false;
+        }
+        /// <summary>
+        /// Hide this modal
+        /// </summary>
+        public async Task CloseAsync()
+        {
+            await Modal.CloseAsync();
+            IsShown = false;
+
         }
         private void YesClicked()
         {
@@ -167,21 +197,6 @@ namespace BLAZAM.Gui.UI
             else
                 Close();
         }
-        /// <summary>
-        /// Sets the modal to be fullscreen, disabled by passing false.
-        /// </summary>
-        /// <param name="enabled"></param>
-        public void Fullscreen(bool enabled = true)
-        {
-            var existingOptions = Modal.Options;
-            existingOptions.FullScreen = enabled;
-            existingOptions.FullWidth = enabled;
-            if (enabled)
-            {
-                existingOptions.MaxWidth = MaxWidth.ExtraExtraLarge;
-            }
-            Modal.Options = existingOptions;
-            RefreshView();
-        }
+       
     }
 }

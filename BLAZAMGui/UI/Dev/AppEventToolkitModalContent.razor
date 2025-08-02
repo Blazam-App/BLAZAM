@@ -1,0 +1,70 @@
+﻿@inherits AppModalContent
+<h3>Application Event Toolkit</h3>
+
+
+<MudStack>
+
+
+    @foreach (var eventType in eventTypes)
+    {
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="@(()=>{SendEvent(eventType);})">@eventType.ToString()</MudButton>
+    }
+
+</MudStack>
+
+
+
+@code {
+    [Parameter]
+    public IDirectoryEntryAdapter DirectoryEntry { get; set; }
+
+    private List<ApplicationEventType> eventTypes = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        foreach (ApplicationEventType eventType in Enum.GetValues(typeof(ApplicationEventType)))
+        {
+            eventTypes.Add(eventType);
+        }
+    }
+    private void SendEvent(ApplicationEventType eventType)
+    {
+
+        var ev = new DirectoryEntryChangedArgs()
+            {
+                Actor = CurrentUser.State,
+                Entry = DirectoryEntry,
+                EventType = eventType
+            };
+        switch (eventType)
+        {
+            case ApplicationEventType.Search:
+                break;
+            case ApplicationEventType.Move:
+                break;
+            case ApplicationEventType.Create:
+                break;
+            case ApplicationEventType.PasswordChange:
+                break;
+            case ApplicationEventType.Delete:
+                break;
+            case ApplicationEventType.LockedOut:
+                break;
+            case ApplicationEventType.Assign:
+            case ApplicationEventType.Unassign:
+                ev.Target = Directory.Groups.FindGroupByString("").First();
+                break;
+                break;
+            case ApplicationEventType.Modify:
+                break;
+            case ApplicationEventType.Scheduled:
+                break;
+
+            
+
+        }
+        ApplicationEvents.DirectoryEntryChanged.Invoke(ev);
+    }
+}

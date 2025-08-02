@@ -19,7 +19,7 @@
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
                 <DirectoryEntryContextMenu Entry="@context.Item"
-                                           OnChanged="RefreshData">
+                                           OnChanged="RefreshDataAsync">
                     <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                         <MudText>@context.Item?.CanonicalName</MudText>
                     </AppTooltip>
@@ -40,7 +40,7 @@
         <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IADUser" />
     </PagerContent>
     <NoRecordsContent>
-        <MudText>@AppLocalization["No user are locked out"]</MudText>
+        <MudText>@AppLocalization[Lang.No_user_are_locked_out]</MudText>
     </NoRecordsContent>
 </MudDataGrid>
 
@@ -52,7 +52,7 @@
     }
 
 
-    protected override async Task RefreshData()
+    protected override async Task RefreshDataAsync()
     {
         LoadingData = true;
         LockedUsers = (await Directory.Users.FindLockedOutUsersAsync()).OrderByDescending(u => u.LockoutTime).Where(u => u.CanRead).ToList();
@@ -72,12 +72,20 @@
             var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
-            await AuditLogger.User.Changed(userToUnlock, changes);
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                {
+                    EventType = ApplicationEventType.Modify,
+                    Entry = userToUnlock,
+                    Changes = changes,
+                    Actor = CurrentUser.State
+
+                });
+            //await AuditLogger.User.Changed(userToUnlock, changes);
             if (unlockJob.Result == JobResult.Passed)
             {
-                await RefreshData();
+                await RefreshDataAsync();
 
-                SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" unlocked"]);
+                SnackBarService.Success(userToUnlock.CanonicalName + " " + AppLocalization[Lang.unlocked]);
             }
             else
             {

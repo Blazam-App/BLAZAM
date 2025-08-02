@@ -24,6 +24,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         /// </remarks>
         [Parameter]
         public IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? RootOU { get; set; } = new List<TreeItemData<IDirectoryEntryAdapter>>();
+        protected IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GuiOU { get; set; } = new List<TreeItemData<IDirectoryEntryAdapter>>();
         [Parameter]
         public IADOrganizationalUnit? StartingSelectedOU
         {
@@ -61,11 +62,6 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
                     InvokeAsync(() => { SelectedEntryChanged.InvokeAsync(value); });
 
-
-
-                    //if (RootOU.Count > 0 && firstSet)
-                    //    OpenToSelected();
-
                 }
             }
 
@@ -93,6 +89,11 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             return Color.Default;
         }
 
+        public async Task RefreshViewAcync()
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+
         protected virtual IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(IDirectoryEntryAdapter? parent)
         {
             try
@@ -114,24 +115,23 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
         }
 
-        protected async Task InitializeTreeView()
+        protected void InitializeTreeView()
         {
-            await Task.Run(() =>
+
+            if (RootOU is null || RootOU.Count < 1)
             {
-                if (RootOU is null || RootOU.Count < 1)
-                {
-                    TopLevel = new ADOrganizationalUnit();
-                    TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
-                    _ = TopLevel.SubOUs;
-                    var TopLevelList = new List<IDirectoryEntryAdapter>() { TopLevel };
-                    RootOU = TopLevelList.ToTreeItemData();
-                }
+                TopLevel = new ADOrganizationalUnit();
+                TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
+                _ = TopLevel.SubOUs;
+                var TopLevelList = new List<IDirectoryEntryAdapter>() { TopLevel };
+                RootOU = TopLevelList.ToTreeItemData();
+            }
 
-                OpenToSelected();
-                LoadingData = false;
-                InvokeAsync(StateHasChanged);
-            });
+            OpenToSelected();
 
+            GuiOU = new List<TreeItemData<IDirectoryEntryAdapter>>(RootOU);
+
+            LoadingData = false;
         }
 
 
@@ -149,8 +149,10 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         {
             await base.OnInitializedAsync();
 
-            await InitializeTreeView();
-
+            _ = Task.Run(() =>
+            {
+                InitializeTreeView();
+            });
         }
 
         protected void OpenToSelected()
@@ -160,32 +162,35 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             {
                 RootOU.First().Expanded = true;
                 RootOU.First().Children = GetChildren(RootOU.First());
-                if (SelectedEntry != null && !SelectedEntry.Equals(RootOU.First().Value))
+                if (SelectedEntry != null)
                 {
                     var firstThing = RootOU.First();
                     if (firstThing is TreeItemData<IDirectoryEntryAdapter> openThis)
                     {
-
-                        openThis.Expanded = true;
+                        if (!SelectedEntry.Equals(RootOU.First().Value))
+                        {
+                            openThis.Expanded = true;
+                        }
 
                         while (openThis != null)
                         {
 
                             openThis.Children = GetChildren(openThis);
-                            var child = openThis.Children.Where(
+                            var child = openThis.Children.FirstOrDefault(
                                 c => SelectedEntry.DN?.Contains(c.Value.DN) == true
                                                             && !SelectedEntry.DN.Equals(c.Value.DN)
-                                                            ).FirstOrDefault();
+                                                            );
                             if (child != null)
                             {
-
-                                child.Expanded = true;
-
+                                if (!SelectedEntry.Equals(RootOU.First().Value))
+                                {
+                                    child.Expanded = true;
+                                }
                                 openThis = child;
                             }
                             else
                             {
-                                var matchingOU = openThis.Children.Where(c => SelectedEntry.DN.Equals(c.Value.DN)).FirstOrDefault();
+                                var matchingOU = openThis.Children.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
                                 if (matchingOU != null)
                                     matchingOU.Selected = true;
                                 break;

@@ -3,7 +3,7 @@
 @inject IStringLocalizer<AppLocalization> AppLocalization
 @inject IUserDatabaseFactory factory
 @inject NavigationManager Nav
-<PageTitle>@AppLocalization["Error"]</PageTitle>
+<PageTitle>@AppLocalization[Lang.Error]</PageTitle>
 
 
 
@@ -33,10 +33,10 @@
                 @Error?.Source : @Error?.GetType()
                 </MudCardHeader>
                 <MudPaper Square=true>
-                        @AppLocalization["Error Message"]: @Error?.Message
+                        @AppLocalization[Lang.Error_Message]: @Error?.Message
                     </MudPaper>
                     <MudPaper Class="overflow-auto mud-typography-wrap">
-                        @AppLocalization["Stack Trace"]: <br>
+                    @AppLocalization[Lang.Stack_Trace]: <br>
                         @(
                                 (MarkupString)_error.StackTrace?.Replace("\n", "<br><br>")
                                 )
@@ -51,7 +51,7 @@
         }
         catch (Exception ex)
         {
-            Loggers.SystemLogger.Error("Error on unexpected error page: {@Error}", ex);
+            Loggers.SystemLogger.Error(ex,"Error on unexpected error page");
         }
     </MudContainer>
 

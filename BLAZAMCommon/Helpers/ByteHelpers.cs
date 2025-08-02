@@ -1,9 +1,17 @@
-﻿namespace BLAZAM.Helpers
+﻿using System;
+
+namespace BLAZAM.Helpers
 {
+    /// <summary>
+    /// Provides extension methods and utilities for byte manipulation and conversions.
+    /// </summary>
     public static class ByteHelpers
     {
-
-        // A method that returns the number of 1s in a byte using Brian Kernighan's algorithm
+        /// <summary>
+        /// Counts the number of set bits (1s) in a byte using Brian Kernighan's algorithm.
+        /// </summary>
+        /// <param name="n">The byte to count bits in.</param>
+        /// <returns>The number of set bits in the byte.</returns>
         public static int BitCount(this byte n)
         {
             // Initialize a counter for 1s
@@ -21,10 +29,20 @@
             return count;
         }
 
-
-        // A method that returns the number of different bits between two byte arrays
-        public static int BitDifference(this byte[] a, byte[] b)
+        /// <summary>
+        /// Calculates the number of differing bits between two byte arrays of equal length.
+        /// </summary>
+        /// <param name="a">The first byte array.</param>
+        /// <param name="b">The second byte array.</param>
+        /// <returns>The total number of differing bits.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if either input array is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if the input arrays do not have the same length.</exception>
+        public static int BitDifference(this byte[]? a, byte[]? b)
         {
+            ArgumentNullException.ThrowIfNull(a);
+            ArgumentNullException.ThrowIfNull(b);
+
+           
             // Check that the arrays have the same length
             if (a.Length != b.Length) throw new ArgumentException("Arrays must have the same length");
 
@@ -42,6 +60,12 @@
             return diff;
         }
 
+        /// <summary>
+        /// Converts an integer to a byte array, optionally padding with leading zeros to a specified length.
+        /// </summary>
+        /// <param name="number">The integer to convert.</param>
+        /// <param name="length">Optional. The desired length of the byte array. If specified and greater than the natural length, the array will be padded with leading zeros (or truncated if shorter, though current implementation only pads).</param>
+        /// <returns>A byte array representing the integer.</returns>
         public static byte[] ToByteArray(this int number, int? length = null)
         {
             byte[] byteArray = BitConverter.GetBytes(number);

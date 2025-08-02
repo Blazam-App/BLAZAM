@@ -18,7 +18,7 @@ namespace BLAZAM.Services.Background
         private bool _pollCompleted = false;
         private List<NewsItem> _allNewsItems = new();
         private List<NewsItem> _activeNewsItems => _allNewsItems.Where(x => x.DeletedAt == null && x.Published == true && (x.ScheduledAt == null || x.ScheduledAt < DateTime.Now) && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now)).ToList();
-        public AppEvent OnNewItemsAvailable { get; set; }
+        public AppDelegate OnNewItemsAvailable { get; set; }
 
         public ApplicationNewsService(IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(dbFactory, appLocalization)
         {
@@ -39,9 +39,9 @@ namespace BLAZAM.Services.Background
 
         protected override void Execute(object? obj = null)
         {
-            Job newsCollectionJob = new Job(AppLocalization["Fetch News"]);
+            Job newsCollectionJob = new Job(AppLocalization[Lang.Fetch_News]);
             newsCollectionJob.StopOnFailedStep = true;
-            JobStep collectStep = new JobStep(AppLocalization["Collect data"], async (step) =>
+            JobStep collectStep = new JobStep(AppLocalization[Lang.Excute], async (step) =>
             {
                 try
                 {
@@ -159,10 +159,19 @@ namespace BLAZAM.Services.Background
                 return new();
             }
         }
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _httpClient.Dispose();
-            _secondaryHttpClient.Dispose();
+
+            if (disposing)
+            {
+                _httpClient.Dispose();
+                _secondaryHttpClient.Dispose();
+            }
+
+
+
+            base.Dispose(disposing);
         }
+     
     }
 }

@@ -25,13 +25,19 @@ namespace BLAZAM.Gui.Services
             if (applicationUser != null)
             {
                 if (applicationUser.IsSuperAdmin || applicationUser.CanUnlockUsers)
-                    widgets.Add(new LockedOutUsers() { WidgetType = DashboardWidgetType.LockedOutUsers, Title = AppLocalization["Locked Out Users"] });
+                    widgets.Add(new LockedOutUsers() { WidgetType = DashboardWidgetType.LockedOutUsers, Title = AppLocalization[Lang.Locked_Out_Users] });
                 if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers))
                 {
 
                     widgets.Add(new NewUsersWidget() { WidgetType = DashboardWidgetType.NewUsers, Title = AppLocalization["Users created in the last 14 days"] });
                     widgets.Add(new ChangedPasswordsWidget() { WidgetType = DashboardWidgetType.PasswordsChanged, Title = AppLocalization["Passwords changed in the last 90 days"] });
 
+                }
+                if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchContacts))
+                {
+
+                    widgets.Add(new NewContactsWidget() { WidgetType = DashboardWidgetType.NewContacts, Title = AppLocalization["Contacts created in the last 14 days"] });
+                 
                 }
                 if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers)
                     || applicationUser.HasRole(UserRoles.SearchOUs)

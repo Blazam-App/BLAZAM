@@ -23,13 +23,13 @@
 @code {
     byte[]? newThumbnail;
     [Parameter]
-    public IADUser DirectoryModel { get; set; }
+    public IADUser DirectoryEntry { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Modal.OnYes = SaveChanges;
-        Modal.YesText = AppLocalization[Lang.Save_Photo];
+        Modal.SetOnYes(SaveChanges);
+        Modal.SetYesText(AppLocalization[Lang.Save_Photo]);
         Modal.Title = AppLocalization[Lang.Change_Thumbnail];
         await InvokeAsync(StateHasChanged);
     }
@@ -42,7 +42,7 @@
                 using (var memoryStream = new MemoryStream())
                 {
                     await stream.CopyToAsync(memoryStream);
-                    newThumbnail = memoryStream.ToArray().ReizeRawImage(250);
+                    newThumbnail = memoryStream.ToArray().ResizeRawImage(250);
                 }
             }
         }
@@ -61,9 +61,9 @@
     {
         try
         {
-            DirectoryModel.ThumbnailPhoto = newThumbnail;
+            DirectoryEntry.ThumbnailPhoto = newThumbnail;
 
-            SnackBarService.Warning("Thumbnail changed for " + DirectoryModel.DisplayName + " but changes need to be saved.");
+            SnackBarService.Warning("Thumbnail changed for " + DirectoryEntry.DisplayName + " but changes need to be saved.");
         }
         catch
         {

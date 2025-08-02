@@ -15,6 +15,9 @@
     <MudBreakpointProvider>
         <MudHidden Breakpoint="Breakpoint.MdAndUp">
             <MudStack Row=true>
+                <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                               Color="Color.Inherit"
+                               OnClick="@((e) => {mainLayout.DrawerOpen = !mainLayout.DrawerOpen; })" />
                 <MudImage Class="app-icon"
                           Src="@StaticAssets.ApplicationIconUri" />
                 <MudText Align="Align.Center"
@@ -38,13 +41,19 @@
                 <MudNavLink Href="/create/user"
                             Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
                     @AppLocalization[Lang.Create_User]
-                    </MudNavLink>
+                </MudNavLink>
+            </AuthorizeView>
+            <AuthorizeView Roles="@UserRoles.CreateContacts">
+                <MudNavLink Href="/create/contact"
+                            Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+                    @AppLocalization[Lang.Create_Contact]
+                </MudNavLink>
             </AuthorizeView>
             <AuthorizeView Roles="@UserRoles.CreateGroups">
                 <MudNavLink Href="/create/group"
                             Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
                     @AppLocalization[Lang.Create_Group]
-                            </MudNavLink>
+                </MudNavLink>
             </AuthorizeView>
             <AuthorizeView Roles="@UserRoles.CreateOUs">
                 <MudNavLink Href="/create/ou"
@@ -61,50 +70,45 @@
                     Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)>
             @AppLocalization[Lang.Recycle_Bin]
         </MudNavLink>
-
         <MudNavGroup Title="@AppLocalization[Lang.Configure]" Icon="@Icons.Material.Filled.Handyman">
-            <MudNavLink Href="/settings"
-                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+            <MudNavLink Href="/settings">
                 @AppLocalization[Lang.Settings]
             </MudNavLink>
-           
-            <MudNavLink Href="/permissions"
-                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+
+            <MudNavLink Href="/permissions">
                 @AppLocalization[Lang.Permissions]
             </MudNavLink>
 
-            <MudNavLink Href="/fields"
-                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+            <MudNavLink Href="/fields">
                 @AppLocalization[Lang.Fields]
             </MudNavLink>
 
-            <MudNavLink Href="/templates"
-                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+            <MudNavLink Href="/templates">
                 @AppLocalization[Lang.Templates]
             </MudNavLink>
 
-            <MudNavLink Href="/rules"
-                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+            <MudNavLink Href="/rules">
                 @AppLocalization[Lang.Rules]
             </MudNavLink>
 
-            <MudNavLink Href="/notifications"
-                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+            <MudNavLink Href="/notifications">
                 @AppLocalization[Lang.Notifications]
             </MudNavLink>
 
-            <MudNavLink Href="/webhooks"
-                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+            <MudNavLink Href="/webhooks">
                 @AppLocalization[Lang.Webhooks]
             </MudNavLink>
 
-            <MudNavLink Href="/api-tokens"
-                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+            <MudNavLink Href="/api-tokens">
                 @AppLocalization[Lang.API_Tokens]
             </MudNavLink>
         </MudNavGroup>
+        <MudNavLink Href="/plugins"
+                    Icon="@Icons.Material.Filled.InsertDriveFile">
+            @AppLocalization[Lang.Plugins]
+
+        </MudNavLink>
         <MudNavLink Href="/audit"
-                    Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix
                     Icon="@Icons.Material.Filled.ReceiptLong">
             @AppLocalization[Lang.Audit]
 
@@ -123,6 +127,8 @@
 
 
 @code {
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
     private bool collapseNavMenu = true;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
     [Parameter]

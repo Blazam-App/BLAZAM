@@ -6,6 +6,8 @@ using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
+using BLAZAM.Services.Events;
+using BLAZAM.Session;
 using Microsoft.Extensions.Localization;
 using Polly;
 
@@ -14,13 +16,11 @@ namespace BLAZAM.Services.Background
     [AutoStartBackgroundService]
     public class LockedOutUserMonitor : ActiveDirectoryBackgroundServiceBase
     {
-        private NotificationGenerationService _notificationGenerationService;
 
-        public LockedOutUserMonitor(NotificationGenerationService notificationGenerationService, IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
+        public LockedOutUserMonitor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
             Interval = TimeSpan.FromMinutes(10);
 
-            _notificationGenerationService = notificationGenerationService;
         }
 
         protected override void Execute(object? state = null)
@@ -57,9 +57,17 @@ namespace BLAZAM.Services.Background
 
                             if (user.LockoutTime > DateTime.UtcNow.AddDays(-1))
                             {
-                                _notificationGenerationService.PostAsync(user, NotificationType.LockedOut);
+                                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                                {
+                                    EventType = ApplicationEventType.LockedOut,
+                                    Entry = user,
+                                    Actor = new SystemUserState(dbFactory)
 
-                                RecordLogonEvents(user);
+                                });
+                                if (OperatingSystem.IsWindows())
+                                {
+                                    RecordLogonEvents(user);
+                                }
 
                             }
                         }
@@ -69,7 +77,7 @@ namespace BLAZAM.Services.Background
                 foreach (var user in usersInTable)
                 {
                     if (user == null) continue;
-                    var adUser = directory.GetDirectoryEntryBySid(user.Sid) as IADUser;
+                    var adUser = directory.FindEntryBySid(user.Sid) as IADUser;
                     if (adUser != null && !adUser.LockedOut)
                     {
                         var existing = context.LockedOutUsers.FirstOrDefault(x => x.Sid == user.Sid);
@@ -108,7 +116,7 @@ namespace BLAZAM.Services.Background
                     if (matching == null)
                     {
 
-                        if (existing.Count() > 9)
+                        if (existing.Count > 9)
                         {
                             context.FailedADLogonEvents.Remove(existing.First());
                             existing.Remove(existing.First());

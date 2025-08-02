@@ -20,6 +20,8 @@ namespace BLAZAM.Database.Models
         /// </summary>
         ActiveDirectoryFieldType FieldType { get; set; }
 
+
+
         bool Equals(object? obj);
 
         /// <summary>

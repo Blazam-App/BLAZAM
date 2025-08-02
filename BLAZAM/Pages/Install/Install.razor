@@ -3,6 +3,7 @@
 @layout InstallLayout
 @inherits DatabaseComponentBase
 @inject ApplicationManager ApplicationManager
+@inject BLAZAM.Services.Analytics AnalyticsService
 
 <PageTitle>Install - Blazam</PageTitle>
 
@@ -47,7 +48,7 @@ else
             @if (completedSteps > 2)
             {
                 <ADirectory StepCompleted="(()=>{completedSteps++;})" />
-        }
+            }
         </MudTabPanel>
         <MudTabPanel Disabled=@(completedSteps<4)
         Icon="@Icons.Material.Filled.FlagCircle"
@@ -157,7 +158,7 @@ else
 
         return Task.CompletedTask;
     }
-  
+
 
     private async void FinalizeInstall()
     {
@@ -174,7 +175,14 @@ else
             (await Context.AppSettings.FirstOrDefaultAsync())!.InstallationCompleted = true;
             _ = await Context.SaveChangesAsync();
             ApplicationInfo.InstallationCompleted = true;
+            try{
+                Loggers.SystemLogger.Warning("Installation Finalized");
+            }catch{
+                //Ignore logging errors
+            }
+            await AnalyticsService.InstallationFinalized();
             Nav.NavigateTo("/home", true);
+
             ApplicationManager.Restart();
         }
         catch

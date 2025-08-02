@@ -7,142 +7,53 @@ using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Security.AccessControl;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADUser : AccountDirectoryAdapter, IADUser
     {
-        public byte[]? ThumbnailPhoto
-        {
-
-            get
-            {
-                return GetProperty<byte[]>("thumbnailPhoto");
-            }
-            set
-            {
-                SetProperty("thumbnailPhoto", value);
-            }
-        }
-        public string? Pager
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.Pager.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.Pager.FieldName, value);
-            }
-        }
-        public string? GivenName
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.GivenName.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.GivenName.FieldName, value);
-            }
-        }
+     
         public string? LogOnTo
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.LogOnTo.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.LogOnTo.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.LogOnTo.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.LogOnTo.FieldName, value);
             }
         }
         public LogonHours? LogonHours
         {
             get
             {
-                var raw = GetProperty<byte[]>(ActiveDirectoryFields.LogonHours.FieldName);
+                var raw = GetAttribute<byte[]>(ActiveDirectoryFields.LogonHours.FieldName);
                 var decoded = new LogonHours(raw);
                 return decoded;
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.LogonHours.FieldName, value?.EncodeLogonHours());
+                SetAttribute(ActiveDirectoryFields.LogonHours.FieldName, value?.EncodeLogonHours());
             }
         }
-        public string? MiddleName
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.MiddleName.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.MiddleName.FieldName, value);
-            }
-        }
-        public string? Surname
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.SN.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.SN.FieldName, value);
-            }
-        }
-
+    
         [Required]
         public override string? DisplayName { get => base.DisplayName; set => base.DisplayName = value; }
 
-        public string? Department
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.Department.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.Department.FieldName, value);
-            }
-        }
-        public string? PhysicalDeliveryOfficeName
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.PhysicalDeliveryOffice.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.PhysicalDeliveryOffice.FieldName, value);
-            }
-        }
-        public string? EmployeeId
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.EmployeeId.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.EmployeeId.FieldName, value);
-            }
-        }
+
         public List<FailedADLogonEvent> FailedLogonEvents => this.DomainControllerEventLogs.GetFailedLogonEvents(this, DateTime.UtcNow - TimeSpan.FromDays(5), DateTime.UtcNow);
 
         public string? HomeDirectory
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.HomeDirectory.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.HomeDirectory.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.HomeDirectory.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.HomeDirectory.FieldName, value);
                 if (value == null || value == "") return;
 
 
@@ -170,7 +81,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <remarks>Must be called under an identity context that has permission to make these changes</remarks>
         public void SetHomeDirectoryPermissions()
         {
-            if (SamAccountName == null) throw new AppException("Samaccount name is null while setting home directory");
+            if (SAMAccountName == null) throw new AppException("Samaccount name is null while setting home directory");
             if (HomeDirectory == null) throw new AppException("HomeDirectory is null while setting home directory");
             FileSystemRights Rights;
 
@@ -181,7 +92,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             InheritanceFlags none = InheritanceFlags.None;
 
             //set on dir itself
-            FileSystemAccessRule accessRule = new(SamAccountName, Rights, none, PropagationFlags.NoPropagateInherit, AccessControlType.Allow);
+            FileSystemAccessRule accessRule = new(SAMAccountName, Rights, none, PropagationFlags.NoPropagateInherit, AccessControlType.Allow);
             DirectoryInfo dInfo = new(HomeDirectory);
             DirectorySecurity dSecurity = dInfo.GetAccessControl();
             dSecurity.ModifyAccessRule(AccessControlModification.Set, accessRule, out modified);
@@ -191,7 +102,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
             //Add Access rule for the inheritance
-            FileSystemAccessRule accessRule2 = new(SamAccountName, Rights, iFlags, PropagationFlags.InheritOnly, AccessControlType.Allow);
+            FileSystemAccessRule accessRule2 = new(SAMAccountName, Rights, iFlags, PropagationFlags.InheritOnly, AccessControlType.Allow);
             dSecurity.ModifyAccessRule(AccessControlModification.Add, accessRule2, out modified);
 
             dInfo.SetAccessControl(dSecurity);
@@ -200,20 +111,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.ScriptPath.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.ScriptPath.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.ScriptPath.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.ScriptPath.FieldName, value);
             }
         }
 
-        public override string? SamAccountName
+        public override string? SAMAccountName
         {
-            get => base.SamAccountName;
+            get => base.SAMAccountName;
             set
             {
-                base.SamAccountName = value;
+                base.SAMAccountName = value;
                 if (UserPrincipalName.IsNullOrEmpty())
                     UserPrincipalName = value + "@" + DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.FQDN;
 
@@ -227,153 +138,37 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.ProfilePath.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.ProfilePath.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.ProfilePath.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.ProfilePath.FieldName, value);
             }
         }
         public string? HomeDrive
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.HomeDrive.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.HomeDrive.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.HomeDrive.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.HomeDrive.FieldName, value);
             }
         }
         public string? UserPrincipalName
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.UserPrincipalName.FieldName);
+                return GetStringAttribute(ActiveDirectoryFields.UserPrincipalName.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.UserPrincipalName.FieldName, value);
+                SetAttribute(ActiveDirectoryFields.UserPrincipalName.FieldName, value);
             }
         }
 
-        public string? Title
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.Title.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.Title.FieldName, value);
-            }
-        }
-
-        public string? Company
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.Company.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.Company.FieldName, value);
-            }
-        }
-
-        public string? TelephoneNumber
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.TelephoneNumber.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.TelephoneNumber.FieldName, value);
-            }
-
-        }
-
-        public string? HomePhone
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.HomePhone.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.HomePhone.FieldName, value);
-            }
-
-        }
-        public string? StreetAddress
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.StreetAddress.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.StreetAddress.FieldName, value);
-            }
-        }
-        public string? POBox
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.POBox.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.POBox.FieldName, value);
-            }
-        }
-        public string? City
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.City.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.City.FieldName, value);
-            }
-        }
-        public string? State
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.State.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.State.FieldName, value);
-            }
-        }
-        public string? Zip
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.PostalCode.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.PostalCode.FieldName, value);
-            }
-        }
-        public string? Site
-        {
-            get
-            {
-                return GetStringProperty(ActiveDirectoryFields.Site.FieldName);
-            }
-            set
-            {
-                SetProperty(ActiveDirectoryFields.Site.FieldName, value);
-            }
-        }
-
-
+    
 
     }
 }

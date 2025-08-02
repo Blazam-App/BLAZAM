@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Components.Routing
 @inject IJSRuntime JSRuntime
 @inject IStringLocalizer<AppLocalization> AppLocalization
+@inject IStringLocalizer<AppHelpLocalization> AppHelpLocalization
 @inject NavigationManager Navigation
 @if (Lock)
 {
@@ -17,7 +18,7 @@
     private async Task OnBeforeInternalNavigation(LocationChangingContext context)
     {
         var isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm",
-        AppLocalization["You have unsaved changes"].ToString() + ". " + AppLocalization["Are you sure you want to navigate away?"].ToString());
+        AppLocalization[Lang.You_have_unsaved_changes] + ". " + AppHelpLocalization[HelpLang.Navigate_Away_Confirmation].ToString());
 
         if (!isConfirmed)
         {

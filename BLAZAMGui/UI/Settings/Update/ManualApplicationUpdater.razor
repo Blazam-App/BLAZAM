@@ -15,7 +15,7 @@
 @if (AutoUpdateService.IsUpdatedScheduled)
 {
     <MudAlert Class="mud-alert-filled-info">
-        <MudText Typo="Typo.h6">@AppLocalization["Update Scheduled"]</MudText>
+        <MudText Typo="Typo.h6">@AppLocalization[Lang.Update_Scheduled]</MudText>
         <MudText>
             The application will be updated to version @AutoUpdateService.ScheduledUpdate?.Version at @AutoUpdateService.ScheduledUpdateTime
         </MudText>
@@ -62,83 +62,96 @@
             case UpdateStage.None:
             default:
 
-
-                <MudTimeline TimelineAlign="TimelineAlign.Default"
-                             TimelinePosition="TimelinePosition.Top"
-                             Style="max-height:600px;"
-                             Class="overflow-y-auto">
-                    @{
-                        int i = 0;
-                    }
-
-                    <MudTimelineItem Color="Color.Info" Size="Size.Small">
-                        <ItemOpposite>
-                            <MudText Color="Color.Info" Typo="Typo.h5">@AppLocalization["Previous Versions"]</MudText>
-                        </ItemOpposite>
-                        <ItemContent>
-                            <MudCard Class="pa-3">
+                <MudElement Style="max-height:600px;"
+                            Class="overflow-y-auto">
+                    <MudTimeline TimelineAlign="TimelineAlign.Default"
+                                 TimelinePosition="TimelinePosition.Top">
 
 
-                                <MudButton Class="mx-6"
-                                           OnClick="(()=>{ShowAllUpdates = !ShowAllUpdates;})"
-                                           Color="Color.Success">
-                                    @(AppLocalization[ShowAllUpdates == false ? "Show Previous Updates" : "Hide Previous Updates"])
-                                </MudButton>
-
-
-
-                            </MudCard>
-
-
-                        </ItemContent>
-                    </MudTimelineItem>
-
-
-
-                    @if (ShowAllUpdates)
-                    {
-                        @foreach (var update in UpdateService.AvailableUpdates.Where(x => x.Version <= ApplicationInfo.RunningVersion).OrderBy(x => x.Version))
+                        @if (UpdateService.IncompatibleUpdates.Count > 0)
                         {
+                            var latestIncompatibleUpdate = UpdateService.IncompatibleUpdates.Where(x => x.Newer).OrderByDescending(x => x.Release.ReleaseTime).FirstOrDefault();
+                            if (latestIncompatibleUpdate != null)
+                            {
+                                <AvailableUpdate Update=@latestIncompatibleUpdate OnApply="ApplyUpdate" Even=true />
+
+                            }
+                        }
+
+                        @if (UpdateService.NewestAvailableUpdate != null)
+                        {
+                            if (UpdateService.NewestAvailableUpdate.Version.NewerThan(ApplicationInfo.RunningVersion))
+                            {
+                                <AvailableUpdate Update=@UpdateService.NewestAvailableUpdate OnApply="ApplyUpdate" Even=true />
+
+                            }
+                            else
+                            {
+                                <MudTimelineItem Color="Color.Success" Size="Size.Small">
+                                    <ItemOpposite>
+                                        <MudText Color="Color.Success" Typo="Typo.h5">@AppLocalization[Lang.Up_to_date]</MudText>
+                                    </ItemOpposite>
+                                    <ItemContent>
+
+                                    </ItemContent>
+                                </MudTimelineItem>
+                            }
+                        }
+
+                        <MudTimelineItem Color="Color.Info" Size="Size.Small">
+                            <ItemOpposite>
+                                <MudText Color="Color.Info" Typo="Typo.h5">@AppLocalization[Lang.Previous_Versions]</MudText>
+                            </ItemOpposite>
+                            <ItemContent>
+                                <MudCard Class="pa-3">
 
 
-                            <AvailableUpdate Update=@update OnApply="ApplyUpdate" Even=@(i%2==0) />
+                                    <MudButton Class="mx-6"
+                                               OnClick="(()=>{ShowAllUpdates = !ShowAllUpdates;})"
+                                               Color="Color.Success">
+                                        @(AppLocalization[ShowAllUpdates == false ? "Show Previous Updates" : "Hide Previous Updates"])
+                                    </MudButton>
 
-                            i++;
+
+
+                                </MudCard>
+
+
+                            </ItemContent>
+                        </MudTimelineItem>
+
+
+
+                        @if (ShowAllUpdates)
+                        {
+                            int i = 0;
+
+                            @foreach (var update in UpdateService.AvailableUpdates
+                       .Where(x => x.Version <= ApplicationInfo.RunningVersion)
+                       .OrderByDescending(x => x.Version)
+                       .Take(previousUpdatesToShow))
+                            {
+
+
+                                <AvailableUpdate Update=@update OnApply="ApplyUpdate" Even=@(true) />
+                                i++;
+
+
+                            }
+                            if (i < UpdateService.AvailableUpdates.Count(x => x.Version <= ApplicationInfo.RunningVersion))
+                            {
+                                <MudButton Color="Color.Primary" Variant="Variant.Filled" Size="Size.Large" OnClick="@(()=>{previousUpdatesToShow+=10;})">Show More</MudButton>
+                            }
 
                         }
-                    }
-                    
-                    @if (UpdateService.NewestAvailableUpdate != null)
-                    {
-                        if (UpdateService.NewestAvailableUpdate.Version.NewerThan(ApplicationInfo.RunningVersion))
-                        {
-                            <AvailableUpdate Update=@UpdateService.NewestAvailableUpdate OnApply="ApplyUpdate" Even=true />
 
-                        }
-                        else
-                        {
-                            <MudTimelineItem Color="Color.Success" Size="Size.Small">
-                                <ItemOpposite>
-                                    <MudText Color="Color.Success" Typo="Typo.h5">@AppLocalization["Up to date"]</MudText>
-                                </ItemOpposite>
-                                <ItemContent>
 
-                                </ItemContent>
-                            </MudTimelineItem>
-                        }
-                    }
 
-                    @if (UpdateService.IncompatibleUpdates.Count > 0)
-                    {
-                        var latestIncompatibleUpdate = UpdateService.IncompatibleUpdates.Where(x => x.Newer).OrderByDescending(x => x.Release.ReleaseTime).FirstOrDefault();
-                        if (latestIncompatibleUpdate != null)
-                        {
-                            <AvailableUpdate Update=@latestIncompatibleUpdate OnApply="ApplyUpdate" Even=true />
 
-                        }
-                    }
-                </MudTimeline>
+                    </MudTimeline>
 
+            </MudElement>
+                
                 @if (AutoUpdateService.IsUpdatedScheduled)
                 {
                     <MudButton OnClick=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Error">Cancel Auto Update</MudButton>
@@ -155,6 +168,9 @@
 
 
 @code {
+
+    int previousUpdatesToShow = 10;
+
     ApplicationUpdate? LatestAvailableVersion { get; set; }
 
     UpdateStage updateStage = UpdateStage.None;
@@ -192,7 +208,7 @@
             var output = LatestAvailableVersion.GetUpdateJob();
             if (output != null)
             {
-                _= MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization[Lang.Update]);
+                _ = MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization[Lang.Update]);
                 await output.RunAsync();
 
             }

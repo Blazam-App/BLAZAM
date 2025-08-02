@@ -26,12 +26,9 @@ namespace BLAZAM.Gui.UI
         /// </summary>
         protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = new List<CustomActiveDirectoryField>();
 
-        protected AppModal? UploadThumbnailModal { get; set; }
         protected AppModal? AssignToModal { get; set; }
         protected AppModal? MoveToModal { get; set; }
         protected AppModal? RenameModal { get; set; }
-        protected AppModal? LogonHoursModal { get; set; }
-        protected AppModal? LogOnToModal { get; set; }
         protected AppModal? ChangePasswordModal { get; set; }
         [CascadingParameter(Name = "ChangeHistoryModal")]
         protected AppModal? ChangeHistoryModal { get; set; }

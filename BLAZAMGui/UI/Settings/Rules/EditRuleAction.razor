@@ -1,0 +1,170 @@
+@inherits DatabaseComponentBase
+@using BLAZAM.Database.Models.Rules
+<MudStack Row=true>
+
+        <MudSelectList T="AutomationRuleActionType"
+                       Values="_actionTypes"
+                       @bind-Value=Action.ActionType />
+        @switch (Action.ActionType)
+        {
+            case AutomationRuleActionType.ModifyField:
+                <MudSelectList T="IActiveDirectoryField" Values="_fields"
+                               Value=_selectedField
+                               ValueChanged="@((IActiveDirectoryField field)=>{FieldChanged(field);})" />
+                @if (_selectedField != null)
+                {
+                    AutomationRuleActionFieldValue fieldValue;
+                    if (Action.FieldValues.FirstOrDefault() == null)
+                    {
+                        fieldValue = new() { CurrentField = _selectedField };
+                        Action.FieldValues.Add(fieldValue);
+                    }
+                    else
+                    {
+                        fieldValue = Action.FieldValues.FirstOrDefault(fv => fv.CurrentField.Id == _selectedField.Id);
+                    }
+                    switch (Action.FieldValues.FirstOrDefault()?.CurrentField.FieldType)
+                    {
+                        case ActiveDirectoryFieldType.Text:
+                        case ActiveDirectoryFieldType.RawData:
+                        case ActiveDirectoryFieldType.StringList:
+                            <MudTextField T="string" @bind-Value=fieldValue.Value />
+                            break;
+                        case ActiveDirectoryFieldType.Date:
+                            <MudDatePicker Date="@GetDateTime(fieldValue.Value)"
+                                           DateChanged="@((date)=>{fieldValue.Value=date.ToString();})" />
+                            break;
+                        case ActiveDirectoryFieldType.DriveLetter:
+                            <HomeDriveSelect @bind-DriveLetter=fieldValue.Value />
+                            break;
+                        case ActiveDirectoryFieldType.FileTime:
+                            <MudDatePicker Date="@GetFileTime(fieldValue.Value)"
+                                           DateChanged="@((date)=>{fieldValue.Value=date.Value.ToFileTimeUtc().ToString();})" />
+
+                            break;
+                    }
+                }
+                break;
+            case AutomationRuleActionType.Assign:
+                <ADAutoComplete MinCharacters="1"
+                                SelectedSid="@Action.GroupSids.FirstOrDefault()?.GroupSid"
+                                SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=true});})"
+                                SearchObjectType="ActiveDirectoryObjectType.Group" />
+
+                break;
+            case AutomationRuleActionType.Lockout:
+                break;
+            case AutomationRuleActionType.SendEmail:
+                <AppConstructionNotice />
+                @* <MudTextField Disabled=true T="string" @bind-Value=Action.Data/>*@
+
+                break;
+            case AutomationRuleActionType.Move:
+        @if (!LoadingData)
+        {
+                <ADAutoComplete MinCharacters="1"
+                                SelectedResult="ou"
+                                SelectedResultChanged="@OUSelected"
+                SearchObjectType="ActiveDirectoryObjectType.OU" />
+            }
+            else
+            {
+                <MudProgressLinear Indeterminate=true Color="Color.Primary"/>
+            }
+            break;
+            case AutomationRuleActionType.Unassign:
+                <ADAutoComplete MinCharacters="1"
+                                SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=false});})"
+                                SearchObjectType="ActiveDirectoryObjectType.Group" />
+
+                break;
+            case AutomationRuleActionType.Enable:
+                break;
+            case AutomationRuleActionType.Disable:
+                break;
+            case AutomationRuleActionType.Unlock:
+                break;
+        }
+        <MudButton OnClick="@(RemovedClicked)"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Remove">Remove Action</MudButton>
+
+  
+</MudStack>
+
+@code {
+    IActiveDirectoryField? _selectedField;
+    private List<IActiveDirectoryField> _fields = new();
+
+    [Parameter]
+    public EventCallback RemovedClicked { get; set; }
+    [Parameter]
+    public AutomationRuleAction Action { get; set; }
+
+
+    private List<AutomationRuleActionType> _actionTypes = new();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _fields = (await Context.ActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList();
+        var customFields = (await Context.CustomActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList();
+        if (customFields.Count > 0)
+        {
+            _fields.AddRange(customFields);
+        }
+        _fields = _fields.OrderBy(f => AppLocalization[f.DisplayName].Value).ToList();
+        foreach (AutomationRuleActionType enu in Enum.GetValues(typeof(AutomationRuleActionType)))
+        {
+            _actionTypes.Add(enu);
+        }
+        if (Action.FieldValues.Count > 0)
+        {
+            _selectedField = Action.FieldValues[0].Field;
+        }
+        if (Action.ActionType == AutomationRuleActionType.Move)
+        {
+            using var directory = DirectoryFactory.CreateActiveDirectoryContext();
+            if (!Action.Data.IsNullOrEmpty())
+            {
+                ou = directory.OUs.FindOuByDN(Action.Data);
+            }
+        }
+        LoadingData = false;
+
+    }
+    private IADOrganizationalUnit? ou;
+    private void OUSelected(IDirectoryEntryAdapter? newOu)
+
+    {
+        if (newOu != null)
+        {
+            Action.Data = newOu.DN;
+            ou = newOu as IADOrganizationalUnit;
+        }
+        else
+        {
+            Action.Data = null;
+            ou = null;
+        }
+    }
+
+    private void FieldChanged(IActiveDirectoryField field)
+    {
+        if (_selectedField == field) return;
+        _selectedField = field;
+        Action.FieldValues.Clear();
+    }
+    private DateTime? GetFileTime(string? value)
+    {
+        if (value.IsNullOrEmpty()) return null;
+        return DateTime.FromFileTimeUtc(long.Parse(value));
+    }
+    private DateTime? GetDateTime(string? value)
+    {
+        if (value.IsNullOrEmpty()) return null;
+        return DateTime.Parse(value);
+    }
+}

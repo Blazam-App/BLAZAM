@@ -1,7 +1,5 @@
 ﻿@inherits AutoCompleteComponentBase
-@{
-    //TODO Finish custom disable
-}
+
 <MudAutocomplete Class="@Class"
                  Style="@Style"
                  Disabled=@Disabled
@@ -16,10 +14,10 @@
                  SearchFunc="@GetResults"
                  DebounceInterval=500
                  ResetValueOnEmptyText="true"
-                 MinCharacters="3"
+                 MinCharacters=@MinCharacters
                  Validation="@Validation"
                  CoerceText="@(!AllowCustomInput)"
-                 CoerceValue="true"
+                 CoerceValue="false"
                  ItemDisabledFunc="@(CustomDisableFilter??((r)=>false))"
                  MaxItems=@MaxResults
                  Clearable=true
@@ -48,14 +46,14 @@
         {
             <MudText>
 
-                @AppLocalization["Start typing to search..."]
+                @AppLocalization[Lang.Start_typing_to_search]
             </MudText>
 
         }
         else
         {
             <MudText>
-                @AppLocalization["Sorry no result were found 😒"]
+                @AppLocalization[Lang.Sorry_no_result_were_found]
             </MudText>
 
         }
@@ -67,10 +65,11 @@
             More results than shown...
         </MudText>
     </MoreItemsTemplate>
-</MudAutocomplete>
+</MudAutocomplete> 
+
 
 @code {
-    #nullable disable warnings
+#nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
     [Parameter]
@@ -116,7 +115,7 @@
 
     private MudAutocomplete<IDirectoryEntryAdapter>? AutoComplete { get; set; }
 
-    private List<CancellationTokenSource> _cancellationList = new();
+    private readonly List<CancellationTokenSource> _cancellationList = new();
 
     [Parameter]
     public Func<IDirectoryEntryAdapter, bool> CustomResultsFilter { get; set; }
@@ -146,7 +145,16 @@
         }
     }
 
+    public override void Dispose()
+    {
+        base.Dispose();
+        Task.Run(async () =>
+        {
 
+            await CancelExistingTokens();
+            _cancellationList.Clear();
+        });
+    }
 
     [Parameter]
     public ActiveDirectoryObjectType? SearchObjectType { get; set; }
@@ -169,9 +177,9 @@
     [Parameter]
     public EventCallback<IEnumerable<IDirectoryEntryAdapter>> SearchResultsChanged { get; set; }
 
-    private IDirectoryEntryAdapter _selectedResult;
+    private IDirectoryEntryAdapter? _selectedResult;
     [Parameter]
-    public IDirectoryEntryAdapter SelectedResult
+    public IDirectoryEntryAdapter? SelectedResult
     {
         get => _selectedResult;
         set
@@ -186,13 +194,36 @@
             _selectedResult = value;
 
             SearchService.SearchTerm = _selectedResult != null ? _selectedResult.CanonicalName : "";
-
+            _ = CancelExistingTokens();
             SelectedResultChanged.InvokeAsync(value);
         }
     }
 
     [Parameter]
-    public EventCallback<IDirectoryEntryAdapter> SelectedResultChanged { get; set; }
+    public EventCallback<IDirectoryEntryAdapter?> SelectedResultChanged { get; set; }
+
+
+
+    private string _selectedSid;
+    [Parameter]
+    public string SelectedSid
+    {
+        get => _selectedSid;
+        set
+        {
+            if (_selectedSid == value)
+                return;
+
+
+            _selectedSid = value;
+
+            SelectedSidChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<string> SelectedSidChanged { get; set; }
+
 
     /// <summary>
     /// Clears the results and entered search term
@@ -206,17 +237,20 @@
 
 
 
-
+    private async Task CancelExistingTokens()
+    {
+        foreach (var source in _cancellationList)
+        {
+            await source.CancelAsync();
+        }
+    }
 
 
     private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText, CancellationToken token)
     {
         var newSource = new CancellationTokenSource();
         token = newSource.Token;
-        foreach (var source in _cancellationList)
-        {
-            await source.CancelAsync();
-        }
+        await CancelExistingTokens();
 
         _cancellationList.Add(newSource);
 
@@ -280,6 +314,15 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        if (!SelectedSid.IsNullOrEmpty())
+        {
+            _ = Task.Run(async () =>
+            {
+                var sidMatch = Directory.FindEntryBySID(SelectedSid.ToSidByteArray());
+                await InvokeAsync(() => { SelectedResult = sidMatch; SearchTerm = sidMatch.CanonicalName; });
+                _ = InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
 

@@ -64,7 +64,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Modal.Fullscreen();
+        //Modal.Fullscreen();
         userSettings = await Context.UserSettings.ToListAsync();
         userNotifications = await Context.UserNotifications.ToListAsync();
         accessLevels = await Context.AccessLevels.ToListAsync();

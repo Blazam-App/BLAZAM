@@ -79,6 +79,69 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scan the code below from your authenticator app.
+        /// </summary>
+        public static string Authenticator_Setup_One {
+            get {
+                return ResourceManager.GetString("Authenticator_Setup_One", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Then enter the passcode to activate.
+        /// </summary>
+        public static string Authenticator_Setup_Two {
+            get {
+                return ResourceManager.GetString("Authenticator_Setup_Two", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The time of each day to automatically apply an update..
+        /// </summary>
+        public static string Auto_Update_Time_Definition {
+            get {
+                return ResourceManager.GetString("Auto_Update_Time_Definition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to create this group?.
+        /// </summary>
+        public static string Confirm_Group_Creation {
+            get {
+                return ResourceManager.GetString("Confirm_Group_Creation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to create this OU?.
+        /// </summary>
+        public static string Confirm_OU_Creation {
+            get {
+                return ResourceManager.GetString("Confirm_OU_Creation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to save the changes?.
+        /// </summary>
+        public static string Confirm_Save_Changes {
+            get {
+                return ResourceManager.GetString("Confirm_Save_Changes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue processing other rules.
+        /// </summary>
+        public static string Continue_Processing_Rules {
+            get {
+                return ResourceManager.GetString("Continue_Processing_Rules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} has been created.
         /// </summary>
         public static string Created {
@@ -88,7 +151,7 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) will be allowed to log in to the application..
+        ///   Looks up a localized string similar to Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) with permissions mapped or self-edit enabled..
         /// </summary>
         public static string Delegate_Definition {
             get {
@@ -106,11 +169,57 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this API token?.
+        /// </summary>
+        public static string Delete_API_Token_Confirmation {
+            get {
+                return ResourceManager.GetString("Delete_API_Token_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to disable Google Authenticator MFA?.
+        /// </summary>
+        public static string Delete_Auth_Token_Confirmation {
+            get {
+                return ResourceManager.GetString("Delete_Auth_Token_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} has been deleted.
         /// </summary>
         public static string Deleted {
             get {
                 return ResourceManager.GetString("Deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to deny this request?.
+        /// </summary>
+        public static string Deny_Request_Confirmation {
+            get {
+                return ResourceManager.GetString("Deny_Request_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We ask that you allow developer analytics so we can understand how our app is used to focus our
+        ///efforts on what our users think matters most..
+        /// </summary>
+        public static string Developer_Analytics_Suggestion {
+            get {
+                return ResourceManager.GetString("Developer_Analytics_Suggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We ask that you allow developer logging so we can quickly and transparently improve Blazam and to aid in our developement efforts..
+        /// </summary>
+        public static string Developer_Logs_Suggestion {
+            get {
+                return ResourceManager.GetString("Developer_Logs_Suggestion", resourceCulture);
             }
         }
         
@@ -133,6 +242,24 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to That name already exists. Please choose a different name.
+        /// </summary>
+        public static string Duplicate_Name_Conflict {
+            get {
+                return ResourceManager.GetString("Duplicate_Name_Conflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set up a GA4 account and enter your tracking ID here to collect data on the usage of your installation..
+        /// </summary>
+        public static string GA4_Instructions {
+            get {
+                return ResourceManager.GetString("GA4_Instructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not a valid certificate type..
         /// </summary>
         public static string Invalid_Cert_Type {
@@ -142,11 +269,155 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The token entered is not valid.
+        /// </summary>
+        public static string Invalid_Token_Entered {
+            get {
+                return ResourceManager.GetString("Invalid_Token_Entered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The group has more members you don&apos;t have access to.
+        /// </summary>
+        public static string Lacks_Group_Member_Read_Permission {
+            get {
+                return ResourceManager.GetString("Lacks_Group_Member_Read_Permission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have permission to remove this group member.
+        /// </summary>
+        public static string Lacks_Group_Member_Remove_Permission {
+            get {
+                return ResourceManager.GetString("Lacks_Group_Member_Remove_Permission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} has been locked out.
+        /// </summary>
+        public static string Locked_Out {
+            get {
+                return ResourceManager.GetString("Locked_Out", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} mappings use this Access Level and will be deleted.
         /// </summary>
         public static string Mapping_Use_Access_Level {
             get {
                 return ResourceManager.GetString("Mapping_Use_Access_Level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To modify the user&apos;s name click the rename button in the toolbar/gear menu.
+        /// </summary>
+        public static string Modify_Name_Redirect {
+            get {
+                return ResourceManager.GetString("Modify_Name_Redirect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to navigate away?.
+        /// </summary>
+        public static string Navigate_Away_Confirmation {
+            get {
+                return ResourceManager.GetString("Navigate_Away_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Important updates and changes are posted here..
+        /// </summary>
+        public static string News_Provider_Description {
+            get {
+                return ResourceManager.GetString("News_Provider_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No more widgets to add.
+        /// </summary>
+        public static string No_More_Widgets {
+            get {
+                return ResourceManager.GetString("No_More_Widgets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is nothing new to see here.
+        /// </summary>
+        public static string No_News {
+            get {
+                return ResourceManager.GetString("No_News", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no actions available to request for this entry..
+        /// </summary>
+        public static string No_Request_Actions_Available {
+            get {
+                return ResourceManager.GetString("No_Request_Actions_Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generating a new authenticator token will invalidate the existing one!.
+        /// </summary>
+        public static string Overwrite_Auth_Token_Confirmation {
+            get {
+                return ResourceManager.GetString("Overwrite_Auth_Token_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rearrange dashboard widgets by dragging items to a new position.
+        /// </summary>
+        public static string Rearrange_Dashboard_Help {
+            get {
+                return ResourceManager.GetString("Rearrange_Dashboard_Help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An administrator has renamed this workstation. It will reboot in {0} seconds..
+        /// </summary>
+        public static string Rename_Reboot_Message {
+            get {
+                return ResourceManager.GetString("Rename_Reboot_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request to {0}.
+        /// </summary>
+        public static string Request_To {
+            get {
+                return ResourceManager.GetString("Request_To", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This rule will be fired each time a {0} is {1}.
+        /// </summary>
+        public static string Rule_No_Filter_Warning {
+            get {
+                return ResourceManager.GetString("Rule_No_Filter_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not process any more rules.
+        /// </summary>
+        public static string Stop_On_Rule {
+            get {
+                return ResourceManager.GetString("Stop_On_Rule", resourceCulture);
             }
         }
         
@@ -165,6 +436,54 @@ namespace BLAZAM.Localization {
         public static string Unexpected_Error_Occurred {
             get {
                 return ResourceManager.GetString("Unexpected_Error_Occurred", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The release branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers..
+        /// </summary>
+        public static string Upate_Branch_Definition {
+            get {
+                return ResourceManager.GetString("Upate_Branch_Definition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Active Directory Credentials are validated for updating..
+        /// </summary>
+        public static string Update_Credential_Is_AD {
+            get {
+                return ResourceManager.GetString("Update_Credential_Is_AD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The account running Blazam can write to the application directory.
+        /// This exposes the host machine to unneccessary risk. Change the application identity
+        /// to a lower privileged account to improve security..
+        /// </summary>
+        public static string Update_Credential_Is_Application {
+            get {
+                return ResourceManager.GetString("Update_Credential_Is_Application", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Custom Update Credentials are validated for updating..
+        /// </summary>
+        public static string Update_Credential_Is_Custom {
+            get {
+                return ResourceManager.GetString("Update_Credential_Is_Custom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no credentials configured with write permission to the application directory!
+        ///Try configuring custom update credentials..
+        /// </summary>
+        public static string Update_Credential_Is_Invalid {
+            get {
+                return ResourceManager.GetString("Update_Credential_Is_Invalid", resourceCulture);
             }
         }
         

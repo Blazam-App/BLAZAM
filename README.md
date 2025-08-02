@@ -1,19 +1,28 @@
 # BLAZAM
-[![Release Date](https://img.shields.io/github/release-date-pre/Blazam-App/BLAZAM)](https://img.shields.io/github/release-date-pre/Blazam-App/BLAZAM)
+[![Downloads](https://img.shields.io/github/downloads/Blazam-App/BLAZAM/total)](https://img.shields.io/github/downloads/Blazam-App/BLAZAM/total)
+[![Release Date](https://img.shields.io/github/release-date/Blazam-App/BLAZAM)](https://img.shields.io/github/release-date/Blazam-App/BLAZAM)
 [![Build](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-stable.yml)](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-stable.yml)
-[![Last Commit](https://img.shields.io/github/last-commit/Blazam-App/Blazam/v1-Stable)](https://img.shields.io/github/last-commit/Blazam-App/Blazam/v1-Stable)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Last Commit](https://img.shields.io/github/last-commit/Blazam-App/Blazam/v1-Dev)](https://img.shields.io/github/last-commit/Blazam-App/Blazam/v1-Stable)
+
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
 
-Proudly serving
+## A demo of the Linux beta has been published. 
 
-[![image](https://github.com/user-attachments/assets/ad156dc4-cbe1-47da-9652-8218af367909)](https://logs.blazam.org/#/dashboards?dashboardId=dashboard-14&range=90d&group=1d&apiKey=EpKqcm4TkeEzMvIAxtnc&theme=dark-theme)
+It's running on Ubuntu Server 2024 with 2 cores of a very weak CPU and 2GB of memory and sits at 4.7GB storage for OS and app... 
 
-Click the image for the latest statistics.
+The windows demo is Windows Server 2022 with 4 cores of the same CPU and 3GB of memory and sits at 34GB storage for OS and app...
+
+Find the Linux demo at https://beta.blazam.org
+
+## Proudly serving
+
+![image](https://github.com/user-attachments/assets/0f86540f-ab2e-4a2c-816f-ca2ca027a8b9)
+
 ## Screenshots
 ![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)
 ![image](https://github.com/user-attachments/assets/cfa35e1f-facb-4c64-8ad4-1a48de5f4a82)
@@ -33,7 +42,20 @@ Click the image for the latest statistics.
 * Delegation and Control:
   * Define reusable "Access Levels" with specific permissions for different AD object types.
   * Apply these Access Levels to groups or individual users, controlling their access to specific OUs and objects within those OUs.
-  * Impersonate users to test and verify permissions.
+  * Impersonate users to test and verify permissions
+* Automation Engine:
+  * Rule-Based Automation: Define rules to automate AD tasks based on specific triggers and conditions.
+  * Event Triggers: Initiate automation rules based on directory entry changes (e.g., creation, modification, deletion of users, groups, computers).
+  * Scheduled Triggers: Configure rules to run at predefined times or intervals.
+  * Advanced Filtering: Target specific AD objects for automation using detailed filters, including OU, object type, and attribute values (e.g., account enabled/disabled status).
+  * Automated Actions: Perform actions such as:
+    * Assigning or unassigning users/computers from groups.
+    * Enabling or disabling accounts.
+    * Unlocking or locking out accounts.
+    * Moving AD objects between OUs.
+    * Modifying specific Active Directory attributes.
+  * Rule Prioritization: Control the order of rule execution.
+  * Conditional Processing: Stop further rule processing if a specific rule's conditions are met and actions are performed.
 * User Creation and Management:
   * Configure user creation templates to streamline onboarding and ensure data consistency.
   * Manage user thumbnail photos.
@@ -59,7 +81,9 @@ Click the image for the latest statistics.
 [blazam.org](https://blazam.org)
 
 ## Try the Live Demo
-[blazam.org/demo](https://blazam.org/demo)
+[Windows Hosted Demo](https://blazam.org/demo)
+
+ [Linux Hosted Demo](https://beta.blazam.org)
 
 ## View the Documentation
 [docs.blazam.org](https://docs.blazam.org)
@@ -71,3 +95,4 @@ Blazam's Web Installer is the recommended installation method.
 
 [Manual Installation](https://docs.blazam.org/install/manual)
 
+## [Contributing](/CONTRIBUTING.md)

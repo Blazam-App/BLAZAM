@@ -13,7 +13,6 @@
         <DirectoryEntryViewHeader EditMode="@EditMode"
                                   DirectoryEntry="@Group"
                                   OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
-                                  OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
                                   OnDelete="@DeleteGroup"
                                   OnMove="@(()=>{MoveToModal?.ShowAsync();})"
                                   OnRename="@(()=>{RenameModal?.ShowAsync();})"
@@ -53,13 +52,27 @@
 
         <MudGrid>
             <MudItem xs="12" md="6">
-                <Section Style="min-height:200px;" Title="Group Details">
+                <ViewSection Stack="true" Style="min-height:200px;" Title="Group Details">
+                    <MudCard Elevation="2"
+                             Style="width:fit-content;height:fit-content"
+                             Class="relative mx-auto d-block p-1 mb-5">
+
+                        <MudIcon Style="height:150px;min-width:150px;" Icon="@Icons.Material.Filled.Group" />
+                    </MudCard>
                     <MudTextField Label="@AppLocalization[Lang.Group_Name]" @bind-Value="@Group.CanonicalName" Disabled />
 
-                    <MudTextField Label="@AppLocalization[Lang.Account_Name]" @bind-Value="@Group.SamAccountName" Disabled />
+                    <MudTextField Label="@AppLocalization[Lang.Account_Name]" @bind-Value="@Group.SAMAccountName" Disabled />
 
                     <MudTextField Label="@AppLocalization[Lang.Description]" @bind-Value="@Group.Description" Disabled=@(!EditMode || !Group.CanEdit) />
 
+                    @if (Group.CanReadField(ActiveDirectoryFields.Manager))
+                    {
+                        <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.User"
+                                        Label="@AppLocalization[Lang.Manager]"
+                                        SelectedResult=Group.Manager
+                                        SelectedResultChanged="@((user)=>{Group.Manager=user as IADUser;})"
+                                        Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Manager)) />
+                    }
 
                     <MudTextField Label="@AppLocalization[Lang.Email_Address]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
 
@@ -79,6 +92,7 @@
 
                     </MudStack>
 
+                    
 
                     <MudStack Row=true>
                         <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.OU]:</MudText>
@@ -94,16 +108,16 @@
                             <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Group_Type]:</MudText>
                             <MudSpacer />
                             <MudRadioGroup Disabled="@(Group.NewEntryProperties.ContainsKey("groupType") || !Group.CanEditField(ActiveDirectoryFields.GroupType))"
-                                           @bind-Value="Group.Scope">
+                                           @bind-Value="Group.GroupScope">
                                 <MudRadio Value="GroupScope.Universal">@AppLocalization[Lang.Universal]</MudRadio>
                                 <MudRadio Value="GroupScope.Global"
-                                Disabled="@(Group.Scope==GroupScope.DomainLocal)">@AppLocalization[Lang.Global]</MudRadio>
+                                Disabled="@(Group.GroupScope==GroupScope.DomainLocal)">@AppLocalization[Lang.Global]</MudRadio>
                                 <MudRadio Value="GroupScope.DomainLocal" 
-                                Disabled="@(Group.Scope==GroupScope.Global)">@AppLocalization[Lang.Domain_Local]</MudRadio>
+                                Disabled="@(Group.GroupScope==GroupScope.Global)">@AppLocalization[Lang.Domain_Local]</MudRadio>
                             </MudRadioGroup>
                         </MudStack>
                         <MudStack Row=true>
-                            <MudText Typo="Typo.subtitle2">@AppLocalization["Group Scope"]:</MudText>
+                            <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Group_Scope]:</MudText>
                             <MudSpacer />
                             <MudRadioGroup Disabled="@( !Group.CanEditField(ActiveDirectoryFields.GroupType))"
                                            @bind-Value="Group.IsSecurityGroup">
@@ -114,22 +128,22 @@
                         </MudStack>
                     }
 
-                </Section>
+                </ViewSection>
             </MudItem>
             <MudItem xs="12" md="6">
-                <Section Style="min-height:200px;" Title=@AppLocalization["Parent Groups"]>
+                <ViewSection Style="min-height:200px;" Title=@AppLocalization[Lang.Parent_Groups]>
                     <MemberOfList AssignToClicked=@AssignToModal.ShowAsync Model="Group" />
 
-                </Section>
+                </ViewSection>
             </MudItem>
 
 
 
             <MudItem xs="12" md="12">
-                <Section Style="min-height:200px;" Title=@AppLocalization[Lang.Members]>
+                <ViewSection Stack="true" Style="min-height:200px;" Title=@AppLocalization[Lang.Members]>
                     <GroupMembersDataGrid Group="Group" />
 
-                </Section>
+                </ViewSection>
             </MudItem>
 
         </MudGrid>
@@ -166,7 +180,13 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        await AuditLogger.Searched(Group);
+        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            {
+                EventType = ApplicationEventType.Search,
+                Entry = Group,
+                Actor = CurrentUser.State
+
+            });
 
         LoadingData = false;
         await RefreshEntryComponents();
@@ -186,49 +206,41 @@
             {
                 foreach (var assignment in assignTo)
                 {
-                    await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
-                    await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
-                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                    {
-                        await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
+                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.Assign,
+                            Entry = assignment.Member,
+                            Target = assignment.Group,
+                            Actor = CurrentUser.State
 
-                    }
-                    else
-                    {
-                        _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
-
-                    }
+                        });
+                  
                 }
 
                 foreach (var assignment in unassignFrom)
                 {
-                    await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
-                    await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
-                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                    {
-                        await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Unassign, CurrentUser.State, Group);
+                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.Unassign,
+                            Entry = assignment.Member,
+                            Target = assignment.Group,
+                            Actor = CurrentUser.State
 
-                    }
-                    else
-                    {
-                        _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Unassign, CurrentUser.State, Group);
-
-                    }
+                        });
+                   
                 }
                 if (changes.Any(c => c.Field != "member"))
                 {
-                    await AuditLogger.Group.Changed(Group, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
+                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.Modify,
+                            Entry = Group,
+                            Changes = changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList(),
+                            Actor = CurrentUser.State
 
-                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                    {
-                        await NotificationGenerationService.PostAsync(Group, NotificationType.Modify, CurrentUser.State);
-
-                    }
-                    else
-                    {
-                        _ = NotificationGenerationService.PostAsync(Group, NotificationType.Modify, CurrentUser.State);
-
-                    }
+                        });
+                    
+                   
                 }
                 EditMode = false;
                 SnackBarService.Success("The changes made to this group have been saved.");
@@ -256,9 +268,14 @@
             {
                 Group.Delete();
                 SnackBarService.Success(Group.CanonicalName + " has been deleted.");
-                await AuditLogger.Group.Deleted(Group);
-                _ = NotificationGenerationService.PostAsync(Group, NotificationType.Delete, CurrentUser.State);
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.Delete,
+                        Entry = Group,
+                        Actor = CurrentUser.State
 
+                    });
+               
 
             }
             catch (AppException ex)

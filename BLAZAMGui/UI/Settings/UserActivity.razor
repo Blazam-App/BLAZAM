@@ -9,20 +9,20 @@
             </CellTemplate>
         </TemplateColumn>
        
-        <TemplateColumn Title=@AppLocalization["Impersonator"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Impersonator]>
             <CellTemplate>
                 <MudText>@context.Item.Impersonator?.Identity?.Name</MudText>
             </CellTemplate>
         </TemplateColumn>
        
-        <PropertyColumn Title=@AppLocalization["Last URI"] Property="x => x.LastUri" />
+        <PropertyColumn Title=@AppLocalization[Lang.Last_URI] Property="x => x.LastUri" />
        
-        <TemplateColumn Title=@AppLocalization["Last Access"]>
+        <TemplateColumn Title=@AppLocalization[Lang.Last_Access]>
             <CellTemplate>
                 <MudText>@context.Item.LastAccessed.ToLocalTime()</MudText>
             </CellTemplate>
         </TemplateColumn>
      
-        <PropertyColumn Title=@AppLocalization["Session Expiration Time"] Property="x => x.Ticket==null?null:(DateTimeOffset.UtcNow-x.Ticket.Properties.ExpiresUtc)" />
+        <PropertyColumn Title=@AppLocalization[Lang.Session_Expiration_Time] Property="x => x.Ticket==null?null:(DateTimeOffset.UtcNow-x.Ticket.Properties.ExpiresUtc)" />
     </Columns>
 </MudDataGrid>

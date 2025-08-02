@@ -92,8 +92,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
         public IADComputer Host { get; }
-        public AppEvent<IRemoteSession> OnSessionDown { get; set; }
-        public AppEvent<IRemoteSession> OnSessionUpdated { get; set; }
+        public AppDelegate<IRemoteSession> OnSessionDown { get; set; }
+        public AppDelegate<IRemoteSession> OnSessionUpdated { get; set; }
 
         private Timer t;
         public RemoteSession(ITerminalServicesSession session, IADComputer host)
@@ -264,7 +264,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Log.Error("An error occurred while refreshing a computer session state.", ex);
+                Log.Error(ex,"An error occurred while refreshing a computer session state.");
                 this.Dispose();
             }
         }

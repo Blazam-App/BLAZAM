@@ -1,46 +1,60 @@
 @using System.Diagnostics.Eventing.Reader
 @inherits DatabaseComponentBase
 <MudStack Class="mx-auto">
-        <MudDataGrid Elevation=0 Loading=LoadingData Items="_events">
-            <Header>
+    <MudDataGrid Elevation=0 Loading=LoadingData Items="_events">
+        <Header>
             <MudText Typo=Typo.subtitle2 Align="Align.Center" Class="mud-width-full">@AppLocalization["Failed Logons"]</MudText>
 
             </Header>
             <Columns>
                 <PropertyColumn Title=@AppLocalization[Lang.Timestamp] Property="x=>x.Timestamp" />
-            <PropertyColumn Title=@AppLocalization["Workstation Name"] Property="x=>x.WorkstationName" />
-            <PropertyColumn Title=@AppLocalization["Workstation IP"]  Property="x=>x.WorkstationIp" />
+                <PropertyColumn Title=@AppLocalization["Workstation Name"] Property="x=>x.WorkstationName" />
+                <PropertyColumn Title=@AppLocalization["Workstation IP"] Property="x=>x.WorkstationIp" />
             </Columns>
             <NoRecordsContent>
                 @AppLocalization["There are no recent failed attempts"]
-            </NoRecordsContent>
-        </MudDataGrid>
-    </MudStack>
+        </NoRecordsContent>
+    </MudDataGrid>
+</MudStack>
 @code {
     private List<FailedADLogonEvent> _events = new();
 
-
+    private IADUser? _user;
     [CascadingParameter]
-    public IADUser User { get; set; }
-
-
-    protected override async Task OnInitializedAsync()
+    public IGroupableDirectoryAdapter User
     {
-        await base.OnInitializedAsync();
-        _=Task.Run(() =>
+        get => _user; set
+
         {
-            LoadingData = true;
-            _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
-            LoadingData = false;
-            LoadingData = true;
+            if (_user!=null && _user.Equals(value)) return;
+            if (value is IADUser adUser)
+            {
+                _user = adUser;
+                LoadFailedLogons();
+            }
 
-            LockedOutUserMonitor.RecordLogonEvents(User);
 
-            _events = Context.FailedADLogonEvents.Where(e=>e.Sid.Equals(User.SID)).OrderByDescending(e=>e.Timestamp).ToList();
-            LoadingData = false;
+        }
+    }
+    private void LoadFailedLogons()
+    {
+        _ = Task.Run(() =>
+        {
+            if (_user != null)
+            {
+                LoadingData = true;
+                _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
+                LoadingData = false;
+                LoadingData = true;
 
+                LockedOutUserMonitor.RecordLogonEvents(_user);
+
+                _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
+                LoadingData = false;
+            }
             //InvokeAsync(StateHasChanged);
 
         });
     }
+
 }

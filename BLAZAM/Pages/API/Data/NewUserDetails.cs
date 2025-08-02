@@ -26,7 +26,7 @@
         /// create the new user under
         /// </summary>
         /// <remarks>
-        /// Only used for custom user creation, ignored for API template execution
+        /// Overrides the OU in a template if provided.
         /// </remarks>
         public string? OU { get; set; }
 
@@ -36,8 +36,9 @@
         /// </summary>
         public List<NewUserField>? Fields { get; set; } = new();
         /// <summary>
-        /// A list of group SID's to assign for this user. Template groups will also
-        /// be applied.
+        /// A list of groups to assign for this user. The value can be the SID, DN, or
+        /// group name. If using group name, the name must be unique and match a single
+        /// group in the domain. Template groups will also be applied.
         /// </summary>
         public List<string>? Groups { get; set; } = new();
 

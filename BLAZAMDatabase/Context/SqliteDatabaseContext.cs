@@ -30,12 +30,44 @@ namespace BLAZAM.Database.Context
             {
                 return await base.SaveChangesAsync(cancellationToken);
             }
-            catch
+            catch(DbUpdateException ex)
             {
+                if (ex.InnerException?.HResult== -2147467259)
+                {
+                    await Task.Delay(500);
+                    return await RetrySaveChangesAsync(cancellationToken);
+                }
+                return -1;
+
+            }
+            catch (Exception ex) 
+            {
+                LastSaveError=ex.InnerException??ex;
                 return -1;
             }
         }
+        private async Task<int> RetrySaveChangesAsync(CancellationToken cancellationToken = default, int retries = 0)
+        {
+            try
+            {
+                return await base.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException ex)
+            {
+                if (retries < 15 && ex.InnerException?.HResult == -2147467259)
+                {
+                    await Task.Delay(500);
+                    return await RetrySaveChangesAsync(cancellationToken, retries + 1);
+                }
+                return -1;
 
+            }
+            catch (Exception ex)
+            {
+                LastSaveError = ex.InnerException ?? ex;
+                return -1;
+            }
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (ConnectionString == null)

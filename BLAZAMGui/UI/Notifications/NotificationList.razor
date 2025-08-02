@@ -4,12 +4,12 @@
 
     <LoadingData Loading="LoadingData" />
 
-    @if (messages.Where(m => !m.IsRead).Count() < 1 || messages.Where(m => !m.IsRead) == null)
+    @if (messages.Count(m => !m.IsRead) < 1 || messages.Where(m => !m.IsRead) == null)
     {
         <MudCard Class="py-3" Elevation="2">
             <MudStack Row=true Class="px-4">
                 <MudIcon Color="Color.Success" Icon="@Icons.Material.Outlined.Check" />
-                <MudText Typo="Typo.subtitle2">@AppLocalization["No unread notifications"]</MudText>
+                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.No_unread_notifications]</MudText>
             </MudStack>
         </MudCard>
     }
@@ -28,13 +28,13 @@
         }
     }
 
-    @if (messages.Where(m => m.IsRead).Count() > 0)
+    @if (messages.Count(m => m.IsRead) > 0)
     {
         <MudCard Class="py-3 cursor-pointer" Elevation="2" @onclick=@(()=>{_showRead = !_showRead; })>
             <MudStack Row=true Class="px-4">
                 <MudIcon Color="Color.Success"
                          Icon="@(_showRead? Icons.Material.Filled.ArrowDropUp : Icons.Material.Filled.ArrowDropDown)" />
-                <MudText Typo="Typo.subtitle2">@AppLocalization["Read Notifications"]</MudText>
+                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Read_Notifications]</MudText>
             </MudStack>
         </MudCard>
         @if (_showRead)

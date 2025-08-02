@@ -1,4 +1,5 @@
-﻿@inject IHttpContextAccessor context
+﻿
+@inject IHttpContextAccessor context
 @inject IApplicationUserStateService userStateService
 @inject ICurrentUserStateService currentUser
 
@@ -23,7 +24,9 @@
                             }
                             else
                             {
-                                <p>You are not authorized to access this resource.</p>
+
+                                <_403/>
+                               
                             }
                         </NotAuthorized>
                     </AuthorizeRouteView>
@@ -86,7 +89,7 @@
         }
         catch (Exception ex)
         {
-            Loggers.SystemLogger.Error("Error while fetching user theme: {@Error}", ex);
+            Loggers.SystemLogger.Error(ex,"Error while fetching user theme");
         }
     }
 

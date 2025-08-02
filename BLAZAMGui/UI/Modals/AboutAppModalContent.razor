@@ -3,11 +3,11 @@
 
 
     <MudText Align="Align.Center">
-        @AppLocalization["Founder"]: Chris Jacobsen
+        @AppLocalization[Lang.Founder]: Chris Jacobsen
     </MudText>
 
     <MudText Align="Align.Center">
-        @AppLocalization["Founded"]: 2022
+        @AppLocalization[Lang.Founded]: 2022
     </MudText>
     <MudText Align="Align.Center">
         @AppLocalization[Lang.Version]: @ApplicationInfo.RunningVersion.ToString()
@@ -18,21 +18,21 @@
     </MudText>
     <MudText Align="Align.Center">
 
-        <MudLink Href="https://github.com/Blazam-App/BLAZAM">@AppLocalization["Source Code"]</MudLink>
+        <MudLink Href="https://github.com/Blazam-App/BLAZAM">@AppLocalization[Lang.Source_Code]</MudLink>
     </MudText>
     <MudText Align="Align.Center">
         <MudBreakpointProvider>
             <MudHidden Breakpoint="Breakpoint.SmAndUp">
-                <MudImage Width="250" Src="/img/maggie.png" />
+                <MudImage Width="250" Src=@imageSrc />
             </MudHidden>
             <MudHidden Breakpoint="Breakpoint.Xs">
-                <MudImage Width="350" Src="/img/maggie.png" />
+                <MudImage Width="350" Src=@imageSrc />
             </MudHidden>
         </MudBreakpointProvider>
 
     </MudText>
-    <MudText Align="Align.Center">@AppLocalization["Dedicated To"] Maggie</MudText>
-    <MudText Align="Align.Center">@AppLocalization["In Loving Memory"]</MudText>
+    <MudText Align="Align.Center">@AppLocalization[Lang.Dedicated_To] Maggie</MudText>
+    <MudText Align="Align.Center">@AppLocalization[Lang.In_Loving_Memory]</MudText>
     <MudText Align="Align.Center">2014-2024</MudText>
 </MudStack>
 
@@ -46,5 +46,24 @@
 
 
     }
+    private const string ThumbnailPath = "/static/img/maggieThumb.png";
+    private const string FullResolutionPath = "/static/img/maggie.png";
 
+    private string imageSrc = ThumbnailPath; // Start by showing the thumbnail
+
+    // OnAfterRenderAsync is called after the component has rendered
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Give the browser a moment to render the thumbnail
+            await Task.Delay(1);
+
+            // Change the image source to the full-resolution version
+            imageSrc = FullResolutionPath;
+
+            // Notify Blazor that the state has changed to trigger a re-render
+            StateHasChanged();
+        }
+    }
 }

@@ -14,34 +14,43 @@
         </div>
         <MudMainContent>
 
-            
-                <div style="height:fit-content; max-height:600px;max-width:450px;position: absolute;
+
+            <div style="height:fit-content; max-height:600px;max-width:450px;position: absolute;
                             top:0;
                             bottom: 0;
                             left: 0;
                             right: 0;
 
                             margin: auto;">
-                    <MudCard Square=true Elevation="20">
-                            @Body
-                       
-                    </MudCard>
-                    @if (monitor.DirectoryConnectionStatus == ServiceConnectionState.Connecting)
-                    {
-                     
-                            <MudProgressLinear Color="Color.Warning" Indeterminate=true />
-                            <MudAlert Style="left:25px;right:25px;" Class="absolute  mud-alert-filled-warning">Directory is connecting... Local admin login only...</MudAlert>
-                        
-                        
-                    }
-                    @if (monitor.DirectoryConnectionStatus == ServiceConnectionState.Down && ApplicationInfo.installationCompleted){
-                        @* <MudProgressLinear Color="Color.Error" Indeterminate=true /> *@
-                        <MudAlert Style="left:25px;right:25px;" Class="absolute  mud-alert-filled-error">Unable to connect to directory after @directory.FailedConnectionAttempts attempts ... Local admin login only...</MudAlert>
+                <MudCard Square=true
+                         Elevation="20">
+                    @Body
 
-                    }
-                    
-                </div>
-           
+                </MudCard>
+                @if (monitor.DirectoryConnectionStatus == ServiceConnectionState.Connecting)
+                {
+
+                    <MudProgressLinear Color="Color.Warning"
+                                       Indeterminate=true />
+                    <MudAlert Style="left:25px;right:25px;"
+                              Class="absolute  mud-alert-filled-warning">
+                        Directory is connecting... Local admin login only...
+                    </MudAlert>
+
+
+                }
+                @if (monitor.DirectoryConnectionStatus == ServiceConnectionState.Down
+                    && ApplicationInfo.installationCompleted)
+                {
+                    <MudAlert Style="left:25px;right:25px;"
+                              Class="absolute  mud-alert-filled-error">
+                        Unable to connect to directory after @directory.FailedConnectionAttempts attempts ... Local admin login only...
+                    </MudAlert>
+
+                }
+
+            </div>
+
         </MudMainContent>
 
 
@@ -183,19 +192,12 @@
         }
     }
 
-
-
-
-
-
-
-
 </style>
-@code{
+@code {
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        
+
         monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
     }
 

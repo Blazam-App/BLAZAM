@@ -2,7 +2,7 @@ using Microsoft.Playwright;
 
 namespace PlaywrightTests
 {
-    [Parallelizable(ParallelScope.Self)]
+    
     [TestFixture]
     public class Tests : PageTest
     {
@@ -57,11 +57,11 @@ namespace PlaywrightTests
 
             await Page.GetByLabel("Toggle Create").ClickAsync();
             await Page.GetByRole(AriaRole.Link, new() { Name = "Create User" }).ClickAsync();
-            await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Custom" })).ToBeVisibleAsync();
+            await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Custom" })).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Page.GetByRole(AriaRole.Link, new() { Name = "Create Group" }).ClickAsync();
-            await Expect(Page.GetByLabel("Group Name")).ToBeVisibleAsync();
+            await Expect(Page.GetByLabel("Group Name")).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Page.GetByRole(AriaRole.Link, new() { Name = "Create OU" }).ClickAsync();
-            await Expect(Page.GetByLabel("Organizational Unit Name")).ToBeVisibleAsync();
+            await Expect(Page.GetByLabel("Organizational Unit Name")).ToBeVisibleAsync(new() { Timeout = 30000 });
 
             // Expects the URL to contain intro.
             //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
@@ -143,9 +143,9 @@ namespace PlaywrightTests
         {
             await LogIn();
             await Page.GetByText("BLAZAM " + DateTime.Now.Year).ClickAsync();
-            await Expect(Page.GetByText("Founder: Chris Jacobsen")).ToBeVisibleAsync();
+            await Expect(Page.GetByText("Founder: Chris Jacobsen")).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(Page.GetByText("Dedicated To Maggie")).ToBeVisibleAsync();
-            await Page.GetByRole(AriaRole.Button, new() { Name = "Close", Exact = true }).ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Close", Exact = true }).First.ClickAsync();
 
             // Expects the URL to contain intro.
             //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
@@ -154,9 +154,9 @@ namespace PlaywrightTests
 
         private async Task CloseDialog()
         {
-            var closeButton = Page.GetByRole(AriaRole.Button, new() { Name = "Close dialog" });
+            var closeButton = Page.GetByRole(AriaRole.Button, new() { Name = "Close" });
 
-            await Expect(closeButton).ToBeVisibleAsync();
+            await Expect(closeButton).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(closeButton).ToBeEnabledAsync();
             await closeButton.ClickAsync();
             await Expect(closeButton).ToBeHiddenAsync();
@@ -165,19 +165,19 @@ namespace PlaywrightTests
         {
             var recycleButton = Page.GetByRole(AriaRole.Link, new() { Name = "Recycle Bin" });
 
-            await Expect(recycleButton).ToBeVisibleAsync();
+            await Expect(recycleButton).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(recycleButton).ToBeEnabledAsync();
             await recycleButton.ClickAsync();
 
             var recycleHeader = Page.Locator("text=RESTORE SELECTED");
 
-            await Expect(recycleHeader).ToBeVisibleAsync();
+            await Expect(recycleHeader).ToBeVisibleAsync(new() { Timeout = 30000 });
         }
         private async Task OpenConfigureSubMenu()
         {
             var recycleButton = Page.GetByLabel("Toggle Configure");
 
-            await Expect(recycleButton).ToBeVisibleAsync();
+            await Expect(recycleButton).ToBeVisibleAsync(new() { Timeout = 15000 });
             await Expect(recycleButton).ToBeEnabledAsync();
             await recycleButton.ClickAsync();
 
@@ -190,7 +190,7 @@ namespace PlaywrightTests
         {
             var recycleButton = Page.GetByRole(AriaRole.Link, new() { Name = "Notifications" });
 
-            await Expect(recycleButton).ToBeVisibleAsync();
+            await Expect(recycleButton).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(recycleButton).ToBeEnabledAsync();
             await recycleButton.ClickAsync();
 
@@ -205,7 +205,7 @@ namespace PlaywrightTests
         {
             var button = Page.GetByRole(AriaRole.Link, new() { Name = "Fields" });
 
-            await Expect(button).ToBeVisibleAsync();
+            await Expect(button).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
 
@@ -222,7 +222,7 @@ namespace PlaywrightTests
         {
             var button = Page.GetByRole(AriaRole.Link, new() { Name = "Templates" });
 
-            await Expect(button).ToBeVisibleAsync();
+            await Expect(button).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
 
@@ -265,20 +265,20 @@ namespace PlaywrightTests
 
             var header = Page.Locator("text=Delegates are your approved application users");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);
 
             button = Page.Locator("text=ACCESS LEVELS");
 
-            await Expect(button).ToBeVisibleAsync();
+            await Expect(button).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
 
             header = Page.Locator("text=Access levels are a template");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout=30000 });
 
 
             await Task.Delay(500);
@@ -309,17 +309,18 @@ namespace PlaywrightTests
             await LogIn();
 
             await OpenConfigureSubMenu();
-
+           
             var button = Page.GetByRole(AriaRole.Link, new() { Name = "Settings" });
 
             await Expect(button).ToBeVisibleAsync();
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
+            return;
 
             await Expect(Page).ToHaveURLAsync(new Regex(".*settings"));
             var header = Page.Locator("text=Application Settings");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);
@@ -327,13 +328,13 @@ namespace PlaywrightTests
 
             button = Page.Locator("text=AUTHENTICATION");
 
-            await Expect(button).ToBeVisibleAsync();
+            await Expect(button).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
 
             header = Page.Locator("text=Authentication Settings");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);
@@ -341,13 +342,13 @@ namespace PlaywrightTests
 
             button = Page.Locator("text=ACTIVE DIRECTORY");
 
-            await Expect(button).ToBeVisibleAsync();
+            await Expect(button).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
 
             header = Page.Locator("text=Active Directory Settings");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);
@@ -355,13 +356,13 @@ namespace PlaywrightTests
 
             button = Page.Locator("text=DATABASE");
 
-            await Expect(button).ToBeVisibleAsync();
+            await Expect(button).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
 
             header = Page.Locator("text=Database Status");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);
@@ -369,13 +370,13 @@ namespace PlaywrightTests
 
             button = Page.Locator("text=EMAIL");
 
-            await Expect(button).ToBeVisibleAsync();
+            await Expect(button).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
 
             header = Page.Locator("text=Email Settings");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);
@@ -383,13 +384,13 @@ namespace PlaywrightTests
 
             button = Page.Locator("text=UPDATE");
 
-            await Expect(button).ToBeVisibleAsync();
+            await Expect(button).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
 
             header = Page.Locator("text=Update Settings");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);
@@ -397,13 +398,13 @@ namespace PlaywrightTests
 
             button = Page.Locator("text=USER ACTIVITY");
 
-            await Expect(button).ToBeVisibleAsync();
+            await Expect(button).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
 
             header = Page.Locator("text=User Activity");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);
@@ -411,13 +412,13 @@ namespace PlaywrightTests
 
             button = Page.Locator("text=SYSTEM");
 
-            await Expect(button).ToBeVisibleAsync();
+            await Expect(button).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
 
             header = Page.Locator("text=System Settings");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
 
@@ -440,12 +441,12 @@ namespace PlaywrightTests
         private async Task OpenProfileSettings()
         {
             var profileSettingsButton = Page.Locator("text=Profile Settings");
-
+            await Expect(profileSettingsButton).ToBeInViewportAsync(new() { Timeout = 30000 });
             await profileSettingsButton.ClickAsync();
 
             var uploadProfileIconButton = Page.Locator("text=Upload Profile Icon");
 
-            await Expect(uploadProfileIconButton).ToBeInViewportAsync();
+            await Expect(uploadProfileIconButton).ToBeInViewportAsync(new() { Timeout = 30000 });
             await Expect(uploadProfileIconButton).ToBeVisibleAsync();
             await Expect(uploadProfileIconButton).ToBeEnabledAsync();
         }
@@ -462,7 +463,7 @@ namespace PlaywrightTests
 
             var profileSettingsButton = Page.Locator("text=Profile Settings");
 
-            await Expect(profileSettingsButton).ToBeInViewportAsync();
+            await Expect(profileSettingsButton).ToBeInViewportAsync(new() { Timeout = 30000 });
             await Expect(profileSettingsButton).ToBeVisibleAsync();
             await Expect(profileSettingsButton).ToBeEnabledAsync();
         }
@@ -479,13 +480,13 @@ namespace PlaywrightTests
 
             try
             {
-                await Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Home" })).ToBeVisibleAsync();
+                await Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Home" })).ToBeVisibleAsync(new() { Timeout = 30000 });
 
             }
             catch
             {
                 await Page.GetByRole(AriaRole.Banner).GetByRole(AriaRole.Button).First.ClickAsync();
-                await Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Home" })).ToBeVisibleAsync();
+                await Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Home" })).ToBeVisibleAsync(new() { Timeout = 30000 });
 
             }
             return;

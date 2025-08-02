@@ -71,7 +71,7 @@
                     <AppTooltip 
                                 ShowOnClick=@(!cellContext.Item.CanUnassign)
                                 ShowOnHover=@(!cellContext.Item.CanUnassign)
-                                Text=@AppLocalization["You don't have permission to remove this group member"]>
+                                Text=@AppHelpLocalization[HelpLang.Lacks_Group_Member_Remove_Permission]>
                         <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
                                    OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
@@ -82,10 +82,10 @@
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
-    if (Members.Where(m => !m.CanRead).Count() > 0)
+    if (Members.Count(m => !m.CanRead) > 0)
     {
         <MudAlert Class="mud-alert-filled-info">
-            @AppLocalization["The group has more members you don't have access to"]
+            @AppHelpLocalization[HelpLang.Lacks_Group_Member_Read_Permission]
         </MudAlert>
     }
 }

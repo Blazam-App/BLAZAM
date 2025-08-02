@@ -1,5 +1,5 @@
 ﻿@inherits AppComponentBase
-@if (Model != null)
+@if (Model != null && !LoadingData)
 {
     @if (Model.MemberOf.Count > 0)
     {
@@ -14,13 +14,15 @@
                     <MudListItem>
                         <ChildContent>
                             <MudStack Row=true>
+                                <DirectoryEntryContextMenu Entry="g">
 
-                                <MudLink Target="@Target"
-                                        Underline="Underline.None"
-                                         Class="align-middle"
-                                         Href="@g.SearchUri">
-                                    <GroupWithDescriptionTooltip Group="@g" />
-                                </MudLink>
+                                    <MudLink Target="@Target"
+                                             Underline="Underline.None"
+                                             Class="align-middle"
+                                             Href="@g.SearchUri">
+                                        <GroupWithDescriptionTooltip Group="@g" />
+                                    </MudLink>
+                                </DirectoryEntryContextMenu>
                                 @if (g.CanUnassign)
                                 {
                                     <MudSpacer />
@@ -38,7 +40,7 @@
                 }
 
             }
-            @if (Model.MemberOf.Where(group => !group.CanRead).Count() > 0)
+            @if (Model.MemberOf.Count(group => !group.CanRead) > 0)
             {
                 <MudListItem Text="The user is in more groups you don't have access to" />
             }
@@ -47,7 +49,7 @@
     }
     else
     {
-        <MudText>@AppLocalization["Not a member of any groups"]</MudText>
+        <MudText>@AppLocalization[Lang.Not_a_member_of_any_groups]</MudText>
     }
     @if (CurrentUser.State.CanAssign)
     {
@@ -58,6 +60,10 @@
             @AppLocalization[Lang.Assign_To]
         </MudButton>
     }
+}
+else if (LoadingData)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
 }
 @code {
     [CascadingParameter]
@@ -70,4 +76,15 @@
     public IGroupableDirectoryAdapter Model { get; set; }
     [Parameter]
     public EventCallback AssignToClicked { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _ = Task.Run(() =>
+        {
+            _ = Model.MemberOf;
+            LoadingData = false;
+            InvokeAsync(StateHasChanged);
+        });
+    }
 }

@@ -1,0 +1,693 @@
+﻿using AngleSharp.Dom;
+using BLAZAM.ActiveDirectory;
+using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.ActiveDirectory.Searchers;
+using BLAZAM.ActiveDirectory.Services;
+using BLAZAM.Database.Context;
+using BLAZAM.Database.Models;
+using BLAZAM.Database.Models.Notifications;
+using BLAZAM.Database.Models.Rules;
+using BLAZAM.Helpers;
+using BLAZAM.Jobs;
+using BLAZAM.Localization;
+using BLAZAM.Logger;
+using BLAZAM.Services.Audit;
+using BLAZAM.Services.Events;
+using BLAZAM.Session;
+using Microsoft.Extensions.Localization;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BLAZAM.Services.Background
+{
+    [AutoStartBackgroundService(true)]
+    public class RulesProcessor : ActiveDirectoryBackgroundServiceBase
+    {
+        private Dictionary<AutomationRule, Timer> ScheduledRules = new();
+        private bool _initialized;
+
+        private RulesAuditLogger Audit { get; set; }
+
+        public RulesProcessor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
+        {
+            Interval = TimeSpan.FromMinutes(5);
+        }
+
+        protected override void Execute(object? state = null)
+        {
+            if (!_initialized)
+            {
+                ApplicationEvents.DirectoryEntryChanged.Delegate += ProcessDirectoryEntryChanged;
+                _initialized = true;
+            }
+            ScheduleRules();
+        }
+
+        private void ScheduleRules()
+        {
+            var rules = GetRules();
+            var currentTime = DateTime.Now.TimeOfDay;
+            var scheduledRules = rules.Where(
+                                r => r.Enabled
+                            && r.ScheduledRunTime != null
+                            && r.DeletedAt == null
+                            && r.ScheduledRunTime > currentTime
+                            && r.ScheduledRunTime - currentTime < TimeSpan.FromMinutes(11)
+                            && r.Trigger == NotificationType.Scheduled
+                            ).ToList();
+            foreach (var rule in scheduledRules)
+            {
+                if (!ScheduledRules.ContainsKey(rule))
+                {
+
+                    var timeNow = DateTime.Now.TimeOfDay;
+                    var timeToRun = rule.ScheduledRunTime;
+                    if (timeToRun.HasValue)
+                    {
+
+                        if (timeToRun.Value < timeNow)
+                        {
+                            timeToRun = timeToRun.Value.Add(TimeSpan.FromDays(1));
+                        }
+                        var timeFromRun = timeToRun.Value - timeNow;
+                        Timer ruleTimer = new Timer(async (state) => { await ProcessScheduledRule(rule); }, null, (int)timeFromRun.TotalMilliseconds, Timeout.Infinite);
+                        ScheduledRules.Add(rule, ruleTimer);
+                    }
+                }
+            }
+        }
+        protected override void Dispose(bool disposing)
+        {
+
+            if (disposing)
+            {
+                foreach (var scheduledRule in ScheduledRules)
+                {
+                    scheduledRule.Value.Dispose();
+                }
+                ScheduledRules.Clear();
+            }
+
+
+
+            base.Dispose(disposing);
+        }
+
+
+        private void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedArgs args)
+        {
+            if (sender != null && sender.Equals(this)) return;
+            if (args.EventType != ApplicationEventType.Search)
+            {
+                var rules = GetRules();
+                if (rules.Count > 0)
+                {
+                    var applicableRules = rules
+                        .Where(r => r.ActiveDirectoryObjectType.Equals(args.Entry.ObjectType)
+                        && r.Trigger.Equals(args.EventType.ToNotificationType()))
+                        .OrderBy(r=>r.Order).ToList();
+                    var ruleProcessingJob = new Job("Process entry change rules");
+                    ruleProcessingJob.ThreadPriority = ThreadPriority.Lowest;
+
+                    ruleProcessingJob.StopOnFailedStep = true;
+                    foreach (var ruleForEvent in applicableRules)
+                    {
+
+                        var ruleStep = new JobStep(ruleForEvent.Name, (step) =>
+                        {
+                            ProcessMatchedEntry(ruleForEvent, args.Entry);
+                            return true;
+                        });
+                        ruleProcessingJob.AddStep(ruleStep);
+                    }
+                    _ = ruleProcessingJob.RunAsync();
+                }
+            }
+        }
+
+        public async Task<IJob> ProcessScheduledRule(AutomationRule rule)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            Loggers.RulesLogger.Information("Executing scheduled rule {@Rule}", rule.Name);
+
+            MarkTriggered(rule);
+
+            Job scheduledRuleJob = new Job(AppLocalization[Lang.Scheduled_Rule], AppLocalization[Lang.Rules] + " " + rule.Name);
+            scheduledRuleJob.ThreadPriority = ThreadPriority.Lowest;
+                List<IDirectoryEntryAdapter> filteredEntries = new();
+
+
+                filteredEntries = GetFilteredEntries(rule);
+
+
+                //Execute matched entries
+                foreach (var entry in filteredEntries)
+                {
+                Job entryJob = new Job($"Execute on {entry.CanonicalName}");
+                    JobStep execApplicableEntriesStep = new($"Execute", (step) =>
+                    {
+                        return ProcessMatchedEntry(rule, entry, entryJob);
+                    });
+                entryJob.AddStep(execApplicableEntriesStep);
+                scheduledRuleJob.AddStep(entryJob);
+                }
+            JobStep logCompletionStep = new("Log completion", (step) =>
+            {
+                Loggers.RulesLogger.Information("Processing for scheduled rule {@Rule} has finished {@ElapsedTime}", rule.Name, stopwatch.Elapsed);
+                return true;
+            });
+            scheduledRuleJob.AddStep(logCompletionStep);
+
+
+
+
+           _=scheduledRuleJob.RunAsync();
+            return scheduledRuleJob;
+           
+        }
+
+        public List<IDirectoryEntryAdapter> GetFilteredEntries(AutomationRule rule)
+        {
+            List<IDirectoryEntryAdapter> matchedEntries = new();
+            using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
+            {
+                foreach (var orFilter in rule.Filters)
+                {
+                    ADSearch search = new ADSearch(directory);
+
+
+                    //Perform search customization for this rule
+
+                    //Has enabled filter
+                    if (orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate) &&
+                        !orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate))
+                    {
+                        search.EnabledOnly = true;
+                    }
+                    else if (orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate) &&
+                        !orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate))
+                    {
+                        search.DisabledOnly = true;
+                    }
+
+                    //Has OU scope
+                    if (orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true))
+                    {
+                        var ouFilters = orFilter.AndFilters.Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true) // This part identifies the Filters containing the OU AndFilter
+                            .Select(f => f.Value); // This flattens the collection of AndFilters from the matched Filters
+                        var ouFilter = ouFilters.OrderBy(f => f.Length).FirstOrDefault();
+                        if (ouFilter != null && !ouFilter.IsNullOrEmpty())
+                        {
+                            var ou = directory.OUs.FindOuByDN(ouFilter);
+                            ou?.EnsureDirectoryEntry();
+                            var ouDE = ou?.DirectoryEntry;
+                            if (ouDE != null)
+                            {
+                                search.SearchRoot = ouDE;
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                    }
+
+                    if (rule.ActiveDirectoryObjectType != ActiveDirectoryObjectType.All)
+                    {
+                        search.ObjectTypeFilter = rule.ActiveDirectoryObjectType;
+                    }
+
+
+
+
+
+
+                    foreach (var andFilters in rule.Filters.Select(x => x.AndFilters))
+                    {
+                        foreach (var andFilter in andFilters)
+                        {
+                            if (andFilter.Field?.Equals(ActiveDirectoryFields.Enabled) == false
+                                && andFilter.Field?.Equals(ActiveDirectoryFields.OU) == false)
+                            {
+                                PrepareADSearch(search, andFilter);
+                            }
+
+                        }
+                    }
+                    matchedEntries.AddRange(search.Search());
+                }
+
+            }
+
+            return matchedEntries;
+        }
+
+        private static void PrepareADSearch(ADSearch search, AutomationRuleAndFilter? andFilter)
+        {
+            try
+            {
+                var fieldValue = new ADFieldValue()
+                {
+                    Field = andFilter.CurrentField,
+                    Value = andFilter.TimeFrame == null ? andFilter.Value : andFilter.TimeFrame,
+                    Operator = andFilter.Operator,
+                    Negate = andFilter.Negate
+                };
+                if (andFilter.CurrentField is ActiveDirectoryField defaultField)
+                {
+                    search.FieldValues.Add(fieldValue);
+                }
+                else if (andFilter.CurrentField is CustomActiveDirectoryField customField)
+                {
+                    search.FieldValues.Add(fieldValue);
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.RulesLogger.Warning(ex,"Unable to set search field value {@Field}{@Value}", andFilter.Field, andFilter.Value);
+            }
+        }
+
+        private bool ProcessMatchedEntry(AutomationRule ruleForEvent, IDirectoryEntryAdapter entry, IJob? ruleJob = null)
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+            Task.Delay(50).Wait();
+
+
+
+            Loggers.RulesLogger.Information("Rule {@Rule} processing started on {@Entry}.", ruleForEvent.Name, entry.DN);
+
+            Task.Delay(50).Wait();
+
+
+            if (OrFiltersPass(ruleForEvent, entry))
+            {
+                try
+                {
+                    using var context = dbFactory.CreateDbContext();
+                    var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
+                    contextRule.LastExcecuted = DateTime.UtcNow;
+                    context.SaveChanges();
+                    context.Dispose();
+                    Task.Delay(50).Wait();
+
+                }
+                catch (Exception ex)
+                {
+                    Loggers.RulesLogger.Error(ex,"Error while setting LastExcecuted for rule {@Rule}", ruleForEvent.Name, ex);
+                }
+                foreach (var action in ruleForEvent.Actions)
+                {
+                    try
+                    {
+                        Loggers.RulesLogger.Debug("Executing {@Rule} on {@Entry} {@ElapsedTime}", ruleForEvent.Name, entry.CanonicalName);
+
+                        ExecuteAction(ruleForEvent, action, entry,ruleJob);
+
+                        Task.Delay(250).Wait();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.RulesLogger.Error(ex,"Error while executing rule action. {@Rule}{@TargetDN}{@Action}", ruleForEvent.Name, entry.DN, action, ex);
+                        break;
+                    }
+                }
+
+                if (ruleForEvent.StopOnThisRule)
+                {
+                    Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name, entry.DN, sw.Elapsed);
+
+                    return false;
+                }
+            }
+            Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name, entry.DN, sw.Elapsed);
+
+            return true;
+
+        }
+        private void MarkTriggered(AutomationRule rule)
+        {
+            using var context = dbFactory.CreateDbContext();
+            var contextRule = context.AutomationRules.First(r => r.Id.Equals(rule.Id));
+            contextRule.LastTriggered = DateTime.UtcNow;
+            context.SaveChanges();
+        }
+        private bool OrFiltersPass(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
+        {
+            var anyOrTrue = false;
+            if (ruleForEvent.Filters.Count > 0)
+            {
+                foreach (var orFilter in ruleForEvent.Filters)
+                {
+                    var andTrue = true;
+                    foreach (var andFilter in orFilter.AndFilters)
+                    {
+                        if (!AndFilterTrue(andFilter, entry))
+                        {
+                            andTrue = false;
+
+                        }
+                    }
+                    if (andTrue)
+                    {
+                        anyOrTrue = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                anyOrTrue = true;
+            }
+
+            return anyOrTrue;
+        }
+
+        private void ExecuteAction(AutomationRule rule, AutomationRuleAction action, IDirectoryEntryAdapter entry,IJob? ruleJob=null)
+        {
+            var eventType = ApplicationEventType.All;
+            IDirectoryEntryAdapter? target = null;
+            IDirectoryEntryAdapter? origin = null;
+            var account = entry as IAccountDirectoryAdapter;
+            switch (action.ActionType)
+            {
+                case AutomationRuleActionType.Assign:
+                    eventType = ApplicationEventType.Assign;
+                    if (entry is IGroupableDirectoryAdapter groupableEntry)
+                    {
+                        using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
+                        {
+                            var group = directory.Groups.FindGroupBySID(action.GroupSids[0].GroupSid);
+                            if (group != null)
+                            {
+                                target = group;
+                                if (groupableEntry.IsAMemberOf(group))
+                                {
+                                    return;
+                                }
+                                groupableEntry.AssignTo(group);
+                            }
+                        }
+                    }
+                    break;
+                case AutomationRuleActionType.Unassign:
+                    eventType = ApplicationEventType.Unassign;
+                    if (entry is IGroupableDirectoryAdapter groupableEntry2)
+                    {
+                        using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
+                        {
+                            var group = directory.Groups.FindGroupBySID(action.GroupSids[0].GroupSid);
+                            if (group != null)
+                            {
+                                target = group;
+                                if (!groupableEntry2.IsAMemberOf(group))
+                                {
+                                    return;
+                                }
+                                groupableEntry2.UnassignFrom(group);
+                            }
+                        }
+                    }
+                    break;
+                case AutomationRuleActionType.Disable:
+                    eventType = ApplicationEventType.Modify;
+                    if (account != null)
+                    {
+                        if (!account.Enabled) return;
+                        account.Enabled = false;
+
+                    }
+                    break;
+                case AutomationRuleActionType.Enable:
+                    eventType = ApplicationEventType.Modify;
+
+                    if (account != null)
+                    {
+                        if (account.Enabled) return;
+
+                        account.Enabled = true;
+                    }
+                    break;
+                case AutomationRuleActionType.Unlock:
+                    eventType = ApplicationEventType.Modify;
+
+                    if (account != null)
+                    {
+                        if (!account.LockedOut) return;
+
+                        account.LockedOut = false;
+                    }
+                    break;
+                case AutomationRuleActionType.Lockout:
+                    eventType = ApplicationEventType.LockedOut;
+                    if (account != null)
+                    {
+                        if (account.LockedOut) return;
+
+                        account.LockedOut = true;
+                    }
+                    break;
+                case AutomationRuleActionType.Move:
+                    eventType = ApplicationEventType.Move;
+
+                    if (action.Data != null)
+                    {
+                        if (entry.GetParent().DN.Equals(action.Data, StringComparison.InvariantCultureIgnoreCase)) return;
+
+                        using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+
+                        var ou = directory.OUs.FindOuByDN(action.Data);
+                        if (ou != null)
+                        {
+                            target = ou;
+                            origin = entry.GetParent();
+                            entry.MoveTo(ou);
+                        }
+                    }
+                    break;
+                case AutomationRuleActionType.ModifyField:
+                    eventType = ApplicationEventType.Modify;
+                    if (action.FieldValues.Count > 0)
+                    {
+                        var field = action.FieldValues[0].CurrentField;
+                        var existingValue = entry.GetCustomProperty<object>(field.FieldName);
+                        if (existingValue.ToString().Equals(action.FieldValues[0].Value, StringComparison.InvariantCultureIgnoreCase)) return;
+                        entry.SetCustomProperty(field.FieldName, action.FieldValues[0].Value);
+                    }
+                    break;
+            }
+            var changes = entry.Changes;
+            var result = entry.CommitChanges(ruleJob);
+            if (result.FailedSteps.Count == 0)
+            {
+                Audit = new(dbFactory, new RulesUserState(dbFactory, rule.Name));
+
+                ApplicationEvents.DirectoryEntryChanged.Invoke(this, new()
+                {
+                    Actor = new RulesUserState(dbFactory, rule.Name),
+                    Changes = changes,
+                    Entry = entry,
+                    Target = target,
+                    Origin = origin,
+                    EventType = eventType
+                });
+
+            }
+        }
+
+        private static bool AndFilterTrue(AutomationRuleAndFilter andFilter, IDirectoryEntryAdapter entry)
+        {
+            var filterTrue = false;
+            try
+            {
+                if (andFilter.CurrentField is ActiveDirectoryField defaultField)
+                {
+                    if (andFilter.Field.Equals(ActiveDirectoryFields.OU))
+                    {
+                        return entry.DN.Contains(andFilter.Value);
+                    }
+                    switch (andFilter.Operator)
+                    {
+                        case ActiveDirectoryFieldOperator.EqualTo:
+                            filterTrue = entry.PropertyValueEquals(defaultField.PropertyName, andFilter.Value);
+                            break;
+
+                        case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
+                            var dateValue3 = entry.GetPropertyValue(defaultField.PropertyName);
+                            if (dateValue3 is DateTime dateTime3)
+                            {
+                                filterTrue = dateTime3 > DateTime.Now - andFilter.TimeFrame;
+                            }
+                            else if (dateValue3 is long fileTime)
+                            {
+                                filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
+                            }
+                            break;
+
+                        case ActiveDirectoryFieldOperator.FutureTimeFrame:
+                            var dateValue4 = entry.GetPropertyValue(defaultField.PropertyName);
+                            if (dateValue4 is DateTime dateTime4)
+                            {
+                                filterTrue = dateTime4 > DateTime.Now - andFilter.TimeFrame;
+                            }
+                            else if (dateValue4 is long fileTime)
+                            {
+                                filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
+                            }
+                            break;
+
+                        case ActiveDirectoryFieldOperator.StartsWith:
+                            filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().StartsWith(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                            break;
+
+                        case ActiveDirectoryFieldOperator.EndsWith:
+                            filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().EndsWith(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                            break;
+
+                        case ActiveDirectoryFieldOperator.AfterNow:
+                            var dateValue = entry.GetPropertyValue(defaultField.PropertyName);
+                            if (dateValue is DateTime dateTime)
+                            {
+                                filterTrue = dateTime > DateTime.Now;
+                            }
+                            else if (dateValue is long fileTime)
+                            {
+                                filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
+                            }
+                            break;
+
+                        case ActiveDirectoryFieldOperator.BeforeNow:
+                            var dateValue2 = entry.GetPropertyValue(defaultField.PropertyName);
+                            if (dateValue2 is DateTime dateTime2)
+                            {
+                                filterTrue = dateTime2 < DateTime.Now;
+                            }
+                            else if (dateValue2 is long fileTime)
+                            {
+                                filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
+                            }
+                            break;
+
+                        case ActiveDirectoryFieldOperator.Contains:
+                            var propertyValue = entry.GetPropertyValue(defaultField.PropertyName).ToString();
+                            filterTrue = propertyValue?.Contains(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true;
+                            break;
+
+                        case ActiveDirectoryFieldOperator.Boolean:
+                            if (entry.GetPropertyValue(defaultField.PropertyName) is bool boolValue)
+                            {
+                                filterTrue = boolValue == true;
+                            }
+                            break;
+
+
+
+                    }
+                }
+                else if (andFilter.CurrentField is CustomActiveDirectoryField customField)
+                {
+                    switch (andFilter.Operator)
+                    {
+                        case ActiveDirectoryFieldOperator.EqualTo:
+                            filterTrue = entry.GetCustomProperty<object>(customField.FieldName).Equals(andFilter.Value);
+                            break;
+
+                        case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
+                            var raw = entry.GetCustomProperty<object>(customField.FieldName);
+                            var dateValue3 = raw.AdsValueToDateTime();
+                            if (dateValue3 is DateTime dateTime3)
+                            {
+                                filterTrue = dateTime3 > DateTime.Now - andFilter.TimeFrame;
+                            }
+                            break;
+
+                        case ActiveDirectoryFieldOperator.FutureTimeFrame:
+                            var raw2 = entry.GetCustomProperty<object>(customField.FieldName);
+                            var dateValue4 = raw2.AdsValueToDateTime();
+                            if (dateValue4 is DateTime dateTime4)
+                            {
+                                filterTrue = dateTime4 > DateTime.Now - andFilter.TimeFrame;
+                            }
+
+                            break;
+
+                        case ActiveDirectoryFieldOperator.StartsWith:
+                            filterTrue = entry.GetPropertyValue(customField.FieldName).ToString().StartsWith(andFilter.Value.ToString());
+                            break;
+
+                        case ActiveDirectoryFieldOperator.EndsWith:
+                            filterTrue = entry.GetPropertyValue(customField.FieldName).ToString().EndsWith(andFilter.Value.ToString());
+                            break;
+
+                        case ActiveDirectoryFieldOperator.AfterNow:
+                            var raw3 = entry.GetCustomProperty<object>(customField.FieldName);
+                            var dateValue = raw3.AdsValueToDateTime(); if (dateValue is DateTime dateTime)
+                            {
+                                filterTrue = dateTime > DateTime.Now;
+                            }
+                            break;
+
+                        case ActiveDirectoryFieldOperator.BeforeNow:
+                            var raw4 = entry.GetCustomProperty<object>(customField.FieldName);
+                            var dateValue2 = raw4.AdsValueToDateTime();
+                            if (dateValue2 is DateTime dateTime2)
+                            {
+                                filterTrue = dateTime2 < DateTime.Now;
+                            }
+
+                            break;
+
+                        case ActiveDirectoryFieldOperator.Contains:
+                            var propertyValue = entry.GetPropertyValue(customField.FieldName).ToString();
+                            filterTrue = propertyValue?.Contains(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true;
+                            break;
+
+                        case ActiveDirectoryFieldOperator.Boolean:
+                            if (entry.GetPropertyValue(customField.FieldName) is bool boolValue)
+                            {
+                                filterTrue = boolValue == true;
+                            }
+                            break;
+
+
+
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.RulesLogger.Error(ex,"Error checking and filter {@Filter}", andFilter);
+            }
+            if (andFilter.Negate)
+            {
+                filterTrue = !filterTrue;
+            }
+            return filterTrue;
+        }
+
+        private List<AutomationRule> GetRules()
+        {
+            try
+            {
+                using var context = dbFactory.CreateDbContext();
+                return context.AutomationRules.Where(
+                        r => r.DeletedAt == null
+                        && r.Enabled
+                        && (r.ExpirationDate == null || r.ExpirationDate > DateTime.Now)
+                    ).ToList();
+            }
+            catch (Exception ex)
+            {
+                Loggers.RulesLogger.Debug(ex,"Error loading rules");
+                return [];
+            }
+        }
+    }
+}

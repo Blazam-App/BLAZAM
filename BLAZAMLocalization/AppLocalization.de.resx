@@ -232,7 +232,7 @@
     <value>Es wird versucht, eine Verbindung mit Active Directory herzustellen.</value>
   </data>
   <data name="Audit" xml:space="preserve">
-    <value>Rechnungsprüfung</value>
+    <value>Audit</value>
   </data>
   <data name="Authentication" xml:space="preserve">
     <value>Authentifizierung</value>
@@ -259,7 +259,7 @@
     <value>Branding-Symbol</value>
   </data>
   <data name="Browse" xml:space="preserve">
-    <value>Blättern</value>
+    <value>Übersicht</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Abbrechen</value>
@@ -325,7 +325,7 @@
     <value>CPU-Diagramm</value>
   </data>
   <data name="Create" xml:space="preserve">
-    <value>Schaffen</value>
+    <value>Erstellen</value>
   </data>
   <data name="Create Access Level" xml:space="preserve">
     <value>Zugriffsebene erstellen</value>
@@ -442,7 +442,7 @@
     <value>Automatische Aktualisierung aktivieren</value>
   </data>
   <data name="Enabled" xml:space="preserve">
-    <value>Ermöglichte</value>
+    <value>Aktiviert</value>
   </data>
   <data name="Encryption Seed String" xml:space="preserve">
     <value>Seed-Zeichenfolge für die Verschlüsselung</value>
@@ -457,7 +457,7 @@
     <value>Misslungen</value>
   </data>
   <data name="Field Name" xml:space="preserve">
-    <value>Flurname</value>
+    <value>Feldname</value>
   </data>
   <data name="Field Type" xml:space="preserve">
     <value>Feld-Typ</value>
@@ -496,7 +496,7 @@
     <value>Gruppen</value>
   </data>
   <data name="Home" xml:space="preserve">
-    <value>Heim</value>
+    <value>Home</value>
   </data>
   <data name="Home Directory" xml:space="preserve">
     <value>Home-Verzeichnis</value>
@@ -562,10 +562,10 @@
     <value>Anmeldungen</value>
   </data>
   <data name="Logs" xml:space="preserve">
-    <value>Baumstämme</value>
+    <value>Log-Daten</value>
   </data>
   <data name="Main" xml:space="preserve">
-    <value>Hauptsächlich</value>
+    <value>Hauptseite</value>
   </data>
   <data name="Manage Web Application" xml:space="preserve">
     <value>Verwalten von Webanwendungen</value>
@@ -577,10 +577,10 @@
     <value>Mitglied der</value>
   </data>
   <data name="Members" xml:space="preserve">
-    <value>Angehörige</value>
+    <value>Mitglieder</value>
   </data>
   <data name="Memory" xml:space="preserve">
-    <value>Gedächtnis</value>
+    <value>Speicher</value>
   </data>
   <data name="Middle Initial" xml:space="preserve">
     <value>Mittlere Initiale</value>
@@ -646,7 +646,7 @@
     <value>Organisationseinheit</value>
   </data>
   <data name="OU" xml:space="preserve">
-    <value>ODER</value>
+    <value>OE</value>
   </data>
   <data name="Pass Change" xml:space="preserve">
     <value>Pass-Änderung</value>
@@ -655,7 +655,7 @@
     <value>Passwort</value>
   </data>
   <data name="Permissions" xml:space="preserve">
-    <value>Erlaubnisse</value>
+    <value>Berechtigungen</value>
   </data>
   <data name="Please report to" xml:space="preserve">
     <value>Bitte melden Sie sich bei</value>
@@ -664,7 +664,7 @@
     <value>Postfach</value>
   </data>
   <data name="Port" xml:space="preserve">
-    <value>Hafen</value>
+    <value>Port</value>
   </data>
   <data name="Preferences" xml:space="preserve">
     <value>Einstellungen</value>
@@ -697,7 +697,7 @@
     <value>Angestanden</value>
   </data>
   <data name="Ran by" xml:space="preserve">
-    <value>Lief vorbei</value>
+    <value>Abgelaufen</value>
   </data>
   <data name="Recycle Bin" xml:space="preserve">
     <value>Papierkorb</value>
@@ -838,7 +838,7 @@
     <value>Zustand</value>
   </data>
   <data name="Stop It" xml:space="preserve">
-    <value>Hör auf</value>
+    <value>Beenden</value>
   </data>
   <data name="Street" xml:space="preserve">
     <value>Straße</value>
@@ -865,7 +865,7 @@
     <value>Vorlage(n) wiederhergestellt</value>
   </data>
   <data name="Templates" xml:space="preserve">
-    <value>Schablonen</value>
+    <value>Vorlagen</value>
   </data>
   <data name="Test Recipient" xml:space="preserve">
     <value>Testempfänger</value>

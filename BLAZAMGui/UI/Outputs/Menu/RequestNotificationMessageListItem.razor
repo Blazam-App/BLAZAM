@@ -1,4 +1,5 @@
 ﻿@inherits DatabaseComponentBase
+@inject BLAZAM.Services.Analytics AnalyticsService
 @if (LoadingData)
 {
     <MudCard Class="py-3"
@@ -42,14 +43,14 @@ else
                 @if (Notification.Notification.Title.IsNullOrEmpty())
                 {
                     <MudText Typo="Typo.subtitle2">
-                        @AppLocalization["Request to"] @AppLocalization[Notification.Notification.Action.ToString()]
+                        @AppHelpLocalization[HelpLang.Request_To,@AppLocalization[Notification.Notification.Action.ToString()]]
                     </MudText>
                 }
                 else
                 {
                     <MudText Typo="Typo.subtitle2">
-                        @AppLocalization["Request to"] @AppLocalization[Notification.Notification.Title]
-                    </MudText>
+                        @AppHelpLocalization[HelpLang.Request_To,@AppLocalization[Notification.Notification.Title]]
+                   </MudText>
                 }
 
                 @if (Notification.Notification.Message.IsNullOrEmpty())
@@ -93,7 +94,7 @@ else
 
     </MudCard>
 
-    <AppModal @ref=_approvalModal Title="@AppLocalization["Approve Request"]">
+    <AppModal @ref=_approvalModal Title="@AppLocalization[Lang.Approve_Request]">
         @if (_approvalModal.IsShown)
         {
             <AccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
@@ -125,7 +126,7 @@ else
                 _creatorAppUser = appUser;
                 if (!appUser.IsAdminOrDemo())
                 {
-                    var directoryUser = Directory.GetDirectoryEntryBySid(appUser.UserGUID);
+                    var directoryUser = Directory.FindEntryBySid(appUser.UserGUID);
                     if (directoryUser != null && directoryUser is IADUser)
                     {
                         _creator = directoryUser as IADUser;
@@ -146,14 +147,14 @@ else
     }
     private async void DenyRequest()
     {
-        if (await MessageService.Confirm(AppLocalization["Are you sure you want to deny this request?"]))
+        if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Deny_Request_Confirmation]))
         {
             try
             {
                 if (await NotificationPublisher.DeleteNotification(Notification.Notification, Notification.User))
                 {
                     SnackBarService.Info(AppLocalization[Lang.Request_Denied]);
-
+                    await AnalyticsService.AccessRequestDenied(Notification.Notification.Title);
                 }
 
 

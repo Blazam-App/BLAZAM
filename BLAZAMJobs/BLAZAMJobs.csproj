@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,28 +8,32 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.13" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.13" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.13" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.13">
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="8.0.17" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.17" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.17">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
-    <PackageReference Include="MudBlazor" Version="7.16.0" />
-    <PackageReference Include="PreMailer.Net" Version="2.6.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0" />
-    <PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.2" />
-    <PackageReference Include="System.Management" Version="9.0.2" />
-    <PackageReference Include="System.Security.Permissions" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
+    <PackageReference Include="MudBlazor" Version="8.9.0" />
+    <PackageReference Include="MudBlazor.Markdown" Version="8.9.0" />
+    <PackageReference Include="PreMailer.Net" Version="2.7.2" />
+    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.7" />
+    <PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.7" />
+    <PackageReference Include="System.Management" Version="9.0.7" />
+    <PackageReference Include="System.Security.Permissions" Version="9.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
-    <ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
   </ItemGroup>
 
 </Project>

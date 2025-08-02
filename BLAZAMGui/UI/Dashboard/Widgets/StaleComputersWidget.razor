@@ -5,7 +5,7 @@
                             RowsPerPageChanged="@SetRowsPerPage"
                             RowClick=@GoTo
                             T="IADComputer"
-                            OnChanged="RefreshData"
+                            OnChanged="RefreshDataAsync"
                             Loading=LoadingData />
 
 @code {
@@ -16,7 +16,7 @@
     }
 
 
-    protected override async Task RefreshData()
+    protected override async Task RefreshDataAsync()
     {
         LoadingData = true;
         ADSearch searcher = new ADSearch(Directory);

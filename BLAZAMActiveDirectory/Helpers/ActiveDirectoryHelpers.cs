@@ -2,8 +2,12 @@
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
+using BLAZAM.Database.Models.Notifications;
+using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Logger;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
@@ -14,6 +18,8 @@ namespace BLAZAM.Helpers
 {
     public static class ActiveDirectoryHelpers
     {
+        private const string OBJECT_CLASS = "objectClass";
+
         /// <summary>
         /// Returns true if the domain controller is reachable by this web
         /// server, otherwise returns false.
@@ -41,9 +47,9 @@ namespace BLAZAM.Helpers
         public static IEnumerable<IDirectoryEntryAdapter> MoveToTop(this IEnumerable<IDirectoryEntryAdapter> enumerable, Func<IDirectoryEntryAdapter, bool> matchingPredicate)
         {
             var list = enumerable.ToList();
-            if (list.Count() < 1) return list;
+            if (list.Count < 1) return list;
             List<IDirectoryEntryAdapter> mathingItems = new();
-            for (int x = 0; x < list.Count(); x++)
+            for (int x = 0; x < list.Count; x++)
             {
 
                 if (matchingPredicate.Invoke(list[x]))
@@ -105,11 +111,11 @@ namespace BLAZAM.Helpers
                 {
                     if (fieldValue.Field != null && fieldValue.Value != null)
                         if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
-                            user.HomeDirectory = template.ReplaceVariables(fieldValue.Value, newUserName, user.SamAccountName);
+                            user.HomeDirectory = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
                         else
-                            user.NewEntryProperties[fieldValue.Field.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SamAccountName);
+                            user.NewEntryProperties[fieldValue.Field.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
                     else if (fieldValue.CustomField != null && fieldValue.Value != null)
-                        user.NewEntryProperties[fieldValue.CustomField.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SamAccountName);
+                        user.NewEntryProperties[fieldValue.CustomField.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
                 }
                 catch (Exception ex)
                 {
@@ -173,30 +179,34 @@ namespace BLAZAM.Helpers
                 IDirectoryEntryAdapter? thisObject = null;
                 foreach (SearchResult sr in r)
                 {
-                    if (sr.Properties["objectClass"].Contains("top"))
+                    if (sr.Properties[OBJECT_CLASS].Contains("top"))
                     {
-                        if (sr.Properties["objectClass"].Contains("computer"))
+                        if (sr.Properties[OBJECT_CLASS].Contains("computer"))
                         {
                             thisObject = new ADComputer();
                         }
-                        else if (sr.Properties["objectClass"].Contains("user"))
+                        else if (sr.Properties[OBJECT_CLASS].Contains("user"))
                         {
                             thisObject = new ADUser();
                         }
+                        else if (sr.Properties[OBJECT_CLASS].Contains("contact"))
+                        {
+                            thisObject = new ADContact();
+                        }
 
-                        else if (sr.Properties["objectClass"].Contains("group"))
+                        else if (sr.Properties[OBJECT_CLASS].Contains("group"))
                         {
                             thisObject = new ADGroup();
                         }
-                        else if (sr.Properties["objectClass"].Contains("printQueue"))
+                        else if (sr.Properties[OBJECT_CLASS].Contains("printQueue"))
                         {
                             thisObject = new ADPrinter();
                         }
-                        else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
+                        else if (sr.Properties[OBJECT_CLASS].Contains("msFVE-RecoveryInformation"))
                         {
                             thisObject = new ADBitLockerRecovery();
                         }
-                        else if (sr.Properties["objectClass"].Contains("organizationalUnit") || sr.Properties["objectClass"].Contains("container"))
+                        else if (sr.Properties[OBJECT_CLASS].Contains("organizationalUnit") || sr.Properties[OBJECT_CLASS].Contains("container"))
                         {
                             thisObject = new ADOrganizationalUnit();
                         }
@@ -225,30 +235,34 @@ namespace BLAZAM.Helpers
         {
             IDirectoryEntryAdapter? thisObject = null;
 
-            if (sr.Properties["objectClass"].Contains("top"))
+            if (sr.Properties[OBJECT_CLASS].Contains("top"))
             {
-                if (sr.Properties["objectClass"].Contains("computer"))
+                if (sr.Properties[OBJECT_CLASS].Contains("computer"))
                 {
                     thisObject = new ADComputer();
                 }
-                else if (sr.Properties["objectClass"].Contains("user"))
+                else if (sr.Properties[OBJECT_CLASS].Contains("user"))
                 {
                     thisObject = new ADUser();
                 }
+                else if (sr.Properties[OBJECT_CLASS].Contains("contact"))
+                {
+                    thisObject = new ADContact();
+                }
 
-                else if (sr.Properties["objectClass"].Contains("group"))
+                else if (sr.Properties[OBJECT_CLASS].Contains("group"))
                 {
                     thisObject = new ADGroup();
                 }
-                else if (sr.Properties["objectClass"].Contains("printQueue"))
+                else if (sr.Properties[OBJECT_CLASS].Contains("printQueue"))
                 {
                     thisObject = new ADPrinter();
                 }
-                else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
+                else if (sr.Properties[OBJECT_CLASS].Contains("msFVE-RecoveryInformation"))
                 {
                     thisObject = new ADBitLockerRecovery();
                 }
-                else if (sr.Properties["objectClass"].Contains("organizationalUnit") || sr.Properties["objectClass"].Contains("container"))
+                else if (sr.Properties[OBJECT_CLASS].Contains("organizationalUnit") || sr.Properties[OBJECT_CLASS].Contains("container"))
                 {
                     thisObject = new ADOrganizationalUnit();
                 }
@@ -326,6 +340,116 @@ namespace BLAZAM.Helpers
         }
 
 
+        public static List<ActiveDirectoryFieldOperator> GetOperators(this IActiveDirectoryField field)
+        {
+            List<ActiveDirectoryFieldOperator> applicableOperators = new List<ActiveDirectoryFieldOperator>();
+            if (field == null || field.FieldType==null) return applicableOperators;
+            var fieldType = field.FieldType;
 
+            switch (fieldType) {
+                case ActiveDirectoryFieldType.Text:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.StartsWith);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EndsWith);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
+                    break;
+                case ActiveDirectoryFieldType.StringList:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
+                    break;
+                case ActiveDirectoryFieldType.Date:
+                case ActiveDirectoryFieldType.FileTime:
+                case ActiveDirectoryFieldType.RawData:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.BeforeNow);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.AfterNow);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.HistoricalTimeFrame);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.FutureTimeFrame);
+                    break;
+
+            }
+
+            return applicableOperators;
+
+        }
+
+        public static bool IsActionAppropriateForObject(this ActiveDirectoryObjectAction action, ActiveDirectoryObjectType type)
+        {
+
+            switch (type)
+            {
+                case ActiveDirectoryObjectType.User:
+                case ActiveDirectoryObjectType.Computer:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Unlock:
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Enable:
+                        case ActiveDirectoryObjectAction.Disable:
+                        case ActiveDirectoryObjectAction.Rename:
+                        case ActiveDirectoryObjectAction.SetPassword:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Contact:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Rename:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Group:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Unassign:
+                        case ActiveDirectoryObjectAction.Assign:
+                        case ActiveDirectoryObjectAction.Rename:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Printer:
+                case ActiveDirectoryObjectType.OU:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Rename:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.BitLocker:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Delete:
+                            return true;
+                        default:
+                            return false;
+                    }
+
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsActionAppropriateForObject(this ObjectAction action, ActiveDirectoryObjectType type) => IsActionAppropriateForObject(action.Action, type);
+
+
+
+ 
     }
+
+
 }

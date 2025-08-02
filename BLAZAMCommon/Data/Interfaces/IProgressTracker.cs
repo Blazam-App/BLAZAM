@@ -12,7 +12,7 @@
         /// <remarks>
         /// Sending the same value to <see cref="Progress"/> 
         /// will not result in this being called </remarks>
-        AppEvent<TNumber?> OnProgressUpdated { get; set; }
+        AppDelegate<TNumber?> OnProgressUpdated { get; set; }
         /// <summary>
         /// The current progress between 0 and 100
         /// </summary>

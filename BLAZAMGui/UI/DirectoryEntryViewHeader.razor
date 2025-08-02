@@ -7,9 +7,12 @@
     <MudStack Row=true Class="mud-width-full">
 
         <MudStack Spacing="1">
-            <MudSkeleton Height="25px" Width="150px" />
-            <MudSkeleton Width="150px" />
+            <MudSkeleton Height="25px" Width="200px" />
+            <MudSkeleton Width="200px" />
         </MudStack>
+        <MudSkeleton Class="ms-5 my-auto" SkeletonType="SkeletonType.Circle" Height="25px" Width="25px"/>
+        <MudSkeleton Class="my-auto" SkeletonType="SkeletonType.Circle" Height="25px" Width="25px"/>
+        <MudSkeleton Class="my-auto" SkeletonType="SkeletonType.Circle" Height="25px" Width="25px" />
     </MudStack>
 
 }
@@ -27,7 +30,7 @@ else
     <MudStack Row=true Class="mud-width-full">
 
         <MudStack Spacing="1">
-            @if (groupableEntry != null && DirectoryEntry is not IADComputer)
+            @if (groupableEntry != null && DirectoryEntry is not IADComputer && !groupableEntry.DisplayName.IsNullOrEmpty())
             {
                 <MudText Class="align-middle">
                     @groupableEntry.DisplayName
@@ -63,8 +66,7 @@ else
                         Style="height:32px"
                         Gutters=false
                         Dense=true>
-                @if (accountEntry != null)
-
+                @if (accountEntry != null && (accountEntry is IADUser ||accountEntry is IADComputer) )
                 {
                     <AppTooltip Text="@AppLocalization[accountEntry.Enabled?"Disable":"Enable"]">
 
@@ -79,7 +81,7 @@ else
 
 
 
-                <AppTooltip Text="@(EditMode?AppLocalization["End Edit"]:AppLocalization[Lang.Edit])">
+                <AppTooltip Text="@(EditMode?AppLocalization[Lang.End_Edit]:AppLocalization[Lang.Edit])">
 
                     <MudToggleIconButton Toggled=EditMode
                                          ToggledChanged="@(async(state)=>{await ToggleEditMode(state);})"
@@ -90,7 +92,7 @@ else
 
                 </AppTooltip>
 
-                @if (accountEntry != null && accountEntry.LockedOut)
+                @if (accountEntry != null && accountEntry is not IADContact && accountEntry.LockedOut)
                 {
                     <AppTooltip Text="@AppLocalization[Lang.Unlock]">
 
@@ -105,12 +107,13 @@ else
                     <AppTooltip Text="@AppLocalization[Lang.Assign_To]">
 
                         <MudIconButton OnClick="@OnAssignTo"
+                                       Disabled="@(CurrentUser.State?.CanAssign!=true)"
                                        Icon="@Icons.Material.Filled.GroupAdd"
                                        aria-label="assign to" />
                     </AppTooltip>
 
                 }
-                @if (accountEntry != null && accountEntry is not IADComputer)
+                @if (accountEntry != null && accountEntry is IADUser)
                 {
                     <AppTooltip Text="@AppLocalization[Lang.Change_Password]">
                         <MudIconButton OnClick="@OnResetPassword"
@@ -175,11 +178,19 @@ else
                                        Icon="@Icons.Material.Filled.PlaylistAdd" />
                     </AppTooltip>
                 }
-                <AppTooltip Text="@(IsFavorite?AppLocalization["Remove from favorites"]:AppLocalization["Add to favorites"])">
+                <AppTooltip Text="@AppLocalization[IsFavorite?Lang.Remove_from_favorites : Lang.Add_to_favorites]">
                     <MudIconButton OnClick="@ToggleFavorite"
                                    Icon="@(IsFavorite?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
                                    Color="@(IsFavorite?Color.Warning:Color.Default)" />
                 </AppTooltip>
+                @if (IsAdmin && ApplicationInfo.InDebugMode)
+                {
+                    <AppTooltip Text="Application Event Toolkit">
+                        <MudIconButton OnClick="@(()=>{_appEventModal?.ShowAsync();})"
+                                       Icon="@(IsFavorite?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
+                                       Color="@(IsFavorite?Color.Warning:Color.Default)" />
+                    </AppTooltip>
+                }
             </MudToolBar>
         </MudHidden>
         <MudSpacer />
@@ -188,14 +199,14 @@ else
 
             <MudMenu Class="align-self-end"
                      IconColor="@Color.Tertiary"
-                     StartIcon="@Icons.Material.Filled.Settings">
+                     Icon="@Icons.Material.Filled.Settings">
 
-                @if (accountEntry != null && ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable)))
+                @if (accountEntry != null && accountEntry is not IADContact && ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable)))
                 {
                     <MudMenuItem>
                         <MudSwitch T=bool
                                    Color=Color.Success
-                                   Label=@AppLocalization["Account Enabled"]
+                                   Label=@AppLocalization[Lang.Account_Enabled]
                                    @bind-Value=@accountEntry.Enabled
                                    Disabled=@((accountEntry.Disabled && !accountEntry.CanEnable)||(accountEntry.Enabled && !accountEntry.CanDisable)) />
 
@@ -205,14 +216,14 @@ else
 
                 @if (DirectoryEntry.CanEdit)
                 {
-                    <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!EditMode);})">@(EditMode ? AppLocalization["End Edit"] : AppLocalization[Lang.Edit])</MudMenuItem>
+                    <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!EditMode);})">@(AppLocalization[EditMode ? Lang.End_Edit : Lang.Edit])</MudMenuItem>
                 }
-                @if (accountEntry != null && accountEntry.LockedOut && accountEntry.CanUnlock)
+                @if (accountEntry != null && accountEntry is not IADContact && accountEntry.LockedOut && accountEntry.CanUnlock)
                 {
                     <MudMenuItem OnClick="@OnUnlock">@AppLocalization[Lang.Unlock]</MudMenuItem>
                 }
                 <MudMenuItem OnClick="@OnAssignTo">@AppLocalization[Lang.Assign_To]</MudMenuItem>
-                    @if (accountEntry?.CanSetPassword == true && accountEntry is not IADComputer)
+                @if (accountEntry?.CanSetPassword == true && accountEntry is not IADComputer)
                 {
                     <MudMenuItem OnClick="@OnResetPassword">@AppLocalization[Lang.Change_Password]</MudMenuItem>
                 }
@@ -248,7 +259,9 @@ else
                 }
                 <MudMenuItem Icon="@(IsFavorite?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
                              IconColor="@(IsFavorite?Color.Warning:Color.Default)"
-                             OnClick="@ToggleFavorite">@(IsFavorite ? AppLocalization["Remove from favorites"] : AppLocalization["Add to favorites"])</MudMenuItem>
+                             OnClick="@ToggleFavorite">
+                    @AppLocalization[IsFavorite ? Lang.Remove_from_favorites : Lang.Add_to_favorites]
+                </MudMenuItem>
 
 
 
@@ -261,10 +274,13 @@ else
             <RequestAccessModalContent Entry="@DirectoryEntry" />
         </AppModal>
     }
-
+    <AppModal @ref=_appEventModal Title="Application Event Toolkit">
+        <AppEventToolkitModalContent DirectoryEntry="@DirectoryEntry" />
+    </AppModal>
 }
 @code {
     private AppModal? _requestAccessModal;
+    private AppModal? _appEventModal;
     private bool _showRequestButton;
     private IDirectoryEntryAdapter? _parentOU;
     [Parameter]
@@ -279,10 +295,6 @@ else
 
     [Parameter]
     public EventCallback OnRename { get; set; }
-
-
-    [Parameter]
-    public EventCallback OnChangeThumbnail { get; set; }
 
 
 
@@ -324,18 +336,21 @@ else
 
         await base.OnInitializedAsync();
         LoadingData = true;
+
         _showRequestButton = (await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowAccessRequest == true
         && await Context.GlobalPermissionRequestActions.CountAsync() > 0;
         _parentOU = await DirectoryEntry.GetParentAsync();
+        LoadingData = false;
+
     }
-    protected override void OnAfterRender(bool firstRender)
-    {
-        base.OnAfterRender(firstRender);
-        if (firstRender)
-        {
-            LoadingData = false;
-        }
-    }
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     base.OnAfterRender(firstRender);
+    //     if (LoadingData)
+    //     {
+    //         LoadingData = false;
+    //     }
+    // }
 
     private async Task ToggleEditMode(bool editEnabled)
     {

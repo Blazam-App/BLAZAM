@@ -75,7 +75,7 @@
         base.OnInitialized();
 
         Modal.SetYesText(AppLocalization[Lang.Save]);
-        Modal.OnYes += SaveSettings;
+        Modal.SetOnYes(SaveSettings);
         Modal.YesEnabled = () => { return !LoadingData; };
         authSettings = Context.AuthenticationSettings.FirstOrDefault();
     }
@@ -85,12 +85,12 @@
         await Modal.RefreshView();
         if (await CurrentUser.State.SaveAllUserSettings())
         {
-            SnackBarService.Success(AppLocalization["Settings saved"]);
+            SnackBarService.Success(AppLocalization[Lang.Settings_saved]);
 
         }
         else
         {
-            SnackBarService.Warning(AppLocalization["Failed to save settings"]);
+            SnackBarService.Warning(AppLocalization[Lang.Failed_to_save_settings]);
 
         }
         LoadingData = false;
@@ -101,11 +101,11 @@
 #nullable disable warnings
     async Task UploadProfilePicture(IBrowserFile profilePictureFile)
     {
-        var rawBytes = await profilePictureFile.ToByteArrayAsync();
+        var rawBytes = await profilePictureFile.ReadByteArrayAsync();
 
         if (rawBytes != null)
         {
-            CurrentUser.State.Preferences.ProfilePicture = rawBytes.ReizeRawImage(100, true);
+            CurrentUser.State.Preferences.ProfilePicture = rawBytes.ResizeRawImage(100, true);
         }
     }
 

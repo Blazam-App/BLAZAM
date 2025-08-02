@@ -15,9 +15,9 @@ namespace BLAZAM.Services.Background
     public class AutoUpdateService : DatabaseBackgroundServiceBase, IDisposable
     {
 
-        public AppEvent<DateTime?> OnAutoUpdateQueued { get; set; }
-        public AppEvent OnAutoUpdateStarted { get; set; }
-        public AppEvent OnAutoUpdateFailed { get; set; }
+        public AppDelegate<DateTime?> OnAutoUpdateQueued { get; set; }
+        public AppDelegate OnAutoUpdateStarted { get; set; }
+        public AppDelegate OnAutoUpdateFailed { get; set; }
 
         private readonly ApplicationInfo _applicationInfo;
 
@@ -182,8 +182,8 @@ namespace BLAZAM.Services.Background
         protected override void Execute(object? state)
         {
             using var context = factory.CreateDbContext();
-            Job updateCheckJob = new(AppLocalization["Check for Update"]);
-            JobStep checkForUpdateStep = new(AppLocalization["Execute"], async (step) =>
+            Job updateCheckJob = new(AppLocalization[Lang.Check_for_Update]);
+            JobStep checkForUpdateStep = new(AppLocalization[Lang.Excute], async (step) =>
             {
                 try
                 {

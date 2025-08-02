@@ -4,7 +4,7 @@
 @inherits SettingsComponents
 
 
-<MudText Typo="Typo.h4">@AppLocalization["Application Settings"] <AppDocumentationButton Page="/admin/settings/application" /></MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Application_Settings] <AppDocumentationButton Page="/admin/settings/application" /></MudText>
 <MudForm @ref=Form
          @bind-IsValid=IsValid
          Model="settings">
@@ -20,10 +20,10 @@
 
         </SettingsField>
 
-        <SettingsField Label="@AppLocalization["Homepage Message"]">
+        <SettingsField Label="@AppLocalization[Lang.Homepage_Message]">
 
 
-            <MudTextField Label="@AppLocalization["Homepage Message"]"
+            <MudTextField Label="@AppLocalization[Lang.Homepage_Message]"
                           T="string" Variant="Variant.Text"
                           @bind-Text="@settings.MOTD"
                           Lines="5"
@@ -32,7 +32,7 @@
         </SettingsField>
 
 
-        <SettingsField Label="@AppLocalization["Force Https"]">
+        <SettingsField Label="@AppLocalization[Lang.Force_Https]">
 
             <MudSwitch Label="@AppLocalization[Lang.Enabled]"
                        Color="Color.Success"
@@ -55,7 +55,7 @@
         *@
 
 
-        <SettingsField Label="@AppLocalization["Branding Icon"]">
+        <SettingsField Label="@AppLocalization[Lang.Branding_Icon]">
 
             <MudContainer>
 
@@ -74,7 +74,7 @@
                                Variant="Variant.Filled"
                                Color="Color.Primary"
                                StartIcon="@Icons.Material.Filled.CloudUpload">
-                        @AppLocalization["Upload Icon"]
+                        @AppLocalization[Lang.Upload_Icon]
                     </MudButton>
                 </ActivatorContent>
             </MudFileUpload>
@@ -83,9 +83,9 @@
 
 
 
-        <SettingsField Label="@AppLocalization["Website FQDN"]">
+        <SettingsField Label="@AppLocalization[Lang.Website_FQDN]">
 
-            <MudTextField Label="@AppLocalization["Website FQDN"]"
+            <MudTextField Label="@AppLocalization[Lang.Website_FQDN]"
                           For=@(()=> settings.AppFQDN)
                           Immediate="true"
                           HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)"
@@ -96,7 +96,7 @@
 
         @if (!ApplicationInfo.IsUnderIIS || ApplicationInfo.InDebugMode)
         {
-            <SettingsField Label="@AppLocalization["SSL Certificate"]">
+            <SettingsField Label="@AppLocalization[Lang.SSL_Certificate]">
                 <MudButton OnClick="()=>{uploadCertificateModal?.ShowAsync();}"
                            Variant="Variant.Filled"
                            Color="Color.Primary"
@@ -105,7 +105,7 @@
                 </MudButton>
 
             </SettingsField>
-            <AppModal @ref="uploadCertificateModal" Title=@AppLocalization["Upload SSL Certificate"]>
+            <AppModal @ref="uploadCertificateModal" Title=@AppLocalization[Lang.Upload_Certificate]>
                 <UploadCertificateModalContent AppSettings="settings" />
             </AppModal>
         }
@@ -151,7 +151,7 @@
             }
         }
 
-        settings.AppIcon = await e.ToByteArrayAsync(5000000);
+        settings.AppIcon = await e.ReadByteArrayAsync(5000000);
         //await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
 

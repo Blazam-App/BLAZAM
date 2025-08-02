@@ -17,6 +17,14 @@
 
 
     </Section>
+    <Section>
+
+        <MudCheckBox @bind-Value=_rebootAfterRename Label="@AppLocalization[Lang.Reboot]"/>
+        @if (_rebootAfterRename)
+        {
+            <MudDateTimePicker @bind-DateTime=_date />
+        }
+    </Section>
 
 }
 else
@@ -24,7 +32,8 @@ else
     <MudProgressCircular Indeterminate Color="Color.Primary" />
 }
 @code {
-
+    bool _rebootAfterRename;
+    DateTime? _date;
     #nullable disable warnings
     private IADComputer _privateComputerInstance;
     private string newName;
@@ -35,12 +44,12 @@ else
     {
         await base.OnInitializedAsync();
 
-        _privateComputerInstance = Directory.GetDirectoryEntryBySid(Computer.SID.ToSidString()) as IADComputer;
+        _privateComputerInstance = Directory.FindEntryBySid(Computer.SID.ToSidString()) as IADComputer;
         _privateComputerInstance.OnOnlineChanged += ((state) => { InvokeAsync(StateHasChanged); });
         SaveDisabled = false;
-        Modal.OnYes = SaveChanges;
-        Modal.YesText = AppLocalization["Rename Computer"];
-        Modal.Title = "Rename Computer";
+        Modal.SetOnYes(SaveChanges);
+        Modal.SetYesText(AppLocalization[Lang.Rename_Computer]);
+        Modal.Title = AppLocalization[Lang.Rename_Computer];
 
         await InvokeAsync(StateHasChanged);
     }
@@ -56,12 +65,12 @@ else
         var possibleConflictingMatch = await Directory.Computers.FindByStringAsync(newName);
         if (Computer.IsOnline != true)
         {
-            SnackBarService.Error("Computer is offline!");
+            SnackBarService.Error(AppLocalization[Lang.Computer_not_reachable]);
             return;
         }
         if (possibleConflictingMatch == null || possibleConflictingMatch.Any(m => m.CanonicalName.Equals(newName)))
         {
-            SnackBarService.Error("That name already exists. Please choose a different name");
+            SnackBarService.Error(AppHelpLocalization[HelpLang.Duplicate_Name_Conflict]);
 
             return;
 
@@ -70,7 +79,21 @@ else
         LoadingData = true;
         if(await Computer.RenameAsync(newName))
         {
-            SnackBarService.Success("Computer has been renamed.");
+            if (_rebootAfterRename)
+            {
+                var delay = (int)(_date.Value - DateTime.Now).TotalSeconds;
+                if (await Computer.ShutdownAsync(delay, AppHelpLocalization[HelpLang.Rename_Reboot_Message, delay], true, true))
+                {
+                    SnackBarService.Success(AppLocalization[Lang.Computer_renamed]);
+
+                }
+                SnackBarService.Warning(AppLocalization[Lang.Computer_renamed]);
+
+            }
+            else
+            {
+                SnackBarService.Success(AppLocalization[Lang.Computer_renamed]);
+            }
             Close();
 
         }

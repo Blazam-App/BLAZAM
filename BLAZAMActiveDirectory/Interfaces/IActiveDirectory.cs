@@ -2,7 +2,6 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
-using BLAZAM.Session.Interfaces;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 
@@ -54,6 +53,10 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         IADUserSearcher Users { get; }
         /// <summary>
+        /// Provides Contacts search functions
+        /// </summary>
+        IADContactSearcher Contacts { get; }
+        /// <summary>
         /// Provides Printer search functions
         /// </summary>
         IADPrinterSearcher Printers { get; }
@@ -71,7 +74,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Called when the connection state of the Active Directory server has
         /// changed
         /// </summary>
-        AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
+        AppDelegate<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
 
         /// <summary>
         /// The connection settings as gotten from the <see cref="Factory"/>
@@ -82,7 +85,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// The current web user attached to this connection. If this is a system connection it will be null.
         /// </summary>
-        IApplicationUserState? CurrentUser { get; }
+        ActiveDirectoryUserState? CurrentUser { get; set; }
 
         /// <summary>
         /// Provides an impersonation context to the application domain account.
@@ -101,7 +104,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         /// <param name="sid">The SID in string form to search against</param>
         /// <returns>The matching object in Active Directory, or null</returns>
-        IDirectoryEntryAdapter? GetDirectoryEntryBySid(string sid);
+        IDirectoryEntryAdapter? FindEntryBySid(string sid);
 
         /// <summary>
         /// Searches for an Active Directory object by it's SID
@@ -109,6 +112,18 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <param name="sid">The SID in byte array form to search against</param>
         /// <returns>The matching object in Active Directory, or null</returns>
         IDirectoryEntryAdapter? FindEntryBySID(byte[] sid);
+        /// <summary>
+        /// Searches for an Active Directory object by it's GUID
+        /// </summary>
+        /// <param name="sid">The GUID in byte array form to search against</param>
+        /// <returns>The matching object in Active Directory, or null</returns>
+        IDirectoryEntryAdapter? FindEntryByGuid(byte[] guid);
+        /// <summary>
+        /// Searches for an Active Directory object by it's GUID
+        /// </summary>
+        /// <param name="sid">The GUID in string form to search against</param>
+        /// <returns>The matching object in Active Directory, or null</returns>
+        IDirectoryEntryAdapter? FindEntryByGuid(string guid);
 
 
 

@@ -1,78 +1,44 @@
-﻿using BLAZAM.FileSystem;
-using BLAZAM.Logger;
+using BLAZAM.Helpers;
 using BLAZAM.Plugins;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Org.BouncyCastle.Asn1.Cms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BLAZAM.Services.Plugins
 {
-    public class PluginManager
+
+    /// <summary>
+    /// Manages the loading, registration, and lifecycle of external plugins.
+    /// This service is intended to provide extensibility to the application. (Functionality TBD)
+    /// </summary>
+    public static class PluginManager
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly IConfiguration _configuration;
-        public PluginContext Context = new PluginContext();
-        private readonly List<IPluginBase> _loadedPlugins = new();
 
-        public PluginManager(IServiceProvider serviceProvider, IConfiguration configuration)
+        public static Type? GetPluginSettingsComponent(IPluginBase plugin)
         {
-            _serviceProvider = serviceProvider;
-            _configuration = configuration;
-        }
-
-        public IEnumerable<IPluginBase> LoadedPlugins => _loadedPlugins;
-
-      
-
-    
-        public void RegisterPluginComponents()
-        {
-            foreach (var pluginAssembly in ApplicationInfo.loadedPlugins)
+            var matchingPlugin = ApplicationInfo.LoadedPlugins.FirstOrDefault(p => p.Value.Equals(plugin));
+            if (matchingPlugin.Key != null)
             {
-                // Scan for Razor components with PluginRenderFragmentAttribute
-                var componentTypes = pluginAssembly.Key.DefinedTypes
-                    .Where(t => t is PluginComponentBase);
-
-                foreach (var componentType in componentTypes)
+                var settingsPage = matchingPlugin.Key.GetPluginTypes(typeof(ComponentBase));
+                foreach (Type pluginRenderFragment in settingsPage)
                 {
-                    try
+                    var attribute = pluginRenderFragment.GetCustomAttributes(typeof(PluginRenderFragmentAttribute), false).FirstOrDefault() as PluginRenderFragmentAttribute;
+                    if (attribute != null)
                     {
-                        var componentInstance = Activator.CreateInstance(componentType) as PluginComponentBase;
-
-                        if (componentInstance != null)
+                        if (attribute.PageType == PageType.Plugin && attribute.PageLocation == PageLocation.Settings)
                         {
-                            
-                        
-                            var pageType = componentInstance.PageType;
-                            Context.RegisterPluginComponent(pageType, componentType);
-                            Console.WriteLine($"Registered render fragment {componentType.FullName} for location '{pageType}' from {pluginAssembly.Key.GetName().Name}");
+                            return pluginRenderFragment;
 
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error registering render fragment for {componentType.FullName} from {pluginAssembly.Key.GetName().Name}: {ex.Message}");
-                    }
                 }
+
+
             }
-        }
-
-        public IEnumerable<Type> GetRenderFragments(PageType locationName)
-        {
-            return Context.GetPluginComponents(locationName);
-        }
-
-        public TData ApplyDataManipulation<TData>(string handlerName, TData data)
-        {
-            return Context.ApplyDataManipulation(handlerName, data);
+            return null;
         }
     }
 }

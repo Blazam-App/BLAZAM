@@ -12,7 +12,7 @@
 
 
                 @user.DisplayName <br>
-                @user.SamAccountName <br>
+                @user.SAMAccountName <br>
                 @user.OU.ToPrettyOu() <br>
 
                 @user.LastChanged <br>
@@ -30,7 +30,7 @@
     
 
 
-    protected override async Task RefreshData()
+    protected override async Task RefreshDataAsync()
     {
         LoadingData = true;
         DisabledUsers = (await Directory.Users.FindChangedUsersAsync(false)).Where(u => u.Disabled).ToList();

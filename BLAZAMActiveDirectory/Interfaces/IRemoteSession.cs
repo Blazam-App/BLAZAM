@@ -16,8 +16,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         ITerminalServer? Server { get; }
         int SessionId { get; }
         NTAccount User { get; }
-        AppEvent<IRemoteSession> OnSessionDown { get; set; }
-        AppEvent<IRemoteSession> OnSessionUpdated { get; set; }
+        AppDelegate<IRemoteSession> OnSessionDown { get; set; }
+        AppDelegate<IRemoteSession> OnSessionUpdated { get; set; }
 
         void Disconnect(bool synchronous = false);
         bool Equals(object? obj);

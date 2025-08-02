@@ -3,10 +3,11 @@
 @using BLAZAM.EmailMessage.Email.Notifications
 @inherits AppModalContent
 @inject NotificationGenerationService notificationGenerationService
+@inject BLAZAM.Services.Analytics AnalyticsService
 
 @if (_objectActions != null && _objectActions.Count > 0)
 {
-    if (globalPermissionRequestActions.Count() > 0)
+    if (globalPermissionRequestActions.Count > 0)
     {
         @if (_dbAllowedActions.Any(x => x.IsActionAppropriateForObject(Entry.ObjectType)))
         {
@@ -32,7 +33,7 @@
         }
         else
         {
-            <MudAlert Severity="Severity.Info">@AppLocalization["There are no actions available to request for this entry."]</MudAlert>
+            <MudAlert Severity="Severity.Info">@AppHelpLocalization[HelpLang.No_Request_Actions_Available]</MudAlert>
 
         }
     }
@@ -43,14 +44,13 @@
     [Inject]
     private AppAuthenticationStateProvider AppAuthenticationStateProvider { get; set; }
 
-    [Parameter]
-    public IDirectoryEntryAdapter Entry { get; set; }
+
 
     IReadOnlyCollection<ActiveDirectoryObjectAction>? _selectedActions = new List<ActiveDirectoryObjectAction>();
 
     List<ActiveDirectoryObjectAction> _objectActions;
     List<ActiveDirectoryObjectAction> _dbAllowedActions;
-    List<GlobalPermissionRequestActions> globalPermissionRequestActions = new();
+    List<GlobalPermissionRequestAction> globalPermissionRequestActions = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,7 +58,7 @@
         _objectActions = ActiveDirectoryObjectAction.Assign.ToList();
         _dbAllowedActions = await Context.GlobalPermissionRequestActions.Select(x => x.ObjectAction).ToListAsync();
         globalPermissionRequestActions = await Context.GlobalPermissionRequestActions.ToListAsync();
-        Modal.OnYes += Submit;
+        Modal.SetOnYes(Submit);
     }
     public async Task Submit()
     {
@@ -96,6 +96,7 @@
                 notificationGenerationService.PackageRequest(Entry, action, CurrentUser.State,  out notification);
                
                 _=NotificationPublisher.PublishNotification(adminUsers, notification);
+                await AnalyticsService.AccessRequestCreated(notification.Title);
 
                 
                 var requestEmail = new AccessRequestEmailMessage(); 
@@ -112,7 +113,7 @@
                     }
                 }
             }
-            SnackBarService.Success(AppLocalization["Access request sent"]);
+            SnackBarService.Success(AppLocalization[Lang.Access_request_sent]);
         }
         await Modal.CloseAsync();
         LoadingData = false;

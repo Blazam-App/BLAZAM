@@ -6,8 +6,10 @@ using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
+using BLAZAM.Logger; // Added
 using BLAZAM.Server.Helpers;
 using BLAZAM.Services.Audit;
+using BLAZAM.Services.Background;
 using BLAZAM.Services.Duo;
 using BLAZAM.Services.Exceptions;
 using BLAZAM.Session;
@@ -17,18 +19,34 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens; // For IsNullOrEmpty extension if not globally available
+using System; // For ArgumentNullException
 using System.Security.Claims;
+
 
 namespace BLAZAM.Services
 {
     /// <summary>
-    /// Handles login/impersonate/logout of the browser HTTPContext Identity.
-    /// This identity is stored it the Application's authentication cookie.
+    /// Manages user authentication states, including login, logout, impersonation, and MFA flows, integrating with Active Directory and other authentication services.
     /// </summary>
     public class AppAuthenticationStateProvider : AuthenticationStateProvider
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AppAuthenticationStateProvider"/> class with necessary dependencies for authentication and user state management.
+        /// </summary>
+        /// <param name="factory">The user database factory.</param>
+        /// <param name="directory">The Active Directory context.</param>
+        /// <param name="permissionHandler">The permission applicator service.</param>
+        /// <param name="userStateService">The application user state service.</param>
+        /// <param name="ca">The HTTP context accessor.</param>
+        /// <param name="dcp">The Duo client provider.</param>
+        /// <param name="enc">The encryption service.</param>
+        /// <param name="audit">The web user audit logger.</param>
+        /// <param name="applicationInfo">The application information service.</param>
+        /// <param name="googleAuthenticatorService">The Google Authenticator service.</param>
+        /// <exception cref="ArgumentNullException">Thrown if any critical dependency is null.</exception>
         public AppAuthenticationStateProvider(IUserDatabaseFactory factory,
-            IActiveDirectoryContext directoy,
+            IActiveDirectoryContext directory, // Corrected typo: directoy -> directory
             PermissionApplicator permissionHandler,
             IApplicationUserStateService userStateService,
             IHttpContextAccessor ca,
@@ -38,10 +56,21 @@ namespace BLAZAM.Services
             ApplicationInfo applicationInfo,
             GoogleAuthenticatorService googleAuthenticatorService)
         {
+            if (factory == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(factory)); throw new ArgumentNullException(nameof(factory)); }
+            if (directory == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(directory)); throw new ArgumentNullException(nameof(directory)); }
+            if (permissionHandler == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(permissionHandler)); throw new ArgumentNullException(nameof(permissionHandler)); }
+            if (userStateService == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(userStateService)); throw new ArgumentNullException(nameof(userStateService)); }
+            if (ca == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(ca)); throw new ArgumentNullException(nameof(ca)); }
+            if (dcp == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(dcp)); throw new ArgumentNullException(nameof(dcp)); }
+            if (enc == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(enc)); throw new ArgumentNullException(nameof(enc)); }
+            if (audit == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(audit)); throw new ArgumentNullException(nameof(audit)); }
+            if (applicationInfo == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(applicationInfo)); throw new ArgumentNullException(nameof(applicationInfo)); }
+            if (googleAuthenticatorService == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(googleAuthenticatorService)); throw new ArgumentNullException(nameof(googleAuthenticatorService)); }
+
             _applicationInfo = applicationInfo;
             this._encryption = enc;
             this._googleAuthenticatorService = googleAuthenticatorService;
-            this._directory = directoy;
+            this._directory = directory; // Corrected typo: directoy -> directory
             this._factory = factory;
             this._permissionHandler = permissionHandler;
             this._userStateService = userStateService;
@@ -58,7 +87,7 @@ namespace BLAZAM.Services
         private readonly ApplicationInfo _applicationInfo;
         private readonly IEncryptionService _encryption;
         private readonly GoogleAuthenticatorService _googleAuthenticatorService;
-        private readonly IActiveDirectoryContext _directory;
+        private readonly IActiveDirectoryContext _directory; // Corrected typo: directoy -> directory
         private readonly IUserDatabaseFactory _factory;
         private readonly PermissionApplicator _permissionHandler;
 
@@ -158,10 +187,10 @@ namespace BLAZAM.Services
             return new ClaimsPrincipal(identity);
         }
         /// <summary>
-        /// Processes a login request.
+        /// Processes a user login request, handling local admin, demo, Active Directory authentication, and MFA flows.
         /// </summary>
-        /// <param name="loginReq">The authentication details and options for login</param>
-        /// <returns>A fully processed AuthenticationState with all Claims and application permissions applied.</returns>
+        /// <param name="loginReq">The login request details.</param>
+        /// <returns>A <see cref="LoginRequest"/> object populated with the result of the login attempt.</returns>
         public async Task<LoginRequest> Login(LoginRequest loginReq)
         {
             var newUserState = _userStateService.CreateUserState(GetAnonymous(_httpContextAccessor.HttpContext?.Session.Id));
@@ -199,6 +228,7 @@ namespace BLAZAM.Services
             {
 
                 var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
+                if (settings == null) { Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.Login: AuthenticationSettings are null from database."); }
                 //Check admin credentials
                 if (settings != null
                     && loginReq.Username != null
@@ -238,8 +268,12 @@ namespace BLAZAM.Services
                                 )
                             {
                                 //Duo is enabled, so we need to set up an MFA request
-
+                                Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: Initiating Duo MFA for user {UserName}.", loginReq.Username);
                                 var mfaRRedirect = await PerformDuoAuthentication(loginReq);
+                                if (mfaRRedirect.IsNullOrEmpty() && settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Block)
+                                {
+                                    Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.Login: Duo authentication for user {UserName} did not return a redirect URI, but DuoUnreachableBehavior is Block.", loginReq.Username);
+                                }
                                 //Settings are configured so
                                 if (!mfaRRedirect.IsNullOrEmpty())
                                 {
@@ -265,10 +299,12 @@ namespace BLAZAM.Services
                                     && settings.MFAType == MFAType.GoogleAuthenticator
                                     && userSettings.AuthenticatorSecret?.Decrypt<string>().IsNullOrEmpty() == false)
                                 {
+                                    Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: Google Authenticator MFA required for user {UserName}.", userClaim.Identity.Name);
                                     var passcode = loginReq.MFAToken;
                                     loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
                                     if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken.ToSecureString(), passcode))
                                     {
+                                        Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.Login: Google Authenticator PIN validation failed for user {UserName}.", userClaim.Identity.Name);
                                         var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
                                         var authResult = await SetUser(twostepState);
                                         newUserState.User = userClaim;
@@ -307,7 +343,10 @@ namespace BLAZAM.Services
             //Return the authenticationstate
             if (authenticationState != null)
             {
-
+                if (loginReq.AuthenticationResult ==  LoginResultStatus.OK) // This check might be redundant if only success path reaches here with non-null authState
+                {
+                    Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: User {UserName} successfully logged in. Final ClaimsPrincipal Name: {PrincipalName}", loginReq.Username, authenticationState?.User?.Identity?.Name);
+                }
                 return loginReq.Success(authenticationState);
             }
             else
@@ -333,19 +372,23 @@ namespace BLAZAM.Services
         /// </returns>
         private async Task<ClaimsPrincipal?> AttemptADLogin(IApplicationUserState loginUser, LoginRequest loginReq)
         {
+            Loggers.SystemLogger.Debug("AppAuthenticationStateProvider.AttemptADLogin: Attempting AD login for user {UserName}. Impersonation: {IsImpersonation}", loginReq.Username, loginReq.Impersonation);
             IADUser? user;
             if (!loginReq.Impersonation)
             {
                 user = _directory.Authenticate(loginReq);
-
             }
             else
+            {
                 user = (await _directory.Users.FindUsersByStringAsync(loginReq.Username, true, true)).FirstOrDefault();
+            }
 
+            if (user == null)
+            {
+                Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.AttemptADLogin: Active Directory user {UserName} not found or authentication failed.", loginReq.Username);
+            }
 
             return await CreateDirectoryPrincipal(loginUser, user, loginReq);
-
-
         }
 
         private async Task<string> PerformDuoAuthentication(LoginRequest loginReq)
@@ -354,11 +397,7 @@ namespace BLAZAM.Services
             {
 
                 var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
-                if (settings == null) throw new AppException("Could not get settings");
-
-
-
-
+                if (settings == null) throw new AppException("Could not get settings"); // Existing check, good.
 
                 // Initiate the Duo authentication for a specific username
 
@@ -366,11 +405,20 @@ namespace BLAZAM.Services
                 Client duoClient = _duoClientProvider.GetDuoClient(loginReq.CallbackBaseUri + "/mfacallback");
 
                 // Check if Duo seems to be healthy and able to service authentications.
-                // If Duo were unhealthy, you could possibly send user to an error page, or implement a fail mode
                 var isDuoHealthy = await duoClient.DoHealthCheck();
-                if (!isDuoHealthy && settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Bypass)
+                if (!isDuoHealthy)
                 {
-                    return String.Empty;
+                    if (settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Block)
+                    {
+                        Loggers.SystemLogger.Error("AppAuthenticationStateProvider.PerformDuoAuthentication: Duo health check failed and DuoUnreachableBehavior is Block for user {UserName}.", loginReq.Username);
+                        // Potentially throw or return empty to signify failure to redirect,
+                        // which Login method will then handle. For now, just logging and returning empty.
+                        return String.Empty;
+                    }
+                    if (settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Bypass)
+                    {
+                        return String.Empty; //Bypass Duo
+                    }
                 }
                 // Generate a random state value to tie the authentication steps together
                 string state = Client.GenerateState();
@@ -394,12 +442,12 @@ namespace BLAZAM.Services
 
         /// <summary>
         /// Creates the foundation for the Active Directory user's ClaimsPrincipal. Then it passes to CreateDirectoryIdentity to
-        /// actually make the ClaimsIdentity inside the principal.
+        /// Creates a <see cref="ClaimsPrincipal"/> for an Active Directory user, including transformed application roles and claims.
         /// </summary>
-        /// <param name="user">The user found in Active Directory that matches the LoginRequest Username</param>
-        /// <param name="loginReq">The parameters passed from the login attempt</param>
-        /// <returns>A fully processed ClaimsPrincipal representing the Web user with data applied depending on
-        /// database permission tables</returns>
+        /// <param name="loginUser">The application user state associated with the login attempt.</param>
+        /// <param name="user">The <see cref="IADUser"/> from Active Directory.</param>
+        /// <param name="loginReq">The original login request, used for context like impersonation.</param>
+        /// <returns>A <see cref="ClaimsPrincipal"/> for the AD user, or null if the user is null.</returns>
         public async Task<ClaimsPrincipal?> CreateDirectoryPrincipal(IApplicationUserState loginUser, IADUser? user, LoginRequest? loginReq = null)
         {
             ClaimsPrincipal? principal = null;
@@ -414,12 +462,12 @@ namespace BLAZAM.Services
         }
 
         /// <summary>
-        /// Processes the Active Directory Users permissions applied in the database and maps the roles to be assigned
+        /// Creates a <see cref="ClaimsIdentity"/> for an Active Directory user, loading permissions and transforming them into application roles.
         /// </summary>
-        /// <param name="user">The Active Directory User to create an identity for</param>
-        /// <param name="loginReq">The parameteres passed from the login attempt</param>
-        /// <returns>A fully processed ClaimsIdentity representing the user in Active Directory with data applied depending on
-        /// database permission tables</returns>
+        /// <param name="loginUser">The application user state.</param>
+        /// <param name="user">The Active Directory user.</param>
+        /// <param name="loginReq">The login request details.</param>
+        /// <returns>A <see cref="ClaimsIdentity"/> for the user, or null if user is null.</returns>
         public async Task<ClaimsIdentity?> CreateDirectoryIdentity(IApplicationUserState loginUser, IADUser user, LoginRequest? loginReq = null)
         {
 
@@ -453,11 +501,10 @@ namespace BLAZAM.Services
             return task;
         }
         /// <summary>
-        /// This may not be entirely necessary the way I am implementing authentication and authorization
-        /// Though, this likely is needed to remove the cookie to actually sign out.
+        /// Logs out the current user by clearing their authentication state and notifying state change.
         /// </summary>
-        /// <param name="claimsPrincipal"></param>
-        /// <returns></returns>
+        /// <param name="claimsPrincipal">The <see cref="ClaimsPrincipal"/> of the user to log out.</param>
+        /// <returns>The new <see cref="AuthenticationState"/> after logout (typically anonymous).</returns>
         public Task<AuthenticationState> Logout(ClaimsPrincipal claimsPrincipal)
         {
             _userStateService.RemoveUserState(claimsPrincipal);

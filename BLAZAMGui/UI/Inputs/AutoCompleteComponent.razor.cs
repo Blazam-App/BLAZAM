@@ -22,6 +22,9 @@ namespace BLAZAM.Gui.UI.Inputs
         [Parameter]
         public EventCallback<string> SearchTermChanged { get; set; }
 
+        [Parameter]
+        public int MinCharacters { get; set; } = 3;
+
         private string searchTerm;
     }
 }

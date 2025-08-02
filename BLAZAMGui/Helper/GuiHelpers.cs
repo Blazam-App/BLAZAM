@@ -1,5 +1,6 @@
 ﻿
 using ApplicationNews;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Gui.UI.Modals;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
@@ -8,10 +9,10 @@ namespace BLAZAM.Helpers
 {
     public static class GuiHelpers
     {
-        public static async Task<byte[]?> ToByteArrayAsync(this IBrowserFile file, int maxReadBytes = 5000000)
+        public static async Task<byte[]?> ReadByteArrayAsync(this IBrowserFile file, int maxReadBytes = 5000000)
         {
             byte[] fileBytes;
-            using (var stream = file.OpenReadStream(5000000))
+            using (var stream = file.OpenReadStream(maxReadBytes))
             {
                 using (var memoryStream = new MemoryStream())
                 {
@@ -21,17 +22,31 @@ namespace BLAZAM.Helpers
             }
             return fileBytes;
         }
+        public static ActiveDirectoryUserState ToActiveDirectoryUserState(this IApplicationUserState userState)
+        {
+            return new ActiveDirectoryUserState()
+            {
+                 Username=userState.AuditUsername,
+                 PermissionMappings = userState.PermissionMappings,
+                 IsSuperAdmin=userState.IsSuperAdmin
 
+            };
+            
+        }
         public static async Task<IDialogReference> ShowNewsItemDialog(this NewsItem item, AppDialogService dialogService)
         {
             var dialogParams = new DialogParameters
             {
                 { "Item", item }
             };
-            var options = new DialogOptions();
-            options.MaxWidth = MaxWidth.ExtraExtraLarge;
-            options.CloseButton = true;
-            options.CloseOnEscapeKey = true;
+            var options = new DialogOptions()
+            {
+                MaxWidth = MaxWidth.ExtraExtraLarge,
+                CloseButton = true,
+                CloseOnEscapeKey = true
+
+            };
+
 
             return (await dialogService.ShowMessage<AppNewsItemDialog>(dialogParams, item.Title, options: options));
 

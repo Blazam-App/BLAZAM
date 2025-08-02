@@ -17,6 +17,7 @@ using Microsoft.Extensions.Localization;
 using MudBlazor;
 using System.Security;
 using System.Text.Json;
+using BLAZAM.Services.Events;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -28,13 +29,19 @@ namespace BLAZAM.Pages.API.v1
     {
         private readonly IStringLocalizer<AppLocalization> AppLocalization;
         private readonly EmailService EmailService;
-        private readonly NotificationGenerationService OUNotificationService;
 
-        public Templates(NotificationGenerationService ouNotificationService, EmailService email, IApplicationUserStateService applicationUserStateService, IStringLocalizer<AppLocalization> localizer, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
+        public Templates(NotificationGenerationService ouNotificationService,
+            EmailService email,
+            IApplicationUserStateService applicationUserStateService,
+            IStringLocalizer<AppLocalization> localizer,
+            WebUserAuditLogger audit,
+            IUserDatabaseFactory appDatabaseFactory, 
+            IHttpContextAccessor httpContextAccessor,
+            IActiveDirectoryContextFactory adFactory)
+            : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
         {
             AppLocalization = localizer;
             EmailService = email;
-            OUNotificationService = ouNotificationService;
         }
 
 
@@ -58,7 +65,9 @@ namespace BLAZAM.Pages.API.v1
         ///       ]
         ///       "groups": [
         ///          {
-        ///            "S-1-5-21-1004336348-1177238915-682003330-512"
+        ///            "S-1-5-21-1004336348-1177238915-682003330-512",
+        ///            "CN=Group Name,OU=Somewhere,DC=example,DC=org",
+        ///            "Another Group Name"
         ///         }
         ///       ]
         ///     }
@@ -102,75 +111,85 @@ namespace BLAZAM.Pages.API.v1
                 MiddleName = newUserDetails.MiddleName,
                 Surname = newUserDetails.LastName
             };
-
-            //Generate IADUser
-            var newUser = template.GenerateTemplateUser(newUserName, Directory);
-
-            //Override username if provided
-            if (!newUserDetails.Username.IsNullOrEmpty())
+            try
             {
-                newUser.SamAccountName = newUserDetails.Username;
+                var customOU = Directory.OUs.FindOuByDN(newUserDetails.OU);
+                if (customOU == null && template.EffectiveParentOU == null)
+                {
+                    return new BadRequestObjectResult("There was no OU provided by API call or template!");
+                }
+                //Generate IADUser
+                var newUser = template.GenerateTemplateUser(newUserName, Directory, customOU);
+
+                //Override username if provided
+                if (!newUserDetails.Username.IsNullOrEmpty())
+                {
+                    newUser.SAMAccountName = newUserDetails.Username;
+                }
+
+                //Store password in memory for later
+                var password = newUser.NewPassword.ToPlainText().ToSecureString();
+
+                //Set each field in template
+                template.PopulateFields(newUser, newUserName);
+
+                //Set API provided fields
+                SetFields(newUserDetails, newUser);
+
+                //Set API provided groups
+                AssignGroups(newUserDetails, newUser);
+
+                //Prepare commit job
+                Job createUserJob = new(AppLocalization[Lang.Create_User]);
+
+                createUserJob.StopOnFailedStep = true;
+
+                //Commmit
+                var result = await newUser.CommitChangesAsync(createUserJob);
+
+                if (result.FailedSteps.Count > 0)
+                    return new UnprocessableEntityObjectResult(result.FailedSteps.Select(s => s.Exception?.InnerException != null ? s.Exception.InnerException.Message : s.Exception?.Message));
+
+
+                newUser = (IADUser)Directory.GetDirectoryEntryByDN(newUser.DN);
+
+                await AuditAndNotify(newUserDetails, template, newUser, password);
+
+                return new CreatedResult(newUser.OU, newUser.DN);
             }
-
-            //Store password in memory for later
-            var password = newUser.NewPassword.ToPlainText().ToSecureString();
-
-            //Set each field in template
-            template.PopulateFields(newUser, newUserName);
-
-            //Set API provided fields
-            SetFields(newUserDetails, newUser);
-
-            //Set API provided groups
-            AssignGroups(newUserDetails, newUser);
-
-            //Prepare commit job
-            Job createUserJob = new(AppLocalization[Lang.Create_User]);
-
-            createUserJob.StopOnFailedStep = true;
-
-            //Commmit
-            var result = await newUser.CommitChangesAsync(createUserJob);
-
-            if (result.FailedSteps.Count > 0)
-                return new UnprocessableEntityObjectResult(result.FailedSteps.Select(s => s.Exception?.InnerException != null ? s.Exception.InnerException.Message : s.Exception?.Message));
-
-
-            newUser = (IADUser)Directory.GetDirectoryEntryByDN(newUser.DN);
-
-            await AuditAndNotify(newUserDetails, template, newUser, password);
-
-            return new CreatedResult(newUser.OU, newUser.DN);
-
+            catch (DirectorySearchUniquenessException ex) {
+                return new UnprocessableEntityObjectResult("Multiple groups match the provided search term: "+ ex.SearchTerm);
+            }
+            catch (Exception ex)
+            {
+                return new UnprocessableEntityObjectResult(ex.Message);
+            }
 
         }
 
-        private async Task AuditAndNotify(NewUserDetails newUserDetails, DirectoryTemplate? template, IADUser? newUser, SecureString password)
+        private async Task AuditAndNotify(NewUserDetails newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
         {
-            await AuditLogger.User.Created(newUser);
-            if (DbFactory.DatabaseType == DatabaseType.SQLite)
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
-                await OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
+                EventType = ApplicationEventType.Create,
+                Entry = entry,
+                Actor = CurrentUserState
 
-            }
-            else
-            {
-                _ = OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
-
-            }
+            });
+            
 
 
             if (template?.EffectiveSendWelcomeEmail == true)
             {
-                if (template.EffectiveAskForAlternateEmail == true || newUser.Email.IsNullOrEmpty())
+                if (template.EffectiveAskForAlternateEmail == true || entry.Email.IsNullOrEmpty())
                 {
 
-                    await SendWelcomeEmail(newUser, newUserDetails.SendWelcomeEmailTo!, password);
+                    await SendWelcomeEmail(entry, newUserDetails.SendWelcomeEmailTo!, password);
 
                 }
                 else
                 {
-                    await SendWelcomeEmail(newUser, newUser.Email!, password);
+                    await SendWelcomeEmail(entry, entry.Email!, password);
                 }
             }
 
@@ -207,7 +226,28 @@ namespace BLAZAM.Pages.API.v1
             {
                 foreach (var groupSid in newUserDetails.Groups)
                 {
-                    var group = (IADGroup)Directory.GetDirectoryEntryByDN(groupSid);
+                    var group = (IADGroup)Directory.FindEntryBySid(groupSid);
+                    if(group == null)
+                    {
+                        group = (IADGroup)Directory.GetDirectoryEntryByDN(groupSid);
+                    }
+                    if (group == null)
+                    {
+                        group = (IADGroup)Directory.GetDirectoryEntryByDN(groupSid);
+                    }
+                    if (group == null)
+                    {
+                        var matches = Directory.Groups.FindGroupByString(groupSid,true);
+                        if (matches != null && matches.Count > 0)
+                        {
+                            if (matches.Count > 1)
+                            {
+                                throw new DirectorySearchUniquenessException(groupSid);
+                            }
+                            group = matches.First();
+                        }
+
+                    }
                     if (group != null)
                     {
                         newUser?.AssignTo(group);
@@ -258,14 +298,14 @@ namespace BLAZAM.Pages.API.v1
             {
                 NewUserWelcomeEmailMessage message = new();
                 message.Domain = user.Directory.ConnectionSettings?.FQDN;
-                message.Username = user.SamAccountName;
+                message.Username = user.SAMAccountName;
                 message.Password = password;
                 await EmailService.SendMessage(AppLocalization["New Account Details"], message, to);
 
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error sending welcome email {@Error}", ex);
+                Loggers.SystemLogger.Error(ex,"Error sending welcome email");
             }
         }
     }

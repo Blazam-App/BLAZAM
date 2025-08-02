@@ -2,7 +2,7 @@
 @inherits AppComponentBase
 @inject NotificationGenerationService NotificationGenerationService
 
-<AppPageTitle>@AppLocalization["Confirm OU Creation"]</AppPageTitle>
+<AppPageTitle>@AppLocalization[Lang.Confirm_OU_Creation]</AppPageTitle>
 
 @if (OU != null)
 {
@@ -26,24 +26,21 @@
 
     async Task CommitChanges()
     {
-        if (await MessageService.Confirm("Are you sure you want to create this OU?", "Create OU"))
+        if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_OU_Creation], AppLocalization[Lang.Create_OU]))
         {
             var results = await OU.CommitChangesAsync();
             if (results.FailedSteps.Count == 0)
             {
                 OU = Directory.OUs.FindOuByDN(OU.DN);
-                SnackBarService.Success(AppLocalization["OU created"]);
-                await AuditLogger.OU.Created(OU);
-                if (DbFactory.DatabaseType == DatabaseType.SQLite)
-                {
-                    await NotificationGenerationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
+                SnackBarService.Success(AppLocalization[Lang.OU_created]);
+                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.Create,
+                        Entry = OU,
+                        Actor = CurrentUser.State
 
-                }
-                else
-                {
-                    _ = NotificationGenerationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
-
-                }
+                    });
+               
                 await Confirmed.InvokeAsync(OU);
                 Nav.NavigateTo("/create/ou", true);
             }

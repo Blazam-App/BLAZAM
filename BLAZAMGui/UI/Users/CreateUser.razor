@@ -85,7 +85,7 @@
                     <MudPaper Width="300px">
                         <MudText>@AppLocalization["There are no templates available"]</MudText>
                         <AuthorizeView Roles="@UserRoles.SuperAdmin">
-                            <MudLink Href="/templates">@AppLocalization["Create One"]</MudLink>
+                            <MudLink Href="/templates">@AppLocalization[Lang.Create_One]</MudLink>
 
                         </AuthorizeView>
                     </MudPaper>
@@ -124,16 +124,16 @@
             <ChildContent>
                 @{
 
-                    var conflictingEntry = Directory.Users.FindUserByUsername(newUser?.SamAccountName, false, true);
+                    var conflictingEntry = Directory.Users.FindUserByUsername(newUser?.SAMAccountName, false, true);
                     bool conflictWarning = false;
-                    if (conflictingEntry != null && conflictingEntry.SamAccountName?.Equals(newUser?.SamAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
+                    if (conflictingEntry != null && conflictingEntry.SAMAccountName?.Equals(newUser?.SAMAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
                     {
                        _usernameStepValid = false;
                         conflictWarning = true;
                     }
                     else
                     {
-                        if (newUser?.SamAccountName.IsNullOrEmpty() == false)
+                        if (newUser?.SAMAccountName.IsNullOrEmpty() == false)
                         {
                             _usernameStepValid = true;
                         }
@@ -146,12 +146,12 @@
                               Immediate="true"
                               Disabled=@(!CurrentUser.State.IsSuperAdmin && SelectedTemplate?.EffectiveAllowUsernameOverride!=true)
                               T=string
-                              @bind-Value=@newUser!.SamAccountName />
+                              @bind-Value=@newUser!.SAMAccountName />
                 @if (conflictWarning)
                 {
                     <MudAlert Severity="Severity.Error">
                         @AppLocalization["An account with that name already exists!"]<br/>
-                        @AppLocalization[Lang.User]: @conflictingEntry.SamAccountName
+                        @AppLocalization[Lang.User]: @conflictingEntry.SAMAccountName
                         </MudAlert>
                 }
                 <MudButton Disabled=LoadingData
@@ -176,7 +176,7 @@
             <ChildContent>
                 <NewTemplateUser NewUserName="newUserName"
                                  OnValidSubmit=@(()=>{SelectedStep=4;})
-                                 User="@newUser"
+                                 Entry="@newUser"
                                  DirectoryTemplate="SelectedTemplate" />
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
@@ -285,7 +285,7 @@
                 @AppLocalization[Lang.Confirm]
             </TabContent>
             <ChildContent>
-                <ConfirmNewUser @bind-User="@newUser"
+                <ConfirmNewUser User="@newUser"
                                 Confirmed="_userCreated"
                                 DirectoryTemplate="SelectedTemplate"
                                 OnConfirmed="UserConfirmed" />

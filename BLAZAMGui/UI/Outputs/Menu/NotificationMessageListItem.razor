@@ -15,9 +15,10 @@
         <MudSpacer />
         @if (!Notification.IsRead)
         {
-            <AppCloseButton TooltipPlacement="Placement.Left" Tooltip="@AppLocalization["Dismiss Notification"]" OnClick="@(async () =>
+            <AppCloseButton TooltipPlacement="Placement.Left" Tooltip="@AppLocalization[Lang.Dismiss]" OnClick="@(async () =>
         {
             await CurrentUser.State.MarkRead(Notification);
+            await Analytics.NotificationDismissed(Notification.Notification.MessageType.ToString());
             await InvokeAsync(StateHasChanged);
         })" />
         }

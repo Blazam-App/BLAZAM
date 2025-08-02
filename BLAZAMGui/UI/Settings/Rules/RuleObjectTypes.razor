@@ -1,0 +1,32 @@
+@inherits AppComponentBase
+<MudList Color="Color.Tertiary"
+         Dense=true
+         T="ActiveDirectoryObjectType"
+         @bind-SelectedValue=ViewFiler.ObjectType>
+    @foreach (var objectType in objectTypes)
+    {
+        <MudListItem Icon="@objectType.TypeIcon()"
+                     OnClick="@(()=>{Nav.NavigateTo($"/rules/{objectType.ToString().ToLower()}/{ViewFiler.Trigger.ToString().ToLower()}");})"
+                     Value="objectType">@AppLocalization[objectType.ToString()]</MudListItem>
+    }
+</MudList>
+
+
+@code {
+    [CascadingParameter]
+    public RuleViewFilter ViewFiler { get; set; }
+
+
+    private List<ActiveDirectoryObjectType> objectTypes = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        foreach (ActiveDirectoryObjectType type in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
+        {
+            objectTypes.Add(type);
+        }
+        objectTypes = objectTypes.OrderBy(t => t.ToString()).ToList();
+        //ViewFiler.ObjectType = objectTypes.First();
+    }
+}

@@ -59,39 +59,16 @@
                @bind-Value=SearchService.IncludeDisabled
                UncheckedColor="Color.Error"
                Color=Color.Success>
-        @AppLocalization["Include Disabled"]
+        @AppLocalization[Lang.Include_Disabled]
     </MudSwitch>
 }
-@{
-    var adornmentIcon = Icons.Material.Filled.AccountTree;
-    switch (SearchService.SeachObjectType)
-    {
-        case ActiveDirectoryObjectType.User:
-            adornmentIcon = Icons.Material.Filled.Person;
-            break;
-        case ActiveDirectoryObjectType.Group:
-            adornmentIcon = Icons.Material.Filled.People;
-            break;
-        case ActiveDirectoryObjectType.OU:
-            adornmentIcon = Icons.Material.Filled.Folder;
-            break;
-        case ActiveDirectoryObjectType.Computer:
-            adornmentIcon = Icons.Material.Filled.Computer;
-            break;
-        case ActiveDirectoryObjectType.Printer:
-            adornmentIcon = Icons.Material.Filled.Print;
-            break;
-        case ActiveDirectoryObjectType.BitLocker:
-            adornmentIcon = Icons.Material.Filled.EnhancedEncryption;
-            break;
-    }
-}
+
 <MudPaper Class=" mud-overlay-light" Style="width:100%;max-width:550px;height:min-content;">
     <ADAutoComplete Class="mt-0"
                     Style="max-width:550px;"
-                    AdornmentIcon="@adornmentIcon"
+                    AdornmentIcon="@SearchService.SeachObjectType.TypeIcon()"
                     Variant="Variant.Filled"
-                    Label=@AppLocalization["Search Directory"]
+                    Label=@AppLocalization[Lang.Search_Directory]
                     SelectedResultChanged="@((result)=>{if(result!=null)SearchService.Search(SearchService.SearchTerm);})"
                     SearchObjectType="@SearchService.SeachObjectType"
                     SearchDisabled=@SearchService.IncludeDisabled

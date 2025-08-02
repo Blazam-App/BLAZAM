@@ -17,10 +17,10 @@
                 color = Color.Info;
             }
             <MudBadge Color=Color.Error
-                      Visible="@(unreadItems.Count() > 0)"
+                      Visible="@(unreadItems.Count > 0)"
                       Overlap=true
                       BadgeClass="badge-repos cursor-pointer"
-                      Content="@unreadItems.Count()">
+                      Content="@unreadItems.Count">
                 <AppTooltip Text=@("Blazam "+AppLocalization[Lang.News])>
                     <AppIconButton Size="Size.Large"
                                    Icon="@Icons.Material.TwoTone.NewReleases"
@@ -30,17 +30,23 @@
         </ActivatorContent>
 
         <ChildContent>
-            <MudContainer Class="px-0" Style="width:300px;">
-                <MudText Typo=Typo.h6 Class="py-2" Align="Align.Center">
+            <MudContainer Class="px-0"
+                          Style="width:300px;">
+                <MudText Typo=Typo.h6
+                         Class="py-2"
+                         Align="Align.Center">
                     Blazam @AppLocalization[Lang.News]
                 </MudText>
-                <MudText Typo="Typo.caption" Class="px-1 py-2" Align="Align.Center">
-                    @AppLocalization["Important updates and changes are posted here."]
+                <MudText Typo="Typo.caption"
+                         Class="px-1 py-2"
+                         Align="Align.Center">
+                    @AppHelpLocalization[HelpLang.News_Provider_Description]
                 </MudText>
                 @foreach (var item in unreadItems.OrderByDescending(x => x.UpdatedAt))
                 {
                     <ApplicationNewsItem Item=item
                                          Read=false
+                                         OnClick="@(()=>{ ShowNews(item); })"
                                          OnRead="@(()=>{
                                             RefreshItems();
                                             })" />
@@ -50,7 +56,9 @@
                 {
                     foreach (var item in readItems.OrderByDescending(x => x.UpdatedAt))
                     {
-                        <ApplicationNewsItem Item="item" Read=true />
+                        <ApplicationNewsItem Item="item"
+                                             Read=true
+                                             OnClick="@(()=>{ ShowNews(item); })" />
                         <MudDivider />
 
                     }
@@ -59,8 +67,8 @@
                 {
                     if (unreadItems.Count == 0)
                     {
-                        <MudText Align=Align.Center Class="">
-                            @AppLocalization["There is nothing new to see here"]
+                        <MudText Align=Align.Center>
+                            @AppHelpLocalization[HelpLang.No_News]
                         </MudText>
                     }
                 }
@@ -74,13 +82,13 @@
                                        UncheckedColor="Color.Error"
                                        Color="Color.Success"
                                        Class="ps-2"
-                                       Label="@AppLocalization["Show read"]" />
+                                       Label="@AppLocalization[Lang.Show_read]" />
                         }
                         @if (unreadItems.Count > 0)
                         {
                             <MudSpacer />
                             <MudButton Size="Size.Small" OnClick="MarkAllRead">
-                                @AppLocalization["Mark all read"]
+                                @AppLocalization[Lang.Mark_all_read]
                             </MudButton>
                         }
                     </MudStack>
@@ -106,21 +114,24 @@ else
     private List<NewsItem> unreadItems = new();
     private List<NewsItem> readItems = new();
     private MudMenu? newsMenu;
-    private ApplicationUpdate? latestUpdate;
     private NewsItem? appUpdateNewsItem
     {
         get
         {
-            if (latestUpdate == null) return null;
+            if (!AutoUpdateService.IsUpdateAvailable || UpdateService.NewestAvailableUpdate == null)
+            {
+                return null;
+            }
             return new NewsItem
                 {
-                    Title = AppLocalization["Update Available"],
-                    Body = AppLocalization[Lang.Version] + " " + latestUpdate.Version,
+                    Title = AppLocalization[Lang.Update_Available],
+                    Body = AppLocalization[Lang.Version] + " " + UpdateService.NewestAvailableUpdate?.Version +
+                                    "<br/> ",
                     Link = "/settings/update",
                     Published = true,
                     UpdatedAt = DateTime.MinValue,
                     CreatedAt = DateTime.MinValue,
-                    Id = ulong.Parse(latestUpdate.Version.ToString().Replace(".", ""))
+                    Id = ulong.Parse(UpdateService.NewestAvailableUpdate.Version.ToString().Replace(".", ""))
                 };
         }
     }
@@ -128,9 +139,9 @@ else
     {
         await base.OnInitializedAsync();
         ApplicationNewsService.OnNewItemsAvailable += RefreshItems;
-        
+
         RefreshItems();
-        
+
 
     }
 
@@ -142,6 +153,20 @@ else
         {
             newsMenu?.OpenMenuAsync(new());
         }
+    }
+    private async Task ShowNews(NewsItem newItem)
+    {
+        if (newsMenu != null)
+        {
+            await newsMenu.CloseAllMenusAsync();
+        }
+        var result = await newItem.ShowNewsItemDialog(MessageService);
+        if (result.Dialog is AppNewsItemDialog dialog)
+        {
+            dialog.OnAcknowledged += () => RefreshItems();
+        }
+
+
     }
     private async void MarkAllRead()
     {
@@ -173,7 +198,6 @@ else
 
         }
         LoadingData = false;
-       // InvokeAsync(StateHasChanged);
 
     }
     private void RefreshUnreadItems()
@@ -183,10 +207,9 @@ else
         unreadItems = ApplicationNewsService.GetUnreadNewsItems(CurrentUser.State);
         if (AutoUpdateService.IsUpdateAvailable)
         {
-            latestUpdate = UpdateService.LatestUpdate;
 
             if (appUpdateNewsItem != null &&
-                !CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id)==true)
+                !CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id) == true)
             {
                 unreadItems.Insert(0, appUpdateNewsItem);
             }
@@ -197,10 +220,10 @@ else
     {
         readItems = ApplicationNewsService.GetReadNewsItems(CurrentUser.State);
 
-        if (appUpdateNewsItem != null && CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id)==true)
+        if (appUpdateNewsItem != null && CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id) == true)
         {
             readItems.Insert(0, appUpdateNewsItem);
         }
     }
- 
+
 }

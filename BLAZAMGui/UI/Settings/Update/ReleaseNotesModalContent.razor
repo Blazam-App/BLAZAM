@@ -1,6 +1,6 @@
 ﻿@using BLAZAM.Update;
 @inherits AppModalContent
-<MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@Update.Release.ReleaseNotes"/>
+<MudMarkdown Props=Props Value="@Update.Release.ReleaseNotes"/>
 
 @code {
     [Parameter]
@@ -8,7 +8,16 @@
 
     private string Value { get; } = "text *italics* and **bold**";
 
-    private Typo ConvertHeaders(Typo from)
+    private static readonly MudMarkdownProps Props = new()
+    {
+         Heading =
+        {
+           OverrideTypo=ConvertHeaders,
+        },
+    };
+
+
+    private static Typo ConvertHeaders(Typo from)
     {
         switch (from)
         {

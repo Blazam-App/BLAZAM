@@ -3,13 +3,13 @@
 Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
 
 
-<SettingsField Label="@AppLocalization["Create new token"]">
+<SettingsField Label="@AppLocalization[Lang.Create_new_token]">
     <MudSelect @bind-Value="_apiValidDays"
     Class="mb-3"
-    Label="@AppLocalization["Token Lifetime"]">
+    Label="@AppLocalization[Lang.Token_Lifetime]">
         @if (ApplicationInfo.InDebugMode)
         {
-            <MudSelectItem Value="TimeSpan.FromSeconds(30)">30 @AppLocalization["seconds"]</MudSelectItem>
+            <MudSelectItem Value="TimeSpan.FromSeconds(30)">30 @AppLocalization[Lang.seconds]</MudSelectItem>
 
         }
         <MudSelectItem Value="TimeSpan.FromDays(30)">30 @AppLocalization[Lang.days]</MudSelectItem>
@@ -20,13 +20,13 @@ Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
         <MudSelectItem Value="TimeSpan.FromDays(2*365)">2 @AppLocalization[Lang.years]</MudSelectItem>
         <MudSelectItem Value="TimeSpan.FromDays(5*365)">5 @AppLocalization[Lang.years]</MudSelectItem>
         <MudSelectItem Value="TimeSpan.FromDays(10*365)">10 @AppLocalization[Lang.years]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(1000*365)">@AppLocalization["Forever"]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(1000*365)">@AppLocalization[Lang.Forever]</MudSelectItem>
 
     </MudSelect>
     <MudButton Variant="Variant.Filled"
     Color="Color.Success"
     OnClick="@GenerateToken">
-        @AppLocalization["Generate New API Token"]
+        @AppLocalization[Lang.Generate_New_API_Token]
     </MudButton>
 </SettingsField>
 @code {
@@ -64,12 +64,12 @@ Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
     public async Task Save()
     {
         await Context.SaveChangesAsync();
-        SnackBarService.Success(AppLocalization["Changes have been saved"]);
+        SnackBarService.Success(AppLocalization[Lang.Changes_have_been_saved]);
     }
 
     private async Task Delete(ApiToken? tokenToDelete)
     {
-        if (tokenToDelete != null && await MessageService.Confirm(AppLocalization["Are you sure you want to delete this API token?"], AppLocalization["Confirm delete"]))
+        if (tokenToDelete != null && await MessageService.Confirm(AppHelpLocalization[HelpLang.Delete_API_Token_Confirmation], AppLocalization[Lang.Confirm_deletion]))
         {
                 tokenToDelete.DeletedAt = DateTime.UtcNow;
                 await Context.SaveChangesAsync();
