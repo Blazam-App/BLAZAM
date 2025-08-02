@@ -136,15 +136,20 @@ namespace BLAZAM.Gui.UI
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            YesText = AppLocalization[Lang.Ok];
+            if (YesText.IsNullOrEmpty())
+            {
+                YesText = AppLocalization[Lang.Ok];
+            }
             if (Options == null)
+            {
                 Options = new()
                 {
                     MaxWidth = Width,
-                    CloseButton=true
+                    CloseButton = true
                 };
+            }
 
-            AllowClose = true;
+            //AllowClose = true;
         }
         /// <summary>
         /// Re-renders the modal with the latest property values
