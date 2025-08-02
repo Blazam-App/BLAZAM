@@ -12,44 +12,7 @@
           ExpirationWarningModal?.Close();
           return Task.CompletedTask;
           })>
-
-    @if (ExpirationWarningModal?.IsShown == true)
-    {
-
-        var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
-        if (timeLeft.HasValue && timeLeft.Value.TotalMilliseconds < 0)
-        {
-           
-            if (ExpiredModal != null)
-            {
-                ExpiredModal.AllowClose = false;
-                _=ExpiredModal.ShowAsync();
-            }
-            //ExpirationWarningModal.Close();
-        }
-        string formattedTimeLeft = "";
-        if (timeLeft != null && timeLeft.Value.TotalSeconds>0)
-        {
-
-            if (timeLeft.Value.Hours > 0)
-            {
-                formattedTimeLeft += timeLeft.Value.Hours + ":";
-            }
-            formattedTimeLeft += timeLeft.Value.Minutes + ":";
-            formattedTimeLeft += timeLeft.Value.Seconds.ToString("D2");
-            Task.Delay(1000).ContinueWith((state) =>
-            {
-                InvokeAsync(StateHasChanged);
-            });
-        }
-
-        <MudText>
-            @AppLocalization[Lang.Session_expires_in] @formattedTimeLeft
-        </MudText>
-
-
-    }
-
+    <AppUserSessionTimeLeft Ticket="_ticket"/>
 </AppModal>
 <AppModal Title=@AppLocalization[Lang.Session_Expired]
           @ref="ExpiredModal"
@@ -72,12 +35,15 @@
     AppModal? ExpirationWarningModal;
     AppModal? ExpiredModal;
     AuthenticationTicket? _ticket;
+    Timer? fastExpirationChecker;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         sessionTimeoutCheckTimer = new Timer(CheckExpiration, null, 30000, 30000);
     }
+
+    // This method checks the session expiration and shows a warning modal if the session is about to expire
     private async void CheckExpiration(object? obj)
     {
         if (CurrentUser.State?.Ticket != null)
@@ -88,14 +54,51 @@
             {
                 await InvokeAsync(async () => {
                     await ExpirationWarningModal.ShowAsync(); 
+                    fastExpirationChecker = new Timer(WaitForExpiration, null, 1000, 1000);
                 });
 
             }
         }
     }
+
+    // This method is called by the fast expiration checker timer to check if the session has expired
+    private async void WaitForExpiration(object? obj)
+    {
+        if (CurrentUser.State?.Ticket != null)
+        {
+            _ticket = CurrentUser.State?.Ticket;
+            var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
+
+            // If the time left is less than 1 second, we can consider the session expired
+            if (timeLeft < TimeSpan.FromSeconds(1))
+            {
+                // Stop the fast expiration checker timer
+                if(fastExpirationChecker != null)
+                {
+                    fastExpirationChecker.Dispose();
+                    fastExpirationChecker = null;
+                }
+                // Close the expiration warning modal if it's shown
+                if(ExpirationWarningModal?.IsShown == true)
+                {
+                    ExpirationWarningModal.Close();
+                }
+                // Show the expired modal
+                if(ExpiredModal?.IsShown == false)
+                {
+                    await InvokeAsync(async () => {
+                        await ExpiredModal.ShowAsync();
+                    });
+                }
+               
+            }
+        }
+    }
+
     public override void Dispose()
     {
         base.Dispose();
         sessionTimeoutCheckTimer?.Dispose();
+        fastExpirationChecker?.Dispose();   
     }
 }
