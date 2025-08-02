@@ -2,6 +2,7 @@
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
+using BLAZAM.Global.Events;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;

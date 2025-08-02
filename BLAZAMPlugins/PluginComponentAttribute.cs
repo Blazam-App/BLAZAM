@@ -28,13 +28,13 @@ namespace BLAZAM.Plugins
         Settings,
     }
 
-    public class PluginRenderFragmentAttribute : Attribute
+    public class PluginComponentAttribute : Attribute
     {
         public PageType PageType { get; }
 
         public PageLocation PageLocation { get; set; }
 
-        public PluginRenderFragmentAttribute(PageType pageType, PageLocation pageLocation)
+        public PluginComponentAttribute(PageType pageType, PageLocation pageLocation)
         {
             PageType = pageType;
             PageLocation = pageLocation;

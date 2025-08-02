@@ -164,11 +164,7 @@ namespace BLAZAM.Logger
                              .Enrich.WithProperty("Installation Completed", InstallationCompleted)
                              .Enrich.WithProperty("Database Type", DatabaseType)
                                .Enrich.WithProperty("Application Version", _applicationVersion);
-            if (pluginName != null)
-            {
-                config.Enrich.WithProperty("Plugin Name", pluginName);
-                config.Enrich.WithProperty("Plugin Version", pluginVersion);
-            }
+          
             return config;
         }
 

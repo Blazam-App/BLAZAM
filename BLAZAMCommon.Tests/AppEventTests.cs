@@ -2,6 +2,7 @@
 using Xunit;
 using BLAZAM;
 
+
 namespace BLAZAMCommon.Tests // You can adjust the namespace to fit your test project structure
 {
     public class AppEventTests

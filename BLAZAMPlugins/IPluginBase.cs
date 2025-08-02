@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using BLAZAM.Global.Data;
+using Microsoft.AspNetCore.Builder;
 using System.Reflection;
 
 namespace BLAZAM.Plugins
@@ -18,7 +19,7 @@ namespace BLAZAM.Plugins
         /// <summary>
         /// The version of the plugin.
         /// </summary>
-        string Version { get; }
+        PluginVersion Version { get; }
         /// <summary>
         /// The author of the plugin.
         /// </summary>

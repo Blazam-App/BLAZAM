@@ -47,6 +47,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
+		<ProjectReference Include="..\BLAZAMGlobal\BLAZAMGlobal.csproj" />
 	</ItemGroup>
 
 </Project>
