@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <BaseOutputPath>..\BLAZAM\Plugins</BaseOutputPath>
+	  <disabletransitiveprojectreferences>true</disabletransitiveprojectreferences>
   </PropertyGroup>
 
 
@@ -17,7 +19,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BLAZAMPlugins\BLAZAMPlugins.csproj" />
+    <ProjectReference Include="..\BLAZAMGui\BLAZAMGui.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\BLAZAMPlugins\BLAZAMPlugins.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

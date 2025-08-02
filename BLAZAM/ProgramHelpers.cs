@@ -75,9 +75,6 @@ namespace BLAZAM.Server
                 ApplicationInfo.installationId = Environment.MachineName.ToGuid(); // Assumes ToGuid() extension method exists
             }
 
-            // Define the path for application plugins based on the writable path.
-            Program.PluginDirectory = new SystemDirectory(Program.WritablePath + @"plugins\");
-
             // Store the configuration manager instance globally for easy access (use with caution).
             Program.Configuration = builder.Configuration;
 
@@ -393,7 +390,7 @@ namespace BLAZAM.Server
         /// <param name="builder">The WebApplicationBuilder instance.</param>
         private static void InjectPluginServices(WebApplicationBuilder builder)
         {
-            var pluginDir = Program.PluginDirectory; // Get the plugin directory path
+            var pluginDir = ApplicationInfo.pluginDirectory; // Get the plugin directory path
 
             // Check if the directory exists
             if (!pluginDir.Exists)
@@ -405,20 +402,21 @@ namespace BLAZAM.Server
             Loggers.SystemLogger.Information("Scanning for plugins in {@PluginPath}...", pluginDir.FullPath);
 
             // Process each DLL file in the plugin directory in parallel
-            Parallel.ForEach(pluginDir.Files.Where(f => f.Extension.Equals(".dll", StringComparison.OrdinalIgnoreCase)), dll =>
+            Parallel.ForEach(pluginDir.GetFilesAndSubFiles("*.dll"), dll =>
             {
                 Loggers.SystemLogger.Debug("Attempting to load plugin assembly: {@DllName}", dll.Name);
                 try
                 {
                     // Use a custom AssemblyLoadContext for plugin isolation (optional but recommended)
                     var loadContext = new PluginLoadContext(dll.FullPath);
+                    
                     // Load the assembly by its name (without extension)
                     Assembly assembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(dll.FullPath)));
                     Loggers.SystemLogger.Debug("Successfully loaded assembly: {@AssemblyName}", assembly.FullName);
-
-                    // Find all types in the loaded assembly that implement IPluginBase
-                    var pluginTypes = assembly.GetTypes()
-                        .Where(type => typeof(IPluginBase).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
+                   
+                    
+                    
+                    IEnumerable<Type> pluginTypes = assembly.GetPluginTypes(typeof(IPluginBase));
 
                     // Iterate through discovered plugin types
                     foreach (Type pluginType in pluginTypes)
@@ -429,12 +427,13 @@ namespace BLAZAM.Server
                             // Create an instance of the plugin type
                             if (Activator.CreateInstance(pluginType) is IPluginBase pluginInstance)
                             {
-                                // Call the plugin's service injection method
-                                pluginInstance.InjectServices(builder);
-                                // Store the loaded assembly reference in the plugin instance
-                                pluginInstance.Assembly = assembly;
+                                if (pluginInstance is IPluginServiceProvider pluginServices)
+                                {
+                                    // Call the plugin's service injection method
+                                    pluginServices.InjectServices(builder);
+                                }
                                 // Add the plugin instance to the global list of loaded plugins
-                                ApplicationInfo.loadedPlugins.Add(pluginInstance);
+                                ApplicationInfo.LoadedPlugins.Add(assembly, pluginInstance);
                                 Loggers.SystemLogger.Information("Successfully instantiated and injected services for plugin: {@PluginType}", pluginType.FullName);
                             }
                             else
@@ -475,6 +474,8 @@ namespace BLAZAM.Server
             });
             Loggers.SystemLogger.Information("Finished scanning for plugins.");
         }
+
+
 
         // Lock object for thread safety when modifying shared service collection in parallel
         private static readonly object _lock = new();

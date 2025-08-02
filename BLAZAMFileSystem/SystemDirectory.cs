@@ -134,7 +134,32 @@ namespace BLAZAM.FileSystem
                 return files;
             }
         }
-
+        public List<SystemFile> GetFilesAndSubFiles(string? filter = "*.*")
+        {
+            
+            
+                List<SystemFile> files = new();
+                try
+                {
+                    if (Exists)
+                    {
+                        // Get all files in the directory and subdirectories
+                        foreach (var file in Directory.GetFiles(FullPath, filter, SearchOption.AllDirectories))
+                        {
+                            files.Add(new SystemFile(file));
+                        }
+                    }
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    // Ignore if directory not found during file listing
+                }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Error(ex, "SystemDirectory.FilesAndSubFiles: Error getting files for {Path}.", FullPath);
+                }
+                return files;
+            }
         /// <summary>
         /// Gets the name of the directory (the last part of the path). Returns null or empty if FullPath is invalid.
         /// </summary>
