@@ -362,10 +362,5 @@ namespace BLAZAM
                 return AppInstance.Environment.IsDevelopment();
             }
         }
-
-        /// <summary>
-        /// Gets or sets the directory path for storing application plugins.
-        /// </summary>
-        public static SystemDirectory PluginDirectory { get; internal set; }
     }
 }

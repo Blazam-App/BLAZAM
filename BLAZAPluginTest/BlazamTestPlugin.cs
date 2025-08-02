@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAPluginTest
 {
-    public class BlazamTestPlugin : IPluginBase
+    public class BlazamTestPlugin : IPluginBase, IPluginServiceProvider
     {
 
 
@@ -21,10 +21,9 @@ namespace BLAZAPluginTest
 
         public IPluginView? SettingsPage => null;
 
-        public Assembly Assembly { get; set; }
-
         public WebApplicationBuilder InjectServices(WebApplicationBuilder builder)
         {
+
             return builder;
         }
     }

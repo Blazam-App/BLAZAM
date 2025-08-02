@@ -14,16 +14,30 @@ namespace BLAZAM.Plugins
         Computer,
         OU,
         Printer,
-        Widget
+        Widget,
+        Plugin,
+    }
+    public enum PageLocation
+    {
+        SubHeader,
+        Details,
+        Account,
+        Organization,
+        Profile,
+        CustomFields,
+        Settings,
     }
 
     public class PluginRenderFragmentAttribute : Attribute
     {
         public PageType PageType { get; }
 
-        public PluginRenderFragmentAttribute(PageType pageType)
+        public PageLocation PageLocation { get; set; }
+
+        public PluginRenderFragmentAttribute(PageType pageType, PageLocation pageLocation)
         {
             PageType = pageType;
+            PageLocation = pageLocation;
         }
     }
 }
