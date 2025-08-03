@@ -61,6 +61,8 @@
             <PropertyColumn Title="@AppLocalization[Lang.Name]" Property="x=>x.CanonicalName" />
         </Columns>
     </MudDataGrid>
+
+    <PluginComponents Page="@PageType.OU" Location="@PageLocation.Details" />
 }
 
 @if (OU != null && OU.CanEdit && OU.HasUnsavedChanges)
