@@ -73,7 +73,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                            }
                            catch (Win32Exception ex)
                            {
-                               Loggers.ActiveDirectoryLogger.Error("Error while collecting sessions for " + Computer + " {@Error}", ex);
+                               Loggers.ActiveDirectoryLogger.Information(ex, "Error while collecting sessions for {@Computer}" + Computer);
                            }
                        }
                        catch

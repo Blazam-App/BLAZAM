@@ -1,4 +1,4 @@
-﻿@using BLAZAM.Services.Plugins
+﻿
 @inherits DirectoryModelComponentElement
 
 
@@ -127,11 +127,8 @@
             }
         }
 
-        @foreach(var pluginComponent in accountPluginComponents)
-        {
-            <DynamicComponent Type="@pluginComponent" />
-        }
-    
+       <PluginComponents Page="@PageType.User" Location="@PageLocation.Account"/>
+     
 
 
     </ViewSection>
@@ -191,11 +188,4 @@
     [Parameter]
     public EventCallback<string> ConfirmPasswordChanged { get; set; }
 
-    List<Type> accountPluginComponents = new List<Type>();
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        accountPluginComponents = PluginManager.GetPluginTypeForPageAndLocation(Plugins.PageType.User, Plugins.PageLocation.Account);
-
-    }
 }

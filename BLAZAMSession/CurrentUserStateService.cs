@@ -69,7 +69,7 @@ namespace BLAZAM.Session
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex, "Error trying to get current user state {@Error}", ex); // Pass ex as first param
+                Loggers.SystemLogger.Error(ex, "Error trying to get current user state");
                 return;
             }
             // Original log below might be less useful now that we log success specifically. Kept for now.

@@ -12,9 +12,9 @@
             ButtonDisabledFunc="@((item)=>{return false;})"
                          InitiallyExpandedFunc="@((item)=>{return false;})" />
 
-        <PropertyColumn Property="x=>x.Value.Name"/>
-        <PropertyColumn Property="x=>x.Value.Version"/>
-        <PropertyColumn Property="x=>x.Value.Author"/>
+        <PropertyColumn Property="x => x.PluginBase.Name" />
+        <PropertyColumn Property="x => x.PluginBase.Version" />
+        <PropertyColumn Property="x => x.PluginBase.Author" />
     </Columns>
     <ChildRowContent>
         <MudCard>
@@ -24,7 +24,7 @@
                 </CardHeaderContent>
             </MudCardHeader>
             <MudCardContent>
-                <DynamicComponent Type="@PluginManager.GetPluginSettingsComponent(context.Item.Value)" />
+                <DynamicComponent Type="@PluginManager.GetPluginSettingsComponent(context.Item.PluginBase)" />
             </MudCardContent>
         </MudCard>
     </ChildRowContent>

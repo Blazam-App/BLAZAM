@@ -582,7 +582,7 @@
         }
         catch (Exception ex)
         {
-            Loggers.SystemLogger.Error("Error while assigning group to template {@Error}", ex);
+            Loggers.SystemLogger.Error(ex,"Error while assigning group to template");
             SnackBarService.Error(ex.Message);
 
         }
@@ -835,7 +835,7 @@
             }
             catch (SqlException ex)
             {
-                Loggers.DatabaseLogger.Error("Error attempting to save creation template " + _template.Name + " {@Error}", ex);
+                Loggers.DatabaseLogger.Error(ex,"Error attempting to save creation template {@Template}", _template.Name);
             }
         }
         else

@@ -516,7 +516,7 @@ namespace BLAZAM.Database.Context
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error(ex.Message + " {@Error}", ex);
+                    Loggers.DatabaseLogger.Error(ex,"Unexpected error testing connection to database");
                     DownReason = new("The database experienced an unexpected error. " + ex.Message);
 
                 }

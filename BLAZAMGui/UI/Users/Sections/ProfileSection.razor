@@ -37,6 +37,9 @@
             {
                 <DynamicMudInput T=string Label="@AppLocalization[Lang.Profile_Path]" @bind-Value="@User.ProfilePath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) />
             }
+
+        <PluginComponents Page="@PageType.User" Location="@PageLocation.Profile" />
+
     </ViewSection>
 }
 @code {

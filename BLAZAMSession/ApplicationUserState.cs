@@ -491,7 +491,7 @@ namespace BLAZAM.Session
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex, "Error checking object read permissions for ObjectType {ObjectType}. Error: {@Error}", objectType, ex.Message); // Include objectType and ex
+                Loggers.SystemLogger.Error(ex, "Error checking object read permissions for ObjectType {ObjectType}", objectType); // Include objectType and ex
                 return false;
             }
         }

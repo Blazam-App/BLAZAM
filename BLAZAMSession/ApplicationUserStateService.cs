@@ -110,7 +110,7 @@ namespace BLAZAM.Session
                 }
                 catch (Exception ex)
                 {
-                    Loggers.SystemLogger.Error(ex, "Unexpected error trying to retrieve current user state from httpContext{@Error}", ex.Message); // Use ex.Message
+                    Loggers.SystemLogger.Error(ex, "Unexpected error trying to retrieve current user state from httpContext"); 
                     return null;
                 }
             }
@@ -225,7 +225,7 @@ namespace BLAZAM.Session
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex, "Error trying to remove user state {@Error}", ex.Message); // Use ex.Message
+                Loggers.SystemLogger.Error(ex, "Error trying to remove user state"); 
             }
         }
 

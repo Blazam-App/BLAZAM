@@ -233,7 +233,7 @@ namespace BLAZAM.Services.Background
                     else
                     {
                         var error = new AppException();
-                        Loggers.SystemLogger.Error("Email message template was not found! {@Error}", error);
+                        Loggers.SystemLogger.Error(error,"Email message template was not found!");
                     }
                 }
             }
@@ -430,7 +430,7 @@ namespace BLAZAM.Services.Background
                 }
                 catch (Exception ex)
                 {
-                    Loggers.SystemLogger.Error("Error while parsing users for notification broadcast {@Error}", ex);
+                    Loggers.SystemLogger.Error(ex,"Error while parsing users for notification broadcast");
                 }
             }
             return effectiveByEmailSubscription;
