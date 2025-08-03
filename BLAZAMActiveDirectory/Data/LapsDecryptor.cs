@@ -62,6 +62,10 @@ namespace BLAZAM.ActiveDirectory.Data
 
         public string Decrypt(byte[] encryptedPass)
         {
+            if (encryptedPass.Length < 16)
+            {
+                throw new ArgumentException("Encrypted password data is too short.", nameof(encryptedPass));
+            }
             var tcs = new TaskCompletionSource<string>();
             GCHandle gch = GCHandle.Alloc(tcs);
 
