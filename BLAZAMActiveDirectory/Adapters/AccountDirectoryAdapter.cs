@@ -374,7 +374,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Warning("Could not set password via Invoke {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Warning(ex, "Could not set password via Invoke");
                     //The following works outside the domain but may have issues with certs
                     using (PrincipalContext pContext = new(
                         ContextType.Domain,

@@ -50,7 +50,7 @@
             SnackBarService.Error(ex.Message);
         }
         catch(Exception ex){
-            Loggers.SystemLogger.Error("Error uploading thumbnail image. {@Error}", ex);
+            Loggers.SystemLogger.Error(ex, "Error uploading thumbnail image.");
         }
     await InvokeAsync(StateHasChanged);
 

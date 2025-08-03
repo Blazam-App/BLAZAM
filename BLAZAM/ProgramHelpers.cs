@@ -434,7 +434,7 @@ namespace BLAZAM.Server
                                     pluginServices.InjectServices(builder);
                                 }
                                 // Add the plugin instance to the global list of loaded plugins
-                                ApplicationInfo.loadedPlugins.Add(assembly, pluginInstance);
+                                ApplicationInfo.loadedPlugins.Add(new(assembly,pluginInstance));
                                 Loggers.PluginLogger.Information("Successfully loaded and injected services for plugin: {@PluginType}", pluginType.FullName);
                             }
                             else

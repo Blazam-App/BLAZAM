@@ -85,7 +85,7 @@ namespace BLAZAM.Services.Background
                 }
                 catch (Exception ex)
                 {
-                    Loggers.SystemLogger.Warning("Unable to contact application news API {@URI}{@Error}", _httpClient.BaseAddress, ex);
+                    Loggers.SystemLogger.Warning(ex, "Unable to contact application news API {@URI}", _httpClient.BaseAddress);
                 }
                 return false;
             });
@@ -128,7 +128,7 @@ namespace BLAZAM.Services.Background
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error while trying to get unread news items for user. {@Error}", ex);
+                Loggers.SystemLogger.Error(ex, "Error while trying to get unread news items for user.");
                 return new();
             }
         }
@@ -155,7 +155,7 @@ namespace BLAZAM.Services.Background
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error while trying to get read news items for user. {@Error}", ex);
+                Loggers.SystemLogger.Error(ex, "Error while trying to get read news items for user.");
                 return new();
             }
         }

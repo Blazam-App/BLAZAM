@@ -387,11 +387,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
             catch (COMException ex)
             {
-                Loggers.ActiveDirectoryLogger.Information("Directory Entry failed to connect {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Information(ex, "Directory Entry failed to connect");
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error("Directory Entry failed to connect {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex, "Directory Entry failed to connect");
             }
 
             SearchState = SearchState.Completed;

@@ -491,7 +491,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error trying to check entry permissions.");
                 return false;
             }
         }
@@ -831,8 +831,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     //Existing Active Directory Entry
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectoryLogger.Error("The directory entry for an existing " +
-                            " entry is somehow missing on commit." + " {@Error}", new AppException("DirectoryEntry is null"));
+                        Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"),"The directory entry for an existing " +
+                            " entry is somehow missing on commit." );
                         throw new AppException("DirectoryEntry is null");
                     }
                     foreach (var p in NewEntryProperties)
@@ -879,8 +879,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectoryLogger.Error("The directory entry for new entry " + DN +
-                            " is somehow missing on commit." + " {@Error}", new AppException("DirectoryEntry is null"));
+                        Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"),"The directory entry for new entry " + DN +
+                            " is somehow missing on commit.");
                         throw new AppException("DirectoryEntry is null");
                     }
                     foreach (var p in NewEntryProperties)
@@ -1013,7 +1013,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex,"Unexpected error deleting directory entry");
             }
         }
 
@@ -1194,7 +1194,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (ArgumentException ex)
             {
-                Loggers.ActiveDirectoryLogger.Information(ex, "Argument Exception getting an entry's attribute. {@Error} {@Attribute}", propertyName);
+                Loggers.ActiveDirectoryLogger.Information(ex, "Argument Exception getting an entry's attribute. {@Attribute}", propertyName);
                 //var temp = DirectoryEntry?.Properties[propertyName];
                 //var temp2 = (T?)temp?.Value;
                 //return temp2;

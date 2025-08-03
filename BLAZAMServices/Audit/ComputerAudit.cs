@@ -86,7 +86,7 @@ namespace BLAZAM.Services.Audit
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Unable to write Log to database {@Error}", ex);
+                Loggers.SystemLogger.Error(ex, "Unable to write Log to database");
 
                 return false;
             }

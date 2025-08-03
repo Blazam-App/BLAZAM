@@ -119,7 +119,7 @@ namespace BLAZAM.Common.Data
                           {
                               var exception = new AppException("Impersonation running as application identity");
                               ExceptionDispatchInfo.SetCurrentStackTrace(exception);
-                              Loggers.ActiveDirectoryLogger.Information("Impersonation running as application identity  {@Error}", exception);
+                              Loggers.ActiveDirectoryLogger.Information(exception, "Impersonation running as application identity");
 
                           }
                           Loggers.ActiveDirectoryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);
@@ -130,7 +130,7 @@ namespace BLAZAM.Common.Data
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error("Error running impersonated action " + impersonationUser.Username + " {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Error running impersonated action {@Impersonatee}", impersonationUser.Username);
                 }
                 finally
                 {
@@ -139,7 +139,7 @@ namespace BLAZAM.Common.Data
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error("Error trying to impersonate " + impersonationUser.Username + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error trying to impersonate {@Impersonatee}", impersonationUser.Username);
             }
 
             return result;

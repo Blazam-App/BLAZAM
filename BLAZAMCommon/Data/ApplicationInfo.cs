@@ -119,12 +119,12 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// A list of plugins that were found
         /// </summary>
-        public static Dictionary<Assembly, IPluginBase> loadedPlugins { get; set; } = new();
+        public static List<LoadedPlugin> loadedPlugins { get; set; } = new();
 
         /// <summary>
         /// A list of plugins that were found
         /// </summary>
-        public Dictionary<Assembly, IPluginBase> LoadedPlugins { get => LoadedPlugins; set => LoadedPlugins = value; }
+        public List<LoadedPlugin> LoadedPlugins { get => LoadedPlugins; set => LoadedPlugins = value; }
 
         /// <summary>
         /// A collection of active listening address's with port

@@ -240,7 +240,7 @@ namespace BLAZAM.Update
                     }
                     catch (Exception ex)
                     {
-                        Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
+                        Loggers.UpdateLogger?.Error(ex, "Error applying update");
 
                     }
                     return false;
@@ -254,7 +254,7 @@ namespace BLAZAM.Update
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
+                    Loggers.UpdateLogger?.Error(ex, "Error applying update");
 
                 }
             }
@@ -313,7 +313,7 @@ namespace BLAZAM.Update
 
             Loggers.UpdateLogger?.Information("Starting update process");
             process.Start();
-            Loggers.UpdateLogger?.Information("Update process id: {ProcessId}", process.Id);
+            Loggers.UpdateLogger?.Information("Update process id: {@ProcessId}", process.Id);
 
             // Read and log the output asynchronously
             var output = new StringBuilder();
@@ -322,7 +322,7 @@ namespace BLAZAM.Update
                 if (!string.IsNullOrEmpty(e.Data))
                 {
                     output.AppendLine(e.Data);
-                    Loggers.UpdateLogger?.Information("Update process output: {ProcessOutput}", e.Data);
+                    Loggers.UpdateLogger?.Information("Update process output: {@ProcessOutput}", e.Data);
                 }
             };
             process.ErrorDataReceived += (sender, e) =>
@@ -330,35 +330,35 @@ namespace BLAZAM.Update
                 if (!string.IsNullOrEmpty(e.Data))
                 {
                     output.AppendLine(e.Data);
-                    Loggers.UpdateLogger?.Error("Update process error: {ProcessOutput}", e.Data); // Log as error
+                    Loggers.UpdateLogger?.Error("Update process error: {@ProcessOutput}", e.Data); // Log as error
                 }
             };
             process.BeginOutputReadLine(); // Start asynchronous reading
 
             process.WaitForExit();
             stopwatch.Stop();
-            Loggers.UpdateLogger?.Information("Update process exited in {ExeecutionTime}: {ExitCode}", stopwatch.ElapsedMilliseconds + "ms", process.ExitCode);
+            Loggers.UpdateLogger?.Information("Update process exited in {@ExeecutionTime}: {@ExitCode}", stopwatch.ElapsedMilliseconds + "ms", process.ExitCode);
 
 
             // Log the complete output (if needed)
-            Loggers.UpdateLogger?.Information("Complete update process output:\n{ProcessOutput}", output.ToString());
+            Loggers.UpdateLogger?.Information("Complete update process output:\n{@ProcessOutput}", output.ToString());
 
             return true;
         }
         public async Task<bool> Backup(JobStep? step)
         {
-            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {BackupPath}", BackupPath);
+            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupPath);
             try
             {
                 var result = await Task.Run(() => { return _applicationRootDirectory.CopyTo(BackupDirectory); });
 
-                Loggers.UpdateLogger?.Debug("Backup result: {BackupResult}", result.ToString());
+                Loggers.UpdateLogger?.Debug("Backup result: {@BackupResult}", result.ToString());
 
                 return result;
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger?.Error("Backup of current version failed: {@Error}", ex);
+                Loggers.UpdateLogger?.Error(ex, "Backup of current version failed");
                 return false;
             }
         }
@@ -368,7 +368,7 @@ namespace BLAZAM.Update
         {
             return await Task.Run(() =>
             {
-                Loggers.UpdateLogger?.Information("Attempting cleaning of download folder: {UpdatePath}", UpdateFile);
+                Loggers.UpdateLogger?.Information("Attempting cleaning of download folder: {@UpdatePath}", UpdateFile);
 
                 try
                 {
@@ -379,7 +379,7 @@ namespace BLAZAM.Update
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger?.Error("Error while cleaning of download folder: {UpdatePath} {@Error}", UpdateFile,  ex);
+                    Loggers.UpdateLogger?.Error(ex, "Error while cleaning of download folder: {@UpdatePath}", UpdateFile);
 
                     return false;
                 }
@@ -397,7 +397,7 @@ namespace BLAZAM.Update
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger?.Error("Error while cleaning staging directory. {@Error}", ex);
+                    Loggers.UpdateLogger?.Error(ex, "Error while cleaning staging directory.");
                     return true;
                 }
             });
@@ -425,7 +425,7 @@ namespace BLAZAM.Update
                     }
                     catch (Exception ex)
                     {
-                        Loggers.UpdateLogger?.Error("Error while extracting update zip {@Error}", ex);
+                        Loggers.UpdateLogger?.Error(ex, "Error while extracting update zip");
 
                         return false;
                     }
@@ -450,9 +450,9 @@ namespace BLAZAM.Update
             {
                 try
                 {
-                    Loggers.UpdateLogger?.Debug("Attempting download of update {UpdateVersion}", Version);
-                    Loggers.UpdateLogger?.Debug("Download URL: {DownloadURL}", Release.DownloadURL);
-                    Loggers.UpdateLogger?.Debug("Download Path: {UpdateDirectory}", UpdateDownloadDirectory);
+                    Loggers.UpdateLogger?.Debug("Attempting download of update {@UpdateVersion}", Version);
+                    Loggers.UpdateLogger?.Debug("Download URL: {@DownloadURL}", Release.DownloadURL);
+                    Loggers.UpdateLogger?.Debug("Download Path: {@UpdateDirectory}", UpdateDownloadDirectory);
 
                     var progress = new FileProgress();
                     using (var client = new HttpClient())
@@ -461,7 +461,7 @@ namespace BLAZAM.Update
                         {
                             if (!response.IsSuccessStatusCode)
                             {
-                                Loggers.UpdateLogger?.Debug("Unable to connect to download url: {StatusCode}:{ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                                Loggers.UpdateLogger?.Debug("Unable to connect to download url: {@StatusCode}:{@ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
 
                                 return false;
                             }

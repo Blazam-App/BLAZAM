@@ -87,7 +87,7 @@ namespace BLAZAM.Gui.UI.Chat
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error("Error getting unread chat messages {@Error}", ex);
+                Loggers.DatabaseLogger.Error(ex, "Error getting unread chat messages");
             }
         }
     }

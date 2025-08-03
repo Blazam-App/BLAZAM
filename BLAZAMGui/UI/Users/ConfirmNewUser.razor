@@ -351,7 +351,7 @@ else
         }
         catch (Exception ex)
         {
-            Loggers.SystemLogger.Error("Error sending welcome email {@Error}", ex);
+            Loggers.SystemLogger.Error(ex, "Error sending welcome email");
             SnackBarService.Error(ex.Message);
         }
         //emailPreview = EmailService.PrepareHTMLForEmail(html);

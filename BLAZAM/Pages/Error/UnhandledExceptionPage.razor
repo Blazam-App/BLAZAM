@@ -73,7 +73,7 @@
             if (_error != null)
             {
                 try{
-                    Loggers.SystemLogger.Fatal("Unhandled exception {@Error}", _error);
+                    Loggers.SystemLogger.Fatal(_error,"Unhandled exception");
                 }
                 catch
                 {
