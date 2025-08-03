@@ -1,8 +1,10 @@
 using BLAZAM.Helpers;
 using BLAZAM.Plugins;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,18 +20,44 @@ namespace BLAZAM.Services.Plugins
     {
         public static List<Type> GetPluginTypeForPageAndLocation(PageType pageType, PageLocation pageLocation)
         {
+            var includeAllEntryTypes = false;
+            if (pageType == PageType.User
+                || pageType == PageType.Computer
+                || pageType == PageType.Contact
+                || pageType == PageType.Printer
+                || pageType == PageType.OU
+                || pageType == PageType.Group)
+            {
+                includeAllEntryTypes = true;
+            }
+            bool includeIndividualEntryTypes = false;
+            if (pageType == PageType.AllEntryTypes)
+            {
+                includeIndividualEntryTypes = true;
+            }
             var matchingRazorComponents = new List<Type>();
-            foreach(var pluginAssembly in ApplicationInfo.loadedPlugins.Select(p=>p.Assembly))
+            foreach (var pluginAssembly in ApplicationInfo.loadedPlugins.Select(p => p.Assembly))
             {
                 var renderFragmentComponents = pluginAssembly.GetPluginComponents();
                 if (renderFragmentComponents.Count() > 0)
                 {
-                    foreach(var renderFragmentComponent in renderFragmentComponents)
+                    foreach (var renderFragmentComponent in renderFragmentComponents)
                     {
                         var attributeData = renderFragmentComponent.GetPluginComponentAttributes();
-                        foreach(var attribute in attributeData)
+                        foreach (var attribute in attributeData)
                         {
-                            if (attribute.PageType == pageType && attribute.PageLocation == pageLocation)
+                            if ((attribute.PageType == pageType
+                                || (includeAllEntryTypes && attribute.PageType == PageType.AllEntryTypes)
+                                || (includeIndividualEntryTypes
+                                && (attribute.PageType == PageType.User
+                                    || attribute.PageType == PageType.Computer
+                                    || attribute.PageType == PageType.Contact
+                                    || attribute.PageType == PageType.OU
+                                    || attribute.PageType == PageType.Printer
+                                    || attribute.PageType == PageType.Group)
+                                    )
+                                )
+                                && attribute.PageLocation == pageLocation)
                             {
                                 matchingRazorComponents.Add(renderFragmentComponent);
                             }
@@ -42,7 +70,7 @@ namespace BLAZAM.Services.Plugins
         public static Type? GetPluginSettingsComponent(IPluginBase plugin)
         {
             var matchingPlugin = ApplicationInfo.loadedPlugins.FirstOrDefault(p => p.PluginBase.Equals(plugin));
-            if (matchingPlugin.Assembly != null)
+            if (matchingPlugin?.Assembly != null)
             {
                 var settingsPage = matchingPlugin.Assembly.GetPluginComponents();
                 foreach (Type pluginRenderFragment in settingsPage)

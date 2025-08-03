@@ -63,6 +63,8 @@
     </MudDataGrid>
 
     <PluginComponents Page="@PageType.OU" Location="@PageLocation.Details" />
+
+    <PluginComponents Page="@PageType.OU" Location="@PageLocation.NewSection" />
 }
 
 @if (OU != null && OU.CanEdit && OU.HasUnsavedChanges)

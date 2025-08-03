@@ -191,6 +191,8 @@ else
                                        Color="@(IsFavorite?Color.Warning:Color.Default)" />
                     </AppTooltip>
                 }
+
+                <PluginComponents Page="@PageType.AllEntryTypes" Location="@PageLocation.SubHeader" />
             </MudToolBar>
         </MudHidden>
         <MudSpacer />
@@ -263,6 +265,7 @@ else
                     @AppLocalization[IsFavorite ? Lang.Remove_from_favorites : Lang.Add_to_favorites]
                 </MudMenuItem>
 
+                <PluginComponents Page="@PageType.AllEntryTypes" Location="@PageLocation.SubHeaderMobile" />
 
 
             </MudMenu>

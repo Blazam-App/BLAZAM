@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @inherits AppComponentBase
 
-@if (ApplicationInfo.InDebugMode)
+@if (ApplicationInfo.InDebugMode && CurrentUser.State.IsSuperAdmin)
 {
     <MudAlert Dense=true Class="mud-width-full" Severity="Severity.Info">
         <MudText>PluginComponent Location</MudText>
@@ -42,30 +42,30 @@
                 return new() { { "Entry", Entry} };
             }
 
-            if(Entry is IADComputer computer)
-            {
-                return new() { {"Computer",computer } };
-            } 
-            else if (Entry is IADUser user)
-            {
-                return new() { { "User", user } };
-            }
-            else if(Entry is IADPrinter printer)
-            {
-                return new() { { "Printer", printer } };
-            }
-            else if (Entry is IADOrganizationalUnit ou)
-            {
-                return new() { { "Ou", ou } };
-            }
-            else if (Entry is IADGroup group)
-            {
-                return new() { { "group", group } };
-            }
-            else if (Entry is IADContact contact)
-            {
-                return new() { { "contact", contact } };
-            }
+            // if(Entry is IADComputer computer)
+            // {
+            //     return new() { {"Computer",computer } };
+            // } 
+            // else if (Entry is IADUser user)
+            // {
+            //     return new() { { "User", user } };
+            // }
+            // else if(Entry is IADPrinter printer)
+            // {
+            //     return new() { { "Printer", printer } };
+            // }
+            // else if (Entry is IADOrganizationalUnit ou)
+            // {
+            //     return new() { { "OU", ou } };
+            // }
+            // else if (Entry is IADGroup group)
+            // {
+            //     return new() { { "Group", group } };
+            // }
+            // else if (Entry is IADContact contact)
+            // {
+            //     return new() { { "Contact", contact } };
+            // }
             return null;
         }
     }

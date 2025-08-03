@@ -28,6 +28,7 @@ namespace BLAZAM.Plugins
     public enum PageLocation
     {
         SubHeader,
+        SubHeaderMobile,
         Details,
         Account,
         Organization,
@@ -36,6 +37,7 @@ namespace BLAZAM.Plugins
         Settings,
         ContactInfo,
         Name,
+        NewSection,
     }
     /// <summary>
     /// This attribute provides the nececessary information for Blazam to include the attached Razor component
