@@ -124,7 +124,7 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// A list of plugins that were found
         /// </summary>
-        public List<LoadedPlugin> LoadedPlugins { get => LoadedPlugins; set => LoadedPlugins = value; }
+        public List<LoadedPlugin> LoadedPlugins { get => loadedPlugins; set => loadedPlugins = value; }
 
         /// <summary>
         /// A collection of active listening address's with port
