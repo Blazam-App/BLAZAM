@@ -45,7 +45,7 @@
 
 
 
-                    <Section Title=@AppLocalization[Lang.Info]>
+                    <ViewSection Title=@AppLocalization[Lang.Info]>
                         <MudStack Row=true Class="@_fieldMudStackClasses">
                             <DynamicMudInput T=string
                                              Label="@AppLocalization[Lang.Name]"
@@ -77,8 +77,10 @@
                                              Disabled=@true />
 
                         </MudStack>
+                        
+                        <PluginComponents Page="@PageType.Printer" Location="@PageLocation.Details"/>
 
-                    </Section>
+                    </ViewSection>
 
 
 

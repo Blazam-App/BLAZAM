@@ -19,7 +19,7 @@ namespace BLAZAM.Services.Plugins
         public static List<Type> GetPluginTypeForPageAndLocation(PageType pageType, PageLocation pageLocation)
         {
             var matchingRazorComponents = new List<Type>();
-            foreach(var pluginAssembly in ApplicationInfo.loadedPlugins.Keys)
+            foreach(var pluginAssembly in ApplicationInfo.loadedPlugins.Select(p=>p.Assembly))
             {
                 var renderFragmentComponents = pluginAssembly.GetPluginComponents();
                 if (renderFragmentComponents.Count() > 0)
@@ -41,10 +41,10 @@ namespace BLAZAM.Services.Plugins
         }
         public static Type? GetPluginSettingsComponent(IPluginBase plugin)
         {
-            var matchingPlugin = ApplicationInfo.loadedPlugins.FirstOrDefault(p => p.Value.Equals(plugin));
-            if (matchingPlugin.Key != null)
+            var matchingPlugin = ApplicationInfo.loadedPlugins.FirstOrDefault(p => p.PluginBase.Equals(plugin));
+            if (matchingPlugin.Assembly != null)
             {
-                var settingsPage = matchingPlugin.Key.GetPluginComponents();
+                var settingsPage = matchingPlugin.Assembly.GetPluginComponents();
                 foreach (Type pluginRenderFragment in settingsPage)
                 {
                     var attribute = pluginRenderFragment.GetPluginComponentAttributes().FirstOrDefault();

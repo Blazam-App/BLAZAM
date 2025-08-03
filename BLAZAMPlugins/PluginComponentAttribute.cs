@@ -26,6 +26,8 @@ namespace BLAZAM.Plugins
         Profile,
         CustomFields,
         Settings,
+        ContactInfo,
+        Name,
     }
 
     public class PluginComponentAttribute : Attribute
