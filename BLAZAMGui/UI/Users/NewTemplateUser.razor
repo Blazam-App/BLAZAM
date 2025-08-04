@@ -394,7 +394,7 @@
 
 
         if (field is ActiveDirectoryField)
-            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Required);
+            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field?.FieldName == field.FieldName && f.Required);
         else
             return DirectoryTemplate.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Required);
     }
