@@ -63,7 +63,7 @@
 
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Warning("Error checking user h-drive: {Message}", ex);
+                Loggers.ActiveDirectoryLogger.Warning(ex,"Error checking user h-drive");
 
             }
         }
