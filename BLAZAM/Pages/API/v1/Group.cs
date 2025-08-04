@@ -44,12 +44,15 @@ namespace BLAZAM.Pages.API.v1
         {
             try
             {
-                var ou = Directory.OUs.FindOUByDN(newGroupDetails.OU);
+                var ou = Directory.OUs.FindOuByDN(newGroupDetails.OU);
                 if (ou == null)
                 {
                     return NotFound("OU not found");
                 }
-
+                if (!ou.CanCreateUser)
+                {
+                    return Forbid("You do not have permission to create groups in this OU");
+                }
                 var newGroup = ou.CreateGroup(newGroupDetails.Name);
                 if (newGroupDetails.Description != null)
                 {
