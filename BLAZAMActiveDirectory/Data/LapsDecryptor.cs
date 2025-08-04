@@ -62,6 +62,10 @@ namespace BLAZAM.ActiveDirectory.Data
 
         public string Decrypt(byte[] encryptedPass)
         {
+            if(encryptedPass.Length<17)
+            {
+                throw new ArgumentException("Encrypted password must be at least 17 bytes long.");
+            }
             var tcs = new TaskCompletionSource<string>();
             GCHandle gch = GCHandle.Alloc(tcs);
 
