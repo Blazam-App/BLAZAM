@@ -75,13 +75,13 @@
                 // Stop the fast expiration checker timer
                 if(fastExpirationChecker != null)
                 {
-                    fastExpirationChecker.Dispose();
+                    await fastExpirationChecker.DisposeAsync();
                     fastExpirationChecker = null;
                 }
                 // Close the expiration warning modal if it's shown
                 if(ExpirationWarningModal?.IsShown == true)
                 {
-                    ExpirationWarningModal.Close();
+                    await ExpirationWarningModal.CloseAsync();
                 }
                 // Show the expired modal
                 if(ExpiredModal?.IsShown == false)
