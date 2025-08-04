@@ -93,7 +93,7 @@ namespace BLAZAM.ActiveDirectory.Data
             try
             {
                 Marshal.Copy(encryptedPass, 16, alloc, encryptedPass.Length - 16);
-                ret = Win32.NCryptUnprotectSecret(out handle2, 0x41, alloc, (uint)encryptedPass.Length - 16, IntPtr.Zero, IntPtr.Zero, out secData, out secDataLen);
+                ret = Win32.NCryptUnprotectSecret(out handle2, 0x41, alloc, (uint)(encryptedPass.Length - 16), IntPtr.Zero, IntPtr.Zero, out secData, out secDataLen);
                 if (ret == 0)
                 {
                     string sid;
