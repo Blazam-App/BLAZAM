@@ -11,6 +11,7 @@ using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
 using System.Diagnostics;
+using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -594,6 +595,38 @@ namespace BLAZAM.ActiveDirectory
             _context?.Dispose();
             _context = null;
         }
+        private AuthenticationTypes AuthTypeWin
+        {
+            get
+            {
+                AuthenticationTypes _authType = AuthenticationTypes.Secure;
+                using var context = Factory.CreateDbContext();
+                ADSettings? ad = context?.ActiveDirectorySettings.FirstOrDefault();
+
+                if (ad != null)
+                {
+                    ConnectionSettings = ad;
+
+                    //We need to determine what security options to use when authenticating
+                    //based on the settings in the DB
+
+                    if (ad.UseTLS)
+                    {
+                        _authType = AuthenticationTypes.Encryption;
+
+                    }
+                    if (ad.ServerPort == 636)
+                    {
+                        _authType = AuthenticationTypes.SecureSocketsLayer | AuthenticationTypes.Secure;
+
+                    }
+                }
+                return _authType;
+
+            }
+        }
+
+
         public IADUser? Authenticate(LoginRequest loginReq)
         {
             var stopWatch = Stopwatch.StartNew();
@@ -656,20 +689,25 @@ namespace BLAZAM.ActiveDirectory
                             try
                             {
                                 Loggers.ActiveDirectoryLogger.Information("Authenticating Active Directory credentials");
-                                throw new AppException("AD Auth not implemented");
+                                if (OperatingSystem.IsLinux())
+                                {
+                                    throw new AppException("AD Auth not implemented");
+                                }
 
-                                //var _authenticatedContext = new LdapDirectoryEntry(ConnectionSettings.ApplicationBaseDN, loginReq.Username, loginReq.Password, AuthType);
-                                //_ = _authenticatedContext.AuthenticationType;
-                                //var test2 = _authenticatedContext.Children.GetEnumerator();
-                                //test2.MoveNext();
-                                //var test3 = test2.Current as IDirectoryEntry;
-                                //_ = test3?.Parent;
+                                else
+                                {
+                                    var _authenticatedContext = new DirectoryEntry(LDAP_PROTO + ConnectionSettings.ServerAddress + ":" + ConnectionSettings.ServerPort + "/" + ConnectionSettings.ApplicationBaseDN, loginReq.Username, loginReq.Password, AuthTypeWin);
+                                    _ = _authenticatedContext.AuthenticationType;
+                                    var test2 = _authenticatedContext.Children.GetEnumerator();
+                                    test2.MoveNext();
+                                    var test3 = test2.Current as DirectoryEntry;
+                                    _ = test3?.Parent;
 
-                                //_authenticatedContext.Dispose();
-                                //stopWatch.Stop();
-                                //Loggers.ActiveDirectoryLogger.Debug("Authentication success: {@Elapsed} ms", stopWatch.ElapsedMilliseconds);
-
-                                //return findUser;
+                                    _authenticatedContext.Dispose();
+                                    stopWatch.Stop();
+                                    Loggers.ActiveDirectoryLogger.Debug("Authentication success: {@Elapsed} ms", stopWatch.ElapsedMilliseconds);
+                                }
+                                return findUser;
 
                             }
                             catch (Exception ex)
