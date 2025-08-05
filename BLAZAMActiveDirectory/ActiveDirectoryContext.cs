@@ -283,7 +283,7 @@ namespace BLAZAM.ActiveDirectory
                     }
                     catch (Exception ex)
                     {
-                        Loggers.ActiveDirectoryLogger.Error(ex,"Unexpected error performing keep alive search.");
+                        Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error performing keep alive search.");
                     }
                 }
             }
@@ -348,7 +348,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 ConnectionException = ex;
 
-                Loggers.ActiveDirectoryLogger.Warning(ex,"Unable to decrypt Active Directory password");
+                Loggers.ActiveDirectoryLogger.Warning(ex, "Unable to decrypt Active Directory password");
                 Status = DirectoryConnectionStatus.ServerDown;
                 if (FailedConnectionAttempts < 10)
                     FailedConnectionAttempts++;
@@ -357,7 +357,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 ConnectionException = ex;
 
-                Loggers.ActiveDirectoryLogger.Warning(ex,"Error connecting to Active Directory");
+                Loggers.ActiveDirectoryLogger.Warning(ex, "Error connecting to Active Directory");
 
                 Status = DirectoryConnectionStatus.BadConfiguration;
                 if (FailedConnectionAttempts < 10)
@@ -595,10 +595,12 @@ namespace BLAZAM.ActiveDirectory
 
         private void PerformNetworkTests(ADSettings? ad)
         {
+            if (ad == null) throw new CriticalActiveDirectoryException(this,"Missing configuration");
+
             Loggers.ActiveDirectoryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
-            
+
             NetworkTools.ResolveHostIP(ad.ServerAddress);
-            
+
             if (!NetworkTools.IsPortOpen(ad.ServerAddress, ad.ServerPort))
             {
                 Loggers.ActiveDirectoryLogger.Debug("Active Directory port is not open");
@@ -611,6 +613,7 @@ namespace BLAZAM.ActiveDirectory
             }
             Loggers.ActiveDirectoryLogger.Information("Active Directory port is open.");
         }
+
 
         /// <summary>
         /// Tries to get the domain controllers by connecting to the domain from the web server
@@ -732,7 +735,7 @@ namespace BLAZAM.ActiveDirectory
                             catch (DirectoryServicesCOMException ex)
                             {
                                 Loggers.ActiveDirectoryLogger.Information(ex, "Error authenticating user: {@Message}", ex.Message);
-                                if(ex.ExtendedErrorMessage.Contains("data 773, v4563"))
+                                if (ex.ExtendedErrorMessage.Contains("data 773, v4563"))
                                 {
                                     return findUser;
                                 }
