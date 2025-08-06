@@ -75,8 +75,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 return (GroupType & ADS_GROUP_TYPE_SECURITY_ENABLED) != 0;
             }
-            set {
-                if (value) {
+            set
+            {
+                if (value)
+                {
                     GroupType = GroupType | ADS_GROUP_TYPE_SECURITY_ENABLED;
                 }
                 else
@@ -92,7 +94,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 return (GroupType & ADS_GROUP_TYPE_GLOBAL_GROUP) != 0;
             }
-           
+
         }
         public bool IsDomainLocalGroup
         {
@@ -100,7 +102,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 return (GroupType & ADS_GROUP_TYPE_DOMAIN_LOCAL_GROUP) != 0;
             }
-           
+
         }
         public bool IsUniversalGroup
         {
@@ -109,7 +111,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return (GroupType & ADS_GROUP_TYPE_UNIVERSAL_GROUP) != 0;
 
             }
-         
+
         }
 
 
@@ -167,29 +169,29 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (MembersToAdd.Count > 0)
             {
-                PostCommitSteps.Add(new JobStep("Add group members", (JobStep? step) =>
-                {
-                    MembersToAdd.ForEach(g =>
+                MembersToAdd.ForEach(g =>
                     {
-                        g.Group.Invoke("Add", new object[] { g.Member.DN });
+                        PostCommitSteps.Add(new JobStep($"Add {g.Member} to {g.Group}", (JobStep? step) =>
+                        {
+                            g.Group.Invoke("Add", new object[] { g.Member.DN });
+                            return true;
+                        }));
 
                     });
-                    return true;
-                }));
 
-
+                MembersToAdd.Clear();
             }
             if (MembersToRemove.Count > 0)
             {
-                PostCommitSteps.Add(new JobStep("Remove group members", (JobStep? step) =>
-                {
                     MembersToRemove.ForEach(g =>
                     {
-                        g.Group.Invoke("Remove", new object[] { g.Member.DN });
+                        PostCommitSteps.Add(new JobStep($"Remove {g.Member}. from {g.Group}", (JobStep? step) =>
+                        {
+                            g.Group.Invoke("Remove", new object[] { g.Member.DN });
+                            return true;
+                        }));
                     });
-                    return true;
-                }));
-
+                MembersToRemove.Clear();
             }
 
             commitJob = base.CommitChanges(commitJob);
@@ -299,7 +301,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return result;
             }
         }
-
+        private readonly static object _membersLock = new();
         /// <summary>
         /// Gathers current group members in realtime
         /// </summary>
@@ -308,33 +310,69 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 var temp = MembersAsStrings;
-                ADSearch search = new(Directory);
 
                 List<IGroupableDirectoryAdapter> members = new();
-                temp?.ForEach(t =>
+
+                Parallel.ForEach(temp, t =>
                 {
-                    search.Results.Clear();
+                     ADSearch search = new(Directory);
+                    
                     search.Fields.DN = t;
                     var member = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>()?.FirstOrDefault();
                     if (member != null)
                     {
-                        members.Add(member);
+                        lock (_membersLock)
+                        {
+                            members.Add(member);
+                        }
+                    }
+                });
+
+                //temp?.ForEach(t =>
+                //{
+                //    search.Results.Clear();
+                //    search.Fields.DN = t;
+                //    var member = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>()?.FirstOrDefault();
+                //    if (member != null)
+                //    {
+                //        members.Add(member);
+                //    }
+
+                //});
+                var tempRemoval = new List<IGroupableDirectoryAdapter>(members);
+                Parallel.ForEach(MembersToRemove, m =>
+                {
+
+                    lock (_membersLock)
+                    {
+                        if (members.Contains(m.Member))
+                        {
+                            members.Remove(m.Member);
+                        }
                     }
 
                 });
-                var tempRemoval = new List<IGroupableDirectoryAdapter>(members);
-                tempRemoval.ForEach(m =>
-                {
-                    if (MembersToRemove.Select(gm => gm.Member).Contains(m))
+                //tempRemoval.ForEach(m =>
+                //{
+                //    if (MembersToRemove.Select(gm => gm.Member).Contains(m))
+                //    {
+                //        members.Remove(m);
+                //    }
+                //});
+                Parallel.ForEach(MembersToRemove, m => {
+                    lock (_membersLock)
                     {
-                        members.Remove(m);
+                        if (!members.Contains(m.Member))
+                        {
+                            members.Add(m.Member);
+                        }
                     }
                 });
-                MembersToAdd.ForEach(m =>
-                {
-                    if (!members.Contains(m.Member))
-                        members.Add(m.Member);
-                });
+                //MembersToAdd.ForEach(m =>
+                //{
+                //    if (!members.Contains(m.Member))
+                //        members.Add(m.Member);
+                //});
                 return members;
             }
         }
