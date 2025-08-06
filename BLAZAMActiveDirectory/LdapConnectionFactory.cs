@@ -12,13 +12,13 @@ namespace BLAZAM.ActiveDirectory
     public class LdapConnectionFactory : IDisposable
     {
         public readonly int PoolSize = 10;
+        private static int ConnectedUsers { get; set; }
         private Timer? _disposerTimer = null;
         private static readonly object _poolLock = new object();
         private static ADSettings? _connectionSettingsCache = null;
         private List<AppLdapConnection> _connectionPool = new();
         private static Random _random;
         private bool disposedValue;
-        private bool disposedValue1;
         private static readonly object _tlsLock = new();
 
         public int Count
@@ -30,6 +30,10 @@ namespace BLAZAM.ActiveDirectory
                     return _connectionPool.Count;
                 }
             }
+        }
+        public static void SetConnectedUsers(int connectedUsers)
+        {
+           
         }
         public static AppEvent? OnCountChanged { get; set; } = new();
 
@@ -172,7 +176,8 @@ namespace BLAZAM.ActiveDirectory
                 try
                 {
                     var count = _connectionPool.Count;
-                    for (int i = 0; i < count; i++)
+                    if (count < PoolSize) return;
+                    for (int i = 0; i < count-PoolSize; i++)
                     {
                         if (!_connectionPool[i].IsDisposed
                             && _connectionPool[i].Expires != null

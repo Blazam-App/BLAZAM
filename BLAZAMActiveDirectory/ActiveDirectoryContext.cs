@@ -23,7 +23,7 @@ namespace BLAZAM.ActiveDirectory
 {
     public class ActiveDirectoryContext : IActiveDirectoryContext
     {
-        private readonly LdapConnectionFactory LdapConnectionFactory = new();
+        private static LdapConnectionFactory LdapConnectionFactory { get; set; }
         public DomainControllerEventLogReader EventLogReader { get; private set; }
         public ActiveDirectoryUserState? CurrentUser
         {
@@ -85,6 +85,10 @@ namespace BLAZAM.ActiveDirectory
             INotificationPublisher notificationPublisher
             )
         {
+            if (LdapConnectionFactory == null)
+            {
+                LdapConnectionFactory = new();
+            }
             _wmiFactory = new(this);
             _encryption = encryptionService;
             _notificationPublisher = notificationPublisher;
@@ -589,7 +593,6 @@ namespace BLAZAM.ActiveDirectory
         {
             // Cleanup
             _keepAlive = false;
-            LdapConnectionFactory.Dispose();
             _connectionCTS?.Dispose();
             _connectionCTS = null;
             _context?.Dispose();
