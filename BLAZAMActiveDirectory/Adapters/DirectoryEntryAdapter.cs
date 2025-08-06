@@ -1120,97 +1120,68 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         /// <summary>
-        /// Retrieves the requested property value from either the cached <see cref="SearchResult"/>
-        /// or by actively polling Active Directory for the entire object.
-        /// The value is cached for future calls.
+        /// Retrieves the requested property value from a local cache or by polling Active Directory.
         /// </summary>
-        /// <typeparam name="T">The value type of the requested attribute</typeparam>
-        /// <param name="propertyName">The requested attribute</param>
-        /// <returns>The attribute value</returns>
+        /// <typeparam name="T">The value type of the requested attribute.</typeparam>
+        /// <param name="propertyName">The name of the attribute to retrieve.</param>
+        /// <returns>The attribute's value, or a default value if not found.</returns>
         private T? GetValue<T>(string propertyName)
-
         {
-
-            if (NewEntry)
-            {
-                try
-                {
-                    if (NewEntryProperties.ContainsKey(propertyName))
-                        return (T)NewEntryProperties[propertyName];
-                }
-                catch (InvalidCastException ex)
-                {
-                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-                }
-                catch (Exception ex)
-                {
-                    Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
-                }
-
-
-
-                return default;
-
-            }
-            if (DirectoryEntry == null)
-            {
-                if (SearchResult != null && SearchResult.Properties.Contains(propertyName))
-                    return (T?)SearchResult.Properties[propertyName][0];
-                else
-                {
-                    FetchDirectoryEntry();
-                }
-            }
             try
             {
-                if (NewEntryProperties.ContainsKey(propertyName))
-                    return (T)NewEntryProperties[propertyName];
+                // For new entries or entries with staged changes, the property cache is the source of truth.
+                if (NewEntry || NewEntryProperties.ContainsKey(propertyName))
+                {
+                    return NewEntryProperties.TryGetValue(propertyName, out var propValue) ? (T)propValue : default;
+                }
+
+                // If the full directory entry isn't loaded, check the initial search result cache first.
+                if (DirectoryEntry == null)
+                {
+                    if (SearchResult?.Properties.Contains(propertyName) == true)
+                    {
+                        return (T?)SearchResult.Properties[propertyName][0];
+                    }
+                    // The property was not in the lightweight search result, so load the full entry from AD.
+                    FetchDirectoryEntry();
+                }
+
+                // If the entry could not be fetched from Active Directory, no value can be returned.
+                if (DirectoryEntry == null)
+                {
+                    return default;
+                }
+
+                // Attempt to get the property from the loaded entry's property collection.
+                if (DirectoryEntry.Properties.Contains(propertyName))
+                {
+                    return (T?)DirectoryEntry.Properties[propertyName].Value;
+                }
+
+                // If the property is not in the local cache, refresh it from Active Directory.
+                DirectoryEntry.RefreshCache(new[] { propertyName });
+                if (DirectoryEntry.Properties.Contains(propertyName))
+                {
+                    return (T?)DirectoryEntry.Properties[propertyName].Value;
+                }
             }
             catch (InvalidCastException ex)
             {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-
-            }
-            catch
-            {
-                return default;
-
-            }
-            
-            try
-            {
-                if (DirectoryEntry != null)
-                {
-                    
-                    if (DirectoryEntry.Properties.Contains(propertyName))
-                        return (T?)DirectoryEntry.Properties[propertyName].Value;
-                    else
-                    {
-                        DirectoryEntry.RefreshCache(new string[] { propertyName });
-                        if (DirectoryEntry.Properties.Contains(propertyName))
-                            return (T?)DirectoryEntry.Properties[propertyName].Value;
-                    }
-                }
+                // Provides detailed context if the stored value cannot be cast to the requested type.
+                throw new InvalidCastException($"Bad casting attempt for {propertyName} to type {typeof(T).FullName}", ex);
             }
             catch (ArgumentException ex)
             {
-                Loggers.ActiveDirectoryLogger.Information(ex, "Argument Exception getting an entry's attribute. {@Attribute}", propertyName);
-                //var temp = DirectoryEntry?.Properties[propertyName];
-                //var temp2 = (T?)temp?.Value;
-                //return temp2;
+                // This exception can occur if the attribute is not available for this object class in AD.
+                Loggers.ActiveDirectoryLogger.Information(ex, "Argument Exception getting an entry's attribute. {Attribute}", propertyName);
             }
-            catch (InvalidCastException ex)
+            catch (Exception ex)
             {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-
+                // Logs any other unexpected errors during the retrieval process.
+                Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {PropertyName}", propertyName);
             }
 
-            catch
-            {
-                return default;
-            }
             return default;
-
         }
 
         protected virtual string? GetStringAttribute(string propertyName)
