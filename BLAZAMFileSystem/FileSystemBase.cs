@@ -184,5 +184,10 @@ namespace BLAZAM.FileSystem
         {
             return !(left == right);
         }
+
+        public virtual bool Rename(string newName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -252,5 +252,21 @@ namespace BLAZAM.FileSystem
                 stream?.Close(); // Ensure stream is closed if it was opened
             }
         }
+
+        public override bool Rename(string newName)
+        {
+            try
+            {
+                var newPath = Path.Combine(ParentDirectory.FullPath, newName);
+                File.Move(FullPath, newPath);
+                FullPath = newPath;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "Error renaming file {File} to {NewName}", FullPath, newName);
+                return false;
+            }
+        }
     }
 }

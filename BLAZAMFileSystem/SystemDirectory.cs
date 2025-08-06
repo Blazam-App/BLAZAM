@@ -293,5 +293,23 @@ namespace BLAZAM.FileSystem
                 Loggers.SystemLogger.Error(ex, "SystemDirectory.EnsureCreated: Failed to create directory {DirectoryPath}. Message: {ErrorMessage}", FullPath, ex.Message);
             }
         }
+
+        public override bool Rename(string newName)
+        {
+            try
+            {
+                var parent = Path.GetDirectoryName(FullPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+                if (parent == null) return false;
+                var newPath = Path.Combine(parent, newName);
+                Directory.Move(FullPath, newPath);
+                FullPath = newPath;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "Error renaming directory {Directory} to {NewName}", FullPath, newName);
+                return false;
+            }
+        }
     }
 }

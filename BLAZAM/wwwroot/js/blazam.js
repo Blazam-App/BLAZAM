@@ -91,4 +91,12 @@ window.customAnalyticsEvent = async (eventName, jsonData) => {
     });
 };
 
+window.downloadFile = (fileName, fileBytes) => {
+    const link = document.createElement('a');
+    link.href = "data:application/octet-stream;base64," + fileBytes;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
