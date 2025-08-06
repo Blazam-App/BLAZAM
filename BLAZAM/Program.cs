@@ -8,6 +8,7 @@ using BLAZAM.Server;
 using BLAZAM.Server.Middleware;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting.WindowsServices; // Required for running as a Windows Service
 using Serilog; // Logging library
 using System.Diagnostics; // For checking if debugger is attached
@@ -45,11 +46,6 @@ namespace BLAZAM
         /// </summary>
         public static ConfigurationManager? Configuration { get; set; }
 
-        /// <summary>
-        /// Indicates whether the application process has write permissions to the <see cref="WritablePath"/>.
-        /// Checked during startup to ensure necessary file operations can be performed.
-        /// </summary>
-        public static bool Writable { get; private set; }
 
         /// <summary>
         /// The main entry point method for the web application.
@@ -84,7 +80,7 @@ namespace BLAZAM
             // Assign installation-specific details for logging context.
             Loggers.InstallationId = ApplicationInfo.installationId.ToString();
             Loggers.InstallationType = ApplicationInfo.isUnderIIS ? "IIS" : "Service"; // Determine if running under IIS or as a standalone service
-            Loggers.DatabaseType = Configuration.GetValue<string>("DatabaseType"); // Get DB type from config
+            Loggers.DatabaseType = Configuration?.GetValue<string>("DatabaseType")??"SQLite"; // Get DB type from config
 
             // Configure Seq logging server details.
             Loggers.SeqServerUri = "http://logs.blazam.org:5341"; // Centralized logging server URI
@@ -199,123 +195,117 @@ namespace BLAZAM
         }
 
         /// <summary>
-        /// Configures the Kestrel web server options, including listening addresses, ports, and HTTPS settings.
-        /// This setup is typically bypassed when running under IIS, as IIS handles port binding and SSL termination.
+        /// Configures Kestrel web server options if not running under IIS or with a debugger attached.
         /// </summary>
-        /// <param name="builder">The WebApplicationBuilder instance.</param>
         private static void SetupKestrel(WebApplicationBuilder builder)
         {
-            // Create a temporary DbContext instance to fetch SSL settings.
-            // This factory pattern avoids injecting the full DbContextFactory early in the setup.
-            var _programDbFactory = new AppDatabaseFactory(Configuration);
-            using var kestrelContext = _programDbFactory.CreateDbContext();
-
-            // Configure Kestrel only if not running under IIS and not actively debugging.
-            // When debugging, default launch settings often handle Kestrel configuration.
-            if (!ApplicationInfo.isUnderIIS && !Debugger.IsAttached)
+            // 1. Use a guard clause for an early exit. This removes the primary nesting level.
+            if (ShouldSkipKestrelConfiguration())
             {
-                // Get Kestrel configuration values from appsettings.json.
-                var listeningAddress = Configuration.GetValue<string>("ListeningAddress"); // e.g., "*" or specific IP
-                var httpPort = Configuration.GetValue<int>("HTTPPort"); // e.g., 80 or 5000
-                var httpsPort = Configuration.GetValue<int>("HTTPSPort"); // e.g., 443 or 5001
+                return;
+            }
 
-                AppSettings? dbSettings = null;
-                X509Certificate2? cert = null;
+            // 2. Delegate certificate loading to a dedicated method.
+            using var kestrelContext = new AppDatabaseFactory(Configuration).CreateDbContext();
+            var certificate = TryLoadCertificateFromDb(kestrelContext);
 
-                // Try to load SSL certificate details from the database.
-                try
+            // 3. Delegate endpoint configuration to a dedicated method.
+            builder.WebHost.UseKestrel(options =>
+            {
+                ConfigureKestrelEndpoints(options, builder.Configuration, certificate);
+            });
+        }
+
+        /// <summary>
+        /// Determines if Kestrel configuration should be skipped.
+        /// </summary>
+        /// <returns>True if the app is under IIS or a debugger is attached; otherwise, false.</returns>
+        private static bool ShouldSkipKestrelConfiguration()
+        {
+            if (ApplicationInfo.isUnderIIS)
+            {
+                Loggers.SystemLogger.Information("Skipping Kestrel endpoint configuration: Application is running under IIS.");
+                return true;
+            }
+            if (Debugger.IsAttached)
+            {
+                Loggers.SystemLogger.Information("Skipping Kestrel endpoint configuration: Debugger is attached.");
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Tries to load and decrypt the SSL certificate from the database.
+        /// </summary>
+        /// <param name="context">The database context to use for the query.</param>
+        /// <returns>An X509Certificate2 instance if successful; otherwise, null.</returns>
+        private static X509Certificate2? TryLoadCertificateFromDb(IDatabaseContext context)
+        {
+            try
+            {
+                var dbSettings = context.AppSettings.FirstOrDefault();
+                if (dbSettings == null)
                 {
-                    dbSettings = kestrelContext.AppSettings.FirstOrDefault();
-                    if (dbSettings != null)
-                    {
-                        // Decrypt the stored SSL certificate data.
-                        var certBytes = dbSettings.SSLCertificateCipher?.Decrypt<byte[]>();
-                        if (certBytes != null)
-                        {
-                            // Load the certificate from the byte array.
-                            cert = new X509Certificate2(certBytes);
-                            Loggers.SystemLogger.Information("SSL Certificate {@Subject} loaded successfully.", cert.Subject);
-                        }
-                        else
-                        {
-                            Loggers.SystemLogger.Warning("SSL Certificate data in database is null or could not be decrypted.");
-                        }
-                    }
-                    else
-                    {
-                        // Log a warning if AppSettings couldn't be retrieved (e.g., initial setup).
-                        Loggers.SystemLogger.Warning("Unable to retrieve AppSettings from DB for SSL information. HTTPS may not be configured.");
-                    }
+                    Loggers.SystemLogger.Information("AppSettings not found in DB. HTTPS may not be configured.");
+                    return null;
                 }
-                catch (Exception ex)
+
+                var certBytes = dbSettings.SSLCertificateCipher?.Decrypt<byte[]>();
+                if (certBytes == null || certBytes.Length == 0)
                 {
-                    // Log any errors during certificate retrieval or loading.
-                    Loggers.SystemLogger.Error(ex, "Error collecting or loading SSL information from database.");
+                    Loggers.SystemLogger.Warning("SSL Certificate data in database is null, empty, or could not be decrypted.");
+                    return null;
                 }
 
-                // Configure Kestrel endpoints.
-                builder.WebHost.UseKestrel(options =>
-                {
-                    // Check if Kestrel should listen on all network interfaces.
-                    if (listeningAddress == "*")
-                    {
-                        // Listen for HTTP requests on any IP address on the configured port.
-                        options.ListenAnyIP(httpPort);
-                        Loggers.SystemLogger.Information("Kestrel listening for HTTP on Any IP: {@Port}", httpPort);
+                var cert = new X509Certificate2(certBytes);
+                Loggers.SystemLogger.Information("SSL Certificate '{@Subject}' loaded successfully.", cert.Subject);
+                return cert;
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "Error collecting or loading SSL information from database.");
+                return null;
+            }
+        }
 
-                        // Configure HTTPS endpoint if port is specified, settings exist, certificate loaded, and has a private key.
-                        if (httpsPort != 0 && dbSettings != null && cert != null && cert.HasPrivateKey)
-                        {
-                            options.ListenAnyIP(httpsPort, configure =>
-                            {
-                                // Use the loaded certificate for HTTPS.
-                                configure.UseHttps(options => options.ServerCertificate = cert);
-                            });
-                            Loggers.SystemLogger.Information("Kestrel listening for HTTPS on Any IP: {@Port}", httpsPort);
-                        }
-                        else if (httpsPort != 0)
-                        {
-                            Loggers.SystemLogger.Warning("HTTPS port {@Port} configured, but SSL certificate is missing, invalid, or lacks a private key. HTTPS endpoint NOT configured.", httpsPort);
-                        }
-                    }
-                    else // Listen on a specific IP address.
-                    {
-                        try
-                        {
-                            var ip = IPAddress.Parse(listeningAddress);
+        /// <summary>
+        /// Configures the HTTP and HTTPS endpoints for Kestrel based on app configuration.
+        /// </summary>
+        private static void ConfigureKestrelEndpoints(KestrelServerOptions options, IConfiguration config, X509Certificate2? cert)
+        {
+            var listeningAddressStr = config.GetValue<string>("ListeningAddress");
+            var httpPort = config.GetValue<int>("HTTPPort");
+            var httpsPort = config.GetValue<int>("HTTPSPort");
 
-                            // Listen for HTTP requests on the specific IP and port.
-                            options.Listen(ip, httpPort);
-                            Loggers.SystemLogger.Information("Kestrel listening for HTTP on {@IP}:{@Port}", ip, httpPort);
+            IPAddress ipAddress;
+            try
+            {
+                // Consolidate "*" and specific IP logic. IPAddress.Any is the programmatic equivalent of "*".
+                ipAddress = listeningAddressStr == "*" ? IPAddress.Any : IPAddress.Parse(listeningAddressStr);
+            }
+            catch (FormatException ex)
+            {
+                Loggers.SystemLogger.Information(ex, "Invalid IP address format '{@IPAddress}' in configuration. Kestrel endpoints not configured.", listeningAddressStr);
+                return;
+            }
 
-                            // Configure HTTPS endpoint similarly for the specific IP.
-                            if (httpsPort != 0 && dbSettings != null && cert != null && cert.HasPrivateKey)
-                            {
-                                options.Listen(ip, httpsPort, configure =>
-                                {
-                                    configure.UseHttps(options => options.ServerCertificate = cert);
-                                });
-                                Loggers.SystemLogger.Information("Kestrel listening for HTTPS on {@IP}:{@Port}", ip, httpsPort);
-                            }
-                            else if (httpsPort != 0)
-                            {
-                                Loggers.SystemLogger.Warning("HTTPS port {@Port} configured for IP {@IP}, but SSL certificate is missing, invalid, or lacks a private key. HTTPS endpoint NOT configured.", httpsPort, ip);
-                            }
-                        }
-                        catch (FormatException ex)
-                        {
-                            Loggers.SystemLogger.Error(ex, "Invalid IP address format '{@IPAddress}' specified in ListeningAddress configuration. Kestrel HTTP/HTTPS endpoints may not be configured correctly.", listeningAddress);
-                        }
-                    }
-                });
+            // Configure HTTP endpoint.
+            options.Listen(ipAddress, httpPort);
+            Loggers.SystemLogger.Information("Kestrel listening for HTTP on {Address}:{Port}", ipAddress, httpPort);
+
+            // Stop if no HTTPS port is defined.
+            if (httpsPort <= 0) return;
+
+            // Configure HTTPS endpoint if the certificate is valid.
+            if (cert?.HasPrivateKey == true)
+            {
+                options.Listen(ipAddress, httpsPort, listenOptions => listenOptions.UseHttps(cert));
+                Loggers.SystemLogger.Information("Kestrel listening for HTTPS on {Address}:{Port}", ipAddress, httpsPort);
             }
             else
             {
-                // Log why Kestrel setup is skipped.
-                if (ApplicationInfo.isUnderIIS)
-                    Loggers.SystemLogger.Information("Skipping Kestrel endpoint configuration because the application appears to be running under IIS.");
-                if (Debugger.IsAttached)
-                    Loggers.SystemLogger.Information("Skipping Kestrel endpoint configuration because the debugger is attached (likely using launchSettings.json).");
+                Loggers.SystemLogger.Information("HTTPS port {Port} configured, but SSL certificate is missing, invalid, or lacks a private key. HTTPS endpoint NOT configured.", httpsPort);
             }
         }
 

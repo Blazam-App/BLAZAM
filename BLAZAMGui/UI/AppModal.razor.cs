@@ -186,14 +186,14 @@ namespace BLAZAM.Gui.UI
         /// </summary>
         public async Task CloseAsync()
         {
-            await Modal.CloseAsync();
+            await InvokeAsync(async()=> {await Modal.CloseAsync(); });
             IsShown = false;
 
         }
         private void YesClicked()
         {
             if (OnYes != null)
-                OnYes?.Invoke();
+                OnYes.Invoke();
             else
                 Close();
         }

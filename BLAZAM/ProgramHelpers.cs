@@ -390,9 +390,7 @@ namespace BLAZAM.Server
         /// <param name="builder">The WebApplicationBuilder instance.</param>
         private static void LoadPluginAssemblies(WebApplicationBuilder builder)
         {
-            var pluginDir = ApplicationInfo.pluginDirectory; // Get the plugin directory path
-
-            // Check if the directory exists
+            var pluginDir = ApplicationInfo.pluginDirectory;
             if (!pluginDir.Exists)
             {
                 Loggers.PluginLogger.Warning("Plugin directory {@PluginPath} does not exist. Skipping plugin loading.", pluginDir.FullPath);
@@ -400,80 +398,87 @@ namespace BLAZAM.Server
             }
 
             Loggers.PluginLogger.Information("Scanning for plugins in {@PluginPath}...", pluginDir.FullPath);
-
-            // Process each DLL file in the plugin directory in parallel
-            Parallel.ForEach(pluginDir.GetFilesAndSubFiles("*.dll"), dll =>
-            {
-                Loggers.PluginLogger.Debug("Attempting to load plugin assembly: {@DllName}", dll.Name);
-                try
-                {
-                    // Use a custom AssemblyLoadContext for plugin isolation (optional but recommended)
-                    var loadContext = new PluginLoadContext(dll.FullPath);
-                    
-                    // Load the assembly by its name (without extension)
-                    Assembly assembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(dll.FullPath)));
-                    Loggers.PluginLogger.Debug("Successfully loaded assembly: {@AssemblyName}", assembly.FullName);
-                   
-                    
-                    
-                    IEnumerable<Type> pluginTypes = assembly.GetPluginTypes(typeof(IPluginBase));
-
-                    // Iterate through discovered plugin types
-                    foreach (Type pluginType in pluginTypes)
-                    {
-                        Loggers.PluginLogger.Information("Found plugin type: {@PluginType} in {@DllName}", pluginType.FullName, dll.Name);
-                        try
-                        {
-                            // Create an instance of the plugin type
-                            if (Activator.CreateInstance(pluginType) is IPluginBase pluginInstance)
-                            {
-                                if (pluginInstance is IPluginServiceProvider pluginServices)
-                                {
-                                    Loggers.PluginLogger.Information("Injecting services for plugin: {@PluginType}", pluginType.FullName);
-                                    // Call the plugin's service injection method
-                                    pluginServices.InjectServices(builder);
-                                }
-                                // Add the plugin instance to the global list of loaded plugins
-                                ApplicationInfo.loadedPlugins.Add(new(assembly,pluginInstance));
-                                Loggers.PluginLogger.Information("Successfully loaded and injected services for plugin: {@PluginType}", pluginType.FullName);
-                            }
-                            else
-                            {
-                                Loggers.PluginLogger.Warning("Could not create an instance of plugin type: {@PluginType} in {@DllName}.", pluginType.FullName, dll.Name);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Loggers.PluginLogger.Error(ex, "Error creating instance or injecting services for plugin {@PluginType} in {@DllName}", pluginType.FullName, dll.Name);
-                        }
-                    }
-                }
-                // Handle errors during assembly loading or type discovery
-                catch (ReflectionTypeLoadException ex) // Catches errors when types within the assembly cannot be loaded
-                {
-                    Loggers.PluginLogger.Error(ex, "Error loading types from assembly {@DllName}", dll.Name);
-                    if (ex.LoaderExceptions != null)
-                    {
-                        foreach (Exception loaderEx in ex.LoaderExceptions)
-                        {
-                            Loggers.PluginLogger.Error("- LoaderException: {@LoaderExceptionMessage}", loaderEx.Message);
-                        }
-                    }
-                }
-                catch (FileLoadException ex) // Catches errors related to loading the file itself
-                {
-                    Loggers.PluginLogger.Error(ex, "Error loading assembly file {@DllName}", dll.Name);
-                }
-                catch (BadImageFormatException ex) // Catches errors if the DLL is not a valid .NET assembly
-                {
-                    Loggers.PluginLogger.Error(ex, "Error loading assembly {@DllName}: Invalid assembly format", dll.Name);
-                }
-                catch (Exception ex) // Catch-all for other unexpected errors
-                {
-                    Loggers.PluginLogger.Error(ex, "An unexpected error occurred while processing plugin assembly {@DllName}", dll.Name);
-                }
-            });
+            Parallel.ForEach(pluginDir.GetFilesAndSubFiles("*.dll"), dll => LoadAndProcessPlugin(dll, builder));
             Loggers.PluginLogger.Information("Finished scanning for plugins.");
+        }
+
+        /// <summary>
+        /// Loads a single plugin assembly, finds all plugin types within it, and initiates their processing.
+        /// This method isolates assembly loading and error handling for each plugin file.
+        /// </summary>
+        /// <param name="dll">The plugin DLL file to process.</param>
+        /// <param name="builder">The WebApplicationBuilder instance for service injection.</param>
+        private static void LoadAndProcessPlugin(SystemFile dll, WebApplicationBuilder builder)
+        {
+            Loggers.PluginLogger.Debug("Attempting to load plugin assembly: {@DllName}", dll.Name);
+            try
+            {
+                var loadContext = new PluginLoadContext(dll.FullPath);
+                Assembly assembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(dll.FullPath)));
+                Loggers.PluginLogger.Debug("Successfully loaded assembly: {@AssemblyName}", assembly.FullName);
+
+                IEnumerable<Type> pluginTypes = assembly.GetPluginTypes(typeof(IPluginBase));
+                foreach (Type pluginType in pluginTypes)
+                {
+                    InstantiateAndConfigurePlugin(pluginType, assembly, dll.Name, builder);
+                }
+            }
+            catch (ReflectionTypeLoadException ex) { HandleReflectionTypeLoadException(ex, dll.Name); }
+            catch (FileLoadException ex) { Loggers.PluginLogger.Error(ex, "Error loading assembly file {@DllName}", dll.Name); }
+            catch (BadImageFormatException ex) { Loggers.PluginLogger.Error(ex, "Error loading assembly {@DllName}: Invalid assembly format", dll.Name); }
+            catch (Exception ex) { Loggers.PluginLogger.Error(ex, "An unexpected error occurred while processing plugin assembly {@DllName}", dll.Name); }
+        }
+
+        /// <summary>
+        /// Provides detailed logging for ReflectionTypeLoadException, which occurs when some types in an assembly cannot be loaded.
+        /// </summary>
+        /// <param name="ex">The exception instance.</param>
+        /// <param name="dllName">The name of the DLL that failed to load.</param>
+        private static void HandleReflectionTypeLoadException(ReflectionTypeLoadException ex, string dllName)
+        {
+            Loggers.PluginLogger.Error(ex, "Error loading types from assembly {@DllName}", dllName);
+            if (ex.LoaderExceptions != null)
+            {
+                foreach (Exception loaderEx in ex.LoaderExceptions)
+                {
+                    Loggers.PluginLogger.Error("- LoaderException: {@LoaderExceptionMessage}", loaderEx.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates an instance of a discovered plugin type, injects services if required, and registers the plugin.
+        /// </summary>
+        /// <param name="pluginType">The plugin type to instantiate.</param>
+        /// <param name="assembly">The assembly the plugin belongs to.</param>
+        /// <param name="dllName">The name of the DLL file for logging context.</param>
+        /// <param name="builder">The WebApplicationBuilder for service injection.</param>
+        private static void InstantiateAndConfigurePlugin(Type pluginType, Assembly assembly, string dllName, WebApplicationBuilder builder)
+        {
+            Loggers.PluginLogger.Information("Found plugin type: {@PluginType} in {@DllName}", pluginType.FullName, dllName);
+            try
+            {
+                if (Activator.CreateInstance(pluginType) is not IPluginBase pluginInstance)
+                {
+                    Loggers.PluginLogger.Warning("Could not create an instance of plugin type: {@PluginType} in {@DllName}.", pluginType.FullName, dllName);
+                    return;
+                }
+
+                // Why: Inject services if the plugin supports it.
+                if (pluginInstance is IPluginServiceProvider pluginServices)
+                {
+                    Loggers.PluginLogger.Information("Injecting services for plugin: {@PluginType}", pluginType.FullName);
+                    pluginServices.InjectServices(builder);
+                }
+
+                // Why: Add the initialized plugin to the application's list of loaded plugins for runtime access.
+                ApplicationInfo.loadedPlugins.Add(new(assembly, pluginInstance));
+                Loggers.PluginLogger.Information("Successfully loaded and injected services for plugin: {@PluginType}", pluginType.FullName);
+            }
+            catch (Exception ex)
+            {
+                Loggers.PluginLogger.Error(ex, "Error creating instance or injecting services for plugin {@PluginType} in {@DllName}", pluginType.FullName, dllName);
+            }
         }
 
 
