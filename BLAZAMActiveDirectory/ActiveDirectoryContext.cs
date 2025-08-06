@@ -348,7 +348,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 ConnectionException = ex;
 
-                Loggers.ActiveDirectoryLogger.Warning(ex, "Unable to decrypt Active Directory password");
+                Loggers.ActiveDirectoryLogger.Warning(ex, "Unable to resolve Active Directory server address");
                 Status = DirectoryConnectionStatus.ServerDown;
                 if (FailedConnectionAttempts < 10)
                     FailedConnectionAttempts++;
