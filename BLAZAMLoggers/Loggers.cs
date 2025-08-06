@@ -18,6 +18,7 @@ namespace BLAZAM.Logger
         public static string SeqAPIKey { get; set; }
 
      
+
         private static ILogger? _requestLogger;
         public static ILogger RequestLogger
         {
