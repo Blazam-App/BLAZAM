@@ -7,28 +7,19 @@
     <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" OnClick="GoUp" Disabled="@(CurrentPath == null || CurrentPath.ParentDirectory == null || !CurrentPath.ParentDirectory.Exists)"></MudIconButton>
     <MudTextField T="string" Value="CurrentPath?.FullPath" ReadOnly="true" Variant="Variant.Text" Class="flex-grow-1"></MudTextField>
 </MudToolBar>
-<MudDataGrid T="FileSystemBase" Items="Items" Hover="true" @ref="dataGrid" OnRowClick="@((args) => RowClicked(args.Item))" FixedHeader="true" Height="400px">
+<MudDataGrid T="FileSystemBase" Items="Items" Hover="true" RowClick="@((args) => RowClicked(args.Item))" FixedHeader="true" Height="400px">
     <Columns>
         <TemplateColumn Title="" Sortable="false">
             <CellTemplate>
                 <MudIcon Icon="@(context.Item is SystemDirectory ? Icons.Material.Filled.Folder : Icons.Material.Filled.Article)" />
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn T="FileSystemBase" Property="x => x.Name" Title="@AppLocalization[Lang.Name]" />
-        <PropertyColumn T="FileSystemBase" Property="x => x.LastWriteTime" Title="@AppLocalization[Lang.Date_Modified]" />
+        <PropertyColumn Property="x => x.Name" Title="@AppLocalization[Lang.Name]" />
 
-        <TemplateColumn Title="@AppLocalization[Lang.Actions]" Sortable="false" Class="d-flex justify-end">
+        <TemplateColumn Title="@AppLocalization[Lang.Actions]" Sortable="false">
             <CellTemplate>
-                <div @onclick:stopPropagation="true">
-                    <MudMenu Icon="@Icons.Material.Filled.MoreVert" Dense="true">
-                        <MudMenuItem OnClick="@(()=>Rename(context.Item))">@AppLocalization[Lang.Rename]</MudMenuItem>
-                        <MudMenuItem OnClick="@(()=>Delete(context.Item))">@AppLocalization[Lang.Delete]</MudMenuItem>
-                        @if (context.Item is SystemFile file)
-                        {
-                            <MudMenuItem OnClick="@(()=>Download(file))">@AppLocalization[Lang.Download]</MudMenuItem>
-                        }
-                    </MudMenu>
-                </div>
+                
+                
             </CellTemplate>
         </TemplateColumn>
     </Columns>
