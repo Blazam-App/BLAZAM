@@ -2,7 +2,6 @@
 using System.DirectoryServices.Protocols;
 using System.Net; 
 using BLAZAM.ActiveDirectory.Data;
-using BLAZAM.ActiveDirectory.Events;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
@@ -12,7 +11,7 @@ namespace BLAZAM.ActiveDirectory
 {
     public class LdapConnectionFactory : IDisposable
     {
-        public readonly int PoolSize = 10;
+        public static int PoolSize => (5*_connectedUsers);
         private static int _connectedUsers { get; set; }
         private Timer? _disposerTimer = null;
         private static readonly object _poolLock = new object();

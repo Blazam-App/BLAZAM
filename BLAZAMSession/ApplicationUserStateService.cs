@@ -27,6 +27,8 @@ namespace BLAZAM.Session
 
         private IHttpContextAccessor _httpContextAccessor { get; set; }
         private readonly IAppDatabaseFactory _factory;
+        private static readonly object _userStatesLock=new();
+
         private int? Timeout { get; set; }
         private List<MFARequest> _mfaLoginQueue = new();
 
@@ -72,18 +74,22 @@ namespace BLAZAM.Session
         {
             try
             {
-                if (state is List<IApplicationUserState> userStates)
+                lock (_userStatesLock)
                 {
-                    var temp = new List<IApplicationUserState>(userStates); // Iterate over a copy
-                    var now = DateTime.UtcNow;
-                    temp.ForEach(x =>
+                    if (state is List<IApplicationUserState> userStates)
                     {
-                        if (Timeout.HasValue && (now - x.LastAccessed).TotalMinutes > Timeout * 3)
+                        var temp = new List<IApplicationUserState>(userStates); // Iterate over a copy
+                        var now = DateTime.UtcNow;
+                        temp.ForEach(x =>
                         {
-                            userStates.Remove(x); // Remove from original list
-                            UserStateEvents.UserTimedOut.Invoke(x);
-                        }
-                    });
+                            if (Timeout.HasValue && (now - x.LastAccessed).TotalMinutes > Timeout * 3)
+                            {
+                                userStates.Remove(x); // Remove from original list
+                                UserStateEvents.UserTimedOut.Invoke(x);
+                                ActiveDirectoryEvents.LoggedOnUserCountChanged.Invoke(userStates.Count);
+                            }
+                        });
+                    }
                 }
             }
             catch (Exception ex)
@@ -158,8 +164,13 @@ namespace BLAZAM.Session
 
         private void AddUserState(IApplicationUserState state)
         {
-            UserStates.Add(state);
+            lock (_userStatesLock)
+            {
+                UserStates.Add(state);
+            }
             UserStateEvents.UserLoggedIn.Invoke(state); // Invoke event after adding
+            ActiveDirectoryEvents.LoggedOnUserCountChanged.Invoke(UserStates.Count);
+
         }
 
         /// <summary>Stores an MFA request temporarily, associating an MFA token with a user state and return URL. Typically used during an MFA challenge flow.</summary> 
@@ -215,10 +226,13 @@ namespace BLAZAM.Session
             }
             try
             {
-                if (UserStates.Contains(state)) // Check before removing
+                lock (_userStatesLock)
                 {
-                    UserStates.Remove(state);
-                    UserStateEvents.UserLoggedOut.Invoke(state); // Invoke event after removing
+                    if (UserStates.Contains(state)) // Check before removing
+                    {
+                        UserStates.Remove(state);
+                        UserStateEvents.UserLoggedOut.Invoke(state); // Invoke event after removing
+                    }
                 }
             }
             catch (Exception ex)
