@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BLAZAM.Plugins
+{
+    /// <summary>
+    /// Defines the contract for initializing a plugin within the application.
+    /// </summary>
+    /// <remarks>Implementations of this interface are responsible for performing any setup or configuration
+    /// required to initialize a plugin. This may include tasks such as loading resources, validating dependencies, or
+    /// registering services.</remarks>
+    internal interface IPluginInitialization
+    {
+        /// <summary>
+        /// Initializes the component, preparing it for use.
+        /// </summary>
+        /// <remarks>This method will be called before using the component if the <see cref="IPluginInitialization"/>
+        /// interface is used.
+        /// </remarks>
+        void Initialize();
+    }
+}

@@ -1,0 +1,86 @@
+@using BLAZAM.Plugins
+@using BLAZAM.Services.Plugins
+@using Microsoft.AspNetCore.Components.Web
+@inherits AppComponentBase
+
+@if (ApplicationInfo.InDebugMode && CurrentUser.State.IsSuperAdmin)
+{
+    <MudAlert Dense=true Class="mud-width-full" Severity="Severity.Info">
+        <MudText>PluginComponent Location</MudText>
+        <MudText Typo="Typo.caption">Page: @Page</MudText><br />
+        <MudText Typo="Typo.caption">Location: @Location</MudText>
+    </MudAlert>
+}
+
+@foreach (var pluginComponent in _pluginComponents)
+{ 
+    <ErrorBoundary>
+       <ChildContent>
+            <DynamicComponent Parameters=Parameters Type="@pluginComponent" />
+       </ChildContent>
+       <ErrorContent>
+          <UnhandledPluginExceptionPage Plugin="@GetPlugin(pluginComponent)" Error="@context"/>
+       </ErrorContent>
+     
+    </ErrorBoundary>
+}
+@code {
+    [CascadingParameter]
+    public IDirectoryEntryAdapter? Entry { get; set; }
+    [Parameter]
+    public PageType Page { get; set; }
+
+    [Parameter]
+    public PageLocation Location { get; set; }
+
+    private Dictionary<string, object>? Parameters
+    {
+        get
+        {
+            if (Entry is IDirectoryEntryAdapter)
+            {
+                return new() { { "Entry", Entry} };
+            }
+
+            // if(Entry is IADComputer computer)
+            // {
+            //     return new() { {"Computer",computer } };
+            // } 
+            // else if (Entry is IADUser user)
+            // {
+            //     return new() { { "User", user } };
+            // }
+            // else if(Entry is IADPrinter printer)
+            // {
+            //     return new() { { "Printer", printer } };
+            // }
+            // else if (Entry is IADOrganizationalUnit ou)
+            // {
+            //     return new() { { "OU", ou } };
+            // }
+            // else if (Entry is IADGroup group)
+            // {
+            //     return new() { { "Group", group } };
+            // }
+            // else if (Entry is IADContact contact)
+            // {
+            //     return new() { { "Contact", contact } };
+            // }
+            return null;
+        }
+    }
+    LoadedPlugin? GetPlugin(Type t)
+    {
+        var plugins = ApplicationInfo.loadedPlugins;
+        var matchingPlugin =  plugins.FirstOrDefault(p => p.PluginBase.GetType().Assembly.Equals(t.Assembly));
+        return matchingPlugin;
+    }
+    List<Type> _pluginComponents = new();
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _pluginComponents = PluginManager.GetPluginTypeForPageAndLocation(Page, Location);
+
+    }
+
+}

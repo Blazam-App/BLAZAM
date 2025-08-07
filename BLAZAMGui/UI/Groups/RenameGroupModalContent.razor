@@ -51,7 +51,7 @@
         }
         catch(Exception ex)
         {
-            Loggers.ActiveDirectoryLogger.Error("Error attempting to rename a group {@Error}",ex);
+            Loggers.ActiveDirectoryLogger.Error(ex, "Error attempting to rename a group");
             SnackBarService.Error("The group could not be renamed.");
         }
 

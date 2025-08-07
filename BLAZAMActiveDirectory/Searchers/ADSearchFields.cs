@@ -16,13 +16,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public string? SamAccountName { get => samAccountName; set => samAccountName = value.EscapeLdapSearchFilter(); }
 
-        /// <summary>
-        /// The ADS long value to search for locked out users from"
-        /// </summary>
-        /// <remarks>
-        /// To find all locked out entries, use 1
-        /// </remarks>
-        public long? LockoutTime { get; set; }
 
 
         public long? LastLogonTime { get; set; }

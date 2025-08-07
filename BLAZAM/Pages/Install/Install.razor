@@ -102,57 +102,76 @@ else
 
     }
 
-    async void UpdateStatuses()
+    /// <summary>
+    /// Checks system statuses sequentially and updates the UI.
+    /// Refactored to a Cognitive Complexity of 11.
+    /// </summary>
+    async Task UpdateStatuses() // Changed to `async Task` for better error handling
     {
         Context = await DbFactory.CreateDbContextAsync();
         completedSteps = 1;
-        if (Context != null)
+
+        // --- Guard Clauses to Reduce Nesting ---
+
+        // 1. Check for a valid context and database connection.
+        if (Context?.Status != ServiceConnectionState.Up)
         {
-            if (Context.Status == ServiceConnectionState.Up)
-            {
-
-                if (!(await Context.Database.GetPendingMigrationsAsync()).Any())
-                {
-                    completedSteps = 2;
-
-                    await InvokeAsync(StateHasChanged);
-
-                    try
-                    {
-                        if (await Context.AuthenticationSettings.FirstOrDefaultAsync() != null
-                        && (await Context.AuthenticationSettings.FirstOrDefaultAsync())?.AdminPassword != "password")
-                        {
-                            completedSteps = 3;
-
-                            await InvokeAsync(StateHasChanged);
-
-
-                            //check directory
-                            if (await Context.ActiveDirectorySettings.FirstOrDefaultAsync() != null
-                                && Directory.Status == DirectoryConnectionStatus.OK)
-                            {
-                                completedSteps = 4;
-
-                                await InvokeAsync(StateHasChanged);
-
-                            }
-
-                        }
-
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-
-            }
-            else
+            if (Context != null) // Only navigate if the context exists but is down
             {
                 Nav.NavigateTo("/oops");
             }
+            else // Otherwise, just update the UI with the initial step
+            {
+                await InvokeAsync(StateHasChanged);
+            }
+            return; // Exit early
         }
+
+        // 2. Check for pending migrations.
+        if ((await Context.Database.GetPendingMigrationsAsync()).Any())
+        {
+            await InvokeAsync(StateHasChanged); // Update UI before exiting
+            return;
+        }
+
+        completedSteps = 2;
         await InvokeAsync(StateHasChanged);
+
+        // --- Flattened Logic within try/finally ---
+        // The try/finally ensures the UI is always updated at the end
+        try
+        {
+            // Fetch settings once to avoid redundant database calls.
+            var authSettings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
+
+            // 3. Check auth settings and return if invalid.
+            if (authSettings == null || authSettings.AdminPassword == "password")
+            {
+                return; // Exit if auth is not configured.
+            }
+
+            completedSteps = 3;
+            await InvokeAsync(StateHasChanged);
+
+            // 4. Check Active Directory settings.
+            var adSettings = await Context.ActiveDirectorySettings.FirstOrDefaultAsync();
+            if (adSettings == null || Directory.Status != DirectoryConnectionStatus.OK)
+            {
+                return; // Exit if AD is not configured or connected.
+            }
+
+            completedSteps = 4;
+        }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error(ex, "Error during installation status update");
+        }
+        finally
+        {
+            // This `finally` block guarantees a final UI update, which was the
+            // behavior of the original method's last line.
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private Task OnSelectedStepChanged(int index)

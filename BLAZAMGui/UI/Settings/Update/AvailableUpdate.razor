@@ -70,12 +70,12 @@
     public EventCallback OnSchedule { get; set; }
 
    
-    private string Timestamp
+    private string? Timestamp
     {
         get
         {
             if (Update.Branch == ApplicationReleaseBranches.Stable)
-                return Update.Version.ReleaseDate.ToLongDateString();
+                return Update.Version.ReleaseDate?.ToLongDateString();
             else
                 return DateTime.Parse(Update.Release.ReleaseTime.ToString()).ToLongDateString();
             //return Update.Version.ReleaseDate.ToString("MMMM d, yyyy");

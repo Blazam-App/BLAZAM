@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using BLAZAM.Global.Data;
+using System.Diagnostics;
 
 namespace BLAZAM.Common.Data
 {

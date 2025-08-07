@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Common.Data.Interfaces
+﻿using BLAZAM.Global.Events;
+
+namespace BLAZAM.Common.Data.Interfaces
 {
     /// <summary>
     /// Provides a progress variable and an event when updated

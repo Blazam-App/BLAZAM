@@ -121,7 +121,7 @@ namespace BLAZAM.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value?.ToString() + " {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error(ex,"Could not set value for {@Field}: {@Value}", fieldValue.Field?.FieldName, fieldValue.Value?.ToString());
                 }
 
             }

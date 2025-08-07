@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Common.Exceptions;
+using BLAZAM.Global.Exceptions;
 using BLAZAM.Jobs;
 
 namespace BLAZAM.Tests.Jobs

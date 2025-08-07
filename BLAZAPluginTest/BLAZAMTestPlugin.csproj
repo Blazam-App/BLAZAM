@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <BaseOutputPath>..\BLAZAM\Plugins</BaseOutputPath>
+	  <disabletransitiveprojectreferences>true</disabletransitiveprojectreferences>
   </PropertyGroup>
 
 
@@ -12,12 +14,46 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.17" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.18" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BLAZAMPlugins\BLAZAMPlugins.csproj" />
+    <ProjectReference Include="..\BLAZAMActiveDirectory\BLAZAMActiveDirectory.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\BLAZAMGlobal\BLAZAMGlobal.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\BLAZAMGui\BLAZAMGui.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\BLAZAMPlugins\BLAZAMPlugins.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resource1.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

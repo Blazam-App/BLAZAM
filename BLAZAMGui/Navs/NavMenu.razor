@@ -31,7 +31,7 @@
                 Icon="@Icons.Material.Filled.Dashboard">
         @AppLocalization[Lang.Home]
     </MudNavLink>
-    <NavBrowseButton SelectedEntryChanged=@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);})
+    <NavBrowseButton SelectedEntryChanged=@((entry) => { SelectedEntryChanged.InvokeAsync(entry); })
                      BrowseExpandedChanged=@((value)=>{BrowseExpandedChanged.InvokeAsync(value);}) />
     <AuthorizeView Context="createContext" Roles=@createRole>
         <MudNavGroup Icon="@Icons.Material.Filled.Create"
@@ -102,7 +102,15 @@
             <MudNavLink Href="/api-tokens">
                 @AppLocalization[Lang.API_Tokens]
             </MudNavLink>
+            @if (ApplicationInfo.loadedPlugins.Count > 0)
+            {
+                <MudNavLink Href="/plugins">
+                    @AppLocalization[Lang.Plugins]
+
+                </MudNavLink>
+            }
         </MudNavGroup>
+      
         <MudNavLink Href="/audit"
                     Icon="@Icons.Material.Filled.ReceiptLong">
             @AppLocalization[Lang.Audit]
