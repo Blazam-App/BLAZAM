@@ -1,4 +1,6 @@
 ﻿@using System.DirectoryServices;
+@using System.Security.Authentication
+@using System.DirectoryServices.Protocols
 @inherits AppComponentBase
 <MudCard Class="ma-5 mx-auto pa-3">
     <MudCardHeader>
@@ -40,6 +42,25 @@
             <StatusCheck Status=@GetConnectionTypeStatus()
             Text="@GetConnectionType()" />
         </MudItem>
+
+        <MudItem xs="8">
+            @AppLocalization[Lang.Encrypted]
+        </MudItem>
+        <MudItem xs="4">
+            <StatusCheck Status=@GetSslStatus() />
+        </MudItem>
+
+
+        @if (OperatingSystem.IsWindows())
+        {
+            <MudItem xs="8">
+                @AppLocalization[Lang.Connection_Type]
+            </MudItem>
+            <MudItem xs="4">
+                <StatusCheck Status=@GetEncryptionTypeStatus()
+                             Text="@GetEncryptionType()" />
+            </MudItem>
+        }
     </MudGrid>
     @if (Directory.Status != DirectoryConnectionStatus.OK && Directory.Status != DirectoryConnectionStatus.Connecting)
     {
@@ -81,13 +102,14 @@
 @code {
     #nullable disable warnings
 
-    [Parameter]
-    public EventCallback DirectoryConnected { get; set; }
+        [Parameter]
+        public EventCallback DirectoryConnected {get; set; }
 
-    bool _monitoring = false;
-    bool _portStatus;
-    bool? _credStatus=null;
-    bool showProgress = true;
+        bool _monitoring = false;
+        bool? _portStatus = null;
+        bool? _credStatus = null;
+        bool showProgress = true;
+    private AppLdapConnection? _connection;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -100,18 +122,19 @@
     {
         base.Dispose();
         _monitoring = false;
+        _connection?.Dispose();
     }
     public async Task RefreshStatuses()
     {
-        await Directory.CancelConnection();
+        await Directory.CancelCheckConnection();
         ResetStatus();
-        _ = Directory.ConnectAsync();
+        using var connection = await Directory.GetConnectionAsync();
     }
     public void ResetStatus()
     {
         //Directory = DirectoryFactory.CreateActiveDirectoryContext();
-        Directory.ConnectAsync();
-        _portStatus = false;
+
+        _portStatus = null;
         _credStatus = null;
         showProgress = true;
         StateHasChanged();
@@ -207,11 +230,32 @@
     {
         if (Directory.Status != DirectoryConnectionStatus.OK) return false;
         if (Directory.AppRootDirectoryEntry == null) return false;
-        var authType = Directory.AppRootDirectoryEntry.AuthenticationType;
-        if (authType.Equals(AuthenticationTypes.Encryption) ||
-            authType.Equals(AuthenticationTypes.SecureSocketsLayer) ||
-            authType.Equals(AuthenticationTypes.Secure)) return true;
-        return authType.Equals(AuthenticationTypes.Secure | AuthenticationTypes.SecureSocketsLayer);
+        var rootDE =  Directory.AppRootDirectoryEntry;
+        var authType = rootDE.AuthenticationType;
+        if (authType.Equals(AuthType.Negotiate) ||
+            (authType.Equals(AuthType.Basic) &&
+            rootDE.SslEnabled)) return true;
+        return false;
+    }
+    private bool? GetEncryptionTypeStatus()
+    {
+        if (Directory.Status != DirectoryConnectionStatus.OK) return false;
+        if (Directory.AppRootDirectoryEntry == null) return false;
+        var authType = Directory.AppRootDirectoryEntry.EncryptionType;
+        if (authType.Equals(CipherAlgorithmType.Aes256) ||
+            authType.Equals(CipherAlgorithmType.Aes192)) return true;
+        return false;
+    }
+    private bool? GetSslStatus()
+    {
+        if (Directory.Status != DirectoryConnectionStatus.OK) return false;
+        if (Directory.AppRootDirectoryEntry == null) return false;
+        return Directory.AppRootDirectoryEntry.SslEnabled;
+    }
+    private string? GetEncryptionType()
+    {
+        if (Directory.Status != DirectoryConnectionStatus.OK) return null;
+        return Directory.AppRootDirectoryEntry?.EncryptionType.ToString();
     }
     private string? GetConnectionType()
     {

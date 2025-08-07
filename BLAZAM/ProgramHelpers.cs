@@ -1,4 +1,5 @@
 // Import necessary namespaces for various functionalities
+using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Services; // Active Directory related services
 using BLAZAM.Common.Attributes; // Custom attributes like AutoStartBackgroundService
 using BLAZAM.Common.Conventions; // Custom routing conventions
@@ -74,6 +75,9 @@ namespace BLAZAM.Server
                 // Fallback: Generate a GUID based on the machine name. Less unique but better than nothing.
                 ApplicationInfo.installationId = Environment.MachineName.ToGuid(); // Assumes ToGuid() extension method exists
             }
+
+            // Define the path for application plugins based on the writable path.
+            Program.PluginDirectory = new SystemDirectory(Program.WritablePath + $"plugins{Path.DirectorySeparatorChar}");
 
             // Store the configuration manager instance globally for easy access (use with caution).
             Program.Configuration = builder.Configuration;

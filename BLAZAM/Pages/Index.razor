@@ -30,24 +30,24 @@
 
 <style>
     body {
-        height: 98vh;
+    height: 98vh;
     }
 
     .brand-icon {
-        position: fixed;
-        left: 5px;
-        top: 5px;
+    position: fixed;
+    left: 5px;
+    top: 5px;
     }
 
-        .brand-icon img {
-            max-width: 65px;
-            max-height: 65px;
-        }
+    .brand-icon img {
+    max-width: 65px;
+    max-height: 65px;
+    }
 
     .login-form input {
-        max-width: 300px;
-        margin-left: auto;
-        margin-right: auto;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
     }
 </style>
 
@@ -59,6 +59,7 @@
     {
         while (waitingForLoadToComplete)
         {
+            Loggers.SystemLogger.Information($"Waiting for application load to complete. InstallComplete={ApplicationInfo.InstallationCompleted} AppReady={Monitor.AppReady}");
 
             if (ApplicationInfo.InstallationCompleted)
             {
@@ -69,6 +70,8 @@
                 }
                 else if (Monitor.AppReady == ServiceConnectionState.Down)
                 {
+                    Loggers.SystemLogger.Information("Insall completed, but AppReady is false.");
+
                     Nav.NavigateTo("/oops", true);
 
                 }
@@ -77,12 +80,13 @@
             {
                 if (Monitor.AppReady == ServiceConnectionState.Up)
                 {
+                    Loggers.SystemLogger.Information("Redirecting from index to install page.");
                     waitingForLoadToComplete = false;
                     await Task.Delay(2500); // Initial delay
                     Nav.NavigateTo("/install", true);
                 }
             }
-            if (!waitingForLoadToComplete)
+            if (waitingForLoadToComplete)
                 Task.Delay(1000).Wait();
 
         }
@@ -104,6 +108,8 @@
         if (newStatus == ServiceConnectionState.Up && oldStatus != newStatus
             && ApplicationInfo.InstallationCompleted && Nav.ToBaseRelativePath(Nav.Uri) == "")
         {
+            Loggers.SystemLogger.Information("AppReady Changed, now up and installation completed. Redirecting to /home");
+
             waitingForLoadToComplete = false;
 
             Nav.NavigateTo("/home");

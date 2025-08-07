@@ -189,7 +189,7 @@ namespace BLAZAM.Common.Data
         {
             RunningProcess = Process.GetCurrentProcess();
             ApplicationRoot = new SystemDirectory(builder.Environment.ContentRootPath);
-            TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
+            TempDirectory = new SystemDirectory(Path.GetTempPath() + $"Blazam{Path.DirectorySeparatorChar}");
             configuration = builder.Configuration;
             //AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Blazam\\");
         }

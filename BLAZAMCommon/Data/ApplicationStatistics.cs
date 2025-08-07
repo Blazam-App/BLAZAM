@@ -5,6 +5,7 @@ namespace BLAZAM.Common.Data
 {
     public static class ApplicationStatistics
     {
+        public static AppEvent<int> OnLdapCountChanged { get; }  = new ();
         public static Process Process { get; set; }
         public static int ADContextCount { get; private set; }
         public static void AddADContext()
@@ -17,6 +18,20 @@ namespace BLAZAM.Common.Data
                 ADContextCount--;
 
         }
+        public static readonly List<Guid> LdapConnections = new ();
+        public static void RemoveLdapConnection(Guid guid)
+        {
+            LdapConnections.Remove(guid);
+
+            OnLdapCountChanged.Invoke(LdapConnections.Count);
+        }
+        public static void AddLdapConnection(Guid guid)
+        {
+            LdapConnections.Add(guid);
+            OnLdapCountChanged.Invoke(LdapConnections.Count);
+        }
+
+      
 
 
         public static int DBContextCount { get; private set; }

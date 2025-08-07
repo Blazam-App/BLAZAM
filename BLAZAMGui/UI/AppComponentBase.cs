@@ -32,6 +32,7 @@ namespace BLAZAM.Gui.UI
 
         [Inject]
         protected IActiveDirectoryContextFactory DirectoryFactory { get; set; }
+        
 
         [Inject]
         protected LockedOutUserMonitor LockedOutUserMonitor { get; set; }
@@ -110,7 +111,7 @@ namespace BLAZAM.Gui.UI
         {
             base.OnInitialized();
             try
-            { 
+            {
                 userActiveDirectoryService = new ScopedActiveDirectoryContext(DirectoryFactory);
                 userActiveDirectoryService.Context.CurrentUser = CurrentUser.State.ToActiveDirectoryUserState();
                 Directory = userActiveDirectoryService.Context;

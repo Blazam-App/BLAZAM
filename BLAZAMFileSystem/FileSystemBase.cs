@@ -1,9 +1,6 @@
-﻿
-using BLAZAM.Logger;
-using System; // Added for ArgumentNullException, ArgumentException, IEquatable
-using System.Collections.Generic; // Added for EqualityComparer
-using System.IO; // Added for Path, DirectoryInfo, FileInfo, FileMode, FileAccess, FileShare, File, IOException
-using System.Security; // Added for SecurityException
+﻿using BLAZAM.Logger;
+using Serilog;
+using System.Security;
 
 namespace BLAZAM.FileSystem
 {
