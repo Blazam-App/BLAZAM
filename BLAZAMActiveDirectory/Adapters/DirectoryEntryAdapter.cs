@@ -11,11 +11,8 @@ using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
-using Novell.Directory.Ldap.Utilclass;
-using System.Collections;
 using System.Data;
 using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
 using System.DirectoryServices.Protocols;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -1125,36 +1122,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <param name="propertyName">The name of the attribute to retrieve.</param>
         /// <returns>The attribute's value, or a default value if not found.</returns>
         private T? GetValue<T>(string propertyName)
+
         {
             if (NewEntry)
             {
-                // For new entries or entries with staged changes, the property cache is the source of truth.
-                if (NewEntry || NewEntryProperties.ContainsKey(propertyName))
+                try
                 {
-                    return NewEntryProperties.TryGetValue(propertyName, out var propValue) ? (T)propValue : default;
+                    if (NewEntryProperties.ContainsKey(propertyName))
+                        return (T)NewEntryProperties[propertyName];
                 }
-
-                // If the full directory entry isn't loaded, check the initial search result cache first.
-                if (DirectoryEntry == null)
+                catch (InvalidCastException ex)
                 {
-                    if (SearchResult?.Properties.Contains(propertyName) == true)
-                    {
-                        return (T?)SearchResult.Properties[propertyName][0];
-                    }
-                    // The property was not in the lightweight search result, so load the full entry from AD.
-                    FetchDirectoryEntry();
+                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
                 }
-
-                // If the entry could not be fetched from Active Directory, no value can be returned.
-                if (DirectoryEntry == null)
+                catch (Exception ex)
                 {
-                    return default;
-                }
-
-                // Attempt to get the property from the loaded entry's property collection.
-                if (DirectoryEntry.Properties.Contains(propertyName))
-                {
-                    return (T?)DirectoryEntry.Properties[propertyName].Value;
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
                 }
 
 

@@ -76,9 +76,7 @@ namespace BLAZAM.Server
                 ApplicationInfo.installationId = Environment.MachineName.ToGuid(); // Assumes ToGuid() extension method exists
             }
 
-            // Define the path for application plugins based on the writable path.
-            Program.PluginDirectory = new SystemDirectory(Program.WritablePath + $"plugins{Path.DirectorySeparatorChar}");
-
+          
             // Store the configuration manager instance globally for easy access (use with caution).
             Program.Configuration = builder.Configuration;
 

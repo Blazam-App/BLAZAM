@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Global.Data;
+using BLAZAM.Global.Events;
 using System.Diagnostics;
 
 namespace BLAZAM.Common.Data

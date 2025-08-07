@@ -541,7 +541,7 @@ namespace BLAZAM.ActiveDirectory
 
         private void PerformNetworkTests(ADSettings? ad)
         {
-            if (ad == null) throw new CriticalActiveDirectoryException(this,"Missing configuration");
+            if (ad == null) throw new CriticalActiveDirectoryException(this, "Missing configuration");
 
             Loggers.ActiveDirectoryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
 
@@ -691,59 +691,52 @@ namespace BLAZAM.ActiveDirectory
                         {
                             Loggers.ActiveDirectoryLogger.Information(localAttemptEx, "Local AD auth attempt failed. Attempting remote AD authentication.");
 
-                           
-                                if (OperatingSystem.IsLinux())
+
+                            if (OperatingSystem.IsLinux())
+                            {
+                                throw new AppException("AD Auth not implemented");
+                            }
+                            else
+                            {
+                                try
                                 {
-                                    throw new AppException("AD Auth not implemented");
+                                    Loggers.ActiveDirectoryLogger.Information("Authenticating Active Directory credentials");
+
+                                    var _authenticatedContext = new DirectoryEntry(LDAP_PROTO + ConnectionSettings.ServerAddress + ":" + ConnectionSettings.ServerPort + "/" + ConnectionSettings.ApplicationBaseDN, loginReq.Username, loginReq.Password, AuthenticationTypes.Secure|AuthenticationTypes.Signing);
+                                    _ = _authenticatedContext.AuthenticationType;
+                                    var test2 = _authenticatedContext.Children.GetEnumerator();
+                                    test2.MoveNext();
+                                    var test3 = test2.Current as DirectoryEntry;
+                                    _ = test3?.Parent;
+
+                                    _authenticatedContext.Dispose();
+                                    stopWatch.Stop();
+                                    Loggers.ActiveDirectoryLogger.Debug("Authentication success: {@Elapsed} ms", stopWatch.ElapsedMilliseconds);
+
+                                    return findUser;
+
                                 }
-                                else
+                                catch (DirectoryServicesCOMException ex)
                                 {
-                                    try
-                            {
-                                Loggers.ActiveDirectoryLogger.Information("Authenticating Active Directory credentials");
-
-                                var _authenticatedContext = new DirectoryEntry(LDAP_PROTO + ConnectionSettings.ServerAddress + ":" + ConnectionSettings.ServerPort + "/" + ConnectionSettings.ApplicationBaseDN, loginReq.Username, loginReq.Password, AuthType);
-                                _ = _authenticatedContext.AuthenticationType;
-                                var test2 = _authenticatedContext.Children.GetEnumerator();
-                                test2.MoveNext();
-                                var test3 = test2.Current as DirectoryEntry;
-                                _ = test3?.Parent;
-
-                                _authenticatedContext.Dispose();
-                                stopWatch.Stop();
-                                Loggers.ActiveDirectoryLogger.Debug("Authentication success: {@Elapsed} ms", stopWatch.ElapsedMilliseconds);
-
-                                return findUser;
-
-                            }
-                            catch (DirectoryServicesCOMException ex)
-                            {
-                                Loggers.ActiveDirectoryLogger.Information(ex, "Error authenticating user: {@Message}", ex.Message);
-                                if (ex.ExtendedErrorMessage.Contains("data 773, v4563"))
-                                  {
-                                    Loggers.ActiveDirectoryLogger.Debug("Authentication failure: {@Elapsed} ms", stopWatch.ElapsedMilliseconds);
-                                    return null;
-                                  }
-                            }
+                                    Loggers.ActiveDirectoryLogger.Information(ex, "Error authenticating user: {@Message}", ex.Message);
+                                    if (ex.ExtendedErrorMessage.Contains("data 773, v4563"))
+                                    {
+                                        Loggers.ActiveDirectoryLogger.Debug("Authentication failure: {@Elapsed} ms", stopWatch.ElapsedMilliseconds);
+                                        return null;
+                                    }
                                 }
-                                return findUser;
+                                catch (Exception ex)
+                                {
+                                    stopWatch.Stop();
 
+                                    Loggers.ActiveDirectoryLogger.Debug("Authentication failure: {Elapsed} ms", stopWatch.ElapsedMilliseconds);
+
+                                    Loggers.ActiveDirectoryLogger.Error(ex, "Error while authenticating credentials.");
+                                }
                             }
-                            catch (Exception ex)
-                            {
-                                stopWatch.Stop();
-
-                                Loggers.ActiveDirectoryLogger.Debug("Authentication failure: {Elapsed} ms", stopWatch.ElapsedMilliseconds);
-
-                                Loggers.ActiveDirectoryLogger.Error(ex, "Error while authenticating credentials.");
-                            }
+                            return findUser;
                         }
-
-
-
-
                     }
-
                 }
                 catch (LdapException ex)
                 {
