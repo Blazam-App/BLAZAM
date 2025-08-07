@@ -55,7 +55,7 @@ namespace BLAZAM.ActiveDirectory.Data
         {
             return LdapConnection.SendRequest(request);
         }
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+
         ~AppLdapConnection()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
@@ -71,7 +71,6 @@ namespace BLAZAM.ActiveDirectory.Data
                     {
                         _keepAliveTime.Dispose();
                     }
-                    // TODO: dispose managed state (managed objects)
                     try
                     {
                         if (_startedTLS)
@@ -89,20 +88,13 @@ namespace BLAZAM.ActiveDirectory.Data
                     }
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
                 ApplicationStatistics.RemoveLdapConnection(Guid);
 
                 IsDisposed = true;
             }
         }
 
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~AppLdapConnection()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
+        
         public void DisposeNow()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
