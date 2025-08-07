@@ -224,34 +224,12 @@ namespace BLAZAM.Pages.API.v1
         {
             if (newUserDetails.Groups != null)
             {
-                foreach (var groupSid in newUserDetails.Groups)
+                foreach (var groupIdentifier in newUserDetails.Groups)
                 {
-                    var group = (IADGroup)Directory.FindEntryBySid(groupSid);
-                    if(group == null)
-                    {
-                        group = (IADGroup)Directory.GetDirectoryEntryByDN(groupSid);
-                    }
-                    if (group == null)
-                    {
-                        group = (IADGroup)Directory.GetDirectoryEntryByDN(groupSid);
-                    }
-                    if (group == null)
-                    {
-                        var matches = Directory.Groups.FindGroupByString(groupSid,true);
-                        if (matches != null && matches.Count > 0)
-                        {
-                            if (matches.Count > 1)
-                            {
-                                throw new DirectorySearchUniquenessException(groupSid);
-                            }
-                            group = matches.First();
-                        }
-
-                    }
+                    var group = FindGroupByIdentifier(groupIdentifier);
                     if (group != null)
                     {
                         newUser?.AssignTo(group);
-
                     }
                 }
             }

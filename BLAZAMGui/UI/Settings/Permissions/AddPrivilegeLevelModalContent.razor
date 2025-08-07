@@ -58,7 +58,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
         catch (Exception ex)
         {
 
-            Loggers.ActiveDirectoryLogger.Error("Error attempting to add delegate " + selectedDelegate?.CanonicalName + " {@Error}",ex);
+            Loggers.ActiveDirectoryLogger.Error(ex,"Error attempting to add delegate {@Delegate}", selectedDelegate?.CanonicalName);
             SnackBarService.Error(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred]);
         }
     }

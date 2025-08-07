@@ -93,5 +93,27 @@ namespace BLAZAM.Pages.API.v1
 
             return new JsonResult(ResponseData);
         }
+
+        protected IADGroup? FindGroupByIdentifier(string groupIdentifier)
+        {
+            var group = (IADGroup)Directory.FindEntryBySid(groupIdentifier);
+            if (group == null)
+            {
+                group = (IADGroup)Directory.GetDirectoryEntryByDN(groupIdentifier);
+            }
+            if (group == null)
+            {
+                var matches = Directory.Groups.FindGroupByString(groupIdentifier, true);
+                if (matches != null && matches.Count > 0)
+                {
+                    if (matches.Count > 1)
+                    {
+                        throw new DirectorySearchUniquenessException(groupIdentifier);
+                    }
+                    group = matches.First();
+                }
+            }
+            return group;
+        }
     }
 }

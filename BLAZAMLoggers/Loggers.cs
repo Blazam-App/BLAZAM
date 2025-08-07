@@ -11,19 +11,130 @@ namespace BLAZAM.Logger
         public static bool SendToSeqServer { get; set; } = true;
         public static bool? InstallationCompleted { get; set; } = null;
         public static string SeqServerUri { get; set; }
+        public static string SecondarySeqServerUri { get; set; }
         public static string InstallationId { get; set; }
         public static string InstallationType { get; set; }
         public static string DatabaseType { get; set; }
         public static string SeqAPIKey { get; set; }
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public static ILogger RequestLogger { get; private set; }
-        public static ILogger DatabaseLogger { get; private set; }
-        public static ILogger ActiveDirectoryLogger { get; private set; }
-        public static ILogger UpdateLogger { get; private set; }
-        public static ILogger RulesLogger { get; private set; }
-        public static ILogger SystemLogger { get; set; }
-        public static ILogger AspNetLogger{ get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+     
+
+        private static ILogger? _requestLogger;
+        public static ILogger RequestLogger
+        {
+            get
+            {
+                EnsureLogger(ref _requestLogger);
+                return _requestLogger;
+            }
+            private set
+            {
+                _requestLogger = value;
+            }
+        }
+
+        private static ILogger? _databaseLogger;
+        public static ILogger DatabaseLogger
+        {
+            get
+            {
+                EnsureLogger(ref _databaseLogger);
+                return _databaseLogger;
+            }
+            private set
+            {
+                _databaseLogger = value;
+            }
+        }
+
+        private static ILogger? _activeDirectoryLogger;
+        public static ILogger ActiveDirectoryLogger
+        {
+            get
+            {
+                EnsureLogger(ref _activeDirectoryLogger);
+                return _activeDirectoryLogger;
+            }
+            private set
+            {
+                _activeDirectoryLogger = value;
+            }
+        }
+
+
+        private static ILogger? _updateLogger;
+        public static ILogger UpdateLogger
+        {
+            get
+            {
+                EnsureLogger(ref _updateLogger);
+                return _updateLogger;
+            }
+            private set
+            {
+                _updateLogger = value;
+            }
+        }
+
+        private static ILogger? _rulesLogger;
+        public static ILogger RulesLogger
+        {
+            get
+            {
+                EnsureLogger(ref _rulesLogger);
+                return _rulesLogger;
+            }
+            private set
+            {
+                _rulesLogger = value;
+            }
+        }
+
+        private static ILogger? _systemLogger;
+        public static ILogger SystemLogger
+        {
+            get
+            {
+                EnsureLogger(ref _systemLogger);
+                return _systemLogger;
+            }
+            private set
+            {
+                _systemLogger = value;
+            }
+        }
+        
+      
+        private static ILogger? _aspLogger;
+        public static ILogger AspNetLogger
+        {
+            get
+            {
+                EnsureLogger(ref _aspLogger);
+                return _aspLogger;
+            }
+            private set
+            {
+                _aspLogger = value;
+            }
+        }
+
+        private static ILogger? _pluginManager;
+        public static ILogger PluginLogger
+        {
+            get
+            {
+                EnsureLogger(ref _pluginManager);
+                return _pluginManager;
+            }
+            private set
+            {
+                _pluginManager = value;
+            }
+        }
+
+   
+
 
         public static void SetupLoggers(string logPath, string applicationVersion = "1.0")
         {
@@ -36,6 +147,7 @@ namespace BLAZAM.Logger
             RulesLogger = SetupLogger(logPath + $"rules{Path.DirectorySeparatorChar}rules.txt");
             AspNetLogger = SetupLogger(logPath + $"aspnet{Path.DirectorySeparatorChar}aspnet.txt");
             SystemLogger = SetupLogger(logPath + $"system{Path.DirectorySeparatorChar}system.txt");
+            PluginLogger = SetupLogger(logPath + $"plugins{Path.DirectorySeparatorChar}plugins.txt");
 
           
            
@@ -44,9 +156,9 @@ namespace BLAZAM.Logger
             //Serilog.Debugging.SelfLog.Enable(Console.Error);
         }
 
-        private static LoggerConfiguration CreateLogBuilder()
+        internal static LoggerConfiguration CreateLogBuilder()
         {
-            return new LoggerConfiguration()
+           var config =  new LoggerConfiguration()
                                 .Enrich.FromLogContext()
                                .Enrich.WithMachineName()
                                .Enrich.WithEnvironmentName()
@@ -54,13 +166,15 @@ namespace BLAZAM.Logger
                              .Enrich.WithProperty("Application Name", "Blazam")
                              .Enrich.WithProperty("Installation Type", InstallationType)
                              .Enrich.WithProperty("Installation Id", InstallationId)
-                             .Enrich.WithProperty("OS",OperatingSystem.IsWindows()?"Windows":OperatingSystem.IsLinux()?"Linux":"Unknown")
+                             .Enrich.WithProperty("OS", OperatingSystem.IsWindows() ? "Windows" : OperatingSystem.IsLinux() ? "Linux" : "Unknown")
                              .Enrich.WithProperty("Installation Completed", InstallationCompleted)
                              .Enrich.WithProperty("Database Type", DatabaseType)
                                .Enrich.WithProperty("Application Version", _applicationVersion);
+          
+            return config;
         }
 
-        private static Serilog.ILogger SetupLogger(string logFilePath, RollingInterval rollingInterval = RollingInterval.Hour)
+        public static ILogger SetupLogger(string logFilePath, RollingInterval rollingInterval = RollingInterval.Hour)
         {
             var loggerBuilder = CreateLogBuilder()
                 .WriteTo.File(logFilePath,
@@ -77,6 +191,20 @@ namespace BLAZAM.Logger
             {
                 loggerBuilder.WriteTo.Seq(SeqServerUri, apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning);
             }
+
+            return loggerBuilder.CreateLogger();
+        }
+
+        private static void EnsureLogger(ref ILogger? logger)
+        {
+            logger ??= SetupTestLogger();
+        }
+
+        private static Serilog.ILogger SetupTestLogger()
+        {
+            var loggerBuilder = CreateLogBuilder()
+                .WriteTo.Console();
+          
 
             return loggerBuilder.CreateLogger();
         }

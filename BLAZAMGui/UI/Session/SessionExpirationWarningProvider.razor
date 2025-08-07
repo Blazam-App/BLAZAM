@@ -1,0 +1,104 @@
+@using Microsoft.AspNetCore.Authentication;
+@inherits AppComponentBase
+@inject IJSRuntime JSRuntime
+
+
+<AppModal Title=@AppLocalization[Lang.Your_session_is_about_to_expire]
+          @ref="ExpirationWarningModal"
+          AllowClose=false
+          YesText=@AppLocalization[Lang.Refresh_Session]
+          OnYes=@(()=>{
+          JSRuntime.InvokeVoidAsync("updateCookieExpiration");
+          ExpirationWarningModal?.Close();
+          return Task.CompletedTask;
+          })>
+    <AppUserSessionTimeLeft Ticket="_ticket"/>
+</AppModal>
+<AppModal Title=@AppLocalization[Lang.Session_Expired]
+          @ref="ExpiredModal"
+          YesText=@AppLocalization[Lang.Log_In]
+          OnYes="@(()=>{Refresh();
+          return Task.CompletedTask;
+           })"
+          Options=@(new DialogOptions{
+          CloseButton=false,
+          CloseOnEscapeKey=false,
+          BackdropClick=false})>
+
+
+    <MudText>@AppLocalization[Lang.Your_session_has_expired]</MudText>
+
+
+</AppModal>
+@code {
+    private Timer? sessionTimeoutCheckTimer;
+    AppModal? ExpirationWarningModal;
+    AppModal? ExpiredModal;
+    AuthenticationTicket? _ticket;
+    Timer? fastExpirationChecker;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        sessionTimeoutCheckTimer = new Timer(CheckExpiration, null, 30000, 30000);
+    }
+
+    // This method checks the session expiration and shows a warning modal if the session is about to expire
+    private async void CheckExpiration(object? obj)
+    {
+        if (CurrentUser.State?.Ticket != null)
+        {
+            _ticket = CurrentUser.State?.Ticket;
+            var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
+            if (timeLeft > TimeSpan.FromSeconds(1) && timeLeft < TimeSpan.FromMinutes(2) && ExpirationWarningModal?.IsShown == false)
+            {
+                await InvokeAsync(async () => {
+                    await ExpirationWarningModal.ShowAsync(); 
+                    fastExpirationChecker = new Timer(WaitForExpiration, null, 1000, 1000);
+                });
+
+            }
+        }
+    }
+
+    // This method is called by the fast expiration checker timer to check if the session has expired
+    private async void WaitForExpiration(object? obj)
+    {
+        if (CurrentUser.State?.Ticket != null)
+        {
+            _ticket = CurrentUser.State?.Ticket;
+            var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
+
+            // If the time left is less than 1 second, we can consider the session expired
+            if (timeLeft < TimeSpan.FromSeconds(1))
+            {
+                // Stop the fast expiration checker timer
+                if(fastExpirationChecker != null)
+                {
+                    await fastExpirationChecker.DisposeAsync();
+                    fastExpirationChecker = null;
+                }
+                // Close the expiration warning modal if it's shown
+                if(ExpirationWarningModal?.IsShown == true)
+                {
+                    await ExpirationWarningModal.CloseAsync();
+                }
+                // Show the expired modal
+                if(ExpiredModal?.IsShown == false)
+                {
+                    await InvokeAsync(async () => {
+                        await ExpiredModal.ShowAsync();
+                    });
+                }
+               
+            }
+        }
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        sessionTimeoutCheckTimer?.Dispose();
+        fastExpirationChecker?.Dispose();   
+    }
+}

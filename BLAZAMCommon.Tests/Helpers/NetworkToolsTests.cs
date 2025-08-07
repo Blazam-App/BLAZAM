@@ -20,18 +20,14 @@ namespace BLAZAMCommon.Tests.Helpers
         }
 
         [Fact]
-        public void PingHost_NonExistentHost_ReturnsCorrectException()
+        public void PingHost_NonExistentHost_ReturnsFalse()
         {
             // Using a TLD that is reserved for testing/documentation (RFC 2606 / RFC 6761)
             // or a clearly fake one.
-            Assert.Throws<UnresolvableAddressException>(() =>
-            {
-                NetworkTools.PingHost("nonexistent-domain-for-blazam-tests.example.com");
-            });
-            Assert.Throws<UnresolvableAddressException>(() =>
-            {
-                NetworkTools.PingHost("another-unlikely-hostname-blazam.blazam");
-            });
+            Assert.False(NetworkTools.PingHost("nonexistent-domain-for-blazam-tests.example.com"));
+
+            Assert.False(NetworkTools.PingHost("another-unlikely-hostname-blazam.blazam"));
+
         }
 
         [Fact]
@@ -291,18 +287,30 @@ namespace BLAZAMCommon.Tests.Helpers
         /// to catch a SocketException and correctly return null.
         /// </summary>
         [Fact]
-        public void ResolveHostIP_WithInvalidHostname_ReturnsNull()
+        public void TryResolveHostIP_WithInvalidHostname_ReturnsNull()
         {
             // Arrange
             var invalidHostName = "this-is-not-a-valid-hostname.invalid";
 
             // Act
-            var result = NetworkTools.ResolveHostIP(invalidHostName);
+            var result = NetworkTools.TryResolveHostIP(invalidHostName);
 
             // Assert
             Assert.Null(result);
         }
 
+
+
+        [Fact]
+        public void ResolveHostIP_WithInvalidHostname_ThrowsCorrectExcepion()
+        {
+            // Arrange
+            var invalidHostName = "this-is-not-a-valid-hostname.invalid";
+
+            // Assert
+            Assert.Throws<UnresolvableAddressException>(() => NetworkTools.ResolveHostIP(invalidHostName));
+
+        }
         /// <summary>
         /// This test verifies that passing a null input is not handled by the
         /// catch block and correctly throws an ArgumentNullException. This highlights

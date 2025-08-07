@@ -21,18 +21,25 @@
     <DialogActions>
         @if (!CancelText.IsNullOrEmpty())
         {
-            <MudButton Color="CancelColor" OnClick="@(()=>{OnCancel.Invoke();})">@CancelText</MudButton>
+            <MudButton Color="CancelColor"
+                       OnClick="@(() => { OnCancel.Invoke(); })">
+                @CancelText
+            </MudButton>
 
         }
         @{
             var yesDisabled = !YesEnabled.Invoke();
         }
-        <MudButton Disabled=@yesDisabled Color="Color.Primary" OnClick="@YesClicked">@YesText</MudButton>
+        <MudButton Disabled=@yesDisabled
+                   Color="Color.Primary"
+                   OnClick="@YesClicked">
+            @YesText
+        </MudButton>
 
-            <LoadingData Loading=LoadingData />
-        </DialogActions>
+        <LoadingData Loading=LoadingData />
+    </DialogActions>
 
-    </MudDialog>
+</MudDialog>
 
 
 

@@ -246,8 +246,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(lastLogonTimestamp<={Fields.LastLogonTime})(!(lastLogonTimestamp=0))";
                     if (Fields.ExpireTime != null)
                         FilterQuery += $"(accountExpires<={Fields.ExpireTime.Value.ToFileTimeUtc().ToString()})(!(accountExpires=0))";
-                    if (Fields.LockoutTime != null)
-                        FilterQuery += $"(lockoutTime>={Fields.LockoutTime})";
+                 
                     if (!Fields.DN.IsNullOrEmpty())
                         FilterQuery += $"(distinguishedName={Fields.DN})";
                     if (!Fields.MemberOf.IsNullOrEmpty())
@@ -407,11 +406,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
             catch (COMException ex)
             {
-                Loggers.ActiveDirectoryLogger.Information("Directory Entry failed to connect {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Information(ex, "Directory Entry failed to connect");
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error("Directory Entry failed to connect {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex, "Directory Entry failed to connect");
             }
 
             SearchState = SearchState.Completed;

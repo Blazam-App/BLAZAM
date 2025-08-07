@@ -1,5 +1,4 @@
-﻿
-namespace BLAZAM
+﻿namespace BLAZAM.Global.Events
 {
     public delegate void AppDelegate();
     public delegate void AppDelegate<in T>(T value);

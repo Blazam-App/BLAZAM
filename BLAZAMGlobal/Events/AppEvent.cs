@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLAZAM
+namespace BLAZAM.Global.Events
 {
     public class AppEvent
     {

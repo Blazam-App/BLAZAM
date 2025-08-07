@@ -86,10 +86,8 @@ namespace BLAZAM.Helpers
                 {
                     try
                     {
-                        if (ip != null)
-                            client.Connect(ip, port);
-                        else
-                            client.Connect(hostNameOrAddress, port);
+                        
+                        client.Connect(ip, port);
                         portOpen = true; // Port is open
                         break; // Exit loop since one open port is found
                     }
@@ -106,7 +104,7 @@ namespace BLAZAM.Helpers
             return portOpen;
         }
 
-        private static IPAddress? TryResolveHostIP(string hostNameOrAddress)
+        public static IPAddress? TryResolveHostIP(string hostNameOrAddress)
         {
             try
             {

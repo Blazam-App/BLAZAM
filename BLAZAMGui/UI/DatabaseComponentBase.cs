@@ -14,7 +14,7 @@ namespace BLAZAM.Gui.UI
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error("Failed to connect to database {@Error}", ex);
+                    Loggers.DatabaseLogger.Error(ex, "Failed to connect to database");
                 }
             }
 
@@ -28,7 +28,7 @@ namespace BLAZAM.Gui.UI
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error("Failed to connect to database {@Error}", ex);
+                Loggers.DatabaseLogger.Error(ex, "Failed to connect to database");
             }
         }
     }

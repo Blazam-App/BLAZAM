@@ -37,6 +37,9 @@
             {
                 <DynamicMudInput T=string Label="@AppLocalization[Lang.Profile_Path]" @bind-Value="@User.ProfilePath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) />
             }
+
+        <PluginComponents Page="@PageType.User" Location="@PageLocation.Profile" />
+
     </ViewSection>
 }
 @code {
@@ -60,7 +63,7 @@
 
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Warning("Error checking user h-drive: {Message}", ex);
+                Loggers.ActiveDirectoryLogger.Warning(ex,"Error checking user h-drive");
 
             }
         }

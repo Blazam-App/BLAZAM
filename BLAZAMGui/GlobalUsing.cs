@@ -18,4 +18,7 @@ global using Microsoft.Data.SqlClient;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Localization;
 global using Microsoft.JSInterop;
+global using BLAZAM.Global.Data;
+global using BLAZAM.Global.Events;
+global using BLAZAM.Global.Exceptions;
 

@@ -1,0 +1,39 @@
+﻿@page "/plugins"
+@using BLAZAM.Plugins
+@using BLAZAM.Services.Plugins
+@inherits AppComponentBase
+<MudText Typo="Typo.h4">
+    @AppLocalization[Lang.Plugins]
+</MudText>
+
+<MudDataGrid EditMode="@DataGridEditMode.Cell" Items=@ApplicationInfo.loadedPlugins>
+    <Columns>
+        <HierarchyColumn 
+            ButtonDisabledFunc="@((item)=>{return false;})"
+                         InitiallyExpandedFunc="@((item)=>{return false;})" />
+
+        <PropertyColumn Property="x => x.PluginBase.Name" />
+        <PropertyColumn Property="x => x.PluginBase.Version" />
+        <PropertyColumn Property="x => x.PluginBase.Author" />
+    </Columns>
+    <ChildRowContent>
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">Settings</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <DynamicComponent Type="@PluginManager.GetPluginSettingsComponent(context.Item.PluginBase)" />
+            </MudCardContent>
+        </MudCard>
+    </ChildRowContent>
+    <PagerContent>
+        <MudDataGridPager />
+    </PagerContent>
+
+</MudDataGrid>
+@code {
+    IDirectoryEntryAdapter asdsa;
+    IPluginBase asdsad;
+}

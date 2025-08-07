@@ -62,6 +62,10 @@ namespace BLAZAM.ActiveDirectory.Data
 
         public string Decrypt(byte[] encryptedPass)
         {
+            if(encryptedPass.Length<17)
+            {
+                throw new ArgumentException("Encrypted password must be at least 17 bytes long.");
+            }
             var tcs = new TaskCompletionSource<string>();
             GCHandle gch = GCHandle.Alloc(tcs);
 
@@ -89,7 +93,7 @@ namespace BLAZAM.ActiveDirectory.Data
             try
             {
                 Marshal.Copy(encryptedPass, 16, alloc, encryptedPass.Length - 16);
-                ret = Win32.NCryptUnprotectSecret(out handle2, 0x41, alloc, (uint)encryptedPass.Length - 16, IntPtr.Zero, IntPtr.Zero, out secData, out secDataLen);
+                ret = Win32.NCryptUnprotectSecret(out handle2, 0x41, alloc, (uint)(encryptedPass.Length - 16), IntPtr.Zero, IntPtr.Zero, out secData, out secDataLen);
                 if (ret == 0)
                 {
                     string sid;
