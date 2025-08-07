@@ -1,41 +1,39 @@
 // Import necessary namespaces for various functionalities
-using BLAZAM.ActiveDirectory.Services; // Active Directory related services
-using BLAZAM.Common.Attributes; // Custom attributes like AutoStartBackgroundService
-using BLAZAM.Common.Conventions; // Custom routing conventions
-using BLAZAM.Common.Data; // Common data structures and utilities
-using BLAZAM.Common.Data.Services; // Common data services
-using BLAZAM.Common.Exceptions; // Custom exception types
-using BLAZAM.Database.Context; // Database context interfaces and implementations
-using BLAZAM.Gui.Services; // GUI related services (MudBlazor extensions)
-using BLAZAM.Notifications.Services; // Notification system services
-using BLAZAM.Plugins; // Plugin system interfaces and helpers
-using BLAZAM.Services; // Core application services
-using BLAZAM.Services.Audit; // Auditing services
-using BLAZAM.Services.Chat; // Chat services
-using BLAZAM.Services.Duo; // Duo Security integration services
-using BLAZAM.Session; // Session management services
-using BLAZAM.Session.Interfaces; // Session management interfaces
-using BLAZAM.Update.Services; // Application update services
-using Microsoft.AspNetCore.Authentication; // ASP.NET Core Authentication services
-using Microsoft.AspNetCore.Authentication.Cookies; // Cookie authentication scheme
-using Microsoft.AspNetCore.Authentication.JwtBearer; // JWT Bearer authentication scheme
-using Microsoft.IdentityModel.Tokens; // Security token handling
-using Microsoft.OpenApi.Models; // OpenAPI (Swagger) models
-using MudBlazor; // MudBlazor UI component library
-using MudBlazor.Services; // MudBlazor service registration
-using NuGet.Protocol.Plugins; // Used for PluginLoadContext (potentially, verify usage)
-using Polly; // Resilience and transient-fault-handling library
-using Polly.Contrib.WaitAndRetry; // Polly extensions for wait and retry strategies
-using Polly.Extensions.Http; // Polly extensions for HttpClient
-using System.Diagnostics; // For Process class
-using System.Globalization; // For CultureInfo (localization)
-using System.Management; // For WMI (Windows Management Instrumentation) to get Installation ID
-using System.Reflection; // For assembly loading and reflection
+using BLAZAM.ActiveDirectory.Services;
+using BLAZAM.Common.Attributes;
+using BLAZAM.Common.Conventions;
+using BLAZAM.Common.Data;
+using BLAZAM.Common.Data.Services;
+using BLAZAM.Database.Context;
+using BLAZAM.Gui.Services;
+using BLAZAM.Notifications.Services;
+using BLAZAM.Plugins;
+using BLAZAM.Services;
+using BLAZAM.Services.Audit;
+using BLAZAM.Services.Chat;
+using BLAZAM.Services.Duo;
+using BLAZAM.Session;
+using BLAZAM.Session.Interfaces;
+using BLAZAM.Update.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using MudBlazor;
+using MudBlazor.Services;
+using Polly;
+using Polly.Contrib.WaitAndRetry;
+using Polly.Extensions.Http;
+using System.Diagnostics;
+using System.Globalization;
+using System.Management;
+using System.Reflection;
 
 namespace BLAZAM.Server
 {
     /// <summary>
-    /// Provides extension methods for <see cref="WebApplicationBuilder"/> and <see cref="WebApplication"/>
+    /// Extension methods for <see cref="WebApplicationBuilder"/> and <see cref="WebApplication"/>
     /// to encapsulate application initialization, service injection, and pre-run configuration logic.
     /// </summary>
     public static class ProgramHelpers
@@ -44,9 +42,6 @@ namespace BLAZAM.Server
         /// Initializes core application properties like debug flags, installation ID,
         /// running process information, and application version.
         /// </summary>
-        /// <param name="builder">The WebApplicationBuilder instance.</param>
-        /// <returns>The modified WebApplicationBuilder instance.</returns>
-        /// <remarks>Note the typo in the original method name 'IntializeProperties'.</remarks>
         public static WebApplicationBuilder IntializeProperties(this WebApplicationBuilder builder)
         {
             // Set a default timeout for Regex matching across the application domain.
@@ -97,42 +92,34 @@ namespace BLAZAM.Server
         {
             try
             {
-                string ComputerName = "localhost"; // Target the local machine
-                ManagementScope Scope;
-                // Connect to the root\CIMV2 namespace
-                Scope = new ManagementScope(String.Format("\\\\{0}\\root\\CIMV2", ComputerName), null);
-                Scope.Connect(); // Establish connection
+                var scope = new ManagementScope(@"\\localhost\root\CIMV2", null);
+                scope.Connect();
 
-                // Query for the UUID from the Win32_ComputerSystemProduct class
-                ObjectQuery Query = new("SELECT UUID FROM Win32_ComputerSystemProduct");
-                ManagementObjectSearcher Searcher = new(Scope, Query);
+                var query = new ObjectQuery("SELECT UUID FROM Win32_ComputerSystemProduct");
+                var searcher = new ManagementObjectSearcher(scope, query);
 
-                // Iterate through the results (should typically be only one)
-                foreach (ManagementObject WmiObject in Searcher.Get())
+                foreach (ManagementObject wmiObject in searcher.Get())
                 {
                     try
                     {
-                        // Attempt to parse the UUID string into a Guid
-                        return Guid.Parse(WmiObject["UUID"].ToString());
+                        return Guid.Parse(wmiObject["UUID"].ToString());
                     }
-                    catch (Exception ex) // Catch parsing errors or null values
+                    catch (Exception ex)
                     {
                         Console.WriteLine($"Error parsing UUID from WMI object: {ex.Message}. Skipping object.");
-                        continue; // Try next object if any (though unlikely for this specific query)
+                        continue;
                     }
                 }
-                // If the loop completes without returning, the UUID was not found.
                 throw new AppException("WMI query executed successfully, but no Win32_ComputerSystemProduct UUID was found.");
             }
-            catch (ManagementException ex) // Catch specific WMI errors
+            catch (ManagementException ex)
             {
                 Console.WriteLine($"WMI ManagementException while getting Installation ID: {ex.Message}. Check WMI service and permissions.");
                 throw new AppException("Failed to query WMI for Installation ID. Check WMI service status and application permissions.", ex);
             }
-            catch (Exception ex) // Catch other potential errors (e.g., connection issues)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Generic exception while getting Installation ID: {ex.Message}");
-                // Re-throw as AppException for consistent error handling upstream
                 throw new AppException("An unexpected error occurred while retrieving the Installation ID.", ex);
             }
         }
@@ -140,8 +127,6 @@ namespace BLAZAM.Server
         /// <summary>
         /// Registers application services with the dependency injection container.
         /// </summary>
-        /// <param name="builder">The WebApplicationBuilder instance.</param>
-        /// <returns>The modified WebApplicationBuilder instance.</returns>
         public static WebApplicationBuilder InjectServices(this WebApplicationBuilder builder)
         {
             // --- Localization Setup ---
@@ -296,8 +281,6 @@ namespace BLAZAM.Server
             // --- Background Services & Session Services ---
             builder.InjectBackgroundServices(); // Extension method to register background services automatically
             builder.Services.AddSessionServices(); // Extension method to register session-related services
-
-            // --- Update Services ---
             builder.Services.AddUpdateServices(); // Extension method to register application update services
 
             // --- UI Services (MudBlazor) ---
@@ -387,7 +370,6 @@ namespace BLAZAM.Server
         /// Discovers plugins in the plugin directory, loads their assemblies,
         /// and calls their InjectServices method to register plugin-specific services.
         /// </summary>
-        /// <param name="builder">The WebApplicationBuilder instance.</param>
         private static void LoadPluginAssemblies(WebApplicationBuilder builder)
         {
             var pluginDir = ApplicationInfo.pluginDirectory;
@@ -490,8 +472,6 @@ namespace BLAZAM.Server
         /// Discovers and registers background services marked with the <see cref="AutoStartBackgroundService"/> attribute
         /// from all loaded BLAZAM assemblies.
         /// </summary>
-        /// <param name="builder">The WebApplicationBuilder instance.</param>
-        /// <returns>The modified WebApplicationBuilder instance.</returns>
         public static WebApplicationBuilder InjectBackgroundServices(this WebApplicationBuilder builder)
         {
             Loggers.SystemLogger.Information("Injecting auto-start background services...");
