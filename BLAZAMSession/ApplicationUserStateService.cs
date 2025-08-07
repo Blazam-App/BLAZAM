@@ -2,6 +2,7 @@
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers; // Added for GetAppHashCode
 using BLAZAM.Logger;
+using BLAZAM.Session.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,11 +30,8 @@ namespace BLAZAM.Session
         private int? Timeout { get; set; }
         private List<MFARequest> _mfaLoginQueue = new();
 
-        /// <summary>Event triggered when a new <see cref="IApplicationUserState"/> is added to the cache. Primarily for internal use or advanced scenarios.</summary>
-        public AppDelegate<IApplicationUserState> UserStateAdded { get; set; }
 
-        /// <summary>Event triggered when an <see cref="IApplicationUserState"/> is removed from the cache, either due to timeout or explicit logout.</summary>
-        public AppDelegate<IApplicationUserState> OnUserStateRemoved { get; set; }
+
 
         /// <summary>Gets the list of currently cached <see cref="IApplicationUserState"/> objects. Use with caution; direct manipulation is not recommended.</summary>
         public IList<IApplicationUserState> UserStates { get; private set; } = new List<IApplicationUserState>();
@@ -83,7 +81,7 @@ namespace BLAZAM.Session
                         if (Timeout.HasValue && (now - x.LastAccessed).TotalMinutes > Timeout * 3)
                         {
                             userStates.Remove(x); // Remove from original list
-                            OnUserStateRemoved?.Invoke(x); // Invoke event
+                            UserStateEvents.UserTimedOut.Invoke(x);
                         }
                     });
                 }
@@ -161,7 +159,7 @@ namespace BLAZAM.Session
         private void AddUserState(IApplicationUserState state)
         {
             UserStates.Add(state);
-            UserStateAdded?.Invoke(state); // Invoke event after adding
+            UserStateEvents.UserLoggedIn.Invoke(state); // Invoke event after adding
         }
 
         /// <summary>Stores an MFA request temporarily, associating an MFA token with a user state and return URL. Typically used during an MFA challenge flow.</summary> 
@@ -220,7 +218,7 @@ namespace BLAZAM.Session
                 if (UserStates.Contains(state)) // Check before removing
                 {
                     UserStates.Remove(state);
-                    OnUserStateRemoved?.Invoke(state); // Invoke event
+                    UserStateEvents.UserLoggedOut.Invoke(state); // Invoke event after removing
                 }
             }
             catch (Exception ex)

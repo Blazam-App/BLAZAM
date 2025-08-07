@@ -2,6 +2,7 @@
 using System.DirectoryServices.Protocols;
 using System.Net; 
 using BLAZAM.ActiveDirectory.Data;
+using BLAZAM.ActiveDirectory.Events;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
@@ -12,7 +13,7 @@ namespace BLAZAM.ActiveDirectory
     public class LdapConnectionFactory : IDisposable
     {
         public readonly int PoolSize = 10;
-        private static int ConnectedUsers { get; set; }
+        private static int _connectedUsers { get; set; }
         private Timer? _disposerTimer = null;
         private static readonly object _poolLock = new object();
         private static ADSettings? _connectionSettingsCache = null;
@@ -20,6 +21,14 @@ namespace BLAZAM.ActiveDirectory
         private static Random _random;
         private bool disposedValue;
         private static readonly object _tlsLock = new();
+
+        public LdapConnectionFactory()
+        {
+            ActiveDirectoryEvents.LoggedOnUserCountChanged.Delegate += (state,count) =>
+            {
+                _connectedUsers = count;
+            };
+        }
 
         public int Count
         {
@@ -212,7 +221,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (Exception ex)
                 {
-
+                   Loggers.ActiveDirectoryLogger.Information(ex, "Error during connection pool cleanup.");
                 }
 
             }
@@ -243,7 +252,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (Exception ex)
                 {
-
+                    Loggers.ActiveDirectoryLogger.Information(ex, "Error during connection pool clearing.");
                 }
 
             }
@@ -340,7 +349,7 @@ namespace BLAZAM.ActiveDirectory
 
             try
             {
-                //TestConnectionMethods(settings);
+               
                 // 1. Create LdapConnection object targeting the standard LDAP port
                 LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier(settings.ServerAddress, settings.ServerPort);
                 var currentConnection = new LdapConnection(identifier);
@@ -530,15 +539,6 @@ namespace BLAZAM.ActiveDirectory
                 disposedValue = true;
             }
         }
-
- 
-
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~LdapConnectionFactory()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
 
         public void Dispose()
         {
