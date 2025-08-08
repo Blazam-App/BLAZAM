@@ -43,7 +43,8 @@
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Mail))
                     {
                         @if (DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true &&
-                       (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id) && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
+                       (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field?.Id == ActiveDirectoryFields.Mail.Id) 
+                       && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field?.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
                         {
 
                         }
@@ -365,7 +366,7 @@
     public NewUserName NewUserName { get; set; }
 
     [Parameter]
-    public bool IsValid { get; set; }
+    public new bool IsValid { get; set; }
 
     bool _initialized = false;
 
@@ -385,7 +386,6 @@
     bool IsEditableTemplateField(IActiveDirectoryField field)
     {
 
-        //if (IsAdmin) return true;
 
         if (field is ActiveDirectoryField)
             return DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
