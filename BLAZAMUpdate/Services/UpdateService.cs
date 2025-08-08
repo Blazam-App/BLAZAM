@@ -1,4 +1,6 @@
 ﻿
+using System.Runtime.ExceptionServices;
+using System.Security.Principal;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
@@ -8,8 +10,6 @@ using BLAZAM.Update.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Octokit;
-using System.Runtime.ExceptionServices;
-using System.Security.Principal;
 
 namespace BLAZAM.Update.Services
 {
@@ -321,18 +321,23 @@ namespace BLAZAM.Update.Services
 
         public WindowsImpersonation? GetUpdateCredentials()
         {
-            using var context = _dbFactory.CreateDbContext();
             switch (UpdateCredential)
             {
                 case UpdateCredential.Application:
                     return null;
                 case UpdateCredential.Active_Directory:
                     //Pull ad settings to test if app ad account can write to the application directory
-                    var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
-                    return adSettings?.CreateDirectoryAdminImpersonator();
+                    using (var context = _dbFactory.CreateDbContext())
+                    {
+                        var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
+                        return adSettings?.CreateDirectoryAdminImpersonator();
+                    }
                 case UpdateCredential.Custom:
-                    var appSettings = context.AppSettings.FirstOrDefault();
-                    return appSettings?.CreateUpdateImpersonator();
+                    using (var context2 = _dbFactory.CreateDbContext())
+                    {
+                        var appSettings = context2.AppSettings.FirstOrDefault();
+                        return appSettings?.CreateUpdateImpersonator();
+                    }
                 default:
                     return null;
             }
