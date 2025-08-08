@@ -13,11 +13,19 @@ namespace BLAZAM.Services.Background
     [AutoStartBackgroundService(true)]
     public class ApplicationNewsService : DatabaseBackgroundServiceBase, IApplicationNewsService
     {
+        private const string _primaryNewsApi = "https://blazam.org/api/";
+        private const string _secondaryNewsApi = "https://blazam-news.azurewebsites.net/api/";
+        private readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
+
         private readonly HttpClient _httpClient;
         private readonly HttpClient _secondaryHttpClient;
         private bool _pollCompleted = false;
-        private List<NewsItem> _allNewsItems = new();
-        private List<NewsItem> _activeNewsItems => _allNewsItems.Where(x => x.DeletedAt == null && x.Published == true && (x.ScheduledAt == null || x.ScheduledAt < DateTime.Now) && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now)).ToList();
+        private List<NewsItem> _allNewsItems = [];
+        private IEnumerable<NewsItem> activeNewsItems => _allNewsItems.Where(x => x.DeletedAt == null
+                                                                        && x.Published
+                                                                        && (x.ScheduledAt == null
+                                                                        || x.ScheduledAt < DateTime.Now)
+                                                                        && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now));
         public AppDelegate OnNewItemsAvailable { get; set; }
 
         public ApplicationNewsService(IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(dbFactory, appLocalization)
@@ -26,12 +34,12 @@ namespace BLAZAM.Services.Background
 
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://blazam.org/api/"),
+                BaseAddress = new Uri(_primaryNewsApi),
                 Timeout = TimeSpan.FromSeconds(60)
             };
             _secondaryHttpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://blazam-news.azurewebsites.net/api/"),
+                BaseAddress = new Uri(_secondaryNewsApi),
                 Timeout = TimeSpan.FromSeconds(60)
             };
         }
@@ -39,9 +47,11 @@ namespace BLAZAM.Services.Background
 
         protected override void Execute(object? state = null)
         {
-            Job newsCollectionJob = new Job(AppLocalization[Lang.Fetch_News]);
-            newsCollectionJob.StopOnFailedStep = true;
-            JobStep collectStep = new JobStep(AppLocalization[Lang.Excute], async (step) =>
+            Job newsCollectionJob = new(AppLocalization[Lang.Fetch_News])
+            {
+                StopOnFailedStep = true
+            };
+            JobStep collectStep = new(AppLocalization[Lang.Excute], async (step) =>
             {
                 try
                 {
@@ -59,6 +69,7 @@ namespace BLAZAM.Services.Background
                 {
                     Loggers.SystemLogger.Warning(ex, "Unable to contact application news API {@URI}", _httpClient.BaseAddress);
                 }
+
                 return false;
             });
             newsCollectionJob.AddStep(collectStep);
@@ -71,7 +82,7 @@ namespace BLAZAM.Services.Background
             if (apiResponse != null && apiResponse.IsSuccessStatusCode)
             {
                 var content = await apiResponse.Content.ReadAsStringAsync();
-                var allNewsItems = JsonSerializer.Deserialize<List<NewsItem>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var allNewsItems = JsonSerializer.Deserialize<List<NewsItem>>(content, _jsonOptions);
                 if (allNewsItems != null)
                 {
                     _allNewsItems = allNewsItems;
@@ -80,8 +91,10 @@ namespace BLAZAM.Services.Background
                     OnNewItemsAvailable?.Invoke();
 
                 }
+
                 return true;
             }
+
             throw new AppException("News API did not return a successful response.");
         }
 
@@ -89,15 +102,15 @@ namespace BLAZAM.Services.Background
         {
             try
             {
-                var activeItems = _activeNewsItems;
+                var activeItems = activeNewsItems;
                 var unreadItems = new List<NewsItem>();
                 // If the user has no read items, return all active items
                 if (user?.ReadNewsItems != null)
                 {
                     foreach (var item in activeItems)
                     {
-                        bool isRead = user.ReadNewsItems.Any(x => x.NewsItemId == item.Id);
-                        bool isUpdated = user.ReadNewsItems.Any(r => r.NewsItemId == item.Id && r.NewsItemUpdatedAt < item.UpdatedAt);
+                        bool isRead = user.ReadNewsItems.Any(x => x.NewsItemId.Equals(item.Id));
+                        bool isUpdated = user.ReadNewsItems.Any(r => r.NewsItemId.Equals(item.Id) && r.NewsItemUpdatedAt < item.UpdatedAt);
 
                         if (!isRead || isUpdated)
                         {
@@ -110,7 +123,7 @@ namespace BLAZAM.Services.Background
                 if (_pollCompleted && user?.ReadNewsItems != null)
                 {
                     var staleItems = user.ReadNewsItems
-                        .Where(x => x.NewsItemId < 100000000000 && !activeItems.Any(a => a.Id == x.NewsItemId))
+                        .Where(x => x.NewsItemId < 100000000000 && !activeItems.Any(a => a.Id.Equals(x.NewsItemId)))
                         .ToList();
 
                     if (staleItems.Count > 0)
@@ -119,6 +132,7 @@ namespace BLAZAM.Services.Background
                         {
                             user.ReadNewsItems.Remove(x);
                         }
+
                         user.SaveReadNewsItems();
                     }
                 }
@@ -128,7 +142,7 @@ namespace BLAZAM.Services.Background
             catch (Exception ex)
             {
                 Loggers.SystemLogger.Error(ex, "Error while trying to get unread news items for user.");
-                return new();
+                return [];
             }
         }
 
@@ -139,7 +153,7 @@ namespace BLAZAM.Services.Background
             {
                 if (user != null)
                 {
-                    var activeItems = _activeNewsItems;
+                    var activeItems = activeNewsItems;
                     if (user.ReadNewsItems != null)
                     {
                         var readItems = activeItems.Where(x => user.ReadNewsItems.Any(r => r.NewsItemId == x.Id && r.NewsItemUpdatedAt >= x.UpdatedAt)).ToList();
@@ -147,15 +161,16 @@ namespace BLAZAM.Services.Background
                         return readItems;
                     }
 
-                    return new();
+                    return [];
                 }
-                return new List<NewsItem>();
+
+                return [];
 
             }
             catch (Exception ex)
             {
                 Loggers.SystemLogger.Error(ex, "Error while trying to get read news items for user.");
-                return new();
+                return [];
             }
         }
         protected override void Dispose(bool disposing)
