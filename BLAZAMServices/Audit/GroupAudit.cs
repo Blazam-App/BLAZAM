@@ -6,12 +6,8 @@ using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
-    public class GroupAudit : DirectoryAudit
+    public class GroupAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
     {
-        public GroupAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
-        {
-        }
-
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
         {
             Analytics?.ObjectDeleted(ActiveDirectoryObjectType.Group);
@@ -82,12 +78,12 @@ namespace BLAZAM.Services.Audit
                ouMovedTo.OU);
             return true;
         }
-        public override async Task<bool> Changed(IDirectoryEntryAdapter changedGroup, List<AuditChangeLog> changes)
+        public override async Task<bool> Changed(IDirectoryEntryAdapter changedEntry, List<AuditChangeLog> changes)
         {
 
             await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.Group_Edited,
-                changedGroup,
+                changedEntry,
                 changes.GetValueChangesString(c => c.OldValue),
                 changes.GetValueChangesString(c => c.NewValue));
             return true;

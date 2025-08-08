@@ -14,7 +14,7 @@ namespace BLAZAM.Services.Audit
         {
         }
 
-        public virtual Task<bool> Changed(IDirectoryEntryAdapter changedUser, List<AuditChangeLog> changes)
+        public virtual Task<bool> Changed(IDirectoryEntryAdapter changedEntry, List<AuditChangeLog> changes)
         {
             throw new NotImplementedException();
         }

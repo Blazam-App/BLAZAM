@@ -1,4 +1,5 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Text;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
@@ -6,12 +7,8 @@ using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
-    public class UserAudit : DirectoryAudit
+    public class UserAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
     {
-        public UserAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
-        {
-        }
-
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
         {
             Analytics?.ObjectDeleted(ActiveDirectoryObjectType.User);
@@ -64,10 +61,13 @@ namespace BLAZAM.Services.Audit
 
             var oldValues = "";
             var newValues = "";
+            var strBuilder = new StringBuilder();
             foreach (var c in newEntry.NewEntryProperties)
             {
-                newValues += c.Key + "=" + c.Value;
+                strBuilder.Append(c.Key + "=" + c.Value);
             }
+
+            newValues = strBuilder.ToString();
             await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.User_Created,
                 newEntry,
@@ -86,11 +86,11 @@ namespace BLAZAM.Services.Audit
                ouMovedTo.OU);
             return true;
         }
-        public override async Task<bool> Changed(IDirectoryEntryAdapter changedUser, List<AuditChangeLog> changes)
+        public override async Task<bool> Changed(IDirectoryEntryAdapter changedEntry, List<AuditChangeLog> changes)
         {
             await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.User_Edited,
-                changedUser,
+                changedEntry,
                 changes.GetValueChangesString(c => c.OldValue),
                 changes.GetValueChangesString(c => c.NewValue));
             return true;
