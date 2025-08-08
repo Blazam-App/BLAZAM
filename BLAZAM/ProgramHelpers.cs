@@ -1,4 +1,8 @@
 // Import necessary namespaces for various functionalities
+using System.Diagnostics;
+using System.Globalization;
+using System.Management;
+using System.Reflection;
 using BLAZAM.Common.Attributes;
 using BLAZAM.Common.Conventions;
 using BLAZAM.Common.Data;
@@ -24,12 +28,8 @@ using MudBlazor.Services;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
-using System.Diagnostics;
-using System.Globalization;
-using System.Management;
-using System.Reflection;
 
-namespace BLAZAM.Server
+namespace BLAZAM
 {
     /// <summary>
     /// Extension methods for <see cref="WebApplicationBuilder"/> and <see cref="WebApplication"/>
@@ -49,7 +49,7 @@ namespace BLAZAM.Server
 
             // Initialize ApplicationInfo singleton (holds global app state/config).
             // Pass the builder to access configuration early.
-            ApplicationInfo ApplicationInfo = new(builder);
+            _ = new ApplicationInfo(builder);
 
             // Read DebugMode and DemoMode flags from configuration (appsettings.json).
             ApplicationInfo.inDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
@@ -97,28 +97,42 @@ namespace BLAZAM.Server
                 var query = new ObjectQuery("SELECT UUID FROM Win32_ComputerSystemProduct");
                 var searcher = new ManagementObjectSearcher(scope, query);
 
-                foreach (ManagementObject wmiObject in searcher.Get())
+
+                try
                 {
-                    try
+                    var enumerator = searcher.Get().GetEnumerator();
+                    var wmiObject = enumerator.MoveNext() ? enumerator.Current : null;
+                    if (wmiObject != null)
                     {
-                        return Guid.Parse(wmiObject["UUID"].ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error parsing UUID from WMI object: {ex.Message}. Skipping object.");
-                        continue;
+                        var guid = wmiObject["UUID"];
+                        if (guid == null)
+                        {
+                            throw new AppException("UUID property not found in Win32_ComputerSystemProduct WMI object.");
+                        }
+                        var guidString = guid.ToString();
+                        if (guidString == null)
+                        {
+                            throw new AppException("UUID property is null in Win32_ComputerSystemProduct WMI object.");
+                        }
+                        return Guid.Parse(guidString);
                     }
                 }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Information(ex, "Error parsing UUID from WMI object. Skipping object.");
+
+                }
+
                 throw new AppException("WMI query executed successfully, but no Win32_ComputerSystemProduct UUID was found.");
             }
             catch (ManagementException ex)
             {
-                Console.WriteLine($"WMI ManagementException while getting Installation ID: {ex.Message}. Check WMI service and permissions.");
+                Loggers.SystemLogger.Information(ex, "WMI ManagementException while getting Installation ID. Check WMI service and permissions.");
                 throw new AppException("Failed to query WMI for Installation ID. Check WMI service status and application permissions.", ex);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Generic exception while getting Installation ID: {ex.Message}");
+                Loggers.SystemLogger.Information(ex, "Generic exception while getting Installation ID");
                 throw new AppException("An unexpected error occurred while retrieving the Installation ID.", ex);
             }
         }
@@ -420,9 +434,9 @@ namespace BLAZAM.Server
             Loggers.PluginLogger.Error(ex, "Error loading types from assembly {@DllName}", dllName);
             if (ex.LoaderExceptions != null)
             {
-                foreach (Exception loaderEx in ex.LoaderExceptions)
+                foreach (Exception? loaderEx in ex.LoaderExceptions)
                 {
-                    Loggers.PluginLogger.Error("- LoaderException: {@LoaderExceptionMessage}", loaderEx.Message);
+                    Loggers.PluginLogger.Error(loaderEx, "LoaderException loading {@DLL}", dllName);
                 }
             }
         }
@@ -541,7 +555,7 @@ namespace BLAZAM.Server
                     if (appSettings != null)
                     {
                         // Enable/disable sending logs to the central Seq server based on the setting
-                        Loggers.SendToSeqServer = appSettings.SendLogsToDeveloper != false; // Default to true if null
+                        Loggers.SendToSeqServer = appSettings.SendLogsToDeveloper;
                         Loggers.SystemLogger.Information("Seq logging to developer server set to: {SendToSeq}", Loggers.SendToSeqServer);
                         ApplicationInfo.installationCompleted = appSettings.InstallationCompleted;
                         Loggers.SystemLogger.Information("Installation completed status: {Status}", ApplicationInfo.installationCompleted);
@@ -648,7 +662,7 @@ namespace BLAZAM.Server
                                         var metadata = type.GetCustomAttribute<AutoStartBackgroundService>();
                                         Loggers.SystemLogger.Information("Starting background service: {ServiceType} (Immediate: {ImmediateStart})", type.FullName, metadata?.Immediate == true);
                                         // Start the service (implementation likely handles actual background task execution)
-                                        if (metadata?.RunOnLinux == true || OperatingSystem.IsLinux() == false)
+                                        if (metadata?.RunOnLinux == true || !OperatingSystem.IsLinux())
                                         {
                                             service.Start(metadata?.Immediate == true);
                                         }
