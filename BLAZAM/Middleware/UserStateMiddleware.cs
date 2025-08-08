@@ -28,8 +28,8 @@ namespace BLAZAM.Server.Middleware
         {
             if (httpContext == null)
             {
-                Loggers.SystemLogger.Debug("UserStateMiddleware: httpContext is null.");
-                return _next(httpContext);
+                Loggers.SystemLogger.Error("UserStateMiddleware: httpContext is null.");
+                throw new AppException("HttpContext is null.");
             }
 
 
