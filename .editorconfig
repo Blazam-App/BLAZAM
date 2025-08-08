@@ -73,6 +73,39 @@ dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
 dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
 
+ 
+[*.{cs,vb}]
+# Naming rules for private fields and private properties
+
+dotnet_naming_rule.private_fields_should_start_with_underscore.severity = suggestion
+dotnet_naming_rule.private_fields_should_start_with_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_should_start_with_underscore.style = starts_with_underscore
+
+dotnet_naming_rule.private_properties_should_not_start_with_underscore.severity = suggestion
+dotnet_naming_rule.private_properties_should_not_start_with_underscore.symbols = private_properties
+dotnet_naming_rule.private_properties_should_not_start_with_underscore.style = no_leading_underscore
+
+# Symbol specifications
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_fields.required_modifiers =
+
+dotnet_naming_symbols.private_properties.applicable_kinds = property
+dotnet_naming_symbols.private_properties.applicable_accessibilities = private
+dotnet_naming_symbols.private_properties.required_modifiers =
+
+# Naming styles
+
+dotnet_naming_style.starts_with_underscore.required_prefix = _
+dotnet_naming_style.starts_with_underscore.required_suffix =
+dotnet_naming_style.starts_with_underscore.word_separator =
+dotnet_naming_style.starts_with_underscore.capitalization = camel_case
+
+dotnet_naming_style.no_leading_underscore.required_prefix =
+dotnet_naming_style.no_leading_underscore.required_suffix =
+dotnet_naming_style.no_leading_underscore.word_separator =
+dotnet_naming_style.no_leading_underscore.capitalization = camel_case
 # Symbol specifications
 
 dotnet_naming_symbols.interface.applicable_kinds = interface
