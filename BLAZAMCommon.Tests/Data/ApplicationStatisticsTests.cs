@@ -1,7 +1,7 @@
-﻿using BLAZAM.Common.Data;
-using Moq;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
+using BLAZAM.Common.Data;
+using Moq;
 
 namespace BLAZAMCommon.Tests.Data
 {

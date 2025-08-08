@@ -1,10 +1,10 @@
-﻿using BLAZAM.Database.Context;
+﻿using System.Security.Claims; // Added
+using BLAZAM.Database.Context;
 using BLAZAM.Helpers; // Added for GetAppHashCode
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Claims; // Added
 
 namespace BLAZAM.Session
 {

@@ -1,17 +1,16 @@
 // Import necessary namespaces for various functionalities like data handling,
 // database operations, server configuration, logging, security, etc.
+using System.Diagnostics; // For checking if debugger is attached
+using System.Net; // For IP address handling
+using System.Security.Cryptography.X509Certificates; // For SSL certificate handling
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
-using BLAZAM.Server;
 using BLAZAM.Server.Middleware;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting.WindowsServices; // Required for running as a Windows Service
 using Serilog; // Logging library
-using System.Diagnostics; // For checking if debugger is attached
-using System.Net; // For IP address handling
-using System.Security.Cryptography.X509Certificates; // For SSL certificate handling
 
 namespace BLAZAM
 {

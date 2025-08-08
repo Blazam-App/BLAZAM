@@ -1,5 +1,5 @@
-﻿using BLAZAM.Common.Data.Validators;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using BLAZAM.Common.Data.Validators;
 
 namespace BLAZAM.Common.Data.Tests.Validators
 {

@@ -1,9 +1,9 @@
-﻿using BLAZAM.Database.Context;
+﻿using System.Security.Claims;
+using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
-using System.Security.Claims;
 
 namespace BLAZAM.Services.Audit
 {

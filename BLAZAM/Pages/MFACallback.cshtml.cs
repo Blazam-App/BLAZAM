@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BLAZAM.Services;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Duo;
@@ -7,7 +8,6 @@ using DuoUniversal;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
 
 namespace BLAZAM.Pages
 {

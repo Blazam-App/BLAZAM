@@ -1,9 +1,9 @@
-﻿using BLAZAM.ActiveDirectory.Data;
+﻿using System.DirectoryServices;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Jobs;
-using System.DirectoryServices;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {

@@ -1,7 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO.Compression;
@@ -9,6 +6,9 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
+using BLAZAM.Common.Data;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace BLAZAM.Helpers
 {

@@ -1,8 +1,8 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Web;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
-using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

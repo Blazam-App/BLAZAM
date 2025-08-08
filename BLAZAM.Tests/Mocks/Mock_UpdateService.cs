@@ -1,8 +1,8 @@
-﻿using BLAZAM.FileSystem;
+﻿using System.Diagnostics;
+using BLAZAM.FileSystem;
 using BLAZAM.Global.Data;
 using BLAZAM.Update;
 using BLAZAM.Update.Services;
-using System.Diagnostics;
 
 namespace BLAZAM.Tests.Mocks
 {

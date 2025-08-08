@@ -1,7 +1,7 @@
-﻿using BLAZAM.Logger;
+﻿using System.Security.Claims; // Added
+using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims; // Added
 
 namespace BLAZAM.Session
 {

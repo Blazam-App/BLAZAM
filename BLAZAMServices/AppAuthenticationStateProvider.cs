@@ -1,4 +1,5 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Security.Claims;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -18,7 +19,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 
 
 namespace BLAZAM.Services

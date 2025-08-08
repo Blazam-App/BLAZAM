@@ -1,4 +1,5 @@
-﻿using BLAZAM.Common.Data;
+﻿using System.Security.Claims; // Added
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
@@ -8,7 +9,6 @@ using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims; // Added
 
 namespace BLAZAM.Session
 {

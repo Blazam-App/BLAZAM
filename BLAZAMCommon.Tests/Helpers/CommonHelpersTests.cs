@@ -1,11 +1,11 @@
-using BLAZAM.Common.Data;
-using BLAZAM.Helpers; // For CommonHelpers extension methods
-using SixLabors.ImageSharp; // For Image
-using SixLabors.ImageSharp.Formats.Png; // For PngEncoder
 using System.Collections;
 using System.Diagnostics.Eventing.Reader; // For EventRecord
 using System.Reflection;
 using System.Security.Principal; // For SecurityIdentifier
+using BLAZAM.Common.Data;
+using BLAZAM.Helpers; // For CommonHelpers extension methods
+using SixLabors.ImageSharp; // For Image
+using SixLabors.ImageSharp.Formats.Png; // For PngEncoder
 
 namespace BLAZAMCommon.Tests.Helpers
 {

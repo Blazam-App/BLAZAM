@@ -1,4 +1,8 @@
-﻿using BLAZAM.ActiveDirectory;
+﻿using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
+using System.Text;
+using System.Text.RegularExpressions;
+using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
@@ -7,10 +11,6 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Logger;
 using Microsoft.Extensions.DependencyInjection;
-using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace BLAZAM.Helpers
 {

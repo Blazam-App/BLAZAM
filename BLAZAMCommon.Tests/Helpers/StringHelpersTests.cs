@@ -1,6 +1,6 @@
+using System.Text;
 using BLAZAM.Helpers; // For StringHelpers
 using Microsoft.AspNetCore.Components; // For MarkupString
-using System.Text;
 
 namespace BLAZAMCommon.Tests.Helpers
 {

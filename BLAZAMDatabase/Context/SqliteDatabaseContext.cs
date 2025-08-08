@@ -1,8 +1,8 @@
-﻿using BLAZAM.Common.Data.Database;
+﻿using System.Data;
+using System.Data.SQLite;
+using BLAZAM.Common.Data.Database;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
-using System.Data.SQLite;
 
 namespace BLAZAM.Database.Context
 {

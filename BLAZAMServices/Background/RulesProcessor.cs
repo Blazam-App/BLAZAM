@@ -1,4 +1,6 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Data;
+using System.Diagnostics;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Database.Context;
@@ -13,8 +15,6 @@ using BLAZAM.Services.Audit;
 using BLAZAM.Services.Events;
 using BLAZAM.Session;
 using Microsoft.Extensions.Localization;
-using System.Data;
-using System.Diagnostics;
 
 namespace BLAZAM.Services.Background
 {

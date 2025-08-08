@@ -1,4 +1,5 @@
-﻿using BLAZAM.ActiveDirectory;
+﻿using System.Security.Claims;
+using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
@@ -9,7 +10,6 @@ using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace BLAZAM.Services.Background
 {

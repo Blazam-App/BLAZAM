@@ -1,10 +1,10 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Data;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
-using System.Data;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

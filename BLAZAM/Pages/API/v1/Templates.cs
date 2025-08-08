@@ -1,4 +1,6 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Security;
+using System.Text.Json;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Templates;
@@ -14,8 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
-using System.Security;
-using System.Text.Json;
 
 namespace BLAZAM.Pages.API.v1
 {

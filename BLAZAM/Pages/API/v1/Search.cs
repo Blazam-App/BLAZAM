@@ -1,10 +1,10 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Text.RegularExpressions;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Database.Context;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
 
 namespace BLAZAM.Pages.API.v1
 {

@@ -1,4 +1,5 @@
-﻿using BLAZAM.Common.Data;
+﻿using System.Security.Claims;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
@@ -6,7 +7,6 @@ using BLAZAM.Global.Events;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
 
 namespace BLAZAM.Tests.Session
 {

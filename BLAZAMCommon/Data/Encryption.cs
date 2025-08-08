@@ -1,7 +1,7 @@
-﻿using BLAZAM.Helpers;
-using Newtonsoft.Json;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
+using BLAZAM.Helpers;
+using Newtonsoft.Json;
 
 namespace BLAZAM.Common.Data
 {

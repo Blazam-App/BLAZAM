@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Jobs;
@@ -6,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Localization;
-using System.IO.Compression;
 
 namespace BLAZAM.Server.Pages.Download
 {

@@ -1,6 +1,6 @@
 ﻿
-using BLAZAM.Logger;
 using System.Security; // Added for SecurityException
+using BLAZAM.Logger;
 
 
 namespace BLAZAM.FileSystem

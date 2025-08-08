@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Components;
 namespace BLAZAM.ActiveDirectory.Searchers
 {
     public class SearchBase

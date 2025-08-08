@@ -1,6 +1,6 @@
 ﻿
-using BLAZAM.Common.Data;
 using System.ComponentModel.DataAnnotations;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.Database.Models
 {

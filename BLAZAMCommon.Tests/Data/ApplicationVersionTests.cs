@@ -1,5 +1,5 @@
-﻿using Moq;
-using System.Reflection;
+﻿using System.Reflection;
+using Moq;
 
 // If AppException is a custom type and not provided, you might need a placeholder for the tests to compile:
 // namespace BLAZAM.Common.Data

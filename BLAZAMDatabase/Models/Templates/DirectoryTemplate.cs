@@ -1,10 +1,10 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
-using Microsoft.IdentityModel.Tokens;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
+using BLAZAM.Common.Data;
+using BLAZAM.Database.Context;
+using Microsoft.IdentityModel.Tokens;
 using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
 
 namespace BLAZAM.Database.Models.Templates

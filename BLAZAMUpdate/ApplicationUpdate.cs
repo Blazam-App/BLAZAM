@@ -1,14 +1,14 @@
-﻿using BLAZAM.Common.Data;
+﻿using System.Diagnostics;
+using System.IO.Compression;
+using System.Security.Principal;
+using System.Text;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.FileSystem;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Update.Services;
-using System.Diagnostics;
-using System.IO.Compression;
-using System.Security.Principal;
-using System.Text;
 
 namespace BLAZAM.Update
 {
