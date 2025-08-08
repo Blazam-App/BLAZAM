@@ -1,4 +1,8 @@
 ﻿
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Security;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
@@ -6,32 +10,29 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADComputer : AccountDirectoryAdapter, IADComputer
     {
 
-        private ADComputerSessions? sessionManager;
+        private ADComputerSessions? _sessionManager;
         private WmiConnection? _wmiConnection;
         private WmiConnection? wmiConnection
         {
             get
             {
-                if (CanonicalName == null) return null;
-                if (_wmiConnection == null)
+                if (CanonicalName == null)
                 {
-                    _wmiConnection = new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
+                    return null;
                 }
+
+                _wmiConnection ??= new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
                 return _wmiConnection;
             }
         }
         private CancellationTokenSource _pingCancellationTokenSource = new();
-        private bool? online;
+        private bool? _online;
         public ADComputer()
         {
 
@@ -74,6 +75,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 Loggers.ActiveDirectoryLogger.Warning("Delay cannot be negative. Setting to 0");
                 delaySeconds = 0; //Prevent exceptions
             }
+
             if (wmiConnection != null)
             {
                 return await wmiConnection.ShutdownAsync(delaySeconds, message, force, reboot);
@@ -100,7 +102,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (_lapsCredential != null) return _lapsCredential.Password;
+                if (_lapsCredential != null)
+                {
+                    return _lapsCredential.Password;
+                }
+
                 return GetLapsCredentials()?.Password;
             }
         }
@@ -108,14 +114,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (_lapsCredential != null) return _lapsCredential.AccountName;
+                if (_lapsCredential != null)
+                {
+                    return _lapsCredential.AccountName;
+                }
+
                 return GetLapsCredentials()?.AccountName;
             }
         }
 
         private LapsCredential? GetLapsCredentials()
         {
-            string? pass = null;
             object? value = null;
             if (System.OperatingSystem.IsWindows())
             {
@@ -126,10 +135,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         return Directory.Impersonation.Run(() =>
                         {
-                            string decryptedPassword = String.Empty;
                             var decryptor = new LapsDecryptor();
                             var decryptedJson = decryptor.Decrypt(bytes).ToSecureString();
-                            //decryptedPassword = decryptedJson;
                             _lapsCredential = new LapsCredential(decryptedJson);
 
                             return _lapsCredential;
@@ -142,6 +149,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                 }
             }
+
             if (value is null)
             {
                 var str = GetSecureStringAttribute(ActiveDirectoryFields.LapsPassword.FieldName);
@@ -151,13 +159,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     return _lapsCredential;
                 }
             }
+
             return null;
         }
 
         private SecureString? GetSecureStringAttribute(string fieldName)
         {
             var temp = GetStringAttribute(fieldName);
-            if (temp != null) return temp.ToSecureString();
+            if (temp != null)
+            {
+                return temp.ToSecureString();
+            }
+
             return null;
         }
 
@@ -180,27 +193,40 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// </summary>
         public virtual bool? IsOnline
         {
-            get => online; protected set
+            get => _online; protected set
             {
 
-                if (value == online) return;
-                online = value;
+                if (value == _online)
+                {
+                    return;
+                }
+
+                _online = value;
                 if (value != null)
+                {
                     OnOnlineChanged?.Invoke((bool)value);
+                }
             }
         }
-        public List<ComputerService> Services => wmiConnection?.Services ?? new();
+        public List<ComputerService> Services => wmiConnection?.Services ?? [];
         public ComputerMemory Memory => wmiConnection?.Memory ?? new();
         public int Processor => wmiConnection?.Processor ?? 0;
         public double MemoryUsedPercent => wmiConnection?.Memory.PercentUsed ?? 0;
         public List<IADComputerDrive> GetDrives()
         {
-            if (wmiConnection == null) return new();
+            if (wmiConnection == null)
+            {
+                return [];
+            }
+
             return wmiConnection.Drives;
         }
         public async Task<List<IADComputerDrive>> GetDrivesAsync()
         {
-            if (wmiConnection == null) return new();
+            if (wmiConnection == null)
+            {
+                return [];
+            }
 
             return await Task.Run(() =>
             {
@@ -209,14 +235,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public async Task<List<IRemoteSession>> GetRemoteSessionsAsync()
         {
-            if (CanonicalName == null) return new List<IRemoteSession>();
+            if (CanonicalName == null)
+            {
+                return [];
+            }
+
             return await Task.Run(() =>
             {
-                if (sessionManager == null)
-                {
-                    sessionManager = new ADComputerSessions(this);
-                }
-                return sessionManager.ConnectedSessions;
+                _sessionManager ??= new ADComputerSessions(this);
+                return _sessionManager.ConnectedSessions;
             });
         }
         public AppDelegate<bool> OnOnlineChanged { get; set; }
@@ -225,7 +252,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return wmiConnection?.SharePrinters ?? new();
+                return wmiConnection?.SharePrinters ?? [];
 
             }
         }
@@ -268,6 +295,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 Loggers.ActiveDirectoryLogger.Error(ex, "Error renaming computer");
             }
+
             return false;
 
         }
@@ -281,7 +309,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public void MonitorOnlineStatus(int timeout = 5000)
         {
             if (_pingCancellationTokenSource == null || _pingCancellationTokenSource.IsCancellationRequested)
+            {
                 _pingCancellationTokenSource = new CancellationTokenSource();
+            }
+
             Task.Run(() =>
             {
                 while (!_pingCancellationTokenSource.IsCancellationRequested)
@@ -298,8 +329,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         IsOnline = false;
 
                     }
+
                     Task.Delay(1000).Wait();
                 }
+
                 _pingCancellationTokenSource.Dispose();
             }, _pingCancellationTokenSource.Token);
 
@@ -316,38 +349,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         IPHostEntry = null;
                     });
                 }
-                Ping ping = new();
-                int retries = 5;
-                int x = 0;
-                do
-                {
-                    try
-                    {
-                        if (_pingCancellationTokenSource.IsCancellationRequested || CanonicalName == null) return;
 
-                        PingReply response = ping.Send(CanonicalName, timeout);
-                        if (response != null)
-                        {
-                            if (response.Status == IPStatus.Success)
-                            {
-                                IsOnline = true;
-                                return;
-                            }
-                            else if (response.Status == IPStatus.TimedOut && x == retries - 1)
-                            {
-                                IsOnline = false;
-
-                            }
-                        }
-
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.ActiveDirectoryLogger.Error(ex, "Error pinging computer");
-                    }
-                    x++;
-                } while (x < retries);
-
+                PerformPing(timeout);
             }
             catch (SocketException)
             {
@@ -360,11 +363,49 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
+        private void PerformPing(int timeout)
+        {
+            Ping ping = new();
+            int retries = 5;
+            int x = 0;
+            while (x < retries)
+            {
+                if (_pingCancellationTokenSource.IsCancellationRequested || CanonicalName == null)
+                {
+                    return;
+                }
+
+                try
+                {
+                    PingReply response = ping.Send(CanonicalName, timeout);
+                    if (response != null)
+                    {
+                        if (response.Status == IPStatus.Success)
+                        {
+                            IsOnline = true;
+                            return;
+                        }
+                        if (response.Status == IPStatus.TimedOut && x == retries - 1)
+                        {
+                            IsOnline = false;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Error pinging computer");
+                }
+
+                x++;
+            }
+        }
+
         public override void Dispose()
         {
             _pingCancellationTokenSource.Cancel();
-            sessionManager?.Dispose();
+            _sessionManager?.Dispose();
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
