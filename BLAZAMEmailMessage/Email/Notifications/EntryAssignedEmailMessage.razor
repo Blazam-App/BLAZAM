@@ -16,10 +16,10 @@
 
 @code{
     [Parameter]
-    public string EntryName { get; set; }
+    public string? EntryName { get; set; }
 
     [Parameter]
-    public string GroupName { get; set; }
+    public string? GroupName { get; set; }
     public override string Render() => new ComponentRenderer<EntryAssignedEmailMessage>()
             .UseLayout<DefaultEmailLayout>()
             .AddServiceProvider(ApplicationInfo.services)

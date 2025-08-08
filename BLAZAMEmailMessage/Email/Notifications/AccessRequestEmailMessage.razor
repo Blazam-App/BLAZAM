@@ -2,6 +2,8 @@
 @using BLAZAM.Helpers
 @using System.Security
 @inherits NotificationTemplateComponent
+@if (Notification != null && Notification.Action!=null)
+{
 
 <EmailTemplateHeader>
     <strong>  @Notification.Title</strong>
@@ -11,7 +13,7 @@
     <MudText Typo="Typo.caption">
         @(Notification.Creator?.Username)
         @AppLocalization["is requesting"]
-        @AppLocalization[Notification.Action.ToString()].ToString().ToLower()
+        @AppLocalization[Notification.Action.Value.ToString()].ToString().ToLower()
         @AppLocalization["access to"]
         @TargetName
         
@@ -20,13 +22,13 @@
     
 
 </EmailTemplateBody>
-
+}
 
 @code {
     [Parameter]
-    public NotificationMessage Notification { get; set; }
+    public NotificationMessage? Notification { get; set; }
     [Parameter]
-    public string TargetName { get; set; }
+    public string? TargetName { get; set; }
 
 
     public override string Render() => new ComponentRenderer<AccessRequestEmailMessage>()
