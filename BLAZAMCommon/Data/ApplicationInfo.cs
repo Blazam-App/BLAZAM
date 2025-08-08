@@ -110,8 +110,8 @@ namespace BLAZAM.Common.Data
         public static Microsoft.Extensions.Configuration.ConfigurationManager configuration { get; set; }
 
 
-        public static SystemDirectory pluginDirectory => new SystemDirectory(applicationRoot.ToString() + @"/plugins/");
-        public SystemDirectory PluginDirectory => new SystemDirectory(ApplicationRoot.ToString() + @"/plugins/");
+        public static SystemDirectory pluginDirectory => new(applicationRoot.ToString() + @"/plugins/");
+        public SystemDirectory PluginDirectory => new(ApplicationRoot.ToString() + @"/plugins/");
 
         /// <summary>
         /// A list of plugins that were found
@@ -188,7 +188,7 @@ namespace BLAZAM.Common.Data
             ApplicationRoot = new SystemDirectory(builder.Environment.ContentRootPath);
             TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
             configuration = builder.Configuration;
-            //AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Blazam\\");
+
         }
     }
 }
