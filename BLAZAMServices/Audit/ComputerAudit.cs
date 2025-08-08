@@ -64,7 +64,7 @@ namespace BLAZAM.Services.Audit
             return true;
         }
 
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedComputer) => await Log(AuditActions.Computer_Searched, (IADComputer)searchedComputer);
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedEntry) => await Log(AuditActions.Computer_Searched, (IADComputer)searchedEntry);
 
         private async Task<bool> Log(string action, IADComputer searchedComputer)
         {

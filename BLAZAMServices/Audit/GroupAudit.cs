@@ -19,7 +19,7 @@ namespace BLAZAM.Services.Audit
             return await Log(t => t.DirectoryEntryAuditLogs,
             AuditActions.Group_Deleted, deletedEntry);
         }
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedGroup) => await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Group_Searched, searchedGroup);
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedEntry) => await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Group_Searched, searchedEntry);
 
         public async Task<bool> Assigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
         {
@@ -92,19 +92,19 @@ namespace BLAZAM.Services.Audit
                 changes.GetValueChangesString(c => c.NewValue));
             return true;
         }
-        public override async Task<bool> Created(IDirectoryEntryAdapter newGroup)
+        public override async Task<bool> Created(IDirectoryEntryAdapter newEntry)
         {
             Analytics?.ObjectCreated(ActiveDirectoryObjectType.Group);
 
             var oldValues = "";
             var newValues = "";
-            foreach (var c in newGroup.NewEntryProperties)
+            foreach (var c in newEntry.NewEntryProperties)
             {
                 newValues += c.Key + "=" + c.Value;
             }
             await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.Group_Created,
-                newGroup,
+                newEntry,
                 oldValues,
                 newValues);
             return true;

@@ -27,21 +27,21 @@ namespace BLAZAM.Services.Audit
              AuditActions.Printer_Deleted, deletedEntry);
 
 
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedOU)
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedEntry)
             => await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.Printer_Searched,
-                searchedOU);
+                searchedEntry);
 
-        public override async Task<bool> Created(IDirectoryEntryAdapter newOU)
+        public override async Task<bool> Created(IDirectoryEntryAdapter newEntry)
 
         {
             var oldValues = "";
             var newValues = "";
-            foreach (var c in newOU.NewEntryProperties)
+            foreach (var c in newEntry.NewEntryProperties)
             {
                 newValues += c.Key + "=" + c.Value;
             }
-            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Printer_Created, newOU, oldValues, newValues);
+            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Printer_Created, newEntry, oldValues, newValues);
             return true;
         }
 

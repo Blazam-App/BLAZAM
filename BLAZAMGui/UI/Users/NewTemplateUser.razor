@@ -315,12 +315,16 @@
                         {
                             <MudTextField Immediate=true
                                           Validation=@(()=>{
-                          if(field.Required && Entry.NewEntryProperties[field.CustomField.FieldName]!=null
-                          && Entry.NewEntryProperties[field.CustomField.FieldName].ToString()!="")
-                          return true;
-                          else
-                          return false;
-                          })
+                                                          if(field.Required && Entry.NewEntryProperties[field.CustomField.FieldName]!=null
+                                                          && Entry.NewEntryProperties[field.CustomField.FieldName].ToString()!="")
+                                                          {
+                                                          return true;
+                                                          }
+                                                          else
+                                                          {
+                                                              return false;
+                                                          }
+                                                     })
                                           Label="@field.FieldDisplayName"
                                           @bind-Value="@Entry.NewEntryProperties[field.CustomField.FieldName]"
                                           Disabled=@(!IsAdmin && !IsEditableTemplateField(field.CustomField)) />

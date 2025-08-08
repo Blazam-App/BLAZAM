@@ -20,10 +20,10 @@ namespace BLAZAM.Services.Audit
             AuditActions.User_Deleted, deletedEntry);
         }
 
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedUser)
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedEntry)
             => await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.User_Searched,
-                searchedUser);
+                searchedEntry);
 
         public async Task<bool> PasswordChanged(IDirectoryEntryAdapter searchedUser,
             bool requirePasswordChanged = false)
@@ -58,19 +58,19 @@ namespace BLAZAM.Services.Audit
             return true;
         }
 
-        public override async Task<bool> Created(IDirectoryEntryAdapter newUser)
+        public override async Task<bool> Created(IDirectoryEntryAdapter newEntry)
         {
             Analytics?.ObjectCreated(ActiveDirectoryObjectType.User);
 
             var oldValues = "";
             var newValues = "";
-            foreach (var c in newUser.NewEntryProperties)
+            foreach (var c in newEntry.NewEntryProperties)
             {
                 newValues += c.Key + "=" + c.Value;
             }
             await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.User_Created,
-                newUser,
+                newEntry,
                 oldValues,
                 newValues);
             return true;

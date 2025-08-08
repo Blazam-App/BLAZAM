@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Builder;
 
 namespace BLAZAM.Common.Data
 
@@ -45,7 +45,7 @@ namespace BLAZAM.Common.Data
         /// <returns>
         /// A list of address strings eg: {"https://localhost:7900/","http://localhost:5900/"}
         /// </returns>
-        public static IEnumerable<string> listeningAddresses = new List<string>();
+        public static IEnumerable<string> listeningAddresses { get; set; } = new List<string>();
 
         /// <summary>
         /// A static access to <see cref="InDebugMode"/>
@@ -59,7 +59,7 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// A static access to <see cref="InstallationId"/>
         /// </summary>
-        public static Guid installationId = Guid.Empty;
+        public static Guid installationId { get; set; } = Guid.Empty;
 
         /// <summary>
         /// Indicates whether Blazam is running under IIS or as a service
@@ -107,7 +107,7 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// The running AppConfig configuration
         /// </summary>
-        public static Microsoft.Extensions.Configuration.ConfigurationManager configuration;
+        public static Microsoft.Extensions.Configuration.ConfigurationManager configuration { get; set; }
 
 
         public static SystemDirectory pluginDirectory => new SystemDirectory(applicationRoot.ToString() + @"/plugins/");

@@ -46,9 +46,11 @@ else
                      userLastLogonTime = userLastLogon;
                  }
                  else
-                 if (userLastLogonTimestamp != null)
                  {
-                     userLastLogonTime = userLastLogonTimestamp;
+                     if (userLastLogonTimestamp != null)
+                     {
+                         userLastLogonTime = userLastLogonTimestamp;
+                     }
                  }
              }
 

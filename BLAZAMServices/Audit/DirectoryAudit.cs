@@ -23,12 +23,12 @@ namespace BLAZAM.Services.Audit
             throw new NotImplementedException();
 
         }
-        public virtual Task<bool> Created(IDirectoryEntryAdapter newUser)
+        public virtual Task<bool> Created(IDirectoryEntryAdapter newEntry)
         {
             throw new NotImplementedException();
         }
 
-        public virtual Task<bool> Searched(IDirectoryEntryAdapter searchedUser)
+        public virtual Task<bool> Searched(IDirectoryEntryAdapter searchedEntry)
         {
             throw new NotImplementedException();
         }

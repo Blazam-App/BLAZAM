@@ -29,22 +29,22 @@ namespace BLAZAM.Services.Audit
 
         }
 
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedOU)
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedEntry)
             => await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.OU_Searched,
-                searchedOU);
+                searchedEntry);
 
-        public override async Task<bool> Created(IDirectoryEntryAdapter newOU)
+        public override async Task<bool> Created(IDirectoryEntryAdapter newEntry)
 
         {
             Analytics?.ObjectCreated(ActiveDirectoryObjectType.OU);
 
             var newValues = "";
-            foreach (var c in newOU.NewEntryProperties)
+            foreach (var c in newEntry.NewEntryProperties)
             {
                 newValues += c.Key + "=" + c.Value;
             }
-            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.OU_Created, newOU, "", newValues);
+            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.OU_Created, newEntry, "", newValues);
             return true;
         }
 
