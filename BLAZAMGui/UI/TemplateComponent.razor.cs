@@ -12,7 +12,8 @@ namespace BLAZAM.Gui.UI
         private string? selectedCategory;
         private DirectoryTemplate? selectedTemplate;
 
-        protected SetHeader? Header { get; set; }
+        protected SetSubHeader? Header { get; set; }
+
 
 
 
