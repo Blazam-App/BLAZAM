@@ -1,12 +1,9 @@
-﻿using BLAZAM.Common.Data;
+﻿using System.Security.Claims; // Required for ClaimsPrincipal
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using Microsoft.AspNetCore.Authentication;
-using System; // Required for Func, DateTime
-using System.Collections.Generic; // Required for List, IList
-using System.Security.Claims; // Required for ClaimsPrincipal
-using System.Threading.Tasks; // Required for Task
 
 namespace BLAZAM.Session.Interfaces
 {

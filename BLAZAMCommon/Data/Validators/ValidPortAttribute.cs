@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 
 namespace BLAZAM.Common.Data.Validators
 {
@@ -22,10 +21,10 @@ namespace BLAZAM.Common.Data.Validators
         /// <returns></returns>
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            
+
             if (value is int intValue)
             {
-                if (intValue>0 && intValue<65536)
+                if (intValue > 0 && intValue < 65536)
                     return ValidationResult.Success;
 
             }

@@ -1,6 +1,4 @@
-﻿using BLAZAM.Common.Data;
-
-namespace BLAZAMCommon.Tests
+﻿namespace BLAZAMCommon.Tests
 {
     public class RollingAverageTests
     {

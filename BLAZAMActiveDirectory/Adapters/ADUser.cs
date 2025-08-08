@@ -1,19 +1,18 @@
-﻿using BLAZAM.ActiveDirectory.Data;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Security.AccessControl;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using Microsoft.IdentityModel.Tokens;
-using System.ComponentModel.DataAnnotations;
-using System.Security.AccessControl;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADUser : AccountDirectoryAdapter, IADUser
     {
-     
+
         public string? LogOnTo
         {
             get
@@ -38,7 +37,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute(ActiveDirectoryFields.LogonHours.FieldName, value?.EncodeLogonHours());
             }
         }
-    
+
         [Required]
         public override string? DisplayName { get => base.DisplayName; set => base.DisplayName = value; }
 
@@ -168,7 +167,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-    
+
 
     }
 }

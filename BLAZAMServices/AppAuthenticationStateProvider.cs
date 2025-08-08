@@ -1,17 +1,16 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory.Services;
+﻿using System.Security.Claims;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
-using BLAZAM.Logger; // Added
+using BLAZAM.Logger;
 using BLAZAM.Server.Helpers;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Background;
 using BLAZAM.Services.Duo;
-using BLAZAM.Services.Exceptions;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using DuoUniversal;
@@ -19,9 +18,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens; // For IsNullOrEmpty extension if not globally available
-using System; // For ArgumentNullException
-using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace BLAZAM.Services
@@ -343,7 +340,7 @@ namespace BLAZAM.Services
             //Return the authenticationstate
             if (authenticationState != null)
             {
-                if (loginReq.AuthenticationResult ==  LoginResultStatus.OK) // This check might be redundant if only success path reaches here with non-null authState
+                if (loginReq.AuthenticationResult == LoginResultStatus.OK) // This check might be redundant if only success path reaches here with non-null authState
                 {
                     Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: User {UserName} successfully logged in. Final ClaimsPrincipal Name: {PrincipalName}", loginReq.Username, authenticationState?.User?.Identity?.Name);
                 }

@@ -1,8 +1,5 @@
 ﻿using BLAZAM.Logger; // Added
 using BLAZAM.Session.Interfaces;
-using System; // Added
-using System.Collections.Generic; // Added
-using System.Linq; // Added
 
 namespace BLAZAM.Session
 {

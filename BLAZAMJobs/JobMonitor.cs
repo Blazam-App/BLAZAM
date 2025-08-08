@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Jobs
+﻿
+
+namespace BLAZAM.Jobs
 {
     public static class JobMonitor
     {

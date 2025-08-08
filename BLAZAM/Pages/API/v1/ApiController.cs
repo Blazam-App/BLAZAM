@@ -1,4 +1,6 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Diagnostics;
+using System.Security.Claims;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Services.Audit;
@@ -6,8 +8,6 @@ using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using System.Security.Claims;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -64,7 +64,7 @@ namespace BLAZAM.Pages.API.v1
 
             Directory = adFactory.CreateActiveDirectoryContext(CurrentUserState.ToActiveDirectoryUserState());
             DbFactory = appDatabaseFactory;
-          
+
 
         }
 
@@ -92,6 +92,28 @@ namespace BLAZAM.Pages.API.v1
             ResponseData.Add("Runtime", stopwatch.ElapsedMilliseconds + "ms");
 
             return new JsonResult(ResponseData);
+        }
+
+        protected IADGroup? FindGroupByIdentifier(string groupIdentifier)
+        {
+            var group = (IADGroup)Directory.FindEntryBySid(groupIdentifier);
+            if (group == null)
+            {
+                group = (IADGroup)Directory.GetDirectoryEntryByDN(groupIdentifier);
+            }
+            if (group == null)
+            {
+                var matches = Directory.Groups.FindGroupByString(groupIdentifier, true);
+                if (matches != null && matches.Count > 0)
+                {
+                    if (matches.Count > 1)
+                    {
+                        throw new DirectorySearchUniquenessException(groupIdentifier);
+                    }
+                    group = matches.First();
+                }
+            }
+            return group;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BLAZAM.Services;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Duo;
@@ -7,7 +8,6 @@ using DuoUniversal;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
 
 namespace BLAZAM.Pages
 {
@@ -83,7 +83,7 @@ namespace BLAZAM.Pages
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Warning(ex,"Error attempting to perform Duo MFA");
+                Loggers.SystemLogger.Warning(ex, "Error attempting to perform Duo MFA");
             }
             return new RedirectResult("/");
 

@@ -1,6 +1,4 @@
-﻿using System; // Required for IDisposable
-
-namespace BLAZAM.Session.Interfaces
+﻿namespace BLAZAM.Session.Interfaces
 {
     /// <summary>
     /// Defines a contract for a scoped service that provides access to the <see cref="IApplicationUserState"/> for the current user in the request scope.

@@ -67,7 +67,7 @@ namespace BLAZAM.Common.Data
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex,"Error creating performance counters");
+                Loggers.SystemLogger.Error(ex, "Error creating performance counters");
             }
 
 

@@ -12,7 +12,7 @@ namespace BLAZAM.Helpers
         public static string TypeIcon(this IDirectoryEntryAdapter adapter)
         {
             return adapter.ObjectType.TypeIcon();
-        }  
+        }
         /// <summary>
         /// Retuns a MudBlazor Icon that represents this <see cref="ActiveDirectoryObjectType"/>
         /// </summary>

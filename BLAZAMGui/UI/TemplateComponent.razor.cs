@@ -12,7 +12,8 @@ namespace BLAZAM.Gui.UI
         private string? selectedCategory;
         private DirectoryTemplate? selectedTemplate;
 
-        protected SetHeader? Header { get; set; }
+        protected SetSubHeader? Header { get; set; }
+
 
 
 
@@ -62,7 +63,7 @@ namespace BLAZAM.Gui.UI
             {
                 if (selectedTemplate == value) return;
                 selectedTemplate = value;
-               
+
                 _templateIdParameter = value?.Id;
                 Header?.OnRefreshRequested?.Invoke();
 

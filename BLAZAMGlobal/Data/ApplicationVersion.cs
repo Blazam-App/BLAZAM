@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
+using BLAZAM.Global.Exceptions;
 
-namespace BLAZAM.Common.Data
+namespace BLAZAM.Global.Data
 {
     /// <summary>
     /// A representation of a version of the app.
@@ -50,7 +52,7 @@ namespace BLAZAM.Common.Data
             AssemblyVersion = new Version(int.Parse(assemblyVersion[0]), int.Parse(assemblyVersion[1]), int.Parse(assemblyVersion[2]));
             var fileInfo = FileVersionInfo.GetVersionInfo(executingAssembly.Location);
             var productVersion = fileInfo.ProductVersion;
-            if (productVersion.Contains("+"))
+            if (productVersion?.Contains("+") == true)
             {
                 productVersion = productVersion.Split("+")[0];
             }
@@ -102,18 +104,26 @@ namespace BLAZAM.Common.Data
         /// <remarks>
         /// This is calculated from the build number
         /// </remarks>
-        public DateTime ReleaseDate
+        public DateTime? ReleaseDate
         {
             get
             {
-                DateTime release = DateTime.MinValue;
+                DateTime? release = null;
                 try
                 {
-                    var buildNumberParts = BuildNumber.Split('.');
+
+                    var buildNumberParts = BuildNumber?.Split('.');
+                    if (buildNumberParts == null || buildNumberParts.Length < 4)
+                    {
+                        return null; // Not enough parts to determine a date
+                    }
+
                     string year = "";
                     string month = "";
                     string day = "";
                     string time = "";
+
+                    // Assuming the build number is in the format "YYYY.MM.DD.HHMM"
                     for (int x = 0; x < buildNumberParts.Length; x++)
                     {
                         switch (x)
@@ -135,7 +145,22 @@ namespace BLAZAM.Common.Data
                                 break;
                         }
                     }
-                    DateTime.TryParse((month + "/" + day + "/" + year + " " + time + " Z"), out release);
+                    // Construct the date string and parse it
+                    // 1. Combine your date and time parts into one string
+                    string dateString = $"{month}/{day}/{year} {time} Z";
+
+                    // 2. Define the exact format of your string
+                    //    - M/d/yyyy handles single or double-digit months/days
+                    //    - HH:mm:ss is for 24-hour time
+                    //    - The 'Z' is treated as a literal character indicating UTC
+                    string format = "M/d/yyyy HH:mm:ss 'Z'";
+
+                    DateTime parsedDateTime;
+
+                    // 3. Use TryParseExact with the specified format and provider
+                    parsedDateTime = DateTime.Parse(dateString, CultureInfo.InvariantCulture);
+                    release = parsedDateTime;
+
                 }
                 catch
                 {

@@ -1,11 +1,7 @@
-﻿using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
-using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
-using Microsoft.JSInterop;
-using Octokit;
 
 namespace BLAZAM.Services.Audit
 {
@@ -42,183 +38,248 @@ namespace BLAZAM.Services.Audit
         {
             lock (HandledEvents)
             {
-                if (!HandledEvents.Contains(args.Guid))
+                // Exit early if this event has already been processed to prevent duplicates.
+                if (HandledEvents.Contains(args.Guid))
                 {
-                    if (args.Actor != null)
-                    {
-                        User = new UserAudit(_factory, args.Actor);
-                        Group = new GroupAudit(_factory, args.Actor);
-                        Computer = new ComputerAudit(_factory, args.Actor);
-                        OU = new OUAudit(_factory, args.Actor);
-                        Printer = new PrinterAudit(_factory, args.Actor);
-                        Logon = new LogonAudit(_factory, args.Actor);
-                        BitLocker = new BitLockerAudit(_factory, args.Actor);
-                    }
-                    switch (args.ObjectType)
-                    {
-                        case ActiveDirectoryObjectType.User:
-                            switch (args.EventType)
-                            {
-                                case ApplicationEventType.Create:
-                                    User.Created(args.Entry);
-                                    break;
-                                case ApplicationEventType.Delete:
-                                    User.Deleted(args.Entry);
-                                    break;
-                                case ApplicationEventType.Assign:
-                                    User.Assigned(args.Entry, args.Target);
-                                    Group.MemberAdded(args.Target, args.Entry);
-                                    break;
-                                case ApplicationEventType.Unassign:
-
-                                    User.Unassigned(args.Entry, args.Target);
-                                    Group.MemberRemoved(args.Target, args.Entry);
-                                    break;
-                                case ApplicationEventType.LockedOut:
-                                    break;
-                                case ApplicationEventType.Modify:
-                                    User.Changed(args.Entry, args.Changes);
-                                    break;
-                                case ApplicationEventType.Move:
-                                    User.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
-                                    break;
-                                case ApplicationEventType.PasswordChange:
-                                    User.PasswordChanged(args.Entry, (args.Entry as IAccountDirectoryAdapter).RequirePasswordChange);
-                                    break;
-                                case ApplicationEventType.Search:
-                                    User.Searched(args.Entry);
-                                    break;
-                            }
-                            break;
-                        case ActiveDirectoryObjectType.Printer:
-                            switch (args.EventType)
-                            {
-                                case ApplicationEventType.Create:
-                                    Printer.Created(args.Entry);
-                                    break;
-                                case ApplicationEventType.Delete:
-                                    Printer.Deleted(args.Entry);
-                                    break;
-                                case ApplicationEventType.Assign:
-                                    // Printer.Assigned(args.Entry, args.Target);
-                                    Group.MemberAdded(args.Target, args.Entry);
-                                    break;
-                                case ApplicationEventType.Unassign:
-
-                                    // Printer.Unassigned(args.Entry, args.Target);
-                                    Group.MemberRemoved(args.Target, args.Entry);
-                                    break;
-                                case ApplicationEventType.LockedOut:
-                                    break;
-                                case ApplicationEventType.Modify:
-                                    Printer.Changed(args.Entry, args.Changes);
-                                    break;
-                                case ApplicationEventType.Move:
-                                    Printer.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
-                                    break;
-                                case ApplicationEventType.Search:
-                                    Printer.Searched(args.Entry);
-                                    break;
-
-                            }
-                            break;
-                        case ActiveDirectoryObjectType.Computer:
-                            switch (args.EventType)
-                            {
-                                case ApplicationEventType.Create:
-                                    Computer.Created(args.Entry);
-                                    break;
-                                case ApplicationEventType.Delete:
-                                    Computer.Deleted(args.Entry);
-                                    break;
-                                case ApplicationEventType.Assign:
-                                    Computer.Assigned(args.Entry, args.Target);
-                                    Group.MemberAdded(args.Target, args.Entry);
-                                    break;
-                                case ApplicationEventType.Unassign:
-
-                                    Computer.Unassigned(args.Entry, args.Target);
-                                    Group.MemberRemoved(args.Target, args.Entry);
-                                    break;
-                                case ApplicationEventType.LockedOut:
-                                    break;
-                                case ApplicationEventType.Modify:
-                                    Computer.Changed(args.Entry, args.Changes);
-                                    break;
-                                case ApplicationEventType.Move:
-                                    Computer.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
-                                    break;
-                                case ApplicationEventType.Search:
-                                    Computer.Searched(args.Entry);
-                                    break;
-                            }
-                            break;
-                        case ActiveDirectoryObjectType.BitLocker:
-                            switch (args.EventType)
-                            {
-                                case ApplicationEventType.Delete:
-                                    BitLocker.Deleted(args.Entry);
-                                    break;
-                                case ApplicationEventType.Modify:
-                                    BitLocker.Changed(args.Entry, args.Changes);
-                                    break;
-                            }
-                            break;
-                        case ActiveDirectoryObjectType.Group:
-                            switch (args.EventType)
-                            {
-                                case ApplicationEventType.Create:
-                                    Group.Created(args.Entry);
-                                    break;
-                                case ApplicationEventType.Delete:
-                                    Group.Deleted(args.Entry);
-                                    break;
-                                case ApplicationEventType.Assign:
-                                    Group.Assigned(args.Entry, args.Target);
-                                    Group.MemberAdded(args.Target, args.Entry);
-                                    break;
-                                case ApplicationEventType.Unassign:
-
-                                    Group.Unassigned(args.Entry, args.Target);
-                                    Group.MemberRemoved(args.Target, args.Entry);
-                                    break;
-                                case ApplicationEventType.Modify:
-                                    Group.Changed(args.Entry, args.Changes);
-                                    break;
-                                case ApplicationEventType.Move:
-                                    Group.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
-                                    break;
-                                case ApplicationEventType.Search:
-                                    Group.Searched(args.Entry);
-                                    break;
-                            }
-                            break;
-                        case ActiveDirectoryObjectType.OU:
-                            switch (args.EventType)
-                            {
-                                case ApplicationEventType.Create:
-                                    OU.Created(args.Entry);
-                                    break;
-                                case ApplicationEventType.Delete:
-                                    OU.Deleted(args.Entry);
-                                    break;
-
-                                case ApplicationEventType.Modify:
-                                    OU.Changed(args.Entry, args.Changes);
-                                    break;
-                                case ApplicationEventType.Move:
-                                    OU.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
-                                    break;
-                                case ApplicationEventType.Search:
-                                    OU.Searched(args.Entry);
-                                    break;
-                            }
-                            break;
-                    }
-
-                    HandledEvents.Add(args.Guid);
+                    return;
                 }
 
+                // If an actor is associated with the event, initialize the audit services
+                // that will log the changes.
+                if (args.Actor != null)
+                {
+                    InitializeAuditServices(args.Actor);
+                }
+
+                // Delegate the specific event processing based on the type of Active Directory object.
+                DispatchAuditEvent(args);
+
+                // Mark the event as handled.
+                HandledEvents.Add(args.Guid);
+            }
+        }
+
+        /// <summary>
+        /// Creates instances of all audit services for a given actor.
+        /// </summary>
+        private void InitializeAuditServices(IApplicationUserState actor)
+        {
+            User = new UserAudit(_factory, actor);
+            Group = new GroupAudit(_factory, actor);
+            Computer = new ComputerAudit(_factory, actor);
+            OU = new OUAudit(_factory, actor);
+            Printer = new PrinterAudit(_factory, actor);
+            Logon = new LogonAudit(_factory, actor);
+            BitLocker = new BitLockerAudit(_factory, actor);
+        }
+
+        /// <summary>
+        /// Routes the directory change event to the appropriate handler based on the object type.
+        /// </summary>
+        private void DispatchAuditEvent(DirectoryEntryChangedArgs args)
+        {
+            switch (args.ObjectType)
+            {
+                case ActiveDirectoryObjectType.User:
+                    ProcessUserChangeEvent(args);
+                    break;
+                case ActiveDirectoryObjectType.Printer:
+                    ProcessPrinterChangeEvent(args);
+                    break;
+                case ActiveDirectoryObjectType.Computer:
+                    ProcessComputerChangeEvent(args);
+                    break;
+                case ActiveDirectoryObjectType.BitLocker:
+                    ProcessBitLockerChangeEvent(args);
+                    break;
+                case ActiveDirectoryObjectType.Group:
+                    ProcessGroupChangeEvent(args);
+                    break;
+                case ActiveDirectoryObjectType.OU:
+                    ProcessOUChangeEvent(args);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Handles audit logging for user-related directory changes.
+        /// </summary>
+        private void ProcessUserChangeEvent(DirectoryEntryChangedArgs args)
+        {
+            switch (args.EventType)
+            {
+                case ApplicationEventType.Create:
+                    User.Created(args.Entry);
+                    break;
+                case ApplicationEventType.Delete:
+                    User.Deleted(args.Entry);
+                    break;
+                case ApplicationEventType.Assign:
+                    User.Assigned(args.Entry, args.Target);
+                    Group.MemberAdded(args.Target, args.Entry);
+                    break;
+                case ApplicationEventType.Unassign:
+                    User.Unassigned(args.Entry, args.Target);
+                    Group.MemberRemoved(args.Target, args.Entry);
+                    break;
+                case ApplicationEventType.Modify:
+                    User.Changed(args.Entry, args.Changes);
+                    break;
+                case ApplicationEventType.Move:
+                    User.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
+                    break;
+                case ApplicationEventType.PasswordChange:
+                    User.PasswordChanged(args.Entry, (args.Entry as IAccountDirectoryAdapter).RequirePasswordChange);
+                    break;
+                case ApplicationEventType.Search:
+                    User.Searched(args.Entry);
+                    break;
+                case ApplicationEventType.LockedOut:
+                    break; // No action needed.
+            }
+        }
+
+        /// <summary>
+        /// Handles audit logging for printer-related directory changes.
+        /// </summary>
+        private void ProcessPrinterChangeEvent(DirectoryEntryChangedArgs args)
+        {
+            switch (args.EventType)
+            {
+                case ApplicationEventType.Create:
+                    Printer.Created(args.Entry);
+                    break;
+                case ApplicationEventType.Delete:
+                    Printer.Deleted(args.Entry);
+                    break;
+                case ApplicationEventType.Assign:
+                    // Printer assignment is tracked via group membership changes.
+                    Group.MemberAdded(args.Target, args.Entry);
+                    break;
+                case ApplicationEventType.Unassign:
+                    // Printer unassignment is tracked via group membership changes.
+                    Group.MemberRemoved(args.Target, args.Entry);
+                    break;
+                case ApplicationEventType.Modify:
+                    Printer.Changed(args.Entry, args.Changes);
+                    break;
+                case ApplicationEventType.Move:
+                    Printer.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
+                    break;
+                case ApplicationEventType.Search:
+                    Printer.Searched(args.Entry);
+                    break;
+                case ApplicationEventType.LockedOut:
+                    break; // Not applicable to printers.
+            }
+        }
+
+        /// <summary>
+        /// Handles audit logging for computer-related directory changes.
+        /// </summary>
+        private void ProcessComputerChangeEvent(DirectoryEntryChangedArgs args)
+        {
+            switch (args.EventType)
+            {
+                case ApplicationEventType.Create:
+                    Computer.Created(args.Entry);
+                    break;
+                case ApplicationEventType.Delete:
+                    Computer.Deleted(args.Entry);
+                    break;
+                case ApplicationEventType.Assign:
+                    Computer.Assigned(args.Entry, args.Target);
+                    Group.MemberAdded(args.Target, args.Entry);
+                    break;
+                case ApplicationEventType.Unassign:
+                    Computer.Unassigned(args.Entry, args.Target);
+                    Group.MemberRemoved(args.Target, args.Entry);
+                    break;
+                case ApplicationEventType.Modify:
+                    Computer.Changed(args.Entry, args.Changes);
+                    break;
+                case ApplicationEventType.Move:
+                    Computer.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
+                    break;
+                case ApplicationEventType.Search:
+                    Computer.Searched(args.Entry);
+                    break;
+                case ApplicationEventType.LockedOut:
+                    break; // Not applicable to computers.
+            }
+        }
+
+        /// <summary>
+        /// Handles audit logging for BitLocker-related directory changes.
+        /// </summary>
+        private void ProcessBitLockerChangeEvent(DirectoryEntryChangedArgs args)
+        {
+            switch (args.EventType)
+            {
+                case ApplicationEventType.Delete:
+                    BitLocker.Deleted(args.Entry);
+                    break;
+                case ApplicationEventType.Modify:
+                    BitLocker.Changed(args.Entry, args.Changes);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Handles audit logging for group-related directory changes.
+        /// </summary>
+        private void ProcessGroupChangeEvent(DirectoryEntryChangedArgs args)
+        {
+            switch (args.EventType)
+            {
+                case ApplicationEventType.Create:
+                    Group.Created(args.Entry);
+                    break;
+                case ApplicationEventType.Delete:
+                    Group.Deleted(args.Entry);
+                    break;
+                case ApplicationEventType.Assign:
+                    Group.Assigned(args.Entry, args.Target);
+                    Group.MemberAdded(args.Target, args.Entry);
+                    break;
+                case ApplicationEventType.Unassign:
+                    Group.Unassigned(args.Entry, args.Target);
+                    Group.MemberRemoved(args.Target, args.Entry);
+                    break;
+                case ApplicationEventType.Modify:
+                    Group.Changed(args.Entry, args.Changes);
+                    break;
+                case ApplicationEventType.Move:
+                    Group.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
+                    break;
+                case ApplicationEventType.Search:
+                    Group.Searched(args.Entry);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Handles audit logging for Organizational Unit (OU) related directory changes.
+        /// </summary>
+        private void ProcessOUChangeEvent(DirectoryEntryChangedArgs args)
+        {
+            switch (args.EventType)
+            {
+                case ApplicationEventType.Create:
+                    OU.Created(args.Entry);
+                    break;
+                case ApplicationEventType.Delete:
+                    OU.Deleted(args.Entry);
+                    break;
+                case ApplicationEventType.Modify:
+                    OU.Changed(args.Entry, args.Changes);
+                    break;
+                case ApplicationEventType.Move:
+                    OU.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
+                    break;
+                case ApplicationEventType.Search:
+                    OU.Searched(args.Entry);
+                    break;
             }
         }
 

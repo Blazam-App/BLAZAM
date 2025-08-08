@@ -6,12 +6,8 @@ using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
-    public class GroupAudit : DirectoryAudit
+    public class GroupAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
     {
-        public GroupAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
-        {
-        }
-
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
         {
             Analytics?.ObjectDeleted(ActiveDirectoryObjectType.Group);
@@ -19,7 +15,7 @@ namespace BLAZAM.Services.Audit
             return await Log(t => t.DirectoryEntryAuditLogs,
             AuditActions.Group_Deleted, deletedEntry);
         }
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedGroup) => await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Group_Searched, searchedGroup);
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedEntry) => await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Group_Searched, searchedEntry);
 
         public async Task<bool> Assigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
         {
@@ -82,29 +78,29 @@ namespace BLAZAM.Services.Audit
                ouMovedTo.OU);
             return true;
         }
-        public override async Task<bool> Changed(IDirectoryEntryAdapter changedGroup, List<AuditChangeLog> changes)
+        public override async Task<bool> Changed(IDirectoryEntryAdapter changedEntry, List<AuditChangeLog> changes)
         {
 
             await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.Group_Edited,
-                changedGroup,
+                changedEntry,
                 changes.GetValueChangesString(c => c.OldValue),
                 changes.GetValueChangesString(c => c.NewValue));
             return true;
         }
-        public override async Task<bool> Created(IDirectoryEntryAdapter newGroup)
+        public override async Task<bool> Created(IDirectoryEntryAdapter newEntry)
         {
             Analytics?.ObjectCreated(ActiveDirectoryObjectType.Group);
 
             var oldValues = "";
             var newValues = "";
-            foreach (var c in newGroup.NewEntryProperties)
+            foreach (var c in newEntry.NewEntryProperties)
             {
                 newValues += c.Key + "=" + c.Value;
             }
             await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.Group_Created,
-                newGroup,
+                newEntry,
                 oldValues,
                 newValues);
             return true;

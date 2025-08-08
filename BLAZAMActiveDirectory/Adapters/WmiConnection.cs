@@ -1,10 +1,8 @@
-﻿using BLAZAM.ActiveDirectory.Helpers;
+﻿using System.Management;
+using BLAZAM.ActiveDirectory.Helpers;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using System.Management;
-using static MudBlazor.CategoryTypes;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -83,9 +81,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             });
 
         }
-        public async Task<bool> ShutdownAsync(int delaySeconds=0, string? message=null, bool force = true, bool reboot = false)
+        public async Task<bool> ShutdownAsync(int delaySeconds = 0, string? message = null, bool force = true, bool reboot = false)
         {
-            return await Task.Run(() => {
+            return await Task.Run(() =>
+            {
                 try
                 {
                     // Use WMI to initiate the shutdown.
@@ -153,7 +152,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     return false;
                 }
             });
-          
+
 
 
         }
@@ -251,7 +250,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error("Error polling drives {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Error polling drives");
                 }
                 return drives;
             }
@@ -277,7 +276,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error("Error polling printers {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Error polling printers");
                 }
 
 

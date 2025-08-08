@@ -7,7 +7,7 @@
 {
     if (sessionsErrorMessage == null)
     {
-        <MudDataGrid HorizontalScrollbar=true Elevation=0 Items="sessions">
+        <MudDataGrid HorizontalScrollbar=true Elevation=0 Items="Sessions">
             <Columns>
                 <PropertyColumn Title="@AppLocalization[Lang.User]" Property="x=>x.User" />
                 <PropertyColumn Title="@AppLocalization[Lang.State]" Property="x=>x.ConnectionState" />
@@ -75,7 +75,7 @@ else
 
         }
     }
-    IRemoteSession sessionToMessage;
+    IRemoteSession? sessionToMessage;
     AppModal? sessionMessageModal;
 
 
@@ -86,19 +86,7 @@ else
 
     string? sessionsErrorMessage;
     Timer? t;
-    List<IRemoteSession> sessions = new();
-    List<IRemoteSession> Sessions
-    {
-        get
-        {
-
-            return sessions;
-
-
-
-        }
-        set => sessions = value;
-    }
+    List<IRemoteSession> Sessions {get; set;}
 
 
     protected override void OnInitialized()
@@ -113,7 +101,7 @@ else
         if (await MessageService.Confirm("Are you sure you want to log off " + session.User.ToString(), "Logoff User"))
         {
             session.Logoff();
-            sessions.Remove(session);
+            Sessions.Remove(session);
         }
 
         await InvokeAsync(StateHasChanged);
@@ -135,12 +123,12 @@ else
         {
             if (Computer != null && Computer.IsOnline == true)
             {
-                sessions = await Computer.GetRemoteSessionsAsync();
-                sessions.ForEach(s =>
+                Sessions = await Computer.GetRemoteSessionsAsync();
+                Sessions.ForEach(s =>
                 {
                     s.OnSessionDown += ((s) =>
                     {
-                        sessions.Remove(s);
+                        Sessions.Remove(s);
                     });
                     s.OnSessionUpdated += ((s) =>
                     {

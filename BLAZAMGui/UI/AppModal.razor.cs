@@ -105,7 +105,10 @@ namespace BLAZAM.Gui.UI
 
         [Parameter]
         public string Title { get; set; }
-
+        public void SetTitle(string title)
+        {
+            Title = title;
+        }
 
         [Parameter]
         public EventCallback<MudMessageBox>? ModalChanged { get; set; }
@@ -132,19 +135,24 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public MaxWidth? Width { get; set; }
 
-       
+
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            YesText = AppLocalization[Lang.Ok];
+            if (YesText.IsNullOrEmpty())
+            {
+                YesText = AppLocalization[Lang.Ok];
+            }
             if (Options == null)
+            {
                 Options = new()
                 {
                     MaxWidth = Width,
-                    CloseButton=true
+                    CloseButton = true
                 };
+            }
 
-            AllowClose = true;
+            //AllowClose = true;
         }
         /// <summary>
         /// Re-renders the modal with the latest property values
@@ -162,8 +170,8 @@ namespace BLAZAM.Gui.UI
 
             IsShown = true;
             Modal.CloseAsync(); //Fix for MudBlazor Bug causing modal to no reopen after one click but two, suggesting a state sync issue, remove if fixed
-           var @ref = await Modal.ShowAsync(null, Options);
-             await InvokeAsync(StateHasChanged);
+            var @ref = await Modal.ShowAsync(null, Options);
+            await InvokeAsync(StateHasChanged);
             return @ref;
         }
 
@@ -181,17 +189,17 @@ namespace BLAZAM.Gui.UI
         /// </summary>
         public async Task CloseAsync()
         {
-            await Modal.CloseAsync();
+            await InvokeAsync(async () => { await Modal.CloseAsync(); });
             IsShown = false;
 
         }
         private void YesClicked()
         {
             if (OnYes != null)
-                OnYes?.Invoke();
+                OnYes.Invoke();
             else
                 Close();
         }
-       
+
     }
 }

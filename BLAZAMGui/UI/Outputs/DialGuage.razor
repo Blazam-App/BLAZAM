@@ -1,4 +1,5 @@
-﻿@inherits AppComponentBase
+﻿@using BLAZAM.Global.Data
+@inherits AppComponentBase
 <MudStack>
 
     <div id="@_elementID" class="gauge-container">
@@ -57,7 +58,7 @@
     [Parameter]
     public double MaxValue { get; set; } = 100;
 
-    public RollingAverage AverageValue { get; set; } = new Common.Data.RollingAverage(3);
+    public RollingAverage AverageValue { get; set; } = new RollingAverage(3);
     [Parameter]
     public string? Title { get; set; }
 

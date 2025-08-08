@@ -91,18 +91,18 @@ namespace BLAZAM.Database.Context
 
         }
 
-        public static ADSettings ActiveDirectorySettings
+        public static ADSettings? ActiveDirectorySettings
         {
             get;
             set;
         }
-        public static AppSettings ApplicationSettings
+        public static AppSettings? ApplicationSettings
         {
             get;
             set;
         }
-        public static EmailSettings EmailSettings { get; set; }
-        public static AuthenticationSettings AuthenticationSettings { get; set; }
+        public static EmailSettings? EmailSettings { get; set; }
+        public static AuthenticationSettings? AuthenticationSettings { get; set; }
 
 
 

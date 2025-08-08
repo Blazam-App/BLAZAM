@@ -1,7 +1,6 @@
 ﻿using BLAZAM.Common.Data.Services;
 using BLAZAM.Logger;
 using Microsoft.Extensions.Configuration;
-using System;
 
 namespace BLAZAM.Services
 {
@@ -56,7 +55,7 @@ namespace BLAZAM.Services
                 catch (Exception ex)
                 {
                     Loggers.SystemLogger.Error(ex, "Exception during new Encryption(encryptionKey) in EncryptionService constructor.");
-                    throw; 
+                    throw;
                 }
             }
             else

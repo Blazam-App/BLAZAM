@@ -1,16 +1,13 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
 using BLAZAM.Services.Background;
 using BLAZAM.Services.Events;
-using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
-using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
     public class RulesAuditLogger : BaseAuditLogger
     {
-        public RulesAuditLogger(IAppDatabaseFactory factory,IApplicationUserState ruleUserState) : base(factory, null)
+        public RulesAuditLogger(IAppDatabaseFactory factory, IApplicationUserState ruleUserState) : base(factory, null)
         {
             System = new SystemAudit(factory);
             User = new UserAudit(factory) { CurrentUser = ruleUserState };
@@ -19,14 +16,14 @@ namespace BLAZAM.Services.Audit
             OU = new OUAudit(factory) { CurrentUser = ruleUserState };
             Printer = new PrinterAudit(factory) { CurrentUser = ruleUserState };
             BitLocker = new BitLockerAudit(factory) { CurrentUser = ruleUserState };
-            Email=new EmailAudit(factory);
+            Email = new EmailAudit(factory);
             ApplicationEvents.DirectoryEntryChanged.Delegate += TriggerDirectoryEntryChangedEvent;
 
         }
 
         protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
         {
-          if(sender!=null && sender is RulesProcessor)
+            if (sender != null && sender is RulesProcessor)
             {
                 System = new SystemAudit(_factory);
                 User = new UserAudit(_factory) { CurrentUser = args.Actor };

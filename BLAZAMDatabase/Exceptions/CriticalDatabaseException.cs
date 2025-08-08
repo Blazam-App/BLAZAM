@@ -1,7 +1,4 @@
-﻿
-
-using BLAZAM.Common.Exceptions;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
 
 namespace BLAZAM.Database.Exceptions
 {

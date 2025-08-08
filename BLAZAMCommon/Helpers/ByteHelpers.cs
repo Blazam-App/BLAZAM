@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BLAZAM.Helpers
+﻿namespace BLAZAM.Helpers
 {
     /// <summary>
     /// Provides extension methods and utilities for byte manipulation and conversions.
@@ -42,7 +40,7 @@ namespace BLAZAM.Helpers
             ArgumentNullException.ThrowIfNull(a);
             ArgumentNullException.ThrowIfNull(b);
 
-           
+
             // Check that the arrays have the same length
             if (a.Length != b.Length) throw new ArgumentException("Arrays must have the same length");
 

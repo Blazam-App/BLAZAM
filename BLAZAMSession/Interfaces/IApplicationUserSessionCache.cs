@@ -1,6 +1,4 @@
-﻿using System; // Required for Type
-
-namespace BLAZAM.Session.Interfaces
+﻿namespace BLAZAM.Session.Interfaces
 {
     /// <summary>
     /// Defines a contract for a simple in-memory cache for storing user session-specific data.

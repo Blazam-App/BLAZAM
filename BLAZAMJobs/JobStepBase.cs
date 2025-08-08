@@ -1,10 +1,8 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Exceptions;
-using System.Collections.Concurrent;
 
 namespace BLAZAM.Jobs
 {
-   
+
     public class JobStepBase : IJobStepBase
     {
         protected CancellationTokenSource cancellationTokenSource = new();
@@ -72,11 +70,11 @@ namespace BLAZAM.Jobs
                 thread.Name = "RunAsyncJob";
                 thread.Priority = ThreadPriority;
                 thread.Start();
-                while(Result!=JobResult.Passed && Result != JobResult.Failed && Result != JobResult.Cancelled)
+                while (Result != JobResult.Passed && Result != JobResult.Failed && Result != JobResult.Cancelled)
                 {
                     await Task.Delay(500);
                 }
-                return Result == JobResult.Passed ;
+                return Result == JobResult.Passed;
             }
             else
             {
@@ -88,7 +86,7 @@ namespace BLAZAM.Jobs
         }
         private void RunBackground()
         {
-            _=Run();
+            _ = Run();
         }
         public virtual bool Run()
         {

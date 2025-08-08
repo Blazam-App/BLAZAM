@@ -1,10 +1,10 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Data;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
-using System.Data;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -112,7 +112,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 List<AuditChangeLog> changes = base.Changes;
                 if (ToAssignTo.Count > 0 || ToUnassignFrom.Count > 0)
                 {
-                    _=MemberOf;
+                    _ = MemberOf;
                     changes.Add(new AuditChangeLog()
                     {
                         Field = ActiveDirectoryFields.MemberOf.FieldName,

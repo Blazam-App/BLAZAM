@@ -2,6 +2,7 @@
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Exceptions;
 using BLAZAM.Database.Models.Permissions;
+
 using BLAZAM.Logger;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -73,58 +74,79 @@ namespace BLAZAM.Database.Context
         {
             Task.Run(() =>
             {
-                using var seedContext = this.CreateDbContext();
-
-                bool saveRequired = false;
                 try
                 {
-                    var denyAll = seedContext.AccessLevels.First(x => x.Id == 1);
-                    if (denyAll != null)
+                    using var seedContext = this.CreateDbContext();
+
+                    // Use FirstOrDefault to safely retrieve the entity and prevent exceptions.
+                    var denyAll = seedContext.AccessLevels.FirstOrDefault(x => x.Id == 1);
+                    if (denyAll is null)
                     {
-                        foreach (var adObjectType in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
-                        {
-                            if ((ActiveDirectoryObjectType)adObjectType != ActiveDirectoryObjectType.All)
-                            {
-                                if (denyAll.ObjectMap.Any(x => x.ObjectType == (ActiveDirectoryObjectType)adObjectType))
-                                {
-                                    var eexisingObjectMap = denyAll.ObjectMap.First(x => x.ObjectType == (ActiveDirectoryObjectType)adObjectType);
-                                    if (eexisingObjectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
-                                    {
-                                        denyAll.ObjectMap.Remove(eexisingObjectMap);
-                                        saveRequired = true;
-                                    }
-                                }
-                                if (!denyAll.ObjectMap.Any(x => x.ObjectType == (ActiveDirectoryObjectType)adObjectType && x.ObjectAccessLevel.Id == ObjectAccessLevels.Deny.Id))
-                                {
-                                    denyAll.ObjectMap.Add(new()
-                                    {
-                                        ObjectType = (ActiveDirectoryObjectType)adObjectType,
-                                        ObjectAccessLevelId = ObjectAccessLevels.Deny.Id,
-                                    });
-                                    saveRequired = true;
-
-                                }
-                            }
-                        }
-
+                        Loggers.DatabaseLogger.Warning("AccessLevel with Id=1 not found for DenyAll setup.");
+                        return; // Exit if the required entity isn't found.
                     }
 
+                    // Ensure the DenyAll access level is set up correctly.
+                    bool wasModified = this.EnsureDenyPermissionsAreSet(denyAll);
+
+                    if (wasModified)
+                    {
+                        seedContext.SaveChanges();
+                    }
                 }
                 catch (SqlException ex)
                 {
-                    Loggers.DatabaseLogger.Warning(ex,"Error attempting to seed denyAll");
+                    Loggers.DatabaseLogger.Warning(ex, "SQL error while attempting to seed DenyAll settings.");
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error(ex,"Unexpected error attempting to seed denyAll");
-
-                }
-                if (saveRequired)
-                {
-                    seedContext.SaveChanges();
+                    Loggers.DatabaseLogger.Error(ex, "Unexpected error while attempting to seed DenyAll settings.");
                 }
             });
+        }
 
+        /// <summary>
+        /// Verifies and applies 'Deny' permissions for all relevant object types.
+        /// </summary>
+        /// <param name="denyAll">The access level to configure.</param>
+        /// <returns>A boolean indicating if the entity was modified.</returns>
+        private bool EnsureDenyPermissionsAreSet(AccessLevel denyAll)
+        {
+            bool wasModified = false;
+
+            // Process all Active Directory object types except for the general 'All' type.
+            var objectTypesToProcess = Enum.GetValues<ActiveDirectoryObjectType>()
+                .Where(type => type != ActiveDirectoryObjectType.All);
+
+            foreach (var objectType in objectTypesToProcess)
+            {
+                // Find and remove any existing map for this type that is not set to 'Deny'.
+                var incorrectMap = denyAll.ObjectMap
+                    .FirstOrDefault(m => m.ObjectType == objectType && m.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id);
+
+                if (incorrectMap is not null)
+                {
+                    denyAll.ObjectMap.Remove(incorrectMap);
+                    wasModified = true;
+                }
+
+                // After cleanup, check if a 'Deny' permission map exists.
+                bool hasDenyPermission = denyAll.ObjectMap
+                    .Any(m => m.ObjectType == objectType && m.ObjectAccessLevelId == ObjectAccessLevels.Deny.Id);
+
+                // If a 'Deny' permission is missing, add it.
+                if (!hasDenyPermission)
+                {
+                    denyAll.ObjectMap.Add(new()
+                    {
+                        ObjectType = objectType,
+                        ObjectAccessLevelId = ObjectAccessLevels.Deny.Id,
+                    });
+                    wasModified = true;
+                }
+            }
+
+            return wasModified;
         }
 
         private void StartDatabaseCache()
@@ -321,8 +343,8 @@ namespace BLAZAM.Database.Context
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Fatal(ex,"Database Auto-Update Failed!!!!");
-               
+                Loggers.DatabaseLogger.Fatal(ex, "Database Auto-Update Failed!!!!");
+
                 FatalError = ex;
                 OnFatalError?.Invoke(ex);
                 return false;

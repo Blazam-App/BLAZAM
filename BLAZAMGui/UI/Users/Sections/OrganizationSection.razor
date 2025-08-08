@@ -69,7 +69,11 @@
                              @bind-Value="@Contact.PhysicalDeliveryOfficeName"
                              Disabled=@(!EditMode || !GroupableEntry.CanEditField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
         }
+
+        <PluginComponents Page="@PageType.User" Location="@PageLocation.Organization" />
+
     </ViewSection>
+
 }
 @code {
 }

@@ -1,4 +1,5 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Text;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
@@ -6,12 +7,8 @@ using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
-    public class UserAudit : DirectoryAudit
+    public class UserAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
     {
-        public UserAudit(IAppDatabaseFactory factory, IApplicationUserState? userState=null, IJSRuntime? jSRuntime=null) : base(factory,  userState, jSRuntime)
-        {
-        }
-
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
         {
             Analytics?.ObjectDeleted(ActiveDirectoryObjectType.User);
@@ -20,10 +17,10 @@ namespace BLAZAM.Services.Audit
             AuditActions.User_Deleted, deletedEntry);
         }
 
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedUser)
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedEntry)
             => await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.User_Searched,
-                searchedUser);
+                searchedEntry);
 
         public async Task<bool> PasswordChanged(IDirectoryEntryAdapter searchedUser,
             bool requirePasswordChanged = false)
@@ -58,19 +55,22 @@ namespace BLAZAM.Services.Audit
             return true;
         }
 
-        public override async Task<bool> Created(IDirectoryEntryAdapter newUser)
+        public override async Task<bool> Created(IDirectoryEntryAdapter newEntry)
         {
             Analytics?.ObjectCreated(ActiveDirectoryObjectType.User);
 
             var oldValues = "";
             var newValues = "";
-            foreach (var c in newUser.NewEntryProperties)
+            var strBuilder = new StringBuilder();
+            foreach (var c in newEntry.NewEntryProperties)
             {
-                newValues += c.Key + "=" + c.Value;
+                strBuilder.Append(c.Key + "=" + c.Value);
             }
+
+            newValues = strBuilder.ToString();
             await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.User_Created,
-                newUser,
+                newEntry,
                 oldValues,
                 newValues);
             return true;
@@ -86,11 +86,11 @@ namespace BLAZAM.Services.Audit
                ouMovedTo.OU);
             return true;
         }
-        public override async Task<bool> Changed(IDirectoryEntryAdapter changedUser, List<AuditChangeLog> changes)
+        public override async Task<bool> Changed(IDirectoryEntryAdapter changedEntry, List<AuditChangeLog> changes)
         {
             await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.User_Edited,
-                changedUser,
+                changedEntry,
                 changes.GetValueChangesString(c => c.OldValue),
                 changes.GetValueChangesString(c => c.NewValue));
             return true;

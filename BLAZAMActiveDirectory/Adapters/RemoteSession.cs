@@ -1,9 +1,9 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using Cassia;
-using Serilog;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Net;
 using System.Security.Principal;
+using BLAZAM.ActiveDirectory.Interfaces;
+using Cassia;
+using Serilog;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -264,14 +264,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Log.Error(ex,"An error occurred while refreshing a computer session state.");
+                Log.Error(ex, "An error occurred while refreshing a computer session state.");
                 this.Dispose();
             }
         }
 
         public override bool Equals(object? obj)
         {
-            if (obj is IRemoteSession other && other.Server!=null)
+            if (obj is IRemoteSession other && other.Server != null)
             {
                 if (other.SessionId.Equals(SessionId) && other.Server.ServerName.Equals(Server?.ServerName))
                 {

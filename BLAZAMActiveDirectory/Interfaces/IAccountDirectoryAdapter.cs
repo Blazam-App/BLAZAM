@@ -9,7 +9,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     /// <remarks>
     /// Examples include Active Directory users and computers
     /// </remarks>
-    public interface IAccountDirectoryAdapter : IADContact,IIdentityAdapater
+    public interface IAccountDirectoryAdapter : IADContact, IIdentityAdapater
     {
         /// <summary>
         /// Indicates whether the current web user can enable this <see cref="IAccountDirectoryAdapter"/>

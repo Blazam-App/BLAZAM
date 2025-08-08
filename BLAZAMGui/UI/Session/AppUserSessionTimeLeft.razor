@@ -1,0 +1,51 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@inherits AppComponentBase
+
+
+<MudText>
+    @AppLocalization[Lang.Session_expires_in] @_timeLeft
+</MudText>
+
+@code {
+    [Parameter]
+    public AuthenticationTicket Ticket { get; set; }
+
+    Timer? timer;
+
+    string _timeLeft
+    {
+        get
+        {
+            var formattedTimeLeft = "";
+            var timeLeft = Ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
+         
+            if (timeLeft != null && timeLeft.Value.TotalSeconds > 0)
+            {
+
+                if (timeLeft.Value.Hours > 0)
+                {
+                    formattedTimeLeft += timeLeft.Value.Hours + ":";
+                }
+                formattedTimeLeft += timeLeft.Value.Minutes + ":";
+                formattedTimeLeft += timeLeft.Value.Seconds.ToString("D2");
+            }
+            return formattedTimeLeft;
+        }
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Start a timer to update the time left every second
+            timer = new Timer(_ =>
+            {
+                InvokeAsync(StateHasChanged);
+            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+        }
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        timer?.Dispose();
+    }
+}

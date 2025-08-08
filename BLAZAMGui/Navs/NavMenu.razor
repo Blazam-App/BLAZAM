@@ -17,7 +17,7 @@
             <MudStack Row=true>
                 <MudIconButton Icon="@Icons.Material.Filled.Menu"
                                Color="Color.Inherit"
-                               OnClick="@((e) => {mainLayout.DrawerOpen = !mainLayout.DrawerOpen; })" />
+                               OnClick="ToggleDrawer" />
                 <MudImage Class="app-icon"
                           Src="@StaticAssets.ApplicationIconUri" />
                 <MudText Align="Align.Center"
@@ -31,7 +31,7 @@
                 Icon="@Icons.Material.Filled.Dashboard">
         @AppLocalization[Lang.Home]
     </MudNavLink>
-    <NavBrowseButton SelectedEntryChanged=@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);})
+    <NavBrowseButton SelectedEntryChanged=@((entry) => { SelectedEntryChanged.InvokeAsync(entry); })
                      BrowseExpandedChanged=@((value)=>{BrowseExpandedChanged.InvokeAsync(value);}) />
     <AuthorizeView Context="createContext" Roles=@createRole>
         <MudNavGroup Icon="@Icons.Material.Filled.Create"
@@ -102,7 +102,15 @@
             <MudNavLink Href="/api-tokens">
                 @AppLocalization[Lang.API_Tokens]
             </MudNavLink>
+            @if (ApplicationInfo.loadedPlugins.Count > 0)
+            {
+                <MudNavLink Href="/plugins">
+                    @AppLocalization[Lang.Plugins]
+
+                </MudNavLink>
+            }
         </MudNavGroup>
+
         <MudNavLink Href="/audit"
                     Icon="@Icons.Material.Filled.ReceiptLong">
             @AppLocalization[Lang.Audit]
@@ -123,7 +131,7 @@
 
 @code {
     [CascadingParameter]
-    public MainLayout mainLayout { get; set; }
+    public MainLayout? mainLayout { get; set; }
     private bool collapseNavMenu = true;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
     [Parameter]
@@ -150,5 +158,11 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
-
+    private void ToggleDrawer()
+    {
+        if (mainLayout != null)
+        {
+            mainLayout.DrawerOpen = !mainLayout.DrawerOpen;
+        }
+    }
 }

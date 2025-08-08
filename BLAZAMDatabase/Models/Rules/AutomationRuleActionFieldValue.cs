@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BLAZAM.Database.Models.Rules
+﻿namespace BLAZAM.Database.Models.Rules
 {
     public class AutomationRuleActionFieldValue : ActiveDirectoryFieldDbSet
     {

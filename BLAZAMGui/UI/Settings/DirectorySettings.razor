@@ -13,24 +13,26 @@
                 <SettingsField Label="@AppLocalization[Lang.Server]">
 
 
-                    @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
+                    @if (ApplicationInfo.InstallationCompleted
+                                        && ApplicationInfo.InDemoMode
+                                        && UserStateService.CurrentUsername == "Demo")
                     {
 
                         <MudTextField Label="@AppLocalization[Lang.Server]"
-                        AutoFocus=true
-                        HelperText="Can be your domain name in most environments"
-                        Value=@("Private")
-                        Disabled />
+                                      AutoFocus=true
+                                      HelperText="Can be your domain name in most environments"
+                                      Value=@("Private")
+                                      Disabled />
                     }
                     else
                     {
 
                         <MudTextField Label="@AppLocalization[Lang.Server]"
-                        AutoFocus=true
-                        Immediate=true
-                        HelperText="Can be your domain name in most environments"
-                        For="(()=>settings.ServerAddress)"
-                        @bind-Value="@(settings.ServerAddress)">
+                                      AutoFocus=true
+                                      Immediate=true
+                                      HelperText="Can be your domain name in most environments"
+                                      For="(() => settings.ServerAddress)"
+                                      @bind-Value="@(settings.ServerAddress)">
 
 
 
@@ -41,7 +43,7 @@
                 </SettingsField>
                 <SettingsField Label="@AppLocalization[Lang.Port]">
 
-                
+
 
                     @*
                     TODO Add this as a popover
@@ -51,26 +53,26 @@
                     <MudIcon Icon="IconName.QuestionCircle" Color="Color.Info" />
                     </AppTooltip>*@
 
-                    @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
+                    @if (ApplicationInfo.InstallationCompleted
+                                        && ApplicationInfo.InDemoMode 
+                                        && UserStateService.CurrentUsername == "Demo")
                     {
-                        <MudNumericField
-                        Immediate=true
-                        Label="@AppLocalization[Lang.Port]"
-                        HideSpinButtons="true"
-                        Value="0"
-                        Disabled />
+                        <MudNumericField Immediate=true
+                                         Label="@AppLocalization[Lang.Port]"
+                                         HideSpinButtons="true"
+                                         Value="0"
+                                         Disabled />
 
 
                     }
                     else
                     {
 
-                        <MudNumericField
-                        Immediate=true
-                        Label="@AppLocalization[Lang.Port]"
-                        HideSpinButtons="true"
-                        For="(()=>settings.ServerPort)"
-                        @bind-Value="@settings.ServerPort" />
+                        <MudNumericField Immediate=true
+                                         Label="@AppLocalization[Lang.Port]"
+                                         HideSpinButtons="true"
+                                         For="(() => settings.ServerPort)"
+                                         @bind-Value="@settings.ServerPort" />
 
 
 
@@ -88,11 +90,11 @@
                 <SettingsField Label="@AppLocalization[Lang.Username]">
 
 
-                    <MudTextField For="(()=>settings.Username)"
-                    Immediate=true
-                    Label="@AppLocalization[Lang.Username]"
-                    name="username"
-                    @bind-Value="@settings.Username">
+                    <MudTextField For="(() => settings.Username)"
+                                  Immediate=true
+                                  Label="@AppLocalization[Lang.Username]"
+                                  name="username"
+                                  @bind-Value="@settings.Username">
 
 
 
@@ -104,12 +106,12 @@
 
                 <SettingsField Label="@AppLocalization[Lang.Password]">
 
-                    <MudTextField For="(()=>settings.Password)"
-                    Immediate=true
-                    Label="@AppLocalization[Lang.Password]"
-                    name="password"
-                    InputType="InputType.Password"
-                    @bind-Value="@settings.Password">
+                    <MudTextField For="(() => settings.Password)"
+                                  Immediate=true
+                                  Label="@AppLocalization[Lang.Password]"
+                                  name="password"
+                                  InputType="InputType.Password"
+                                  @bind-Value="@settings.Password">
 
 
 
@@ -121,10 +123,10 @@
 
                 <SettingsField Label="@AppLocalization[Lang.Use_TLS]">
 
-                    <MudSwitch For="(()=>settings.UseTLS)"
-                    Color="Color.Success"
-                    Label="@AppLocalization[Lang.Use_TLS]"
-                    @bind-Value="@settings.UseTLS" />
+                    <MudSwitch For="(() => settings.UseTLS)"
+                               Color="Color.Success"
+                               Label="@AppLocalization[Lang.Use_TLS]"
+                               @bind-Value="@settings.UseTLS" />
 
                 </SettingsField>
 
@@ -132,11 +134,11 @@
 
                 <SettingsField Label="@AppLocalization[Lang.FQDN]">
 
-                    <MudTextField For="(()=>settings.FQDN)"
-                    Immediate=true
-                    Label="@AppLocalization[Lang.FQDN]"
-                    name="fqdn"
-                    @bind-Value="@settings.FQDN" />
+                    <MudTextField For="(() => settings.FQDN)"
+                                  Immediate=true
+                                  Label="@AppLocalization[Lang.FQDN]"
+                                  name="fqdn"
+                                  @bind-Value="@settings.FQDN" />
 
                 </SettingsField>
 
@@ -144,11 +146,11 @@
 
                 <SettingsField Label="@AppLocalization[Lang.Base_DN]">
 
-                    <MudTextField For="(()=>settings.ApplicationBaseDN)"
-                    Immediate=true
-                    Label="@AppLocalization[Lang.Base_DN]"
-                    name="baseDN"
-                    @bind-Value="@settings.ApplicationBaseDN" />
+                    <MudTextField For="(() => settings.ApplicationBaseDN)"
+                                  Immediate=true
+                                  Label="@AppLocalization[Lang.Base_DN]"
+                                  name="baseDN"
+                                  @bind-Value="@settings.ApplicationBaseDN" />
 
                 </SettingsField>
 
@@ -156,8 +158,8 @@
                 <SettingsField>
 
                     <MudButton Disabled="!IsValid"
-                    OnClick="Save"
-                    Color="Color.Success">
+                               OnClick="Save"
+                               Color="Color.Success">
                         @AppLocalization[Lang.Save_Changes]
                     </MudButton>
 
@@ -180,7 +182,7 @@
 </MudForm>
 @code {
 
-    #nullable disable warnings
+#nullable disable warnings
     ADSettings settings = new ADSettings();
     ActiveDirectoryStatusPanel? statusPanel;
     bool _insert;
@@ -226,7 +228,8 @@
         await AuditLogger.System.SettingsChanged("Active Directory", settings.GetChanges(originalSettings));
         await base.Save();
         await SettingsSaved.InvokeAsync();
-        if(ShowStatusPanel){
+        if (ShowStatusPanel)
+        {
             statusPanel?.RefreshStatuses();
         }
 

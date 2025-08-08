@@ -1,11 +1,5 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Helpers;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAMCommon.Tests.Helpers
 {
@@ -39,10 +33,10 @@ namespace BLAZAMCommon.Tests.Helpers
             // This helps prevent test interference.
             _originalEncryptionInstance = new Encryption("seedstring"); // Assuming Encryption.Instance is static and gettable
 
-           
+
         }
 
-       
+
 
 
         // -------------------------------------
@@ -117,7 +111,7 @@ namespace BLAZAMCommon.Tests.Helpers
             Assert.Equal(invalidCiphertext, result);
         }
 
-       
+
 
         // -------------------------------------
         // Tests for Encrypt(this object input)

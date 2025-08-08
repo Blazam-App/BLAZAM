@@ -53,7 +53,7 @@ InDirectoryTemplate(ActiveDirectoryFields.Title) ||
 InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 )
 {
-    <Section Title=@AppLocalization[Lang.Organization]>
+    <ViewSection Title=@AppLocalization[Lang.Organization]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.EmployeeId))
         {
             <MudTextField Label="@AppLocalization[Lang.Employee_Id]"
@@ -84,7 +84,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
                           @bind-Value="@User.PhysicalDeliveryOfficeName"
                           Disabled=true />
         }
-    </Section>
+    </ViewSection>
 }
 
 @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone) ||
@@ -95,7 +95,7 @@ InDirectoryTemplate(ActiveDirectoryFields.State) ||
 InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
 )
 {
-    <Section Title=@AppLocalization[Lang.Contact_Info]>
+    <ViewSection Title=@AppLocalization[Lang.Contact_Info]>
 
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone))
         {
@@ -133,7 +133,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
                           @bind-Value="@User.Zip"
                           Disabled=true />
         }
-    </Section>
+    </ViewSection>
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
 {
@@ -153,7 +153,7 @@ InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
 InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
 )
 {
-    <Section Title=@AppLocalization[Lang.Profile]>
+    <ViewSection Title=@AppLocalization[Lang.Profile]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
         {
             <MudTextField Label="@AppLocalization[Lang.Home_Directory]"
@@ -178,14 +178,14 @@ InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
                           @bind-Value="@User.ProfilePath"
                           Disabled=true />
         }
-    </Section>
+    </ViewSection>
 }
 
 
 
 
 
-<Section Title=@AppLocalization[Lang.Groups]>
+<ViewSection Title=@AppLocalization[Lang.Groups]>
     @if (User.IsAGroupMember)
     {
         var deniedRead = false;
@@ -214,7 +214,7 @@ InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
         }
     }
 
-</Section>
+</ViewSection>
 
 @if (!Confirmed)
 {
@@ -351,7 +351,7 @@ else
         }
         catch (Exception ex)
         {
-            Loggers.SystemLogger.Error("Error sending welcome email {@Error}", ex);
+            Loggers.SystemLogger.Error(ex, "Error sending welcome email");
             SnackBarService.Error(ex.Message);
         }
         //emailPreview = EmailService.PrepareHTMLForEmail(html);

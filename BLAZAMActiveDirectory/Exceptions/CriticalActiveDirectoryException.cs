@@ -1,6 +1,5 @@
 ﻿
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Exceptions;
 
 namespace BLAZAM.ActiveDirectory.Exceptions
 {

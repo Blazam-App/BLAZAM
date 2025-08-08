@@ -1,6 +1,5 @@
-﻿using Xunit;
+﻿using System.ComponentModel.DataAnnotations;
 using BLAZAM.Common.Data.Validators;
-using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Common.Data.Tests.Validators
 {

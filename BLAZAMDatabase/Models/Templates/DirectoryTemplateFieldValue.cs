@@ -1,5 +1,5 @@
-﻿using BLAZAM.Database.Context;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using BLAZAM.Database.Context;
 
 namespace BLAZAM.Database.Models.Templates
 {
@@ -33,8 +33,8 @@ namespace BLAZAM.Database.Models.Templates
             var clone = new DirectoryTemplateFieldValue()
             {
 
-                Field = context.ActiveDirectoryFields.FirstOrDefault(f => f.Id == Field.Id),
-                CustomField = CustomField,
+                Field = Field != null ? context.ActiveDirectoryFields.FirstOrDefault(f => f.Id == Field.Id) : null,
+                CustomField = CustomField != null ? context.CustomActiveDirectoryFields.FirstOrDefault(f => f.Id == CustomField.Id) : null,
                 Value = Value,
                 Editable = Editable,
                 Required = Required

@@ -12,7 +12,7 @@
         /// </summary>
         /// <param name="immediate">If set the servic starts with the application,
         /// otherwise, it will start after a random delay of 15-45 seconds.</param>
-        public AutoStartBackgroundService(bool immediate = false,bool runOnLinux=true)
+        public AutoStartBackgroundService(bool immediate = false, bool runOnLinux = true)
         {
             Immediate = immediate;
             RunOnLinux = runOnLinux;

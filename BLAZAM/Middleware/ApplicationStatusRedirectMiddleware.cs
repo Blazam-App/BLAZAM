@@ -1,6 +1,5 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
-using BLAZAM.Logger;
 using BLAZAM.Pages.Error;
 
 namespace BLAZAM.Server.Middleware

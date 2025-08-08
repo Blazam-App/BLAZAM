@@ -32,7 +32,7 @@ namespace BLAZAM.Services.Background
 
         //private AuditLogger Audit;
 
-        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo, IStringLocalizer<AppLocalization> appLocalization) : base(factory,appLocalization)
+        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo, IStringLocalizer<AppLocalization> appLocalization) : base(factory, appLocalization)
         {
             Interval = TimeSpan.FromMinutes(60);
 
@@ -100,7 +100,7 @@ namespace BLAZAM.Services.Background
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Other error deleting file: " + file + " {@Error}", ex);
+                    Loggers.UpdateLogger.Error(ex, "Other error deleting file. {@File} ", file);
                 }
 
             }
@@ -167,12 +167,12 @@ namespace BLAZAM.Services.Background
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Loggers.UpdateLogger.Error("Deleting unknown directory: {@Directory} {@Error}", dir.ToString(), ex);
+                    Loggers.UpdateLogger.Error(ex, "Deleting unknown directory: {@Directory}", dir.ToString());
                     //dir.Delete(true);
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Other error cleaning staging files {@Directory}{@Error}", dir.FullPath, ex);
+                    Loggers.UpdateLogger.Error(ex, "Other error cleaning staging files {@Directory}", dir.FullPath);
                     //file.Delete();
                 }
             }
@@ -219,7 +219,7 @@ namespace BLAZAM.Services.Background
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Error while checking for auto update {@Error}", ex);
+                    Loggers.UpdateLogger.Error(ex, "Error while checking for auto update");
                 }
                 return true;
             });
@@ -278,7 +278,7 @@ namespace BLAZAM.Services.Background
                         }
                         catch (Exception ex)
                         {
-                            Loggers.UpdateLogger.Error("Error during auto update scheduling {@Error}", ex);
+                            Loggers.UpdateLogger.Error(ex, "Error during auto update scheduling");
                         }
                         return true;
                     });
@@ -288,7 +288,7 @@ namespace BLAZAM.Services.Background
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Error during auto update scheduling {@Error}", ex);
+                Loggers.UpdateLogger.Error(ex, "Error during auto update scheduling");
             }
         }
 
@@ -325,7 +325,7 @@ namespace BLAZAM.Services.Background
                                     {
                                         var thrownStep = updateJob.Steps.FirstOrDefault(x => x.Exception != null);
                                         if (thrownStep != null)
-                                            Loggers.UpdateLogger.Error("Failed to auto-update. {@Error}{@UpdateVersion}", thrownStep.Exception, latestUpdate.Version);
+                                            Loggers.UpdateLogger.Error(thrownStep.Exception, "Failed to auto-update. {@UpdateVersion}", latestUpdate.Version);
                                         else
                                             Loggers.UpdateLogger.Error("Failed to auto-update. No exception collected from update job!{@UpdateVersion}", latestUpdate.Version);
 
@@ -336,7 +336,7 @@ namespace BLAZAM.Services.Background
                             {
                                 //Log.Error(ex);
                                 OnAutoUpdateFailed?.Invoke();
-                                Loggers.UpdateLogger.Error("Error trying to apply auto update {@Error}{@UpdateVersion}", ex, latestUpdate.Version);
+                                Loggers.UpdateLogger.Error(ex, "Error trying to apply auto update {@UpdateVersion}", latestUpdate.Version);
                             }
                         }
                         else
@@ -359,7 +359,7 @@ namespace BLAZAM.Services.Background
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Error during auto update {@Error}", ex);
+                Loggers.UpdateLogger.Error(ex, "Error during auto update");
             }
 
 

@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.4.4</AssemblyVersion>
-		<Version>2025.08.01.2248</Version>
+		<Version>2025.08.08.2116</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -117,6 +117,7 @@
 		<ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
 		<ProjectReference Include="..\BLAZAMEmailMessage\BLAZAMEmailMessage.csproj" />
 		<ProjectReference Include="..\BLAZAMFileSystem\BLAZAMFileSystem.csproj" />
+		<ProjectReference Include="..\BLAZAMGlobal\BLAZAMGlobal.csproj" />
 		<ProjectReference Include="..\BLAZAMGui\BLAZAMGui.csproj" />
 		<ProjectReference Include="..\BLAZAMJobs\BLAZAMJobs.csproj" />
 		<ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
@@ -169,6 +170,10 @@
 
 	<ItemGroup>
 	  <Folder Include="Plugins\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\BLAZAMGui\UI\Users\Sections\PluginComponents.razor" Link="PluginComponents.razor" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />

@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Exceptions;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace BLAZAM.Update.Exceptions
 {

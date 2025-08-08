@@ -1,41 +1,38 @@
-﻿// Import necessary namespaces for various functionalities
-using BLAZAM.ActiveDirectory.Services; // Active Directory related services
-using BLAZAM.Common.Attributes; // Custom attributes like AutoStartBackgroundService
-using BLAZAM.Common.Conventions; // Custom routing conventions
-using BLAZAM.Common.Data; // Common data structures and utilities
-using BLAZAM.Common.Data.Services; // Common data services
-using BLAZAM.Common.Exceptions; // Custom exception types
-using BLAZAM.Database.Context; // Database context interfaces and implementations
-using BLAZAM.Gui.Services; // GUI related services (MudBlazor extensions)
-using BLAZAM.Notifications.Services; // Notification system services
-using BLAZAM.Plugins; // Plugin system interfaces and helpers
-using BLAZAM.Services; // Core application services
-using BLAZAM.Services.Audit; // Auditing services
-using BLAZAM.Services.Chat; // Chat services
-using BLAZAM.Services.Duo; // Duo Security integration services
-using BLAZAM.Session; // Session management services
-using BLAZAM.Session.Interfaces; // Session management interfaces
-using BLAZAM.Update.Services; // Application update services
-using Microsoft.AspNetCore.Authentication; // ASP.NET Core Authentication services
-using Microsoft.AspNetCore.Authentication.Cookies; // Cookie authentication scheme
-using Microsoft.AspNetCore.Authentication.JwtBearer; // JWT Bearer authentication scheme
-using Microsoft.IdentityModel.Tokens; // Security token handling
-using Microsoft.OpenApi.Models; // OpenAPI (Swagger) models
-using MudBlazor; // MudBlazor UI component library
-using MudBlazor.Services; // MudBlazor service registration
-using NuGet.Protocol.Plugins; // Used for PluginLoadContext (potentially, verify usage)
-using Polly; // Resilience and transient-fault-handling library
-using Polly.Contrib.WaitAndRetry; // Polly extensions for wait and retry strategies
-using Polly.Extensions.Http; // Polly extensions for HttpClient
-using System.Diagnostics; // For Process class
-using System.Globalization; // For CultureInfo (localization)
-using System.Management; // For WMI (Windows Management Instrumentation) to get Installation ID
-using System.Reflection; // For assembly loading and reflection
+// Import necessary namespaces for various functionalities
+using System.Diagnostics;
+using System.Globalization;
+using System.Management;
+using System.Reflection;
+using BLAZAM.Common.Attributes;
+using BLAZAM.Common.Conventions;
+using BLAZAM.Common.Data;
+using BLAZAM.Common.Data.Services;
+using BLAZAM.Database.Context;
+using BLAZAM.Gui.Services;
+using BLAZAM.Notifications.Services;
+using BLAZAM.Plugins;
+using BLAZAM.Services;
+using BLAZAM.Services.Audit;
+using BLAZAM.Services.Chat;
+using BLAZAM.Services.Duo;
+using BLAZAM.Session;
+using BLAZAM.Session.Interfaces;
+using BLAZAM.Update.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using MudBlazor;
+using MudBlazor.Services;
+using Polly;
+using Polly.Contrib.WaitAndRetry;
+using Polly.Extensions.Http;
 
-namespace BLAZAM.Server
+namespace BLAZAM
 {
     /// <summary>
-    /// Provides extension methods for <see cref="WebApplicationBuilder"/> and <see cref="WebApplication"/>
+    /// Extension methods for <see cref="WebApplicationBuilder"/> and <see cref="WebApplication"/>
     /// to encapsulate application initialization, service injection, and pre-run configuration logic.
     /// </summary>
     public static class ProgramHelpers
@@ -44,9 +41,6 @@ namespace BLAZAM.Server
         /// Initializes core application properties like debug flags, installation ID,
         /// running process information, and application version.
         /// </summary>
-        /// <param name="builder">The WebApplicationBuilder instance.</param>
-        /// <returns>The modified WebApplicationBuilder instance.</returns>
-        /// <remarks>Note the typo in the original method name 'IntializeProperties'.</remarks>
         public static WebApplicationBuilder IntializeProperties(this WebApplicationBuilder builder)
         {
             // Set a default timeout for Regex matching across the application domain.
@@ -55,7 +49,7 @@ namespace BLAZAM.Server
 
             // Initialize ApplicationInfo singleton (holds global app state/config).
             // Pass the builder to access configuration early.
-            ApplicationInfo ApplicationInfo = new(builder);
+            _ = new ApplicationInfo(builder);
 
             // Read DebugMode and DemoMode flags from configuration (appsettings.json).
             ApplicationInfo.inDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
@@ -74,9 +68,6 @@ namespace BLAZAM.Server
                 // Fallback: Generate a GUID based on the machine name. Less unique but better than nothing.
                 ApplicationInfo.installationId = Environment.MachineName.ToGuid(); // Assumes ToGuid() extension method exists
             }
-
-            // Define the path for application plugins based on the writable path.
-            Program.PluginDirectory = new SystemDirectory(Program.WritablePath + @"plugins\");
 
             // Store the configuration manager instance globally for easy access (use with caution).
             Program.Configuration = builder.Configuration;
@@ -100,42 +91,48 @@ namespace BLAZAM.Server
         {
             try
             {
-                string ComputerName = "localhost"; // Target the local machine
-                ManagementScope Scope;
-                // Connect to the root\CIMV2 namespace
-                Scope = new ManagementScope(String.Format("\\\\{0}\\root\\CIMV2", ComputerName), null);
-                Scope.Connect(); // Establish connection
+                var scope = new ManagementScope(@"\\localhost\root\CIMV2", null);
+                scope.Connect();
 
-                // Query for the UUID from the Win32_ComputerSystemProduct class
-                ObjectQuery Query = new("SELECT UUID FROM Win32_ComputerSystemProduct");
-                ManagementObjectSearcher Searcher = new(Scope, Query);
+                var query = new ObjectQuery("SELECT UUID FROM Win32_ComputerSystemProduct");
+                var searcher = new ManagementObjectSearcher(scope, query);
 
-                // Iterate through the results (should typically be only one)
-                foreach (ManagementObject WmiObject in Searcher.Get())
+
+                try
                 {
-                    try
+                    var enumerator = searcher.Get().GetEnumerator();
+                    var wmiObject = enumerator.MoveNext() ? enumerator.Current : null;
+                    if (wmiObject != null)
                     {
-                        // Attempt to parse the UUID string into a Guid
-                        return Guid.Parse(WmiObject["UUID"].ToString());
-                    }
-                    catch (Exception ex) // Catch parsing errors or null values
-                    {
-                        Console.WriteLine($"Error parsing UUID from WMI object: {ex.Message}. Skipping object.");
-                        continue; // Try next object if any (though unlikely for this specific query)
+                        var guid = wmiObject["UUID"];
+                        if (guid == null)
+                        {
+                            throw new AppException("UUID property not found in Win32_ComputerSystemProduct WMI object.");
+                        }
+                        var guidString = guid.ToString();
+                        if (guidString == null)
+                        {
+                            throw new AppException("UUID property is null in Win32_ComputerSystemProduct WMI object.");
+                        }
+                        return Guid.Parse(guidString);
                     }
                 }
-                // If the loop completes without returning, the UUID was not found.
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Information(ex, "Error parsing UUID from WMI object. Skipping object.");
+
+                }
+
                 throw new AppException("WMI query executed successfully, but no Win32_ComputerSystemProduct UUID was found.");
             }
-            catch (ManagementException ex) // Catch specific WMI errors
+            catch (ManagementException ex)
             {
-                Console.WriteLine($"WMI ManagementException while getting Installation ID: {ex.Message}. Check WMI service and permissions.");
+                Loggers.SystemLogger.Information(ex, "WMI ManagementException while getting Installation ID. Check WMI service and permissions.");
                 throw new AppException("Failed to query WMI for Installation ID. Check WMI service status and application permissions.", ex);
             }
-            catch (Exception ex) // Catch other potential errors (e.g., connection issues)
+            catch (Exception ex)
             {
-                Console.WriteLine($"Generic exception while getting Installation ID: {ex.Message}");
-                // Re-throw as AppException for consistent error handling upstream
+                Loggers.SystemLogger.Information(ex, "Generic exception while getting Installation ID");
                 throw new AppException("An unexpected error occurred while retrieving the Installation ID.", ex);
             }
         }
@@ -143,8 +140,6 @@ namespace BLAZAM.Server
         /// <summary>
         /// Registers application services with the dependency injection container.
         /// </summary>
-        /// <param name="builder">The WebApplicationBuilder instance.</param>
-        /// <returns>The modified WebApplicationBuilder instance.</returns>
         public static WebApplicationBuilder InjectServices(this WebApplicationBuilder builder)
         {
             // --- Localization Setup ---
@@ -299,8 +294,6 @@ namespace BLAZAM.Server
             // --- Background Services & Session Services ---
             builder.InjectBackgroundServices(); // Extension method to register background services automatically
             builder.Services.AddSessionServices(); // Extension method to register session-related services
-
-            // --- Update Services ---
             builder.Services.AddUpdateServices(); // Extension method to register application update services
 
             // --- UI Services (MudBlazor) ---
@@ -380,7 +373,7 @@ namespace BLAZAM.Server
 
             // --- Plugin Service Injection ---
             // Discover and inject services defined within plugins
-            InjectPluginServices(builder);
+            LoadPluginAssemblies(builder);
 
             // Return the builder for chaining
             return builder;
@@ -390,91 +383,100 @@ namespace BLAZAM.Server
         /// Discovers plugins in the plugin directory, loads their assemblies,
         /// and calls their InjectServices method to register plugin-specific services.
         /// </summary>
-        /// <param name="builder">The WebApplicationBuilder instance.</param>
-        private static void InjectPluginServices(WebApplicationBuilder builder)
+        private static void LoadPluginAssemblies(WebApplicationBuilder builder)
         {
-            var pluginDir = Program.PluginDirectory; // Get the plugin directory path
-
-            // Check if the directory exists
+            var pluginDir = ApplicationInfo.pluginDirectory;
             if (!pluginDir.Exists)
             {
-                Loggers.SystemLogger.Warning("Plugin directory {@PluginPath} does not exist. Skipping plugin loading.", pluginDir.FullPath);
+                Loggers.PluginLogger.Warning("Plugin directory {@PluginPath} does not exist. Skipping plugin loading.", pluginDir.FullPath);
                 return;
             }
 
-            Loggers.SystemLogger.Information("Scanning for plugins in {@PluginPath}...", pluginDir.FullPath);
-
-            // Process each DLL file in the plugin directory in parallel
-            Parallel.ForEach(pluginDir.Files.Where(f => f.Extension.Equals(".dll", StringComparison.OrdinalIgnoreCase)), dll =>
-            {
-                Loggers.SystemLogger.Debug("Attempting to load plugin assembly: {@DllName}", dll.Name);
-                try
-                {
-                    // Use a custom AssemblyLoadContext for plugin isolation (optional but recommended)
-                    var loadContext = new PluginLoadContext(dll.FullPath);
-                    // Load the assembly by its name (without extension)
-                    Assembly assembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(dll.FullPath)));
-                    Loggers.SystemLogger.Debug("Successfully loaded assembly: {@AssemblyName}", assembly.FullName);
-
-                    // Find all types in the loaded assembly that implement IPluginBase
-                    var pluginTypes = assembly.GetTypes()
-                        .Where(type => typeof(IPluginBase).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
-
-                    // Iterate through discovered plugin types
-                    foreach (Type pluginType in pluginTypes)
-                    {
-                        Loggers.SystemLogger.Information("Found plugin type: {@PluginType} in {@DllName}", pluginType.FullName, dll.Name);
-                        try
-                        {
-                            // Create an instance of the plugin type
-                            if (Activator.CreateInstance(pluginType) is IPluginBase pluginInstance)
-                            {
-                                // Call the plugin's service injection method
-                                pluginInstance.InjectServices(builder);
-                                // Store the loaded assembly reference in the plugin instance
-                                pluginInstance.Assembly = assembly;
-                                // Add the plugin instance to the global list of loaded plugins
-                                ApplicationInfo.loadedPlugins.Add(pluginInstance);
-                                Loggers.SystemLogger.Information("Successfully instantiated and injected services for plugin: {@PluginType}", pluginType.FullName);
-                            }
-                            else
-                            {
-                                Loggers.SystemLogger.Warning("Could not create an instance of plugin type: {@PluginType} in {@DllName}.", pluginType.FullName, dll.Name);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Loggers.SystemLogger.Error(ex, "Error creating instance or injecting services for plugin {@PluginType} in {@DllName}", pluginType.FullName, dll.Name);
-                        }
-                    }
-                }
-                // Handle errors during assembly loading or type discovery
-                catch (ReflectionTypeLoadException ex) // Catches errors when types within the assembly cannot be loaded
-                {
-                    Loggers.SystemLogger.Error(ex, "Error loading types from assembly {@DllName}", dll.Name);
-                    if (ex.LoaderExceptions != null)
-                    {
-                        foreach (Exception loaderEx in ex.LoaderExceptions)
-                        {
-                            Loggers.SystemLogger.Error("- LoaderException: {@LoaderExceptionMessage}", loaderEx.Message);
-                        }
-                    }
-                }
-                catch (FileLoadException ex) // Catches errors related to loading the file itself
-                {
-                    Loggers.SystemLogger.Error(ex, "Error loading assembly file {@DllName}", dll.Name);
-                }
-                catch (BadImageFormatException ex) // Catches errors if the DLL is not a valid .NET assembly
-                {
-                    Loggers.SystemLogger.Error(ex, "Error loading assembly {@DllName}: Invalid assembly format", dll.Name);
-                }
-                catch (Exception ex) // Catch-all for other unexpected errors
-                {
-                    Loggers.SystemLogger.Error(ex, "An unexpected error occurred while processing plugin assembly {@DllName}", dll.Name);
-                }
-            });
-            Loggers.SystemLogger.Information("Finished scanning for plugins.");
+            Loggers.PluginLogger.Information("Scanning for plugins in {@PluginPath}...", pluginDir.FullPath);
+            Parallel.ForEach(pluginDir.GetFilesAndSubFiles("*.dll"), dll => LoadAndProcessPlugin(dll, builder));
+            Loggers.PluginLogger.Information("Finished scanning for plugins.");
         }
+
+        /// <summary>
+        /// Loads a single plugin assembly, finds all plugin types within it, and initiates their processing.
+        /// This method isolates assembly loading and error handling for each plugin file.
+        /// </summary>
+        /// <param name="dll">The plugin DLL file to process.</param>
+        /// <param name="builder">The WebApplicationBuilder instance for service injection.</param>
+        private static void LoadAndProcessPlugin(SystemFile dll, WebApplicationBuilder builder)
+        {
+            Loggers.PluginLogger.Debug("Attempting to load plugin assembly: {@DllName}", dll.Name);
+            try
+            {
+                var loadContext = new PluginLoadContext(dll.FullPath);
+                Assembly assembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(dll.FullPath)));
+                Loggers.PluginLogger.Debug("Successfully loaded assembly: {@AssemblyName}", assembly.FullName);
+
+                IEnumerable<Type> pluginTypes = assembly.GetPluginTypes(typeof(IPluginBase));
+                foreach (Type pluginType in pluginTypes)
+                {
+                    InstantiateAndConfigurePlugin(pluginType, assembly, dll.Name, builder);
+                }
+            }
+            catch (ReflectionTypeLoadException ex) { HandleReflectionTypeLoadException(ex, dll.Name); }
+            catch (FileLoadException ex) { Loggers.PluginLogger.Error(ex, "Error loading assembly file {@DllName}", dll.Name); }
+            catch (BadImageFormatException ex) { Loggers.PluginLogger.Error(ex, "Error loading assembly {@DllName}: Invalid assembly format", dll.Name); }
+            catch (Exception ex) { Loggers.PluginLogger.Error(ex, "An unexpected error occurred while processing plugin assembly {@DllName}", dll.Name); }
+        }
+
+        /// <summary>
+        /// Provides detailed logging for ReflectionTypeLoadException, which occurs when some types in an assembly cannot be loaded.
+        /// </summary>
+        /// <param name="ex">The exception instance.</param>
+        /// <param name="dllName">The name of the DLL that failed to load.</param>
+        private static void HandleReflectionTypeLoadException(ReflectionTypeLoadException ex, string dllName)
+        {
+            Loggers.PluginLogger.Error(ex, "Error loading types from assembly {@DllName}", dllName);
+            if (ex.LoaderExceptions != null)
+            {
+                foreach (Exception? loaderEx in ex.LoaderExceptions)
+                {
+                    Loggers.PluginLogger.Error(loaderEx, "LoaderException loading {@DLL}", dllName);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates an instance of a discovered plugin type, injects services if required, and registers the plugin.
+        /// </summary>
+        /// <param name="pluginType">The plugin type to instantiate.</param>
+        /// <param name="assembly">The assembly the plugin belongs to.</param>
+        /// <param name="dllName">The name of the DLL file for logging context.</param>
+        /// <param name="builder">The WebApplicationBuilder for service injection.</param>
+        private static void InstantiateAndConfigurePlugin(Type pluginType, Assembly assembly, string dllName, WebApplicationBuilder builder)
+        {
+            Loggers.PluginLogger.Information("Found plugin type: {@PluginType} in {@DllName}", pluginType.FullName, dllName);
+            try
+            {
+                if (Activator.CreateInstance(pluginType) is not IPluginBase pluginInstance)
+                {
+                    Loggers.PluginLogger.Warning("Could not create an instance of plugin type: {@PluginType} in {@DllName}.", pluginType.FullName, dllName);
+                    return;
+                }
+
+                // Why: Inject services if the plugin supports it.
+                if (pluginInstance is IPluginServiceProvider pluginServices)
+                {
+                    Loggers.PluginLogger.Information("Injecting services for plugin: {@PluginType}", pluginType.FullName);
+                    pluginServices.InjectServices(builder);
+                }
+
+                // Why: Add the initialized plugin to the application's list of loaded plugins for runtime access.
+                ApplicationInfo.loadedPlugins.Add(new(assembly, pluginInstance));
+                Loggers.PluginLogger.Information("Successfully loaded and injected services for plugin: {@PluginType}", pluginType.FullName);
+            }
+            catch (Exception ex)
+            {
+                Loggers.PluginLogger.Error(ex, "Error creating instance or injecting services for plugin {@PluginType} in {@DllName}", pluginType.FullName, dllName);
+            }
+        }
+
+
 
         // Lock object for thread safety when modifying shared service collection in parallel
         private static readonly object _lock = new();
@@ -483,8 +485,6 @@ namespace BLAZAM.Server
         /// Discovers and registers background services marked with the <see cref="AutoStartBackgroundService"/> attribute
         /// from all loaded BLAZAM assemblies.
         /// </summary>
-        /// <param name="builder">The WebApplicationBuilder instance.</param>
-        /// <returns>The modified WebApplicationBuilder instance.</returns>
         public static WebApplicationBuilder InjectBackgroundServices(this WebApplicationBuilder builder)
         {
             Loggers.SystemLogger.Information("Injecting auto-start background services...");
@@ -555,7 +555,7 @@ namespace BLAZAM.Server
                     if (appSettings != null)
                     {
                         // Enable/disable sending logs to the central Seq server based on the setting
-                        Loggers.SendToSeqServer = appSettings.SendLogsToDeveloper != false; // Default to true if null
+                        Loggers.SendToSeqServer = appSettings.SendLogsToDeveloper;
                         Loggers.SystemLogger.Information("Seq logging to developer server set to: {SendToSeq}", Loggers.SendToSeqServer);
                         ApplicationInfo.installationCompleted = appSettings.InstallationCompleted;
                         Loggers.SystemLogger.Information("Installation completed status: {Status}", ApplicationInfo.installationCompleted);
@@ -618,71 +618,10 @@ namespace BLAZAM.Server
             Loggers.SystemLogger.Information("Preloading/Starting singleton services...");
             try
             {
-                // Only start most background services if the initial installation/setup is marked as complete.
                 if (ApplicationInfo.installationCompleted)
                 {
                     Loggers.SystemLogger.Information("Installation complete. Starting background services...");
-                    // Iterate through BLAZAM assemblies to find auto-start services
-                    foreach (var assembly in blazamAssemblies)
-                    {
-                        try
-                        {
-                            // Find types marked with the attribute
-                            var types = assembly.GetTypes()
-                                .Where(t => t.IsClass && !t.IsAbstract
-                                && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
-
-                            foreach (var type in types)
-                            {
-                                try
-                                {
-                                    // Resolve the service instance from the DI container
-                                    // Prefer resolving via interface if registered that way
-                                    var interfaceType = type.GetInterfaces()
-                                        .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null && i.Name != "IDisposable");
-
-                                    BackgroundServiceBase? service = null;
-                                    object? resolvedService = null;
-
-                                    if (interfaceType != null)
-                                    {
-                                        resolvedService = application.Services.GetService(interfaceType); // Use GetService to avoid exception if not found
-                                    }
-                                    else
-                                    {
-                                        resolvedService = application.Services.GetService(type);
-                                    }
-
-                                    // Cast to BackgroundServiceBase (assuming this is the base class)
-                                    service = resolvedService as BackgroundServiceBase;
-
-                                    if (service != null)
-                                    {
-                                        // Get the attribute metadata to check if immediate start is requested
-                                        var metadata = type.GetCustomAttribute<AutoStartBackgroundService>();
-                                        Loggers.SystemLogger.Information("Starting background service: {ServiceType} (Immediate: {ImmediateStart})", type.FullName, metadata?.Immediate == true);
-                                        // Start the service (implementation likely handles actual background task execution)
-                                        if (metadata.RunOnLinux == true || OperatingSystem.IsLinux() == false)
-                                        {
-                                            service.Start(metadata?.Immediate == true);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Loggers.SystemLogger.Warning("Could not resolve or cast background service type {ServiceType} (Interface: {InterfaceType}) during preload.", type.FullName, interfaceType?.FullName ?? "N/A");
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Loggers.SystemLogger.Error(ex, "Error resolving or starting background service {ServiceType} from assembly {AssemblyName}", type.FullName, assembly.FullName);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Loggers.SystemLogger.Error(ex, "Error finding or processing background service types in assembly {AssemblyName}", assembly.FullName);
-                        }
-                    }
+                    StartBackgroundServices(application);
                     Loggers.SystemLogger.Information("Finished starting background services.");
                 }
                 else
@@ -695,12 +634,72 @@ namespace BLAZAM.Server
                 Loggers.SystemLogger.Error(ex, "Critical error enumerating assemblies or starting background services during preload.");
             }
 
-            // Explicitly initialize/preload other critical singleton services, regardless of installation status (or check individually if needed)
-            // Use try-catch blocks for each service to prevent one failure from stopping others.
+            PreloadNotificationGenerationService(application);
+            InitializeUpdateService(application);
+            PreloadWebHookPublisher(application);
+            StartApplicationStatisticsPolling(application);
 
+            Loggers.SystemLogger.Information("Finished preloading/starting singleton services.");
+        }
+
+        private static void StartBackgroundServices(WebApplication application)
+        {
+            foreach (var assembly in blazamAssemblies)
+            {
+                try
+                {
+                    var types = assembly.GetTypes()
+                        .Where(t => t.IsClass && !t.IsAbstract
+                        && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
+
+                    foreach (var type in types)
+                    {
+                        TryStartBackgroundService(application, type, assembly);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Error(ex, "Error finding or processing background service types in assembly {AssemblyName}", assembly.FullName);
+                }
+            }
+        }
+
+        private static void TryStartBackgroundService(WebApplication application, Type type, Assembly assembly)
+        {
             try
             {
-                // Resolve NotificationGenerationService to ensure it's created
+                var interfaceType = type.GetInterfaces()
+                    .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null && i.Name != "IDisposable");
+
+                object? resolvedService = interfaceType != null
+                    ? application.Services.GetService(interfaceType)
+                    : application.Services.GetService(type);
+
+                var service = resolvedService as BackgroundServiceBase;
+                if (service != null)
+                {
+                    var metadata = type.GetCustomAttribute<AutoStartBackgroundService>();
+                    Loggers.SystemLogger.Information("Starting background service: {ServiceType} (Immediate: {ImmediateStart})", type.FullName, metadata?.Immediate == true);
+                    if (metadata?.RunOnLinux == true || !OperatingSystem.IsLinux())
+                    {
+                        service.Start(metadata?.Immediate == true);
+                    }
+                }
+                else
+                {
+                    Loggers.SystemLogger.Warning("Could not resolve or cast background service type {ServiceType} (Interface: {InterfaceType}) during preload.", type.FullName, interfaceType?.FullName ?? "N/A");
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "Error resolving or starting background service {ServiceType} from assembly {AssemblyName}", type.FullName, assembly.FullName);
+            }
+        }
+
+        private static void PreloadNotificationGenerationService(WebApplication application)
+        {
+            try
+            {
                 Loggers.SystemLogger.Debug("Preloading NotificationGenerationService...");
                 _ = application.Services.GetRequiredService<NotificationGenerationService>();
                 Loggers.SystemLogger.Debug("NotificationGenerationService preloaded.");
@@ -709,15 +708,17 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex, "Error preloading NotificationGenerationService.");
             }
+        }
 
+        private static void InitializeUpdateService(WebApplication application)
+        {
             try
             {
-                // Initialize UpdateService only if installation is complete
                 if (ApplicationInfo.installationCompleted)
                 {
                     Loggers.SystemLogger.Debug("Initializing UpdateService...");
                     var updateService = application.Services.GetRequiredService<UpdateService>();
-                    updateService.Initialize(); // Call initialization method
+                    updateService.Initialize();
                     Loggers.SystemLogger.Debug("UpdateService initialized.");
                 }
             }
@@ -725,10 +726,12 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex, "Error initializing UpdateService.");
             }
+        }
 
+        private static void PreloadWebHookPublisher(WebApplication application)
+        {
             try
             {
-                // Resolve WebHookPublisher only if installation is complete
                 if (ApplicationInfo.installationCompleted)
                 {
                     Loggers.SystemLogger.Debug("Preloading WebHookPublisher...");
@@ -740,15 +743,17 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex, "Error preloading WebHookPublisher.");
             }
+        }
 
+        private static void StartApplicationStatisticsPolling(WebApplication application)
+        {
             try
             {
-                // Start resource usage polling only if installation is complete
                 if (ApplicationInfo.installationCompleted)
                 {
                     Loggers.SystemLogger.Debug("Starting application statistics polling...");
-                    ApplicationStatistics.Process = ApplicationInfo.runningProcess; // Assign the process
-                    ApplicationStatistics.StartResourceUsagePolling(); // Start the polling timer
+                    ApplicationStatistics.Process = ApplicationInfo.runningProcess;
+                    ApplicationStatistics.StartResourceUsagePolling();
                     Loggers.SystemLogger.Debug("Application statistics polling started.");
                 }
             }
@@ -756,7 +761,6 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex, "Error starting application statistics polling.");
             }
-            Loggers.SystemLogger.Information("Finished preloading/starting singleton services.");
         }
     }
 }
