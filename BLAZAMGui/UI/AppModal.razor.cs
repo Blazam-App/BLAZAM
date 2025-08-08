@@ -105,7 +105,10 @@ namespace BLAZAM.Gui.UI
 
         [Parameter]
         public string Title { get; set; }
-
+        public void SetTitle(string title)
+        {
+            Title = title;
+        }
 
         [Parameter]
         public EventCallback<MudMessageBox>? ModalChanged { get; set; }
