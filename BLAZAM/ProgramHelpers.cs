@@ -618,71 +618,10 @@ namespace BLAZAM
             Loggers.SystemLogger.Information("Preloading/Starting singleton services...");
             try
             {
-                // Only start most background services if the initial installation/setup is marked as complete.
                 if (ApplicationInfo.installationCompleted)
                 {
                     Loggers.SystemLogger.Information("Installation complete. Starting background services...");
-                    // Iterate through BLAZAM assemblies to find auto-start services
-                    foreach (var assembly in blazamAssemblies)
-                    {
-                        try
-                        {
-                            // Find types marked with the attribute
-                            var types = assembly.GetTypes()
-                                .Where(t => t.IsClass && !t.IsAbstract
-                                && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
-
-                            foreach (var type in types)
-                            {
-                                try
-                                {
-                                    // Resolve the service instance from the DI container
-                                    // Prefer resolving via interface if registered that way
-                                    var interfaceType = type.GetInterfaces()
-                                        .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null && i.Name != "IDisposable");
-
-                                    BackgroundServiceBase? service = null;
-                                    object? resolvedService = null;
-
-                                    if (interfaceType != null)
-                                    {
-                                        resolvedService = application.Services.GetService(interfaceType); // Use GetService to avoid exception if not found
-                                    }
-                                    else
-                                    {
-                                        resolvedService = application.Services.GetService(type);
-                                    }
-
-                                    // Cast to BackgroundServiceBase (assuming this is the base class)
-                                    service = resolvedService as BackgroundServiceBase;
-
-                                    if (service != null)
-                                    {
-                                        // Get the attribute metadata to check if immediate start is requested
-                                        var metadata = type.GetCustomAttribute<AutoStartBackgroundService>();
-                                        Loggers.SystemLogger.Information("Starting background service: {ServiceType} (Immediate: {ImmediateStart})", type.FullName, metadata?.Immediate == true);
-                                        // Start the service (implementation likely handles actual background task execution)
-                                        if (metadata?.RunOnLinux == true || !OperatingSystem.IsLinux())
-                                        {
-                                            service.Start(metadata?.Immediate == true);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Loggers.SystemLogger.Warning("Could not resolve or cast background service type {ServiceType} (Interface: {InterfaceType}) during preload.", type.FullName, interfaceType?.FullName ?? "N/A");
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Loggers.SystemLogger.Error(ex, "Error resolving or starting background service {ServiceType} from assembly {AssemblyName}", type.FullName, assembly.FullName);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Loggers.SystemLogger.Error(ex, "Error finding or processing background service types in assembly {AssemblyName}", assembly.FullName);
-                        }
-                    }
+                    StartBackgroundServices(application);
                     Loggers.SystemLogger.Information("Finished starting background services.");
                 }
                 else
@@ -695,12 +634,72 @@ namespace BLAZAM
                 Loggers.SystemLogger.Error(ex, "Critical error enumerating assemblies or starting background services during preload.");
             }
 
-            // Explicitly initialize/preload other critical singleton services, regardless of installation status (or check individually if needed)
-            // Use try-catch blocks for each service to prevent one failure from stopping others.
+            PreloadNotificationGenerationService(application);
+            InitializeUpdateService(application);
+            PreloadWebHookPublisher(application);
+            StartApplicationStatisticsPolling(application);
 
+            Loggers.SystemLogger.Information("Finished preloading/starting singleton services.");
+        }
+
+        private static void StartBackgroundServices(WebApplication application)
+        {
+            foreach (var assembly in blazamAssemblies)
+            {
+                try
+                {
+                    var types = assembly.GetTypes()
+                        .Where(t => t.IsClass && !t.IsAbstract
+                        && t.GetCustomAttribute<AutoStartBackgroundService>() != null);
+
+                    foreach (var type in types)
+                    {
+                        TryStartBackgroundService(application, type, assembly);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Error(ex, "Error finding or processing background service types in assembly {AssemblyName}", assembly.FullName);
+                }
+            }
+        }
+
+        private static void TryStartBackgroundService(WebApplication application, Type type, Assembly assembly)
+        {
             try
             {
-                // Resolve NotificationGenerationService to ensure it's created
+                var interfaceType = type.GetInterfaces()
+                    .FirstOrDefault(i => i.GetCustomAttribute<AutoStartBackgroundService>() == null && i.Name != "IDisposable");
+
+                object? resolvedService = interfaceType != null
+                    ? application.Services.GetService(interfaceType)
+                    : application.Services.GetService(type);
+
+                var service = resolvedService as BackgroundServiceBase;
+                if (service != null)
+                {
+                    var metadata = type.GetCustomAttribute<AutoStartBackgroundService>();
+                    Loggers.SystemLogger.Information("Starting background service: {ServiceType} (Immediate: {ImmediateStart})", type.FullName, metadata?.Immediate == true);
+                    if (metadata?.RunOnLinux == true || !OperatingSystem.IsLinux())
+                    {
+                        service.Start(metadata?.Immediate == true);
+                    }
+                }
+                else
+                {
+                    Loggers.SystemLogger.Warning("Could not resolve or cast background service type {ServiceType} (Interface: {InterfaceType}) during preload.", type.FullName, interfaceType?.FullName ?? "N/A");
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "Error resolving or starting background service {ServiceType} from assembly {AssemblyName}", type.FullName, assembly.FullName);
+            }
+        }
+
+        private static void PreloadNotificationGenerationService(WebApplication application)
+        {
+            try
+            {
                 Loggers.SystemLogger.Debug("Preloading NotificationGenerationService...");
                 _ = application.Services.GetRequiredService<NotificationGenerationService>();
                 Loggers.SystemLogger.Debug("NotificationGenerationService preloaded.");
@@ -709,15 +708,17 @@ namespace BLAZAM
             {
                 Loggers.SystemLogger.Error(ex, "Error preloading NotificationGenerationService.");
             }
+        }
 
+        private static void InitializeUpdateService(WebApplication application)
+        {
             try
             {
-                // Initialize UpdateService only if installation is complete
                 if (ApplicationInfo.installationCompleted)
                 {
                     Loggers.SystemLogger.Debug("Initializing UpdateService...");
                     var updateService = application.Services.GetRequiredService<UpdateService>();
-                    updateService.Initialize(); // Call initialization method
+                    updateService.Initialize();
                     Loggers.SystemLogger.Debug("UpdateService initialized.");
                 }
             }
@@ -725,10 +726,12 @@ namespace BLAZAM
             {
                 Loggers.SystemLogger.Error(ex, "Error initializing UpdateService.");
             }
+        }
 
+        private static void PreloadWebHookPublisher(WebApplication application)
+        {
             try
             {
-                // Resolve WebHookPublisher only if installation is complete
                 if (ApplicationInfo.installationCompleted)
                 {
                     Loggers.SystemLogger.Debug("Preloading WebHookPublisher...");
@@ -740,15 +743,17 @@ namespace BLAZAM
             {
                 Loggers.SystemLogger.Error(ex, "Error preloading WebHookPublisher.");
             }
+        }
 
+        private static void StartApplicationStatisticsPolling(WebApplication application)
+        {
             try
             {
-                // Start resource usage polling only if installation is complete
                 if (ApplicationInfo.installationCompleted)
                 {
                     Loggers.SystemLogger.Debug("Starting application statistics polling...");
-                    ApplicationStatistics.Process = ApplicationInfo.runningProcess; // Assign the process
-                    ApplicationStatistics.StartResourceUsagePolling(); // Start the polling timer
+                    ApplicationStatistics.Process = ApplicationInfo.runningProcess;
+                    ApplicationStatistics.StartResourceUsagePolling();
                     Loggers.SystemLogger.Debug("Application statistics polling started.");
                 }
             }
@@ -756,7 +761,6 @@ namespace BLAZAM
             {
                 Loggers.SystemLogger.Error(ex, "Error starting application statistics polling.");
             }
-            Loggers.SystemLogger.Information("Finished preloading/starting singleton services.");
         }
     }
 }
