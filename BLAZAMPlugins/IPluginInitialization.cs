@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLAZAM.Plugins
+﻿namespace BLAZAM.Plugins
 {
     /// <summary>
     /// Defines the contract for initializing a plugin within the application.

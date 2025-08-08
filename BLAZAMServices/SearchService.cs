@@ -1,8 +1,6 @@
 ﻿using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components;
-using System;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Services
 {

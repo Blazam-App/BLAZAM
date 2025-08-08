@@ -2,7 +2,6 @@
 using BLAZAM.Logger;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
-using System;
 
 namespace BLAZAM.Services
 {

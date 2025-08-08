@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Exceptions;
-using BLAZAM.Database.Exceptions;
+﻿using BLAZAM.Database.Exceptions;
 using BLAZAM.FileSystem;
 
 namespace BLAZAM.Common.Data.Database

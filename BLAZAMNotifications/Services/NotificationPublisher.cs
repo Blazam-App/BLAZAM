@@ -2,10 +2,6 @@
 using BLAZAM.Database.Models.User;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
-using System; // Added
-using System.Collections.Generic; // Added
-using System.Linq; // Added
-using System.Threading.Tasks; // Added
 
 namespace BLAZAM.Notifications.Services
 {

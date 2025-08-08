@@ -1,6 +1,4 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Exceptions;
-using System.Collections.Concurrent;
 
 namespace BLAZAM.Jobs
 {

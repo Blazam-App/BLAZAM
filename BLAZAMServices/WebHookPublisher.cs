@@ -1,6 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Helpers;
@@ -8,7 +7,6 @@ using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System; // Added for ArgumentNullException
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;

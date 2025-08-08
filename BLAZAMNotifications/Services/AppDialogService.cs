@@ -2,8 +2,6 @@
 using BLAZAM.Logger; // Added
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System; // Added
-using System.Threading.Tasks; // Added for Task
 
 namespace BLAZAM.Notifications.Services
 {

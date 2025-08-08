@@ -1,5 +1,4 @@
-﻿using BLAZAM.Database.Models.Permissions;
-using BLAZAM.Helpers;
+﻿using BLAZAM.Helpers;
 using BLAZAM.Localization;
 
 namespace BLAZAM.Database.Models

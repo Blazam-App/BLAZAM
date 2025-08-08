@@ -1,6 +1,5 @@
 
 using BLAZAM.ActiveDirectory;
-using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Duo;

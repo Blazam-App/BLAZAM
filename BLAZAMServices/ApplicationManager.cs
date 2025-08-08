@@ -1,6 +1,5 @@
 ﻿using BLAZAM.Logger;
 using Microsoft.Extensions.Hosting;
-using System;
 
 namespace BLAZAM.Services
 {

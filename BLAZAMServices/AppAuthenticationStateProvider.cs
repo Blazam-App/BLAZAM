@@ -1,17 +1,15 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
-using BLAZAM.Logger; // Added
+using BLAZAM.Logger;
 using BLAZAM.Server.Helpers;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Background;
 using BLAZAM.Services.Duo;
-using BLAZAM.Services.Exceptions;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using DuoUniversal;
@@ -19,8 +17,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens; // For IsNullOrEmpty extension if not globally available
-using System; // For ArgumentNullException
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 
