@@ -3,12 +3,9 @@ using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
-using BLAZAM.Database.Models.Rules;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.DirectoryServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -239,7 +236,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(lastLogonTimestamp<={Fields.LastLogonTime})(!(lastLogonTimestamp=0))";
                     if (Fields.ExpireTime != null)
                         FilterQuery += $"(accountExpires<={Fields.ExpireTime.Value.ToFileTimeUtc().ToString()})(!(accountExpires=0))";
-                 
+
                     if (!Fields.DN.IsNullOrEmpty())
                         FilterQuery += $"(distinguishedName={Fields.DN})";
                     if (!Fields.MemberOf.IsNullOrEmpty())
@@ -319,12 +316,12 @@ namespace BLAZAM.ActiveDirectory.Searchers
                                 if (field.Field.FieldType == ActiveDirectoryFieldType.Date
                                     || field.Field.FieldType == ActiveDirectoryFieldType.FileTime)
                                 {
-                                    if(field.Operator== ActiveDirectoryFieldOperator.FutureTimeFrame 
+                                    if (field.Operator == ActiveDirectoryFieldOperator.FutureTimeFrame
                                         || field.Operator == ActiveDirectoryFieldOperator.HistoricalTimeFrame)
                                     {
                                         var op2 = field.Operator == ActiveDirectoryFieldOperator.FutureTimeFrame ? ">=" : "<=";
 
-                                       FilterQuery += $"({field.Field.FieldName}{op2}{DateTime.Now.ToFileTimeUtc().ToString()})";
+                                        FilterQuery += $"({field.Field.FieldName}{op2}{DateTime.Now.ToFileTimeUtc().ToString()})";
 
 
                                     }
@@ -449,7 +446,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 if (searcher.VirtualListView != null)
                     searcher.VirtualListView.Offset += pageSize;
-                
+
                 lastResults = searcher.FindAll();
                 AddResults<TObject, TInterface>(lastResults);
                 if (searcher.VirtualListView == null || lastResults.Count < pageSize)

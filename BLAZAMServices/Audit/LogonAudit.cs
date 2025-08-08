@@ -21,7 +21,7 @@ namespace BLAZAM.Services.Audit
 
         public async Task<bool> AttemptedLogin(ClaimsPrincipal user, string? iPAddress = null)
         {
-            CurrentUser = ApplicationUserState.CreateUserState(user,factory);
+            CurrentUser = ApplicationUserState.CreateUserState(user, factory);
             return await Log("Attempted Login", iPAddress);
         }
         public async Task<bool> Impersonate(ClaimsPrincipal impersonator, ClaimsPrincipal impersonateee, string? ipAddress = null)
@@ -35,7 +35,7 @@ namespace BLAZAM.Services.Audit
         }
         public async Task<bool> Login(ClaimsPrincipal user, string? ipAddress = null)
         {
-            CurrentUser = ApplicationUserState.CreateUserState(user,factory);
+            CurrentUser = ApplicationUserState.CreateUserState(user, factory);
             return await Log("Login", ipAddress);
         }
         public async Task<bool> Logout() => await Log("Logout");

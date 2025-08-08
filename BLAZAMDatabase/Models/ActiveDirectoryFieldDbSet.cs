@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Database.Models
 {
-    public class ActiveDirectoryFieldDbSet:AppDbSetBase
+    public class ActiveDirectoryFieldDbSet : AppDbSetBase
     {
         [NotMapped]
         public IActiveDirectoryField? CurrentField
@@ -57,7 +52,7 @@ namespace BLAZAM.Database.Models
                 }
                 return null;
             }
-            
+
         }
 
         public ActiveDirectoryField? Field { get; set; }

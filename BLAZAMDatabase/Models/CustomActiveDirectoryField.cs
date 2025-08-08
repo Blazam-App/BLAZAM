@@ -8,11 +8,11 @@ namespace BLAZAM.Database.Models
     {
 
 
-        [Required (ErrorMessageResourceName ="CustomActiveDirectoryField_FieldName",ErrorMessageResourceType = typeof(AppValidationLocalization))]
+        [Required(ErrorMessageResourceName = "CustomActiveDirectoryField_FieldName", ErrorMessageResourceType = typeof(AppValidationLocalization))]
         public string FieldName { get; set; }
 
 
-        [Required (ErrorMessageResourceName = "CustomActiveDirectoryField_DisplayName", ErrorMessageResourceType = typeof(AppValidationLocalization))]
+        [Required(ErrorMessageResourceName = "CustomActiveDirectoryField_DisplayName", ErrorMessageResourceType = typeof(AppValidationLocalization))]
         public string DisplayName { get; set; }
 
 

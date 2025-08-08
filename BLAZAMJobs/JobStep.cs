@@ -1,6 +1,4 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Exceptions;
-using System.DirectoryServices;
 
 namespace BLAZAM.Jobs
 {
@@ -103,7 +101,7 @@ namespace BLAZAM.Jobs
                 return Result == JobResult.Passed;
 
             }
-            
+
             catch (Exception ex)
             {
                 Result = Result = JobResult.Failed;

@@ -1,5 +1,5 @@
 ﻿namespace BLAZAM.Plugins
-{   
+{
     /// <summary>
     /// Determines the page type that the PluginComponent will be shown
     /// </summary>

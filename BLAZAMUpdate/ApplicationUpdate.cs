@@ -114,12 +114,12 @@ namespace BLAZAM.Update
         {
             get
             {
-               
+
                 var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory;
                 if (Debugger.IsAttached)
                     args += "bin\\Debug\\net8.0\\";
                 args += "'";
-               
+
                 return args;
 
             }
@@ -504,7 +504,8 @@ namespace BLAZAM.Update
                             }
                         }
                     }
-                }catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     retries--;
                     if (retries == 0)

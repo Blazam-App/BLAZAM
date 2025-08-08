@@ -64,7 +64,7 @@ namespace BLAZAM.Pages.API.v1
 
             Directory = adFactory.CreateActiveDirectoryContext(CurrentUserState.ToActiveDirectoryUserState());
             DbFactory = appDatabaseFactory;
-          
+
 
         }
 

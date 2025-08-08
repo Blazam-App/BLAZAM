@@ -1,7 +1,7 @@
+using BLAZAM.Common.Exceptions;
 using BLAZAM.Helpers; // For NetworkTools
 using System.Net;
 using System.Net.Sockets;
-using BLAZAM.Common.Exceptions;
 
 namespace BLAZAMCommon.Tests.Helpers
 {

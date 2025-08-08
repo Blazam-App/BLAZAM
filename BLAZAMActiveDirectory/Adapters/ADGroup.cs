@@ -75,8 +75,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 return (GroupType & ADS_GROUP_TYPE_SECURITY_ENABLED) != 0;
             }
-            set {
-                if (value) {
+            set
+            {
+                if (value)
+                {
                     GroupType = GroupType | ADS_GROUP_TYPE_SECURITY_ENABLED;
                 }
                 else
@@ -92,7 +94,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 return (GroupType & ADS_GROUP_TYPE_GLOBAL_GROUP) != 0;
             }
-           
+
         }
         public bool IsDomainLocalGroup
         {
@@ -100,7 +102,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 return (GroupType & ADS_GROUP_TYPE_DOMAIN_LOCAL_GROUP) != 0;
             }
-           
+
         }
         public bool IsUniversalGroup
         {
@@ -109,7 +111,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return (GroupType & ADS_GROUP_TYPE_UNIVERSAL_GROUP) != 0;
 
             }
-         
+
         }
 
 

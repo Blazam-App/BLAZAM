@@ -28,7 +28,7 @@ namespace BLAZAM.Services
 
             ArgumentNullException.ThrowIfNull(dbFactory);
 
-           
+
             _userStateService = userStateService;
             _dbFactory = dbFactory;
         }

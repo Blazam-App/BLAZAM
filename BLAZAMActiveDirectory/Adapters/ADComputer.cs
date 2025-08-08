@@ -6,14 +6,10 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using Newtonsoft.Json;
-using System.Data.Entity.Core.Common.CommandTrees;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Security;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

@@ -43,7 +43,7 @@ namespace BLAZAM.Gui.UI
         public IADUser User
         {
             get => Entry as IADUser; set => Entry = value;
-        }   
+        }
         [Parameter]
         public IADContact Contact
         {
@@ -52,7 +52,7 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public IADComputer Computer
         {
-            get=>Entry as IADComputer; set=>Entry=value;
+            get => Entry as IADComputer; set => Entry = value;
         }
         [Parameter]
         public IGroupableDirectoryAdapter GroupableEntry

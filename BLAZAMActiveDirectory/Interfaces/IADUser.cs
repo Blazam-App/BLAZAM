@@ -1,7 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {

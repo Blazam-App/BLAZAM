@@ -30,9 +30,9 @@ namespace BLAZAM.Database.Context
             {
                 return await base.SaveChangesAsync(cancellationToken);
             }
-            catch(DbUpdateException ex)
+            catch (DbUpdateException ex)
             {
-                if (ex.InnerException?.HResult== -2147467259)
+                if (ex.InnerException?.HResult == -2147467259)
                 {
                     await Task.Delay(500);
                     return await RetrySaveChangesAsync(cancellationToken);
@@ -40,9 +40,9 @@ namespace BLAZAM.Database.Context
                 return -1;
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                LastSaveError=ex.InnerException??ex;
+                LastSaveError = ex.InnerException ?? ex;
                 return -1;
             }
         }

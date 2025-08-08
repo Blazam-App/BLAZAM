@@ -1,8 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using Moq;
 using System.Reflection;
-using Moq;
-using Xunit;
 
 // If AppException is a custom type and not provided, you might need a placeholder for the tests to compile:
 // namespace BLAZAM.Common.Data
@@ -206,13 +203,13 @@ namespace BLAZAMCommon.Tests.Data
         [InlineData("2024.01.15.0930", 2024, 1, 15, 9, 30, 0)]   // Another standard
         [InlineData("2023.12.31.2359", 2023, 12, 31, 23, 59, 0)] // End of year
         [InlineData("2023.02.28.0000", 2023, 2, 28, 0, 0, 0)]   // Midnight
-       public void Property_ReleaseDate_ParsesValidBuildNumbers(string buildNumber, int y, int M, int d, int h, int m, int s)
+        public void Property_ReleaseDate_ParsesValidBuildNumbers(string buildNumber, int y, int M, int d, int h, int m, int s)
         {
             // Arrange
             var appVersion = new ApplicationVersion(new Version(1, 0, 0), buildNumber);
             DateTime expectedDate;
-         
-                expectedDate = new DateTime(y, M, d, h, m, s, DateTimeKind.Utc);
+
+            expectedDate = new DateTime(y, M, d, h, m, s, DateTimeKind.Utc);
 
 
             // Act

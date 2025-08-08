@@ -26,7 +26,7 @@ namespace BLAZAM.Services.Background
         /// </summary>
         /// <param name="immediate">If false, or not set, the service will wait a 
         /// random time between 15 and 45 seconds after launch.</param>
-        public virtual void Start( bool immediate = false)
+        public virtual void Start(bool immediate = false)
         {
             if (!started)
             {
@@ -44,7 +44,8 @@ namespace BLAZAM.Services.Background
                 }
                 else
                 {
-                    Task.Delay(delay).ContinueWith((task) => {
+                    Task.Delay(delay).ContinueWith((task) =>
+                    {
                         Execute();
                     });
                 }
@@ -82,7 +83,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-     
+
 
         public void Dispose()
         {

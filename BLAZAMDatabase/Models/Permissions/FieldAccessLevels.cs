@@ -6,20 +6,23 @@ namespace BLAZAM.Database.Models.Permissions
     {
         public static List<FieldAccessLevel> Levels => typeof(FieldAccessLevels).GetStaticProperties<FieldAccessLevel>();
 
-        
-        public static readonly FieldAccessLevel Deny = new() {
+
+        public static readonly FieldAccessLevel Deny = new()
+        {
             Id = 1,
             Name = "Deny",
             Level = 10
         };
-        public static readonly FieldAccessLevel Read = new() { 
-            Id = 2, 
+        public static readonly FieldAccessLevel Read = new()
+        {
+            Id = 2,
             Name = "Read",
-            Level = 100 
+            Level = 100
         };
-        public static readonly FieldAccessLevel Edit = new() {
+        public static readonly FieldAccessLevel Edit = new()
+        {
             Id = 3,
-            Name = "Edit", 
+            Name = "Edit",
             Level = 1000
         };
     }

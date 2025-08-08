@@ -1,9 +1,6 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
 using BLAZAM.Services.Events;
 using BLAZAM.Session;
-using BLAZAM.Session.Interfaces;
-using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
@@ -19,14 +16,14 @@ namespace BLAZAM.Services.Audit
             OU = new OUAudit(factory);
             Printer = new PrinterAudit(factory);
             BitLocker = new BitLockerAudit(factory);
-            Email=new EmailAudit(factory);
+            Email = new EmailAudit(factory);
         }
 
         protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
         {
             if (new SystemUserState(_factory).Equals(args.Actor) == true)
             {
-                base.TriggerDirectoryEntryChangedEvent(sender,args);
+                base.TriggerDirectoryEntryChangedEvent(sender, args);
             }
         }
 

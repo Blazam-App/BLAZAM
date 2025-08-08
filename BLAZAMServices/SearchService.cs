@@ -53,7 +53,7 @@ namespace BLAZAM.Services
 
             ArgumentNullException.ThrowIfNull(nav);
 
-          
+
 
             _userStateService = userStateService;
             _nav = nav;

@@ -1,5 +1,3 @@
-using System;
-using Xunit;
 using BLAZAM.Helpers;
 
 namespace BLAZAMCommon.Tests.Helpers

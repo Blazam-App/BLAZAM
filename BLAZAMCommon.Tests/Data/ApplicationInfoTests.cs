@@ -1,17 +1,9 @@
-﻿using Xunit;
-using Moq;
-using BLAZAM.Common.Data; // Assuming ApplicationInfo, SystemDirectory, ApplicationVersion are here
-using BLAZAM.Plugins;    // Assuming IPluginBase is here
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+﻿using BLAZAM.Common.Data; // Assuming ApplicationInfo, SystemDirectory, ApplicationVersion are here
 using BLAZAM.FileSystem;
-using Microsoft.AspNetCore.Hosting; // For IWebHostEnvironment
+using BLAZAM.Plugins;    // Assuming IPluginBase is here
+using Microsoft.Extensions.Configuration;
+using Moq;
+using System.Diagnostics;
 
 namespace BLAZAMCommon.Tests.Data
 {
@@ -68,7 +60,7 @@ namespace BLAZAMCommon.Tests.Data
             Assert.NotNull(appInfo);
         }
 
-       
+
 
         [Fact]
         public void StaticProperties_ShouldSetAndGetCorrectly()
@@ -204,7 +196,7 @@ namespace BLAZAMCommon.Tests.Data
             ApplicationInfo.installationId = newStaticGuid;
             Assert.Equal(newStaticGuid, appInfo.InstallationId);
 
-           
+
 
             // Act & Assert - InstallationCompleted
             appInfo.InstallationCompleted = true;

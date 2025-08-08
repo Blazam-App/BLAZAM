@@ -172,6 +172,6 @@ namespace BLAZAM.Services.Background
 
             base.Dispose(disposing);
         }
-     
+
     }
 }

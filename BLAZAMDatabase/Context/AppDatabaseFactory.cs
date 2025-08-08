@@ -343,8 +343,8 @@ namespace BLAZAM.Database.Context
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Fatal(ex,"Database Auto-Update Failed!!!!");
-               
+                Loggers.DatabaseLogger.Fatal(ex, "Database Auto-Update Failed!!!!");
+
                 FatalError = ex;
                 OnFatalError?.Invoke(ex);
                 return false;

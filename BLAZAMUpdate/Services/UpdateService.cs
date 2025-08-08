@@ -1,12 +1,10 @@
 ﻿
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Update.Exceptions;
-using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Octokit;

@@ -261,7 +261,7 @@ namespace BLAZAM.Database.Models.Templates
                 switch (variable)
                 {
                     case "fn": return ProcessVariable(newUser?.GivenName, modifier, arg);
-                    case "fi": return ProcessVariable(Substring(newUser?.GivenName,0, 1), modifier, arg);
+                    case "fi": return ProcessVariable(Substring(newUser?.GivenName, 0, 1), modifier, arg);
                     case "mn": return ProcessVariable(newUser?.MiddleName, modifier, arg);
                     case "mi": return ProcessVariable(Substring(newUser?.MiddleName, 0, 1), modifier, arg);
                     case "ln": return ProcessVariable(newUser?.Surname, modifier, arg);
@@ -325,7 +325,7 @@ namespace BLAZAM.Database.Models.Templates
             // Return the final processed value.
             return value;
         }
-        private  string Substring(string? str, int start, int count)
+        private string Substring(string? str, int start, int count)
         {
             if (str == null || str.IsNullOrEmpty()) return "";
             return str.Substring(start, count);

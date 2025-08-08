@@ -1,5 +1,5 @@
 ﻿using BLAZAM.Database.Context;
-using BLAZAM.Logger; 
+using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -54,7 +54,7 @@ namespace BLAZAM.Helpers
                             {
                                 var newExpiryTime = currentUtc.AddMinutes(dbTimeoutValue);
                                 Loggers.SystemLogger.Debug("SessionHelpers.SlideCookieExpiration: Sliding cookie expiration for user {UserIdentifier} to {NewExpiryTime}.", userState?.User?.Identity?.Name ?? httpContext.User?.Identity?.Name ?? "Unknown", newExpiryTime);
-                                
+
                                 ticket.Properties.IssuedUtc = currentUtc;
                                 ticket.Properties.ExpiresUtc = newExpiryTime;
 

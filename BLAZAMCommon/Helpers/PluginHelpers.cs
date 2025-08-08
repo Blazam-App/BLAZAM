@@ -1,16 +1,10 @@
-﻿using BLAZAM.Plugins;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
 namespace BLAZAM.Helpers
 {
     public static class PluginHelpers
     {
-        public static IEnumerable<Type> GetPluginTypes(this Assembly assembly,Type pluginClassType)
+        public static IEnumerable<Type> GetPluginTypes(this Assembly assembly, Type pluginClassType)
         {
 
             // Find all types in the loaded assembly that implement IPluginBase

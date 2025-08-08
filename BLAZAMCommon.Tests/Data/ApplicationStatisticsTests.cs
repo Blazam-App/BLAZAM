@@ -1,12 +1,7 @@
 ﻿using BLAZAM.Common.Data;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAMCommon.Tests.Data
 {
@@ -186,8 +181,8 @@ namespace BLAZAMCommon.Tests.Data
 
 
 
-       
 
-       
+
+
     }
 }

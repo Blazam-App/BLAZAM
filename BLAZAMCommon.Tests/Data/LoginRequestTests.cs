@@ -2,12 +2,7 @@
 using BLAZAM.Helpers;
 using Microsoft.AspNetCore.Components.Authorization;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAMCommon.Tests.Data
 {
@@ -31,7 +26,7 @@ namespace BLAZAMCommon.Tests.Data
 
             // Assert
             Assert.Null(loginRequest.Username);
-            Assert.Null(loginRequest.Password); 
+            Assert.Null(loginRequest.Password);
             Assert.Null(loginRequest.SecurePassword);
             Assert.Equal("/", loginRequest.ReturnUrl);
             Assert.Null(loginRequest.CallbackBaseUri);

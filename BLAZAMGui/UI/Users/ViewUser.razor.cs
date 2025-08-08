@@ -1,10 +1,4 @@
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
-using BLAZAM.Database.Models.Notifications;
-
-using BLAZAM.FileSystem;
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
 using BLAZAM.Services.Events;
@@ -12,7 +6,7 @@ using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Users
 {
-    public partial class ViewUser: DirectoryEntryViewBase
+    public partial class ViewUser : DirectoryEntryViewBase
     {
 #nullable disable warnings
         string password;
@@ -50,13 +44,13 @@ namespace BLAZAM.Gui.UI.Users
         IADUser User => DirectoryEntry as IADUser;
         IADContact Contact => DirectoryEntry as IADContact;
 
-       
 
-        private bool CanReadField(IActiveDirectoryField field)=> GroupableEntry.CanReadField(field);
-        
 
-        private bool CanEditField(IActiveDirectoryField field)=> GroupableEntry.CanEditField(field);
-        
+        private bool CanReadField(IActiveDirectoryField field) => GroupableEntry.CanReadField(field);
+
+
+        private bool CanEditField(IActiveDirectoryField field) => GroupableEntry.CanEditField(field);
+
 
 
 
@@ -69,10 +63,10 @@ namespace BLAZAM.Gui.UI.Users
 
             await InvokeAsync(StateHasChanged);
 
-          
 
 
-           
+
+
             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
@@ -200,7 +194,7 @@ namespace BLAZAM.Gui.UI.Users
                 await RefreshEntryComponents();
             }
         }
-     
+
 
 
     }

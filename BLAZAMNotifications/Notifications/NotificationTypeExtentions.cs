@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Database.Models.Notifications;
-using BLAZAM.EmailMessage.Email.Base; // Added
 using BLAZAM.Logger; // Added
 
 namespace BLAZAM.Notifications.Notifications

@@ -1,8 +1,7 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory;
-using BLAZAM.Common.Exceptions;
+﻿using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
+using BLAZAM.Database.Models.Audit;
 using BLAZAM.Database.Services;
 using BLAZAM.EmailMessage;
 using BLAZAM.EmailMessage.Email;
@@ -20,15 +19,11 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using MimeKit;
 using MimeKit.Utils;
-using BLAZAM.Database.Models.Audit;
-using ApplicationNews;
-using Newtonsoft.Json;
-using static QRCoder.PayloadGenerator;
 
 namespace BLAZAM.Services.Background
 {
     [AutoStartBackgroundService]
-    public class EmailService:DatabaseBackgroundServiceBase
+    public class EmailService : DatabaseBackgroundServiceBase
     {
         public static EmailService? Instance { get; set; }
         public ServerAuditLogger Audit { get; }
@@ -47,7 +42,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        public EmailService(IAppDatabaseFactory factory, IStringLocalizer<AppLocalization>appLocalization, ServerAuditLogger audit):base(factory, appLocalization)
+        public EmailService(IAppDatabaseFactory factory, IStringLocalizer<AppLocalization> appLocalization, ServerAuditLogger audit) : base(factory, appLocalization)
         {
             Instance = this;
             Audit = audit;
@@ -56,24 +51,24 @@ namespace BLAZAM.Services.Background
 
         protected override void Execute(object? state = null)
         {
-            
 
-         
+
+
             Job executeJob = new(AppLocalization["Retry failed emails"]);
 
             executeJob.StopOnFailedStep = true;
-            List<EmailAuditLog>failedEmails = new List<EmailAuditLog>();
+            List<EmailAuditLog> failedEmails = new List<EmailAuditLog>();
             JobStep prepareStep = new(AppLocalization["Check for failed emails"], (state) =>
             {
                 using var context = dbFactory.CreateDbContext();
-                 failedEmails = context.EmailAuditLog.Where(e=> e.ServerResponse!=null && !e.ServerResponse.StartsWith("2") && e.Retries<5).ToList();
-                
+                failedEmails = context.EmailAuditLog.Where(e => e.ServerResponse != null && !e.ServerResponse.StartsWith("2") && e.Retries < 5).ToList();
+
                 return true;
             });
             executeJob.AddStep(prepareStep);
             JobStep analyzeStep = new(AppLocalization["Analyze data"], (state) =>
             {
-                
+
                 foreach (var email in failedEmails)
                 {
                     if (email == null) continue;
@@ -89,7 +84,7 @@ namespace BLAZAM.Services.Background
                         message.Subject = email.Subject;
                     }
                 }
-               
+
                 return true;
             });
             executeJob.AddStep(analyzeStep);
@@ -242,7 +237,7 @@ namespace BLAZAM.Services.Background
         //    retryMessage.From.Add(MailboxAddress.Parse(failedEmail.From));
         //    retryMessage.Cc.Add(MailboxAddress.Parse(failedEmail.Cc));
         //    retryMessage.Bcc.Add(MailboxAddress.Parse(failedEmail.Bcc));
-            
+
         //    var response = await client.SendAsync(retryMessage);
 
         //    Audit.Email.EmailSent(retryMessage.MessageId, retryMessage.From.ToString(), retryMessage.To.ToString(), retryMessage.Cc.ToString(), retryMessage.Bcc.ToString(), retryMessage.Subject, retryMessage.HtmlBody, response);
@@ -253,7 +248,7 @@ namespace BLAZAM.Services.Background
         {
             var response = await client.SendAsync(message);
 
-            Audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody,response);
+            Audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody, response);
             return true;
         }
 

@@ -1,6 +1,4 @@
-﻿using BLAZAM.Common.Exceptions;
-
-namespace BLAZAM.ActiveDirectory.Exceptions
+﻿namespace BLAZAM.ActiveDirectory.Exceptions
 {
     [Serializable]
     public class MissingDirectoryEntryException : AppException

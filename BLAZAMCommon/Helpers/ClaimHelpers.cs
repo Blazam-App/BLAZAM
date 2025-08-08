@@ -18,7 +18,7 @@ namespace BLAZAM.Server.Helpers
 
             ArgumentNullException.ThrowIfNull(claims);
 
-            
+
             claims.Add(new Claim(ClaimTypes.Role, UserRoles.SuperAdmin));
         }
 

@@ -20,7 +20,7 @@ namespace BLAZAM.Database.Models
     {
         Text, Date, RawData,
         DriveLetter,
-        StringList,FileTime,
+        StringList, FileTime,
         Boolean
     }
     /// <summary>

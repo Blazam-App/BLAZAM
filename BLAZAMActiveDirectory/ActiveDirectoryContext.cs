@@ -7,7 +7,6 @@ using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
-using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
@@ -595,7 +594,7 @@ namespace BLAZAM.ActiveDirectory
 
         private void PerformNetworkTests(ADSettings? ad)
         {
-            if (ad == null) throw new CriticalActiveDirectoryException(this,"Missing configuration");
+            if (ad == null) throw new CriticalActiveDirectoryException(this, "Missing configuration");
 
             Loggers.ActiveDirectoryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
 

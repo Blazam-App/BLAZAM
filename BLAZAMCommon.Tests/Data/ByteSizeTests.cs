@@ -1,9 +1,4 @@
 ﻿using BLAZAM.Common.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAMCommon.Tests.Data
 {
@@ -21,7 +16,7 @@ namespace BLAZAMCommon.Tests.Data
         [InlineData(1500000000, "1.40 GB")] // 1500000000 / (1024 * 1024 * 1024)
         [InlineData(2000000000, "1.86 GB")] // Further GB test
         [InlineData(1099511627776, "1,024.00 GB")] // Test case where it stays GB because no TB suffix is handled
-                                                  // This is equivalent to 1 TB, but the class tops out at GB
+                                                   // This is equivalent to 1 TB, but the class tops out at GB
         public void ToString_ReturnsCorrectFormat(double bytes, string expectedOutput)
         {
             // Arrange

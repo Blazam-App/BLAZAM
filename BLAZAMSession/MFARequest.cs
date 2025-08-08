@@ -1,6 +1,4 @@
 ﻿using BLAZAM.Session.Interfaces;
-using System; // Required for IEquatable, HashCode
-using System.Collections.Generic; // Required for EqualityComparer
 
 namespace BLAZAM.Session
 {

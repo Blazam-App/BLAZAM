@@ -1,5 +1,4 @@
-﻿using BLAZAM.Global.Events;
-using BLAZAM.Gui.Layouts;
+﻿using BLAZAM.Gui.Layouts;
 
 namespace BLAZAM.Gui.UI
 {

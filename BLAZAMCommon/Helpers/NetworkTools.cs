@@ -1,7 +1,4 @@
 ﻿using BLAZAM.Common.Data.Validators;
-using BLAZAM.Logger; // Added
-using System; // Added
-using System.Linq; // Added for ports.Length
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -25,7 +22,7 @@ namespace BLAZAM.Helpers
                 return false;
             }
             bool pingable = false;
-            
+
             IPAddress? ip = TryResolveHostIP(hostNameOrAddress);
             if (ip == null) return false;
 
@@ -86,7 +83,7 @@ namespace BLAZAM.Helpers
                 {
                     try
                     {
-                        
+
                         client.Connect(ip, port);
                         portOpen = true; // Port is open
                         break; // Exit loop since one open port is found
@@ -118,8 +115,8 @@ namespace BLAZAM.Helpers
 
         public static IPAddress? ResolveHostIP(string hostNameOrAddress)
         {
-            if(hostNameOrAddress == null) throw new ArgumentNullException(nameof(hostNameOrAddress));
-            if(hostNameOrAddress == String.Empty) throw new ArgumentException(nameof(hostNameOrAddress));
+            if (hostNameOrAddress == null) throw new ArgumentNullException(nameof(hostNameOrAddress));
+            if (hostNameOrAddress == String.Empty) throw new ArgumentException(nameof(hostNameOrAddress));
             IPAddress? ip;
             var validator = new ValidIpAttribute();
             if (validator.IsValid(hostNameOrAddress)) return IPAddress.Parse(hostNameOrAddress);
@@ -130,7 +127,7 @@ namespace BLAZAM.Helpers
                 // Return the first address found (often the IPv4 address).
                 return addresses.FirstOrDefault();
             }
-            catch (SocketException ex) when (ex.ErrorCode==11001)
+            catch (SocketException ex) when (ex.ErrorCode == 11001)
             {
                 throw new UnresolvableAddressException(hostNameOrAddress);
             }

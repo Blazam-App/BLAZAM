@@ -1,9 +1,7 @@
 // Import necessary namespaces for various functionalities like data handling,
 // database operations, server configuration, logging, security, etc.
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
-using BLAZAM.Database.Models;
 using BLAZAM.Server;
 using BLAZAM.Server.Middleware;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -33,7 +31,7 @@ namespace BLAZAM
         /// </returns>
         internal static SystemDirectory WritablePath => new(ApplicationInfo.tempDirectory + @"writable\");
 
-   
+
         /// <summary>
         /// A static reference to the current running ASP.NET Core WebApplication instance.
         /// Provides access to application services and configuration throughout the application.
@@ -80,7 +78,7 @@ namespace BLAZAM
             // Assign installation-specific details for logging context.
             Loggers.InstallationId = ApplicationInfo.installationId.ToString();
             Loggers.InstallationType = ApplicationInfo.isUnderIIS ? "IIS" : "Service"; // Determine if running under IIS or as a standalone service
-            Loggers.DatabaseType = Configuration?.GetValue<string>("DatabaseType")??"SQLite"; // Get DB type from config
+            Loggers.DatabaseType = Configuration?.GetValue<string>("DatabaseType") ?? "SQLite"; // Get DB type from config
 
             // Configure Seq logging server details.
             Loggers.SeqServerUri = "http://logs.blazam.org:5341"; // Centralized logging server URI

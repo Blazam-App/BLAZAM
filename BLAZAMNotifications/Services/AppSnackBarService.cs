@@ -18,7 +18,7 @@ namespace BLAZAM.Notifications.Services
         {
             ArgumentNullException.ThrowIfNull(snackbar);
 
-           
+
             _snackbar = snackbar;
         }
 

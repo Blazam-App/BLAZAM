@@ -6,12 +6,7 @@ using BLAZAM.Global.Events;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Tests.Session
 {
@@ -412,7 +407,7 @@ namespace BLAZAM.Tests.Session
 
         public string AuditUsername => throw new NotImplementedException();
 
-        public string? Username {get;set;}="test";
+        public string? Username { get; set; } = "test";
 
         public ClaimsPrincipal? Impersonator { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

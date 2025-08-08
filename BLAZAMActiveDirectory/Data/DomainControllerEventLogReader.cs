@@ -4,8 +4,6 @@ using BLAZAM.Helpers;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
-using System.Reflection.Metadata;
 
 namespace BLAZAM.ActiveDirectory.Data
 {
@@ -145,7 +143,7 @@ namespace BLAZAM.ActiveDirectory.Data
             });
 
 
-            return events.OrderByDescending(e=>e.Timestamp).ToList();
+            return events.OrderByDescending(e => e.Timestamp).ToList();
         }
     }
 

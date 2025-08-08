@@ -1,9 +1,9 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
+using BLAZAM.Pages.API.Data;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using BLAZAM.Pages.API.Data;
 
 namespace BLAZAM.Pages.API.v1
 {

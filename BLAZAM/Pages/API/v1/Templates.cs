@@ -1,15 +1,14 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
-using BLAZAM.Gui.Helpers;
-using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.EmailMessage.Email.Notifications;
+using BLAZAM.Gui.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Pages.API.Data;
 using BLAZAM.Services.Audit;
+using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +16,6 @@ using Microsoft.Extensions.Localization;
 using MudBlazor;
 using System.Security;
 using System.Text.Json;
-using BLAZAM.Services.Events;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -35,7 +33,7 @@ namespace BLAZAM.Pages.API.v1
             IApplicationUserStateService applicationUserStateService,
             IStringLocalizer<AppLocalization> localizer,
             WebUserAuditLogger audit,
-            IUserDatabaseFactory appDatabaseFactory, 
+            IUserDatabaseFactory appDatabaseFactory,
             IHttpContextAccessor httpContextAccessor,
             IActiveDirectoryContextFactory adFactory)
             : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
@@ -157,8 +155,9 @@ namespace BLAZAM.Pages.API.v1
 
                 return new CreatedResult(newUser.OU, newUser.DN);
             }
-            catch (DirectorySearchUniquenessException ex) {
-                return new UnprocessableEntityObjectResult("Multiple groups match the provided search term: "+ ex.SearchTerm);
+            catch (DirectorySearchUniquenessException ex)
+            {
+                return new UnprocessableEntityObjectResult("Multiple groups match the provided search term: " + ex.SearchTerm);
             }
             catch (Exception ex)
             {
@@ -176,7 +175,7 @@ namespace BLAZAM.Pages.API.v1
                 Actor = CurrentUserState
 
             });
-            
+
 
 
             if (template?.EffectiveSendWelcomeEmail == true)
@@ -283,7 +282,7 @@ namespace BLAZAM.Pages.API.v1
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex,"Error sending welcome email");
+                Loggers.SystemLogger.Error(ex, "Error sending welcome email");
             }
         }
     }

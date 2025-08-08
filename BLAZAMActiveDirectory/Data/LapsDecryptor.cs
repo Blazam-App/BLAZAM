@@ -1,18 +1,8 @@
-﻿using System;
-using System.ComponentModel;
-using System.DirectoryServices.Protocols;
-using System.IO;
-using System.Reflection.Metadata;
+﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
-using static MudBlazor.Colors;
-using System.Xml.Linq;
 using static BLAZAM.ActiveDirectory.Data.Win32;
-using static System.Net.Mime.MediaTypeNames;
-using System.Security;
-using System.Diagnostics;
 
 namespace BLAZAM.ActiveDirectory.Data
 {
@@ -62,7 +52,7 @@ namespace BLAZAM.ActiveDirectory.Data
 
         public string Decrypt(byte[] encryptedPass)
         {
-            if(encryptedPass.Length<17)
+            if (encryptedPass.Length < 17)
             {
                 throw new ArgumentException("Encrypted password must be at least 17 bytes long.");
             }

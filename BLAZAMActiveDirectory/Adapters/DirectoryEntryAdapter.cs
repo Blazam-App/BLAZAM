@@ -1,7 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
@@ -831,8 +830,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     //Existing Active Directory Entry
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"),"The directory entry for an existing " +
-                            " entry is somehow missing on commit." );
+                        Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"), "The directory entry for an existing " +
+                            " entry is somehow missing on commit.");
                         throw new AppException("DirectoryEntry is null");
                     }
                     foreach (var p in NewEntryProperties)
@@ -879,7 +878,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"),"The directory entry for new entry " + DN +
+                        Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"), "The directory entry for new entry " + DN +
                             " is somehow missing on commit.");
                         throw new AppException("DirectoryEntry is null");
                     }
@@ -1013,7 +1012,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex,"Unexpected error deleting directory entry");
+                Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error deleting directory entry");
             }
         }
 

@@ -141,7 +141,7 @@ namespace BLAZAM.Common.Data.Database
                         string serverFragment = dataSourceParts[0];
                         if (serverFragment.StartsWith("tcp:"))
                             serverFragment = serverFragment.Substring(4);
-                        if (serverFragment.Contains("\\")&&!serverFragment.Contains(":\\"))
+                        if (serverFragment.Contains("\\") && !serverFragment.Contains(":\\"))
                         {
                             serverFragment = serverFragment.Split("\\")[0];
                         }
@@ -176,7 +176,7 @@ namespace BLAZAM.Common.Data.Database
                     if (dataSourceParts.Length > 0)
                     {
                         string serverFragment = dataSourceParts[0];
-                       
+
                         if (serverFragment.Contains("\\"))
                         {
                             return serverFragment.Split("\\")[1];

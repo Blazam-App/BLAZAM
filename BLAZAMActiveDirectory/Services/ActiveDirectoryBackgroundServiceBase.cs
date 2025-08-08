@@ -10,7 +10,7 @@ namespace BLAZAM.ActiveDirectory.Services
     {
         protected readonly IActiveDirectoryContextFactory activeDirectoryContextFactory;
 
-        public ActiveDirectoryBackgroundServiceBase(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(dbFactory,appLocalization)
+        public ActiveDirectoryBackgroundServiceBase(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(dbFactory, appLocalization)
         {
             this.activeDirectoryContextFactory = activeDirectoryContextFactory;
         }

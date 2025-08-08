@@ -1,8 +1,5 @@
-﻿
-using BLAZAM.Plugins;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using System.Diagnostics;
-using System.Reflection;
 
 namespace BLAZAM.Common.Data
 
@@ -112,7 +109,7 @@ namespace BLAZAM.Common.Data
         /// </summary>
         public static Microsoft.Extensions.Configuration.ConfigurationManager configuration;
 
-        
+
         public static SystemDirectory pluginDirectory => new SystemDirectory(applicationRoot.ToString() + @"/plugins/");
         public SystemDirectory PluginDirectory => new SystemDirectory(ApplicationRoot.ToString() + @"/plugins/");
 

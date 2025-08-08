@@ -1,9 +1,7 @@
 ﻿using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
-using System; // Added
 using System.Security.Claims; // Added
-using System.Threading; // Added
 
 namespace BLAZAM.Session
 {
@@ -38,10 +36,10 @@ namespace BLAZAM.Session
         public CurrentUserStateService(IApplicationUserStateService applicationUserStateService, IHttpContextAccessor httpContextAccessor)
         {
             ArgumentNullException.ThrowIfNull(applicationUserStateService);
-            
+
             ArgumentNullException.ThrowIfNull(httpContextAccessor);
 
-           
+
 
             _httpContextAccessor = httpContextAccessor;
             _applicationUserStateService = applicationUserStateService;

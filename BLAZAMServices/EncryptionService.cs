@@ -55,7 +55,7 @@ namespace BLAZAM.Services
                 catch (Exception ex)
                 {
                     Loggers.SystemLogger.Error(ex, "Exception during new Encryption(encryptionKey) in EncryptionService constructor.");
-                    throw; 
+                    throw;
                 }
             }
             else

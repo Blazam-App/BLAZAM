@@ -20,7 +20,8 @@ namespace BLAZAM.Gui.Helpers
             }
             if (parentOU == null) throw new AppException("OU could not be found for new user");
             var displayName = template.GenerateDisplayName(newUserName);
-            try {
+            try
+            {
                 newUser = parentOU.CreateUser(displayName);
 
                 newUser.SAMAccountName = template.GenerateUsername(newUserName);

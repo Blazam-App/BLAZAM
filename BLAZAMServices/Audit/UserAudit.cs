@@ -8,7 +8,7 @@ namespace BLAZAM.Services.Audit
 {
     public class UserAudit : DirectoryAudit
     {
-        public UserAudit(IAppDatabaseFactory factory, IApplicationUserState? userState=null, IJSRuntime? jSRuntime=null) : base(factory,  userState, jSRuntime)
+        public UserAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
         {
         }
 

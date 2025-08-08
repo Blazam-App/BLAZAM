@@ -8,11 +8,7 @@ using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
-using System; // Added
-using System.Collections.Generic; // Added
-using System.Linq; // Added
 using System.Security.Claims; // Added
-using System.Threading.Tasks; // Added for Task
 
 namespace BLAZAM.Session
 {
@@ -36,10 +32,10 @@ namespace BLAZAM.Session
 
         public List<PermissionMapping> PermissionMappings { get; set; } = new();
 
- 
+
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
 
-   
+
         public string? IPAddress { get; set; }
 
         /// <summary>
@@ -47,12 +43,12 @@ namespace BLAZAM.Session
         /// </summary>
         public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries ?? new List<UserFavoriteEntry>();
 
-   
+
         public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems ?? new List<ReadNewsItem>(); // Corrected to List
 
         public int Id => Preferences != null ? Preferences.Id : 0;
 
-   
+
         public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
 
         public AuthenticationTicket? Ticket { get; set; }
@@ -75,16 +71,16 @@ namespace BLAZAM.Session
         public ApplicationUserState(IAppDatabaseFactory factory)
         {
             ArgumentNullException.ThrowIfNull(factory);
-            
+
             _dbFactory = factory;
         }
 
-        
+
         public AppUser? Preferences
         {
             get
             {
-               
+
                 if (userSettings == null)
                 {
                     GetUserSettingFromDB();
@@ -121,7 +117,7 @@ namespace BLAZAM.Session
                 }
                 else
                 {
-                     Loggers.SystemLogger.Warning("ApplicationUserState.MarkRead: UserNotification with ID {NotificationId} not found in database for user {UserGuid}.", notification.Id, userSettings?.UserGUID ?? "Unknown");
+                    Loggers.SystemLogger.Warning("ApplicationUserState.MarkRead: UserNotification with ID {NotificationId} not found in database for user {UserGuid}.", notification.Id, userSettings?.UserGUID ?? "Unknown");
                 }
             }
             catch (Exception ex)
@@ -169,7 +165,7 @@ namespace BLAZAM.Session
         {
             try
             {
-                
+
                 using var context = _dbFactory.CreateDbContext();
                 userSettings = context.UserSettings
                     .Include(x => x.NotificationSubscriptions)
@@ -324,9 +320,9 @@ namespace BLAZAM.Session
             }
         }
 
-        public string? Username => User?.Identity?.Name; 
+        public string? Username => User?.Identity?.Name;
 
-        public bool IsAuthenticated => User?.Identity?.IsAuthenticated == true; 
+        public bool IsAuthenticated => User?.Identity?.IsAuthenticated == true;
 
         public string? AuditUsername
         {
@@ -341,16 +337,16 @@ namespace BLAZAM.Session
             }
         }
 
-        
+
         public string LastUri { get; set; }
 
-        
+
         public override int GetHashCode()
         {
-            return User?.GetHashCode() ?? 0; 
+            return User?.GetHashCode() ?? 0;
         }
 
-        
+
         public override bool Equals(object? obj)
         {
             if (obj == null) return false;
@@ -368,10 +364,10 @@ namespace BLAZAM.Session
             return false;
         }
 
-       
+
         public bool HasRole(string userRole)
         {
-            
+
             return User.HasClaim(ClaimTypes.Role, userRole);
         }
 
@@ -379,8 +375,8 @@ namespace BLAZAM.Session
 
         public bool HasBitLockerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.BitLocker);
 
-        public bool HasCreateUserPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.User); 
-        
+        public bool HasCreateUserPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.User);
+
         public bool HasGroupPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Group);
 
         public bool HasCreateGroupPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.Group);
@@ -403,14 +399,14 @@ namespace BLAZAM.Session
         /// <summary>
         /// Gets or sets the list of notification subscriptions for the user. Modifying this list requires saving user settings.
         /// </summary>
-        public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions ?? new List<NotificationSubscription>(); set { if(userSettings!=null) userSettings.NotificationSubscriptions = value; } } // Added null check for userSettings in setter
+        public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions ?? new List<NotificationSubscription>(); set { if (userSettings != null) userSettings.NotificationSubscriptions = value; } } // Added null check for userSettings in setter
 
         /// <summary>
         /// Checks if the user has a specific action permission on a given object type, without OU context.
         /// </summary>
         private bool HasObjectActionPermission(ActiveDirectoryObjectType objectType, ObjectAction actionType)
         {
-            
+
             return HasPermission(objectType,
                 p => p.Where(pm =>
                    pm.AccessLevels.Any(al => al.ActionMap.Any(am =>
@@ -471,14 +467,14 @@ namespace BLAZAM.Session
 
         public bool CanSearchDisabled(ActiveDirectoryObjectType objectType)
         {
-             if (IsSuperAdmin == true) return true;
+            if (IsSuperAdmin == true) return true;
             return PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == objectType && om.AllowDisabled))) == true;
         }
 
         /// <summary>Checks if the user has read permissions for a specific object type.
         private bool HasObjectReadPermissions(ActiveDirectoryObjectType objectType)
         {
-            
+
             try
             {
                 if (IsSuperAdmin == true) return true;
@@ -564,7 +560,7 @@ namespace BLAZAM.Session
                                 .Select(d => d.OU.Length)
                                 .DefaultIfEmpty(0) // Handle case where no denies match allow paths
                                 .Max();
-                            if(mostSpecificDenyOuLengthForMatchingAllows >= mostSpecificAllowOuLength) return false;
+                            if (mostSpecificDenyOuLengthForMatchingAllows >= mostSpecificAllowOuLength) return false;
 
 
                             return true; // Allows exist, and no deny rule is more specific

@@ -5,6 +5,8 @@ global using BLAZAM.Common.Exceptions;
 global using BLAZAM.Database.Context;
 global using BLAZAM.Database.Models.Notifications;
 global using BLAZAM.Database.Models.Templates;
+global using BLAZAM.Global.Events;
+global using BLAZAM.Global.Exceptions;
 global using BLAZAM.Helpers;
 global using BLAZAM.Localization;
 global using BLAZAM.Logger;
@@ -18,7 +20,4 @@ global using Microsoft.Data.SqlClient;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Localization;
 global using Microsoft.JSInterop;
-global using BLAZAM.Global.Data;
-global using BLAZAM.Global.Events;
-global using BLAZAM.Global.Exceptions;
 

@@ -69,7 +69,7 @@ namespace BLAZAM.Notifications.Services
                 }
                 catch (Exception ex)
                 {
-                    Loggers.SystemLogger.Error(ex,"Error saving new notification {Error}", ex.Message); // Use ex.Message for cleaner log
+                    Loggers.SystemLogger.Error(ex, "Error saving new notification {Error}", ex.Message); // Use ex.Message for cleaner log
                     return Task.CompletedTask; // Stop if we can't save the core message
                 }
             }
@@ -116,7 +116,7 @@ namespace BLAZAM.Notifications.Services
                 }
                 catch (Exception ex)
                 {
-                    Loggers.SystemLogger.Error(ex,"Error saving new user notifications {Error}", ex.Message); // Use ex.Message
+                    Loggers.SystemLogger.Error(ex, "Error saving new user notifications {Error}", ex.Message); // Use ex.Message
                 }
             }
             return Task.CompletedTask;

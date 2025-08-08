@@ -1,11 +1,7 @@
-﻿using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
-using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
-using Microsoft.JSInterop;
-using Octokit;
 
 namespace BLAZAM.Services.Audit
 {

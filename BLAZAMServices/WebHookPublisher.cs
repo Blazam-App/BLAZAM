@@ -47,7 +47,7 @@ namespace BLAZAM.Services
 
             ArgumentNullException.ThrowIfNull(appDatabaseFactory);
 
-            
+
             _httpClientFactory = httpClientFactory;
             _appDatabaseFactory = appDatabaseFactory;
             _ = Run();

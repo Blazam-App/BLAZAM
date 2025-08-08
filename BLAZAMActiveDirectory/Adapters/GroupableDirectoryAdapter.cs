@@ -112,7 +112,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 List<AuditChangeLog> changes = base.Changes;
                 if (ToAssignTo.Count > 0 || ToUnassignFrom.Count > 0)
                 {
-                    _=MemberOf;
+                    _ = MemberOf;
                     changes.Add(new AuditChangeLog()
                     {
                         Field = ActiveDirectoryFields.MemberOf.FieldName,
