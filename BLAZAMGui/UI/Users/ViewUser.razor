@@ -90,7 +90,7 @@
 
                     @if (GroupableEntry.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
                     {
-                        <Section Title=@AppLocalization[Lang.Additional_Fields]>
+                        <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
 
                             @foreach (var field in CustomFields)
                             {
@@ -102,7 +102,7 @@
                             }
 
 
-                        </Section>
+                        </ViewSection>
                     }
                     <PluginComponents Page="@PageType.User" Location="@PageLocation.NewSection" />
                 </CascadingValue>

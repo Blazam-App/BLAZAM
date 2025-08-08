@@ -25,7 +25,7 @@
            InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
            )
             {
-                <Section Title=@AppLocalization[Lang.Organization]>
+                <ViewSection Title=@AppLocalization[Lang.Organization]>
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
                     {
 
@@ -128,7 +128,7 @@
 
 
                     }
-                </Section>
+                </ViewSection>
             }
 
             @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone) ||
@@ -139,7 +139,7 @@
            InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
            )
             {
-                <Section Title=@AppLocalization[Lang.Contact_Info]>
+                <ViewSection Title=@AppLocalization[Lang.Contact_Info]>
 
                     @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone))
                     {
@@ -225,7 +225,7 @@
 
 
                     }
-                </Section>
+                </ViewSection>
             }
 
             @if (InDirectoryTemplate(ActiveDirectoryFields.Site))
@@ -247,7 +247,7 @@
            InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
            )
             {
-                <Section Title=@AppLocalization[Lang.Profile]>
+                <ViewSection Title=@AppLocalization[Lang.Profile]>
                     @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
                     {
 
@@ -304,11 +304,11 @@
 
 
                     }
-                </Section>
+                </ViewSection>
             }
             @if (Entry.CanReadAnyCustomFields)
             {
-                <Section Title=@AppLocalization[Lang.Additional_Fields]>
+                <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
                     @foreach (var field in DirectoryTemplate.EffectiveFieldValues.Where(f => f.CustomField != null))
                     {
                         @if (field.CustomField != null)
@@ -326,7 +326,7 @@
                                           Disabled=@(!IsAdmin && !IsEditableTemplateField(field.CustomField)) />
                         }
                     }
-                </Section>
+                </ViewSection>
             }
 
 

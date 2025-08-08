@@ -1,7 +1,7 @@
 ﻿@inherits AppModalContent
 @if (Computer != null && _privateComputerInstance != null)
 {
-    <Section Title=@AppLocalization[Lang.Name]>
+    <ViewSection Title=@AppLocalization[Lang.Name]>
         @if (Computer.IsOnline == true)
         {
             <MudTextField Value="_privateComputerInstance.CanonicalName" ValueChanged="((string val)=>{newName=val;})" />
@@ -16,15 +16,15 @@
         }
 
 
-    </Section>
-    <Section>
+    </ViewSection>
+    <ViewSection>
 
         <MudCheckBox @bind-Value=_rebootAfterRename Label="@AppLocalization[Lang.Reboot]"/>
         @if (_rebootAfterRename)
         {
             <MudDateTimePicker @bind-DateTime=_date />
         }
-    </Section>
+    </ViewSection>
 
 }
 else

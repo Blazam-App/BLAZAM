@@ -87,7 +87,7 @@
 
                     @if (Printer.CanReadAnyCustomFields)
                     {
-                        <Section Title="Additional Field">
+                        <ViewSection Title="Additional Field">
                             @if (CustomFields != null)
                             {
                                 @foreach (var field in CustomFields)
@@ -100,7 +100,7 @@
                                 }
                             }
 
-                        </Section>
+                        </ViewSection>
                     }
                     <PluginComponents Page="@PageType.Printer" Location="@PageLocation.NewSection" />
 

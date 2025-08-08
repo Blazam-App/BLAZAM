@@ -392,7 +392,7 @@
                         }
 
                     </ViewSection>
-                    <Section Title=@AppLocalization[Lang.Assigned_Groups]>
+                    <ViewSection Title=@AppLocalization[Lang.Assigned_Groups]>
 
                         <MudStack>
 
@@ -409,7 +409,8 @@
                                 </TemplateOverride>
 
                             }
-                        </MudStack>
+                       
+                       
                         <MudStack Row=true>
                             <ADAutoComplete SearchObjectType=ActiveDirectoryObjectType.Group
                                             Label="@AppLocalization[Lang.Groups]"
@@ -422,8 +423,8 @@
                                     Color="Color.Primary"
                                     OnClick="@AssignGroup" />
                         </MudStack>
-
-                    </Section>
+ </MudStack>
+                    </ViewSection>
 
                 </MudStack>
 
