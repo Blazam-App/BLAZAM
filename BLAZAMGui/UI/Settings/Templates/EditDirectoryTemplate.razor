@@ -374,18 +374,20 @@
                         @if (SelectedOU != null)
                         {
                             var ouTemplateSource = GetParentOfValue(DirectoryTemplate.EffectiveParentOU, template => template.ParentOU);
+                            <MudText Align="Align.Center" Class="mud-width-full">
 
-                            <TemplateOverride SourceTemplate="@ouTemplateSource">
-                                <OUTreeView Label=@(AppLocalization[Lang.OU]+": "+ SelectedOU?.CanonicalName)
-                                            SelectedEntry=@SelectedOU
-                                            SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
-                                            StartingSelectedOU=@SelectedOU />
-                                @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty() && DirectoryTemplate.ParentTemplateId != null && !DirectoryTemplate.ParentOU.IsNullOrEmpty())
-                                {
-                                    <RevertTemplateValueButton OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;await LoadData();}) />
+                                <TemplateOverride SourceTemplate="@ouTemplateSource">
+                                    <OUTreeView Label=@(AppLocalization[Lang.OU]+": "+ SelectedOU?.CanonicalName)
+                                                SelectedEntry=@SelectedOU
+                                                SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
+                                                StartingSelectedOU=@SelectedOU />
+                                    @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty() && DirectoryTemplate.ParentTemplateId != null && !DirectoryTemplate.ParentOU.IsNullOrEmpty())
+                                    {
+                                        <RevertTemplateValueButton OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;await LoadData();}) />
 
-                                }
-                            </TemplateOverride>
+                                    }
+                                </TemplateOverride>
+                            </MudText>
 
 
 
@@ -399,14 +401,13 @@
                             @foreach (var group in DirectoryTemplate.EffectiveAssignedGroupSids)
                             {
 
-                                var groupFromTemplate = dropdownTemplates.FirstOrDefault(ot => ot.AssignedGroupSids.Contains(group));
-                                <TemplateOverride SourceTemplate="@groupFromTemplate">
-
-
+                                //TODO Find a way to identify a single group sid's source template
+                              
+                        
 
                                     <AssignedTemplateGroup Group="group"
                                                            OnGroupRemoved="@(async (group)=>{await InvokeAsync(StateHasChanged);})" />
-                                </TemplateOverride>
+           
 
                             }
                        
@@ -449,8 +450,7 @@
                     }
                     <MudButton Disabled=SaveDisabled
                                Color="Color.Success"
-                               OnClick="SaveTemplate"
-                               ButtonType="ButtonType.Submit">@buttonText</MudButton>
+                               OnClick="SaveTemplate">@buttonText</MudButton>
                     </MudStack>
 
 
@@ -471,7 +471,7 @@
 
 
     [Parameter]
-    public SetHeader? Header { get; set; }
+    public SetSubHeader? Header { get; set; }
     protected DirectoryTemplate originalTemplate;
 
 
@@ -551,6 +551,8 @@
                 value = Context?.DirectoryTemplates.First(dt => dt.Id == value.Id);
             _template = value;
             originalTemplate = value;
+            SelectedOU = Directory?.OUs.FindOuByDN(value.EffectiveParentOU);
+
             DirectoryTemplateChanged.InvokeAsync(value);
 
 
@@ -603,9 +605,9 @@
             sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail); ;
             askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); ;
 
-                fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
-                fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
-            
+            fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
+            fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
+
             using (var dropdownContext = await DbFactory.CreateDbContextAsync())
             {
                 dropdownTemplates = await dropdownContext.DirectoryTemplates.Where(t => !t.Equals(DirectoryTemplate) && t.DeletedAt == null).ToListAsync();
@@ -818,11 +820,11 @@
                 await Context.DirectoryTemplates.AddAsync(DirectoryTemplate);
                 var result = await Context.SaveChangesAsync();
 
-                Header?.OnRefreshRequested.Invoke();
+                Header?.OnRefreshRequested?.Invoke();
                 if (result > 0)
                 {
                     SnackBarService.Success(DirectoryTemplate.Name + " was added.");
-                    // DirectoryTemplate = new();
+                    Nav.NavigateTo($"/templates/{DirectoryTemplate.Id}");
                 }
             }
             catch (DbUpdateException ex)
