@@ -14,8 +14,17 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         [Parameter]
         public bool StartRootExpanded { get; set; } = true;
 
+        private string? _label;
         [Parameter]
-        public string? Label { get; set; }
+        public string? Label
+        {
+            get => _label; set
+            {
+                if (_label == value) return;
+                _label = value;
+                _ = InvokeAsync(StateHasChanged);
+            }
+        }
         /// <summary>
         /// The root ou of this TreeView
         /// </summary>
@@ -130,7 +139,8 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             OpenToSelected();
 
             GuiOU = new List<TreeItemData<IDirectoryEntryAdapter>>(RootOU);
-
+            var root = GuiOU.First();
+            root.Children = GetChildren(root);
             LoadingData = false;
         }
 
@@ -148,7 +158,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-
+            LoadingData = true;
             _ = Task.Run(() =>
             {
                 InitializeTreeView();
