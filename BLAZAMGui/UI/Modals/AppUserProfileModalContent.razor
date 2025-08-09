@@ -90,7 +90,7 @@
         if (await CurrentUser.State.SaveAllUserSettings())
         {
             SnackBarService.Success(AppLocalization[Lang.Settings_saved]);
-
+            await Modal.CloseAsync();
         }
         else
         {
