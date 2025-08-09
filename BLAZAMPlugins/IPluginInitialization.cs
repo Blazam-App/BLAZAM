@@ -6,7 +6,7 @@
     /// <remarks>Implementations of this interface are responsible for performing any setup or configuration
     /// required to initialize a plugin. This may include tasks such as loading resources, validating dependencies, or
     /// registering services.</remarks>
-    internal interface IPluginInitialization
+    public interface IPluginInitialization
     {
         /// <summary>
         /// Initializes the component, preparing it for use.
