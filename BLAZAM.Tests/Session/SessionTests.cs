@@ -1,11 +1,12 @@
 ﻿using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
-using BLAZAM.Tests.Mocks;
+using Moq; // Added Moq namespace
 
 namespace BLAZAM.Tests.Session
 {
     public class SessionTests
     {
+
         [Fact]
         public void LocalAuthentication_Constant_ShouldHaveCorrectValue()
         {
@@ -31,6 +32,7 @@ namespace BLAZAM.Tests.Session
             // Assert
             Assert.Equal(expectedValue, actualValue);
         }
+
 
         [Fact]
         public void SetAndGet_ByTypeKey_ShouldStoreAndRetrieveObject()
@@ -178,21 +180,24 @@ namespace BLAZAM.Tests.Session
             // Assert
             Assert.Equal(expectedValue, retrievedValue);
         }
+
         [Fact]
         public void MFARequest_Constructor_ShouldSetPropertiesCorrectly()
         {
             // Arrange
             string expectedToken = "test-token-123";
             string expectedRedirectUrl = "/redirect/path";
-            var mockUser = new MockApplicationUserState();
+            // Replaced hard-coded mock with Moq
+            var mockUser = new Mock<IApplicationUserState>();
 
             // Act
-            var mfaRequest = new MFARequest(expectedToken, expectedRedirectUrl, mockUser);
+            // Use mockUser.Object to pass the mocked instance
+            var mfaRequest = new MFARequest(expectedToken, expectedRedirectUrl, mockUser.Object);
 
             // Assert
             Assert.Equal(expectedToken, mfaRequest.mfaToken);
             Assert.Equal(expectedRedirectUrl, mfaRequest.redirectUrl);
-            Assert.Same(mockUser, mfaRequest.user); // Check reference equality for the user object
+            Assert.Same(mockUser.Object, mfaRequest.user); // Check reference equality for the user object
         }
 
         [Theory]
@@ -203,8 +208,9 @@ namespace BLAZAM.Tests.Session
             string tokenA, string urlA, string tokenB, string urlB, bool expectedEquality)
         {
             // Arrange
-            var userA = new MockApplicationUserState();
-            var userB = new MockApplicationUserState();
+            // Replaced hard-coded mocks with Moq
+            var userA = new Mock<IApplicationUserState>().Object;
+            var userB = new Mock<IApplicationUserState>().Object;
             var requestA = new MFARequest(tokenA, urlA, userA);
             var requestB = new MFARequest(tokenB, urlB, userB);
 
@@ -219,7 +225,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_Equals_Object_WithNull_ShouldReturnFalse()
         {
             // Arrange
-            var requestA = new MFARequest("token", "/url", new MockApplicationUserState());
+            var requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
 
             // Act
             bool actualEquality = requestA.Equals((object?)null);
@@ -232,7 +238,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_Equals_Object_WithDifferentType_ShouldReturnFalse()
         {
             // Arrange
-            var requestA = new MFARequest("token", "/url", new MockApplicationUserState());
+            var requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
             var differentObject = new object();
 
             // Act
@@ -250,8 +256,8 @@ namespace BLAZAM.Tests.Session
             string tokenA, string urlA, string tokenB, string urlB, bool expectedEquality)
         {
             // Arrange
-            var userA = new MockApplicationUserState();
-            var userB = new MockApplicationUserState();
+            var userA = new Mock<IApplicationUserState>().Object;
+            var userB = new Mock<IApplicationUserState>().Object;
             var requestA = new MFARequest(tokenA, urlA, userA);
             var requestB = new MFARequest(tokenB, urlB, userB);
 
@@ -266,7 +272,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_Equals_MFARequest_WithNull_ShouldReturnFalse()
         {
             // Arrange
-            var requestA = new MFARequest("token", "/url", new MockApplicationUserState());
+            var requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
 
             // Act
             bool actualEquality = requestA.Equals(null);
@@ -279,7 +285,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_GetHashCode_ShouldBeEqualForEqualObjects()
         {
             // Arrange
-            var user = new MockApplicationUserState();
+            var user = new Mock<IApplicationUserState>().Object;
             var requestA = new MFARequest("same-token", "/urlA", user);
             var requestB = new MFARequest("same-token", "/urlB", user); // Different URL, but same token
 
@@ -291,7 +297,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_GetHashCode_ShouldLikelyBeDifferentForDifferentTokens()
         {
             // Arrange
-            var user = new MockApplicationUserState();
+            var user = new Mock<IApplicationUserState>().Object;
             var requestA = new MFARequest("token-A", "/url", user);
             var requestB = new MFARequest("token-B", "/url", user);
 
@@ -311,7 +317,7 @@ namespace BLAZAM.Tests.Session
             string tokenA, string tokenB, bool expectedEquality)
         {
             // Arrange
-            var user = new MockApplicationUserState();
+            var user = new Mock<IApplicationUserState>().Object;
             var requestA = new MFARequest(tokenA, "/url", user);
             var requestB = new MFARequest(tokenB, "/url", user);
 
@@ -337,7 +343,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_EqualityOperator_OneNull_ShouldReturnFalse()
         {
             // Arrange
-            MFARequest? requestA = new MFARequest("token", "/url", new MockApplicationUserState());
+            MFARequest? requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
             MFARequest? requestB = null;
 
             // Act & Assert
@@ -353,7 +359,7 @@ namespace BLAZAM.Tests.Session
             string tokenA, string tokenB, bool expectedInequality)
         {
             // Arrange
-            var user = new MockApplicationUserState();
+            var user = new Mock<IApplicationUserState>().Object;
             var requestA = new MFARequest(tokenA, "/url", user);
             var requestB = new MFARequest(tokenB, "/url", user);
 
@@ -380,7 +386,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_InequalityOperator_OneNull_ShouldReturnTrue()
         {
             // Arrange
-            MFARequest? requestA = new MFARequest("token", "/url", new MockApplicationUserState());
+            MFARequest? requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
             MFARequest? requestB = null;
 
             // Act & Assert
@@ -403,9 +409,5 @@ namespace BLAZAM.Tests.Session
             Id = id;
             Name = name;
         }
-
-        // Optional: Override Equals and GetHashCode if you plan to compare instances directly
-        // For these tests, we'll compare properties or reference equality.
     }
-
 }
