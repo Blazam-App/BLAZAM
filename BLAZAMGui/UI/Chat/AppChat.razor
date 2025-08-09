@@ -22,7 +22,6 @@
 
     <MudDrawer @bind-Open="@_drawerOpen"
                Anchor="Anchor.Right"
-               PreserveOpenState=true
                Elevation="1"
                ClipMode="DrawerClipMode.Never"
                Style="--mud-drawer-width-right: 150px;"
@@ -96,7 +95,7 @@
                 }
                 <MudNavGroup Title="Online" Expanded=true>
 
-                    )
+                    
                     @foreach (var user in onlineUsers)
                     {
                         if (user != null && user.Preferences != null)
