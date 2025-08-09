@@ -27,59 +27,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         {
 
                             _user = _session.UserAccount;
-                        }
-                        catch
-                        {
-
-                        }
-                        try
-                        {
 
                             _sessionId = _session.SessionId;
 
-                        }
-                        catch
-                        {
-
-                        }
-                        try
-                        {
-
                             _idleTime = _session.IdleTime;
-
-                        }
-                        catch
-                        {
-
-                        }
-                        try
-                        {
 
                             _connectionState = _session.ConnectionState;
 
-                        }
-                        catch
-                        {
-
-                        }
-                        try
-                        {
-
                             _connectTime = _session.ConnectTime;
-                        }
-                        catch
-                        {
-
-                        }
-                        try
-                        {
 
                             _clientIPAddress = _session.ClientIPAddress;
 
                         }
                         catch
                         {
-
+                            // If the session is closed or the user is no longer available, we can ignore this.
                         }
 
 

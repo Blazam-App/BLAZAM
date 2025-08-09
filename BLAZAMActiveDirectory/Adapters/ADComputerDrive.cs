@@ -8,7 +8,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public double FreeSpace { get; internal set; }
         public double UsedSpace { get { return Capacity - FreeSpace; } }
         public double Capacity { get; internal set; }
-        public string Letter { get; internal set; }
+        public string? Letter { get; internal set; }
         public double PercentUsed
         {
             get
