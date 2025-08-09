@@ -1,6 +1,6 @@
-﻿using BLAZAM.ActiveDirectory.Adapters;
-using System.Net;
+﻿using System.Net;
 using System.Security;
+using BLAZAM.ActiveDirectory.Adapters;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -88,7 +88,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// No checks are performed before calling this method
         /// </remarks>
         /// <param name="timeout"></param>
-        void MonitorOnlineStatus(int timeout = 500);
+        void MonitorOnlineStatus(int timeout = 5000);
         Task<bool> RenameAsync(string newName);
         Task<bool> ShutdownAsync(int delaySeconds = 0, string? message = null, bool force = true, bool reboot = false);
     }

@@ -1,7 +1,7 @@
 ﻿
+using System.Data;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Audit;
@@ -13,7 +13,6 @@ using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
-using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Server.Data;
 using Microsoft.Data.SqlClient;
@@ -21,8 +20,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
-using System.Data;
-using System.Reflection;
 
 namespace BLAZAM.Database.Context
 {
@@ -529,7 +526,7 @@ namespace BLAZAM.Database.Context
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error(ex,"Unexpected error testing connection to database");
+                    Loggers.DatabaseLogger.Error(ex, "Unexpected error testing connection to database");
                     DownReason = new("The database experienced an unexpected error. " + ex.Message);
 
                 }

@@ -1,10 +1,6 @@
 ﻿
-using BLAZAM.Logger;
-using System; // Added for ArgumentException, etc.
-using System.Collections.Generic; // Added for List
-using System.IO; // Added for Path, Directory, File, etc.
-using System.Linq; // Added for path.Split().Last() and Enumerable.Where
 using System.Security; // Added for SecurityException
+using BLAZAM.Logger;
 
 
 namespace BLAZAM.FileSystem
@@ -136,30 +132,30 @@ namespace BLAZAM.FileSystem
         }
         public List<SystemFile> GetFilesAndSubFiles(string? filter = "*.*")
         {
-            
-            
-                List<SystemFile> files = new();
-                try
+
+
+            List<SystemFile> files = new();
+            try
+            {
+                if (Exists)
                 {
-                    if (Exists)
+                    // Get all files in the directory and subdirectories
+                    foreach (var file in Directory.GetFiles(FullPath, filter, SearchOption.AllDirectories))
                     {
-                        // Get all files in the directory and subdirectories
-                        foreach (var file in Directory.GetFiles(FullPath, filter, SearchOption.AllDirectories))
-                        {
-                            files.Add(new SystemFile(file));
-                        }
+                        files.Add(new SystemFile(file));
                     }
                 }
-                catch (DirectoryNotFoundException)
-                {
-                    // Ignore if directory not found during file listing
-                }
-                catch (Exception ex)
-                {
-                    Loggers.SystemLogger.Error(ex, "SystemDirectory.FilesAndSubFiles: Error getting files for {Path}.", FullPath);
-                }
-                return files;
             }
+            catch (DirectoryNotFoundException)
+            {
+                // Ignore if directory not found during file listing
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "SystemDirectory.FilesAndSubFiles: Error getting files for {Path}.", FullPath);
+            }
+            return files;
+        }
         /// <summary>
         /// Gets the name of the directory (the last part of the path). Returns null or empty if FullPath is invalid.
         /// </summary>
@@ -221,7 +217,7 @@ namespace BLAZAM.FileSystem
                 Loggers.SystemLogger.Warning("SystemDirectory.CopyTo: Source directory {SourcePath} does not exist. Cannot copy.", FullPath);
                 return false;
             }
-            
+
             bool anyError = false;
 
             var directories = Directory.GetDirectories(FullPath, "*", SearchOption.AllDirectories).AsEnumerable();

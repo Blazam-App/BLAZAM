@@ -1,13 +1,10 @@
 ﻿using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
-using BLAZAM.Logger; // Added
+using BLAZAM.Logger;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
-using System; // Added
-using System.Linq; // Added for FirstOrDefault
-using System.Threading.Tasks; // Added for Task
 
 namespace BLAZAM.Services
 {
@@ -31,7 +28,7 @@ namespace BLAZAM.Services
 
             ArgumentNullException.ThrowIfNull(dbFactory);
 
-           
+
             _userStateService = userStateService;
             _dbFactory = dbFactory;
         }

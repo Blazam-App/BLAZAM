@@ -22,7 +22,7 @@
                               ItemsSelector="ItemSelector"
                               ItemDraggingClass="mud-info-text"
                               DisabledClass=""
-                              ItemsClassSelector=@((item,name)=>{return _editMode==false?"cursor-default":"cursor-move";})
+                              ItemsClassSelector=@((item,name)=>{return !_editMode ? "cursor-default" : "cursor-move";})
                               ItemDisabled=@((item)=>{return !_editMode;})
                               ItemDropped="ItemDropped"
                               Class="d-flex flex-wrap flex-grow-1 mud-width-full  my-5 cursor-">
@@ -62,9 +62,9 @@
                         {
                             widget = allWidgets.First(w => w.WidgetType == context.WidgetType);
                         }
-                        catch
+                        catch (Exception ex)
                         {
-
+                            Loggers.SystemLogger.Error(ex, "Widget not found {@WidgetType}", context.WidgetType);
                         }
                         if (widget != null)
                         {
@@ -88,14 +88,14 @@
                                 <CascadingValue Value="this">
 
                                     <DynamicComponent Parameters="@(new Dictionary<string,object>(){
-                                    {"ItemsPerPage",context.ItemsPerPage>5?context.ItemsPerPage:5},
-                                    {"WidgetType",context.WidgetType}
-                                 })"
-                                                      Type="@widget.GetType()" />
-                                </CascadingValue>
+                                                                                                        {"ItemsPerPage",context.ItemsPerPage>5?context.ItemsPerPage:5},
+                                                                                                        {"WidgetType",context.WidgetType}
+                                                                                                     })"
+                                  Type="@widget.GetType()" />
+            </CascadingValue>
 
                             </MudCard>
-                        }
+                }
                     }
 
                 </ItemRenderer>
@@ -126,8 +126,8 @@
                   Style="justify-content: flex-end;"
                   Row=true>
             <AppTooltip Text=@AppLocalization[Lang.Edit]>
-                <MudFab StartIcon="@(_editMode==false?Icons.Material.Filled.Edit:Icons.Material.Filled.EditOff)"
-                        Color="@(_editMode==false?Color.Success:Color.Error)"
+                <MudFab StartIcon="@(!_editMode ? Icons.Material.Filled.Edit : Icons.Material.Filled.EditOff)"
+                        Color="@(!_editMode ? Color.Success : Color.Error)"
                         OnClick="@(()=>{_editMode = !_editMode; widgetContainer?.Refresh();})" />
             </AppTooltip>
             @if (_editMode)
@@ -146,7 +146,7 @@
                             {
                                 @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType) == true)
                                 {
-                                    <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
+                                    <MudMenuItem OnClick="@(async () => { await AddWidget(widget.WidgetType); })">@widget.Title</MudMenuItem>
                                 }
 
                             }
@@ -187,7 +187,7 @@ else
     bool _editMode;
     bool _initialized;
     [Inject]
-    public WidgetService WidgetService { get; set; }
+    public WidgetService? WidgetService { get; set; }
     public AppDelegate<Widget> OnRefreshWidget { get; set; } = (val) => { };
     MudDropContainer<UserDashboardWidget>? widgetContainer;
     List<Widget> allWidgets = new List<Widget>();
@@ -196,8 +196,14 @@ else
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-
-        allWidgets = new List<Widget>(WidgetService.Available());
+        if (WidgetService == null)
+        {
+            Loggers.SystemLogger.Error(new AppException("WidgetService is not injected properly."), "Widget service not available");
+        }
+        else
+        {
+            allWidgets = new List<Widget>(WidgetService.Available());
+        }
         await InvokeAsync(StateHasChanged);
 
     }
@@ -218,57 +224,55 @@ else
     private Task ItemDropped(MudItemDropInfo<UserDashboardWidget> dropItem)
     {
         if (dropItem.Item == null) return Task.CompletedTask;
-        if (CurrentUser.State != null)
-        {
-            // Find the dropped widget
-            var droppedWidget = CurrentUser.State.Preferences?.DashboardWidgets
-                .FirstOrDefault(w => w.WidgetType == dropItem.Item.WidgetType);
+        if (CurrentUser.State == null) return Task.CompletedTask;
 
-            if (droppedWidget != null)
-            {
-                // **1. Update the Slot of the dropped widget**
-                droppedWidget.Slot = dropItem.DropzoneIdentifier;
+        var droppedWidget = CurrentUser.State.Preferences?.DashboardWidgets
+            .FirstOrDefault(w => w.WidgetType == dropItem.Item.WidgetType);
 
-                // **2. Get widgets in the ORIGINAL slot**
-                var widgetsInOriginalSlot = CurrentUser.State.Preferences.DashboardWidgets
-                    .Where(w => w.Slot == droppedWidget.Slot)
-                    .OrderBy(w => w.Order)
-                    .ToList();
+        if (droppedWidget == null) return Task.CompletedTask;
 
-                // **3. Remove from the ORIGINAL slot**
-                widgetsInOriginalSlot.Remove(droppedWidget);
+        // Update the Slot of the dropped widget
+        droppedWidget.Slot = dropItem.DropzoneIdentifier;
 
-                // **4. Reorder widgets in the ORIGINAL slot**
-                for (int i = 0; i < widgetsInOriginalSlot.Count; i++)
-                {
-                    widgetsInOriginalSlot[i].Order = i;
-                }
+        // Reorder widgets in both slots
+        ReorderWidgetsInSlot(CurrentUser.State.Preferences?.DashboardWidgets, droppedWidget, dropItem);
 
-                // **5. Get widgets in the NEW slot**
-                var widgetsInNewSlot = CurrentUser.State.Preferences.DashboardWidgets
-                    .Where(w => w.Slot == dropItem.DropzoneIdentifier)
-                    .OrderBy(w => w.Order)
-                    .ToList();
-
-                // **6. Remove from the NEW slot**
-                widgetsInNewSlot.Remove(droppedWidget);
-
-                // **7. Insert into the NEW slot**
-                widgetsInNewSlot.Insert(dropItem.IndexInZone, droppedWidget);
-
-                // **8. Reorder widgets in the NEW slot**
-                for (int i = 0; i < widgetsInNewSlot.Count; i++)
-                {
-                    widgetsInNewSlot[i].Order = i;
-                }
-
-                CurrentUser.State.SaveDashboardWidgets();
-            }
-        }
+        CurrentUser.State.SaveDashboardWidgets();
         return Task.CompletedTask;
-
     }
 
+    private void ReorderWidgetsInSlot(
+        IList<UserDashboardWidget>? dashboardWidgets,
+        UserDashboardWidget droppedWidget,
+        MudItemDropInfo<UserDashboardWidget> dropItem)
+    {
+        if (dashboardWidgets == null) return;
+
+        // Remove from original slot
+        var originalSlotWidgets = dashboardWidgets
+            .Where(w => w.Slot == droppedWidget.Slot && w.WidgetType != droppedWidget.WidgetType)
+            .OrderBy(w => w.Order)
+            .ToList();
+
+        for (int i = 0; i < originalSlotWidgets.Count; i++)
+            originalSlotWidgets[i].Order = i;
+
+        // Remove from new slot and insert at new index
+        var newSlotWidgets = dashboardWidgets
+            .Where(w => w.Slot == dropItem.DropzoneIdentifier && w.WidgetType != droppedWidget.WidgetType)
+            .OrderBy(w => w.Order)
+            .ToList();
+
+        newSlotWidgets.Insert(dropItem.IndexInZone, droppedWidget);
+
+        for (int i = 0; i < newSlotWidgets.Count; i++)
+            newSlotWidgets[i].Order = i;
+
+        // Update the dashboardWidgets list
+        int idx = 0;
+        foreach (var widget in dashboardWidgets.Where(w => w.Slot == dropItem.DropzoneIdentifier).OrderBy(w => w.Order))
+            widget.Order = idx++;
+    }
 
     async Task AddWidget(DashboardWidgetType widgetType)
     {
@@ -280,13 +284,13 @@ else
                 order = CurrentUser.State.Preferences.DashboardWidgets.Max(w => w.Order) + 1;
             }
             CurrentUser.State.Preferences?.DashboardWidgets.Add(new UserDashboardWidget
-                {
-                    Id = 0,
-                    User = CurrentUser.State.Preferences,
-                    Slot = "slot1",
-                    WidgetType = widgetType,
-                    Order = order
-                });
+            {
+                Id = 0,
+                User = CurrentUser.State.Preferences,
+                Slot = "slot1",
+                WidgetType = widgetType,
+                Order = order
+            });
             await CurrentUser.State.SaveDashboardWidgets();
             await InvokeAsync(StateHasChanged);
             widgetContainer?.Refresh();

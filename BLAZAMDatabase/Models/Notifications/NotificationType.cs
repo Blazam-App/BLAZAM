@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace BLAZAM.Database.Models.Notifications
+﻿namespace BLAZAM.Database.Models.Notifications
 {
     public enum NotificationType
     {

@@ -1,5 +1,5 @@
-﻿using BLAZAM.Plugins;
-using System.Reflection;
+﻿using System.Reflection;
+using BLAZAM.Plugins;
 
 namespace BLAZAM.Common.Data
 {

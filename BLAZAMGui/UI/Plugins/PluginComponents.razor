@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @inherits AppComponentBase
 
-@if (ApplicationInfo.InDebugMode && CurrentUser.State.IsSuperAdmin)
+@if (CurrentUser.State.ShowPluginPlaceholders && CurrentUser.State.IsSuperAdmin)
 {
     <MudAlert Dense=true Class="mud-width-full" Severity="Severity.Info">
         <MudText>PluginComponent Location</MudText>

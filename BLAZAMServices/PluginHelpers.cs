@@ -1,12 +1,7 @@
-﻿using BLAZAM.Helpers;
+﻿using System.Reflection;
+using BLAZAM.Helpers;
 using BLAZAM.Plugins;
 using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Services
 {

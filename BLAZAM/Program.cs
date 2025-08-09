@@ -1,20 +1,17 @@
 // Import necessary namespaces for various functionalities like data handling,
 // database operations, server configuration, logging, security, etc.
+using System.Diagnostics; // For checking if debugger is attached
+using System.Net; // For IP address handling
+using System.Security.Cryptography.X509Certificates; // For SSL certificate handling
 using BLAZAM.ActiveDirectory;
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
-using BLAZAM.Database.Models;
-using BLAZAM.Server;
 using BLAZAM.Server.Middleware;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting.WindowsServices; // Required for running as a Windows Service
 using Serilog; // Logging library
-using System.Diagnostics; // For checking if debugger is attached
-using System.Net; // For IP address handling
-using System.Security.Cryptography.X509Certificates; // For SSL certificate handling
 
 namespace BLAZAM
 {
@@ -34,7 +31,7 @@ namespace BLAZAM
         /// </returns>
         internal static SystemDirectory WritablePath => new(ApplicationInfo.tempDirectory + $"writable{Path.DirectorySeparatorChar}");
 
-   
+
         /// <summary>
         /// A static reference to the current running ASP.NET Core WebApplication instance.
         /// Provides access to application services and configuration throughout the application.
@@ -81,7 +78,7 @@ namespace BLAZAM
             // Assign installation-specific details for logging context.
             Loggers.InstallationId = ApplicationInfo.installationId.ToString();
             Loggers.InstallationType = ApplicationInfo.isUnderIIS ? "IIS" : "Service"; // Determine if running under IIS or as a standalone service
-            Loggers.DatabaseType = Configuration?.GetValue<string>("DatabaseType")??"SQLite"; // Get DB type from config
+            Loggers.DatabaseType = Configuration?.GetValue<string>("DatabaseType") ?? "SQLite"; // Get DB type from config
 
             // Configure Seq logging server details.
             Loggers.SeqServerUri = "http://logs.blazam.org:5341"; // Centralized logging server URI

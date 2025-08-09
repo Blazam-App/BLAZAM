@@ -1,6 +1,4 @@
 ﻿using BLAZAM.Global.Data;
-using Microsoft.AspNetCore.Builder;
-using System.Reflection;
 
 namespace BLAZAM.Plugins
 {
@@ -27,6 +25,6 @@ namespace BLAZAM.Plugins
 
 
 
-       
+
     }
 }

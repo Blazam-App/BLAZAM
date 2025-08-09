@@ -21,6 +21,7 @@ namespace BLAZAM.ActiveDirectory
         public IActiveDirectoryContext CreateActiveDirectoryContext(ActiveDirectoryUserState? currentUserState = null)
         {
             var context = new ActiveDirectoryContext(activeDirectoryContextSeed);
+
             //_ = context.ConnectAsync();
             context.CurrentUser=currentUserState;
             return context;

@@ -1,7 +1,6 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Services;
 using BLAZAM.Services.Audit;
-using BLAZAM.Services.Events;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
@@ -54,7 +53,7 @@ namespace BLAZAM.Server.Pages
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex,"Error setting ip address for login request");
+                Loggers.SystemLogger.Error(ex, "Error setting ip address for login request");
             }
             try
             {
@@ -70,7 +69,7 @@ namespace BLAZAM.Server.Pages
                         if (result.Impersonation)
                         {
 
-                           
+
                             await AuditLogger.Logon.Impersonate(User, result.AuthenticationState.User, req.IPAddress);
 
                         }

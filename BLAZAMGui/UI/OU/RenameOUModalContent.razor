@@ -1,6 +1,5 @@
 ﻿@inherits AppModalContent
-<div Background="Background.Light" Color="Color.Dark">
-<Section Title=@AppLocalization[Lang.OU]>
+<ViewSection Title=@AppLocalization[Lang.OU]>
 
 
     @if (OU.CanReadField(ActiveDirectoryFields.CanonicalName))
@@ -14,11 +13,10 @@
     }
     
     
-</Section>
+</ViewSection>
 
 
     <MudButton Color=Color.Primary OnClick="SaveChanges">@AppLocalization[Lang.Save_Changes]</MudButton>
-</div>
 @code {
 
     protected override async Task OnInitializedAsync()

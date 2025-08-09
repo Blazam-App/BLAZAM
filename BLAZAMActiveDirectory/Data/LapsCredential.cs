@@ -1,13 +1,7 @@
-﻿using BLAZAM.ActiveDirectory.Adapters;
+﻿using System.Globalization;
+using System.Security;
 using BLAZAM.Helpers;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Data
 {
@@ -19,7 +13,7 @@ namespace BLAZAM.ActiveDirectory.Data
 
         public LapsCredential(SecureString lapsJson)
         {
-            
+
             dynamic jsonDynamic = JsonConvert.DeserializeObject(lapsJson.ToPlainText());
             // Format the final string
             string? rawAccount = jsonDynamic["n"];
@@ -29,7 +23,7 @@ namespace BLAZAM.ActiveDirectory.Data
             long fileTime = long.Parse(rawTime, NumberStyles.HexNumber);
             CreationTime = DateTime.FromFileTimeUtc(fileTime);
             string? rawPass = jsonDynamic["p"];
-            Password= rawPass.ToSecureString(); 
+            Password = rawPass.ToSecureString();
             rawPass = null;
         }
     }

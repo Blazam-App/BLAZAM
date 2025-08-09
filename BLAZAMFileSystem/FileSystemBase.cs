@@ -1,4 +1,4 @@
-﻿using BLAZAM.Logger;
+using BLAZAM.Logger;
 using Serilog;
 using System.Security;
 
@@ -91,9 +91,9 @@ namespace BLAZAM.FileSystem
                         string targetDirectory = directoryInfo.Exists ? FullPath : fileInfo.DirectoryName;
                         if (string.IsNullOrEmpty(targetDirectory) || !Directory.Exists(targetDirectory))
                         {
-                             // If the directory itself doesn't exist, can't write a test file.
-                             // This could be a new file in a new directory. The ability to create the directory
-                             // would be a separate check. For now, if dir doesn't exist, assume not writable here.
+                            // If the directory itself doesn't exist, can't write a test file.
+                            // This could be a new file in a new directory. The ability to create the directory
+                            // would be a separate check. For now, if dir doesn't exist, assume not writable here.
                             Loggers.SystemLogger.Debug("FileSystemBase.Writable: Target directory {TargetDirectory} for path {FullPath} does not exist. Cannot perform write test.", targetDirectory, FullPath);
                             return false;
                         }

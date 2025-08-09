@@ -113,7 +113,7 @@ namespace BLAZAM.Tests.FileSystem
         //    // This makes the test somewhat environment-dependent but avoids needing to
         //    // execute external processes like icacls or chmod.
         //    string programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            
+
         //    // If ProgramFiles is empty (unlikely but possible in some stripped environments),
         //    // or if for some reason it's writable (e.g. tests running as admin), this test might not be meaningful.
         //    // However, for typical scenarios, it should be non-writable.

@@ -2,8 +2,6 @@
 using BLAZAM.Logger; // Added
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System; // Added
-using System.Threading.Tasks; // Added for Task
 
 namespace BLAZAM.Notifications.Services
 {
@@ -36,7 +34,7 @@ namespace BLAZAM.Notifications.Services
             Loggers.SystemLogger.Debug("AppDialogService.ShowMessage (MarkupString): Attempting to show message box with Title '{DialogTitle}'.", title);
             return await _dialog.ShowMessageBox(title, message, yesText, noText, cancelText, DialogOptions);
         }
-        
+
         /// <summary>Shows a pre-formatted message box.</summary>
         private async Task<bool?> ShowMessage(string message, string? title = null)
         {

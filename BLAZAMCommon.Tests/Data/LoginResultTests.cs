@@ -1,12 +1,7 @@
-﻿using BLAZAM.Common.Data;
+﻿using System.Security.Claims;
+using BLAZAM.Common.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAMCommon.Tests.Data
 {

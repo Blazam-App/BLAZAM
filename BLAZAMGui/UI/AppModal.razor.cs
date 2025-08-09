@@ -105,7 +105,10 @@ namespace BLAZAM.Gui.UI
 
         [Parameter]
         public string Title { get; set; }
-
+        public void SetTitle(string title)
+        {
+            Title = title;
+        }
 
         [Parameter]
         public EventCallback<MudMessageBox>? ModalChanged { get; set; }
@@ -132,7 +135,7 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public MaxWidth? Width { get; set; }
 
-       
+
         protected override void OnInitialized()
         {
             base.OnInitialized();
@@ -167,8 +170,8 @@ namespace BLAZAM.Gui.UI
 
             IsShown = true;
             Modal.CloseAsync(); //Fix for MudBlazor Bug causing modal to no reopen after one click but two, suggesting a state sync issue, remove if fixed
-           var @ref = await Modal.ShowAsync(null, Options);
-             await InvokeAsync(StateHasChanged);
+            var @ref = await Modal.ShowAsync(null, Options);
+            await InvokeAsync(StateHasChanged);
             return @ref;
         }
 
@@ -186,7 +189,7 @@ namespace BLAZAM.Gui.UI
         /// </summary>
         public async Task CloseAsync()
         {
-            await InvokeAsync(async()=> {await Modal.CloseAsync(); });
+            await InvokeAsync(async () => { await Modal.CloseAsync(); });
             IsShown = false;
 
         }
@@ -197,6 +200,6 @@ namespace BLAZAM.Gui.UI
             else
                 Close();
         }
-       
+
     }
 }

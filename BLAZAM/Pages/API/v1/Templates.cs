@@ -1,23 +1,21 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Security;
+using System.Text.Json;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
-using BLAZAM.Gui.Helpers;
-using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.EmailMessage.Email.Notifications;
+using BLAZAM.Gui.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Pages.API.Data;
 using BLAZAM.Services.Audit;
+using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
-using System.Security;
-using System.Text.Json;
-using BLAZAM.Services.Events;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -30,12 +28,23 @@ namespace BLAZAM.Pages.API.v1
         private readonly IStringLocalizer<AppLocalization> AppLocalization;
         private readonly EmailService EmailService;
 
+        /// <summary>
+        /// Constructs a new instance of the Templates API controller.
+        /// </summary>
+        /// <param name="ouNotificationService"></param>
+        /// <param name="email"></param>
+        /// <param name="applicationUserStateService"></param>
+        /// <param name="localizer"></param>
+        /// <param name="audit"></param>
+        /// <param name="appDatabaseFactory"></param>
+        /// <param name="httpContextAccessor"></param>
+        /// <param name="adFactory"></param>
         public Templates(NotificationGenerationService ouNotificationService,
             EmailService email,
             IApplicationUserStateService applicationUserStateService,
             IStringLocalizer<AppLocalization> localizer,
             WebUserAuditLogger audit,
-            IUserDatabaseFactory appDatabaseFactory, 
+            IUserDatabaseFactory appDatabaseFactory,
             IHttpContextAccessor httpContextAccessor,
             IActiveDirectoryContextFactory adFactory)
             : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
@@ -88,7 +97,10 @@ namespace BLAZAM.Pages.API.v1
             var context = await DbFactory.CreateDbContextAsync();
             var template = await context.DirectoryTemplates.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id == templateId);
 
-            if (template == null) return new NotFoundObjectResult(templateId);
+            if (template == null)
+            {
+                return new NotFoundObjectResult(templateId);
+            }
 
             try
             {
@@ -148,7 +160,9 @@ namespace BLAZAM.Pages.API.v1
                 var result = await newUser.CommitChangesAsync(createUserJob);
 
                 if (result.FailedSteps.Count > 0)
+                {
                     return new UnprocessableEntityObjectResult(result.FailedSteps.Select(s => s.Exception?.InnerException != null ? s.Exception.InnerException.Message : s.Exception?.Message));
+                }
 
 
                 newUser = (IADUser)Directory.GetDirectoryEntryByDN(newUser.DN);
@@ -157,8 +171,9 @@ namespace BLAZAM.Pages.API.v1
 
                 return new CreatedResult(newUser.OU, newUser.DN);
             }
-            catch (DirectorySearchUniquenessException ex) {
-                return new UnprocessableEntityObjectResult("Multiple groups match the provided search term: "+ ex.SearchTerm);
+            catch (DirectorySearchUniquenessException ex)
+            {
+                return new UnprocessableEntityObjectResult("Multiple groups match the provided search term: " + ex.SearchTerm);
             }
             catch (Exception ex)
             {
@@ -176,7 +191,7 @@ namespace BLAZAM.Pages.API.v1
                 Actor = CurrentUserState
 
             });
-            
+
 
 
             if (template?.EffectiveSendWelcomeEmail == true)
@@ -215,6 +230,7 @@ namespace BLAZAM.Pages.API.v1
                             value = json.Value.GetBoolean(); break;
 
                     }
+
                     newUser?.SetCustomProperty(field.FieldName, value);
                 }
             }
@@ -250,6 +266,7 @@ namespace BLAZAM.Pages.API.v1
                     }
                 }
             }
+
             return true;
         }
 
@@ -283,7 +300,7 @@ namespace BLAZAM.Pages.API.v1
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex,"Error sending welcome email");
+                Loggers.SystemLogger.Error(ex, "Error sending welcome email");
             }
         }
     }

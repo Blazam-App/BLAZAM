@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic; // Required for IList
-using System.Security.Claims; // Required for ClaimsPrincipal
+﻿using System.Security.Claims; // Required for ClaimsPrincipal
 
 namespace BLAZAM.Session.Interfaces
 {

@@ -23,7 +23,7 @@ namespace BLAZAM.Common.Data.Validators
         /// <returns></returns>
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            
+
             if (value is string strValue)
             {
                 Regex regex = new(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$");

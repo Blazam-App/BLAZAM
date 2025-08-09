@@ -101,7 +101,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                          Operator = ActiveDirectoryFieldOperator.BeforeNow
                     }
                 },
-               
+
 
             }.Search<ADUser, IADUser>();
 

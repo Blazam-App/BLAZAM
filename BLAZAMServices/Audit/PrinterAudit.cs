@@ -5,12 +5,8 @@ using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
-    public class PrinterAudit : DirectoryAudit
+    public class PrinterAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
     {
-        public PrinterAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
-        {
-        }
-
         public async Task<bool> Moved(IDirectoryEntryAdapter movedPrinter, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
             Analytics?.ObjectMoved(ActiveDirectoryObjectType.Printer);
@@ -27,21 +23,21 @@ namespace BLAZAM.Services.Audit
              AuditActions.Printer_Deleted, deletedEntry);
 
 
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedOU)
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedEntry)
             => await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.Printer_Searched,
-                searchedOU);
+                searchedEntry);
 
-        public override async Task<bool> Created(IDirectoryEntryAdapter newOU)
+        public override async Task<bool> Created(IDirectoryEntryAdapter newEntry)
 
         {
             var oldValues = "";
             var newValues = "";
-            foreach (var c in newOU.NewEntryProperties)
+            foreach (var c in newEntry.NewEntryProperties)
             {
                 newValues += c.Key + "=" + c.Value;
             }
-            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Printer_Created, newOU, oldValues, newValues);
+            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Printer_Created, newEntry, oldValues, newValues);
             return true;
         }
 

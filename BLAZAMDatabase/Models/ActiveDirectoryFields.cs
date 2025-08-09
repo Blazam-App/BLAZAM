@@ -1,5 +1,4 @@
-﻿using BLAZAM.Database.Models.Permissions;
-using BLAZAM.Helpers;
+﻿using BLAZAM.Helpers;
 using BLAZAM.Localization;
 
 namespace BLAZAM.Database.Models
@@ -304,7 +303,7 @@ namespace BLAZAM.Database.Models
             Id = 33,
             FieldName = "accountExpires", // Date when the account expires
             DisplayName = "Account Expiration",
-            FieldType = ActiveDirectoryFieldType.FileTime, 
+            FieldType = ActiveDirectoryFieldType.FileTime,
             PropertyName = "ExpireTime"
         };
 
@@ -363,7 +362,7 @@ namespace BLAZAM.Database.Models
         public static readonly ActiveDirectoryField Enabled = new()
         {
             Id = 40,
-            FieldName = "userAccountControl", 
+            FieldName = "userAccountControl",
             DisplayName = Lang.Enabled,
             FieldType = ActiveDirectoryFieldType.Boolean,
             PropertyName = Lang.Enabled

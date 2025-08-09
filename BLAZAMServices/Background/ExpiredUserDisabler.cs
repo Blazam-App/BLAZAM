@@ -7,7 +7,6 @@ using BLAZAM.Localization;
 using BLAZAM.Services.Events;
 using BLAZAM.Session;
 using Microsoft.Extensions.Localization;
-using System.Security.Cryptography.Xml;
 
 namespace BLAZAM.Services.Background
 {

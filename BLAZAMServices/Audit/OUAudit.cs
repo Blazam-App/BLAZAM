@@ -5,12 +5,8 @@ using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
-    public class OUAudit : DirectoryAudit
+    public class OUAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
     {
-        public OUAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
-        {
-        }
-
         public async Task<bool> Moved(IDirectoryEntryAdapter movedOU, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
             Analytics?.ObjectMoved(ActiveDirectoryObjectType.OU);
@@ -29,22 +25,22 @@ namespace BLAZAM.Services.Audit
 
         }
 
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedOU)
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedEntry)
             => await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.OU_Searched,
-                searchedOU);
+                searchedEntry);
 
-        public override async Task<bool> Created(IDirectoryEntryAdapter newOU)
+        public override async Task<bool> Created(IDirectoryEntryAdapter newEntry)
 
         {
             Analytics?.ObjectCreated(ActiveDirectoryObjectType.OU);
 
             var newValues = "";
-            foreach (var c in newOU.NewEntryProperties)
+            foreach (var c in newEntry.NewEntryProperties)
             {
                 newValues += c.Key + "=" + c.Value;
             }
-            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.OU_Created, newOU, "", newValues);
+            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.OU_Created, newEntry, "", newValues);
             return true;
         }
 

@@ -1,10 +1,10 @@
+
 ﻿using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
-using BLAZAM.Database.Models.Rules;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
@@ -246,7 +246,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(lastLogonTimestamp<={Fields.LastLogonTime})(!(lastLogonTimestamp=0))";
                     if (Fields.ExpireTime != null)
                         FilterQuery += $"(accountExpires<={Fields.ExpireTime.Value.ToFileTimeUtc().ToString()})(!(accountExpires=0))";
-                 
+
                     if (!Fields.DN.IsNullOrEmpty())
                         FilterQuery += $"(distinguishedName={Fields.DN})";
                     if (!Fields.MemberOf.IsNullOrEmpty())
@@ -470,6 +470,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 pageRequestControl.Cookie = pageResponseControl.Cookie;
 
             } while (true); // The loop is controlled by the break statement inside.
+
+
 
 
 

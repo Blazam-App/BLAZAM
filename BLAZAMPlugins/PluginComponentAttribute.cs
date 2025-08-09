@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLAZAM.Plugins
-{   
+﻿namespace BLAZAM.Plugins
+{
     /// <summary>
     /// Determines the page type that the PluginComponent will be shown
     /// </summary>

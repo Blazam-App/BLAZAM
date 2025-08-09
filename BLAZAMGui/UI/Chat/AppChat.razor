@@ -22,7 +22,6 @@
 
     <MudDrawer @bind-Open="@_drawerOpen"
                Anchor="Anchor.Right"
-               PreserveOpenState=true
                Elevation="1"
                ClipMode="DrawerClipMode.Never"
                Style="--mud-drawer-width-right: 150px;"
@@ -34,7 +33,7 @@
                                  @bind-Toggled=@_drawerOpen>
                 Menu
             </MudToggleIconButton>
-            <MudBadge Visible=@(unreadAppChatMessages>0)
+            <MudBadge Visible=@(unreadAppChatMessages > 0)
                       Class="mud-width-full"
                       Overlap=true
                       BadgeClass="left-0"
@@ -42,12 +41,12 @@
                       Max="99"
                       Content="unreadAppChatMessages"
                       Color="Color.Error">
-                <MudNavLink OnClick="@(()=>{SwitchTo(AppChatRoom);})"
+                <MudNavLink OnClick="@(() => { SwitchTo(AppChatRoom); })"
                             Icon="@Icons.Material.Filled.AllInclusive">
                     App Chat
                 </MudNavLink>
             </MudBadge>
-            <MudBadge Visible=@((!_chatsExpanded||!_drawerOpen)&& unreadChatMessages>0)
+            <MudBadge Visible=@((!_chatsExpanded || !_drawerOpen) && unreadChatMessages > 0)
                       Class="mud-width-full"
                       Overlap=true
                       BadgeClass="left-0"
@@ -60,11 +59,11 @@
                              Title="Private Chats"
                              Expanded=@(_chatsExpanded && _drawerOpen)
                              ExpandedChanged=@ChangeChatExpanded>
-                    @if (_chatsExpanded)
+                    @if (_chatsExpanded && currentUserState != null)
                     {
                         foreach (var chatRoom in PrivateChatRooms)
                         {
-                            int unreadRoomMessageCount = Chat.GetUnreadMessages(currentUserState.Preferences, chatRoom).Count();
+                            int unreadRoomMessageCount = Chat.GetUnreadMessages(currentUserState.Preferences, chatRoom).Count;
                             <MudBadge Class="ms-4"
                                       Overlap=true
                                       Visible=@(unreadRoomMessageCount>0)
@@ -72,7 +71,7 @@
                                       Max="99"
                                       Content="unreadRoomMessageCount"
                                       Color="Color.Error">
-                                <MudNavLink OnClick="@(()=>{SwitchTo(chatRoom);})">@chatRoom.Name</MudNavLink>
+                                <MudNavLink OnClick="@(() => { SwitchTo(chatRoom); })">@chatRoom.Name</MudNavLink>
 
                             </MudBadge>
                             <MudMenu Icon="@Icons.Material.Filled.MoreVert">
@@ -96,19 +95,22 @@
                 }
                 <MudNavGroup Title="Online" Expanded=true>
 
-
+                    
                     @foreach (var user in onlineUsers)
                     {
-                        <MudNavLink OnClick="@(()=>{OpenPrivateChat(user.Preferences);})">@user.Username</MudNavLink>
+                        if (user != null && user.Preferences != null)
+                        {
+                            <MudNavLink OnClick="@(() => { OpenPrivateChat(user.Preferences); })">@user.Username</MudNavLink>
+                        }
                     }
                 </MudNavGroup>
 
                 <MudNavGroup Title="Offline">
-                    @if (Context != null)
+                    @if (Context != null && currentUserState != null)
                     {
                         @foreach (var user in Context.UserSettings.Where(u => !onlineUsers.Select(us => us.Preferences).Contains(u) && !u.Equals(currentUserState.Preferences)))
                         {
-                            <MudNavLink OnClick="@(()=>{OpenPrivateChat(user);})">@user.Username</MudNavLink>
+                            <MudNavLink OnClick="@(() => { OpenPrivateChat(user); })">@user.Username</MudNavLink>
                         }
                     }
                 </MudNavGroup>
@@ -116,7 +118,7 @@
             </MudNavGroup>
             @if (ApplicationInfo.InDebugMode && IsAdmin)
             {
-                <MudNavLink OnClick="@(()=>{Chat.DeleteAllChatRooms();})"
+                <MudNavLink OnClick="@(() => { Chat.DeleteAllChatRooms(); })"
                             Icon="@Icons.Material.Filled.Clear">Delete All Chat Rooms</MudNavLink>
             }
         </MudNavMenu>
@@ -130,10 +132,10 @@
         {
             <MudText>App Chat</MudText>
         }
-        else
+        else if (currentUserState?.Preferences != null && selectedChatRoom?.Members != null)
         {
 
-            var otherMembers = selectedChatRoom?.Members.Where(m => !m.Equals(currentUserState.Preferences)).Select(m => m.Username).ToList();
+            var otherMembers = selectedChatRoom.Members.Where(m => !m.Equals(currentUserState.Preferences)).Select(m => m.Username).ToList();
             string chatName = String.Join(", ", otherMembers);
 
             <MudText>@selectedChatRoom?.Name</MudText>
@@ -158,7 +160,7 @@
     bool _drawerOpen;
     ChatRoom? selectedChatRoom;
 
-    public List<ChatRoom> PrivateChatRooms { get; set; }
+    public List<ChatRoom> PrivateChatRooms { get; set; } = new();
 
 
     [Parameter]
@@ -167,7 +169,7 @@
     public bool AlwaysShowChatButton { get; set; }
     [Parameter]
     public bool AlwaysShowPageViewersButton { get; set; }
-    IApplicationUserState currentUserState;
+    IApplicationUserState? currentUserState;
 
 
 
@@ -178,72 +180,74 @@
 
     protected override async Task OnInitializedAsync()
     {
-
         await base.OnInitializedAsync();
         await Task.Run(async () =>
         {
-
-            currentUserState = CurrentUser.State;
-
-            if (ChatUri.IsNullOrEmpty())
-            {
-
-
-                ChatUri = Nav.ToBaseRelativePath(Nav.Uri);
-
-            }
-
-
-            await RefreshChatRooms();
-            if (CurrentUser.State != null && CurrentUser.State.Preferences != null)
-                PrivateChatRooms = Chat.GetPrivateChats(CurrentUser.State.Preferences);
-
-
-
-
+            InitializeCurrentUserState();
+            InitializeChatUri();
+            await InitializeChatRooms();
             selectedChatRoom = AppChatRoom;
+            SetupChatMessageListeners();
+            SetupChatRoomCreatedListener();
+        });
+    }
 
+    private void InitializeCurrentUserState()
+    {
+        currentUserState = CurrentUser.State;
+    }
 
-            //Setup chat message listeners
-
-            Chat.OnMessagePosted += ((ChatMessage message) =>
-       {
-           if (message.User != currentUserState.Preferences
-               && (message.ChatRoomId == AppChatRoom?.Id
-                   || PrivateChatRooms.Any(pcr => pcr.Id == message.ChatRoomId)))
-           {
-               if (_chatOpen && !playingPop)
-               {
-                   playingPop = true;
-
-               }
-               else if (!_chatOpen && !playingBell)
-               {
-                   playingBell = true;
-               }
-
-           }
-           InvokeAsync(StateHasChanged);
-
-       });
-
-
-            Chat.OnChatRoomCreated += (async (room) =>
-
+    private void InitializeChatUri()
+    {
+        if (ChatUri.IsNullOrEmpty())
         {
-            if (room.Members.Any(m => m.Id == currentUserState.Id))
+            ChatUri = Nav.ToBaseRelativePath(Nav.Uri);
+        }
+    }
+
+    private async Task InitializeChatRooms()
+    {
+        await RefreshChatRooms();
+        if (CurrentUser.State != null && CurrentUser.State.Preferences != null)
+            PrivateChatRooms = Chat.GetPrivateChats(CurrentUser.State.Preferences);
+    }
+
+    private void SetupChatMessageListeners()
+    {
+        Chat.OnMessagePosted += ((ChatMessage message) =>
+        {
+            if (currentUserState != null && message.User != currentUserState.Preferences
+                && (message.ChatRoomId == AppChatRoom?.Id
+                    || PrivateChatRooms.Any(pcr => pcr.Id == message.ChatRoomId)))
+            {
+                if (_chatOpen && !playingPop)
+                {
+                    playingPop = true;
+                }
+                else if (!_chatOpen && !playingBell)
+                {
+                    playingBell = true;
+                }
+            }
+            InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private void SetupChatRoomCreatedListener()
+    {
+        Chat.OnChatRoomCreated += (async (room) =>
+        {
+            if (currentUserState != null && room.Members.Any(m => m.Id == currentUserState.Id))
             {
                 await RefreshChatRooms();
                 await InvokeAsync(StateHasChanged);
             }
         });
-
-        });
-
-
     }
-    void SwitchTo(ChatRoom room)
+
+    void SwitchTo(ChatRoom? room)
     {
+        if (room == null) return;
         selectedChatRoom = room;
 
         _drawerOpen = false;
@@ -251,6 +255,7 @@
     }
     void OpenPrivateChat(AppUser otherParty)
     {
+        if (currentUserState == null || otherParty == null) return;
         var chat = Chat.GetPrivateTwoWayChat(currentUserState.Preferences, otherParty);
         SwitchTo(chat);
     }
@@ -283,11 +288,6 @@
 
     }
 
-    //void ToggleDrawer()
-    //{
-    //    _drawerOpen = !_drawerOpen;
-
-    //}
 
 
 

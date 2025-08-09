@@ -1,6 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
@@ -16,10 +15,6 @@ using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using System.Linq;
-using Octokit;
-using Serilog.Parsing;
-using System.Text.RegularExpressions;
 
 namespace BLAZAM.Services.Background
 {
@@ -233,7 +228,7 @@ namespace BLAZAM.Services.Background
                     else
                     {
                         var error = new AppException();
-                        Loggers.SystemLogger.Error(error,"Email message template was not found!");
+                        Loggers.SystemLogger.Error(error, "Email message template was not found!");
                     }
                 }
             }
@@ -430,7 +425,7 @@ namespace BLAZAM.Services.Background
                 }
                 catch (Exception ex)
                 {
-                    Loggers.SystemLogger.Error(ex,"Error while parsing users for notification broadcast");
+                    Loggers.SystemLogger.Error(ex, "Error while parsing users for notification broadcast");
                 }
             }
             return effectiveByEmailSubscription;

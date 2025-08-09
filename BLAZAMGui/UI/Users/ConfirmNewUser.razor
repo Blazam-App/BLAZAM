@@ -54,7 +54,7 @@ InDirectoryTemplate(ActiveDirectoryFields.Title) ||
 InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 )
 {
-    <Section Title=@AppLocalization[Lang.Organization]>
+    <ViewSection Title=@AppLocalization[Lang.Organization]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.EmployeeId))
         {
             <MudTextField Label="@AppLocalization[Lang.Employee_Id]"
@@ -85,7 +85,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
             @bind-Value="@Contact.PhysicalDeliveryOfficeName"
             Disabled=true />
         }
-    </Section>
+    </ViewSection>
 }
 
 @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone) ||
@@ -96,7 +96,7 @@ InDirectoryTemplate(ActiveDirectoryFields.State) ||
 InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
 )
 {
-    <Section Title=@AppLocalization[Lang.Contact_Info]>
+    <ViewSection Title=@AppLocalization[Lang.Contact_Info]>
 
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone))
         {
@@ -134,7 +134,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
             @bind-Value="@Contact.Zip"
             Disabled=true />
         }
-    </Section>
+    </ViewSection>
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
 {
@@ -150,47 +150,42 @@ InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
 }
 @if (User != null)
 {
-    @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory) ||
-                  InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
-                  InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
-                  InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
-                  )
-    {
-        <Section Title=@AppLocalization[Lang.Profile]
-        >
-            @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
-            {
-                <MudTextField Label="@AppLocalization[Lang.Home_Directory]"
-                @bind-Value="@User.HomeDirectory"
-                Disabled=true />
-            }
-            @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDrive))
-            {
-                <HomeDriveSelect Label="@AppLocalization[Lang.Home_Drive]"
-                @bind-Value="@User.HomeDrive"
-                Disabled=true />
-            }
-            @if (InDirectoryTemplate(ActiveDirectoryFields.ScriptPath))
-            {
-                <MudTextField Label="@AppLocalization[Lang.Script_Path]"
-                @bind-Value="@User.ScriptPath"
-                Disabled=true />
-            }
-            @if (InDirectoryTemplate(ActiveDirectoryFields.ProfilePath))
-            {
-                <MudTextField Label="@AppLocalization[Lang.Profile_Path]"
-                @bind-Value="@User.ProfilePath"
-                Disabled=true />
-            }
-        </Section>
-    }
+    <ViewSection Title=@AppLocalization[Lang.Profile]>
+        @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
+        {
+            <MudTextField Label="@AppLocalization[Lang.Home_Directory]"
+                          @bind-Value="@User.HomeDirectory"
+                          Disabled=true />
+        }
+        @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDrive))
+        {
+            <HomeDriveSelect Label="@AppLocalization[Lang.Home_Drive]"
+                             @bind-Value="@User.HomeDrive"
+                             Disabled=true />
+        }
+        @if (InDirectoryTemplate(ActiveDirectoryFields.ScriptPath))
+        {
+            <MudTextField Label="@AppLocalization[Lang.Script_Path]"
+                          @bind-Value="@User.ScriptPath"
+                          Disabled=true />
+        }
+        @if (InDirectoryTemplate(ActiveDirectoryFields.ProfilePath))
+        {
+            <MudTextField Label="@AppLocalization[Lang.Profile_Path]"
+                          @bind-Value="@User.ProfilePath"
+                          Disabled=true />
+        }
+    </ViewSection>
+}
+
+
 
 }
 
 
 
-<Section Title=@AppLocalization[Lang.Groups]>
-    @if (Contact.IsAGroupMember)
+<ViewSection Title=@AppLocalization[Lang.Groups]>
+    @if (User.IsAGroupMember)
     {
         var deniedRead = false;
         @foreach (var g in Contact.MemberOf.Where(g => g.CanRead))
@@ -218,7 +213,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
         }
     }
 
-</Section>
+</ViewSection>
 
 @if (!Confirmed)
 {

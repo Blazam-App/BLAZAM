@@ -1,4 +1,12 @@
-﻿using BLAZAM.ActiveDirectory.Adapters;
+﻿using System.Diagnostics;
+using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Security.Principal;
+using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;

@@ -9,7 +9,7 @@ namespace BLAZAM.Services.Audit
         public Analytics? Analytics { get; set; }
 
 
-        public BaseAudit(IAppDatabaseFactory factory, IJSRuntime? jSRuntime=null)
+        public BaseAudit(IAppDatabaseFactory factory, IJSRuntime? jSRuntime = null)
         {
             if (jSRuntime != null)
             {

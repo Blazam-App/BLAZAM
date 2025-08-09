@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BLAZAM.Database.Models.Rules
+﻿namespace BLAZAM.Database.Models.Rules
 {
 
     public class AutomationRuleAndFilter : ActiveDirectoryFieldDbSet
     {
-   
+
         public AutomationRuleOrFilter OrFilter { get; set; }
         public int OrFilterId { get; set; }
 
@@ -23,7 +21,8 @@ namespace BLAZAM.Database.Models.Rules
 
         public override bool Equals(object? obj)
         {
-            if (obj is AutomationRuleAndFilter otherFilter){
+            if (obj is AutomationRuleAndFilter otherFilter)
+            {
                 return FilterGuid.Equals(otherFilter.FilterGuid);
 
             }

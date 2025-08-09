@@ -24,38 +24,44 @@ else
         await Task.Run(() =>
          {
 
-             var userLastLogon = DirectoryEntry?.LastLogonTime;
-             var userLastLogonTimestamp = DirectoryEntry?.LastLogonTimestamp;
-
-             if(userLastLogon!=null && userLastLogonTimestamp != null)
-             {
-                 if (userLastLogon > userLastLogonTimestamp)
-                 {
-                     userLastLogonTime = userLastLogon;
-                 }
-                 else
-                 {
-                     userLastLogonTime = userLastLogonTimestamp;
-
-                 }
-             }
-             else
-             {
-                 if (userLastLogon != null)
-                 {
-                     userLastLogonTime = userLastLogon;
-                 }
-                 else
-                 if (userLastLogonTimestamp != null)
-                 {
-                     userLastLogonTime = userLastLogonTimestamp;
-                 }
-             }
-
-             _loadingLogonTime = false;
-
-             InvokeAsync(StateHasChanged);
+             GetLogonTimestamp();
 
          });
+    }
+    private void GetLogonTimestamp()
+    {
+        var userLastLogon = DirectoryEntry?.LastLogonTime;
+        var userLastLogonTimestamp = DirectoryEntry?.LastLogonTimestamp;
+
+        if (userLastLogon != null && userLastLogonTimestamp != null)
+        {
+            if (userLastLogon > userLastLogonTimestamp)
+            {
+                userLastLogonTime = userLastLogon;
+            }
+            else
+            {
+                userLastLogonTime = userLastLogonTimestamp;
+
+            }
+        }
+        else
+        {
+            if (userLastLogon != null)
+            {
+                userLastLogonTime = userLastLogon;
+            }
+            else
+            {
+                if (userLastLogonTimestamp != null)
+                {
+                    userLastLogonTime = userLastLogonTimestamp;
+                }
+            }
+        }
+
+        _loadingLogonTime = false;
+
+        InvokeAsync(StateHasChanged);
     }
 }

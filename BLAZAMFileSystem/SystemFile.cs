@@ -1,7 +1,4 @@
 ﻿using BLAZAM.Logger; // Added
-using System; // Added
-using System.IO; // Added
-using System.Threading.Tasks; // Added
 
 namespace BLAZAM.FileSystem
 {

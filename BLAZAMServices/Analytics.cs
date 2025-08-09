@@ -2,7 +2,6 @@
 using BLAZAM.Logger;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
-using System;
 
 namespace BLAZAM.Services
 {
@@ -240,7 +239,7 @@ namespace BLAZAM.Services
         /// <param name="data">Optional data payload for the event (will be JSON serialized).</param>
         public async Task PostCustomEvent(string eventName, object? data = null)
         {
-            
+
             Loggers.SystemLogger.Debug("Analytics: Posting custom event '{EventName}' with data: {Data}", eventName, data == null ? "null" : JsonConvert.SerializeObject(data));
             try
             {

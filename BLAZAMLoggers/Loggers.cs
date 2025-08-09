@@ -17,7 +17,7 @@ namespace BLAZAM.Logger
         public static string DatabaseType { get; set; }
         public static string SeqAPIKey { get; set; }
 
-     
+
 
         private static ILogger? _requestLogger;
         public static ILogger RequestLogger
@@ -133,7 +133,7 @@ namespace BLAZAM.Logger
             }
         }
 
-   
+
 
 
         public static void SetupLoggers(string logPath, string applicationVersion = "1.0")
@@ -158,19 +158,19 @@ namespace BLAZAM.Logger
 
         internal static LoggerConfiguration CreateLogBuilder()
         {
-           var config =  new LoggerConfiguration()
-                                .Enrich.FromLogContext()
-                               .Enrich.WithMachineName()
-                               .Enrich.WithEnvironmentName()
-                               .Enrich.WithEnvironmentUserName()
-                             .Enrich.WithProperty("Application Name", "Blazam")
-                             .Enrich.WithProperty("Installation Type", InstallationType)
-                             .Enrich.WithProperty("Installation Id", InstallationId)
-                             .Enrich.WithProperty("OS", OperatingSystem.IsWindows() ? "Windows" : OperatingSystem.IsLinux() ? "Linux" : "Unknown")
-                             .Enrich.WithProperty("Installation Completed", InstallationCompleted)
-                             .Enrich.WithProperty("Database Type", DatabaseType)
-                               .Enrich.WithProperty("Application Version", _applicationVersion);
-          
+            var config = new LoggerConfiguration()
+                                 .Enrich.FromLogContext()
+                                .Enrich.WithMachineName()
+                                .Enrich.WithEnvironmentName()
+                                .Enrich.WithEnvironmentUserName()
+                              .Enrich.WithProperty("Application Name", "Blazam")
+                              .Enrich.WithProperty("Installation Type", InstallationType)
+                              .Enrich.WithProperty("Installation Id", InstallationId)
+                              .Enrich.WithProperty("OS", OperatingSystem.IsWindows() ? "Windows" : OperatingSystem.IsLinux() ? "Linux" : "Unknown")
+                              .Enrich.WithProperty("Installation Completed", InstallationCompleted)
+                              .Enrich.WithProperty("Database Type", DatabaseType)
+                                .Enrich.WithProperty("Application Version", _applicationVersion);
+
             return config;
         }
 
@@ -204,7 +204,7 @@ namespace BLAZAM.Logger
         {
             var loggerBuilder = CreateLogBuilder()
                 .WriteTo.Console();
-          
+
 
             return loggerBuilder.CreateLogger();
         }

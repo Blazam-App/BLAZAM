@@ -1,15 +1,6 @@
-﻿using BLAZAM.ActiveDirectory.Data;
+﻿using System.ComponentModel.DataAnnotations;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
-using BLAZAM.FileSystem;
-using BLAZAM.Helpers;
-using BLAZAM.Jobs;
-using Microsoft.IdentityModel.Tokens;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
-using System.Security.AccessControl;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -49,7 +40,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute(ActiveDirectoryFields.GivenName.FieldName, value);
             }
         }
-      
+
         public string? MiddleName
         {
             get
@@ -109,13 +100,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute(ActiveDirectoryFields.EmployeeId.FieldName, value);
             }
         }
-        
 
-     
-       
 
-      
-     
+
+
+
+
+
 
         public string? Title
         {

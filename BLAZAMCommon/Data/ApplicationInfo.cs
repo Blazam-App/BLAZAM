@@ -1,8 +1,5 @@
-﻿
-using BLAZAM.Plugins;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Builder;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace BLAZAM.Common.Data
 
@@ -48,7 +45,7 @@ namespace BLAZAM.Common.Data
         /// <returns>
         /// A list of address strings eg: {"https://localhost:7900/","http://localhost:5900/"}
         /// </returns>
-        public static IEnumerable<string> listeningAddresses = new List<string>();
+        public static IEnumerable<string> listeningAddresses { get; set; } = new List<string>();
 
         /// <summary>
         /// A static access to <see cref="InDebugMode"/>
@@ -62,7 +59,7 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// A static access to <see cref="InstallationId"/>
         /// </summary>
-        public static Guid installationId = Guid.Empty;
+        public static Guid installationId { get; set; } = Guid.Empty;
 
         /// <summary>
         /// Indicates whether Blazam is running under IIS or as a service
@@ -110,11 +107,11 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// The running AppConfig configuration
         /// </summary>
-        public static Microsoft.Extensions.Configuration.ConfigurationManager configuration;
+        public static Microsoft.Extensions.Configuration.ConfigurationManager configuration { get; set; }
 
-        
-        public static SystemDirectory pluginDirectory => new SystemDirectory(applicationRoot.ToString() + @"/plugins/");
-        public SystemDirectory PluginDirectory => new SystemDirectory(ApplicationRoot.ToString() + @"/plugins/");
+
+        public static SystemDirectory pluginDirectory => new(applicationRoot.ToString() + @"/plugins/");
+        public SystemDirectory PluginDirectory => new(ApplicationRoot.ToString() + @"/plugins/");
 
         /// <summary>
         /// A list of plugins that were found
@@ -191,7 +188,7 @@ namespace BLAZAM.Common.Data
             ApplicationRoot = new SystemDirectory(builder.Environment.ContentRootPath);
             TempDirectory = new SystemDirectory(Path.GetTempPath() + $"Blazam{Path.DirectorySeparatorChar}");
             configuration = builder.Configuration;
-            //AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Blazam\\");
+
         }
     }
 }

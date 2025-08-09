@@ -1,6 +1,5 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
-using BLAZAM.Helpers;
 
 namespace BLAZAM.Static
 {
@@ -32,7 +31,7 @@ namespace BLAZAM.Static
                 {
                     return imgBytes.ResizeRawImage(size);
                 }
-               
+
 
             }
             return null;

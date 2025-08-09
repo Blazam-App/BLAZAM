@@ -1,6 +1,6 @@
-﻿using BLAZAM.Common.Data.Validators;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using BLAZAM.Common.Data.Validators;
 
 namespace BLAZAM.Database.Models
 {

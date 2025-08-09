@@ -1,6 +1,10 @@
-﻿using BLAZAM.ActiveDirectory.Data;
+﻿using System.Data;
+using System.Diagnostics;
+using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
+using System.Security;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
@@ -68,7 +72,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                if (value!=null)
+                if (value != null)
                 {
                     SetAttribute("lockoutTime", DateTime.UtcNow);
                 }
@@ -88,7 +92,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-          public virtual DateTime? PasswordExpirationTime
+        public virtual DateTime? PasswordExpirationTime
         {
             get
             {
@@ -132,7 +136,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 else
                 {
 
-                   LockoutTime = null;
+                    LockoutTime = null;
                 }
             }
         }
@@ -271,7 +275,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        
+
 
         public virtual DateTime? ExpireTime
         {
@@ -281,7 +285,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                value = SetFileTimeAttribute("accountExpires",value);
+                value = SetFileTimeAttribute("accountExpires", value);
             }
         }
 
@@ -396,7 +400,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             catch (Exception ex) when (ex is not AppException)
             {
 
-                Loggers.ActiveDirectoryLogger.Error(ex,"Error setting entry password");
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error setting entry password");
                 if (!Debugger.IsAttached)
                     throw new AppException("Unable to set password", ex);
                 else return true;

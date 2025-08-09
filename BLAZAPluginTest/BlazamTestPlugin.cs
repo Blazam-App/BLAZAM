@@ -1,12 +1,6 @@
 ﻿using BLAZAM.Global.Data;
 using BLAZAM.Plugins;
 using Microsoft.AspNetCore.Builder;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAPluginTest
 {

@@ -1,14 +1,14 @@
-﻿using BLAZAM.Common.Data;
+﻿using System.Diagnostics;
+using System.IO.Compression;
+using System.Security.Principal;
+using System.Text;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.FileSystem;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Update.Services;
-using System.Diagnostics;
-using System.IO.Compression;
-using System.Security.Principal;
-using System.Text;
 
 namespace BLAZAM.Update
 {
@@ -114,12 +114,12 @@ namespace BLAZAM.Update
         {
             get
             {
-               
+
                 var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory;
                 if (Debugger.IsAttached)
                     args += $"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}net8.0{Path.DirectorySeparatorChar}";
                 args += "'";
-               
+
                 return args;
 
             }
@@ -504,7 +504,8 @@ namespace BLAZAM.Update
                             }
                         }
                     }
-                }catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     retries--;
                     if (retries == 0)

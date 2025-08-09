@@ -1,7 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Models.Audit;
-
-namespace BLAZAM.Services.Events
+﻿namespace BLAZAM.Services.Events
 {
     public static class ApplicationEvents
     {

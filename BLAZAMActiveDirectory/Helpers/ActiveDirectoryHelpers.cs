@@ -1,13 +1,15 @@
-﻿using BLAZAM.ActiveDirectory;
+﻿using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
+using System.Text;
+using System.Text.RegularExpressions;
+using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
-using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Logger;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
@@ -121,7 +123,7 @@ namespace BLAZAM.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error(ex,"Could not set value for {@Field}: {@Value}", fieldValue.Field?.FieldName, fieldValue.Value?.ToString());
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Could not set value for {@Field}: {@Value}", fieldValue.Field?.FieldName, fieldValue.Value?.ToString());
                 }
 
             }
@@ -455,10 +457,11 @@ namespace BLAZAM.Helpers
         public static List<ActiveDirectoryFieldOperator> GetOperators(this IActiveDirectoryField field)
         {
             List<ActiveDirectoryFieldOperator> applicableOperators = new List<ActiveDirectoryFieldOperator>();
-            if (field == null || field.FieldType==null) return applicableOperators;
+            if (field == null || field.FieldType == null) return applicableOperators;
             var fieldType = field.FieldType;
 
-            switch (fieldType) {
+            switch (fieldType)
+            {
                 case ActiveDirectoryFieldType.Text:
                     applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
                     applicableOperators.Add(ActiveDirectoryFieldOperator.StartsWith);
@@ -560,7 +563,7 @@ namespace BLAZAM.Helpers
 
 
 
- 
+
     }
 
 

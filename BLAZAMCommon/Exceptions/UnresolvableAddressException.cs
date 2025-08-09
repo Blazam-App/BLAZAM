@@ -27,6 +27,6 @@
             Address = address;
         }
 
-       
+
     }
 }

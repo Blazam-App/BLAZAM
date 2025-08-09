@@ -1,5 +1,3 @@
-
-using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Session;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,7 +17,7 @@ namespace BLAZAM.Server.Pages.API.Auth
             if (HttpContext.User.Identity?.IsAuthenticated == true)
             {
                 HttpContext.SlideCookieExpiration(ApplicationUserStateService.Instance.GetUserState(HttpContext.User));
-                
+
             }
             else
             {

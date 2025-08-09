@@ -11,10 +11,10 @@ namespace BLAZAM.Services.Audit
         {
         }
 
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedOU)
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedEntry)
             => await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.BitLocker_Searched,
-                searchedOU);
+                searchedEntry);
 
 
 

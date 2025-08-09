@@ -1,14 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using System.Runtime.Intrinsics.X86;
-using System.Security;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Xml.Linq;
-
-namespace BLAZAM.Localization
+﻿namespace BLAZAM.Localization
 {
     /// <summary>
     /// Collection of available string translations

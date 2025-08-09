@@ -1,6 +1,6 @@
 @inherits ChatComponentBase
-
-@{
+@if (Message != null)
+{
     var localTimestamp = Message.Timestamp.ToLocalTime();
     var timestamp = "";
     bool timestampeShortend = false;
@@ -19,49 +19,49 @@
     {
         timestamp = localTimestamp.ToString();
     }
-}
 
-@if (Message.User.Username != CurrentUser.State.Username)
-{
-    <MudStack Class="w-100">
-        <MudStack Row="true">
-            <MudChip T=string
-                     Size=Size.Small
-                     Color="Color.Secondary">
-                @Message.User.Username
-            </MudChip>
-            <MudText Class="align-middle">@Message.Message</MudText>
 
+    @if (Message.User.Username != CurrentUser.State.Username)
+    {
+        <MudStack Class="w-100">
+            <MudStack Row="true">
+                <MudChip T=string
+                         Size=Size.Small
+                         Color="Color.Secondary">
+                    @Message.User.Username
+                </MudChip>
+                <MudText Class="align-middle">@Message.Message</MudText>
+
+            </MudStack>
+            <AppTooltip Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
+
+                <MudText Class="w-max" Typo="Typo.caption">@timestamp</MudText>
+            </AppTooltip>
         </MudStack>
-        <AppTooltip Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
+    }
+    else
+    {
+        <MudStack Justify="Justify.FlexEnd" Class="w-100">
+            <MudStack Justify="Justify.FlexEnd" Row="true">
+                <MudText Class="align-middle">@Message.Message</MudText>
 
-            <MudText Class="w-max" Typo="Typo.caption">@timestamp</MudText>
-        </AppTooltip>
-    </MudStack>
-}
-else
-{
-    <MudStack Justify="Justify.FlexEnd" Class="w-100">
-        <MudStack Justify="Justify.FlexEnd" Row="true">
-            <MudText Class="align-middle">@Message.Message</MudText>
+                <MudChip T=string
+                         Size=Size.Small
+                         Color="Color.Tertiary">
+                    @Message.User.Username
+                </MudChip>
 
-            <MudChip T=string
-                     Size=Size.Small
-                     Color="Color.Tertiary">
-                @Message.User.Username
-            </MudChip>
+            </MudStack>
+            <AppTooltip RootClass="align-end" Style="z-index:1500 !important;" Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
 
+                <MudText Class="w-max" Typo="Typo.caption">@timestamp</MudText>
+            </AppTooltip>
         </MudStack>
-        <AppTooltip RootClass="align-end" Style="z-index:1500 !important;" Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
 
-            <MudText Class="w-max" Typo="Typo.caption">@timestamp</MudText>
-        </AppTooltip>
-    </MudStack>
-
+    }
 }
-
 @code {
     [Parameter]
-    public ChatMessage Message { get; set; }
+    public ChatMessage? Message { get; set; }
 
 }

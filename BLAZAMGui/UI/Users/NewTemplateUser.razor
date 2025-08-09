@@ -25,7 +25,7 @@
            InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
            )
             {
-                <Section Title=@AppLocalization[Lang.Organization]>
+                <ViewSection Title=@AppLocalization[Lang.Organization]>
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
                     {
 
@@ -43,7 +43,8 @@
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Mail))
                     {
                         @if (DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true &&
-                       (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id) && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
+                       (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field?.Id == ActiveDirectoryFields.Mail.Id) 
+                       && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field?.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
                         {
 
                         }
@@ -128,7 +129,7 @@
 
 
                     }
-                </Section>
+                </ViewSection>
             }
 
             @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone) ||
@@ -139,7 +140,7 @@
            InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
            )
             {
-                <Section Title=@AppLocalization[Lang.Contact_Info]>
+                <ViewSection Title=@AppLocalization[Lang.Contact_Info]>
 
                     @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone))
                     {
@@ -225,7 +226,7 @@
 
 
                     }
-                </Section>
+                </ViewSection>
             }
 
             @if (InDirectoryTemplate(ActiveDirectoryFields.Site))
@@ -247,7 +248,7 @@
            InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
            )
             {
-                <Section Title=@AppLocalization[Lang.Profile]>
+                <ViewSection Title=@AppLocalization[Lang.Profile]>
                     @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
                     {
 
@@ -304,29 +305,33 @@
 
 
                     }
-                </Section>
+                </ViewSection>
             }
             @if (Entry.CanReadAnyCustomFields)
             {
-                <Section Title=@AppLocalization[Lang.Additional_Fields]>
+                <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
                     @foreach (var field in DirectoryTemplate.EffectiveFieldValues.Where(f => f.CustomField != null))
                     {
                         @if (field.CustomField != null)
                         {
                             <MudTextField Immediate=true
                                           Validation=@(()=>{
-                          if(field.Required && Entry.NewEntryProperties[field.CustomField.FieldName]!=null
-                          && Entry.NewEntryProperties[field.CustomField.FieldName].ToString()!="")
-                          return true;
-                          else
-                          return false;
-                          })
+                                                          if(field.Required && Entry.NewEntryProperties[field.CustomField.FieldName]!=null
+                                                          && Entry.NewEntryProperties[field.CustomField.FieldName].ToString()!="")
+                                                          {
+                                                          return true;
+                                                          }
+                                                          else
+                                                          {
+                                                              return false;
+                                                          }
+                                                     })
                                           Label="@field.FieldDisplayName"
                                           @bind-Value="@Entry.NewEntryProperties[field.CustomField.FieldName]"
                                           Disabled=@(!IsAdmin && !IsEditableTemplateField(field.CustomField)) />
                         }
                     }
-                </Section>
+                </ViewSection>
             }
 
 
@@ -361,7 +366,7 @@
     public NewUserName NewUserName { get; set; }
 
     [Parameter]
-    public bool IsValid { get; set; }
+    public new bool IsValid { get; set; }
 
     bool _initialized = false;
 
@@ -381,7 +386,6 @@
     bool IsEditableTemplateField(IActiveDirectoryField field)
     {
 
-        //if (IsAdmin) return true;
 
         if (field is ActiveDirectoryField)
             return DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
@@ -394,7 +398,7 @@
 
 
         if (field is ActiveDirectoryField)
-            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Required);
+            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field?.FieldName == field.FieldName && f.Required);
         else
             return DirectoryTemplate.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Required);
     }

@@ -1,5 +1,5 @@
 ﻿using BLAZAM.Database.Models.User;
-using BLAZAM.Logger; // Added
+using BLAZAM.Logger;
 
 namespace BLAZAM.Notifications.Services
 {

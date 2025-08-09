@@ -1,13 +1,9 @@
-﻿using BLAZAM.Common.Data.Services; // Used for Encryption.Instance
-using BLAZAM.Database.Context; // Used for DatabaseCache
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using BLAZAM.Database.Context;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.IdentityModel.Tokens;
-using System; // Added for ArgumentNullException, InvalidOperationException, TimeSpan
-using System.Collections.Generic; // Added for Dictionary
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq; // Added for FirstOrDefault
-using System.Security.Claims;
 
 
 namespace BLAZAM.Services

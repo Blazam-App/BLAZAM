@@ -1,4 +1,4 @@
-﻿using BLAZAM.Common;
+﻿using System.Security.Claims; // Added
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers; // Added for GetAppHashCode
 using BLAZAM.Logger;
@@ -6,12 +6,6 @@ using BLAZAM.Session.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using System; // Added
-using System.Collections.Generic; // Added
-using System.Linq; // Added
-using System.Security.Claims; // Added
-using System.Threading; // Added for Timer
-using System.Threading.Tasks; // Added for Task
 
 namespace BLAZAM.Session
 {
@@ -114,7 +108,7 @@ namespace BLAZAM.Session
                 }
                 catch (Exception ex)
                 {
-                    Loggers.SystemLogger.Error(ex, "Unexpected error trying to retrieve current user state from httpContext"); 
+                    Loggers.SystemLogger.Error(ex, "Unexpected error trying to retrieve current user state from httpContext");
                     return null;
                 }
             }
@@ -237,7 +231,7 @@ namespace BLAZAM.Session
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex, "Error trying to remove user state"); 
+                Loggers.SystemLogger.Error(ex, "Error trying to remove user state");
             }
         }
 
