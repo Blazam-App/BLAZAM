@@ -1,10 +1,10 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Text.RegularExpressions;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Database.Context;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -12,11 +12,8 @@ namespace BLAZAM.Pages.API.v1
     /// Searches Active Directory.
     /// </summary>
     [Produces("application/json")]
-    public class Search : ApiController
+    public class Search(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : ApiController(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
     {
-        public Search(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
-        {
-        }
 
 
 
@@ -41,8 +38,11 @@ namespace BLAZAM.Pages.API.v1
             {
                 return BadRequest();
             }
-            ADSearch search = new(Directory);
-            search.GeneralSearchTerm = query;
+
+            ADSearch search = new(Directory)
+            {
+                GeneralSearchTerm = query
+            };
             var data = search.Search();
             var data2 = data.Where(de => de.CanRead).ToList();
             var data3 = data2.Select(de => de.CanonicalName).ToList();

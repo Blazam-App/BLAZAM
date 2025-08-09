@@ -2,22 +2,25 @@
 @using System.Security
 @inherits NotificationTemplateComponent
 
-    <EmailTemplateHeader>
+<EmailTemplateHeader>
     <strong>@AppLocalization[Lang.User_locked_out]</strong>
-    </EmailTemplateHeader>
-   
-    <EmailTemplateBody>
-     @AppHelpLocalization[HelpLang.Locked_Out,EntryName]
-    <br/>
-   
-   
-    </EmailTemplateBody>
+</EmailTemplateHeader>
+
+<EmailTemplateBody>
+    @if (EntryName != null)
+    {
+        @AppHelpLocalization[HelpLang.Locked_Out, EntryName]
+    }
+    <br />
 
 
-@code{
+</EmailTemplateBody>
+
+
+@code {
     [Parameter]
-    public string EntryName { get; set; }
- 
+    public string? EntryName { get; set; }
+
     public override string Render() => new ComponentRenderer<LockedOutEmailMessage>()
             .UseLayout<DefaultEmailLayout>()
             .AddServiceProvider(ApplicationInfo.services)

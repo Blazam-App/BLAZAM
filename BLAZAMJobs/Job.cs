@@ -1,9 +1,9 @@
 ﻿
 
-using BLAZAM.Helpers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
+using BLAZAM.Helpers;
 
 namespace BLAZAM.Jobs
 {
@@ -16,7 +16,7 @@ namespace BLAZAM.Jobs
         private DateTime scheduledRunTime = DateTime.Now;
         private Timer? runScheduler;
 
-        public string? User { get; set; } 
+        public string? User { get; set; }
 
         private ConcurrentQueue<IJobStep> _queue = new ConcurrentQueue<IJobStep>();
 
@@ -168,7 +168,7 @@ namespace BLAZAM.Jobs
             }
 
 
-            
+
 
             // Finalize job result after the loop
             if (Result == JobResult.Running) // Only set final result if not already cancelled or failed by StopOnFailedStep

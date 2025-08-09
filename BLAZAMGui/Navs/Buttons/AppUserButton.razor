@@ -73,9 +73,9 @@
     AppModal? apiModal;
 
     [CascadingParameter]
-    public MainLayout mainLayout { get; set; }
+    public MainLayout? mainLayout { get; set; }
 
-    private IApplicationUserState UserState;
+    private IApplicationUserState? UserState;
 
     protected override async Task OnInitializedAsync()
     {

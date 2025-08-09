@@ -30,14 +30,14 @@
     /// The computer to reboot or shutdown
     /// </summary>
     [Parameter]
-    public IADComputer DirectoryModel { get; set; }
+    public IADComputer? DirectoryModel { get; set; }
 
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         Modal.SetOnYes(Execute);
-        Modal.Title = AppLocalization[Lang.Reboot_Shutdown];
+        Modal.SetTitle(AppLocalization[Lang.Reboot_Shutdown]);
     }
 
     private async Task Execute()

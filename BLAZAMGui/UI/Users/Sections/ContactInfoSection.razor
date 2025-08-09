@@ -54,6 +54,8 @@
                              Disabled=@(!EditMode || !Contact.CanEditField(ActiveDirectoryFields.PostalCode)) />
         }
 
+        <PluginComponents Page="@PageType.User" Location="@PageLocation.ContactInfo" />
+
     </ViewSection>
 }
 

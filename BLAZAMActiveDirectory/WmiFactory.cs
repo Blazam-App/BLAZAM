@@ -1,8 +1,8 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Management;
+using System.Runtime.InteropServices;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using System.Management;
-using System.Runtime.InteropServices;
 
 namespace BLAZAM.Common.Data.Services
 {
@@ -34,15 +34,15 @@ namespace BLAZAM.Common.Data.Services
                 }
                 catch (UnauthorizedAccessException ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Warning("Unauthorized access exception connecting wmi to " + hostName + " {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Warning(ex, "Unauthorized access exception connecting wmi to {@Hostname}", hostName);
                 }
                 catch (COMException ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Warning("COM Exception while connecting to WMI on " + hostName + " {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Warning(ex, "COM Exception while connecting to WMI on  {@Hostname}", hostName);
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error("Error connecting to WMI " + hostName + " {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Error connecting to WMI {@Hostname}", hostName);
 
                 }
                 return managementScope;

@@ -1,6 +1,6 @@
 ﻿
-using BLAZAM.Common.Data;
 using System.ComponentModel.DataAnnotations;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.Database.Models
 {
@@ -20,7 +20,7 @@ namespace BLAZAM.Database.Models
     {
         Text, Date, RawData,
         DriveLetter,
-        StringList,FileTime,
+        StringList, FileTime,
         Boolean
     }
     /// <summary>

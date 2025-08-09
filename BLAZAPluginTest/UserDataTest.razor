@@ -1,0 +1,19 @@
+﻿@using BLAZAM.ActiveDirectory.Interfaces
+@using BLAZAM.Gui
+@using BLAZAM.Gui.UI
+@using BLAZAM.Notifications.Services
+
+@using BLAZAM.Plugins
+@inherits PluginDirectoryModelComponentElement
+@attribute [PluginComponent(PageType.User,PageLocation.Account)]
+
+<MudText>
+    Test Plugin Account Information
+</MudText>
+<MudButton OnClick="TestSnackBar">Test Button</MudButton>
+@code {
+    private void TestSnackBar()
+    {
+        SnackBarService.Success("Plugin Toast Notification in "+Account.DisplayName);
+    }
+}

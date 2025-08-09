@@ -1,8 +1,9 @@
 ﻿@inherits OUTreeViewBase
 
 <MudText>@Label</MudText>
-
-<MudTreeView T="IDirectoryEntryAdapter"
+@if (GuiOU != null && GuiOU.Count > 0)
+{
+    <MudTreeView T="IDirectoryEntryAdapter"
              ServerData="GetOUChildrenAsync"
              Items="GuiOU"
              @ref=treeView
@@ -29,8 +30,8 @@
         </MudTreeViewItem>
     </ItemTemplate>
 </MudTreeView>
-
-@if (RootOU == null || !RootOU.Any() || LoadingData)
+}
+@if (GuiOU == null || !GuiOU.Any() || LoadingData)
 {
     <MudProgressLinear Color="Color.Secondary" Indeterminate="true" />
 

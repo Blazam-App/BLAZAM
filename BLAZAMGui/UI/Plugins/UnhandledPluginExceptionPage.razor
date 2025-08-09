@@ -1,0 +1,127 @@
+@inject EmailService email
+@inject ApplicationInfo ApplicationInfo
+@inject IStringLocalizer<AppLocalization> AppLocalization
+@inject IUserDatabaseFactory factory
+@inject NavigationManager Nav
+
+
+
+
+
+<MudExpansionPanel Class="mud-theme-error" Text="@AppLocalization["{0} experienced an unexpected error", Plugin?.PluginBase.Name ?? "Unknown Plugin"]" 
+Dense=true
+ Disabled=@(!ApplicationInfo.InDebugMode)
+ HideIcon=@(!ApplicationInfo.InDebugMode)>
+
+    <MudContainer>
+
+        @try
+        {
+            @if (ApplicationInfo.InDebugMode)
+            {
+
+                <MudCard Class=" mx-auto">
+                    <MudCardHeader>
+                        @Error?.Source : @Error?.GetType()
+                    </MudCardHeader>
+                    <MudPaper Square=true>
+                        @AppLocalization[Lang.Error_Message]: @Error?.Message
+                    </MudPaper>
+                    <MudPaper Class="overflow-auto mud-typography-wrap">
+                        @AppLocalization[Lang.Stack_Trace]: <br>
+                        @(
+                                        (MarkupString)_error.StackTrace?.Replace("\n", "<br><br>")
+                                        )
+                </MudPaper>
+            </MudCard>
+                }
+            else
+            {
+                <MudText Class="my-7">@AppLocalization["To see error details, set DebugMode to true in appsettings.json in the Blazam installation directory."]</MudText>
+            }
+            <MudText Class="my-4" Align="Align.Right">@AppLocalization["Installation Id"]: @ApplicationInfo.InstallationId</MudText>
+        }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error(ex, "Error on unexpected error page");
+        }
+    </MudContainer>
+</MudExpansionPanel>
+
+
+
+@* <MudAlert Elevation="5"
+    ShowCloseIcon=true
+    CloseIcon="@Icons.Material.Filled.Refresh"
+    CloseIconClicked=@(()=>{Nav.NavigateTo(Nav.Uri,true);}) 
+    Severity="Severity.Warning" 
+    ContentAlignment="HorizontalAlignment.Center">
+    <MudText Typo="Typo.h6">
+        @AppLocalization["{0} experienced an unexpected error",Plugin?.PluginBase.Name??"Unknown Plugin"]
+
+    </MudText>
+  
+    <MudContainer>
+
+    @try
+        {
+            @if (ApplicationInfo.InDebugMode)
+            {
+
+                <MudCard Class=" mx-auto">
+                <MudCardHeader Class="mud-error">
+                @Error?.Source : @Error?.GetType()
+                </MudCardHeader>
+                <MudPaper Square=true>
+                        @AppLocalization[Lang.Error_Message]: @Error?.Message
+                    </MudPaper>
+                    <MudPaper Class="overflow-auto mud-typography-wrap">
+                    @AppLocalization[Lang.Stack_Trace]: <br>
+                        @(
+                                (MarkupString)_error.StackTrace?.Replace("\n", "<br><br>")
+                                )
+                    </MudPaper>
+                </MudCard>
+            }
+            else
+            {
+            <MudText Class="my-7">@AppLocalization["To see error details, set DebugMode to true in appsettings.json in the Blazam installation directory."]</MudText>
+            }
+            <MudText Class="my-4" Align="Align.Right">@AppLocalization["Installation Id"]: @ApplicationInfo.InstallationId</MudText>
+        }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error(ex,"Error on unexpected error page");
+        }
+    </MudContainer>
+</MudAlert> *@
+
+
+
+
+@code {
+    private Exception? _error;
+    private List<string> StackTrace { get; set; } = new();
+    [Parameter]
+    public LoadedPlugin? Plugin { get; set; }   
+    [Parameter]
+    public Exception? Error
+    {
+        get => _error; set
+
+        {
+            if (value == _error) return;
+            _error = value;
+            if (_error != null)
+            {
+                try{
+                    Loggers.PluginLogger.Fatal(_error,"Unhandled exception in plugin. {@PluginName} {@PluginPath}",Plugin.PluginBase.Name,Plugin.Assembly.Location);
+                }
+                catch
+                {
+                    
+                }
+            }
+        }
+    }
+}

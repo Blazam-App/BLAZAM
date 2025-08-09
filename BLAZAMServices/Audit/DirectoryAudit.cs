@@ -10,11 +10,11 @@ namespace BLAZAM.Services.Audit
 {
     public class DirectoryAudit : CommonAudit
     {
-        public DirectoryAudit(IAppDatabaseFactory factory, IApplicationUserState userState, IJSRuntime? jSRuntime=null) : base(factory,  userState, jSRuntime)
+        public DirectoryAudit(IAppDatabaseFactory factory, IApplicationUserState userState, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
         {
         }
 
-        public virtual Task<bool> Changed(IDirectoryEntryAdapter changedUser, List<AuditChangeLog> changes)
+        public virtual Task<bool> Changed(IDirectoryEntryAdapter changedEntry, List<AuditChangeLog> changes)
         {
             throw new NotImplementedException();
         }
@@ -23,12 +23,12 @@ namespace BLAZAM.Services.Audit
             throw new NotImplementedException();
 
         }
-        public virtual Task<bool> Created(IDirectoryEntryAdapter newUser)
+        public virtual Task<bool> Created(IDirectoryEntryAdapter newEntry)
         {
             throw new NotImplementedException();
         }
 
-        public virtual Task<bool> Searched(IDirectoryEntryAdapter searchedUser)
+        public virtual Task<bool> Searched(IDirectoryEntryAdapter searchedEntry)
         {
             throw new NotImplementedException();
         }
@@ -55,7 +55,7 @@ namespace BLAZAM.Services.Audit
             {
                 using var context = await factory.CreateDbContextAsync();
                 var table = auditTable.Invoke(context);
-                var username = UserState?.AuditUsername?? CurrentUser?.AuditUsername ?? string.Empty;
+                var username = UserState?.AuditUsername ?? CurrentUser?.AuditUsername ?? string.Empty;
                 var auditEntry = new T()
                 {
                     Action = action,

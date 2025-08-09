@@ -1,7 +1,5 @@
 ﻿using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
-using BLAZAM.Session.Interfaces;
-using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {

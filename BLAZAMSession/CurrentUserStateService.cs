@@ -1,9 +1,7 @@
-﻿using BLAZAM.Logger;
+﻿using System.Security.Claims; // Added
+using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
-using System; // Added
-using System.Security.Claims; // Added
-using System.Threading; // Added
 
 namespace BLAZAM.Session
 {
@@ -38,10 +36,10 @@ namespace BLAZAM.Session
         public CurrentUserStateService(IApplicationUserStateService applicationUserStateService, IHttpContextAccessor httpContextAccessor)
         {
             ArgumentNullException.ThrowIfNull(applicationUserStateService);
-            
+
             ArgumentNullException.ThrowIfNull(httpContextAccessor);
 
-           
+
 
             _httpContextAccessor = httpContextAccessor;
             _applicationUserStateService = applicationUserStateService;
@@ -69,7 +67,7 @@ namespace BLAZAM.Session
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex, "Error trying to get current user state {@Error}", ex); // Pass ex as first param
+                Loggers.SystemLogger.Error(ex, "Error trying to get current user state");
                 return;
             }
             // Original log below might be less useful now that we log success specifically. Kept for now.

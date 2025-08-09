@@ -1,11 +1,5 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Notifications;
-using BLAZAM.Database.Models.Permissions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Database.Models.Rules
 {
@@ -107,11 +101,11 @@ namespace BLAZAM.Database.Models.Rules
         /// <summary>
         /// The actions to perform if this rule's filters are applicable to this triggering event
         /// </summary>
-        public List<AutomationRuleAction> Actions { get; set; } = new() {};
+        public List<AutomationRuleAction> Actions { get; set; } = new() { };
 
         public override string ToString()
         {
-            return Name??"New Rule";
+            return Name ?? "New Rule";
         }
     }
 }

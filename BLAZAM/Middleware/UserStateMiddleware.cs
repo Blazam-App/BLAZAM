@@ -1,5 +1,4 @@
-﻿using BLAZAM.Logger;
-using BLAZAM.Session.Interfaces;
+﻿using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.Server.Middleware
 {
@@ -29,14 +28,14 @@ namespace BLAZAM.Server.Middleware
         {
             if (httpContext == null)
             {
-                Loggers.SystemLogger.Debug("UserStateMiddleware: httpContext is null.");
-                return _next(httpContext);
+                Loggers.SystemLogger.Error("UserStateMiddleware: httpContext is null.");
+                throw new AppException("HttpContext is null.");
             }
-            
+
 
             if (httpContext.User != null && httpContext.User.Identity != null) //Proceed if User and Identity are not null
             {
-               
+
 
                 var state = userStateService.GetUserState(httpContext.User);
                 if (state != null)
@@ -47,7 +46,7 @@ namespace BLAZAM.Server.Middleware
                 if (httpContext.Connection != null &&
                     httpContext.Connection.RemoteIpAddress != null)
                 {
-                   
+
                     if (currentUserStateService.State != null &&
                         currentUserStateService.State.IPAddress != httpContext.Connection.RemoteIpAddress.ToString())
                     {

@@ -33,7 +33,11 @@
         /// <summary>
         /// The assigned drive letter
         /// </summary>
-        string Letter { get; }
+        string? Letter { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         int MediaType { get; }
 
         /// <summary>

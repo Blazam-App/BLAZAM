@@ -4,13 +4,8 @@ using BLAZAM.Common.Data;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
-    public class ADContactSearcher : ADSearcher, IADContactSearcher
+    public class ADContactSearcher(IActiveDirectoryContext directory) : ADSearcher(directory), IADContactSearcher
     {
-
-        public ADContactSearcher(IActiveDirectoryContext directory) : base(directory)
-        {
-        }
-
         public async Task<List<IADContact>> FindContactsByStringAsync(string? searchTerm, bool exactMatch = false)
         {
             return await Task.Run(() =>

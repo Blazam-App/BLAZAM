@@ -1,8 +1,8 @@
-﻿using BLAZAM.Common.Data;
+﻿using System.Reflection;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
-using System.Reflection;
 
 namespace BLAZAM.Helpers
 {

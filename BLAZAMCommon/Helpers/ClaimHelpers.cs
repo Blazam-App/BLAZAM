@@ -1,5 +1,5 @@
-﻿using BLAZAM.Common.Data;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.Server.Helpers
 {
@@ -18,7 +18,7 @@ namespace BLAZAM.Server.Helpers
 
             ArgumentNullException.ThrowIfNull(claims);
 
-            
+
             claims.Add(new Claim(ClaimTypes.Role, UserRoles.SuperAdmin));
         }
 

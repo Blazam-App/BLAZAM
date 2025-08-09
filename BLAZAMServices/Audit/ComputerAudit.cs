@@ -8,12 +8,8 @@ using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
-    public class ComputerAudit : DirectoryAudit
+    public class ComputerAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
     {
-        public ComputerAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
-        {
-        }
-
         public async Task<bool> Moved(IDirectoryEntryAdapter movedComputer, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
             Analytics?.ObjectMoved(ActiveDirectoryObjectType.Computer);
@@ -25,9 +21,9 @@ namespace BLAZAM.Services.Audit
                ouMovedTo.OU);
             return true;
         }
-        public override async Task<bool> Changed(IDirectoryEntryAdapter changedComputer, List<AuditChangeLog> changes)
+        public override async Task<bool> Changed(IDirectoryEntryAdapter changedEntry, List<AuditChangeLog> changes)
         {
-            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Computer_Edited, changedComputer, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));
+            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Computer_Edited, changedEntry, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));
             return true;
         }
 
@@ -64,7 +60,7 @@ namespace BLAZAM.Services.Audit
             return true;
         }
 
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedComputer) => await Log(AuditActions.Computer_Searched, (IADComputer)searchedComputer);
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedEntry) => await Log(AuditActions.Computer_Searched, (IADComputer)searchedEntry);
 
         private async Task<bool> Log(string action, IADComputer searchedComputer)
         {
@@ -86,7 +82,7 @@ namespace BLAZAM.Services.Audit
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Unable to write Log to database {@Error}", ex);
+                Loggers.SystemLogger.Error(ex, "Unable to write Log to database");
 
                 return false;
             }

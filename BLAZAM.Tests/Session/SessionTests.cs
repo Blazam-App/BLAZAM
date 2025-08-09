@@ -1,21 +1,12 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models.Notifications;
-using BLAZAM.Database.Models.Permissions;
-using BLAZAM.Database.Models.User;
-using BLAZAM.Session;
+﻿using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Authentication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+using Moq; // Added Moq namespace
 
 namespace BLAZAM.Tests.Session
 {
     public class SessionTests
     {
+
         [Fact]
         public void LocalAuthentication_Constant_ShouldHaveCorrectValue()
         {
@@ -41,6 +32,7 @@ namespace BLAZAM.Tests.Session
             // Assert
             Assert.Equal(expectedValue, actualValue);
         }
+
 
         [Fact]
         public void SetAndGet_ByTypeKey_ShouldStoreAndRetrieveObject()
@@ -188,21 +180,24 @@ namespace BLAZAM.Tests.Session
             // Assert
             Assert.Equal(expectedValue, retrievedValue);
         }
+
         [Fact]
         public void MFARequest_Constructor_ShouldSetPropertiesCorrectly()
         {
             // Arrange
             string expectedToken = "test-token-123";
             string expectedRedirectUrl = "/redirect/path";
-            var mockUser = new MockApplicationUserState();
+            // Replaced hard-coded mock with Moq
+            var mockUser = new Mock<IApplicationUserState>();
 
             // Act
-            var mfaRequest = new MFARequest(expectedToken, expectedRedirectUrl, mockUser);
+            // Use mockUser.Object to pass the mocked instance
+            var mfaRequest = new MFARequest(expectedToken, expectedRedirectUrl, mockUser.Object);
 
             // Assert
             Assert.Equal(expectedToken, mfaRequest.mfaToken);
             Assert.Equal(expectedRedirectUrl, mfaRequest.redirectUrl);
-            Assert.Same(mockUser, mfaRequest.user); // Check reference equality for the user object
+            Assert.Same(mockUser.Object, mfaRequest.user); // Check reference equality for the user object
         }
 
         [Theory]
@@ -213,8 +208,9 @@ namespace BLAZAM.Tests.Session
             string tokenA, string urlA, string tokenB, string urlB, bool expectedEquality)
         {
             // Arrange
-            var userA = new MockApplicationUserState();
-            var userB = new MockApplicationUserState();
+            // Replaced hard-coded mocks with Moq
+            var userA = new Mock<IApplicationUserState>().Object;
+            var userB = new Mock<IApplicationUserState>().Object;
             var requestA = new MFARequest(tokenA, urlA, userA);
             var requestB = new MFARequest(tokenB, urlB, userB);
 
@@ -229,7 +225,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_Equals_Object_WithNull_ShouldReturnFalse()
         {
             // Arrange
-            var requestA = new MFARequest("token", "/url", new MockApplicationUserState());
+            var requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
 
             // Act
             bool actualEquality = requestA.Equals((object?)null);
@@ -242,7 +238,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_Equals_Object_WithDifferentType_ShouldReturnFalse()
         {
             // Arrange
-            var requestA = new MFARequest("token", "/url", new MockApplicationUserState());
+            var requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
             var differentObject = new object();
 
             // Act
@@ -260,8 +256,8 @@ namespace BLAZAM.Tests.Session
             string tokenA, string urlA, string tokenB, string urlB, bool expectedEquality)
         {
             // Arrange
-            var userA = new MockApplicationUserState();
-            var userB = new MockApplicationUserState();
+            var userA = new Mock<IApplicationUserState>().Object;
+            var userB = new Mock<IApplicationUserState>().Object;
             var requestA = new MFARequest(tokenA, urlA, userA);
             var requestB = new MFARequest(tokenB, urlB, userB);
 
@@ -276,7 +272,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_Equals_MFARequest_WithNull_ShouldReturnFalse()
         {
             // Arrange
-            var requestA = new MFARequest("token", "/url", new MockApplicationUserState());
+            var requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
 
             // Act
             bool actualEquality = requestA.Equals(null);
@@ -289,7 +285,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_GetHashCode_ShouldBeEqualForEqualObjects()
         {
             // Arrange
-            var user = new MockApplicationUserState();
+            var user = new Mock<IApplicationUserState>().Object;
             var requestA = new MFARequest("same-token", "/urlA", user);
             var requestB = new MFARequest("same-token", "/urlB", user); // Different URL, but same token
 
@@ -301,7 +297,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_GetHashCode_ShouldLikelyBeDifferentForDifferentTokens()
         {
             // Arrange
-            var user = new MockApplicationUserState();
+            var user = new Mock<IApplicationUserState>().Object;
             var requestA = new MFARequest("token-A", "/url", user);
             var requestB = new MFARequest("token-B", "/url", user);
 
@@ -321,7 +317,7 @@ namespace BLAZAM.Tests.Session
             string tokenA, string tokenB, bool expectedEquality)
         {
             // Arrange
-            var user = new MockApplicationUserState();
+            var user = new Mock<IApplicationUserState>().Object;
             var requestA = new MFARequest(tokenA, "/url", user);
             var requestB = new MFARequest(tokenB, "/url", user);
 
@@ -347,7 +343,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_EqualityOperator_OneNull_ShouldReturnFalse()
         {
             // Arrange
-            MFARequest? requestA = new MFARequest("token", "/url", new MockApplicationUserState());
+            MFARequest? requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
             MFARequest? requestB = null;
 
             // Act & Assert
@@ -363,7 +359,7 @@ namespace BLAZAM.Tests.Session
             string tokenA, string tokenB, bool expectedInequality)
         {
             // Arrange
-            var user = new MockApplicationUserState();
+            var user = new Mock<IApplicationUserState>().Object;
             var requestA = new MFARequest(tokenA, "/url", user);
             var requestB = new MFARequest(tokenB, "/url", user);
 
@@ -390,126 +386,12 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_InequalityOperator_OneNull_ShouldReturnTrue()
         {
             // Arrange
-            MFARequest? requestA = new MFARequest("token", "/url", new MockApplicationUserState());
+            MFARequest? requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
             MFARequest? requestB = null;
 
             // Act & Assert
             Assert.True(requestA != requestB);
             Assert.True(requestB != requestA);
-        }
-    }
-    // --- Mock/Stub for IApplicationUserState (Helper for MFARequest tests) ---
-    public class MockApplicationUserState : IApplicationUserState
-    {
-        // This is a minimal mock. Add properties or methods if MFARequest
-        // interacts with IApplicationUserState in ways that need to be controlled during tests.
-        // For the current MFARequest class, it's primarily just being stored.
-
-        public int Id => throw new NotImplementedException();
-
-        public AppDelegate OnSettingsChanged { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public string AuditUsername => throw new NotImplementedException();
-
-        public string? Username {get;set;}="test";
-
-        public ClaimsPrincipal? Impersonator { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public bool IsSuperAdmin => throw new NotImplementedException();
-
-        public DateTime LastAccessed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public ClaimsPrincipal User { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public AppUser Preferences => throw new NotImplementedException();
-
-        public AuthenticationTicket? Ticket { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IApplicationUserSessionCache Cache { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string? IPAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string LastUri { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public bool IsAuthenticated => throw new NotImplementedException();
-
-        public List<PermissionDelegate> PermissionDelegates { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public List<PermissionMapping> PermissionMappings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public List<NotificationSubscription> NotificationSubscriptions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public bool HasUserPrivilege => throw new NotImplementedException();
-
-        public bool HasCreateUserPrivilege => throw new NotImplementedException();
-
-        public bool HasGroupPrivilege => throw new NotImplementedException();
-
-        public bool HasCreateGroupPrivilege => throw new NotImplementedException();
-
-        public bool HasOUPrivilege => throw new NotImplementedException();
-
-        public bool HasCreateOUPrivilege => throw new NotImplementedException();
-
-        public bool HasComputerPrivilege => throw new NotImplementedException();
-
-        public bool HasBitLockerPrivilege => throw new NotImplementedException();
-
-        public bool CanUnlockUsers => throw new NotImplementedException();
-
-        public bool CanAssign => throw new NotImplementedException();
-
-        public string DuoAuthState { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public IList<ReadNewsItem>? ReadNewsItems => throw new NotImplementedException();
-
-        public bool CanSearchDisabled(ActiveDirectoryObjectType objectType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void GetUserSettingFromDB()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool HasActionPermission(string dnTarget, ObjectAction action, ActiveDirectoryObjectType objectType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool HasPermission(string dnTarget, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector, bool nestedSearch)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool HasRole(string role)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> MarkAllRead()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> MarkRead(UserNotification notification)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> SaveAllUserSettings()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveBasicUserPreferences()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveDashboardWidgets()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveReadNewsItems()
-        {
-            throw new NotImplementedException();
         }
     }
 
@@ -527,9 +409,5 @@ namespace BLAZAM.Tests.Session
             Id = id;
             Name = name;
         }
-
-        // Optional: Override Equals and GetHashCode if you plan to compare instances directly
-        // For these tests, we'll compare properties or reference equality.
     }
-
 }

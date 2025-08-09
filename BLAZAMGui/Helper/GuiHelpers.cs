@@ -26,12 +26,12 @@ namespace BLAZAM.Helpers
         {
             return new ActiveDirectoryUserState()
             {
-                 Username=userState.AuditUsername,
-                 PermissionMappings = userState.PermissionMappings,
-                 IsSuperAdmin=userState.IsSuperAdmin
+                Username = userState.AuditUsername,
+                PermissionMappings = userState.PermissionMappings,
+                IsSuperAdmin = userState.IsSuperAdmin
 
             };
-            
+
         }
         public static async Task<IDialogReference> ShowNewsItemDialog(this NewsItem item, AppDialogService dialogService)
         {

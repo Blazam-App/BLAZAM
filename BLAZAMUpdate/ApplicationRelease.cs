@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using Octokit;
+﻿using Octokit;
 
 namespace BLAZAM.Update
 {

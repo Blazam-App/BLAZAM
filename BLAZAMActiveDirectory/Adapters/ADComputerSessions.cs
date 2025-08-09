@@ -1,7 +1,7 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.ComponentModel;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Logger;
 using Cassia;
-using System.ComponentModel;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -37,62 +37,83 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private void RefreshSessions()
         {
-
-            if (!Polling && Computer.IsOnline == true)
+            // 1. Use guard clause to check if polling is already in progress or if the computer is offline.
+            if (Polling || Computer.IsOnline != true)
             {
-                Loggers.ActiveDirectoryLogger.Information("Getting sessions for " + Computer);
-                Polling = true;
-                var impersonation = Computer.Directory.Impersonation;
-                var success = impersonation.Run(() =>
-               {
-                   try
-                   {
-                       server = manager.GetRemoteServer(Computer.CanonicalName);
-                       try
-                       {
-                           server.Open();
-
-                           try
-                           {
-                               foreach (ITerminalServicesSession session in server.GetSessions())
-                               {
-                                   if (session.UserAccount != null)
-                                   {
-                                       if (!session.Server.IsOpen)
-                                           session.Server.Open();
-                                       IRemoteSession s = new RemoteSession(session, Computer);
-                                       s.OnSessionDown += SessionDownEvent;
-                                       if (!ConnectedSessions.Contains(s))
-                                       {
-                                           ConnectedSessions.Add(s);
-                                           ConnectedSessionsChanged?.Invoke();
-                                       }
-                                   }
-                               }
-
-                           }
-                           catch (Win32Exception ex)
-                           {
-                               Loggers.ActiveDirectoryLogger.Error("Error while collecting sessions for " + Computer + " {@Error}", ex);
-                           }
-                       }
-                       catch
-                       {
-
-                       }
-
-
-                       Polling = false;
-                       return true;
-                   }
-                   catch (Exception ex)
-                   {
-                       Loggers.ActiveDirectoryLogger.Error(ex,"Error while connecting to TerminalServices on {@Computer}", Computer.CanonicalName);
-                       return false;
-                   }
-               });
+                return;
             }
 
+            Loggers.ActiveDirectoryLogger.Information("Getting sessions for {Computer}", Computer);
+            Polling = true;
+
+            try
+            {
+                var impersonation = Computer.Directory.Impersonation;
+                // 2. Delegate the core logic to a separate method.
+                impersonation.Run(() => GetAndProcessSessions());
+            }
+            finally
+            {
+                // 3. Use a 'finally' block to guarantee state is reset.
+                Polling = false;
+            }
+        }
+
+        /// <summary>
+        /// Connects to the remote server and processes all terminal sessions.
+        /// This contains the error handling for the remote connection.
+        /// </summary>
+        private bool GetAndProcessSessions()
+        {
+            try
+            {
+                var server = manager.GetRemoteServer(Computer.CanonicalName);
+                server.Open();
+
+                foreach (ITerminalServicesSession session in server.GetSessions())
+                {
+                    // 4. Delegate the logic for a single session to another method.
+                    ProcessSingleSession(session);
+                }
+                return true; // Return true if sessions were successfully collected.
+            }
+            catch (Win32Exception ex) // Catches specific session collection errors
+            {
+                Loggers.ActiveDirectoryLogger.Information(ex, "Error while collecting sessions for {Computer}", Computer);
+            }
+            catch (Exception ex) // Catches general connection errors
+            {
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error connecting to TerminalServices on {Computer}", Computer.CanonicalName);
+            }
+            return false; // Return false if there was an error.
+        }
+
+        /// <summary>
+        /// Processes an individual terminal session.
+        /// </summary>
+        private void ProcessSingleSession(ITerminalServicesSession session)
+        {
+            // Use guard clauses to skip irrelevant or existing sessions.
+            if (session.UserAccount == null)
+            {
+                return;
+            }
+
+            var remoteSession = new RemoteSession(session, Computer);
+            if (ConnectedSessions.Contains(remoteSession))
+            {
+                return;
+            }
+
+            // Logic for adding a new session.
+            if (!session.Server.IsOpen)
+            {
+                session.Server.Open();
+            }
+
+            remoteSession.OnSessionDown += SessionDownEvent;
+            ConnectedSessions.Add(remoteSession);
+            ConnectedSessionsChanged?.Invoke();
         }
 
         public void Dispose()

@@ -1,5 +1,4 @@
 ﻿
-using BLAZAM.Common.Exceptions;
 
 namespace BLAZAM.Notifications.Services
 {

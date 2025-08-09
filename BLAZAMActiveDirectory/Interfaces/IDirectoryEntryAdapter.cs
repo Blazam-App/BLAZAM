@@ -1,9 +1,9 @@
-﻿using BLAZAM.ActiveDirectory.Data;
+﻿using System.DirectoryServices;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Jobs;
-using System.DirectoryServices;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -13,7 +13,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     /// </summary>
     public interface IDirectoryEntryAdapter : IDisposable
     {
-  
+
         /// <summary>
         /// The name that displays for this object in ADUC
         /// </summary>
@@ -382,7 +382,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Ensures that the <see cref="DirectoryEntry"/> property is not null.
         /// </summary>
         void EnsureDirectoryEntry();
-		
+
         /// <summary>
         /// Sets the current user state that should be associated to 
         /// </summary>

@@ -1,7 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO.Compression;
@@ -9,6 +6,9 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
+using BLAZAM.Common.Data;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace BLAZAM.Helpers
 {
@@ -76,7 +76,7 @@ namespace BLAZAM.Helpers
         {
             if (eventRecord == null)
             {
-               return null;
+                return null;
             }
             try
             {
@@ -102,7 +102,7 @@ namespace BLAZAM.Helpers
                 // If original is null, any property in 'changed' is considered a new value, but our current BuildAuditChangeLog handles this.
                 // If 'changed' is also null, ReferenceEquals handles it.
             }
-           
+
 
             // Check if both objects are null or same reference
             if (ReferenceEquals(changed, original))
@@ -173,7 +173,7 @@ namespace BLAZAM.Helpers
         {
             if (obj == null)
             {
-               return false; // If obj is null, it cannot have a property that equals value (unless value is also null, but this simplifies)
+                return false; // If obj is null, it cannot have a property that equals value (unless value is also null, but this simplifies)
             }
             var propertyValue = obj.GetPropertyValue(propertyName);
             if (propertyValue == null)
@@ -283,7 +283,7 @@ namespace BLAZAM.Helpers
         {
             if (memoryStream == null)
             {
-               return;
+                return;
             }
             if (destinationFile == null)
             {
@@ -437,17 +437,17 @@ namespace BLAZAM.Helpers
                 if (value == null) return null;
 
                 Int64 longInt = Int64.MinValue;
-              
-                    // Attempt to parse if it's a string representation of a long
-                    if (value is string s && long.TryParse(s, out long parsedLong))
-                    {
-                        longInt = parsedLong;
-                    }
-                    else if (value is IConvertible convertibleValue) // Handle other numeric types
-                    {
-                         longInt = convertibleValue.ToInt64(CultureInfo.InvariantCulture);
-                    }
-               
+
+                // Attempt to parse if it's a string representation of a long
+                if (value is string s && long.TryParse(s, out long parsedLong))
+                {
+                    longInt = parsedLong;
+                }
+                else if (value is IConvertible convertibleValue) // Handle other numeric types
+                {
+                    longInt = convertibleValue.ToInt64(CultureInfo.InvariantCulture);
+                }
+
 
 
                 if (longInt != Int64.MinValue && longInt != 0)
@@ -462,9 +462,9 @@ namespace BLAZAM.Helpers
                         long dV = ((long)v.HighPart << 32) + v.LowPart;
                         if (dV != 0) // Avoid converting 0 FILETIME to 1601/01/01 if it represents "no date"
                             dateTime = DateTime.FromFileTimeUtc(dV);
-                       
+
                     }
-                   
+
                 }
             }
             catch (Exception)

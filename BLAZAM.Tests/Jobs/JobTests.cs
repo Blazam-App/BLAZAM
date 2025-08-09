@@ -1,4 +1,4 @@
-﻿using BLAZAM.Common.Exceptions;
+﻿using BLAZAM.Global.Exceptions;
 using BLAZAM.Jobs;
 
 namespace BLAZAM.Tests.Jobs
@@ -76,7 +76,7 @@ namespace BLAZAM.Tests.Jobs
             var testJob = TestJob;
 
             // Act
-           _ = testJob.Run();
+            _ = testJob.Run();
 
             // Assert
             Assert.True(testJob.StartTime != null

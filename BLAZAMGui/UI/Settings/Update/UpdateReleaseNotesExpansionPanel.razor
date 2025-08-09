@@ -4,7 +4,7 @@
     <MudExpansionPanel @bind-Expanded=_expanded Text="@AppLocalization[Lang.Release_Notes]">
         @if (_expanded)
         {
-            <MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@Update.Release.ReleaseNotes" />
+            <MudMarkdown Props=Props Value="@Update.Release.ReleaseNotes" />
         }
     </MudExpansionPanel>
 </MudExpansionPanels>
@@ -15,7 +15,16 @@
 
     private bool _expanded;
 
-    private Typo ConvertHeaders(Typo from)
+     private static readonly MudMarkdownProps Props = new()
+    {
+         Heading =
+        {
+           OverrideTypo=ConvertHeaders,
+        },
+    };
+
+
+    private static Typo ConvertHeaders(Typo from)
     {
         switch (from)
         {

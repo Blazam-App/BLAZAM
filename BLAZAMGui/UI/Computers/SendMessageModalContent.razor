@@ -5,9 +5,9 @@
 </MudStack>
 
 @code{
-    string messageTextField;
+    string messageTextField="";
     [Parameter]
-    public IRemoteSession Session{ get; set; }
+    public IRemoteSession? Session{ get; set; }
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -19,6 +19,11 @@
 
     private async Task SendMessage()
     {
+        if(Session == null)
+        {
+            SnackBarService.Error("Session lost");
+            return;
+        }   
         Session.SendMessage(messageTextField);
 
         SnackBarService.Success("Message sent");

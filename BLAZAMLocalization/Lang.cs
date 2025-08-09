@@ -1,14 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using System.Runtime.Intrinsics.X86;
-using System.Security;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Xml.Linq;
-
-namespace BLAZAM.Localization
+﻿namespace BLAZAM.Localization
 {
     /// <summary>
     /// Collection of available string translations
@@ -27,6 +17,7 @@ namespace BLAZAM.Localization
         public static readonly string Username = "Username";
         public static readonly string Founder = "Founder";
         public static readonly string Founded = "Founded";
+        public static readonly string Plugins = "Plugins";
         public static readonly string Execution_Schedule = "Execution Schedule";
         public static readonly string Go_To_User = "Go To User";
         public static readonly string Print = "Print";

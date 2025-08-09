@@ -1,4 +1,4 @@
-﻿using BLAZAM.Common.Data;
+﻿using BLAZAM.Global.Data;
 
 namespace BLAZAM.Tests.Updates
 {

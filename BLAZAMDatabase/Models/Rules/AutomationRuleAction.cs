@@ -1,7 +1,4 @@
-﻿using BLAZAM.Database.Models.Permissions;
-using BLAZAM.Database.Models.Templates;
-
-namespace BLAZAM.Database.Models.Rules
+﻿namespace BLAZAM.Database.Models.Rules
 {
     public enum AutomationRuleActionType
     {
@@ -33,7 +30,7 @@ namespace BLAZAM.Database.Models.Rules
         /// Although a list, the GUI currently restricts this to one item
         /// </remarks>
         public List<AutomationRuleActionFieldValue> FieldValues { get; set; } = new();
-       
+
         /// <summary>
         /// Dynamic JSON data to hold data for actions other than field changes or direct group assignments
         /// </summary>

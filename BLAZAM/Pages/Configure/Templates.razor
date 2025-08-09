@@ -5,128 +5,11 @@
 
 <AppPageTitle>@AppLocalization[Lang.Templates]</AppPageTitle>
 
-<SetHeader @ref=Header>
+<SetSubHeader @ref=Header>
 
-
-    <MudStack Row=true AlignItems="AlignItems.Center">
-        <MudText Class="align-middle" Align="Align.Center">
-            @AppLocalization[Lang.Templates]
-
-        </MudText>
-
-        <MudSelectList T="string"
-                       Label=@AppLocalization[Lang.Category]
-                       Values="TemplateCategories"
-                       @bind-Value="@SelectedCategory" />
-
-        <MudSelectList T="DirectoryTemplate"
-                       Disabled=@(Templates.Count(t=>t.DeletedAt==null)<1)
-                       Label=@AppLocalization[Lang.Template]
-                       Values="@Templates.Where(t=>t.DeletedAt==null)"
-                       Value="@SelectedTemplate"
-                       ValueChanged="@((selected)=>{
-                                        SelectedTemplate = selected;
-                                        Nav.NavigateTo("/templates/"+selected.Id);
-                                        })" />
-        @if (createFirstTemplateTooltipVisible)
-        {
-            <AppTooltip Color=Color.Error
-                        ShowOnHover=@(Templates?.Any()==true)
-                        Arrow=true
-                        Visible=@(createFirstTemplateTooltipVisible)
-                        Text="Create your first template">
-
-
-
-                <MudIconButton Color=Color.Tertiary
-                               Class="align-middle"
-                               OnClick="@(NewTemplate)"
-                               Icon="@Icons.Material.Filled.AddCard" />
-
-            </AppTooltip>
-        }
-        else
-        {
-            <AppTooltip Text="@AppLocalization[Lang.New_Template]">
-                <MudIconButton Color=Color.Tertiary
-                               Class="align-middle"
-                               OnClick="@(NewTemplate)"
-                               Icon="@Icons.Material.Filled.AddCard" />
-
-            </AppTooltip>
-        }
-
-        @if (SelectedCategory != null && SelectedCategory != "All")
-        {
-            <AppTooltip Text="@AppLocalization[Lang.Rename_Category]">
-                <MudIconButton OnClick=@(()=>{RenameModal?.ShowAsync();})
-                               Color="Color.Tertiary"
-                               Class="align-middle"
-                               Icon="@Icons.Material.Filled.ChangeCircle" />
-            </AppTooltip>
-        }
-        @if (SelectedTemplate != null)
-        {
-            <AppTooltip Text="@AppLocalization[Lang.Copy_Template]">
-
-                <MudIconButton OnClick=@(async()=>{await DuplicateTemplate(SelectedTemplate);})
-                               Color="Color.Tertiary"
-                               Class="align-middle"
-                               Icon="@Icons.Material.Filled.FileCopy" />
-            </AppTooltip>
-            <AppTooltip Text="@AppLocalization[Lang.Remove_template]">
-
-
-                <MudIconButton Color=Color.Error
-                               Class="align-middle"
-                               OnClick="DeleteTemplate"
-                               Icon="@Icons.Material.Filled.Delete" />
-            </AppTooltip>
-        }
-
-        @if (Templates?.Any(t => t.DeletedAt != null) == true)
-        {
-            <AppTooltip Text="@AppLocalization[Lang.Restore_templates]">
-
-                <MudIconButton OnClick=@(async()=>{RestoreModal?.ShowAsync();})
-                               Color="Color.Warning"
-                               Class="align-middle"
-                               Icon="@Icons.Material.Filled.RestoreFromTrash" />
-            </AppTooltip>
-        }
-        <MudSpacer />
-        <AppDocumentationButton Page="/admin/templates" />
-    </MudStack>
-
-    <AppModal @ref=RenameModal
-              Title=@AppLocalization[Lang.Rename_Category]>
-
-
-        <MudTextField Label="New Name" @bind-Value=newCategoryName />
-
-
-        <MudButton Color="Color.Primary"
-                   OnClick="RenameSelectedCategory">Save</MudButton>
-    </AppModal>
-
-    <AppModal YesText="@AppLocalization[Lang.Restore]"
-              OnYes="RestoreSelectedTemplates"
-              @ref=RestoreModal
-              Title=@AppLocalization["Restore Template"]>
-
-        <MudDataGrid @ref=restoreDataGrid Items="Templates.Where(t=>t.DeletedAt!=null)" SelectOnRowClick=true>
-            <Columns>
-                <SelectColumn />
-                <PropertyColumn Property="t=>t.Name" />
-                <PropertyColumn Property="t=>t.Category" />
-
-            </Columns>
-        </MudDataGrid>
-
-
-
-    </AppModal>
-</SetHeader>
+    <EditDirectoryTemplateHeader TemplateSelected="SelectedTemplate"/>
+  
+</SetSubHeader>
 
 <MudText Typo="Typo.h4">@AppLocalization[Lang.Templates] <AppDocumentationButton Page="/admin/templates" /></MudText>
 @if (Templates.Any() == true)
@@ -151,26 +34,15 @@
 
 
 @code {
-    bool createFirstTemplateTooltipVisible;
-    AppModal? RenameModal;
-    AppModal? RestoreModal;
-    MudDataGrid<DirectoryTemplate>? restoreDataGrid;
-    string? newCategoryName;
-
     IReadOnlyCollection<TreeItemData<DirectoryTemplate>> TemplateTreeItemData = new List<TreeItemData<DirectoryTemplate>>();
-
+    
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await RefreshComponents();
 
-        if (Templates?.Any() != true)
-        {
-
-            await Task.Delay(1000);
-            createFirstTemplateTooltipVisible = true;
-        }
-        else
+      
+        if (Templates?.Any() == true)
         {
             TemplateTreeItemData = CreateTemplateTreeItemData();
         }
@@ -178,43 +50,9 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    protected async Task DuplicateTemplate(DirectoryTemplate template)
-    {
-        SelectedTemplate = (DirectoryTemplate)template.Clone(Context);
-        await RefreshComponents();
 
-
-    }
-    async Task RenameSelectedCategory()
-    {
-        var temp = await Context.DirectoryTemplates.Where(t => t.Category == SelectedCategory).ToListAsync();
-        if (temp != null)
-        {
-            foreach (var template in temp)
-            {
-                template.Category = newCategoryName;
-            }
-        }
-        if (SelectedTemplate != null && SelectedTemplate.Category == SelectedCategory)
-            SelectedTemplate.Category = newCategoryName;
-        if (Context != null && await Context.SaveChangesAsync() > 0)
-        {
-
-            SnackBarService.Success(AppLocalization["Renamed category"] + ": " + SelectedCategory + " to " + newCategoryName);
-            SelectedCategory = newCategoryName;
-            await FetchTemplates();
-            await RenameModal!.CloseAsync();
-        }
-        await RefreshComponents();
-
-    }
-    private void NewTemplate()
-    {
-        SelectedTemplate = new();
-        TemplateIdParameter = null;
-        SelectedTemplate = new();
-        Nav.NavigateTo("/templates/0", true);
-    }
+  
+   
 
 
     private IReadOnlyCollection<TreeItemData<DirectoryTemplate>> CreateTemplateTreeItemData()
@@ -244,36 +82,5 @@
         }
         return setToFill;
     }
-    private async Task DeleteTemplate()
-    {
-        if (SelectedTemplate != null)
-        {
-            SelectedTemplate.DeletedAt = DateTime.Now;
-            await Context.SaveChangesAsync();
-            SelectedTemplate = null;
-            await InvokeAsync(StateHasChanged);
-        }
-    }
-    private async Task RestoreSelectedTemplates()
-    {
-        if (restoreDataGrid != null)
-        {
-            foreach (var template in restoreDataGrid.SelectedItems)
-            {
-                template.DeletedAt = null;
-                Templates.First(t => template.Equals(t)).DeletedAt = null;
-
-            }
-            if (await Context.SaveChangesAsync() > 0)
-            {
-                await RestoreModal!.CloseAsync();
-                SnackBarService.Success(AppLocalization["Template(s) restored"]);
-            }
-
-        }
-        else
-        {
-            Loggers.SystemLogger.Warning("Could not find directory template restore data grid ui reference!", new AppException("restoreDataGrid is NULL"));
-        }
-    }
+  
 }

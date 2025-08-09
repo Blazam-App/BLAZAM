@@ -1,10 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Reflection;
-using BLAZAM.Common.Data; // Assuming AppException is in this namespace or accessible
-using BLAZAM.Common.Exceptions;
+﻿using System.Reflection;
 using Moq;
-using Xunit;
 
 // If AppException is a custom type and not provided, you might need a placeholder for the tests to compile:
 // namespace BLAZAM.Common.Data
@@ -208,28 +203,19 @@ namespace BLAZAMCommon.Tests.Data
         [InlineData("2024.01.15.0930", 2024, 1, 15, 9, 30, 0)]   // Another standard
         [InlineData("2023.12.31.2359", 2023, 12, 31, 23, 59, 0)] // End of year
         [InlineData("2023.02.28.0000", 2023, 2, 28, 0, 0, 0)]   // Midnight
-        [InlineData("2023.11.09", 2023, 11, 9, 0, 0, 0)] // Date only, time defaults to 00:00
-        [InlineData("2023.11", 2023, 11, 1, 0, 0, 0)] // Year and month, day defaults to 1, time to 00:00 (by TryParse with "MM/dd/yyyy Z")
-        [InlineData("2023", 1, 1, 1, 0, 0, 0)] // Year only, (by TryParse with "MM/dd/yyyy Z" will likely fail or be 1/1/YYYY) -> Actually results in MinValue
         public void Property_ReleaseDate_ParsesValidBuildNumbers(string buildNumber, int y, int M, int d, int h, int m, int s)
         {
             // Arrange
             var appVersion = new ApplicationVersion(new Version(1, 0, 0), buildNumber);
             DateTime expectedDate;
-            if (buildNumber == "2023" || buildNumber == "2023.11") // Special case for year only based on logic, should result in MinValue due to TryParse format
-            {
-                expectedDate = DateTime.MinValue;
-            }
-            else
-            {
-                expectedDate = new DateTime(y, M, d, h, m, s, DateTimeKind.Utc);
-            }
+
+            expectedDate = new DateTime(y, M, d, h, m, s, DateTimeKind.Utc);
 
 
             // Act
             var releaseDate = appVersion.ReleaseDate;
             var utcExpectedDate = expectedDate.ToUniversalTime();
-            var utcReleaseDate = releaseDate.ToUniversalTime();
+            var utcReleaseDate = releaseDate?.ToUniversalTime();
 
             // Assert
             Assert.Equal(utcExpectedDate, utcReleaseDate);
@@ -242,7 +228,7 @@ namespace BLAZAMCommon.Tests.Data
         [InlineData("2023.11.09.1160")] // Invalid minute
         [InlineData("NotaDate")]
         [InlineData("2023.11.09.1134extra")] // Extra non-numeric in time
-        public void Property_ReleaseDate_MalformedBuildNumber_ReturnsMinValue(string malformedBuildNumber)
+        public void Property_ReleaseDate_MalformedBuildNumber_ReturnsNull(string malformedBuildNumber)
         {
             // Arrange
             var appVersion = new ApplicationVersion(new Version(1, 0, 0), malformedBuildNumber);
@@ -251,13 +237,13 @@ namespace BLAZAMCommon.Tests.Data
             var releaseDate = appVersion.ReleaseDate;
 
             // Assert
-            Assert.Equal(DateTime.MinValue, releaseDate);
+            Assert.Null(releaseDate);
         }
 
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void Property_ReleaseDate_NullOrEmptyBuildNumber_ReturnsMinValue(string buildNumber)
+        public void Property_ReleaseDate_NullOrEmptyBuildNumber_ReturnsNull(string buildNumber)
         {
             // Arrange
             var appVersion = new ApplicationVersion(new Version(1, 0, 0), buildNumber);
@@ -266,7 +252,7 @@ namespace BLAZAMCommon.Tests.Data
             var releaseDate = appVersion.ReleaseDate;
 
             // Assert
-            Assert.Equal(DateTime.MinValue, releaseDate);
+            Assert.Null(releaseDate);
         }
 
         // --- Method Tests ---

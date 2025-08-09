@@ -1,9 +1,7 @@
-using System;
-using Microsoft.AspNetCore.Http;
-using Moq;
-using Xunit;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Moq;
 
 namespace BLAZAM.Tests.Session
 {

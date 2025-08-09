@@ -402,7 +402,7 @@
         catch (Exception ex)
         {
 
-            Loggers.ActiveDirectoryLogger.Error("Error while creating template user {@Error}", ex);
+            Loggers.ActiveDirectoryLogger.Error(ex,"Error while creating template user");
 
             SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user: "] + ex.Message);
         }

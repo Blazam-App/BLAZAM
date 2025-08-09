@@ -16,7 +16,7 @@
 
 
 
-    @if (Searcher.Results.Count > 1)
+    @if (Searcher?.Results.Count > 1)
     {
         <MudStack Row=true>
             Results found: @Searcher.Results.Count
@@ -41,7 +41,7 @@
             </Placeholder>
         </Virtualize>
     }
-    else if (Searcher.Results.Count == 1)
+    else if (Searcher?.Results.Count == 1)
     {
 
         var result = Searcher.Results[0];
@@ -64,7 +64,7 @@
     {
         <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
     }
-    else if (Searcher.Results.Count == 0)
+    else if (Searcher?.Results.Count == 0)
     {
         <MudAlert Class="mud-alert-filled-info">
             No results were found.
@@ -74,36 +74,36 @@
 @code {
 
     [CascadingParameter]
-    public SearchService SearchParameters { get; set; }
+    public SearchService? SearchParameters { get; set; }
 
-    string ModelsTypeName = "Search";
+    readonly string ModelsTypeName = "Search";
     protected string SearchIcon { get; set; } = "";
     string? _searchTermParameter;
-    /// <summary>
+      /// <summary>
     /// The search term that comes from the URI
     /// </summary>
     [Parameter]
-    public virtual string? SearchTermParameter
+    public virtual string? SearchTermParameter { get; set; }
+
+    protected override async Task OnParametersSetAsync()
     {
-        get => _searchTermParameter; set
-        {
-            if (_searchTermParameter == HttpUtility.UrlDecode(value)) return;
-            LoadingData = true;
-            Searcher?.Cancel();
-            _searchTermParameter = HttpUtility.UrlDecode(value);
-            Task.Run(async () =>
-            {
-                await PerformSearch();
-                if (_searchTermParameter.IsNullOrEmpty())
-                    LoadingData = false;
-            });
+        var decodedSearchTerm = HttpUtility.UrlDecode(SearchTermParameter);
 
+        if (_searchTermParameter == decodedSearchTerm)
+            return;
 
-        }
+        LoadingData = true;
+        Searcher?.Cancel();
+        _searchTermParameter = decodedSearchTerm;
+
+        await PerformSearch();
+
+        if (_searchTermParameter.IsNullOrEmpty())
+            LoadingData = false;
     }
 
 
-    public ADSearch Searcher { get; set; }
+    public ADSearch? Searcher { get; set; }
 
 
     [CascadingParameter]
@@ -170,7 +170,7 @@
         if (!SearchTermParameter.IsNullOrEmpty() && SearchTermParameter?.Length > 0)
             await InvokeSearch();
         else
-            Searcher.Results.Clear();
+            Searcher?.Results.Clear();
         LoadingData = false;
 
 

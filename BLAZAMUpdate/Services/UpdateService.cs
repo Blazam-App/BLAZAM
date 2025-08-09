@@ -1,17 +1,15 @@
 ﻿
+using System.Runtime.ExceptionServices;
+using System.Security.Principal;
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Update.Exceptions;
-using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Octokit;
-using System.Runtime.ExceptionServices;
-using System.Security.Principal;
 
 namespace BLAZAM.Update.Services
 {
@@ -78,7 +76,7 @@ namespace BLAZAM.Update.Services
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("An error occurred while getting latest update {@Error}", ex);
+                Loggers.UpdateLogger.Error(ex, "An error occurred while getting latest update");
             }
             return null;
 
@@ -156,7 +154,7 @@ namespace BLAZAM.Update.Services
                     }
                     catch (Exception ex)
                     {
-                        Loggers.UpdateLogger.Error("Error trying to get v1 releases {@Error}{@Release}", ex, release?.Name);
+                        Loggers.UpdateLogger.Error(ex, "Error trying to get v1 releases {@Release}", release?.Name);
                     }
                 }
             }
@@ -179,7 +177,7 @@ namespace BLAZAM.Update.Services
                     }
                     catch (Exception ex)
                     {
-                        Loggers.UpdateLogger.Error("Error trying to get beta releases {@Error}{@Release}", ex, release?.Name);
+                        Loggers.UpdateLogger.Error(ex, "Error trying to get beta releases {@Release}", release?.Name);
                     }
                 }
             }
@@ -214,7 +212,7 @@ namespace BLAZAM.Update.Services
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Warning("Error getting update branch from database {@Error}", ex);
+                    Loggers.DatabaseLogger.Warning(ex, "Error getting update branch from database");
 
                 }
             }
@@ -288,7 +286,7 @@ namespace BLAZAM.Update.Services
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Error while checking for latest update {@Error}", ex);
+                Loggers.UpdateLogger.Error(ex, "Error while checking for latest update");
 
             }
         }
@@ -323,18 +321,23 @@ namespace BLAZAM.Update.Services
 
         public WindowsImpersonation? GetUpdateCredentials()
         {
-            using var context = _dbFactory.CreateDbContext();
             switch (UpdateCredential)
             {
                 case UpdateCredential.Application:
                     return null;
                 case UpdateCredential.Active_Directory:
                     //Pull ad settings to test if app ad account can write to the application directory
-                    var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
-                    return adSettings?.CreateDirectoryAdminImpersonator();
+                    using (var context = _dbFactory.CreateDbContext())
+                    {
+                        var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
+                        return adSettings?.CreateDirectoryAdminImpersonator();
+                    }
                 case UpdateCredential.Custom:
-                    var appSettings = context.AppSettings.FirstOrDefault();
-                    return appSettings?.CreateUpdateImpersonator();
+                    using (var context2 = _dbFactory.CreateDbContext())
+                    {
+                        var appSettings = context2.AppSettings.FirstOrDefault();
+                        return appSettings?.CreateUpdateImpersonator();
+                    }
                 default:
                     return null;
             }
@@ -391,7 +394,7 @@ namespace BLAZAM.Update.Services
                    {
                        var exception = new AppException("Impersonation running as application identity");
                        ExceptionDispatchInfo.SetCurrentStackTrace(exception);
-                       Loggers.ActiveDirectoryLogger.Information("Impersonation running as application identity  {@Error}", exception);
+                       Loggers.ActiveDirectoryLogger.Information(exception, "Impersonation running as application identity");
                        return false;
                    }
                    if (ApplicationInfo.applicationRoot.Writable)

@@ -1,17 +1,9 @@
-﻿using Xunit;
-using Moq;
+﻿using System.Diagnostics;
 using BLAZAM.Common.Data; // Assuming ApplicationInfo, SystemDirectory, ApplicationVersion are here
-using BLAZAM.Plugins;    // Assuming IPluginBase is here
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using BLAZAM.FileSystem;
-using Microsoft.AspNetCore.Hosting; // For IWebHostEnvironment
+using BLAZAM.Plugins;    // Assuming IPluginBase is here
+using Microsoft.Extensions.Configuration;
+using Moq;
 
 namespace BLAZAMCommon.Tests.Data
 {
@@ -28,7 +20,6 @@ namespace BLAZAMCommon.Tests.Data
         private readonly Guid _originalInstallationId = ApplicationInfo.installationId;
         private readonly IServiceProvider _originalServices = ApplicationInfo.services;
         private readonly ConfigurationManager _originalConfiguration = ApplicationInfo.configuration;
-        private readonly List<IPluginBase> _originalLoadedPlugins = ApplicationInfo.loadedPlugins;
         private readonly bool _originalInstallationCompleted = ApplicationInfo.installationCompleted;
 
         public ApplicationInfoTests()
@@ -41,7 +32,6 @@ namespace BLAZAMCommon.Tests.Data
             }
             // Reset static lists to new instances to avoid interference between tests
             ApplicationInfo.listeningAddresses = new List<string>();
-            ApplicationInfo.loadedPlugins = new List<IPluginBase>();
         }
 
         public void Dispose()
@@ -57,7 +47,6 @@ namespace BLAZAMCommon.Tests.Data
             ApplicationInfo.installationId = _originalInstallationId;
             ApplicationInfo.services = _originalServices;
             ApplicationInfo.configuration = _originalConfiguration;
-            ApplicationInfo.loadedPlugins = _originalLoadedPlugins;
             ApplicationInfo.installationCompleted = _originalInstallationCompleted;
         }
 
@@ -71,7 +60,7 @@ namespace BLAZAMCommon.Tests.Data
             Assert.NotNull(appInfo);
         }
 
-       
+
 
         [Fact]
         public void StaticProperties_ShouldSetAndGetCorrectly()
@@ -119,9 +108,6 @@ namespace BLAZAMCommon.Tests.Data
             ApplicationInfo.services = mockServices;
             Assert.Same(mockServices, ApplicationInfo.services);
 
-            ApplicationInfo.loadedPlugins = mockPlugins;
-            Assert.Same(mockPlugins, ApplicationInfo.loadedPlugins);
-            Assert.True(ApplicationInfo.LoadedPlugins.SequenceEqual(mockPlugins));
 
 
             ApplicationInfo.installationCompleted = true;
@@ -210,7 +196,7 @@ namespace BLAZAMCommon.Tests.Data
             ApplicationInfo.installationId = newStaticGuid;
             Assert.Equal(newStaticGuid, appInfo.InstallationId);
 
-           
+
 
             // Act & Assert - InstallationCompleted
             appInfo.InstallationCompleted = true;

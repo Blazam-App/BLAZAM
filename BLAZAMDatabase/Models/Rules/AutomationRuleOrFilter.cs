@@ -3,7 +3,7 @@
     /// <summary>
     /// An or filter which is really a collection of ands
     /// </summary>
-    public class AutomationRuleOrFilter:AppDbSetBase
+    public class AutomationRuleOrFilter : AppDbSetBase
     {
         /// <summary>
         /// The and filters which cumulatively represent this OrFilter's value
@@ -18,7 +18,8 @@
 
         public override bool Equals(object? obj)
         {
-            if (obj is AutomationRuleOrFilter otherFilter){
+            if (obj is AutomationRuleOrFilter otherFilter)
+            {
                 return FilterGuid.Equals(otherFilter.FilterGuid);
 
             }

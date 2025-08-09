@@ -2,7 +2,7 @@ using Microsoft.Playwright;
 
 namespace PlaywrightTests
 {
-    
+
     [TestFixture]
     public class Tests : PageTest
     {
@@ -278,7 +278,7 @@ namespace PlaywrightTests
 
             header = Page.Locator("text=Access levels are a template");
 
-            await Expect(header).ToBeVisibleAsync(new() { Timeout=30000 });
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);
@@ -309,7 +309,7 @@ namespace PlaywrightTests
             await LogIn();
 
             await OpenConfigureSubMenu();
-           
+
             var button = Page.GetByRole(AriaRole.Link, new() { Name = "Settings" });
 
             await Expect(button).ToBeVisibleAsync();

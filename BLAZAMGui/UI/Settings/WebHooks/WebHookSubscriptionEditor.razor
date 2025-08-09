@@ -130,7 +130,7 @@ Title="@AppLocalization["Add new Webhook Subscription"]">
         }
         catch (Exception ex)
         {
-            Loggers.SystemLogger.Warning("Error while adding webhook subscription {@Error}", ex);
+            Loggers.SystemLogger.Warning(ex, "Error while adding webhook subscription");
             SnackBarService.Error(ex.Message);
         }
     }
@@ -158,7 +158,7 @@ Title="@AppLocalization["Add new Webhook Subscription"]">
         }
         catch (Exception ex)
         {
-            Loggers.SystemLogger.Warning("Error while saving webhook subscriptions {@Error}", ex);
+            Loggers.SystemLogger.Warning(ex, "Error while saving webhook subscriptions");
             SnackBarService.Error(ex.Message);
         }
     }
@@ -178,7 +178,7 @@ Title="@AppLocalization["Add new Webhook Subscription"]">
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Warning("Error while saving webhook subscriptions {@Error}", ex);
+                Loggers.SystemLogger.Warning(ex, "Error while saving webhook subscriptions");
                 SnackBarService.Error(ex.Message);
             }
         }

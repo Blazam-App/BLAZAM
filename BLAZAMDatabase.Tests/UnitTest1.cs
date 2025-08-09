@@ -1,5 +1,4 @@
 using BLAZAM.Common.Data.Database;
-using Xunit;
 namespace BLAZAMDatabase.Tests
 {
     public class UnitTest1

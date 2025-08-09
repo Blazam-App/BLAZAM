@@ -1,7 +1,11 @@
-﻿using BLAZAM.ActiveDirectory.Data;
+﻿using System.Data;
+using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
@@ -11,11 +15,6 @@ using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
-using System.Data;
-using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
-using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -50,7 +49,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                List<AuditChangeLog> changes = new();
+                List<AuditChangeLog> changes = [];
 
 
 
@@ -64,8 +63,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     catch
                     {
-
+                        // If the property does not exist, we can ignore it
+                        // This can happen if the property is not set on the DirectoryEntry
+                        // or if it is a custom property that does not exist in the DirectoryEntry
                     }
+
                     if (currentValue == null && prop.Value != null || currentValue != null && !currentValue.Equals(prop.Value))
                         changes.Add(new AuditChangeLog()
                         {
@@ -74,6 +76,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             NewValue = prop.Value
                         });
                 }
+
                 return changes;
 
             }
@@ -83,12 +86,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <summary>
         /// Actions to perform during <see cref="CommitChanges"/>
         /// </summary>
-        protected List<JobStep> CommitSteps { get; set; } = new();
+        protected List<JobStep> CommitSteps { get; set; } = [];
 
         /// <summary>
         /// Actions to perform during <see cref="CommitChanges"/> but to happen after an initial commit, for new entries
         /// </summary>
-        protected List<JobStep> PostCommitSteps { get; set; } = new();
+        protected List<JobStep> PostCommitSteps { get; set; } = [];
 
 
 
@@ -103,7 +106,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public bool NewEntry { get; set; }
 
-        public Dictionary<string, object> NewEntryProperties { get; set; } = new();
+        public Dictionary<string, object> NewEntryProperties { get; set; } = [];
         private IActiveDirectoryContext _directory;
 
         public IActiveDirectoryContext Directory
@@ -116,7 +119,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 _currentUser = value.CurrentUser;
             }
         }
-        private bool hasUnsavedChanges = false;
+        private bool _hasUnsavedChanges = false;
 
 
 
@@ -144,6 +147,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 }
             }
+
             return false;
         }
 
@@ -425,7 +429,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (DirectoryEntry != null)
                     DirectoryEntry.Properties["objectclass"].Value = value;
                 else
-                    Loggers.ActiveDirectoryLogger.Error("Error setting objectClass for " + DN);
+                    Loggers.ActiveDirectoryLogger.Error("Error setting objectClass for {@DN}", DN);
 
             }
         }
@@ -491,7 +495,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error trying to check entry permissions.");
                 return false;
             }
         }
@@ -564,7 +568,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected virtual bool HasActionPermission(ObjectAction action, ActiveDirectoryObjectType? objectType = null)
         {
             if (CurrentUser == null) return false;
-            if (objectType == null) objectType = ObjectType;
+            objectType ??= ObjectType;
             return CurrentUser.HasActionPermission(DN, action, objectType.Value);
         }
 
@@ -594,9 +598,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                using var context = DbFactory.CreateDbContext();
-                _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
-
+                if (_appliedPermissionMappings == null)
+                {
+                    using var context = DbFactory.CreateDbContext();
+                    _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
+                }
                 return _appliedPermissionMappings;
             }
         }
@@ -623,11 +629,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual bool HasUnsavedChanges
         {
-            get => hasUnsavedChanges;
+            get => _hasUnsavedChanges;
 
             set
             {
-                hasUnsavedChanges = value;
+                _hasUnsavedChanges = value;
                 OnModelChanged?.Invoke();
             }
         }
@@ -644,7 +650,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (CachedChildren == null)
                 {
-                    List<IDirectoryEntryAdapter> directoryEntries = new();
+                    List<IDirectoryEntryAdapter> directoryEntries = [];
                     var children = DirectoryEntry.Children;
                     var list = new List<DirectoryEntry>();
                     foreach (DirectoryEntry child in children)
@@ -831,8 +837,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     //Existing Active Directory Entry
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectoryLogger.Error("The directory entry for an existing " +
-                            " entry is somehow missing on commit." + " {@Error}", new AppException("DirectoryEntry is null"));
+                        Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"), "The directory entry for an existing " +
+                            " entry is somehow missing on commit.");
                         throw new AppException("DirectoryEntry is null");
                     }
                     foreach (var p in NewEntryProperties)
@@ -879,8 +885,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectoryLogger.Error("The directory entry for new entry " + DN +
-                            " is somehow missing on commit." + " {@Error}", new AppException("DirectoryEntry is null"));
+                        Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"), "The directory entry for new entry is somehow missing on commit. {@DN}", DN);
                         throw new AppException("DirectoryEntry is null");
                     }
                     foreach (var p in NewEntryProperties)
@@ -981,7 +986,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             var children = DirectoryEntry.Children;
                             foreach (DirectoryEntry child in children)
                             {
-                                DirectoryEntry?.Children.Remove(child);
+                                DirectoryEntry.Children.Remove(child);
                             }
 
                         }
@@ -1013,7 +1018,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error deleting directory entry");
             }
         }
 
@@ -1023,7 +1028,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             DirectoryEntry = null;
             HasUnsavedChanges = false;
-            NewEntryProperties = new();
+            NewEntryProperties = [];
             CommitSteps.Clear();
 
             PostCommitSteps.Clear();
@@ -1120,97 +1125,68 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         /// <summary>
-        /// Retrieves the requested property value from either the cached <see cref="SearchResult"/>
-        /// or by actively polling Active Directory for the entire object.
-        /// The value is cached for future calls.
+        /// Retrieves the requested property value from a local cache or by polling Active Directory.
         /// </summary>
-        /// <typeparam name="T">The value type of the requested attribute</typeparam>
-        /// <param name="propertyName">The requested attribute</param>
-        /// <returns>The attribute value</returns>
+        /// <typeparam name="T">The value type of the requested attribute.</typeparam>
+        /// <param name="propertyName">The name of the attribute to retrieve.</param>
+        /// <returns>The attribute's value, or a default value if not found.</returns>
         private T? GetValue<T>(string propertyName)
-
         {
-
-            if (NewEntry)
-            {
-                try
-                {
-                    if (NewEntryProperties.ContainsKey(propertyName))
-                        return (T)NewEntryProperties[propertyName];
-                }
-                catch (InvalidCastException ex)
-                {
-                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-                }
-                catch (Exception ex)
-                {
-                    Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
-                }
-
-
-
-                return default;
-
-            }
-            if (DirectoryEntry == null)
-            {
-                if (SearchResult != null && SearchResult.Properties.Contains(propertyName))
-                    return (T?)SearchResult.Properties[propertyName][0];
-                else
-                {
-                    FetchDirectoryEntry();
-                }
-            }
             try
             {
-                if (NewEntryProperties.ContainsKey(propertyName))
-                    return (T)NewEntryProperties[propertyName];
+                // For new entries or entries with staged changes, the property cache is the source of truth.
+                if (NewEntry || NewEntryProperties.ContainsKey(propertyName))
+                {
+                    return NewEntryProperties.TryGetValue(propertyName, out var propValue) ? (T)propValue : default;
+                }
+
+                // If the full directory entry isn't loaded, check the initial search result cache first.
+                if (DirectoryEntry == null)
+                {
+                    if (SearchResult?.Properties.Contains(propertyName) == true)
+                    {
+                        return (T?)SearchResult.Properties[propertyName][0];
+                    }
+                    // The property was not in the lightweight search result, so load the full entry from AD.
+                    FetchDirectoryEntry();
+                }
+
+                // If the entry could not be fetched from Active Directory, no value can be returned.
+                if (DirectoryEntry == null)
+                {
+                    return default;
+                }
+
+                // Attempt to get the property from the loaded entry's property collection.
+                if (DirectoryEntry.Properties.Contains(propertyName))
+                {
+                    return (T?)DirectoryEntry.Properties[propertyName].Value;
+                }
+
+                // If the property is not in the local cache, refresh it from Active Directory.
+                DirectoryEntry.RefreshCache([propertyName]);
+                if (DirectoryEntry.Properties.Contains(propertyName))
+                {
+                    return (T?)DirectoryEntry.Properties[propertyName].Value;
+                }
             }
             catch (InvalidCastException ex)
             {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-
-            }
-            catch
-            {
-                return default;
-
-            }
-            
-            try
-            {
-                if (DirectoryEntry != null)
-                {
-                    
-                    if (DirectoryEntry.Properties.Contains(propertyName))
-                        return (T?)DirectoryEntry.Properties[propertyName].Value;
-                    else
-                    {
-                        DirectoryEntry.RefreshCache(new string[] { propertyName });
-                        if (DirectoryEntry.Properties.Contains(propertyName))
-                            return (T?)DirectoryEntry.Properties[propertyName].Value;
-                    }
-                }
+                // Provides detailed context if the stored value cannot be cast to the requested type.
+                throw new InvalidCastException($"Bad casting attempt for {propertyName} to type {typeof(T).FullName}", ex);
             }
             catch (ArgumentException ex)
             {
-                Loggers.ActiveDirectoryLogger.Information(ex, "Argument Exception getting an entry's attribute. {@Error} {@Attribute}", propertyName);
-                //var temp = DirectoryEntry?.Properties[propertyName];
-                //var temp2 = (T?)temp?.Value;
-                //return temp2;
+                // This exception can occur if the attribute is not available for this object class in AD.
+                Loggers.ActiveDirectoryLogger.Information(ex, "Argument Exception getting an entry's attribute. {Attribute}", propertyName);
             }
-            catch (InvalidCastException ex)
+            catch (Exception ex)
             {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-
+                // Logs any other unexpected errors during the retrieval process.
+                Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {PropertyName}", propertyName);
             }
 
-            catch
-            {
-                return default;
-            }
             return default;
-
         }
 
         protected virtual string? GetStringAttribute(string propertyName)
@@ -1237,7 +1213,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                List<string> values = new();
+                List<string> values = [];
                 object[]? rawValue = null;
                 try
                 {
@@ -1248,7 +1224,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     //Asked for string list but may have found just a single string
                     string? str = GetValue<string>(propertyName);
                     if (str != null)
-                        rawValue = new object[] { str };
+                        rawValue = [str];
                 }
                 if (rawValue != null)
                 {
@@ -1297,23 +1273,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 else
                 {
-#pragma warning disable CS8601 // Possible null reference assignment.
                     SetNewProperty(propertyName, value);
-#pragma warning restore CS8601 // Possible null reference assignment.
                 }
 
 
             }
             catch (ArgumentOutOfRangeException)
             {
-
+                // This exception can occur if the attribute is not available for this object class in AD.
             }
         }
 
 
         protected DateTime? SetFileTimeAttribute(string attribute, DateTime? value)
         {
-            if (value == null || !value.HasValue)
+            if (value == null)
                 value = CommonHelpers.ADS_NULL_TIME;
             var dateTime = value.Value;
             if (dateTime.Kind == DateTimeKind.Unspecified)
@@ -1362,7 +1336,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (ArgumentOutOfRangeException)
             {
-
+                // This exception can occur if the attribute is not available for this object class in AD.
             }
         }
 
@@ -1376,7 +1350,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (ArgumentOutOfRangeException)
             {
-
+                // This exception can occur if the attribute is not available for this object class in AD.
             }
         }
 

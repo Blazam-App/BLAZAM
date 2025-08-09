@@ -1,7 +1,5 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
-using BLAZAM.Logger;
-using System;
 
 namespace BLAZAM.Server.Middleware
 {
@@ -26,7 +24,7 @@ namespace BLAZAM.Server.Middleware
         {
             _next = next;
             _applicationInfo = applicationInfo;
-           
+
         }
         /// <summary>
         /// Checks the database cache for a true ForceHTTPS and if so an request is HTTP redirect to HTTPS

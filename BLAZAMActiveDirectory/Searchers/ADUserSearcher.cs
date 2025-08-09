@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 
 namespace BLAZAM.ActiveDirectory.Searchers
@@ -92,10 +93,15 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
-                Fields = new()
+                FieldValues = new()
                 {
-                    LockoutTime = 1
-                }
+                    new()
+                    {
+                        Field=ActiveDirectoryFields.LockedOut,
+                         Operator = ActiveDirectoryFieldOperator.BeforeNow
+                    }
+                },
+
 
             }.Search<ADUser, IADUser>();
 

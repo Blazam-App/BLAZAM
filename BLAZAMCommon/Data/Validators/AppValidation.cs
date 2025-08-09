@@ -1,15 +1,13 @@
-﻿using BLAZAM.Helpers;
+﻿using System.ComponentModel.DataAnnotations;
 using BLAZAM.Localization;
-using Microsoft.Extensions.Localization;
-using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Common.Data.Validators
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class AppValidationAttribute : ValidationAttribute
     {
-  
-   
+
+
         protected string? GetErrorMessage(ValidationContext validationContext)
         {
             return ErrorMessage;
@@ -31,7 +29,7 @@ namespace BLAZAM.Common.Data.Validators
             this.ErrorMessageResourceType = typeof(AppValidationLocalization);
         }
 
-      
+
 
     }
 }

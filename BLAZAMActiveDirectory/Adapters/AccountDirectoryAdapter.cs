@@ -1,16 +1,15 @@
-﻿using BLAZAM.ActiveDirectory.Data;
+﻿using System.Data;
+using System.Diagnostics;
+using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
+using System.Security;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
-using System.Data;
-using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
-using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -67,7 +66,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                if (value!=null)
+                if (value != null)
                 {
                     SetAttribute("lockoutTime", DateTime.UtcNow);
                 }
@@ -87,7 +86,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-          public virtual DateTime? PasswordExpirationTime
+        public virtual DateTime? PasswordExpirationTime
         {
             get
             {
@@ -131,7 +130,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 else
                 {
 
-                   LockoutTime = null;
+                    LockoutTime = null;
                 }
             }
         }
@@ -270,7 +269,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        
+
 
         public virtual DateTime? ExpireTime
         {
@@ -280,7 +279,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                value = SetFileTimeAttribute("accountExpires",value);
+                value = SetFileTimeAttribute("accountExpires", value);
             }
         }
 
@@ -374,7 +373,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Warning("Could not set password via Invoke {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Warning(ex, "Could not set password via Invoke");
                     //The following works outside the domain but may have issues with certs
                     using (PrincipalContext pContext = new(
                         ContextType.Domain,
@@ -406,7 +405,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             catch (Exception ex)
             {
 
-                Loggers.ActiveDirectoryLogger.Error(ex,"Error setting entry password");
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error setting entry password");
                 if (!Debugger.IsAttached)
                     throw new AppException("Unable to set password", ex);
                 else return true;

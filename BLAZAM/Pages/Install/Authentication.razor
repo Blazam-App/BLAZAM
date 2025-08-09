@@ -6,7 +6,7 @@
 @layout InstallLayout
 @inherits ValidatedForm
 
-<MudText Typo="Typo.h3" Size="HeadingSize.Is3">@AppLocalization[Lang.Authentication]</MudText>
+<MudText Typo="Typo.h3">@AppLocalization[Lang.Authentication]</MudText>
 <MudText Typo="Typo.h6">
     @AppLocalization["Please set a secure admin password."]
 
@@ -60,8 +60,7 @@
 
     <MudButton Disabled=!IsValid
                OnClick="SubmitForm"
-               Color="Color.Primary"
-               ButtonType="ButtonType.Submit">Save Password</MudButton>
+               Color="Color.Primary">Save Password</MudButton>
 </MudForm>
 
 
@@ -76,9 +75,15 @@
         await base.OnInitializedAsync();
         settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
 
-        if (settings != null && settings.AdminPassword == "password")
-            settings.AdminPassword = "";
+        if (settings != null && !settings.AdminPassword.IsNullOrEmpty())
+        {
+            if (settings.AdminPassword == "password")
+            {
+                settings.AdminPassword = "";
+            }
+            settings.AdminPasswordConfirmed = settings.AdminPassword;
 
+        }
         await InvokeAsync(StateHasChanged);
 
     }
@@ -93,6 +98,7 @@
 
             settings.AdminPassword = settings.AdminPasswordConfirmed.Encrypt();
             await Context.SaveChangesAsync();
+            settings = await Context.AuthenticationSettings.FirstAsync();
             await StepCompleted.InvokeAsync();
 
         }

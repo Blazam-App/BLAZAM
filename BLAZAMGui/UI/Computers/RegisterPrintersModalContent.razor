@@ -23,7 +23,7 @@
             </MudDataGrid>
         </MudTabPanel>
         <MudTabPanel Text="@AppLocalization[Lang.OU]">
-            <OUTreeView SelectedEntry="destinationOU" SelectedOUChanged="destinationOUChanged" StartingSelectedOU="null" StartRootExpanded=true />
+            <OUTreeView SelectedEntry="destinationOU" SelectedEntryChanged="destinationOUChanged" StartingSelectedOU="null" StartRootExpanded=true />
         </MudTabPanel>
 
     </MudTabs>
@@ -32,19 +32,16 @@
 </MudContainer>
 @code {
     int activePanel = 0;
-    IADOrganizationalUnit destinationOU;
+    IADOrganizationalUnit? destinationOU;
     [Parameter]
     public List<SharedPrinter> Printers { get; set; }
     public HashSet<SharedPrinter> selectedPrinters { get; set; }
 
     protected override void OnInitialized()
     {
-        //Modal.Options.FullWidth = true;
-        //Modal.Options.MaxWidth = MaxWidth.Large;
-
         Modal.SetYesText(AppLocalization[Lang.Next]);
-        Modal.Title = AppLocalization[Lang.Register_Printers];
-        Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
+        Modal.SetTitle(AppLocalization[Lang.Register_Printers]);
+        Modal.SetOnYes(() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
         base.OnInitialized();
 
 
@@ -53,7 +50,10 @@
 
     private async Task RegisterSelectedPrinters()
     {
-
+        if(destinationOU == null)
+        {
+            return;
+        }
         foreach (var printer in selectedPrinters.Where(p => p.ADPrinter == null))
         {
             IJob registerJob = new Job(AppLocalization[Lang.Register_Printers], CurrentUser.State.AuditUsername);
@@ -87,16 +87,16 @@
         {
             if (destinationOU == newDestinationOU) return;
             destinationOU = newDestinationOU;
-            if (destinationOU != null && selectedPrinters != null && selectedPrinters.Count > 0)
+            if (selectedPrinters != null && selectedPrinters.Count > 0)
             {
-                Modal.YesText = AppLocalization[Lang.Register];
-                Modal.OnYes = RegisterSelectedPrinters;
+                Modal.SetYesText(AppLocalization[Lang.Register]);
+                Modal.SetOnYes(RegisterSelectedPrinters);
                 _=Modal.RefreshView();
             }
             else
             {
-                Modal.YesText = AppLocalization[Lang.Next];
-                Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
+                Modal.SetYesText(AppLocalization[Lang.Next]);
+                Modal.SetOnYes(() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
                 _=Modal.RefreshView();
 
             }

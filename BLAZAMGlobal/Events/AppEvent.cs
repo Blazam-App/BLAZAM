@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLAZAM
+﻿namespace BLAZAM.Global.Events
 {
     public class AppEvent
     {
@@ -18,7 +12,7 @@ namespace BLAZAM
         /// </summary>
         public void Invoke()
         {
-            Delegate?.Invoke(null,EventArgs.Empty);
+            Delegate?.Invoke(null, EventArgs.Empty);
 
         }
     }
@@ -32,7 +26,7 @@ namespace BLAZAM
         /// <summary>
         /// Trigger this event
         /// </summary>
-        public void Invoke(object sender,T args)
+        public void Invoke(object sender, T args)
         {
             Delegate?.Invoke(sender, args);
 
@@ -42,7 +36,7 @@ namespace BLAZAM
         /// </summary>
         public void Invoke(T args)
         {
-            Delegate?.Invoke(null,args);
+            Delegate?.Invoke(null, args);
 
         }
     }

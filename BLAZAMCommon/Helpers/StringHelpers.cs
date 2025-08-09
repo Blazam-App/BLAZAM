@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-using System; // Added
-using System.Linq; // Added for Regex.Matches(...).Select
-using System.Net;
+﻿using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Components;
 
 namespace BLAZAM.Helpers
 {
@@ -50,7 +48,7 @@ namespace BLAZAM.Helpers
                 return hash;
             }
         }
-     
+
         /// <summary>
         /// Determines whether a string is null or an empty string.
         /// </summary>
@@ -89,7 +87,7 @@ namespace BLAZAM.Helpers
         public static Guid ToGuid(this string input)
         {
             ArgumentNullException.ThrowIfNull(input);
-            
+
             // Use MD5 hash to get a 16-byte hash of the string
             using (MD5 md5 = MD5.Create())
             {
