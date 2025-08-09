@@ -12,7 +12,7 @@
                        @bind-Value="@SelectedCategory" />
 
         <MudSelectList T="DirectoryTemplate"
-                       Disabled=@(Templates.Count(t=>t.DeletedAt==null)<1)
+                       Disabled=@(Templates.Any(t=>t.DeletedAt==null))
                        Label=@AppLocalization[Lang.Template]
                        Values="@Templates.Where(t=>t.DeletedAt==null)"
                        Value="@SelectedTemplate"
@@ -128,7 +128,7 @@
     AppModal? RestoreModal;
 
     [Parameter]
-    public DirectoryTemplate TemplateSelected{ get => SelectedTemplate; set => SelectedTemplate = value; }
+    public DirectoryTemplate? TemplateSelected{ get => SelectedTemplate; set => SelectedTemplate = value; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -187,7 +187,7 @@
         }
         else
         {
-            Loggers.SystemLogger.Warning("Could not find directory template restore data grid ui reference!", new AppException("restoreDataGrid is NULL"));
+            Loggers.SystemLogger.Warning( new AppException("restoreDataGrid is NULL"),"Could not find directory template restore data grid ui reference!");
         }
     }
 

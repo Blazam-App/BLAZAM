@@ -885,7 +885,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"), "The directory entry for new entry is somehow missing on commit. {@DN{", DN);
+                        Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"), "The directory entry for new entry is somehow missing on commit. {@DN}", DN);
                         throw new AppException("DirectoryEntry is null");
                     }
                     foreach (var p in NewEntryProperties)
