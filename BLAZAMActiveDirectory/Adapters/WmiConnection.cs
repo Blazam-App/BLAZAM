@@ -8,19 +8,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     internal class WmiConnection
     {
-        private const string DriveStatsQuery = "SELECT DeviceID,FreeSpace,Size,Description,DriveType,FileSystem,MediaType,VolumeDirty,VolumeSerialNumber FROM Win32_LogicalDisk";
-        private const string TotalMemoryQuery = "SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem";
-        private const string CPUStatsQuery = "SELECT * FROM Win32_PerfFormattedData_PerfOS_Processor WHERE Name='_Total'";
-        private const string IPStatsQuery = "SELECT * FROM Win32_NetworkAdapterConfiguration WHERE IPEnabled = 'TRUE'";
-        private const string ServicesQuery = "SELECT * FROM Win32_Service";
-        private const string SharedPrintersQuery = "SELECT * FROM Win32_Printer";
-        private ManagementScope managementScope;
-        private IADComputer target;
+        private const string _driveStatsQuery = "SELECT DeviceID,FreeSpace,Size,Description,DriveType,FileSystem,MediaType,VolumeDirty,VolumeSerialNumber FROM Win32_LogicalDisk";
+        private const string _totalMemoryQuery = "SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem";
+        private const string _cpuStatsQuery = "SELECT * FROM Win32_PerfFormattedData_PerfOS_Processor WHERE Name='_Total'";
+        private const string _ipStatsQuery = "SELECT * FROM Win32_NetworkAdapterConfiguration WHERE IPEnabled = 'TRUE'";
+        private const string _servicesQuery = "SELECT * FROM Win32_Service";
+        private const string _sharedPrintersQuery = "SELECT * FROM Win32_Printer";
+        private readonly ManagementScope _managementScope;
+        private readonly IADComputer _target;
 
         public WmiConnection(ManagementScope managementScope, IADComputer target)
         {
-            this.managementScope = managementScope;
-            this.target = target;
+            this._managementScope = managementScope;
+            this._target = target;
         }
         public async Task<bool> RenameComputerAsync(string newName)
         {
@@ -30,19 +30,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     // Use WMI to initiate the shutdown.
                     // The Win32_OperatingSystem class has a Win32Shutdown method.
-                    SelectQuery query = new SelectQuery("Win32_ComputerSystem");
+                    SelectQuery query = new("Win32_ComputerSystem");
                     ManagementObjectSearcher searcher =
-                        new ManagementObjectSearcher(managementScope, query);
-
-                    foreach (ManagementObject os in searcher.Get())
+                        new(_managementScope, query);
+                    var enumerator = searcher.Get().GetEnumerator();
+                    var os = (ManagementObject)(enumerator.MoveNext() ? enumerator.Current : null);
+                    if (os != null)
                     {
                         // Obtain in-parameters for the method
                         ManagementBaseObject inParams =
                             os.GetMethodParameters("Rename");
 
                         // Add the input parameters.
-                        var username = target.Directory.ConnectionSettings.Username + "@" + target.Directory.ConnectionSettings.FQDN;
-                        var pass = target.Directory.ConnectionSettings.Password.Decrypt<string>();
+                        var username = _target.Directory.ConnectionSettings?.Username + "@" + _target.Directory.ConnectionSettings?.FQDN;
+                        var pass = _target.Directory.ConnectionSettings?.Password.Decrypt<string>();
                         inParams["Name"] = newName;
                         inParams["UserName"] = username;
                         inParams["Password"] = pass;
@@ -55,27 +56,26 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         {
                             throw new InvalidOperationException($"Failed to change computer name. Error code: {returnValue}");
                         }
-#pragma warning disable S1751 // Loops with at most one iteration should be refactored
+
                         return true;
-#pragma warning restore S1751 // Loops with at most one iteration should be refactored
                     }
 
-                    Loggers.ActiveDirectoryLogger.Warning($"Rename command sent to {target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
+                    Loggers.ActiveDirectoryLogger.Warning($"Rename command sent to {_target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
                     return false; // No Win32_OperatingSystem object found.
                 }
                 catch (ManagementException mex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Management exception while renaming {target.CanonicalName}: {mex.Message} ErrorCode: {mex.ErrorCode}", mex);
+                    Loggers.ActiveDirectoryLogger.Error(mex, "Management exception while renaming {@CanonicalName}", _target.CanonicalName);
                     return false;
                 }
                 catch (UnauthorizedAccessException uaex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Unauthorized access while renaming {target.CanonicalName}: {uaex.Message}", uaex);
+                    Loggers.ActiveDirectoryLogger.Error(uaex, "Unauthorized access while renaming {@CanonicalName}", _target.CanonicalName);
                     return false;
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error(ex, "Exception while renaming {@Target}", target?.CanonicalName);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Exception while renaming {@Target}", _target?.CanonicalName);
                     return false;
                 }
             });
@@ -89,11 +89,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     // Use WMI to initiate the shutdown.
                     // The Win32_OperatingSystem class has a Win32Shutdown method.
-                    SelectQuery query = new SelectQuery("Win32_OperatingSystem");
+                    SelectQuery query = new("Win32_OperatingSystem");
                     ManagementObjectSearcher searcher =
-                        new ManagementObjectSearcher(managementScope, query);
+                        new(_managementScope, query);
 
-                    foreach (ManagementObject os in searcher.Get())
+                    foreach (ManagementObject os in searcher.Get().Cast<ManagementObject>())
                     {
                         // Obtain in-parameters for the method
                         ManagementBaseObject inParams =
@@ -125,30 +125,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         inParams["Timeout"] = delaySeconds;
                         inParams["Comment"] = message;
 
-                        // Execute the method and obtain the return values.
-                        ManagementBaseObject outParams =
-                            os.InvokeMethod("Win32ShutdownTracker", inParams, null);
 #pragma warning disable S1751 // Loops with at most one iteration should be refactored
                         return true;
 #pragma warning restore S1751 // Loops with at most one iteration should be refactored
                     }
 
-                    Loggers.ActiveDirectoryLogger.Warning($"Shutdown command sent to {target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
+                    Loggers.ActiveDirectoryLogger.Warning($"Shutdown command sent to {_target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
                     return false; // No Win32_OperatingSystem object found.
                 }
                 catch (ManagementException mex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Management exception while shutting down {target.CanonicalName}: {mex.Message} ErrorCode: {mex.ErrorCode}", mex);
+                    Loggers.ActiveDirectoryLogger.Error($"Management exception while shutting down {_target.CanonicalName}: {mex.Message} ErrorCode: {mex.ErrorCode}", mex);
                     return false;
                 }
                 catch (UnauthorizedAccessException uaex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Unauthorized access while shutting down {target.CanonicalName}: {uaex.Message}", uaex);
+                    Loggers.ActiveDirectoryLogger.Error($"Unauthorized access while shutting down {_target.CanonicalName}: {uaex.Message}", uaex);
                     return false;
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Exception while shutting down {target.CanonicalName}: {ex.Message}", ex);
+                    Loggers.ActiveDirectoryLogger.Error($"Exception while shutting down {_target.CanonicalName}: {ex.Message}", ex);
                     return false;
                 }
             });
@@ -160,7 +157,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                foreach (var mo in PerformQuery(TotalMemoryQuery))
+                foreach (var mo in PerformQuery(_totalMemoryQuery))
                 {
                     double total = Convert.ToDouble(mo["TotalVisibleMemorySize"]);
                     double free = Convert.ToDouble(mo["FreePhysicalMemory"]);
@@ -176,27 +173,30 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                List<ComputerService> services = new();
-                foreach (var mo in PerformQuery(ServicesQuery))
+                List<ComputerService> services = [];
+                foreach (var mo in PerformQuery(_servicesQuery))
                 {
-                    ComputerService service = new();
-                    service.Status = mo.GetPropertyValue<string>("Status");
-                    service.State = mo.GetPropertyValue<string>("State");
-                    service.Caption = mo.GetPropertyValue<string>("Caption");
-                    service.DisplayName = mo.GetPropertyValue<string>("DisplayName");
-                    service.Description = mo.GetPropertyValue<string>("Description");
-                    service.ErrorControl = mo.GetPropertyValue<string>("ErrorControl");
-                    service.ServiceType = mo.GetPropertyValue<string>("ServiceType");
-                    service.PathName = mo.GetPropertyValue<string>("PathName");
-                    service.Name = mo.GetPropertyValue<string>("Name");
-                    service.StartMode = mo.GetPropertyValue<string>("StartMode");
-                    service.StartName = mo.GetPropertyValue<string>("StartName");
-                    service.InstallDate = mo.GetPropertyValue<DateTime>("InstallDate");
-                    service.CanPause = mo.GetPropertyValue<bool>("AcceptPause");
-                    service.CanStop = mo.GetPropertyValue<bool>("AcceptStop");
-                    service.Started = mo.GetPropertyValue<bool>("Started");
+                    ComputerService service = new()
+                    {
+                        Status = mo.GetPropertyValue<string>("Status"),
+                        State = mo.GetPropertyValue<string>("State"),
+                        Caption = mo.GetPropertyValue<string>("Caption"),
+                        DisplayName = mo.GetPropertyValue<string>("DisplayName"),
+                        Description = mo.GetPropertyValue<string>("Description"),
+                        ErrorControl = mo.GetPropertyValue<string>("ErrorControl"),
+                        ServiceType = mo.GetPropertyValue<string>("ServiceType"),
+                        PathName = mo.GetPropertyValue<string>("PathName"),
+                        Name = mo.GetPropertyValue<string>("Name"),
+                        StartMode = mo.GetPropertyValue<string>("StartMode"),
+                        StartName = mo.GetPropertyValue<string>("StartName"),
+                        InstallDate = mo.GetPropertyValue<DateTime>("InstallDate"),
+                        CanPause = mo.GetPropertyValue<bool>("AcceptPause"),
+                        CanStop = mo.GetPropertyValue<bool>("AcceptStop"),
+                        Started = mo.GetPropertyValue<bool>("Started")
+                    };
                     services.Add(service);
                 }
+
                 return services;
             }
         }
@@ -205,11 +205,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                foreach (var mo in PerformQuery(CPUStatsQuery))
+                foreach (var mo in PerformQuery(_cpuStatsQuery))
                 {
                     int percentProcessor = Convert.ToInt32(mo["PercentProcessorTime"]);
                     return percentProcessor;
                 }
+
                 return 0;
             }
         }
@@ -218,11 +219,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                List<IADComputerDrive> drives = new();
+                List<IADComputerDrive> drives = [];
                 try
                 {
 
-                    foreach (var mo in PerformQuery(DriveStatsQuery))
+                    foreach (var mo in PerformQuery(_driveStatsQuery))
                     {
                         string letter = mo["DeviceID"]?.ToString();
                         string description = mo["Description"]?.ToString();
@@ -252,6 +253,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     Loggers.ActiveDirectoryLogger.Error(ex, "Error polling drives");
                 }
+
                 return drives;
             }
         }
@@ -260,16 +262,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                List<SharedPrinter> sharedPrinters = new();
+                List<SharedPrinter> sharedPrinters = [];
                 try
                 {
 
-                    foreach (var mo in PerformQuery(SharedPrintersQuery))
+                    foreach (var mo in PerformQuery(_sharedPrintersQuery))
                     {
                         if ((bool)mo["Shared"])
                         {
 
-                            sharedPrinters.Add(new SharedPrinter(target, mo));
+                            sharedPrinters.Add(new SharedPrinter(_target, mo));
 
                         }
                     }
@@ -289,25 +291,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                List<ManagementObject> results = new();
+                List<ManagementObject> results = [];
                 ObjectQuery objectQuery = new(query);
-                ManagementObjectSearcher searcher = new(managementScope, objectQuery);
+                ManagementObjectSearcher searcher = new(_managementScope, objectQuery);
                 ManagementObjectCollection queryCollection = searcher.Get();
                 if (queryCollection.Count > 0)
                 {
-                    foreach (ManagementObject mo in queryCollection)
+                    foreach (ManagementObject mo in queryCollection.Cast<ManagementObject>())
                     {
                         results.Add(mo);
                     }
                 }
+
                 return results;
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error("WMI query failure: " + ex.Message);
+                Loggers.ActiveDirectoryLogger.Information(ex, "WMI query failure");
 
             }
-            return new();
+
+            return [];
         }
     }
     public class ComputerService
