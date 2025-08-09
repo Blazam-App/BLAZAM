@@ -1,13 +1,6 @@
-﻿using BLAZAM.Common.Data;
+﻿using System.DirectoryServices.Protocols;
+using BLAZAM.Common.Data;
 using BLAZAM.Logger;
-using Microsoft.AspNetCore.Http.Connections;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System;
-using System.Collections.Generic;
-using System.DirectoryServices.Protocols;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Data
 {
@@ -35,7 +28,7 @@ namespace BLAZAM.ActiveDirectory.Data
 
         private void KeepAlive(object? state)
         {
-            var whoAmIRequest = new SearchRequest("", "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base);
+            var whoAmIRequest = new SearchRequest("", "(objectClass=*)", SearchScope.Base);
             try
             {
                 var response = SendRequest(whoAmIRequest);
@@ -94,7 +87,7 @@ namespace BLAZAM.ActiveDirectory.Data
             }
         }
 
-        
+
         public void DisposeNow()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

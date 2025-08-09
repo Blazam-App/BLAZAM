@@ -1,5 +1,6 @@
 ﻿using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
 using System.Text;
 using System.Text.RegularExpressions;
 using BLAZAM.ActiveDirectory;
@@ -11,12 +12,6 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Logger;
 using Microsoft.Extensions.DependencyInjection;
-using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
-using System.DirectoryServices.Protocols;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace BLAZAM.Helpers
 {
@@ -34,6 +29,8 @@ namespace BLAZAM.Helpers
         {
             return NetworkTools.PingHost(dc.IPAddress);
         }
+
+
         public static IServiceCollection AddActiveDirectoryServices(this IServiceCollection services)
         {
             //Provide a primary Active Directory connection as a service
@@ -167,8 +164,8 @@ namespace BLAZAM.Helpers
             ouComponents.Reverse();
             return string.Join("/", ouComponents);
         }
-      
-     
+
+
         /// <summary>
         /// Encapsulates a raw DirectoryEntry within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
         /// </summary>
@@ -181,7 +178,7 @@ namespace BLAZAM.Helpers
 
             if (sr.PropertyContains("objectClass", "top"))
             {
-                if (sr.PropertyContains("objectClass","computer"))
+                if (sr.PropertyContains("objectClass", "computer"))
                 {
                     thisObject = new ADComputer();
                 }
@@ -268,9 +265,9 @@ namespace BLAZAM.Helpers
         }
         public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry, IActiveDirectoryContext directory)
         {
-            return new LdapDirectoryEntry(entry.Properties["distinuishedName"].Value?.ToString(),directory);
+            return new LdapDirectoryEntry(entry.Properties["distinuishedName"].Value?.ToString(), directory);
         }
-       
+
 
 
         /// <summary>
@@ -293,7 +290,7 @@ namespace BLAZAM.Helpers
             {
                 foreach (System.DirectoryServices.Protocols.SearchResultEntry sre in searchResultEntries)
                 {
-                   objects.Add(sre.Encapsulate(context));
+                    objects.Add(sre.Encapsulate(context));
                 }
             }
             catch (Exception ex)
@@ -304,7 +301,7 @@ namespace BLAZAM.Helpers
             return objects;
         }
 
-        private static IDirectoryEntryAdapter? Encapsulate(this SearchResultEntry sre, IActiveDirectoryContext context )
+        private static IDirectoryEntryAdapter? Encapsulate(this SearchResultEntry sre, IActiveDirectoryContext context)
         {
             if (sre == null || sre.Attributes == null) return default;
 
@@ -324,7 +321,7 @@ namespace BLAZAM.Helpers
             else
             {
                 Loggers.ActiveDirectoryLogger.Warning("SearchResultEntry {DN} does not contain objectClass attribute.", sre.DistinguishedName);
-                return default; 
+                return default;
             }
 
             // Determine object type based on objectClass values
@@ -430,23 +427,16 @@ namespace BLAZAM.Helpers
             {
                 switch (c)
                 {
-                    case '\\':
-                        sb.Append("\\5c");
-                        break;
-                    case '*':
-                        sb.Append("\\2a");
-                        break;
-                    case '(':
-                        sb.Append("\\28");
-                        break;
-                    case ')':
-                        sb.Append("\\29");
-                        break;
-                    case '\0': // Null character
-                        sb.Append("\\00");
-                        break;
+                    case '\\': sb.Append("\\5c"); break;
+                    case '*': sb.Append("\\2a"); break;
+                    case '(': sb.Append("\\28"); break;
+                    case ')': sb.Append("\\29"); break;
+                    case '\0': sb.Append("\\00"); break;
                     default:
-                        sb.Append(c);
+                        if (c < 0x20 || c > 0x7E) // Non-printable ASCII
+                            sb.AppendFormat("\\{0:X2}", (int)c);
+                        else
+                            sb.Append(c);
                         break;
                 }
             }

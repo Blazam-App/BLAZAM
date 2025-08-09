@@ -1,23 +1,18 @@
 ﻿
+
+using System.DirectoryServices;
+using System.DirectoryServices.Protocols;
+using System.Security.Authentication;
+using System.Text;
+using System.Text.RegularExpressions;
 using AngleSharp.Dom;
-using AngleSharp.Io;
-using Azure;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using System.DirectoryServices;
-using System.DirectoryServices.Protocols;
-using System.IO;
-using System.Security.Authentication;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -74,14 +69,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private LdapDirectoryEntry(string proposedDn, IActiveDirectoryContext directory, bool isNew)
         {
             DN = proposedDn;
-           Directory = directory;
+            Directory = directory;
             _isNew = isNew;
             // Immediately place a new attribute dictionary into the static DirectoryCache for this proposed DN.
             var initialAttributes = new Dictionary<string, object?> { { "distinguishedname", proposedDn } };
             _attributeCache = initialAttributes;
             DirectoryCache.SetEntryCache(proposedDn, initialAttributes);
-         }
-                // NEW: Static factory method to create a new directory entry in memory.
+        }
+        // NEW: Static factory method to create a new directory entry in memory.
         /// <summary>
         /// Creates a new directory entry in memory. Call CommitChanges() to save it to the directory.
         /// </summary>
@@ -94,7 +89,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             // Determine RDN prefix (e.g., CN, OU)
             string rdnPrefix = objectType == ActiveDirectoryObjectType.OU ? "OU" : "CN";
-            string rdn = $"{rdnPrefix}={name}";
+            string rdn = $"{rdnPrefix}={name.EscapeLdapSearchFilter().Replace(",", "\\,")}";
             string proposedDn = $"{rdn},{parentDn}";
 
             var newEntry = new LdapDirectoryEntry(proposedDn, directory, true);
@@ -115,7 +110,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 case ActiveDirectoryObjectType.User:
                     SetPropertyValue("objectClass", new[] { "top", "person", "organizationalPerson", "user" });
                     SetPropertyValue(ActiveDirectoryFields.CanonicalName.FieldName, name);
-                    
+
                     // Set UAC to 514, which is the bitwise combination of:
                     // 512 (NORMAL_ACCOUNT) | 2 (ACCOUNTDISABLE)
                     SetPropertyValue("userAccountControl", "514");
@@ -177,6 +172,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
             return;
         }
+
         public void RemovePropertyValue(string propertyName, object? value)
         {
             Invoke(propertyName, DirectoryAttributeOperation.Delete, value);
@@ -231,11 +227,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return Search(propertyName);
         }
 
-        public string? DN { get; set; }
+        public string? DN
+        {
+            get;
+            set;
+        }
 
 
         private bool _propertiesCollected = false;
-        private Dictionary<string, object?> _attributeCache=new();
+        private Dictionary<string, object?> _attributeCache = new();
 
         private object? Search(string attributeName)
         {
@@ -272,7 +272,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             if (_isNew) return null;
             Loggers.ActiveDirectoryLogger.Information("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}", Directory != null && Directory.ConnectionSettings != null);
-            
+
             GetAllAttributes(existingCache);
 
             if (!existingCache.Attributes.ContainsKey("isdeleted"))
@@ -294,7 +294,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private void GetAllAttributes(EntryCache? existingCache)
         {
-           
+
             // Search request to get ALL user attributes for the specified DN
             SearchRequest allAttributesSearchRequest = new SearchRequest(
                 DN,                                 // The DN of the object
@@ -311,7 +311,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             SearchResultEntry entry = searchResponse.Entries[0];
 
             ProcessAttributes(existingCache, entry);
-          
+
 
         }
 
@@ -322,7 +322,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             foreach (string currentAttributeLdapName in entry.Attributes.AttributeNames)
             {
-             
+
                 DirectoryAttribute directoryAttribute = entry.Attributes[currentAttributeLdapName];
                 GetSchemaInfo(currentAttributeLdapName);
 
@@ -333,7 +333,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     existingCache.Attributes[currentAttributeLdapName.ToLower()] = null;
                     // Log: $"Schema not found for attribute '{currentAttributeLdapName}'. Caching as null."
                     Console.WriteLine($"Warning: Schema not found for attribute '{currentAttributeLdapName}'. It will be cached as null.");
-                  
+
                     continue;
                 }
 
@@ -370,7 +370,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     Console.WriteLine($"Error converting attribute '{currentAttributeLdapName}': {ex.Message}. It will be cached as null.");
                     existingCache.Attributes[currentAttributeLdapName.ToLower()] = null; // Cache null if conversion fails
                 }
-              
+
             }
             _attributeCache = existingCache.Attributes;
             DirectoryCache.SetEntryCache(DN, existingCache.Attributes);
@@ -662,12 +662,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 using var connection = Directory.CheckConnect();
                 return connection.LdapConnection.AuthType;
             }
-        } 
-        public bool SslEnabled { get
+        }
+        public bool SslEnabled
+        {
+            get
             {
                 using var connection = Directory.CheckConnect();
-                return connection?.LdapConnection.SessionOptions.SecureSocketLayer??false;
-            } }
+                return connection?.LdapConnection.SessionOptions.SecureSocketLayer ?? false;
+            }
+        }
         public CipherAlgorithmType EncryptionType
         {
             get
@@ -707,7 +710,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     // distinguishedName is part of the request DN, not an attribute in the payload.
                     if (attr.Key.Equals("distinguishedname", StringComparison.OrdinalIgnoreCase)) continue;
                     if (attr.Key.Equals("cn", StringComparison.OrdinalIgnoreCase)) continue;
-                   // if (attr.Key.Equals("objectClass", StringComparison.OrdinalIgnoreCase)) continue;
+                    // if (attr.Key.Equals("objectClass", StringComparison.OrdinalIgnoreCase)) continue;
                     if (attr.Key.Equals("name", StringComparison.OrdinalIgnoreCase)) continue;
 
                     var dirAttr = new DirectoryAttribute(attr.Key);
@@ -723,7 +726,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         addRequest.Attributes.Add(dirAttr);
                 }
 
-              
+
                 if (addRequest.Attributes.Count == 0) throw new InvalidOperationException("Cannot commit a new entry with no attributes.");
 
                 var response = SendRequestAndGetResponse<AddResponse>(addRequest);
@@ -931,7 +934,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-       
+
 
         /// <summary>
         /// Performs a generic ModifyDN operation, which is the underlying protocol request
