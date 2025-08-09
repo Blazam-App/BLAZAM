@@ -154,25 +154,25 @@ InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
         {
             <MudTextField Label="@AppLocalization[Lang.Home_Directory]"
-                          @bind-Value="@User.HomeDirectory"
+                          Value="@User.HomeDirectory"
                           Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDrive))
         {
             <HomeDriveSelect Label="@AppLocalization[Lang.Home_Drive]"
-                             @bind-Value="@User.HomeDrive"
+                             DriveLetter="@User.HomeDrive"
                              Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.ScriptPath))
         {
             <MudTextField Label="@AppLocalization[Lang.Script_Path]"
-                          @bind-Value="@User.ScriptPath"
+                          Value="@User.ScriptPath"
                           Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.ProfilePath))
         {
             <MudTextField Label="@AppLocalization[Lang.Profile_Path]"
-                          @bind-Value="@User.ProfilePath"
+                          Value="@User.ProfilePath"
                           Disabled=true />
         }
     </ViewSection>
@@ -180,7 +180,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
 
 
 
-}
+
 
 
 
@@ -254,7 +254,7 @@ else
     bool InDirectoryTemplate(ActiveDirectoryField field)
     {
         if (DirectoryTemplate == null) return true;
-        return DirectoryTemplate?.FieldValues.Any(f => f.Field?.FieldName == field.FieldName) == true;
+        return DirectoryTemplate?.EffectiveFieldValues.Any(f => f.Field?.FieldName == field.FieldName) == true;
     }
     [Parameter]
     public bool Confirmed { get; set; }
@@ -359,4 +359,6 @@ else
     {
         await JSRuntime.InvokeVoidAsync("printPage", null);
     }
+
+    
 }
