@@ -1,5 +1,9 @@
 
-﻿using BLAZAM.ActiveDirectory.Adapters;
+using System.DirectoryServices;
+using System.DirectoryServices.Protocols;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
@@ -8,12 +12,6 @@ using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.DirectoryServices;
-using System.DirectoryServices.Protocols;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -380,7 +378,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 using (var connection = _currentUserActiveDirectoryContext.GetConnection())
                 {
-                    if (connection == null) { 
+                    if (connection == null)
+                    {
                         return new List<TInterface>();
                     }
                     PerformSearch<TObject, TInterface>(connection, searchRequest, PageSize);
@@ -434,15 +433,13 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         private void PerformSearch<TObject, TInterface>(AppLdapConnection searcher, SearchRequest searchRequest, int pageSize) where TObject : IDirectoryEntryAdapter, TInterface, new()
         {
-            //SearchResponse? lastResults = (SearchResponse)searcher.SendRequest(searchRequest);
-            //AddResults<TObject, TInterface>(lastResults);
-            //return;
+
             // 1. Create the page result request control, specifying the page size.
             var pageRequestControl = new PageResultRequestControl(pageSize);
 
             // Add the control to the SearchRequest's controls collection.
             searchRequest.Controls.Add(pageRequestControl);
-     
+
             do
             {
                 // Check for cancellation before each page request.
@@ -450,7 +447,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 // 2. Send the request and get a single page of results.
                 SearchResponse searchResponse = (SearchResponse)searcher.SendRequest(searchRequest);
-       
+
                 // Find the page response control returned by the server.
                 PageResultResponseControl? pageResponseControl = searchResponse.Controls
                     .OfType<PageResultResponseControl>()
@@ -584,7 +581,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
             else if (DisabledOnly)
             {
-                Results.AddRange(last.Where(l=>l is not IAccountDirectoryAdapter || (l as IAccountDirectoryAdapter).Disabled));
+                Results.AddRange(last.Where(l => l is not IAccountDirectoryAdapter || (l as IAccountDirectoryAdapter).Disabled));
             }
             else
             {
