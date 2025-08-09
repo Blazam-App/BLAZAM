@@ -132,6 +132,11 @@ namespace BLAZAM.Session.Interfaces
         IList<ReadNewsItem>? ReadNewsItems { get; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether plugin placeholders should be shown in the UI.
+        /// </summary>
+        bool ShowPluginPlaceholders { get; set; }
+
+        /// <summary>
         /// Checks if the user can search for disabled objects of a specific type based on their permissions.
         /// </summary>
         /// <param name="objectType">The type of Active Directory object.</param>

@@ -35,6 +35,7 @@ namespace BLAZAM.Session
 
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
 
+        public bool ShowPluginPlaceholders { get; set; } = false;
 
         public string? IPAddress { get; set; }
 
@@ -43,8 +44,8 @@ namespace BLAZAM.Session
         /// </summary>
         public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries ?? new List<UserFavoriteEntry>();
 
-
         public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems ?? new List<ReadNewsItem>(); // Corrected to List
+
 
         public int Id => Preferences != null ? Preferences.Id : 0;
 
@@ -53,10 +54,6 @@ namespace BLAZAM.Session
 
         public AuthenticationTicket? Ticket { get; set; }
 
-        /// <summary>
-        /// Timestamp of the last data refresh for this user state.
-        /// </summary>
-        public DateTime lastDataRefresh;
 
         /// <summary>
         /// Holds the application-specific user settings, loaded from the database.
@@ -197,7 +194,6 @@ namespace BLAZAM.Session
                         Task.Run(async () => { await Task.Delay(1000); await SaveBasicUserPreferences(); });
                     }
                 }
-                lastDataRefresh = DateTime.Now;
             }
             catch (Exception ex) // Catch specific Exception ex
             {

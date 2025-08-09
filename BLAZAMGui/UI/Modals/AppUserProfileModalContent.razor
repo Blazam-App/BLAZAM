@@ -62,6 +62,10 @@
         <CreateGoogleAuthenticationToken/>
     }
 
+    @if (CurrentUser.State.IsSuperAdmin)
+    {
+        <MudSwitch @bind-Value=@CurrentUser.State.ShowPluginPlaceholders Label="Show Plugin Placeholders in GUI"/>
+    }
 
         <LoadingData Loading=LoadingData />
     </MudStack>
