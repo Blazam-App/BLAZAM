@@ -93,7 +93,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringAttribute(ActiveDirectoryFields.Description.FieldName);
+                var raw = GetStringListAttribute(ActiveDirectoryFields.Description.FieldName);
+                return raw?.FirstOrDefault();
             }
             set
             {
@@ -134,7 +135,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     ToAssignTo.ForEach(g =>
                     {
-                        g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
+                        g.Group.Invoke("Add", new object[] { g.Member.DN });
 
                     });
                     return true;
@@ -146,7 +147,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     ToUnassignFrom.ForEach(g =>
                     {
-                        g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
+                        g.Group.Invoke("Remove", new object[] { g.Member.DN });
                     });
                     return true;
                 }));

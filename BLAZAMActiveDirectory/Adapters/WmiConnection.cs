@@ -6,7 +6,7 @@ using BLAZAM.Logger;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
-    internal class WmiConnection
+    internal class WmiConnection : IRemoteManagementConnection
     {
         private const string _driveStatsQuery = "SELECT DeviceID,FreeSpace,Size,Description,DriveType,FileSystem,MediaType,VolumeDirty,VolumeSerialNumber FROM Win32_LogicalDisk";
         private const string _totalMemoryQuery = "SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem";

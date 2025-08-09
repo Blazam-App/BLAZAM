@@ -69,6 +69,7 @@ namespace BLAZAM
                 ApplicationInfo.installationId = Environment.MachineName.ToGuid(); // Assumes ToGuid() extension method exists
             }
 
+          
             // Store the configuration manager instance globally for easy access (use with caution).
             Program.Configuration = builder.Configuration;
 

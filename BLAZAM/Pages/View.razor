@@ -87,7 +87,8 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        var decodedSearchTerm = HttpUtility.UrlDecode(SearchTermParameter);
+
+        var decodedSearchTerm = HttpUtility.UrlDecode(SearchTermParameter)
 
         if (_searchTermParameter == decodedSearchTerm)
             return;
@@ -123,11 +124,12 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
         Searcher = new ADSearch(Directory);
         SearchService.SearchTerm = SearchTermParameter;
         Searcher.GeneralSearchTerm = SearchTermParameter;
 
-        await base.OnInitializedAsync();
+        LoadingData = false;
 
 
 
@@ -143,6 +145,11 @@
              {
                  results.AddRange(batch.Where(r => r.CanRead));
              });
+
+        if (!SearchTermParameter.IsNullOrEmpty())
+        {
+            await PerformSearch();
+        }
     }
     /// <summary>
     /// Filter for searching objects of only this type
