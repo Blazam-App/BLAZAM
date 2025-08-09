@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.ActiveDirectory.Interfaces
+﻿using BLAZAM.FileSystem;
+
+namespace BLAZAM.ActiveDirectory.Interfaces
 {
     /// <summary>
     /// Represents a data drive on a remote computer in Active Directory
@@ -55,5 +57,7 @@
         /// The amount of used space in bytes
         /// </summary>
         double UsedSpace { get; }
+        IADComputer Computer { get; }
+        SystemDirectory UNCPath { get; }
     }
 }

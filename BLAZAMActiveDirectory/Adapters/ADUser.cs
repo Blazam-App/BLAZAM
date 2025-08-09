@@ -64,7 +64,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if (HomeDirectory == null || HomeDirectory.IsNullOrEmpty()) return true;
                         var homeDirectory = new SystemDirectory(HomeDirectory);
                         if (!homeDirectory.Exists)
-                            homeDirectory.EnsureCreated();
+                            homeDirectory.Create();
                         SetHomeDirectoryPermissions();
                         if (homeDirectory.Exists)
                             return true;

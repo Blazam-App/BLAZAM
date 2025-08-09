@@ -411,7 +411,7 @@ namespace BLAZAM.Update
 
                 Loggers.UpdateLogger?.Debug("Attempting unzip of {UpdatePath}", UpdateFile);
 
-                UpdateStagingDirectory.EnsureCreated();
+                UpdateStagingDirectory.Create();
 
                 using (var streamToReadFrom = UpdateFile.OpenReadStream())
                 {
@@ -465,7 +465,7 @@ namespace BLAZAM.Update
 
                                 return false;
                             }
-                            UpdateDownloadDirectory.EnsureCreated();
+                            UpdateDownloadDirectory.Create();
                             if (UpdateFile.Exists) UpdateFile.Delete();
                             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
                             {

@@ -1,9 +1,6 @@
 ﻿
-using BLAZAM.Logger;
-using System; // Added for ArgumentNullException, ArgumentException, IEquatable
-using System.Collections.Generic; // Added for EqualityComparer
-using System.IO; // Added for Path, DirectoryInfo, FileInfo, FileMode, FileAccess, FileShare, File, IOException
 using System.Security; // Added for SecurityException
+using BLAZAM.Logger;
 
 namespace BLAZAM.FileSystem
 {
@@ -29,7 +26,15 @@ namespace BLAZAM.FileSystem
 
             try
             {
-                FullPath = Path.GetFullPath(path);
+                if (IsUncPath(path))
+                {
+                    FullPath = path;
+                }
+                else
+                {
+                    FullPath = GetFullPath(path);
+
+                }
                 if (string.IsNullOrEmpty(FullPath)) // Path.GetFullPath can return empty if input is effectively empty after processing
                 {
                     // This case might be redundant if Path.GetFullPath throws for such inputs,
@@ -58,6 +63,20 @@ namespace BLAZAM.FileSystem
                 Loggers.SystemLogger.Error(ex, "FileSystemBase.Constructor: Error obtaining full path for input '{InitialPath}'.", originalPath);
                 throw new ArgumentException($"Invalid path specified: {originalPath}", ex);
             }
+        }
+
+        private string? GetFullPath(string path)
+        {
+            if (IsUncPath(path))
+            {
+                return path;
+            }
+            return Path.GetFullPath(path);
+        }
+
+        private bool IsUncPath(string path)
+        {
+            return path.StartsWith(@"\\") || path.StartsWith("//");
         }
 
         /// <summary>
@@ -94,9 +113,9 @@ namespace BLAZAM.FileSystem
                         string targetDirectory = directoryInfo.Exists ? FullPath : fileInfo.DirectoryName;
                         if (string.IsNullOrEmpty(targetDirectory) || !Directory.Exists(targetDirectory))
                         {
-                             // If the directory itself doesn't exist, can't write a test file.
-                             // This could be a new file in a new directory. The ability to create the directory
-                             // would be a separate check. For now, if dir doesn't exist, assume not writable here.
+                            // If the directory itself doesn't exist, can't write a test file.
+                            // This could be a new file in a new directory. The ability to create the directory
+                            // would be a separate check. For now, if dir doesn't exist, assume not writable here.
                             Loggers.SystemLogger.Debug("FileSystemBase.Writable: Target directory {TargetDirectory} for path {FullPath} does not exist. Cannot perform write test.", targetDirectory, FullPath);
                             return false;
                         }
@@ -133,6 +152,23 @@ namespace BLAZAM.FileSystem
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the directory (the last part of the path). Returns null or empty if FullPath is invalid.
+        /// </summary>
+        public virtual string? Name
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(FullPath))
+                {
+                    Loggers.SystemLogger.Warning("SystemDirectory.Name: FullPath is null or empty. Cannot determine directory name.");
+                    return null;
+                }
+                // More robust way to get directory name
+                return Path.GetFileName(FullPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
             }
         }
 

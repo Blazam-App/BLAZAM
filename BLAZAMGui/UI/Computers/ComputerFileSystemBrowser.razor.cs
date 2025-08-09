@@ -1,10 +1,5 @@
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.FileSystem;
-using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Linq;
-using System;
-using Microsoft.JSInterop;
+using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Computers
 {
@@ -12,117 +7,51 @@ namespace BLAZAM.Gui.UI.Computers
     {
         [Inject]
         private IJSRuntime JSRuntime { get; set; }
-        private IEnumerable<FileSystemBase> Items { get; set; } = new List<FileSystemBase>();
-        private SystemDirectory? CurrentPath { get; set; }
-
+        private MudDataGrid<FileSystemBase>? _dataGrid;
+        private IEnumerable<FileSystemBase> items { get; set; } = new List<FileSystemBase>();
+        private SystemDirectory? currentPath { get; set; }
+        private List<IADComputerDrive> _drives = [];
+        private IADComputer? _computer;
         protected override void OnParametersSet()
         {
-            if (Computer != null && CurrentPath == null)
+            if (Computer != null && !Computer.Equals(_computer))
             {
-                UpdateDrives();
-            }
-        }
 
-        private void UpdateDrives()
-        {
-            if (Computer == null) return;
-            Items = Computer.Directory.Impersonation.Run(() =>
-            {
-                return Computer.GetDrives().Select(d => new SystemDirectory(d.Name + "\\"));
-            });
-            StateHasChanged();
-        }
-
-        private void RowClicked(FileSystemBase item)
-        {
-            if (item is SystemDirectory dir)
-            {
-                CurrentPath = dir;
-                UpdateFileList();
-            }
-        }
-
-        private void GoUp()
-        {
-            if (CurrentPath?.ParentDirectory != null)
-            {
-                CurrentPath = CurrentPath.ParentDirectory;
-                UpdateFileList();
-            }
-            else
-            {
-                CurrentPath = null;
-                UpdateDrives();
-            }
-        }
-
-        private void UpdateFileList()
-        {
-            if (Computer == null || CurrentPath == null)
-            {
-                UpdateDrives();
-                return;
-            }
-            Items = Computer.Directory.Impersonation.Run(() =>
-            {
-                var items = new List<FileSystemBase>();
-                items.AddRange(CurrentPath.SubDirectories);
-                items.AddRange(CurrentPath.Files);
-                return items.OrderBy(i => i is SystemDirectory ? 0 : 1).ThenBy(i => i.Name);
-            });
-            StateHasChanged();
-        }
-
-        private async void Rename(FileSystemBase item)
-        {
-            var parameters = new DialogParameters { ["Item"] = item };
-            var dialog = DialogService.Show<BLAZAM.Gui.UI.Modals.RenameFileSystemItemModal>("Rename", parameters);
-            var result = await dialog.Result;
-            if (!result.Cancelled)
-            {
-                var newName = result.Data.ToString();
-                if (Computer.Directory.Impersonation.Run(() => item.Rename(newName)))
+                _computer = Computer;
+                _drives = _computer.GetDrives();
+                if (_drives.Count > 0)
                 {
-                    UpdateFileList();
-                }
-                else
-                {
-                    Snackbar.Add("Failed to rename item.", Severity.Error);
+                    currentPath = _drives[0].UNCPath;
+                    LoadItems();
                 }
             }
         }
-        private async void Delete(FileSystemBase item)
-        {
-            var result = await DialogService.ShowMessageBox(
-                "Delete",
-                $"Are you sure you want to delete {item.Name}?",
-                yesText: "Delete", cancelText: "Cancel");
 
-            if (result == true)
+        private async void LoadItems()
+        {
+            if (currentPath != null)
             {
-                if (Computer.Directory.Impersonation.Run(() =>
+                await _computer.Directory.Impersonation.RunAsync(() =>
                 {
-                    if (item is SystemFile file)
+                    items = currentPath.Files;
+                    return true;
+                });
+                await _computer.Directory.Impersonation.RunAsync(() =>
+                {
+                    var directories = currentPath.SubDirectories;
+                    directories.ForEach(dir =>
                     {
-                        file.Delete();
-                        return !file.Exists;
-                    }
-                    else if (item is SystemDirectory dir)
-                    {
-                        dir.Delete(true);
-                        return !dir.Exists;
-                    }
-                    return false;
-                }))
-                {
-                    UpdateFileList();
-                }
-                else
-                {
-                    Snackbar.Add("Failed to delete item.", Severity.Error);
-                }
+                        items = items.Append(dir);
+                    });
+                    InvokeAsync(StateHasChanged);
+                    return true;
+                });
             }
         }
+
+
+
+
         private async void Download(SystemFile item)
         {
             var fileBytes = await Computer.Directory.Impersonation.Run(async () => await item.ReadAllBytesAsync());
@@ -132,7 +61,7 @@ namespace BLAZAM.Gui.UI.Computers
             }
             else
             {
-                Snackbar.Add("Failed to download file.", Severity.Error);
+                SnackBarService.Error("Failed to download file.");
             }
         }
     }

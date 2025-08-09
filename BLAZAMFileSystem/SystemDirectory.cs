@@ -1,10 +1,4 @@
-﻿
-using BLAZAM.Logger;
-using System; // Added for ArgumentException, etc.
-using System.Collections.Generic; // Added for List
-using System.IO; // Added for Path, Directory, File, etc.
-using System.Linq; // Added for path.Split().Last() and Enumerable.Where
-using System.Security; // Added for SecurityException
+﻿using BLAZAM.Logger;
 
 
 namespace BLAZAM.FileSystem
@@ -12,7 +6,7 @@ namespace BLAZAM.FileSystem
     /// <summary>
     /// Represents a directory in the file system, providing properties and methods for directory manipulation.
     /// </summary>
-    public class SystemDirectory : FileSystemBase
+    public class SystemDirectory : FileSystemBase, IFileSystemObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SystemDirectory"/> class.
@@ -21,53 +15,7 @@ namespace BLAZAM.FileSystem
         /// <exception cref="ArgumentException">Thrown if the path is invalid.</exception>
         public SystemDirectory(string path) : base(path) // base constructor handles initial Path.GetFullPath and %temp%
         {
-            // The base constructor already called Path.GetFullPath.
-            // We need to ensure this path ends with a directory separator.
-            // If base.FullPath is already correct and ends with a separator, this might be redundant,
-            // but it ensures consistency for SystemDirectory instances.
-            string originalPathForLogging = path; // Use the original path for logging if GetFullPath fails here
-            try
-            {
-                // Ensure the path from base is treated as a directory path.
-                // Path.GetFullPath might not add a trailing slash if the directory doesn't exist.
-                // We append one to signify it's a directory for consistency in FullPath.
-                string basePath = base.FullPath; // Get FullPath from base constructor
-                if (!string.IsNullOrEmpty(basePath) &&
-                    !basePath.EndsWith(Path.DirectorySeparatorChar.ToString()) &&
-                    !basePath.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
-                {
-                    FullPath = basePath + Path.DirectorySeparatorChar;
-                }
-                else
-                {
-                    FullPath = basePath;
-                }
-                // Re-evaluate FullPath to ensure it's absolute and clean after potential modification
-                if (!string.IsNullOrEmpty(FullPath))
-                {
-                    FullPath = Path.GetFullPath(FullPath);
-                }
-            }
-            catch (ArgumentException ex)
-            {
-                Loggers.SystemLogger.Error(ex, "SystemDirectory.Constructor: Error obtaining full path for input '{InitialPath}'.", originalPathForLogging);
-                throw new ArgumentException($"Invalid directory path specified: {originalPathForLogging}", ex);
-            }
-            catch (SecurityException ex)
-            {
-                Loggers.SystemLogger.Error(ex, "SystemDirectory.Constructor: Error obtaining full path for input '{InitialPath}'.", originalPathForLogging);
-                throw new ArgumentException($"Invalid directory path specified: {originalPathForLogging}", ex);
-            }
-            catch (NotSupportedException ex)
-            {
-                Loggers.SystemLogger.Error(ex, "SystemDirectory.Constructor: Error obtaining full path for input '{InitialPath}'.", originalPathForLogging);
-                throw new ArgumentException($"Invalid directory path specified: {originalPathForLogging}", ex);
-            }
-            catch (PathTooLongException ex)
-            {
-                Loggers.SystemLogger.Error(ex, "SystemDirectory.Constructor: Error obtaining full path for input '{InitialPath}'.", originalPathForLogging);
-                throw new ArgumentException($"Invalid directory path specified: {originalPathForLogging}", ex);
-            }
+
         }
 
         /// <summary>
@@ -134,48 +82,74 @@ namespace BLAZAM.FileSystem
                 return files;
             }
         }
-        public List<SystemFile> GetFilesAndSubFiles(string? filter = "*.*")
-        {
-            
-            
-                List<SystemFile> files = new();
-                try
-                {
-                    if (Exists)
-                    {
-                        // Get all files in the directory and subdirectories
-                        foreach (var file in Directory.GetFiles(FullPath, filter, SearchOption.AllDirectories))
-                        {
-                            files.Add(new SystemFile(file));
-                        }
-                    }
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    // Ignore if directory not found during file listing
-                }
-                catch (Exception ex)
-                {
-                    Loggers.SystemLogger.Error(ex, "SystemDirectory.FilesAndSubFiles: Error getting files for {Path}.", FullPath);
-                }
-                return files;
-            }
-        /// <summary>
-        /// Gets the name of the directory (the last part of the path). Returns null or empty if FullPath is invalid.
-        /// </summary>
-        public string? Name
+
+        public SystemDirectory ParentDirectory
         {
             get
             {
-                if (string.IsNullOrEmpty(FullPath))
+                try
                 {
-                    Loggers.SystemLogger.Warning("SystemDirectory.Name: FullPath is null or empty. Cannot determine directory name.");
-                    return null;
+                    // Normalize path separators for cross-platform compatibility
+                    var trimmedPath = FullPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+                    // Get parent directory path
+                    var parentPath = Path.GetDirectoryName(trimmedPath);
+
+                    // If parentPath is null, this is a root directory (e.g., "/" or "C:\")
+                    if (string.IsNullOrEmpty(parentPath))
+                    {
+                        // For UNC paths, return the share root if possible
+                        if (Path.IsPathRooted(FullPath) && FullPath.StartsWith(@"\\"))
+                        {
+                            // UNC root: \\server\share
+                            var uncParts = FullPath.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+                            if (uncParts.Length >= 2)
+                            {
+                                var uncRoot = $@"\\{uncParts[0]}\{uncParts[1]}";
+                                return new SystemDirectory(uncRoot);
+                            }
+                        }
+                        // For local root, return itself
+                        return new SystemDirectory(FullPath);
+                    }
+
+                    return new SystemDirectory(parentPath);
                 }
-                // More robust way to get directory name
-                return Path.GetFileName(FullPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+                catch
+                {
+                    // On error, return itself as a fallback
+                    return new SystemDirectory(FullPath);
+                }
             }
         }
+
+        public List<SystemFile> GetFilesAndSubFiles(string? filter = "*.*")
+        {
+
+
+            List<SystemFile> files = new();
+            try
+            {
+                if (Exists)
+                {
+                    // Get all files in the directory and subdirectories
+                    foreach (var file in Directory.GetFiles(FullPath, filter, SearchOption.AllDirectories))
+                    {
+                        files.Add(new SystemFile(file));
+                    }
+                }
+            }
+            catch (DirectoryNotFoundException)
+            {
+                // Ignore if directory not found during file listing
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "SystemDirectory.FilesAndSubFiles: Error getting files for {Path}.", FullPath);
+            }
+            return files;
+        }
+
 
         /// <summary>
         /// Deletes all files directly within this directory. Logs warnings for files that cannot be deleted but continues operation.
@@ -221,7 +195,7 @@ namespace BLAZAM.FileSystem
                 Loggers.SystemLogger.Warning("SystemDirectory.CopyTo: Source directory {SourcePath} does not exist. Cannot copy.", FullPath);
                 return false;
             }
-            
+
             bool anyError = false;
 
             var directories = Directory.GetDirectories(FullPath, "*", SearchOption.AllDirectories).AsEnumerable();
@@ -259,7 +233,10 @@ namespace BLAZAM.FileSystem
             }
             return !anyError;
         }
-
+        public void Delete()
+        {
+            Delete(false);
+        }
         /// <summary>
         /// Deletes this directory. Logs an error if the operation fails.
         /// </summary>
@@ -282,16 +259,18 @@ namespace BLAZAM.FileSystem
         /// <summary>
         /// Ensures that the directory exists. If it does not, it attempts to create it. Logs an error if creation fails.
         /// </summary>
-        public void EnsureCreated()
+        public bool Create()
         {
             try
             {
                 Directory.CreateDirectory(FullPath);
+                return Exists;
             }
             catch (Exception ex)
             {
                 Loggers.SystemLogger.Error(ex, "SystemDirectory.EnsureCreated: Failed to create directory {DirectoryPath}. Message: {ErrorMessage}", FullPath, ex.Message);
             }
+            return false;
         }
 
         public override bool Rename(string newName)

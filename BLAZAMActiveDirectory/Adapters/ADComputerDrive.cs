@@ -1,10 +1,13 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.FileSystem;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
 
     public class ADComputerDrive : IADComputerDrive
     {
+        public SystemDirectory UNCPath => new SystemDirectory(@"\\" + Computer.CanonicalName + "\\" + Letter.Replace(":", "") + "$");
+        public IADComputer Computer { get; internal set; }
         public double FreeSpace { get; internal set; }
         public double UsedSpace { get { return Capacity - FreeSpace; } }
         public double Capacity { get; internal set; }
