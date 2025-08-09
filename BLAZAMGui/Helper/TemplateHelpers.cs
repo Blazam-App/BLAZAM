@@ -1,10 +1,3 @@
-using BLAZAM.ActiveDirectory.Adapters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace BLAZAM.Gui.Helpers
 {
     public static class TemplateHelpers
@@ -33,7 +26,7 @@ namespace BLAZAM.Gui.Helpers
                 newUser.SAMAccountName = template.GenerateUsername(newUserName);
                 newUser.DisplayName = displayName;
                 newUser.StagePasswordChange(template.GeneratePassword(newUserName).ToSecureString());
-              newUser.StageEnable();
+                newUser.StageEnable();
                 if (template.EffectiveRequirePasswordChange == true)
                     newUser.StageRequirePasswordChange(true);
                 if (!newUserName.GivenName.IsNullOrEmpty())
@@ -59,9 +52,6 @@ namespace BLAZAM.Gui.Helpers
 
                 throw;
             }
-
-            //newUser = ou.CreateUser(displayName);
-
         }
     }
 }
