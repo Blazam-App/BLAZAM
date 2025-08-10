@@ -322,7 +322,7 @@ namespace BLAZAM.Services.Background
             }
             catch (EmailException ex)
             {
-                Loggers.SystemLogger.Information(ex, "Error trying to send testt email");
+                Loggers.SystemLogger.Information(ex, "Error trying to send test email");
                 throw;
 
 
