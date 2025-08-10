@@ -52,7 +52,6 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        //Modal.Options.MaxWidth = MaxWidth.Large;
         Modal.SetYesText(AppLocalization[Lang.Approve]);
         base.Modal.SetOnYes(Approve);
         _ = LoadData();
@@ -63,11 +62,11 @@
     private async Task Approve()
     {
         LoadingData = true;
-        if (_delegate.Id == 0)
+        if (_delegate?.Id == 0)
         {
             Context.PermissionDelegate.Add(_delegate);
         }
-        if (_permissionMapping.Id == 0)
+        if (_permissionMapping?.Id == 0)
         {
             Context.PermissionMap.Add(_permissionMapping);
         }
@@ -94,88 +93,80 @@
 
     private async Task LoadData()
     {
-        //Get matching delegate, access level and mapping from the db, or prepare new ones
-        await Task.Run(async () =>
+        LoadingData = true;
+
+        var _creator = await Context.UserSettings.FirstOrDefaultAsync(x => x.Id == Request.Notification.CreatorId);
+        var _creatorAD = Directory.FindEntryBySid(_creator.UserGUID);
+
+        _delegate = await PrepareDelegate(_creator, _creatorAD);
+        _target = Directory.GetDirectoryEntryByDN(Request.Notification.TargetDN)!;
+        _accessLevel = await PrepareAccessLevel(_target, Request.Notification.Action);
+        _permissionMapping = await PreparePermissionMapping(_target, _accessLevel, _delegate, _creator);
+
+        LoadingData = false;
+    }
+
+    private async Task<PermissionDelegate> PrepareDelegate(AppUser _creator, IDirectoryEntryAdapter _creatorAD)
+    {
+        var _deleg = await Context.PermissionDelegate.FirstOrDefaultAsync(x => x.DelegateSid == _creator.UserGUID.ToSidByteArray());
+        if (_deleg == null)
         {
-            LoadingData = true;
-
-            var _creator = await Context.UserSettings.FirstOrDefaultAsync(x => x.Id == Request.Notification.CreatorId);
-            var _creatorAD = Directory.FindEntryBySid(_creator.UserGUID);
-
-            //Prepare delegate
-            var _deleg = await Context.PermissionDelegate.FirstOrDefaultAsync(x => x.DelegateSid == _creator.UserGUID.ToSidByteArray());
-            if (_deleg == null)
+            return new PermissionDelegate()
             {
-                _deleg = new PermissionDelegate()
-                    {
-                        DelegateName = _creatorAD != null ? _creatorAD.CanonicalName : _creator.Username,
-                        DelegateSid = _creator.UserGUID.ToSidByteArray()
-                    };
-            }
-            else
-            {
-                _deleg.DeletedAt = null;
-            }
-            _delegate = _deleg;
+                DelegateName = _creatorAD != null ? _creatorAD.CanonicalName : _creator.Username,
+                DelegateSid = _creator.UserGUID.ToSidByteArray()
+            };
+        }
+        _deleg.DeletedAt = null;
+        return _deleg;
+    }
 
-            //Prepare target
-
-            var tgtDN = Request.Notification.TargetDN;
-            _target = Directory.GetDirectoryEntryByDN(tgtDN)!;
-
-            //Prepare Access Level
-            var _accessLvl = await Context.AccessLevels.FirstOrDefaultAsync(x => x.ObjectMap.Count == 1
+    private async Task<AccessLevel> PrepareAccessLevel(IDirectoryEntryAdapter _target, ActiveDirectoryObjectAction? action)
+    {
+        var _accessLvl = await Context.AccessLevels.FirstOrDefaultAsync(x => x.ObjectMap.Count == 1
             && x.ObjectMap.Any(x => x.ObjectType == _target.ObjectType)
-        && x.ActionMap.Count == 1 && x.ActionMap.Any(x => x.AllowOrDeny == true && x.ObjectAction.Action == Request.Notification.Action));
-            if (_accessLvl == null)
+            && x.ActionMap.Count == 1 && x.ActionMap.Any(x => x.AllowOrDeny == true && x.ObjectAction.Action == action));
+        if (_accessLvl == null)
+        {
+            var objActions = await Context.ObjectActionFlag.ToListAsync();
+
+            var objectMap = new ObjectAccessMapping()
             {
-                var objActions = await Context.ObjectActionFlag.ToListAsync();
-
-                var objectMap = new ObjectAccessMapping()
-                    {
-                        ObjectAccessLevelId = ObjectAccessLevels.Read.Id,
-                        ObjectType = _target != null ? _target.ObjectType : ActiveDirectoryObjectType.Group
-
-                    };
-                var actionMap = new ActionAccessMapping()
-                    {
-                        ObjectActionId = objActions.First(x => x.Action == Request.Notification.Action).Id,
-                        AllowOrDeny = true,
-                        ObjectType = _target != null ? _target.ObjectType : ActiveDirectoryObjectType.Group
-                    };
-                _accessLvl = new AccessLevel()
-                    {
-                        ActionMap = new List<ActionAccessMapping>() { actionMap },
-                        ObjectMap = new List<ObjectAccessMapping>() { objectMap },
-                        Name = AppLocalization[Request.Notification.Action.ToString()!] + " " + AppLocalization[_target!.ObjectType.ToString()]
-                    };
-            }
-            else
+                ObjectAccessLevelId = ObjectAccessLevels.Read.Id,
+                ObjectType = _target != null ? _target.ObjectType : ActiveDirectoryObjectType.Group
+            };
+            var actionMap = new ActionAccessMapping()
             {
-                _accessLvl.DeletedAt = null;
-            }
-            _accessLevel = _accessLvl;
-
-
-            //Prepare mapping
-            var _permMap = await Context.PermissionMap.FirstOrDefaultAsync(x => x.OU == _target.DN && x.AccessLevels.Count() == 1
-        && x.AccessLevels.Any(x => x.Id == _accessLevel.Id) && x.PermissionDelegates.Count() == 1
-        && x.PermissionDelegates.Any(x => x.DelegateSid == _creator.UserGUID.ToSidByteArray()));
-            if (_permMap == null)
+                ObjectActionId = objActions.First(x => x.Action == action).Id,
+                AllowOrDeny = true,
+                ObjectType = _target != null ? _target.ObjectType : ActiveDirectoryObjectType.Group
+            };
+            return new AccessLevel()
             {
-                _permMap = new PermissionMapping()
-                    {
-                        AccessLevels = new List<AccessLevel>() { _accessLevel },
-                        PermissionDelegates = new List<PermissionDelegate>() { _delegate },
-                        OU = _target.DN!,
-                    };
-            }
-            _permissionMapping = _permMap;
+                ActionMap = new List<ActionAccessMapping>() { actionMap },
+                ObjectMap = new List<ObjectAccessMapping>() { objectMap },
+                Name = AppLocalization[action.ToString()!] + " " + AppLocalization[_target!.ObjectType.ToString()]
+            };
+        }
+        _accessLvl.DeletedAt = null;
+        return _accessLvl;
+    }
 
-            LoadingData = false;
-
-        });
-
+    private async Task<PermissionMapping> PreparePermissionMapping(IDirectoryEntryAdapter _target, AccessLevel _accessLevel, PermissionDelegate _delegate, AppUser _creator)
+    {
+        var _permMap = await Context.PermissionMap.FirstOrDefaultAsync(x => x.OU == _target.DN && x.AccessLevels.Count() == 1
+            && x.AccessLevels.Any(x => x.Id == _accessLevel.Id) && x.PermissionDelegates.Count() == 1
+            && x.PermissionDelegates.Any(x => x.DelegateSid == _creator.UserGUID.ToSidByteArray()));
+        if (_permMap == null)
+        {
+            return new PermissionMapping()
+            {
+                AccessLevels = new List<AccessLevel>() { _accessLevel },
+                PermissionDelegates = new List<PermissionDelegate>() { _delegate },
+                OU = _target.DN!,
+            };
+        }
+        return _permMap;
     }
 }
 
