@@ -10,6 +10,7 @@ using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
+using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
 using BLAZAM.Static;
 using BlazorTemplater;
@@ -167,60 +168,67 @@ namespace BLAZAM.Services.Background
         public MimeMessage BuildMessage<T>(string subject, string to, string? cc = null, string? bcc = null, EmailTemplate? template = null) where T : IComponent
         {
             var htmlBody = WrapMessage<T>();
-            return BuildMessage(subject, to, htmlBody, cc, bcc, template);
+            return BuildMessage(subject, to, htmlBody, cc, bcc);
         }
 
         public MimeMessage BuildGenericMessage(string subject, string to, MarkupString header, MarkupString body, string? cc = null, string? bcc = null, EmailTemplate? template = null)
         {
             var htmlBody = WrapGenericMessage(header, body);
-            return BuildMessage(subject, to, htmlBody, cc, bcc, template);
+            return BuildMessage(subject, to, htmlBody, cc, bcc);
         }
-        private MimeMessage BuildMessage(string subject, string to, string body, string? cc = null, string? bcc = null, EmailTemplate? template = null)
+        private MimeMessage BuildMessage(string subject, string to, string body, string? cc = null, string? bcc = null)
         {
-
             var email = new MimeMessage();
             email.MessageId = Guid.NewGuid().ToString();
-            if (IsConfigured)
-            {
-                EmailSettings? settings = GetSettings();
-                if (settings != null)
-                {
-                    if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty()) email.Sender = MailboxAddress.Parse(settings.SMTPUsername);
-                    else email.Sender = MailboxAddress.Parse(settings.FromAddress);
-                    if (!settings.FromName.IsNullOrEmpty()) email.Sender.Name = settings.FromName;
-                    email.From.Add(email.Sender);
-                    if (to != null) email.To.Add(MailboxAddress.Parse(to));
-                    if (cc != null) email.Cc.Add(MailboxAddress.Parse(cc));
-                    if (bcc != null) email.Bcc.Add(MailboxAddress.Parse(bcc));
 
-                    //Inject admin bcc
-                    if (!settings.AdminBcc.IsNullOrEmpty()) email.Bcc.Add(MailboxAddress.Parse(settings.AdminBcc));
-
-
-                    email.Subject = subject;
-                    //Start body builder for attached logo image ref
-                    var builder = new BodyBuilder();
-                    //Attach logo
-                    var image = builder.LinkedResources.Add("logo.png", StaticAssets.AppIcon(75));
-                    //Generate attachment ID
-                    image.ContentId = MimeUtils.GenerateMessageId();
-                    //Replace logo placeholder in template with referenced img tag
-                    body = body.Replace("{{ApplicationLogo}}", "<img src=\"cid:" + image.ContentId + "\">");
-                    body = body.Replace("{{TrackingImgLink}}", "<img src=\"/background/acknowlegeEmail/" + email.MessageId + "\">");
-                    body = PrepareHTMLForEmail(body);
-                    builder.HtmlBody = body;
-                    //Compile body
-                    email.Body = builder.ToMessageBody();
-
-
-                }
-                return email;
-            }
-            else
-            {
+            if (!IsConfigured)
                 throw new EmailException("Email settings are invalid.");
-            }
-            throw new ApplicationException("Unknown error creating email message.");
+
+            EmailSettings? settings = GetSettings();
+            if (settings == null)
+                throw new EmailException("Unknown error creating email message.");
+
+            SetSender(email, settings);
+            AddRecipients(email, to, cc, bcc, settings);
+
+            email.Subject = subject;
+
+            var builder = new BodyBuilder();
+            var image = builder.LinkedResources.Add("logo.png", StaticAssets.AppIcon(75));
+            image.ContentId = MimeUtils.GenerateMessageId();
+
+            body = body.Replace("{{ApplicationLogo}}", $"<img src=\"cid:{image.ContentId}\">");
+            body = body.Replace("{{TrackingImgLink}}", $"<img src=\"/background/acknowlegeEmail/{email.MessageId}\">");
+            body = PrepareHTMLForEmail(body);
+            builder.HtmlBody = body;
+            email.Body = builder.ToMessageBody();
+
+            return email;
+        }
+
+        private void SetSender(MimeMessage email, EmailSettings settings)
+        {
+            if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty())
+                email.Sender = MailboxAddress.Parse(settings.SMTPUsername);
+            else
+                email.Sender = MailboxAddress.Parse(settings.FromAddress);
+
+            if (!settings.FromName.IsNullOrEmpty())
+                email.Sender.Name = settings.FromName;
+
+            email.From.Add(email.Sender);
+        }
+
+        private void AddRecipients(MimeMessage email, string to, string? cc, string? bcc, EmailSettings settings)
+        {
+            if (to != null)
+                email.To.Add(MailboxAddress.Parse(to));
+            if (cc != null)
+                email.Cc.Add(MailboxAddress.Parse(cc));
+            if (bcc != null)
+                email.Bcc.Add(MailboxAddress.Parse(bcc));
+            if (!settings.AdminBcc.IsNullOrEmpty())
+                email.Bcc.Add(MailboxAddress.Parse(settings.AdminBcc));
         }
 
         public string PrepareHTMLForEmail(string body)
@@ -230,19 +238,7 @@ namespace BLAZAM.Services.Background
             body = preMailer.MoveCssInline(stripIdAndClassAttributes: true, css: css.ReadAllText()).Html;
             return body;
         }
-        //private async Task<bool> RetrySend(EmailAuditLog failedEmail)
-        //{
-        //    MimeMessage retryMessage = new();
-        //    retryMessage.MessageId = failedEmail.MessageGuid;
-        //    retryMessage.From.Add(MailboxAddress.Parse(failedEmail.From));
-        //    retryMessage.Cc.Add(MailboxAddress.Parse(failedEmail.Cc));
-        //    retryMessage.Bcc.Add(MailboxAddress.Parse(failedEmail.Bcc));
 
-        //    var response = await client.SendAsync(retryMessage);
-
-        //    Audit.Email.EmailSent(retryMessage.MessageId, retryMessage.From.ToString(), retryMessage.To.ToString(), retryMessage.Cc.ToString(), retryMessage.Bcc.ToString(), retryMessage.Subject, retryMessage.HtmlBody, response);
-        //    return true;
-        //}
 
         private async Task<bool> TrySend(SmtpClient client, MimeMessage message)
         {
@@ -264,6 +260,7 @@ namespace BLAZAM.Services.Background
             }
             catch (EmailException ex)
             {
+                Loggers.SystemLogger.Error(ex, "Error trying to send email");
                 throw;
 
 
@@ -283,6 +280,7 @@ namespace BLAZAM.Services.Background
             }
             catch (EmailException ex)
             {
+                Loggers.SystemLogger.Error(ex, "Error trying to send email");
                 throw;
 
 
@@ -307,6 +305,7 @@ namespace BLAZAM.Services.Background
             }
             catch (Exception ex)
             {
+                Loggers.SystemLogger.Error(ex, "Error trying to send email");
                 throw;
             }
         }
@@ -318,12 +317,12 @@ namespace BLAZAM.Services.Background
 
 
                 var message = BuildMessage<TestEmailMessage>("BLAZAM Test Email", to);
-                //var message = BuildGenericMessage("BLAZAM Test Email", to, (MarkupString)"Success", (MarkupString)"Your email settings are correct.");
 
                 return await TrySend(client, message);
             }
             catch (EmailException ex)
             {
+                Loggers.SystemLogger.Information(ex, "Error trying to send testt email");
                 throw;
 
 
