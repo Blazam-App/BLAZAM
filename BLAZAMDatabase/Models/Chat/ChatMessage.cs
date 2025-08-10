@@ -1,8 +1,6 @@
-﻿using BLAZAM.Database.Models;
-using BLAZAM.Database.Models.Chat;
-using BLAZAM.Database.Models.User;
+﻿using BLAZAM.Database.Models.User;
 
-namespace BLAZAM.Server.Data
+namespace BLAZAM.Database.Models.Chat
 {
     public class ChatMessage : AppDbSetBase
     {

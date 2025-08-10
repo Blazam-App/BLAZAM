@@ -69,7 +69,7 @@
 
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
     [Parameter]
@@ -251,57 +251,50 @@
         var newSource = new CancellationTokenSource();
         token = newSource.Token;
         await CancelExistingTokens();
-
         _cancellationList.Add(newSource);
 
-        return await Task.Run(() =>
-         {
 
-             if (!token.IsCancellationRequested && searchText != null)
-             {
-                 SearchResults = new List<IDirectoryEntryAdapter>();
+        if (string.IsNullOrEmpty(searchText))
+        {
+            return Enumerable.Empty<IDirectoryEntryAdapter>();
+        }
 
-                 var search = new ADSearch(Directory);
+        if (token.IsCancellationRequested || string.IsNullOrEmpty(searchText))
+        {
+            return Enumerable.Empty<IDirectoryEntryAdapter>();
+        }
 
-                 search.ObjectTypeFilter = SearchObjectType;
-                 search.GeneralSearchTerm = searchText;
-                 search.MaxResults = MaxResults;
-                 search.EnabledOnly = !SearchDisabled;
-                 if (!search.GeneralSearchTerm.IsNullOrEmpty())
-                 {
-                     //search.ResultsCollected += AddResults;
-                     var temp = (search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token)).Where(r => r.CanRead);
-
-                     if (!token.IsCancellationRequested)
-                     {
-
-                         if (CustomResultsFilter != null)
-                         {
-                             List<IDirectoryEntryAdapter> filteredResults = new();
-                             foreach (var result in temp)
-                             {
-                                 if (CustomResultsFilter.Invoke(result))
-                                     filteredResults.Add(result);
-                             }
-                             if (!token.IsCancellationRequested)
-                             {
-                                 temp = filteredResults;
-                             }
-                         }
-                         if (!token.IsCancellationRequested)
-                         {
-                             SearchResults = temp;
-                             return SearchResults;
-                         }
-
-                     }
-                 }
-
-             }
-             return new List<IDirectoryEntryAdapter>();
-         });
+        SearchResults = new List<IDirectoryEntryAdapter>();
+        var search = new ADSearch(Directory)
+        {
+            ObjectTypeFilter = SearchObjectType,
+            GeneralSearchTerm = searchText,
+            MaxResults = MaxResults,
+            EnabledOnly = !SearchDisabled
+        };
 
 
+        var tempResults = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token))
+            .Where(r => r.CanRead);
+
+        if (token.IsCancellationRequested)
+        {
+            return Enumerable.Empty<IDirectoryEntryAdapter>();
+        }
+
+        IEnumerable<IDirectoryEntryAdapter> filteredResults = tempResults;
+        if (CustomResultsFilter != null)
+        {
+            filteredResults = tempResults.Where(result => CustomResultsFilter.Invoke(result));
+        }
+
+        if (token.IsCancellationRequested)
+        {
+            return Enumerable.Empty<IDirectoryEntryAdapter>();
+        }
+
+        SearchResults = filteredResults.ToList();
+        return SearchResults;
     }
     private void AddResults(IEnumerable<IDirectoryEntryAdapter> resultsPage)
     {

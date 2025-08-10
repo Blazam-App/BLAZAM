@@ -45,8 +45,7 @@
     /// </summary>
     static Dictionary<string, List<IApplicationUserState>> Viewers = new Dictionary<string, List<IApplicationUserState>>();
 
-    delegate void CallbackEvent();
-    static CallbackEvent ViewersChanged;
+    static AppEvent ViewersChanged=new();
 
 
     bool playingPop;
@@ -54,7 +53,6 @@
 
 
     public IEnumerable<ChatMessage> ChatMessages => ChatRoom?.Messages??new List<ChatMessage>();
-    delegate void ChatMessageCallbackEvent(ChatMessage message);
 
     protected override async Task OnInitializedAsync()
     {
@@ -91,7 +89,7 @@
 
 
             //Setup other viewers button listeners
-            ViewersChanged += (async () =>
+            ViewersChanged.Delegate += (async (state,args) =>
            {
 
                await InvokeAsync(StateHasChanged);

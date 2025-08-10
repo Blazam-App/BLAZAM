@@ -15,7 +15,7 @@
     string topMarginForContent = "";
 }
 
-<PageTitle>@DatabaseCache.ApplicationSettings.AppAbbreviation</PageTitle>
+<PageTitle>@DatabaseCache.ApplicationSettings?.AppAbbreviation</PageTitle>
 <CascadingValue Value="this">
     <MudLayout Style="min-height:98vh;">
         <AuthorizeView Context="authContext">
@@ -62,7 +62,7 @@
                 </MudDrawer>
 
 
-                <MudBreakpointProvider @ref=_mudBreakPoint>
+                <MudBreakpointProvider>
 
                     <MudDrawer Width=@(BrowseExpanded==false?"185px":"385px")
                                @bind-Open=@DrawerOpen
@@ -177,7 +177,6 @@
 }
 
 @code {
-    MudBreakpointProvider? _mudBreakPoint;
     AppModal? dataBrowser;
     bool _drawerOpen = true;
     bool _devDrawerOpen = false;

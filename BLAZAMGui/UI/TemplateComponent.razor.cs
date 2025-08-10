@@ -24,7 +24,7 @@ namespace BLAZAM.Gui.UI
                 if (SelectedCategory == null || SelectedCategory == "" || SelectedCategory == "All")
                     return templates;
                 else
-                    return templates.Where(t => t.Category == SelectedCategory).ToList();
+                    return templates.Where(t => t.Category == SelectedCategory);
 
             }
             set => templates = value;

@@ -37,47 +37,59 @@ namespace BLAZAM.Helpers
                 Loggers.SystemLogger.Warning("SessionHelpers.SlideCookieExpiration: httpContext parameter is null. Cannot slide cookie expiration.");
                 return;
             }
+
+            double? dbTimeoutValue = DatabaseCache.AuthenticationSettings?.SessionTimeout;
+            if (dbTimeoutValue == null)
+                return;
+
+            string? cookie = httpContext.Request.Cookies[CookieAuthenticationDefaults.CookiePrefix + CookieAuthenticationDefaults.AuthenticationScheme];
+            if (cookie == null)
+                return;
+
             try
             {
-                if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                var ticketDataFormat = httpContext.RequestServices
+                    .GetRequiredService<IOptionsMonitor<CookieAuthenticationOptions>>()
+                    .Get(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .TicketDataFormat;
+                var ticket = ticketDataFormat.Unprotect(cookie);
+                if (ticket == null)
+                    return;
+
+                var currentUtc = DateTimeOffset.UtcNow;
+                if (!ticket.Properties.IssuedUtc.HasValue)
+                    return;
+
+                var newExpiryTime = currentUtc.AddMinutes((double)dbTimeoutValue);
+                if (ticket.Properties.IssuedUtc.Value.AddMinutes((double)dbTimeoutValue) > currentUtc)
                 {
-                    var cookie = httpContext.Request.Cookies[CookieAuthenticationDefaults.CookiePrefix + CookieAuthenticationDefaults.AuthenticationScheme];
-                    if (cookie != null)
-                    {
-                        var ticketDataFormat = httpContext.RequestServices.GetRequiredService<IOptionsMonitor<CookieAuthenticationOptions>>().Get(CookieAuthenticationDefaults.AuthenticationScheme).TicketDataFormat;
-                        var ticket = ticketDataFormat.Unprotect(cookie);
-                        if (ticket != null)
+                    Loggers.SystemLogger.Debug(
+                        "SessionHelpers.SlideCookieExpiration: Sliding cookie expiration for user {UserIdentifier} to {NewExpiryTime}.",
+                        userState?.User?.Identity?.Name ?? httpContext.User?.Identity?.Name ?? "Unknown",
+                        newExpiryTime);
+
+                    ticket.Properties.IssuedUtc = currentUtc;
+                    ticket.Properties.ExpiresUtc = newExpiryTime;
+
+                    var newCookie = ticketDataFormat.Protect(ticket);
+                    httpContext.Response.Cookies.Append(
+                        CookieAuthenticationDefaults.CookiePrefix + CookieAuthenticationDefaults.AuthenticationScheme,
+                        newCookie,
+                        new CookieOptions
                         {
-                            var currentUtc = DateTimeOffset.UtcNow;
-                            var dbTimeoutValue = (double)DatabaseCache.AuthenticationSettings.SessionTimeout;
-                            if (ticket.Properties.IssuedUtc.Value.AddMinutes(dbTimeoutValue) > currentUtc)
-                            {
-                                var newExpiryTime = currentUtc.AddMinutes(dbTimeoutValue);
-                                Loggers.SystemLogger.Debug("SessionHelpers.SlideCookieExpiration: Sliding cookie expiration for user {UserIdentifier} to {NewExpiryTime}.", userState?.User?.Identity?.Name ?? httpContext.User?.Identity?.Name ?? "Unknown", newExpiryTime);
-
-                                ticket.Properties.IssuedUtc = currentUtc;
-                                ticket.Properties.ExpiresUtc = newExpiryTime;
-
-                                var newCookie = ticketDataFormat.Protect(ticket);
-                                httpContext.Response.Cookies.Append(
-                                    CookieAuthenticationDefaults.CookiePrefix + CookieAuthenticationDefaults.AuthenticationScheme,
-                                    newCookie,
-                                    new CookieOptions
-                                    {
-                                        HttpOnly = true,
-                                        Secure = true, // Assuming Secure attribute is desired
-                                        Expires = ticket.Properties.ExpiresUtc
-                                    });
-                                if (userState != null)
-                                    userState.Ticket = ticket;
-                            }
-                        }
-                    }
+                            HttpOnly = true,
+                            Secure = true,
+                            Expires = ticket.Properties.ExpiresUtc
+                        });
+                    if (userState != null)
+                        userState.Ticket = ticket;
                 }
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Warning(ex, "SessionHelpers.SlideCookieExpiration: Failed to slide cookie expiration for user {UserIdentifier}.", userState?.User?.Identity?.Name ?? httpContext.User?.Identity?.Name ?? "Unknown");
+                Loggers.SystemLogger.Warning(ex,
+                    "SessionHelpers.SlideCookieExpiration: Failed to slide cookie expiration for user {UserIdentifier}.",
+                    userState?.User?.Identity?.Name ?? httpContext.User?.Identity?.Name ?? "Unknown");
             }
         }
 

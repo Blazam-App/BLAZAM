@@ -171,48 +171,35 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (Classes != null && Classes.Contains("top"))
-                {
-                    if (Classes.Contains("computer"))
-                    {
-                        return ActiveDirectoryObjectType.Computer;
-                    }
-                    if (Classes.Contains("user"))
-                    {
-                        return ActiveDirectoryObjectType.User;
-                    }
-                    if (Classes.Contains("group"))
-                    {
-                        return ActiveDirectoryObjectType.Group;
-                    }
-                    if (Classes.Contains("organizationalUnit"))
-                    {
-                        return ActiveDirectoryObjectType.OU;
-                    }
-                    if (Classes.Contains("printQueue"))
-                    {
-                        return ActiveDirectoryObjectType.Printer;
-                    }
+                if (Classes == null || !Classes.Contains("top"))
+                    return ActiveDirectoryObjectType.OU;
 
-                    if (Classes.Contains("contact"))
-                    {
-                        return ActiveDirectoryObjectType.Contact;
-                    }
-                    if (Classes.Contains("msFVE-RecoveryInformation"))
-                    {
-                        return ActiveDirectoryObjectType.BitLocker;
-
-                    }
-
-                }
-                return ActiveDirectoryObjectType.OU;
+                return GetObjectTypeFromClasses(Classes);
             }
+        }
+
+        private static ActiveDirectoryObjectType GetObjectTypeFromClasses(List<string> classes)
+        {
+            if (classes.Contains("computer"))
+                return ActiveDirectoryObjectType.Computer;
+            if (classes.Contains("user"))
+                return ActiveDirectoryObjectType.User;
+            if (classes.Contains("group"))
+                return ActiveDirectoryObjectType.Group;
+            if (classes.Contains("organizationalUnit"))
+                return ActiveDirectoryObjectType.OU;
+            if (classes.Contains("printQueue"))
+                return ActiveDirectoryObjectType.Printer;
+            if (classes.Contains("contact"))
+                return ActiveDirectoryObjectType.Contact;
+            if (classes.Contains("msFVE-RecoveryInformation"))
+                return ActiveDirectoryObjectType.BitLocker;
+
+            return ActiveDirectoryObjectType.OU;
         }
 
 
         protected SearchResult? SearchResult { get; set; }
-
-
 
         public virtual string? ADSPath
         {
@@ -575,53 +562,49 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
 
 
-        public IList<PermissionMapping> InheritedPermissionMappings
+        public IList<PermissionMapping> GetInheritedPermissionMappings()
         {
-            get
-            {
-                return AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
-            }
+            return GetAppliedPermissionMappings().Where(m => !m.OU.Equals(DN)).ToList();
         }
-        public IList<PermissionMapping> DirectPermissionMappings
+
+        public IList<PermissionMapping> GetDirectPermissionMappings()
         {
-            get
-            {
 
-                return AppliedPermissionMappings.Where(m => m.OU.Equals(DN)).ToList();
+            return GetAppliedPermissionMappings().Where(m => m.OU.Equals(DN)).ToList();
 
-            }
+
         }
 
         private IList<PermissionMapping> _appliedPermissionMappings;
 
-        public IList<PermissionMapping> AppliedPermissionMappings
+        public IList<PermissionMapping> GetAppliedPermissionMappings()
         {
-            get
+            if (_appliedPermissionMappings == null)
             {
-                if (_appliedPermissionMappings == null)
-                {
-                    using var context = DbFactory.CreateDbContext();
-                    _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
-                }
-                return _appliedPermissionMappings;
+                using var context = DbFactory.CreateDbContext();
+                _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates)
+                                                                    .Where(m => DN.Contains(m.OU))
+                                                                    .OrderByDescending(m => m.OU.Length)
+                                                                    .ToList();
             }
+            return _appliedPermissionMappings;
+
         }
         private IList<PermissionMapping> _offspringPermissionMappings;
 
 
-        public IList<PermissionMapping> OffspringPermissionMappings
+        public IList<PermissionMapping> GetOffspringPermissionMappings()
         {
-            get
+            if (_offspringPermissionMappings == null)
             {
-                if (_offspringPermissionMappings == null)
-                {
-                    using var context = DbFactory.CreateDbContext();
-                    _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates)
-                                                                        .Where(m => m.OU.Contains(DN) && m.OU != DN)
-                                                                        .OrderByDescending(m => m.OU.Length).ToList();
-                }
-                return _offspringPermissionMappings;
+                using var context = DbFactory.CreateDbContext();
+                _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates)
+                                                                    .Where(m => m.OU.Contains(DN) && m.OU != DN)
+                                                                    .OrderByDescending(m => m.OU.Length)
+                                                                    .ToList();
             }
+            return _offspringPermissionMappings;
+
         }
 
 
@@ -983,10 +966,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     case ActiveDirectoryObjectType.Computer:
                         if (forceDeleteChildren)
                         {
-                            var children = DirectoryEntry.Children;
-                            foreach (DirectoryEntry child in children)
+                            var children = DirectoryEntry?.Children;
+                            if (children != null)
                             {
-                                DirectoryEntry.Children.Remove(child);
+                                foreach (DirectoryEntry child in children)
+                                {
+                                    DirectoryEntry?.Children.Remove(child);
+                                }
                             }
 
                         }

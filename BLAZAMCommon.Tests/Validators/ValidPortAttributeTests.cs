@@ -59,7 +59,7 @@ namespace BLAZAM.Common.Data.Tests.Validators
             // or we can just test the outcome of IsValid for an invalid value.
             var attribute = new ValidPortAttribute();
             var result = attribute.IsValid(0); // Invalid value to trigger error message
-            Assert.Equal(false, result);
+            Assert.False(result);
         }
 
         [Fact]

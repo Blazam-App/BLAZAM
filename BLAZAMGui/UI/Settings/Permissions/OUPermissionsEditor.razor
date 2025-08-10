@@ -4,7 +4,7 @@
     <MudCardHeader>
         @Node?.CanonicalName
     </MudCardHeader>
-    @if (inheritedMappings.Count > 0)
+    @if (inheritedMappings.Count() > 0)
     {
         <MudExpansionPanel Text="@AppLocalization[Lang.Inherited_Permissions]">
 
@@ -51,8 +51,8 @@
     public EventCallback MappingsChanged{ get; set; }
 
     private PermissionMapping? NewMapping;
-    IList<PermissionMapping> appliedMappings { get; set; } = new List<PermissionMapping>();
-    IList<PermissionMapping> inheritedMappings { get; set; } = new List<PermissionMapping>();
+    IEnumerable<PermissionMapping> appliedMappings { get; set; } = new List<PermissionMapping>();
+    IEnumerable<PermissionMapping> inheritedMappings { get; set; } = new List<PermissionMapping>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,8 +77,8 @@
     }
     async Task RefreshData()
     {
-        appliedMappings = Node.DirectPermissionMappings;
-        inheritedMappings = Node.InheritedPermissionMappings;
+        appliedMappings = Node.GetDirectPermissionMappings();
+        inheritedMappings = Node.GetInheritedPermissionMappings();
         NewMapping = null;
         await InvokeAsync(StateHasChanged);
     }
