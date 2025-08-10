@@ -11,58 +11,41 @@ namespace BLAZAM.ActiveDirectory.Data
         public bool IsSuperAdmin { get; set; }
 
 
-        public bool HasPermission(string dnTarget, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector, bool nestedSearch)
+        public bool HasPermission(
+            string dnTarget,
+            Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector,
+            Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector,
+            bool nestedSearch)
         {
             if (IsSuperAdmin) return true;
 
-            IOrderedEnumerable<PermissionMapping>? baseSearch = null;
-            if (!nestedSearch)
-            {
-                baseSearch = PermissionMappings
-       .Where(pm => dnTarget.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
-
-            }
-            else
-            {
-                baseSearch = PermissionMappings
-       .Where(pm => pm.OU.Contains(dnTarget)).OrderByDescending(pm => pm.OU.Length);
-
-            }
-
+            IOrderedEnumerable<PermissionMapping> baseSearch = !nestedSearch
+                ? PermissionMappings.Where(pm => dnTarget.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length)
+                : PermissionMappings.Where(pm => pm.OU.Contains(dnTarget)).OrderByDescending(pm => pm.OU.Length);
 
             try
             {
-                var possibleReads = allowSelector.Invoke(baseSearch).ToList();
-                if (denySelector != null)
-                {
-                    var possibleDenys = denySelector.Invoke(baseSearch).ToList();
+                var possibleReads = allowSelector(baseSearch).ToList();
+                if (possibleReads.Count == 0)
+                    return false;
 
-                    if (possibleReads != null && possibleReads.Count > 0)
-                    {
-                        if (possibleDenys != null && possibleDenys.Count > 0)
-                        {
-                            foreach (var d in possibleDenys)
-                            {
-                                if (d.OU.Length > possibleReads.OrderByDescending(r => r.OU.Length).First().OU.Length)
-                                    return false;
-                            }
-                        }
-                        else
-                        {
-                            return true;
-                        }
-                    }
-                }
-                else
-                {
-                    return possibleReads?.Count > 0;
-                }
+                if (denySelector == null)
+                    return true;
+
+                var possibleDenys = denySelector(baseSearch).ToList();
+                if (possibleDenys.Count == 0)
+                    return true;
+
+                int maxReadLength = possibleReads.Max(r => r.OU.Length);
+                bool hasDenyWithLongerOU = possibleDenys.Any(d => d.OU.Length > maxReadLength);
+
+                return !hasDenyWithLongerOU;
             }
             catch (Exception ex)
             {
                 Loggers.SystemLogger.Error(ex.Message);
+                return false;
             }
-            return false;
         }
 
         public bool HasActionPermission(string dnTarget, ObjectAction action, ActiveDirectoryObjectType objectType)
