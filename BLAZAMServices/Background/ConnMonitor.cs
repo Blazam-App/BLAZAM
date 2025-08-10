@@ -46,7 +46,7 @@ namespace BLAZAM.Services.Background
         public bool DatabaseUpdatePending { get; private set; }
 
         private bool _monitoring;
-        private Timer _timer;
+        private Timer? _timer;
         private ServiceConnectionState _appReady = ServiceConnectionState.Connecting;
 
         public ConnMonitor(IAppDatabaseFactory DbFactory, IActiveDirectoryContext directory, IEncryptionService encryption)
