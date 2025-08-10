@@ -257,7 +257,7 @@ namespace BLAZAM.Helpers
                 ZipArchiveEntry entry = archive.CreateEntry(directory.FullPath.Replace(basePath, "") + file.Name + file.Extension);
                 using (Stream es = entry.Open())
                 {
-                    fs?.CopyTo(es);
+                    fs.CopyTo(es);
                 }
 
             }
