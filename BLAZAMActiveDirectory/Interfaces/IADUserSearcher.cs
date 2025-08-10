@@ -7,7 +7,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     public interface IADUserSearcher
     {
         List<IADUser> FindUsersByString(string? searchTerm, bool ignoreDisabledUsers = true, bool exactMatch = false);
-        IADUser? FindUsersByContainerName(string? searchTerm, bool ignoreDisabledUsers = true, bool exactMatch = true);
+        IADUser? FindUsersByContainerName(string? searchTerm, bool ignoreDisabledUsers = true, bool exactMatch = false);
         Task<List<IADUser>> FindUsersByStringAsync(string? searchTerm, bool ignoreDisabledUsers = true, bool exactMatch = false);
         Task<List<IADUser>> FindLockedOutUsersAsync(bool ignoreDisabledUsers = true);
         List<IADUser>? FindLockedOutUsers(bool ignoreDisabledUsers = true);
