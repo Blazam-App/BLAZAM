@@ -11,7 +11,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private const string _driveStatsQuery = "SELECT DeviceID,FreeSpace,Size,Description,DriveType,FileSystem,MediaType,VolumeDirty,VolumeSerialNumber FROM Win32_LogicalDisk";
         private const string _totalMemoryQuery = "SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem";
         private const string _cpuStatsQuery = "SELECT * FROM Win32_PerfFormattedData_PerfOS_Processor WHERE Name='_Total'";
-        private const string _ipStatsQuery = "SELECT * FROM Win32_NetworkAdapterConfiguration WHERE IPEnabled = 'TRUE'";
+        //private const string _ipStatsQuery = "SELECT * FROM Win32_NetworkAdapterConfiguration WHERE IPEnabled = 'TRUE'";
         private const string _servicesQuery = "SELECT * FROM Win32_Service";
         private const string _sharedPrintersQuery = "SELECT * FROM Win32_Printer";
         private readonly ManagementScope _managementScope;
@@ -130,28 +130,25 @@ namespace BLAZAM.ActiveDirectory.Adapters
 #pragma warning restore S1751 // Loops with at most one iteration should be refactored
                     }
 
-                    Loggers.ActiveDirectoryLogger.Warning($"Shutdown command sent to {_target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
+                    Loggers.ActiveDirectoryLogger.Warning("Shutdown command sent to {CanonicalName}, but no Win32_OperatingSystem instance was found.", _target.CanonicalName);
                     return false; // No Win32_OperatingSystem object found.
                 }
                 catch (ManagementException mex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Management exception while shutting down {_target.CanonicalName}: {mex.Message} ErrorCode: {mex.ErrorCode}", mex);
+                    Loggers.ActiveDirectoryLogger.Error(mex, "Management exception while shutting down {CanonicalName}", _target.CanonicalName);
                     return false;
                 }
                 catch (UnauthorizedAccessException uaex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Unauthorized access while shutting down {_target.CanonicalName}: {uaex.Message}", uaex);
+                    Loggers.ActiveDirectoryLogger.Error(uaex, "Unauthorized access while shutting down {CanonicalName}", _target.CanonicalName);
                     return false;
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Exception while shutting down {_target.CanonicalName}: {ex.Message}", ex);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Exception while shutting down {CanonicalName}", _target.CanonicalName);
                     return false;
                 }
             });
-
-
-
         }
         public ComputerMemory Memory
         {
@@ -225,11 +222,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     foreach (var mo in PerformQuery(_driveStatsQuery))
                     {
-                        string letter = mo["DeviceID"]?.ToString();
-                        string description = mo["Description"]?.ToString();
-                        string fileSystem = mo["FileSystem"]?.ToString();
+                        string? letter = mo["DeviceID"]?.ToString();
+                        string? description = mo["Description"]?.ToString();
+                        string? fileSystem = mo["FileSystem"]?.ToString();
                         bool volumeDirty = Convert.ToBoolean(mo["VolumeDirty"]);
-                        string volumeSerial = mo["VolumeSerialNumber"]?.ToString();
+                        string? volumeSerial = mo["VolumeSerialNumber"]?.ToString();
                         int driveType = Convert.ToInt32(mo["DriveType"]);
                         int mediaType = Convert.ToInt32(mo["MediaType"]);
                         double freeSpace = Convert.ToDouble(mo["FreeSpace"]) / (1024 * 1024 * 1024);

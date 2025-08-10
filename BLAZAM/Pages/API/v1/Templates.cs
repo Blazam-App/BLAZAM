@@ -89,7 +89,7 @@ namespace BLAZAM.Pages.API.v1
         /// <response code="403">Forbidden - The user does not have the required role.</response>
         /// <response code="422">Unprocessable - The creation request cannot be processed due to an internal error.</response>
         [HttpPost]
-        [Route("api/v1/templates/execute/{templateId}")]
+        [Route("/api/v1/templates/execute/{templateId}")]
 
         public async Task<IActionResult> Execute(int templateId, [FromBody] NewUserDetails newUserDetails)
         {
@@ -104,10 +104,8 @@ namespace BLAZAM.Pages.API.v1
 
             try
             {
-                if (ValidateInput(newUserDetails, template))
-                {
+                ValidateInput(newUserDetails, template);
 
-                }
             }
             catch (BadHttpRequestException ex)
             {

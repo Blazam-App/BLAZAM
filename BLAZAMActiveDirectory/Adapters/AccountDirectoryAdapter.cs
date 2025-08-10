@@ -285,14 +285,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                value = SetFileTimeAttribute("accountExpires", value);
+                SetFileTimeAttribute("accountExpires", value);
             }
         }
 
 
         public void StageRequirePasswordChange(bool requireChange)
         {
-            PostCommitSteps.Add(new JobStep("Require Password Change", (JobStep? step) =>
+            PostCommitSteps.Add(new JobStep("Require Password Change", (JobStep step) =>
             {
 
                 RequirePasswordChange = requireChange;
@@ -365,17 +365,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (SAMAccountName == null) throw new AppException("samaccount name not found!");
             if (DirectorySettings == null) throw new AppException("Directory settings not found when trying to change directory user password");
-          
-            var directoryPassword = DirectorySettings.Password.Decrypt();
-            if (directoryPassword == null) return false;
 
+            var directoryPassword = DirectorySettings.Password.Decrypt().ToSecureString();
+            if (directoryPassword == null) return false;
 
             try
             {
-                try
-                {
-                    Invoke("SetPassword", new[] { password.ToPlainText() });
+                if (TryInvokeSetPassword(password))
                     return true;
+                if (OperatingSystem.IsWindows())
+                {
+                    // If we are on Windows, we can use the PrincipalContext to set the password
+                    return TryPrincipalContextSetPassword(password, requireChange, directoryPassword);
+                }
                 }
                 catch (DirectoryOperationException ex)
                 {
@@ -394,18 +396,56 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                          Loggers.ActiveDirectoryLogger.Error(ex, "An unexpected directory operation error occurred setting entry password");
                     }
+
                 }
                 return false;
             }
             catch (Exception ex) when (ex is not AppException)
             {
-
                 Loggers.ActiveDirectoryLogger.Error(ex, "Error setting entry password");
                 if (!Debugger.IsAttached)
                     throw new AppException("Unable to set password", ex);
-                else return true;
             }
+            return false;
+        }
 
+        private bool TryInvokeSetPassword(SecureString password)
+        {
+            try
+            {
+                Invoke("SetPassword", new[] { password.ToPlainText() });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Warning(ex, "Could not set password via Invoke");
+                return false;
+            }
+        }
+
+        private bool TryPrincipalContextSetPassword(SecureString password, bool requireChange, SecureString directoryPassword)
+        {
+            if (DirectorySettings == null)
+                throw new AppException("Directory settings not found when trying to change directory user password");
+            using (PrincipalContext pContext = new(
+                ContextType.Domain,
+                DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
+                DirectorySettings.Username + "@" + DirectorySettings.FQDN,
+                directoryPassword.ToPlainText()
+            ))
+            {
+                UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
+                if (up != null)
+                {
+                    up.SetPassword(password.ToPlainText());
+                    if (requireChange)
+                        up.ExpirePasswordNow();
+                    if (NewEntry)
+                        up.PasswordNotRequired = false;
+                    up.Save();
+                }
+            }
+            return true;
         }
         public void StageEnable()
         {
@@ -426,7 +466,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
         {
             NewPassword = newPassword;
-            PostCommitSteps.Add(new JobStep("Set Password", (JobStep? step) =>
+            PostCommitSteps.Add(new JobStep("Set Password", (JobStep step) =>
             {
                 var pass = NewPassword;
                 NewPassword = null;
@@ -435,7 +475,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         }
-
 
 
 

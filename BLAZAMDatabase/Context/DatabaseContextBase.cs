@@ -1,5 +1,4 @@
-﻿
-using System.Data;
+﻿using System.Data;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Exceptions;
@@ -14,11 +13,9 @@ using BLAZAM.Database.Models.User;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using BLAZAM.Server.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
 
 namespace BLAZAM.Database.Context
@@ -48,7 +45,7 @@ namespace BLAZAM.Database.Context
             }
         }
 
-        private static IEnumerable<string> _pendingMigrations;
+        private IEnumerable<string> _pendingMigrations;
         public virtual IEnumerable<string> PendingMigrations
         {
             get
@@ -58,7 +55,7 @@ namespace BLAZAM.Database.Context
             }
         }
 
-        private static IEnumerable<string> _appliedMigrations;
+        private IEnumerable<string> _appliedMigrations;
 
 
 
@@ -190,220 +187,15 @@ namespace BLAZAM.Database.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            List<ActiveDirectoryField> activeDirectoryFields = typeof(ActiveDirectoryFields).GetStaticProperties<ActiveDirectoryField>();
-
-
-            modelBuilder.Entity<ActiveDirectoryField>().HasData(activeDirectoryFields);
-
-
-            modelBuilder.Entity<CustomActiveDirectoryField>()
-         .HasMany(x => x.ObjectTypes);
-            modelBuilder.Entity<CustomActiveDirectoryField>()
-         .Navigation(x => x.ObjectTypes).AutoInclude();
-
-
-
-
-            modelBuilder.Entity<AccessLevel>(entity =>
-            {
-                entity.HasData(
-                        new AccessLevel { Id = 1, Name = "Deny All" }
-                );
-                entity.Navigation(e => e.ObjectMap).AutoInclude();
-                entity.Navigation(e => e.FieldMap).AutoInclude();
-                entity.Navigation(e => e.ActionMap).AutoInclude();
-            });
-
-
-            List<FieldAccessLevel> fieldAccessLevels = typeof(FieldAccessLevels).GetStaticProperties<FieldAccessLevel>();
-
-            modelBuilder.Entity<FieldAccessLevel>().HasData(fieldAccessLevels);
-
-
-            modelBuilder.Entity<FieldAccessMapping>(entity =>
-            {
-                entity.Navigation(e => e.CustomField).AutoInclude();
-                entity.Navigation(e => e.Field).AutoInclude();
-                entity.Navigation(e => e.FieldAccessLevel).AutoInclude();
-            });
-
-            List<ObjectAccessLevel> objectAccessLevels = typeof(ObjectAccessLevels).GetStaticProperties<ObjectAccessLevel>();
-
-            modelBuilder.Entity<ObjectAccessLevel>(entity =>
-            {
-                entity.HasData(objectAccessLevels);
-            });
-
-            modelBuilder.Entity<ObjectAccessMapping>(entity =>
-            {
-                entity.Navigation(e => e.ObjectAccessLevel).AutoInclude();
-            });
-
-            modelBuilder.Entity<DirectoryTemplate>(entity =>
-            {
-                entity.Navigation(e => e.FieldValues).AutoInclude();
-                entity.Navigation(e => e.AssignedGroupSids).AutoInclude();
-            });
-
-            modelBuilder.Entity<AutomationRule>(entity =>
-            {
-                entity.Navigation(e => e.Actions).AutoInclude();
-                entity.Navigation(e => e.Filters).AutoInclude();
-            });
-
-            modelBuilder.Entity<AutomationRuleAction>(entity =>
-            {
-                entity.Navigation(e => e.GroupSids).AutoInclude();
-                entity.Navigation(e => e.FieldValues).AutoInclude();
-            });
-
-            modelBuilder.Entity<AutomationRuleOrFilter>(entity =>
-            {
-                entity.Navigation(e => e.AndFilters).AutoInclude();
-            });
-
-            modelBuilder.Entity<AutomationRuleAndFilter>(entity =>
-            {
-                entity.Navigation(e => e.CustomField).AutoInclude();
-                entity.Navigation(e => e.Field).AutoInclude();
-                entity.Property(e => e.TimeFrame)
-                .HasConversion(new ValueConverter<TimeSpan?, long?>(
-                        v => v.HasValue ? v.Value.Ticks : (long?)null,
-                        v => v.HasValue ? TimeSpan.FromTicks(v.Value) : (TimeSpan?)null
-                    ));
-            });
-
-            modelBuilder.Entity<AutomationRuleActionFieldValue>(entity =>
-            {
-                entity.Navigation(e => e.Field).AutoInclude();
-                entity.Navigation(e => e.CustomField).AutoInclude();
-            });
-
-            modelBuilder.Entity<DirectoryTemplateFieldValue>(entity =>
-            {
-                entity.Navigation(e => e.Field).AutoInclude();
-                entity.Navigation(e => e.CustomField).AutoInclude();
-            });
-
-
-            List<ObjectAction> objectActions = typeof(ObjectActions).GetStaticProperties<ObjectAction>();
-
-            modelBuilder.Entity<ObjectAction>().HasData(objectActions);
-
-            modelBuilder.Entity<ActionAccessMapping>(entity =>
-            {
-                entity.Navigation(e => e.ObjectAction).AutoInclude();
-            });
-
-            modelBuilder.Entity<PermissionMapping>(entity =>
-            {
-                entity.Navigation(e => e.AccessLevels).AutoInclude();
-            });
-
-            modelBuilder.Entity<DirectoryTemplate>(entity =>
-            {
-                entity.Navigation(e => e.AssignedGroupSids).AutoInclude();
-            });
-
-            modelBuilder.Entity<AppSettings>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                if (Database.IsMySql())
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
-                else
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
-            });
-
-            modelBuilder.Entity<ADSettings>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                if (Database.IsMySql())
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
-                else
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
-
-            });
-
-
-
-            modelBuilder.Entity<AuthenticationSettings>(entity =>
-               {
-                   entity.Property(e => e.Id).ValueGeneratedNever();
-
-                   if (Database.IsMySql())
-                       entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
-
-                   else
-                       entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
-                   entity.HasData(new AuthenticationSettings
-                   {
-                       Id = 1,
-                       AdminPassword = "password"
-                   });
-               });
-
-            modelBuilder.Entity<EmailSettings>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                if (Database.IsMySql())
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
-
-                else
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
-
-            });
-
-
-            modelBuilder.Entity<AppUser>(entity =>
-            {
-                entity.HasIndex(e => e.UserGUID).IsUnique();
-                entity.Navigation(e => e.ReadNewsItems).AutoInclude();
-                entity.Navigation(e => e.FavoriteEntries).AutoInclude();
-                entity.Navigation(e => e.DashboardWidgets).AutoInclude();
-            });
-
-            modelBuilder.Entity<UserNotification>(entity =>
-            {
-                entity.Navigation(e => e.Notification).AutoInclude();
-            });
-
-            modelBuilder.Entity<PermissionDelegate>(entity =>
-            {
-                entity.HasIndex(e => e.DelegateSid).IsUnique();
-            });
-
-            modelBuilder.Entity<ChatRoom>(entity =>
-            {
-                entity.HasMany(e => e.Members).WithMany();
-                entity.Navigation(e => e.Messages).AutoInclude();
-                entity.Navigation(e => e.Members).AutoInclude();
-            });
-
-            modelBuilder.Entity<ChatMessage>(entity =>
-            {
-                entity.Navigation(e => e.User).AutoInclude();
-            });
-
-            modelBuilder.Entity<NotificationSubscription>(entity =>
-            {
-                entity.Navigation(e => e.NotificationTypes).AutoInclude();
-            });
-
-            modelBuilder.Entity<UnreadChatMessage>(entity =>
-            {
-                entity.Navigation(e => e.ChatMessage).AutoInclude();
-
-            });
-
+            DatabaseHelpers.ConfigureModel(modelBuilder, this);
         }
 
 
 
-        public bool EntityIsTracked<TEntry>(TEntry entry)
+
+        public bool EntityIsTracked<TEntry>(TEntry? entry)
         {
+            if (entry is null) return false;
             if (EqualityComparer<TEntry>.Default.Equals(entry, default)) return false;
             return base.Entry(entry).State != EntityState.Detached;
         }
@@ -419,123 +211,84 @@ namespace BLAZAM.Database.Context
         /// <returns></returns>
         private ServiceConnectionState TestConnection()
         {
-            Loggers.DatabaseLogger.Information("Testing Database Connection");
-            if (ConnectionString != null)
+            if (ConnectionString == null)
+                return ServiceConnectionState.Down;
+
+            try
             {
-                //Check for db connection
-                try
+                if (ConnectionString.FileBased)
+                    return TestSqliteConnection();
+
+                if (!NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort))
                 {
-                    //Handle SQLite
-                    if (ConnectionString.FileBased)
-                    {
-                        Loggers.DatabaseLogger.Information("SQLite configuration detected.");
-
-                        if (ConnectionString.File.Writable)
-                        {
-                            Loggers.DatabaseLogger.Information("SQLite file/directory is writeablee");
-
-                            if (ConnectionString.File.Exists)
-                            {
-                                Loggers.DatabaseLogger.Information("SQLite file exists. Returning Status Up.");
-
-                                return ServiceConnectionState.Up;
-                            }
-                        }
-                        else
-                        {
-                            Loggers.DatabaseLogger.Information("The Sqlite database folder is not writable by the current server user.");
-
-                            DownReason = new("The Sqlite database folder is not writable by the current server user.");
-                        }
-                        return ServiceConnectionState.Down;
-                    }
-
-                    Loggers.DatabaseLogger.Information("Not SQLite, checking database server port.");
-
-                    if (NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort))
-                    {
-                        if (Database.CanConnect())
-                        {
-                            return ServiceConnectionState.Up;
-                        }
-
-                    }
-                    else
-                    {
-                        Loggers.DatabaseLogger.Information("Database server port is not open or reachable.");
-
-                        DownReason = new("The database port is not open or is not reachable.");
-
-                        Database.CloseConnection();
-                        // return DatabaseStatus.TablesMissing;
-                    }
-
+                    DownReason = new("The database port is not open or is not reachable.");
+                    Database.CloseConnection();
+                    return ServiceConnectionState.Down;
                 }
 
-
-                catch (ObjectDisposedException ex)
-                {
-                    Loggers.DatabaseLogger.Information(ex, "Attempted to access a disposed Database object");
-                }
-                catch (InvalidOperationException ex)
-                {
-                    Loggers.DatabaseLogger.Information(ex, "Attempted to access a Database object in an invalid way");
-                }
-                catch (SqlException ex)
-                {
-                    switch (ex.Number)
-                    {
-                        case 53:
-                            //Server unreachable
-                            DownReason = new("The database port is open but connecting as an Sql server failed.");
-                            break;
-
-
-                        case 208:
-                            //Tables Missing
-                            DownReason = new("The database is missing a table. It may be in a corrupt state.");
-                            break;
-                        case 18456:
-                            //Database may be missing or permission issue
-                            DownReason = new("The database server is reachable, but the database could not be found or the" +
-                                " credentials provided do not have permission to the database.");
-                            break;
-
-                    }
-
-                }
-
-
-                catch (RetryLimitExceededException)
-                {
-                    //Couldn't connect to DB
-                    DownReason = new("The retry limit exceeded trying to connect to the database.");
-
-
-                }
-                catch (DatabaseConnectionStringException ex)
-                {
-                    DownReason = new("The database connection string is malformed. " + ex.Message);
-
-                }
-                catch (AppException ex)
-                {
-
-                    DownReason = new("The database experienced a general error. " + ex.Message);
-
-                }
-                catch (Exception ex)
-                {
-                    Loggers.DatabaseLogger.Error(ex, "Unexpected error testing connection to database");
-                    DownReason = new("The database experienced an unexpected error. " + ex.Message);
-
-                }
-
-
-
+                if (Database.CanConnect())
+                    return ServiceConnectionState.Up;
             }
-            return ServiceConnectionState.Down;
+            catch (ObjectDisposedException ex)
+            {
+                Loggers.DatabaseLogger.Information(ex, "Attempted to access a disposed Database object");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Loggers.DatabaseLogger.Information(ex, "Attempted to access a Database object in an invalid way");
+            }
+            catch (SqlException ex)
+            {
+                HandleSqlException(ex);
+            }
+            catch (RetryLimitExceededException)
+            {
+                DownReason = new("The retry limit exceeded trying to connect to the database.");
+            }
+            catch (DatabaseConnectionStringException ex)
+            {
+                DownReason = new("The database connection string is malformed. " + ex.Message);
+            }
+            catch (AppException ex)
+            {
+                DownReason = new("The database experienced a general error. " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Loggers.DatabaseLogger.Error(ex, "Unexpected error testing connection to database");
+                DownReason = new("The database experienced an unexpected error. " + ex.Message);
+            }
 
+            return ServiceConnectionState.Down;
+        }
+
+        private ServiceConnectionState TestSqliteConnection()
+        {
+            if (ConnectionString?.File.Writable != true)
+            {
+                DownReason = new("The Sqlite database folder is not writable by the current server user.");
+                return ServiceConnectionState.Down;
+            }
+            if (ConnectionString.File.Exists)
+                return ServiceConnectionState.Up;
+
+            return ServiceConnectionState.Down;
+        }
+
+        private void HandleSqlException(SqlException ex)
+        {
+            switch (ex.Number)
+            {
+                case 53:
+                    DownReason = new("The database port is open but connecting as an Sql server failed.");
+                    break;
+                case 208:
+                    DownReason = new("The database is missing a table. It may be in a corrupt state.");
+                    break;
+                case 18456:
+                    DownReason = new("The database server is reachable, but the database could not be found or the credentials provided do not have permission to the database.");
+                    break;
+            }
         }
 
 
@@ -604,7 +357,7 @@ namespace BLAZAM.Database.Context
                 var entityType = dbSet.PropertyType.GetGenericArguments()[0];
 
                 // Get the table name of the entity type
-                var tableName = Model.FindEntityType(entityType).GetTableName();
+                var tableName = Model.FindEntityType(entityType)?.GetTableName();
 
                 DataTable table = SelectAllDataFromTable(tableName);
 

@@ -132,9 +132,8 @@
     }
     public void ResetStatus()
     {
-        //Directory = DirectoryFactory.CreateActiveDirectoryContext();
-
-        _portStatus = null;
+        Directory.ConnectAsync();
+        _portStatus = false;
         _credStatus = null;
         showProgress = true;
         StateHasChanged();
@@ -145,87 +144,63 @@
     {
         await Task.Run(async () =>
         {
-            if (_monitoring == false)
+            if (_monitoring) return;
+            _monitoring = true;
+
+            while (_monitoring)
             {
-                _monitoring = true;
-                while (_monitoring == true)
+                UpdateProgress();
+
+                try
                 {
-
-                    if (Directory.Status == DirectoryConnectionStatus.Connecting)
-                    {
-                        showProgress = true;
-                        await InvokeAsync(StateHasChanged);
-
-                    }
-                    
-                    try{
-                  
-                        if (Directory.PortOpen)
-                        {
-                            _portStatus = true;
-                            await InvokeAsync(StateHasChanged);
-                            if (Directory.Status == DirectoryConnectionStatus.OK)
-                            {
-                                _credStatus = true;
-
-                                showProgress = false;
-                                // Directory.DomainControllers.ForEach(async dc =>
-                                // {
-                                //     try
-                                //     {
-                                //         if (dc.Domain != null)
-                                //         {
-                                //             if (dc.Domain.DomainMode != null)
-                                //             {
-                                //                 _domain = dc.Domain;
-                                //             }
-                                //         }
-                                //     }catch(Exception ex)
-                                //     {
-                                //         Loggers.ActiveDirectryLogger.Information("Unable to contact domain from domain controller. {@Error}", ex);
-                                //     }
-                                // });
-
-                                await InvokeAsync(DirectoryConnected.InvokeAsync);
-
-                            }
-                            else
-                            {
-                                _credStatus = false;
-                            }
-                        }
-                        else
-                        {
-                            _portStatus = false;
-                        }
-
-
-                        if (Directory.Status == DirectoryConnectionStatus.Connecting)
-                        {
-                            showProgress = true;
-
-                        }
-                        else
-                        {
-
-                            showProgress = false;
-                        }
-                    }
-                    catch (UnresolvableAddressException ex)
-                    {
-                        //ignore DNS errors, will show from Directory.ConnectionException
-                    }
-
-                   
-
-                    await InvokeAsync(StateHasChanged);
-                    await Task.Delay(1000);
+                   await UpdatePortAndCredentials();
                 }
+                catch (UnresolvableAddressException)
+                {
+                    //ignore DNS errors, will show from Directory.ConnectionException
+                }
+
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1000);
             }
-
         });
-
     }
+
+    private void UpdateProgress()
+    {
+        if (Directory.Status == DirectoryConnectionStatus.Connecting)
+        {
+            showProgress = true;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task UpdatePortAndCredentials()
+    {
+        if (Directory.PortOpen)
+        {
+            _portStatus = true;
+            await InvokeAsync(StateHasChanged);
+
+            if (Directory.Status == DirectoryConnectionStatus.OK)
+            {
+                _credStatus = true;
+                showProgress = false;
+                await InvokeAsync(DirectoryConnected.InvokeAsync);
+            }
+            else
+            {
+                _credStatus = false;
+            }
+        }
+        else
+        {
+            _portStatus = false;
+        }
+
+        showProgress = Directory.Status == DirectoryConnectionStatus.Connecting;
+    }
+
     private bool? GetConnectionTypeStatus()
     {
         if (Directory.Status != DirectoryConnectionStatus.OK) return false;

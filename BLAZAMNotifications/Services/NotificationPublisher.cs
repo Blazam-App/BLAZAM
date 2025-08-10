@@ -58,56 +58,16 @@ namespace BLAZAM.Notifications.Services
 
             using var context = _databaseFactory.CreateDbContext();
 
-            if (notificationMessage.Id == 0)
+            notificationMessage = EnsureNotificationMessage(context, notificationMessage);
+            if (notificationMessage == null)
             {
-                try
-                {
-                    context.NotificationMessages.Add(notificationMessage);
-                    context.SaveChanges();
-                    // Re-fetch to ensure we have the tracked entity with its ID
-                    notificationMessage = context.NotificationMessages.First(nm => nm.Id == notificationMessage.Id);
-                }
-                catch (Exception ex)
-                {
-                    Loggers.SystemLogger.Error(ex, "Error saving new notification {Error}", ex.Message); // Use ex.Message for cleaner log
-                    return Task.CompletedTask; // Stop if we can't save the core message
-                }
-            }
-            else
-            {
-                var existingMessage = context.NotificationMessages.FirstOrDefault(m => m.Id == notificationMessage.Id);
-                if (existingMessage == null)
-                {
-                    Loggers.SystemLogger.Warning("NotificationPublisher.PublishNotification: NotificationMessage with ID {NotificationId} not found in database. Cannot publish.", notificationMessage.Id);
-                    return Task.CompletedTask; // Stop if message doesn't exist
-                }
-                notificationMessage = existingMessage; // Use the tracked entity
+                // Error already logged in EnsureNotificationMessage
+                return Task.CompletedTask;
             }
 
-            List<UserNotification> sentNotifications = new();
-            foreach (var user in users)
-            {
-                if (user == null) // Handle null user in the list
-                {
-                    Loggers.SystemLogger.Warning("NotificationPublisher.PublishNotification: Encountered a null AppUser in the 'users' list. Skipping.");
-                    continue;
-                }
-                var dbUser = context.UserSettings.FirstOrDefault(u => u.Id == user.Id); // Assuming Id is the primary key
-                if (dbUser == null)
-                {
-                    Loggers.SystemLogger.Warning("NotificationPublisher.PublishNotification: User with ID {UserId} (Username: {Username}) provided in the list was not found in the database. Skipping notification for this user.", user.Id, user.Username);
-                    continue;
-                }
-                var userNotification = new UserNotification()
-                {
-                    User = dbUser, // Use the retrieved dbUser
-                    NotificationId = notificationMessage.Id
-                };
-                context.UserNotifications.Add(userNotification);
-                sentNotifications.Add(userNotification);
-            }
+            var sentNotifications = CreateUserNotifications(context, users, notificationMessage);
 
-            if (sentNotifications.Any()) // Only save if there are notifications to send
+            if (sentNotifications.Any())
             {
                 try
                 {
@@ -116,10 +76,65 @@ namespace BLAZAM.Notifications.Services
                 }
                 catch (Exception ex)
                 {
-                    Loggers.SystemLogger.Error(ex, "Error saving new user notifications {Error}", ex.Message); // Use ex.Message
+                    Loggers.SystemLogger.Error(ex, "Error saving new user notifications {Error}", ex.Message);
                 }
             }
             return Task.CompletedTask;
+        }
+
+        private NotificationMessage? EnsureNotificationMessage(IDatabaseContext context, NotificationMessage notificationMessage)
+        {
+            if (notificationMessage.Id == 0)
+            {
+                try
+                {
+                    context.NotificationMessages.Add(notificationMessage);
+                    context.SaveChanges();
+                    return context.NotificationMessages.First(nm => nm.Id == notificationMessage.Id);
+                }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Error(ex, "Error saving new notification {Error}", ex.Message);
+                    return null;
+                }
+            }
+            else
+            {
+                var existingMessage = context.NotificationMessages.FirstOrDefault(m => m.Id == notificationMessage.Id);
+                if (existingMessage == null)
+                {
+                    Loggers.SystemLogger.Warning("NotificationPublisher.PublishNotification: NotificationMessage with ID {NotificationId} not found in database. Cannot publish.", notificationMessage.Id);
+                    return null;
+                }
+                return existingMessage;
+            }
+        }
+
+        private List<UserNotification> CreateUserNotifications(IDatabaseContext context, List<AppUser> users, NotificationMessage notificationMessage)
+        {
+            List<UserNotification> sentNotifications = new();
+            foreach (var user in users)
+            {
+                if (user == null)
+                {
+                    Loggers.SystemLogger.Warning("NotificationPublisher.PublishNotification: Encountered a null AppUser in the 'users' list. Skipping.");
+                    continue;
+                }
+                var dbUser = context.UserSettings.FirstOrDefault(u => u.Id == user.Id);
+                if (dbUser == null)
+                {
+                    Loggers.SystemLogger.Warning("NotificationPublisher.PublishNotification: User with ID {UserId} (Username: {Username}) provided in the list was not found in the database. Skipping notification for this user.", user.Id, user.Username);
+                    continue;
+                }
+                var userNotification = new UserNotification()
+                {
+                    User = dbUser,
+                    NotificationId = notificationMessage.Id
+                };
+                context.UserNotifications.Add(userNotification);
+                sentNotifications.Add(userNotification);
+            }
+            return sentNotifications;
         }
 
         /// <summary>Publishes a notification to all users currently in the UserSettings table.</summary> 

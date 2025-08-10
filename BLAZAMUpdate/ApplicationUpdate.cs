@@ -204,13 +204,6 @@ namespace BLAZAM.Update
 
 
 
-
-
-
-
-
-            throw new ApplicationUpdateException("An unknown error caused the update to fail.");
-
         }
         private static async Task<bool> Wait(JobStep? step)
         {
@@ -445,65 +438,37 @@ namespace BLAZAM.Update
             {
                 return false;
             }
+
             int retries = 5;
+            var progress = new FileProgress();
+
             while (retries > 0)
             {
                 try
                 {
-                    Loggers.UpdateLogger?.Debug("Attempting download of update {@UpdateVersion}", Version);
-                    Loggers.UpdateLogger?.Debug("Download URL: {@DownloadURL}", Release.DownloadURL);
-                    Loggers.UpdateLogger?.Debug("Download Path: {@UpdateDirectory}", UpdateDownloadDirectory);
+                    LogDownloadAttempt();
 
-                    var progress = new FileProgress();
                     using (var client = new HttpClient())
+                    using (var response = await client.GetAsync(Release.DownloadURL, HttpCompletionOption.ResponseHeadersRead))
                     {
-                        using (var response = await client.GetAsync(Release.DownloadURL, HttpCompletionOption.ResponseHeadersRead))
+                        if (!response.IsSuccessStatusCode)
                         {
-                            if (!response.IsSuccessStatusCode)
-                            {
-                                Loggers.UpdateLogger?.Debug("Unable to connect to download url: {@StatusCode}:{@ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                            Loggers.UpdateLogger?.Debug("Unable to connect to download url: {@StatusCode}:{@ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                            return false;
+                        }
 
-                                return false;
-                            }
-                            UpdateDownloadDirectory.EnsureCreated();
-                            if (UpdateFile.Exists) UpdateFile.Delete();
-                            using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
-                            {
-                                using (var streamToWriteTo = UpdateFile.OpenWriteStream())
-                                {
-                                    progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
-                                    var buffer = new byte[4096];
-                                    int bytesRead;
-                                    int totalBytesRead = 0;
+                        UpdateDownloadDirectory.EnsureCreated();
+                        if (UpdateFile.Exists) UpdateFile.Delete();
 
-                                    while ((bytesRead = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length, cancellationTokenSource.Token)) > 0)
-                                    {
-                                        if (cancellationTokenSource.IsCancellationRequested != true)
-                                        {
-                                            await streamToWriteTo.WriteAsync(buffer, 0, bytesRead, cancellationTokenSource.Token);
-                                            totalBytesRead += bytesRead;
-                                            progress.CompletedBytes = totalBytesRead;
-                                            if (step != null)
-                                            {
-                                                step.Progress = progress.FilePercentage;
-                                            }
-
-                                            DownloadPercentageChanged?.Invoke(progress);
-                                        }
-                                        else
-                                        {
-                                            DownloadPercentageChanged?.Invoke(null);
-
-                                            return false;
-                                        }
-                                    }
-
-                                    retries = 0;
-
-                                }
-                            }
+                        using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
+                        using (var streamToWriteTo = UpdateFile.OpenWriteStream())
+                        {
+                            progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
+                            bool result = await WriteStreamWithProgress(streamToReadFrom, streamToWriteTo, progress, step);
+                            if (!result) return false;
                         }
                     }
+                    retries = 0;
                 }
                 catch (Exception ex)
                 {
@@ -518,9 +483,39 @@ namespace BLAZAM.Update
                     }
                 }
             }
+            return true;
+        }
 
+        private void LogDownloadAttempt()
+        {
+            Loggers.UpdateLogger?.Debug("Attempting download of update {@UpdateVersion}", Version);
+            Loggers.UpdateLogger?.Debug("Download URL: {@DownloadURL}", Release.DownloadURL);
+            Loggers.UpdateLogger?.Debug("Download Path: {@UpdateDirectory}", UpdateDownloadDirectory);
+        }
 
+        private async Task<bool> WriteStreamWithProgress(Stream readStream, Stream writeStream, FileProgress progress, JobStep? step)
+        {
+            var buffer = new byte[4096];
+            int bytesRead;
+            int totalBytesRead = 0;
 
+            while ((bytesRead = await readStream.ReadAsync(buffer, 0, buffer.Length, cancellationTokenSource.Token)) > 0)
+            {
+                if (cancellationTokenSource.IsCancellationRequested)
+                {
+                    DownloadPercentageChanged?.Invoke(null);
+                    return false;
+                }
+
+                await writeStream.WriteAsync(buffer, 0, bytesRead, cancellationTokenSource.Token);
+                totalBytesRead += bytesRead;
+                progress.CompletedBytes = totalBytesRead;
+                if (step != null)
+                {
+                    step.Progress = progress.FilePercentage;
+                }
+                DownloadPercentageChanged?.Invoke(progress);
+            }
             return true;
         }
 

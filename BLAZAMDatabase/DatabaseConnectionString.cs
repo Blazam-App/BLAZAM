@@ -18,7 +18,6 @@ namespace BLAZAM.Common.Data.Database
         {
 
             Value = connectionString;
-            //ConnectionString = ConnectionString.Replace("%temp%", Path.GetTempPath().Substring(0, Path.GetTempPath().Length-1));
             DatabaseType = dbType;
         }
 
@@ -83,43 +82,28 @@ namespace BLAZAM.Common.Data.Database
         {
             get
             {
-                if (Value != null)
+                if (Value == null)
+                    throw new AppException("Connection String missing a Database or Initial Catalog parameter");
+
+                if (FileBased)
+                    return "File Based";
+
+                string[] keys = { "initial catalog=", "database=" };
+                string lowerValue = Value.ToLower();
+
+                foreach (var key in keys)
                 {
-                    if (FileBased) return "File Based";
-
-                    string search = "initial catalog=";
-                    int startIndex = Value.ToLower().IndexOf(search);
-                    if (startIndex == -1)
-                    {
-                        try
-                        {
-                            search = "database=";
-                            startIndex = Value.ToLower().IndexOf(search);
-                        }
-                        catch
-                        {
-
-                        }
-                    }
+                    int startIndex = lowerValue.IndexOf(key);
                     if (startIndex >= 0)
                     {
-                        startIndex += search.Length;
+                        startIndex += key.Length;
                         int endIndex = Value.IndexOf(";", startIndex);
-                        if (endIndex >= 0)
-                        {
-                            return Value.Substring(startIndex, endIndex - startIndex);
-
-                        }
-
-                        if (endIndex == -1)
-                        {
-                            return Value.Substring(startIndex);
-
-                        }
-
+                        return endIndex >= 0
+                            ? Value.Substring(startIndex, endIndex - startIndex)
+                            : Value.Substring(startIndex);
                     }
-
                 }
+
                 throw new AppException("Connection String missing a Database or Initial Catalog parameter");
             }
         }

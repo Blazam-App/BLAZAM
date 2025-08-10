@@ -10,12 +10,16 @@
 	<ItemGroup>
 		<Compile Remove="Helpers\**" />
 		<Compile Remove="UI\General\**" />
+		<Compile Remove="wwwroot\**" />
 		<Content Remove="Helpers\**" />
 		<Content Remove="UI\General\**" />
+		<Content Remove="wwwroot\**" />
 		<EmbeddedResource Remove="Helpers\**" />
 		<EmbeddedResource Remove="UI\General\**" />
+		<EmbeddedResource Remove="wwwroot\**" />
 		<None Remove="Helpers\**" />
 		<None Remove="UI\General\**" />
+		<None Remove="wwwroot\**" />
 	</ItemGroup>
 
 
@@ -94,10 +98,6 @@
 	  <Content Update="UI\OU\CreateOU.razor">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	  </Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="wwwroot\" />
 	</ItemGroup>
 
 

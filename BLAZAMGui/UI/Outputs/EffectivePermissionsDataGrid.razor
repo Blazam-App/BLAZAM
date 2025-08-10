@@ -1,7 +1,7 @@
 ﻿
 @inherits AppComponentBase
 
-@if (Target != null && Target.AppliedPermissionMappings.Count() > 0)
+@if (Target != null && Target.GetAppliedPermissionMappings().Count > 0)
 {
 
     <MudSimpleTable>

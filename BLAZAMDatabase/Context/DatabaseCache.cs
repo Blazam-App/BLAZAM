@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 namespace BLAZAM.Database.Context
 {
-    public class DatabaseCache : IDisposable
+    public class DatabaseCache
     {
         private static bool _started;
 
@@ -85,11 +85,7 @@ namespace BLAZAM.Database.Context
 
         }
 
-        public void Dispose()
-        {
-            _started = false;
 
-        }
 
         public static ADSettings? ActiveDirectorySettings
         {

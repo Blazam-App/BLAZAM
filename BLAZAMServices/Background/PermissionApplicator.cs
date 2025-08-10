@@ -28,42 +28,37 @@ namespace BLAZAM.Services.Background
             _factory = factory;
             _directory = directory;
 
-            //if (_httpContextAccessor != null)
-            //{
-            //    ApplicationEvents.PermissionsChanged += ReloadPermissions;
-            //}
         }
 
 
         private void ReloadPermissions()
         {
             var userState = _userStateService.GetUserState(_httpContextAccessor.HttpContext.User);
-            if (userState != null)
-            {
-                if (userState.IsAuthenticated)
-                {
-                    var sid = userState.Preferences?.UserGUID;
-                    if (!sid.IsNullOrEmpty() && sid.StartsWith('S'))
-                    {
-                        var adObj = _directory.FindEntryBySID(sid.ToSidByteArray());
-                        if (adObj is IADUser adUser)
-                        {
-                            LoadPermissions(userState, adUser);
-                            var actorSid = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Actor))?.Value;
-                            var userSid = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid))?.Value;
-                            string? impersonatorSid = null;
-                            if (actorSid != null && userSid != null && !actorSid.Equals(userSid))
-                            {
-                                impersonatorSid = actorSid;
-                            }
-                            var claims = TransformUserRoles(userState, adUser, impersonatorSid);
-                            var identity = new ClaimsIdentity(claims, _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthenticationMethod))?.Value);
 
-                            _httpContextAccessor.HttpContext.SignInAsync(new(identity));
+            if (userState != null && userState.IsAuthenticated)
+            {
+                var sid = userState.Preferences?.UserGUID;
+                if (!sid.IsNullOrEmpty() && sid.StartsWith('S'))
+                {
+                    var adObj = _directory.FindEntryBySID(sid.ToSidByteArray());
+                    if (adObj is IADUser adUser)
+                    {
+                        LoadPermissions(userState, adUser);
+                        var actorSid = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Actor))?.Value;
+                        var userSid = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid))?.Value;
+                        string? impersonatorSid = null;
+                        if (actorSid != null && userSid != null && !actorSid.Equals(userSid))
+                        {
+                            impersonatorSid = actorSid;
                         }
+                        var claims = TransformUserRoles(userState, adUser, impersonatorSid);
+                        var identity = new ClaimsIdentity(claims, _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthenticationMethod))?.Value);
+
+                        _httpContextAccessor.HttpContext.SignInAsync(new(identity));
                     }
                 }
             }
+
         }
 
 
@@ -81,15 +76,16 @@ namespace BLAZAM.Services.Background
                 foreach (var l in cursor)
                 {
                     var permissiondelegate = ActiveDirectoryContext.SystemInstance.FindEntryBySID(l.DelegateSid);
-                    if (permissiondelegate != null)
+
+                    if (permissiondelegate != null
+                        &&
+                        (permissiondelegate is IADGroup && directoryUser.IsAMemberOf(permissiondelegate as IADGroup)
+                        || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
                     {
-                        if (permissiondelegate is IADGroup && directoryUser.IsAMemberOf(permissiondelegate as IADGroup)
-                            || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString()))
-                        {
-                            webUser.PermissionDelegates.Add(l);
-                            webUser.PermissionMappings.AddRange(l.PermissionsMaps);
-                        }
+                        webUser.PermissionDelegates.Add(l);
+                        webUser.PermissionMappings.AddRange(l.PermissionsMaps);
                     }
+
                 }
 #pragma warning disable S6966 // Awaitable method should be used
                 if (Context.GlobalPermissionSettings.Any() && Context.GlobalPermissionSettings.First()?.AllowSelfModification == true)
@@ -134,89 +130,49 @@ namespace BLAZAM.Services.Background
             {
                 userRoles.AddSuperAdmin();
                 userRoles.AddAllRoles();
-
             }
             else
             {
-                if (user.HasUserPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchUsers));
-                }
-                if (user.HasCreateUserPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.CreateUsers));
-                }
-                if (user.HasGroupPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchGroups));
-                }
-                if (user.HasCreateGroupPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.CreateGroups));
-                }
-                if (user.HasOUPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchOUs));
-                }
-                if (user.HasCreateOUPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.CreateOUs));
-                }
-                if (user.HasComputerPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchComputers));
-                }
-                if (user.HasBitLockerPrivilege)
-                {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchBitLocker));
-                }
-
-
+                AddRoleIf(userRoles, user.HasUserPrivilege, UserRoles.SearchUsers);
+                AddRoleIf(userRoles, user.HasCreateUserPrivilege, UserRoles.CreateUsers);
+                AddRoleIf(userRoles, user.HasGroupPrivilege, UserRoles.SearchGroups);
+                AddRoleIf(userRoles, user.HasCreateGroupPrivilege, UserRoles.CreateGroups);
+                AddRoleIf(userRoles, user.HasOUPrivilege, UserRoles.SearchOUs);
+                AddRoleIf(userRoles, user.HasCreateOUPrivilege, UserRoles.CreateOUs);
+                AddRoleIf(userRoles, user.HasComputerPrivilege, UserRoles.SearchComputers);
+                AddRoleIf(userRoles, user.HasBitLockerPrivilege, UserRoles.SearchBitLocker);
             }
 
-            //TransformUserRoles returns an empty list if the user has no login rights
+            AddClaimIfNotNull(userRoles, ClaimTypes.Sid, directoryUser.SID?.ToSidString());
+            AddClaimIfNotNull(userRoles, ClaimTypes.Name, directoryUser.DisplayName ?? directoryUser.SAMAccountName);
+            AddClaimIfNotNull(userRoles, ClaimTypes.WindowsAccountName, directoryUser.SAMAccountName);
+            AddClaimIfNotNull(userRoles, ClaimTypes.GivenName, directoryUser.GivenName);
+            AddClaimIfNotNull(userRoles, ClaimTypes.Surname, directoryUser.Sn);
+            AddClaimIfNotNull(userRoles, ClaimTypes.Email, directoryUser.Email);
 
-
-
-
-            if (directoryUser.DisplayName != null)
+            if (!string.IsNullOrEmpty(impersonatorSid))
             {
-                userRoles.Add(new Claim(ClaimTypes.Sid, directoryUser.SID.ToSidString()));
-            }
-            if (directoryUser.DisplayName != null)
-            {
-                userRoles.Add(new Claim(ClaimTypes.Name, directoryUser.DisplayName));
-            }
-            else if (directoryUser.SAMAccountName != null)
-            {
-                userRoles.Add(new Claim(ClaimTypes.Name, directoryUser.SAMAccountName));
-
-            }
-            if (directoryUser.UserPrincipalName != null)
-                userRoles.Add(new Claim(ClaimTypes.WindowsAccountName, directoryUser.SAMAccountName));
-            if (directoryUser.GivenName != null)
-                userRoles.Add(new Claim(ClaimTypes.GivenName, directoryUser.GivenName));
-            if (directoryUser.Sn != null)
-                userRoles.Add(new Claim(ClaimTypes.Surname, directoryUser.Sn));
-            if (directoryUser.Email != null)
-                userRoles.Add(new Claim(ClaimTypes.Email, directoryUser.Email));
-
-            if (impersonatorSid != null && impersonatorSid != String.Empty)
-            {
-                //Handle Impersonated login
                 userRoles.Add(new Claim(ClaimTypes.UserData, "impersonated"));
-                //Set the impersonators SID to the actor claim type so we know who to unimpersonate back to
                 userRoles.Add(new Claim(ClaimTypes.Actor, impersonatorSid));
-
             }
             else
             {
-                //This sign in is not impersonated, so we use the users SID we got from Active Directory above
-                userRoles.Add(new Claim(ClaimTypes.Actor, directoryUser.SID.ToSidString()));
-
+                AddClaimIfNotNull(userRoles, ClaimTypes.Actor, directoryUser.SID?.ToSidString());
             }
             return userRoles;
         }
 
+        // Helper methods to reduce complexity
+        private static void AddRoleIf(List<Claim> claims, bool condition, string role)
+        {
+            if (condition)
+                claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
+        private static void AddClaimIfNotNull(List<Claim> claims, string type, string? value)
+        {
+            if (!string.IsNullOrEmpty(value))
+                claims.Add(new Claim(type, value));
+        }
     }
 }

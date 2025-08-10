@@ -109,7 +109,6 @@ Title="@AppLocalization["Add new Webhook Subscription"]">
     public AppUser User { get; set; }
     Analytics Analytics;
     private List<WebHookSubscription> _subscriptions = new();
-    IDirectoryEntryAdapter? _selectedOU = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -198,7 +197,6 @@ Title="@AppLocalization["Add new Webhook Subscription"]">
         var ou = (IADOrganizationalUnit)entry;
         if (ou != null)
         {
-            _selectedOU = ou;
             await InvokeAsync(StateHasChanged);
         }
     }

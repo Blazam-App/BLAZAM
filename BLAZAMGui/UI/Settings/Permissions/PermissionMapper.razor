@@ -10,7 +10,7 @@
         <MudItem xs="12" sm="3" md="4">
             <ADTreeView @ref=@OUTree 
             StartRootExpanded=false
-            EndText="@(x=>x.DirectPermissionMappings.Count>0?x.DirectPermissionMappings.Count.ToString():"")"
+            EndText="@(x=>x.GetDirectPermissionMappings().Count>0?x.GetDirectPermissionMappings().Count.ToString():"")"
             @bind-SelectedEntry="SelectedNode">
 
             </ADTreeView>

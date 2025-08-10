@@ -43,7 +43,7 @@ namespace BLAZAM.Services
         /// <param name="googleAuthenticatorService">The Google Authenticator service.</param>
         /// <exception cref="ArgumentNullException">Thrown if any critical dependency is null.</exception>
         public AppAuthenticationStateProvider(IUserDatabaseFactory factory,
-            IActiveDirectoryContext directory, // Corrected typo: directoy -> directory
+            IActiveDirectoryContext directory,
             PermissionApplicator permissionHandler,
             IApplicationUserStateService userStateService,
             IHttpContextAccessor ca,
@@ -193,163 +193,172 @@ namespace BLAZAM.Services
             var newUserState = _userStateService.CreateUserState(GetAnonymous(_httpContextAccessor.HttpContext?.Session.Id));
             newUserState.IPAddress = loginReq.IPAddress;
 
-
             AuthenticationState? authenticationState = null;
+            CurrentUser = _httpContextAccessor.HttpContext?.User;
 
-            //Set the current user from the HttpContext which gets it from the user's browser cookie
-            CurrentUser = _httpContextAccessor?.HttpContext?.User;
-            //Block impersonation logins from non superadmins
-            if (loginReq.Impersonation
-                && CurrentUser != null
-                && !CurrentUser.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin))
+            if (IsUnauthorizedImpersonation(loginReq))
             {
                 await _audit.Logon.AttemptedPersonation(loginReq.IPAddress);
                 return loginReq.UnauthorizedImpersonation();
             }
-            //If the user is impersonating then we want to remember who we were before
+
             if (loginReq.Impersonation)
             {
-                //Prepare the UserState for the StateService to include the impersonator identity so
-                //we can undo the impersonation later
-                newUserState.Impersonator = CurrentUser;
-                //Attach the impersonator to the login request so it can be used for later processing
-                loginReq.ImpersonatorClaims = CurrentUser;
+                SetImpersonationState(newUserState, loginReq);
             }
-            else
+            else if (loginReq.Username.IsNullOrEmpty())
             {
-
-                if (loginReq.Username.IsNullOrEmpty()) return loginReq.NoUsername();
+                return loginReq.NoUsername();
             }
-            //Pull the authentication settings from the database so we can check admin credentials
+
             using (var context = await _factory.CreateDbContextAsync())
             {
-
                 var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
-                if (settings == null) { Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.Login: AuthenticationSettings are null from database."); }
-                //Check admin credentials
-                if (settings != null
-                    && loginReq.Username != null
-                    && loginReq.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                if (settings == null)
                 {
-                    var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
-                    if (loginReq.Password == adminPass)
-                        authenticationState = await SetUser(GetLocalAdmin());
-                    else
-                        await _audit.Logon.AttemptedLogin(GetLocalAdmin(), loginReq.IPAddress);
-
-
+                    Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.Login: AuthenticationSettings are null from database.");
                 }
-                //Check if we're in demo mode and this is a demo login
-                else if (_applicationInfo.InDemoMode && settings != null
-                    && loginReq.Username != null
-                    && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
-                {
-                    authenticationState = await SetUser(GetDemoUser());
 
+                authenticationState = await HandleLoginByType(loginReq, newUserState, context, settings);
+
+                if (authenticationState?.User != null)
+                {
+                    newUserState.User = authenticationState.User;
+                }
+                if (newUserState.User != null)
+                    _userStateService.SetUserState(newUserState);
+
+                if (authenticationState != null)
+                {
+                    if (loginReq.AuthenticationResult == LoginResultStatus.OK)
+                    {
+                        Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: User {UserName} successfully logged in. Final ClaimsPrincipal Name: {PrincipalName}", loginReq.Username, authenticationState.User?.Identity?.Name);
+                    }
+                    return loginReq.Success(authenticationState);
                 }
                 else
-                {
-                    try
-                    {
-                        //Login username is not "admin" or "demo" or we're not in demo mode, so we'll try active directory
-                        var userClaim = await AttemptADLogin(newUserState, loginReq);
-
-                        if (userClaim != null)
-                        {
-                            // Check that Duo is enabled and configured properly, also skip if impersonation
-                            if (settings != null &&
-                                settings.RequireMFA &&
-                                settings.MFAType == MFAType.CiscoDuo &&
-                                settings.DuoSettingsValid &&
-                                !loginReq.Impersonation
-                                )
-                            {
-                                //Duo is enabled, so we need to set up an MFA request
-                                Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: Initiating Duo MFA for user {UserName}.", loginReq.Username);
-                                var mfaRRedirect = await PerformDuoAuthentication(loginReq);
-                                if (mfaRRedirect.IsNullOrEmpty() && settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Block)
-                                {
-                                    Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.Login: Duo authentication for user {UserName} did not return a redirect URI, but DuoUnreachableBehavior is Block.", loginReq.Username);
-                                }
-                                //Settings are configured so
-                                if (!mfaRRedirect.IsNullOrEmpty())
-                                {
-                                    var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
-                                    var authResult = await SetUser(twostepState);
-                                    newUserState.User = userClaim;
-                                    _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
-                                    authenticationState = authResult;
-                                    return loginReq.DuoRequested(authenticationState);
-
-                                }
-
-                            }
-                            else
-                            {
-                                //Duo is not enabled, or this is impersonation, proceed with post login processing
-                                AppUser? userSettings = await GetUserSettings(context, userClaim);
-
-                                if (userSettings != null
-                                    && !loginReq.Impersonation
-                                    && settings != null
-                                    && settings.RequireMFA
-                                    && settings.MFAType == MFAType.GoogleAuthenticator
-                                    && userSettings.AuthenticatorSecret?.Decrypt<string>().IsNullOrEmpty() == false)
-                                {
-                                    Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: Google Authenticator MFA required for user {UserName}.", userClaim.Identity.Name);
-                                    var passcode = loginReq.MFAToken;
-                                    loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
-                                    if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken.ToSecureString(), passcode))
-                                    {
-                                        Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.Login: Google Authenticator PIN validation failed for user {UserName}.", userClaim.Identity.Name);
-                                        var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
-                                        var authResult = await SetUser(twostepState);
-                                        newUserState.User = userClaim;
-                                        _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
-                                        authenticationState = authResult;
-                                        return loginReq.GoogleAuthenticatorRequested(authenticationState);
-                                    }
-                                }
-
-                            }
-
-                            //If active directory login/impersonation succeeded the userClaim will be popluated
-                            if (userClaim.Identity?.IsAuthenticated == true)
-                                //Set the user in the authentication provider
-                                authenticationState = await SetUser(userClaim);
-                        }
-                    }
-                    catch (DeniedLoginException)
-                    {
-                        return loginReq.DeniedLogin();
-                    }
-
-                }
+                    return loginReq.BadCredentials();
             }
-            if (authenticationState?.User != null)
-            {
-                //User claim processing is done so we can set the UserState with the new identity
-                newUserState.User = authenticationState.User;
+        }
 
+        private bool IsUnauthorizedImpersonation(LoginRequest loginReq)
+        {
+            return loginReq.Impersonation
+                && CurrentUser != null
+                && !CurrentUser.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin);
+        }
+
+        private void SetImpersonationState(IApplicationUserState newUserState, LoginRequest loginReq)
+        {
+            newUserState.Impersonator = CurrentUser;
+            loginReq.ImpersonatorClaims = CurrentUser;
+        }
+
+        private async Task<AuthenticationState?> HandleLoginByType(LoginRequest loginReq, IApplicationUserState newUserState, IDatabaseContext context, AuthenticationSettings? settings)
+        {
+            if (IsLocalAdminLogin(loginReq, settings))
+            {
+                return await HandleLocalAdminLogin(loginReq, settings);
             }
-            //Pass this state to the State Service for statefulness if it's populated
-            if (newUserState.User != null)
-                _userStateService.SetUserState(newUserState);
-
-
-            //Return the authenticationstate
-            if (authenticationState != null)
+            else if (IsDemoLogin(loginReq, settings))
             {
-                if (loginReq.AuthenticationResult == LoginResultStatus.OK) // This check might be redundant if only success path reaches here with non-null authState
-                {
-                    Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: User {UserName} successfully logged in. Final ClaimsPrincipal Name: {PrincipalName}", loginReq.Username, authenticationState?.User?.Identity?.Name);
-                }
-                return loginReq.Success(authenticationState);
+                return await SetUser(GetDemoUser());
             }
             else
-                return loginReq.BadCredentials();
+            {
+                return await HandleActiveDirectoryLogin(loginReq, newUserState, context, settings);
+            }
+        }
 
+        private bool IsLocalAdminLogin(LoginRequest loginReq, AuthenticationSettings? settings)
+        {
+            return settings != null
+                && loginReq.Username != null
+                && loginReq.Username.Equals("admin", StringComparison.OrdinalIgnoreCase);
+        }
 
+        private async Task<AuthenticationState?> HandleLocalAdminLogin(LoginRequest loginReq, AuthenticationSettings settings)
+        {
+            var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
+            if (loginReq.Password == adminPass)
+                return await SetUser(GetLocalAdmin());
+            else
+                await _audit.Logon.AttemptedLogin(GetLocalAdmin(), loginReq.IPAddress);
+            return null;
+        }
+
+        private bool IsDemoLogin(LoginRequest loginReq, AuthenticationSettings? settings)
+        {
+            return _applicationInfo.InDemoMode && settings != null
+                && loginReq.Username != null
+                && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase)
+                && loginReq.Password == "demo";
+        }
+
+        private async Task<AuthenticationState?> HandleActiveDirectoryLogin(LoginRequest loginReq, IApplicationUserState newUserState, IDatabaseContext context, AuthenticationSettings? settings)
+        {
+            try
+            {
+                var userClaim = await AttemptADLogin(newUserState, loginReq);
+                if (userClaim != null)
+                {
+                    if (ShouldPerformDuoMFA(settings, loginReq))
+                    {
+                        var mfaRedirect = await PerformDuoAuthentication(loginReq);
+                        if (!mfaRedirect.IsNullOrEmpty())
+                        {
+                            var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
+                            var authResult = await SetUser(twostepState);
+                            newUserState.User = userClaim;
+                            _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                            return authResult;
+                        }
+                    }
+                    else
+                    {
+                        var userSettings = await GetUserSettings(context, userClaim);
+                        if (ShouldPerformGoogleAuthenticatorMFA(userSettings, loginReq, settings))
+                        {
+                            var passcode = loginReq.MFAToken;
+                            loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
+                            if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken.ToSecureString(), passcode))
+                            {
+                                var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
+                                var authResult = await SetUser(twostepState);
+                                newUserState.User = userClaim;
+                                _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                                return authResult;
+                            }
+                        }
+                    }
+                    if (userClaim.Identity?.IsAuthenticated == true)
+                        return await SetUser(userClaim);
+                }
+            }
+            catch (DeniedLoginException)
+            {
+                return loginReq.DeniedLogin().AuthenticationState;
+            }
+            return null;
+        }
+
+        private bool ShouldPerformDuoMFA(AuthenticationSettings? settings, LoginRequest loginReq)
+        {
+            return settings != null &&
+                settings.RequireMFA &&
+                settings.MFAType == MFAType.CiscoDuo &&
+                settings.DuoSettingsValid &&
+                !loginReq.Impersonation;
+        }
+
+        private bool ShouldPerformGoogleAuthenticatorMFA(AppUser? userSettings, LoginRequest loginReq, AuthenticationSettings? settings)
+        {
+            return userSettings != null
+                && !loginReq.Impersonation
+                && settings != null
+                && settings.RequireMFA
+                && settings.MFAType == MFAType.GoogleAuthenticator
+                && userSettings.AuthenticatorSecret?.Decrypt<string>().IsNullOrEmpty() == false;
         }
 
         private static async Task<AppUser?> GetUserSettings(IDatabaseContext context, ClaimsPrincipal? userClaim)

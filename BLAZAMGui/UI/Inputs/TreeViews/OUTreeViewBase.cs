@@ -167,58 +167,46 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
         protected void OpenToSelected()
         {
+            if (!(StartRootExpanded && RootOU != null && RootOU.Count > 0))
+                return;
 
-            if (StartRootExpanded && RootOU != null && RootOU.Count > 0)
+            var root = RootOU.First();
+            root.Expanded = true;
+            root.Children = GetChildren(root);
+
+            if (SelectedEntry == null)
             {
-                RootOU.First().Expanded = true;
-                RootOU.First().Children = GetChildren(RootOU.First());
-                if (SelectedEntry != null)
-                {
-                    var firstThing = RootOU.First();
-                    if (firstThing is TreeItemData<IDirectoryEntryAdapter> openThis)
-                    {
-                        if (!SelectedEntry.Equals(RootOU.First().Value))
-                        {
-                            openThis.Expanded = true;
-                        }
-
-                        while (openThis != null)
-                        {
-
-                            openThis.Children = GetChildren(openThis);
-                            var child = openThis.Children.FirstOrDefault(
-                                c => SelectedEntry.DN?.Contains(c.Value.DN) == true
-                                                            && !SelectedEntry.DN.Equals(c.Value.DN)
-                                                            );
-                            if (child != null)
-                            {
-                                if (!SelectedEntry.Equals(RootOU.First().Value))
-                                {
-                                    child.Expanded = true;
-                                }
-                                openThis = child;
-                            }
-                            else
-                            {
-                                var matchingOU = openThis.Children.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
-                                if (matchingOU != null)
-                                    matchingOU.Selected = true;
-                                break;
-                            }
-
-
-                        }
-                    }
-                }
-                else
-                {
-                    RootOU.First().Selected = true;
-                    SelectedEntry = RootOU.First().Value;
-                }
+                root.Selected = true;
+                SelectedEntry = root.Value;
+                return;
             }
-            //InvokeAsync(StateHasChanged);
 
+            var openThis = root;
+            if (!SelectedEntry.Equals(root.Value))
+                openThis.Expanded = true;
 
+            while (true)
+            {
+                openThis.Children = GetChildren(openThis);
+
+                var child = openThis.Children.FirstOrDefault(
+                    c => SelectedEntry.DN?.Contains(c.Value.DN) == true
+                        && !SelectedEntry.DN.Equals(c.Value.DN)
+                );
+
+                if (child == null)
+                {
+                    var matchingOU = openThis.Children.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
+                    if (matchingOU != null)
+                        matchingOU.Selected = true;
+                    break;
+                }
+
+                if (!SelectedEntry.Equals(root.Value))
+                    child.Expanded = true;
+
+                openThis = child;
+            }
         }
         /// <summary>
         /// Defines a function to determine whether an Active Directory object should be
@@ -233,11 +221,14 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             if (entry is IADOrganizationalUnit ou)
             {
                 if (ou.CanRead)
+                {
                     return true;
+                }
                 if (AdditionalVisibilityFilters != null && AdditionalVisibilityFilters(entry))
                 {
                     return true;
                 }
+
             }
             return false;
         }

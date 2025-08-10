@@ -5,9 +5,9 @@
                  Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
                  Filterable="false"
                  Dense=true
+                 Style="max-height:400px; overflow-y:auto;"
                  Loading=@LoadingData
                  Virtualize=true
-                 Height="600px"
                  FixedHeader=true
                  SortMode="@SortMode.None"
                  Groupable="false">
@@ -91,7 +91,7 @@
             @AppLocalization[Lang.Printers]: @Members.Count(m => m is IADPrinter)
         </MudText>
     }
-    if (Members.Where(m => !m.CanRead).Count() > 0)
+    if (Members.Count(m => !m.CanRead) > 0)
     {
         <MudAlert Class="mud-alert-filled-info">
             @AppHelpLocalization[HelpLang.Lacks_Group_Member_Read_Permission]
@@ -134,12 +134,6 @@ else
     {
         await base.OnInitializedAsync();
         RefreshData();
-
-        // Group.OnChangesDiscarded += () =>
-        // {
-        //     RefreshData();
-        // };
-        await InvokeAsync(StateHasChanged);
 
     }
     private void RefreshData()

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.4.5</AssemblyVersion>
-		<Version>2025.08.09.1903</Version>
+		<Version>2025.08.10.2112</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -170,11 +170,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Plugins\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="..\BLAZAMGui\UI\Users\Sections\PluginComponents.razor" Link="PluginComponents.razor" />
-	  <None Include="..\BLAZAMGui\UI\Dashboard\LdapCount.razor" Link="LdapCount.razor" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />

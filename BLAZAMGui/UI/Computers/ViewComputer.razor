@@ -5,7 +5,7 @@
     string _fieldMudStackClasses = "flex-wrap gap-10";
 }
 <AppPageTitle>@Computer?.CanonicalName</AppPageTitle>
-    @if (Computer != null)
+@if (Computer != null)
 {
     <EditForm OnValidSubmit=SaveChanges Context="editContext" Model="Computer">
 
@@ -50,7 +50,7 @@
                     <AppModal Title=@AppLocalization[Lang.Rename] @ref=@RenameModal>
                         @if (RenameModal?.IsShown == true)
                         {
-                            <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Computer="Computer" />
+                            <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser) => { Renamed(renamedUser); }) Computer="Computer" />
                         }
                     </AppModal>
 
@@ -66,12 +66,12 @@
 
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Name]:</MudText>
-                                        <MudSpacer />
-                                        <MudText>@Computer.CanonicalName</MudText>
+                                    <MudSpacer />
+                                    <MudText>@Computer.CanonicalName</MudText>
 
-                                    </MudStack>
+                                </MudStack>
 
-                                    @if (Computer.CanReadField(ActiveDirectoryFields.Manager))
+                                @if (Computer.CanReadField(ActiveDirectoryFields.Manager))
                                 {
                                     <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.User"
                                                     Label="@AppLocalization[Lang.Manager]"
@@ -83,32 +83,32 @@
                                 {
                                     <MudStack Row=true>
                                         <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Operating_System]:</MudText>
-                                            <MudSpacer />
-                                            <MudText>@Computer.OperatingSystem</MudText>
+                                        <MudSpacer />
+                                        <MudText>@Computer.OperatingSystem</MudText>
 
-                                        </MudStack>
+                                    </MudStack>
                                 }
 
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Online]:</MudText>
-                                        <MudSpacer />
-                                        <MudText>
-                                            <StatusCheck Status="@(Computer.IsOnline==true)" />
-                                        </MudText>
-                                    </MudStack>
+                                    <MudSpacer />
+                                    <MudText>
+                                        <StatusCheck Status="@(Computer.IsOnline == true)" />
+                                    </MudText>
+                                </MudStack>
 
-                                    <MudStack Row=true>
-                                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
-                                        <MudSpacer />
-                                        <LastLogonTime Typo=Typo.caption DirectoryEntry="Computer" />
+                                <MudStack Row=true>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
+                                    <MudSpacer />
+                                    <LastLogonTime Typo=Typo.caption DirectoryEntry="Computer" />
 
-                                    </MudStack>
+                                </MudStack>
 
-                                    <MudStack>
-                                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Groups]:</MudText>
-                                        <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="Computer" />
-                                    </MudStack>
-                                    @if (Computer.Disabled)
+                                <MudStack>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Groups]:</MudText>
+                                    <MemberOfList AssignToClicked=@(() => { AssignToModal?.ShowAsync(); }) Model="Computer" />
+                                </MudStack>
+                                @if (Computer.Disabled)
                                 {
                                     <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization[Lang.Computer_is_disabled]</MudAlert>
                                 }
@@ -172,7 +172,7 @@
 
                                     <DynamicMudInput T=DateTime? Label="@AppLocalization[Lang.Expires]"
                                                      @bind-Value="@Computer.LapsPasswordExpiration"
-                                                     Disabled=@(!EditMode|| !Computer.CanEditField(ActiveDirectoryFields.LapsPassword))/>
+                                                     Disabled=@(!EditMode|| !Computer.CanEditField(ActiveDirectoryFields.LapsPassword)) />
 
                                     <MudButton Color="Color.Secondary"
                                                Variant="Variant.Filled"
@@ -182,7 +182,7 @@
 
                                 </ViewSection>
 
-                               
+
                             </MudStack>
 
                         </MudItem>
@@ -265,25 +265,24 @@
 
                         </ViewSection>
                     }
-                    @if (Computer.CanReadAnyCustomFields)
+
+                    @if (Computer.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
                     {
-                        @if (CustomFields != null && CustomFields.Count > 0)
-                        {
-                            <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
+                        <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
 
-                                @foreach (var field in CustomFields)
+                            @foreach (var field in CustomFields)
+                            {
+                                @if (Computer.CanReadField(field))
                                 {
-                                    @if (Computer.CanReadField(field))
-                                    {
-                                        <CustomDirectoryField Disabled=@(!EditMode || !Computer.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="Computer" Field="@field" />
+                                    <CustomDirectoryField Disabled=@(!EditMode || !Computer.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="Computer" Field="@field" />
 
-                                    }
                                 }
+                            }
 
 
-                            </ViewSection>
-                        }
+                        </ViewSection>
                     }
+
 
 
                     <PluginComponents Page="@PageType.Computer" Location="@PageLocation.NewSection" />
@@ -323,14 +322,16 @@
                 await RefreshEntryComponents();
             });
         }
-        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+        if (Computer != null)
+        {
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
                 Entry = Computer,
                 Actor = CurrentUser.State
 
             });
-
+        }
         LoadingData = false;
         await RefreshEntryComponents();
     }
@@ -365,12 +366,12 @@
                 Computer.Delete(true);
                 SnackBarService.Success(Computer.CanonicalName + " has been deleted.");
                 ApplicationEvents.DirectoryEntryChanged.Invoke(new()
-                    {
-                        EventType = ApplicationEventType.Delete,
-                        Entry = Computer,
-                        Actor = CurrentUser.State
+                {
+                    EventType = ApplicationEventType.Delete,
+                    Entry = Computer,
+                    Actor = CurrentUser.State
 
-                    });
+                });
 
             }
             catch (AppException ex)
@@ -384,78 +385,70 @@
     }
     async void SaveChanges()
     {
-        if (Computer != null && await MessageService.Confirm("Are you sure you want to save the changes?"))
+        if (Computer == null || !await MessageService.Confirm("Are you sure you want to save the changes?"))
+            return;
+
+        SavingChanges = true;
+        await RefreshEntryComponents();
+
+        try
         {
-            SavingChanges = true;
-            await RefreshEntryComponents();
-            try
+            var changes = Computer.Changes;
+            var assignTo = Computer.ToAssignTo;
+            var unassignFrom = Computer.ToUnassignFrom;
+            var jobResults = await Computer.CommitChangesAsync();
+
+            if (jobResults.Result == JobResult.Passed)
             {
+                NotifyAssignments(assignTo, ApplicationEventType.Assign);
+                NotifyAssignments(unassignFrom, ApplicationEventType.Unassign);
 
-                var changes = Computer.Changes;
-                var assignTo = Computer.ToAssignTo;
-                var unassignFrom = Computer.ToUnassignFrom;
-                var jobResults = await Computer.CommitChangesAsync();
-                if (jobResults.Result == JobResult.Passed)
+                var nonMemberOfChanges = changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList();
+                if (nonMemberOfChanges.Any())
                 {
-                    foreach (var assignment in assignTo)
+                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
                     {
-                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
-                            {
-                                EventType = ApplicationEventType.Assign,
-                                Entry = assignment.Member,
-                                Target = assignment.Group,
-                                Actor = CurrentUser.State
-
-                            });
-
-                    }
-
-                    foreach (var assignment in unassignFrom)
-                    {
-                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
-                            {
-                                EventType = ApplicationEventType.Unassign,
-                                Entry = assignment.Member,
-                                Target = assignment.Group,
-                                Actor = CurrentUser.State
-
-                            });
-
-                    }
-                    if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
-                    {
-
-                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
-                            {
-                                EventType = ApplicationEventType.Modify,
-                                Entry = Computer,
-                                Changes = changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList(),
-                                Actor = CurrentUser.State
-
-
-                            });
-
-                    }
-                    EditMode = false;
-                    SnackBarService.Success("The changes made to this computer have been saved.");
-                    await RefreshEntryComponents();
+                        EventType = ApplicationEventType.Modify,
+                        Entry = Computer,
+                        Changes = nonMemberOfChanges,
+                        Actor = CurrentUser.State
+                    });
                 }
-                else
-                {
-                    await jobResults.ShowJobDetailsDialogAsync(MessageService);
-                }
+
+                EditMode = false;
+                SnackBarService.Success("The changes made to this computer have been saved.");
+                await RefreshEntryComponents();
             }
-            catch (AppException ex)
+            else
             {
-                SnackBarService.Error(ex.Message);
-
+                await jobResults.ShowJobDetailsDialogAsync(MessageService);
             }
+        }
+        catch (AppException ex)
+        {
+            SnackBarService.Error(ex.Message);
+        }
+        finally
+        {
             SavingChanges = false;
-
             await RefreshEntryComponents();
-
         }
     }
+
+    private void NotifyAssignments(List<GroupMembership> assignments, ApplicationEventType eventType)
+    {
+        foreach (var assignment in assignments)
+        {
+            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            {
+                EventType = eventType,
+                Entry = assignment.Member,
+                Target = assignment.Group,
+                Actor = CurrentUser.State
+            });
+        }
+    }
+
     public override void Dispose()
     {
         base.Dispose();
