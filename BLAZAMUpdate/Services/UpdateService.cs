@@ -1,5 +1,4 @@
-﻿
-using System.Runtime.ExceptionServices;
+﻿using System.Runtime.ExceptionServices;
 using System.Security.Principal;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
@@ -222,60 +221,55 @@ namespace BLAZAM.Update.Services
 
         private ApplicationUpdate? EncapsulateUpdate(Release? releaseToEncapsulate, string Branch)
         {
-            ApplicationVersion? releaseVersion = null;
+            if (releaseToEncapsulate == null)
+                return null;
 
-            //Get the release filename to prepare a version object
-            var filename = Path.GetFileNameWithoutExtension(releaseToEncapsulate?.Assets.FirstOrDefault()?.Name);
-            //Create that version object
+            var filename = Path.GetFileNameWithoutExtension(releaseToEncapsulate.Assets.FirstOrDefault()?.Name);
             if (filename == null)
                 throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
-            releaseVersion = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
 
+            var versionStart = filename.IndexOf("-v");
+            if (versionStart < 0 || versionStart + 2 >= filename.Length)
+                throw new ApplicationUpdateException("Version string not found in filename");
 
+            var releaseVersion = new ApplicationVersion(filename[(versionStart + 2)..]);
 
-
-
-            if (releaseToEncapsulate != null && releaseVersion != null)
+            var release = new ApplicationRelease
             {
-                IApplicationRelease release = new ApplicationRelease
-                {
-                    Branch = Branch,
-                    GitHubRelease = releaseToEncapsulate,
-                    Version = releaseVersion,
+                Branch = Branch,
+                GitHubRelease = releaseToEncapsulate,
+                Version = releaseVersion,
+            };
 
-                };
-                var update = new ApplicationUpdate(_applicationInfo, this, _dbFactory) { Release = release };
-                if (releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
-                {
-                    update.PreRequisiteChecks.Add(new(() =>
-                    {
-                        if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
-                        {
-                            if (AppLocalization != null)
-                                update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
-                            else
-                                update.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
+            var update = new ApplicationUpdate(_applicationInfo, this, _dbFactory) { Release = release };
 
-                            return false;
-
-                        }
-                        if (ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCoreHosting())
-                        {
-                            if (AppLocalization != null)
-
-                                update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
-                            else
-                                update.PrequisiteMessage = "ASP NET Core 8 Web Hosting Bundle is missing.";
-
-                            return false;
-
-                        }
-                        return true;
-                    }));
-                }
-                return update;
+            if (releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
+            {
+                update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update));
             }
-            return null;
+
+            return update;
+        }
+
+        private bool CheckAspCorePrerequisites(ApplicationUpdate update)
+        {
+            if (!ApplicationInfo.isUnderIIS)
+            {
+                if (!PrerequisiteChecker.CheckForAspCore())
+                {
+                    update.PrequisiteMessage = AppLocalization?["ASP NET Core 8 Runtime is missing."] ?? "ASP NET Core 8 Runtime is missing.";
+                    return false;
+                }
+            }
+            else
+            {
+                if (!PrerequisiteChecker.CheckForAspCoreHosting())
+                {
+                    update.PrequisiteMessage = AppLocalization?["ASP NET Core 8 Web Hosting Bundle is missing."] ?? "ASP NET Core 8 Web Hosting Bundle is missing.";
+                    return false;
+                }
+            }
+            return true;
         }
 
         private async void CheckForUpdate(object? state)
