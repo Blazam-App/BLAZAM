@@ -14,127 +14,73 @@
     [Parameter]
     public Align Align { get; set; }
 
-    private Dictionary<string, string?> Changes = new();
-    private List<string> Attributes = new();
+    private readonly Dictionary<string, string?> Changes = new();
+    private readonly List<string> Attributes = new();
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        if (AuditEntry != null)
+        if (AuditEntry == null) return;
+
+        Changes.Clear();
+        AddAttributes(AuditEntry.BeforeAction);
+        if (Changes.Count == 0)
+            AddAttributes(AuditEntry.AfterAction);
+
+        foreach (var attr in Changes.Keys.ToList())
         {
-            if (!AuditEntry.BeforeAction.IsNullOrEmpty())
+            var beforeValue = GetAttributeValue(AuditEntry.BeforeAction, attr);
+            var afterValue = GetAttributeValue(AuditEntry.AfterAction, attr);
+
+            Changes[attr] = BuildOutputString(beforeValue, afterValue);
+        }
+    }
+
+    private void AddAttributes(string? action)
+    {
+        if (action.IsNullOrEmpty()) return;
+
+        if (action.Contains(";"))
+        {
+            foreach (var str in action.Split(";"))
             {
-                if (AuditEntry.BeforeAction?.Contains(";") == true)
-                {
-                    foreach (var str in AuditEntry.BeforeAction.Split(";"))
-                    {
-                        if (!str.IsNullOrEmpty())
-                        {
-                            var data = str.Split("=");
-                            var attr = data.FirstOrDefault();
-                            if (attr != null)
-                            {
-
-                                Changes.Add(attr, null);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Changes.Add(AppLocalization[Lang.Action], null);
-                }
-            }
-            else if (!AuditEntry.AfterAction.IsNullOrEmpty())
-            {
-                if (AuditEntry.AfterAction?.Contains(";") == true)
-                {
-                    foreach (var str in AuditEntry.AfterAction.Split(";"))
-                    {
-                        if (!str.IsNullOrEmpty())
-                        {
-                            var data = str.Split("=");
-                            var attr = data.FirstOrDefault();
-                            if (attr != null)
-                            {
-
-                                Changes.Add(attr, null);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Changes.Add(AppLocalization[Lang.Action], null);
-                }
-            }
-            foreach (var attr in Changes.Keys)
-            {
-                try
-                {
-                    string? beforeValue = null;
-                    try
-                    {
-                        if (AuditEntry.BeforeAction?.Contains(";") == true)
-                        {
-                            var matchingBeforeAction = AuditEntry.BeforeAction.Split(";").FirstOrDefault(s => s.StartsWith(attr));
-
-                            beforeValue = matchingBeforeAction.Split("=")[1];
-                        }
-                        else
-                        {
-                            beforeValue = AuditEntry.BeforeAction;
-                        }
-
-
-                    }
-                    catch
-                    {
-
-                    }
-                    string? matchingAfterAction = null;
-                    string? afterValue = null;
-                    try
-                    {
-
-                        if (AuditEntry.AfterAction?.Contains(";") == true)
-                        {
-                            matchingAfterAction = AuditEntry.AfterAction.Split(";").FirstOrDefault(s => s.StartsWith(attr));
-
-                            afterValue = matchingAfterAction.Split("=")[1];
-                        }
-                        else
-                        {
-                            afterValue = AuditEntry.AfterAction;
-                        }
-
-                    }
-                    catch
-                    {
-
-                    }
-                    string outputString = beforeValue ?? "";
-                    if (afterValue == null || beforeValue == null || !afterValue.Contains(beforeValue))
-                    {
-                        outputString = "<s>" + outputString + "</s>";
-                    }
-                    if (!afterValue.IsNullOrEmpty())
-                    {
-
-                        if (!beforeValue.IsNullOrEmpty())
-                            outputString += "<text style=\"display:contents;color:var(--mud-palette-success)\">" + afterValue.Replace(beforeValue, "") + "</text>";
-                        else
-                            outputString += "<text style =\"display:contents;color:var(--mud-palette-success)\">" + afterValue + "</text>";
-
-                    }
-
-                    Changes[attr] = outputString;
-                }
-                catch
-                {
-
-                }
-
+                var attr = str.Split("=").FirstOrDefault();
+                if (!attr.IsNullOrEmpty())
+                    Changes.TryAdd(attr, null);
             }
         }
+        else
+        {
+            Changes.TryAdd(AppLocalization[Lang.Action], null);
+        }
+    }
+
+    private string? GetAttributeValue(string? action, string attr)
+    {
+        if (action.IsNullOrEmpty()) return null;
+
+        if (action.Contains(";"))
+        {
+            var match = action.Split(";").FirstOrDefault(s => s.StartsWith(attr));
+            if (match?.Contains("=") == true)
+                return match.Split("=", 2)[1];
+            return null;
+        }
+        return action;
+    }
+
+    private string BuildOutputString(string? beforeValue, string? afterValue)
+    {
+        var output = beforeValue ?? "";
+        if (afterValue == null || beforeValue == null || !afterValue.Contains(beforeValue))
+            output = $"<s>{output}</s>";
+
+        if (!afterValue.IsNullOrEmpty())
+        {
+            var added = beforeValue.IsNullOrEmpty()
+                ? afterValue
+                : afterValue.Replace(beforeValue ?? "", "");
+            output += $"<text style=\"display:contents;color:var(--mud-palette-success)\">{added}</text>";
+        }
+        return output;
     }
 }
