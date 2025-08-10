@@ -1,7 +1,7 @@
 using BLAZAM.Common.Data.Database;
 namespace BLAZAMDatabase.Tests
 {
-    public class UnitTest1
+    public class ConnectionStringTests
     {
         const string Valid_SQLite_Connection_String = "Data Source=C:\\ProgramData\\Blazam\\database.db;";
         const string Valid_SQLite_Connection_String2 = "data source=C:\\ProgramData\\Blazam\\database.db;";
