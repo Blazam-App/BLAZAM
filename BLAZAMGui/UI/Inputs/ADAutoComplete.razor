@@ -274,7 +274,7 @@
         };
 
 
-        var tempResults = search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token)
+        var tempResults = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token))
             .Where(r => r.CanRead);
 
         if (token.IsCancellationRequested)

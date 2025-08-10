@@ -74,7 +74,7 @@
         if (afterValue == null || beforeValue == null || !afterValue.Contains(beforeValue))
             output = $"<s>{output}</s>";
 
-        if (!afterValue.IsNullOrEmpty())
+        if (afterValue!=null && !afterValue.IsNullOrEmpty())
         {
             var added = beforeValue.IsNullOrEmpty()
                 ? afterValue

@@ -195,7 +195,7 @@ namespace BLAZAM.Database.Context
 
         public bool EntityIsTracked<TEntry>(TEntry? entry)
         {
-            if (entry == null) return false;
+            if (entry is null) return false;
             if (EqualityComparer<TEntry>.Default.Equals(entry, default)) return false;
             return base.Entry(entry).State != EntityState.Detached;
         }

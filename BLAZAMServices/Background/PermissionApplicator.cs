@@ -77,8 +77,10 @@ namespace BLAZAM.Services.Background
                 {
                     var permissiondelegate = ActiveDirectoryContext.SystemInstance.FindEntryBySID(l.DelegateSid);
 
-                    if (permissiondelegate != null && permissiondelegate is IADGroup && directoryUser.IsAMemberOf(permissiondelegate as IADGroup)
-                        || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString()))
+                    if (permissiondelegate != null
+                        &&
+                        (permissiondelegate is IADGroup && directoryUser.IsAMemberOf(permissiondelegate as IADGroup)
+                        || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
                     {
                         webUser.PermissionDelegates.Add(l);
                         webUser.PermissionMappings.AddRange(l.PermissionsMaps);

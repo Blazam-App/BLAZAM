@@ -27,7 +27,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         List<GroupMembership> ToAssignTo { get; }
 
         void AssignTo(IADGroup group);
-        bool IsAMemberOf(IADGroup group);
+        bool IsAMemberOf(IADGroup? group);
         void UnassignFrom(IADGroup group);
     }
 }
