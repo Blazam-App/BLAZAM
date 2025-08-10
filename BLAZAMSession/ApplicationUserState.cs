@@ -263,45 +263,50 @@ namespace BLAZAM.Session
 
         public async Task SaveDashboardWidgets()
         {
-            if (Preferences != null)
+            if (Preferences == null) return;
+
+            try
             {
-                try
+                using var context = await _dbFactory.CreateDbContextAsync();
+                var dbUserSettings = await context.UserSettings
+                    .Include(u => u.DashboardWidgets)
+                    .FirstOrDefaultAsync(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid));
+
+                if (dbUserSettings == null) return;
+
+                // Build lookup dictionaries for efficient access
+                var prefWidgets = Preferences.DashboardWidgets.ToDictionary(w => w.WidgetType);
+                var dbWidgets = dbUserSettings.DashboardWidgets.ToDictionary(w => w.WidgetType);
+
+                // Update existing widgets and add new ones
+                foreach (var widgetType in prefWidgets.Keys)
                 {
-                    using var context = await _dbFactory.CreateDbContextAsync();
-                    var dbUserSettings = await context.UserSettings.Include(u => u.DashboardWidgets).FirstOrDefaultAsync(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid));
-                    if (dbUserSettings != null)
+                    if (dbWidgets.TryGetValue(widgetType, out var dbWidget))
                     {
-                        // Update existing or add new widgets
-                        foreach (var widget in Preferences.DashboardWidgets)
-                        {
-                            var matchingWidget = dbUserSettings.DashboardWidgets.FirstOrDefault(w => w.WidgetType == widget.WidgetType);
-                            if (matchingWidget != null)
-                            {
-                                matchingWidget.Slot = widget.Slot;
-                                matchingWidget.Order = widget.Order;
-                                matchingWidget.ItemsPerPage = widget.ItemsPerPage;
-                            }
-                            else
-                            {
-                                dbUserSettings.DashboardWidgets.Add(widget);
-                            }
-                        }
-                        // Remove widgets not present in current preferences
-                        var widgetsInDB = new List<UserDashboardWidget>(dbUserSettings.DashboardWidgets);
-                        foreach (var widget in widgetsInDB)
-                        {
-                            if (!Preferences.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType))
-                            {
-                                dbUserSettings.DashboardWidgets.Remove(widget);
-                            }
-                        }
-                        await context.SaveChangesAsync();
+                        var prefWidget = prefWidgets[widgetType];
+                        dbWidget.Slot = prefWidget.Slot;
+                        dbWidget.Order = prefWidget.Order;
+                        dbWidget.ItemsPerPage = prefWidget.ItemsPerPage;
+                    }
+                    else
+                    {
+                        dbUserSettings.DashboardWidgets.Add(prefWidgets[widgetType]);
                     }
                 }
-                catch (Exception ex) // Catch specific Exception ex
+
+                // Remove widgets not present in preferences
+                var widgetsToRemove = dbWidgets.Keys.Except(prefWidgets.Keys).ToList();
+                foreach (var widgetType in widgetsToRemove)
                 {
-                    Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.SaveDashboardWidgets: Failed to save dashboard widgets for UserGUID {UserGuid}.", User?.FindFirstValue(ClaimTypes.Sid) ?? "Unknown");
+                    var widget = dbWidgets[widgetType];
+                    dbUserSettings.DashboardWidgets.Remove(widget);
                 }
+
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.SaveDashboardWidgets: Failed to save dashboard widgets for UserGUID {UserGuid}.", User?.FindFirstValue(ClaimTypes.Sid) ?? "Unknown");
             }
         }
 
@@ -361,10 +366,10 @@ namespace BLAZAM.Session
         }
 
 
-        public bool HasRole(string userRole)
+        public bool HasRole(string role)
         {
 
-            return User.HasClaim(ClaimTypes.Role, userRole);
+            return User.HasClaim(ClaimTypes.Role, role);
         }
 
         public bool HasUserPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.User);
@@ -434,7 +439,7 @@ namespace BLAZAM.Session
                     {
                         if (possibleDenies.Any())
                         {
-                            // Simplified logic: if any deny is more specific or equally specific than the most specific allow, deny.
+                            // Simplified logic: if any deny is more specific or equally specific as the most specific allow, deny.
                             // This assumes OU specificity determines precedence, which is complex.
                             // The original logic was: if (d.OU.Length > possibleReads.OrderByDescending(r => r.OU.Length).First().OU.Length) return false;
                             // This part needs careful review if complex OU hierarchy denial is critical.
@@ -546,7 +551,7 @@ namespace BLAZAM.Session
                             }
                             // If no deny rule is more specific, and there's an allow, it's allowed (unless a deny is equally specific)
                             // A more precise check would be: if the most specific deny is >= most specific allow, deny.
-                            // For now, this means if allows exist, and no *more specific* denies exist, it's an allow.
+                            // For now, this means if allows exist, and no *more* specific denies exist, it's an allow.
                             // This could be an issue if an equally specific deny exists.
                             // However, the current logic implies if allows exist, and no *more* specific deny exists, allow.
                             // Let's refine: if the most specific deny is as specific or more specific than the most specific allow, deny.
