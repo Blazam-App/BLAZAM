@@ -15,6 +15,7 @@ namespace BLAZAM.Services.Background
     public class LockedOutUserMonitor : ActiveDirectoryBackgroundServiceBase
     {
 
+
         public LockedOutUserMonitor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
             Interval = TimeSpan.FromMinutes(10);
@@ -42,60 +43,66 @@ namespace BLAZAM.Services.Background
             executeJob.AddStep(prepareStep);
             JobStep analyzeStep = new(AppLocalization["Analyze data"], (state) =>
             {
-                using var context = dbFactory.CreateDbContext();
-                foreach (var user in lockedOutUsers)
-                {
-                    if (user == null) continue;
-                    if (user.LockedOut)
-                    {
-                        if (!usersInTable.Any(x => x.Sid == user.SID.ToSidString()))
-                        {
-                            //add user to lockout table
-                            context.LockedOutUsers.Add(new() { Sid = user.SID.ToSidString(), Added = DateTime.UtcNow });
-
-                            if (user.LockoutTime > DateTime.UtcNow.AddDays(-1))
-                            {
-                                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
-                                {
-                                    EventType = ApplicationEventType.LockedOut,
-                                    Entry = user,
-                                    Actor = new SystemUserState(dbFactory)
-
-                                });
-                                if (OperatingSystem.IsWindows())
-                                {
-                                    RecordLogonEvents(user);
-                                }
-
-                            }
-                        }
-
-                    }
-                }
-                foreach (var user in usersInTable)
-                {
-                    if (user == null) continue;
-                    var adUser = directory.FindEntryBySid(user.Sid) as IADUser;
-                    if (adUser != null && !adUser.LockedOut)
-                    {
-                        var existing = context.LockedOutUsers.FirstOrDefault(x => x.Sid == user.Sid);
-                        if (existing != null)
-                        {
-                            context.LockedOutUsers.Remove(existing);
-
-                        }
-
-
-
-                    }
-                }
-                context.SaveChanges();
-                return true;
+                return AnalyzeUsers(directory, usersInTable, lockedOutUsers);
             });
             executeJob.AddStep(analyzeStep);
             var result = executeJob.Run();
 
 
+        }
+
+        private bool AnalyzeUsers(IActiveDirectoryContext directory, List<GenericSidList> usersInTable, List<IADUser> lockedOutUsers)
+        {
+            using var context = dbFactory.CreateDbContext();
+
+            AddNewlyLockedOutUsers(context, usersInTable, lockedOutUsers);
+            RemoveUnlockedUsers(context, directory, usersInTable);
+
+            context.SaveChanges();
+            return true;
+        }
+
+        private void AddNewlyLockedOutUsers(IDatabaseContext context, List<GenericSidList> usersInTable, List<IADUser> lockedOutUsers)
+        {
+            foreach (var user in lockedOutUsers.Where(u => u != null && u.LockedOut))
+            {
+                string sid = user.SID.ToSidString();
+                if (!usersInTable.Any(x => x.Sid == sid))
+                {
+                    context.LockedOutUsers.Add(new() { Sid = sid, Added = DateTime.UtcNow });
+
+                    if (user.LockoutTime > DateTime.UtcNow.AddDays(-1))
+                    {
+                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.LockedOut,
+                            Entry = user,
+                            Actor = new SystemUserState(dbFactory)
+                        });
+
+                        if (OperatingSystem.IsWindows())
+                        {
+                            RecordLogonEvents(user);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void RemoveUnlockedUsers(IDatabaseContext context, IActiveDirectoryContext directory, List<GenericSidList> usersInTable)
+        {
+            foreach (var user in usersInTable.Where(u => u != null))
+            {
+                var adUser = directory.FindEntryBySid(user.Sid) as IADUser;
+                if (adUser != null && !adUser.LockedOut)
+                {
+                    var existing = context.LockedOutUsers.FirstOrDefault(x => x.Sid == user.Sid);
+                    if (existing != null)
+                    {
+                        context.LockedOutUsers.Remove(existing);
+                    }
+                }
+            }
         }
 
         public void RecordLogonEvents(IADUser user)
