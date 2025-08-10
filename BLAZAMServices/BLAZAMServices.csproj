@@ -28,6 +28,8 @@
     <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.7" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
     <PackageReference Include="MudBlazor" Version="8.9.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
     <PackageReference Include="Octokit" Version="14.0.0" />
     <PackageReference Include="PreMailer.Net" Version="2.7.2" />
     <PackageReference Include="Serilog" Version="4.3.0" />
