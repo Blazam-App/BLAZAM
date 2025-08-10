@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
-using BLAZAM.Server.Data;
 
 namespace BLAZAM.Database.Models.Chat
 {

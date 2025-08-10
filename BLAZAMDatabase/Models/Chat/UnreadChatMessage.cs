@@ -1,6 +1,4 @@
-﻿using BLAZAM.Server.Data;
-
-namespace BLAZAM.Database.Models.Chat
+﻿namespace BLAZAM.Database.Models.Chat
 {
     public class UnreadChatMessage : AppDbSetBase
     {
