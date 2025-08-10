@@ -360,7 +360,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (SAMAccountName == null) throw new AppException("samaccount name not found!");
             if (DirectorySettings == null) throw new AppException("Directory settings not found when trying to change directory user password");
 
-            var directoryPassword = DirectorySettings.Password.Decrypt();
+            var directoryPassword = DirectorySettings.Password.Decrypt().ToSecureString();
             if (directoryPassword == null) return false;
 
             try
@@ -397,7 +397,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        private bool TryPrincipalContextSetPassword(SecureString password, bool requireChange, string directoryPassword)
+        private bool TryPrincipalContextSetPassword(SecureString password, bool requireChange, SecureString directoryPassword)
         {
             if (DirectorySettings == null)
                 throw new AppException("Directory settings not found when trying to change directory user password");
@@ -405,7 +405,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 ContextType.Domain,
                 DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
                 DirectorySettings.Username + "@" + DirectorySettings.FQDN,
-                directoryPassword
+                directoryPassword.ToPlainText()
             ))
             {
                 UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
