@@ -575,41 +575,41 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
 
 
-        public IList<PermissionMapping> InheritedPermissionMappings
+        public IEnumerable<PermissionMapping> InheritedPermissionMappings
         {
             get
             {
-                return AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
+                return AppliedPermissionMappings.Where(m => !m.OU.Equals(DN));
             }
         }
-        public IList<PermissionMapping> DirectPermissionMappings
+        public IEnumerable<PermissionMapping> DirectPermissionMappings
         {
             get
             {
 
-                return AppliedPermissionMappings.Where(m => m.OU.Equals(DN)).ToList();
+                return AppliedPermissionMappings.Where(m => m.OU.Equals(DN));
 
             }
         }
 
-        private IList<PermissionMapping> _appliedPermissionMappings;
+        private IEnumerable<PermissionMapping> _appliedPermissionMappings;
 
-        public IList<PermissionMapping> AppliedPermissionMappings
+        public IEnumerable<PermissionMapping> AppliedPermissionMappings
         {
             get
             {
                 if (_appliedPermissionMappings == null)
                 {
                     using var context = DbFactory.CreateDbContext();
-                    _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
+                    _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
                 }
                 return _appliedPermissionMappings;
             }
         }
-        private IList<PermissionMapping> _offspringPermissionMappings;
+        private IEnumerable<PermissionMapping> _offspringPermissionMappings;
 
 
-        public IList<PermissionMapping> OffspringPermissionMappings
+        public IEnumerable<PermissionMapping> OffspringPermissionMappings
         {
             get
             {
@@ -618,7 +618,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     using var context = DbFactory.CreateDbContext();
                     _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates)
                                                                         .Where(m => m.OU.Contains(DN) && m.OU != DN)
-                                                                        .OrderByDescending(m => m.OU.Length).ToList();
+                                                                        .OrderByDescending(m => m.OU.Length);
                 }
                 return _offspringPermissionMappings;
             }
