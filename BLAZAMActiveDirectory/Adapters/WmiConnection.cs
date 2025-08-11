@@ -1,10 +1,8 @@
-﻿using BLAZAM.ActiveDirectory.Helpers;
+﻿using System.Management;
+using BLAZAM.ActiveDirectory.Helpers;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using System.Management;
-using static MudBlazor.CategoryTypes;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -17,12 +15,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private const string ServicesQuery = "SELECT * FROM Win32_Service";
         private const string SharedPrintersQuery = "SELECT * FROM Win32_Printer";
         private ManagementScope managementScope;
-        private IADComputer target;
+        private IADComputer _computer;
 
         public WmiConnection(ManagementScope managementScope, IADComputer target)
         {
             this.managementScope = managementScope;
-            this.target = target;
+            this._computer = target;
         }
         public async Task<bool> RenameComputerAsync(string newName)
         {
@@ -43,8 +41,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             os.GetMethodParameters("Rename");
 
                         // Add the input parameters.
-                        var username = target.Directory.ConnectionSettings.Username + "@" + target.Directory.ConnectionSettings.FQDN;
-                        var pass = target.Directory.ConnectionSettings.Password.Decrypt<string>();
+                        var username = _computer.Directory.ConnectionSettings.Username + "@" + _computer.Directory.ConnectionSettings.FQDN;
+                        var pass = _computer.Directory.ConnectionSettings.Password.Decrypt<string>();
                         inParams["Name"] = newName;
                         inParams["UserName"] = username;
                         inParams["Password"] = pass;
@@ -62,30 +60,31 @@ namespace BLAZAM.ActiveDirectory.Adapters
 #pragma warning restore S1751 // Loops with at most one iteration should be refactored
                     }
 
-                    Loggers.ActiveDirectoryLogger.Warning($"Rename command sent to {target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
+                    Loggers.ActiveDirectoryLogger.Warning($"Rename command sent to {_computer.CanonicalName}, but no Win32_OperatingSystem instance was found.");
                     return false; // No Win32_OperatingSystem object found.
                 }
                 catch (ManagementException mex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Management exception while renaming {target.CanonicalName}: {mex.Message} ErrorCode: {mex.ErrorCode}", mex);
+                    Loggers.ActiveDirectoryLogger.Error($"Management exception while renaming {_computer.CanonicalName}: {mex.Message} ErrorCode: {mex.ErrorCode}", mex);
                     return false;
                 }
                 catch (UnauthorizedAccessException uaex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Unauthorized access while renaming {target.CanonicalName}: {uaex.Message}", uaex);
+                    Loggers.ActiveDirectoryLogger.Error($"Unauthorized access while renaming {_computer.CanonicalName}: {uaex.Message}", uaex);
                     return false;
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error(ex, "Exception while renaming {@Target}", target?.CanonicalName);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Exception while renaming {@Target}", _computer?.CanonicalName);
                     return false;
                 }
             });
 
         }
-        public async Task<bool> ShutdownAsync(int delaySeconds=0, string? message=null, bool force = true, bool reboot = false)
+        public async Task<bool> ShutdownAsync(int delaySeconds = 0, string? message = null, bool force = true, bool reboot = false)
         {
-            return await Task.Run(() => {
+            return await Task.Run(() =>
+            {
                 try
                 {
                     // Use WMI to initiate the shutdown.
@@ -134,26 +133,26 @@ namespace BLAZAM.ActiveDirectory.Adapters
 #pragma warning restore S1751 // Loops with at most one iteration should be refactored
                     }
 
-                    Loggers.ActiveDirectoryLogger.Warning($"Shutdown command sent to {target.CanonicalName}, but no Win32_OperatingSystem instance was found.");
+                    Loggers.ActiveDirectoryLogger.Warning($"Shutdown command sent to {_computer.CanonicalName}, but no Win32_OperatingSystem instance was found.");
                     return false; // No Win32_OperatingSystem object found.
                 }
                 catch (ManagementException mex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Management exception while shutting down {target.CanonicalName}: {mex.Message} ErrorCode: {mex.ErrorCode}", mex);
+                    Loggers.ActiveDirectoryLogger.Error($"Management exception while shutting down {_computer.CanonicalName}: {mex.Message} ErrorCode: {mex.ErrorCode}", mex);
                     return false;
                 }
                 catch (UnauthorizedAccessException uaex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Unauthorized access while shutting down {target.CanonicalName}: {uaex.Message}", uaex);
+                    Loggers.ActiveDirectoryLogger.Error($"Unauthorized access while shutting down {_computer.CanonicalName}: {uaex.Message}", uaex);
                     return false;
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error($"Exception while shutting down {target.CanonicalName}: {ex.Message}", ex);
+                    Loggers.ActiveDirectoryLogger.Error($"Exception while shutting down {_computer.CanonicalName}: {ex.Message}", ex);
                     return false;
                 }
             });
-          
+
 
 
         }
@@ -236,6 +235,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         double size = Convert.ToDouble(mo["Size"]) / (1024 * 1024 * 1024);
                         drives.Add(new ADComputerDrive
                         {
+                            Computer = _computer,
                             Letter = letter,
                             Capacity = size,
                             FreeSpace = freeSpace,
@@ -251,7 +251,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error(ex,"Error polling drives");
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Error polling drives");
                 }
                 return drives;
             }
@@ -270,14 +270,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if ((bool)mo["Shared"])
                         {
 
-                            sharedPrinters.Add(new SharedPrinter(target, mo));
+                            sharedPrinters.Add(new SharedPrinter(_computer, mo));
 
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error(ex,"Error polling printers");
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Error polling printers");
                 }
 
 

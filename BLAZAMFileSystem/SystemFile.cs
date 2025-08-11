@@ -1,14 +1,11 @@
 ﻿using BLAZAM.Logger; // Added
-using System; // Added
-using System.IO; // Added
-using System.Threading.Tasks; // Added
 
 namespace BLAZAM.FileSystem
 {
     /// <summary>
     /// Represents a file in the file system, providing properties and methods for file manipulation and access.
     /// </summary>
-    public class SystemFile : FileSystemBase
+    public class SystemFile : FileSystemBase, IFileSystemObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SystemFile"/> class.
@@ -26,12 +23,12 @@ namespace BLAZAM.FileSystem
         /// <summary>
         /// Gets the name of the file without the extension.
         /// </summary>
-        public string Name => System.IO.Path.GetFileNameWithoutExtension(FullPath);
+        public override string Name => Path.GetFileNameWithoutExtension(FullPath);
 
         /// <summary>
         /// Gets the file extension.
         /// </summary>
-        public string Extension => System.IO.Path.GetExtension(FullPath);
+        public string Extension => Path.GetExtension(FullPath);
 
         /// <summary>
         /// Gets the parent directory of this file. Returns a representation of the current directory if the parent cannot be determined.
@@ -40,7 +37,7 @@ namespace BLAZAM.FileSystem
         {
             get
             {
-                string? directoryName = System.IO.Path.GetDirectoryName(FullPath);
+                string? directoryName = Path.GetDirectoryName(FullPath);
                 if (string.IsNullOrEmpty(directoryName))
                 {
                     Loggers.SystemLogger.Warning("SystemFile.ParentDirectory: Could not determine directory name for {FullPath}. Returning current directory representation (\".\").", FullPath);
@@ -199,28 +196,20 @@ namespace BLAZAM.FileSystem
             }
         }
 
-        /// <summary>
-        /// Ensures that the file exists. If it does not, it attempts to create it (empty).
-        /// Logs an error if creation fails.
-        /// </summary>
-        public void EnsureCreated()
-        {
-            if (!Exists)
-                Create();
-        }
+
 
         /// <summary>
         /// Creates this file as an empty file if it does not already exist.
         /// Ensures the parent directory exists before creating the file.
         /// </summary>
-        private void Create()
+        public bool Create()
         {
             try
             {
                 if (!ParentDirectory.Exists)
                 {
                     // ParentDirectory.EnsureCreated() already has its own logging
-                    ParentDirectory.EnsureCreated();
+                    ParentDirectory.Create();
                 }
             }
             catch (Exception ex) // Catching exception from ParentDirectory.EnsureCreated if it throws despite internal logging
@@ -233,14 +222,9 @@ namespace BLAZAM.FileSystem
             FileStream? stream = null;
             try
             {
-                // FileMode.OpenOrCreate will open if exists, create if not.
-                // FileAccess.Read might be too restrictive if the intent is just to create an empty file marker.
-                // Using FileAccess.Write and immediately closing is a common pattern for "touching" a file.
-                // However, the original code used FileAccess.Read. If the goal is just to ensure it's there,
-                // and it might be read immediately after, Read is fine.
-                // For just creating, File.Create(FullPath).Close() is simpler.
-                // Given the original, sticking to FileStream for now.
+                // Using FileMode.OpenOrCreate to avoid overwriting existing files
                 stream = new FileStream(FullPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, bufferSize: 4096, useAsync: true);
+                return true;
             }
             catch (Exception ex)
             {
@@ -251,6 +235,8 @@ namespace BLAZAM.FileSystem
             {
                 stream?.Close(); // Ensure stream is closed if it was opened
             }
+
+            return false;
         }
 
         public override bool Rename(string newName)
@@ -265,6 +251,25 @@ namespace BLAZAM.FileSystem
             catch (Exception ex)
             {
                 Loggers.SystemLogger.Error(ex, "Error renaming file {File} to {NewName}", FullPath, newName);
+                return false;
+            }
+        }
+
+        public bool CopyTo(SystemDirectory parentDirectory)
+        {
+            try
+            {
+                if (!parentDirectory.Exists)
+                {
+                    parentDirectory.Create();
+                }
+                var destinationPath = Path.Combine(parentDirectory.FullPath, this.Name + this.Extension);
+                File.Copy(this.FullPath, destinationPath, overwrite: false);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Information(ex, "Error copying file {File} to directory {Directory}", FullPath, parentDirectory.FullPath);
                 return false;
             }
         }

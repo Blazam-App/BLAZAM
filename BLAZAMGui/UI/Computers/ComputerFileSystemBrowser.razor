@@ -4,10 +4,10 @@
 @inject IStringLocalizer<AppLocalization> AppLocalization
 
 <MudToolBar Dense="true">
-    <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" OnClick="GoUp" Disabled="@(CurrentPath == null || CurrentPath.ParentDirectory == null || !CurrentPath.ParentDirectory.Exists)"></MudIconButton>
-    <MudTextField T="string" Value="CurrentPath?.FullPath" ReadOnly="true" Variant="Variant.Text" Class="flex-grow-1"></MudTextField>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Disabled="@(currentPath == null || currentPath.ParentDirectory == null || !currentPath.ParentDirectory.Exists)"></MudIconButton>
+    <MudTextField T="string" Value="currentPath?.FullPath" ReadOnly="true" Variant="Variant.Text" Class="flex-grow-1"></MudTextField>
 </MudToolBar>
-<MudDataGrid T="FileSystemBase" Items="Items" Hover="true" RowClick="@((args) => RowClicked(args.Item))" FixedHeader="true" Height="400px">
+<MudDataGrid T="FileSystemBase" Items="items" Hover="true" @ref="_dataGrid" FixedHeader="true" Height="400px">
     <Columns>
         <TemplateColumn Title="" Sortable="false">
             <CellTemplate>
@@ -18,8 +18,16 @@
 
         <TemplateColumn Title="@AppLocalization[Lang.Actions]" Sortable="false">
             <CellTemplate>
-                
-                
+                <div @onclick:stopPropagation="true">
+                    <MudMenu Icon="@Icons.Material.Filled.MoreVert" Dense="true">
+                        <MudMenuItem OnClick="@(()=>Rename(context.Item))">@AppLocalization[Lang.Rename]</MudMenuItem>
+                        <MudMenuItem OnClick="@(()=>Delete(context.Item))">@AppLocalization[Lang.Delete]</MudMenuItem>
+                        @if (context.Item is SystemFile file)
+                        {
+                            <MudMenuItem OnClick="@(()=>Download(file))">@AppLocalization[Lang.Download]</MudMenuItem>
+                        }
+                    </MudMenu>
+                </div>
             </CellTemplate>
         </TemplateColumn>
     </Columns>

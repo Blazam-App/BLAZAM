@@ -601,7 +601,7 @@ namespace BLAZAM.Database.Context
                 // Create a CSV file name for the table
                 var fileName = Path.Combine(directory, tableName + ".csv");
                 var file = new SystemFile(fileName);
-                file.EnsureCreated();
+                file.Create();
                 // Write the data table to the CSV file
                 using (var writer = new StreamWriter(fileName))
                 {
