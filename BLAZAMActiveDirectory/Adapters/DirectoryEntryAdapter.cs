@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using BLAZAM.ActiveDirectory.Data;
@@ -15,11 +15,6 @@ using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
-using System.Data;
-using System.DirectoryServices;
-using System.DirectoryServices.Protocols;
-using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -969,7 +964,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         {
                             var children = DirectoryEntry?.Children;
                             if (children != null)
-                                foreach (DirectoryEntry child in children)
+                            {
+                                foreach (IDirectoryEntry child in children)
                                 {
                                     DirectoryEntry?.Children.Remove(child);
                                 }

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.Protocols;
 using System.Security;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
@@ -10,12 +11,6 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
-using System.Data;
-using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
-using System.DirectoryServices.Protocols;
-using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -222,7 +217,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null, SearchResultEntry? searchResultEntry = null)
         {
-            base.Parse(directory, directoryEntry, searchResult,searchResultEntry);
+            base.Parse(directory, directoryEntry, searchResult, searchResultEntry);
             DomainControllerEventLogs = new DomainControllerEventLogReader(directory);
         }
 
@@ -378,27 +373,25 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     // If we are on Windows, we can use the PrincipalContext to set the password
                     return TryPrincipalContextSetPassword(password, requireChange, directoryPassword);
                 }
-                }
-                catch (DirectoryOperationException ex)
+            }
+            catch (DirectoryOperationException ex)
+            {
+                // Check for the password complexity error
+                if (ex.Response.ResultCode == ResultCode.UnwillingToPerform &&
+                    ex.Response.ErrorMessage.Contains("0000052D"))
                 {
-                    // Check for the password complexity error
-                    if (ex.Response.ResultCode == ResultCode.UnwillingToPerform &&
-                        ex.Response.ErrorMessage.Contains("0000052D"))
-                    {
-                       throw new PasswordPolicyViolationException();
-                    }
-                    else if (ex.Response.ResultCode == ResultCode.ConstraintViolation &&
-     ex.Response.ErrorMessage.Contains("0000052F"))
-                    {
-                        throw new AccountDisabledConstraintViolationException();
-                    }
-                    else
-                    {
-                         Loggers.ActiveDirectoryLogger.Error(ex, "An unexpected directory operation error occurred setting entry password");
-                    }
-
+                    throw new PasswordPolicyViolationException();
                 }
-                return false;
+                else if (ex.Response.ResultCode == ResultCode.ConstraintViolation &&
+ ex.Response.ErrorMessage.Contains("0000052F"))
+                {
+                    throw new AccountDisabledConstraintViolationException();
+                }
+                else
+                {
+                    Loggers.ActiveDirectoryLogger.Error(ex, "An unexpected directory operation error occurred setting entry password");
+                }
+
             }
             catch (Exception ex) when (ex is not AppException)
             {
@@ -408,6 +401,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             return false;
         }
+
 
         private bool TryInvokeSetPassword(SecureString password)
         {
@@ -449,7 +443,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public void StageEnable()
         {
-            
+
             PostCommitSteps.Add(new JobStep("Enable", (JobStep? step) =>
             {
                 Enabled = true;

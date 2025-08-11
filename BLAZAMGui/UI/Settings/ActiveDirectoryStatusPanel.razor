@@ -132,7 +132,7 @@
     }
     public void ResetStatus()
     {
-        Directory.ConnectAsync();
+        Directory.CheckConnectionAsync();
         _portStatus = false;
         _credStatus = null;
         showProgress = true;
