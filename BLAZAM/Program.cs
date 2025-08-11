@@ -3,6 +3,7 @@
 using System.Diagnostics; // For checking if debugger is attached
 using System.Net; // For IP address handling
 using System.Security.Cryptography.X509Certificates; // For SSL certificate handling
+using BLAZAM.ActiveDirectory;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Server.Middleware;
@@ -28,7 +29,7 @@ namespace BLAZAM
         /// <returns>
         /// A SystemDirectory object representing the path, e.g., C:\inetpub\blazam\writable\
         /// </returns>
-        internal static SystemDirectory WritablePath => new(ApplicationInfo.tempDirectory + @"writable\");
+        internal static SystemDirectory WritablePath => new(ApplicationInfo.tempDirectory + $"writable{Path.DirectorySeparatorChar}");
 
 
         /// <summary>
@@ -91,12 +92,12 @@ namespace BLAZAM
             }
 
             // Setup local file logging and Seq logging using Serilog.
-            Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
+            Loggers.SetupLoggers(WritablePath + $"logs{Path.DirectorySeparatorChar}", ApplicationInfo.runningVersion.ToString());
             // Integrate Serilog with the ASP.NET Core host logging.
             builder.Host.UseSerilog(Log.Logger);
 
             // Log the application start event with the process name.
-            Log.Warning("Application Starting {@ProcessName}", ApplicationInfo.runningProcess.ProcessName);
+            Loggers.SystemLogger.Warning("Application Starting {@ProcessName}", ApplicationInfo.runningProcess.ProcessName);
 
             // Register application services with the dependency injection container.
             builder.InjectServices();
@@ -118,7 +119,7 @@ namespace BLAZAM
             AppInstance.PreRun();
 
             // Re-setup loggers - perhaps needed if PreRun modified paths or settings?
-            Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
+            Loggers.SetupLoggers(WritablePath + $"logs{Path.DirectorySeparatorChar}", ApplicationInfo.runningVersion.ToString());
 
             // Enable Serilog request logging to log details about incoming HTTP requests.
             AppInstance.UseSerilogRequestLogging(configureOptions => configureOptions.Logger = Loggers.RequestLogger);
@@ -187,8 +188,10 @@ namespace BLAZAM
             // Block the main thread until the application is shut down (e.g., Ctrl+C or service stop).
             AppInstance.WaitForShutdown();
 
+
+
             // Log application shutdown event.
-            Log.Information("Application Shutting Down");
+            Loggers.SystemLogger.Information("Application Shutting Down");
         }
 
         /// <summary>

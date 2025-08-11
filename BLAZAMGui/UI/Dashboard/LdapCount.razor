@@ -1,0 +1,10 @@
+<MudText>Ldap Count: @_count</MudText>
+@code{
+    int _count = 0;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _count = ApplicationStatistics.LdapConnections.Count;
+        ApplicationStatistics.OnLdapCountChanged.Delegate+= (c,count) => { _count = count; InvokeAsync(StateHasChanged); };
+    }
+}
