@@ -16,7 +16,7 @@ namespace BLAZAM.Static
                 + Path.DirectorySeparatorChar
                 + "img"
                 + Path.DirectorySeparatorChar
-                + "default_logo5.png";
+                + "appicon.png";
         /// <summary>
         /// "/static/img/favicon.ico"
         /// </summary>
