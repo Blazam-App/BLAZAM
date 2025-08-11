@@ -3,35 +3,47 @@
 @inherits ComputerViewBase
 @inject IStringLocalizer<AppLocalization> AppLocalization
 
-<MudToolBar Dense="true">
-    <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Disabled="@(currentPath == null || currentPath.ParentDirectory == null || !currentPath.ParentDirectory.Exists)"></MudIconButton>
-    <MudTextField T="string" Value="currentPath?.FullPath" ReadOnly="true" Variant="Variant.Text" Class="flex-grow-1"></MudTextField>
-</MudToolBar>
-<MudDataGrid T="FileSystemBase" Items="items" Hover="true" @ref="_dataGrid" FixedHeader="true" Height="400px">
-    <Columns>
-        <TemplateColumn Title="" Sortable="false">
-            <CellTemplate>
-                <MudIcon Icon="@(context.Item is SystemDirectory ? Icons.Material.Filled.Folder : Icons.Material.Filled.Article)" />
-            </CellTemplate>
-        </TemplateColumn>
-        <PropertyColumn Property="x => x.Name" Title="@AppLocalization[Lang.Name]" />
+@if (Computer?.IsOnline == true)
+{
+    <MudDataGrid T="IFileSystemObject"
+                 Items="items"
+                 RowClick="RowClicked"
+                 Hover="true"
+                 @ref="_dataGrid"
+                 FixedHeader="true"
+                 Height="400px">
+        <Header>
+            <MudToolBar Dense="true">
+                <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward"
+                               OnClick="GoUpOneDirectory"
+                               Disabled="@CanGoUp"></MudIconButton>
+                <MudTextField T="string"
+                              Value="currentPath?.FullPath"
+                              ReadOnly="true"
+                              Variant="Variant.Text"
+                              Class="flex-grow-1"></MudTextField>
+            </MudToolBar>
+        </Header>
+        <Columns>
+            <TemplateColumn Title="" Sortable="false">
+                <CellTemplate>
+                    <MudIcon Icon="@(context.Item is SystemDirectory ? Icons.Material.Filled.Folder : Icons.Material.Filled.Article)" />
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.Name" Title="@AppLocalization[Lang.Name]" />
 
-        <TemplateColumn Title="@AppLocalization[Lang.Actions]" Sortable="false">
-            <CellTemplate>
-                <div @onclick:stopPropagation="true">
-                    <MudMenu Icon="@Icons.Material.Filled.MoreVert" Dense="true">
-                        <MudMenuItem OnClick="@(()=>Rename(context.Item))">@AppLocalization[Lang.Rename]</MudMenuItem>
-                        <MudMenuItem OnClick="@(()=>Delete(context.Item))">@AppLocalization[Lang.Delete]</MudMenuItem>
-                        @if (context.Item is SystemFile file)
-                        {
-                            <MudMenuItem OnClick="@(()=>Download(file))">@AppLocalization[Lang.Download]</MudMenuItem>
-                        }
-                    </MudMenu>
-                </div>
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-    <PagerContent>
-        <MudDataGridPager T="FileSystemBase" />
-    </PagerContent>
-</MudDataGrid>
+            <TemplateColumn Title="@AppLocalization[Lang.Actions]" Sortable="false">
+                <CellTemplate>
+
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="FileSystemBase" />
+        </PagerContent>
+    </MudDataGrid>
+}
+else
+{
+    <MudText>@AppLocalization[Lang.Computer_not_reachable]</MudText>
+}
