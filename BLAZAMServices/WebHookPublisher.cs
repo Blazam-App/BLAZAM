@@ -27,7 +27,6 @@ namespace BLAZAM.Services
         internal const string UNBRANDED_ATTEMPT_TIMESTAMP_HEADER_KEY = "webhook-attempt-timestamp";
         private const string webhookDateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
-        private const int TOLERANCE_IN_SECONDS = 60 * 5;
         private static string prefix = "whsec_";
 
         private readonly IHttpClientFactory _httpClientFactory;
@@ -187,15 +186,15 @@ namespace BLAZAM.Services
                 var payloadString = System.Text.Json.JsonSerializer.Serialize(payload);
                 if (subscription.WebHookSignature == WebHookSignature.HMAC)
                 {
-                    if (subscription.HmacKey.IsNullOrEmpty())
+                    if (subscription.HmacKey is null || subscription.HmacKey.IsNullOrEmpty())
                         throw new AppException("HMAC Key not supplied to subscription set to use it.");
                     var key = subscription.HmacKey.Decrypt<string>();
-                    if (key.StartsWith(prefix))
+                    if (key != null && key.StartsWith(prefix))
                     {
                         key = key.Substring(prefix.Length);
+                        var bytekey = Convert.FromBase64String(key);
+                        signature = Sign(bytekey, msgId.ToString(), DateTime.UtcNow, payloadString);
                     }
-                    var bytekey = Convert.FromBase64String(key);
-                    signature = Sign(bytekey, msgId.ToString(), DateTime.UtcNow, payloadString);
                 }
                 await SendWebHook(subscription, msgId, attemptId, eventTimestamp, eventType, payloadString, signature);
                 return true;
@@ -217,19 +216,40 @@ namespace BLAZAM.Services
         /// <param name="signature">The optional signature for the payload.</param>
         private async Task SendWebHook(WebHookSubscription subscription, Guid msgId, Guid attemptId, DateTime eventTimestamp, string eventType, string payloadString, string? signature)
         {
-            var httpClientHandler = new HttpClientHandler();
             var httpClient = CreateAPIClient(subscription.IgnoreSSLVerification);
             using var context = await _appDatabaseFactory.CreateDbContextAsync();
 
             var thisMessage = await context.WebHookAttempts.FirstOrDefaultAsync(a => a.MessageGuid == msgId);
 
+            var request = BuildHttpRequest(subscription, msgId, attemptId, eventTimestamp, payloadString, signature);
+
+            try
+            {
+                thisMessage = PrepareWebHookAttempt(context, thisMessage, subscription, msgId, eventTimestamp, eventType, payloadString, signature, request.RequestUri.ToString());
+                await context.SaveChangesAsync();
+
+                var response = await httpClient.SendAsync(request);
+
+                await HandleWebHookResponse(context, thisMessage, response, attemptId, subscription.Id, request.RequestUri);
+            }
+            catch (HttpRequestException ex)
+            {
+                await HandleHttpRequestException(context, thisMessage, ex);
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error("Unexpected Webhook error occurred {Error}", ex);
+            }
+        }
+
+        private HttpRequestMessage BuildHttpRequest(WebHookSubscription subscription, Guid msgId, Guid attemptId, DateTime eventTimestamp, string payloadString, string? signature)
+        {
             var request = new HttpRequestMessage
             {
                 RequestUri = new Uri(subscription.URL),
                 Method = subscription.WebHookMethod == WebHookMethod.GET ? HttpMethod.Get : HttpMethod.Post,
                 Content = new StringContent(payloadString, Encoding.UTF8, "application/json")
             };
-            Loggers.SystemLogger.Debug("WebHookPublisher.SendWebHook: Sending webhook attempt ID {AttemptId} to {RequestUri} via {RequestMethod}.", attemptId, request.RequestUri, request.Method);
 
             request.Headers.Add(UNBRANDED_ID_HEADER_KEY, msgId.ToString());
             request.Headers.Add(UNBRANDED_ATTEMPT_ID_HEADER_KEY, attemptId.ToString());
@@ -240,10 +260,8 @@ namespace BLAZAM.Services
                 Loggers.SystemLogger.Debug("WebHookPublisher.SendWebHook: Added signature to webhook attempt ID {AttemptId}.", attemptId);
                 request.Headers.Add(UNBRANDED_SIGNATURE_HEADER_KEY, signature);
             }
-            // Add authorization header if needed
-            if (subscription.WebHookAuthorization == WebHookAuthorization.Basic)
+            if (subscription.WebHookAuthorization == WebHookAuthorization.Basic && subscription.AuthorizationToken != null)
             {
-                // Assuming AuthorizationToken is in the format "username:password"
                 var base64Auth = Convert.ToBase64String(Encoding.ASCII.GetBytes(subscription.AuthorizationToken));
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", base64Auth);
             }
@@ -251,79 +269,64 @@ namespace BLAZAM.Services
             {
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", subscription.AuthorizationToken);
             }
+            return request;
+        }
 
-            try
+        private WebHookAttempt PrepareWebHookAttempt(IDatabaseContext context, WebHookAttempt? thisMessage, WebHookSubscription subscription, Guid msgId, DateTime eventTimestamp, string eventType, string payloadString, string? signature, string uri)
+        {
+            if (thisMessage == null)
             {
-                if (thisMessage == null)
+                var webHookAttempt = new WebHookAttempt()
                 {
-                    var webHookAttempt = new WebHookAttempt()
-                    {
-                        Body = payloadString,
-                        MessageGuid = msgId,
-                        EventType = eventType,
-                        Uri = request.RequestUri.ToString(),
-                        Delivered = false,
-                        WebHookSubscriptionId = subscription.Id,
-                        LastAttemptTimestamp = DateTime.UtcNow,
-                        EventTimestamp = eventTimestamp,
-                        Signature = signature
-                    };
-                    thisMessage = webHookAttempt;
-                    context.WebHookAttempts.Add(thisMessage);
-                }
-                else
-                {
-                    thisMessage.LastAttemptTimestamp = DateTime.UtcNow;
-                    thisMessage.RetryCount++;
-                    thisMessage.Uri = request.RequestUri.ToString();
-                }
-                await context.SaveChangesAsync();
-
-                var response = await httpClient.SendAsync(request);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    Loggers.SystemLogger.Information("WebHookPublisher.SendWebHook: Webhook attempt ID {AttemptId} sent successfully to {RequestUri}. Status: {StatusCode}", attemptId, request.RequestUri, response.StatusCode);
-                    thisMessage.Delivered = true;
-                    thisMessage.ResponseCode = response.StatusCode;
-                    thisMessage.ResponseMessage = null;
-                    await context.SaveChangesAsync();
-                }
-                else
-                {
-                    // Capture response message for logging if available
-                    string responseContent = await response.Content.ReadAsStringAsync();
-                    thisMessage.ResponseMessage = responseContent; // Store it first
-                    Loggers.SystemLogger.Warning("WebHookPublisher.SendWebHook: Webhook attempt ID {AttemptId} failed for subscription {SubscriptionId} to {RequestUri}. Status: {StatusCode}, Response: {ResponseMessage}", attemptId, subscription.Id, request.RequestUri, response.StatusCode, thisMessage.ResponseMessage);
-                    thisMessage.Delivered = false;
-                    thisMessage.ResponseCode = response.StatusCode;
-                    // thisMessage.ResponseMessage is already set
-                    await context.SaveChangesAsync();
-                }
+                    Body = payloadString,
+                    MessageGuid = msgId,
+                    EventType = eventType,
+                    Uri = uri,
+                    Delivered = false,
+                    WebHookSubscriptionId = subscription.Id,
+                    LastAttemptTimestamp = DateTime.UtcNow,
+                    EventTimestamp = eventTimestamp,
+                    Signature = signature
+                };
+                thisMessage = webHookAttempt;
+                context.WebHookAttempts.Add(thisMessage);
             }
-            catch (HttpRequestException ex)
+            else
             {
-                if (ex.InnerException != null)
-                {
-                    if (thisMessage != null)
-                    {
-                        thisMessage.ResponseCode = HttpStatusCode.UnprocessableEntity;
-                        thisMessage.ResponseMessage = ex.InnerException.Message;
-                    }
-                }
-                else
-                {
-                    if (thisMessage != null)
-                    {
-                        thisMessage.ResponseCode = HttpStatusCode.UnprocessableEntity;
-                        thisMessage.ResponseMessage = ex.Message;
-                    }
-                }
-                await context.SaveChangesAsync();
+                thisMessage.LastAttemptTimestamp = DateTime.UtcNow;
+                thisMessage.RetryCount++;
+                thisMessage.Uri = uri;
             }
-            catch (Exception ex)
+            return thisMessage;
+        }
+
+        private async Task HandleWebHookResponse(IDatabaseContext context, WebHookAttempt thisMessage, HttpResponseMessage response, Guid attemptId, int subscriptionId, Uri requestUri)
+        {
+            if (response.IsSuccessStatusCode)
             {
-                Loggers.SystemLogger.Error("Unexpected Webhook error occurred {Error}", ex);
+                Loggers.SystemLogger.Information("WebHookPublisher.SendWebHook: Webhook attempt ID {AttemptId} sent successfully to {RequestUri}. Status: {StatusCode}", attemptId, requestUri, response.StatusCode);
+                thisMessage.Delivered = true;
+                thisMessage.ResponseCode = response.StatusCode;
+                thisMessage.ResponseMessage = null;
+            }
+            else
+            {
+                string responseContent = await response.Content.ReadAsStringAsync();
+                thisMessage.ResponseMessage = responseContent;
+                Loggers.SystemLogger.Warning("WebHookPublisher.SendWebHook: Webhook attempt ID {AttemptId} failed for subscription {SubscriptionId} to {RequestUri}. Status: {StatusCode}, Response: {ResponseMessage}", attemptId, subscriptionId, requestUri, response.StatusCode, thisMessage.ResponseMessage);
+                thisMessage.Delivered = false;
+                thisMessage.ResponseCode = response.StatusCode;
+            }
+            await context.SaveChangesAsync();
+        }
+
+        private async Task HandleHttpRequestException(IDatabaseContext context, WebHookAttempt? thisMessage, HttpRequestException ex)
+        {
+            if (thisMessage != null)
+            {
+                thisMessage.ResponseCode = HttpStatusCode.UnprocessableEntity;
+                thisMessage.ResponseMessage = ex.InnerException?.Message ?? ex.Message;
+                await context.SaveChangesAsync();
             }
         }
 
@@ -348,69 +351,7 @@ namespace BLAZAM.Services
                 return client;
             }
         }
-        //public void Verify(string payload, WebHeaderCollection headers)
-        //{
-        //    string msgId = headers.Get(UNBRANDED_ID_HEADER_KEY);
-        //    string msgSignature = headers.Get(UNBRANDED_SIGNATURE_HEADER_KEY);
-        //    string msgTimestamp = headers.Get(UNBRANDED_TIMESTAMP_HEADER_KEY);
-        //    if (String.IsNullOrEmpty(msgId) || String.IsNullOrEmpty(msgSignature) || String.IsNullOrEmpty(msgTimestamp))
-        //    {
-        //        throw new WebhookVerificationException("Missing Required Headers");
-        //    }
 
-        //    var timestamp = Webhook.VerifyTimestamp(msgTimestamp);
-
-        //    var signature = this.Sign(msgId, timestamp, payload);
-        //    var expectedSignature = signature.Split(',')[1];
-
-        //    var passedSignatures = msgSignature.Split(' ');
-        //    foreach (string versionedSignature in passedSignatures)
-        //    {
-        //        var parts = versionedSignature.Split(',');
-        //        if (parts.Length < 2)
-        //        {
-        //            throw new WebhookVerificationException("Invalid Signature Headers");
-        //        }
-        //        var version = parts[0];
-        //        var passedSignature = parts[1];
-
-        //        if (version != "v1")
-        //        {
-        //            continue;
-        //        }
-        //        if (Utils.SecureCompare(expectedSignature, passedSignature))
-        //        {
-        //            return;
-        //        }
-
-        //    }
-        //    throw new WebhookVerificationException("No matching signature found");
-        //}
-
-        //private static DateTimeOffset VerifyTimestamp(string timestampHeader)
-        //{
-        //    DateTimeOffset timestamp;
-        //    var now = DateTimeOffset.UtcNow;
-        //    try
-        //    {
-        //        var timestampInt = long.Parse(timestampHeader);
-        //        timestamp = DateTimeOffset.FromUnixTimeSeconds(timestampInt);
-        //    }
-        //    catch
-        //    {
-        //        throw new WebhookVerificationException("Invalid Signature Headers");
-        //    }
-
-        //    if (timestamp < (now.AddSeconds(-1 * TOLERANCE_IN_SECONDS)))
-        //    {
-        //        throw new WebhookVerificationException("Message timestamp too old");
-        //    }
-        //    if (timestamp > (now.AddSeconds(TOLERANCE_IN_SECONDS)))
-        //    {
-        //        throw new WebhookVerificationException("Message timestamp too new");
-        //    }
-        //    return timestamp;
-        //}
 
         /// <summary>
         /// Generates an HMACSHA256 signature for the webhook payload.
