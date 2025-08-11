@@ -18,15 +18,6 @@ namespace BLAZAM.Static
                 + Path.DirectorySeparatorChar
                 + "default_logo5.png";
         /// <summary>
-        /// "/static/img/appicon.png"
-        /// </summary>
-        public static readonly string MaggiePortraitUri = Path.DirectorySeparatorChar
-                + "static"
-                + Path.DirectorySeparatorChar
-                + "img"
-                + Path.DirectorySeparatorChar
-                + "maggie.png";
-        /// <summary>
         /// "/static/img/favicon.ico"
         /// </summary>
         public static readonly string FaviconUri = Path.DirectorySeparatorChar
@@ -36,21 +27,7 @@ namespace BLAZAM.Static
                 + Path.DirectorySeparatorChar
                 + "favicon.ico";
 
-        public static byte[]? Maggie(int size = 1914)
-        {
-            var defaultIconFilePath = Path.GetFullPath(ApplicationInfo.applicationRoot + MaggiePortraitUri);
-            if (File.Exists(defaultIconFilePath))
-            {
-                var imgBytes = File.ReadAllBytes(defaultIconFilePath);
-                if (imgBytes != null)
-                {
-                    return imgBytes.ResizeRawImage(size);
-                }
 
-
-            }
-            return null;
-        }
 
 
         public static byte[]? AppIcon(int size = 250)
@@ -75,9 +52,13 @@ namespace BLAZAM.Static
 
         private static byte[]? GetDefaultIcon()
         {
-            var defaultIconFilePath = Path.GetFullPath(
-               ApplicationIconUri
-            );
+            var defaultIconFilePath = Path.GetFullPath(ApplicationInfo.applicationRoot.FullPath +
+                Path.DirectorySeparatorChar +
+                "wwwroot" +
+                Path.DirectorySeparatorChar +
+                "img" +
+                Path.DirectorySeparatorChar +
+                "default_logo.png");
             if (File.Exists(defaultIconFilePath))
                 return File.ReadAllBytes(defaultIconFilePath);
             return null;
