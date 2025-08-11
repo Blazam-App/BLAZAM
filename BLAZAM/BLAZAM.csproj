@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.4.5</AssemblyVersion>
-		<Version>2025.08.10.2112</Version>
+		<Version>2025.08.11.0347</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
