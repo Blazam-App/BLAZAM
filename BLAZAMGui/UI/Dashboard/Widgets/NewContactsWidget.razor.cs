@@ -1,3 +1,4 @@
+using BLAZAM.Localization;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
@@ -6,7 +7,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public NewContactsWidget()
         {
-            Title = AppLocalization["Contacts created in the last 14 days"];
+            Title = AppLocalization.Contacts_created_in_the_last_14_days;
             WidgetType = DashboardWidgetType.NewContacts;
         }
 

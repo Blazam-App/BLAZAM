@@ -1,5 +1,6 @@
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Search;
+using BLAZAM.Localization;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
@@ -7,7 +8,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public DeletedEntriesWidget()
         {
-            Title = AppLocalization["Entries deleted in the last 14 days"];
+            Title = AppLocalization.Entries_deleted_in_the_last_14_days;
             WidgetType = DashboardWidgetType.DeletedEntries;
         }
 

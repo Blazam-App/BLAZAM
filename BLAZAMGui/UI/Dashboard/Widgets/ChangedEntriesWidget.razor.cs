@@ -1,5 +1,6 @@
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Search;
+using BLAZAM.Localization;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
@@ -7,7 +8,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public ChangedEntriesWidget()
         {
-            Title = AppLocalization["Entries changed in the last 24 hours"];
+            Title = AppLocalization.Entries_changed_in_the_last_24_hours;
             WidgetType = DashboardWidgetType.ChangedEntries;
         }
 

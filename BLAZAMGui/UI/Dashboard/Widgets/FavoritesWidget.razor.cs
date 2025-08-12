@@ -1,3 +1,4 @@
+using BLAZAM.Localization;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
@@ -6,7 +7,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public FavoritesWidget()
         {
-            Title = AppLocalization[Lang.Favorites];
+            Title = AppLocalization.Favorites;
             WidgetType = DashboardWidgetType.FavoriteEntries;
         }
 

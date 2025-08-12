@@ -1,5 +1,6 @@
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Database.Models.User;
+using BLAZAM.Localization;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets.Admin
@@ -8,7 +9,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets.Admin
     {
         public AppLogonsWidget()
         {
-            Title = AppLocalization[Lang.Application_logons];
+            Title = AppLocalization.Application_logons;
             WidgetType = DashboardWidgetType.AppLogons;
         }
 

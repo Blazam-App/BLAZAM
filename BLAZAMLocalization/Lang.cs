@@ -560,5 +560,14 @@
         public static readonly string Reboot_Shutdown_Success = "Reboot_Shutdown_Success";
         public static readonly string Reboot_Shutdown_Failure = "Reboot_Shutdown_Failure";
         public static readonly string Disabled_users_changed_in_the_last_90_days = "Disabled users changed in the last 90 days";
+        public static readonly string Entries_changed_in_the_last_24_hours = "Entries changed in the last 24 hours";
+        public static readonly string Passwords_changed_in_the_last_90_days = "Passwords changed in the last 90 days";
+        public static readonly string Entries_deleted_in_the_last_14_days = "Entries deleted in the last 14 days";
+        public static readonly string Computers_created_in_the_last_14_days = "Computers created in the last 14 days";
+        public static readonly string Contacts_created_in_the_last_14_days = "Contacts created in the last 14 days";
+        public static readonly string Groups_created_in_the_last_14_days = "Groups created in the last 14 days";
+        public static readonly string OUs_created_in_the_last_14_days = "OU\'s created in the last 14 days";
+        public static readonly string Printers_created_in_the_last_14_days = "Printers created in the last 14 days";
+        public static readonly string Users_created_in_the_last_14_days = "Users created in the last 14 days";
     }
 }

@@ -1,10 +1,12 @@
+using BLAZAM.Localization;
+
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
     public partial class ChangedPasswordsWidget : Widget
     {
         public ChangedPasswordsWidget()
         {
-            Title = AppLocalization["Passwords changed in the last 90 days"];
+            Title = AppLocalization.Passwords_changed_in_the_last_90_days;
             WidgetType = DashboardWidgetType.PasswordsChanged;
         }
 
