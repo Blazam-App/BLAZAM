@@ -1,4 +1,3 @@
-using BLAZAM.Localization;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
@@ -7,7 +6,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public NewUsersWidget()
         {
-            Title = string.Format(Localization.AppLocalization.Users_created_in_the_last_14_days);
+            Title = Localization.AppLocalization.Users_created_in_the_last_14_days;
             WidgetType = DashboardWidgetType.NewUsers;
         }
 

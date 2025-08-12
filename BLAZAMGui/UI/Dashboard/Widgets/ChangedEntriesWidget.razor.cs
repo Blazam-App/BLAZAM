@@ -6,7 +6,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public ChangedEntriesWidget()
         {
-            Title = string.Format(Localization.AppLocalization.Entries_changed_in_the_last_24_hours);
+            Title = Localization.AppLocalization.Entries_changed_in_the_last_24_hours;
             WidgetType = DashboardWidgetType.ChangedEntries;
         }
 

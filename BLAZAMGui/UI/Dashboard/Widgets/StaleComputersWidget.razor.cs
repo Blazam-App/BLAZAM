@@ -1,5 +1,3 @@
-
-using BLAZAM.Localization;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
@@ -8,7 +6,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public StaleComputersWidget()
         {
-            Title = string.Format(Localization.AppLocalization.Stale_computers);
+            Title = Localization.AppLocalization.Stale_computers;
             WidgetType = DashboardWidgetType.StaleComputers;
         }
 

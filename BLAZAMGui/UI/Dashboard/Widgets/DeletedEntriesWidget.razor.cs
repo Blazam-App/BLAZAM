@@ -1,14 +1,10 @@
-using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Database.Models.User;
-
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
     public partial class DeletedEntriesWidget : Widget
     {
         public DeletedEntriesWidget()
         {
-            Title = string.Format(Localization.AppLocalization.Entries_deleted_in_the_last_14_days);
+            Title = Localization.AppLocalization.Entries_deleted_in_the_last_14_days;
             WidgetType = DashboardWidgetType.DeletedEntries;
         }
 

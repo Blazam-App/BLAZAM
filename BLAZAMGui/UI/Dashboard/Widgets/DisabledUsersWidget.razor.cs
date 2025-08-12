@@ -1,12 +1,10 @@
-using BLAZAM.Localization;
-
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
     public partial class DisabledUsersWidget : Widget
     {
         public DisabledUsersWidget()
         {
-            Title = string.Format(Localization.AppLocalization.Disabled_users_changed_in_the_last_90_days);
+            Title = Localization.AppLocalization.Disabled_users_changed_in_the_last_90_days;
             WidgetType = DashboardWidgetType.DisabledUsers;
         }
 
