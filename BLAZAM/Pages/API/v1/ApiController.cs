@@ -45,6 +45,15 @@ namespace BLAZAM.Pages.API.v1
         /// </summary>
         protected IApplicationUserState? CurrentUserState { get; }
 
+
+        /// <summary>
+        /// Creates a new API controller with the required services
+        /// </summary>
+        /// <param name="applicationUserStateService"></param>
+        /// <param name="audit"></param>
+        /// <param name="appDatabaseFactory"></param>
+        /// <param name="httpContextAccessor"></param>
+        /// <param name="adFactory"></param>
         public ApiController(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
         {
             stopwatch.Start();
@@ -93,7 +102,12 @@ namespace BLAZAM.Pages.API.v1
 
             return new JsonResult(ResponseData);
         }
-
+        /// <summary>
+        /// Finds a group by its SID, DN, or name. If using name, the name must be unique
+        /// </summary>
+        /// <param name="groupIdentifier"></param>
+        /// <returns></returns>
+        /// <exception cref="DirectorySearchUniquenessException"></exception>
         protected IADGroup? FindGroupByIdentifier(string groupIdentifier)
         {
             var group = (IADGroup)Directory.FindEntryBySid(groupIdentifier);
