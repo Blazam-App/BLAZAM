@@ -1278,4 +1278,34 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>Your session is about to expire</value>
   </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>Disabled users changed in the last 90 days</value>
+  </data>
+  <data name="Entries_changed_in_the_last_24_hours" xml:space="preserve">
+    <value>Entries changed in the last 24 hours</value>
+  </data>
+  <data name="Passwords_changed_in_the_last_90_days" xml:space="preserve">
+    <value>Passwords changed in the last 90 days</value>
+  </data>
+  <data name="Entries_deleted_in_the_last_14_days" xml:space="preserve">
+    <value>Entries deleted in the last 14 days</value>
+  </data>
+  <data name="Computers_created_in_the_last_14_days" xml:space="preserve">
+    <value>Computers created in the last 14 days</value>
+  </data>
+  <data name="Contacts_created_in_the_last_14_days" xml:space="preserve">
+    <value>Contacts created in the last 14 days</value>
+  </data>
+  <data name="Groups_created_in_the_last_14_days" xml:space="preserve">
+    <value>Groups created in the last 14 days</value>
+  </data>
+  <data name="OUs_created_in_the_last_14_days" xml:space="preserve">
+    <value>OU's created in the last 14 days</value>
+  </data>
+  <data name="Printers_created_in_the_last_14_days" xml:space="preserve">
+    <value>Printers created in the last 14 days</value>
+  </data>
+  <data name="Users_created_in_the_last_14_days" xml:space="preserve">
+    <value>Users created in the last 14 days</value>
+  </data>
 </root>
