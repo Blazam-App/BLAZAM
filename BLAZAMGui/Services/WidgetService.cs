@@ -34,7 +34,7 @@ namespace BLAZAM.Gui.Services
             }
 
             AddWidgetIf(isSuperAdmin || applicationUser.CanUnlockUsers,
-                new LockedOutUsers() { WidgetType = DashboardWidgetType.LockedOutUsers, Title = AppLocalization[Lang.Locked_Out_Users] });
+                new LockedOutUsers());
 
             AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers),
                 new NewUsersWidget() { WidgetType = DashboardWidgetType.NewUsers, Title = AppLocalization["Users created in the last 14 days"] });
