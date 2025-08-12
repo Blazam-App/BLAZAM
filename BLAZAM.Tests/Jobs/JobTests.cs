@@ -6,7 +6,7 @@ namespace BLAZAM.Tests.Jobs
     public class JobTests
     {
 
-        private IJob TestJob
+        private static IJob TestJob
         {
             get
             {
