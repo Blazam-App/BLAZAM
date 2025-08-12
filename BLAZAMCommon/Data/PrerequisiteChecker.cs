@@ -22,7 +22,11 @@
 
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Log the exception if necessary
+                Loggers.SystemLogger.Error(ex, "Error checking for ASP.NET Core prerequisites.");
+            }
             return false;
         }
         public static bool CheckForAspCoreHosting()
@@ -45,7 +49,11 @@
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Log the exception if necessary
+                Loggers.SystemLogger.Error(ex, "Error checking for ASP.NET Core Hosting prerequisites.");
+            }
             return false;
 
         }
