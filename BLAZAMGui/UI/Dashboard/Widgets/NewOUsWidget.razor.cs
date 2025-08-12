@@ -7,7 +7,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public NewOUsWidget()
         {
-            Title = AppLocalization.OUs_created_in_the_last_14_days;
+            Title = string.Format(Localization.AppLocalization.OUs_created_in_the_last_14_days);
             WidgetType = DashboardWidgetType.NewOus;
         }
 

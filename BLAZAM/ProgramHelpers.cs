@@ -170,9 +170,11 @@ namespace BLAZAM
 
             /* --- Code to force a specific culture during development/testing ---
             // Uncomment this block to force a specific culture for debugging localization.
+            */
             CultureInfo culture = new CultureInfo("zh-Hans"); // Example: Force Simplified Chinese
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
+            /*
             */
 
             // Register ApplicationInfo as a singleton service

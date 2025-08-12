@@ -7,7 +7,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public NewContactsWidget()
         {
-            Title = AppLocalization.Contacts_created_in_the_last_14_days;
+            Title = string.Format(Localization.AppLocalization.Contacts_created_in_the_last_14_days);
             WidgetType = DashboardWidgetType.NewContacts;
         }
 

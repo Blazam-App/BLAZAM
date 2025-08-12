@@ -6,7 +6,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public ChangedPasswordsWidget()
         {
-            Title = AppLocalization.Passwords_changed_in_the_last_90_days;
+            Title = string.Format(Localization.AppLocalization.Passwords_changed_in_the_last_90_days);
             WidgetType = DashboardWidgetType.PasswordsChanged;
         }
 

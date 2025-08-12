@@ -9,7 +9,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets.Admin
     {
         public AppLogonsWidget()
         {
-            Title = AppLocalization.Application_logons;
+            Title = string.Format(Localization.AppLocalization.Application_logons);
             WidgetType = DashboardWidgetType.AppLogons;
         }
 

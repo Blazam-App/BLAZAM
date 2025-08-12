@@ -1,4 +1,4 @@
-using BLAZAM.ActiveDirectory.Search;
+
 using BLAZAM.Localization;
 using MudBlazor;
 
@@ -8,7 +8,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public StaleUsersWidget()
         {
-            Title = AppLocalization.Stale_users;
+            Title = string.Format(Localization.AppLocalization.Stale_users);
             WidgetType = DashboardWidgetType.StaleUsers;
         }
 

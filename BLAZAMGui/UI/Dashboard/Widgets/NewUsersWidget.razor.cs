@@ -7,7 +7,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public NewUsersWidget()
         {
-            Title = AppLocalization.Users_created_in_the_last_14_days;
+            Title = string.Format(Localization.AppLocalization.Users_created_in_the_last_14_days);
             WidgetType = DashboardWidgetType.NewUsers;
         }
 

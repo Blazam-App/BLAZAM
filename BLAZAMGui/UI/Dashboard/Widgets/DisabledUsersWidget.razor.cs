@@ -6,7 +6,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public DisabledUsersWidget()
         {
-            Title = AppLocalization.Disabled_users_changed_in_the_last_90_days;
+            Title = string.Format(Localization.AppLocalization.Disabled_users_changed_in_the_last_90_days);
             WidgetType = DashboardWidgetType.DisabledUsers;
         }
 

@@ -7,7 +7,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         public FavoritesWidget()
         {
-            Title = AppLocalization.Favorites;
+            Title = string.Format(Localization.AppLocalization.Favorites);
             WidgetType = DashboardWidgetType.FavoriteEntries;
         }
 
