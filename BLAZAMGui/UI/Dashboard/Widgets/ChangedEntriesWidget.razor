@@ -51,22 +51,3 @@
 </MudDataGrid>
 
 
-@code {
-    List<IDirectoryEntryAdapter> changdEntries
-    {
-        get => CurrentUser.State.Cache.Get<List<IDirectoryEntryAdapter>>(this.GetType());
-        set => CurrentUser.State.Cache.Set(this.GetType(), value);
-    }
-
-    protected override async Task RefreshDataAsync()
-    {
-        LoadingData = true;
-        var search = new ADSearch(Directory);
-        search.Fields.Changed = DateTime.Now.AddDays(-1);
-        changdEntries = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>()).Where(x => x.CanRead).ToList();
-        LoadingData = false;
-
-    }
-
-
-}

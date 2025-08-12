@@ -559,5 +559,6 @@
         public static readonly string Reboot_Shutdown_Confirmation = "Reboot_Shutdown_Confirmation";
         public static readonly string Reboot_Shutdown_Success = "Reboot_Shutdown_Success";
         public static readonly string Reboot_Shutdown_Failure = "Reboot_Shutdown_Failure";
+        public static readonly string Disabled_users_changed_in_the_last_90_days = "Disabled users changed in the last 90 days";
     }
 }

@@ -1278,4 +1278,7 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>Your session is about to expire</value>
   </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>Disabled users changed in the last 90 days</value>
+  </data>
 </root>
