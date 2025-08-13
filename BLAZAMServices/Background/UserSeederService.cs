@@ -38,28 +38,19 @@ namespace BLAZAM.Services.Background
 
                     if (_applicationInfo.InDemoMode)
                         EnsureDemoExists();
+
                     using var context = dbFactory.CreateDbContext();
                     using var activeDirectoryContext = activeDirectoryContextFactory.CreateActiveDirectoryContext();
                     if (context.Status != ServiceConnectionState.Up) return false;
-                    foreach (var deleg in context.PermissionDelegate.Where(x => x.DeletedAt == null).ToList())
+
+                    var delegates = context.PermissionDelegate
+                        .Where(x => x.DeletedAt == null)
+                        .ToList();
+
+                    foreach (var deleg in delegates)
                     {
                         var entry = activeDirectoryContext.FindEntryBySID(deleg.DelegateSid);
-                        if (entry != null)
-                        {
-                            if (entry is IADUser user)
-                            {
-                                EnsureUserExists(user);
-                            }
-                            if (entry is IADGroup group)
-                            {
-                                foreach (var member in group.NestedMembers)
-                                {
-                                    var type = member.GetType();
-                                    if (member is IADUser aduser)
-                                        EnsureUserExists(aduser);
-                                }
-                            }
-                        }
+                        ProcessDirectoryEntry(entry);
                     }
                 }
                 catch (Exception ex)
@@ -138,6 +129,24 @@ namespace BLAZAM.Services.Background
                 });
             }
             context.SaveChanges();
+        }
+        /// <summary>
+        /// Processes an Active Directory entry, ensuring users are seeded.
+        /// </summary>
+        private void ProcessDirectoryEntry(object? entry)
+        {
+            if (entry is IADUser user)
+            {
+                EnsureUserExists(user);
+            }
+            else if (entry is IADGroup group)
+            {
+                foreach (var member in group.NestedMembers)
+                {
+                    if (member is IADUser aduser)
+                        EnsureUserExists(aduser);
+                }
+            }
         }
     }
 }

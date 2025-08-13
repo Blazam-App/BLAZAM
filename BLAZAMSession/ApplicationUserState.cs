@@ -15,7 +15,7 @@ namespace BLAZAM.Session
     /// <summary>
     /// Represents the state and permissions for a logged-in application user, including their AD identity, application preferences, and calculated permissions.
     /// </summary>
-    public class ApplicationUserState : IApplicationUserState
+    public class ApplicationUserState : IApplicationUserState, IDisposable
     {
 
         public AppDelegate OnSettingsChanged { get; set; }
@@ -61,6 +61,7 @@ namespace BLAZAM.Session
         public AppUser? userSettings { get; set; }
 
         private readonly IAppDatabaseFactory _dbFactory;
+        private bool _disposedValue;
 
         /// <summary>Initializes a new instance of the <see cref="ApplicationUserState"/> class.</summary> 
         /// <param name="factory">The database context factory.</param> 
@@ -595,6 +596,46 @@ namespace BLAZAM.Session
               am.ObjectType == objectType
                ))), false
                );
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    // Dispose managed state (managed objects)
+                    Cache?.Dispose();
+
+
+                    // Unsubscribe event handlers if needed
+                    OnSettingsChanged = null;
+
+                    // Set large fields to null
+                    PermissionDelegates = null;
+                    PermissionMappings = null;
+                    userSettings = null;
+                    User = null;
+                    Impersonator = null;
+                    Ticket = null;
+                }
+
+                // Free unmanaged resources (none in this class)
+                _disposedValue = true;
+            }
+        }
+
+
+        //~ApplicationUserState()
+        //{
+        //    Dispose(disposing: false);
+        //}
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

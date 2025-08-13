@@ -53,10 +53,6 @@ namespace BLAZAM.Server.Pages
             {
                 case "appicon.png":
                     return File(StaticAssets.AppIcon(), "image/png");
-                case "maggie.png":
-                    return File(StaticAssets.Maggie(), "image/png");
-                case "maggiethumb.png":
-                    return File(StaticAssets.Maggie(300), "image/png");
                 case "favicon.ico":
                     return File(StaticAssets.AppIcon(100), "image/x-icon");
             }

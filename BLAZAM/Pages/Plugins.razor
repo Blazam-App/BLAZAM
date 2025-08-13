@@ -2,6 +2,7 @@
 @using BLAZAM.Plugins
 @using BLAZAM.Services.Plugins
 @inherits AppComponentBase
+@attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 <MudText Typo="Typo.h4">
     @AppLocalization[Lang.Plugins]
 </MudText>

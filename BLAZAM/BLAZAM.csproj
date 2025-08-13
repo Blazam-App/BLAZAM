@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.4.5</AssemblyVersion>
-		<Version>2025.08.10.2112</Version>
+		<Version>2025.08.12.2232</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -22,11 +22,6 @@
 
 	<ItemGroup>
 		<None Remove="nssm.exe" />
-		<None Remove="static\img\default_logo.png" />
-		<None Remove="static\img\default_logo2.png" />
-		<None Remove="static\img\default_logo3.png" />
-		<None Remove="static\img\default_logo4.png" />
-		<None Remove="static\img\default_logo5.png" />
 	</ItemGroup>
 
 
@@ -38,22 +33,6 @@
 	<ItemGroup>
 		<Content Include="nssm.exe">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="static\img\default_logo.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="static\img\default_logo2.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="static\img\default_logo3.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="static\img\default_logo4.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="static\img\maggie.png">
-		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
 	</ItemGroup>
 
@@ -130,12 +109,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="static\img\default_logo5.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
 		<Compile Update="Properties\Resources.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
@@ -149,6 +122,9 @@
 		</Content>
 		<Content Update="wwwroot\favicon.ico">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\img\default_logo.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 

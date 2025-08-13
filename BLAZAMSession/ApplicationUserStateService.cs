@@ -21,7 +21,7 @@ namespace BLAZAM.Session
         private IHttpContextAccessor _httpContextAccessor { get; set; }
         private readonly IAppDatabaseFactory _factory;
         private int? Timeout { get; set; }
-        private List<MFARequest> _mfaLoginQueue = new();
+        private readonly List<MFARequest> _mfaLoginQueue = new();
 
         /// <summary>Event triggered when a new <see cref="IApplicationUserState"/> is added to the cache. Primarily for internal use or advanced scenarios.</summary>
         public AppDelegate<IApplicationUserState> UserStateAdded { get; set; }
@@ -32,7 +32,7 @@ namespace BLAZAM.Session
         /// <summary>Gets the list of currently cached <see cref="IApplicationUserState"/> objects. Use with caution; direct manipulation is not recommended.</summary>
         public IList<IApplicationUserState> UserStates { get; private set; } = new List<IApplicationUserState>();
 
-        private Timer t;
+        private readonly Timer? t;
 
         /// <summary>Initializes a new instance of the <see cref="ApplicationUserStateService"/> class.</summary> 
         /// <param name="httpContextAccessor">Accessor for the current HTTP context, used to retrieve the user's ClaimsPrincipal.</param> 
@@ -54,10 +54,9 @@ namespace BLAZAM.Session
                 Timeout = context.AuthenticationSettings.FirstOrDefault()?.SessionTimeout;
             });
         }
-
-        private void ReloadAllPermissions()
+        ~ApplicationUserStateService()
         {
-            // Method body not implemented in original, left as is.
+            t?.Dispose();
         }
 
         /// <summary>
@@ -95,18 +94,18 @@ namespace BLAZAM.Session
             {
                 try
                 {
-                    return GetUserState(_httpContextAccessor.HttpContext?.User);
-                }
-                catch (NullReferenceException ex) // Catch specific Exception ex
-                {
-                    Loggers.SystemLogger.Debug(ex, "ApplicationUserStateService.CurrentUserState_get: NullReferenceException encountered. CurrentUser or HttpContext might be null initially.");
-                    return null;
+                    if (_httpContextAccessor?.HttpContext?.User != null)
+                    {
+                        return GetUserState(_httpContextAccessor.HttpContext.User);
+                    }
                 }
                 catch (Exception ex)
                 {
                     Loggers.SystemLogger.Error(ex, "Unexpected error trying to retrieve current user state from httpContext");
-                    return null;
                 }
+                // If no user context is available or an error occurs, return null
+                return null;
+
             }
         }
 
@@ -191,12 +190,9 @@ namespace BLAZAM.Session
         /// <param name="state">The user state to cache.</param>
         public void SetUserState(IApplicationUserState state)
         {
-            if (state != null)
+            if (state != null && !UserStates.Contains(state)) // Check if it's already there before adding
             {
-                if (!UserStates.Contains(state)) // Check if it's already there before adding
-                {
-                    AddUserState(state);
-                }
+                AddUserState(state);
             }
         }
 
