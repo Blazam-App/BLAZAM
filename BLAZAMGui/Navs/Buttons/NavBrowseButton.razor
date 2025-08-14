@@ -4,16 +4,21 @@
             Icon="@Icons.Material.Filled.ViewList">
     @AppLocalization[Lang.Browse]
 </MudNavLink> *@
-<MudNavGroup ExpandedChanged=@((value)=>{BrowseExpandedChanged.InvokeAsync(value);})
-             Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)
-             Title="@AppLocalization[Lang.Browse]"
-             Icon="@Icons.Material.Filled.ViewList">
+<MudNavGroup ExpandedChanged=@((value)=>{BrowseExpandedChanged.InvokeAsync(value);_expanded=value; if(!value)treeView?.Dispose();})
+Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)
+Title="@AppLocalization[Lang.Browse]"
+Icon="@Icons.Material.Filled.ViewList">
+    @if (_expanded) {
     <ADTreeView AdditionalVisibilityFilters=@((entry)=>{if(entry is IADOrganizationalUnit ou) return (ou.CanReadUsersInSubOus || ou.CanReadNonOUs); return false;})
                 SelectedEntryChanged="@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);})"
-                StartRootExpanded=false/>
+                StartRootExpanded=false
+                @ref=treeView/>
+    }
 </MudNavGroup>
 
 @code {
+    ADTreeView? treeView;
+    private bool _expanded;
     [Parameter]
     public EventCallback<bool> BrowseExpandedChanged { get; set; }
     [Parameter]
