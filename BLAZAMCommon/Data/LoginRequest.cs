@@ -150,5 +150,11 @@ namespace BLAZAM.Common.Data
             return this;
         }
 
+        public LoginRequest LockedOut()
+        {
+            AuthenticationResult = LoginResultStatus.LockedOut;
+
+            return this;
+        }
     }
 }

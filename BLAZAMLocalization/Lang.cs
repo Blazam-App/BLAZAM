@@ -40,6 +40,14 @@
         public static readonly string Group_member_removed = "Group member removed";
         public static readonly string Object_deleted = "Object deleted";
         public static readonly string Entry_modified = "Entry modified";
+        public static readonly string Username_is_missing = "Username is missing";
+        public static readonly string Password_is_missing = "Password is missing";
+        public static readonly string Login_request_is_missing = "Login request is missing";
+        public static readonly string Account_is_locked_out = "Account is locked out";
+        public static readonly string Username_or_password_not_correct = "Username or password not correct";
+        public static readonly string Unauthorized_Impersonation_Attempt = "Unauthorized Impersonation Attempt";
+        public static readonly string You_are_not_authorized_to_login = "You are not authorized to login";
+        public static readonly string Unknown_error_while_attempting_to_log_in = "Unknown error while attempting to log in";
         public static readonly string Update_Scheduled = "Update Scheduled";
         public static readonly string Dismiss_all = "Dismiss all";
         public static readonly string No_unread_notifications = "No unread notifications";
