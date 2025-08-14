@@ -16,8 +16,6 @@ set -e
 
 # --- Configuration ---
 readonly BLAZAM_RELEASE_TAG="BetaDev1"
-readonly BLAZAM_ZIP_FILENAME="blazam-dev-beta-v1.4.0.2025.06.26.2119.zip"
-readonly DOWNLOAD_URL="https://github.com/Blazam-App/BLAZAM/releases/download/${BLAZAM_RELEASE_TAG}/${BLAZAM_ZIP_FILENAME}"
 
 # System and application settings
 readonly INSTALL_DIR="/opt/blazam"
@@ -44,6 +42,8 @@ DOMAIN_NAME=""
 DB_TYPE=""
 DB_CONN_STR=""
 WEB_SERVER_CHOICE=""
+DOWNLOAD_URL=""
+BLAZAM_ZIP_FILENAME=""
 
 # --- Helper Functions ---
 
@@ -113,16 +113,50 @@ log_error() {
 
 # --- Main Installation Functions ---
 
+# NEW FUNCTION: Get the download URL from the GitHub release tag.
+get_release_url() {
+    log_info "Querying GitHub for the download URL for tag '${BLAZAM_RELEASE_TAG}'..."
+    
+    # Construct the API URL
+    local api_url="https://api.github.com/repos/Blazam-App/BLAZAM/releases/tags/${BLAZAM_RELEASE_TAG}"
+    
+    # Fetch release data from the GitHub API
+    local release_data
+    release_data=$(curl -sL "$api_url")
+    
+    # Check for API errors (e.g., tag not found, rate limiting)
+    if echo "$release_data" | jq -e 'has("message")' > /dev/null; then
+        local error_msg
+        error_msg=$(echo "$release_data" | jq -r '.message')
+        log_error "GitHub API error for tag '${BLAZAM_RELEASE_TAG}': ${error_msg}"
+    fi
+    
+    # Use jq to extract the download URL for the .zip asset
+    DOWNLOAD_URL=$(echo "$release_data" | jq -r '.assets[] | select(.name | endswith(".zip")) | .browser_download_url')
+    
+    # Validate that we found a URL
+    if [[ -z "${DOWNLOAD_URL}" || "${DOWNLOAD_URL}" == "null" ]]; then
+        log_error "Could not find a .zip file in the release assets for tag '${BLAZAM_RELEASE_TAG}'."
+    fi
+
+    # Extract the filename from the URL
+    BLAZAM_ZIP_FILENAME=$(basename "${DOWNLOAD_URL}")
+    
+    log_info "Found release asset: ${BLAZAM_ZIP_FILENAME}"
+}
+
 # 1. Run pre-flight checks to ensure the script can execute.
 pre_flight_checks() {
     log_info "Running pre-flight checks..."
     if [ "$(id -u)" -ne 0 ]; then
         log_error "This script must be run as root. Please use sudo."
     fi
-    if ! command -v wget &>/dev/null || ! command -v unzip &>/dev/null; then
-        log_info "Installing 'wget' and 'unzip'..."
+
+    # Check for tools needed for the script itself to run correctly.
+    if ! command -v wget &>/dev/null || ! command -v unzip &>/dev/null || ! command -v curl &>/dev/null || ! command -v jq &>/dev/null; then
+        log_info "Installing script dependencies: 'wget', 'unzip', 'curl', 'jq'..."
         apt-get update
-        apt-get install -y wget unzip
+        apt-get install -y wget unzip curl jq
     fi
 }
 
@@ -476,6 +510,7 @@ print_summary() {
 main() {
     log_info "Starting Blazam installation script."
     pre_flight_checks
+    get_release_url
     get_user_input
     install_dependencies
     fix_ldap_symlink
