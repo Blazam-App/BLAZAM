@@ -109,30 +109,30 @@ namespace BLAZAM.Services.Audit
             switch (args.EventType)
             {
                 case ApplicationEventType.Create:
-                    User.Created(args.Entry);
+                    _ = User.Created(args.Entry);
                     break;
                 case ApplicationEventType.Delete:
-                    User.Deleted(args.Entry);
+                    _ = User.Deleted(args.Entry);
                     break;
                 case ApplicationEventType.Assign:
-                    User.Assigned(args.Entry, args.Target);
-                    Group.MemberAdded(args.Target, args.Entry);
+                    _ = User.Assigned(args.Entry, args.Target);
+                    _ = Group.MemberAdded(args.Target, args.Entry);
                     break;
                 case ApplicationEventType.Unassign:
-                    User.Unassigned(args.Entry, args.Target);
-                    Group.MemberRemoved(args.Target, args.Entry);
+                    _ = User.Unassigned(args.Entry, args.Target);
+                    _ = Group.MemberRemoved(args.Target, args.Entry);
                     break;
                 case ApplicationEventType.Modify:
-                    User.Changed(args.Entry, args.Changes);
+                    _ = User.Changed(args.Entry, args.Changes);
                     break;
                 case ApplicationEventType.Move:
-                    User.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
+                    _ = User.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
                     break;
                 case ApplicationEventType.PasswordChange:
-                    User.PasswordChanged(args.Entry, (args.Entry as IAccountDirectoryAdapter).RequirePasswordChange);
+                    _ = User.PasswordChanged(args.Entry, (args.Entry as IAccountDirectoryAdapter).RequirePasswordChange);
                     break;
                 case ApplicationEventType.Search:
-                    User.Searched(args.Entry);
+                    _ = User.Searched(args.Entry);
                     break;
                 case ApplicationEventType.LockedOut:
                     break; // No action needed.
@@ -147,27 +147,27 @@ namespace BLAZAM.Services.Audit
             switch (args.EventType)
             {
                 case ApplicationEventType.Create:
-                    Printer.Created(args.Entry);
+                    _ = Printer.Created(args.Entry);
                     break;
                 case ApplicationEventType.Delete:
-                    Printer.Deleted(args.Entry);
+                    _ = Printer.Deleted(args.Entry);
                     break;
                 case ApplicationEventType.Assign:
                     // Printer assignment is tracked via group membership changes.
-                    Group.MemberAdded(args.Target, args.Entry);
+                    _ = Group.MemberAdded(args.Target, args.Entry);
                     break;
                 case ApplicationEventType.Unassign:
                     // Printer unassignment is tracked via group membership changes.
-                    Group.MemberRemoved(args.Target, args.Entry);
+                    _ = Group.MemberRemoved(args.Target, args.Entry);
                     break;
                 case ApplicationEventType.Modify:
-                    Printer.Changed(args.Entry, args.Changes);
+                    _ = Printer.Changed(args.Entry, args.Changes);
                     break;
                 case ApplicationEventType.Move:
-                    Printer.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
+                    _ = Printer.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
                     break;
                 case ApplicationEventType.Search:
-                    Printer.Searched(args.Entry);
+                    _ = Printer.Searched(args.Entry);
                     break;
                 case ApplicationEventType.LockedOut:
                     break; // Not applicable to printers.
@@ -182,27 +182,27 @@ namespace BLAZAM.Services.Audit
             switch (args.EventType)
             {
                 case ApplicationEventType.Create:
-                    Computer.Created(args.Entry);
+                    _ = Computer.Created(args.Entry);
                     break;
                 case ApplicationEventType.Delete:
-                    Computer.Deleted(args.Entry);
+                    _ = Computer.Deleted(args.Entry);
                     break;
                 case ApplicationEventType.Assign:
-                    Computer.Assigned(args.Entry, args.Target);
-                    Group.MemberAdded(args.Target, args.Entry);
+                    _ = Computer.Assigned(args.Entry, args.Target);
+                    _ = Group.MemberAdded(args.Target, args.Entry);
                     break;
                 case ApplicationEventType.Unassign:
-                    Computer.Unassigned(args.Entry, args.Target);
-                    Group.MemberRemoved(args.Target, args.Entry);
+                    _ = Computer.Unassigned(args.Entry, args.Target);
+                    _ = Group.MemberRemoved(args.Target, args.Entry);
                     break;
                 case ApplicationEventType.Modify:
-                    Computer.Changed(args.Entry, args.Changes);
+                    _ = Computer.Changed(args.Entry, args.Changes);
                     break;
                 case ApplicationEventType.Move:
-                    Computer.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
+                    _ = Computer.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
                     break;
                 case ApplicationEventType.Search:
-                    Computer.Searched(args.Entry);
+                    _ = Computer.Searched(args.Entry);
                     break;
                 case ApplicationEventType.LockedOut:
                     break; // Not applicable to computers.
@@ -217,10 +217,10 @@ namespace BLAZAM.Services.Audit
             switch (args.EventType)
             {
                 case ApplicationEventType.Delete:
-                    BitLocker.Deleted(args.Entry);
+                    _ = BitLocker.Deleted(args.Entry);
                     break;
                 case ApplicationEventType.Modify:
-                    BitLocker.Changed(args.Entry, args.Changes);
+                    _ = BitLocker.Changed(args.Entry, args.Changes);
                     break;
             }
         }
@@ -233,27 +233,27 @@ namespace BLAZAM.Services.Audit
             switch (args.EventType)
             {
                 case ApplicationEventType.Create:
-                    Group.Created(args.Entry);
+                    _ = Group.Created(args.Entry);
                     break;
                 case ApplicationEventType.Delete:
-                    Group.Deleted(args.Entry);
+                    _ = Group.Deleted(args.Entry);
                     break;
                 case ApplicationEventType.Assign:
-                    Group.Assigned(args.Entry, args.Target);
-                    Group.MemberAdded(args.Target, args.Entry);
+                    _ = Group.Assigned(args.Entry, args.Target);
+                    _ = Group.MemberAdded(args.Target, args.Entry);
                     break;
                 case ApplicationEventType.Unassign:
-                    Group.Unassigned(args.Entry, args.Target);
-                    Group.MemberRemoved(args.Target, args.Entry);
+                    _ = Group.Unassigned(args.Entry, args.Target);
+                    _ = Group.MemberRemoved(args.Target, args.Entry);
                     break;
                 case ApplicationEventType.Modify:
-                    Group.Changed(args.Entry, args.Changes);
+                    _ = Group.Changed(args.Entry, args.Changes);
                     break;
                 case ApplicationEventType.Move:
-                    Group.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
+                    _ = Group.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
                     break;
                 case ApplicationEventType.Search:
-                    Group.Searched(args.Entry);
+                    _ = Group.Searched(args.Entry);
                     break;
             }
         }
@@ -266,19 +266,19 @@ namespace BLAZAM.Services.Audit
             switch (args.EventType)
             {
                 case ApplicationEventType.Create:
-                    OU.Created(args.Entry);
+                    _ = OU.Created(args.Entry);
                     break;
                 case ApplicationEventType.Delete:
-                    OU.Deleted(args.Entry);
+                    _ = OU.Deleted(args.Entry);
                     break;
                 case ApplicationEventType.Modify:
-                    OU.Changed(args.Entry, args.Changes);
+                    _ = OU.Changed(args.Entry, args.Changes);
                     break;
                 case ApplicationEventType.Move:
-                    OU.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
+                    _ = OU.Moved(args.Entry, args.Origin as IADOrganizationalUnit, args.Target as IADOrganizationalUnit);
                     break;
                 case ApplicationEventType.Search:
-                    OU.Searched(args.Entry);
+                    _ = OU.Searched(args.Entry);
                     break;
             }
         }

@@ -19,6 +19,11 @@ namespace BLAZAM.Server.Pages.Download
         private readonly IStringLocalizer<AppLocalization> _appLocalization;
         private readonly IAppDatabaseFactory _factory;
 
+        /// <summary>
+        /// Creates a new instance of the DBExport page model
+        /// </summary>
+        /// <param name="appLocalization"></param>
+        /// <param name="factory"></param>
         public DBExport(IStringLocalizer<AppLocalization> appLocalization, IAppDatabaseFactory factory)
         {
             _appLocalization = appLocalization;
@@ -45,7 +50,7 @@ namespace BLAZAM.Server.Pages.Download
             {
                 using (ZipArchive zip = new(memoryStream, ZipArchiveMode.Create))
                 {
-                    Job exportJob = new Job(_appLocalization["Export Database"], User.Identity.Name);
+                    Job exportJob = new Job(_appLocalization["Export Database"], User.Identity?.Name);
                     JobStep exportData = new JobStep(_appLocalization["Export Data"], (step) =>
                     {
                         var context = _factory.CreateDbContext();

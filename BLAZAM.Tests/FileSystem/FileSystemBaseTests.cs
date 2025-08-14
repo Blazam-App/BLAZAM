@@ -92,7 +92,12 @@ namespace BLAZAM.Tests.FileSystem
         {
             // Arrange
             string path = Path.GetTempFileName();
-            var fileSystemBase = new FileSystemBase(Path.GetDirectoryName(path));
+            var tmpDir = Path.GetDirectoryName(path);
+            if (tmpDir == null)
+            {
+                throw new InvalidOperationException("Temporary directory path is null.");
+            }
+            var fileSystemBase = new FileSystemBase(tmpDir);
 
 
             // Act
@@ -165,7 +170,7 @@ namespace BLAZAM.Tests.FileSystem
             var fileSystemBase = new FileSystemBase(path);
 
             // Act
-            string toString = fileSystemBase.ToString();
+            string? toString = fileSystemBase.ToString();
 
             // Assert
             Assert.Equal(path, toString);

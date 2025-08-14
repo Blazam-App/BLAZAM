@@ -53,6 +53,10 @@
     /// </summary>
     public class NewUserDetailsExample
     {
+        /// <summary>
+        /// Returns an example NewUserDetails object for Swagger documentation
+        /// </summary>
+        /// <returns></returns>
         public object GetExamples()
         {
             return new NewUserDetails

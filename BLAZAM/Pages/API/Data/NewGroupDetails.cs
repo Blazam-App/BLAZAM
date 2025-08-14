@@ -38,6 +38,10 @@ namespace BLAZAM.Pages.API.Data
     /// </summary>
     public class NewGroupDetailsExample
     {
+        /// <summary>
+        /// Provides an example of the NewGroupDetails object for Swagger documentation
+        /// </summary>
+        /// <returns></returns>
         public object GetExamples()
         {
             return new NewGroupDetails

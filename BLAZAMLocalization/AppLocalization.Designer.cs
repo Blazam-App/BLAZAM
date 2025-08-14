@@ -763,6 +763,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Computers created in the last 14 days.
+        /// </summary>
+        public static string Computers_created_in_the_last_14_days {
+            get {
+                return ResourceManager.GetString("Computers_created_in_the_last_14_days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configure.
         /// </summary>
         public static string Configure {
@@ -808,9 +817,18 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contacts created in the last 14 days.
+        /// </summary>
+        public static string Contacts_created_in_the_last_14_days {
+            get {
+                return ResourceManager.GetString("Contacts_created_in_the_last_14_days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy template.
         /// </summary>
-        public static string Copy_template {
+        public static string Copy_Template {
             get {
                 return ResourceManager.GetString("Copy Template", resourceCulture);
             }
@@ -1114,6 +1132,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disabled users changed in the last 90 days.
+        /// </summary>
+        public static string Disabled_users_changed_in_the_last_90_days {
+            get {
+                return ResourceManager.GetString("Disabled_users_changed_in_the_last_90_days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Discard Changes.
         /// </summary>
         public static string Discard_Changes {
@@ -1344,6 +1371,24 @@ namespace BLAZAM.Localization {
         public static string Encryption_Seed_String {
             get {
                 return ResourceManager.GetString("Encryption Seed String", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entries changed in the last 24 hours.
+        /// </summary>
+        public static string Entries_changed_in_the_last_24_hours {
+            get {
+                return ResourceManager.GetString("Entries_changed_in_the_last_24_hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entries deleted in the last 14 days.
+        /// </summary>
+        public static string Entries_deleted_in_the_last_14_days {
+            get {
+                return ResourceManager.GetString("Entries_deleted_in_the_last_14_days", resourceCulture);
             }
         }
         
@@ -1591,6 +1636,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Groups created in the last 14 days.
+        /// </summary>
+        public static string Groups_created_in_the_last_14_days {
+            get {
+                return ResourceManager.GetString("Groups_created_in_the_last_14_days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide Previous Updates.
         /// </summary>
         public static string Hide_Previous_Updates {
@@ -1767,6 +1821,15 @@ namespace BLAZAM.Localization {
         public static string Jobs_Monitor {
             get {
                 return ResourceManager.GetString("Jobs Monitor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LAPS Password.
+        /// </summary>
+        public static string LAPS_Password {
+            get {
+                return ResourceManager.GetString("LAPS_Password", resourceCulture);
             }
         }
         
@@ -2070,7 +2133,7 @@ namespace BLAZAM.Localization {
         /// <summary>
         ///   Looks up a localized string similar to New template.
         /// </summary>
-        public static string New_template {
+        public static string New_Template {
             get {
                 return ResourceManager.GetString("New Template", resourceCulture);
             }
@@ -2239,6 +2302,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OU&apos;s created in the last 14 days.
+        /// </summary>
+        public static string OUs_created_in_the_last_14_days {
+            get {
+                return ResourceManager.GetString("OUs_created_in_the_last_14_days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parent Template.
         /// </summary>
         public static string Parent_Template {
@@ -2271,6 +2343,15 @@ namespace BLAZAM.Localization {
         public static string PasswordChange {
             get {
                 return ResourceManager.GetString("PasswordChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passwords changed in the last 90 days.
+        /// </summary>
+        public static string Passwords_changed_in_the_last_90_days {
+            get {
+                return ResourceManager.GetString("Passwords_changed_in_the_last_90_days", resourceCulture);
             }
         }
         
@@ -2361,6 +2442,15 @@ namespace BLAZAM.Localization {
         public static string Printers {
             get {
                 return ResourceManager.GetString("Printers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Printers created in the last 14 days.
+        /// </summary>
+        public static string Printers_created_in_the_last_14_days {
+            get {
+                return ResourceManager.GetString("Printers_created_in_the_last_14_days", resourceCulture);
             }
         }
         
@@ -3432,6 +3522,15 @@ namespace BLAZAM.Localization {
         public static string Users {
             get {
                 return ResourceManager.GetString("Users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users created in the last 14 days.
+        /// </summary>
+        public static string Users_created_in_the_last_14_days {
+            get {
+                return ResourceManager.GetString("Users_created_in_the_last_14_days", resourceCulture);
             }
         }
         

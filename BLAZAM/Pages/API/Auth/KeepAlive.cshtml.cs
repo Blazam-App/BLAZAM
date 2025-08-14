@@ -9,7 +9,10 @@ namespace BLAZAM.Server.Pages.API.Auth
     /// </summary>
     public class KeepAliveModel : PageModel
     {
-
+        /// <summary>
+        /// Called when the page is accessed via GET request.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult OnGet()
         {
 

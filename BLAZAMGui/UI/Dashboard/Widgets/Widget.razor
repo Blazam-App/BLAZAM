@@ -18,6 +18,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        
         if (CurrentUserDashboardWidgets?.OnRefreshWidget != null)
         {
             CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>

@@ -34,16 +34,19 @@ namespace BLAZAM.Gui.Services
             }
 
             AddWidgetIf(isSuperAdmin || applicationUser.CanUnlockUsers,
-                new LockedOutUsers() { WidgetType = DashboardWidgetType.LockedOutUsers, Title = AppLocalization[Lang.Locked_Out_Users] });
+                new LockedOutUsers());
 
             AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers),
-                new NewUsersWidget() { WidgetType = DashboardWidgetType.NewUsers, Title = AppLocalization["Users created in the last 14 days"] });
+                new NewUsersWidget());
 
             AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers),
-                new ChangedPasswordsWidget() { WidgetType = DashboardWidgetType.PasswordsChanged, Title = AppLocalization["Passwords changed in the last 90 days"] });
+                new ChangedPasswordsWidget());
+
+            AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers),
+                new DisabledUsersWidget());
 
             AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchContacts),
-                new NewContactsWidget() { WidgetType = DashboardWidgetType.NewContacts, Title = AppLocalization["Contacts created in the last 14 days"] });
+                new NewContactsWidget());
 
             AddWidgetIf(isSuperAdmin
                 || applicationUser.HasRole(UserRoles.SearchUsers)
@@ -51,29 +54,29 @@ namespace BLAZAM.Gui.Services
                 || applicationUser.HasRole(UserRoles.SearchGroups)
                 || applicationUser.HasRole(UserRoles.SearchPrinters)
                 || applicationUser.HasRole(UserRoles.SearchComputers),
-                new ChangedEntriesWidget() { WidgetType = DashboardWidgetType.ChangedEntries, Title = AppLocalization["Entries changed in the last 24 hours"] });
+                new ChangedEntriesWidget());
 
             AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchOUs),
-                new NewOUsWidget() { WidgetType = DashboardWidgetType.NewOus, Title = AppLocalization["OU's created in the last 14 days"] });
+                new NewOUsWidget());
 
             AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchGroups),
-                new NewGroupsWidget() { WidgetType = DashboardWidgetType.NewGroups, Title = AppLocalization["Groups created in the last 14 days"] });
+                new NewGroupsWidget());
 
             AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchPrinters),
-                new NewPrintersWidget() { WidgetType = DashboardWidgetType.NewPrinters, Title = AppLocalization["Printers created in the last 14 days"] });
+                new NewPrintersWidget());
 
             AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchComputers),
-                new NewComputersWidget() { WidgetType = DashboardWidgetType.NewComputers, Title = AppLocalization["Computers created in the last 14 days"] });
+                new NewComputersWidget());
 
             if (isSuperAdmin)
             {
-                widgets.Add(new DeletedEntriesWidget() { WidgetType = DashboardWidgetType.DeletedEntries, Title = AppLocalization["Entries deleted in the last 14 days"] });
-                widgets.Add(new AppLogonsWidget() { WidgetType = DashboardWidgetType.AppLogons, Title = AppLocalization[Lang.Application_logons] });
-                widgets.Add(new StaleUsersWidget() { WidgetType = DashboardWidgetType.StaleUsers, Title = AppLocalization[Lang.Stale_users] });
-                widgets.Add(new StaleComputersWidget() { WidgetType = DashboardWidgetType.StaleComputers, Title = AppLocalization[Lang.Stale_computers] });
+                widgets.Add(new DeletedEntriesWidget());
+                widgets.Add(new AppLogonsWidget());
+                widgets.Add(new StaleUsersWidget());
+                widgets.Add(new StaleComputersWidget());
             }
 
-            widgets.Add(new FavoritesWidget() { WidgetType = DashboardWidgetType.FavoriteEntries, Title = AppLocalization[Lang.Favorites] });
+            widgets.Add(new FavoritesWidget());
 
             return widgets;
         }

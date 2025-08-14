@@ -391,7 +391,15 @@ namespace BLAZAM.Services
 
             if (user == null)
             {
+
                 Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.AttemptADLogin: Active Directory user {UserName} not found or authentication failed.", loginReq.Username);
+            }
+            else
+            {
+                if (user.LockedOut)
+                {
+                    throw new LockedOutUserException();
+                }
             }
 
             return await CreateDirectoryPrincipal(loginUser, user, loginReq);
