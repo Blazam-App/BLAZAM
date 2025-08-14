@@ -45,26 +45,35 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
             });
         }
+        private Dictionary<IDirectoryEntryAdapter, IEnumerable<IDirectoryEntryAdapter>?> _childrenCache = new();
         protected IEnumerable<IDirectoryEntryAdapter> GetChildren(IDirectoryEntryAdapter parentNode)
         {
 
-            if (ShowAllEntries)
-            {
-                var children = parentNode.Children
-                    .Where(c => (c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c)) || (c.CanRead))
-                    .MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.Group)
-                    .MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.OU); ;
-                return children;
-
-            }
-            else if (parentNode is IADOrganizationalUnit ou)
+            if (!_childrenCache.ContainsKey(parentNode))
             {
 
-                var children = ou.Children.Where(c => c.ObjectType == ActiveDirectoryObjectType.OU);
-                return children;
-            }
-            return new List<IDirectoryEntryAdapter>();
 
+                if (ShowAllEntries)
+                {
+                    var children = parentNode.Children
+                        .Where(c => (c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c)) || (c.CanRead))
+                        .MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.Group)
+                        .MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.OU); ;
+                    _childrenCache[parentNode] = children;
+
+                }
+                else if (parentNode is IADOrganizationalUnit ou)
+                {
+
+                    var children = ou.Children.Where(c => c.ObjectType == ActiveDirectoryObjectType.OU);
+                    _childrenCache[parentNode] = children;
+                }
+                else
+                {
+                    _childrenCache[parentNode] = new List<IDirectoryEntryAdapter>();
+                }
+            }
+            return _childrenCache[parentNode] ?? new List<IDirectoryEntryAdapter>();
 
         }
     }

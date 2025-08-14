@@ -6,7 +6,8 @@ namespace BLAZAM.Common.Data
     {
         OK, BadCredentials, UnauthorizedImpersonation, NoData, NoUsername, NoPassword, UnknownFailure,
         DeniedLogin, DuoRequested, GoogleAuthenticatorRequested,
-        GoogleAuthenticatorRegistrationRequested
+        GoogleAuthenticatorRegistrationRequested,
+        LockedOut
     }
     public class LoginResult
     {
