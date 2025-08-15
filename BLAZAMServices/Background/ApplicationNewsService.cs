@@ -2,6 +2,7 @@
 using ApplicationNews;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Services;
+using BLAZAM.Global.Attributes;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Logger;

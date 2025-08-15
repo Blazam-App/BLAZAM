@@ -1,4 +1,4 @@
-﻿namespace BLAZAM.Common.Attributes
+﻿namespace BLAZAM.Global.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class AutoStartBackgroundService : Attribute

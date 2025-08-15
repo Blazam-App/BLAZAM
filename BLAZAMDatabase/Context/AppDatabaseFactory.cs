@@ -2,7 +2,7 @@
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Exceptions;
 using BLAZAM.Database.Models.Permissions;
-
+using BLAZAM.Global.Enums;
 using BLAZAM.Logger;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;

@@ -244,19 +244,19 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Permissions inherited by this object
         /// </summary>
-        IList<PermissionMapping> GetInheritedPermissionMappings();
+        IList<PermissionMapping> InheritedPermissionMappings { get; }
         /// <summary>
         /// Inherited and direct permssions applied to this object
         /// </summary>
-        IList<PermissionMapping> GetAppliedPermissionMappings();
+        IList<PermissionMapping> AppliedPermissionMappings { get; }
 
         /// <summary>
         /// Permissions directly assigned to this object
         /// </summary>
-        IList<PermissionMapping> GetDirectPermissionMappings();
+        IList<PermissionMapping> DirectPermissionMappings { get; }
 
 
-        IList<PermissionMapping> GetOffspringPermissionMappings();
+        IList<PermissionMapping> OffspringPermissionMappings { get; }
 
         /// <summary>
         /// Called when staged changes have been discarded

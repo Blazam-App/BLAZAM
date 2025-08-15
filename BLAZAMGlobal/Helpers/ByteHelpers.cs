@@ -1,4 +1,4 @@
-﻿namespace BLAZAM.Helpers
+﻿namespace BLAZAM.Global.Helpers
 {
     /// <summary>
     /// Provides extension methods and utilities for byte manipulation and conversions.

@@ -552,49 +552,51 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
 
 
-        public IList<PermissionMapping> GetInheritedPermissionMappings()
+        public IList<PermissionMapping> InheritedPermissionMappings
         {
-            return GetAppliedPermissionMappings().Where(m => !m.OU.Equals(DN)).ToList();
+            get
+            {
+                return AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
+            }
         }
-
-        public IList<PermissionMapping> GetDirectPermissionMappings()
+        public IList<PermissionMapping> DirectPermissionMappings
         {
+            get
+            {
 
-            return GetAppliedPermissionMappings().Where(m => m.OU.Equals(DN)).ToList();
+                return AppliedPermissionMappings.Where(m => m.OU.Equals(DN)).ToList();
 
-
+            }
         }
 
         private IList<PermissionMapping> _appliedPermissionMappings;
 
-        public IList<PermissionMapping> GetAppliedPermissionMappings()
+        public IList<PermissionMapping> AppliedPermissionMappings
         {
-            if (_appliedPermissionMappings == null)
+            get
             {
                 using var context = DbFactory.CreateDbContext();
-                _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates)
-                                                                    .Where(m => DN.Contains(m.OU))
-                                                                    .OrderByDescending(m => m.OU.Length)
-                                                                    .ToList();
-            }
-            return _appliedPermissionMappings;
+                _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
 
+                return _appliedPermissionMappings;
+            }
         }
         private IList<PermissionMapping> _offspringPermissionMappings;
 
 
-        public IList<PermissionMapping> GetOffspringPermissionMappings()
+        public IList<PermissionMapping> OffspringPermissionMappings
         {
-            if (_offspringPermissionMappings == null)
+            get
             {
-                using var context = DbFactory.CreateDbContext();
-                _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates)
-                                                                    .Where(m => m.OU.Contains(DN) && m.OU != DN)
-                                                                    .OrderByDescending(m => m.OU.Length)
-                                                                    .ToList();
+                if (_offspringPermissionMappings == null)
+                {
+                    using var context = DbFactory.CreateDbContext();
+                    _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates)
+                                                                        .Where(m => m.OU.Contains(DN) && m.OU != DN)
+                                                                        .OrderByDescending(m => m.OU.Length).ToList();
+                }
+                return _offspringPermissionMappings;
             }
-            return _offspringPermissionMappings;
-
         }
 
 
@@ -1131,44 +1133,52 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
                 }
 
+                return default;
 
-
-                //    return default;
-
-                //}
-
-                //Check for exising edits to this entry
-                try
+            }
+            if (DirectoryEntry == null)
+            {
+                if (SearchResult != null && SearchResult.Properties.Contains(propertyName))
+                    return (T?)SearchResult.Properties[propertyName][0];
+                else
                 {
-                    if (NewEntryProperties.ContainsKey(propertyName))
-                        return (T)NewEntryProperties[propertyName];
-                }
-                catch (InvalidCastException ex)
-                {
-                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-                }
-                catch
-                {
-                    return default;
-
+                    FetchDirectoryEntry();
                 }
             }
             try
             {
-                if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
-                {
-                    var val = DirectoryEntry.GetPropertyValue(propertyName);
-                    if (val is null)
-                    {
-                        return default;
-                    }
-                    else
-                    {
-                        return (T?)val;
-                    }
-                }
+                if (NewEntryProperties.ContainsKey(propertyName))
+                    return (T)NewEntryProperties[propertyName];
+            }
+            catch (InvalidCastException ex)
+            {
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
 
             }
+            catch
+            {
+                return default;
+
+            }
+
+            try
+            {
+                if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
+                    return (T?)DirectoryEntry.Properties[propertyName].Value;
+
+            }
+            catch (ArgumentException)
+            {
+                var temp = DirectoryEntry?.Properties[propertyName];
+                var temp2 = (T?)temp?.Value;
+                return temp2;
+            }
+            catch (InvalidCastException ex)
+            {
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+
+            }
+
             catch
             {
                 return default;

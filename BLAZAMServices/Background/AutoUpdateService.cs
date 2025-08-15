@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Database.Context;
 using BLAZAM.Database.Services;
 using BLAZAM.FileSystem;
+using BLAZAM.Global.Attributes;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;

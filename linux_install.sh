@@ -17,6 +17,7 @@ set -e
 # --- Configuration ---
 readonly BLAZAM_RELEASE_TAG="BetaDev1"
 
+
 # System and application settings
 readonly INSTALL_DIR="/opt/blazam"
 readonly DATA_DIR="/var/lib/blazam"

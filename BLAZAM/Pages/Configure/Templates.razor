@@ -1,5 +1,6 @@
 ﻿@page "/templates"
 @page "/templates/{TemplateIdParameter:int?}"
+@using BLAZAM.Global.Data
 @inherits TemplateComponent
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 

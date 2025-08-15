@@ -1,7 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
+using BLAZAM.Global.Data;
 using BLAZAM.Jobs;
 
 namespace BLAZAM.ActiveDirectory.Adapters

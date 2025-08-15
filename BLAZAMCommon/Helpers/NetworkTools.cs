@@ -3,7 +3,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using BLAZAM.Common.Data.Validators;
 
-namespace BLAZAM.Helpers
+namespace BLAZAM.Common.Helpers
 {
     /// <summary>
     /// Provides utility methods for network-related operations like pinging hosts and checking port statuses.
@@ -116,7 +116,7 @@ namespace BLAZAM.Helpers
         public static IPAddress? ResolveHostIP(string hostNameOrAddress)
         {
             if (hostNameOrAddress == null) throw new ArgumentNullException(nameof(hostNameOrAddress));
-            if (hostNameOrAddress == String.Empty) throw new ArgumentException(nameof(hostNameOrAddress));
+            if (hostNameOrAddress == string.Empty) throw new ArgumentException(nameof(hostNameOrAddress));
             IPAddress? ip;
             var validator = new ValidIpAttribute();
             if (validator.IsValid(hostNameOrAddress)) return IPAddress.Parse(hostNameOrAddress);

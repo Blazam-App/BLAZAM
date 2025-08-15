@@ -1,6 +1,7 @@
 // Import necessary namespaces for various functionalities
 using System.Security;
 using BLAZAM.Common.Data;
+using BLAZAM.Global.Enums;
 using BLAZAM.Gui.UI.Modals;
 using BLAZAM.Gui.UI.Settings;
 using BLAZAM.Localization;

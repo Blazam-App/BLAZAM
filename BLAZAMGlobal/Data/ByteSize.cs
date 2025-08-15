@@ -1,4 +1,4 @@
-﻿namespace BLAZAM.Common.Data
+﻿namespace BLAZAM.Global.Data
 {
     public class ByteSize
     {

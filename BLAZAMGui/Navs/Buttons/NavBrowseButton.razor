@@ -1,4 +1,5 @@
-﻿@inherits AppComponentBase
+﻿@using BLAZAM.Global.Enums
+@inherits AppComponentBase
 @* <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/browse");})"
             Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)
             Icon="@Icons.Material.Filled.ViewList">

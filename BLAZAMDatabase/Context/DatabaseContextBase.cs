@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Common.Helpers;
 using BLAZAM.Database.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Audit;
@@ -11,6 +12,7 @@ using BLAZAM.Database.Models.Rules;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
 using BLAZAM.FileSystem;
+using BLAZAM.Global.Enums;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.Data.SqlClient;

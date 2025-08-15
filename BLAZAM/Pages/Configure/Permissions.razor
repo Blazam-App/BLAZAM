@@ -1,5 +1,7 @@
 ﻿@page "/permissions"
 @page "/permissions/{ActiveTab}"
+@using BLAZAM.Global.Data
+@using BLAZAM.Global.Enums
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits TabbedAppComponentBase

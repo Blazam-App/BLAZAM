@@ -77,8 +77,8 @@
     }
     async Task RefreshData()
     {
-        appliedMappings = Node.GetDirectPermissionMappings();
-        inheritedMappings = Node.GetInheritedPermissionMappings();
+        appliedMappings = Node.DirectPermissionMappings;
+        inheritedMappings = Node.InheritedPermissionMappings;
         NewMapping = null;
         await InvokeAsync(StateHasChanged);
     }
