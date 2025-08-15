@@ -48,8 +48,7 @@
             </TemplateColumn>
             <TemplateColumn Title=@AppLocalization[Lang.Remove_Member] Context="templateContext">
                 <CellTemplate Context="cellContext">
-                    <AppTooltip ShowOnClick=@(!Group.CanUnassign)
-                                ShowOnHover=@(!Group.CanUnassign)
+                    <AppTooltip ShowOnHover=@(!Group.CanUnassign)
                                 Text=@AppHelpLocalization[HelpLang.Lacks_Group_Member_Remove_Permission]>
                         <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
