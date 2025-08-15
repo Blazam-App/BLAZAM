@@ -83,6 +83,7 @@ jobs:
           files: |
             ./blazam-dev-beta-v${{ env.ASSEMBLY_VERSION }}.zip
   deploy:
+    needs: build
     runs-on: [self-hosted, linux]
     permissions: write-all
 
@@ -93,7 +94,6 @@ jobs:
           repository: ${{ github.repository }}
           tag: 'BetaDev1'
           fileName: 'blazam-dev-beta.zip'
-          outDir: './'
 
       - name: Extract release zip
         run: |
