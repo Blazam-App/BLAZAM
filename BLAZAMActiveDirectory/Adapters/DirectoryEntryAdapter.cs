@@ -9,7 +9,6 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
-using BLAZAM.Global.Data;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
@@ -563,49 +562,51 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
 
 
-        public IList<PermissionMapping> GetInheritedPermissionMappings()
+        public IList<PermissionMapping> InheritedPermissionMappings
         {
-            return GetAppliedPermissionMappings().Where(m => !m.OU.Equals(DN)).ToList();
+            get
+            {
+                return AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
+            }
         }
-
-        public IList<PermissionMapping> GetDirectPermissionMappings()
+        public IList<PermissionMapping> DirectPermissionMappings
         {
+            get
+            {
 
-            return GetAppliedPermissionMappings().Where(m => m.OU.Equals(DN)).ToList();
+                return AppliedPermissionMappings.Where(m => m.OU.Equals(DN)).ToList();
 
-
+            }
         }
 
         private IList<PermissionMapping> _appliedPermissionMappings;
 
-        public IList<PermissionMapping> GetAppliedPermissionMappings()
+        public IList<PermissionMapping> AppliedPermissionMappings
         {
-            if (_appliedPermissionMappings == null)
+            get
             {
                 using var context = DbFactory.CreateDbContext();
-                _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates)
-                                                                    .Where(m => DN.Contains(m.OU))
-                                                                    .OrderByDescending(m => m.OU.Length)
-                                                                    .ToList();
-            }
-            return _appliedPermissionMappings;
+                _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
 
+                return _appliedPermissionMappings;
+            }
         }
         private IList<PermissionMapping> _offspringPermissionMappings;
 
 
-        public IList<PermissionMapping> GetOffspringPermissionMappings()
+        public IList<PermissionMapping> OffspringPermissionMappings
         {
-            if (_offspringPermissionMappings == null)
+            get
             {
-                using var context = DbFactory.CreateDbContext();
-                _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates)
-                                                                    .Where(m => m.OU.Contains(DN) && m.OU != DN)
-                                                                    .OrderByDescending(m => m.OU.Length)
-                                                                    .ToList();
+                if (_offspringPermissionMappings == null)
+                {
+                    using var context = DbFactory.CreateDbContext();
+                    _offspringPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates)
+                                                                        .Where(m => m.OU.Contains(DN) && m.OU != DN)
+                                                                        .OrderByDescending(m => m.OU.Length).ToList();
+                }
+                return _offspringPermissionMappings;
             }
-            return _offspringPermissionMappings;
-
         }
 
 
@@ -1119,61 +1120,77 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <returns>The attribute's value, or a default value if not found.</returns>
         private T? GetValue<T>(string propertyName)
         {
-            try
+
+            if (NewEntry)
             {
-                // For new entries or entries with staged changes, the property cache is the source of truth.
-                if (NewEntry || NewEntryProperties.ContainsKey(propertyName))
+                try
                 {
-                    return NewEntryProperties.TryGetValue(propertyName, out var propValue) ? (T)propValue : default;
+                    if (NewEntryProperties.ContainsKey(propertyName))
+                        return (T)NewEntryProperties[propertyName];
+                }
+                catch (InvalidCastException ex)
+                {
+                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+                }
+                catch (Exception ex)
+                {
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
                 }
 
-                // If the full directory entry isn't loaded, check the initial search result cache first.
-                if (DirectoryEntry == null)
+
+
+                return default;
+
+            }
+            if (DirectoryEntry == null)
+            {
+                if (SearchResult != null && SearchResult.Properties.Contains(propertyName))
+                    return (T?)SearchResult.Properties[propertyName][0];
+                else
                 {
-                    if (SearchResult?.Properties.Contains(propertyName) == true)
-                    {
-                        return (T?)SearchResult.Properties[propertyName][0];
-                    }
-                    // The property was not in the lightweight search result, so load the full entry from AD.
                     FetchDirectoryEntry();
                 }
-
-                // If the entry could not be fetched from Active Directory, no value can be returned.
-                if (DirectoryEntry == null)
-                {
-                    return default;
-                }
-
-                // Attempt to get the property from the loaded entry's property collection.
-                if (DirectoryEntry.Properties.Contains(propertyName))
-                {
-                    return (T?)DirectoryEntry.Properties[propertyName].Value;
-                }
-
-                // If the property is not in the local cache, refresh it from Active Directory.
-                DirectoryEntry.RefreshCache([propertyName]);
-                if (DirectoryEntry.Properties.Contains(propertyName))
-                {
-                    return (T?)DirectoryEntry.Properties[propertyName].Value;
-                }
+            }
+            try
+            {
+                if (NewEntryProperties.ContainsKey(propertyName))
+                    return (T)NewEntryProperties[propertyName];
             }
             catch (InvalidCastException ex)
             {
-                // Provides detailed context if the stored value cannot be cast to the requested type.
-                throw new InvalidCastException($"Bad casting attempt for {propertyName} to type {typeof(T).FullName}", ex);
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+
             }
-            catch (ArgumentException ex)
+            catch
             {
-                // This exception can occur if the attribute is not available for this object class in AD.
-                Loggers.ActiveDirectoryLogger.Information(ex, "Argument Exception getting an entry's attribute. {Attribute}", propertyName);
-            }
-            catch (Exception ex)
-            {
-                // Logs any other unexpected errors during the retrieval process.
-                Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {PropertyName}", propertyName);
+                return default;
+
             }
 
+            try
+            {
+                if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
+                    return (T?)DirectoryEntry.Properties[propertyName].Value;
+
+            }
+            catch (ArgumentException)
+            {
+                var temp = DirectoryEntry?.Properties[propertyName];
+                var temp2 = (T?)temp?.Value;
+                return temp2;
+            }
+            catch (InvalidCastException ex)
+            {
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+
+            }
+
+            catch
+            {
+                return default;
+            }
             return default;
+
         }
 
         protected virtual string? GetStringAttribute(string propertyName)
