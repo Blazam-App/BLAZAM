@@ -82,3 +82,31 @@ jobs:
           body: This release is highly unstable. Expect bugs and crashes on this branch. Developers Only!
           files: |
             ./blazam-dev-beta-v${{ env.ASSEMBLY_VERSION }}.zip
+  deploy:
+    runs-on: [self-hosted, linux]
+    permissions: write-all
+
+    steps:
+      - name: Download latest BetaDev1 release artifact
+        uses: robinraju/release-downloader@v1.8
+        with:
+          repository: ${{ github.repository }}
+          tag: 'BetaDev1'
+          fileName: 'blazam-dev-beta.zip'
+          outDir: './'
+
+      - name: Extract release zip
+        run: |
+          unzip "./blazam-dev-beta.zip" -d /opt/blazam
+
+      - name: Shutdown Demo Website
+        shell: bash
+        run: systemctl stop blazam.service
+
+      - name: Restart Demo Website
+        shell: bash
+        run: systemctl start blazam.service
+
+      - name: Delete downloaded zip
+        shell: bash
+        run: rm -f ./blazam-dev-beta.zip
