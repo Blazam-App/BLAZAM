@@ -1109,11 +1109,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         /// <summary>
-        /// Retrieves the requested property value from a local cache or by polling Active Directory.
+        /// Retrieves the requested property value from either the cached <see cref="SearchResult"/>
+        /// or by actively polling Active Directory for the entire object.
+        /// The value is cached for future calls.
         /// </summary>
-        /// <typeparam name="T">The value type of the requested attribute.</typeparam>
-        /// <param name="propertyName">The name of the attribute to retrieve.</param>
-        /// <returns>The attribute's value, or a default value if not found.</returns>
+        /// <typeparam name="T">The value type of the requested attribute</typeparam>
+        /// <param name="propertyName">The requested attribute</param>
+        /// <returns>The attribute value</returns>
         private T? GetValue<T>(string propertyName)
 
         {
@@ -1133,55 +1135,48 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
                 }
 
-                return default;
 
-            }
-            if (DirectoryEntry == null)
-            {
-                if (SearchResult != null && SearchResult.Properties.Contains(propertyName))
-                    return (T?)SearchResult.Properties[propertyName][0];
-                else
+
+
+
+                //Check for exising edits to this entry
+                try
                 {
-                    FetchDirectoryEntry();
+                    if (NewEntryProperties.ContainsKey(propertyName))
+                        return (T)NewEntryProperties[propertyName];
+                }
+                catch (InvalidCastException ex)
+                {
+                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+
+                }
+                catch
+                {
+                    return default;
+
                 }
             }
             try
             {
-                if (NewEntryProperties.ContainsKey(propertyName))
-                    return (T)NewEntryProperties[propertyName];
-            }
-            catch (InvalidCastException ex)
-            {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+                if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
+                {
+                    var val = DirectoryEntry.GetPropertyValue(propertyName);
+                    if (val is null)
+                    {
+                        return default;
+                    }
+                    else
+                    {
+                        return (T?)val;
+                    }
+                }
 
             }
             catch
             {
-                return default;
-
-            }
-
-            try
-            {
-                if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
-                    return (T?)DirectoryEntry.Properties[propertyName].Value;
-
-            }
-            catch (ArgumentException)
-            {
-                var temp = DirectoryEntry?.Properties[propertyName];
-                var temp2 = (T?)temp?.Value;
-                return temp2;
-            }
-            catch (InvalidCastException ex)
-            {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-
-            }
-
-            catch
-            {
-                return default;
+                // This can happen if the property is not available for this object class in AD.
+                // For example, if the property is not set on the object, or if it is not a valid property for the object class.
+                // In this case, we return null.
             }
             return default;
 
