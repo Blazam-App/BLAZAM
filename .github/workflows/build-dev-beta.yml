@@ -93,11 +93,11 @@ jobs:
         with:
           repository: ${{ github.repository }}
           tag: 'BetaDev1'
-          fileName: 'blazam-dev-beta.zip'
+          fileName: 'blazam-dev-beta-v*.zip'
 
       - name: Extract release zip
         run: |
-          unzip "./blazam-dev-beta.zip" -d /opt/blazam
+          unzip "./blazam-dev-beta-v*.zip" -d /opt/blazam
 
       - name: Shutdown Demo Website
         shell: bash
