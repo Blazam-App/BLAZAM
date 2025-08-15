@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
-using BLAZAM.Common.Data;
+using BLAZAM.Global.Data;
 
-namespace BLAZAM.Server.Helpers
+namespace BLAZAM.Global.Helpers
 {
     /// <summary>
     /// Provides extension methods for conveniently adding specific roles as claims to an <see cref="IList{Claim}"/>.

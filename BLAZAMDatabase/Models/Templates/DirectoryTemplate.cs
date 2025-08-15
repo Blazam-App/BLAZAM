@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
+using BLAZAM.Global.Data;
 using Microsoft.IdentityModel.Tokens;
 using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
 

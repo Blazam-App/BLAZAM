@@ -1,4 +1,4 @@
-﻿namespace BLAZAM.Common.Data
+﻿namespace BLAZAM.Global.Enums
 {
     public enum ServiceConnectionState { Down, Up, Connecting };
 }

@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
+﻿using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Database.Models.Chat;
@@ -8,6 +7,7 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Rules;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
+using BLAZAM.Global.Enums;
 using Microsoft.EntityFrameworkCore;
 namespace BLAZAM.Database.Context
 {

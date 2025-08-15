@@ -3,6 +3,7 @@ using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
+using BLAZAM.Global.Data;
 using BLAZAM.Jobs;
 
 namespace BLAZAM.ActiveDirectory.Interfaces

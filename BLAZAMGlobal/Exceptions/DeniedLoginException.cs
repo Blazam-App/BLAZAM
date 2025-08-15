@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace BLAZAM.Common.Exceptions
+namespace BLAZAM.Global.Exceptions
 {
     [Serializable]
     public class DeniedLoginException : AppException

@@ -1,5 +1,5 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Helpers;
+using BLAZAM.Global.Helpers;
 
 namespace BLAZAMCommon.Tests
 {

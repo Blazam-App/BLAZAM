@@ -1,4 +1,4 @@
-﻿using BLAZAM.Database.Models.User;
+﻿using BLAZAM.Global.Data;
 using BLAZAM.Gui.UI.Dashboard.Widgets;
 using BLAZAM.Gui.UI.Dashboard.Widgets.Admin;
 
