@@ -1,6 +1,7 @@
 ﻿@page "/search"
 @page "/search/{SearchTermParameter}"
 @using System.Web
+@using BLAZAM.Global.Data
 
 @inherits AppComponentBase
 @attribute [Authorize(Roles = (UserRoles.SearchOUs + "," + UserRoles.SearchComputers + "," + UserRoles.SearchGroups + "," + UserRoles.SearchUsers + "," + UserRoles.SuperAdmin))]

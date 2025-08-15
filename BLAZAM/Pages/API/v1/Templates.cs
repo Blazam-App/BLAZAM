@@ -5,6 +5,7 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.EmailMessage.Email.Notifications;
+using BLAZAM.Global.Events;
 using BLAZAM.Gui.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;

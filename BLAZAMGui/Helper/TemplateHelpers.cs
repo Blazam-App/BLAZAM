@@ -1,4 +1,6 @@
 ﻿
+using BLAZAM.Global.Data;
+
 namespace BLAZAM.Gui.Helpers
 {
     public static class TemplateHelpers

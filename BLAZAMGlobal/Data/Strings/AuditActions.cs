@@ -1,4 +1,4 @@
-﻿namespace BLAZAM.Services.Audit
+﻿namespace BLAZAM.Global.Data.Strings
 {
     public class AuditActions
     {

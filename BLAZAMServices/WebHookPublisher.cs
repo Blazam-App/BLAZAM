@@ -5,6 +5,7 @@ using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
+using BLAZAM.Global.Data.Strings;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;

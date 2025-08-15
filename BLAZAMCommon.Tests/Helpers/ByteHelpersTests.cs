@@ -1,4 +1,4 @@
-using BLAZAM.Helpers;
+using BLAZAM.Global.Helpers;
 
 namespace BLAZAMCommon.Tests.Helpers
 {

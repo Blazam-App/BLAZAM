@@ -1,4 +1,4 @@
-﻿namespace BLAZAM.Common.Data.Enums
+﻿namespace BLAZAM.Global.Enums
 {
     public enum TimeUnit
     {

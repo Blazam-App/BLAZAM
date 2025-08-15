@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
+using BLAZAM.Global.Attributes;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
