@@ -94,18 +94,18 @@ jobs:
           repository: ${{ github.repository }}
           tag: 'BetaDev1'
           fileName: 'blazam-dev-beta-v*.zip'
+      
+      - name: Shutdown Demo Website
+        shell: bash
+        run: sudo systemctl stop blazam.service
 
       - name: Extract release zip
         run: |
           unzip -o "./blazam-dev-beta-v*.zip" -d /opt/blazam
 
-      - name: Shutdown Demo Website
-        shell: bash
-        run: systemctl stop blazam.service
-
       - name: Restart Demo Website
         shell: bash
-        run: systemctl start blazam.service
+        run: sudo systemctl start blazam.service
 
       - name: Delete downloaded zip
         shell: bash
