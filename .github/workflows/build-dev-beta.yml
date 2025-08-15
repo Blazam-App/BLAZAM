@@ -97,7 +97,7 @@ jobs:
 
       - name: Extract release zip
         run: |
-          unzip "./blazam-dev-beta-v*.zip" -d /opt/blazam
+          unzip -o "./blazam-dev-beta-v*.zip" -d /opt/blazam
 
       - name: Shutdown Demo Website
         shell: bash
