@@ -1,5 +1,6 @@
 ﻿@inherits Widget
 @attribute [Authorize]
+
 <MudDataGrid T="IADUser"
              Items="@LockedUsers.Where(u=>u.LockedOut)"
              Dense=true
@@ -37,7 +38,7 @@
 
     </Columns>
     <PagerContent>
-        <MudDataGridPager PageSizeOptions=[5, 10, 25, 50, 100] T="IADUser" />
+        <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="IADUser" />
     </PagerContent>
     <NoRecordsContent>
         <MudText>@AppLocalization[Lang.No_user_are_locked_out]</MudText>

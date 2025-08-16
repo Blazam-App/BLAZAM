@@ -43,7 +43,7 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager PageSizeOptions=[5, 10, 25, 50, 100] T="IDirectoryEntryAdapter" />
+        <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="IDirectoryEntryAdapter" />
     </PagerContent>
     <NoRecordsContent>
         <MudText>@AppLocalization[Lang.No_Favorites]</MudText>
