@@ -141,21 +141,7 @@
                                 </ViewSection>
 
 
-                                <ViewSection Title=@AppLocalization[Lang.Services]>
-
-                                    <MudStack Row=true Class="@_fieldMudStackClasses">
-                                        @if (Computer.IsOnline == true)
-                                        {
-                                            <ComputerServices Computer="Computer" />
-                                        }
-                                        else
-                                        {
-                                            <MudText>@AppLocalization[Lang.Computer_not_reachable]</MudText>
-
-                                        }
-
-                                    </MudStack>
-                                </ViewSection>
+                             
                                 @if (Computer.CanReadBitLocker)
                                 {
                                     <BitLockerViewer Computer="Computer" />
@@ -195,11 +181,25 @@
 
 
 
+                    <ViewSection Title=@AppLocalization[Lang.Services]>
+
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                            @if (Computer.IsOnline == true)
+                            {
+                                <ComputerServices Computer="Computer" />
+                            }
+                            else
+                            {
+                                <MudText>@AppLocalization[Lang.Computer_not_reachable]</MudText>
+
+                            }
+
+                        </MudStack>
+                    </ViewSection>
 
 
 
-
-                    @if (OperatingSystem.IsWindows())
+                    @if (OperatingSystem.IsWindows() && CurrentUser.State.IsSuperAdmin)
                     {
                         <ViewSection Title=@AppLocalization[Lang.Drive_Details]>
                             <MudStack Row=true Class="@_fieldMudStackClasses">
@@ -222,7 +222,7 @@
 
 
 
-                    @if (OperatingSystem.IsWindows())
+                    @if (OperatingSystem.IsWindows() && CurrentUser.State.IsSuperAdmin)
                     {
                         <ViewSection Title=@AppLocalization[Lang.Sessions]>
 
@@ -248,7 +248,7 @@
                         </ViewSection>
                     }
 
-                    @if (OperatingSystem.IsWindows())
+                    @if (OperatingSystem.IsWindows() && CurrentUser.State.IsSuperAdmin)
                     {
                         <ViewSection Title=@AppLocalization[Lang.Printers]>
 

@@ -22,6 +22,10 @@ namespace BLAZAM.Plugins
         /// The author of the plugin.
         /// </summary>
         string Author { get; }
+        /// <summary>
+        /// The plugin's GUID, which should be unique across all plugins.
+        /// </summary>
+        static Guid Guid { get; }
 
 
 

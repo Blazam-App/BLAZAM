@@ -636,6 +636,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (CachedChildren == null)
                 {
                     List<IDirectoryEntryAdapter> directoryEntries = [];
+                    EnsureDirectoryEntry();
                     var children = DirectoryEntry.Children;
                     var list = new List<DirectoryEntry>();
                     foreach (DirectoryEntry child in children)

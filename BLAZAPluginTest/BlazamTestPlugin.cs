@@ -14,7 +14,7 @@ namespace BLAZAPluginTest
 
         public string Author => "Blazam";
 
-        public IPluginView? SettingsPage => null;
+        public static Guid Guid => Guid.Parse("e2a1c7b2-4f8e-4c3a-9b7e-2d8f1a6e5c3f");
 
         public WebApplicationBuilder InjectServices(WebApplicationBuilder builder)
         {
