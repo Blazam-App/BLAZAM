@@ -521,46 +521,109 @@ namespace BLAZAM.Helpers
             }
             return ldapHex.ToString();
         }
-
         /// <summary>
-        /// Converts a byte array representing a Security Identifier (SID) to its string format.
+        /// Converts a Security Identifier (SID) from a byte array to its string format (e.g., "S-1-5-21-...").
+        /// This method is cross-platform and does not rely on the Windows-specific SecurityIdentifier class.
         /// </summary>
-        /// <param name="sid">The byte array SID. Can be null.</param>
-        /// <returns>The string representation of the SID, or an empty string if sid is null.</returns>
+        /// <param name="sid">The byte array representing the SID.</param>
+        /// <returns>The string representation of the SID, or an empty string if the input is null or invalid.</returns>
         public static string ToSidString(this byte[]? sid)
         {
-            if (null == sid) return "";
+            if (sid == null || sid.Length < 8)
+            {
+                return "";
+            }
+
+            var builder = new StringBuilder("S-");
+
+            // Revision Level (1 byte)
+            builder.Append(sid[0]);
+
+            // Sub-Authority Count (1 byte)
+            var subAuthorityCount = sid[1];
+
+            // Identifier Authority (6 bytes, big-endian)
+            long identifierAuthority = 0;
+            for (var i = 2; i <= 7; i++)
+            {
+                identifierAuthority = (identifierAuthority << 8) + sid[i];
+            }
+            builder.Append('-').Append(identifierAuthority);
+
+            // Sub-Authorities (4 bytes each, little-endian)
+            var offset = 8;
+            for (var i = 0; i < subAuthorityCount; i++)
+            {
+                // BitConverter handles the little-endian conversion correctly on most architectures.
+                uint subAuthority = BitConverter.ToUInt32(sid, offset);
+                builder.Append('-').Append(subAuthority);
+                offset += 4;
+            }
+
+            return builder.ToString();
+        }
+        /// <summary>
+        /// Converts a Security Identifier (SID) from its string format (e.g., "S-1-5-21-...") to a byte array.
+        /// This method is cross-platform and does not rely on the Windows-specific SecurityIdentifier class.
+        /// </summary>
+        /// <param name="sidString">The string representation of the SID.</param>
+        /// <returns>The byte array representing the SID.</returns>
+        /// <exception cref="FormatException">Thrown if the SID string is not in a valid format.</exception>
+        public static byte[] ToSidByteArray(this string? sidString)
+        {
+            if (string.IsNullOrEmpty(sidString))
+            {
+                return Array.Empty<byte>();
+            }
+
             try
             {
-                var securityIdentifier = new SecurityIdentifier(sid, 0);
-                return securityIdentifier.Value;
+                string[] parts = sidString.Split('-');
+
+                // A valid SID string must start with 'S-' and have at least three parts (S, Rev, IdentifierAuthority)
+                if (parts.Length < 3 || !parts[0].Equals("S", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new FormatException("Invalid SID string format.");
+                }
+
+                int subAuthorityCount = parts.Length - 3;
+                // Calculate the required byte array size: 8 bytes for the header + 4 bytes for each sub-authority
+                byte[] sidBytes = new byte[8 + subAuthorityCount * 4];
+
+                // 1. Write Revision Level (1 byte)
+                sidBytes[0] = byte.Parse(parts[1]);
+
+                // 2. Write Sub-Authority Count (1 byte)
+                sidBytes[1] = (byte)subAuthorityCount;
+
+                // 3. Write Identifier Authority (6 bytes, big-endian)
+                long identifierAuthority = long.Parse(parts[2]);
+                for (int i = 5; i >= 0; i--)
+                {
+                    // Place the bytes from right to left
+                    sidBytes[2 + i] = (byte)(identifierAuthority & 0xFF);
+                    identifierAuthority >>= 8;
+                }
+
+                // 4. Write Sub-Authorities (4 bytes each, little-endian)
+                for (int i = 0; i < subAuthorityCount; i++)
+                {
+                    uint subAuthority = uint.Parse(parts[3 + i]);
+                    // BitConverter correctly handles little-endian conversion on most architectures
+                    byte[] subAuthorityBytes = BitConverter.GetBytes(subAuthority);
+                    // Copy the 4 bytes into the correct position in the main byte array
+                    Array.Copy(subAuthorityBytes, 0, sidBytes, 8 + i * 4, 4);
+                }
+
+                return sidBytes;
             }
-            catch (ArgumentException) // Handles invalid SID byte arrays
+            catch (Exception ex) when (ex is not FormatException)
             {
-                return ""; // Or throw, depending on desired error handling
+                // Catch parsing errors or other exceptions and wrap them in a FormatException
+                throw new FormatException("The SID string could not be parsed.", ex);
             }
         }
 
-        /// <summary>
-        /// Converts a string representation of a Security Identifier (SID) to its byte array format.
-        /// </summary>
-        /// <param name="sidString">The SID string. Can be null or empty.</param>
-        /// <returns>The byte array representation of the SID, or an empty array if sidString is null or empty.</returns>
-        public static byte[] ToSidByteArray(this string sidString)
-        {
-            if (string.IsNullOrEmpty(sidString)) return Array.Empty<byte>();
-            try
-            {
-                var securityIdentifier = new SecurityIdentifier(sidString);
-                byte[] sidBytes = new byte[securityIdentifier.BinaryLength];
-                securityIdentifier.GetBinaryForm(sidBytes, 0);
-                return sidBytes;
-            }
-            catch (ArgumentException) // Handles invalid SID string formats
-            {
-                return Array.Empty<byte>(); // Or throw
-            }
-        }
         #endregion
     }
 }
