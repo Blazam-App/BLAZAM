@@ -143,7 +143,6 @@ namespace BLAZAM.Services.Background
             string notificationTitle;
             NotificationTemplateComponent? emailMessage;
             PackageNotification(source, notificationType, actor, target, out notification, out notificationTitle, out emailMessage);
-            var _emailConfigured = _emailService.IsConfigured;
             using var context = Context;
             var users = context.UserSettings.Include(us => us.NotificationSubscriptions).ToList();
             if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
@@ -152,14 +151,14 @@ namespace BLAZAM.Services.Background
 
                 foreach (var user in users)
                 {
-                    ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
+                    ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage);
                 }
             }
             else
             {
                 Parallel.ForEach(users, user =>
                 {
-                    ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
+                    ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage);
                 });
             }
             PostWebHooks(source, notificationType, actor, target);
@@ -173,8 +172,7 @@ namespace BLAZAM.Services.Background
                                             AppUser user,
                                             NotificationMessage notification,
                                             string notificationTitle,
-                                            NotificationTemplateComponent? emailMessage,
-                                            bool emailConfigured)
+                                            NotificationTemplateComponent? emailMessage)
         {
             if (user.Id == actor?.Id)
                 return;
@@ -183,7 +181,7 @@ namespace BLAZAM.Services.Background
             var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
 
             PublishInAppNotification(user, notificationType, notification, effectiveInAppSubscriptions);
-            PublishEmailNotification(user, notificationType, notificationTitle, emailMessage, emailConfigured, effectiveEmailSubscriptions);
+            PublishEmailNotification(user, notificationType, notificationTitle, emailMessage, effectiveEmailSubscriptions);
         }
 
         private void PublishInAppNotification(
@@ -203,7 +201,6 @@ namespace BLAZAM.Services.Background
             NotificationType notificationType,
             string notificationTitle,
             NotificationTemplateComponent? emailMessage,
-            bool emailConfigured,
             NotificationSubscription? effectiveEmailSubscriptions)
         {
             if (effectiveEmailSubscriptions?.NotificationTypes.Any(x => x.NotificationType == notificationType) != true)
@@ -216,7 +213,7 @@ namespace BLAZAM.Services.Background
                 return;
             }
 
-            if (emailConfigured && !user.Email.IsNullOrEmpty())
+            if (_emailService.IsConfigured && !user.Email.IsNullOrEmpty())
             {
                 _ = _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
             }
@@ -377,43 +374,34 @@ namespace BLAZAM.Services.Background
             effectiveByEmailSubscription.OU = ou.DN;
             effectiveByEmailSubscription.User = user;
             effectiveByEmailSubscription.ByEmail = true;
-            var userSubscriptions = context.NotificationSubscriptions.Where(x => x.DeletedAt == null && x.UserId == user.Id).ToList();
-            userSubscriptions = userSubscriptions.OrderBy(x => x.OU).ToList();
+            var userSubscriptions = context.NotificationSubscriptions
+                .Where(x => x.DeletedAt == null && x.UserId == user.Id && ou.DN.Contains(x.OU))
+                .OrderBy(x => x.OU)
+                .ToList();
             foreach (var sub in userSubscriptions)
             {
-                try
+
+                if (sub.Block && sub.ByEmail)
                 {
-                    if (ou.DN.Contains(sub.OU))
+                    foreach (var type in sub.NotificationTypes)
                     {
-                        if (sub.Block)
-                        {
-
-                            if (sub.ByEmail)
-                            {
-                                foreach (var type in sub.NotificationTypes)
-                                {
-                                    effectiveByEmailSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
-                                }
-                            }
-                        }
-                        else
-                        {
-
-                            if (sub.ByEmail)
-                            {
-                                effectiveByEmailSubscription.NotificationTypes.AddRange(from type in sub.NotificationTypes
-                                                                                        where !effectiveByEmailSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType)
-                                                                                        select new SubscriptionNotificationType() { NotificationType = type.NotificationType });
-                            }
-
-
-                        }
+                        effectiveByEmailSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
                     }
+
                 }
-                catch (Exception ex)
+                else
                 {
-                    Loggers.SystemLogger.Error(ex, "Error while parsing users for notification broadcast");
+
+                    if (sub.ByEmail)
+                    {
+                        effectiveByEmailSubscription.NotificationTypes.AddRange(from type in sub.NotificationTypes
+                                                                                where !effectiveByEmailSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType)
+                                                                                select new SubscriptionNotificationType() { NotificationType = type.NotificationType });
+                    }
+
+
                 }
+
             }
             return effectiveByEmailSubscription;
         }
@@ -431,40 +419,39 @@ namespace BLAZAM.Services.Background
             effectiveInAppSubscription.User = user;
             effectiveInAppSubscription.InApp = true;
 
-            var userSubscriptions = context.NotificationSubscriptions.Where(x => x.DeletedAt == null && x.UserId == user.Id).ToList();
-            userSubscriptions = userSubscriptions.OrderBy(x => x.OU).ToList();
+            var userSubscriptions = context.NotificationSubscriptions
+                .Where(x => x.DeletedAt == null && x.UserId == user.Id && ou.DN.Contains(x.OU))
+                .OrderBy(x => x.OU)
+                .ToList();
             foreach (var sub in userSubscriptions)
             {
-                if (ou.DN.Contains(sub.OU))
+
+                if (sub.Block && sub.InApp)
                 {
-                    if (sub.Block)
+                    foreach (var type in sub.NotificationTypes)
                     {
-                        if (sub.InApp)
-                        {
-                            foreach (var type in sub.NotificationTypes)
-                            {
-                                effectiveInAppSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
-                            }
-                        }
-
+                        effectiveInAppSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
                     }
-                    else
-                    {
-                        if (sub.InApp)
-                        {
-                            foreach (var type in sub.NotificationTypes)
-                            {
-                                if (!effectiveInAppSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType))
-                                {
-                                    effectiveInAppSubscription.NotificationTypes.Add(new() { NotificationType = type.NotificationType });
-                                }
-                            }
-                        }
 
 
-
-                    }
                 }
+                else
+                {
+                    if (sub.InApp)
+                    {
+                        foreach (var type in sub.NotificationTypes)
+                        {
+                            if (!effectiveInAppSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType))
+                            {
+                                effectiveInAppSubscription.NotificationTypes.Add(new() { NotificationType = type.NotificationType });
+                            }
+                        }
+                    }
+
+
+
+                }
+
             }
             return effectiveInAppSubscription;
         }
