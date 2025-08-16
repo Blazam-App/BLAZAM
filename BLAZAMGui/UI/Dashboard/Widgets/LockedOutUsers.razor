@@ -18,12 +18,12 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <DirectoryEntryContextMenu Entry="@context.Item"
-                                           OnChanged="RefreshDataAsync">
-                    <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                <DirectoryEntryTooltipPopover Entry="@context.Item">
+                    <DirectoryEntryContextMenu Entry="@context.Item"
+                                               OnChanged="RefreshDataAsync">
                         <MudText>@context.Item?.CanonicalName</MudText>
-                    </AppTooltip>
-                </DirectoryEntryContextMenu>
+                    </DirectoryEntryContextMenu>
+                </DirectoryEntryTooltipPopover>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Locked_Out]>
@@ -37,7 +37,7 @@
 
     </Columns>
     <PagerContent>
-        <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IADUser" />
+        <MudDataGridPager PageSizeOptions=[5, 10, 25, 50, 100] T="IADUser" />
     </PagerContent>
     <NoRecordsContent>
         <MudText>@AppLocalization[Lang.No_user_are_locked_out]</MudText>

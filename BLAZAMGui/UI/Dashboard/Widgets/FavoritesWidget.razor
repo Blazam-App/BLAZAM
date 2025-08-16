@@ -25,12 +25,12 @@
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <DirectoryEntryContextMenu Entry="@context.Item"
-                                           OnChanged="RefreshDataAsync">
-                    <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                <DirectoryEntryTooltipPopover Entry="@context.Item">
+                    <DirectoryEntryContextMenu Entry="@context.Item"
+                                               OnChanged="RefreshDataAsync">
                         <MudText>@context.Item?.CanonicalName</MudText>
-                    </AppTooltip>
-                </DirectoryEntryContextMenu>
+                    </DirectoryEntryContextMenu>
+                </DirectoryEntryTooltipPopover>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Changed]>
@@ -43,7 +43,7 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IDirectoryEntryAdapter" />
+        <MudDataGridPager PageSizeOptions=[5, 10, 25, 50, 100] T="IDirectoryEntryAdapter" />
     </PagerContent>
     <NoRecordsContent>
         <MudText>@AppLocalization[Lang.No_Favorites]</MudText>
