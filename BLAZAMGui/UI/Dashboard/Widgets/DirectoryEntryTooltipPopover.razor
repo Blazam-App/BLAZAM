@@ -9,6 +9,7 @@
             {
                 case ActiveDirectoryObjectType.User:
                     var User = Entry as IADUser;
+                    
                     <MudText Align=Align.Center><MudLink Href="@User?.SearchUri">@User.CanonicalName</MudLink></MudText>
                     <MudCard Elevation="2"
                              Style="width:fit-content;height:fit-content"
@@ -18,11 +19,6 @@
                         {
                             <Base64Image Style="max-height:100px;max-width:100px;" Data="User.ThumbnailPhoto.ResizeRawImage(150)" />
 
-
-                        }
-                        else
-                        {
-                            <MudIcon Style="height:100px;width:100px;" Icon="@Icons.Material.Filled.Person" />
 
                         }
 

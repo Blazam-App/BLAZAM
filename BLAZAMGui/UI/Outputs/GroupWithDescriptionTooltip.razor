@@ -1,7 +1,7 @@
 ﻿@if(!Group.Description.IsNullOrEmpty()){
 
-    <AppTooltip Text="@Group.Description">
-        @Group.CanonicalName
+    <AppTooltip Inline=false Text="@Group.Description">
+        <MudElement Class="d-block" Style="overflow:hidden; text-overflow:ellipsis;">@Group.CanonicalName</MudElement>
     </AppTooltip>
 
 }else{

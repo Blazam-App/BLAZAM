@@ -10,13 +10,10 @@ namespace BLAZAM.Gui.Services
     public class WidgetService
     {
         private readonly ICurrentUserStateService _currentUserStateService;
-        private readonly IStringLocalizer<AppLocalization> AppLocalization;
 
-        public WidgetService(ICurrentUserStateService currentUserStateService, IStringLocalizer<AppLocalization> appLocalization)
+        public WidgetService(ICurrentUserStateService currentUserStateService)
         {
             _currentUserStateService = currentUserStateService;
-
-            AppLocalization = appLocalization;
         }
         public List<Widget> Available()
         {
@@ -42,8 +39,6 @@ namespace BLAZAM.Gui.Services
             AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers),
                 new ChangedPasswordsWidget());
 
-            AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers),
-                new DisabledUsersWidget());
 
             AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchContacts),
                 new NewContactsWidget());
