@@ -3,7 +3,7 @@
 
 <MudDataGrid T="IDirectoryEntryAdapter"
              Items="deletedObjects"
-             RowClick="@RowClicked"
+             RowClick="@(()=>{Nav.NavigateTo("/recyclebin");})"
              RowClass="cursor-pointer"
              Dense=true
              Filterable=true
@@ -25,9 +25,11 @@
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
-                    <MudText>@context.Item?.CanonicalName</MudText>
-                    </AppTooltip>
+                <DirectoryEntryTooltipPopover Entry="@context.Item">
+                    <DirectoryEntryContextMenu Entry="context.Item">
+                        <MudText>@context.Item?.CanonicalName</MudText>
+                    </DirectoryEntryContextMenu>
+                </DirectoryEntryTooltipPopover>
                 </CellTemplate>
             </TemplateColumn>
             <PropertyColumn Property="x=>x.LastChanged" Title=@AppLocalization[Lang.Deleted] />
