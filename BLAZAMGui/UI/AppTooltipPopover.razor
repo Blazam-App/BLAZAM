@@ -1,12 +1,17 @@
 ﻿@inherits AppComponentBase
-<MudElement @onmouseover="@(()=>{Show=true;})" @onmouseout="@(()=>{Show=false;})">
+<MudElement @onmouseover="@(() => { Show = true; })"
+            @onmouseout="@(() => { Show = false; })">
     @ActivatorContent
 </MudElement>
-<MudPopover AnchorOrigin=Origin.BottomCenter TransformOrigin=Origin.TopCenter  Class="pa-5" Open="Show">
+<MudPopover AnchorOrigin=Origin.BottomCenter
+            TransformOrigin=Origin.TopCenter
+            Class="pa-2"
+            Open="Show">
     @if (Show)
     {
-        <MudElement @onmouseover="@(()=>{Show=true;})" Class
-        ="pa-5" @onmouseout="@(()=>{Show=false;})">
+        <MudElement @onmouseover="@(() => { Show = true; })"
+                    Class="pa-2"
+                    @onmouseout="@(() => { Show = false; })">
             @PopoverContent
         </MudElement>
     }
@@ -20,29 +25,22 @@
         get => _show; set
         {
             if (_stagedShow == value) return;
-            if (!value)
-            {
-                if (!showCancellationTokenSource.IsCancellationRequested)
-                {
-                    showCancellationTokenSource.Cancel();
-                }
-                showCancellationTokenSource.Dispose();
-                showCancellationTokenSource = new();
-                _stagedShow=value;
-                Task.Delay(250).ContinueWith((state) =>
-                {
 
-                    _show = _stagedShow;
-                    InvokeAsync(StateHasChanged);
-
-                }, showCancellationTokenSource.Token);
-            }
-            else
+            if (!showCancellationTokenSource.IsCancellationRequested)
             {
                 showCancellationTokenSource.Cancel();
-                _stagedShow = value;
-                _show = value;
             }
+            showCancellationTokenSource.Dispose();
+            showCancellationTokenSource = new();
+            _stagedShow = value;
+            Task.Delay(500).ContinueWith((state) =>
+            {
+
+                _show = _stagedShow;
+                InvokeAsync(StateHasChanged);
+
+            }, showCancellationTokenSource.Token);
+
         }
     }
     [Parameter]

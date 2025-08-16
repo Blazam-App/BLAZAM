@@ -26,16 +26,16 @@
               Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Last_Name]"
-Value="@User.Sn"
-Disabled=true />
+              Value="@User.Sn"
+              Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Display_Name]"
               Value="@User.DisplayName"
               Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Username]"
-Value="@User.SAMAccountName"
-Disabled=true />
+              Value="@User.SAMAccountName"
+              Disabled=true />
 
 
 <MudTextField Label="@AppLocalization[Lang.Password]"
@@ -189,30 +189,9 @@ InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
 <ViewSection Title=@AppLocalization[Lang.Groups]>
     @if (User.IsAGroupMember)
     {
-        var deniedRead = false;
-        @foreach (var g in User.MemberOf.Where(g => g.CanRead))
-        {
-            if (g.CanRead)
-            {
-                <AssignedGroup AllowUnassign=false
-                               Elevation=0
-                               AllowNavigation=false
-                               Group=g
-                               Member="User"
-                               OnGroupMembershipChange="@((change)=>{InvokeAsync(StateHasChanged);})" />
-            }
-            else
-            {
-                deniedRead = true;
-            }
-        }
-
-        if (deniedRead)
-        {
-            <MudText>
-                @AppLocalization["The user is in more groups you don't have access to"]
-            </MudText>
-        }
+        <MudText Class="mud-width-full" Align="Align.Center">
+            <MemberOfList AllowNavigation="false" Model="@User" Disabled=true />
+        </MudText>
     }
 
 </ViewSection>
@@ -300,12 +279,12 @@ else
                 await OnConfirmed.InvokeAsync();
 
                 ApplicationEvents.DirectoryEntryChanged.Invoke(new()
-                    {
-                        EventType = ApplicationEventType.Create,
-                        Entry = User,
-                        Actor = CurrentUser.State
+                {
+                    EventType = ApplicationEventType.Create,
+                    Entry = User,
+                    Actor = CurrentUser.State
 
-                    });
+                });
                 try
                 {
                     if (DirectoryTemplate?.EffectiveSendWelcomeEmail == true)
