@@ -3,7 +3,7 @@
     /// <summary>
     /// Request package for creation of a templated user
     /// </summary>
-    public class NewUserDetails
+    public class NewUserPayload
     {
         /// <summary>
         /// The given name for this user
@@ -59,7 +59,7 @@
         /// <returns></returns>
         public object GetExamples()
         {
-            return new NewUserDetails
+            return new NewUserPayload
             {
                 FirstName = "John",
                 LastName = "Doe",
