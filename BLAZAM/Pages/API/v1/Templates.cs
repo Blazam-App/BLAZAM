@@ -92,7 +92,7 @@ namespace BLAZAM.Pages.API.v1
         [HttpPost]
         [Route("/api/v1/templates/execute/{templateId}")]
 
-        public async Task<IActionResult> Execute(int templateId, [FromBody] NewUserDetails newUserDetails)
+        public async Task<IActionResult> Execute(int templateId, [FromBody] NewUserPayload newUserDetails)
         {
 
             var context = await DbFactory.CreateDbContextAsync();
@@ -181,7 +181,7 @@ namespace BLAZAM.Pages.API.v1
 
         }
 
-        private async Task AuditAndNotify(NewUserDetails newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
+        private async Task AuditAndNotify(NewUserPayload newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
         {
             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
@@ -209,7 +209,7 @@ namespace BLAZAM.Pages.API.v1
 
         }
 
-        private static void SetFields(NewUserDetails newUserDetails, IADUser? newUser)
+        private static void SetFields(NewUserPayload newUserDetails, IADUser? newUser)
         {
             if (newUserDetails.Fields != null)
             {
@@ -235,7 +235,7 @@ namespace BLAZAM.Pages.API.v1
             }
         }
 
-        private void AssignGroups(NewUserDetails newUserDetails, IADUser? newUser)
+        private void AssignGroups(NewUserPayload newUserDetails, IADUser? newUser)
         {
             if (newUserDetails.Groups != null)
             {
@@ -250,7 +250,7 @@ namespace BLAZAM.Pages.API.v1
             }
         }
 
-        private static bool ValidateInput(NewUserDetails newUserDetails, DirectoryTemplate? template)
+        private static bool ValidateInput(NewUserPayload newUserDetails, DirectoryTemplate? template)
         {
             //Check if the request has the required fields for this template
             if (template?.HasRequiredFields() == true)
