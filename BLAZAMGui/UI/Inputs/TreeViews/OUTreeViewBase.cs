@@ -156,11 +156,11 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
         protected void OpenToSelected()
         {
-
+            RootOU.First().Children = GetChildren(RootOU.First());
             if (StartRootExpanded && RootOU != null && RootOU.Count > 0)
             {
                 RootOU.First().Expanded = true;
-                RootOU.First().Children = GetChildren(RootOU.First());
+
                 if (SelectedEntry != null)
                 {
                     var firstThing = RootOU.First();
@@ -189,6 +189,14 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                             }
                             else
                             {
+                                openThis.Children.ForEach(c =>
+                                {
+                                    if (c.Value is IADOrganizationalUnit ou)
+                                    {
+                                        c.Children = ou.SubOUs.ToTreeItemData();
+                                    }
+                                });
+
                                 var matchingOU = openThis.Children.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
                                 if (matchingOU != null)
                                     matchingOU.Selected = true;
