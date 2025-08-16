@@ -366,34 +366,32 @@
                         @if (SelectedOU != null)
                         {
                             var ouTemplateSource = GetParentOfValue(DirectoryTemplate.EffectiveParentOU, template => template.ParentOU);
-                            <MudText Align="Align.Center" Class="mud-width-full">
-                                <MudText>
-                                    @(AppLocalization[Lang.OU]+": "+ SelectedOU?.OU.ToPrettyOu())
-                                </MudText>
-                                @if(!_showOuTree){
-                                <MudButton Variant="Variant.Filled"
-                                             Color="Color.Secondary"
-                                             OnClick="@(()=>{_showOuTree=true;})">
-                                        @AppLocalization[Lang.OU]
-                                        </MudButton><br/>
-                                }
-                                else
-                                {
-                                    <TemplateOverride SourceTemplate="@ouTemplateSource">
-                                        <OUTreeView Label=
-                                        SelectedEntry=@SelectedOU
-                                        SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
-                                        StartingSelectedOU=@SelectedOU />
-                                        @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty() && DirectoryTemplate.ParentTemplateId != null && !DirectoryTemplate.ParentOU.IsNullOrEmpty())
-                                        {
-                                            <RevertTemplateValueButton OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;await LoadData();}) />
+                            <MudText Class="mud-width-full" Align="Align.Center">
+                                <MudStack>
+                                    <MudText Align="Align.Center">
+                                        @(AppLocalization[Lang.OU]+": "+ SelectedOU?.OU.ToPrettyOu())
+                                    </MudText>
+                                    @if(!_showOuTree){
+                                    <MudButton Variant="Variant.Filled"
+                                                 Color="Color.Secondary"
+                                                 OnClick="@(()=>{_showOuTree=true;})">
+                                            @AppLocalization[Lang.OU]
+                                            </MudButton><br/>
+                                    }
+                                    else
+                                    {
+                                            <OUTreeView SelectedEntry=@SelectedOU
+                                            SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
+                                            StartingSelectedOU=@SelectedOU />
+                                            @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty() && DirectoryTemplate.ParentTemplateId != null && !DirectoryTemplate.ParentOU.IsNullOrEmpty())
+                                            {
+                                                <RevertTemplateValueButton OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;await LoadData();}) />
 
-                                        }
-                                    </TemplateOverride>
-                                }
-                            </MudText>
+                                            }
+                                    }
+                               </MudStack>
 
-
+                           </MudText>
 
                         }
 
