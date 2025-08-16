@@ -43,15 +43,15 @@ namespace BLAZAM.Server.Middleware
                     currentUserStateService.State = state;
                 }
 
-                if (httpContext.Connection != null &&
-                    httpContext.Connection.RemoteIpAddress != null)
+                if (httpContext.Connection != null
+                    && httpContext.Connection.RemoteIpAddress != null
+                    && currentUserStateService.State != null
+                    && currentUserStateService.State.IPAddress != httpContext.Connection.RemoteIpAddress.ToString())
                 {
 
-                    if (currentUserStateService.State != null &&
-                        currentUserStateService.State.IPAddress != httpContext.Connection.RemoteIpAddress.ToString())
-                    {
-                        currentUserStateService.State.IPAddress = httpContext.Connection.RemoteIpAddress.ToString();
-                    }
+
+                    currentUserStateService.State.IPAddress = httpContext.Connection.RemoteIpAddress.ToString();
+
                 }
             }
             return _next(httpContext);

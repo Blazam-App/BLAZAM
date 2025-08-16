@@ -18,11 +18,12 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="state">The application user state.</param>
         /// <returns>True if the username is 'admin' or 'demo' (case-insensitive); otherwise, false. Returns false if state or username is null.</returns>
-        public static bool IsAdminOrDemo(this IApplicationUserState state)
+        public static bool IsAdminOrDemo(this IApplicationUserState? state)
         {
+            if (state == null) return false;
             // state?.Username handles null state, ?.Equals handles null Username
-            return state?.Username?.Equals("admin", StringComparison.InvariantCultureIgnoreCase) == true ||
-                   state?.Username?.Equals("demo", StringComparison.InvariantCultureIgnoreCase) == true;
+            return state.Username?.Equals("admin", StringComparison.InvariantCultureIgnoreCase) == true ||
+                   state.Username?.Equals("demo", StringComparison.InvariantCultureIgnoreCase) == true;
         }
 
         /// <summary>
@@ -30,7 +31,7 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="httpContext">The current HttpContext.</param>
         /// <param name="userState">Optional. The current user's application state, used for logging context.</param>
-        public static void SlideCookieExpiration(this HttpContext httpContext, IApplicationUserState? userState = null)
+        public static void SlideCookieExpiration(this HttpContext? httpContext, IApplicationUserState? userState = null)
         {
             if (httpContext == null)
             {
@@ -98,7 +99,7 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="httpContext">The current HttpContext.</param>
         /// <returns>A TimeSpan representing the session timeout, or null if it cannot be determined or an error occurs.</returns>
-        public static TimeSpan? GetSessionTimeout(this HttpContext httpContext)
+        public static TimeSpan? GetSessionTimeout(this HttpContext? httpContext)
         {
             if (httpContext == null)
             {

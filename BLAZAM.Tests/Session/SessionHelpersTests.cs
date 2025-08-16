@@ -75,10 +75,15 @@ namespace BLAZAM.Tests.Session
         public void GetAuthenticationCookie_ReturnsNull_WhenNoCookie()
         {
             var context = new DefaultHttpContext();
-            var result = typeof(SessionHelpers)
-                .GetMethod("GetAuthenticationCookie", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
-                .Invoke(null, new object[] { context });
-            Assert.Null(result);
+            var method = typeof(SessionHelpers)
+                .GetMethod("GetAuthenticationCookie", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            Assert.NotNull(method); // Ensure method is found before invoking
+            if (method != null)
+            {
+                var result = method?.Invoke(null, new object[] { context });
+                Assert.Null(result);
+            }
+            throw new Exception("GetAuthenticationCookie method not found");
         }
     }
 }
