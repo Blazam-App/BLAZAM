@@ -39,8 +39,6 @@ namespace BLAZAM.Gui.Services
             AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers),
                 new ChangedPasswordsWidget());
 
-            AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers),
-                new DisabledUsersWidget());
 
             AddWidgetIf(isSuperAdmin || applicationUser.HasRole(UserRoles.SearchContacts),
                 new NewContactsWidget());

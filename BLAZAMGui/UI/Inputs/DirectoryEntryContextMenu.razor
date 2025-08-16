@@ -1,6 +1,6 @@
 ﻿@using BLAZAM.Global.Events
 @inherits AppComponentBase
-@if (Entry is IAccountDirectoryAdapter account)
+@if (Entry is IAccountDirectoryAdapter account && !Disabled)
 {
     <MudContextMenu>
 
@@ -45,6 +45,8 @@ else
     public RenderFragment ChildContent { get; set; }
     [Parameter]
     public IDirectoryEntryAdapter Entry { get; set; }
+    [Parameter]
+    public bool Disabled { get; set; }
     [Parameter]
     public EventCallback OnChanged { get; set; }
     async Task UnlockAccount(IAccountDirectoryAdapter userToUnlock)

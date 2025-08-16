@@ -20,9 +20,9 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <DirectoryEntryContextMenu Entry="@context.Item"
-                OnChanged="OnChanged">
-                    <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                <DirectoryEntryTooltipPopover Entry="@context.Item">
+                    <DirectoryEntryContextMenu Entry="@context.Item"
+                                               OnChanged="OnChanged">
                         @if (context.Item is IADGroup group)
                         {
                             <GroupWithDescriptionTooltip Group="group" />
@@ -31,11 +31,8 @@
                         {
                             <MudText>@context.Item?.CanonicalName</MudText>
                         }
-                    </AppTooltip>
-                    @*  <DirectoryEntryTooltipPopover Entry="context.Item">
-                            <MudText>@context.Item?.CanonicalName</MudText>
-                        </DirectoryEntryTooltipPopover> *@
-                </DirectoryEntryContextMenu>
+                    </DirectoryEntryContextMenu>
+                </DirectoryEntryTooltipPopover>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Created]>
@@ -49,7 +46,7 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="@T" />
+        <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="@T" />
     </PagerContent>
     <NoRecordsContent>
         <MudText>@AppLocalization[Lang.No_matching_results]</MudText>
