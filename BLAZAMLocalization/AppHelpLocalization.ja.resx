@@ -147,6 +147,9 @@
   <data name="Created" xml:space="preserve">
     <value>{0}が作成されました</value>
   </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value />
+  </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>デリゲートは、承認されたアプリケーションユーザーです。ここで定義するユーザー、または次のActive Directoryグループ（またはネストされたグループ）のユーザーで、権限がマップされているか、自己編集が有効になっているユーザーのみです。</value>
   </data>

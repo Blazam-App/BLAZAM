@@ -147,6 +147,9 @@
   <data name="Created" xml:space="preserve">
     <value>{0} has been created</value>
   </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value>Debug mode is enabled. If this is a production server, disable in appsettings.json to prevent disclosure of sensitive data.</value>
+  </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) with permissions mapped or self-edit enabled.</value>
   </data>
