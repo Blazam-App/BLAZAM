@@ -94,13 +94,13 @@ namespace BLAZAM.Pages.API.v1
         /// 200 OK: List of <see cref="CustomActiveDirectoryField"/> objects.
         /// </returns>
         [HttpGet]
-        public IActionResult List()
+        public async Task<IActionResult> List()
         {
-            using var context = DbFactory.CreateDbContext();
-            var list = context.CustomActiveDirectoryFields
+            using var context = await DbFactory.CreateDbContextAsync();
+            var list = await context.CustomActiveDirectoryFields
                 .Include(f => f.ObjectTypes)
                 .Where(f => f.DeletedAt == null)
-                .ToList();
+                .ToListAsync();
             return FormatData(list);
         }
 
@@ -119,12 +119,12 @@ namespace BLAZAM.Pages.API.v1
         /// 404 Not Found: If the field does not exist.
         /// </returns>
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            using var context = DbFactory.CreateDbContext();
-            var field = context.CustomActiveDirectoryFields
+            using var context = await DbFactory.CreateDbContextAsync();
+            var field = await context.CustomActiveDirectoryFields
                 .Include(f => f.ObjectTypes)
-                .FirstOrDefault(f => f.Id == id && f.DeletedAt == null);
+                .FirstOrDefaultAsync(f => f.Id == id && f.DeletedAt == null);
             if (field == null)
                 return NotFound();
             return FormatData(field);
@@ -176,7 +176,7 @@ namespace BLAZAM.Pages.API.v1
             if (!Validator.TryValidateObject(field, context, validationResults, true))
                 return UnprocessableEntity(validationResults);
 
-            using var db = DbFactory.CreateDbContext();
+            using var db = await DbFactory.CreateDbContextAsync();
             db.CustomActiveDirectoryFields.Add(field);
             await db.SaveChangesAsync();
 
@@ -214,10 +214,10 @@ namespace BLAZAM.Pages.API.v1
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] NewFieldPayload payload)
         {
-            using var db = DbFactory.CreateDbContext();
-            var field = db.CustomActiveDirectoryFields
+            using var db = await DbFactory.CreateDbContextAsync();
+            var field = await db.CustomActiveDirectoryFields
                 .Include(f => f.ObjectTypes)
-                .FirstOrDefault(f => f.Id == id && f.DeletedAt == null);
+                .FirstOrDefaultAsync(f => f.Id == id && f.DeletedAt == null);
 
             if (field == null)
                 return NotFound();
@@ -267,8 +267,8 @@ namespace BLAZAM.Pages.API.v1
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            using var db = DbFactory.CreateDbContext();
-            var field = db.CustomActiveDirectoryFields.FirstOrDefault(f => f.Id == id && f.DeletedAt == null);
+            using var db = await DbFactory.CreateDbContextAsync();
+            var field = await db.CustomActiveDirectoryFields.FirstOrDefaultAsync(f => f.Id == id && f.DeletedAt == null);
             if (field == null)
                 return NotFound();
 
@@ -294,8 +294,8 @@ namespace BLAZAM.Pages.API.v1
         [HttpPost("{id}/restore")]
         public async Task<IActionResult> Restore(int id)
         {
-            using var db = DbFactory.CreateDbContext();
-            var field = db.CustomActiveDirectoryFields.FirstOrDefault(f => f.Id == id && f.DeletedAt != null);
+            using var db = await DbFactory.CreateDbContextAsync();
+            var field = await db.CustomActiveDirectoryFields.FirstOrDefaultAsync(f => f.Id == id && f.DeletedAt != null);
             if (field == null)
                 return NotFound();
 
