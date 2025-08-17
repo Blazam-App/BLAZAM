@@ -177,7 +177,6 @@
         await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
         await base.Save();
         await InvokeAsync(StateHasChanged);
-        //DoDuoHealthCheck();
     }
 
     public class BehaviorConverter : BoolConverter<DuoUnreachableBehavior>

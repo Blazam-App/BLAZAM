@@ -10,7 +10,6 @@ using BLAZAM.Common.Helpers;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
-using BLAZAM.Global.Data;
 using BLAZAM.Logger;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -176,55 +175,67 @@ namespace BLAZAM.Helpers
             if (r != null && r.Count > 0)
             {
 
-                IDirectoryEntryAdapter? thisObject = null;
+
                 foreach (SearchResult sr in r)
                 {
-                    if (sr.Properties[OBJECT_CLASS].Contains("top"))
+                    var obj = Encapsulate(sr, context);
+                    if (obj != null)
                     {
-                        if (sr.Properties[OBJECT_CLASS].Contains("computer"))
-                        {
-                            thisObject = new ADComputer();
-                        }
-                        else if (sr.Properties[OBJECT_CLASS].Contains("user"))
-                        {
-                            thisObject = new ADUser();
-                        }
-                        else if (sr.Properties[OBJECT_CLASS].Contains("contact"))
-                        {
-                            thisObject = new ADContact();
-                        }
-
-                        else if (sr.Properties[OBJECT_CLASS].Contains("group"))
-                        {
-                            thisObject = new ADGroup();
-                        }
-                        else if (sr.Properties[OBJECT_CLASS].Contains("printQueue"))
-                        {
-                            thisObject = new ADPrinter();
-                        }
-                        else if (sr.Properties[OBJECT_CLASS].Contains("msFVE-RecoveryInformation"))
-                        {
-                            thisObject = new ADBitLockerRecovery();
-                        }
-                        else if (sr.Properties[OBJECT_CLASS].Contains("organizationalUnit") || sr.Properties[OBJECT_CLASS].Contains("container"))
-                        {
-                            thisObject = new ADOrganizationalUnit();
-                        }
-                        if (thisObject != null)
-                        {
-                            thisObject.Parse(directory: context, searchResult: sr);
-
-
-                            objects.Add(thisObject);
-
-                        }
+                        objects.Add(obj);
                     }
-                    thisObject = null;
 
                 }
             }
             return objects;
         }
+
+        private static IDirectoryEntryAdapter? Encapsulate(SearchResult sr, IActiveDirectoryContext context)
+        {
+            IDirectoryEntryAdapter? thisObject = null;
+
+            if (sr.Properties[OBJECT_CLASS].Contains("top"))
+            {
+                if (sr.Properties[OBJECT_CLASS].Contains("computer"))
+                {
+                    thisObject = new ADComputer();
+                }
+                else if (sr.Properties[OBJECT_CLASS].Contains("user"))
+                {
+                    thisObject = new ADUser();
+                }
+                else if (sr.Properties[OBJECT_CLASS].Contains("contact"))
+                {
+                    thisObject = new ADContact();
+                }
+
+                else if (sr.Properties[OBJECT_CLASS].Contains("group"))
+                {
+                    thisObject = new ADGroup();
+                }
+                else if (sr.Properties[OBJECT_CLASS].Contains("printQueue"))
+                {
+                    thisObject = new ADPrinter();
+                }
+                else if (sr.Properties[OBJECT_CLASS].Contains("msFVE-RecoveryInformation"))
+                {
+                    thisObject = new ADBitLockerRecovery();
+                }
+                else if (sr.Properties[OBJECT_CLASS].Contains("organizationalUnit") || sr.Properties[OBJECT_CLASS].Contains("container"))
+                {
+                    thisObject = new ADOrganizationalUnit();
+                }
+                if (thisObject != null)
+                {
+                    thisObject.Parse(directory: context, searchResult: sr);
+
+
+
+
+                }
+            }
+            return thisObject;
+        }
+
         /// <summary>
         /// Encapsulates a raw DirectoryEntry within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
         /// </summary>

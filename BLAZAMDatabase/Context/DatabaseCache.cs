@@ -2,13 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 namespace BLAZAM.Database.Context
 {
-    public class DatabaseCache
+    public static class DatabaseCache
     {
         private static bool _started;
 
         private static IAppDatabaseFactory dbContextFactory;
 
-        public static byte[] AppIcon
+        public static byte[]? AppIcon
         {
             get
             {
@@ -78,7 +78,7 @@ namespace BLAZAM.Database.Context
             }
             catch (Exception)
             {
-
+                // Ignore errors in the cache update, we will just return the original property
             }
 
             return originalProperty;

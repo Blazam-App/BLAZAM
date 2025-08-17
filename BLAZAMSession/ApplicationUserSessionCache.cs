@@ -8,8 +8,8 @@ namespace BLAZAM.Session
     /// </summary>
     public class ApplicationUserSessionCache : IApplicationUserSessionCache, IDisposable
     {
-        private Dictionary<Type, object> _typeCache = new();
-        private Dictionary<string, object> _stringCache = new();
+        private readonly Dictionary<Type, object> _typeCache = new();
+        private readonly Dictionary<string, object> _stringCache = new();
         private bool _disposedValue;
 
         /// <summary>
@@ -77,21 +77,19 @@ namespace BLAZAM.Session
                 if (disposing)
                 {
                     // Dispose managed state (managed objects)
-                    foreach (var item in _typeCache.Values)
+                    foreach (var item in _typeCache.Values
+                        .Where(x => x is IDisposable)
+                        .Cast<IDisposable>())
                     {
-                        if (item is IDisposable disposable)
-                        {
-                            disposable.Dispose();
-                        }
+                        item.Dispose();
                     }
                     _typeCache.Clear();
 
-                    foreach (var item in _stringCache.Values)
+                    foreach (var item in _stringCache.Values
+                        .Where(x => x is IDisposable)
+                        .Cast<IDisposable>())
                     {
-                        if (item is IDisposable disposable)
-                        {
-                            disposable.Dispose();
-                        }
+                        item.Dispose();
                     }
                     _stringCache.Clear();
                 }
@@ -102,12 +100,7 @@ namespace BLAZAM.Session
             }
         }
 
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~ApplicationUserSessionCache()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
+
 
         public void Dispose()
         {

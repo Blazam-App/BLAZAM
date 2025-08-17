@@ -15,7 +15,7 @@ namespace BLAZAM.Database.Context
     /// </summary>
     public class AppDatabaseFactory : IAppDatabaseFactory
     {
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public static DatabaseException DatabaseCreationFailureReason { get; set; }
         public static AppDelegate? OnMigrationApplied { get; set; }
@@ -265,7 +265,7 @@ namespace BLAZAM.Database.Context
 
             }
             return databaseContext == null
-                ? throw new Exception("Database Context is null. Attempted connection to a "
+                ? throw new DatabaseException("Database Context is null. Attempted connection to a "
                 + DatabaseType + " type database")
                 : databaseContext;
         }
@@ -286,18 +286,20 @@ namespace BLAZAM.Database.Context
             {
                 using (var context = CreateDbContext())
                 {
-                    if (context != null && context.Status == ServiceConnectionState.Up)
-                        if (context.IsSeeded() || force)
-                            if (!context.SeedMismatch)
-                            {
-                                if (context.Database.GetPendingMigrations().Count() > 0)
-                                    Migrate(context);
-                            }
-                            else
-                            {
-                                throw new DatabaseException("Database incompatible with current application version.");
-                            }
-
+                    if (context != null
+                        && context.Status == ServiceConnectionState.Up
+                        && (context.IsSeeded() || force))
+                    {
+                        if (!context.SeedMismatch)
+                        {
+                            if (context.Database.GetPendingMigrations().Count() > 0)
+                                Migrate(context);
+                        }
+                        else
+                        {
+                            throw new DatabaseException("Database incompatible with current application version.");
+                        }
+                    }
 
                     return true;
                 }
@@ -305,6 +307,7 @@ namespace BLAZAM.Database.Context
             catch (DatabaseException ex)
             {
                 OnFatalError?.Invoke(ex);
+                Loggers.DatabaseLogger.Information(ex, "Fatal Database Error");
                 FatalError = ex;
                 throw;
             }

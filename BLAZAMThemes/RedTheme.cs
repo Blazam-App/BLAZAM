@@ -9,7 +9,6 @@
 
             lightPalette.ActionDefault = "#C39A9A";
             lightPalette.AppbarBackground = "#A82222";
-            //lightPalette.AppbarBackground = "#D32222";
             lightPalette.DrawerBackground = "#DCCFCF";
             lightPalette.DrawerText = "#1E0F0F";
             lightPalette.Dark = "#290500";

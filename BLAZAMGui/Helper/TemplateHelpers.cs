@@ -55,8 +55,6 @@ namespace BLAZAM.Gui.Helpers
                 throw;
             }
 
-            //newUser = ou.CreateUser(displayName);
-
 
 
 

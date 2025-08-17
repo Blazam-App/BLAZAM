@@ -52,7 +52,6 @@
                 _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
                 LoadingData = false;
             }
-            //InvokeAsync(StateHasChanged);
 
         });
     }

@@ -29,12 +29,11 @@ namespace BLAZAM.Database.Context
             {
                 ConnectionString = new DatabaseConnectionString("Server=localhost;User=blazam;Password=blazam;Database=blazam;");
             }
-            optionsBuilder.UseMySql(ConnectionString?.Value,
+            optionsBuilder.UseMySql(ConnectionString.Value,
                            serverVersion: new MySqlServerVersion(new Version(8, 0, 32)),
                           mySqlOptionsAction: options =>
                           {
                               options.EnableRetryOnFailure();
-                              //options.SetSqlModeOnOpen();
 
                           })
 

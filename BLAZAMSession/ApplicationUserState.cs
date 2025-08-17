@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims; // Added
 using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
@@ -439,19 +438,7 @@ namespace BLAZAM.Session
                     var possibleDenies = denySelector.Invoke(baseSearch).ToList();
                     if (possibleAllows.Any()) // More concise check
                     {
-                        if (possibleDenies.Any())
-                        {
-                            // Simplified logic: if any deny is more specific or equally specific as the most specific allow, deny.
-                            // This assumes OU specificity determines precedence, which is complex.
-                            // The original logic was: if (d.OU.Length > possibleReads.OrderByDescending(r => r.OU.Length).First().OU.Length) return false;
-                            // This part needs careful review if complex OU hierarchy denial is critical.
-                            // For now, if there's any deny for the object type (without considering OU hierarchy yet for this overload), it might be too restrictive or too permissive.
-                            // This method seems to be for non-OU specific checks, so OU length comparison might not apply here directly.
-                            // If any deny exists for this object type, and any allow exists, it's ambiguous without OU context.
-                            // Let's assume for this simplified overload, any deny overrides any allow if both exist.
-                            return !possibleDenies.Any(); // Deny if any deny rule exists for the object type
-                        }
-                        return true; // Allows exist, no denies exist
+                        return !possibleDenies.Any();
                     }
                     return false; // No allows
                 }

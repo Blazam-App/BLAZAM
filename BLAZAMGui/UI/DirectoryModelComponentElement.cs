@@ -1,6 +1,4 @@
-﻿using BLAZAM.Gui.UI;
-
-namespace BLAZAM.Gui
+﻿namespace BLAZAM.Gui.UI
 {
     public class DirectoryModelComponentElement : AppComponentBase
     {

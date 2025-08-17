@@ -21,16 +21,6 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         {
             LoadingData = true;
             ADSearch searcher = new ADSearch(Directory);
-            // searcher.FieldValues = new()
-            // {
-            //     new()
-            //     {
-            //         Field=ActiveDirectoryFields.LastLogonTimestamp,
-            //         Operator=ActiveDirectoryFieldOperator.HistoricalTimeFrame,
-            //         Negate=true,
-            //         Value=  (DateTime.UtcNow - TimeSpan.FromDays(180))
-            //     }
-            // };
             searcher.Fields.LastLogonTime = (DateTime.UtcNow - TimeSpan.FromDays(180)).ToFileTimeUtc();
             searcher.ObjectTypeFilter = ActiveDirectoryObjectType.Computer;
             searcher.EnabledOnly = true;

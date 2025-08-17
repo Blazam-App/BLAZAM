@@ -1,3 +1,5 @@
+using BLAZAM.Database.Interfaces;
+
 namespace BLAZAM.Gui.UI
 {
     public class DatabaseComponentBase : AppComponentBase

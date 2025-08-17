@@ -138,7 +138,6 @@ namespace BLAZAM.Logger
                     retainedFileTimeLimit: TimeSpan.FromDays(30))
                     .WriteTo.Logger(lc =>
                     {
-                        //lc.WriteTo.Console();
                         lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
                     });
             if (SendToSeqServer)
@@ -148,7 +147,6 @@ namespace BLAZAM.Logger
             Log.Logger = systemLoggerBuilder.CreateLogger();
             SystemLogger = Log.Logger;
 
-            //Serilog.Debugging.SelfLog.Enable(Console.Error);
         }
 
         internal static LoggerConfiguration CreateLogBuilder()
@@ -179,7 +177,6 @@ namespace BLAZAM.Logger
 
                 .WriteTo.Logger(lc =>
                 {
-                    //lc.WriteTo.Console();
                     lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
                 });
             if (SendToSeqServer)
@@ -195,7 +192,7 @@ namespace BLAZAM.Logger
             logger ??= SetupTestLogger();
         }
 
-        private static Serilog.ILogger SetupTestLogger()
+        private static ILogger SetupTestLogger()
         {
             var loggerBuilder = CreateLogBuilder()
                 .WriteTo.Console();

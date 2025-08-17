@@ -361,7 +361,7 @@ namespace BLAZAM
                         Type = ReferenceType.SecurityScheme
                     }
                 };
-
+                c.SchemaFilter<EnumSchemaFilter>();
                 // Add the security definition to Swagger
                 c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
                 // Add a security requirement globally (forces auth for all endpoints shown in Swagger UI)

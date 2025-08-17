@@ -147,6 +147,9 @@
   <data name="Created" xml:space="preserve">
     <value>{0} बनाया गया है</value>
   </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value />
+  </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>प्रतिनिधि आपके अनुमोदित एप्लिकेशन उपयोगकर्ता हैं। केवल वे उपयोगकर्ता जिन्हें आप यहाँ परिभाषित करते हैं, या निम्नलिखित सक्रिय निर्देशिका समूहों (या नेस्टेड समूहों) में उपयोगकर्ता जिनके पास अनुमतियाँ मैप की गई हैं या स्व-संपादन सक्षम है।</value>
   </data>

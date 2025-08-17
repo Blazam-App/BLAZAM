@@ -214,7 +214,6 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                     SelectedEntry = RootOU.First().Value;
                 }
             }
-            //InvokeAsync(StateHasChanged);
 
 
         }

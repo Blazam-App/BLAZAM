@@ -5,7 +5,6 @@ namespace BLAZAM.Database.Models.Permissions
     {
         public string Name { get; set; }
         public int Level { get; internal set; }
-        // public virtual ICollection<FieldAccessMapping> FieldAccessMappings { get; set; }
 
         public override bool Equals(object? obj)
         {

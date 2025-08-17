@@ -9,10 +9,31 @@
 
 @if (MOTD.HasValue && MOTD.Value.ToString() != "")
 {
-    <MudAlert Class="mb-6 mud-theme-info rounded-t-0"  ShowCloseIcon=false Elevation="3">
+    _motdShown = true;
+    <MudAlert Severity=Severity.Info
+              Class="mb-6 rounded-t-0"
+              ShowCloseIcon=false
+              Elevation="3"
+              Dense=true
+              Variant="Variant.Filled">
 
 
         @MOTD.Value
+
+    </MudAlert>
+}
+@if (CurrentUser.State.IsSuperAdmin && ApplicationInfo.InDebugMode)
+{
+    string cssClass = "mb-6 " + (_motdShown ? "" : "rounded-t-0");
+    <MudAlert Severity=Severity.Warning
+              Class=@cssClass 
+              ShowCloseIcon=false
+              Elevation="3"
+              Dense=true
+              Variant="Variant.Filled">
+
+
+        @AppHelpLocalization[HelpLang.Debug_Enabled_Warning]
 
     </MudAlert>
 }
@@ -29,7 +50,7 @@
 
 @code {
     MarkupString? MOTD;
-
+    bool _motdShown;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
