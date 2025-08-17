@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Interfaces;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

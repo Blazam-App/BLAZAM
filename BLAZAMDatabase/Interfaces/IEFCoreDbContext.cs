@@ -1,8 +1,7 @@
-﻿
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace BLAZAM.Database.Context
+namespace BLAZAM.Database.Interfaces
 {
     public interface IEFCoreDbContext : IDisposable
     {

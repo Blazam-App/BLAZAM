@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;

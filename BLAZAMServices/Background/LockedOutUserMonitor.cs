@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Global.Attributes;
 using BLAZAM.Helpers;

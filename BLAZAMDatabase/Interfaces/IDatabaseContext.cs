@@ -9,7 +9,8 @@ using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Global.Enums;
 using Microsoft.EntityFrameworkCore;
-namespace BLAZAM.Database.Context
+
+namespace BLAZAM.Database.Interfaces
 {
     public interface IDatabaseContext : IEFCoreDbContext
     {

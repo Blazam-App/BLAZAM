@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Database.Context
+﻿
+
+namespace BLAZAM.Database.Interfaces
 {
     /// <summary>
     /// The primary database factory for BLAZAM.

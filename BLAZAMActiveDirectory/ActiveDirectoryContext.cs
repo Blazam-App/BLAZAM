@@ -15,6 +15,7 @@ using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Global.Enums;
 using BLAZAM.Global.Helpers;
