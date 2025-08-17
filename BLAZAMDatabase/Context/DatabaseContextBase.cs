@@ -303,12 +303,12 @@ namespace BLAZAM.Database.Context
         /// returns false.</returns>
         public virtual bool IsSeeded()
         {
-            if (AppliedMigrations.Count() > 0) return true;
 
 
 
             try
             {
+                if (AppliedMigrations.Count() > 0) return true;
 
                 if (AuthenticationSettings.FirstOrDefault() == null)
                     return false;

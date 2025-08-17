@@ -230,6 +230,8 @@ namespace BLAZAM.Database.Context
                 return DatabaseType.SQLite;
             }
         }
+
+
         /// <summary>
         /// Creates a new application <see cref="DbContext"/> based on the configured DatabaseType
         /// and DBConnectionString in appsettings.json
@@ -292,7 +294,8 @@ namespace BLAZAM.Database.Context
                     {
                         if (!context.SeedMismatch)
                         {
-                            if (context.Database.GetPendingMigrations().Count() > 0)
+                            var pendingMigrations = context.Database.GetPendingMigrations();
+                            if (pendingMigrations.Count() > 0)
                                 Migrate(context);
                         }
                         else

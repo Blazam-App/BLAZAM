@@ -550,6 +550,8 @@ namespace BLAZAM
                 // Create a scope to resolve scoped services like the database context
                 using var scope = application.Services.CreateScope();
                 var dbFactory = scope.ServiceProvider.GetRequiredService<IAppDatabaseFactory>();
+
+
                 using var context = dbFactory.CreateDbContext();
 
                 if (context != null)
