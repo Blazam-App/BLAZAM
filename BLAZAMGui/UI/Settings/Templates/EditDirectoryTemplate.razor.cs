@@ -88,9 +88,8 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 if (_template == value)
                     return;
                 if (Context != null && value.Id > 0)
-                    value = Context?.DirectoryTemplates.First(dt => dt.Id == value.Id);
+                    value = Context.DirectoryTemplates.First(dt => dt.Id == value.Id);
                 _template = value;
-                //_showOuTree = false;
                 originalTemplate = value;
                 SelectedOU = Directory?.OUs.FindOuByDN(value.EffectiveParentOU);
 
