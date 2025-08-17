@@ -49,7 +49,7 @@ else
         SaveDisabled = false;
         Modal.SetOnYes(SaveChanges);
         Modal.SetYesText(AppLocalization[Lang.Rename_Computer]);
-        Modal.Title = AppLocalization[Lang.Rename_Computer];
+        Modal.SetTitle(AppLocalization[Lang.Rename_Computer]);
 
         await InvokeAsync(StateHasChanged);
     }
@@ -102,9 +102,8 @@ else
             SnackBarService.Error(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred]);
 
         }
-        //User.DirectoryEntry = null;
+        
 
-        //await DirectoryModelRenamed.InvokeAsync(_privateComputerInstance);
         LoadingData = false;
 
         SaveDisabled = false;

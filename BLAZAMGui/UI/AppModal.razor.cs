@@ -1,4 +1,3 @@
-using BLAZAM.Database.Interfaces;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI
@@ -153,7 +152,6 @@ namespace BLAZAM.Gui.UI
                 };
             }
 
-            //AllowClose = true;
         }
         /// <summary>
         /// Re-renders the modal with the latest property values

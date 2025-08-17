@@ -120,10 +120,6 @@ namespace BLAZAM.Gui.UI
                 Loggers.ActiveDirectoryLogger.Error(ex, "Failed to connect to scoped active directory");
 
             }
-            //Monitor.OnDirectoryConnectionChanged += (status) =>
-            //{
-            //    InvokeAsync(StateHasChanged);
-            //};
         }
 
         protected override async Task OnInitializedAsync()
@@ -138,10 +134,6 @@ namespace BLAZAM.Gui.UI
             {
                 Loggers.ActiveDirectoryLogger.Error(ex, "Failed to connect to scoped active directory");
             }
-            //Monitor.OnDirectoryConnectionChanged += (status) =>
-            //{
-            //    InvokeAsync(StateHasChanged);
-            //};
 
         }
 
