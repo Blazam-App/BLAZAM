@@ -3,7 +3,6 @@ using System.Diagnostics;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.ActiveDirectory.Services;
-using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Rules;
@@ -264,11 +263,7 @@ namespace BLAZAM.Services.Background
                     Operator = andFilter.Operator,
                     Negate = andFilter.Negate
                 };
-                if (andFilter.CurrentField is ActiveDirectoryField defaultField)
-                {
-                    search.FieldValues.Add(fieldValue);
-                }
-                else if (andFilter.CurrentField is CustomActiveDirectoryField customField)
+                if (andFilter.CurrentField is ActiveDirectoryField defaultField || andFilter.CurrentField is CustomActiveDirectoryField)
                 {
                     search.FieldValues.Add(fieldValue);
                 }

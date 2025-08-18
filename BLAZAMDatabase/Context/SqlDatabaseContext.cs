@@ -1,8 +1,10 @@
 ﻿using System.Data;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Database.Data;
 using BLAZAM.Logger;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BLAZAM.Database.Context
 {
@@ -35,8 +37,9 @@ namespace BLAZAM.Database.Context
                             {
                                 sqlOptions.EnableRetryOnFailure();
 
-                            }
-                                ).EnableSensitiveDataLogging()
+                            })
+                    .ReplaceService<IMigrationsAssembly, CompositeMigrationsAssembly>()
+                            .EnableSensitiveDataLogging()
                                 .LogTo(Loggers.DatabaseLogger.Information);
         }
         protected override DataTable SelectAllDataFromTable(string? tableName)

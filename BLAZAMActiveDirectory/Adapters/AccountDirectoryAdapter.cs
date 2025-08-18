@@ -20,7 +20,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private const int ADS_UF_PASSWD_CANT_CHANGE = 0x0040;
         private const int ADS_UF_NORMAL_ACCOUNT = 0x0200;
         private const int ADS_UF_DONT_EXPIRE_PASSWD = 0x10000;
-
+        private const string pwdLastSet = "pwdLastSet";
 
         public virtual string? SAMAccountName
         {
@@ -322,13 +322,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var dateTime = GetDateTimeAttribute("pwdLastSet")?.AdsValueToDateTime();
+                var dateTime = GetDateTimeAttribute(pwdLastSet)?.AdsValueToDateTime();
                 if (dateTime.HasValue)
                 {
                     return dateTime.Value;
 
                 }
-                var rawValue = GetAttribute<Int32>("pwdLastSet");
+                var rawValue = GetAttribute<Int32>(pwdLastSet);
                 if (rawValue == -1)
                 {
                     return DateTime.UtcNow;
@@ -342,9 +342,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 if (value == null)
-                    SetAttribute("pwdLastSet", 0);
+                    SetAttribute(pwdLastSet, 0);
                 else
-                    SetAttribute("pwdLastSet", -1);
+                    SetAttribute(pwdLastSet, -1);
 
             }
 
