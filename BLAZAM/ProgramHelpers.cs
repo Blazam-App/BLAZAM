@@ -6,6 +6,7 @@ using System.Reflection;
 using BLAZAM.Common.Conventions;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Global.Attributes;
 using BLAZAM.Global.Data.Strings;
