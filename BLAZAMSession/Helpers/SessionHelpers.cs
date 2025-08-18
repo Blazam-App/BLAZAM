@@ -130,7 +130,7 @@ namespace BLAZAM.Helpers
         /// <summary>
         /// Gets the ASP.NET Core authentication cookie value from the HttpContext.
         /// </summary>
-        private static string? GetAuthenticationCookie(this HttpContext httpContext)
+        public static string? GetAuthenticationCookie(this HttpContext httpContext)
         {
             // Get the current authentication cookie
             return httpContext.Request.Cookies[CookieAuthenticationDefaults.CookiePrefix + CookieAuthenticationDefaults.AuthenticationScheme];
