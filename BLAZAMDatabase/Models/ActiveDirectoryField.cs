@@ -109,7 +109,6 @@ namespace BLAZAM.Database.Models
                         case "site":
                         case "sn":
                         case "st":
-                        case "street":
                         case "streetAddress":
                         case "telephoneNumber":
                         case "title":
@@ -142,7 +141,6 @@ namespace BLAZAM.Database.Models
                         case "postalCode":
                         case "sn":
                         case "st":
-                        case "street":
                         case "streetAddress":
                         case "telephoneNumber":
                         case "title":
