@@ -15,8 +15,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.18" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.19" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.19" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Serilog" Version="4.3.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
