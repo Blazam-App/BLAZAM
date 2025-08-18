@@ -56,7 +56,7 @@ namespace BLAZAM.Gui.UI.Chat
 
             if (ChatRoom is null) return 0;
             if (CurrentUser == null || CurrentUser.State.Preferences == null) return 0;
-            return Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count();
+            return Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count;
 
 
         }
@@ -82,8 +82,8 @@ namespace BLAZAM.Gui.UI.Chat
             }
             try
             {
-                unreadAppChatMessages = Chat.GetUnreadMessages(CurrentUser.State.Preferences).Where(ur => ur.ChatRoomId == AppChatRoom.Id).Count();
-                unreadChatMessages = Chat.GetUnreadMessages(CurrentUser.State.Preferences).Where(ur => ur.ChatRoomId != AppChatRoom.Id).Count();
+                unreadAppChatMessages = Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count(ur => ur.ChatRoomId == AppChatRoom.Id);
+                unreadChatMessages = Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count(ur => ur.ChatRoomId != AppChatRoom.Id);
             }
             catch (Exception ex)
             {
