@@ -1,7 +1,7 @@
 ﻿using System.Runtime.ExceptionServices;
 using System.Security.Principal;
 using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
+using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
@@ -34,6 +34,20 @@ namespace BLAZAM.Update.Services
         /// </summary>
         public List<ApplicationUpdate> AvailableUpdates { get; set; } = new();
 
+        public SystemDirectory BackupPath
+        {
+            get => new(Path.Combine(UpdateTempDirectory.FullPath,
+                "backup",
+                _applicationInfo.RunningVersion.ToString()));
+        }
+        public SystemDirectory BackupDirectory
+        {
+            get => new(Path.Combine(UpdateTempDirectory.FullPath,
+                "backup",
+                _applicationInfo.RunningVersion.ToString()));
+        }
+
+
         /// <summary>
         /// The branch configured in the database
         /// </summary>
@@ -41,11 +55,15 @@ namespace BLAZAM.Update.Services
 
         private const string Publisher_Name = "BLAZAM-APP";
         private const string Repository_Name = "Blazam";
+
+        public SystemDirectory UpdateTempDirectory { get; }
+
         private readonly IAppDatabaseFactory? _dbFactory;
         private readonly ApplicationInfo _applicationInfo;
 
         public UpdateService(ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null, IStringLocalizer<AppLocalization>? appLocalization = null)
         {
+            UpdateTempDirectory = new SystemDirectory(applicationInfo.TempDirectory + "update" + Path.DirectorySeparatorChar);
             _dbFactory = dbFactory;
             _applicationInfo = applicationInfo;
             AppLocalization = appLocalization;
@@ -360,6 +378,24 @@ namespace BLAZAM.Update.Services
                 }
             }
             return false;
+        }
+
+        public async Task<bool> Backup()
+        {
+            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupPath);
+            try
+            {
+                var result = await Task.Run(() => { return _applicationInfo.ApplicationRoot.CopyTo(BackupDirectory); });
+
+                Loggers.UpdateLogger?.Debug("Backup result: {@BackupResult}", result.ToString());
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Loggers.UpdateLogger?.Error(ex, "Backup of current version failed");
+                return false;
+            }
         }
 
         private bool TestDirectoryCredentials()

@@ -3,7 +3,6 @@ using System.IO.Compression;
 using System.Security.Principal;
 using System.Text;
 using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
 using BLAZAM.FileSystem;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
@@ -67,14 +66,7 @@ namespace BLAZAM.Update
         {
             get => new(UpdateTempDirectory + "download\\");
         }
-        public SystemDirectory BackupPath
-        {
-            get => new(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
-        }
-        public SystemDirectory BackupDirectory
-        {
-            get => new(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
-        }
+
 
         /// <summary>
         /// The local path to the downloaded zip file
@@ -139,7 +131,6 @@ namespace BLAZAM.Update
         {
             _dbFactory = dbFactory;
             _updateService = updateService;
-            UpdateTempDirectory = new SystemDirectory(applicationInfo.TempDirectory + "update\\");
             _runningProcess = applicationInfo.RunningProcess;
             _runningVersion = applicationInfo.RunningVersion;
             _applicationRootDirectory = applicationInfo.ApplicationRoot;
@@ -188,8 +179,8 @@ namespace BLAZAM.Update
             var downloadStep = new JobStep("Download latest version", Download);
             var cleanStageStep = new JobStep("Cleaning staging area", CleanStaging);
             var stageStep = new JobStep("Extract files", ExtractFiles);
-            var stagingCheckStep = new JobStep("Check prepared files", (step) => { return UpdateStagingDirectory.Exists; });
-            var bakupStep = new JobStep("Create backup", Backup);
+            var stagingCheckStep = new JobStep("Check prepared files", (step) => { return UpdateStagingDirectory.Exists && UpdateStagingDirectory.Files.Count > 3; });
+            var bakupStep = new JobStep("Create backup", (step) => { return _updateService.Backup(); });
             var updateUpdaterStep = new JobStep("Apply Files", InitiateFileCopy);
             var waitForRestart = new JobStep("Wait for completion...", Wait);
             updateJob.AddStep(cleanDownloadStep);
@@ -338,23 +329,7 @@ namespace BLAZAM.Update
 
             return true;
         }
-        public async Task<bool> Backup(JobStep? step)
-        {
-            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupPath);
-            try
-            {
-                var result = await Task.Run(() => { return _applicationRootDirectory.CopyTo(BackupDirectory); });
 
-                Loggers.UpdateLogger?.Debug("Backup result: {@BackupResult}", result.ToString());
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Loggers.UpdateLogger?.Error(ex, "Backup of current version failed");
-                return false;
-            }
-        }
 
 
         public async Task<bool> CleanDownload(IJobStep? step)
