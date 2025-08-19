@@ -10,12 +10,6 @@ namespace BLAZAM.Gui.UI.Settings
         {
             return base.OnInitializedAsync();
         }
-        //TODO do we need this save
-        protected void Save(IEnumerable<EntityEntry> changedEntries)
-        {
-
-            base.Save();
-        }
         [Parameter]
         public EventCallback SettingsSaved { get; set; }
     }
