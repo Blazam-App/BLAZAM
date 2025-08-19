@@ -1159,6 +1159,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             try
             {
+                if (NewEntryProperties.ContainsKey(propertyName))
+                {
+                    return (T)NewEntryProperties[propertyName];
+                }
+
                 if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
                 {
                     var val = DirectoryEntry.GetPropertyValue(propertyName);
