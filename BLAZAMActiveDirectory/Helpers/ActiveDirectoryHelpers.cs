@@ -166,6 +166,15 @@ namespace BLAZAM.Helpers
             return string.Join("/", ouComponents);
         }
 
+        /// <summary>
+        /// Encapsulates a raw DirectoryEntry search's <see cref="SearchResultCollection"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
+        /// </summary>
+        /// <param name="r"></param>
+        /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
+        public static List<IDirectoryEntryAdapter> Encapsulate(this SearchResultCollection r, IActiveDirectoryContext context)
+        {
+            List<IDirectoryEntryAdapter> objects = new();
+
 
             if (r != null && r.Count > 0)
             {
@@ -242,34 +251,34 @@ namespace BLAZAM.Helpers
         {
             IDirectoryEntryAdapter? thisObject = null;
 
-            if (sr.PropertyContains("objectClass", "top"))
+            if (sr.PropertyContains(OBJECT_CLASS, "top"))
             {
-                if (sr.PropertyContains("objectClass", "computer"))
+                if (sr.PropertyContains(OBJECT_CLASS, "computer"))
                 {
                     thisObject = new ADComputer();
                 }
-                else if (sr.PropertyContains("objectClass", "user"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "user"))
                 {
                     thisObject = new ADUser();
                 }
-                else if (sr.PropertyContains("objectClass", "contact"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "contact"))
                 {
                     thisObject = new ADContact();
                 }
 
-                else if (sr.PropertyContains("objectClass", "group"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "group"))
                 {
                     thisObject = new ADGroup();
                 }
-                else if (sr.PropertyContains("objectClass", "printQueue"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "printQueue"))
                 {
                     thisObject = new ADPrinter();
                 }
-                else if (sr.PropertyContains("objectClass", "msFVE-RecoveryInformation"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "msFVE-RecoveryInformation"))
                 {
                     thisObject = new ADBitLockerRecovery();
                 }
-                else if (sr.PropertyContains("objectClass", "organizationalUnit") || sr.PropertyContains("objectClass", "container"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "organizationalUnit") || sr.PropertyContains(OBJECT_CLASS, "container"))
                 {
                     thisObject = new ADOrganizationalUnit();
                 }
