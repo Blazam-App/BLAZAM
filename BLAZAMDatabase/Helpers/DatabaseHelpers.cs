@@ -155,11 +155,6 @@ namespace BLAZAM.Helpers
             AddNotificationSubscriptionConfig(modelBuilder);
             AddUnreadChatMessageConfig(modelBuilder);
 
-            // Scan all assemblies (core + plugins) for entity configurations
-            foreach (var assembly in ApplicationInfo.loadedPlugins.Select(p => p.Assembly))
-            {
-                modelBuilder.ApplyConfigurationsFromAssembly(assembly);
-            }
         }
 
         internal static void AddActiveDirectoryFieldData(ModelBuilder modelBuilder)
