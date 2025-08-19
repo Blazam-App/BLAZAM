@@ -14,9 +14,6 @@ namespace BLAZAM.Database.Models.User
         public List<UserNotification> Notifications { get; set; } = new();
         public List<ReadNewsItem> ReadNewsItems { get; set; } = new();
         public List<UserFavoriteEntry> FavoriteEntries { get; set; } = new();
-        //public List<ChatMessage> PostedChatMessages { get; set; } = new();
-        //public List<UnreadChatMessage> UnreadChatMessages { get; set; } = new();
-        //public List<ChatRoom> ChatRooms{ get; set; } = new();
 
         public List<UserDashboardWidget> DashboardWidgets { get; set; } = new();
         public List<NotificationSubscription> NotificationSubscriptions { get; set; } = new();

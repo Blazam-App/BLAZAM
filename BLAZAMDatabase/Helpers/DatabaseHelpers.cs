@@ -38,7 +38,6 @@ namespace BLAZAM.Helpers
         public static bool IsNotificationAppropriateForObject(this NotificationType notificationType, ActiveDirectoryObjectType type)
         {
 
-            //var Name = action.ToString();
             switch (type)
             {
                 case ActiveDirectoryObjectType.User:
@@ -155,6 +154,7 @@ namespace BLAZAM.Helpers
             AddChatMessageConfig(modelBuilder);
             AddNotificationSubscriptionConfig(modelBuilder);
             AddUnreadChatMessageConfig(modelBuilder);
+
         }
 
         internal static void AddActiveDirectoryFieldData(ModelBuilder modelBuilder)

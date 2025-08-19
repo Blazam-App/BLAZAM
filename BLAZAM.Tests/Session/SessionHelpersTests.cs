@@ -75,9 +75,8 @@ namespace BLAZAM.Tests.Session
         public void GetAuthenticationCookie_ReturnsNull_WhenNoCookie()
         {
             var context = new DefaultHttpContext();
-            var result = typeof(SessionHelpers)
-                .GetMethod("GetAuthenticationCookie", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
-                .Invoke(null, new object[] { context });
+
+            var result = context.GetAuthenticationCookie();
             Assert.Null(result);
         }
     }

@@ -28,10 +28,16 @@ namespace BLAZAM.Tests.Updates
             var latest = await _updateService.GetUpdates();
             if (latest != null)
                 await latest.Download(null);
-
-            Assert.True(latest?.UpdateFile.Exists);
-            await Update_Stages_OK(latest);
-            await Update_Cleanup_OK(latest);
+            if (latest == null)
+            {
+                Assert.NotNull(latest);
+            }
+            else
+            {
+                Assert.True(latest.UpdateFile.Exists);
+                await Update_Stages_OK(latest);
+                await Update_Cleanup_OK(latest);
+            }
         }
 
         private static async Task Update_Stages_OK(ApplicationUpdate latest)

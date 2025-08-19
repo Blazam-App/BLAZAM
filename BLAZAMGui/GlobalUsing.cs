@@ -3,6 +3,7 @@ global using BLAZAM.Common.Data;
 global using BLAZAM.Common.Data.Services;
 global using BLAZAM.Common.Exceptions;
 global using BLAZAM.Database.Context;
+global using BLAZAM.Database.Interfaces;
 global using BLAZAM.Database.Models.Notifications;
 global using BLAZAM.Database.Models.Templates;
 global using BLAZAM.Global.Events;

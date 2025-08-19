@@ -183,7 +183,6 @@ else
         }
         await CurrentUser.State.SaveReadNewsItems();
         RefreshItems();
-        //await InvokeAsync(StateHasChanged);
 
     }
     private void RefreshItems()
@@ -202,17 +201,14 @@ else
     }
     private void RefreshUnreadItems()
     {
-
-
         unreadItems = ApplicationNewsService.GetUnreadNewsItems(CurrentUser.State);
-        if (AutoUpdateService.IsUpdateAvailable)
+        if (AutoUpdateService.IsUpdateAvailable 
+            && appUpdateNewsItem != null
+            && !CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id) == true)
         {
 
-            if (appUpdateNewsItem != null &&
-                !CurrentUser.State.ReadNewsItems?.Any(x => x.NewsItemId == appUpdateNewsItem.Id) == true)
-            {
-                unreadItems.Insert(0, appUpdateNewsItem);
-            }
+            unreadItems.Insert(0, appUpdateNewsItem);
+            
         }
     }
 

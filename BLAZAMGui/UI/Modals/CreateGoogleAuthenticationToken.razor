@@ -58,7 +58,6 @@ OnClick="GenerateGoogleAuthToken">@AppLocalization[Lang.Create_Google_Authentica
     }
     async Task GenerateGoogleAuthToken()
     {
-        //var result  =  await googleAuthenticatorModal.ShowAsync();
 
         if (qrCode == null || await MessageService.Confirm(AppHelpLocalization[HelpLang.Overwrite_Auth_Token_Confirmation]) == true)
         {

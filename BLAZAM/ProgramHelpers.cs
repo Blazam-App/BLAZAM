@@ -6,6 +6,7 @@ using System.Reflection;
 using BLAZAM.Common.Conventions;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Global.Attributes;
 using BLAZAM.Global.Data.Strings;
@@ -362,7 +363,7 @@ namespace BLAZAM
                         Type = ReferenceType.SecurityScheme
                     }
                 };
-
+                c.SchemaFilter<EnumSchemaFilter>();
                 // Add the security definition to Swagger
                 c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
                 // Add a security requirement globally (forces auth for all endpoints shown in Swagger UI)
@@ -551,6 +552,8 @@ namespace BLAZAM
                 // Create a scope to resolve scoped services like the database context
                 using var scope = application.Services.CreateScope();
                 var dbFactory = scope.ServiceProvider.GetRequiredService<IAppDatabaseFactory>();
+
+
                 using var context = dbFactory.CreateDbContext();
 
                 if (context != null)

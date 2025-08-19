@@ -53,6 +53,7 @@ namespace BLAZAM.Gui.Helpers
 
                 throw;
             }
+          
         }
     }
 }

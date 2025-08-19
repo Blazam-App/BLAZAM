@@ -1,8 +1,9 @@
+@using BLAZAM.Gui.UI.Dashboard.Widgets
 @inherits AppComponentBase
 @if (Members != null)
 {
     <MudDataGrid Elevation=0
-                 Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
+                 Items="@Members.Where(m => m.CanRead).OrderBy(m => m.ObjectType).ThenBy(m => m.CanonicalName)"
                  Filterable="false"
                  Dense=true
                  Style="max-height:400px; overflow-y:auto;"
@@ -20,20 +21,22 @@
             <TemplateColumn Title=@AppLocalization[Lang.Name] Sortable=true Filterable=true Context="templateContext">
 
                 <CellTemplate Context="cellContext">
-                    <DirectoryEntryContextMenu Entry="cellContext.Item" OnChanged="RefreshData">
-                        <MudLink Href="@cellContext.Item.SearchUri">
-                            @if (cellContext.Item is IADGroup group)
-                            {
-                                <GroupWithDescriptionTooltip Group="group" />
-                            }
-                            else
-                            {
-                                <MudElement>
-                                    @cellContext.Item.CanonicalName
-                                </MudElement>
-                            }
-                        </MudLink>
-                    </DirectoryEntryContextMenu>
+                    <DirectoryEntryTooltipPopover Entry="@cellContext.Item">
+                        <DirectoryEntryContextMenu Entry="cellContext.Item" OnChanged="RefreshData">
+                            <MudLink Href="@cellContext.Item.SearchUri">
+                                @if (cellContext.Item is IADGroup group)
+                                {
+                                    <GroupWithDescriptionTooltip Group="group" />
+                                }
+                                else
+                                {
+                                    <MudElement>
+                                        @cellContext.Item.CanonicalName
+                                    </MudElement>
+                                }
+                            </MudLink>
+                        </DirectoryEntryContextMenu>
+                    </DirectoryEntryTooltipPopover>
                 </CellTemplate>
             </TemplateColumn>
             <TemplateColumn Sortable=true Filterable=true Context="templateContext">
@@ -105,7 +108,7 @@
                    OnClick="@(()=>{_=AssignMemberModal?.ShowAsync();})">@AppLocalization[Lang.Add_Member]</MudButton>
     }
     <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Add_Member] @ref=@AssignMemberModal>
-        <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />
+        <AddMemberModalContent ModelChanged=@(() => { InvokeAsync(OnInitializedAsync); }) Group="Group" />
     </AppModal>
 }
 else

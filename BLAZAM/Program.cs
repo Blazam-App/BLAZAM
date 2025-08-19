@@ -6,6 +6,7 @@ using System.Security.Cryptography.X509Certificates; // For SSL certificate hand
 using BLAZAM.ActiveDirectory;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Interfaces;
 using BLAZAM.Server.Middleware;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;

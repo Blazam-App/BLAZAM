@@ -100,7 +100,6 @@ namespace BLAZAM.Services
             _nav.NavigateTo("/search/" + SearchTerm);
 
 
-            //Search();
 
         }
     }

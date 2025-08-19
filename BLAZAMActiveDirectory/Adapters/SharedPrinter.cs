@@ -8,12 +8,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
     {
         public IADPrinter? ADPrinter { get; set; }
 
-        public IADComputer Host;
+        private readonly IADComputer _host;
+        public IADComputer Host => _host;
         private readonly ManagementObject _wmiPrinterObject;
 
         public SharedPrinter(IADComputer host, ManagementObject wmiPrinterObject)
         {
-            Host = host;
+            _host = host;
             _wmiPrinterObject = wmiPrinterObject;
             GetDirectoryPrinter();
         }
@@ -25,7 +26,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <returns></returns>
         public void GetDirectoryPrinter()
         {
-            var directory = Host.Directory;
+            var directory = _host.Directory;
             if (directory != null)
             {
                 var printer = directory.Printers.FindPrintersByString(ShareName).FirstOrDefault();

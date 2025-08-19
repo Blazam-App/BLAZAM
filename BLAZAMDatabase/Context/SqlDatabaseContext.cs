@@ -35,8 +35,8 @@ namespace BLAZAM.Database.Context
                             {
                                 sqlOptions.EnableRetryOnFailure();
 
-                            }
-                                ).EnableSensitiveDataLogging()
+                            })
+                            .EnableSensitiveDataLogging()
                                 .LogTo(Loggers.DatabaseLogger.Information);
         }
         protected override DataTable SelectAllDataFromTable(string? tableName)

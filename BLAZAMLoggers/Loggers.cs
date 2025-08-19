@@ -140,6 +140,7 @@ namespace BLAZAM.Logger
         {
             _logPath = logPath;
             _applicationVersion = applicationVersion;
+          
             RequestLogger = SetupLogger(logPath + $"requests{Path.DirectorySeparatorChar}requests.txt");
             DatabaseLogger = SetupLogger(logPath + $"database{Path.DirectorySeparatorChar}db.txt");
             ActiveDirectoryLogger = SetupLogger(logPath + $"activedirectory{Path.DirectorySeparatorChar}activedirectory.txt");
@@ -149,11 +150,8 @@ namespace BLAZAM.Logger
             SystemLogger = SetupLogger(logPath + $"system{Path.DirectorySeparatorChar}system.txt");
             PluginLogger = SetupLogger(logPath + $"plugins{Path.DirectorySeparatorChar}plugins.txt");
 
-          
-           
-            Log.Logger = AspNetLogger;
+        
 
-            //Serilog.Debugging.SelfLog.Enable(Console.Error);
         }
 
         internal static LoggerConfiguration CreateLogBuilder()
@@ -184,7 +182,6 @@ namespace BLAZAM.Logger
 
                 .WriteTo.Logger(lc =>
                 {
-                    //lc.WriteTo.Console();
                     lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
                 });
             if (SendToSeqServer)
@@ -200,7 +197,7 @@ namespace BLAZAM.Logger
             logger ??= SetupTestLogger();
         }
 
-        private static Serilog.ILogger SetupTestLogger()
+        private static ILogger SetupTestLogger()
         {
             var loggerBuilder = CreateLogBuilder()
                 .WriteTo.Console();

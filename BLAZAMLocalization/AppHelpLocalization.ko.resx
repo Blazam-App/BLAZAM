@@ -147,6 +147,9 @@
   <data name="Created" xml:space="preserve">
     <value>{0}이(가) 만들어졌습니다.</value>
   </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value />
+  </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>위임자는 승인된 애플리케이션 사용자입니다. 여기에 정의한 사용자 또는 매핑된 권한이 있거나 자체 편집이 활성화된 다음 Active Directory 그룹(또는 중첩된 그룹)의 사용자만 해당됩니다.</value>
   </data>

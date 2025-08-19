@@ -1,5 +1,6 @@
 
 using BLAZAM.ActiveDirectory;
+
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Duo;
@@ -120,10 +121,6 @@ namespace BLAZAM.Gui.UI
                 Loggers.ActiveDirectoryLogger.Error(ex, "Failed to connect to scoped active directory");
 
             }
-            //Monitor.OnDirectoryConnectionChanged += (status) =>
-            //{
-            //    InvokeAsync(StateHasChanged);
-            //};
         }
 
         protected override async Task OnInitializedAsync()
@@ -138,10 +135,6 @@ namespace BLAZAM.Gui.UI
             {
                 Loggers.ActiveDirectoryLogger.Error(ex, "Failed to connect to scoped active directory");
             }
-            //Monitor.OnDirectoryConnectionChanged += (status) =>
-            //{
-            //    InvokeAsync(StateHasChanged);
-            //};
 
         }
 

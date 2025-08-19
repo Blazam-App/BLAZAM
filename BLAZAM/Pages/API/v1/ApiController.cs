@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Security.Claims;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Interfaces;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -124,7 +124,7 @@ namespace BLAZAM.Pages.API.v1
                     {
                         throw new DirectorySearchUniquenessException(groupIdentifier);
                     }
-                    group = matches.First();
+                    group = matches[0];
                 }
             }
             return group;
