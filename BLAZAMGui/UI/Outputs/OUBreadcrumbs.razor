@@ -1,0 +1,46 @@
+﻿@if (_items.Count > 0)
+{
+    <AppBreadcrumbs Style="padding:0px;"  Items="_items">
+        <ItemTemplate>
+            <MudLink Typo="Typo.caption"
+                     Color="Color.Tertiary"
+                     Class="align-middle"
+                     Href="@context.Href">@context.Text</MudLink>
+        </ItemTemplate>
+        <SeparatorTemplate>
+            <MudText Typo="Typo.caption"
+                     Class="align-middle">
+                /
+            </MudText>
+        </SeparatorTemplate>
+    </AppBreadcrumbs>
+}
+
+
+
+
+@code {
+    [Parameter]
+    public IDirectoryEntryAdapter? Entry { get; set; }
+    private List<BreadcrumbItem> _items
+    {
+        get
+        {
+            var ou = Entry.GetParent() as IADOrganizationalUnit;
+            var items = new List<BreadcrumbItem>();
+            if (ou is not null)
+            {
+                IADOrganizationalUnit? ouCursor = ou;
+                do
+                {
+                    items.Add(new BreadcrumbItem(ouCursor.Name, ouCursor.SearchUri));
+                    ouCursor = ouCursor.GetParent() as IADOrganizationalUnit;
+
+                } while (ouCursor != null);
+            }
+            items.Reverse();
+            return items;
+
+        }
+    }
+}
