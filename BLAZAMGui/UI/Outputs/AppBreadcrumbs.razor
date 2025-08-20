@@ -1,0 +1,38 @@
+﻿@inherits MudBreadcrumbs
+<MudStack Row=true Spacing="1">
+    @if (Items != null)
+    {
+        // Limit breadcrumbs to max 3: show first and last 2 if over limit
+        List<BreadcrumbItem> displayItems = new(Items);
+        if (Items.Count() > 3)
+        {
+            var first = Items.First();
+            var thirdFromLast = Items[Items.Count-2];
+            var lastTwo = Items.Skip(Items.Count() - 2);
+            displayItems = new List<BreadcrumbItem>() { first };
+            displayItems.Add(new("...", thirdFromLast.Href)); // Use a string or a custom object for ellipsis
+
+            displayItems.AddRange(lastTwo);
+        }
+
+        var firstItem = true;
+        foreach (var item in displayItems)
+        {
+            if (!firstItem)
+            {
+                @SeparatorTemplate
+            }
+            if (item?.ToString() == "...")
+            {
+                <span>...</span>
+            }
+            else
+            {
+                @ItemTemplate(item)
+            }
+            firstItem = false;
+        }
+    }
+</MudStack>
+@code {
+}

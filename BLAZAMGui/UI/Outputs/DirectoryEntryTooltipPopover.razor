@@ -4,6 +4,7 @@
         @ChildContent
     </ActivatorContent>
     <PopoverContent>
+        <MudElement Class="pa-1">
         @{
             switch (Entry.ObjectType)
             {
@@ -67,8 +68,7 @@
                         <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.OU]:</MudText>
                         <MudSpacer />
 
-                        <MudText Style="text-align:end;"
-                                 Typo="Typo.caption">@User?.OU.ToPrettyOu()</MudText>
+                       <OUBreadcrumbs Entry="Entry"/>
                     </MudStack>
                     break;
                 default:
@@ -77,7 +77,7 @@
             }
         }
 
-
+        </MudElement>
     </PopoverContent>
 </AppTooltipPopover>
 
