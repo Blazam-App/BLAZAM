@@ -1,5 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
@@ -73,8 +72,8 @@ namespace BLAZAM.Services.Audit
                     Sid = searchedComputer.SID.ToSidString(),
                     Action = action,
                     Target = searchedComputer.CanonicalName,
-                    Username = CurrentUser?.AuditUsername,
-                    IpAddress = CurrentUser?.IPAddress
+                    Username = UserState?.AuditUsername,
+                    IpAddress = UserState?.IPAddress
 
                 });
                 await context.SaveChangesAsync();
