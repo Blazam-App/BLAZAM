@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using BLAZAM.ActiveDirectory.Data;
@@ -58,7 +58,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     object? currentValue = null;
                     try
                     {
-                        currentValue = DirectoryEntry?.Properties[prop.Key].Value;
+                        currentValue = DirectoryEntry?.GetPropertyValue(prop.Key);
                     }
                     catch
                     {
@@ -71,7 +71,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         changes.Add(new AuditChangeLog()
                         {
                             Field = prop.Key,
-                            OldValue = DirectoryEntry?.Properties[prop.Key].Value,
+                            OldValue = DirectoryEntry?.GetPropertyValue(prop.Key),
                             NewValue = prop.Value
                         });
                 }
@@ -151,7 +151,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public DirectoryEntry? DirectoryEntry { get; set; }
+        public IDirectoryEntry? DirectoryEntry { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -314,13 +314,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-
+        private IADOrganizationalUnit? _lastKnownParent;
         public virtual IADOrganizationalUnit? LastKnownParent
         {
             get
             {
+                if (_lastKnownParent != null) return _lastKnownParent;
                 var parentDN = GetStringAttribute("lastknownparent");
-                return parentDN != null ? Directory.OUs.FindOuByDN(parentDN) : null;
+                _lastKnownParent = parentDN != null ? Directory.OUs.FindOuByDN(parentDN) : null;
+                return _lastKnownParent;
             }
 
         }
@@ -405,26 +407,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (!IsDeleted)
-                {
-                    return GetStringListAttribute("objectClass");
-                }
-                else
-                {
-                    try
-                    {
-                        return SearchResult?.Properties["objectclass"].Cast<string>().ToList();
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                        return null;
-                    }
-                }
+
+
+                return GetStringListAttribute("objectClass");
             }
             set
             {
                 if (DirectoryEntry != null)
-                    DirectoryEntry.Properties["objectclass"].Value = value;
+                    DirectoryEntry.SetPropertyValue("objectclass", value);
                 else
                     Loggers.ActiveDirectoryLogger.Error("Error setting objectClass for {@DN}", DN);
 
@@ -450,7 +440,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        public virtual string? OU { get => DN.DnToOu() ?? ADSPath.DnToOu(); }
+        public virtual string? OU { get => DN.DnToOu(); }
 
         public async Task<IDirectoryEntryAdapter?> GetParentAsync() => await Task.Run(() =>
         {
@@ -486,7 +476,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (CurrentUser == null) return false;
                 if (DN == null)
                 {
-                    throw new AppException("The directory object " + ADSPath + " did not load a distinguished name.");
+                    throw new AppException("The directory object " + DN + " did not load a distinguished name.");
                 }
                 return CurrentUser.HasPermission(DN, allowSelector, denySelector, nestedSearch);
             }
@@ -648,18 +638,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     List<IDirectoryEntryAdapter> directoryEntries = [];
                     EnsureDirectoryEntry();
                     var children = DirectoryEntry.Children;
-                    var list = new List<DirectoryEntry>();
-                    foreach (DirectoryEntry child in children)
+                    var list = new List<IDirectoryEntry>();
+                    foreach (IDirectoryEntry child in children)
                     {
-                        list.Add(child);
-                    }
-                    Parallel.ForEach<DirectoryEntry>(list, child =>
-                    {
+                        //    list.Add(child);
+                        //}
+                        //Parallel.ForEach<IDirectoryEntry>(list, child =>
+                        //{
                         DirectoryEntryAdapter? thisObject = null;
 
-                        if (child.Properties["objectClass"].Contains("top"))
+                        if (child.PropertyContains("objectClass", "top"))
                         {
-                            var objectClass = child.Properties["objectClass"];
+                            var raw = child.GetPropertyValue("objectClass");
+                            var objectClass = raw as object[];
                             if (objectClass.Contains("computer"))
                             {
                                 thisObject = new ADComputer();
@@ -696,7 +687,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             }
 
                         }
-                    });
+                    }//);
                     CachedChildren = directoryEntries.OrderBy(x => x.CanonicalName).ThenBy(x => x.ObjectType);
                 }
                 return CachedChildren;
@@ -774,19 +765,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
             throw new AppException("The field provided is invalid");
-
-
-
         }
 
 
-        public virtual void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
+        public virtual void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null, SearchResultEntry? searchResultEntry = null)
         {
             Directory = directory;
 
             if (searchResult != null)
                 SearchResult = searchResult;
+            if (searchResultEntry != null)
+            {
+                DirectoryEntry = new LdapDirectoryEntry(searchResultEntry, directory);
 
+            }
             if (directoryEntry != null)
             {
                 DirectoryEntry = directoryEntry;
@@ -844,26 +836,26 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-                             if (!DirectoryEntry.Properties.Contains(p.Key)
-                                 || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
+                             if (!DirectoryEntry.ContainsProperty(p.Key)
+                                 || DirectoryEntry.GetPropertyValue(p.Key)?.Equals(p.Value) != true)
                              {
                                  if (p.Value == null
                              || p.Value is string strValue && strValue.IsNullOrEmpty()
                              || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
                                  {
 
-                                     DirectoryEntry.Properties[p.Key].Clear();
+                                     DirectoryEntry.ClearPropertyValue(p.Key);
 
 
                                  }
                                  else
                                  {
-                                     DirectoryEntry.Properties[p.Key].Value = p.Value;
+                                     DirectoryEntry.SetPropertyValue(p.Key, p.Value);
 
                                  }
                              }
 
-                             DirectoryEntry.CommitChanges();
+                             //DirectoryEntry.CommitChanges();
                              return true;
                          });
                         propertyJob.AddStep(propertyStep);
@@ -873,12 +865,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         commitJob.AddStep(propertyJob);
                     }
-                    commitJob.AddStep(commitStep);
+                    //commitJob.AddStep(commitStep);
 
                 }
                 else
                 {
 
+                    var ou = GetParent();
+                    var ouEntry = ou.DirectoryEntry;
+                    //var newUser = ouEntry.Children.Add(this.Rdn(), "user");
                     if (DirectoryEntry == null)
                     {
                         Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"), "The directory entry for new entry is somehow missing on commit. {@DN}", DN);
@@ -891,7 +886,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                || p.Value is DateTime dateValue && dateValue == DateTime.MinValue) continue;
                         propertyStep = new JobStep("Set " + p.Key, (step) =>
                         {
-                            DirectoryEntry.Properties[p.Key].Value = p.Value;
+                            DirectoryEntry.SetPropertyValue(p.Key, p.Value);
                             return true;
                         });
                         propertyJob.AddStep(propertyStep);
@@ -900,6 +895,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         commitJob.AddStep(propertyJob);
                     }
+                    commitJob.AddStep(commitStep);
                 }
 
 
@@ -920,8 +916,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 }
-                commitJob.AddStep(commitStep);
-                commitJob.AddStep(commitStep);
+                //commitJob.AddStep(commitStep);
+                //commitJob.AddStep(commitStep);
                 if (NewEntry
                     && PostCommitSteps.Count > 0)
                 {
@@ -929,7 +925,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         commitJob.AddStep(step);
                     }
-                    commitJob.AddStep(commitStep);
+                    //commitJob.AddStep(commitStep);
 
 
                 }
@@ -982,7 +978,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             var children = DirectoryEntry?.Children;
                             if (children != null)
                             {
-                                foreach (DirectoryEntry child in children)
+                                foreach (IDirectoryEntry child in children)
                                 {
                                     DirectoryEntry?.Children.Remove(child);
                                 }
@@ -1025,7 +1021,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual void DiscardChanges()
         {
 
-            DirectoryEntry = null;
+            //DirectoryEntry = null;
             HasUnsavedChanges = false;
             NewEntryProperties = [];
             CommitSteps.Clear();
@@ -1041,7 +1037,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (SearchResult is null) throw new CriticalActiveDirectoryException(Directory, nameof(SearchResult));
 
-            DirectoryEntry = SearchResult.GetDirectoryEntry();
+            DirectoryEntry = SearchResult.GetDirectoryEntry().ToIDirectoryEntry(Directory);
 
         }
 
@@ -1076,37 +1072,37 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
         {
             var list = new List<T?>();
-            var dcs = new List<DomainController>(Directory.DomainControllers);
+            //var dcs = new List<DomainController>(Directory.DomainControllers);
 
-            Parallel.ForEach(dcs, dc =>
-            {
-                try
-                {
-                    if (dc.IsPingable())
-                    {
-                        var searcher = dc.GetDirectorySearcher();
-                        searcher.Filter = "(distinguishedName=" + this.DN + ")";
-                        searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
-                        searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
-                        var searchResult = searcher.FindOne();
-                        if (searchResult != null)
-                        {
-                            var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
-                            lock (list)
-                            {
-                                list.Add((T)value);
-                            }
-                        }
-                    }
-                }
-                catch
-                {
-                    lock (list)
-                    {
-                        list.Add(default);
-                    }
-                }
-            });
+            //Parallel.ForEach(dcs, dc =>
+            //{
+            //    try
+            //    {
+            //        if (dc.IsPingable())
+            //        {
+            //            var searcher = dc.GetDirectorySearcher();
+            //            searcher.Filter = "(distinguishedName=" + this.DN + ")";
+            //            searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
+            //            searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
+            //            var searchResult = searcher.FindOne();
+            //            if (searchResult != null)
+            //            {
+            //                var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
+            //                lock (list)
+            //                {
+            //                    list.Add((T)value);
+            //                }
+            //            }
+            //        }
+            //    }
+            //    catch
+            //    {
+            //        lock (list)
+            //        {
+            //            list.Add(default);
+            //        }
+            //    }
+            //});
 
             return list;
         }
@@ -1124,14 +1120,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         /// <summary>
-        /// Retrieves the requested property value from a local cache or by polling Active Directory.
+        /// Retrieves the requested property value from either the cached <see cref="SearchResult"/>
+        /// or by actively polling Active Directory for the entire object.
+        /// The value is cached for future calls.
         /// </summary>
-        /// <typeparam name="T">The value type of the requested attribute.</typeparam>
-        /// <param name="propertyName">The name of the attribute to retrieve.</param>
-        /// <returns>The attribute's value, or a default value if not found.</returns>
+        /// <typeparam name="T">The value type of the requested attribute</typeparam>
+        /// <param name="propertyName">The requested attribute</param>
+        /// <returns>The attribute value</returns>
         private T? GetValue<T>(string propertyName)
-        {
 
+        {
             if (NewEntry)
             {
                 try
@@ -1150,57 +1148,54 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-                return default;
 
-            }
-            if (DirectoryEntry == null)
-            {
-                if (SearchResult != null && SearchResult.Properties.Contains(propertyName))
-                    return (T?)SearchResult.Properties[propertyName][0];
-                else
+
+                //Check for exising edits to this entry
+                try
                 {
-                    FetchDirectoryEntry();
+                    if (NewEntryProperties.ContainsKey(propertyName))
+                        return (T)NewEntryProperties[propertyName];
+                }
+                catch (InvalidCastException ex)
+                {
+                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+
+                }
+                catch
+                {
+                    return default;
+
                 }
             }
             try
             {
                 if (NewEntryProperties.ContainsKey(propertyName))
+                {
                     return (T)NewEntryProperties[propertyName];
-            }
-            catch (InvalidCastException ex)
-            {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+                }
+
+                if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
+                {
+                    var val = DirectoryEntry.GetPropertyValue(propertyName);
+                    if (val is null)
+                    {
+                        return default;
+                    }
+                    else
+                    {
+                        return (T?)val;
+                    }
+                }
 
             }
             catch
             {
-                return default;
-
-            }
-
-            try
-            {
-                if (DirectoryEntry != null && DirectoryEntry.Properties.Contains(propertyName))
-                    return (T?)DirectoryEntry.Properties[propertyName].Value;
-
-            }
-            catch (ArgumentException)
-            {
-                var temp = DirectoryEntry?.Properties[propertyName];
-                var temp2 = (T?)temp?.Value;
-                return temp2;
-            }
-            catch (InvalidCastException ex)
-            {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-
-            }
-
-            catch
-            {
-                return default;
+                // This can happen if the property is not available for this object class in AD.
+                // For example, if the property is not set on the object, or if it is not a valid property for the object class.
+                // In this case, we return null.
             }
             return default;
+
 
         }
 
@@ -1316,7 +1311,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private void SetNewProperty(string propertyName, object? value)
         {
-            if (value != null && !value.Equals(DirectoryEntry?.Properties[propertyName]?.Value))
+            var existingValue = DirectoryEntry?.GetPropertyValue(propertyName);
+            if (value != null && !value.Equals(existingValue))
             {
                 NewEntryProperties[propertyName] = value;
 
@@ -1335,7 +1331,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual bool Rename(string newName)
         {
             newName = newName.Replace(",", "\\,");
-            DirectoryEntry?.Rename("cn=" + newName);
+            DirectoryEntry?.Rename(newName);
             OnDirectoryModelRenamed?.Invoke(this);
             return true;
         }
@@ -1344,7 +1340,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
 
-                DirectoryEntry?.Properties[propertyName].Remove(value);
+                DirectoryEntry?.RemovePropertyValue(propertyName, value);
 
                 HasUnsavedChanges = true;
 
@@ -1359,7 +1355,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                DirectoryEntry?.Properties[propertyName].Add(value);
+                DirectoryEntry?.AddPropertyValue(propertyName, value);
                 HasUnsavedChanges = true;
 
             }

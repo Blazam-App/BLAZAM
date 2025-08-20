@@ -31,11 +31,8 @@
 
            };
         }
-        _ = Task.Run(() =>
-        {
-            _ = RefreshDataAsync();
+       await RefreshDataAsync();
 
-        });
     }
 
     protected virtual async Task RefreshDataAsync()

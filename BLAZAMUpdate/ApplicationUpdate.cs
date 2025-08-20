@@ -47,7 +47,7 @@ namespace BLAZAM.Update
         private static SystemDirectory UpdateTempDirectory { get; set; }
 
         public static SystemDirectory StagingDirectory =>
-            new(UpdateTempDirectory + "staged\\");
+            new(UpdateTempDirectory + $"staged{Path.DirectorySeparatorChar}");
 
         /// <summary>
         /// The local staging directory path for this update
@@ -64,9 +64,8 @@ namespace BLAZAM.Update
         /// </returns>
         public static SystemDirectory UpdateDownloadDirectory
         {
-            get => new(UpdateTempDirectory + "download\\");
+            get => new(UpdateTempDirectory + $"download{Path.DirectorySeparatorChar}");
         }
-
 
         /// <summary>
         /// The local path to the downloaded zip file
@@ -92,12 +91,12 @@ namespace BLAZAM.Update
         {
             get
             {
-                var testPath = new SystemFile(_applicationRootDirectory + @"bin\Debug\net8.0\updater\update.ps1");
+                var testPath = new SystemFile(_applicationRootDirectory + $"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}net8.0{Path.DirectorySeparatorChar}updater{Path.DirectorySeparatorChar}update.ps1");
 
 
                 if (!testPath.Exists)
                 {
-                    testPath = new SystemFile(_applicationRootDirectory + @"updater\update.ps1");
+                    testPath = new SystemFile(_applicationRootDirectory + $"updater{Path.DirectorySeparatorChar}update.ps1");
                 }
                 return testPath;
             }
@@ -109,7 +108,7 @@ namespace BLAZAM.Update
 
                 var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory;
                 if (Debugger.IsAttached)
-                    args += "bin\\Debug\\net8.0\\";
+                    args += $"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}net8.0{Path.DirectorySeparatorChar}";
                 args += "'";
 
                 return args;
@@ -209,8 +208,8 @@ namespace BLAZAM.Update
 
 
             Loggers.UpdateLogger?.Debug("Copying updater script");
-            Loggers.UpdateLogger?.Debug("Source: {Source}", UpdateStagingDirectory + "\\updater\\*");
-            Loggers.UpdateLogger?.Debug("Dest: {Destination}", _applicationRootDirectory + "updater\\");
+            Loggers.UpdateLogger?.Debug("Source: {Source}", UpdateStagingDirectory + $"{Path.DirectorySeparatorChar}updater{Path.DirectorySeparatorChar}*");
+            Loggers.UpdateLogger?.Debug("Dest: {Destination}", _applicationRootDirectory + $"updater{Path.DirectorySeparatorChar}");
 
 
             using var context = await _dbFactory.CreateDbContextAsync();
@@ -252,8 +251,8 @@ namespace BLAZAM.Update
 
 
 
-            SystemDirectory updaterDirFromStagedUpdate = new(UpdateStagingDirectory.FullPath + "updater\\");
-            SystemDirectory updaterDir = new(_applicationRootDirectory.FullPath + "updater\\");
+            SystemDirectory updaterDirFromStagedUpdate = new(UpdateStagingDirectory.FullPath + $"updater{Path.DirectorySeparatorChar}");
+            SystemDirectory updaterDir = new(_applicationRootDirectory.FullPath + $"updater{Path.DirectorySeparatorChar}");
 
 
 

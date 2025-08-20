@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.Protocols;
 using System.Security;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
@@ -200,23 +201,23 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 var uacRaw = Convert.ToInt32(GetAttribute<object>("userAccountControl"));
                 if (uacRaw == 0)
                 {
-                    UAC = ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
+                    //UAC = ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
                     return ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
                 }
                 return uacRaw;
             }
             set
             {
-                SetAttribute("userAccountControl", value);
+                SetAttribute("userAccountControl", value.ToString());
             }
         }
 
         protected DomainControllerEventLogReader? DomainControllerEventLogs;
 
 
-        public override void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
+        public override void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null, SearchResultEntry? searchResultEntry = null)
         {
-            base.Parse(directory, directoryEntry, searchResult);
+            base.Parse(directory, directoryEntry, searchResult, searchResultEntry);
             DomainControllerEventLogs = new DomainControllerEventLogReader(directory);
         }
 
@@ -372,9 +373,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     // If we are on Windows, we can use the PrincipalContext to set the password
                     return TryPrincipalContextSetPassword(password, requireChange, directoryPassword);
                 }
+            }
+            catch (DirectoryOperationException ex)
+            {
+                // Check for the password complexity error
+                if (ex.Response.ResultCode == ResultCode.UnwillingToPerform &&
+                    ex.Response.ErrorMessage.Contains("0000052D"))
+                {
+                    throw new PasswordPolicyViolationException();
+                }
+                else if (ex.Response.ResultCode == ResultCode.ConstraintViolation &&
+ ex.Response.ErrorMessage.Contains("0000052F"))
+                {
+                    throw new AccountDisabledConstraintViolationException();
+                }
+                else
+                {
+                    Loggers.ActiveDirectoryLogger.Error(ex, "An unexpected directory operation error occurred setting entry password");
+                }
 
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not AppException)
             {
                 Loggers.ActiveDirectoryLogger.Error(ex, "Error setting entry password");
                 if (!Debugger.IsAttached)
@@ -382,6 +401,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             return false;
         }
+
 
         private bool TryInvokeSetPassword(SecureString password)
         {
@@ -420,6 +440,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
             }
             return true;
+        }
+        public void StageEnable()
+        {
+
+            PostCommitSteps.Add(new JobStep("Enable", (JobStep? step) =>
+            {
+                Enabled = true;
+                DirectoryEntry.SetPropertyValue("userAccountControl", UAC);
+                return true;
+
+                Enabled = true;
+                return true;
+            }));
+
+
         }
 
         public void StagePasswordChange(SecureString newPassword, bool requireChange = false)

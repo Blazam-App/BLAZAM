@@ -15,11 +15,11 @@
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudTabs PanelClass="mx-auto w-100"
-             @ref=Tabs
-             Elevation="0"
-             Outlined="true"
-             @bind-ActivePanelIndex="SelectedStep"
-             Centered=true>
+    @ref=Tabs
+    Elevation="0"
+    Outlined="true"
+    @bind-ActivePanelIndex="SelectedStep"
+    Centered=true>
 
         <MudTabPanel>
             <TabContent>
@@ -31,30 +31,30 @@
                 {
 
                     <MudCarousel Style="height:50vh"
-                                 ShowArrows=false
-                                 ShowBullets=false
-                                 EnableSwipeGesture=false
-                                 AutoCycle=false
-                                 @bind-SelectedIndex=_templateCarouselIndex
-                                 TData="object">
+                    ShowArrows=false
+                    ShowBullets=false
+                    EnableSwipeGesture=false
+                    AutoCycle=false
+                    @bind-SelectedIndex=_templateCarouselIndex
+                    TData="object">
                         <MudCarouselItem Class="pa-5">
                             <FlexContainer>
 
                                 @foreach (var category in TemplateCategoriesUserCanUse)
                                 {
                                     <MudButton StartIcon="@Icons.Material.Filled.Folder"
-                                               OnClick=@(()=>{SelectedCategory=category; _templateCarouselIndex=1;})
-                                               Variant="Variant.Filled"
-                                               Color="Color.Secondary"
-                                               Size="Size.Large">@category</MudButton>
+                                    OnClick=@(()=>{SelectedCategory=category; _templateCarouselIndex=1;})
+                                    Variant="Variant.Filled"
+                                    Color="Color.Secondary"
+                                    Size="Size.Large">@category</MudButton>
                                 }
                                 @foreach (var uncategorizedTemplate in TemplatesUserCanUse.Where(t => t.Category.IsNullOrEmpty() && t.DeletedAt == null && t.Visible))
                                 {
                                     <MudButton StartIcon="@Icons.Material.Filled.DynamicForm"
-                                               OnClick=@(async()=>{await SetTemplate(uncategorizedTemplate);})
-                                               Variant="Variant.Filled"
-                                               Color="Color.Primary"
-                                               Size="Size.Large">@uncategorizedTemplate.Name</MudButton>
+                                    OnClick=@(async()=>{await SetTemplate(uncategorizedTemplate);})
+                                    Variant="Variant.Filled"
+                                    Color="Color.Primary"
+                                    Size="Size.Large">@uncategorizedTemplate.Name</MudButton>
                                 }
                             </FlexContainer>
                         </MudCarouselItem>
@@ -63,16 +63,16 @@
 
                             <FlexContainer>
                                 <MudFab StartIcon="@Icons.Material.Filled.ArrowBack"
-                                        Size="Size.Small"
-                                        OnClick="@(()=>{_templateCarouselIndex=0; SelectedCategory=null;})"
-                                        Color="Color.Primary" />
+                                Size="Size.Small"
+                                OnClick="@(()=>{_templateCarouselIndex=0; SelectedCategory=null;})"
+                                Color="Color.Primary" />
                                 @foreach (var template in TemplatesUserCanUse.Where(t => t.DeletedAt == null && t.Visible))
                                 {
                                     <MudButton StartIcon="@Icons.Material.Filled.DynamicForm"
-                                               OnClick=@(async()=>{await SetTemplate(template);})
-                                               Variant="Variant.Filled"
-                                               Color="Color.Primary"
-                                               Size="Size.Large">@template.Name</MudButton>
+                                    OnClick=@(async()=>{await SetTemplate(template);})
+                                    Variant="Variant.Filled"
+                                    Color="Color.Primary"
+                                    Size="Size.Large">@template.Name</MudButton>
 
                                 }
                             </FlexContainer>
@@ -92,7 +92,7 @@
                     </MudPaper>
                 }
                 <MudButton Color=Color.Secondary
-                           OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=5;})">
+                OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=5;})">
                     @AppLocalization[Lang.Custom]
                 </MudButton>
 
@@ -101,7 +101,7 @@
         </MudTabPanel>
 
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
-                     Disabled=@( SelectedTemplate==null)>
+        Disabled=@( SelectedTemplate==null)>
             <TabContent>
                 @AppLocalization[Lang.Name]
             </TabContent>
@@ -109,8 +109,8 @@
 
 
                 <NewUserNameEntry @bind-NewUserName=@newUserName
-                                  OnNext="CreateTemplateUser"
-                                  OnBack="@(()=>{SelectedStep=0;})" />
+                OnNext="CreateTemplateUser"
+                OnBack="@(()=>{SelectedStep=0;})" />
 
 
 
@@ -118,7 +118,7 @@
 
         </MudTabPanel>
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
-                     Disabled="@(newUser==null || _userCreated)">
+        Disabled="@(newUser==null || _userCreated)">
             <TabContent>
                 @AppLocalization[Lang.Username]
             </TabContent>
@@ -129,7 +129,7 @@
                     bool conflictWarning = false;
                     if (conflictingEntry != null && conflictingEntry.SAMAccountName?.Equals(newUser?.SAMAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
                     {
-                       _usernameStepValid = false;
+                        _usernameStepValid = false;
                         conflictWarning = true;
                     }
                     else
@@ -143,26 +143,26 @@
 
                 }
                 <MudTextField Class="mt-5"
-                              Label="@AppLocalization[Lang.Username]"
-                              Immediate="true"
-                              Disabled=@(!CurrentUser.State.IsSuperAdmin && SelectedTemplate?.EffectiveAllowUsernameOverride!=true)
-                              T=string
-                              @bind-Value=@newUser!.SAMAccountName />
+                Label="@AppLocalization[Lang.Username]"
+                Immediate="true"
+                Disabled=@(!CurrentUser.State.IsSuperAdmin && SelectedTemplate?.EffectiveAllowUsernameOverride!=true)
+                T=string
+                @bind-Value=@newUser!.SAMAccountName />
                 @if (conflictWarning)
                 {
                     <MudAlert Severity="Severity.Error">
                         @AppLocalization["An account with that name already exists!"]<br/>
                         @AppLocalization[Lang.User]: @conflictingEntry.SAMAccountName
-                        </MudAlert>
+                    </MudAlert>
                 }
                 <MudButton Disabled=LoadingData
-                           Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=1;})">
+                Color=Color.Primary
+                OnClick="@(()=>{SelectedStep=1;})">
                     @AppLocalization[Lang.Back]
                 </MudButton>
                 <MudButton Color=Color.Success
-                           Disabled="@(conflictWarning)"
-                           OnClick="@(()=>{SelectedStep=3;})">
+                Disabled="@(conflictWarning)"
+                OnClick="@(()=>{SelectedStep=3;})">
                     @AppLocalization[Lang.Next]
                 </MudButton>
 
@@ -170,18 +170,18 @@
 
         </MudTabPanel>
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
-                     Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
+        Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
             <TabContent>
                 @AppLocalization[Lang.Fields]
             </TabContent>
             <ChildContent>
                 <NewTemplateUser NewUserName="newUserName"
-                                 OnValidSubmit=@(()=>{SelectedStep=4;})
-                                 Entry="@newUser"
-                                 DirectoryTemplate="SelectedTemplate" />
+                OnValidSubmit=@(()=>{SelectedStep=4;})
+                Entry="@newUser"
+                DirectoryTemplate="SelectedTemplate" />
                 <MudButton Disabled=LoadingData
-                           Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=2;})">
+                Color=Color.Primary
+                OnClick="@(()=>{SelectedStep=2;})">
                     @AppLocalization[Lang.Back]
                 </MudButton>
 
@@ -190,27 +190,27 @@
         </MudTabPanel>
 
         <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
-                     Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
+        Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
             <TabContent>
                 @AppLocalization[Lang.Groups]
             </TabContent>
             <ChildContent>
                 <MemberOfList Target="_blank"
-                              AssignToClicked="@(async()=>{await _assignToModal!.ShowAsync();})"
-                              Disabled="@(SelectedTemplate?.EffectiveAllowCustomGroups!=true  && !CurrentUser.State.IsSuperAdmin)"
-                              Model="@newUser" />
+                AssignToClicked="@(async()=>{await _assignToModal!.ShowAsync();})"
+                Disabled="@(SelectedTemplate?.EffectiveAllowCustomGroups!=true  && !CurrentUser.State.IsSuperAdmin)"
+                Model="@newUser" />
                 <AppModal @ref=_assignToModal>
                     <AssignToModalContent ModelChanged=@(async()=>{
                                           await InvokeAsync(StateHasChanged);
                                           }) DirectoryModel="newUser" />
                 </AppModal>
                 <MudButton Disabled=LoadingData
-                           Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=3;})">
+                Color=Color.Primary
+                OnClick="@(()=>{SelectedStep=3;})">
                     @AppLocalization[Lang.Back]
                 </MudButton>
                 <MudButton Color=Color.Success
-                           OnClick="@(()=>{SelectedStep=7;})">
+                OnClick="@(()=>{SelectedStep=7;})">
                     @AppLocalization[Lang.Next]
                 </MudButton>
 
@@ -225,21 +225,21 @@
             </TabContent>
             <ChildContent>
                 <OUTreeView AdditionalVisibilityFilters=@(AdditionalShow)
-                            StartRootExpanded=true
-                            SelectedEntryChanged="OUSelected" />
+                StartRootExpanded=true
+                SelectedEntryChanged="OUSelected" />
 
                 <MudTextField Label="@AppLocalization[Lang.Display_Name]"
-                              @bind-Value="@customUserDisplayName" />
+                @bind-Value="@customUserDisplayName" />
 
 
 
                 <MudButton Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=0;})">
+                OnClick="@(()=>{SelectedStep=0;})">
                     @AppLocalization[Lang.Back]
                 </MudButton>
                 <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()|| selectedOU==null)
-                           Color=Color.Success
-                           OnClick="@(async()=>{
+                Color=Color.Success
+                OnClick="@(async()=>{
                                                 await CreateCustomUser();
                                                 selectedStep=6;
                                                 })">
@@ -251,7 +251,7 @@
 
         </MudTabPanel>
         <MudTabPanel Class=@(custom==true?"":"d-none")
-                     Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
+        Disabled="@(newUser==null || !_usernameStepValid || _userCreated)">
             <TabContent>
                 @AppLocalization[Lang.Details]
             </TabContent>
@@ -260,19 +260,19 @@
                 this element
                 *@
                 <ViewUser DirectoryEntry="@newUser"
-                          @bind-ConfirmPassword=@customConfirmPassword
-                          @bind-Password=customPassword />
+                @bind-ConfirmPassword=@customConfirmPassword
+                @bind-Password=customPassword />
                 <MudButton Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=4;})">
+                OnClick="@(()=>{SelectedStep=4;})">
                     @AppLocalization[Lang.Back]
                 </MudButton>
                 <MudButton Color=Color.Success
-                           OnClick="@(()=>{
+                OnClick="@(()=>{
                                             SelectedStep=7;
                                             if(newUser?.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
                                                 newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
                                             })"
-                           Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
+                Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
                     @AppLocalization[Lang.Next]
                 </MudButton>
             </ChildContent>
@@ -287,9 +287,9 @@
             </TabContent>
             <ChildContent>
                 <ConfirmNewUser User="@newUser"
-                                Confirmed="_userCreated"
-                                DirectoryTemplate="SelectedTemplate"
-                                OnConfirmed="UserConfirmed" />
+                Confirmed="_userCreated"
+                DirectoryTemplate="SelectedTemplate"
+                OnConfirmed="UserConfirmed" />
 
             </ChildContent>
 
@@ -365,8 +365,17 @@
                     if (customUserDisplayName == null) SnackBarService.Error(AppLocalization["No display name was set"]);
                     else
                     {
-                        newUser = selectedOU.CreateUser(customUserDisplayName.Trim());
-                        newUser.DisplayName = customUserDisplayName;
+                        try
+                        {
+                            newUser = selectedOU.CreateUser(customUserDisplayName);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create user in {@ContainerName}", customUserDisplayName);
+                            throw;
+                        }
+                        
                     }
                 }
                 else
