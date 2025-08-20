@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
@@ -159,6 +158,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <exception cref="MissingDirectoryEntryException">If the DirectoryEntry cannot be retrieved</exception>
         public void EnsureDirectoryEntry()
         {
+            if (DirectoryEntry is not null)
+            {
+                try
+                {
+                    _ = DirectoryEntry.Path;
+                }
+                catch (ObjectDisposedException)
+                {
+                    DirectoryEntry = null;
+                }
+            }
             if (DirectoryEntry is null)
             {
                 FetchDirectoryEntry();

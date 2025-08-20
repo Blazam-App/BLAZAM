@@ -99,7 +99,7 @@
                 {
                     Task.Delay(1000).Wait();
                     Value = _pollFunc.Invoke();
-                     AverageValue.AddValue(Value);
+                    AverageValue.AddValue(Value);
                     var temp = AverageValue.GetAverage();
                     JS.InvokeVoidAsync("window.setGaugeValue", new object[] {_elementID, temp, 1 });
 
@@ -108,6 +108,14 @@
 
         }
     }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        _polling = false;
+        AverageValue = new();
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

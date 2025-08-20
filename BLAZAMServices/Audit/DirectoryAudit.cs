@@ -1,6 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
@@ -56,7 +54,7 @@ namespace BLAZAM.Services.Audit
             {
                 using var context = await factory.CreateDbContextAsync();
                 var table = auditTable.Invoke(context);
-                var username = UserState?.AuditUsername ?? CurrentUser?.AuditUsername ?? string.Empty;
+                var username = UserState?.AuditUsername ?? string.Empty;
                 var auditEntry = new T()
                 {
                     Action = action,
