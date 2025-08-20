@@ -134,6 +134,7 @@ namespace BLAZAM.Update
             _runningProcess = applicationInfo.RunningProcess;
             _runningVersion = applicationInfo.RunningVersion;
             _applicationRootDirectory = applicationInfo.ApplicationRoot;
+            UpdateTempDirectory = new SystemDirectory(applicationInfo.TempDirectory + $"update{Path.DirectorySeparatorChar}");
         }
 
         /// <summary>
