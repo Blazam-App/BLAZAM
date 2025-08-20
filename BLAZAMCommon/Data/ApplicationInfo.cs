@@ -111,7 +111,7 @@ namespace BLAZAM.Common.Data
 
 
         public static SystemDirectory pluginDirectory => new(Path.Combine(applicationRoot.FullPath, "plugins"));
-        public SystemDirectory PluginDirectory => new(Path.Combine(ApplicationRoot.FullPath + "plugins"));
+        public SystemDirectory PluginDirectory => new(Path.Combine(ApplicationRoot.FullPath, "plugins"));
 
         /// <summary>
         /// A list of plugins that were found
