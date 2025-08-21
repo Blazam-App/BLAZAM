@@ -18,6 +18,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AppHelpLocalization.resx</DependentUpon>
     </Compile>
+    <Compile Update="AppLocalization - Copy.hi.Designer.cs">
+      <DependentUpon>AppLocalization.hi.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="AppLocalization.hi.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -43,6 +48,10 @@
     <EmbeddedResource Update="AppHelpLocalization.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AppHelpLocalization.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="AppLocalization.ar.resx">
+      <LastGenOutput>AppLocalization - Copy.hi.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="AppLocalization.hi.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

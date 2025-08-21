@@ -1,10 +1,11 @@
-﻿
+﻿@using System.Globalization
+
 @inject IHttpContextAccessor context
 @inject IApplicationUserStateService userStateService
 @inject ICurrentUserStateService currentUser
 
 <CascadingAuthenticationState>
-
+    <MudRTLProvider RightToLeft=@(CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)>
     <ErrorBoundary>
 
         <ChildContent>
@@ -60,6 +61,7 @@
     <MudPopoverProvider />
     <MudSnackbarProvider />
     <SessionExpirationWarningProvider />
+    </MudRTLProvider>
 </CascadingAuthenticationState>
 
 @code {
