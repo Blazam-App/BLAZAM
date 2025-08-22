@@ -243,6 +243,9 @@
   <data name="Super_User_Definition" xml:space="preserve">
     <value>활성화하면 애플리케이션에 대한 완전하고 총체적인 액세스 권한을 갖게 됩니다.</value>
   </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}"가 클립보드에 복사되었습니다.</value>
+  </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>예기치 않은 오류가 발생했습니다.</value>
   </data>

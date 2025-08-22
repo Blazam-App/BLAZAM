@@ -243,6 +243,9 @@
   <data name="Super_User_Definition" xml:space="preserve">
     <value>Hat bei Aktivierung vollständigen und uneingeschränkten Zugriff auf die Anwendung.</value>
   </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" wurde in die Zwischenablage kopiert.</value>
+  </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Ein unerwarteter Fehler ist aufgetreten.</value>
   </data>

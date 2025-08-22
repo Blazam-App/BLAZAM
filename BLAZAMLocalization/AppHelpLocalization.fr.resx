@@ -243,6 +243,9 @@
   <data name="Super_User_Definition" xml:space="preserve">
     <value>Aura un accès complet et total à l'application si activé</value>
   </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" copié dans le presse-papiers.</value>
+  </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Une erreur inattendue s'est produite.</value>
   </data>

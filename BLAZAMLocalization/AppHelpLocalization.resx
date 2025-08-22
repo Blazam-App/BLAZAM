@@ -244,6 +244,9 @@ efforts on what our users think matters most.</value>
   <data name="Super_User_Definition" xml:space="preserve">
     <value>Will have complete and total acceess to the application if enabled</value>
   </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" copied to clipboard.</value>
+  </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>An unexpected error has occured.</value>
   </data>

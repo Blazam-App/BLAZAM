@@ -243,6 +243,9 @@
   <data name="Super_User_Definition" xml:space="preserve">
     <value>Avrà accesso completo e totale all'applicazione se abilitato</value>
   </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" copiato negli appunti.</value>
+  </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Si è verificato un errore imprevisto.</value>
   </data>

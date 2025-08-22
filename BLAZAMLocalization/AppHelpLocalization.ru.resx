@@ -243,6 +243,9 @@
   <data name="Super_User_Definition" xml:space="preserve">
     <value>При включении будет иметь полный и неограниченный доступ к приложению.</value>
   </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" скопировано в буфер обмена.</value>
+  </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Произошла непредвиденная ошибка.</value>
   </data>

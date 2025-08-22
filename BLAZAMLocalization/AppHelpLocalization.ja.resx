@@ -243,6 +243,9 @@
   <data name="Super_User_Definition" xml:space="preserve">
     <value>有効にすると、アプリケーションへの完全かつ総合的なアクセスが可能になります</value>
   </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>「{0}」がクリップボードにコピーされました。</value>
+  </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>予期しないエラーが発生しました。</value>
   </data>
