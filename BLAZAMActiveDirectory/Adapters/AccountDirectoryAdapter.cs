@@ -322,20 +322,34 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var dateTime = GetDateTimeAttribute(pwdLastSet)?.AdsValueToDateTime();
-                if (dateTime.HasValue)
-                {
-                    return dateTime.Value;
 
-                }
-                var rawValue = GetAttribute<Int32>(pwdLastSet);
-                if (rawValue == -1)
+                try
                 {
-                    return DateTime.UtcNow;
+                    var dateTime = GetDateTimeAttribute(pwdLastSet)?.AdsValueToDateTime();
+                    if (dateTime.HasValue)
+                    {
+                        return dateTime.Value;
+
+                    }
                 }
-                if (rawValue == 0)
+                catch (Exception ex)
                 {
-                    return null;
+                    try
+                    {
+                        var rawValue = GetAttribute<Int32>(pwdLastSet);
+                        if (rawValue == -1)
+                        {
+                            return DateTime.UtcNow;
+                        }
+                        if (rawValue == 0)
+                        {
+                            return null;
+                        }
+                    }
+                    catch (Exception ex2)
+                    {
+                        //Ignore conversion errors during runtime
+                    }
                 }
                 return null;
             }

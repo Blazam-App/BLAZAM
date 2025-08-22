@@ -151,6 +151,7 @@ namespace BLAZAM
                 // Define supported cultures for the application
                 var supportedCultures = new[]
                 {
+                    new CultureInfo("ar"),    // Arabic
                     new CultureInfo("en-US"), // English (United States) - Often the default
                     new CultureInfo("fr-FR"), // French (France)
                     new CultureInfo("de"),    // German (Default)
@@ -173,7 +174,7 @@ namespace BLAZAM
             /* --- Code to force a specific culture during development/testing ---
             // Uncomment this block to force a specific culture for debugging localization.
           
-            CultureInfo culture = new CultureInfo("zh-Hans"); // Example: Force Simplified Chinese
+            CultureInfo culture = new CultureInfo("ar"); // Example: Force Simplified Chinese
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
             

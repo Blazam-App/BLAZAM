@@ -1184,12 +1184,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     return (T?)DirectoryEntry.Properties[propertyName].Value;
 
             }
-            catch (ArgumentException)
-            {
-                var temp = DirectoryEntry?.Properties[propertyName];
-                var temp2 = (T?)temp?.Value;
-                return temp2;
-            }
             catch (InvalidCastException ex)
             {
                 throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);

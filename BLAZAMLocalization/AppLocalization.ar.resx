@@ -1,0 +1,1311 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="Access Levels" xml:space="preserve">
+	  <value>مستويات الوصول</value>
+	</data>
+	<data name="Account" xml:space="preserve">
+	  <value>الحساب</value>
+	</data>
+	<data name="Account and Name" xml:space="preserve">
+	  <value>الحساب والاسم</value>
+	</data>
+	<data name="Account Expiration" xml:space="preserve">
+	  <value>انتهاء صلاحية الحساب</value>
+	</data>
+	<data name="Account is disabled." xml:space="preserve">
+	  <value>الحساب معطل.</value>
+	</data>
+	<data name="Account is enabled." xml:space="preserve">
+	  <value>الحساب مفعل.</value>
+	</data>
+	<data name="Account is locked out." xml:space="preserve">
+	  <value>الحساب مقفل.</value>
+	</data>
+	<data name="Account is not locked out." xml:space="preserve">
+	  <value>الحساب غير مقفل.</value>
+	</data>
+	<data name="Account Name" xml:space="preserve">
+	  <value>اسم الحساب</value>
+	</data>
+	<data name="Active Directory" xml:space="preserve">
+	  <value>Active Directory</value>
+	</data>
+	<data name="Active Directory is not available!" xml:space="preserve">
+	  <value>!Active Directory غير متوفر</value>
+	</data>
+	<data name="Active Directory Settings" xml:space="preserve">
+	  <value>إعدادات Active Directory</value>
+	</data>
+	<data name="Add" xml:space="preserve">
+	  <value>إضافة</value>
+	</data>
+	<data name="Add Members" xml:space="preserve">
+	  <value>إضافة أعضاء</value>
+	</data>
+	<data name="Add New Access Level" xml:space="preserve">
+	  <value>إضافة مستوى وصول جديد</value>
+	</data>
+	<data name="Add to favorites" xml:space="preserve">
+	  <value>إضافة إلى المفضلة</value>
+	</data>
+	<data name="Additional Field" xml:space="preserve">
+	  <value>حقل إضافي</value>
+	</data>
+	<data name="Additional Fields" xml:space="preserve">
+	  <value>حقول إضافية</value>
+	</data>
+	<data name="Additonal Fields" xml:space="preserve">
+	  <value>حقول إضافية</value>
+	</data>
+	<data name="Admin bcc" xml:space="preserve">
+	  <value>نسخة مخفية للمسؤول</value>
+	</data>
+	<data name="Admin Password" xml:space="preserve">
+	  <value>كلمة مرور المسؤول</value>
+	</data>
+	<data name="All" xml:space="preserve">
+	  <value>الكل</value>
+	</data>
+	<data name="Allow" xml:space="preserve">
+	  <value>سماح</value>
+	</data>
+	<data name="Allow Auto Update" xml:space="preserve">
+	  <value>السماح بالتحديث التلقائي</value>
+	</data>
+	<data name="Allow Disabled User Access" xml:space="preserve">
+	  <value>السماح بوصول المستخدم المعطل</value>
+	</data>
+	<data name="An error has occurred while trying to create the template user" xml:space="preserve">
+	  <value>حدث خطأ أثناء محاولة إنشاء المستخدم القالب</value>
+	</data>
+	<data name="App Chat" xml:space="preserve">
+	  <value>دردشة التطبيق</value>
+	</data>
+	<data name="Application" xml:space="preserve">
+	  <value>التطبيق</value>
+	</data>
+	<data name="Application Credentials" xml:space="preserve">
+	  <value>بيانات اعتماد التطبيق</value>
+	</data>
+	<data name="Application Name" xml:space="preserve">
+	  <value>اسم التطبيق</value>
+	</data>
+	<data name="Application Settings" xml:space="preserve">
+	  <value>إعدادات التطبيق</value>
+	</data>
+	<data name="ApplicationStarting" xml:space="preserve">
+	  <value>...جاري بدء تشغيل التطبيق... يرجى الانتظار</value>
+	</data>
+	<data name="Are you sure you want to navigate away?" xml:space="preserve">
+	  <value>هل أنت متأكد أنك تريد المغادرة؟</value>
+	</data>
+	<data name="Assign" xml:space="preserve">
+	  <value>تعيين</value>
+	</data>
+	<data name="Assign Objects" xml:space="preserve">
+	  <value>تعيين كائنات</value>
+	</data>
+	<data name="Assign To" xml:space="preserve">
+	  <value>تعيين إلى</value>
+	</data>
+	<data name="Assigned Groups" xml:space="preserve">
+	  <value>المجموعات المعينة</value>
+	</data>
+	<data name="Attempting to connect to Active Directory." xml:space="preserve">
+	  <value>.جاري محاولة الاتصال بـ Active Directory</value>
+	</data>
+	<data name="Audit" xml:space="preserve">
+	  <value>تدقيق</value>
+	</data>
+	<data name="Authentication" xml:space="preserve">
+	  <value>المصادقة</value>
+	</data>
+	<data name="Authentication Settings" xml:space="preserve">
+	  <value>إعدادات المصادقة</value>
+	</data>
+	<data name="Auto Update Time" xml:space="preserve">
+	  <value>وقت التحديث التلقائي</value>
+	</data>
+	<data name="Available Update" xml:space="preserve">
+	  <value>تحديث متوفر</value>
+	</data>
+	<data name="Base DN" xml:space="preserve">
+	  <value>DN الأساسي</value>
+	</data>
+	<data name="BaseDN" xml:space="preserve">
+	  <value>DN الأساسي</value>
+	</data>
+	<data name="Branch" xml:space="preserve">
+	  <value>فرع</value>
+	</data>
+	<data name="Branding Icon" xml:space="preserve">
+	  <value>أيقونة العلامة التجارية</value>
+	</data>
+	<data name="Browse" xml:space="preserve">
+	  <value>تصفح</value>
+	</data>
+	<data name="Cancel" xml:space="preserve">
+	  <value>إلغاء</value>
+	</data>
+	<data name="Cancelled" xml:space="preserve">
+	  <value>تم الإلغاء</value>
+	</data>
+	<data name="Certificate Type" xml:space="preserve">
+	  <value>نوع الشهادة</value>
+	</data>
+	<data name="Change History" xml:space="preserve">
+	  <value>سجل التغييرات</value>
+	</data>
+	<data name="Change Password" xml:space="preserve">
+	  <value>تغيير كلمة المرور</value>
+	</data>
+	<data name="Chat" xml:space="preserve">
+  <value>دردشة</value>
+</data>
+	<data name="Choose or Search..." xml:space="preserve">
+  <value>...اختر أو ابحث</value>
+</data>
+	<data name="City" xml:space="preserve">
+  <value>المدينة</value>
+</data>
+	<data name="Close" xml:space="preserve">
+<value>إغلاق</value>
+</data>
+	<data name="Company" xml:space="preserve">
+<value>الشركة</value>
+</data>
+	<data name="Completed Successfully" xml:space="preserve">
+<value>اكتمل بنجاح</value>
+</data>
+	<data name="Computer" xml:space="preserve">
+<value>جهاز الكمبيوتر</value>
+</data>
+	<data name="Computer is not reachable." xml:space="preserve">
+<value>لا يمكن الوصول إلى جهاز الكمبيوتر.</value>
+</data>
+	<data name="Configure" xml:space="preserve">
+<value>تكوين</value>
+</data>
+	<data name="Confirm" xml:space="preserve">
+<value>تأكيد</value>
+</data>
+	<data name="Confirm New Password" xml:space="preserve">
+<value>تأكيد كلمة المرور الجديدة</value>
+</data>
+	<data name="Confirm Password" xml:space="preserve">
+<value>تأكيد كلمة المرور</value>
+</data>
+	<data name="Contact Info" xml:space="preserve">
+<value>معلومات الاتصال</value>
+</data>
+	<data name="Copy Template" xml:space="preserve">
+<value>نسخ القالب</value>
+</data>
+	<data name="CPU" xml:space="preserve">
+<value>وحدة المعالجة المركزية</value>
+</data>
+	<data name="CPU Chart" xml:space="preserve">
+<value>مخطط وحدة المعالجة المركزية</value>
+</data>
+	<data name="Create" xml:space="preserve">
+<value>إنشاء</value>
+</data>
+	<data name="Create Access Level" xml:space="preserve">
+<value>إنشاء مستوى وصول</value>
+</data>
+	<data name="Create Group" xml:space="preserve">
+<value>إنشاء مجموعة</value>
+</data>
+	<data name="Create New Delegation Target" xml:space="preserve">
+<value>إنشاء هدف تفويض جديد</value>
+</data>
+	<data name="Create OU" xml:space="preserve">
+<value>إنشاء وحدة تنظيمية</value>
+</data>
+	<data name="Create User" xml:space="preserve">
+<value>إنشاء مستخدم</value>
+</data>
+	<data name="Created" xml:space="preserve">
+<value>تم الإنشاء</value>
+</data>
+	<data name="Current OU" xml:space="preserve">
+<value>الوحدة التنظيمية الحالية</value>
+</data>
+	<data name="Current Template:" xml:space="preserve">
+<value>القالب الحالي:</value>
+</data>
+	<data name="Current Version" xml:space="preserve">
+<value>الإصدار الحالي</value>
+</data>
+	<data name="Custom Login" xml:space="preserve">
+<value>تسجيل دخول مخصص</value>
+</data>
+	<data name="Database" xml:space="preserve">
+<value>قاعدة البيانات</value>
+</data>
+	<data name="Database server is not reachable!" xml:space="preserve">
+<value>لا يمكن الوصول إلى خادم قاعدة البيانات!</value>
+</data>
+	<data name="Database Status" xml:space="preserve">
+<value>حالة قاعدة البيانات</value>
+</data>
+	<data name="DB Type" xml:space="preserve">
+<value>نوع قاعدة البيانات</value>
+</data>
+	<data name="Delegates" xml:space="preserve">
+<value>المفوضون</value>
+</data>
+	<data name="Delete" xml:space="preserve">
+<value>حذف</value>
+</data>
+	<data name="Delete Access Level" xml:space="preserve">
+<value>حذف مستوى الوصول</value>
+</data>
+	<data name="Delgate Name" xml:space="preserve">
+<value>اسم المفوض</value>
+</data>
+	<data name="Deny" xml:space="preserve">
+<value>رفض</value>
+</data>
+	<data name="Department" xml:space="preserve">
+<value>القسم</value>
+</data>
+	<data name="Description" xml:space="preserve">
+<value>الوصف</value>
+</data>
+	<data name="Details" xml:space="preserve">
+<value>التفاصيل</value>
+</data>
+	<data name="Discard Changes" xml:space="preserve">
+<value>تجاهل التغييرات</value>
+</data>
+	<data name="Display Name" xml:space="preserve">
+<value>اسم العرض</value>
+</data>
+	<data name="Documentation" xml:space="preserve">
+<value>المستندات</value>
+</data>
+	<data name="Domain" xml:space="preserve">
+<value>النطاق</value>
+</data>
+	<data name="Drive Details" xml:space="preserve">
+<value>تفاصيل محرك الأقراص</value>
+</data>
+	<data name="Driver" xml:space="preserve">
+<value>برنامج التشغيل</value>
+</data>
+	<data name="Driver Version" xml:space="preserve">
+<value>إصدار برنامج التشغيل</value>
+</data>
+	<data name="Edit" xml:space="preserve">
+<value>تحرير</value>
+</data>
+	<data name="Editable" xml:space="preserve">
+<value>قابل للتحرير</value>
+</data>
+	<data name="Elapsed Time" xml:space="preserve">
+<value>الوقت المنقضي</value>
+</data>
+	<data name="Email" xml:space="preserve">
+<value>البريد الإلكتروني</value>
+</data>
+	<data name="Email Address" xml:space="preserve">
+<value>عنوان البريد الإلكتروني</value>
+</data>
+	<data name="Email Enabled" xml:space="preserve">
+  <value>تمكين البريد الإلكتروني</value>
+ </data>
+	<data name="Email Settings" xml:space="preserve">
+  <value>إعدادات البريد الإلكتروني</value>
+ </data>
+	<data name="Employee Id" xml:space="preserve">
+  <value>معرّف الموظف</value>
+ </data>
+	<data name="Enable Auto Update" xml:space="preserve">
+  <value>تمكين التحديث التلقائي</value>
+ </data>
+	<data name="Enabled" xml:space="preserve">
+  <value>مُمكَّن</value>
+ </data>
+	<data name="Encryption Seed String" xml:space="preserve">
+  <value>سلسلة بذرة التشفير</value>
+ </data>
+	<data name="Export Data" xml:space="preserve">
+  <value>تصدير البيانات</value>
+ </data>
+	<data name="Export Database" xml:space="preserve">
+  <value>تصدير قاعدة البيانات</value>
+ </data>
+	<data name="Failed" xml:space="preserve">
+  <value>فشل</value>
+ </data>
+	<data name="Field Name" xml:space="preserve">
+  <value>اسم الحقل</value>
+ </data>
+	<data name="Field Type" xml:space="preserve">
+  <value>نوع الحقل</value>
+ </data>
+	<data name="Fields" xml:space="preserve">
+  <value>الحقول</value>
+ </data>
+	<data name="First Initial" xml:space="preserve">
+  <value>الحرف الأول من الاسم الأول</value>
+ </data>
+	<data name="First Name" xml:space="preserve">
+  <value>الاسم الأول</value>
+ </data>
+	<data name="Force Https" xml:space="preserve">
+  <value>فرض HTTPS</value>
+ </data>
+	<data name="FQDN" xml:space="preserve">
+  <value>اسم النطاق المؤهل بالكامل (FQDN)</value>
+ </data>
+	<data name="From Address" xml:space="preserve">
+  <value>عنوان المرسل</value>
+ </data>
+	<data name="From Display Name" xml:space="preserve">
+  <value>اسم العرض للمرسل</value>
+ </data>
+	<data name="Google Analytics ID" xml:space="preserve">
+  <value>معرّف Google Analytics</value>
+ </data>
+	<data name="Group" xml:space="preserve">
+  <value>مجموعة</value>
+ </data>
+	<data name="Group Name" xml:space="preserve">
+  <value>اسم المجموعة</value>
+ </data>
+	<data name="Groups" xml:space="preserve">
+  <value>المجموعات</value>
+ </data>
+	<data name="Home" xml:space="preserve">
+  <value>الرئيسية</value>
+ </data>
+	<data name="Home Directory" xml:space="preserve">
+  <value>الدليل الرئيسي</value>
+ </data>
+	<data name="Home Drive" xml:space="preserve">
+  <value>محرك الأقراص الرئيسي</value>
+ </data>
+	<data name="Home Phone" xml:space="preserve">
+  <value>هاتف المنزل</value>
+ </data>
+	<data name="Homepage Message" xml:space="preserve">
+  <value>رسالة الصفحة الرئيسية</value>
+ </data>
+	<data name="Impersonate User" xml:space="preserve">
+  <value>انتحال شخصية المستخدم</value>
+ </data>
+	<data name="Info" xml:space="preserve">
+  <value>معلومات</value>
+ </data>
+	<data name="Inheritance Tree" xml:space="preserve">
+  <value>شجرة الوراثة</value>
+ </data>
+	<data name="Inherited from" xml:space="preserve">
+  <value>موروث من</value>
+ </data>
+	<data name="Inherited Permissions" xml:space="preserve">
+  <value>الأذونات الموروثة</value>
+ </data>
+	<data name="Job Title" xml:space="preserve">
+  <value>المسمى الوظيفي</value>
+ </data>
+	<data name="Last Change" xml:space="preserve">
+  <value>آخر تغيير</value>
+ </data>
+	<data name="Last Initial" xml:space="preserve">
+  <value>الحرف الأول من اسم العائلة</value>
+ </data>
+	<data name="Last Logon" xml:space="preserve">
+  <value>آخر تسجيل دخول</value>
+ </data>
+	<data name="LAPS_Password" xml:space="preserve">
+  <value>كلمة مرور LAPS</value>
+ </data>
+	<data name="Last Name" xml:space="preserve">
+  <value>اسم العائلة</value>
+ </data>
+	<data name="Live Stats" xml:space="preserve">
+  <value>إحصائيات حية</value>
+ </data>
+	<data name="Loading" xml:space="preserve">
+  <value>جارٍ التحميل</value>
+ </data>
+	<data name="Location" xml:space="preserve">
+  <value>الموقع</value>
+ </data>
+	<data name="Lockout Time" xml:space="preserve">
+  <value>وقت الإغلاق</value>
+ </data>
+	<data name="Log In" xml:space="preserve">
+  <value>تسجيل الدخول</value>
+ </data>
+	<data name="Log In To Demo" xml:space="preserve">
+  <value>تسجيل الدخول إلى العرض التجريبي</value>
+ </data>
+	<data name="Logins" xml:space="preserve">
+  <value>عمليات تسجيل الدخول</value>
+ </data>
+	<data name="Logs" xml:space="preserve">
+  <value>السجلات</value>
+ </data>
+	<data name="Main" xml:space="preserve">
+  <value>رئيسي</value>
+ </data>
+	<data name="Manage Web Application" xml:space="preserve">
+  <value>إدارة تطبيق الويب</value>
+ </data>
+	<data name="Mappings" xml:space="preserve">
+  <value>التعيينات</value>
+ </data>
+	<data name="Member Of" xml:space="preserve">
+  <value>عضو في</value>
+ </data>
+	<data name="Members" xml:space="preserve">
+  <value>الأعضاء</value>
+ </data>
+	<data name="Memory" xml:space="preserve">
+  <value>الذاكرة</value>
+ </data>
+	<data name="Middle Initial" xml:space="preserve">
+  <value>الحرف الأول من الاسم الأوسط</value>
+ </data>
+	<data name="Middle Name" xml:space="preserve">
+  <value>الاسم الأوسط</value>
+ </data>
+	<data name="Move" xml:space="preserve">
+  <value>نقل</value>
+ </data>
+	<data name="Move To" xml:space="preserve">
+  <value>نقل إلى</value>
+ </data>
+	<data name="Myrtille Web Adress" xml:space="preserve">
+  <value>عنوان ويب Myrtille</value>
+ </data>
+	<data name="Name" xml:space="preserve">
+  <value>الاسم</value>
+ </data>
+	<data name="New Password" xml:space="preserve">
+  <value>كلمة مرور جديدة</value>
+ </data>
+	<data name="New Template" xml:space="preserve">
+  <value>قالب جديد</value>
+ </data>
+	<data name="Next" xml:space="preserve">
+  <value>التالي</value>
+ </data>
+	<data name="Not a member of any groups" xml:space="preserve">
+  <value>ليس عضواً في أي مجموعات</value>
+ </data>
+	<data name="Not a valid certificate type." xml:space="preserve">
+  <value>نوع الشهادة غير صالح.</value>
+ </data>
+	<data name="Not finished" xml:space="preserve">
+  <value>غير مكتمل</value>
+</data>
+	<data name="Not started" xml:space="preserve">
+  <value>لم يبدأ</value>
+</data>
+	<data name="Office" xml:space="preserve">
+  <value>المكتب</value>
+</data>
+	<data name="Ok" xml:space="preserve">
+  <value>موافق</value>
+</data>
+	<data name="Online" xml:space="preserve">
+  <value>متصل</value>
+</data>
+	<data name="Oops" xml:space="preserve">
+  <value>عفوًا</value>
+</data>
+	<data name="Operating System" xml:space="preserve">
+  <value>نظام التشغيل</value>
+</data>
+	<data name="or" xml:space="preserve">
+  <value>أو</value>
+</data>
+	<data name="Organization" xml:space="preserve">
+  <value>المؤسسة</value>
+</data>
+	<data name="Organizational Unit" xml:space="preserve">
+  <value>وحدة تنظيمية</value>
+</data>
+	<data name="OU" xml:space="preserve">
+  <value>وحدة تنظيمية</value>
+</data>
+	<data name="Pass Change" xml:space="preserve">
+  <value>تغيير كلمة المرور</value>
+</data>
+	<data name="Password" xml:space="preserve">
+  <value>كلمة المرور</value>
+</data>
+	<data name="Permissions" xml:space="preserve">
+  <value>الصلاحيات</value>
+</data>
+	<data name="Please report to" xml:space="preserve">
+  <value>يرجى الرفع إلى</value>
+</data>
+	<data name="PO Box" xml:space="preserve">
+  <value>صندوق بريد</value>
+</data>
+	<data name="Port" xml:space="preserve">
+  <value>منفذ</value>
+</data>
+	<data name="Preferences" xml:space="preserve">
+  <value>التفضيلات</value>
+</data>
+	<data name="Prepare Files" xml:space="preserve">
+  <value>تجهيز الملفات</value>
+</data>
+	<data name="Previous Versions" xml:space="preserve">
+  <value>الإصدارات السابقة</value>
+</data>
+	<data name="Printer" xml:space="preserve">
+  <value>طابعة</value>
+</data>
+	<data name="Printer(s) registered to Active Directory" xml:space="preserve">
+  <value>الطابعة (الطابعات) المسجلة في Active Directory</value>
+</data>
+	<data name="Printers" xml:space="preserve">
+  <value>الطابعات</value>
+</data>
+	<data name="Profile" xml:space="preserve">
+  <value>الملف الشخصي</value>
+</data>
+	<data name="Profile Path" xml:space="preserve">
+  <value>مسار الملف الشخصي</value>
+</data>
+	<data name="Profile Settings" xml:space="preserve">
+  <value>إعدادات الملف الشخصي</value>
+</data>
+	<data name="Queued" xml:space="preserve">
+  <value>في قائمة الانتظار</value>
+</data>
+	<data name="Ran by" xml:space="preserve">
+  <value>تم التشغيل بواسطة</value>
+</data>
+	<data name="Recycle Bin" xml:space="preserve">
+  <value>سلة المحذوفات</value>
+</data>
+	<data name="Register" xml:space="preserve">
+  <value>تسجيل</value>
+</data>
+	<data name="Register Printers" xml:space="preserve">
+  <value>تسجيل الطابعات</value>
+</data>
+	<data name="Register printers with Active Directory" xml:space="preserve">
+  <value>تسجيل الطابعات في Active Directory</value>
+</data>
+	<data name="Release Notes" xml:space="preserve">
+  <value>ملاحظات الإصدار</value>
+</data>
+	<data name="Remove field" xml:space="preserve">
+  <value>إزالة الحقل</value>
+</data>
+	<data name="Remove from favorites" xml:space="preserve">
+  <value>إزالة من المفضلة</value>
+</data>
+	<data name="Remove Group" xml:space="preserve">
+  <value>إزالة المجموعة</value>
+</data>
+	<data name="Remove template" xml:space="preserve">
+  <value>إزالة القالب</value>
+</data>
+	<data name="Rename" xml:space="preserve">
+  <value>إعادة تسمية</value>
+</data>
+	<data name="Rename Category" xml:space="preserve">
+  <value>إعادة تسمية الفئة</value>
+</data>
+	<data name="Rename Group" xml:space="preserve">
+  <value>إعادة تسمية المجموعة</value>
+</data>
+	<data name="Rename OU" xml:space="preserve">
+  <value>إعادة تسمية الوحدة التنظيمية</value>
+</data>
+	<data name="Rename User" xml:space="preserve">
+  <value>إعادة تسمية المستخدم</value>
+</data>
+	<data name="Reply-To Address" xml:space="preserve">
+  <value>عنوان الرد</value>
+</data>
+	<data name="Reply-To Display Name" xml:space="preserve">
+  <value>اسم عرض الرد</value>
+</data>
+	<data name="Require change" xml:space="preserve">
+  <value>يتطلب التغيير</value>
+</data>
+	<data name="Require the user to change their password at next logon" xml:space="preserve">
+  <value>مطالبة المستخدم بتغيير كلمة المرور عند تسجيل الدخول التالي</value>
+</data>
+	<data name="Required" xml:space="preserve">
+  <value>مطلوب</value>
+</data>
+	<data name="Reset Password" xml:space="preserve">
+  <value>إعادة تعيين كلمة المرور</value>
+</data>
+	<data name="Restore" xml:space="preserve">
+  <value>استعادة</value>
+</data>
+	<data name="Restore Template" xml:space="preserve">
+  <value>استعادة القالب</value>
+</data>
+	<data name="Restore templates" xml:space="preserve">
+  <value>استعادة القوالب</value>
+</data>
+	<data name="Restore:" xml:space="preserve">
+  <value>استعادة:</value>
+</data>
+	<data name="Results" xml:space="preserve">
+  <value>النتائج</value>
+</data>
+	<data name="Revert to inherited value" xml:space="preserve">
+  <value>العودة إلى القيمة الموروثة</value>
+</data>
+	<data name="Running" xml:space="preserve">
+  <value>قيد التشغيل</value>
+</data>
+	<data name="Save" xml:space="preserve">
+  <value>حفظ</value>
+</data>
+	<data name="Save Changes" xml:space="preserve">
+  <value>حفظ التغييرات</value>
+</data>
+	<data name="Save Photo" xml:space="preserve">
+  <value>حفظ الصورة</value>
+</data>
+	<data name="Script Path" xml:space="preserve">
+  <value>مسار البرنامج النصي</value>
+</data>
+	<data name="Server" xml:space="preserve">
+  <value>خادم</value>
+</data>
+	<data name="Services" xml:space="preserve">
+  <value>الخدمات</value>
+</data>
+	<data name="Session Timeout" xml:space="preserve">
+  <value>مهلة الجلسة</value>
+</data>
+	<data name="Sessions" xml:space="preserve">
+  <value>الجلسات</value>
+</data>
+	<data name="Settings" xml:space="preserve">
+  <value>الإعدادات</value>
+</data>
+	<data name="Show more" xml:space="preserve">
+  <value>عرض المزيد</value>
+</data>
+	<data name="Sign Out" xml:space="preserve">
+  <value>تسجيل الخروج</value>
+</data>
+	<data name="Site" xml:space="preserve">
+  <value>الموقع</value>
+</data>
+	<data name="SMTP Password" xml:space="preserve">
+  <value>كلمة مرور SMTP</value>
+</data>
+	<data name="SMTP Port" xml:space="preserve">
+  <value>منفذ SMTP</value>
+</data>
+	<data name="SMTP Server" xml:space="preserve">
+  <value>خادم SMTP</value>
+</data>
+	<data name="SMTP Username" xml:space="preserve">
+  <value>اسم مستخدم SMTP</value>
+</data>
+	<data name="SSL Certificate" xml:space="preserve">
+  <value>شهادة SSL</value>
+</data>
+	<data name="Start Time" xml:space="preserve">
+  <value>وقت البدء</value>
+</data>
+	<data name="State" xml:space="preserve">
+  <value>الولاية/المقاطعة</value>
+</data>
+	<data name="Stop It" xml:space="preserve">
+  <value>إيقاف</value>
+</data>
+	<data name="Street" xml:space="preserve">
+  <value>الشارع</value>
+</data>
+	<data name="Street Address" xml:space="preserve">
+  <value>عنوان الشارع</value>
+</data>
+	<data name="Success" xml:space="preserve">
+  <value>تم بنجاح</value>
+</data>
+	<data name="System" xml:space="preserve">
+  <value>النظام</value>
+</data>
+	<data name="System Settings" xml:space="preserve">
+  <value>إعدادات النظام</value>
+</data>
+	<data name="Template Category" xml:space="preserve">
+  <value>فئة القالب</value>
+</data>
+	<data name="Template Name" xml:space="preserve">
+  <value>اسم القالب</value>
+</data>
+	<data name="Template(s) restored" xml:space="preserve">
+  <value>تم استعادة القالب (القوالب)</value>
+</data>
+	<data name="Templates" xml:space="preserve">
+  <value>القوالب</value>
+</data>
+	<data name="Test Recipient" xml:space="preserve">
+  <value>مستلم الاختبار</value>
+</data>
+	<data name="There are no templates available" xml:space="preserve">
+  <value>لا توجد قوالب متاحة</value>
+</data>
+	<data name="Type" xml:space="preserve">
+  <value>النوع</value>
+</data>
+	<data name="Unable to read" xml:space="preserve">
+  <value>تعذرت القراءة</value>
+</data>
+	<data name="UNC Path" xml:space="preserve">
+  <value>مسار UNC</value>
+</data>
+	<data name="Unknown delegate" xml:space="preserve">
+  <value>مفوض غير معروف</value>
+</data>
+	<data name="Unlock" xml:space="preserve">
+  <value>إلغاء القفل</value>
+</data>
+	<data name="Up to date" xml:space="preserve">
+  <value>محدّث</value>
+</data>
+	<data name="Update" xml:space="preserve">
+  <value>تحديث</value>
+</data>
+	<data name="Update Access Level" xml:space="preserve">
+  <value>تحديث مستوى الوصول</value>
+</data>
+	<data name="Update Branch" xml:space="preserve">
+  <value>تحديث الفرع</value>
+</data>
+	<data name="Update Credential Source" xml:space="preserve">
+  <value>تحديث مصدر بيانات الاعتماد</value>
+</data>
+	<data name="Update Credentials" xml:space="preserve">
+  <value>تحديث بيانات الاعتماد</value>
+</data>
+	<data name="Update Scheduled" xml:space="preserve">
+  <value>التحديث مجدول</value>
+</data>
+	<data name="Update Settings" xml:space="preserve">
+  <value>تحديث الإعدادات</value>
+</data>
+	<data name="Upload" xml:space="preserve">
+  <value>رفع</value>
+</data>
+	<data name="Upload SSL Certificate" xml:space="preserve">
+  <value>رفع شهادة SSL</value>
+</data>
+	<data name="Upload Thumbnail" xml:space="preserve">
+  <value>رفع صورة مصغرة</value>
+</data>
+	<data name="Upload Thumbnail Photo" xml:space="preserve">
+  <value>رفع صورة شخصية مصغرة</value>
+</data>
+	<data name="Use Custom Credentials" xml:space="preserve">
+  <value>استخدام بيانات اعتماد مخصصة</value>
+ </data>
+	<data name="Use SMTP Authentication" xml:space="preserve">
+  <value>استخدام مصادقة SMTP</value>
+ </data>
+	<data name="Use SSL" xml:space="preserve">
+  <value>استخدام SSL</value>
+ </data>
+	<data name="Use TLS" xml:space="preserve">
+  <value>استخدام TLS</value>
+ </data>
+	<data name="User" xml:space="preserve">
+  <value>مستخدم</value>
+ </data>
+	<data name="User Helpdesk URL" xml:space="preserve">
+  <value>عنوان URL لمكتب مساعدة المستخدم</value>
+ </data>
+	<data name="Username" xml:space="preserve">
+  <value>اسم المستخدم</value>
+ </data>
+	<data name="Users" xml:space="preserve">
+  <value>المستخدمون</value>
+ </data>
+	<data name="UseTLS" xml:space="preserve">
+  <value>استخدام TLS</value>
+ </data>
+	<data name="Visible" xml:space="preserve">
+  <value>مرئي</value>
+ </data>
+	<data name="Website FQDN" xml:space="preserve">
+  <value>FQDN لموقع الويب</value>
+ </data>
+	<data name="Website Name" xml:space="preserve">
+  <value>اسم موقع الويب</value>
+ </data>
+	<data name="You have unsaved changes" xml:space="preserve">
+  <value>لديك تغييرات غير محفوظة</value>
+ </data>
+	<data name="Zip Code" xml:space="preserve">
+  <value>الرمز البريدي</value>
+ </data>
+	<data name="Application logons" xml:space="preserve">
+  <value>عمليات تسجيل الدخول إلى التطبيق</value>
+ </data>
+	<data name="Block" xml:space="preserve">
+  <value>حظر</value>
+ </data>
+	<data name="Bypass" xml:space="preserve">
+  <value>تجاوز</value>
+ </data>
+	<data name="Click to view help documentation" xml:space="preserve">
+  <value>انقر لعرض وثائق المساعدة</value>
+ </data>
+	<data name="Data Collection Settings" xml:space="preserve">
+  <value>إعدادات جمع البيانات</value>
+ </data>
+	<data name="Developer Analytics" xml:space="preserve">
+  <value>تحليلات المطور</value>
+ </data>
+	<data name="Download Logs" xml:space="preserve">
+  <value>تنزيل السجلات</value>
+ </data>
+	<data name="Duo Enabled" xml:space="preserve">
+  <value>Duo مفعّل</value>
+ </data>
+	<data name="Duo Health Check" xml:space="preserve">
+  <value>فحص حالة Duo</value>
+ </data>
+	<data name="Duo Security MFA (optional)" xml:space="preserve">
+  <value>مصادقة Duo Security متعددة العوامل (اختياري)</value>
+ </data>
+	<data name="Duo Unreachable Behavior" xml:space="preserve">
+  <value>سلوك Duo عند تعذر الوصول إليه</value>
+ </data>
+	<data name="Favorites" xml:space="preserve">
+  <value>المفضلة</value>
+ </data>
+	<data name="Installation Id" xml:space="preserve">
+  <value>معرف التثبيت</value>
+ </data>
+	<data name="Jobs Monitor" xml:space="preserve">
+  <value>مراقب المهام</value>
+ </data>
+	<data name="Locked Out Users" xml:space="preserve">
+  <value>المستخدمون المقفلون</value>
+ </data>
+	<data name="Logging" xml:space="preserve">
+  <value>تسجيل</value>
+ </data>
+	<data name="Notifications" xml:space="preserve">
+  <value>الإشعارات</value>
+ </data>
+	<data name="Resource Usage" xml:space="preserve">
+  <value>استخدام الموارد</value>
+ </data>
+	<data name="Send logs to developer" xml:space="preserve">
+  <value>إرسال السجلات إلى المطور</value>
+ </data>
+	<data name="Time in minutes" xml:space="preserve">
+  <value>الوقت بالدقائق</value>
+ </data>
+	<data name="Upload Certificate" xml:space="preserve">
+  <value>تحميل شهادة</value>
+ </data>
+	<data name="Upload Icon" xml:space="preserve">
+  <value>تحميل أيقونة</value>
+ </data>
+	<data name="About" xml:space="preserve">
+  <value>حول</value>
+ </data>
+	<data name="Add Category" xml:space="preserve">
+  <value>إضافة فئة</value>
+ </data>
+	<data name="Allow Username Override" xml:space="preserve">
+  <value>السماح بتجاوز اسم المستخدم</value>
+ </data>
+	<data name="API Tokens" xml:space="preserve">
+  <value>رموز API المميزة</value>
+ </data>
+	<data name="Apply Update" xml:space="preserve">
+  <value>تطبيق التحديث</value>
+ </data>
+	<data name="Ask For Alternate Email" xml:space="preserve">
+  <value>طلب بريد إلكتروني بديل</value>
+ </data>
+	<data name="Authorization Token" xml:space="preserve">
+  <value>رمز التفويض المميز</value>
+ </data>
+	<data name="Authorization Type" xml:space="preserve">
+  <value>نوع التفويض</value>
+ </data>
+	<data name="Basic" xml:space="preserve">
+  <value>أساسي</value>
+ </data>
+	<data name="Bearer" xml:space="preserve">
+  <value>Bearer</value>
+ </data>
+	<data name="BitLocker" xml:space="preserve">
+  <value>BitLocker</value>
+ </data>
+	<data name="Changed" xml:space="preserve">
+  <value>مُعدَّل</value>
+ </data>
+	<data name="Changes have been saved" xml:space="preserve">
+  <value>تم حفظ التغييرات</value>
+ </data>
+	<data name="Create new token" xml:space="preserve">
+  <value>إنشاء رمز مميز جديد</value>
+ </data>
+	<data name="days" xml:space="preserve">
+  <value>أيام</value>
+ </data>
+	<data name="Dedicated To" xml:space="preserve">
+  <value>مخصص لـ</value>
+ </data>
+	<data name="Deleted" xml:space="preserve">
+  <value>محذوف</value>
+ </data>
+	<data name="Delivered" xml:space="preserve">
+  <value>تم التسليم</value>
+ </data>
+	<data name="Disable" xml:space="preserve">
+  <value>تعطيل</value>
+ </data>
+	<data name="Display Name Format" xml:space="preserve">
+  <value>تنسيق اسم العرض</value>
+ </data>
+	<data name="Effective Permissions" xml:space="preserve">
+  <value>الأذونات السارية</value>
+ </data>
+	<data name="Enable" xml:space="preserve">
+  <value>تمكين</value>
+ </data>
+	<data name="Error Message" xml:space="preserve">
+  <value>رسالة خطأ</value>
+ </data>
+	<data name="Event Timestamp" xml:space="preserve">
+  <value>الطابع الزمني للحدث</value>
+ </data>
+	<data name="Expires" xml:space="preserve">
+  <value>تنتهي الصلاحية</value>
+ </data>
+	<data name="Formula sim" xml:space="preserve">
+  <value>محاكاة الصيغة</value>
+ </data>
+	<data name="Founded" xml:space="preserve">
+  <value>تأسست</value>
+ </data>
+	<data name="Founder" xml:space="preserve">
+  <value>المؤسس</value>
+ </data>
+	<data name="Generate New API Token" xml:space="preserve">
+  <value>إنشاء رمز API مميز جديد</value>
+ </data>
+	<data name="Group Member Added" xml:space="preserve">
+  <value>تمت إضافة عضو إلى المجموعة</value>
+ </data>
+	<data name="Group Member Removed" xml:space="preserve">
+  <value>تمت إزالة عضو من المجموعة</value>
+ </data>
+	<data name="Group Searched" xml:space="preserve">
+  <value>تم البحث عن مجموعة</value>
+ </data>
+	<data name="Hide Previous Updates" xml:space="preserve">
+  <value>إخفاء التحديثات السابقة</value>
+ </data>
+	<data name="HTTP Method" xml:space="preserve">
+  <value>طريقة HTTP</value>
+ </data>
+	<data name="Ignore SSL Verification" xml:space="preserve">
+  <value>تجاهل التحقق من SSL</value>
+ </data>
+	<data name="In Loving Memory" xml:space="preserve">
+  <value>في ذكرى عطرة</value>
+ </data>
+	<data name="Include Disabled" xml:space="preserve">
+  <value>تضمين المعطلين</value>
+ </data>
+	<data name="IP Address" xml:space="preserve">
+  <value>عنوان IP</value>
+ </data>
+	<data name="Is Revoked" xml:space="preserve">
+  <value>مُبطل</value>
+ </data>
+	<data name="Last Attempt Timestamp" xml:space="preserve">
+  <value>الطابع الزمني لآخر محاولة</value>
+ </data>
+	<data name="Last Message Status" xml:space="preserve">
+  <value>آخر حالة للرسالة</value>
+ </data>
+	<data name="Last Used" xml:space="preserve">
+  <value>آخر استخدام</value>
+ </data>
+	<data name="Locked Out" xml:space="preserve">
+  <value>مقفل</value>
+ </data>
+	<data name="Message Id" xml:space="preserve">
+  <value>معرف الرسالة</value>
+ </data>
+	<data name="Modify" xml:space="preserve">
+  <value>تعديل</value>
+ </data>
+	<data name="None" xml:space="preserve">
+  <value>لا شيء</value>
+</data>
+	<data name="Notification Settings" xml:space="preserve">
+  <value>إعدادات الإشعارات</value>
+</data>
+	<data name="OU Searched" xml:space="preserve">
+  <value>الوحدة التنظيمية التي تم البحث عنها</value>
+</data>
+	<data name="Parent Template" xml:space="preserve">
+  <value>القالب الأصلي</value>
+</data>
+	<data name="PasswordChange" xml:space="preserve">
+  <value>تغيير كلمة المرور</value>
+</data>
+	<data name="Refresh" xml:space="preserve">
+  <value>تحديث</value>
+</data>
+	<data name="Refresh Session" xml:space="preserve">
+  <value>تحديث الجلسة</value>
+</data>
+	<data name="Remove" xml:space="preserve">
+  <value>إزالة</value>
+</data>
+	<data name="Request Access" xml:space="preserve">
+  <value>طلب الوصول</value>
+</data>
+	<data name="Require Password Change" xml:space="preserve">
+  <value>يتطلب تغيير كلمة المرور</value>
+</data>
+	<data name="Response Code" xml:space="preserve">
+  <value>رمز الاستجابة</value>
+</data>
+	<data name="Retry Count" xml:space="preserve">
+  <value>عدد المحاولات</value>
+</data>
+	<data name="Send  Welcome Email" xml:space="preserve">
+  <value>إرسال بريد الترحيب الإلكتروني</value>
+</data>
+	<data name="Session Expired" xml:space="preserve">
+  <value>انتهت صلاحية الجلسة</value>
+</data>
+	<data name="Session expires in" xml:space="preserve">
+  <value>تنتهي صلاحية الجلسة خلال</value>
+</data>
+	<data name="Show Previous Updates" xml:space="preserve">
+  <value>عرض التحديثات السابقة</value>
+</data>
+	<data name="Source Code" xml:space="preserve">
+  <value>الكود المصدري</value>
+</data>
+	<data name="Stale computers" xml:space="preserve">
+  <value>أجهزة الكمبيوتر غير النشطة</value>
+</data>
+	<data name="Stale users" xml:space="preserve">
+  <value>المستخدمون غير النشطين</value>
+</data>
+	<data name="Template Id" xml:space="preserve">
+  <value>معرف القالب</value>
+</data>
+	<data name="Timestamp" xml:space="preserve">
+  <value>الطابع الزمني</value>
+</data>
+	<data name="Toggle Fields" xml:space="preserve">
+  <value>تبديل الحقول</value>
+</data>
+	<data name="Token" xml:space="preserve">
+  <value>الرمز المميز</value>
+</data>
+	<data name="Token Lifetime" xml:space="preserve">
+  <value>مدة صلاحية الرمز المميز</value>
+</data>
+	<data name="Unassign" xml:space="preserve">
+  <value>إلغاء التعيين</value>
+</data>
+	<data name="URL" xml:space="preserve">
+  <value>رابط</value>
+</data>
+	<data name="User Activity" xml:space="preserve">
+  <value>نشاط المستخدم</value>
+</data>
+	<data name="User Assigned" xml:space="preserve">
+  <value>مستخدم معين</value>
+</data>
+	<data name="User Searched" xml:space="preserve">
+  <value>المستخدم الذي تم البحث عنه</value>
+</data>
+	<data name="User Unassigned" xml:space="preserve">
+  <value>مستخدم غير معين</value>
+</data>
+	<data name="Username Format" xml:space="preserve">
+  <value>تنسيق اسم المستخدم</value>
+</data>
+	<data name="Value" xml:space="preserve">
+  <value>القيمة</value>
+</data>
+	<data name="Variables" xml:space="preserve">
+  <value>المتغيرات</value>
+</data>
+	<data name="Webhooks" xml:space="preserve">
+  <value>ويب هوكس</value>
+</data>
+	<data name="Your session has expired." xml:space="preserve">
+  <value>لقد انتهت صلاحية جلستك.</value>
+</data>
+	<data name="Your session is about to expire" xml:space="preserve">
+  <value>جلستك على وشك الانتهاء</value>
+</data>
+	<data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+  <value>المستخدمون المعطلون الذين تم تغييرهم في آخر 90 يومًا</value>
+</data>
+	<data name="Entries_changed_in_the_last_24_hours" xml:space="preserve">
+  <value>الإدخالات التي تم تغييرها في آخر 24 ساعة</value>
+</data>
+	<data name="Passwords_changed_in_the_last_90_days" xml:space="preserve">
+  <value>كلمات المرور التي تم تغييرها في آخر 90 يومًا</value>
+</data>
+	<data name="Entries_deleted_in_the_last_14_days" xml:space="preserve">
+  <value>الإدخالات المحذوفة في آخر 14 يومًا</value>
+</data>
+	<data name="Computers_created_in_the_last_14_days" xml:space="preserve">
+  <value>أجهزة الكمبيوتر التي تم إنشاؤها في آخر 14 يومًا</value>
+</data>
+	<data name="Contacts_created_in_the_last_14_days" xml:space="preserve">
+  <value>جهات الاتصال التي تم إنشاؤها في آخر 14 يومًا</value>
+</data>
+	<data name="Groups_created_in_the_last_14_days" xml:space="preserve">
+  <value>المجموعات التي تم إنشاؤها في آخر 14 يومًا</value>
+</data>
+	<data name="OUs_created_in_the_last_14_days" xml:space="preserve">
+  <value>الوحدات التنظيمية التي تم إنشاؤها في آخر 14 يومًا</value>
+</data>
+	<data name="Printers_created_in_the_last_14_days" xml:space="preserve">
+  <value>الطابعات التي تم إنشاؤها في آخر 14 يومًا</value>
+</data>
+	<data name="Users_created_in_the_last_14_days" xml:space="preserve">
+  <value>المستخدمون الذين تم إنشاؤهم في آخر 14 يومًا</value>
+</data>
+</root>
