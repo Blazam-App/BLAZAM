@@ -13,7 +13,7 @@
     private async Task CopyToClipboard(string? text)
     {
         await JS.InvokeVoidAsync("navigator.clipboard.writeText", text);
-        SnackBarService.Info(AppHelpLocalization[HelpLang.Text_Copied_To_Clipboard]"\"" + text + "\" copied to clipboard.");
+        SnackBarService.Info(AppHelpLocalization[HelpLang.Text_Copied_To_Clipboard]);
     }
 
 }
