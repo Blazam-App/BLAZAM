@@ -1,10 +1,19 @@
 ﻿@inherits AppComponentBase
+@inject IHttpContextAccessor HttpContextAccessor
+@if (HttpContextAccessor.HttpContext is not null && HttpContextAccessor.HttpContext.Request.Scheme.Equals("https", StringComparison.InvariantCultureIgnoreCase))
+{
 <MudIconButton Icon="@Icons.Material.Filled.ContentCopy"
-OnClick="@(async()=>{await CopyToClipboard(TextToCopy);})" />
-
+    OnClick="@(async()=>{await CopyToClipboard(TextToCopy);})" />
+}
 @code {
     [Parameter]
     public string? TextToCopy{ get; set; }
 
+
+    private async Task CopyToClipboard(string? text)
+    {
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", text);
+        SnackBarService.Info(AppHelpLocalization[HelpLang.Text_Copied_To_Clipboard]"\"" + text + "\" copied to clipboard.");
+    }
 
 }
