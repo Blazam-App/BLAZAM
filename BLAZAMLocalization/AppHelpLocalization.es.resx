@@ -148,7 +148,7 @@
     <value>{0} ha sido creado</value>
   </data>
   <data name="Debug_Enabled_Warning" xml:space="preserve">
-    <value />
+    <value>El modo de depuración está habilitado. Si este es un servidor de producción, desactívelo en appsettings.json para evitar la divulgación de datos sensibles.</value>
   </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>Los delegados son los usuarios aprobados de la aplicación. Solo los usuarios que defina aquí, o los usuarios de los siguientes grupos de Active Directory (o grupos anidados) con permisos asignados o autoedición habilitada.</value>

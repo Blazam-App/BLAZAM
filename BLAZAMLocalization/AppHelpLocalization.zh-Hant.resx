@@ -148,7 +148,7 @@
     <value>已建立 {0}</value>
   </data>
   <data name="Debug_Enabled_Warning" xml:space="preserve">
-    <value />
+    <value>已啟用偵錯模式。如果這是生產伺服器，請在 appsettings.json 中停用以防止敏感資料洩漏。</value>
   </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>委派是您核准的應用程式使用者。只有您在此處定義的使用者，或下列 Active Directory 群組（或巢狀群組）中具有對應權限或啟用自我編輯的使用者。</value>

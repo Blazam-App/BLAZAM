@@ -148,7 +148,7 @@
     <value>已创建 {0}</value>
   </data>
   <data name="Debug_Enabled_Warning" xml:space="preserve">
-    <value />
+    <value>已启用调试模式。如果这是生产服务器，请在 appsettings.json 中禁用以防止敏感数据泄露。</value>
   </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>委托是您批准的应用程序用户。只有您在此处定义的用户，或以下 Active Directory 组（或嵌套组）中具有映射权限或启用自编辑的用户。</value>

@@ -148,7 +148,7 @@
     <value>{0} è stato creato</value>
   </data>
   <data name="Debug_Enabled_Warning" xml:space="preserve">
-    <value />
+    <value>La modalità di debug è abilitata. Se questo è un server di produzione, disabilitalo in appsettings.json per evitare la divulgazione di dati sensibili.</value>
   </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>I delegati sono gli utenti dell'applicazione approvati. Solo gli utenti definiti qui o gli utenti nei seguenti gruppi di Active Directory (o gruppi nidificati) con autorizzazioni mappate o auto-modifica abilitata.</value>

@@ -18,16 +18,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AppHelpLocalization.resx</DependentUpon>
     </Compile>
-    <Compile Update="AppLocalization - Copy.hi.Designer.cs">
-      <DependentUpon>AppLocalization.hi.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="AppLocalization.hi.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AppLocalization.hi.resx</DependentUpon>
-    </Compile>
     <Compile Update="AppLocalization.Designer.cs">
       <DependentUpon>AppLocalization.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -50,12 +40,10 @@
       <LastGenOutput>AppHelpLocalization.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="AppLocalization.ar.resx">
-      <LastGenOutput>AppLocalization - Copy.hi.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="AppLocalization.hi.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>AppLocalization.hi.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="AppLocalization.pl.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -89,7 +77,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="AppValidationLocalization.zh-Hans.resx">
-      <LastGenOutput>AppValidationLocalization.zh-Hans.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="AppValidationLocalization.resx">

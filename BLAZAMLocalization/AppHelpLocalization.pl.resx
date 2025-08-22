@@ -148,7 +148,7 @@
     <value>Utworzono {0}</value>
   </data>
   <data name="Debug_Enabled_Warning" xml:space="preserve">
-    <value />
+    <value>Tryb debugowania jest włączony. Jeśli to jest serwer produkcyjny, wyłącz go w pliku appsettings.json, aby zapobiec ujawnieniu poufnych danych.</value>
   </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>Delegaci to zatwierdzeni użytkownicy aplikacji. Tylko zdefiniowani tutaj użytkownicy lub użytkownicy w następujących grupach Active Directory (lub grupach zagnieżdżonych) z przypisanymi uprawnieniami lub włączoną samodzielną edycją.</value>
