@@ -26,7 +26,7 @@ namespace BLAZAM.Common.Data.Tests.Validators
         [InlineData("Pas1!")]      // Less than 6 characters
         [InlineData("")]            // Empty string
         [InlineData(null)]          // Null value
-        public void IsValid_ShouldReturnError_ForInvalidPasswords(string invalidPassword)
+        public void IsValid_ShouldReturnError_ForInvalidPasswords(string? invalidPassword)
         {
             var result = _validator.GetValidationResult(invalidPassword, new ValidationContext(new object()));
             Assert.NotEqual(ValidationResult.Success, result);

@@ -41,7 +41,7 @@ namespace BLAZAM.Common.Data.Tests.Validators
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void IsValid_ShouldReturnNull_ForNullOrEmptyStrings(string ip)
+        public void IsValid_ShouldReturnNull_ForNullOrEmptyStrings(string? ip)
         {
             var result = _validator.GetValidationResult(ip, new ValidationContext(new object()));
             Assert.Null(result);
