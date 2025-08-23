@@ -5,6 +5,12 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BLAZAM.Data
 {
+    /// <summary>
+    /// A schema filter that modifies OpenAPI schemas to replace numeric enum values with their string representations.
+    /// </summary>
+    /// <remarks>This filter is designed to process enum types in OpenAPI schemas. When applied, it replaces
+    /// the numeric values of enum fields in the schema with their corresponding string names, improving the readability
+    /// of the generated API documentation.</remarks>
     public class EnumSchemaFilter : ISchemaFilter
     {
         /// <summary>
