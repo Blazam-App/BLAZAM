@@ -20,7 +20,7 @@ namespace BLAZAM.Tests.FileSystem
         public void Constructor_ReplacesTempVariable_WhenPathContainsTemp()
         {
             // Arrange
-            string path = "%temp%\\test.txt";
+            string path = "%temp%" + Path.DirectorySeparatorChar + "test.txt";
 
             // Act
             var fileSystemBase = new FileSystemBase(path);
