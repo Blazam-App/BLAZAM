@@ -24,6 +24,7 @@ using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MudBlazor;
@@ -381,6 +382,27 @@ namespace BLAZAM
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
                     { jwtSecurityScheme, Array.Empty<string>() } // Link the requirement to the definition
                 });
+            });
+
+
+
+            // Add response compression services
+            builder.Services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+                options.MimeTypes = new[]
+                {
+                    "text/plain",
+                    "text/css",
+                    "application/javascript",
+                    "text/javascript",
+                    "application/json",
+                    "application/xml",
+                    "text/html",
+                    "image/svg+xml"
+                };
             });
 
             // --- Windows Service Hosting ---

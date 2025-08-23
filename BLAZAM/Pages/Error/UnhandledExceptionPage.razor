@@ -11,49 +11,56 @@
 
 
 <MudAlert Elevation="5"
-    Square=true
-    ShowCloseIcon=true
-    CloseIconClicked=@(()=>{Nav.NavigateTo("/",true);}) 
-    Class="mud-alert-outlined-error mb-5" 
-    ContentAlignment="HorizontalAlignment.Center">
+          Square=true
+          ShowCloseIcon=true
+          CloseIconClicked=@(()=>{Nav.NavigateTo("/",true);})
+          Class="mud-alert-outlined-error mb-5"
+          ContentAlignment="HorizontalAlignment.Center">
     <MudText Typo="Typo.h4">
         @AppLocalization["Something terrible has happened..."]
 
     </MudText>
-    </MudAlert>
-    <MudContainer>
+</MudAlert>
+<MudContainer>
 
     @try
+    {
+        @if (ApplicationInfo.InDebugMode)
         {
-            @if (ApplicationInfo.InDebugMode)
-            {
 
-                <MudCard Square Class="mud-border-error mx-auto">
+            <MudCard Square Class="mud-border-error mx-auto">
                 <MudCardHeader Class="mud-error">
-                @Error?.Source : @Error?.GetType()
+                    @Error?.Source : @Error?.GetType()
                 </MudCardHeader>
                 <MudPaper Square=true>
-                        @AppLocalization[Lang.Error_Message]: @Error?.Message
-                    </MudPaper>
-                    <MudPaper Class="overflow-auto mud-typography-wrap">
+                    @AppLocalization[Lang.Error_Message]: @Error?.Message
+                </MudPaper>
+                <MudPaper Class="overflow-auto mud-typography-wrap">
                     @AppLocalization[Lang.Stack_Trace]: <br>
-                        @(
-                                (MarkupString)_error.StackTrace?.Replace("\n", "<br><br>")
-                                )
-                    </MudPaper>
-                </MudCard>
-            }
-            else
-            {
-            <MudText Class="my-7">@AppLocalization["To see error details, set DebugMode to true in appsettings.json in the Blazam installation directory."]</MudText>
-            }
-            <MudText Class="my-4" Align="Align.Right">@AppLocalization["Installation Id"]: @ApplicationInfo.InstallationId</MudText>
+                    @{
+                        var stackTrace = _error?.StackTrace?.Replace("\n", "<br><br>");
+                        if (stackTrace != null)
+                        {
+                            @((MarkupString)stackTrace)
+
+                        }
+
+                    }
+
+                </MudPaper>
+            </MudCard>
         }
-        catch (Exception ex)
+        else
         {
-            Loggers.SystemLogger.Error(ex,"Error on unexpected error page");
+            <MudText Class="my-7">@AppLocalization["To see error details, set DebugMode to true in appsettings.json in the Blazam installation directory."]</MudText>
         }
-    </MudContainer>
+        <MudText Class="my-4" Align="Align.Right">@AppLocalization["Installation Id"]: @ApplicationInfo.InstallationId</MudText>
+    }
+    catch (Exception ex)
+    {
+        Loggers.SystemLogger.Error(ex, "Error on unexpected error page");
+    }
+</MudContainer>
 
 
 
@@ -63,22 +70,21 @@
     private Exception? _error;
     private List<string> StackTrace { get; set; } = new();
     [Parameter]
-    public Exception? Error
+    public Exception? Error { get; set; }
+    protected override void OnParametersSet()
     {
-        get => _error; set
-
+        base.OnParametersSet();
+        if (Error == _error) return;
+        _error = Error;
+        if (_error != null)
         {
-            if (value == _error) return;
-            _error = value;
-            if (_error != null)
+            try
             {
-                try{
-                    Loggers.SystemLogger.Fatal(_error,"Unhandled exception");
-                }
-                catch
-                {
-                    
-                }
+                Loggers.SystemLogger.Fatal(_error, "Unhandled exception");
+            }
+            catch
+            {
+                // ignore logging errors
             }
         }
     }
