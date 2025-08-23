@@ -4,6 +4,7 @@ using System.DirectoryServices;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
+using BLAZAM.Logger;
 
 namespace BLAZAM.ActiveDirectory.Data
 {
@@ -40,7 +41,7 @@ namespace BLAZAM.ActiveDirectory.Data
                 catch (Exception ex)
                 {
                     // Handle exceptions appropriately (e.g., logging)
-                    Console.WriteLine($"Error reading events from {domainController}: {ex.Message}");
+                    Loggers.ActiveDirectoryLogger.Information(ex, "Error reading events from {@DomainController}", domainController);
                 }
             }
 
@@ -136,7 +137,7 @@ namespace BLAZAM.ActiveDirectory.Data
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error reading events from {domainController}: {ex.Message}");
+                        Loggers.ActiveDirectoryLogger.Information(ex, "Error reading events from {@DomainController}", domainController);
                         return false;
                     }
                 });

@@ -53,5 +53,10 @@
             }
             return false;
         }
+
+        public override int GetHashCode()
+        {
+            return ActionGuid.GetHashCode();
+        }
     }
 }

@@ -20,7 +20,10 @@ namespace BLAZAM.Helpers
             long hash = 0;
             foreach (var member in members)
             {
-                hash += member.Username.GetAppHashCode();
+                if (member.Username != null)
+                {
+                    hash += member.Username.GetAppHashCode();
+                }
             }
             return hash;
         }

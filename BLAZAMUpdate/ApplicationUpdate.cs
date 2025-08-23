@@ -47,7 +47,7 @@ namespace BLAZAM.Update
         private static SystemDirectory UpdateTempDirectory { get; set; }
 
         public static SystemDirectory StagingDirectory =>
-            new(UpdateTempDirectory + "staged\\");
+            new(UpdateTempDirectory + "staged" + Path.DirectorySeparatorChar);
 
         /// <summary>
         /// The local staging directory path for this update
@@ -64,7 +64,7 @@ namespace BLAZAM.Update
         /// </returns>
         public static SystemDirectory UpdateDownloadDirectory
         {
-            get => new(UpdateTempDirectory + "download\\");
+            get => new(UpdateTempDirectory + "download" + Path.DirectorySeparatorChar);
         }
 
 
@@ -182,7 +182,8 @@ namespace BLAZAM.Update
             var stageStep = new JobStep("Extract files", ExtractFiles);
             var stagingCheckStep = new JobStep("Check prepared files", (step) => { return UpdateStagingDirectory.Exists && UpdateStagingDirectory.Files.Count > 3; });
             var bakupStep = new JobStep("Create backup", (step) => { return _updateService.Backup(); });
-            var updateUpdaterStep = new JobStep("Apply Files", InitiateFileCopy);
+            var updateUpdaterStep = new JobStep("Apply Files", UpdateUpdater);
+            var updateStep = new JobStep("Apply Files", InitiateFileCopy);
             var waitForRestart = new JobStep("Wait for completion...", Wait);
             updateJob.AddStep(cleanDownloadStep);
             updateJob.AddStep(downloadStep);
@@ -191,12 +192,35 @@ namespace BLAZAM.Update
             updateJob.AddStep(stagingCheckStep);
             updateJob.AddStep(bakupStep);
             updateJob.AddStep(updateUpdaterStep);
+            updateJob.AddStep(updateStep);
             updateJob.AddStep(waitForRestart);
             return updateJob;
 
 
 
         }
+
+        private bool UpdateUpdater(JobStep step)
+        {
+            var updaterSource = new SystemDirectory(Path.Combine(UpdateStagingDirectory.FullPath,
+                                                                                "updater"));
+            var updaterDestination = new SystemDirectory(Path.Combine(_applicationRootDirectory.FullPath,
+                                                                                "updater"));
+            Loggers.UpdateLogger.Debug("Copying updater script");
+            Loggers.UpdateLogger.Debug("Source: {Source}", updaterSource);
+            Loggers.UpdateLogger.Debug("Dest: {Destination}", updaterDestination);
+            if (updaterSource.Exists && updaterSource.Files.Count > 0 && updaterSource.CopyTo(updaterDestination))
+            {
+                Loggers.UpdateLogger.Debug("Updater script copied successfully");
+                return true;
+            }
+            else
+            {
+                Loggers.UpdateLogger.Error("Failed to copy updater script from {Source} to {Destination}", updaterSource, updaterDestination);
+            }
+            return false;
+        }
+
         private static async Task<bool> Wait(JobStep? step)
         {
 
@@ -205,14 +229,6 @@ namespace BLAZAM.Update
         }
         private async Task<bool> InitiateFileCopy(JobStep? step)
         {
-            //All prerequisites met
-
-
-            Loggers.UpdateLogger?.Debug("Copying updater script");
-            Loggers.UpdateLogger?.Debug("Source: {Source}", UpdateStagingDirectory + "\\updater\\*");
-            Loggers.UpdateLogger?.Debug("Dest: {Destination}", _applicationRootDirectory + "updater\\");
-
-
             using var context = await _dbFactory.CreateDbContextAsync();
             var updateCredentials = _updateService.GetUpdateCredentials();
             if (updateCredentials != null)
@@ -384,6 +400,10 @@ namespace BLAZAM.Update
 
                 using (var streamToReadFrom = UpdateFile.OpenReadStream())
                 {
+                    if (streamToReadFrom == null)
+                    {
+                        return false;
+                    }
                     try
                     {
                         var zip = new ZipArchive(streamToReadFrom);
@@ -397,6 +417,7 @@ namespace BLAZAM.Update
                         Loggers.UpdateLogger?.Error(ex, "Error while extracting update zip");
 
                         return false;
+
                     }
                 }
             });

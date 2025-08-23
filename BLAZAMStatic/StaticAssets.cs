@@ -7,7 +7,7 @@ namespace BLAZAM.Static
     /// <summary>
     /// A store of static uri's for things like icons and images
     /// </summary>
-    public class StaticAssets
+    public static class StaticAssets
     {
         /// <summary>
         /// "/static/img/appicon.png"

@@ -243,6 +243,9 @@
   <data name="Super_User_Definition" xml:space="preserve">
     <value>如果启用，将拥有对应用程序的完全和全部访问权限</value>
   </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>“{0}”已复制到剪贴板。</value>
+  </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>发生意外错误。</value>
   </data>

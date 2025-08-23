@@ -243,6 +243,9 @@
   <data name="Super_User_Definition" xml:space="preserve">
     <value>सक्षम होने पर एप्लिकेशन तक पूर्ण और कुल पहुँच होगी</value>
   </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" क्लिपबोर्ड पर कॉपी किया गया।</value>
+  </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>एक अप्रत्याशित त्रुटि हुई है।</value>
   </data>

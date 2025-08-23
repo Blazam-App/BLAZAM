@@ -243,6 +243,9 @@
   <data name="Super_User_Definition" xml:space="preserve">
     <value>Po włączeniu będzie miał pełny i całkowity dostęp do aplikacji</value>
   </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" skopiowano do schowka.</value>
+  </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Wystąpił nieoczekiwany błąd.</value>
   </data>
