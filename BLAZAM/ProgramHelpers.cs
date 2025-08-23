@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Management;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using BLAZAM.Common.Conventions;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
@@ -324,8 +325,15 @@ namespace BLAZAM
             {
                 // Apply a custom convention to make controller routes lowercase
                 options.Conventions.Add(new LowercaseControllerRouteConvention());
+            }).AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
+
             builder.Services.AddMvc(); // Add MVC services (includes controllers, views, etc.)
+
+
+
 
             // --- Swagger/OpenAPI Documentation ---
             builder.Services.AddSwaggerGen(c =>
