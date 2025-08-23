@@ -1,4 +1,5 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Text.RegularExpressions;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
@@ -32,6 +33,11 @@ namespace BLAZAM.Pages.API.v1
         public IActionResult OnGet([FromQuery] string query)
         {
 
+            // Validate the query parameter: allow alphanumeric, space, hyphen, underscore, and period, 1-100 chars
+            if (string.IsNullOrWhiteSpace(query) || query.Length > 100 || !Regex.IsMatch(query, @"^[\w\s\-.]+$"))
+            {
+                return BadRequest("Invalid query parameter.");
+            }
 
             ADSearch search = new(Directory)
             {
