@@ -149,12 +149,6 @@ namespace BLAZAM.Global.Data
                     // 1. Combine your date and time parts into one string
                     string dateString = $"{month}/{day}/{year} {time} Z";
 
-                    // 2. Define the exact format of your string
-                    //    - M/d/yyyy handles single or double-digit months/days
-                    //    - HH:mm:ss is for 24-hour time
-                    //    - The 'Z' is treated as a literal character indicating UTC
-                    string format = "M/d/yyyy HH:mm:ss 'Z'";
-
                     DateTime parsedDateTime;
 
                     // 3. Use TryParseExact with the specified format and provider
