@@ -1,4 +1,5 @@
 ﻿using System.Security;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -76,6 +77,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// If a password change is staged using <see cref="StagePasswordChange(SecureString, bool)"/>, holds the encrypted new password to be applied.
         /// </summary>
+        [JsonIgnore]
         SecureString? NewPassword { get; set; }
         bool PasswordNotRequired { get; set; }
         bool RequirePasswordChange { get; set; }
