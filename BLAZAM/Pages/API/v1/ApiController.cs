@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -93,10 +93,29 @@ namespace BLAZAM.Pages.API.v1
         /// </summary>
         /// <param name="data">A JSON serializable object</param>
         /// <returns>A new <see cref="JsonResult"/> containing the <see cref="ResponseData"/></returns>
-        protected IActionResult FormatData(dynamic data)
+        protected IActionResult FormatData(object data)
         {
             stopwatch.Stop();
-            ResponseData.Add("Data", data);
+
+
+            if (data is IEnumerable<object> dataEnumerable)
+            {
+                var options = new JsonSerializerOptions();
+                options.Converters.Add(new JsonStringEnumConverter());
+
+                // Serialize each item using its runtime type
+                var serializedItems = dataEnumerable
+                    .Select(item => JsonSerializer.SerializeToElement(item, item.GetType(), options))
+                    .ToList();
+
+
+                ResponseData["Data"] = serializedItems;
+            }
+            else
+            {
+                ResponseData["Data"] = data;
+            }
+
             ResponseData.Add("Finish Time", DateTime.Now.ToString());
             ResponseData.Add("Runtime", stopwatch.ElapsedMilliseconds + "ms");
 
