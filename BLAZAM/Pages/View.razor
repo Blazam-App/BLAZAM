@@ -125,8 +125,8 @@
     {
         await base.OnInitializedAsync();
         Searcher = new ADSearch(Directory);
-        SearchService.SearchTerm = SearchTermParameter;
-        Searcher.GeneralSearchTerm = SearchTermParameter;
+        SearchService.SearchTerm = _searchTermParameter;
+        Searcher.GeneralSearchTerm = _searchTermParameter;
 
         await base.OnInitializedAsync();
 
@@ -168,7 +168,7 @@
         results.Clear();
 
         LoadingData = true;
-        if (!SearchTermParameter.IsNullOrEmpty() && SearchTermParameter?.Length > 0)
+        if (!_searchTermParameter.IsNullOrEmpty() && _searchTermParameter?.Length > 0)
             await InvokeSearch();
         else
             Searcher?.Results.Clear();
@@ -191,7 +191,7 @@
             Searcher = new ADSearch(Directory);
         else
             Searcher.Cancel();
-        SearchService.SearchTerm = SearchTermParameter;
+        SearchService.SearchTerm = _searchTermParameter;
         Searcher.GeneralSearchTerm = SearchService.SearchTerm;
         if (CurrentUser.State.CanSearchDisabled(ActiveDirectoryObjectType.User)
     || CurrentUser.State.CanSearchDisabled(ActiveDirectoryObjectType.Computer))
