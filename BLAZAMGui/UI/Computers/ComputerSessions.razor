@@ -152,8 +152,8 @@ else
     {
         base.Dispose();
         t?.Dispose();
-        Sessions.ForEach(s => {
-            s.Dispose();
+        Sessions?.ForEach(s => {
+            s?.Dispose();
         });
     }
 }
