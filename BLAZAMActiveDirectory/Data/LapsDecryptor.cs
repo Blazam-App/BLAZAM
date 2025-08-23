@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
+using BLAZAM.Logger;
 using static BLAZAM.ActiveDirectory.Data.Win32;
 
 namespace BLAZAM.ActiveDirectory.Data
@@ -96,12 +97,11 @@ namespace BLAZAM.ActiveDirectory.Data
                         try
                         {
                             ntaccount = (securityIdentifier.Translate(typeof(NTAccount)) as NTAccount);
-
-                            Console.WriteLine("[*] Authorized Decryptor: {0}", ntaccount.ToString());
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            Console.WriteLine("[*] Authorized Decryptor SID: {0}", securityIdentifier.ToString());
+                            Loggers.ActiveDirectoryLogger.Error(ex, "Failed to translate SID to NTAccount: {0}", securityIdentifier.ToString());
+
                         }
                     }
                 }
