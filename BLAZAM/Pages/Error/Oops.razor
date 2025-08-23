@@ -57,8 +57,10 @@
                 Loggers.SystemLogger.Fatal("Ooops shown! {Error}{Details}", ErrorMessage, DetailsMessage);
 
             }
-        }catch{
-
+        }
+        catch
+        {
+            //we don't want to crash here
         }
        
     }
