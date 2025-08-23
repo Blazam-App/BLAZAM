@@ -45,6 +45,7 @@ namespace BLAZAM.Pages.API.v1
         /// </summary>
         protected IApplicationUserState? CurrentUserState { get; }
 
+        private readonly JsonSerializerOptions jsonOptions;
 
         /// <summary>
         /// Creates a new API controller with the required services
@@ -56,6 +57,9 @@ namespace BLAZAM.Pages.API.v1
         /// <param name="adFactory"></param>
         public ApiController(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
         {
+            jsonOptions = new JsonSerializerOptions();
+            jsonOptions.Converters.Add(new JsonStringEnumConverter());
+
             stopwatch.Start();
 
             RequestId = Guid.NewGuid();
@@ -100,12 +104,11 @@ namespace BLAZAM.Pages.API.v1
 
             if (data is IEnumerable<object> dataEnumerable)
             {
-                var options = new JsonSerializerOptions();
-                options.Converters.Add(new JsonStringEnumConverter());
+
 
                 // Serialize each item using its runtime type
                 var serializedItems = dataEnumerable
-                    .Select(item => JsonSerializer.SerializeToElement(item, item.GetType(), options))
+                    .Select(item => JsonSerializer.SerializeToElement(item, item.GetType(), jsonOptions))
                     .ToList();
 
 
