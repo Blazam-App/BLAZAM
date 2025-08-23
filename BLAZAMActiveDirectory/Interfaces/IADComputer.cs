@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Security;
+using System.Text.Json.Serialization;
 using BLAZAM.ActiveDirectory.Adapters;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
@@ -41,6 +42,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Called when this computers <see cref="IsOnline"/> status changes
         /// </summary>
+        [JsonIgnore]
         AppDelegate<bool> OnOnlineChanged { get; set; }
         /// <summary>
         /// The realtime CPU usage percentage
