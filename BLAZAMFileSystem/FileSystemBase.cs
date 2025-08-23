@@ -88,7 +88,7 @@ namespace BLAZAM.FileSystem
                         // Ensure the directory exists if we are testing directory writability
                         // If FullPath points to a non-existent file in an existing directory, this will test the directory.
                         // If FullPath points to a non-existent file in a non-existent directory, DirectoryInfo will handle it.
-                        string targetDirectory = directoryInfo.Exists ? FullPath : fileInfo.DirectoryName;
+                        string? targetDirectory = directoryInfo.Exists ? FullPath : fileInfo.DirectoryName;
                         if (string.IsNullOrEmpty(targetDirectory) || !Directory.Exists(targetDirectory))
                         {
                             // If the directory itself doesn't exist, can't write a test file.
