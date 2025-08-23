@@ -65,9 +65,9 @@ namespace BLAZAM
             catch (Exception ex) // Catch broad exceptions as WMI can fail for various reasons (permissions, OS)
             {
                 // Log the failure to get the preferred ID.
-                Console.WriteLine($"Failed to get Windows Installation ID via WMI: {ex.Message}. Falling back to MachineName hash.");
+                Loggers.SystemLogger.Information(ex, "Failed to get Windows Installation ID via WMI. Falling back to MachineName hash.");
                 // Fallback: Generate a GUID based on the machine name. Less unique but better than nothing.
-                ApplicationInfo.installationId = Environment.MachineName.ToGuid(); // Assumes ToGuid() extension method exists
+                ApplicationInfo.installationId = Environment.MachineName.ToGuid();
             }
 
             // Store the configuration manager instance globally for easy access (use with caution).
