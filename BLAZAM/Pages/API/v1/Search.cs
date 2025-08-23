@@ -1,7 +1,5 @@
-﻿using System.Text.RegularExpressions;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Database.Context;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -33,11 +31,7 @@ namespace BLAZAM.Pages.API.v1
         [HttpGet]
         public IActionResult OnGet([FromQuery] string query)
         {
-            // restrict the username and password to letters only
-            if (!Regex.IsMatch(query, "^[a-zA-Z]+$"))
-            {
-                return BadRequest();
-            }
+
 
             ADSearch search = new(Directory)
             {
@@ -48,5 +42,6 @@ namespace BLAZAM.Pages.API.v1
             var data3 = data2.Select(de => de.CanonicalName).ToList();
             return FormatData(data3);
         }
+
     }
 }
