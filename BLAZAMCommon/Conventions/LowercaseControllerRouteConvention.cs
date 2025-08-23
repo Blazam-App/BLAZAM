@@ -12,6 +12,10 @@ namespace BLAZAM.Common.Conventions
                 foreach (var selector in controller.Selectors)
 
                 {
+                    if (selector.AttributeRouteModel?.Template == null)
+                    {
+                        continue; // Skip if no route template is defined
+                    }
                     foreach (var template in selector.AttributeRouteModel.Template.Split('/'))
                     {
                         if (template == "[controller]")
