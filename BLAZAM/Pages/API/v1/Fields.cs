@@ -158,11 +158,17 @@ namespace BLAZAM.Pages.API.v1
             if (payload == null)
                 return BadRequest("Payload required.");
 
+            if (payload.FieldType == null)
+                return UnprocessableEntity(new List<ValidationResult>
+                {
+                    new ValidationResult("FieldType is required.", new[] { nameof(payload.FieldType) })
+                });
+
             var field = new CustomActiveDirectoryField
             {
                 DisplayName = payload.DisplayName,
                 FieldName = payload.FieldName,
-                FieldType = payload.FieldType,
+                FieldType = payload.FieldType.Value,
                 ObjectTypes = payload.ObjectTypes?
                     .Select(ot => new ActiveDirectoryFieldObjectType
                     {
@@ -223,8 +229,13 @@ namespace BLAZAM.Pages.API.v1
                 return NotFound();
 
             field.DisplayName = payload.DisplayName;
+
             field.FieldName = payload.FieldName;
-            field.FieldType = payload.FieldType;
+
+            if (payload.FieldType.HasValue)
+            {
+                field.FieldType = payload.FieldType.Value;
+            }
 
             // Update object types
             field.ObjectTypes.Clear();
@@ -334,7 +345,7 @@ namespace BLAZAM.Pages.API.v1
         /// <summary>
         /// The data type for this field.
         /// </summary>
-        public ActiveDirectoryFieldType FieldType { get; set; }
+        public ActiveDirectoryFieldType? FieldType { get; set; }
 
         /// <summary>
         /// The list of Active Directory object types this field applies to.

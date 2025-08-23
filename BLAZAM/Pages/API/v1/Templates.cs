@@ -1,11 +1,8 @@
 ﻿using System.Security;
 using System.Text.Json;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.EmailMessage.Email.Notifications;
-using BLAZAM.Global.Events;
 using BLAZAM.Gui.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
@@ -24,6 +21,7 @@ namespace BLAZAM.Pages.API.v1
     /// Template API endpoints provide listing of templates
     /// and execution to create users.
     /// </summary>
+    [Route("api/v1/templates")]
     public class Templates : ApiController
     {
         private readonly IStringLocalizer<AppLocalization> AppLocalization;
@@ -90,7 +88,7 @@ namespace BLAZAM.Pages.API.v1
         /// <response code="403">Forbidden - The user does not have the required role.</response>
         /// <response code="422">Unprocessable - The creation request cannot be processed due to an internal error.</response>
         [HttpPost]
-        [Route("/api/v1/templates/execute/{templateId}")]
+        [Route("execute/{templateId}")]
 
         public async Task<IActionResult> Execute(int templateId, [FromBody] NewUserPayload newUserDetails)
         {
@@ -277,7 +275,7 @@ namespace BLAZAM.Pages.API.v1
         /// <response code="401">Unauthorized - The user is not authenticated.</response>
         /// <response code="403">Forbidden - The user does not have the required role.</response>
         [HttpGet]
-        [Route("/api/v1/templates/list/")]
+        [Route("list")]
         public IActionResult List()
         {
             using var context = DbFactory.CreateDbContext();
