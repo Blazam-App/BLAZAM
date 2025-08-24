@@ -178,29 +178,21 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 switch (ObjectTypeFilter)
                 {
                     case ActiveDirectoryObjectType.Printer:
-                        searcher.Filter = "(&(objectClass=printQueue))";
+                        LdapFilter = "(&(objectClass=printQueue))";
                         break;
 
                     case ActiveDirectoryObjectType.Group:
-                        searcher.Filter = "(&(objectCategory=group)(objectClass=group))";
+                        LdapFilter = "(&(objectCategory=group)(objectClass=group))";
                         break;
 
                     case ActiveDirectoryObjectType.User:
                         LdapFilter = "(&(objectCategory=person)(objectClass=user))";
-                        if (EnabledOnly == true)
-                        {
-                            //LdapFilter = "(&(objectCategory=person)(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
-                        }
-                        else if (DisabledOnly == true)
-                        {
-                            //LdapFilter = "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=2))";
 
-                        }
 
                         break;
 
                     case ActiveDirectoryObjectType.Contact:
-                        searcher.Filter = "(&(objectCategory=person)(objectClass=contact))";
+                        LdapFilter = "(&(objectCategory=person)(objectClass=contact))";
                         break;
 
                     case ActiveDirectoryObjectType.Computer:
@@ -213,12 +205,12 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         break;
 
                     case ActiveDirectoryObjectType.BitLocker:
-                        searcher.Filter = "(&(objectCategory=msFVE-RecoveryInformation))";
+                        LdapFilter = "(&(objectCategory=msFVE-RecoveryInformation))";
                         break;
 
                     case ActiveDirectoryObjectType.OU:
-                        searcher.VirtualListView = null;
-                        searcher.Filter = "(&(objectCategory=organizationalUnit))";
+                        // searcher.VirtualListView = null;
+                        LdapFilter = "(&(objectCategory=organizationalUnit))";
                         break;
 
                 }

@@ -1,12 +1,11 @@
 ﻿using System.DirectoryServices;
+using System.DirectoryServices.Protocols;
 using System.Text.Json.Serialization;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Jobs;
-using System.DirectoryServices;
-using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -112,7 +111,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// The .NET underlying object for this entry
         /// </summary>
         [JsonIgnore]
-        DirectoryEntry? DirectoryEntry { get; set; }
+        IDirectoryEntry? DirectoryEntry { get; set; }
 
         /// <summary>
         /// The full Active Directory Services path including LDAP server name

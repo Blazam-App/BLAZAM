@@ -157,8 +157,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         [JsonIgnore]
-        public DirectoryEntry? DirectoryEntry { get; set; }
-        
+        public IDirectoryEntry? DirectoryEntry { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -1201,7 +1201,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
 
-           
+
             catch (InvalidCastException ex)
             {
                 throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
