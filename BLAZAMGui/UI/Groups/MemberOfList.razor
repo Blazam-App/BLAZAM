@@ -14,16 +14,27 @@
                     <MudListItem>
                         <ChildContent>
                             <MudStack Row=true>
-                                <DirectoryEntryContextMenu Entry="g">
+                                <DirectoryEntryContextMenu Disabled=@Disabled Entry="g">
+                                    <MudElement>
+                                        @if (AllowNavigation)
+                                        {
+                                            <MudLink Target="@Target"
+                                                     Underline="Underline.None"
+                                                     Class="align-middle"
+                                                     Style="min-width:0"
+                                                     Href="@g.SearchUri">
+                                                <GroupWithDescriptionTooltip Group="@g" />
+                                            </MudLink>
+                                        }
+                                        else
+                                        {
+                                            <GroupWithDescriptionTooltip Group="@g" />
+                                        }
+                                    </MudElement>
 
-                                    <MudLink Target="@Target"
-                                             Underline="Underline.None"
-                                             Class="align-middle"
-                                             Href="@g.SearchUri">
-                                        <GroupWithDescriptionTooltip Group="@g" />
-                                    </MudLink>
+
                                 </DirectoryEntryContextMenu>
-                                @if (g.CanUnassign)
+                                @if (g.CanUnassign && !Disabled)
                                 {
                                     <MudSpacer />
                                     <MudIconButton Disabled=@Disabled
@@ -51,7 +62,7 @@
     {
         <MudText>@AppLocalization[Lang.Not_a_member_of_any_groups]</MudText>
     }
-    @if (CurrentUser.State.CanAssign)
+    @if (CurrentUser.State.CanAssign && !Disabled)
     {
 
         <MudButton Color="Color.Primary"
@@ -72,6 +83,8 @@ else if (LoadingData)
     public string? Target { get; set; }
     [Parameter]
     public bool Disabled { get; set; }
+    [Parameter]
+    public bool AllowNavigation { get; set; } = true;
     [Parameter]
     public IGroupableDirectoryAdapter Model { get; set; }
     [Parameter]

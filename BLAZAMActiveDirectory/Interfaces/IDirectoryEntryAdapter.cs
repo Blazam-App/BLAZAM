@@ -1,4 +1,5 @@
 ﻿using System.DirectoryServices;
+using System.Text.Json.Serialization;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
@@ -108,6 +109,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// The .NET underlying object for this entry
         /// </summary>
+        [JsonIgnore]
         DirectoryEntry? DirectoryEntry { get; set; }
 
         /// <summary>
@@ -166,17 +168,20 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Called when pending changes to this entry are commited
         /// </summary>
+        [JsonIgnore]
         AppDelegate? OnModelCommited { get; set; }
 
         /// <summary>
         /// Called when any changes occur to this entry
         /// </summary>
+        [JsonIgnore]
         AppDelegate? OnModelChanged { get; set; }
 
         /// <summary>
         /// If <see cref="NewEntry"/> is true, property changes will be
         /// staged in this property.
         /// </summary>
+        [JsonIgnore]
         Dictionary<string, object> NewEntryProperties { get; set; }
 
         /// <summary>
@@ -195,30 +200,36 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <remarks>
         /// Must be collected prior to executing <see cref="CommitChanges"/>
         /// </remarks>
+        [JsonIgnore]
         List<AuditChangeLog> Changes { get; }
 
         /// <summary>
         /// Called when this entry is renamed
         /// </summary>
+        [JsonIgnore]
         AppDelegate<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
 
         /// <summary>
         /// Called when this entry is deleted
         /// </summary>
+        [JsonIgnore]
         AppDelegate? OnModelDeleted { get; set; }
         /// <summary>
         /// The directory this entry belongs to
         /// </summary>
+        [JsonIgnore]
         IActiveDirectoryContext Directory { get; }
         /// <summary>
         /// Indicates whether this entry is expanded
         /// in the ui within a tree view
         /// </summary>
+        [JsonIgnore]
         bool IsExpanded { get; set; }
         /// <summary>
         /// Indicates whether this entry is selected
         /// in the ui within a tree view
         /// </summary>
+        [JsonIgnore]
         bool IsSelected { get; set; }
 
         /// <summary>
@@ -235,33 +246,39 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <remarks>
         /// Usually only used for <see cref="IADOrganizationalUnit"/>'s
         /// </remarks>
+        [JsonIgnore]
         IEnumerable<IDirectoryEntryAdapter> Children { get; }
-        IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
 
 
         /// <summary>
         /// Permissions inherited by this object
         /// </summary>
+        [JsonIgnore]
         IList<PermissionMapping> InheritedPermissionMappings { get; }
         /// <summary>
         /// Inherited and direct permssions applied to this object
         /// </summary>
+        [JsonIgnore]
         IList<PermissionMapping> AppliedPermissionMappings { get; }
 
         /// <summary>
         /// Permissions directly assigned to this object
         /// </summary>
+        [JsonIgnore]
         IList<PermissionMapping> DirectPermissionMappings { get; }
 
 
+        [JsonIgnore]
         IList<PermissionMapping> OffspringPermissionMappings { get; }
 
         /// <summary>
         /// Called when staged changes have been discarded
         /// </summary>
+        [JsonIgnore]
         AppEvent? OnChangesDiscarded { get; set; }
         byte[]? Guid { get; set; }
         IADUser? Manager { get; set; }
+        IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
 
 
         /// <summary>

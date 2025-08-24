@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using BLAZAM.Helpers;
 using Newtonsoft.Json;
 
 namespace BLAZAM.Common.Data
@@ -244,7 +243,7 @@ namespace BLAZAM.Common.Data
 
         private T? DecryptOldUnsaltedObject<T>(string? cipherText)
         {
-
+            if (cipherText == null) return default;
             byte[] buffer = Convert.FromBase64String(cipherText);
 
             byte[] iv = buffer.Take(16).ToArray<byte>();

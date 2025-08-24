@@ -20,7 +20,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private const int ADS_UF_PASSWD_CANT_CHANGE = 0x0040;
         private const int ADS_UF_NORMAL_ACCOUNT = 0x0200;
         private const int ADS_UF_DONT_EXPIRE_PASSWD = 0x10000;
-
+        private const string pwdLastSet = "pwdLastSet";
 
         public virtual string? SAMAccountName
         {
@@ -279,14 +279,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                value = SetFileTimeAttribute("accountExpires", value);
+                SetFileTimeAttribute("accountExpires", value);
             }
         }
 
 
         public void StageRequirePasswordChange(bool requireChange)
         {
-            PostCommitSteps.Add(new JobStep("Require Password Change", (JobStep? step) =>
+            PostCommitSteps.Add(new JobStep("Require Password Change", (JobStep step) =>
             {
 
                 RequirePasswordChange = requireChange;
@@ -322,29 +322,43 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var dateTime = GetDateTimeAttribute("pwdLastSet")?.AdsValueToDateTime();
-                if (dateTime.HasValue)
-                {
-                    return dateTime.Value;
 
-                }
-                var rawValue = GetAttribute<Int32>("pwdLastSet");
-                if (rawValue == -1)
+                try
                 {
-                    return DateTime.UtcNow;
+                    var dateTime = GetDateTimeAttribute(pwdLastSet)?.AdsValueToDateTime();
+                    if (dateTime.HasValue)
+                    {
+                        return dateTime.Value;
+
+                    }
                 }
-                if (rawValue == 0)
+                catch (Exception ex)
                 {
-                    return null;
+                    try
+                    {
+                        var rawValue = GetAttribute<Int32>(pwdLastSet);
+                        if (rawValue == -1)
+                        {
+                            return DateTime.UtcNow;
+                        }
+                        if (rawValue == 0)
+                        {
+                            return null;
+                        }
+                    }
+                    catch (Exception ex2)
+                    {
+                        //Ignore conversion errors during runtime
+                    }
                 }
                 return null;
             }
             set
             {
                 if (value == null)
-                    SetAttribute("pwdLastSet", 0);
+                    SetAttribute(pwdLastSet, 0);
                 else
-                    SetAttribute("pwdLastSet", -1);
+                    SetAttribute(pwdLastSet, -1);
 
             }
 
@@ -360,63 +374,72 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (SAMAccountName == null) throw new AppException("samaccount name not found!");
             if (DirectorySettings == null) throw new AppException("Directory settings not found when trying to change directory user password");
 
-            var directoryPassword = DirectorySettings.Password.Decrypt();
+            var directoryPassword = DirectorySettings.Password.Decrypt().ToSecureString();
             if (directoryPassword == null) return false;
-
 
             try
             {
-                try
-                {
-                    Invoke("SetPassword", new[] { password.ToPlainText() });
+                if (TryInvokeSetPassword(password))
                     return true;
-                }
-                catch (Exception ex)
+                if (OperatingSystem.IsWindows())
                 {
-                    Loggers.ActiveDirectoryLogger.Warning(ex, "Could not set password via Invoke");
-                    //The following works outside the domain but may have issues with certs
-                    using (PrincipalContext pContext = new(
-                        ContextType.Domain,
-                        DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
-                        DirectorySettings.Username + "@" + DirectorySettings.FQDN,
-                        directoryPassword
-                        ))
-                    {
-
-
-                        UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
-                        if (up != null)
-                        {
-                            up.SetPassword(password.ToPlainText());
-                            if (requireChange)
-                                up.ExpirePasswordNow();
-                            if (NewEntry)
-                                up.PasswordNotRequired = false;
-                            up.Save();
-
-                        }
-                    }
-
-
-                    return true;
+                    // If we are on Windows, we can use the PrincipalContext to set the password
+                    return TryPrincipalContextSetPassword(password, requireChange, directoryPassword);
                 }
 
             }
             catch (Exception ex)
             {
-
                 Loggers.ActiveDirectoryLogger.Error(ex, "Error setting entry password");
                 if (!Debugger.IsAttached)
                     throw new AppException("Unable to set password", ex);
-                else return true;
             }
+            return false;
+        }
 
+        private bool TryInvokeSetPassword(SecureString password)
+        {
+            try
+            {
+                Invoke("SetPassword", new[] { password.ToPlainText() });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Warning(ex, "Could not set password via Invoke");
+                return false;
+            }
+        }
+
+        private bool TryPrincipalContextSetPassword(SecureString password, bool requireChange, SecureString directoryPassword)
+        {
+            if (DirectorySettings == null)
+                throw new AppException("Directory settings not found when trying to change directory user password");
+            using (PrincipalContext pContext = new(
+                ContextType.Domain,
+                DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
+                DirectorySettings.Username + "@" + DirectorySettings.FQDN,
+                directoryPassword.ToPlainText()
+            ))
+            {
+                UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
+                if (up != null)
+                {
+                    up.SetPassword(password.ToPlainText());
+                    if (requireChange)
+                        up.ExpirePasswordNow();
+                    if (NewEntry)
+                        up.PasswordNotRequired = false;
+                    up.Save();
+                }
+            }
+            return true;
         }
 
         public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
         {
             NewPassword = newPassword;
-            PostCommitSteps.Add(new JobStep("Set Password", (JobStep? step) =>
+            PostCommitSteps.Add(new JobStep("Set Password", (JobStep step) =>
             {
                 var pass = NewPassword;
                 NewPassword = null;
@@ -425,7 +448,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         }
-
 
 
 

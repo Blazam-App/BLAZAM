@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a contract for a simple in-memory cache for storing user session-specific data.
     /// </summary>
-    public interface IApplicationUserSessionCache
+    public interface IApplicationUserSessionCache : IDisposable
     {
         /// <summary>
         /// Retrieves a cached object by its Type key.

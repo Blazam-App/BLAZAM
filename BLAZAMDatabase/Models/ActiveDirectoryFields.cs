@@ -374,7 +374,7 @@ namespace BLAZAM.Database.Models
             Id = 41,
             FieldName = "lockoutTime",
             DisplayName = Lang.Locked_Out,
-            FieldType = ActiveDirectoryFieldType.Boolean,
+            FieldType = ActiveDirectoryFieldType.FileTime,
             PropertyName = "LockedOut"
 
         };
@@ -417,6 +417,7 @@ namespace BLAZAM.Database.Models
             FieldType = ActiveDirectoryFieldType.Text,
             PropertyName = "LapsPassword"
         };
+
 
     }
 }

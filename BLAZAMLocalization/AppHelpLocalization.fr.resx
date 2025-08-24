@@ -147,6 +147,9 @@
   <data name="Created" xml:space="preserve">
     <value>{0} a été créé</value>
   </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value>Le mode débogage est activé. S'il s'agit d'un serveur de production, désactivez-le dans appsettings.json pour éviter la divulgation de données sensibles.</value>
+  </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>Les délégués sont vos utilisateurs d'application approuvés. Seuls les utilisateurs que vous définissez ici, ou les utilisateurs des groupes Active Directory suivants (ou des groupes imbriqués) avec des autorisations mappées ou l'auto-édition activée.</value>
   </data>
@@ -239,6 +242,9 @@
   </data>
   <data name="Super_User_Definition" xml:space="preserve">
     <value>Aura un accès complet et total à l'application si activé</value>
+  </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" copié dans le presse-papiers.</value>
   </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Une erreur inattendue s'est produite.</value>

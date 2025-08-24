@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Adapters;
-using MudBlazor;
+﻿using MudBlazor;
 using Color = MudBlazor.Color;
 
 namespace BLAZAM.Gui.UI.Inputs.TreeViews
@@ -14,17 +13,8 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         [Parameter]
         public bool StartRootExpanded { get; set; } = true;
 
-        private string? _label;
         [Parameter]
-        public string? Label
-        {
-            get => _label; set
-            {
-                if (_label == value) return;
-                _label = value;
-                _ = InvokeAsync(StateHasChanged);
-            }
-        }
+        public string? Label { get; set; }
         /// <summary>
         /// The root ou of this TreeView
         /// </summary>
@@ -126,7 +116,8 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
         protected void InitializeTreeView()
         {
-
+            LoadingData = true;
+            _ = InvokeAsync(StateHasChanged);
             if (RootOU is null || RootOU.Count < 1)
             {
                 TopLevel = new ADOrganizationalUnit();
@@ -139,8 +130,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             OpenToSelected();
 
             GuiOU = new List<TreeItemData<IDirectoryEntryAdapter>>(RootOU);
-            var root = GuiOU.First();
-            root.Children = GetChildren(root);
+
             LoadingData = false;
         }
 
@@ -158,7 +148,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            LoadingData = true;
+
             _ = Task.Run(() =>
             {
                 InitializeTreeView();
@@ -167,11 +157,11 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
         protected void OpenToSelected()
         {
-
+            RootOU.First().Children = GetChildren(RootOU.First());
             if (StartRootExpanded && RootOU != null && RootOU.Count > 0)
             {
                 RootOU.First().Expanded = true;
-                RootOU.First().Children = GetChildren(RootOU.First());
+
                 if (SelectedEntry != null)
                 {
                     var firstThing = RootOU.First();
@@ -200,6 +190,14 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                             }
                             else
                             {
+                                openThis.Children.ForEach(c =>
+                                {
+                                    if (c.Value is IADOrganizationalUnit ou)
+                                    {
+                                        c.Children = ou.SubOUs.ToTreeItemData();
+                                    }
+                                });
+
                                 var matchingOU = openThis.Children.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
                                 if (matchingOU != null)
                                     matchingOU.Selected = true;
@@ -216,7 +214,6 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                     SelectedEntry = RootOU.First().Value;
                 }
             }
-            //InvokeAsync(StateHasChanged);
 
 
         }

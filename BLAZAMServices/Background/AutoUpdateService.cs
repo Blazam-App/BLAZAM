@@ -1,5 +1,8 @@
 ﻿using BLAZAM.Database.Context;
+using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Services;
+using BLAZAM.FileSystem;
+using BLAZAM.Global.Attributes;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
@@ -22,15 +25,14 @@ namespace BLAZAM.Services.Background
         private readonly ApplicationInfo _applicationInfo;
 
         private readonly IAppDatabaseFactory factory;
-        private UpdateService updateService;
+        private readonly UpdateService updateService;
         private Timer? autoUpdateApplyTimer = null;
-        private Timer? directoryCleaner = null;
+        private readonly Timer? directoryCleaner = null;
         public bool IsUpdatedScheduled { get { return autoUpdateApplyTimer != null; } }
         public DateTime ScheduledUpdateTime { get; set; }
         public ApplicationUpdate? ScheduledUpdate { get; set; }
         public bool IsUpdateAvailable { get; private set; }
 
-        //private AuditLogger Audit;
 
         public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo, IStringLocalizer<AppLocalization> appLocalization) : base(factory, appLocalization)
         {
@@ -46,66 +48,14 @@ namespace BLAZAM.Services.Background
         {
             using var context = factory.CreateDbContext();
 
-            var oldUpdateFiles = ApplicationUpdate.UpdateDownloadDirectory.Files;
-            foreach (var file in oldUpdateFiles)
-            {
-                try
-                {
-                    var fileVersion = new ApplicationVersion(file.Name);
-                    if (fileVersion.OlderThan(_applicationInfo.RunningVersion) && file.SinceLastModified > TimeSpan.FromDays(1))
-                    {
-                        if (file.Writable)
-                        {
-                            Loggers.UpdateLogger.Debug("Deleting old update file: " + file);
+            CleanDownloadDirectory(context);
 
-                            file.Delete();
+            CleanStagingDirectory(context);
 
-                        }
-                        else
-                        {
-                            Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file: " + file);
+        }
 
-                            var impersonation = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
-                            if (impersonation != null && !impersonation.Run(() =>
-                            {
-                                if (file.Writable)
-                                {
-                                    file.Delete();
-                                    return true;
-                                }
-                                return false;
-                            }))
-                            {
-                                impersonation = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
-                                if (impersonation != null && !impersonation.Run(() =>
-                                {
-                                    if (file.Writable)
-                                    {
-                                        file.Delete();
-                                        return true;
-                                    }
-                                    return false;
-                                }))
-                                {
-                                    Loggers.UpdateLogger.Error("No identities with permission to remove old update file: " + file);
-
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (IndexOutOfRangeException ex)
-                {
-                    Loggers.UpdateLogger.Warning("Tried to delete non-existent file: " + file, ex);
-                }
-                catch (Exception ex)
-                {
-                    Loggers.UpdateLogger.Error(ex, "Other error deleting file. {@File} ", file);
-                }
-
-            }
-
-
+        private void CleanStagingDirectory(IDatabaseContext context)
+        {
             var oldStaginDirectories = ApplicationUpdate.StagingDirectory.SubDirectories;
             foreach (var dir in oldStaginDirectories)
             {
@@ -114,116 +64,185 @@ namespace BLAZAM.Services.Background
 
 
                     var dirVersion = new ApplicationVersion(dir.Name);
-                    if (dirVersion != null)
+
+                    if (dirVersion.OlderThan(_applicationInfo.RunningVersion))
                     {
-                        if (dirVersion.OlderThan(_applicationInfo.RunningVersion))
-                        {
-                            if (dir.Writable)
-                            {
-
-                                Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
-                                dir.Delete(true);
-                            }
-                            else
-                            {
-                                Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old staging files");
-
-                                var impersonation = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
-                                if (impersonation != null && !impersonation.Run(() =>
-                                {
-                                    if (dir.Writable)
-                                    {
-
-                                        Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
-                                        dir.Delete(true);
-                                        return true;
-                                    }
-                                    return false;
-                                }))
-                                {
-                                    impersonation = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
-                                    if (impersonation != null && !impersonation.Run(() =>
-                                    {
-                                        if (dir.Writable)
-                                        {
-
-                                            Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
-                                            dir.Delete(true);
-                                            return true;
-
-                                        }
-                                        return false;
-                                    }))
-                                    {
-                                        Loggers.UpdateLogger.Error("No identities with permission to remove old staging files");
-
-                                    }
-                                }
-                            }
-                        }
-
-
+                        TryDeleteDirectory(context, dir);
                     }
+
+
+
                 }
                 catch (IndexOutOfRangeException ex)
                 {
                     Loggers.UpdateLogger.Error(ex, "Deleting unknown directory: {@Directory}", dir.ToString());
-                    //dir.Delete(true);
+
                 }
                 catch (Exception ex)
                 {
                     Loggers.UpdateLogger.Error(ex, "Other error cleaning staging files {@Directory}", dir.FullPath);
-                    //file.Delete();
+
                 }
             }
-
         }
 
-        protected override void Execute(object? state)
+        private static void TryDeleteDirectory(IDatabaseContext context, SystemDirectory dir)
+        {
+            if (dir.Writable)
+            {
+
+                Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
+                dir.Delete(true);
+            }
+            else
+            {
+                Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old staging files");
+
+                var impersonation = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
+                if (impersonation != null && !impersonation.Run(() =>
+                {
+                    if (dir.Writable)
+                    {
+
+                        Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
+                        dir.Delete(true);
+                        return true;
+                    }
+                    return false;
+                }))
+                {
+                    impersonation = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+                    if (impersonation != null && !impersonation.Run(() =>
+                    {
+                        if (dir.Writable)
+                        {
+
+                            Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
+                            dir.Delete(true);
+                            return true;
+
+                        }
+                        return false;
+                    }))
+                    {
+                        Loggers.UpdateLogger.Error("No identities with permission to remove old staging files");
+
+                    }
+                }
+            }
+        }
+
+        private void CleanDownloadDirectory(IDatabaseContext context)
+        {
+            var oldUpdateFiles = ApplicationUpdate.UpdateDownloadDirectory.Files;
+            foreach (var file in oldUpdateFiles)
+            {
+                try
+                {
+                    var fileVersion = new ApplicationVersion(file.Name);
+                    if (fileVersion.OlderThan(_applicationInfo.RunningVersion) && file.SinceLastModified > TimeSpan.FromDays(1))
+                    {
+                        TryDeleteFile(context, file);
+                    }
+                }
+                catch (IndexOutOfRangeException ex)
+                {
+                    Loggers.UpdateLogger.Warning(ex, "Tried to delete non-existent file {@File}", file);
+                }
+                catch (Exception ex)
+                {
+                    Loggers.UpdateLogger.Error(ex, "Other error deleting file. {@File} ", file);
+                }
+
+            }
+        }
+
+        private static void TryDeleteFile(IDatabaseContext context, SystemFile file)
+        {
+            if (file.Writable)
+            {
+                Loggers.UpdateLogger.Debug("Deleting old update file {@File}", file);
+
+                file.Delete();
+
+            }
+            else
+            {
+                Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file {@File}", file);
+
+                var impersonation = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
+                if (impersonation != null && !impersonation.Run(() =>
+                {
+                    if (file.Writable)
+                    {
+                        file.Delete();
+                        return true;
+                    }
+                    return false;
+                }))
+                {
+                    impersonation = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+                    if (impersonation != null && !impersonation.Run(() =>
+                    {
+                        if (file.Writable)
+                        {
+                            file.Delete();
+                            return true;
+                        }
+                        return false;
+                    }))
+                    {
+                        Loggers.UpdateLogger.Error("No identities with permission to remove old update file {@File}", file);
+
+                    }
+                }
+            }
+        }
+
+        protected override void Execute(object? state = null)
         {
             using var context = factory.CreateDbContext();
             Job updateCheckJob = new(AppLocalization[Lang.Check_for_Update]);
-            JobStep checkForUpdateStep = new(AppLocalization[Lang.Excute], async (step) =>
+            updateCheckJob.AddStep(new JobStep(AppLocalization[Lang.Excute], async (step) =>
             {
                 try
                 {
                     var appSettings = await context.AppSettings.FirstOrDefaultAsync();
-                    if (appSettings != null)
+                    if (appSettings == null)
                     {
-                        Loggers.UpdateLogger.Information("Checking for automatic update");
-
-                        var latestUpdate = await updateService.GetUpdates();
-                        if (latestUpdate != null && latestUpdate.Version.NewerThan(_applicationInfo.RunningVersion))
-                        {
-                            IsUpdateAvailable = true;
-                            if (appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
-                            {
-                                if (latestUpdate.PassesPrerequisiteChecks)
-                                    ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
-                                else
-                                {
-                                    Loggers.UpdateLogger.Warning("Update failed prerequisite check, cancelling scheduling {@Error}", latestUpdate.PrequisiteMessage);
-
-                                }
-                            }
-
-                        }
-                        else
-                        {
-                            IsUpdateAvailable = false;
-                            Cancel();
-                            Loggers.UpdateLogger.Information("No new updates found.");
-
-                        }
+                        Loggers.UpdateLogger.Error("Unable to get update database settings");
+                        return true;
                     }
+
+                    Loggers.UpdateLogger.Information("Checking for automatic update");
+                    var latestUpdate = await updateService.GetUpdates();
+
+                    if (latestUpdate == null || !latestUpdate.Version.NewerThan(_applicationInfo.RunningVersion))
+                    {
+                        IsUpdateAvailable = false;
+                        Cancel();
+                        Loggers.UpdateLogger.Information("No new updates found.");
+                        return true;
+                    }
+
+                    IsUpdateAvailable = true;
+                    if (!appSettings.AutoUpdate || appSettings.AutoUpdateTime == null)
+                        return true;
+
+                    if (!latestUpdate.PassesPrerequisiteChecks)
+                    {
+                        Loggers.UpdateLogger.Warning("Update failed prerequisite check, cancelling scheduling {@Error}", latestUpdate.PrequisiteMessage);
+                        return true;
+                    }
+
+                    ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
                 }
                 catch (Exception ex)
                 {
                     Loggers.UpdateLogger.Error(ex, "Error while checking for auto update");
                 }
                 return true;
-            });
-            updateCheckJob.AddStep(checkForUpdateStep);
+            }));
             updateCheckJob.Run();
         }
         public void Cancel()
@@ -247,11 +266,11 @@ namespace BLAZAM.Services.Background
                         try
                         {
 
-                            Loggers.UpdateLogger.Information("New update found: " + updateToInstall.Version);
+                            Loggers.UpdateLogger.Information("New update found {@Version}", updateToInstall.Version);
 
                             //Update available
                             var now = DateTime.Now;
-                            ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTimeOfDay.Hours, updateTimeOfDay.Minutes, updateTimeOfDay.Seconds);
+                            ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTimeOfDay.Hours, updateTimeOfDay.Minutes, updateTimeOfDay.Seconds, DateTimeKind.Local);
 
 
                             //Check if we're past the scheduled time this day
@@ -266,7 +285,7 @@ namespace BLAZAM.Services.Background
                             ScheduledUpdate = updateToInstall;
 
                             autoUpdateApplyTimer = new Timer(Update, null, (int)timeUntilUpdate.TotalMilliseconds, Timeout.Infinite);
-                            Loggers.UpdateLogger.Information("Auto-update scheduled: " + timeUntilUpdate.TotalMinutes + "mins from now at " + ScheduledUpdateTime);
+                            Loggers.UpdateLogger.Information("Auto-update scheduled {@TimeTillRunInMinutes} at {@RunTime}", timeUntilUpdate.TotalMinutes, ScheduledUpdateTime);
                             if (justScheduled)
                             {
                                 Loggers.UpdateLogger.Debug("Update just scheduled");
@@ -299,73 +318,79 @@ namespace BLAZAM.Services.Background
             {
                 using var context = await factory.CreateDbContextAsync();
                 var settings = await context.AppSettings.FirstOrDefaultAsync();
-                if (settings != null)
-                {
-                    if (settings.AutoUpdate)
-                    {
-                        Loggers.UpdateLogger.Information("Applying auto-update");
-                        Loggers.UpdateLogger.Information("Current Version: {@Version}", _applicationInfo.RunningVersion);
-                        Loggers.UpdateLogger.Information("Update Version: {@UpdateVersion}", ScheduledUpdate?.Version);
-
-                        autoUpdateApplyTimer = null;
-                        ScheduledUpdateTime = DateTime.MinValue;
-                        var latestUpdate = await updateService.GetUpdates();
-                        if (latestUpdate != null)
-                        {
-                            try
-                            {
-                                OnAutoUpdateStarted?.Invoke();
-                                var updateJob = latestUpdate.GetUpdateJob();
-                                if (updateJob != null)
-                                {
-                                    await updateJob.RunAsync();
-                                    if (updateJob.Result == JobResult.Passed)
-                                        Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot.{@UpdateVersion}", latestUpdate.Version);
-                                    else
-                                    {
-                                        var thrownStep = updateJob.Steps.FirstOrDefault(x => x.Exception != null);
-                                        if (thrownStep != null)
-                                            Loggers.UpdateLogger.Error(thrownStep.Exception, "Failed to auto-update. {@UpdateVersion}", latestUpdate.Version);
-                                        else
-                                            Loggers.UpdateLogger.Error("Failed to auto-update. No exception collected from update job!{@UpdateVersion}", latestUpdate.Version);
-
-                                    }
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                //Log.Error(ex);
-                                OnAutoUpdateFailed?.Invoke();
-                                Loggers.UpdateLogger.Error(ex, "Error trying to apply auto update {@UpdateVersion}", latestUpdate.Version);
-                            }
-                        }
-                        else
-                        {
-                            Loggers.UpdateLogger.Error("Unable to get latest update {@Branch}{@AutoUpdate}{@AutoUpdateTime}", settings.UpdateBranch, settings.AutoUpdate, settings.AutoUpdateTime);
-
-                        }
-                    }
-                    else
-                    {
-                        //Auto Update was turned off since scheduling
-                        Loggers.UpdateLogger.Warning("Auto Update was turned off after scheduling");
-
-                    }
-                }
-                else
+                if (settings == null)
                 {
                     Loggers.UpdateLogger.Error("Unable to get update database settings");
+                    return;
                 }
+
+                if (!settings.AutoUpdate)
+                {
+                    Loggers.UpdateLogger.Warning("Auto Update was turned off after scheduling");
+                    return;
+                }
+
+                Loggers.UpdateLogger.Information("Applying auto-update");
+                Loggers.UpdateLogger.Information("Current Version: {@Version}", _applicationInfo.RunningVersion);
+                Loggers.UpdateLogger.Information("Update Version: {@UpdateVersion}", ScheduledUpdate?.Version);
+
+                autoUpdateApplyTimer = null;
+                ScheduledUpdateTime = DateTime.MinValue;
+                var latestUpdate = await updateService.GetUpdates();
+                if (latestUpdate == null)
+                {
+                    Loggers.UpdateLogger.Error("Unable to get latest update {@Branch}{@AutoUpdate}{@AutoUpdateTime}", settings.UpdateBranch, settings.AutoUpdate, settings.AutoUpdateTime);
+                    return;
+                }
+
+                await ApplyUpdate(latestUpdate);
             }
             catch (Exception ex)
             {
                 Loggers.UpdateLogger.Error(ex, "Error during auto update");
             }
-
-
         }
 
-        public void Dispose()
+        private async Task ApplyUpdate(ApplicationUpdate latestUpdate)
+        {
+            try
+            {
+                OnAutoUpdateStarted?.Invoke();
+                var updateJob = latestUpdate.GetUpdateJob();
+                if (updateJob != null)
+                {
+                    await updateJob.RunAsync();
+                    if (updateJob.Result == JobResult.Passed)
+                    {
+                        Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot.{@UpdateVersion}", latestUpdate.Version);
+                    }
+                    else
+                    {
+                        LogUpdateJobFailure(updateJob, latestUpdate.Version);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                OnAutoUpdateFailed?.Invoke();
+                Loggers.UpdateLogger.Error(ex, "Error trying to apply auto update {@UpdateVersion}", latestUpdate.Version);
+            }
+        }
+
+        private void LogUpdateJobFailure(IJob updateJob, ApplicationVersion updateVersion)
+        {
+            var thrownStep = updateJob.Steps.FirstOrDefault(x => x.Exception != null);
+            if (thrownStep != null)
+            {
+                Loggers.UpdateLogger.Error(thrownStep.Exception, "Failed to auto-update. {@UpdateVersion}", updateVersion);
+            }
+            else
+            {
+                Loggers.UpdateLogger.Error("Failed to auto-update. No exception collected from update job!{@UpdateVersion}", updateVersion);
+            }
+        }
+
+        public new void Dispose()
         {
             autoUpdateApplyTimer?.Dispose();
             directoryCleaner?.Dispose();

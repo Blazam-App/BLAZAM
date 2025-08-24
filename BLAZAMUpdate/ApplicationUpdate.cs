@@ -3,7 +3,6 @@ using System.IO.Compression;
 using System.Security.Principal;
 using System.Text;
 using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
 using BLAZAM.FileSystem;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
@@ -48,7 +47,7 @@ namespace BLAZAM.Update
         private static SystemDirectory UpdateTempDirectory { get; set; }
 
         public static SystemDirectory StagingDirectory =>
-            new(UpdateTempDirectory + "staged\\");
+            new(UpdateTempDirectory + "staged" + Path.DirectorySeparatorChar);
 
         /// <summary>
         /// The local staging directory path for this update
@@ -65,16 +64,9 @@ namespace BLAZAM.Update
         /// </returns>
         public static SystemDirectory UpdateDownloadDirectory
         {
-            get => new(UpdateTempDirectory + "download\\");
+            get => new(UpdateTempDirectory + "download" + Path.DirectorySeparatorChar);
         }
-        public SystemDirectory BackupPath
-        {
-            get => new(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
-        }
-        public SystemDirectory BackupDirectory
-        {
-            get => new(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
-        }
+
 
         /// <summary>
         /// The local path to the downloaded zip file
@@ -139,10 +131,10 @@ namespace BLAZAM.Update
         {
             _dbFactory = dbFactory;
             _updateService = updateService;
-            UpdateTempDirectory = new SystemDirectory(applicationInfo.TempDirectory + "update\\");
             _runningProcess = applicationInfo.RunningProcess;
             _runningVersion = applicationInfo.RunningVersion;
             _applicationRootDirectory = applicationInfo.ApplicationRoot;
+            UpdateTempDirectory = new SystemDirectory(applicationInfo.TempDirectory + $"update{Path.DirectorySeparatorChar}");
         }
 
         /// <summary>
@@ -188,9 +180,10 @@ namespace BLAZAM.Update
             var downloadStep = new JobStep("Download latest version", Download);
             var cleanStageStep = new JobStep("Cleaning staging area", CleanStaging);
             var stageStep = new JobStep("Extract files", ExtractFiles);
-            var stagingCheckStep = new JobStep("Check prepared files", (step) => { return UpdateStagingDirectory.Exists; });
-            var bakupStep = new JobStep("Create backup", Backup);
-            var updateUpdaterStep = new JobStep("Apply Files", InitiateFileCopy);
+            var stagingCheckStep = new JobStep("Check prepared files", (step) => { return UpdateStagingDirectory.Exists && UpdateStagingDirectory.Files.Count > 3; });
+            var bakupStep = new JobStep("Create backup", (step) => { return _updateService.Backup(); });
+            var updateUpdaterStep = new JobStep("Apply Files", UpdateUpdater);
+            var updateStep = new JobStep("Apply Files", InitiateFileCopy);
             var waitForRestart = new JobStep("Wait for completion...", Wait);
             updateJob.AddStep(cleanDownloadStep);
             updateJob.AddStep(downloadStep);
@@ -199,19 +192,35 @@ namespace BLAZAM.Update
             updateJob.AddStep(stagingCheckStep);
             updateJob.AddStep(bakupStep);
             updateJob.AddStep(updateUpdaterStep);
+            updateJob.AddStep(updateStep);
             updateJob.AddStep(waitForRestart);
             return updateJob;
 
 
 
-
-
-
-
-
-            throw new ApplicationUpdateException("An unknown error caused the update to fail.");
-
         }
+
+        private bool UpdateUpdater(JobStep step)
+        {
+            var updaterSource = new SystemDirectory(Path.Combine(UpdateStagingDirectory.FullPath,
+                                                                                "updater"));
+            var updaterDestination = new SystemDirectory(Path.Combine(_applicationRootDirectory.FullPath,
+                                                                                "updater"));
+            Loggers.UpdateLogger.Debug("Copying updater script");
+            Loggers.UpdateLogger.Debug("Source: {Source}", updaterSource);
+            Loggers.UpdateLogger.Debug("Dest: {Destination}", updaterDestination);
+            if (updaterSource.Exists && updaterSource.Files.Count > 0 && updaterSource.CopyTo(updaterDestination))
+            {
+                Loggers.UpdateLogger.Debug("Updater script copied successfully");
+                return true;
+            }
+            else
+            {
+                Loggers.UpdateLogger.Error("Failed to copy updater script from {Source} to {Destination}", updaterSource, updaterDestination);
+            }
+            return false;
+        }
+
         private static async Task<bool> Wait(JobStep? step)
         {
 
@@ -220,14 +229,6 @@ namespace BLAZAM.Update
         }
         private async Task<bool> InitiateFileCopy(JobStep? step)
         {
-            //All prerequisites met
-
-
-            Loggers.UpdateLogger?.Debug("Copying updater script");
-            Loggers.UpdateLogger?.Debug("Source: {Source}", UpdateStagingDirectory + "\\updater\\*");
-            Loggers.UpdateLogger?.Debug("Dest: {Destination}", _applicationRootDirectory + "updater\\");
-
-
             using var context = await _dbFactory.CreateDbContextAsync();
             var updateCredentials = _updateService.GetUpdateCredentials();
             if (updateCredentials != null)
@@ -345,23 +346,7 @@ namespace BLAZAM.Update
 
             return true;
         }
-        public async Task<bool> Backup(JobStep? step)
-        {
-            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupPath);
-            try
-            {
-                var result = await Task.Run(() => { return _applicationRootDirectory.CopyTo(BackupDirectory); });
 
-                Loggers.UpdateLogger?.Debug("Backup result: {@BackupResult}", result.ToString());
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Loggers.UpdateLogger?.Error(ex, "Backup of current version failed");
-                return false;
-            }
-        }
 
 
         public async Task<bool> CleanDownload(IJobStep? step)
@@ -415,6 +400,10 @@ namespace BLAZAM.Update
 
                 using (var streamToReadFrom = UpdateFile.OpenReadStream())
                 {
+                    if (streamToReadFrom == null)
+                    {
+                        return false;
+                    }
                     try
                     {
                         var zip = new ZipArchive(streamToReadFrom);
@@ -428,6 +417,7 @@ namespace BLAZAM.Update
                         Loggers.UpdateLogger?.Error(ex, "Error while extracting update zip");
 
                         return false;
+
                     }
                 }
             });
@@ -445,65 +435,37 @@ namespace BLAZAM.Update
             {
                 return false;
             }
+
             int retries = 5;
+            var progress = new FileProgress();
+
             while (retries > 0)
             {
                 try
                 {
-                    Loggers.UpdateLogger?.Debug("Attempting download of update {@UpdateVersion}", Version);
-                    Loggers.UpdateLogger?.Debug("Download URL: {@DownloadURL}", Release.DownloadURL);
-                    Loggers.UpdateLogger?.Debug("Download Path: {@UpdateDirectory}", UpdateDownloadDirectory);
+                    LogDownloadAttempt();
 
-                    var progress = new FileProgress();
                     using (var client = new HttpClient())
+                    using (var response = await client.GetAsync(Release.DownloadURL, HttpCompletionOption.ResponseHeadersRead))
                     {
-                        using (var response = await client.GetAsync(Release.DownloadURL, HttpCompletionOption.ResponseHeadersRead))
+                        if (!response.IsSuccessStatusCode)
                         {
-                            if (!response.IsSuccessStatusCode)
-                            {
-                                Loggers.UpdateLogger?.Debug("Unable to connect to download url: {@StatusCode}:{@ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                            Loggers.UpdateLogger?.Debug("Unable to connect to download url: {@StatusCode}:{@ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                            return false;
+                        }
 
-                                return false;
-                            }
-                            UpdateDownloadDirectory.EnsureCreated();
-                            if (UpdateFile.Exists) UpdateFile.Delete();
-                            using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
-                            {
-                                using (var streamToWriteTo = UpdateFile.OpenWriteStream())
-                                {
-                                    progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
-                                    var buffer = new byte[4096];
-                                    int bytesRead;
-                                    int totalBytesRead = 0;
+                        UpdateDownloadDirectory.EnsureCreated();
+                        if (UpdateFile.Exists) UpdateFile.Delete();
 
-                                    while ((bytesRead = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length, cancellationTokenSource.Token)) > 0)
-                                    {
-                                        if (cancellationTokenSource.IsCancellationRequested != true)
-                                        {
-                                            await streamToWriteTo.WriteAsync(buffer, 0, bytesRead, cancellationTokenSource.Token);
-                                            totalBytesRead += bytesRead;
-                                            progress.CompletedBytes = totalBytesRead;
-                                            if (step != null)
-                                            {
-                                                step.Progress = progress.FilePercentage;
-                                            }
-
-                                            DownloadPercentageChanged?.Invoke(progress);
-                                        }
-                                        else
-                                        {
-                                            DownloadPercentageChanged?.Invoke(null);
-
-                                            return false;
-                                        }
-                                    }
-
-                                    retries = 0;
-
-                                }
-                            }
+                        using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
+                        using (var streamToWriteTo = UpdateFile.OpenWriteStream())
+                        {
+                            progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
+                            bool result = await WriteStreamWithProgress(streamToReadFrom, streamToWriteTo, progress, step);
+                            if (!result) return false;
                         }
                     }
+                    retries = 0;
                 }
                 catch (Exception ex)
                 {
@@ -518,9 +480,39 @@ namespace BLAZAM.Update
                     }
                 }
             }
+            return true;
+        }
 
+        private void LogDownloadAttempt()
+        {
+            Loggers.UpdateLogger?.Debug("Attempting download of update {@UpdateVersion}", Version);
+            Loggers.UpdateLogger?.Debug("Download URL: {@DownloadURL}", Release.DownloadURL);
+            Loggers.UpdateLogger?.Debug("Download Path: {@UpdateDirectory}", UpdateDownloadDirectory);
+        }
 
+        private async Task<bool> WriteStreamWithProgress(Stream readStream, Stream writeStream, FileProgress progress, JobStep? step)
+        {
+            var buffer = new byte[4096];
+            int bytesRead;
+            int totalBytesRead = 0;
 
+            while ((bytesRead = await readStream.ReadAsync(buffer, 0, buffer.Length, cancellationTokenSource.Token)) > 0)
+            {
+                if (cancellationTokenSource.IsCancellationRequested)
+                {
+                    DownloadPercentageChanged?.Invoke(null);
+                    return false;
+                }
+
+                await writeStream.WriteAsync(buffer, 0, bytesRead, cancellationTokenSource.Token);
+                totalBytesRead += bytesRead;
+                progress.CompletedBytes = totalBytesRead;
+                if (step != null)
+                {
+                    step.Progress = progress.FilePercentage;
+                }
+                DownloadPercentageChanged?.Invoke(progress);
+            }
             return true;
         }
 

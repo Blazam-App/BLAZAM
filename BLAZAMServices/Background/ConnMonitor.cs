@@ -1,6 +1,8 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Interfaces;
+using BLAZAM.Global.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Services.Background
@@ -23,7 +25,6 @@ namespace BLAZAM.Services.Background
         public AppDelegate<ServiceConnectionState>? OnDirectoryConnectionChanged { get; set; }
 
 
-        //public bool RedirectToHttps { get; set; }
         public ServiceConnectionState? DatabaseConnectionStatus { get => DatabaseMonitor.Status; }
         public ServiceConnectionState? DirectoryConnectionStatus { get => DirectoryMonitor.Status; }
 
@@ -46,7 +47,7 @@ namespace BLAZAM.Services.Background
         public bool DatabaseUpdatePending { get; private set; }
 
         private bool _monitoring;
-        private Timer _timer;
+        private Timer? _timer;
         private ServiceConnectionState _appReady = ServiceConnectionState.Connecting;
 
         public ConnMonitor(IAppDatabaseFactory DbFactory, IActiveDirectoryContext directory, IEncryptionService encryption)
@@ -99,12 +100,12 @@ namespace BLAZAM.Services.Background
         {
             Task.Run(() =>
             {
-                using (var _context = _factory.CreateDbContext())
+                using (var context = _factory.CreateDbContext())
                 {
 
                     try
                     {
-                        var temp = _context.Database.GetPendingMigrations();
+                        var temp = context.Database.GetPendingMigrations();
                         if (temp != null && temp.Count() > 0)
                             DatabaseUpdatePending = true;
                         else
@@ -113,13 +114,18 @@ namespace BLAZAM.Services.Background
                     }
                     catch (Exception)
                     {
-
+                        // If we can't connect to the database, assume an update is pending
                     }
 
 
                 }
             });
 
+        }
+
+        ~ConnMonitor()
+        {
+            _timer?.Dispose();
         }
     }
 }

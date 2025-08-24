@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Database.Context;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +11,7 @@ namespace BLAZAM.Pages.API.v1
     /// Searches Active Directory.
     /// </summary>
     [Produces("application/json")]
-    public class Search(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : ApiController(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
+    public partial class Search(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : ApiController(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
     {
 
 
@@ -33,10 +32,11 @@ namespace BLAZAM.Pages.API.v1
         [HttpGet]
         public IActionResult OnGet([FromQuery] string query)
         {
-            // restrict the username and password to letters only
-            if (!Regex.IsMatch(query, "^[a-zA-Z]+$"))
+
+            // Validate the query parameter: allow alphanumeric, space, hyphen, underscore, and period, 1-100 chars
+            if (string.IsNullOrWhiteSpace(query) || query.Length > 100 || !ValidSearchCharactersRegex().IsMatch(query))
             {
-                return BadRequest();
+                return BadRequest("Invalid query parameter.");
             }
 
             ADSearch search = new(Directory)
@@ -45,8 +45,11 @@ namespace BLAZAM.Pages.API.v1
             };
             var data = search.Search();
             var data2 = data.Where(de => de.CanRead).ToList();
-            var data3 = data2.Select(de => de.CanonicalName).ToList();
+            var data3 = data2.ToList();
             return FormatData(data3);
         }
+
+        [GeneratedRegex(@"^[\w\s\-.]+$")]
+        private static partial Regex ValidSearchCharactersRegex();
     }
 }

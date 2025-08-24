@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Access_Level_Definition" xml:space="preserve">
+    <value>مستويات الوصول هي قالب من الأذونات التي يمكن تطبيقها على وحدات تنظيمية (OU's) محددة لمفوضين معينين.</value>
+  </data>
+  <data name="Access_Level_Object_Missing_Read" xml:space="preserve">
+    <value>غيّر وصول {0} إلى 'قراءة' لتعيين الأذونات</value>
+  </data>
+  <data name="Authenticator_Setup_One" xml:space="preserve">
+    <value>امسح الرمز أدناه من تطبيق المصادقة الخاص بك</value>
+  </data>
+  <data name="Authenticator_Setup_Two" xml:space="preserve">
+    <value>ثم أدخل رمز المرور للتفعيل</value>
+  </data>
+  <data name="Auto_Update_Time_Definition" xml:space="preserve">
+    <value>الوقت من كل يوم لتطبيق التحديث تلقائيًا.</value>
+  </data>
+  <data name="Confirm_Group_Creation" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد إنشاء هذه المجموعة؟</value>
+  </data>
+  <data name="Confirm_OU_Creation" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد إنشاء هذه الوحدة التنظيمية؟</value>
+  </data>
+  <data name="Confirm_Save_Changes" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد حفظ التغييرات؟</value>
+  </data>
+  <data name="Continue_Processing_Rules" xml:space="preserve">
+    <value>متابعة معالجة القواعد الأخرى</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>تم إنشاء {0}</value>
+  </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value>وضع التصحيح مفعل. إذا كان هذا خادم إنتاج، قم بتعطيله في ملف appsettings.json لمنع الكشف عن البيانات الحساسة.</value>
+  </data>
+  <data name="Delegate_Definition" xml:space="preserve">
+    <value>المفوضون هم مستخدمو التطبيق المعتمدون. فقط المستخدمون الذين تحددهم هنا، أو المستخدمون في مجموعات Active Directory التالية (أو المجموعات المتداخلة) التي لديها أذونات معينة أو تمكين التعديل الذاتي.</value>
+  </data>
+  <data name="Delegate_Function" xml:space="preserve">
+    <value>يتم التحكم في الوصول المسموح به لكل مفوض بواسطة مستوى الوصول المعين له.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>تم حذف {0}</value>
+  </data>
+  <data name="Delete_API_Token_Confirmation" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد حذف رمز API هذا؟</value>
+  </data>
+  <data name="Delete_Auth_Token_Confirmation" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد تعطيل المصادقة متعددة العوامل من Google Authenticator؟</value>
+  </data>
+  <data name="Deny_Request_Confirmation" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد رفض هذا الطلب؟</value>
+  </data>
+  <data name="Developer_Analytics_Suggestion" xml:space="preserve">
+    <value>نطلب منك السماح بتحليلات المطورين حتى نتمكن من فهم كيفية استخدام تطبيقنا لتركيز جهودنا على ما يعتقد مستخدمونا أنه الأكثر أهمية.</value>
+  </data>
+  <data name="Developer_Logs_Suggestion" xml:space="preserve">
+    <value>نطلب منك السماح بتسجيلات المطورين حتى نتمكن من تحسين Blazam بسرعة وشفافية وللمساعدة في جهود التطوير لدينا.</value>
+  </data>
+  <data name="Duplicate_Delegate" xml:space="preserve">
+    <value>هذا المفوض موجود بالفعل.</value>
+  </data>
+  <data name="Duplicate_Deleted_Delegate" xml:space="preserve">
+    <value>هذا المفوض موجود بالفعل. لقد تم حذفه. قم باستعادته من سلة المهملات.</value>
+  </data>
+  <data name="Duplicate_Name_Conflict" xml:space="preserve">
+    <value>هذا الاسم موجود بالفعل. الرجاء اختيار اسم مختلف</value>
+  </data>
+  <data name="GA4_Instructions" xml:space="preserve">
+    <value>قم بإعداد حساب GA4 وأدخل معرّف التتبع الخاص بك هنا لجمع البيانات حول استخدام التثبيت الخاص بك.</value>
+  </data>
+  <data name="Invalid_Cert_Type" xml:space="preserve">
+    <value>نوع شهادة غير صالح.</value>
+  </data>
+  <data name="Invalid_Token_Entered" xml:space="preserve">
+    <value>الرمز الذي تم إدخاله غير صالح</value>
+  </data>
+  <data name="Lacks_Group_Member_Read_Permission" xml:space="preserve">
+    <value>تحتوي المجموعة على أعضاء آخرين ليس لديك إذن بالوصول إليهم</value>
+  </data>
+  <data name="Lacks_Group_Member_Remove_Permission" xml:space="preserve">
+    <value>ليس لديك إذن لإزالة هذا العضو من المجموعة</value>
+  </data>
+  <data name="Locked_Out" xml:space="preserve">
+    <value>تم قفل حساب {0}</value>
+  </data>
+  <data name="Mapping_Use_Access_Level" xml:space="preserve">
+    <value>تستخدم {0} من التعيينات مستوى الوصول هذا وسيتم حذفها</value>
+  </data>
+  <data name="Modify_Name_Redirect" xml:space="preserve">
+    <value>لتعديل اسم المستخدم، انقر فوق زر إعادة التسمية في شريط الأدوات/قائمة الإعدادات</value>
+  </data>
+  <data name="Navigate_Away_Confirmation" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد مغادرة الصفحة؟</value>
+  </data>
+  <data name="News_Provider_Description" xml:space="preserve">
+    <value>يتم نشر التحديثات والتغييرات المهمة هنا.</value>
+  </data>
+  <data name="No_More_Widgets" xml:space="preserve">
+    <value>لا يوجد المزيد من الأدوات لإضافتها</value>
+  </data>
+  <data name="No_News" xml:space="preserve">
+    <value>لا يوجد شيء جديد لرؤيته هنا</value>
+  </data>
+  <data name="No_Request_Actions_Available" xml:space="preserve">
+    <value>لا توجد إجراءات متاحة لطلبها لهذا الإدخال.</value>
+  </data>
+  <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
+    <value>إنشاء رمز مصادقة جديد سيؤدي إلى إبطال الرمز الحالي!</value>
+  </data>
+  <data name="Rearrange_Dashboard_Help" xml:space="preserve">
+    <value>أعد ترتيب أدوات لوحة التحكم عن طريق سحب العناصر إلى موضع جديد</value>
+  </data>
+  <data name="Rename_Reboot_Message" xml:space="preserve">
+    <value>قام مسؤول بإعادة تسمية محطة العمل هذه. سيتم إعادة تشغيلها خلال {0} ثانية.</value>
+  </data>
+  <data name="Request_To" xml:space="preserve">
+    <value>طلب إلى {0}</value>
+  </data>
+  <data name="Rule_No_Filter_Warning" xml:space="preserve">
+    <value>سيتم تفعيل هذه القاعدة في كل مرة يكون فيها {0} هو {1}</value>
+  </data>
+  <data name="Stop_On_Rule" xml:space="preserve">
+    <value>لا تقم بمعالجة أي قواعد أخرى</value>
+  </data>
+  <data name="Super_User_Definition" xml:space="preserve">
+    <value>سيكون لديه وصول كامل وشامل للتطبيق في حال تمكينه</value>
+  </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>تم نسخ "{0}" إلى الحافظة.</value>
+  </data>
+  <data name="Unexpected_Error_Occurred" xml:space="preserve">
+    <value>لقد حدث خطأ غير متوقع.</value>
+  </data>
+  <data name="Upate_Branch_Definition" xml:space="preserve">
+    <value>فرع الإصدار هو الفرع الموصى به. يوصى باختيار (Nightly) فقط للتثبيتات التجريبية. وفرع (Dev) مخصص للمطورين فقط.</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>تم تحديث {0}</value>
+  </data>
+  <data name="Update_Credential_Is_AD" xml:space="preserve">
+    <value>تم التحقق من صحة بيانات اعتماد Active Directory للتحديث.</value>
+  </data>
+  <data name="Update_Credential_Is_Application" xml:space="preserve">
+    <value>الحساب الذي يشغل Blazam يمكنه الكتابة في دليل التطبيق.
+هذا يعرض الجهاز المضيف لمخاطر غير ضرورية. قم بتغيير هوية التطبيق إلى حساب بصلاحيات أقل لتحسين الأمان.</value>
+  </data>
+  <data name="Update_Credential_Is_Custom" xml:space="preserve">
+    <value>تم التحقق من صحة بيانات اعتماد التحديث المخصصة للتحديث.</value>
+  </data>
+  <data name="Update_Credential_Is_Invalid" xml:space="preserve">
+    <value>لا توجد بيانات اعتماد مكونة مع إذن الكتابة إلى دليل التطبيق!
+حاول تكوين بيانات اعتماد تحديث مخصصة.</value>
+  </data>
+</root>

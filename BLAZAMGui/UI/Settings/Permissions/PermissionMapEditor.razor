@@ -1,3 +1,4 @@
+@using BLAZAM.Global.Events
 @inherits ValidatedForm
 @if (Map != null)
 {
@@ -7,7 +8,7 @@
 
         @if (!ReadOnly && _permissionDelegates != null)
         {
-            <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
+            <MudSelectList Validation="@(_permissionDelegates.Count>0)"
                            Values=@_permissionDelegates
                            Placeholder=@AppLocalization["Choose or Search..."]
                            T="PermissionDelegate"
@@ -19,7 +20,7 @@
 
 
 
-            <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
+            <MudSelectList Validation="@(_permissionDelegates.Count>0)"
                            Values=@_accessLevels
                            Placeholder=@AppLocalization["Choose or Search..."]
                            T="AccessLevel"
@@ -61,8 +62,9 @@
 }
 @code {
     const string SELECTION_DELIMITER = ", ";
-#nullable disable warnings
+
     PermissionMapping? _map;
+
     [Parameter]
     public PermissionMapping? Map
     {
@@ -81,8 +83,10 @@
 
         }
     }
+
     [Parameter]
     public EventCallback MappingsChanged { get; set; }
+
     [Parameter]
     public bool ReadOnly { get; set; } = false;
 
@@ -120,36 +124,7 @@
                 _permissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin && p.DeletedAt==null).ToListAsync();
                 if (Map.Id != 0)
                 {
-                    string concatenated = "";
-
-                    _accessLevels.Select(a => a.Name).ToList().ForEach(s =>
-                    {
-                        concatenated += s + SELECTION_DELIMITER;
-
-                    });
-                    if (concatenated != "")
-
-                        concatenated = concatenated.Substring(0, concatenated.Length - 2);
-
-                    selectedAccessLevelNames = concatenated;
-                    concatenated = "";
-                    var sids = _permissionDelegates.Select(a => a.DelegateSid).ToList();
-                    foreach (var sid in sids)
-                    {
-                        try
-                        {
-                            concatenated += Directory.FindEntryBySID(sid) + ", ";
-                        }
-                        catch (Exception)
-                        {
-                            concatenated += sid.ToSidString() + ", ";
-                        }
-                    }
-
-                    if (concatenated != "")
-                        concatenated = concatenated.Substring(0, concatenated.Length - 2);
-
-                    selectedPermissionDelegateNames = concatenated;
+                    ConcatenateStrings();
                 }
             }
 
@@ -157,14 +132,49 @@
         LoadingData = false;
 
     }
+
+    void ConcatenateStrings()
+    {
+        string concatenated = "";
+
+        _accessLevels.Select(a => a.Name).ToList().ForEach(s =>
+        {
+            concatenated += s + SELECTION_DELIMITER;
+
+        });
+        if (concatenated != "")
+
+            concatenated = concatenated.Substring(0, concatenated.Length - 2);
+
+        selectedAccessLevelNames = concatenated;
+        concatenated = "";
+        var sids = _permissionDelegates.Select(a => a.DelegateSid).ToList();
+        foreach (var sid in sids)
+        {
+            try
+            {
+                concatenated += Directory.FindEntryBySID(sid) + ", ";
+            }
+            catch (Exception)
+            {
+                concatenated += sid.ToSidString() + ", ";
+            }
+        }
+
+        if (concatenated != "")
+            concatenated = concatenated.Substring(0, concatenated.Length - 2);
+
+        selectedPermissionDelegateNames = concatenated;
+    }
+
     async Task DeleteMapping()
     {
-        if (Map.Id == 0)
+        if (Map?.Id == 0)
         {
             Map = null;
         }
 
-        else
+        else if(Map!=null)
         {
             Context.PermissionMap.Remove(Map);
             await Context.SaveChangesAsync();
@@ -176,14 +186,14 @@
 
     }
 
-    string DelegateToString(PermissionDelegate deleg)
+    string? DelegateToString(PermissionDelegate deleg)
     {
         return deleg?.DelegateName;
        
     }
     new async Task Save()
     {
-        if (Map.Id == 0)
+        if (Map?.Id == 0)
             Context.PermissionMap.Add(Map);
         var result = await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
@@ -191,28 +201,5 @@
         await MappingsChanged.InvokeAsync();
         ApplicationEvents.PermissionsChanged.Invoke();
 
-    }
-    void ValidateCheck()
-    {
-        /*
-        if (PrivValidation != null && AccValidation!=null && !ReadOnly)
-        {
-            if (Map != null)
-            {
-                if (Map._permissionDelegates == null || Map._permissionDelegates?.Count < 1)
-                    PrivValidation.Status = ValidationStatus.Error;
-                else
-                    PrivValidation.Status = ValidationStatus.Success;
-                if (Map.AccessLevels == null || Map.AccessLevels?.Count < 1)
-                    AccValidation.Status = ValidationStatus.Error;
-                else
-                    AccValidation.Status = ValidationStatus.Success;
-                if (AccValidation.Status == ValidationStatus.Success && PrivValidation.Status == ValidationStatus.Success)
-                    SaveDisabled = false;
-                else
-                    SaveDisabled = true;
-            }
-        }
-        */
     }
 }

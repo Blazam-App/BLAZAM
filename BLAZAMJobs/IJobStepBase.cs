@@ -1,5 +1,5 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Interfaces;
+using BLAZAM.Global.Interfaces;
 
 namespace BLAZAM.Jobs
 {

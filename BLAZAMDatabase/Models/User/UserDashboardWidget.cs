@@ -15,7 +15,8 @@
         AppLogons,
         StaleUsers,
         StaleComputers,
-        NewContacts
+        NewContacts,
+        DisabledUsers
     }
     public class UserDashboardWidget : AppDbSetBase
     {

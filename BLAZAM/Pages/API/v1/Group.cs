@@ -13,6 +13,14 @@ namespace BLAZAM.Pages.API.v1
     [Produces("application/json")]
     public class Group : ApiController
     {
+        /// <summary>
+        /// Constructor for the Group API controller
+        /// </summary>
+        /// <param name="applicationUserStateService"></param>
+        /// <param name="audit"></param>
+        /// <param name="appDatabaseFactory"></param>
+        /// <param name="httpContextAccessor"></param>
+        /// <param name="adFactory"></param>
         public Group(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
         {
         }

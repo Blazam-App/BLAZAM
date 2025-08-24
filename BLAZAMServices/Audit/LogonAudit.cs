@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
@@ -15,27 +14,26 @@ namespace BLAZAM.Services.Audit
 
         public async Task<bool> AttemptedPersonation(string? iPAddress = null)
         {
-            CurrentUser = UserState;
             return await Log("Attempted Personation", iPAddress);
         }
 
         public async Task<bool> AttemptedLogin(ClaimsPrincipal user, string? iPAddress = null)
         {
-            CurrentUser = ApplicationUserState.CreateUserState(user, factory);
+            UserState = ApplicationUserState.CreateUserState(user, factory);
             return await Log("Attempted Login", iPAddress);
         }
         public async Task<bool> Impersonate(ClaimsPrincipal impersonator, ClaimsPrincipal impersonateee, string? ipAddress = null)
         {
-            CurrentUser = ApplicationUserState.CreateUserState(impersonateee, factory);
-            if (CurrentUser != null)
+            UserState = ApplicationUserState.CreateUserState(impersonateee, factory);
+            if (UserState != null)
             {
-                CurrentUser.Impersonator = impersonator;
+                UserState.Impersonator = impersonator;
             }
             return await Log("Impersonation", ipAddress);
         }
         public async Task<bool> Login(ClaimsPrincipal user, string? ipAddress = null)
         {
-            CurrentUser = ApplicationUserState.CreateUserState(user, factory);
+            UserState = ApplicationUserState.CreateUserState(user, factory);
             return await Log("Login", ipAddress);
         }
         public async Task<bool> Logout() => await Log("Logout");
@@ -49,12 +47,12 @@ namespace BLAZAM.Services.Audit
                 var newAuditEntry = new LogonAuditLog
                 {
                     Action = action,
-                    Username = CurrentUser?.AuditUsername,
+                    Username = UserState?.AuditUsername,
                 };
                 if (ipAddress != null)
                     newAuditEntry.IpAddress = ipAddress;
                 else
-                    newAuditEntry.IpAddress = CurrentUser?.IPAddress;
+                    newAuditEntry.IpAddress = UserState?.IPAddress;
 
                 context.LogonAuditLog.Add(newAuditEntry);
                 await context.SaveChangesAsync();

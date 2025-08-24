@@ -3,7 +3,7 @@
 
 <MudDataGrid T="IDirectoryEntryAdapter"
              Items="deletedObjects"
-             RowClick="@RowClicked"
+             RowClick="@(()=>{Nav.NavigateTo("/recyclebin");})"
              RowClass="cursor-pointer"
              Dense=true
              Filterable=true
@@ -25,9 +25,11 @@
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
-                    <MudText>@context.Item?.CanonicalName</MudText>
-                    </AppTooltip>
+                <DirectoryEntryTooltipPopover Entry="@context.Item">
+                    <DirectoryEntryContextMenu Entry="context.Item">
+                        <MudText>@context.Item?.CanonicalName</MudText>
+                    </DirectoryEntryContextMenu>
+                </DirectoryEntryTooltipPopover>
                 </CellTemplate>
             </TemplateColumn>
             <PropertyColumn Property="x=>x.LastChanged" Title=@AppLocalization[Lang.Deleted] />
@@ -42,24 +44,3 @@
     </MudDataGrid>
 
 
-    @code {
-    List<IDirectoryEntryAdapter> deletedObjects
-    {
-        get => CurrentUser.State.Cache.Get<List<IDirectoryEntryAdapter>>(this.GetType());
-        set => CurrentUser.State.Cache.Set(this.GetType(), value);
-    }
-
-
-    protected override async Task RefreshDataAsync()
-    {
-        LoadingData = true;
-        var search = new ADSearch(Directory) { SearchRoot = Directory.GetDeleteObjectsEntry() };
-        search.SearchDeleted = true;
-        search.Fields.Changed = DateTime.Now.AddDays(-14);
-        deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
-        LoadingData = false;
-        LoadingData = false;
-
-    }
-
-}

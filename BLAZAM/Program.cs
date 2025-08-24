@@ -143,7 +143,8 @@ namespace BLAZAM
                 AppInstance.Environment.EnvironmentName = "Development"; // Explicitly set environment name if needed
                 AppInstance.UseDeveloperExceptionPage();
             }
-
+            // Use response compression middleware
+            AppInstance.UseResponseCompression();
             // Custom middleware to manage user state.
             AppInstance.UseMiddleware<UserStateMiddleware>();
             // Redirect HTTP requests to HTTPS.
@@ -325,6 +326,7 @@ namespace BLAZAM
                     {
                         ApplicationInfo.listeningAddresses = ApplicationInfo.listeningAddresses.Append(address);
                         Loggers.SystemLogger.Information("Application host is listening on: {@Address}", address);
+                        Console.WriteLine($"Application host is listening on: {address}");
                     }
                 }
                 else

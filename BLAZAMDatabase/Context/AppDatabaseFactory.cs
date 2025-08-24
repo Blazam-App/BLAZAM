@@ -2,7 +2,7 @@
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Exceptions;
 using BLAZAM.Database.Models.Permissions;
-
+using BLAZAM.Global.Enums;
 using BLAZAM.Logger;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +15,7 @@ namespace BLAZAM.Database.Context
     /// </summary>
     public class AppDatabaseFactory : IAppDatabaseFactory
     {
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public static DatabaseException DatabaseCreationFailureReason { get; set; }
         public static AppDelegate? OnMigrationApplied { get; set; }
@@ -230,6 +230,8 @@ namespace BLAZAM.Database.Context
                 return DatabaseType.SQLite;
             }
         }
+
+
         /// <summary>
         /// Creates a new application <see cref="DbContext"/> based on the configured DatabaseType
         /// and DBConnectionString in appsettings.json
@@ -265,7 +267,7 @@ namespace BLAZAM.Database.Context
 
             }
             return databaseContext == null
-                ? throw new Exception("Database Context is null. Attempted connection to a "
+                ? throw new DatabaseException("Database Context is null. Attempted connection to a "
                 + DatabaseType + " type database")
                 : databaseContext;
         }
@@ -286,18 +288,21 @@ namespace BLAZAM.Database.Context
             {
                 using (var context = CreateDbContext())
                 {
-                    if (context != null && context.Status == ServiceConnectionState.Up)
-                        if (context.IsSeeded() || force)
-                            if (!context.SeedMismatch)
-                            {
-                                if (context.Database.GetPendingMigrations().Count() > 0)
-                                    Migrate(context);
-                            }
-                            else
-                            {
-                                throw new DatabaseException("Database incompatible with current application version.");
-                            }
-
+                    if (context != null
+                        && context.Status == ServiceConnectionState.Up
+                        && (context.IsSeeded() || force))
+                    {
+                        if (!context.SeedMismatch)
+                        {
+                            var pendingMigrations = context.Database.GetPendingMigrations();
+                            if (pendingMigrations.Count() > 0)
+                                Migrate(context);
+                        }
+                        else
+                        {
+                            throw new DatabaseException("Database incompatible with current application version.");
+                        }
+                    }
 
                     return true;
                 }
@@ -305,6 +310,7 @@ namespace BLAZAM.Database.Context
             catch (DatabaseException ex)
             {
                 OnFatalError?.Invoke(ex);
+                Loggers.DatabaseLogger.Information(ex, "Fatal Database Error");
                 FatalError = ex;
                 throw;
             }

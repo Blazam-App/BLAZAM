@@ -1,9 +1,7 @@
-﻿using BLAZAM.Database.Context;
-using BLAZAM.Database.Models.Chat;
+﻿using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using BLAZAM.Server.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Services.Chat
@@ -54,7 +52,6 @@ namespace BLAZAM.Services.Chat
             var context = Context;
             context.ChatRooms.Add(room);
             context.SaveChanges();
-            //ChatRooms.Add(room);
             OnChatRoomCreated?.Invoke(room);
 
         }

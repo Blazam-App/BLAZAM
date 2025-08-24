@@ -147,6 +147,9 @@
   <data name="Created" xml:space="preserve">
     <value>{0} ha sido creado</value>
   </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value>El modo de depuración está habilitado. Si este es un servidor de producción, desactívelo en appsettings.json para evitar la divulgación de datos sensibles.</value>
+  </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>Los delegados son los usuarios aprobados de la aplicación. Solo los usuarios que defina aquí, o los usuarios de los siguientes grupos de Active Directory (o grupos anidados) con permisos asignados o autoedición habilitada.</value>
   </data>
@@ -239,6 +242,9 @@
   </data>
   <data name="Super_User_Definition" xml:space="preserve">
     <value>Tendrá acceso completo y total a la aplicación si está habilitado</value>
+  </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" copiado al portapapeles.</value>
   </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Ha ocurrido un error inesperado.</value>

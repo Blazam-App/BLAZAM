@@ -7,23 +7,3 @@
                           T="IADGroup"
                           Loading=LoadingData />
 
-@code {
-    List<IADGroup> NewGroups
-    {
-        get => CurrentUser.State.Cache.Get<List<IADGroup>>(this.GetType());
-        set => CurrentUser.State.Cache.Set(this.GetType(), value);
-    }
-
-    protected override async Task RefreshDataAsync()
-    {
-        LoadingData = true;
-        NewGroups = (await Directory.Groups.FindNewGroupsAsync()).Where(u => u.CanRead).ToList();
-
-        LoadingData = false;
-
-    }
-    void GoTo(DataGridRowClickEventArgs<IADGroup> args)
-    {
-        Nav.NavigateTo(args.Item.SearchUri);
-    }
-}

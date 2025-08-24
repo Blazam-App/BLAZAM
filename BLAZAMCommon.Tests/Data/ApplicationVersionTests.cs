@@ -91,7 +91,7 @@ namespace BLAZAMCommon.Tests.Data
             Assert.Equal(assemblyVer, appVersion.AssemblyVersion);
             Assert.Null(appVersion.BuildNumber);
             Assert.Equal("1.2.3", appVersion.ShortVersion);
-            Assert.Equal("1.2.3.", appVersion.Version); // As per current implementation: AssemblyVersion.ToString() + "." + BuildNumber;
+            Assert.Equal("1.2.3.", appVersion.Version);
         }
 
         [Fact]

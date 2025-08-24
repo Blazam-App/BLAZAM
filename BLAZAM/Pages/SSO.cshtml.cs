@@ -2,40 +2,37 @@ using BLAZAM.Common.Data;
 using BLAZAM.Services;
 using BLAZAM.Services.Audit;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BLAZAM.Server.Pages
 {
+    /// <summary>
+    /// Represents the Single Sign-On (SSO) page model for handling authentication requests and responses.
+    /// </summary>
+    /// <remarks>This class provides methods for handling GET and POST requests related to user
+    /// authentication. It integrates with the application's authentication state provider, navigation manager,
+    /// connection monitor, and user audit logger to facilitate secure and auditable login operations.</remarks>
     [IgnoreAntiforgeryToken]
     public class SSOModel : PageModel
     {
-        public SSOModel(AppAuthenticationStateProvider auth, NavigationManager _nav, ConnMonitor _monitor, WebUserAuditLogger logger)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SSOModel"/> class with the specified dependencies.
+        /// </summary>
+        /// <param name="auth">The authentication state provider used to manage user authentication state.</param>
+        /// <param name="logger">The audit logger used to log user activity for auditing purposes.</param>
+        public SSOModel(AppAuthenticationStateProvider auth, WebUserAuditLogger logger)
         {
-            Auth = auth;
-            Nav = _nav;
-            Monitor = _monitor;
-            AuditLogger = logger;
+            _auth = auth;
+            _auditLogger = logger;
         }
 
 
-        public string RedirectUri { get; set; }
-        public AppAuthenticationStateProvider Auth { get; }
-        public NavigationManager Nav { get; private set; }
-        public ConnMonitor Monitor { get; private set; }
-        public WebUserAuditLogger AuditLogger { get; private set; }
+        private readonly AppAuthenticationStateProvider _auth;
+        private readonly WebUserAuditLogger _auditLogger;
 
-        public IActionResult OnGet(string returnUrl = "")
-        {
-            ViewData["Layout"] = "_Layout";
-            if (returnUrl.IsUrlLocalToHost())
-            {
-                RedirectUri = returnUrl;
-            }
-            return Redirect("/");
 
-        }
+
 
 
         /// <summary>
@@ -47,19 +44,19 @@ namespace BLAZAM.Server.Pages
         {
             try
             {
-                var result = await Auth.Login(req);
-                if (result != null && result.AuthenticationResult == LoginResultStatus.OK)
+                var result = await _auth.Login(req);
+                if (result != null
+                    && result.AuthenticationResult == LoginResultStatus.OK
+                    && result.AuthenticationState != null)
                 {
                     await HttpContext.SignInAsync(result.AuthenticationState.User);
-                    await AuditLogger.Logon.Login(result.AuthenticationState.User);
+                    await _auditLogger.Logon.Login(result.AuthenticationState.User);
                 }
-                // return new ObjectResult(result.Status);
 
             }
-            catch
+            catch (Exception ex)
             {
-
-                //return new ObjectResult(ex.Message);
+                Loggers.SystemLogger.Error(ex, "SSOModel.OnPost: Exception during login attempt.");
             }
             if (req.ReturnUrl != null && req.ReturnUrl.IsUrlLocalToHost())
             {

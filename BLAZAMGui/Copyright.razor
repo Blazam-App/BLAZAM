@@ -1,9 +1,12 @@
 ﻿@inherits MudText
 @inject ApplicationInfo ApplicationInfo
-<MudText Class="@Class" 
-    
-     Style=@("cursor:pointer; width:max-content; "+this.Style) Color="Color.Secondary">
-    <AppTooltip Arrow=true ShowOnHover=false Style="width:max-content" Text="@ApplicationInfo.RunningVersion.Version">
+<MudText Class="@Class"
+         Style=@("cursor:pointer; width:max-content; "+this.Style)
+         Color="Color.Secondary">
+    <AppTooltip Arrow=true
+                ShowOnHover=false
+                Style="width:max-content"
+                Text="@ApplicationInfo.RunningVersion.Version">
         <MudText @onclick=OnClick>
 
             BLAZAM @DateTime.Now.Year

@@ -1,4 +1,5 @@
 ﻿@using BLAZAM.Database.Models.Audit;
+@using BLAZAM.Global.Data.Strings
 @using BLAZAM.Services.Audit;
 @inherits AppModalContent
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
@@ -13,7 +14,7 @@
             {
                 var ev = _events[i];
                 var align = i % 2 == 1 ? Align.End : Align.Start;
-                <MudTimelineItem Size=Size.Small Color="@(i==0 ? Color.Primary : Color.Default)">
+                <MudTimelineItem Size=Size.Small Color="@(i == 0 ? Color.Primary : Color.Default)">
                     <MudText Align=@align Typo="Typo.h6">@ev.Action</MudText>
                     <MudText Align="@align">
                         <MudText Typo="Typo.caption" Align=@align>by: @ev.Username at @ev.Timestamp.ToLocalTime()</MudText>
@@ -46,68 +47,101 @@
     {
         await base.OnInitializedAsync();
 
-        _ = AuditLogger.System.Analytics.ObjectHistoryViewed(Model.ObjectType);
+        _ = AuditLogger.System.Analytics?.ObjectHistoryViewed(Model.ObjectType);
 
+        _events = await GetFilteredAuditLogsAsync();
 
-        _events = await Context.DirectoryEntryAuditLogs.Where(l => l.Action != AuditActions.Computer_Searched
-            && l.Action != AuditActions.User_Searched
-            && l.Action != AuditActions.Group_Searched
-            && l.Action != AuditActions.OU_Searched
-            && l.Action != AuditActions.Printer_Searched
-            && l.Action != AuditActions.BitLocker_Searched
-            && l.Sid.Equals(Model.SID.ToSidString())).OrderByDescending(l => l.Timestamp).ToListAsync();
+        AddCreatedEventIfNeeded();
+        AddAccountEventsIfNeeded();
+
+        _events = _events.OrderByDescending(e => e.Timestamp).ToList();
+    }
+
+    private async Task<List<DirectoryEntryAuditLog>> GetFilteredAuditLogsAsync()
+    {
+        return await Context.DirectoryEntryAuditLogs
+            .Where(l => l.Action != AuditActions.Computer_Searched
+                && l.Action != AuditActions.User_Searched
+                && l.Action != AuditActions.Group_Searched
+                && l.Action != AuditActions.OU_Searched
+                && l.Action != AuditActions.Printer_Searched
+                && l.Action != AuditActions.BitLocker_Searched
+                && l.Sid.Equals(Model.SID.ToSidString()))
+            .OrderByDescending(l => l.Timestamp)
+            .ToListAsync();
+    }
+
+    private void AddCreatedEventIfNeeded()
+    {
         if (Model.Created.HasValue)
         {
             _events.Add(new()
-                {
-                    Timestamp = Model.Created.Value,
-                    Target = Model.CanonicalName,
-                    Action = Model.ObjectType.ToString() + " created",
-                    Username = AppLocalization[Lang.Active_Directory]
-                });
+            {
+                Timestamp = Model.Created.Value,
+                Target = Model.CanonicalName,
+                Action = Model.ObjectType.ToString() + " created",
+                Username = AppLocalization[Lang.Active_Directory]
+            });
         }
+    }
 
+    private void AddAccountEventsIfNeeded()
+    {
         if (Model is IAccountDirectoryAdapter account)
         {
-            if (account.PasswordLastSet.HasValue)
-            {
-                if (!_events.Any(e => e.Timestamp.Date.Equals(account.PasswordLastSet.Value.Date) && e.Timestamp.Hour.Equals(account.PasswordLastSet.Value.Hour) && e.Timestamp.Minute.Equals(account.PasswordLastSet.Value.Minute)))
-                {
-                    _events.Add(new()
-                        {
-                            Timestamp = account.PasswordLastSet.Value,
-                            Target = Model.CanonicalName,
-                            Action = AppLocalization[Model.ObjectType.ToString()] + " " + AppLocalization[Lang.password_changed] + ".",
-                            Username = AppLocalization[Lang.Active_Directory]
-                        });
-                }
-
-
-            }
-            if (account.LockoutTime.HasValue)
-            {
-                _events.Add(new()
-                    {
-                        Timestamp = account.LockoutTime.Value,
-                        Target = Model.CanonicalName,
-                        Action = Model.ObjectType.ToString() + " " + AppLocalization[Lang.locked_out] + ".",
-                        Username = AppLocalization[Lang.Active_Directory]
-                    });
-            }
-            if (account.LastChanged.HasValue)
-            {
-                if (!_events.Any(e => e.Timestamp.Date.Equals(account.LastChanged.Value.Date) && e.Timestamp.Hour.Equals(account.LastChanged.Value.Hour) && e.Timestamp.Minute.Equals(account.LastChanged.Value.Minute)))
-                {
-                    _events.Add(new()
-                        {
-                            Timestamp = account.LastChanged.Value,
-                            Target = Model.CanonicalName,
-                            Action = Model.ObjectType.ToString() + " " + AppLocalization[Lang.last_changed] + ".",
-                            Username = AppLocalization[Lang.Active_Directory]
-                        });
-                }
-            }
+            AddPasswordLastSetEvent(account);
+            AddLockoutTimeEvent(account);
+            AddLastChangedEvent(account);
         }
-        _events = _events.OrderByDescending(e => e.Timestamp).ToList();
+    }
+
+    private void AddPasswordLastSetEvent(IAccountDirectoryAdapter account)
+    {
+        if (account.PasswordLastSet.HasValue
+            && !_events.Any(e => e.Timestamp.Date.Equals(account.PasswordLastSet.Value.Date)
+            && e.Timestamp.Hour.Equals(account.PasswordLastSet.Value.Hour)
+            && e.Timestamp.Minute.Equals(account.PasswordLastSet.Value.Minute)))
+        {
+            _events.Add(new()
+            {
+                Timestamp = account.PasswordLastSet.Value,
+                Target = Model.CanonicalName,
+                Action = AppLocalization[Model.ObjectType.ToString()] + " " + AppLocalization[Lang.password_changed] + ".",
+                Username = AppLocalization[Lang.Active_Directory]
+            });
+
+        }
+    }
+
+    private void AddLockoutTimeEvent(IAccountDirectoryAdapter account)
+    {
+        if (account.LockoutTime.HasValue)
+        {
+            _events.Add(new()
+            {
+                Timestamp = account.LockoutTime.Value,
+                Target = Model.CanonicalName,
+                Action = Model.ObjectType.ToString() + " " + AppLocalization[Lang.locked_out] + ".",
+                Username = AppLocalization[Lang.Active_Directory]
+            });
+        }
+    }
+
+    private void AddLastChangedEvent(IAccountDirectoryAdapter account)
+    {
+        if (account.LastChanged.HasValue
+            && !_events.Any(e => e.Timestamp.Date.Equals(account.LastChanged.Value.Date)
+            && e.Timestamp.Hour.Equals(account.LastChanged.Value.Hour)
+            && e.Timestamp.Minute.Equals(account.LastChanged.Value.Minute)))
+        {
+            _events.Add(new()
+            {
+                Timestamp = account.LastChanged.Value,
+                Target = Model.CanonicalName,
+                Action = Model.ObjectType.ToString() + " " + AppLocalization[Lang.last_changed] + ".",
+                Username = AppLocalization[Lang.Active_Directory]
+            });
+        }
     }
 }
+

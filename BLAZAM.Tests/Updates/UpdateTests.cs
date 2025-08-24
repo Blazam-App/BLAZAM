@@ -28,10 +28,16 @@ namespace BLAZAM.Tests.Updates
             var latest = await _updateService.GetUpdates();
             if (latest != null)
                 await latest.Download(null);
-
-            Assert.True(latest?.UpdateFile.Exists);
-            await Update_Stages_OK(latest);
-            await Update_Cleanup_OK(latest);
+            if (latest == null)
+            {
+                Assert.NotNull(latest);
+            }
+            else
+            {
+                Assert.True(latest.UpdateFile.Exists);
+                await Update_Stages_OK(latest);
+                await Update_Cleanup_OK(latest);
+            }
         }
 
         private static async Task Update_Stages_OK(ApplicationUpdate latest)
@@ -86,6 +92,34 @@ namespace BLAZAM.Tests.Updates
             var service = new Mock_UpdateService();
             await service.GetUpdates();
             Assert.All(service.AvailableUpdates, update => Assert.True(update.PassesPrerequisiteChecks));
+        }
+
+        [Fact]
+        public async Task ApplicationUpdate_Backup_CreatesBackupDirectory()
+        {
+            // Arrange
+            var updateService = new Mock_UpdateService();
+            var latestUpdate = await updateService.GetUpdates();
+            Assert.NotNull(latestUpdate);
+
+            // Ensure the backup directory does not exist before backup
+            var backupDir = updateService.BackupDirectory;
+            if (backupDir.Exists)
+            {
+                backupDir.Delete(true);
+            }
+            Assert.False(backupDir.Exists);
+
+            // Act
+            var result = await updateService.Backup();
+
+            // Assert
+            Assert.True(result);
+            Assert.True(backupDir.Exists);
+            Assert.True(backupDir.Files.Count > 0 || backupDir.SubDirectories.Count > 0);
+
+            // Cleanup
+            backupDir.Delete(true);
         }
     }
 }

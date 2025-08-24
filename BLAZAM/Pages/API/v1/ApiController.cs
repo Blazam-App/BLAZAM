@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -45,8 +45,21 @@ namespace BLAZAM.Pages.API.v1
         /// </summary>
         protected IApplicationUserState? CurrentUserState { get; }
 
+        private readonly JsonSerializerOptions jsonOptions;
+
+        /// <summary>
+        /// Creates a new API controller with the required services
+        /// </summary>
+        /// <param name="applicationUserStateService"></param>
+        /// <param name="audit"></param>
+        /// <param name="appDatabaseFactory"></param>
+        /// <param name="httpContextAccessor"></param>
+        /// <param name="adFactory"></param>
         public ApiController(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
         {
+            jsonOptions = new JsonSerializerOptions();
+            jsonOptions.Converters.Add(new JsonStringEnumConverter());
+
             stopwatch.Start();
 
             RequestId = Guid.NewGuid();
@@ -84,16 +97,39 @@ namespace BLAZAM.Pages.API.v1
         /// </summary>
         /// <param name="data">A JSON serializable object</param>
         /// <returns>A new <see cref="JsonResult"/> containing the <see cref="ResponseData"/></returns>
-        protected IActionResult FormatData(dynamic data)
+        protected IActionResult FormatData(object data)
         {
             stopwatch.Stop();
-            ResponseData.Add("Data", data);
+
+
+            if (data is IEnumerable<object> dataEnumerable)
+            {
+
+
+                // Serialize each item using its runtime type
+                var serializedItems = dataEnumerable
+                    .Select(item => JsonSerializer.SerializeToElement(item, item.GetType(), jsonOptions))
+                    .ToList();
+
+
+                ResponseData["Data"] = serializedItems;
+            }
+            else
+            {
+                ResponseData["Data"] = data;
+            }
+
             ResponseData.Add("Finish Time", DateTime.Now.ToString());
             ResponseData.Add("Runtime", stopwatch.ElapsedMilliseconds + "ms");
 
             return new JsonResult(ResponseData);
         }
-
+        /// <summary>
+        /// Finds a group by its SID, DN, or name. If using name, the name must be unique
+        /// </summary>
+        /// <param name="groupIdentifier"></param>
+        /// <returns></returns>
+        /// <exception cref="DirectorySearchUniquenessException"></exception>
         protected IADGroup? FindGroupByIdentifier(string groupIdentifier)
         {
             var group = (IADGroup)Directory.FindEntryBySid(groupIdentifier);
@@ -110,7 +146,7 @@ namespace BLAZAM.Pages.API.v1
                     {
                         throw new DirectorySearchUniquenessException(groupIdentifier);
                     }
-                    group = matches.First();
+                    group = matches[0];
                 }
             }
             return group;

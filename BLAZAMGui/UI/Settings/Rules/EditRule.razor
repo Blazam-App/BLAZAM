@@ -135,9 +135,9 @@
 
     private AutomationRule _workingRule;
 
-    List<NotificationType> _triggerTypes = new();
-    List<ActiveDirectoryObjectType> _adObjectTypes = new();
-    List<ScheduleInterval?> _scheduleTypes = new();
+    readonly List<NotificationType> _triggerTypes = new();
+    readonly List<ActiveDirectoryObjectType> _adObjectTypes = new();
+    readonly List<ScheduleInterval?> _scheduleTypes = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -202,54 +202,9 @@
 
     private async Task SaveRule()
     {
-        if (_workingRule.Filters.Count > 0)
-        {
-            foreach (var orFilter in _workingRule.Filters)
-            {
-                foreach (var andFilter in orFilter.AndFilters)
-                {
-                    if (andFilter.Field != null)
-                    {
+        await UpdateFiltersAsync();
+        await UpdateActionsAsync();
 
-                        andFilter.FieldId = andFilter.Field.Id;
-
-                        andFilter.Field = await Context.ActiveDirectoryFields.FirstAsync(f => f.Id == andFilter.Field.Id);
-
-                    }
-                    if (andFilter.CustomField != null)
-                    {
-
-                        andFilter.CustomFieldId = andFilter.CustomField.Id;
-
-                        andFilter.CustomField = await Context.CustomActiveDirectoryFields.FirstAsync(f => f.Id == andFilter.CustomField.Id);
-
-                    }
-
-
-
-                }
-
-            }
-        }
-        if (_workingRule.Actions.Any(a => a.FieldValues.Count > 0))
-        {
-            foreach (var action in _workingRule.Actions.Where(a => a.FieldValues.Count > 0))
-            {
-                foreach (var fieldValue in action.FieldValues)
-                {
-
-                    if (fieldValue.CurrentField is ActiveDirectoryField)
-                    {
-                        fieldValue.CurrentField = await Context.ActiveDirectoryFields.FirstAsync(f => f.Id == fieldValue.CurrentFieldId);
-                    }
-                    else if (fieldValue.CurrentField is CustomActiveDirectoryField)
-                    {
-                        fieldValue.CurrentField = await Context.CustomActiveDirectoryFields.FirstAsync(f => f.Id == fieldValue.CurrentFieldId);
-                    }
-
-                }
-            }
-        }
         var newRule = false;
         if (_workingRule.Id == 0)
         {
@@ -260,15 +215,54 @@
         var result = await Context.SaveChangesAsync();
         if (result > 0)
         {
-
             SnackBarService.Success(AppLocalization[newRule ? Lang.Created : Lang.Changed]);
             RuleChanged.InvokeAsync(Rule);
             await Modal.CloseAsync();
-
         }
         else
         {
             SnackBarService.Error(Context.LastSaveError?.Message);
+        }
+    }
+
+    private async Task UpdateFiltersAsync()
+    {
+        if (_workingRule.Filters.Count == 0) return;
+
+        foreach (var orFilter in _workingRule.Filters)
+        {
+            foreach (var andFilter in orFilter.AndFilters)
+            {
+                if (andFilter.Field != null)
+                {
+                    andFilter.FieldId = andFilter.Field.Id;
+                    andFilter.Field = await Context.ActiveDirectoryFields.FirstAsync(f => f.Id == andFilter.Field.Id);
+                }
+                if (andFilter.CustomField != null)
+                {
+                    andFilter.CustomFieldId = andFilter.CustomField.Id;
+                    andFilter.CustomField = await Context.CustomActiveDirectoryFields.FirstAsync(f => f.Id == andFilter.CustomField.Id);
+                }
+            }
+        }
+    }
+
+    private async Task UpdateActionsAsync()
+    {
+        var actionsWithFields = _workingRule.Actions.Where(a => a.FieldValues.Count > 0);
+        foreach (var action in actionsWithFields)
+        {
+            foreach (var fieldValue in action.FieldValues)
+            {
+                if (fieldValue.CurrentField is ActiveDirectoryField)
+                {
+                    fieldValue.CurrentField = await Context.ActiveDirectoryFields.FirstAsync(f => f.Id == fieldValue.CurrentFieldId);
+                }
+                else if (fieldValue.CurrentField is CustomActiveDirectoryField)
+                {
+                    fieldValue.CurrentField = await Context.CustomActiveDirectoryFields.FirstAsync(f => f.Id == fieldValue.CurrentFieldId);
+                }
+            }
         }
     }
     private void RemoveAction(AutomationRuleAction action)

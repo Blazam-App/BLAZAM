@@ -82,7 +82,7 @@ namespace BLAZAM.Helpers
             {
                 return eventRecord.Properties[index].Value.ToString();
             }
-            catch (ArgumentOutOfRangeException ex)
+            catch (ArgumentOutOfRangeException)
             {
                 return null;
             }
@@ -196,7 +196,7 @@ namespace BLAZAM.Helpers
         private static List<AuditChangeLog> BuildAuditChangeLog(object? changed, object? original = null)
         {
             List<AuditChangeLog> changes = new();
-            PropertyInfo[] properties;
+            PropertyInfo[]? properties = null;
 
             if (changed != null)
                 properties = changed.GetType().GetProperties();
@@ -210,25 +210,24 @@ namespace BLAZAM.Helpers
                 object? oldValue = original != null ? property.GetValue(original) : null;
                 object? newValue = changed != null ? property.GetValue(changed) : null;
 
-                // Determine if there's a change
-                bool isChanged = false;
-                if (oldValue == null && newValue != null) isChanged = true;
-                else if (oldValue != null && newValue == null) isChanged = true;
-                else if (oldValue != null && newValue != null && !oldValue.Equals(newValue)) isChanged = true;
-                // Note: if both are null, they are considered not changed.
-
-                if (isChanged)
+                if (IsChanged(oldValue, newValue))
                 {
-                    var change = new AuditChangeLog
+                    changes.Add(new AuditChangeLog
                     {
                         Field = property.Name,
                         OldValue = oldValue,
                         NewValue = newValue
-                    };
-                    changes.Add(change);
+                    });
                 }
             }
             return changes;
+        }
+
+        private static bool IsChanged(object? oldValue, object? newValue)
+        {
+            if (oldValue == null && newValue == null) return false;
+            if (oldValue == null || newValue == null) return true;
+            return !oldValue.Equals(newValue);
         }
 
         /// <summary>
@@ -254,18 +253,13 @@ namespace BLAZAM.Helpers
                 {
                     continue;
                 }
-                try
+                using var fs = file.OpenReadStream();
+                ZipArchiveEntry entry = archive.CreateEntry(directory.FullPath.Replace(basePath, "") + file.Name + file.Extension);
+                using (Stream es = entry.Open())
                 {
-                    using FileStream fs = file.OpenReadStream();
-                    ZipArchiveEntry entry = archive.CreateEntry(directory.FullPath.Replace(basePath, "") + file.Name + file.Extension);
-                    using (Stream es = entry.Open())
-                    {
-                        fs.CopyTo(es);
-                    }
+                    fs.CopyTo(es);
                 }
-                catch (Exception)
-                {
-                }
+
             }
 
             foreach (var sdi in directory.SubDirectories)
@@ -430,51 +424,30 @@ namespace BLAZAM.Helpers
         /// <returns>A nullable DateTime in UTC, or null if conversion fails or the ADSI value represents a null/zero time.</returns>
         public static DateTime? AdsValueToDateTime(this object? value)
         {
-            DateTime? dateTime = null;
+            if (value == null) return null;
+            if (value is DateTime dtValue) return dtValue;
+
+            long? fileTime = value switch
+            {
+                string s when long.TryParse(s, out var l) => l,
+                IConvertible convertible => convertible.ToInt64(CultureInfo.InvariantCulture),
+                IADsLargeInteger v => ((long)v.HighPart << 32) + v.LowPart,
+                _ => null
+            };
+
+            if (fileTime is null or 0) return null;
+
             try
             {
-                if (value is DateTime dtValue) return dtValue; // Already a DateTime
-                if (value == null) return null;
-
-                Int64 longInt = Int64.MinValue;
-
-                // Attempt to parse if it's a string representation of a long
-                if (value is string s && long.TryParse(s, out long parsedLong))
-                {
-                    longInt = parsedLong;
-                }
-                else if (value is IConvertible convertibleValue) // Handle other numeric types
-                {
-                    longInt = convertibleValue.ToInt64(CultureInfo.InvariantCulture);
-                }
-
-
-
-                if (longInt != Int64.MinValue && longInt != 0)
-                {
-                    dateTime = DateTime.FromFileTimeUtc(longInt);
-                }
-                else
-                {
-                    IADsLargeInteger? v = value as IADsLargeInteger;
-                    if (v != null)
-                    {
-                        long dV = ((long)v.HighPart << 32) + v.LowPart;
-                        if (dV != 0) // Avoid converting 0 FILETIME to 1601/01/01 if it represents "no date"
-                            dateTime = DateTime.FromFileTimeUtc(dV);
-
-                    }
-
-                }
+                var dateTime = DateTime.FromFileTimeUtc(fileTime.Value);
+                if (dateTime.Equals(ADS_NULL_TIME) || dateTime.Equals(DateTime.MinValue))
+                    return null;
+                return dateTime;
             }
-            catch (Exception)
+            catch
             {
-                return null; // Return null on any other unexpected error
+                return null;
             }
-
-            if (dateTime == null || dateTime.Equals(ADS_NULL_TIME) || dateTime.Equals(DateTime.MinValue))
-                dateTime = null; // Standardize "null" or "zero" AD dates to null .NET DateTime
-            return dateTime;
         }
 
         /// <summary>

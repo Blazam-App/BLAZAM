@@ -9,7 +9,7 @@
             var appEvent = new AppEvent();
             bool delegateCalled = false;
             object capturedSender = new object(); // Placeholder, will be null
-            EventArgs capturedArgs = null;
+            EventArgs? capturedArgs = null;
 
             appEvent.Delegate += (sender, args) =>
             {

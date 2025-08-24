@@ -1,4 +1,6 @@
 ﻿
+using BLAZAM.Global.Data;
+
 namespace BLAZAM.Gui.Helpers
 {
     public static class TemplateHelpers
@@ -52,8 +54,6 @@ namespace BLAZAM.Gui.Helpers
                 Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create user in {@ContainerName}", parentOU.DN);
                 throw;
             }
-
-            //newUser = ou.CreateUser(displayName);
 
 
 

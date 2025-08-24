@@ -1,5 +1,5 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
+using BLAZAM.Global.Enums;
 using BLAZAM.Pages.Error;
 
 namespace BLAZAM.Server.Middleware
@@ -49,7 +49,7 @@ namespace BLAZAM.Server.Middleware
                     switch (_monitor.AppReady)
                     {
                         case ServiceConnectionState.Connecting:
-                            Loggers.SystemLogger.Information("ApplicationStatusRedirectMiddleware: App not ready (Connecting). Redirecting {intendedUri} to /.", intendedUri);
+                            Loggers.SystemLogger.Information("ApplicationStatusRedirectMiddleware: App not ready (Connecting). Redirecting {IntendedUri} to /.", intendedUri);
                             SendTo(context, "/");
                             break;
                         case ServiceConnectionState.Up:
@@ -76,7 +76,7 @@ namespace BLAZAM.Server.Middleware
                 }
                 catch (Exception ex)
                 {
-                    Loggers.SystemLogger.Error(ex, "Exception in ApplicationStatusRedirectMiddleware for intended URI: {intendedUri}", intendedUri);
+                    Loggers.SystemLogger.Error(ex, "Exception in ApplicationStatusRedirectMiddleware for intended URI: {IntendedUri}", intendedUri);
                     SendTo(context, "/oops");
 
                 }
@@ -108,7 +108,7 @@ namespace BLAZAM.Server.Middleware
             Oops.ErrorMessage = errorMessage;
             Oops.DetailsMessage = detailsMessage;
             Oops.HelpMessage = helpMessage;
-            Loggers.SystemLogger.Warning("ApplicationStatusRedirectMiddleware: {logReason}. Redirecting {intendedUri} to /oops.", logReason, intendedUri);
+            Loggers.SystemLogger.Warning("ApplicationStatusRedirectMiddleware: {@LogReason}. Redirecting {@IntendedUri} to /oops.", logReason, intendedUri);
             SendTo(context, "/oops");
         }
 

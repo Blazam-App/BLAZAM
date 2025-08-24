@@ -151,6 +151,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Debug mode is enabled. If this is a production server, disable in appsettings.json to prevent disclosure of sensitive data..
+        /// </summary>
+        public static string Debug_Enabled_Warning {
+            get {
+                return ResourceManager.GetString("Debug_Enabled_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) with permissions mapped or self-edit enabled..
         /// </summary>
         public static string Delegate_Definition {
@@ -427,6 +436,15 @@ namespace BLAZAM.Localization {
         public static string Super_User_Definition {
             get {
                 return ResourceManager.GetString("Super_User_Definition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;{0}&quot; copied to clipboard..
+        /// </summary>
+        public static string Text_Copied_To_Clipboard {
+            get {
+                return ResourceManager.GetString("Text_Copied_To_Clipboard", resourceCulture);
             }
         }
         

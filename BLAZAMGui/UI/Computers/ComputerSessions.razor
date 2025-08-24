@@ -1,5 +1,6 @@
-@using BLAZAM.Common.Exceptions;
 @using System.Diagnostics;
+@using BLAZAM.Common.Exceptions;
+@using BLAZAM.Global.Exceptions
 @inherits ComputerViewBase
 
 @implements IDisposable
@@ -151,8 +152,8 @@ else
     {
         base.Dispose();
         t?.Dispose();
-        Sessions.ForEach(s => {
-            s.Dispose();
+        Sessions?.ForEach(s => {
+            s?.Dispose();
         });
     }
 }

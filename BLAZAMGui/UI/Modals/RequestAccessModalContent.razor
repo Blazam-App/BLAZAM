@@ -5,38 +5,36 @@
 @inject NotificationGenerationService notificationGenerationService
 @inject BLAZAM.Services.Analytics AnalyticsService
 
-@if (_objectActions != null && _objectActions.Count > 0)
+@if (_objectActions != null && _objectActions.Count > 0 && globalPermissionRequestActions.Count > 0)
 {
-    if (globalPermissionRequestActions.Count > 0)
+    @if (_dbAllowedActions.Any(x => x.IsActionAppropriateForObject(Entry.ObjectType)))
     {
-        @if (_dbAllowedActions.Any(x => x.IsActionAppropriateForObject(Entry.ObjectType)))
-        {
-            <MudChipSet T="ActiveDirectoryObjectAction"
-                        @bind-SelectedValues="_selectedActions"
-                        SelectionMode="SelectionMode.MultiSelection"
-                        Color="Color.Info"
-                        CheckedIcon="@Icons.Material.Filled.Check"
-                        IconColor="Color.Success"
-                        SelectedColor="Color.Success">
-                @foreach (var action in _objectActions)
+        <MudChipSet T="ActiveDirectoryObjectAction"
+                    @bind-SelectedValues="_selectedActions"
+                    SelectionMode="SelectionMode.MultiSelection"
+                    Color="Color.Info"
+                    CheckedIcon="@Icons.Material.Filled.Check"
+                    IconColor="Color.Success"
+                    SelectedColor="Color.Success">
+            @foreach (var action in _objectActions)
+            {
+                if (action.IsActionAppropriateForObject(Entry.ObjectType) && globalPermissionRequestActions.Any(x => x.ObjectAction == action))
                 {
-                    if (action.IsActionAppropriateForObject(Entry.ObjectType) && globalPermissionRequestActions.Any(x => x.ObjectAction == action))
-                    {
-                        <MudChip Value="action"
-                                 Disabled="@(IsActionDisabled(action))"
-                                 Text="@AppLocalization[action.ToString()]" />
-                    }
+                    <MudChip Value="action"
+                             Disabled="@(IsActionDisabled(action))"
+                             Text="@AppLocalization[action.ToString()]" />
                 }
-            </MudChipSet>
+            }
+        </MudChipSet>
 
 
-        }
-        else
-        {
-            <MudAlert Severity="Severity.Info">@AppHelpLocalization[HelpLang.No_Request_Actions_Available]</MudAlert>
-
-        }
     }
+    else
+    {
+        <MudAlert Severity="Severity.Info">@AppHelpLocalization[HelpLang.No_Request_Actions_Available]</MudAlert>
+
+    }
+
 }
 <LoadingData Loading=LoadingData />
 @code {
@@ -62,56 +60,26 @@
     }
     public async Task Submit()
     {
-        if (_selectedActions.Count > 0)
+        if (_selectedActions != null && _selectedActions.Count > 0)
         {
             LoadingData = true;
             await InvokeAsync(StateHasChanged);
-            var users = await Context.UserSettings.ToListAsync();
-            var adminUsers = new List<AppUser>();
-            await Parallel.ForEachAsync(users, async (user, cancellationToken) =>
-            {
-                var adUser = Directory.Users.FindUserBySID(user.UserGUID);
-                var userState = new ApplicationUserState(DbFactory);
-                try
-                {
-                    var appUser = await AppAuthenticationStateProvider.CreateDirectoryPrincipal(userState, adUser);
-                    userState.User = appUser;
-                    if (userState.IsSuperAdmin || user.IsAdminOrDemo())
-                    {
-                        lock (adminUsers)
-                        {
-                            adminUsers.Add(user);
-                        }
-                    }
-                }
-                catch (DeniedLoginException)
-                {
-                    //Ignore users who can't login
-                }
-            });
+
+            var adminUsers = await GetAdminUsersAsync();
 
             foreach (var action in _selectedActions)
             {
-                NotificationMessage notification;
-                notificationGenerationService.PackageRequest(Entry, action, CurrentUser.State,  out notification);
-               
-                _=NotificationPublisher.PublishNotification(adminUsers, notification);
-                await AnalyticsService.AccessRequestCreated(notification.Title);
-
-                
-                var requestEmail = new AccessRequestEmailMessage(); 
-                requestEmail.Notification= notification;
-                requestEmail.TargetName = Entry.CanonicalName;
-                foreach (var user in adminUsers)
+                var notification = GenerateNotification(action);
+                if (notification == null)
                 {
-                    if (EmailService.IsConfigured && !user.Email.IsNullOrEmpty())
-                    {
-                        string body = CurrentUser.Username + " " + AppLocalization["is requesting"]
-                        + " " + AppLocalization[action.ToString()].ToString().ToLower() + " " + AppLocalization["access to"] + " " +
-                        Entry.CanonicalName;
-                        await EmailService.SendMessage(notification.Title, requestEmail , user.Email);
-                    }
+                    LogNotificationError(action);
+                    LoadingData = false;
+                    continue;
                 }
+
+                await PublishAndTrackNotificationAsync(adminUsers, notification);
+
+                await SendAccessRequestEmailsAsync(adminUsers, notification, action);
             }
             SnackBarService.Success(AppLocalization[Lang.Access_request_sent]);
         }
@@ -119,52 +87,142 @@
         LoadingData = false;
     }
 
+    private async Task<List<AppUser>> GetAdminUsersAsync()
+    {
+        var users = await Context.UserSettings.ToListAsync();
+        var adminUsers = new List<AppUser>();
+        await Parallel.ForEachAsync(users, async (user, cancellationToken) =>
+        {
+            var adUser = Directory.Users.FindUserBySID(user.UserGUID);
+            var userState = new ApplicationUserState(DbFactory);
+            try
+            {
+                var appUser = await AppAuthenticationStateProvider.CreateDirectoryPrincipal(userState, adUser);
+                if (appUser == null)
+                {
+                    Loggers.SystemLogger.Error("Failed to create app user for SID {SID}", user.UserGUID);
+                    return;
+                }
+                userState.User = appUser;
+                if (userState.IsSuperAdmin || user.IsAdminOrDemo())
+                {
+                    lock (adminUsers)
+                    {
+                        adminUsers.Add(user);
+                    }
+                }
+            }
+            catch (DeniedLoginException)
+            {
+                //Ignore users who can't login
+            }
+        });
+        return adminUsers;
+    }
+
+    private NotificationMessage GenerateNotification(ActiveDirectoryObjectAction action)
+    {
+        notificationGenerationService.PackageRequest(Entry, action, CurrentUser.State, out var notification);
+        return notification;
+    }
+
+    private void LogNotificationError(ActiveDirectoryObjectAction action)
+    {
+        Loggers.SystemLogger.Error("Failed to generate notification for action {Action} on entry {Entry}", action, Entry.CanonicalName);
+    }
+
+    private async Task PublishAndTrackNotificationAsync(List<AppUser> adminUsers, NotificationMessage notification)
+    {
+        _ = NotificationPublisher.PublishNotification(adminUsers, notification);
+        if (notification.Title != null)
+        {
+            await AnalyticsService.AccessRequestCreated(notification.Title);
+        }
+    }
+
+    private async Task SendAccessRequestEmailsAsync(List<AppUser> adminUsers, NotificationMessage notification, ActiveDirectoryObjectAction action)
+    {
+        AccessRequestEmailMessage requestEmail = new AccessRequestEmailMessage
+        {
+            Notification = notification,
+            TargetName = Entry.CanonicalName
+        };
+        foreach (var user in adminUsers)
+        {
+            if (EmailService.IsConfigured && !user.Email.IsNullOrEmpty())
+            {
+                string body = CurrentUser.Username + " " + AppLocalization["is requesting"]
+                    + " " + AppLocalization[action.ToString()].ToString().ToLower() + " " + AppLocalization["access to"] + " " +
+                    Entry.CanonicalName;
+                if (user.Email==null || user.Email.IsNullOrEmpty())
+                {
+                    Loggers.SystemLogger.Information("User {Username} has no email configured, skipping email notification.", user.Username);
+                    continue;
+                }
+                if(notification.Title == null)
+                {
+                    Loggers.SystemLogger.Information("Notification title is null for action {Action} on entry {Entry}", action, Entry.CanonicalName);
+                    continue;
+                }
+                await EmailService.SendMessage(notification.Title, requestEmail, user.Email);
+            }
+        }
+    }
+
     private bool IsActionDisabled(ActiveDirectoryObjectAction action)
     {
         switch (action)
         {
             case ActiveDirectoryObjectAction.Assign:
-                if (Entry is IADGroup assign)
-                    return assign.CanAssign;
-                else
-                    return true;
+                return !IsGroupAssignable(Entry);
 
             case ActiveDirectoryObjectAction.Unassign:
-                if (Entry is IADGroup unassign)
-                    return unassign.CanUnassign;
-                else
-                    return true;
-            case ActiveDirectoryObjectAction.Move:
-                return Entry.CanMove;
-            case ActiveDirectoryObjectAction.Delete:
-                return Entry.CanDelete;
-            case ActiveDirectoryObjectAction.Disable:
+                return !IsGroupUnassignable(Entry);
 
-                if (Entry is IAccountDirectoryAdapter disable)
-                    return disable.CanDisable;
-                else
-                    return true;
+            case ActiveDirectoryObjectAction.Move:
+                return !Entry.CanMove;
+
+            case ActiveDirectoryObjectAction.Delete:
+                return !Entry.CanDelete;
+
+            case ActiveDirectoryObjectAction.Disable:
+                return !IsAccountDisableable(Entry);
+
             case ActiveDirectoryObjectAction.Enable:
-                if (Entry is IAccountDirectoryAdapter enable)
-                    return enable.CanDisable;
-                else
-                    return true;
+                return !IsAccountEnableable(Entry);
+
             case ActiveDirectoryObjectAction.SetPassword:
-                if (Entry is IAccountDirectoryAdapter password)
-                    return password.CanSetPassword;
-                else
-                    return true;
+                return !IsPasswordSettable(Entry);
+
             case ActiveDirectoryObjectAction.Rename:
-                return Entry.CanRename;
+                return !Entry.CanRename;
+
             case ActiveDirectoryObjectAction.Create:
-                return Entry.CanCreate;
+                return !Entry.CanCreate;
+
             case ActiveDirectoryObjectAction.Unlock:
-                if (Entry is IAccountDirectoryAdapter unlock)
-                    return unlock.CanDisable;
-                else
-                    return true;
+                return !IsAccountUnlockable(Entry);
+
             default:
                 return false;
         }
     }
+
+    private bool IsGroupAssignable(object entry) =>
+        entry is IADGroup group && group.CanAssign;
+
+    private bool IsGroupUnassignable(object entry) =>
+        entry is IADGroup group && group.CanUnassign;
+
+    private bool IsAccountDisableable(object entry) =>
+        entry is IAccountDirectoryAdapter adapter && adapter.CanDisable;
+
+    private bool IsAccountEnableable(object entry) =>
+        entry is IAccountDirectoryAdapter adapter && adapter.CanDisable;
+
+    private bool IsPasswordSettable(object entry) =>
+        entry is IAccountDirectoryAdapter adapter && adapter.CanSetPassword;
+
+    private bool IsAccountUnlockable(object entry) =>
+        entry is IAccountDirectoryAdapter adapter && adapter.CanDisable;
 }

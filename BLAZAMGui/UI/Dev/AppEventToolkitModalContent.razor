@@ -1,4 +1,5 @@
-﻿@inherits AppModalContent
+﻿@using BLAZAM.Global.Events
+@inherits AppModalContent
 <h3>Application Event Toolkit</h3>
 
 
@@ -55,7 +56,6 @@
             case ApplicationEventType.Assign:
             case ApplicationEventType.Unassign:
                 ev.Target = Directory.Groups.FindGroupByString("").First();
-                break;
                 break;
             case ApplicationEventType.Modify:
                 break;

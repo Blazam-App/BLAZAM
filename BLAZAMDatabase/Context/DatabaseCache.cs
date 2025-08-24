@@ -2,13 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 namespace BLAZAM.Database.Context
 {
-    public class DatabaseCache : IDisposable
+    public static class DatabaseCache
     {
         private static bool _started;
 
         private static IAppDatabaseFactory dbContextFactory;
 
-        public static byte[] AppIcon
+        public static byte[]? AppIcon
         {
             get
             {
@@ -23,12 +23,12 @@ namespace BLAZAM.Database.Context
             {
                 _started = true;
                 dbContextFactory = factory;
-                Task.Run(() =>
+                Task.Run(async () =>
                 {
                     while (_started)
                     {
-                        CachingLoop();
-                        Task.Delay(TimeSpan.FromSeconds(20)).Wait();
+                        await CachingLoop();
+                        await Task.Delay(TimeSpan.FromSeconds(20));
                     }
                 });
 
@@ -38,36 +38,19 @@ namespace BLAZAM.Database.Context
         {
             _started = false;
         }
-        private static void CachingLoop()
+        private static async Task CachingLoop()
         {
-            Task.Run(async () =>
-            {
-                ActiveDirectorySettings = await UpdateProperty(ActiveDirectorySettings, c => c.ActiveDirectorySettings);
 
-            });
-            Task.Run(async () =>
-            {
-                ApplicationSettings = await UpdateProperty(ApplicationSettings, c => c.AppSettings);
+            ActiveDirectorySettings = await UpdateProperty(ActiveDirectorySettings, c => c.ActiveDirectorySettings);
 
+            ApplicationSettings = await UpdateProperty(ApplicationSettings, c => c.AppSettings);
 
-
-            });
-            Task.Run(async () =>
-            {
-                EmailSettings = await UpdateProperty(EmailSettings, c => c.EmailSettings);
-
-            });
-            Task.Run(async () =>
-            {
-                AuthenticationSettings = await UpdateProperty(AuthenticationSettings, c => c.AuthenticationSettings);
-
-            });
-
+            AuthenticationSettings = await UpdateProperty(AuthenticationSettings, c => c.AuthenticationSettings);
 
         }
 
 
-        private static async Task<T> UpdateProperty<T>(T originalProperty, Func<IDatabaseContext, IQueryable<T>> value)
+        private static async Task<T?> UpdateProperty<T>(T originalProperty, Func<IDatabaseContext, IQueryable<T>> value)
         {
 
             using var _context = await dbContextFactory.CreateDbContextAsync();
@@ -78,18 +61,14 @@ namespace BLAZAM.Database.Context
             }
             catch (Exception)
             {
-
+                // Ignore errors in the cache update, we will just return the original property
             }
 
             return originalProperty;
 
         }
 
-        public void Dispose()
-        {
-            _started = false;
 
-        }
 
         public static ADSettings? ActiveDirectorySettings
         {
@@ -101,7 +80,6 @@ namespace BLAZAM.Database.Context
             get;
             set;
         }
-        public static EmailSettings? EmailSettings { get; set; }
         public static AuthenticationSettings? AuthenticationSettings { get; set; }
 
 

@@ -147,6 +147,9 @@
   <data name="Created" xml:space="preserve">
     <value>{0} è stato creato</value>
   </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value>La modalità di debug è abilitata. Se questo è un server di produzione, disabilitalo in appsettings.json per evitare la divulgazione di dati sensibili.</value>
+  </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>I delegati sono gli utenti dell'applicazione approvati. Solo gli utenti definiti qui o gli utenti nei seguenti gruppi di Active Directory (o gruppi nidificati) con autorizzazioni mappate o auto-modifica abilitata.</value>
   </data>
@@ -239,6 +242,9 @@
   </data>
   <data name="Super_User_Definition" xml:space="preserve">
     <value>Avrà accesso completo e totale all'applicazione se abilitato</value>
+  </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" copiato negli appunti.</value>
   </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Si è verificato un errore imprevisto.</value>

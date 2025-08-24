@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
-using BLAZAM.Server.Data;
 
 namespace BLAZAM.Database.Models.Chat
 {
@@ -29,7 +28,10 @@ namespace BLAZAM.Database.Models.Chat
                 long hash = 0;
                 foreach (var member in Members)
                 {
-                    hash += member.Username.GetAppHashCode();
+                    if (member.Username != null)
+                    {
+                        hash += member.Username.GetAppHashCode();
+                    }
                 }
                 return hash;
             }

@@ -1,6 +1,6 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Text.Json.Serialization;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Jobs;
 
@@ -217,6 +217,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <summary>
         /// The members of this group, that are users themselves
         /// </summary>
+        [JsonIgnore]
         public List<IADUser> UserMembers
         {
             get
@@ -244,6 +245,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <summary>
         /// The members of this group, that are groups themselves
         /// </summary>
+        [JsonIgnore]
         public List<IADGroup> GroupMembers
         {
             get
@@ -291,6 +293,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <summary>
         /// Gathers group and sub-group members in realtime
         /// </summary>
+        [JsonIgnore]
         public IEnumerable<IGroupableDirectoryAdapter> NestedMembers
         {
             get
@@ -305,6 +308,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <summary>
         /// Gathers current group members in realtime
         /// </summary>
+        [JsonIgnore]
         public List<IGroupableDirectoryAdapter> Members
         {
             get

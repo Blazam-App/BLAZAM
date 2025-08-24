@@ -2,6 +2,7 @@
 using ApplicationNews;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Services;
+using BLAZAM.Global.Attributes;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
@@ -104,25 +105,34 @@ namespace BLAZAM.Services.Background
             {
                 var activeItems = activeNewsItems;
                 var unreadItems = new List<NewsItem>();
-                // If the user has no read items, return all active items
-                if (user?.ReadNewsItems != null)
-                {
-                    foreach (var item in activeItems)
-                    {
-                        bool isRead = user.ReadNewsItems.Any(x => x.NewsItemId.Equals(item.Id));
-                        bool isUpdated = user.ReadNewsItems.Any(r => r.NewsItemId.Equals(item.Id) && r.NewsItemUpdatedAt < item.UpdatedAt);
 
-                        if (!isRead || isUpdated)
-                        {
-                            unreadItems.Add(item);
-                        }
+                if (user?.ReadNewsItems == null)
+                {
+                    return activeItems.ToList();
+                }
+
+                var readNewsItems = user.ReadNewsItems;
+                var readIds = readNewsItems.Select(x => x.NewsItemId).ToHashSet();
+                var updatedReadItems = readNewsItems
+                    .Where(r => activeItems.Any(a => a.Id.Equals(r.NewsItemId) && r.NewsItemUpdatedAt < a.UpdatedAt))
+                    .Select(r => r.NewsItemId)
+                    .ToHashSet();
+
+                foreach (var item in activeItems)
+                {
+                    bool isRead = readIds.Contains(item.Id);
+                    bool isUpdated = updatedReadItems.Contains(item.Id);
+
+                    if (!isRead || isUpdated)
+                    {
+                        unreadItems.Add(item);
                     }
                 }
 
                 // Clean up stale read items that are no longer active
-                if (_pollCompleted && user?.ReadNewsItems != null)
+                if (_pollCompleted)
                 {
-                    var staleItems = user.ReadNewsItems
+                    var staleItems = readNewsItems
                         .Where(x => x.NewsItemId < 100000000000 && !activeItems.Any(a => a.Id.Equals(x.NewsItemId)))
                         .ToList();
 
@@ -130,7 +140,7 @@ namespace BLAZAM.Services.Background
                     {
                         foreach (var x in staleItems)
                         {
-                            user.ReadNewsItems.Remove(x);
+                            readNewsItems.Remove(x);
                         }
 
                         user.SaveReadNewsItems();

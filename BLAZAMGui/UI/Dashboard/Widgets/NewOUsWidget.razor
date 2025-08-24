@@ -6,25 +6,3 @@
                           RowClick=@GoTo
                           T="IADOrganizationalUnit"
                           Loading=LoadingData />
-
-@code {
-    List<IADOrganizationalUnit> NewOUs
-    {
-        get => CurrentUser.State.Cache.Get<List<IADOrganizationalUnit>>(this.GetType());
-        set => CurrentUser.State.Cache.Set(this.GetType(), value);
-    }
-
-
-    protected override async Task RefreshDataAsync()
-    {
-        LoadingData = true;
-        NewOUs = (await Directory.OUs.FindNewOUsAsync()).Where(u => u.CanRead).ToList();
-
-        LoadingData = false;
-
-    }
-    void GoTo(DataGridRowClickEventArgs<IADOrganizationalUnit> args)
-    {
-        Nav.NavigateTo(args.Item.SearchUri);
-    }
-}

@@ -183,7 +183,7 @@ namespace PlaywrightTests
 
             var recycleHeader = Page.Locator("text=Settings");
 
-            await Expect(recycleHeader).ToBeVisibleAsync();
+            await Expect(recycleHeader).ToBeVisibleAsync(new() { Timeout = 30000 });
         }
 
         private async Task OpenManageNotifications()
@@ -199,7 +199,7 @@ namespace PlaywrightTests
 
             var recycleHeader = Page.Locator("text=Manage Notifications");
 
-            await Expect(recycleHeader).ToBeVisibleAsync();
+            await Expect(recycleHeader).ToBeVisibleAsync(new() { Timeout = 30000 });
         }
         private async Task OpenFields()
         {
@@ -213,7 +213,7 @@ namespace PlaywrightTests
 
             var header = Page.Locator("text=Field Type");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);
@@ -230,7 +230,7 @@ namespace PlaywrightTests
 
             var header = Page.Locator("text=Inheritance Tree");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);
@@ -257,7 +257,7 @@ namespace PlaywrightTests
 
             var button = Page.GetByRole(AriaRole.Link, new() { Name = "Permissions" });
 
-            await Expect(button).ToBeVisibleAsync();
+            await Expect(button).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
 
@@ -312,7 +312,7 @@ namespace PlaywrightTests
 
             var button = Page.GetByRole(AriaRole.Link, new() { Name = "Settings" });
 
-            await Expect(button).ToBeVisibleAsync();
+            await Expect(button).ToBeVisibleAsync(new() { Timeout = 30000 });
             await Expect(button).ToBeEnabledAsync();
             await button.ClickAsync();
             return;

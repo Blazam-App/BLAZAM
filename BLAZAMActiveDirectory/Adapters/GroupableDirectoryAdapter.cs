@@ -1,6 +1,6 @@
 ﻿using System.Data;
+using System.Text.Json.Serialization;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
@@ -10,8 +10,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class GroupableDirectoryAdapter : DirectoryEntryAdapter, IGroupableDirectoryAdapter
     {
-
+        [JsonIgnore]
         public List<GroupMembership> ToAssignTo { get; protected set; } = new List<GroupMembership>();
+
+        [JsonIgnore]
         public List<GroupMembership> ToUnassignFrom { get; protected set; } = new List<GroupMembership>();
 
         public virtual bool CanAssign => HasActionPermission(ObjectActions.Assign);
@@ -33,8 +35,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public virtual bool IsAMemberOf(IADGroup group)
+        public virtual bool IsAMemberOf(IADGroup? group)
         {
+            if (group is null)
+            {
+                return false;
+            }
             return Directory.Groups.IsAMemberOf(group, this, true);
 
         }
@@ -47,6 +53,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <remarks>
         /// It also adds the pending groups to be added, and the groups to be removed from.
         /// </remarks>
+        [JsonIgnore]
         public virtual List<IADGroup> MemberOf
         {
             get
@@ -104,7 +111,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-
+        [JsonIgnore]
         public override List<AuditChangeLog> Changes
         {
             get

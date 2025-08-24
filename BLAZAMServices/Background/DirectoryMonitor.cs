@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Global.Enums;
 
 namespace BLAZAM.Services.Background
 {

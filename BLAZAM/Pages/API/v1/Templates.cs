@@ -1,8 +1,6 @@
 ﻿using System.Security;
 using System.Text.Json;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.EmailMessage.Email.Notifications;
 using BLAZAM.Gui.Helpers;
@@ -23,6 +21,7 @@ namespace BLAZAM.Pages.API.v1
     /// Template API endpoints provide listing of templates
     /// and execution to create users.
     /// </summary>
+    [Route("api/v1/templates")]
     public class Templates : ApiController
     {
         private readonly IStringLocalizer<AppLocalization> AppLocalization;
@@ -89,9 +88,9 @@ namespace BLAZAM.Pages.API.v1
         /// <response code="403">Forbidden - The user does not have the required role.</response>
         /// <response code="422">Unprocessable - The creation request cannot be processed due to an internal error.</response>
         [HttpPost]
-        [Route("api/v1/templates/execute/{templateId}")]
+        [Route("execute/{templateId}")]
 
-        public async Task<IActionResult> Execute(int templateId, [FromBody] NewUserDetails newUserDetails)
+        public async Task<IActionResult> Execute(int templateId, [FromBody] NewUserPayload newUserDetails)
         {
 
             var context = await DbFactory.CreateDbContextAsync();
@@ -104,10 +103,8 @@ namespace BLAZAM.Pages.API.v1
 
             try
             {
-                if (ValidateInput(newUserDetails, template))
-                {
+                ValidateInput(newUserDetails, template);
 
-                }
             }
             catch (BadHttpRequestException ex)
             {
@@ -182,7 +179,7 @@ namespace BLAZAM.Pages.API.v1
 
         }
 
-        private async Task AuditAndNotify(NewUserDetails newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
+        private async Task AuditAndNotify(NewUserPayload newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
         {
             ApplicationEvents.DirectoryEntryChanged.Invoke(new()
             {
@@ -210,7 +207,7 @@ namespace BLAZAM.Pages.API.v1
 
         }
 
-        private static void SetFields(NewUserDetails newUserDetails, IADUser? newUser)
+        private static void SetFields(NewUserPayload newUserDetails, IADUser? newUser)
         {
             if (newUserDetails.Fields != null)
             {
@@ -236,7 +233,7 @@ namespace BLAZAM.Pages.API.v1
             }
         }
 
-        private void AssignGroups(NewUserDetails newUserDetails, IADUser? newUser)
+        private void AssignGroups(NewUserPayload newUserDetails, IADUser? newUser)
         {
             if (newUserDetails.Groups != null)
             {
@@ -251,7 +248,7 @@ namespace BLAZAM.Pages.API.v1
             }
         }
 
-        private static bool ValidateInput(NewUserDetails newUserDetails, DirectoryTemplate? template)
+        private static bool ValidateInput(NewUserPayload newUserDetails, DirectoryTemplate? template)
         {
             //Check if the request has the required fields for this template
             if (template?.HasRequiredFields() == true)
@@ -278,7 +275,7 @@ namespace BLAZAM.Pages.API.v1
         /// <response code="401">Unauthorized - The user is not authenticated.</response>
         /// <response code="403">Forbidden - The user does not have the required role.</response>
         [HttpGet]
-        [Route("/api/v1/templates/list/")]
+        [Route("list")]
         public IActionResult List()
         {
             using var context = DbFactory.CreateDbContext();

@@ -147,6 +147,9 @@
   <data name="Created" xml:space="preserve">
     <value>{0}が作成されました</value>
   </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value>デバッグモードが有効です。これが本番サーバーの場合は、appsettings.jsonで無効にして機密データの漏洩を防いでください。</value>
+  </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>デリゲートは、承認されたアプリケーションユーザーです。ここで定義するユーザー、または次のActive Directoryグループ（またはネストされたグループ）のユーザーで、権限がマップされているか、自己編集が有効になっているユーザーのみです。</value>
   </data>
@@ -239,6 +242,9 @@
   </data>
   <data name="Super_User_Definition" xml:space="preserve">
     <value>有効にすると、アプリケーションへの完全かつ総合的なアクセスが可能になります</value>
+  </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>「{0}」がクリップボードにコピーされました。</value>
   </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>予期しないエラーが発生しました。</value>

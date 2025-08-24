@@ -40,6 +40,14 @@
         public static readonly string Group_member_removed = "Group member removed";
         public static readonly string Object_deleted = "Object deleted";
         public static readonly string Entry_modified = "Entry modified";
+        public static readonly string Username_is_missing = "Username is missing";
+        public static readonly string Password_is_missing = "Password is missing";
+        public static readonly string Login_request_is_missing = "Login request is missing";
+        public static readonly string Account_is_locked_out = "Account is locked out";
+        public static readonly string Username_or_password_not_correct = "Username or password not correct";
+        public static readonly string Unauthorized_Impersonation_Attempt = "Unauthorized Impersonation Attempt";
+        public static readonly string You_are_not_authorized_to_login = "You are not authorized to login";
+        public static readonly string Unknown_error_while_attempting_to_log_in = "Unknown error while attempting to log in";
         public static readonly string Update_Scheduled = "Update Scheduled";
         public static readonly string Dismiss_all = "Dismiss all";
         public static readonly string No_unread_notifications = "No unread notifications";
@@ -559,5 +567,15 @@
         public static readonly string Reboot_Shutdown_Confirmation = "Reboot_Shutdown_Confirmation";
         public static readonly string Reboot_Shutdown_Success = "Reboot_Shutdown_Success";
         public static readonly string Reboot_Shutdown_Failure = "Reboot_Shutdown_Failure";
+        public static readonly string Disabled_users_changed_in_the_last_90_days = "Disabled users changed in the last 90 days";
+        public static readonly string Entries_changed_in_the_last_24_hours = "Entries changed in the last 24 hours";
+        public static readonly string Passwords_changed_in_the_last_90_days = "Passwords changed in the last 90 days";
+        public static readonly string Entries_deleted_in_the_last_14_days = "Entries deleted in the last 14 days";
+        public static readonly string Computers_created_in_the_last_14_days = "Computers created in the last 14 days";
+        public static readonly string Contacts_created_in_the_last_14_days = "Contacts created in the last 14 days";
+        public static readonly string Groups_created_in_the_last_14_days = "Groups created in the last 14 days";
+        public static readonly string OUs_created_in_the_last_14_days = "OU\'s created in the last 14 days";
+        public static readonly string Printers_created_in_the_last_14_days = "Printers created in the last 14 days";
+        public static readonly string Users_created_in_the_last_14_days = "Users created in the last 14 days";
     }
 }

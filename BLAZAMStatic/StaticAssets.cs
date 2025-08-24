@@ -7,7 +7,7 @@ namespace BLAZAM.Static
     /// <summary>
     /// A store of static uri's for things like icons and images
     /// </summary>
-    public class StaticAssets
+    public static class StaticAssets
     {
         /// <summary>
         /// "/static/img/appicon.png"
@@ -40,7 +40,7 @@ namespace BLAZAM.Static
 
         private static byte[]? GetDefaultIcon()
         {
-            var defaultIconFilePath = Path.GetFullPath(ApplicationInfo.applicationRoot + @"\static\img\default_logo5.png");
+            var defaultIconFilePath = Path.Combine(ApplicationInfo.applicationRoot.FullPath, "wwwroot", "img", "default_logo.png");
             if (File.Exists(defaultIconFilePath))
                 return File.ReadAllBytes(defaultIconFilePath);
             return null;

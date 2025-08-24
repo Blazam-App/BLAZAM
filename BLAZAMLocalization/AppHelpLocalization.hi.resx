@@ -147,6 +147,9 @@
   <data name="Created" xml:space="preserve">
     <value>{0} बनाया गया है</value>
   </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value>डिबग मोड सक्षम है। यदि यह प्रोडक्शन सर्वर है, तो संवेदनशील डेटा के प्रकटीकरण को रोकने के लिए appsettings.json में इसे अक्षम करें।</value>
+  </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>प्रतिनिधि आपके अनुमोदित एप्लिकेशन उपयोगकर्ता हैं। केवल वे उपयोगकर्ता जिन्हें आप यहाँ परिभाषित करते हैं, या निम्नलिखित सक्रिय निर्देशिका समूहों (या नेस्टेड समूहों) में उपयोगकर्ता जिनके पास अनुमतियाँ मैप की गई हैं या स्व-संपादन सक्षम है।</value>
   </data>
@@ -239,6 +242,9 @@
   </data>
   <data name="Super_User_Definition" xml:space="preserve">
     <value>सक्षम होने पर एप्लिकेशन तक पूर्ण और कुल पहुँच होगी</value>
+  </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" क्लिपबोर्ड पर कॉपी किया गया।</value>
   </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>एक अप्रत्याशित त्रुटि हुई है।</value>

@@ -14,7 +14,7 @@
                 ShowOnClick=@ShowOnClick
                 ShowOnFocus=@ShowOnFocus
                 ShowOnHover=@ShowOnHover
-                Style="@Style"
+                Style=@(TooltipContent==null?Style:"background-color:#0000")
                 Tag="@Tag"
                 UserAttributes="@UserAttributes"
                 Visible=@Visible
@@ -40,11 +40,6 @@
 }
 
 @code {
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        //if (Color is Color.Default) Color = Color.Surface;
-    }
 
     [Parameter]
     public Color TextColor { get; set; }

@@ -1,8 +1,7 @@
-using System.Data.Entity;
-using BLAZAM.Database.Context;
 using BLAZAM.Static;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace BLAZAM.Pages

@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
@@ -20,7 +21,7 @@ namespace BLAZAM.Services.Background
 {
     public class NotificationGenerationService
     {
-        private IAppDatabaseFactory _databaseFactory;
+        private readonly IAppDatabaseFactory _databaseFactory;
         private readonly INotificationPublisher _notificationPublisher;
         private readonly IStringLocalizer<AppLocalization> _appLocalization;
         private readonly EmailService _emailService;
@@ -40,109 +41,76 @@ namespace BLAZAM.Services.Background
         {
             lock (_notificationLock)
             {
-                switch (args.ObjectType)
+                if (!IsSupportedObjectType(args.ObjectType))
+                    return;
+
+                if (!IsSupportedEventType(args.EventType))
+                    return;
+
+                var isSQLite = _databaseFactory.DatabaseType == DatabaseType.SQLite;
+                switch (args.EventType)
                 {
-                    case ActiveDirectoryObjectType.Printer:
-                    case ActiveDirectoryObjectType.Computer:
-                    case ActiveDirectoryObjectType.BitLocker:
-                    case ActiveDirectoryObjectType.Group:
-                    case ActiveDirectoryObjectType.OU:
-                    case ActiveDirectoryObjectType.User:
-                        switch (args.EventType)
-                        {
-                            case ApplicationEventType.Delete:
-                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
-                                {
-                                    Post(args.Entry, NotificationType.Delete, args.Actor);
-
-                                }
-                                else
-                                {
-                                    _ = PostAsync(args.Entry, NotificationType.Delete, args.Actor);
-
-                                }
-                                break;
-                            case ApplicationEventType.Create:
-                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
-                                {
-                                    Post(args.Entry, NotificationType.Create, args.Actor);
-
-                                }
-                                else
-                                {
-                                    _ = PostAsync(args.Entry, NotificationType.Create, args.Actor);
-
-                                }
-                                break;
-                            case ApplicationEventType.PasswordChange:
-                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
-                                {
-                                    Post(args.Entry, NotificationType.Create, args.Actor);
-
-                                }
-                                else
-                                {
-                                    _ = PostAsync(args.Entry, NotificationType.Create, args.Actor);
-
-                                }
-                                break;
-                            case ApplicationEventType.Assign:
-                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
-                                {
-                                    Post(args.Entry, NotificationType.Assign, args.Actor, args.Target);
-
-                                }
-                                else
-                                {
-                                    _ = PostAsync(args.Entry, NotificationType.Assign, args.Actor, args.Target);
-
-                                }
-                                break;
-                            case ApplicationEventType.LockedOut:
-
-                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
-                                {
-                                    Post(args.Entry, NotificationType.LockedOut);
-
-                                }
-                                else
-                                {
-                                    _ = PostAsync(args.Entry, NotificationType.LockedOut);
-
-                                }
-                                break;
-                            case ApplicationEventType.Move:
-                            case ApplicationEventType.Modify:
-                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
-                                {
-                                    Post(args.Entry, NotificationType.Modify, args.Actor);
-
-                                }
-                                else
-                                {
-                                    _ = PostAsync(args.Entry, NotificationType.Modify, args.Actor);
-
-                                }
-                                break;
-                            case ApplicationEventType.Unassign:
-                                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
-                                {
-                                    Post(args.Entry, NotificationType.Unassign, args.Actor, args.Target);
-
-                                }
-                                else
-                                {
-                                    _ = PostAsync(args.Entry, NotificationType.Unassign, args.Actor, args.Target);
-
-                                }
-                                break;
-                            case ApplicationEventType.Scheduled:
-                                break;
-                        }
+                    case ApplicationEventType.Delete:
+                        PostNotification(args, NotificationType.Delete, isSQLite);
+                        break;
+                    case ApplicationEventType.Create:
+                    case ApplicationEventType.PasswordChange:
+                        PostNotification(args, NotificationType.Create, isSQLite);
+                        break;
+                    case ApplicationEventType.Assign:
+                        PostNotification(args, NotificationType.Assign, isSQLite, args.Target);
+                        break;
+                    case ApplicationEventType.LockedOut:
+                        PostNotification(args, NotificationType.LockedOut, isSQLite);
+                        break;
+                    case ApplicationEventType.Move:
+                    case ApplicationEventType.Modify:
+                        PostNotification(args, NotificationType.Modify, isSQLite);
+                        break;
+                    case ApplicationEventType.Unassign:
+                        PostNotification(args, NotificationType.Unassign, isSQLite, args.Target);
+                        break;
+                    case ApplicationEventType.Scheduled:
                         break;
                 }
             }
         }
+
+        private bool IsSupportedObjectType(ActiveDirectoryObjectType objectType)
+        {
+            return objectType == ActiveDirectoryObjectType.Printer ||
+                   objectType == ActiveDirectoryObjectType.Computer ||
+                   objectType == ActiveDirectoryObjectType.BitLocker ||
+                   objectType == ActiveDirectoryObjectType.Group ||
+                   objectType == ActiveDirectoryObjectType.OU ||
+                   objectType == ActiveDirectoryObjectType.User;
+        }
+
+        private bool IsSupportedEventType(ApplicationEventType eventType)
+        {
+            return eventType == ApplicationEventType.Delete ||
+                   eventType == ApplicationEventType.Create ||
+                   eventType == ApplicationEventType.PasswordChange ||
+                   eventType == ApplicationEventType.Assign ||
+                   eventType == ApplicationEventType.LockedOut ||
+                   eventType == ApplicationEventType.Move ||
+                   eventType == ApplicationEventType.Modify ||
+                   eventType == ApplicationEventType.Unassign ||
+                   eventType == ApplicationEventType.Scheduled;
+        }
+
+        private void PostNotification(DirectoryEntryChangedArgs args, NotificationType notificationType, bool isSQLite, IDirectoryEntryAdapter? target = null)
+        {
+            if (isSQLite)
+            {
+                Post(args.Entry, notificationType, args.Actor, target);
+            }
+            else
+            {
+                _ = PostAsync(args.Entry, notificationType, args.Actor, target);
+            }
+        }
+
         private IDatabaseContext Context => _databaseFactory.CreateDbContext();
 
         /// <summary>
@@ -176,7 +144,6 @@ namespace BLAZAM.Services.Background
             string notificationTitle;
             NotificationTemplateComponent? emailMessage;
             PackageNotification(source, notificationType, actor, target, out notification, out notificationTitle, out emailMessage);
-            var _emailConfigured = _emailService.IsConfigured;
             using var context = Context;
             var users = context.UserSettings.Include(us => us.NotificationSubscriptions).ToList();
             if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
@@ -185,14 +152,14 @@ namespace BLAZAM.Services.Background
 
                 foreach (var user in users)
                 {
-                    ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
+                    ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage);
                 }
             }
             else
             {
-                Parallel.ForEach(users, async user =>
+                Parallel.ForEach(users, user =>
                 {
-                    ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
+                    ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage);
                 });
             }
             PostWebHooks(source, notificationType, actor, target);
@@ -200,40 +167,58 @@ namespace BLAZAM.Services.Background
 
 
         }
-        private async Task ProcessUserNotification(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor, AppUser user, NotificationMessage notification, string notificationTitle, NotificationTemplateComponent? emailMessage, bool _emailConfigured)
+        private void ProcessUserNotification(IDirectoryEntryAdapter source,
+                                            NotificationType notificationType,
+                                            IApplicationUserState? actor,
+                                            AppUser user,
+                                            NotificationMessage notification,
+                                            string notificationTitle,
+                                            NotificationTemplateComponent? emailMessage)
         {
-            //Avoid sending to triggering user if actor is set
-            if (user.Id != actor?.Id)
+            if (user.Id == actor?.Id)
+                return;
+
+            var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
+            var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
+
+            PublishInAppNotification(user, notificationType, notification, effectiveInAppSubscriptions);
+            PublishEmailNotification(user, notificationType, notificationTitle, emailMessage, effectiveEmailSubscriptions);
+        }
+
+        private void PublishInAppNotification(
+            AppUser user,
+            NotificationType notificationType,
+            NotificationMessage notification,
+            NotificationSubscription? effectiveInAppSubscriptions)
+        {
+            if (effectiveInAppSubscriptions?.NotificationTypes.Any(x => x.NotificationType == notificationType) == true)
             {
-                //Calculate recipient subscriptions
-                var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
-                var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
-
-                //Publish in app notifications to subscribing subscriptions
-                if (effectiveInAppSubscriptions != null && effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
-                {
-                    _ = _notificationPublisher.PublishNotification(user, notification);
-                }
-
-                //Publish email notification to subscribing subscriptions
-                if (effectiveEmailSubscriptions != null && effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
-                {
-                    if (emailMessage != null)
-                    {
-                        if (_emailConfigured && !user.Email.IsNullOrEmpty())
-                        {
-                            _ = _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
-                        }
-                    }
-                    else
-                    {
-                        var error = new AppException();
-                        Loggers.SystemLogger.Error(error, "Email message template was not found!");
-                    }
-                }
+                _ = _notificationPublisher.PublishNotification(user, notification);
             }
         }
 
+        private void PublishEmailNotification(
+            AppUser user,
+            NotificationType notificationType,
+            string notificationTitle,
+            NotificationTemplateComponent? emailMessage,
+            NotificationSubscription? effectiveEmailSubscriptions)
+        {
+            if (effectiveEmailSubscriptions?.NotificationTypes.Any(x => x.NotificationType == notificationType) != true)
+                return;
+
+            if (emailMessage == null)
+            {
+                var error = new AppException();
+                Loggers.SystemLogger.Error(error, "Email message template was not found!");
+                return;
+            }
+
+            if (_emailService.IsConfigured && !user.Email.IsNullOrEmpty())
+            {
+                _ = _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
+            }
+        }
         private async Task PostWebHooks(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
         {
             using var context = Context;
@@ -390,43 +375,34 @@ namespace BLAZAM.Services.Background
             effectiveByEmailSubscription.OU = ou.DN;
             effectiveByEmailSubscription.User = user;
             effectiveByEmailSubscription.ByEmail = true;
-            var userSubscriptions = context.NotificationSubscriptions.Where(x => x.DeletedAt == null && x.UserId == user.Id).ToList();
-            userSubscriptions = userSubscriptions.OrderBy(x => x.OU).ToList();
+            var userSubscriptions = context.NotificationSubscriptions
+                .Where(x => x.DeletedAt == null && x.UserId == user.Id && ou.DN.Contains(x.OU))
+                .OrderBy(x => x.OU)
+                .ToList();
             foreach (var sub in userSubscriptions)
             {
-                try
+
+                if (sub.Block && sub.ByEmail)
                 {
-                    if (ou.DN.Contains(sub.OU))
+                    foreach (var type in sub.NotificationTypes)
                     {
-                        if (sub.Block)
-                        {
-
-                            if (sub.ByEmail)
-                            {
-                                foreach (var type in sub.NotificationTypes)
-                                {
-                                    effectiveByEmailSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
-                                }
-                            }
-                        }
-                        else
-                        {
-
-                            if (sub.ByEmail)
-                            {
-                                effectiveByEmailSubscription.NotificationTypes.AddRange(from type in sub.NotificationTypes
-                                                                                        where !effectiveByEmailSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType)
-                                                                                        select new SubscriptionNotificationType() { NotificationType = type.NotificationType });
-                            }
-
-
-                        }
+                        effectiveByEmailSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
                     }
+
                 }
-                catch (Exception ex)
+                else
                 {
-                    Loggers.SystemLogger.Error(ex, "Error while parsing users for notification broadcast");
+
+                    if (sub.ByEmail)
+                    {
+                        effectiveByEmailSubscription.NotificationTypes.AddRange(from type in sub.NotificationTypes
+                                                                                where !effectiveByEmailSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType)
+                                                                                select new SubscriptionNotificationType() { NotificationType = type.NotificationType });
+                    }
+
+
                 }
+
             }
             return effectiveByEmailSubscription;
         }
@@ -444,40 +420,39 @@ namespace BLAZAM.Services.Background
             effectiveInAppSubscription.User = user;
             effectiveInAppSubscription.InApp = true;
 
-            var userSubscriptions = context.NotificationSubscriptions.Where(x => x.DeletedAt == null && x.UserId == user.Id).ToList();
-            userSubscriptions = userSubscriptions.OrderBy(x => x.OU).ToList();
+            var userSubscriptions = context.NotificationSubscriptions
+                .Where(x => x.DeletedAt == null && x.UserId == user.Id && ou.DN.Contains(x.OU))
+                .OrderBy(x => x.OU)
+                .ToList();
             foreach (var sub in userSubscriptions)
             {
-                if (ou.DN.Contains(sub.OU))
+
+                if (sub.Block && sub.InApp)
                 {
-                    if (sub.Block)
+                    foreach (var type in sub.NotificationTypes)
                     {
-                        if (sub.InApp)
-                        {
-                            foreach (var type in sub.NotificationTypes)
-                            {
-                                effectiveInAppSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
-                            }
-                        }
-
+                        effectiveInAppSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
                     }
-                    else
-                    {
-                        if (sub.InApp)
-                        {
-                            foreach (var type in sub.NotificationTypes)
-                            {
-                                if (!effectiveInAppSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType))
-                                {
-                                    effectiveInAppSubscription.NotificationTypes.Add(new() { NotificationType = type.NotificationType });
-                                }
-                            }
-                        }
 
 
-
-                    }
                 }
+                else
+                {
+                    if (sub.InApp)
+                    {
+                        foreach (var type in sub.NotificationTypes)
+                        {
+                            if (!effectiveInAppSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType))
+                            {
+                                effectiveInAppSubscription.NotificationTypes.Add(new() { NotificationType = type.NotificationType });
+                            }
+                        }
+                    }
+
+
+
+                }
+
             }
             return effectiveInAppSubscription;
         }

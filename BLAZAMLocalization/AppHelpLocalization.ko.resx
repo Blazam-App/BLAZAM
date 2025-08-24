@@ -147,6 +147,9 @@
   <data name="Created" xml:space="preserve">
     <value>{0}이(가) 만들어졌습니다.</value>
   </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value>디버그 모드가 활성화되어 있습니다. 이것이 운영 서버인 경우 appsettings.json에서 비활성화하여 민감한 데이터 노출을 방지하십시오.</value>
+  </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>위임자는 승인된 애플리케이션 사용자입니다. 여기에 정의한 사용자 또는 매핑된 권한이 있거나 자체 편집이 활성화된 다음 Active Directory 그룹(또는 중첩된 그룹)의 사용자만 해당됩니다.</value>
   </data>
@@ -239,6 +242,9 @@
   </data>
   <data name="Super_User_Definition" xml:space="preserve">
     <value>활성화하면 애플리케이션에 대한 완전하고 총체적인 액세스 권한을 갖게 됩니다.</value>
+  </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}"가 클립보드에 복사되었습니다.</value>
   </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>예기치 않은 오류가 발생했습니다.</value>

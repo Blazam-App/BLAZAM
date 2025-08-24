@@ -1,6 +1,5 @@
 ﻿using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.User;
-using BLAZAM.Server.Data;
 
 namespace BLAZAM.Services.Chat
 {

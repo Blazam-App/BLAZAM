@@ -38,7 +38,7 @@ namespace BLAZAM.Tests.Session
         public void SetAndGet_ByTypeKey_ShouldStoreAndRetrieveObject()
         {
             // Arrange
-            IApplicationUserSessionCache cache = new ApplicationUserSessionCache();
+            ApplicationUserSessionCache cache = new ApplicationUserSessionCache();
             var key = typeof(MyCacheableItem);
             var expectedItem = new MyCacheableItem(1, "Test Item");
 
@@ -57,7 +57,7 @@ namespace BLAZAM.Tests.Session
         public void Get_ByTypeKey_WhenKeyNotFound_ShouldReturnNewInstance()
         {
             // Arrange
-            IApplicationUserSessionCache cache = new ApplicationUserSessionCache();
+            ApplicationUserSessionCache cache = new ApplicationUserSessionCache();
             var key = typeof(MyCacheableItem);
 
             // Act
@@ -74,7 +74,7 @@ namespace BLAZAM.Tests.Session
         public void Set_ByTypeKey_WhenKeyExists_ShouldUpdateValue()
         {
             // Arrange
-            IApplicationUserSessionCache cache = new ApplicationUserSessionCache();
+            ApplicationUserSessionCache cache = new ApplicationUserSessionCache();
             var key = typeof(MyCacheableItem);
             var initialItem = new MyCacheableItem(1, "Initial");
             var updatedItem = new MyCacheableItem(2, "Updated");
@@ -97,7 +97,7 @@ namespace BLAZAM.Tests.Session
         public void SetAndGet_ByStringKey_ShouldStoreAndRetrieveObject()
         {
             // Arrange
-            IApplicationUserSessionCache cache = new ApplicationUserSessionCache();
+            ApplicationUserSessionCache cache = new ApplicationUserSessionCache();
             string key = "MyCustomStringKey";
             var expectedItem = new MyCacheableItem(10, "String Key Item");
 
@@ -116,7 +116,7 @@ namespace BLAZAM.Tests.Session
         public void Get_ByStringKey_WhenKeyNotFound_ShouldReturnNewInstance()
         {
             // Arrange
-            IApplicationUserSessionCache cache = new ApplicationUserSessionCache();
+            ApplicationUserSessionCache cache = new ApplicationUserSessionCache();
             string key = "NonExistentStringKey";
 
             // Act
@@ -132,7 +132,7 @@ namespace BLAZAM.Tests.Session
         public void Set_ByStringKey_WhenKeyExists_ShouldUpdateValue()
         {
             // Arrange
-            IApplicationUserSessionCache cache = new ApplicationUserSessionCache();
+            ApplicationUserSessionCache cache = new ApplicationUserSessionCache();
             string key = "MyUpdatableStringKey";
             var initialItem = new MyCacheableItem(100, "Initial String");
             var updatedItem = new MyCacheableItem(200, "Updated String");
@@ -153,7 +153,7 @@ namespace BLAZAM.Tests.Session
         public void Get_ByTypeKey_WhenItemIsValueType_ShouldStoreAndRetrieveValue()
         {
             // Arrange
-            IApplicationUserSessionCache cache = new ApplicationUserSessionCache();
+            ApplicationUserSessionCache cache = new ApplicationUserSessionCache();
             var key = typeof(int);
             int expectedValue = 12345;
 
@@ -169,7 +169,7 @@ namespace BLAZAM.Tests.Session
         public void Get_ByStringKey_WhenItemIsValueType_ShouldStoreAndRetrieveValue()
         {
             // Arrange
-            IApplicationUserSessionCache cache = new ApplicationUserSessionCache();
+            ApplicationUserSessionCache cache = new ApplicationUserSessionCache();
             string key = "MyIntValueKey";
             int expectedValue = 67890;
 

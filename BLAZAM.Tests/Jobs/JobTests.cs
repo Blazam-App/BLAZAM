@@ -6,7 +6,7 @@ namespace BLAZAM.Tests.Jobs
     public class JobTests
     {
 
-        private IJob TestJob
+        private static IJob TestJob
         {
             get
             {
@@ -14,10 +14,14 @@ namespace BLAZAM.Tests.Jobs
                 var job2 = new Job("Nested Job");
                 var step1 = new JobStep("Regular Step Passes", (step) => { Task.Delay(200).Wait(); return true; });
                 var step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
+#pragma warning disable CS0162 // Unreachable code detected
                 var step3 = new JobStep("Regular Step Throws", (step) => { Task.Delay(200).Wait(); throw new AppException("Test exception"); return false; });
+#pragma warning restore CS0162 // Unreachable code detected
                 var step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(200).Wait(); return true; });
                 var step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
+#pragma warning disable CS0162 // Unreachable code detected
                 var step6 = new JobStep("Nested Step Throws", (step) => { Task.Delay(200).Wait(); throw new AppException("Test exception"); return false; });
+#pragma warning restore CS0162 // Unreachable code detected
 
                 job.AddStep(step1);
                 job.AddStep(step2);

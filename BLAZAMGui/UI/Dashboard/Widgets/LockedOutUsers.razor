@@ -1,5 +1,6 @@
 ﻿@inherits Widget
 @attribute [Authorize]
+
 <MudDataGrid T="IADUser"
              Items="@LockedUsers.Where(u=>u.LockedOut)"
              Dense=true
@@ -18,12 +19,12 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <DirectoryEntryContextMenu Entry="@context.Item"
-                                           OnChanged="RefreshDataAsync">
-                    <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                <DirectoryEntryTooltipPopover Entry="@context.Item">
+                    <DirectoryEntryContextMenu Entry="@context.Item"
+                                               OnChanged="RefreshDataAsync">
                         <MudText>@context.Item?.CanonicalName</MudText>
-                    </AppTooltip>
-                </DirectoryEntryContextMenu>
+                    </DirectoryEntryContextMenu>
+                </DirectoryEntryTooltipPopover>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Locked_Out]>
@@ -37,68 +38,11 @@
 
     </Columns>
     <PagerContent>
-        <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IADUser" />
+        <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="IADUser" />
     </PagerContent>
     <NoRecordsContent>
         <MudText>@AppLocalization[Lang.No_user_are_locked_out]</MudText>
     </NoRecordsContent>
 </MudDataGrid>
 
-@code {
-    List<IADUser> LockedUsers
-    {
-        get => CurrentUser.State?.Cache.Get<List<IADUser>>(this.GetType());
-        set => CurrentUser.State?.Cache.Set(this.GetType(), value);
-    }
 
-
-    protected override async Task RefreshDataAsync()
-    {
-        LoadingData = true;
-        LockedUsers = (await Directory.Users.FindLockedOutUsersAsync()).OrderByDescending(u => u.LockoutTime).Where(u => u.CanRead).ToList();
-        LoadingData = false;
-    }
-
-    void GoTo(DataGridRowClickEventArgs<IADUser> args)
-    {
-        Nav.NavigateTo(args.Item.SearchUri);
-    }
-    async Task UnlockAccount(IADUser userToUnlock)
-    {
-        if (userToUnlock.LockedOut)
-        {
-
-            userToUnlock.LockedOut = false;
-            var changes = userToUnlock.Changes;
-
-            var unlockJob = await userToUnlock.CommitChangesAsync();
-            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
-                {
-                    EventType = ApplicationEventType.Modify,
-                    Entry = userToUnlock,
-                    Changes = changes,
-                    Actor = CurrentUser.State
-
-                });
-            //await AuditLogger.User.Changed(userToUnlock, changes);
-            if (unlockJob.Result == JobResult.Passed)
-            {
-                await RefreshDataAsync();
-
-                SnackBarService.Success(userToUnlock.CanonicalName + " " + AppLocalization[Lang.unlocked]);
-            }
-            else
-            {
-                SnackBarService.Error("Could not unlock: " + unlockJob.Exception?.Message);
-            }
-        }
-    }
-    public override void Dispose()
-    {
-        base.Dispose();
-        foreach (var entry in LockedUsers)
-        {
-            entry.Dispose();
-        }
-    }
-}
