@@ -1,4 +1,3 @@
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
@@ -31,7 +30,7 @@ namespace BLAZAM.Gui.UI.Groups
             await RefreshEntryComponents();
         }
 
-        async void SaveChanges()
+        async Task SaveChanges()
         {
             if (await MessageService.Confirm("Are you sure you want to save the changes to " + Group.CanonicalName + "?", "Save Changes"))
             {
