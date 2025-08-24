@@ -1,11 +1,10 @@
 ﻿
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Helpers;
 using System.Collections;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Security.Authentication;
-using System.Text;
+using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Helpers;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -25,7 +24,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             UnderlyingEntry = underlyingEntry;
             Directory = directory;
         }
-        public string? DN { get => GetPropertyValue("disinguishedName").ToString(); set { /*donothing*/ } } 
+        public string? DN { get => GetPropertyValue("disinguishedName").ToString(); set { /*donothing*/ } }
         public string Path { get => UnderlyingEntry.Path; set => UnderlyingEntry.Path = value; }
 
         public string? NativeGuid => UnderlyingEntry.NativeGuid;
@@ -50,7 +49,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             return UnderlyingEntry.Properties.Contains(propertyName);
         }
-        public bool PropertyContains(string propertyName,object value)
+        public bool PropertyContains(string propertyName, object value)
         {
             return UnderlyingEntry.Properties[propertyName].Contains(value);
         }
@@ -66,7 +65,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return new AdapterDirectoryEntry(UnderlyingEntry.Parent,Directory);
+                return new AdapterDirectoryEntry(UnderlyingEntry.Parent, Directory);
             }
         }
 
@@ -74,7 +73,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public AuthType AuthenticationType { get => (AuthType)UnderlyingEntry.AuthenticationType; }
         public CipherAlgorithmType EncryptionType { get => CipherAlgorithmType.None; }
-        public bool SslEnabled { get =>false; }
+        public bool SslEnabled { get => false; }
         public bool UsePropertyCache { get => UnderlyingEntry.UsePropertyCache; set => UnderlyingEntry.UsePropertyCache = value; }
 
         public void Close()
@@ -94,8 +93,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        
-     
+
+
         public void MoveTo(IDirectoryEntry newParent)
         {
             if (newParent is AdapterDirectoryEntry adapterDirectoryEntry)
@@ -168,6 +167,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             return UnderlyingDirectoryEntries.GetEnumerator();
         }
+
 
         public void Remove(IDirectoryEntry entry)
         {

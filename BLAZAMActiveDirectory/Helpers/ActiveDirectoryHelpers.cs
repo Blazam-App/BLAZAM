@@ -519,6 +519,25 @@ namespace BLAZAM.Helpers
         }
 
 
+        /// <summary>
+        /// Converts the directory entries to a list.
+        /// </summary>
+        /// <returns>A <see cref="List{T}"/> containing all directory entries as <see cref="IDirectoryEntry"/> objects.</returns>
+        public static List<IDirectoryEntry> ToList(this IDirectoryEntries directoryEntries)
+        {
+            var list = new List<IDirectoryEntry>();
+            var cursor = directoryEntries.GetEnumerator();
+            while (cursor.MoveNext())
+            {
+                if (cursor.Current is IDirectoryEntry entry)
+                {
+                    list.Add(entry);
+                }
+            }
+            return list;
+
+        }
+
         public static List<ActiveDirectoryFieldOperator> GetOperators(this IActiveDirectoryField field)
         {
             List<ActiveDirectoryFieldOperator> applicableOperators = new List<ActiveDirectoryFieldOperator>();

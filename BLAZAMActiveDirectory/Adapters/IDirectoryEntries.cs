@@ -1,6 +1,6 @@
 ﻿
-using BLAZAM.ActiveDirectory.Interfaces;
 using System.Collections;
+using BLAZAM.ActiveDirectory.Interfaces;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

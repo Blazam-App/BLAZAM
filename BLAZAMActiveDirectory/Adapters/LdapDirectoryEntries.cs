@@ -1,6 +1,6 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using System.Collections;
+﻿using System.Collections;
 using System.DirectoryServices.Protocols;
+using BLAZAM.ActiveDirectory.Interfaces;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -18,6 +18,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             _parentDn = parentDn;
             _directory = directory;
         }
+
+
 
         /// <summary>
         /// Gets an enumerator that iterates through the child entries.
