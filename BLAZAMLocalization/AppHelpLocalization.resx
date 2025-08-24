@@ -272,6 +272,6 @@ efforts on what our users think matters most.</value>
 Try configuring custom update credentials.</value>
   </data>
   <data name="Discard_Other_Changes_Warning" xml:space="preserve">
-    <value>Discard Other Changes Warning</value>
+    <value>Discard_Other_Changes_Warning</value>
   </data>
 </root>
