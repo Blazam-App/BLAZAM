@@ -440,6 +440,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;{0}&quot; copied to clipboard..
+        /// </summary>
+        public static string Text_Copied_To_Clipboard {
+            get {
+                return ResourceManager.GetString("Text_Copied_To_Clipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An unexpected error has occured..
         /// </summary>
         public static string Unexpected_Error_Occurred {

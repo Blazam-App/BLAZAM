@@ -1,6 +1,6 @@
 ﻿@attribute [Authorize]
 @inherits DatabaseComponentBase
-@page "/Home"
+@page "/home"
 @using BLAZAM.Gui.UI.Dashboard
 @using BLAZAM.Gui.Helper
 @using BLAZAM.Gui.UI.Outputs.Jobs;
@@ -38,15 +38,7 @@
     </MudAlert>
 }
 
-
 <CurrentUserDashboardWidgets />
-
-
-@if (ApplicationInfo.InDebugMode)
-{
-
-    <MudButton Variant="Variant.Filled" OnClick="testJob">Run Test Job</MudButton>
-}
 
 @code {
     MarkupString? MOTD;
@@ -61,48 +53,10 @@
         }
         catch
         {
-
+            // ignored if the database isn't available
         }
         await InvokeAsync(StateHasChanged);
     }
-    private IJob TestJob
-    {
-        get
-        {
-            var job = new Job("Test Job", requestingUser: CurrentUser.State.Username);
-            var job2 = new Job("Nested Job");
-            var step1 = new JobStep("Regular Step Passes", (step) =>
-            {
-                for (int x = 1; x < 6; x++)
-                {
-                    Task.Delay(400).Wait();
-                    step.Progress = (x / 5.0) * 100.0;
-                }
-                return true;
-            });
-            var step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
-            var step3 = new JobStep("Regular Step Throws", bool (step) => { Task.Delay(2000).Wait(); throw new AppException("Test exception"); });
-            var step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(2000).Wait(); return true; });
-            var step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
-            var step6 = new JobStep("Nested Step Throws", bool (step) => { Task.Delay(2000).Wait(); throw new AppException("Test exception"); });
-
-            job.AddStep(step1);
-            job.AddStep(step2);
-            job.AddStep(step3);
-            job2.AddStep(step4);
-            job2.AddStep(step5);
-            job2.AddStep(step6);
-            job.AddStep((IJobStep)job2);
-            return job;
-        }
-    }
-    private async Task testJob()
-    {
-        var test = TestJob;
-        await test.ShowJobDetailsDialogAsync(MessageService);
-        _ = test.RunAsync();
-
-
-    }
+  
 
 }

@@ -149,11 +149,6 @@ namespace BLAZAM.Gui.UI
         }
 
 
-        public async Task CopyToClipboard(string? text)
-        {
-            await JS.InvokeVoidAsync("navigator.clipboard.writeText", text);
-            SnackBarService.Info("\"" + text + "\" copied to clipboard.");
-        }
 
         public virtual void Dispose()
         {

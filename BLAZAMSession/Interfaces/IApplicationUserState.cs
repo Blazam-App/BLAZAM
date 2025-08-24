@@ -25,7 +25,7 @@ namespace BLAZAM.Session.Interfaces
         /// <summary>
         /// Gets the username for audit logging, including impersonator information if applicable (e.g., "UserA impersonated by AdminUser").
         /// </summary>
-        string AuditUsername { get; }
+        string? AuditUsername { get; }
 
         /// <summary>
         /// Gets the username from the User's ClaimsPrincipal Identity.

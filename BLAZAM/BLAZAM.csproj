@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.4.6</AssemblyVersion>
-		<Version>2025.08.20.2235</Version>
+		<Version>2025.08.23.2140</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -75,18 +75,18 @@
 		<PackageReference Include="SixLabors.ImageSharp.Web" Version="3.2.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.3" />
-		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.7" />
-		<PackageReference Include="System.DirectoryServices" Version="9.0.7" />
+		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.8" />
+		<PackageReference Include="System.DirectoryServices" Version="9.0.8" />
 
-		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.7" />
+		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.8" />
 
-		<PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.7" />
+		<PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.8" />
 
-		<PackageReference Include="System.Drawing.Common" Version="9.0.7" />
+		<PackageReference Include="System.Drawing.Common" Version="9.0.8" />
 
-		<PackageReference Include="System.Management" Version="9.0.7" />
+		<PackageReference Include="System.Management" Version="9.0.8" />
 
-		<PackageReference Include="System.Security.Permissions" Version="9.0.7" />
+		<PackageReference Include="System.Security.Permissions" Version="9.0.8" />
 	</ItemGroup>
 
 	<ItemGroup>

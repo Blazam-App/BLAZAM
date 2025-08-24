@@ -17,6 +17,10 @@ namespace BLAZAM.Common.Conventions
 
                     foreach (var selector in controller.Selectors)
                     {
+                        if (selector.AttributeRouteModel?.Template == null)
+                        {
+                            continue; // Skip if no route template is defined
+                        }
                         // Prepend "api/v1" and the subdirectory path to the route template
                         selector.AttributeRouteModel.Template = $"api/v1/{subdirectoryPath}/{selector.AttributeRouteModel.Template}";
                     }
@@ -26,6 +30,10 @@ namespace BLAZAM.Common.Conventions
                     // For controllers in shallower namespaces, still prepend "api/v1"
                     foreach (var selector in controller.Selectors)
                     {
+                        if (selector.AttributeRouteModel?.Template == null)
+                        {
+                            continue; // Skip if no route template is defined
+                        }
                         selector.AttributeRouteModel.Template = $"api/v1/{selector.AttributeRouteModel.Template}";
                     }
                 }

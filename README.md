@@ -19,10 +19,6 @@ The windows demo is Windows Server 2022 with 4 cores of the same CPU and 3GB of 
 
 Find the Linux demo at https://beta.blazam.org
 
-## Proudly serving
-
-![image](https://github.com/user-attachments/assets/0f86540f-ab2e-4a2c-816f-ca2ca027a8b9)
-
 ## Screenshots
 ![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)
 ![image](https://github.com/user-attachments/assets/cfa35e1f-facb-4c64-8ad4-1a48de5f4a82)

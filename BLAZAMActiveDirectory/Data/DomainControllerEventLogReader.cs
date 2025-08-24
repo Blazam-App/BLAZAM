@@ -4,6 +4,7 @@ using System.DirectoryServices;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
+using BLAZAM.Logger;
 
 namespace BLAZAM.ActiveDirectory.Data
 {
@@ -31,6 +32,7 @@ namespace BLAZAM.ActiveDirectory.Data
             //            PropertiesToLoad = { "dNSHostName" } // Load the DNS host name
             //        };
 
+
             //        foreach (SearchResult result in searcher.FindAll())
             //        {
             //            var hostname = result.Properties["dNSHostName"][0].ToString();
@@ -43,6 +45,7 @@ namespace BLAZAM.ActiveDirectory.Data
             //        Console.WriteLine($"Error reading events from {domainController}: {ex.Message}");
             //    }
             //}
+
 
             return events;
         }
@@ -133,10 +136,11 @@ namespace BLAZAM.ActiveDirectory.Data
             //            }
             //            return true;
 
+
             //        }
             //        catch (Exception ex)
             //        {
-            //            Console.WriteLine($"Error reading events from {domainController}: {ex.Message}");
+            //           Loggers.ActiveDirectoryLogger.Information(ex, "Error reading events from {@DomainController}", domainController);
             //            return false;
             //        }
             //    });

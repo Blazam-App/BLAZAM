@@ -1,12 +1,10 @@
-﻿using BLAZAM.Database.Context;
-using BLAZAM.Database.Models;
+﻿using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Database.Services;
 using BLAZAM.EmailMessage;
 using BLAZAM.EmailMessage.Email;
 using BLAZAM.EmailMessage.Email.Base;
 using BLAZAM.FileSystem;
-using BLAZAM.Global.Attributes;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
@@ -233,7 +231,15 @@ namespace BLAZAM.Services.Background
 
         public string PrepareHTMLForEmail(string body)
         {
-            SystemFile css = new(ApplicationInfo.applicationRoot + "\\wwwroot\\lib\\mudblazor\\css\\mudblazor.min.css");
+
+            SystemFile css = new(Path.Combine(
+                ApplicationInfo.applicationRoot.FullPath,
+                "wwwroot",
+                "lib",
+                "mudblazor",
+                "css",
+                "mudblazor.min.css")
+                );
             var preMailer = new PreMailer.Net.PreMailer(body);
             body = preMailer.MoveCssInline(stripIdAndClassAttributes: true, css: css.ReadAllText()).Html;
             return body;

@@ -148,7 +148,7 @@
     <value>{0} wurde erstellt</value>
   </data>
   <data name="Debug_Enabled_Warning" xml:space="preserve">
-    <value />
+    <value>Der Debug-Modus ist aktiviert. Wenn dies ein Produktionsserver ist, deaktivieren Sie ihn in der appsettings.json, um die Offenlegung sensibler Daten zu verhindern.</value>
   </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>Delegierte sind Ihre genehmigten Anwendungsbenutzer. Nur die hier von Ihnen definierten Benutzer oder Benutzer in den folgenden Active Directory-Gruppen (oder verschachtelten Gruppen) mit zugeordneten Berechtigungen oder aktivierter Selbstbearbeitung.</value>
@@ -242,6 +242,9 @@
   </data>
   <data name="Super_User_Definition" xml:space="preserve">
     <value>Hat bei Aktivierung vollständigen und uneingeschränkten Zugriff auf die Anwendung.</value>
+  </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" wurde in die Zwischenablage kopiert.</value>
   </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Ein unerwarteter Fehler ist aufgetreten.</value>

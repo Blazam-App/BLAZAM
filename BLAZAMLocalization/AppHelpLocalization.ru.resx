@@ -148,7 +148,7 @@
     <value>{0} создан</value>
   </data>
   <data name="Debug_Enabled_Warning" xml:space="preserve">
-    <value />
+    <value>Режим отладки включен. Если это рабочий сервер, отключите его в appsettings.json, чтобы предотвратить раскрытие конфиденциальных данных.</value>
   </data>
   <data name="Delegate_Definition" xml:space="preserve">
     <value>Делегаты — это утвержденные пользователи приложения. Только пользователи, которых вы определяете здесь, или пользователи в следующих группах Active Directory (или вложенных группах) с сопоставленными разрешениями или включенным саморедактированием.</value>
@@ -242,6 +242,9 @@
   </data>
   <data name="Super_User_Definition" xml:space="preserve">
     <value>При включении будет иметь полный и неограниченный доступ к приложению.</value>
+  </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" скопировано в буфер обмена.</value>
   </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Произошла непредвиденная ошибка.</value>

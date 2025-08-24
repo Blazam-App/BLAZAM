@@ -6,7 +6,6 @@ using System.Security.Cryptography.X509Certificates; // For SSL certificate hand
 using BLAZAM.ActiveDirectory;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
 using BLAZAM.Server.Middleware;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -145,7 +144,8 @@ namespace BLAZAM
                 AppInstance.Environment.EnvironmentName = "Development"; // Explicitly set environment name if needed
                 AppInstance.UseDeveloperExceptionPage();
             }
-
+            // Use response compression middleware
+            AppInstance.UseResponseCompression();
             // Custom middleware to manage user state.
             AppInstance.UseMiddleware<UserStateMiddleware>();
             // Redirect HTTP requests to HTTPS.

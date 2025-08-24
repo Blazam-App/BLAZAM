@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Management;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using BLAZAM.Common.Conventions;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
@@ -23,6 +24,7 @@ using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MudBlazor;
@@ -45,9 +47,8 @@ namespace BLAZAM
         /// </summary>
         public static WebApplicationBuilder IntializeProperties(this WebApplicationBuilder builder)
         {
-            // Set a default timeout for Regex matching across the application domain.
-            // Helps prevent potential ReDoS (Regular Expression Denial of Service) attacks.
-            AppDomain.CurrentDomain.SetData("REGEX_DEFAULT_MATCH_TIMEOUT", TimeSpan.FromMilliseconds(100));
+            // Set a default timeout for regex operations to prevent excessive processing time.
+            AppDomain.CurrentDomain.SetData("REGEX_DEFAULT_MATCH_TIMEOUT", TimeSpan.FromMilliseconds(30000));
 
             // Initialize ApplicationInfo singleton (holds global app state/config).
             // Pass the builder to access configuration early.
@@ -66,9 +67,9 @@ namespace BLAZAM
             catch (Exception ex) // Catch broad exceptions as WMI can fail for various reasons (permissions, OS)
             {
                 // Log the failure to get the preferred ID.
-                Console.WriteLine($"Failed to get Windows Installation ID via WMI: {ex.Message}. Falling back to MachineName hash.");
+                Loggers.SystemLogger.Information(ex, "Failed to get Windows Installation ID via WMI. Falling back to MachineName hash.");
                 // Fallback: Generate a GUID based on the machine name. Less unique but better than nothing.
-                ApplicationInfo.installationId = Environment.MachineName.ToGuid(); // Assumes ToGuid() extension method exists
+                ApplicationInfo.installationId = Environment.MachineName.ToGuid();
             }
 
           
@@ -84,6 +85,8 @@ namespace BLAZAM
             // Return the builder for chaining.
             return builder;
         }
+
+
 
         /// <summary>
         /// Attempts to retrieve the Windows installation UUID using WMI.
@@ -152,6 +155,7 @@ namespace BLAZAM
                 // Define supported cultures for the application
                 var supportedCultures = new[]
                 {
+                    new CultureInfo("ar"),    // Arabic
                     new CultureInfo("en-US"), // English (United States) - Often the default
                     new CultureInfo("fr-FR"), // French (France)
                     new CultureInfo("de"),    // German (Default)
@@ -174,7 +178,7 @@ namespace BLAZAM
             /* --- Code to force a specific culture during development/testing ---
             // Uncomment this block to force a specific culture for debugging localization.
           
-            CultureInfo culture = new CultureInfo("zh-Hans"); // Example: Force Simplified Chinese
+            CultureInfo culture = new CultureInfo("ar"); // Example: Force Simplified Chinese
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
             
@@ -234,7 +238,7 @@ namespace BLAZAM
             builder.Services.AddDistributedMemoryCache(); // Add default in-memory distributed cache for session state
             builder.Services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(10); // Set session idle timeout (short duration, adjust as needed)
+                options.IdleTimeout = TimeSpan.FromSeconds(10); // Set session idle timeout (short duration, lengthened on cookie refresh)
                 options.Cookie.HttpOnly = true; // Prevent client-side script access to the session cookie
                 options.Cookie.IsEssential = true; // Mark session cookie as essential (bypasses cookie consent policy)
             });
@@ -263,6 +267,7 @@ namespace BLAZAM
                    .AddPolicyHandler(GetWebhookRetryPolicy()); // Add the Polly retry policy
 
             // Configure another named HttpClient for Webhooks that ignores SSL certificate errors
+#pragma warning disable S4830 // Server certificates should be verified during SSL/TLS connections
             builder.Services.AddHttpClient(HttpClientNames.WebHookHttpClientNoSSLCheckName)
                    .SetHandlerLifetime(TimeSpan.FromMinutes(5))
                    .AddPolicyHandler(GetWebhookRetryPolicy())
@@ -271,6 +276,7 @@ namespace BLAZAM
                        // **Security Warning**: Bypassing SSL validation is insecure. Use only for trusted internal services or testing.
                        ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
                    });
+#pragma warning restore S4830 // Server certificates should be verified during SSL/TLS connections
 
             // --- Core Application Services ---
             builder.Services.AddHttpContextAccessor(); // Provides access to the current HttpContext (needed for user identity, etc.)
@@ -321,8 +327,15 @@ namespace BLAZAM
             {
                 // Apply a custom convention to make controller routes lowercase
                 options.Conventions.Add(new LowercaseControllerRouteConvention());
+            }).AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
+
             builder.Services.AddMvc(); // Add MVC services (includes controllers, views, etc.)
+
+
+
 
             // --- Swagger/OpenAPI Documentation ---
             builder.Services.AddSwaggerGen(c =>
@@ -370,6 +383,27 @@ namespace BLAZAM
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
                     { jwtSecurityScheme, Array.Empty<string>() } // Link the requirement to the definition
                 });
+            });
+
+
+
+            // Add response compression services
+            builder.Services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+                options.MimeTypes = new[]
+                {
+                    "text/plain",
+                    "text/css",
+                    "application/javascript",
+                    "text/javascript",
+                    "application/json",
+                    "application/xml",
+                    "text/html",
+                    "image/svg+xml"
+                };
             });
 
             // --- Windows Service Hosting ---

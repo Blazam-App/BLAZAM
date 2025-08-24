@@ -2,6 +2,7 @@
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
@@ -29,21 +30,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return "/view/" + CanonicalName;
             }
         }
-
+        [JsonIgnore]
         public AppDelegate? OnModelChanged { get; set; }
-
+        [JsonIgnore]
         public AppEvent? OnChangesDiscarded { get; set; }
 
-
+        [JsonIgnore]
         public AppDelegate<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
 
-
+        [JsonIgnore]
         public AppDelegate? OnModelCommited { get; set; }
 
-
+        [JsonIgnore]
         public AppDelegate? OnModelDeleted { get; set; }
 
-
+        [JsonIgnore]
         public virtual List<AuditChangeLog> Changes
         {
             get
@@ -103,11 +104,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected ActiveDirectoryUserState? _currentUser;
         protected ActiveDirectoryUserState? CurrentUser => _currentUser;
 
+        [JsonIgnore]
         public bool NewEntry { get; set; }
 
+        [JsonIgnore]
         public Dictionary<string, object> NewEntryProperties { get; set; } = [];
-        private IActiveDirectoryContext _directory;
 
+        [JsonIgnore]
+        private IActiveDirectoryContext _directory;
+        [JsonIgnore]
         public IActiveDirectoryContext Directory
         {
             get => _directory;
@@ -151,7 +156,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public IDirectoryEntry? DirectoryEntry { get; set; }
+        [JsonIgnore]
+        public DirectoryEntry? DirectoryEntry { get; set; }
+        
         /// <summary>
         /// 
         /// </summary>
@@ -338,6 +345,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
         private bool? _cachedHasChildren;
+        [JsonIgnore]
         public virtual bool HasChildren
         {
             get
@@ -561,7 +569,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
 
-
+        [JsonIgnore]
         public IList<PermissionMapping> InheritedPermissionMappings
         {
             get
@@ -569,6 +577,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
             }
         }
+        [JsonIgnore]
         public IList<PermissionMapping> DirectPermissionMappings
         {
             get
@@ -580,7 +589,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
         private IList<PermissionMapping> _appliedPermissionMappings;
-
+        [JsonIgnore]
         public IList<PermissionMapping> AppliedPermissionMappings
         {
             get
@@ -593,7 +602,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         private IList<PermissionMapping> _offspringPermissionMappings;
 
-
+        [JsonIgnore]
         public IList<PermissionMapping> OffspringPermissionMappings
         {
             get
@@ -611,7 +620,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-
+        [JsonIgnore]
         public virtual bool HasUnsavedChanges
         {
             get => _hasUnsavedChanges;
@@ -624,11 +633,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         protected ADSettings? DirectorySettings => Directory.ConnectionSettings;
 
+        [JsonIgnore]
         public bool IsExpanded { get; set; }
 
+        [JsonIgnore]
         public bool IsSelected { get; set; }
 
-        public virtual IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
+        protected virtual IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
+        [JsonIgnore]
         public virtual IEnumerable<IDirectoryEntryAdapter> Children
         {
             get
@@ -1188,11 +1200,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
 
             }
+
+           
+            catch (InvalidCastException ex)
+            {
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+
+            }
+
             catch
             {
-                // This can happen if the property is not available for this object class in AD.
-                // For example, if the property is not set on the object, or if it is not a valid property for the object class.
-                // In this case, we return null.
+                return default;
             }
             return default;
 

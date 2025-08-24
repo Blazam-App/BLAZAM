@@ -135,7 +135,7 @@ namespace BLAZAMCommon.Tests
         }
 
         [Fact]
-        public async Task Start_NotImmediate_WithNonZeroInterval_EventuallyCallsExecute()
+        public void Start_NotImmediate_WithNonZeroInterval_EventuallyCallsExecute()
         {
             // Arrange
             _service = new TestableBackgroundService(_mockStringLocalizer.Object);

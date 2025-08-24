@@ -38,7 +38,7 @@ namespace BLAZAM.Common.Data.Tests.Validators
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void IsValid_ShouldReturnNull_ForNullOrEmptyStrings(string input)
+        public void IsValid_ShouldReturnNull_ForNullOrEmptyStrings(string? input)
         {
             var result = _validator.GetValidationResult(input, new ValidationContext(new object()));
             Assert.Null(result);

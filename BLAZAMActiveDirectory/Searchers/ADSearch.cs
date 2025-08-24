@@ -156,25 +156,35 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 if (SearchDeleted)
                     LdapFilter = LdapFilter.Substring(0, LdapFilter.Length - 1) + "(isDeleted=TRUE)" + ")";
 
+                // Generalized FilterQuery for GeneralSearchTerm
+                if (GeneralSearchTerm != null)
+                {
+                    FilterQuery =
+                        "(|" +
+                        "(samaccountname=*" + GeneralSearchTerm + "*)" +
+                        "(cn=*" + GeneralSearchTerm + "*)" +
+                        "(distinguishedName=" + GeneralSearchTerm + ")" +
+                        "(givenname=*" + GeneralSearchTerm + "*)" +
+                        "(sn=*" + GeneralSearchTerm + "*)" +
+                        "(displayName=*" + GeneralSearchTerm + "*)" +
+                        "(name=*" + GeneralSearchTerm + "*)" +
+                        "(mail=*" + GeneralSearchTerm + "*@*)" +
+                        "(anr=*" + GeneralSearchTerm + "*)" +
+                        "(ou=*" + GeneralSearchTerm + "*)" +
+                        ")";
+                }
+
+
                 switch (ObjectTypeFilter)
                 {
-                    case ActiveDirectoryObjectType.All:
-                    case null:
-                        if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(distinguishedName=" + GeneralSearchTerm + ")(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(mail=*" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
-                        break;
                     case ActiveDirectoryObjectType.Printer:
-                        LdapFilter = "(&(objectClass=printQueue))";
-                        if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*))";
-
+                        searcher.Filter = "(&(objectClass=printQueue))";
                         break;
+
                     case ActiveDirectoryObjectType.Group:
-                        LdapFilter = "(&(objectCategory=group)(objectClass=group))";
-                        if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
-
+                        searcher.Filter = "(&(objectCategory=group)(objectClass=group))";
                         break;
+
                     case ActiveDirectoryObjectType.User:
                         LdapFilter = "(&(objectCategory=person)(objectClass=user))";
                         if (EnabledOnly == true)
@@ -186,43 +196,31 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             //LdapFilter = "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=2))";
 
                         }
-                        if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
-
 
                         break;
+
                     case ActiveDirectoryObjectType.Contact:
-                        LdapFilter = "(&(objectCategory=person)(objectClass=contact))";
-
-                        if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(mail=" + GeneralSearchTerm + "*@*)(anr=*" + GeneralSearchTerm + "*))";
-
-
+                        searcher.Filter = "(&(objectCategory=person)(objectClass=contact))";
                         break;
+
                     case ActiveDirectoryObjectType.Computer:
                         LdapFilter = "(&(objectCategory=computer))";
                         if (EnabledOnly == true)
                         {
                             //LdapFilter = "(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))";
                         }
-                        if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(distinguishedName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*))";
 
                         break;
+
                     case ActiveDirectoryObjectType.BitLocker:
-                        LdapFilter = "(&(objectCategory=msFVE-RecoveryInformation))";
-                        if (GeneralSearchTerm != null)
-
-                            LdapFilter = $"(name=*{GeneralSearchTerm}*)";
-
+                        searcher.Filter = "(&(objectCategory=msFVE-RecoveryInformation))";
                         break;
+
                     case ActiveDirectoryObjectType.OU:
-                        // searcher.VirtualListView = null;
-                        LdapFilter = "(&(objectCategory=organizationalUnit))";
-                        if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(distinguishedName=" + GeneralSearchTerm + ")(ou=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*))";
-
+                        searcher.VirtualListView = null;
+                        searcher.Filter = "(&(objectCategory=organizationalUnit))";
                         break;
+
                 }
 
 
