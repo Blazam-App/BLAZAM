@@ -11,7 +11,7 @@
 {
     _motdShown = true;
     <MudAlert Severity=Severity.Info
-              Class="mb-6 rounded-t-0"
+              Class="mb-2 rounded-t-0"
               ShowCloseIcon=false
               Elevation="3"
               Dense=true
@@ -22,15 +22,17 @@
 
     </MudAlert>
 }
+
+<DemoHelpAlert />
+
 @if (CurrentUser.State.IsSuperAdmin && ApplicationInfo.InDebugMode)
 {
-    string cssClass = "mb-6 " + (_motdShown ? "" : "rounded-t-0");
+    string cssClass = "my-2 " + (_motdShown ? "" : "rounded-t-0");
     <MudAlert Severity=Severity.Warning
               Class=@cssClass 
               ShowCloseIcon=false
-              Elevation="3"
               Dense=true
-              Variant="Variant.Filled">
+              Variant="Variant.Outlined">
 
 
         @AppHelpLocalization[HelpLang.Debug_Enabled_Warning]

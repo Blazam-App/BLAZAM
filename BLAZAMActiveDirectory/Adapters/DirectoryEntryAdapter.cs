@@ -647,7 +647,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         [JsonIgnore]
         public bool IsSelected { get; set; }
 
-        protected virtual IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
+        public virtual IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
         [JsonIgnore]
         public virtual IEnumerable<IDirectoryEntryAdapter> Children
         {
