@@ -38,9 +38,9 @@
                                 .ToList();
                 if (results.Any())
                 {
-                    foundResults.Add(results[random.Next(0, results.Count - 1)]);
-                    foundResults.Add(results[random.Next(0, results.Count - 1)]);
-                    foundResults.Add(results[random.Next(0, results.Count - 1)]);
+                    foundResults.Add(results[random.Next(0, results.Count)]);
+                    foundResults.Add(results[random.Next(0, results.Count)]);
+                    foundResults.Add(results[random.Next(0, results.Count)]);
                 }
                 await Task.Delay(100);
             }
