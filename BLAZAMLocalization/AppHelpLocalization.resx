@@ -271,4 +271,7 @@ efforts on what our users think matters most.</value>
     <value>There are no credentials configured with write permission to the application directory!
 Try configuring custom update credentials.</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>Discard Other Changes Warning</value>
+  </data>
 </root>
