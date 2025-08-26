@@ -1,4 +1,5 @@
 ﻿using System.DirectoryServices;
+using System.DirectoryServices.Protocols;
 using System.Text.Json.Serialization;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Common.Data;
@@ -110,7 +111,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// The .NET underlying object for this entry
         /// </summary>
         [JsonIgnore]
-        DirectoryEntry? DirectoryEntry { get; set; }
+        IDirectoryEntry? DirectoryEntry { get; set; }
 
         /// <summary>
         /// The full Active Directory Services path including LDAP server name
@@ -329,7 +330,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <param name="result"></param>
         /// <param name="directory"></param>
         /// <returns></returns>
-        void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry = null, SearchResult? searchResult = null);
+        void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null, SearchResultEntry? searchResultEntry = null);
 
         /// <summary>
         /// Move this entry to a new <see cref="IADOrganizationalUnit"/>

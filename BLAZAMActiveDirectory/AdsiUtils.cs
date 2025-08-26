@@ -18,21 +18,5 @@ namespace BLAZAM.ActiveDirectory
             [DispId(2)] int HighPart { get; set; }
             [DispId(3)] int LowPart { get; set; }
         }
-
-        public static DateTime AdsDateValue(object value)
-        {
-            try
-            {
-                IADsLargeInteger v = value as IADsLargeInteger;
-                if (null == v) return DateTime.MinValue;
-
-                long dV = ((long)v.HighPart << 32) + v.LowPart;
-                return DateTime.FromFileTime(dV);
-            }
-            catch
-            {
-                return DateTime.MinValue;
-            }
-        }
     }
 }

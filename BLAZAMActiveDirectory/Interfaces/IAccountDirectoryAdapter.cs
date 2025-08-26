@@ -111,6 +111,9 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <exception cref="AppException">Thrown if the password change fails.</exception>
         bool SetPassword(SecureString password, bool requireChange = false);
 
+        
+        void StageEnable();
+        
         /// <summary>
         /// Stages a password change for this account, to be applied later.
         /// </summary>
