@@ -1,5 +1,3 @@
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Localization;
 using BLAZAM.Services.Events;
 using MudBlazor;
 
@@ -27,7 +25,7 @@ namespace BLAZAM.Gui.UI.OU
             LoadingData = false;
             await RefreshEntryComponents();
         }
-        private async void SaveChanges()
+        private async Task SaveChanges()
         {
             if (OU != null)
             {

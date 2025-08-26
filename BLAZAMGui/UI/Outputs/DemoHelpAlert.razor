@@ -1,0 +1,58 @@
+﻿@inherits AppComponentBase
+
+@if (ApplicationInfo.InDemoMode && randomUsers.Count>0)
+{
+    <MudAlert Class="my-2"
+    Icon="@Icons.Material.Filled.QuestionMark"
+    Dense=true
+    Severity="Severity.Info" 
+    Variant="Variant.Outlined">
+        Try searching @(string.Join(", ", randomUsers.Select(u => u.Sn)))...
+    </MudAlert>
+}
+
+@code {
+    List<IADUser> randomUsers {
+        get => CurrentUser.State.Cache.Get<List<IADUser>>("demoRandomUsers");
+        set => CurrentUser.State.Cache.Set("demoRandomUsers", value);
+    }
+    readonly Random random = new Random();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        // Only run in demo mode
+        if (!ApplicationInfo.InDemoMode){
+            return;
+        }
+        
+        if (randomUsers.IsNullOrEmpty())
+        {
+            var foundResults = new List<IADUser>();
+            while (foundResults.Count < 3)
+            {
+                var threeLetters = GenerateRandomThreeLetters();
+                var results = (await Directory.Users.FindUsersByStringAsync("", false))
+                                .Where(u => !u.Sn.IsNullOrEmpty())
+                                .ToList();
+                if (results.Any())
+                {
+                    foundResults.Add(results[random.Next(0, results.Count)]);
+                    foundResults.Add(results[random.Next(0, results.Count)]);
+                    foundResults.Add(results[random.Next(0, results.Count)]);
+                }
+                await Task.Delay(100);
+            }
+            randomUsers = foundResults;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private string GenerateRandomThreeLetters()
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        return new string(Enumerable.Range(0, 3)
+            .Select(_ => chars[random.Next(chars.Length)]).ToArray());
+    }
+}

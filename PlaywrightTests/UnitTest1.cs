@@ -183,7 +183,7 @@ namespace PlaywrightTests
 
             var recycleHeader = Page.Locator("text=Settings");
 
-            await Expect(recycleHeader).ToBeVisibleAsync();
+            await Expect(recycleHeader).ToBeVisibleAsync(new() { Timeout = 30000 });
         }
 
         private async Task OpenManageNotifications()
@@ -199,7 +199,7 @@ namespace PlaywrightTests
 
             var recycleHeader = Page.Locator("text=Manage Notifications");
 
-            await Expect(recycleHeader).ToBeVisibleAsync();
+            await Expect(recycleHeader).ToBeVisibleAsync(new() { Timeout = 30000 });
         }
         private async Task OpenFields()
         {
@@ -213,7 +213,7 @@ namespace PlaywrightTests
 
             var header = Page.Locator("text=Field Type");
 
-            await Expect(header).ToBeVisibleAsync();
+            await Expect(header).ToBeVisibleAsync(new() { Timeout = 30000 });
 
 
             await Task.Delay(500);

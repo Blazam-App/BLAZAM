@@ -1,5 +1,3 @@
-using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
@@ -85,7 +83,7 @@ namespace BLAZAM.Gui.UI.Computers
                 await RefreshEntryComponents();
             }
         }
-        async void SaveChanges()
+        async Task SaveChanges()
         {
             if (Computer == null || !await MessageService.Confirm("Are you sure you want to save the changes?"))
                 return;
