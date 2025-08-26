@@ -1,10 +1,12 @@
 ﻿
 using System.Collections;
 using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
 using System.DirectoryServices.Protocols;
 using System.Security.Authentication;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Helpers;
+using BLAZAM.Logger;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -136,45 +138,46 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
-    }
 
 
-    public class AdapterDirectoryEntries : IDirectoryEntries
-    {
-        public DirectoryEntries UnderlyingDirectoryEntries { get; private set; }
 
-        public AdapterDirectoryEntries(DirectoryEntries underlyingDirectoryEntries)
+        public class AdapterDirectoryEntries : IDirectoryEntries
         {
-            UnderlyingDirectoryEntries = underlyingDirectoryEntries;
-        }
+            public DirectoryEntries UnderlyingDirectoryEntries { get; private set; }
 
-        public IDirectoryEntry Add(string name, string schemaClassName)
-        {
-            return UnderlyingDirectoryEntries.Add(name, schemaClassName).ToIDirectoryEntry();
-        }
+            public AdapterDirectoryEntries(DirectoryEntries underlyingDirectoryEntries)
+            {
+                UnderlyingDirectoryEntries = underlyingDirectoryEntries;
+            }
 
-        public IDirectoryEntry Find(string name, string schemaClassName)
-        {
-            return UnderlyingDirectoryEntries.Find(name, schemaClassName).ToIDirectoryEntry();
-        }
+            public IDirectoryEntry Add(string name, string schemaClassName)
+            {
+                return UnderlyingDirectoryEntries.Add(name, schemaClassName).ToIDirectoryEntry();
+            }
 
-        public IDirectoryEntry Find(string name)
-        {
-            return UnderlyingDirectoryEntries.Find(name).ToIDirectoryEntry();
-        }
+            public IDirectoryEntry Find(string name, string schemaClassName)
+            {
+                return UnderlyingDirectoryEntries.Find(name, schemaClassName).ToIDirectoryEntry();
+            }
 
-        public IEnumerator GetEnumerator()
-        {
-            return UnderlyingDirectoryEntries.GetEnumerator();
-        }
+            public IDirectoryEntry Find(string name)
+            {
+                return UnderlyingDirectoryEntries.Find(name).ToIDirectoryEntry();
+            }
+
+            public IEnumerator GetEnumerator()
+            {
+                return UnderlyingDirectoryEntries.GetEnumerator();
+            }
 
 
-        public void Remove(IDirectoryEntry entry)
-        {
-            if (entry is DirectoryEntry dEntry)
-                UnderlyingDirectoryEntries.Remove(dEntry);
+            public void Remove(IDirectoryEntry entry)
+            {
+                if (entry is DirectoryEntry dEntry)
+                    UnderlyingDirectoryEntries.Remove(dEntry);
+            }
         }
-    }
 #pragma warning restore CA1416 // Validate platform compatibility
 
+    }
 }

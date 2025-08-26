@@ -94,6 +94,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
         DomainControllerEventLogReader EventLogReader { get; }
         Exception? ConnectionException { get; set; }
+        List<string> DomainControllers { get; }
 
         /// <summary>
         /// Searches for an Active Directory object by it's SID

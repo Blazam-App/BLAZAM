@@ -12,9 +12,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 {
     public interface IDirectoryEntry : IDisposable
     {
-        string Path { get; set; }
+        string Path { get; }
         string? NativeGuid { get; }
-        string SchemaClassName { get; }
         string Name { get; }
         IDirectoryEntry Parent { get; }
         IDirectoryEntries Children { get; }
@@ -32,7 +31,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         void AddPropertyValue(string propertyName, object? value);
         bool PropertyContains(string propertyName, object value);
 
-           AuthType AuthenticationType { get; }
+        AuthType AuthenticationType { get; }
         CipherAlgorithmType EncryptionType { get; }
         bool SslEnabled { get; }
         bool UsePropertyCache { get; set; } 
