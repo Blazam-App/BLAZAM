@@ -25,8 +25,8 @@ namespace BLAZAM.ActiveDirectory.Data
             {
                 try
                 {
-                    var entry = domainController.GetDirectoryEntry();
-                    var searcher = new DirectorySearcher(entry)
+                    using var entry = domainController.GetDirectoryEntry();
+                    using var searcher = new DirectorySearcher(entry)
                     {
                         Filter = "(&(objectCategory=computer)(objectClass=computer))", // Filter for computers
                         PropertiesToLoad = { "dNSHostName" } // Load the DNS host name
@@ -51,7 +51,7 @@ namespace BLAZAM.ActiveDirectory.Data
         private List<EventLogEntry> GetLogonEventsForComputer(string computerName, DateTime startTime, DateTime endTime)
         {
             var events = new List<EventLogEntry>();
-            var eventLog = new EventLog("Security", computerName);
+            using var eventLog = new EventLog("Security", computerName);
 
             foreach (EventLogEntry entry in eventLog.Entries)
             {
@@ -77,11 +77,11 @@ namespace BLAZAM.ActiveDirectory.Data
                 {
                     try
                     {
-                        EventLogSession session = new EventLogSession(domainController);
+                        using EventLogSession session = new EventLogSession(domainController);
                         var eventLogQuery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=4625 or EventID=4771 or EventID=4740)]] and *[EventData[Data[@Name='TargetUserName'] and (Data='" + user.SAMAccountName + "' or Data='" + user.UserPrincipalName + "')]]");
                         eventLogQuery.Session = session;
 
-                        var reader = new EventLogReader(eventLogQuery);
+                        using var reader = new EventLogReader(eventLogQuery);
                         for (EventRecord eventdetail = reader.ReadEvent(); eventdetail != null; eventdetail = reader.ReadEvent())
                         {
                             FailedADLogonEvent? failedADLogonEvent = null;
@@ -130,7 +130,7 @@ namespace BLAZAM.ActiveDirectory.Data
                                 // Read Event details
                                 events.Add(failedADLogonEvent);
                             }
-
+                            eventdetail.Dispose();
                         }
                         return true;
 
