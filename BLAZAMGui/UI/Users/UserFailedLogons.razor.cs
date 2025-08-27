@@ -31,13 +31,11 @@ namespace BLAZAM.Gui.UI.Users
                 if (_user != null)
                 {
                     LoadingData = true;
-                    _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
-                    LoadingData = false;
-                    LoadingData = true;
 
                     LockedOutUserMonitor.RecordLogonEvents(_user);
 
-                    _events = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
+                    _events = [.. Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID))];
+                    _events = [.. _events.OrderByDescending(e => e.Timestamp)];
                     LoadingData = false;
                 }
 
