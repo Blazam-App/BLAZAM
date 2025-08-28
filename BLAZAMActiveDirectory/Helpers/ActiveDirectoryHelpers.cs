@@ -186,7 +186,7 @@ namespace BLAZAM.Helpers
 
                 }
             }
-            r.Dispose();
+            r?.Dispose();
             return objects;
         }
 
