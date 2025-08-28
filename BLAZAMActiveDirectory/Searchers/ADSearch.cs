@@ -121,13 +121,12 @@ namespace BLAZAM.ActiveDirectory.Searchers
             if (cancellationToken?.IsCancellationRequested == true)
                 return new();
             InitializeSearch();
-            DirectorySearcher searcher;
             try
             {
                 SearchRoot ??= ActiveDirectoryContext.SystemInstance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
                 var pageOffset = 1;
 
-                searcher = new DirectorySearcher(SearchRoot)
+                using var searcher = new DirectorySearcher(SearchRoot)
                 {
                     VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, pageOffset),
                     PageSize = PageSize,

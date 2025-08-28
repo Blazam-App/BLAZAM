@@ -103,7 +103,7 @@ namespace BLAZAM.Common.Data
 
 
                 // Check the identity.
-                Loggers.ActiveDirectoryLogger.Information("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
+                Loggers.ActiveDirectoryLogger.Debug("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
 
                 try
                 {
@@ -121,7 +121,7 @@ namespace BLAZAM.Common.Data
                               Loggers.ActiveDirectoryLogger.Information(exception, "Impersonation running as application identity");
 
                           }
-                          Loggers.ActiveDirectoryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);
+                          Loggers.ActiveDirectoryLogger.Debug("During impersonation: " + WindowsIdentity.GetCurrent().Name);
                           result = task.Invoke();
                       }
                       );
@@ -135,6 +135,10 @@ namespace BLAZAM.Common.Data
                 {
                     impersonatedToken?.Close();
                 }
+            }
+            catch (AuthenticationException ex)
+            {
+                Loggers.ActiveDirectoryLogger.Information(ex, "Bad credentials trying to impersonate user {@Username}", impersonationUser.Username);
             }
             catch (Exception ex)
             {
