@@ -259,32 +259,33 @@ namespace BLAZAM.ActiveDirectory
             while (_keepAlive)
             {
                 await Task.Delay(30000);
-
-                if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
+                try
                 {
-                    await ConnectAsync();
-                }
-                else if (Status == DirectoryConnectionStatus.OK)
-                {
-                    //Throw away query used to keep connection alive
-                    try
+                    if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
                     {
+                        await ConnectAsync();
+                    }
+                    else if (Status == DirectoryConnectionStatus.OK)
+                    {
+                        //Throw away query used to keep connection alive
+
                         _ = (await Users.FindUsersByStringAsync(ConnectionSettings?.Username, false))?.FirstOrDefault();
 
-                    }
-                    catch (DirectoryServicesCOMException ex)
-                    {
-                        //not usernam or password is incorrect
-                        if (ex.HResult != -2147023570)
-                        {
-                            Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error performing keep alive search.");
 
-                        }
                     }
-                    catch (Exception ex)
+                }
+                catch (DirectoryServicesCOMException ex)
+                {
+                    //not usernam or password is incorrect
+                    if (ex.HResult != -2147023570)
                     {
                         Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error performing keep alive search.");
+
                     }
+                }
+                catch (Exception ex)
+                {
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error performing keep alive search.");
                 }
             }
         }
