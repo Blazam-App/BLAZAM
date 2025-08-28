@@ -117,7 +117,7 @@ namespace BLAZAM.Common.Helpers
         {
             if (hostNameOrAddress == null) throw new ArgumentNullException(nameof(hostNameOrAddress));
             if (hostNameOrAddress == string.Empty) throw new ArgumentException(nameof(hostNameOrAddress));
-            IPAddress? ip;
+
             var validator = new ValidIpAttribute();
             if (validator.IsValid(hostNameOrAddress)) return IPAddress.Parse(hostNameOrAddress);
             try
