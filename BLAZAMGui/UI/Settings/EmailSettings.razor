@@ -156,7 +156,7 @@
                 settings = set;
             }
         }
-        Task.Run(() =>
+        _ = Task.Run(() =>
             {
                 if (EmailService.IsConfigured)
                     emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
