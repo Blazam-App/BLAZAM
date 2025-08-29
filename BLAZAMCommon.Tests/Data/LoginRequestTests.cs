@@ -148,7 +148,7 @@ namespace BLAZAMCommon.Tests.Data
         [InlineData(null, "pass", false)]  // Null username
         [InlineData("", "", false)]        // Empty username and password
         [InlineData(null, null, false)]    // Null username and password
-        public void Valid_Property_ShouldReturnExpectedValue(string username, string password, bool expectedValid)
+        public void Valid_Property_ShouldReturnExpectedValue(string? username, string? password, bool expectedValid)
         {
             // Arrange
             var loginRequest = new LoginRequest
