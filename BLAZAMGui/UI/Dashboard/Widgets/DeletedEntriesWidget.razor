@@ -2,7 +2,7 @@
 @attribute [Authorize]
 
 <MudDataGrid T="IDirectoryEntryAdapter"
-             Items="deletedObjects"
+             Items="DeletedEntries"
              RowClick="@(()=>{Nav.NavigateTo("/recyclebin");})"
              RowClass="cursor-pointer"
              Dense=true

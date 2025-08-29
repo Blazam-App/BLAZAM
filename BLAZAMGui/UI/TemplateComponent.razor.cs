@@ -5,7 +5,7 @@ using MudBlazor;
 
 namespace BLAZAM.Gui.UI
 {
-    public class TemplateComponent : ValidatedForm
+    public abstract class TemplateComponent : ValidatedForm
     {
         protected MudTabs? Tabs;
         private IEnumerable<DirectoryTemplate> templates = new List<DirectoryTemplate>();

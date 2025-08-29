@@ -1,9 +1,8 @@
-using BLAZAM.Database.Models;
 using BLAZAM.Gui.UI.Settings;
 
 namespace BLAZAM.Gui.UI
 {
-    public partial class DirectoryModelComponent : ValidatedForm
+    public abstract class DirectoryModelComponent : ValidatedForm
     {
         protected bool EditMode = false;
 

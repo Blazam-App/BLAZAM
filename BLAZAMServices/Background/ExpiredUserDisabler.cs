@@ -52,7 +52,7 @@ namespace BLAZAM.Services.Background
 
                         if (result.Result == JobResult.Passed)
                         {
-                            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Modify,
                                 Entry = user,

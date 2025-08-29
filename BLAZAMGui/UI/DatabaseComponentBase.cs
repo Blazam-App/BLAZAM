@@ -1,10 +1,7 @@
-using BLAZAM.Database.Interfaces;
-
 namespace BLAZAM.Gui.UI
 {
-    public class DatabaseComponentBase : AppComponentBase
+    public abstract class DatabaseComponentBase : AppComponentBase
     {
-#nullable disable warnings
         protected IDatabaseContext Context;
         protected override async Task OnInitializedAsync()
         {

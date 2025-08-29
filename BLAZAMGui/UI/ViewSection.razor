@@ -1,16 +1,16 @@
 ﻿@using System.Text
-<MudPaper Elevation="Elevation" Class="@PaperClass" Style="@CombinedStyle">
+<MudPaper Elevation="Elevation" Class="@paperClass" Style="@combinedStyle">
 
     @{
         RenderFragment headerFragment =
-        @<MudElement class="@HeaderWrapperClass">
-            <MudElement class="@HeaderClass">
+        @<MudElement class="@headerWrapperClass">
+            <MudElement class="@headerClass">
                 <MudText Color="TextColor" Class="section-title-text">@Title</MudText>
             </MudElement>
         </MudElement>;
     }
 
-    @if (IsHeaderAtTop)
+    @if (isHeaderAtTop)
     {
         @headerFragment
     }
@@ -20,7 +20,7 @@
     </MudStack>
 
 
-    @if (!IsHeaderAtTop)
+    @if (!isHeaderAtTop)
     {
         @headerFragment
     }

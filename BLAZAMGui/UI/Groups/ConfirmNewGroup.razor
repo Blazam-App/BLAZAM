@@ -16,7 +16,6 @@
 }
 @code {
 
-#nullable disable warnings
 
     private bool disableCreateGroupButton = false;
 
@@ -44,7 +43,7 @@
             {
                 foreach (var assignment in assignTo)
                 {
-                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.Assign,
                             Entry = assignment.Member,
@@ -60,7 +59,7 @@
                 Group = (IADGroup)Directory.GetDirectoryEntryByDN(Group.DN);
 
                 SnackBarService.Success(AppLocalization[Lang.Group_created]);
-                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                     {
                         EventType = ApplicationEventType.Create,
                         Entry = Group,

@@ -19,7 +19,7 @@ namespace BLAZAM.Pages.API.v1
     [ApiController]
     [Produces("application/json")]
     [Route("api/v1/[controller]")]
-    public class ApiController : ControllerBase
+    public class ApiControllerBase : ControllerBase
     {
         private readonly Stopwatch stopwatch = new();
 
@@ -55,7 +55,7 @@ namespace BLAZAM.Pages.API.v1
         /// <param name="appDatabaseFactory"></param>
         /// <param name="httpContextAccessor"></param>
         /// <param name="adFactory"></param>
-        public ApiController(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
+        public ApiControllerBase(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
         {
             jsonOptions = new JsonSerializerOptions();
             jsonOptions.Converters.Add(new JsonStringEnumConverter());

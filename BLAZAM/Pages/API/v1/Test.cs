@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BLAZAM.Pages.API.v1
 {
-    public class Test : ApiController
+    public class Test : ApiControllerBase
     {
         public Test(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
         {

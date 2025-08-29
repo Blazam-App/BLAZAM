@@ -278,7 +278,7 @@ else
                 Confirmed = true;
                 await OnConfirmed.InvokeAsync();
 
-                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Create,
                     Entry = User,

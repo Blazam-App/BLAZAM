@@ -10,7 +10,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             WidgetType = DashboardWidgetType.NewPrinters;
         }
 
-        List<IADPrinter> NewPrinters
+        private List<IADPrinter> NewPrinters
         {
             get => CurrentUser.State.Cache.Get<List<IADPrinter>>(this.GetType());
             set => CurrentUser.State.Cache.Set(this.GetType(), value);

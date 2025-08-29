@@ -8,7 +8,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             WidgetType = DashboardWidgetType.DeletedEntries;
         }
 
-        List<IDirectoryEntryAdapter> deletedObjects
+        private List<IDirectoryEntryAdapter> DeletedEntries
         {
             get => CurrentUser.State.Cache.Get<List<IDirectoryEntryAdapter>>(this.GetType());
             set => CurrentUser.State.Cache.Set(this.GetType(), value);
@@ -21,8 +21,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             var search = new ADSearch(Directory) { SearchRoot = Directory.GetDeleteObjectsEntry() };
             search.SearchDeleted = true;
             search.Fields.Changed = DateTime.Now.AddDays(-14);
-            deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
-            LoadingData = false;
+            DeletedEntries = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
             LoadingData = false;
 
         }

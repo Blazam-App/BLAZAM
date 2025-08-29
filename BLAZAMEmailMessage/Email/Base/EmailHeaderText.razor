@@ -13,7 +13,7 @@
         base.OnInitialized();
         if (emailHeaderText == null)
 
-            if (DatabaseCache.ApplicationSettings.AppName != null)
+            if (DatabaseCache.ApplicationSettings?.AppName != null)
 
                 emailHeaderText = DatabaseCache.ApplicationSettings.AppName;
             else

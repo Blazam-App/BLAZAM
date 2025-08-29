@@ -216,7 +216,7 @@
         if (result > 0)
         {
             SnackBarService.Success(AppLocalization[newRule ? Lang.Created : Lang.Changed]);
-            RuleChanged.InvokeAsync(Rule);
+            await RuleChanged.InvokeAsync(Rule);
             await Modal.CloseAsync();
         }
         else

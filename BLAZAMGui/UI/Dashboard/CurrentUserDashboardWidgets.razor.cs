@@ -1,21 +1,23 @@
-using BLAZAM.Database.Models.User;
-using BLAZAM.Global.Events;
 using BLAZAM.Gui.Services;
 using BLAZAM.Gui.UI.Dashboard.Widgets;
-using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard
 {
     public partial class CurrentUserDashboardWidgets : AppComponentBase
     {
-        bool _editMode;
-        bool _initialized;
+        private bool _editMode;
+
+        private bool _initialized;
+
         [Inject]
         public WidgetService? WidgetService { get; set; }
+
         public AppDelegate<Widget> OnRefreshWidget { get; set; } = (val) => { };
-        MudDropContainer<UserDashboardWidget>? widgetContainer;
-        List<Widget> allWidgets = new List<Widget>();
+
+        private MudDropContainer<UserDashboardWidget>? widgetContainer;
+
+        private List<Widget> allWidgets = new List<Widget>();
 
         protected override async Task OnInitializedAsync()
         {
