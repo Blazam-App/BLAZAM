@@ -181,7 +181,7 @@ namespace BLAZAM.Pages.API.v1
 
         private async Task AuditAndNotify(NewUserPayload newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
         {
-            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Create,
                 Entry = entry,

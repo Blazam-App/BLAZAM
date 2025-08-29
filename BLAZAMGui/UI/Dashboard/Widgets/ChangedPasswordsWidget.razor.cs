@@ -8,7 +8,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             WidgetType = DashboardWidgetType.PasswordsChanged;
         }
 
-        List<IADUser> LockedUsers = new();
+        private List<IADUser> LockedUsers = new();
 
 
         protected override async Task RefreshDataAsync()

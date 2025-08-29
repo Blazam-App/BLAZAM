@@ -24,11 +24,13 @@ namespace BLAZAM.Gui.UI
             base.OnInitialized();
             Modal.YesEnabled = ValidateModal;
         }
+
         protected override void OnAfterRender(bool firstRender)
         {
             base.OnAfterRender(firstRender);
             ValidateModal();
         }
+
         protected MudForm? Form { get; set; }
 
         protected virtual bool IsValid { get; set; } = true;

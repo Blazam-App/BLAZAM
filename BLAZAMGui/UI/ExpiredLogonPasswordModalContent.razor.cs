@@ -5,12 +5,11 @@ namespace BLAZAM.Gui.UI
 {
     public partial class ExpiredLogonPasswordModalContent : AppModalContent
     {
-#nullable disable warnings
-        string newPassword = "";
-        string newPasswordConfirm = "";
-        MudSwitch<bool>? requireChangeSwitch;
+        private string newPassword = "";
+        private string newPasswordConfirm = "";
+        private MudSwitch<bool>? requireChangeSwitch;
 
-        bool _successful;
+        private bool _successful;
 
         [Parameter]
         public bool Successful
@@ -50,7 +49,7 @@ namespace BLAZAM.Gui.UI
 
 
                         SnackBarService.Success("Your password has been updated");
-                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.PasswordChange,
                             Entry = User,
@@ -80,7 +79,7 @@ namespace BLAZAM.Gui.UI
             await InvokeAsync(StateHasChanged);
         }
 
-        bool PasswordsValid
+        private bool PasswordsValid
         {
             get
             {

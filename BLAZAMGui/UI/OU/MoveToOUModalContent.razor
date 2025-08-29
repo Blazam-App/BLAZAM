@@ -47,7 +47,7 @@
             DirectoryModel.MoveTo(ouToMoveTo);
 
             SnackBarService.Warning(DirectoryModel.CanonicalName + " has been moved to " + ouToMoveTo.CanonicalName + ", but changes need to be saved.");
-            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Move,
                     Entry = DirectoryModel,

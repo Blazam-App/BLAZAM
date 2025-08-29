@@ -10,7 +10,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             WidgetType = DashboardWidgetType.NewOus;
         }
 
-        List<IADOrganizationalUnit> NewOUs
+        private List<IADOrganizationalUnit> NewOUs
         {
             get => CurrentUser.State.Cache.Get<List<IADOrganizationalUnit>>(this.GetType());
             set => CurrentUser.State.Cache.Set(this.GetType(), value);

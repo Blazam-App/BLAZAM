@@ -10,7 +10,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             WidgetType = DashboardWidgetType.NewGroups;
         }
 
-        List<IADGroup> NewGroups
+        private List<IADGroup> NewGroups
         {
             get => CurrentUser.State.Cache.Get<List<IADGroup>>(this.GetType());
             set => CurrentUser.State.Cache.Set(this.GetType(), value);

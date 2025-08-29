@@ -34,7 +34,7 @@ namespace BLAZAM.Services.Background
             _appLocalization = appLocalization;
             _emailService = emailService;
             _webHookPublisher = webHookPublisher;
-            ApplicationEvents.DirectoryEntryChanged.Delegate += ProcessDirectoryEntryChangedEvent;
+            ApplicationEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChangedEvent;
 
         }
         protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)

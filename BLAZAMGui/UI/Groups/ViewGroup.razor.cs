@@ -1,4 +1,3 @@
-using BLAZAM.Database.Models;
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
 using BLAZAM.Services.Events;
@@ -8,17 +7,17 @@ namespace BLAZAM.Gui.UI.Groups
 {
     public partial class ViewGroup : DirectoryEntryViewBase
     {
-        AppModal? AssignMemberModal;
+        private AppModal? AssignMemberModal;
 
 
 
-        IADGroup Group => DirectoryEntry as IADGroup;
+        private IADGroup Group => DirectoryEntry as IADGroup;
 
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
             await InvokeAsync(StateHasChanged);
-            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
                 Entry = Group,
@@ -30,7 +29,7 @@ namespace BLAZAM.Gui.UI.Groups
             await RefreshEntryComponents();
         }
 
-        async Task SaveChanges()
+        private async Task SaveChanges()
         {
             if (await MessageService.Confirm("Are you sure you want to save the changes to " + Group.CanonicalName + "?", "Save Changes"))
             {
@@ -44,7 +43,7 @@ namespace BLAZAM.Gui.UI.Groups
                 {
                     foreach (var assignment in assignTo)
                     {
-                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.Assign,
                             Entry = assignment.Member,
@@ -57,7 +56,7 @@ namespace BLAZAM.Gui.UI.Groups
 
                     foreach (var assignment in unassignFrom)
                     {
-                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.Unassign,
                             Entry = assignment.Member,
@@ -69,7 +68,7 @@ namespace BLAZAM.Gui.UI.Groups
                     }
                     if (changes.Any(c => c.Field != "member"))
                     {
-                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.Modify,
                             Entry = Group,
@@ -94,7 +93,7 @@ namespace BLAZAM.Gui.UI.Groups
             }
 
         }
-        async Task DeleteGroup()
+        private async Task DeleteGroup()
         {
             if (await MessageService.Confirm("Are you sure you want to delete " + Group.CanonicalName + "?", "Delete Group"))
             {
@@ -106,7 +105,7 @@ namespace BLAZAM.Gui.UI.Groups
                 {
                     Group.Delete();
                     SnackBarService.Success(Group.CanonicalName + " has been deleted.");
-                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                     {
                         EventType = ApplicationEventType.Delete,
                         Entry = Group,

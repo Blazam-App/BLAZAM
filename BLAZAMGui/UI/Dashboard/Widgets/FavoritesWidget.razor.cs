@@ -10,7 +10,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             WidgetType = DashboardWidgetType.FavoriteEntries;
         }
 
-        List<IDirectoryEntryAdapter> FavoriteEntries
+        private List<IDirectoryEntryAdapter> FavoriteEntries
         {
             get => CurrentUser.State.Cache.Get<List<IDirectoryEntryAdapter>>(this.GetType());
             set => CurrentUser.State.Cache.Set(this.GetType(), value);
