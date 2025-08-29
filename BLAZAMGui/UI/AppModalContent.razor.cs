@@ -31,9 +31,9 @@ namespace BLAZAM.Gui.UI
             ValidateModal();
         }
 
-        protected MudForm? Form { get; set; }
+        protected new MudForm? Form { get; set; }
 
-        protected virtual bool IsValid { get; set; } = true;
+        protected new virtual bool IsValid { get; set; } = true;
         private bool _lastIsValid;
         private bool ValidateModal()
         {
