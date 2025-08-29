@@ -19,13 +19,6 @@ using BLAZAM.Global.Enums;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
-using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.Protocols;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Security.Principal;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BLAZAM.ActiveDirectory
@@ -122,6 +115,10 @@ namespace BLAZAM.ActiveDirectory
                         conn?.Dispose();
                     }
                 }
+                if (connection != null)
+                {
+                    TryGetDomainControllers();
+                }
             });
 
             Users = new ADUserSearcher(this);
@@ -148,6 +145,7 @@ namespace BLAZAM.ActiveDirectory
             _wmiFactory = activeDirectoryContextSeed._wmiFactory;
             Status = activeDirectoryContextSeed.Status;
             EventLogReader = activeDirectoryContextSeed.EventLogReader;
+            DomainControllers = activeDirectoryContextSeed.DomainControllers;
 
             Users = new ADUserSearcher(this);
             Contacts = new ADContactSearcher(this);
@@ -322,6 +320,7 @@ namespace BLAZAM.ActiveDirectory
 
                 return CreateConnection(ad);
 
+
             }
             catch (UnresolvableAddressException ex)
             {
@@ -352,35 +351,6 @@ namespace BLAZAM.ActiveDirectory
                     FailedConnectionAttempts++;
 
             }
-            //catch (DirectoryServicesCOMException ex)
-            //{
-            //    ConnectionException = ex;
-            //    switch (ex.ExtendedError)
-            //    {
-            //        case -2146893044:
-            //            Loggers.ActiveDirectoryLogger.Information("Bad credentials for Active Directory {@Error}", ex);
-
-            //            Status = DirectoryConnectionStatus.BadCredentials;
-            //            break;
-
-            //        case 8235:
-            //            Loggers.ActiveDirectoryLogger.Information("Bad configuration for Active Directory {@Error}", ex);
-
-            //            Status = DirectoryConnectionStatus.BadConfiguration;
-            //            break;
-            //        case 8333:
-            //            Loggers.ActiveDirectoryLogger.Information("RootOU container not found in Active Directory {@Error}", ex);
-
-            //            Status = DirectoryConnectionStatus.ContainerNotFound;
-            //            break;
-            //        default:
-            //            Loggers.ActiveDirectoryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
-            //            Status = DirectoryConnectionStatus.ServerDown;
-            //            break;
-            //    }
-            //    if (FailedConnectionAttempts < 10)
-            //        FailedConnectionAttempts++;
-            //}
             catch (COMException ex)
             {
                 ConnectionException = ex;
@@ -443,6 +413,43 @@ namespace BLAZAM.ActiveDirectory
 
             return null;
         }
+
+        private DirectoryContext DirectoryContext => new(
+    DirectoryContextType.Domain,
+    ConnectionSettings.FQDN,
+    ConnectionSettings.Username,
+    ConnectionSettings.Password.Decrypt()
+    );
+
+        /// <summary>
+        /// Tries to get the domain controllers by connecting to the domain from the web server
+        /// </summary>
+        /// <remarks>
+        /// If the web host cannot contact the domain directly via DNS this will not populate <see cref="DomainControllers"/>
+        /// </remarks>
+        private void TryGetDomainControllers()
+        {
+            if (!OperatingSystem.IsWindows())
+            {
+                return;
+            }
+            try
+            {
+                //Clear local list of domain controllers
+                DomainControllers.Clear();
+
+                foreach (DomainController dc in Domain.GetDomain(DirectoryContext).DomainControllers)
+                {
+                    DomainControllers.Add(dc.Name);
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Warning("Could not get domain controllers directly {@Error}", ex);
+            }
+
+        }
+
         private bool IsCancelRequested
         {
             get
@@ -640,6 +647,7 @@ namespace BLAZAM.ActiveDirectory
             }
         }
 
+        public List<string> DomainControllers { get; private set; } = new();
 
         public IADUser? Authenticate(LoginRequest loginReq)
         {
@@ -711,7 +719,7 @@ namespace BLAZAM.ActiveDirectory
                                 {
                                     Loggers.ActiveDirectoryLogger.Information("Authenticating Active Directory credentials");
 
-                                    var _authenticatedContext = new DirectoryEntry(LDAP_PROTO + ConnectionSettings.ServerAddress + ":" + ConnectionSettings.ServerPort + "/" + ConnectionSettings.ApplicationBaseDN, loginReq.Username, loginReq.Password, AuthenticationTypes.Secure|AuthenticationTypes.Signing);
+                                    var _authenticatedContext = new DirectoryEntry(LDAP_PROTO + ConnectionSettings.ServerAddress + ":" + ConnectionSettings.ServerPort + "/" + ConnectionSettings.ApplicationBaseDN, loginReq.Username, loginReq.Password, AuthenticationTypes.Secure | AuthenticationTypes.Signing);
                                     _ = _authenticatedContext.AuthenticationType;
                                     var test2 = _authenticatedContext.Children.GetEnumerator();
                                     test2.MoveNext();

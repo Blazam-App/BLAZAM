@@ -1,6 +1,5 @@
 ﻿
 
-using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Security.Authentication;
 using System.Text;
@@ -18,7 +17,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class LdapDirectoryEntry : IDirectoryEntry
     {
-        public readonly DirectoryEntry UnderlyingEntry;
         private static Dictionary<string, AttributeSchemaInfo> _schemaCache { get; } = new();
         protected IActiveDirectoryContext Directory { get; set; }
         private bool disposedValue;
@@ -62,7 +60,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 // Fallback to returning just the DN if context is unavailable.
                 return DN;
             }
-            set => UnderlyingEntry.Path = value;
         }
         private bool _isNew = false;
         // NEW: Private constructor for creating a new, in-memory entry.
@@ -641,7 +638,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public string SchemaClassName => UnderlyingEntry.SchemaClassName;
 
         public string Name => GetPropertyValue("name")?.ToString();
 
@@ -992,13 +988,35 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return (T)connection?.SendRequest(request);
         }
 
+        public List<LdapDirectoryEntry> GetDomainControllers()
+        {
+            var domainDn = Directory.ConnectionSettings?.FQDN.FqdnToDN();
+            if (string.IsNullOrEmpty(domainDn)) return new();
+
+            string dcContainerDn = $"CN=Domain Controllers,{domainDn}";
+            var searchRequest = new SearchRequest(
+                dcContainerDn,
+                "(objectClass=server)",
+                SearchScope.OneLevel,
+                "distinguishedName", "name"
+            );
+
+            var response = SendRequestAndGetResponse<SearchResponse>(searchRequest);
+            var controllers = new List<LdapDirectoryEntry>();
+            foreach (SearchResultEntry entry in response.Entries)
+            {
+                controllers.Add(new LdapDirectoryEntry(entry, Directory));
+            }
+            return controllers;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
                 if (disposing)
                 {
-                    UnderlyingEntry?.Dispose();
+                   
                 }
 
                 disposedValue = true;

@@ -157,8 +157,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         [JsonIgnore]
-        public DirectoryEntry? DirectoryEntry { get; set; }
-        
+        public IDirectoryEntry? DirectoryEntry { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -639,6 +639,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         [JsonIgnore]
         public bool IsSelected { get; set; }
 
+        private readonly object _directoryEntriesLock = new();
+
         public virtual IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
         [JsonIgnore]
         public virtual IEnumerable<IDirectoryEntryAdapter> Children
@@ -649,57 +651,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     List<IDirectoryEntryAdapter> directoryEntries = [];
                     EnsureDirectoryEntry();
-                    var children = DirectoryEntry.Children;
+                    var children = DirectoryEntry.Children.ToList();
                     var list = new List<IDirectoryEntry>();
-                    foreach (IDirectoryEntry child in children)
+
+                    Parallel.ForEach<IDirectoryEntry>(children, child =>
                     {
-                        //    list.Add(child);
-                        //}
-                        //Parallel.ForEach<IDirectoryEntry>(list, child =>
-                        //{
-                        DirectoryEntryAdapter? thisObject = null;
 
-                        if (child.PropertyContains("objectClass", "top"))
+                        var entry = child.Encapsulate(Directory);
+                        if (entry != null)
                         {
-                            var raw = child.GetPropertyValue("objectClass");
-                            var objectClass = raw as object[];
-                            if (objectClass.Contains("computer"))
+                            lock (_directoryEntriesLock)
                             {
-                                thisObject = new ADComputer();
+                                directoryEntries.Add(entry);
                             }
-                            else if (objectClass.Contains("user"))
-                            {
-                                thisObject = new ADUser();
-                            }
-                            else if (objectClass.Contains("organizationalUnit"))
-                            {
-                                thisObject = new ADOrganizationalUnit();
-                            }
-                            else if (objectClass.Contains("group"))
-                            {
-                                thisObject = new ADGroup();
-                            }
-                            else if (objectClass.Contains("printQueue"))
-                            {
-                                thisObject = new ADPrinter();
-                            }
-
-                            else if (objectClass.Contains("msFVE-RecoveryInformation"))
-                            {
-                                thisObject = new ADBitLockerRecovery();
-                            }
-                            if (thisObject != null)
-                            {
-                                thisObject.Parse(directory: Directory, directoryEntry: child);
-                                lock (directoryEntries)
-                                {
-                                    directoryEntries.Add(thisObject);
-                                }
-
-                            }
-
                         }
-                    }//);
+
+                    });
                     CachedChildren = directoryEntries.OrderBy(x => x.CanonicalName).ThenBy(x => x.ObjectType);
                 }
                 return CachedChildren;
@@ -1201,7 +1168,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
 
-           
+
             catch (InvalidCastException ex)
             {
                 throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);

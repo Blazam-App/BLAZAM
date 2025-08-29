@@ -6,6 +6,7 @@ using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 
+
 namespace BLAZAM.ActiveDirectory.Data
 {
     public class DomainControllerEventLogReader
@@ -73,81 +74,96 @@ namespace BLAZAM.ActiveDirectory.Data
         {
 
             var events = new List<FailedADLogonEvent>();
-            //var dcNames = _directory.DomainControllers.Select(controller => controller.Name).ToList();
-            //Parallel.ForEach(dcNames, domainController =>
-            //{
-            //    _ = _directory.Impersonation.Run(() =>
-            //    {
-            //        try
-            //        {
-            //            EventLogSession session = new EventLogSession(domainController);
-            //            var eventLogQuery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=4625 or EventID=4771 or EventID=4740)]] and *[EventData[Data[@Name='TargetUserName'] and (Data='" + user.SAMAccountName + "' or Data='" + user.UserPrincipalName + "')]]");
-            //            eventLogQuery.Session = session;
 
-            //            var reader = new EventLogReader(eventLogQuery);
-            //            for (EventRecord eventdetail = reader.ReadEvent(); eventdetail != null; eventdetail = reader.ReadEvent())
-            //            {
-            //                FailedADLogonEvent? failedADLogonEvent = null;
-            //                switch (eventdetail.Id)
-            //                {
-            //                    case 4776:
-            //                        failedADLogonEvent = new FailedADLogonEvent
-            //                        {
-            //                            Sid = user.SID,
-            //                            Timestamp = eventdetail.TimeCreated,
-            //                            WorkstationName = eventdetail.GetEventProperty(2),
+            if (user.SID == null)
+            {
+                return events;
+            }
 
 
-            //                        };
-            //                        break;
-            //                    case 4771:
-            //                        failedADLogonEvent = new FailedADLogonEvent
-            //                        {
-            //                            Sid = user.SID,
-            //                            Timestamp = eventdetail.TimeCreated,
-            //                            WorkstationIp = eventdetail.GetEventProperty(6),
+            if (!OperatingSystem.IsWindows())
+            {
+                return events;
+            }
+            // Force load before impersonation
+            var _ = typeof(System.Diagnostics.EventLog);
 
-            //                        };
-            //                        break;
-            //                    case 4740:
-            //                        failedADLogonEvent = new FailedADLogonEvent
-            //                        {
-            //                            Sid = user.SID,
-            //                            Timestamp = eventdetail.TimeCreated,
-            //                            WorkstationName = eventdetail.GetEventProperty(1),
+            
+            //Parallel.ForEach(_directory.DomainControllers, domainController =>
+            foreach (var domainController in _directory.DomainControllers)
+            {
 
-            //                        };
-            //                        break;
-            //                    default:
-            //                        failedADLogonEvent = new FailedADLogonEvent
-            //                        {
-            //                            Sid = user.SID,
-            //                            Timestamp = eventdetail.TimeCreated,
-            //                            WorkstationIp = eventdetail.GetEventProperty(19),
-            //                            WorkstationName = eventdetail.GetEventProperty(13),
+                var ret = _directory.Impersonation.Run(() =>
+                {
+                    try
+                    {
+                        EventLogSession session = new EventLogSession(domainController);
+                        var eventLogQuery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=4625 or EventID=4771 or EventID=4740)]] and *[EventData[Data[@Name='TargetUserName'] and (Data='" + user.SAMAccountName + "' or Data='" + user.UserPrincipalName + "')]]");
+                        eventLogQuery.Session = session;
 
-            //                        };
-            //                        break;
-            //                }
-            //                lock (events)
-            //                {
-            //                    // Read Event details
-            //                    events.Add(failedADLogonEvent);
-            //                }
+                        var reader = new EventLogReader(eventLogQuery);
+                        for (EventRecord eventdetail = reader.ReadEvent(); eventdetail != null; eventdetail = reader.ReadEvent())
+                        {
+                            FailedADLogonEvent? failedADLogonEvent = null;
+                            switch (eventdetail.Id)
+                            {
+                                case 4776:
+                                    failedADLogonEvent = new FailedADLogonEvent
+                                    {
+                                        Sid = user.SID,
+                                        Timestamp = eventdetail.TimeCreated,
+                                        WorkstationName = eventdetail.GetEventProperty(2),
 
-            //            }
-            //            return true;
+                                    };
+                                    break;
+                                case 4771:
+                                    failedADLogonEvent = new FailedADLogonEvent
+                                    {
+                                        Sid = user.SID,
+                                        Timestamp = eventdetail.TimeCreated,
+                                        WorkstationIp = eventdetail.GetEventProperty(6),
+
+                                    };
+                                    break;
+                                case 4740:
+                                    failedADLogonEvent = new FailedADLogonEvent
+                                    {
+                                        Sid = user.SID,
+                                        Timestamp = eventdetail.TimeCreated,
+                                        WorkstationName = eventdetail.GetEventProperty(1),
+
+                                    };
+                                    break;
+                                default:
+                                    failedADLogonEvent = new FailedADLogonEvent
+                                    {
+                                        Sid = user.SID,
+                                        Timestamp = eventdetail.TimeCreated,
+                                        WorkstationIp = eventdetail.GetEventProperty(19),
+                                        WorkstationName = eventdetail.GetEventProperty(13),
+
+                                    };
+                                    break;
+                            }
+                            lock (events)
+                            {
+                                // Read Event details
+                                events.Add(failedADLogonEvent);
+                            }
+
+                        }
+                        return true;
 
 
 
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //           Loggers.ActiveDirectoryLogger.Information(ex, "Error reading events from {@DomainController}", domainController);
-            //            return false;
-            //        }
-            //    });
-            //});
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.ActiveDirectoryLogger.Information(ex, "Error reading events from {@DomainController}", domainController);
+                        return false;
+                    }
+                });
+            }
 
 
             return events.OrderByDescending(e => e.Timestamp).ToList();
