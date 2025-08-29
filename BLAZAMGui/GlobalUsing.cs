@@ -10,7 +10,6 @@ global using BLAZAM.Database.Models.Notifications;
 global using BLAZAM.Database.Models.Templates;
 global using BLAZAM.Database.Models.User;
 global using BLAZAM.Global.Events;
-global using BLAZAM.ActiveDirectory.Interfaces;
 global using BLAZAM.Database.Models.Templates;
 global using BLAZAM.Global.Exceptions;
 global using BLAZAM.Helpers;
