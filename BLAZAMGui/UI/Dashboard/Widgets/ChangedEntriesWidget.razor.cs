@@ -10,7 +10,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             WidgetType = DashboardWidgetType.ChangedEntries;
         }
 
-        private List<IDirectoryEntryAdapter> ChangdEntries
+        private List<IDirectoryEntryAdapter> ChangedEntries
         {
             get => CurrentUser.State.Cache.Get<List<IDirectoryEntryAdapter>>(this.GetType());
             set => CurrentUser.State.Cache.Set(this.GetType(), value);
@@ -21,7 +21,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             LoadingData = true;
             var search = new ADSearch(Directory);
             search.Fields.Changed = DateTime.Now.AddDays(-1);
-            ChangdEntries = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>()).Where(x => x.CanRead).ToList();
+            ChangedEntries = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>()).Where(x => x.CanRead).ToList();
             LoadingData = false;
 
         }

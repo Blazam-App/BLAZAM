@@ -23,7 +23,6 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             search.Fields.Changed = DateTime.Now.AddDays(-14);
             DeletedEntries = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
             LoadingData = false;
-            LoadingData = false;
 
         }
     }
