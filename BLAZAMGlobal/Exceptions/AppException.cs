@@ -1,6 +1,5 @@
 ﻿namespace BLAZAM.Global.Exceptions
 {
-    [Serializable]
     public class AppException : Exception
     {
         public AppException()
