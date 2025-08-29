@@ -2,9 +2,8 @@ using MudBlazor;
 
 namespace BLAZAM.Gui.UI
 {
-    public class AppModalContent : DirectoryModelComponent
+    public abstract class AppModalContent : DirectoryModelComponent
     {
-#nullable disable warnings
 
         [CascadingParameter] protected AppModal Modal { get; set; }
         [Parameter]

@@ -6,7 +6,7 @@
     /// 
     /// <para>This is primarily geared towards search result pages</para>
     /// </summary>
-    public class DirectoryEntryViewBase : DatabaseComponentBase
+    public abstract class DirectoryEntryViewBase : DatabaseComponentBase
     {
         [Inject]
         public NotificationGenerationService NotificationGenerationService { get; set; }
