@@ -133,7 +133,7 @@
     public EventCallback AssignToClicked { get; set; }
     bool showRemoveThumbnail = false;
 
-    async Task RemoveThumbnail()
+    void RemoveThumbnail()
     {
 
         Contact.ThumbnailPhoto = null;
