@@ -73,7 +73,7 @@ OnClick="GenerateGoogleAuthToken">@AppLocalization[Lang.Create_Google_Authentica
                 _authenticatorSecret = guid;
                 CurrentUser.State.Preferences.AuthenticatorSecret = guid.Encrypt();
                 await CurrentUser.State.SaveBasicUserPreferences();
-                OnCreated.InvokeAsync();
+                await OnCreated.InvokeAsync();
             }
         }
     }
