@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace BLAZAM.Services.Exceptions
+﻿namespace BLAZAM.Services.Exceptions
 {
-    [Serializable]
     public class MFARequestedException : AppException
     {
         public LoginRequest LoginRequest { get; set; }
@@ -22,9 +19,6 @@ namespace BLAZAM.Services.Exceptions
             LoginRequest = state;
         }
 
-        protected MFARequestedException(LoginRequest state, SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-            LoginRequest = state;
-        }
+
     }
 }

@@ -1,9 +1,5 @@
-﻿
-using System.Runtime.Serialization;
-
-namespace BLAZAM.Global.Exceptions
+﻿namespace BLAZAM.Global.Exceptions
 {
-    [Serializable]
     public class AuthenticationException : AppException
     {
         public AuthenticationException()
@@ -18,8 +14,6 @@ namespace BLAZAM.Global.Exceptions
         {
         }
 
-        protected AuthenticationException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+
     }
 }
