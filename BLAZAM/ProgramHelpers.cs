@@ -678,7 +678,7 @@ namespace BLAZAM
             PreloadNotificationGenerationService(application);
             InitializeUpdateService(application);
             PreloadWebHookPublisher(application);
-            StartApplicationStatisticsPolling(application);
+            StartApplicationStatisticsPolling();
 
             Loggers.SystemLogger.Information("Finished preloading/starting singleton services.");
         }
@@ -786,7 +786,7 @@ namespace BLAZAM
             }
         }
 
-        private static void StartApplicationStatisticsPolling(WebApplication application)
+        private static void StartApplicationStatisticsPolling()
         {
             try
             {

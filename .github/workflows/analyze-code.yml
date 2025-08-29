@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     name: Build and analyze
+    permissions:
+      contents: read
     runs-on: windows-latest
     steps:
       - name: Set up JDK 17

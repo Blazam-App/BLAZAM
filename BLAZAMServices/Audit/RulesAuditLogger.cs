@@ -16,7 +16,7 @@ namespace BLAZAM.Services.Audit
             Printer = new PrinterAudit(factory, ruleUserState);
             BitLocker = new BitLockerAudit(factory, ruleUserState);
             Email = new EmailAudit(factory);
-            ApplicationEvents.DirectoryEntryChanged.Delegate += TriggerDirectoryEntryChangedEvent;
+            ApplicationEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
 
         }
 

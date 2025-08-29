@@ -46,7 +46,7 @@
                 {
                     <ApplicationNewsItem Item=item
                                          Read=false
-                                         OnClick="@(()=>{ ShowNews(item); })"
+                                         OnClick="@(()=>{ _ = ShowNews(item); })"
                                          OnRead="@(()=>{
                                             RefreshItems();
                                             })" />

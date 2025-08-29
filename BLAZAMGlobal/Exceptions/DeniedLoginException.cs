@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace BLAZAM.Global.Exceptions
+﻿namespace BLAZAM.Global.Exceptions
 {
-    [Serializable]
     public class DeniedLoginException : AppException
     {
         public DeniedLoginException()
@@ -17,8 +14,5 @@ namespace BLAZAM.Global.Exceptions
         {
         }
 
-        protected DeniedLoginException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
     }
 }

@@ -29,7 +29,7 @@
 
             _computer = (IADComputer?)(await BitLocker.GetParentAsync());
 
-            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Search,
                     Entry = BitLocker,

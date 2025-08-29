@@ -10,7 +10,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             WidgetType = DashboardWidgetType.StaleComputers;
         }
 
-        List<IADComputer> StaleComputers
+        private List<IADComputer> StaleComputers
         {
             get => CurrentUser.State.Cache.Get<List<IADComputer>>("StaleComputers");
             set => CurrentUser.State.Cache.Set("StaleComputers", value);

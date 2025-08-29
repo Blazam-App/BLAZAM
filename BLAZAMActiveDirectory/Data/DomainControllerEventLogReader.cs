@@ -47,13 +47,14 @@ namespace BLAZAM.ActiveDirectory.Data
             //}
 
 
+
             return events;
         }
 
         private List<EventLogEntry> GetLogonEventsForComputer(string computerName, DateTime startTime, DateTime endTime)
         {
             var events = new List<EventLogEntry>();
-            var eventLog = new EventLog("Security", computerName);
+            using var eventLog = new EventLog("Security", computerName);
 
             foreach (EventLogEntry entry in eventLog.Entries)
             {
@@ -96,6 +97,7 @@ namespace BLAZAM.ActiveDirectory.Data
             //                            Timestamp = eventdetail.TimeCreated,
             //                            WorkstationName = eventdetail.GetEventProperty(2),
 
+
             //                        };
             //                        break;
             //                    case 4771:
@@ -135,6 +137,7 @@ namespace BLAZAM.ActiveDirectory.Data
 
             //            }
             //            return true;
+
 
 
             //        }

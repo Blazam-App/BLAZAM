@@ -1,14 +1,13 @@
-using BLAZAM.Database.Models;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Settings.Templates
 {
     public partial class EditDirectoryTemplate : ValidatedForm
     {
-        string? _testFirstName;
-        string? _testMiddleName;
-        string? _testLastName;
-        bool _showOuTree;
+        private string? _testFirstName;
+        private string? _testMiddleName;
+        private string? _testLastName;
+        private bool _showOuTree;
 
         [Parameter]
         public SetSubHeader? Header { get; set; }

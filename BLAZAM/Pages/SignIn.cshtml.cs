@@ -2,45 +2,42 @@ using BLAZAM.Common.Data;
 using BLAZAM.Services;
 using BLAZAM.Services.Audit;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BLAZAM.Server.Pages
 {
+    /// <summary>
+    /// Handles user sign-in operations for web clients, including authentication, impersonation, and audit logging.
+    /// Integrates with <see cref="AppAuthenticationStateProvider"/> for authentication and <see cref="WebUserAuditLogger"/> for logging user actions.
+    /// </summary>
     [IgnoreAntiforgeryToken]
     public class SignInModel : PageModel
     {
-        public SignInModel(AppAuthenticationStateProvider auth, NavigationManager _nav, ConnMonitor _monitor, WebUserAuditLogger logger)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SignInModel"/> class with authentication and audit logging services.
+        /// </summary>
+        /// <param name="auth">The authentication state provider.</param>
+        /// <param name="logger">The audit logger for user actions.</param>
+        public SignInModel(AppAuthenticationStateProvider auth, WebUserAuditLogger logger)
         {
-            Auth = auth;
-            Nav = _nav;
-            Monitor = _monitor;
-            AuditLogger = logger;
+            _auth = auth;
+            _auditLogger = logger;
         }
 
 
-        public string RedirectUri { get; set; }
-        public AppAuthenticationStateProvider Auth { get; }
-        public NavigationManager Nav { get; private set; }
-        public ConnMonitor Monitor { get; private set; }
-        public WebUserAuditLogger AuditLogger { get; private set; }
+        private readonly AppAuthenticationStateProvider _auth;
+        private readonly WebUserAuditLogger _auditLogger;
 
-        public void OnGet(string returnUrl = "")
-        {
-            ViewData["Layout"] = "_Layout";
-            if (returnUrl.IsUrlLocalToHost())
-            {
-                RedirectUri = returnUrl;
-            }
-        }
+
 
 
         /// <summary>
-        /// The authentication endpoint for web clients
+        /// Handles POST requests for user authentication, including login, impersonation, and audit logging.
+        /// Returns a JSON result with the login request outcome.
         /// </summary>
-        /// <param name="req"></param>
-        /// <returns></returns>
+        /// <param name="req">The login request containing user credentials and context.</param>
+        /// <returns>A <see cref="JsonResult"/> with the login outcome, or an <see cref="ObjectResult"/> with error details.</returns>
         public async Task<IActionResult> OnPost([FromFormAttribute] LoginRequest req)
         {
             try
@@ -58,7 +55,7 @@ namespace BLAZAM.Server.Pages
             try
             {
 
-                var result = await Auth.Login(req);
+                var result = await _auth.Login(req);
                 req.Password = null;
                 req.AuthenticationResult = result.AuthenticationResult;
                 if (result != null && (result.AuthenticationResult == LoginResultStatus.OK || result.AuthenticationResult == LoginResultStatus.DuoRequested))
@@ -70,12 +67,12 @@ namespace BLAZAM.Server.Pages
                         {
 
 
-                            await AuditLogger.Logon.Impersonate(User, result.AuthenticationState.User, req.IPAddress);
+                            await _auditLogger.Logon.Impersonate(User, result.AuthenticationState.User, req.IPAddress);
 
                         }
                         else
                         {
-                            await AuditLogger.Logon.Login(result.AuthenticationState.User, req.IPAddress);
+                            await _auditLogger.Logon.Login(result.AuthenticationState.User, req.IPAddress);
 
                         }
                     req.AuthenticationState = null;

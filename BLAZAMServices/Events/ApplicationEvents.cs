@@ -18,7 +18,7 @@
         /// <summary>
         /// Called when a directory entry is changed in some way
         /// </summary>
-        public static AppEvent<DirectoryEntryChangedArgs> DirectoryEntryChanged { get; set; } = new();
+        public static AppEvent<DirectoryEntryChangedArgs> DirectoryEntryEvent { get; set; } = new();
 
 
 

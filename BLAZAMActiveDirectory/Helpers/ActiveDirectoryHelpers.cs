@@ -190,6 +190,7 @@ namespace BLAZAM.Helpers
 
                 }
             }
+            r?.Dispose();
             return objects;
         }
 
@@ -291,7 +292,7 @@ namespace BLAZAM.Helpers
                 }
                 else
                 {
-                    Loggers.ActiveDirectoryLogger.Warning("Unable to match ad object type. {Object}", sr);
+                    Loggers.ActiveDirectoryLogger.Warning(new AppException("Unable to match ad object type"), "Unable to match ad object type. {Object}", sr);
 
                 }
             }

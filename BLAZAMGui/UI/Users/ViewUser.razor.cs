@@ -1,4 +1,3 @@
-using BLAZAM.Database.Models;
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
 using BLAZAM.Services.Events;
@@ -8,8 +7,7 @@ namespace BLAZAM.Gui.UI.Users
 {
     public partial class ViewUser : DirectoryEntryViewBase
     {
-#nullable disable warnings
-        string password;
+        private string password;
 
         [Parameter]
         public string Password
@@ -26,7 +24,7 @@ namespace BLAZAM.Gui.UI.Users
         public EventCallback<string> PasswordChanged { get; set; }
 
 
-        string confirmPassword;
+        private string confirmPassword;
         [Parameter]
         public string ConfirmPassword
         {
@@ -39,10 +37,14 @@ namespace BLAZAM.Gui.UI.Users
         }
         [Parameter]
         public EventCallback<string> ConfirmPasswordChanged { get; set; }
-        IGroupableDirectoryAdapter GroupableEntry => DirectoryEntry as IGroupableDirectoryAdapter;
-        IAccountDirectoryAdapter Account => DirectoryEntry as IAccountDirectoryAdapter;
-        IADUser User => DirectoryEntry as IADUser;
-        IADContact Contact => DirectoryEntry as IADContact;
+
+        private IGroupableDirectoryAdapter GroupableEntry => DirectoryEntry as IGroupableDirectoryAdapter;
+
+        private IAccountDirectoryAdapter Account => DirectoryEntry as IAccountDirectoryAdapter;
+
+        private IADUser User => DirectoryEntry as IADUser;
+
+        private IADContact Contact => DirectoryEntry as IADContact;
 
 
 
@@ -66,23 +68,21 @@ namespace BLAZAM.Gui.UI.Users
 
 
 
-           
-            if (Contact != null && !Contact.NewEntry)
+            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
             {
-                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
-                {
+               
                     EventType = ApplicationEventType.Search,
                     Entry = Contact,
                     Actor = CurrentUser.State
 
                 });
-            }
+            
             LoadingData = false;
             await RefreshEntryComponents();
 
         }
 
-        async Task SaveChanges()
+        private async Task SaveChanges()
         {
             if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_Save_Changes]))
             {
@@ -100,7 +100,7 @@ namespace BLAZAM.Gui.UI.Users
 
                         foreach (var assignment in assignTo)
                         {
-                            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Assign,
                                 Entry = assignment.Member,
@@ -114,7 +114,7 @@ namespace BLAZAM.Gui.UI.Users
 
                         foreach (var assignment in unassignFrom)
                         {
-                            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Unassign,
                                 Entry = assignment.Member,
@@ -126,7 +126,7 @@ namespace BLAZAM.Gui.UI.Users
                         }
                         if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                         {
-                            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Modify,
                                 Entry = User,
@@ -157,7 +157,7 @@ namespace BLAZAM.Gui.UI.Users
 
         }
 
-        async Task Unlock()
+        private async Task Unlock()
         {
             if (await MessageService.Confirm("Are you sure you want to unlock " + GroupableEntry.DisplayName + "?", "Unlock User"))
             {
@@ -168,7 +168,7 @@ namespace BLAZAM.Gui.UI.Users
             }
 
         }
-        async Task DeleteUser()
+        private async Task DeleteUser()
         {
             if (await MessageService.Confirm("Are you sure you want to delete " + GroupableEntry.DisplayName + "?", "Delete User"))
             {
@@ -180,7 +180,7 @@ namespace BLAZAM.Gui.UI.Users
                     GroupableEntry.Delete();
 
                     SnackBarService.Success(GroupableEntry.DisplayName + " has been deleted.");
-                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                     {
                         EventType = ApplicationEventType.Delete,
                         Entry = User,

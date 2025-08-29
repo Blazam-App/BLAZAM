@@ -1,27 +1,15 @@
 using BLAZAM.Services.Events;
-using MudBlazor;
 
 namespace BLAZAM.Gui.UI
 {
     public partial class ExpiredLogonPasswordModalContent : AppModalContent
     {
-#nullable disable warnings
-        string newPassword = "";
-        string newPasswordConfirm = "";
-        MudSwitch<bool>? requireChangeSwitch;
+        private string newPassword = "";
+        private string newPasswordConfirm = "";
 
-        bool _successful;
 
         [Parameter]
-        public bool Successful
-        {
-            get => _successful; set
-            {
-                if (_successful.Equals(value)) return;
-                _successful = value;
-                SuccessfulChanged.InvokeAsync(value);
-            }
-        }
+        public bool Successful { get; set; }
 
         [Parameter]
         public EventCallback<bool> SuccessfulChanged { get; set; }
@@ -37,7 +25,7 @@ namespace BLAZAM.Gui.UI
 
         public async Task SaveChanges()
         {
-            Modal.LoadingData = true;
+            LoadingData = true;
             await InvokeAsync(StateHasChanged);
             await Task.Run(async () =>
 
@@ -50,7 +38,7 @@ namespace BLAZAM.Gui.UI
 
 
                         SnackBarService.Success("Your password has been updated");
-                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.PasswordChange,
                             Entry = User,
@@ -59,6 +47,7 @@ namespace BLAZAM.Gui.UI
 
                         });
                         await InvokeAsync(() => { Successful = true; });
+                        await SuccessfulChanged.InvokeAsync(Successful);
                         await InvokeAsync(Close);
 
 
@@ -76,11 +65,11 @@ namespace BLAZAM.Gui.UI
 
             });
 
-            Modal.LoadingData = false;
+            LoadingData = false;
             await InvokeAsync(StateHasChanged);
         }
 
-        bool PasswordsValid
+        private bool PasswordsValid
         {
             get
             {

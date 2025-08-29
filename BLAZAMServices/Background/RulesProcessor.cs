@@ -34,7 +34,7 @@ namespace BLAZAM.Services.Background
         {
             if (!_initialized)
             {
-                ApplicationEvents.DirectoryEntryChanged.Delegate += ProcessDirectoryEntryChanged;
+                ApplicationEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChanged;
                 _initialized = true;
             }
             ScheduleRules();
@@ -489,7 +489,7 @@ namespace BLAZAM.Services.Background
             {
                 Audit = new(dbFactory, new RulesUserState(dbFactory, rule.Name));
 
-                ApplicationEvents.DirectoryEntryChanged.Invoke(this, new()
+                ApplicationEvents.DirectoryEntryEvent.Invoke(this, new()
                 {
                     Actor = new RulesUserState(dbFactory, rule.Name),
                     Changes = changes,

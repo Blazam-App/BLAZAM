@@ -21,7 +21,7 @@ namespace BLAZAM.Services.Audit
         public BaseAuditLogger(IAppDatabaseFactory factory, IApplicationUserState userState)
         {
             _factory = factory;
-            ApplicationEvents.DirectoryEntryChanged.Delegate += TriggerDirectoryEntryChangedEvent;
+            ApplicationEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
             System = new SystemAudit(factory);
             User = new UserAudit(factory, userState);
             Group = new GroupAudit(factory, userState);

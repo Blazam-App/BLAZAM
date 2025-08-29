@@ -16,14 +16,14 @@
 
         <SettingsField Label="@AppLocalization[Lang.Admin_bcc]">
             <MudTextField Label="@AppLocalization[Lang.Admin_bcc]"
-                          For=@(()=> settings.AdminBcc)
+                          For=@(() => settings.AdminBcc)
                           HelperText="Addresses to blind copy all application emails that are sent."
                           @bind-Value="settings.AdminBcc" />
         </SettingsField>
 
         <SettingsField Label="@AppLocalization[Lang.SMTP_Server]">
             <MudTextField Label="@AppLocalization[Lang.SMTP_Server]"
-                          For=@(()=> settings.SMTPServer)
+                          For=@(() => settings.SMTPServer)
                           @bind-Value="settings.SMTPServer" />
         </SettingsField>
 
@@ -62,7 +62,7 @@
             <SettingsField Label="@AppLocalization[Lang.SMTP_Username]">
 
                 <MudTextField Label="@AppLocalization[Lang.SMTP_Username]"
-                              For=@(()=> settings.SMTPUsername)
+                              For=@(() => settings.SMTPUsername)
                               @bind-Value="settings.SMTPUsername" />
             </SettingsField>
 
@@ -70,7 +70,7 @@
 
 
                 <MudTextField Label="@AppLocalization[Lang.SMTP_Password]"
-                              For=@(()=> settings.SMTPPassword)
+                              For=@(() => settings.SMTPPassword)
                               @bind-Value="settings.SMTPPassword" />
 
             </SettingsField>
@@ -79,14 +79,14 @@
 
 
             <MudTextField Label="@AppLocalization[Lang.From_Address]"
-                          For=@(()=> settings.FromAddress)
+                          For=@(() => settings.FromAddress)
                           @bind-Value="settings.FromAddress" />
         </SettingsField>
         <SettingsField Label="@AppLocalization[Lang.From_Display_Name]">
 
 
             <MudTextField Label="@AppLocalization[Lang.From_Display_Name]"
-                          For=@(()=> settings.FromName)
+                          For=@(() => settings.FromName)
                           @bind-Value="settings.FromName" />
 
         </SettingsField>
@@ -95,7 +95,7 @@
 
 
             <MudTextField Label="@AppLocalization[Lang.Reply_To_Address]"
-                          For=@(()=> settings.ReplyToAddress)
+                          For=@(() => settings.ReplyToAddress)
                           @bind-Value="settings.ReplyToAddress" />
 
         </SettingsField>
@@ -104,17 +104,17 @@
 
 
             <MudTextField Label="@AppLocalization[Lang.Reply_To_Display_Name]"
-                          For=@(()=> settings.ReplyToName)
+                          For=@(() => settings.ReplyToName)
                           @bind-Value="settings.ReplyToName" />
 
         </SettingsField>
 
         <MudTextField Label="@AppLocalization[Lang.Test_Recipient]"
-                      For=@(()=> testRecipient)
+                      For=@(() => testRecipient)
                       Disabled=@(!settings.Enabled)
                       @bind-Value=testRecipient />
 
-        <MudButton Disabled=@((!settings.Enabled && !settings.Valid())||LoadingData)
+        <MudButton Disabled=@((!settings.Enabled && !settings.Valid()) || LoadingData)
                    @onclick="SendTestEmail"
                    Color="Color.Success">Send Test Email</MudButton>
         @if (ApplicationInfo.InDebugMode && emailPreview != null)
@@ -138,7 +138,7 @@
     </MudStack>
 </MudForm>
 @code {
-#nullable disable warnings
+
     string? emailPreview = null;
     BLAZAM.Database.Models.EmailSettings settings = new BLAZAM.Database.Models.EmailSettings();
     string testRecipient;
@@ -156,9 +156,13 @@
                 settings = set;
             }
         }
-        if (EmailService.IsConfigured)
-            emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
-
+        _ = Task.Run(() =>
+            {
+                if (EmailService.IsConfigured)
+                    emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
+                InvokeAsync(StateHasChanged);
+            });
+      
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
     }

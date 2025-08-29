@@ -1,4 +1,6 @@
 @inherits AppComponentBase
+@if(Entry!=null && !Entry.IsDeleted)
+{
 <AppTooltipPopover>
     <ActivatorContent>
         @ChildContent
@@ -79,8 +81,13 @@
 
         </MudElement>
     </PopoverContent>
-</AppTooltipPopover>
+    </AppTooltipPopover>
+}
+else
+{
 
+    @ChildContent
+}
 
 @code {
     [Parameter]

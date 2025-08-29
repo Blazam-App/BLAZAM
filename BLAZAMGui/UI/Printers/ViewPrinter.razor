@@ -133,7 +133,7 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
                 Entry = Printer,

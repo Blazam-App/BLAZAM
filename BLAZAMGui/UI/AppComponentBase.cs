@@ -8,7 +8,7 @@ using BLAZAM.Services.Duo;
 namespace BLAZAM.Gui.UI
 {
 
-    public class AppComponentBase : ComponentBase, IDisposable
+    public abstract class AppComponentBase : ComponentBase, IDisposable
     {
         [Inject]
         protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }

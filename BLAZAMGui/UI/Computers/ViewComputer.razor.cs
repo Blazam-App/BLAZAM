@@ -1,5 +1,3 @@
-using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
@@ -26,7 +24,7 @@ namespace BLAZAM.Gui.UI.Computers
             }
             if (Computer != null)
             {
-                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Search,
                     Entry = Computer,
@@ -67,7 +65,7 @@ namespace BLAZAM.Gui.UI.Computers
 
                     Computer.Delete(true);
                     SnackBarService.Success(Computer.CanonicalName + " has been deleted.");
-                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                     {
                         EventType = ApplicationEventType.Delete,
                         Entry = Computer,
@@ -85,7 +83,7 @@ namespace BLAZAM.Gui.UI.Computers
                 await RefreshEntryComponents();
             }
         }
-        async void SaveChanges()
+        async Task SaveChanges()
         {
             if (Computer == null || !await MessageService.Confirm("Are you sure you want to save the changes?"))
                 return;
@@ -108,7 +106,7 @@ namespace BLAZAM.Gui.UI.Computers
                     var nonMemberOfChanges = changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList();
                     if (nonMemberOfChanges.Any())
                     {
-                        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.Modify,
                             Entry = Computer,
@@ -141,7 +139,7 @@ namespace BLAZAM.Gui.UI.Computers
         {
             foreach (var assignment in assignments)
             {
-                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = eventType,
                     Entry = assignment.Member,

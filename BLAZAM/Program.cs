@@ -329,6 +329,7 @@ namespace BLAZAM
                     {
                         ApplicationInfo.listeningAddresses = ApplicationInfo.listeningAddresses.Append(address);
                         Loggers.SystemLogger.Information("Application host is listening on: {@Address}", address);
+                        Console.WriteLine($"Application host is listening on: {address}");
                     }
                 }
                 else

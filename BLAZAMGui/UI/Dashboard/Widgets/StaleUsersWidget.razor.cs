@@ -10,7 +10,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             WidgetType = DashboardWidgetType.StaleUsers;
         }
 
-        List<IADUser> StaleUsers
+        private List<IADUser> StaleUsers
         {
             get => CurrentUser.State.Cache.Get<List<IADUser>>("StaleUsers");
             set => CurrentUser.State.Cache.Set("StaleUsers", value);

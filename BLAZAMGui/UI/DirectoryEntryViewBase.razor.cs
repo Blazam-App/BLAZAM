@@ -1,6 +1,4 @@
-﻿using BLAZAM.Database.Models;
-
-namespace BLAZAM.Gui.UI
+﻿namespace BLAZAM.Gui.UI
 {
     /// <summary>
     /// Provides a generic <see cref="IDirectoryEntryAdapter"/> parameter and the modals used on view pages.
@@ -8,7 +6,7 @@ namespace BLAZAM.Gui.UI
     /// 
     /// <para>This is primarily geared towards search result pages</para>
     /// </summary>
-    public class DirectoryEntryViewBase : DatabaseComponentBase
+    public abstract class DirectoryEntryViewBase : DatabaseComponentBase
     {
         [Inject]
         public NotificationGenerationService NotificationGenerationService { get; set; }
@@ -67,15 +65,9 @@ namespace BLAZAM.Gui.UI
             EditMode = !EditMode;
         }
 
-        private bool _savingChanges;
         protected bool SavingChanges
         {
-            get => _savingChanges; set
-            {
-                if (_savingChanges = value) return;
-                _savingChanges = value;
-
-            }
+            get; set;
         }
         /// <summary>
         /// Prompts the user for confirmation and sends a discard changes call to the <see cref="IDirectoryEntryAdapter"/> to remove changes if accepted

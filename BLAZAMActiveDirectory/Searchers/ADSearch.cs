@@ -124,7 +124,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
             if (cancellationToken?.IsCancellationRequested == true)
                 return new();
             InitializeSearch();
-            DirectorySearcher searcher;
             try
             {
                 SearchRoot ??= ActiveDirectoryContext.SystemInstance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
@@ -144,6 +143,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 //    SizeLimit = MaxResults,
                 //    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(objectClass=contact)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
                 //};
+
                 if (EnabledOnly == false)
                 {
                     //LdapFilter = LdapFilter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "");

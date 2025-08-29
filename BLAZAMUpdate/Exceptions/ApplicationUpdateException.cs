@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace BLAZAM.Update.Exceptions
+﻿namespace BLAZAM.Update.Exceptions
 {
-    [Serializable]
     public class ApplicationUpdateException : AppException
     {
         public ApplicationUpdateException()
@@ -17,8 +14,5 @@ namespace BLAZAM.Update.Exceptions
         {
         }
 
-        protected ApplicationUpdateException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
     }
 }

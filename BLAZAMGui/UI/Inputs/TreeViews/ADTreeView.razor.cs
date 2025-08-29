@@ -4,7 +4,6 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 {
     public partial class ADTreeView : OUTreeViewBase
     {
-#nullable disable warnings
         /// <summary>
         /// If true all directory entry types will be listed.
         /// If false, only OU's will be shown.
@@ -20,21 +19,21 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
 
 
-        protected override IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(IDirectoryEntryAdapter? parent)
+        protected override IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(IDirectoryEntryAdapter? parent)
         {
             try
             {
-                if (parent.IsExpanded || parent.Children != null)
+                if (parent?.IsExpanded == true || parent?.CachedChildren != null)
                 {
                     return GetChildren(parent).ToTreeItemData();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return null;
+                Loggers.ActiveDirectoryLogger.Information(ex, "Error getting children for {@Parent}", parent);
 
             }
-            return null;
+            return [];
 
         }
         protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>> GetChildrenAsync(IDirectoryEntryAdapter parentNode)
