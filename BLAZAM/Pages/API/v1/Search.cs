@@ -10,9 +10,11 @@ namespace BLAZAM.Pages.API.v1
     /// <summary>
     /// Searches Active Directory.
     /// </summary>
-    [Produces("application/json")]
-    public partial class Search(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : ApiController(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
+    public partial class Search : ApiControllerBase
     {
+        public Search(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
+        {
+        }
 
 
 
