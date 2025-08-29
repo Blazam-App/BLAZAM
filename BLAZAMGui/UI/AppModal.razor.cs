@@ -26,7 +26,7 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public bool AllowClose
         {
-            get => Options.CloseButton == true; set
+            get => Options?.CloseButton == true; set
             {
                 if (Options == null)
                     Options = new()
