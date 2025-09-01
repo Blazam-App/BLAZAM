@@ -91,6 +91,7 @@ namespace BLAZAM.Database.Models
                         case "l":
                         case "company":
                         case "department":
+                        case "description":
                         case "employeeId":
                         case "givenname":
                         case "homeDirectory":
@@ -153,6 +154,7 @@ namespace BLAZAM.Database.Models
                     switch (FieldName)
                     {
                         case "memberOf":
+                        case "description":
                         case "operatingSystemVersion":
                         case "msLAPS-Password":
                         case "site":
@@ -163,6 +165,7 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.Group:
                     switch (FieldName)
                     {
+                        case "description":
                         case "mail":
                         case "memberOf":
                         case "site":
