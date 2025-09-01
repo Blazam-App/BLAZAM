@@ -283,7 +283,7 @@
 
 
                             <MudStack Class="d-flex justify-center align-center mud-height-full">
-                                <MudDataGrid Items="@DirectoryTemplate.EffectiveFieldValues.Where(fv=>(fv.Field!=null &&  fv.Field.DeletedAt==null)||(fv.CustomField !=null && fv.CustomField.DeletedAt == null)).OrderBy(fv => fv.FieldDisplayName)"
+                                <MudDataGrid Items="@DirectoryTemplate.EffectiveFieldValues.Where(fv=>fv.DeletedAt==null).OrderBy(fv => fv.FieldDisplayName)"
                                              Dense=true
                                              Striped=true
                                              Bordered=true

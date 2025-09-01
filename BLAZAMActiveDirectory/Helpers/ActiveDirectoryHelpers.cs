@@ -104,7 +104,7 @@ namespace BLAZAM.Helpers
         /// <param name="newUserName">The new user's name details</param>
         public static void PopulateFields(this DirectoryTemplate template, IADUser user, NewUserName newUserName)
         {
-            foreach (var fieldValue in template.EffectiveFieldValues)
+            foreach (var fieldValue in template.EffectiveFieldValues.Where(fv => fv.DeletedAt == null))
             {
                 try
                 {
