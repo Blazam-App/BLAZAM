@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using BLAZAM.Common.Data;
 
 namespace BLAZAM.Database.Models
@@ -26,9 +27,10 @@ namespace BLAZAM.Database.Models
     /// <summary>
     /// Represents a built-in standard Active Directory attribute
     /// </summary>
-    public class ActiveDirectoryField : AppDbSetBase, IActiveDirectoryField
+    public class ActiveDirectoryField : RecoverableAppDbSetBase, IActiveDirectoryField
     {
-
+        [NotMapped]
+        public new DateTime? DeletedAt { get => null; set { _ = value; return; } }
 
         [Required]
         public string FieldName { get; set; }
