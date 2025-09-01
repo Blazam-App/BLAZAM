@@ -311,7 +311,7 @@
             @if (Entry.CanReadAnyCustomFields)
             {
                 <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
-                    @foreach (var field in DirectoryTemplate.EffectiveFieldValues.Where(f => f.CustomField != null))
+                    @foreach (var field in DirectoryTemplate.EffectiveFieldValues.Where(f => f.CustomField != null && f.DeletedAt==null))
                     {
                         @if (field.CustomField != null)
                         {
