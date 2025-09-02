@@ -54,8 +54,10 @@ namespace BLAZAM.Services.Background
                         PostNotification(args, NotificationType.Delete, isSQLite);
                         break;
                     case ApplicationEventType.Create:
-                    case ApplicationEventType.PasswordChange:
                         PostNotification(args, NotificationType.Create, isSQLite);
+                        break;
+                    case ApplicationEventType.PasswordChange:
+                        PostNotification(args, NotificationType.PasswordChange, isSQLite);
                         break;
                     case ApplicationEventType.Assign:
                         PostNotification(args, NotificationType.Assign, isSQLite, args.Target);
