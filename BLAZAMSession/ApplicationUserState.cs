@@ -250,8 +250,15 @@ namespace BLAZAM.Session
                     var dbUserSettings = await context.UserSettings.Include(u => u.ReadNewsItems).FirstOrDefaultAsync(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid));
                     if (dbUserSettings != null)
                     {
+                        foreach (var newsItem in Preferences.ReadNewsItems)
+                        {
+                            if (newsItem.Id == 0)
+                            {
+                                dbUserSettings.ReadNewsItems.Add(newsItem);
+
+                            }
+                        }
                         // Simple replacement for now, more complex merging might be needed depending on exact requirements
-                        dbUserSettings.ReadNewsItems = Preferences.ReadNewsItems ?? new List<ReadNewsItem>();
                         await context.SaveChangesAsync();
                     }
                 }
