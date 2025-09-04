@@ -13,5 +13,9 @@
         </MudLink>
     </MudText>
 
+}else{
+      <MudText Class="mud-width-full mb-3" Align="Align.Center">
+            @(DatabaseCache.ApplicationSettings?.AppName ?? "Blazam")
+    </MudText>
 }
 
