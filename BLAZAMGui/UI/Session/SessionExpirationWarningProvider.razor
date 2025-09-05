@@ -17,7 +17,7 @@
 <AppModal Title=@AppLocalization[Lang.Session_Expired]
           @ref="ExpiredModal"
           YesText=@AppLocalization[Lang.Log_In]
-          OnYes="@(()=>{Refresh();
+          OnYes="@(()=>{Refresh(false);
           return Task.CompletedTask;
            })"
           Options=@(new DialogOptions{

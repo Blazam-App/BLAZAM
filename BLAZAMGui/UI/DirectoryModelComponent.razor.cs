@@ -94,24 +94,55 @@ namespace BLAZAM.Gui.UI
                 LoadingData = false;
 
             }
-            if (Group != null)
-                Group.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
             if (Entry != null)
-                Entry.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
+            {
+                Entry.OnModelChanged.Delegate += Refresh;
+            }
+            else if (Computer != null)
+            {
+                Computer.OnModelChanged.Delegate += Refresh;
+            }
+            else if (OU != null)
+            {
+                OU.OnModelChanged.Delegate += Refresh;
+            }
+            else if (Group != null)
+            {
+                Group.OnModelChanged.Delegate += Refresh;
+            }
 
-            if (Computer != null)
-                Computer.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
-
-            if (OU != null)
-                OU.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
             if (Context != null)
+            {
                 CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
+            }
+
             await InvokeAsync(StateHasChanged);
 
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            if (Entry != null)
+            {
+                Entry.OnModelChanged.Delegate -= Refresh;
+            }
+            else if (Computer != null)
+            {
+                Computer.OnModelChanged.Delegate -= Refresh;
+            }
+            else if (OU != null)
+            {
+                OU.OnModelChanged.Delegate -= Refresh;
+            }
+            else if (Group != null)
+            {
+                Group.OnModelChanged.Delegate -= Refresh;
+            }
+        }
 
 
         protected async Task RefreshUserGroups()

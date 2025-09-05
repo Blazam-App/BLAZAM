@@ -13,7 +13,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public List<IRemoteSession> ConnectedSessions { get; set; } = new();
         private readonly IADComputer Computer;
 
-        public AppDelegate ConnectedSessionsChanged { get; set; }
+        public AppEvent ConnectedSessionsChanged { get; set; } = new();
         public ADComputerSessions(IADComputer host)
         {
             Computer = host;

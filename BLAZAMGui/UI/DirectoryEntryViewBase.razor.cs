@@ -45,17 +45,26 @@
             await base.OnInitializedAsync();
             if (DirectoryEntry != null)
             {
-                DirectoryEntry.OnModelChanged += async () =>
-                {
-                    await RefreshEntryComponents();
-                };
+                DirectoryEntry.OnModelChanged.Delegate += RefreshEntryComponents;
 
-                DirectoryEntry.OnDirectoryModelRenamed += Renamed;
+                DirectoryEntry.OnDirectoryModelRenamed.Delegate += Renamed;
 
             }
             if (Context != null)
                 CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
             LoadingData = false;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            if (DirectoryEntry != null)
+            {
+                DirectoryEntry.OnModelChanged.Delegate -= RefreshEntryComponents;
+
+                DirectoryEntry.OnDirectoryModelRenamed.Delegate -= Renamed;
+
+            }
         }
         /// <summary>
         /// Toggles <see cref="EditMode"/>
@@ -101,7 +110,7 @@
         /// Called when an entry is renamed to update the current url
         /// </summary>
         /// <param name="renamedEntry"></param>
-        protected void Renamed(IDirectoryEntryAdapter renamedEntry)
+        protected void Renamed(object? state, IDirectoryEntryAdapter renamedEntry)
         {
             Nav.NavigateTo(renamedEntry.SearchUri);
         }
@@ -114,6 +123,11 @@
         {
             SubHeader?.Refresh();
             await InvokeAsync(StateHasChanged);
+        }
+        protected void RefreshEntryComponents(object? state, object? args)
+        {
+            SubHeader?.Refresh();
+            InvokeAsync(StateHasChanged);
         }
     }
 }

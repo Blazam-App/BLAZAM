@@ -4,8 +4,8 @@ namespace BLAZAM.Notifications.Services
 {
     public interface INotificationPublisher
     {
-        AppDelegate<List<UserNotification>> OnNotificationPublished { get; set; }
-        AppDelegate OnNotificationDeleted { get; set; }
+        AppEvent<List<UserNotification>> OnNotificationPublished { get; set; }
+        AppEvent OnNotificationDeleted { get; set; }
 
         Task<bool> DeleteNotification(NotificationMessage notificationMessage, AppUser user);
 

@@ -25,7 +25,7 @@ namespace BLAZAM.Services.Background
                                                                         && (x.ScheduledAt == null
                                                                         || x.ScheduledAt < DateTime.Now)
                                                                         && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now));
-        public AppDelegate OnNewItemsAvailable { get; set; }
+        public AppEvent OnNewItemsAvailable { get; set; } = new();
 
         public ApplicationNewsService(IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(dbFactory, appLocalization)
         {

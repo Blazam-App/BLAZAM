@@ -51,7 +51,7 @@
                     <AppModal Title=@AppLocalization[Lang.Rename] @ref=@RenameModal>
                         @if (RenameModal?.IsShown == true)
                         {
-                            <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser) => { Renamed(renamedUser); }) Computer="Computer" />
+                            <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser) => { Renamed(null,renamedUser); }) Computer="Computer" />
                         }
                     </AppModal>
 
