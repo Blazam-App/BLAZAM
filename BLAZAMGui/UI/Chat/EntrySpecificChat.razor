@@ -127,7 +127,7 @@
     {
         base.Dispose();
 
-        ViewersChanged.Delegate += Refresh;
+        ViewersChanged.Delegate -= Refresh;
     }
     private void AddThisViewer()
     {
