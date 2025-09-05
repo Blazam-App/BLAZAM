@@ -1,9 +1,8 @@
 ﻿@inherits OUTreeViewBase
 
 <MudText>@Label</MudText>
-@if (GuiOU != null && GuiOU.Count > 0)
-{
-    <MudTreeView T="IDirectoryEntryAdapter"
+
+<MudTreeView T="IDirectoryEntryAdapter"
              ServerData="GetChildrenAsync"
              Items="GuiOU"
              Dense="true"
@@ -20,7 +19,7 @@
                          Icon="@context.Value?.TypeIcon()"
                          IconColor=@GetItemColor(context.Value)
                          Class="minw-max w-100 overflow-x-auto"
-                         CanExpand=@(CanExpand(context))
+                         CanExpand=@(context.Value is IADOrganizationalUnit)
                          EndText="@EndText?.Invoke(context.Value)"
                          Context="itemContext">
 
@@ -28,7 +27,7 @@
     </ItemTemplate>
 
 </MudTreeView>
-}
+
 @if (RootOU == null || !RootOU.Any() || LoadingData)
 {
     <MudProgressLinear Style="min-width:200px;" Color="Color.Secondary" Indeterminate="true" />

@@ -4,7 +4,7 @@
 @if (GuiOU != null && GuiOU.Count > 0)
 {
     <MudTreeView T="IDirectoryEntryAdapter"
-    ServerData="GetOUChildrenAsync"
+             ServerData="GetOUChildrenAsync"
              Items="GuiOU"
              @ref=treeView
              Dense="true"
@@ -23,7 +23,7 @@
                          Icon="@Icons.Material.Filled.Folder"
                          IconColor=@(GetIconColor(context))
                          Class="minw-max w-100"
-                         CanExpand=@(CanExpand(context))
+                         CanExpand=@(context.Value is IADOrganizationalUnit)
                          Context="treeContext"
                          EndText="@EndText?.Invoke(context.Value)">
 
