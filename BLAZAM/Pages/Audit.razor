@@ -13,64 +13,88 @@
 
 
 <AppPageTitle>@AppLocalization[Lang.Audit]</AppPageTitle>
-    <SetHeader>
-        <MudText>@AppLocalization[Lang.Audit]</MudText>
-    </SetHeader>
-    <MudText Typo="Typo.h4">@AppLocalization[Lang.Audit]</MudText>
+<SetHeader>
+    <MudText>@AppLocalization[Lang.Audit]</MudText>
+</SetHeader>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Audit]</MudText>
 
 
 
-    <MudTabs @bind-ActivePanelIndex="@ActiveTab">
-        <MudTabPanel>
-            <ChildContent>
-                <MudDataGrid Virtualize=true
-                             Height="600px"
-                             ColumnResizeMode="ResizeMode.Container"
-                             FixedHeader=true
-                             Hideable=true
-                             Items="@auditEntries.Where(ae=>ae.Action!="Login" && ae.Action!="Logout").OrderByDescending(ae=>ae.Timestamp)"
-                             Filterable="false"
-                             SortMode="@SortMode.Multiple"
-                             Groupable="false">
-                    <Columns>
-                        @* <PropertyColumn Property="x => x.Timestamp.ToLocalTime()"   Sortable="true" /> *@
-                        <TemplateColumn Title=@AppLocalization[Lang.Timestamp] Sortable="true">
-                            <CellTemplate>
-                                <MudText>
-                                    @context.Item.Timestamp.ToLocalTime()
+<MudTabs @bind-ActivePanelIndex="@ActiveTab">
+    <MudTabPanel>
+        <ChildContent>
+            <MudDataGrid Virtualize=true
+                         Height="600px"
+                         ColumnResizeMode="ResizeMode.Container"
+                         FixedHeader=true
+                         Hideable=true
+                         Items="@auditEntries.Where(ae => ae.Action != "Login" && ae.Action != "Logout").OrderByDescending(ae => ae.Timestamp)"
+                         Filterable="false"
+                         SortMode="@SortMode.Multiple"
+                         Groupable="false">
+                <Columns>
+                    <PropertyColumn Property="x=>x.Timestamp" Title=@AppLocalization[Lang.Timestamp] Sortable="true">
+                        <CellTemplate>
+                            <MudText>
+                                @context.Item.Timestamp.ToLocalTime()
                             </MudText>
                         </CellTemplate>
-                    </TemplateColumn>
+                    </PropertyColumn>
                     <PropertyColumn Property="x => x.Username" Filterable="true" Title="@AppLocalization[Lang.Username]" />
-                    <TemplateColumn Title=@AppLocalization[Lang.IP_Address] Filterable="true">
-                        <CellTemplate>
-                            <IPAddress>
-                                @context.Item.IpAddress
-                            </IPAddress>
-                        </CellTemplate>
-                    </TemplateColumn>
-                    <TemplateColumn Title="@AppLocalization[Lang.Action]">
+                    @if (!ApplicationInfo.InDemoMode)
+                    {
+                        <PropertyColumn Property="x => x.IpAddress" Title=@AppLocalization[Lang.IP_Address]
+                                        Filterable="true">
+                            <CellTemplate>
+                                <IPAddress>
+                                    @context.Item.IpAddress
+                                </IPAddress>
+                            </CellTemplate>
+                        </PropertyColumn>
+                    }
+                    else
+                    {
+                        <TemplateColumn Title=@AppLocalization[Lang.IP_Address]>
+                            <CellTemplate>
+                                <IPAddress>
+                                    @context.Item.IpAddress
+                                </IPAddress>
+                            </CellTemplate>
+                        </TemplateColumn>
+                    }
+                    <PropertyColumn Property="x => x.Action"
+                                    Filterable=true
+                                    Title="@AppLocalization[Lang.Action]">
                         <CellTemplate>
                             <MudText>@AppLocalization[context.Item.Action]</MudText>
-                            </CellTemplate>
-                        </TemplateColumn>
-                        <TemplateColumn Title="@AppLocalization[Lang.Target]">
-                            <CellTemplate>
-                                <MudLink Href="@("/view/"+context.Item.Target)">@context.Item.Target</MudLink>
-                            </CellTemplate>
-                        </TemplateColumn>
-                        <PropertyColumn Property="x => x.BeforeAction" Filterable="true" Title="@AppLocalization[Lang.Before_Action]" />
-                        <PropertyColumn Property="x => x.AfterAction" Filterable="true" Title="@AppLocalization[Lang.After_Action]" />
+                        </CellTemplate>
+                    </PropertyColumn>
 
-                    </Columns>
-                </MudDataGrid>
+                    <PropertyColumn Property="x => x.Target"
+                                    Filterable=true
+                                    Title="@AppLocalization[Lang.Target]">
+                        <CellTemplate>
+                            <MudLink Href="@("/view/" + context.Item.Target)">@context.Item.Target</MudLink>
+                        </CellTemplate>
+                    </PropertyColumn>
+
+                    <PropertyColumn Property="x => x.BeforeAction"
+                                    Filterable="true"
+                                    Title="@AppLocalization[Lang.Before_Action]" />
+
+                    <PropertyColumn Property="x => x.AfterAction"
+                                    Filterable="true"
+                                    Title="@AppLocalization[Lang.After_Action]" />
+
+                </Columns>
+            </MudDataGrid>
 
 
 
 
-            </ChildContent>
-            <TabContent>
-                @AppLocalization[Lang.Main]
+        </ChildContent>
+        <TabContent>
+            @AppLocalization[Lang.Main]
         </TabContent>
     </MudTabPanel>
     <MudTabPanel>
@@ -83,7 +107,7 @@
                          FixedHeader=true
                          ColumnResizeMode="ResizeMode.Container"
                          Hideable=true
-                         Items="@logonEntries.OrderByDescending(ae=>ae.Timestamp)"
+                         Items="@logonEntries.OrderByDescending(ae => ae.Timestamp)"
                          Filterable="false"
                          SortMode="@SortMode.Multiple"
                          Groupable="false">
@@ -132,7 +156,7 @@
                              ColumnResizeMode="ResizeMode.Container"
                              FixedHeader=true
                              Hideable=true
-                             Items="@systemAuditEntries.OrderByDescending(ae=>ae.Timestamp)"
+                             Items="@systemAuditEntries.OrderByDescending(ae => ae.Timestamp)"
                              Filterable="false"
                              SortMode="@SortMode.Multiple"
                              Groupable="false">
