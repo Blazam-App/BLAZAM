@@ -254,9 +254,7 @@
                 @*TODO: The following binding cause the next button to not update when validation is reached, updates are controlled from
                 this element
                 *@
-                <ViewUser DirectoryEntry="@newContact"
-                          @bind-ConfirmPassword=@customConfirmPassword
-                          @bind-Password=customPassword />
+                <ViewUser DirectoryEntry="@newContact" />
                 <MudButton Color=Color.Primary
                            OnClick="@(()=>{SelectedStep=4;})">
                     @AppLocalization[Lang.Back]
@@ -264,10 +262,7 @@
                 <MudButton Color=Color.Success
                            OnClick="@(()=>{
                                             SelectedStep=7;
-                                            if(newUser!=null && newUser?.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
-                                                newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
-                                            })"
-                           Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
+                                            })">
                     @AppLocalization[Lang.Next]
                 </MudButton>
             </ChildContent>
@@ -281,7 +276,7 @@
                 @AppLocalization[Lang.Confirm]
             </TabContent>
             <ChildContent>
-                <ConfirmNewUser @bind-Contact="@newContact"
+                <ConfirmNewUser Contact="@newContact"
                                 Confirmed="_userCreated"
                                 DirectoryTemplate="SelectedTemplate"
                                 OnConfirmed="UserConfirmed" />
@@ -360,7 +355,11 @@
                     if (customUserDisplayName == null) SnackBarService.Error(AppLocalization["No display name was set"]);
                     else
                     {
-                        newContact = selectedOU.CreateContact(customUserDisplayName.Trim());
+                        newContact = new ADContact();
+                        newContact.Parse(directoryEntry: LdapDirectoryEntry.Create(ActiveDirectoryObjectType.Contact, customUserDisplayName.Trim(), selectedOU.DN, Directory), directory: Directory);
+                        newContact.NewEntry = true;
+
+                        //newContact = selectedOU.CreateContact(customUserDisplayName.Trim());
                         newContact.DisplayName = customUserDisplayName;
                     }
                 }

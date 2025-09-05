@@ -68,14 +68,15 @@ namespace BLAZAM.Gui.UI.Users
 
 
 
-
             ApplicationEvents.DirectoryEntryEvent.Invoke(new()
             {
-                EventType = ApplicationEventType.Search,
-                Entry = Contact,
-                Actor = CurrentUser.State
+               
+                    EventType = ApplicationEventType.Search,
+                    Entry = Contact,
+                    Actor = CurrentUser.State
 
-            });
+                });
+            
             LoadingData = false;
             await RefreshEntryComponents();
 
