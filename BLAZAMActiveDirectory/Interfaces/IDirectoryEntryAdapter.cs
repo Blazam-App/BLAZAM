@@ -278,6 +278,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         AppEvent OnChangesDiscarded { get; }
         byte[]? Guid { get; set; }
         IADUser? Manager { get; set; }
+        IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
 
 
         /// <summary>
