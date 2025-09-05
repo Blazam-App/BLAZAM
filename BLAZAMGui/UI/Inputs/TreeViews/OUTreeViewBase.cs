@@ -252,7 +252,10 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             }
             return new List<TreeItemData<IDirectoryEntryAdapter>>();
         }
-
+        protected bool CanExpand(TreeItemData<IDirectoryEntryAdapter> item)
+        {
+            return item.Value is IADOrganizationalUnit;
+        }
         protected List<TreeItemData<IDirectoryEntryAdapter>> GetOUChildren(IDirectoryEntryAdapter ou)
         {
             if (ou is IADOrganizationalUnit context)
