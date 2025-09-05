@@ -18,7 +18,9 @@ namespace BLAZAM.Session
     public class ApplicationUserState : IApplicationUserState, IDisposable
     {
 
-        public AppDelegate OnSettingsChanged { get; set; }
+        public AppEvent OnSettingsChanged { get; set; } = new();
+
+        public AppEvent OnReadNewsSaved { get; set; } = new();
 
 
         public ClaimsPrincipal User { get; set; }
@@ -260,6 +262,7 @@ namespace BLAZAM.Session
                         }
                         // Simple replacement for now, more complex merging might be needed depending on exact requirements
                         await context.SaveChangesAsync();
+                        OnReadNewsSaved.Invoke();
                     }
                 }
                 catch (Exception ex) // Catch specific Exception ex

@@ -89,12 +89,7 @@
 
 
             //Setup other viewers button listeners
-            ViewersChanged.Delegate += (async (state,args) =>
-           {
-
-               await InvokeAsync(StateHasChanged);
-
-           });
+            ViewersChanged.Delegate += Refresh;
             currentUserState = CurrentUser.State;
             AddThisViewer();
 
@@ -128,7 +123,12 @@
             Loggers.SystemLogger.Error(ex,"Error trying to get page chat");
         }
     }
+    public override void Dispose()
+    {
+        base.Dispose();
 
+        ViewersChanged.Delegate += Refresh;
+    }
     private void AddThisViewer()
     {
         if (!Viewers.ContainsKey(ChatUri))

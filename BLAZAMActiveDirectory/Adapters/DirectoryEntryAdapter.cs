@@ -31,18 +31,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         [JsonIgnore]
-        public AppDelegate? OnModelChanged { get; set; }
+        public AppEvent OnModelChanged { get; } = new();
         [JsonIgnore]
-        public AppEvent? OnChangesDiscarded { get; set; }
+        public AppEvent OnChangesDiscarded { get; } = new();
 
         [JsonIgnore]
-        public AppDelegate<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+        public AppEvent<IDirectoryEntryAdapter> OnDirectoryModelRenamed { get; } = new();
 
         [JsonIgnore]
-        public AppDelegate? OnModelCommited { get; set; }
+        public AppEvent OnModelCommited { get; } = new();
 
         [JsonIgnore]
-        public AppDelegate? OnModelDeleted { get; set; }
+        public AppEvent OnModelDeleted { get; } = new();
 
         [JsonIgnore]
         public virtual List<AuditChangeLog> Changes

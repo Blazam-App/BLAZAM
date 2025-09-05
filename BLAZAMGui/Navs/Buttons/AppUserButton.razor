@@ -86,11 +86,15 @@
         UserState = CurrentUser.State;
         await InvokeAsync(StateHasChanged);
         if (UserState != null)
-            UserState.OnSettingsChanged += async () =>
-        {
-            await InvokeAsync(StateHasChanged);
-        };
+            UserState.OnSettingsChanged.Delegate += Refresh;
         await InvokeAsync(StateHasChanged);
     }
 
+    public override void Dispose()
+    {
+        base.Dispose();
+        
+        if (UserState != null)
+            UserState.OnSettingsChanged.Delegate -= Refresh;
+    }
 }

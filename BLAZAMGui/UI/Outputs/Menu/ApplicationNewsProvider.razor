@@ -138,11 +138,17 @@ else
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        ApplicationNewsService.OnNewItemsAvailable += RefreshItems;
-
+        ApplicationNewsService.OnNewItemsAvailable.Delegate += RefreshItems;
+        CurrentUser.State.OnReadNewsSaved.Delegate += RefreshItems;
         RefreshItems();
 
 
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        ApplicationNewsService.OnNewItemsAvailable.Delegate -= RefreshItems;
+        CurrentUser.State.OnReadNewsSaved.Delegate -= RefreshItems;
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -185,7 +191,7 @@ else
         RefreshItems();
 
     }
-    private void RefreshItems()
+    private void RefreshItems(object? state = null,EventArgs? args=null)
     {
 
         RefreshUnreadItems();
