@@ -4,39 +4,37 @@
 @if (GuiOU != null && GuiOU.Count > 0)
 {
     <MudTreeView T="IDirectoryEntryAdapter"
-             ServerData="GetOUChildrenAsync"
-             Items="GuiOU"
-             @ref=treeView
-             Dense="true"
-             SelectionMode="SelectionMode.SingleSelection"
+                 ServerData="GetOUChildrenAsync"
+                 Items="GuiOU"
+                 @ref=treeView
+                 Dense="true"
+                 SelectionMode="SelectionMode.SingleSelection"
+                 Hover="true"
+                 MaxHeight="400px"
+                 @bind-SelectedValue="SelectedEntry">
+        <ItemTemplate>
+            <MudTreeViewItem Value="@context.Value"
+                             Items=@GetChildren(context)
+                             LoadingIconColor="Color.Info"
+                             @bind-Expanded="@context.Expanded"
+                             Selected=@(context.Value?.Equals(SelectedEntry) == true)
+                             Text="@context.Value?.CanonicalName"
+                             Icon="@Icons.Material.Filled.Folder"
+                             IconColor=@(GetIconColor(context))
+                             Class="minw-max w-100"
+                             CanExpand=@(context.Value is IADOrganizationalUnit)
+                             Context="treeContext"
+                             EndText="@EndText?.Invoke(context.Value)">
 
-             Hover="true"
-             MaxHeight="400px"
-             @bind-SelectedValue="SelectedEntry">
-    <ItemTemplate>
-        <MudTreeViewItem Value="@context.Value"
-                         Items=@GetChildren(context)
-                         LoadingIconColor="Color.Info"
-                         @bind-Expanded="@context.Expanded"
-                         Selected=@(context.Value?.Equals(SelectedEntry)==true)
-                         Text="@context.Value?.CanonicalName"
-                         Icon="@Icons.Material.Filled.Folder"
-                         IconColor=@(GetIconColor(context))
-                         Class="minw-max w-100"
-                         CanExpand=@(context.Value is IADOrganizationalUnit)
-                         Context="treeContext"
-                         EndText="@EndText?.Invoke(context.Value)">
-
-        </MudTreeViewItem>
-    </ItemTemplate>
-</MudTreeView>
+            </MudTreeViewItem>
+        </ItemTemplate>
+    </MudTreeView>
 }
 @if (GuiOU == null || !GuiOU.Any() || LoadingData)
 {
     <MudProgressLinear Color="Color.Secondary" Indeterminate="true" />
 
 }
-
 
 
 

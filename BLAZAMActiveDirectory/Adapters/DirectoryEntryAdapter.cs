@@ -31,18 +31,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         [JsonIgnore]
-        public AppEvent OnModelChanged { get; } = new();
+        public AppEvent OnModelChanged { get; set; } = new();
         [JsonIgnore]
-        public AppEvent OnChangesDiscarded { get; } = new();
+        public AppEvent OnChangesDiscarded { get; set; } = new();
 
         [JsonIgnore]
-        public AppEvent<IDirectoryEntryAdapter> OnDirectoryModelRenamed { get; } = new();
+        public AppEvent<IDirectoryEntryAdapter> OnDirectoryModelRenamed { get; set; } = new();
 
         [JsonIgnore]
-        public AppEvent OnModelCommited { get; } = new();
+        public AppEvent OnModelCommited { get; set; } = new();
 
         [JsonIgnore]
-        public AppEvent OnModelDeleted { get; } = new();
+        public AppEvent OnModelDeleted { get; set; } = new();
 
         [JsonIgnore]
         public virtual List<AuditChangeLog> Changes
@@ -440,16 +440,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual void MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
             CommitSteps.Add(new JobStep("Move to OU", (JobStep step) =>
-              {
-                  parentOUToMoveTo.EnsureDirectoryEntry();
-                  if (parentOUToMoveTo.DirectoryEntry != null)
-                  {
-                      DirectoryEntry?.MoveTo(parentOUToMoveTo.DirectoryEntry);
+            {
+                parentOUToMoveTo.EnsureDirectoryEntry();
+                if (parentOUToMoveTo.DirectoryEntry != null)
+                {
+                    DirectoryEntry?.MoveTo(parentOUToMoveTo.DirectoryEntry);
 
-                      return true;
-                  }
-                  return false;
-              }));
+                    return true;
+                }
+                return false;
+            }));
 
             HasUnsavedChanges = true;
         }
@@ -818,11 +818,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             });
         }
         private IJobStep commitStep => new JobStep("Save directory entry", (step) =>
-                {
-                    DirectoryEntry?.CommitChanges();
+        {
+            DirectoryEntry?.CommitChanges();
 
-                    return true;
-                });
+            return true;
+        });
 
         public virtual IJob CommitChanges(IJob? commitJob = null)
         {
@@ -850,32 +850,32 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     foreach (var p in NewEntryProperties)
                     {
                         propertyStep = new JobStep("Set AD attribute [" + p.Key + "]", (step) =>
-                         {
+                        {
 
 
 
-                             if (!DirectoryEntry.Properties.Contains(p.Key)
-                                 || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
-                             {
-                                 if (p.Value == null
-                             || p.Value is string strValue && strValue.IsNullOrEmpty()
-                             || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
-                                 {
+                            if (!DirectoryEntry.Properties.Contains(p.Key)
+                                || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
+                            {
+                                if (p.Value == null
+                            || p.Value is string strValue && strValue.IsNullOrEmpty()
+                            || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
+                                {
 
-                                     DirectoryEntry.Properties[p.Key].Clear();
+                                    DirectoryEntry.Properties[p.Key].Clear();
 
 
-                                 }
-                                 else
-                                 {
-                                     DirectoryEntry.Properties[p.Key].Value = p.Value;
+                                }
+                                else
+                                {
+                                    DirectoryEntry.Properties[p.Key].Value = p.Value;
 
-                                 }
-                             }
+                                }
+                            }
 
-                             DirectoryEntry.CommitChanges();
-                             return true;
-                         });
+                            DirectoryEntry.CommitChanges();
+                            return true;
+                        });
                         propertyJob.AddStep(propertyStep);
 
                     }

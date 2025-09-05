@@ -89,7 +89,7 @@
 
 
             //Setup other viewers button listeners
-            ViewersChanged.Delegate += Refresh;
+            ViewersChanged.Delegate += InvokeStateHasChanged;
             currentUserState = CurrentUser.State;
             AddThisViewer();
 
