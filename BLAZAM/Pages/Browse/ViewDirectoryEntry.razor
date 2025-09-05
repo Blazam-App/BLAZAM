@@ -4,6 +4,7 @@
 @using BLAZAM.Gui.UI.Printers
 @using BLAZAM.Gui.UI.Users
 @inject IStringLocalizer<AppLocalization> AppLocalization
+@implements IDisposable
 <CascadingValue Value="ChangeHistoryModal" Name="ChangeHistoryModal">
     <CascadingValue Value="EffectivePermissionsModal" Name="EffectivePermissionsModal">
     @switch (DirectoryEntry?.ObjectType)
@@ -59,4 +60,29 @@
 
     protected AppModal? ChangeHistoryModal { get; set; }
     protected AppModal? EffectivePermissionsModal { get; set; }
+
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if ( DirectoryEntry!=null )
+        {
+            DirectoryEntry.OnModelDeleted.Delegate += Refresh;
+        }
+    }
+
+    public void Dispose()
+    {
+        if (DirectoryEntry != null)
+        {
+            DirectoryEntry.OnModelDeleted.Delegate -= Refresh;
+        }
+    }
+
+    private void Refresh(object? state, object? args)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+    
 }

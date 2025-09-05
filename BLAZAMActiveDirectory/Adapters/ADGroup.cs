@@ -203,7 +203,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             MembersToRemove = new();
             MembersToAdd = new();
-            CachedChildren = new List<IDirectoryEntryAdapter>();
+            //CachedChildren = new List<IDirectoryEntryAdapter>();
             _groupMembersCache = new List<IADGroup>();
             _userMembersCache = new();
             base.DiscardChanges();

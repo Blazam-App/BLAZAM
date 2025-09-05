@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using BLAZAM.Database.Interfaces;
 
 namespace BLAZAM.Database.Models.Templates
 {
@@ -61,5 +60,34 @@ namespace BLAZAM.Database.Models.Templates
         {
             return FieldDisplayName.GetHashCode();
         }
+        [NotMapped]
+        public DateTime? DeletedAt
+        {
+            get
+            {
+                if (Field != null)
+                {
+                    return Field.DeletedAt;
+                }
+                else if (CustomField != null)
+                {
+                    return CustomField.DeletedAt;
+                }
+                return null;
+            }
+            set
+            {
+                if (Field != null)
+                {
+                    Field.DeletedAt = value;
+                }
+
+                else if (CustomField != null)
+                {
+                    CustomField.DeletedAt = value;
+                }
+            }
+        }
+
     }
 }

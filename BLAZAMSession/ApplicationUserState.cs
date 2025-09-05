@@ -18,7 +18,9 @@ namespace BLAZAM.Session
     public class ApplicationUserState : IApplicationUserState, IDisposable
     {
 
-        public AppDelegate OnSettingsChanged { get; set; }
+        public AppEvent OnSettingsChanged { get; set; } = new();
+
+        public AppEvent OnReadNewsSaved { get; set; } = new();
 
 
         public ClaimsPrincipal User { get; set; }
@@ -250,9 +252,17 @@ namespace BLAZAM.Session
                     var dbUserSettings = await context.UserSettings.Include(u => u.ReadNewsItems).FirstOrDefaultAsync(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid));
                     if (dbUserSettings != null)
                     {
+                        foreach (var newsItem in Preferences.ReadNewsItems)
+                        {
+                            if (newsItem.Id == 0)
+                            {
+                                dbUserSettings.ReadNewsItems.Add(newsItem);
+
+                            }
+                        }
                         // Simple replacement for now, more complex merging might be needed depending on exact requirements
-                        dbUserSettings.ReadNewsItems = Preferences.ReadNewsItems ?? new List<ReadNewsItem>();
                         await context.SaveChangesAsync();
+                        OnReadNewsSaved.Invoke();
                     }
                 }
                 catch (Exception ex) // Catch specific Exception ex

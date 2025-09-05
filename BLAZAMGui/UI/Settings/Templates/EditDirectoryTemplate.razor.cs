@@ -362,7 +362,14 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 
                 foreach (var field in DirectoryTemplate.FieldValues)
                 {
-                    field.Field = await Context.ActiveDirectoryFields.FirstOrDefaultAsync(f => f.Id == field.Field.Id);
+                    if (field.Field != null)
+                    {
+                        field.Field = await Context.ActiveDirectoryFields.FirstOrDefaultAsync(f => f.Id == field.Field.Id);
+                    }
+                    else if (field.CustomField != null)
+                    {
+                        field.CustomField = await Context.CustomActiveDirectoryFields.FirstOrDefaultAsync(f => f.Id == field.CustomField.Id);
+                    }
                 }
 
                 DirectoryTemplate.AssignedGroupSids = trackedGroups;

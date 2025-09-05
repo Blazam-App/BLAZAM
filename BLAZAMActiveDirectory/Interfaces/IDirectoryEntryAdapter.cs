@@ -170,13 +170,13 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Called when pending changes to this entry are commited
         /// </summary>
         [JsonIgnore]
-        AppDelegate? OnModelCommited { get; set; }
+        AppEvent OnModelCommited { get; }
 
         /// <summary>
         /// Called when any changes occur to this entry
         /// </summary>
         [JsonIgnore]
-        AppDelegate? OnModelChanged { get; set; }
+        AppEvent OnModelChanged { get; }
 
         /// <summary>
         /// If <see cref="NewEntry"/> is true, property changes will be
@@ -208,13 +208,13 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Called when this entry is renamed
         /// </summary>
         [JsonIgnore]
-        AppDelegate<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+        AppEvent<IDirectoryEntryAdapter> OnDirectoryModelRenamed { get; }
 
         /// <summary>
         /// Called when this entry is deleted
         /// </summary>
         [JsonIgnore]
-        AppDelegate? OnModelDeleted { get; set; }
+        AppEvent OnModelDeleted { get; }
         /// <summary>
         /// The directory this entry belongs to
         /// </summary>
@@ -276,10 +276,9 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Called when staged changes have been discarded
         /// </summary>
         [JsonIgnore]
-        AppEvent? OnChangesDiscarded { get; set; }
+        AppEvent OnChangesDiscarded { get; }
         byte[]? Guid { get; set; }
         IADUser? Manager { get; set; }
-        IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
 
 
         /// <summary>

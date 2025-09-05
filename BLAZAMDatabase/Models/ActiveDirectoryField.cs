@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using BLAZAM.Common.Data;
 
 namespace BLAZAM.Database.Models
@@ -26,9 +27,10 @@ namespace BLAZAM.Database.Models
     /// <summary>
     /// Represents a built-in standard Active Directory attribute
     /// </summary>
-    public class ActiveDirectoryField : AppDbSetBase, IActiveDirectoryField
+    public class ActiveDirectoryField : RecoverableAppDbSetBase, IActiveDirectoryField
     {
-
+        [NotMapped]
+        public new DateTime? DeletedAt { get => null; set { _ = value; return; } }
 
         [Required]
         public string FieldName { get; set; }
@@ -91,6 +93,7 @@ namespace BLAZAM.Database.Models
                         case "l":
                         case "company":
                         case "department":
+                        case "description":
                         case "employeeId":
                         case "givenname":
                         case "homeDirectory":
@@ -153,6 +156,7 @@ namespace BLAZAM.Database.Models
                     switch (FieldName)
                     {
                         case "memberOf":
+                        case "description":
                         case "operatingSystemVersion":
                         case "msLAPS-Password":
                         case "site":
@@ -163,6 +167,7 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.Group:
                     switch (FieldName)
                     {
+                        case "description":
                         case "mail":
                         case "memberOf":
                         case "site":

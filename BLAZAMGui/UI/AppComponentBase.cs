@@ -142,6 +142,10 @@ namespace BLAZAM.Gui.UI
         {
             Nav.NavigateTo(Nav.Uri, forceReload);
         }
+        protected void Refresh(object? state = null, object? args = null)
+        {
+            Nav.NavigateTo(Nav.Uri, false);
+        }
         public virtual async Task UpdateState()
         {
 

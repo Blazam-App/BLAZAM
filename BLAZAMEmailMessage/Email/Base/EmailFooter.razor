@@ -1,17 +1,24 @@
 @using BLAZAM.Helpers
 
 <EmailHorizontalLineBreak />
-@if (DatabaseCache.ApplicationSettings?.AppFQDN?.IsNullOrEmpty()==false)
-{
-    var protocol = "http://";
-    if (ApplicationInfo.listeningAddresses.Any(la => la.StartsWith("https"))){
-        protocol = "https://";
-    }
-    <MudText Class="mud-width-full mb-3" Align="Align.Center">
+
+<MudText Color=Color.Surface Class="mud-width-full mb-3" Align="Align.Center">
+    @if (DatabaseCache.ApplicationSettings?.AppFQDN?.IsNullOrEmpty() == false)
+    {
+        var protocol = "http://";
+        @if (ApplicationInfo.listeningAddresses.Any(la => la.StartsWith("https")))
+        {
+            protocol = "https://";
+        }
         <MudLink Color="Color.Tertiary" Href="@(protocol + DatabaseCache.ApplicationSettings.AppFQDN)">
             @(DatabaseCache.ApplicationSettings?.AppName ?? "Blazam")
         </MudLink>
-    </MudText>
 
-}
 
+    }
+    else
+    {
+        @(DatabaseCache.ApplicationSettings?.AppName ?? "Blazam")
+
+    }
+</MudText>

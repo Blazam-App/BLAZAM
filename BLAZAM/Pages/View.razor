@@ -36,15 +36,15 @@
 
 
             </Placeholder>
-        </Virtualize>
-    }
-    else if (Searcher?.Results.Count == 1)
-    {
+    </Virtualize>
+}
+else if (Searcher?.Results.Count == 1)
+{
 
-        var result = Searcher.Results[0];
-        if (result.CanRead)
-        {
-            result.OnModelDeleted = (() => { InvokeAsync(StateHasChanged); });
+    var result = Searcher.Results[0];
+    if (result.CanRead)
+    {
+        
 
             @if (result.IsDeleted)
             {

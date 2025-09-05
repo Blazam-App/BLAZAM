@@ -55,7 +55,7 @@
                     <AppModal Title=@AppLocalization[Lang.Rename_User] @ref=@RenameModal>
                         @if (RenameModal?.IsShown == true)
                         {
-                            <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Entry="Contact" />
+                            <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(null,renamedUser);}) Entry="Contact" />
                         }
                     </AppModal>
                     <AppModal Title=@AppLocalization[Lang.Reset_Password] @ref=@ChangePasswordModal>

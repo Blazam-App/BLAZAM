@@ -43,7 +43,6 @@
         var result = Searcher.Results[0];
         if (result.CanRead)
         {
-            result.OnModelDeleted = (() => { InvokeAsync(StateHasChanged); });
 
             @if (result.IsDeleted)
             {
