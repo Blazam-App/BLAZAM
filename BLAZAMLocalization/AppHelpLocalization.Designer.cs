@@ -458,6 +458,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have unsaved changes.
+        /// </summary>
+        public static string Unsaved_Navigation_Warning {
+            get {
+                return ResourceManager.GetString("Unsaved_Navigation_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The release branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers..
         /// </summary>
         public static string Upate_Branch_Definition {

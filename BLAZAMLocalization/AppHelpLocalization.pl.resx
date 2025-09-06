@@ -249,6 +249,9 @@
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Wystąpił nieoczekiwany błąd.</value>
   </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>Masz niezapisane zmiany</value>
+  </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
     <value>Gałąź wydania jest zalecaną gałęzią. Wybór Nightly jest zalecany tylko w przypadku instalacji testowych. Dev jest przeznaczony tylko dla deweloperów.</value>
   </data>

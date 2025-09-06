@@ -249,6 +249,9 @@
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>發生意外錯誤。</value>
   </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>您有尚未儲存的變更</value>
+  </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
     <value>發行分支是建議的分支。僅建議測試安裝選擇 Nightly。Dev 僅供開發人員使用。</value>
   </data>
