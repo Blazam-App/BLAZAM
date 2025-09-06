@@ -1274,11 +1274,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (IsDeleted) throw new AppException("Cannot set values for a deleted entry.");
             try
             {
+
                 if (!NewEntry)
                 {
 
                     if (value == null || value is string strValue && strValue == "")
                     {
+                        var currentValue = GetStringAttribute(propertyName);
+                        if ((currentValue == null && value == null) || currentValue?.Equals(value) == true)
+                        {
+                            return;
+                        }
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                         NewEntryProperties[propertyName] = null;
                         HasUnsavedChanges = true;

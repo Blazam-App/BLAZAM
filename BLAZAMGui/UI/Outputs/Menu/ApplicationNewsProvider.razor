@@ -27,6 +27,7 @@
                                    Color="@color" />
                 </AppTooltip>
             </MudBadge>
+            <LoadingData Loading=@LoadingData/>
         </ActivatorContent>
 
         <ChildContent>
@@ -193,7 +194,7 @@ else
     }
     private void RefreshItems(object? state = null,EventArgs? args=null)
     {
-
+        LoadingData = true;
         RefreshUnreadItems();
         RefreshReadItems();
         if (!ApplicationInfo.InDebugMode)
