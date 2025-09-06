@@ -1,0 +1,18 @@
+﻿@using BLAZAM.ActiveDirectory.Interfaces
+@using BLAZAM.Gui
+@using BLAZAM.Gui.UI
+@using BLAZAM.Gui.UI.Inputs
+@using BLAZAM.Notifications.Services
+
+@using BLAZAM.Plugins
+@inherits PluginDirectoryModelComponentElement
+@attribute [PluginComponent(PageType.User,PageLocation.Account)]
+<DynamicMudInput Label="Google Account Enabled" Value="false"/>
+@code {
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        Google.Apis.Admin.Directory.directory_v1.DirectoryService googleDirectory = new Google.Apis.Admin.Directory.directory_v1.DirectoryService();
+    }
+}
