@@ -249,6 +249,9 @@
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>لقد حدث خطأ غير متوقع.</value>
   </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>لديك تغييرات غير محفوظة</value>
+  </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
     <value>فرع الإصدار هو الفرع الموصى به. يوصى باختيار (Nightly) فقط للتثبيتات التجريبية. وفرع (Dev) مخصص للمطورين فقط.</value>
   </data>

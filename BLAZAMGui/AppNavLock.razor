@@ -1,28 +1,60 @@
 ﻿@page "/nav-lock"
 @using Microsoft.AspNetCore.Components.Routing
-@inject IJSRuntime JSRuntime
 @inject IStringLocalizer<AppLocalization> AppLocalization
 @inject IStringLocalizer<AppHelpLocalization> AppHelpLocalization
-@inject NavigationManager Navigation
+
 @if (Lock)
 {
-
     <NavigationLock ConfirmExternalNavigation="true"
                     OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
 }
+
+<AppModal @ref="navLockModal"
+          Title="@AppHelpLocalization[HelpLang.Unsaved_Navigation_Warning]"
+          YesText="@AppLocalization[Lang.Ok]"
+          CancelText="@AppLocalization[Lang.Cancel]"
+          OnYes="OnModalYes"
+          OnCancel="OnModalCancel"
+          AllowClose="false">
+    <MudText>
+        @AppHelpLocalization[HelpLang.Navigate_Away_Confirmation]
+    </MudText>
+</AppModal>
 
 @code {
     [Parameter]
     public bool Lock { get; set; } = true;
 
+    private AppModal? navLockModal;
+    private TaskCompletionSource<bool>? navLockTcs;
+    private LocationChangingContext? pendingContext;
+
     private async Task OnBeforeInternalNavigation(LocationChangingContext context)
     {
-        var isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm",
-        AppLocalization[Lang.You_have_unsaved_changes] + ". " + AppHelpLocalization[HelpLang.Navigate_Away_Confirmation].ToString());
+        // Show the modal and wait for user response
+        navLockTcs = new TaskCompletionSource<bool>();
+        pendingContext = context;
+        await navLockModal!.ShowAsync();
+
+        var isConfirmed = await navLockTcs.Task;
 
         if (!isConfirmed)
         {
             context.PreventNavigation();
         }
+    }
+
+    private Task OnModalYes()
+    {
+        navLockTcs?.TrySetResult(true);
+        navLockModal?.Close();
+        return Task.CompletedTask;
+    }
+
+    private Task OnModalCancel()
+    {
+        navLockTcs?.TrySetResult(false);
+        navLockModal?.Close();
+        return Task.CompletedTask;
     }
 }

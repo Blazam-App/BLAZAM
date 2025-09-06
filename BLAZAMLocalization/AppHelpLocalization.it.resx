@@ -249,6 +249,9 @@
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Si è verificato un errore imprevisto.</value>
   </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>Hai modifiche non salvate</value>
+  </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
     <value>Il ramo di rilascio è il ramo consigliato. La scelta di Nightly è consigliata solo per le installazioni di prova. Dev è solo per sviluppatori.</value>
   </data>

@@ -10,6 +10,7 @@
     /// </remarks>
     public static class HelpLang
     {
+        public static readonly string Unsaved_Navigation_Warning = "Unsaved_Navigation_Warning";
         public static readonly string Mapping_Use_Access_Level = "Mapping_Use_Access_Level";
         public static readonly string Text_Copied_To_Clipboard = "Text_Copied_To_Clipboard";
         public static readonly string Navigate_Away_Confirmation = "Navigate_Away_Confirmation";
