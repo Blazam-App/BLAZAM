@@ -54,6 +54,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLAZAMDatabase.Tests", "BLA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLAZAMGlobal", "BLAZAMGlobal\BLAZAMGlobal.csproj", "{FC4AC092-4BF9-41E3-A5E7-9267166C88B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLAZAMGoogleWorkspacePlugin", "BLAZAMGoogleWorkspacePlugin\BLAZAMGoogleWorkspacePlugin.csproj", "{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -340,6 +342,18 @@ Global
 		{FC4AC092-4BF9-41E3-A5E7-9267166C88B7}.Release|x64.Build.0 = Release|Any CPU
 		{FC4AC092-4BF9-41E3-A5E7-9267166C88B7}.Release|x86.ActiveCfg = Release|Any CPU
 		{FC4AC092-4BF9-41E3-A5E7-9267166C88B7}.Release|x86.Build.0 = Release|Any CPU
+		{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}.Debug|x64.Build.0 = Debug|Any CPU
+		{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}.Debug|x86.Build.0 = Debug|Any CPU
+		{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}.Release|x64.ActiveCfg = Release|Any CPU
+		{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}.Release|x64.Build.0 = Release|Any CPU
+		{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}.Release|x86.ActiveCfg = Release|Any CPU
+		{7C4DAE6D-3F58-442E-9F59-40B6C2411E4F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
