@@ -86,7 +86,7 @@
         UserState = CurrentUser.State;
         await InvokeAsync(StateHasChanged);
         if (UserState != null)
-            UserState.OnSettingsChanged.Delegate += Refresh;
+            UserState.OnSettingsChanged.Delegate += InvokeStateHasChanged;
         await InvokeAsync(StateHasChanged);
     }
 
@@ -95,6 +95,6 @@
         base.Dispose();
         
         if (UserState != null)
-            UserState.OnSettingsChanged.Delegate -= Refresh;
+            UserState.OnSettingsChanged.Delegate -= InvokeStateHasChanged;
     }
 }

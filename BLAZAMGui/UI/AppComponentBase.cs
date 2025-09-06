@@ -1,6 +1,6 @@
 
 using BLAZAM.ActiveDirectory;
-
+using BLAZAM.Common.Services;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Duo;
@@ -22,7 +22,7 @@ namespace BLAZAM.Gui.UI
         protected PermissionApplicator PermissionApplicator { get; set; }
 
         [Inject]
-        protected NavigationManager Nav { get; set; }
+        protected AppNavManager Nav { get; set; }
 
         [Inject]
         protected ConnMonitor Monitor { get; set; }
@@ -145,6 +145,11 @@ namespace BLAZAM.Gui.UI
         protected void Refresh(object? state = null, object? args = null)
         {
             Nav.NavigateTo(Nav.Uri, false);
+        }
+
+        protected void InvokeStateHasChanged(object? state = null, object? args = null)
+        {
+            _ = InvokeAsync(StateHasChanged);
         }
         public virtual async Task UpdateState()
         {

@@ -97,19 +97,19 @@ namespace BLAZAM.Gui.UI
 
             if (Entry != null)
             {
-                Entry.OnModelChanged.Delegate += Refresh;
+                Entry.OnModelChanged.Delegate += InvokeStateHasChanged;
             }
             else if (Computer != null)
             {
-                Computer.OnModelChanged.Delegate += Refresh;
+                Computer.OnModelChanged.Delegate += InvokeStateHasChanged;
             }
             else if (OU != null)
             {
-                OU.OnModelChanged.Delegate += Refresh;
+                OU.OnModelChanged.Delegate += InvokeStateHasChanged;
             }
             else if (Group != null)
             {
-                Group.OnModelChanged.Delegate += Refresh;
+                Group.OnModelChanged.Delegate += InvokeStateHasChanged;
             }
 
 
@@ -128,19 +128,19 @@ namespace BLAZAM.Gui.UI
 
             if (Entry != null)
             {
-                Entry.OnModelChanged.Delegate -= Refresh;
+                Entry.OnModelChanged.Delegate -= InvokeStateHasChanged;
             }
             else if (Computer != null)
             {
-                Computer.OnModelChanged.Delegate -= Refresh;
+                Computer.OnModelChanged.Delegate -= InvokeStateHasChanged;
             }
             else if (OU != null)
             {
-                OU.OnModelChanged.Delegate -= Refresh;
+                OU.OnModelChanged.Delegate -= InvokeStateHasChanged;
             }
             else if (Group != null)
             {
-                Group.OnModelChanged.Delegate -= Refresh;
+                Group.OnModelChanged.Delegate -= InvokeStateHasChanged;
             }
         }
 

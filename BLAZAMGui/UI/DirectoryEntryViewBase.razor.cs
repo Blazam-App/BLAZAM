@@ -126,8 +126,7 @@
         }
         protected void RefreshEntryComponents(object? state, object? args)
         {
-            SubHeader?.Refresh();
-            InvokeAsync(StateHasChanged);
+            _ = RefreshEntryComponents();
         }
     }
 }
