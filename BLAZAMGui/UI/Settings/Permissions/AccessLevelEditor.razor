@@ -29,16 +29,16 @@
         Update();
 
     }
-    async void Update()
+    async Task Update()
     {
         LoadingData = true;
         if (Context != null)
         {
             var selfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
-      
+
             CurrentAccessLevels = await Context.AccessLevels.Where(al => al.DeletedAt == null && al.Name != AccessLevel.SelfAccessLevelName).ToListAsync();
         }
 
-            LoadingData = false;
+        LoadingData = false;
     }
 }

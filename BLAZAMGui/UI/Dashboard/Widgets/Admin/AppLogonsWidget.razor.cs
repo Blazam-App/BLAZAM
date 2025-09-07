@@ -34,7 +34,14 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets.Admin
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            UserLogons = (await Context.LogonAuditLog.OrderByDescending(u => u.Timestamp).Take(50).ToListAsync());
+            try
+            {
+                UserLogons = (await Context.LogonAuditLog.OrderByDescending(u => u.Timestamp).Take(50).ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "Failed to load user logons for AppLogonsWidget");
+            }
             LoadingData = false;
         }
     }
