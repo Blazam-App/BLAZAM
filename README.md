@@ -3,6 +3,7 @@
 [![Release Date](https://img.shields.io/github/release-date/Blazam-App/BLAZAM)](https://img.shields.io/github/release-date/Blazam-App/BLAZAM)
 [![Build](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-stable.yml)](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-stable.yml)
 [![Last Commit](https://img.shields.io/github/last-commit/Blazam-App/Blazam/v1-Dev)](https://img.shields.io/github/last-commit/Blazam-App/Blazam/v1-Stable)
+[![first-timers-only](https://img.shields.io/badge/first--timers--only-friendly-blue.svg?style=flat-square)](https://www.firsttimersonly.com/)
 
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
@@ -17,7 +18,7 @@ It's running on Ubuntu Server 2024 with 2 cores of a very weak CPU and 2GB of me
 
 The windows demo is Windows Server 2022 with 4 cores of the same CPU and 3GB of memory and sits at 34GB storage for OS and app...
 
-Find the Linux demo at https://beta.blazam.org
+Find the Linux demo at https://blazam.org/demo
 
 ## Screenshots
 ![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)
@@ -79,7 +80,7 @@ Find the Linux demo at https://beta.blazam.org
 ## Try the Live Demo
 [Windows Hosted Demo](https://blazam.org/demo)
 
- [Linux Hosted Demo](https://beta.blazam.org)
+ [Linux Hosted Demo](https://blazam.org/demo)
 
 ## View the Documentation
 [docs.blazam.org](https://docs.blazam.org)
