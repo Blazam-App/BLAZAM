@@ -21,7 +21,7 @@ namespace BLAZAM.ActiveDirectory
         {
             var context = new ActiveDirectoryContext(activeDirectoryContextSeed);
             context.CurrentUser = currentUserState;
-
+            return context;
         }
 
 
