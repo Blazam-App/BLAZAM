@@ -214,7 +214,7 @@
 
     private void SetupChatMessageListeners()
     {
-        Chat.OnMessagePosted += ((ChatMessage message) =>
+        Chat.OnMessagePosted += (async (ChatMessage message) =>
         {
             if (currentUserState != null && message.User != currentUserState.Preferences
                 && (message.ChatRoomId == AppChatRoom?.Id
@@ -229,7 +229,7 @@
                     playingBell = true;
                 }
             }
-            InvokeAsync(StateHasChanged);
+            await UpdateState();
         });
     }
 
@@ -240,7 +240,7 @@
             if (currentUserState != null && room.Members.Any(m => m.Id == currentUserState.Id))
             {
                 await RefreshChatRooms();
-                await InvokeAsync(StateHasChanged);
+                await UpdateState();
             }
         });
     }

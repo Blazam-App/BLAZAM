@@ -253,7 +253,7 @@ else
         try
         {
             disableCreateUserButton = true;
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
 
             var createUserJob = new Job(AppLocalization[Lang.Create_User]);
             createUserJob.StopOnFailedStep = false;
@@ -268,7 +268,7 @@ else
             var result = await User.CommitChangesAsync(createUserJob);
 
             disableCreateUserButton = false;
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
 
             if (result.FailedSteps.Count == 0)
             {

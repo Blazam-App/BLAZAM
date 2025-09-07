@@ -28,6 +28,6 @@
 
         SnackBarService.Success("Message sent");
         messageTextField = "";
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
     }
 }

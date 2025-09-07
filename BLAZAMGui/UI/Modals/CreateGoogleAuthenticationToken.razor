@@ -84,7 +84,7 @@ OnClick="GenerateGoogleAuthToken">@AppLocalization[Lang.Create_Google_Authentica
             qrCode = null;
             CurrentUser.State.Preferences.AuthenticatorSecret = null;
             await CurrentUser.State.SaveBasicUserPreferences();
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
         }
     }
 }

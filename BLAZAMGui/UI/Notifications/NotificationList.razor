@@ -91,7 +91,6 @@
             {
                 LoadingData = true;
             }
-            await InvokeAsync(StateHasChanged);
             var context = await DbFactory.CreateDbContextAsync();
 
             messages = await context.UserNotifications
@@ -99,8 +98,6 @@
             .OrderByDescending(un => un.Notification.Created)
             .ToListAsync();
             LoadingData = false;
-
-            await InvokeAsync(StateHasChanged);
         });
 
 

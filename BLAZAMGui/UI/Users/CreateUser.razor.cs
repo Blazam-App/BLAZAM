@@ -19,7 +19,7 @@ namespace BLAZAM.Gui.UI.Users
             {
                 if (selectedStep == value) return;
                 selectedStep = value;
-                InvokeAsync(StateHasChanged);
+                _ = UpdateState();
 
             }
         }
@@ -43,7 +43,7 @@ namespace BLAZAM.Gui.UI.Users
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
         }
 
         private async Task OUSelected(IDirectoryEntryAdapter entry)
@@ -58,7 +58,7 @@ namespace BLAZAM.Gui.UI.Users
                 }
             }
 
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
         }
         private async Task CreateCustomUser()
         {
@@ -90,7 +90,6 @@ namespace BLAZAM.Gui.UI.Users
             try
             {
                 LoadingData = true;
-                await InvokeAsync(StateHasChanged);
                 newUser = SelectedTemplate.GenerateTemplateUser(newUserName, Directory);
                 _userCreated = false;
 
@@ -114,8 +113,6 @@ namespace BLAZAM.Gui.UI.Users
                 SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user: "] + ex.Message);
             }
             LoadingData = false;
-
-            await InvokeAsync(StateHasChanged);
         }
 
         private async Task SetTemplate(DirectoryTemplate selectedTemplate)
@@ -123,7 +120,7 @@ namespace BLAZAM.Gui.UI.Users
             SelectedTemplate = selectedTemplate;
             custom = false;
             SelectedStep = 1;
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
         }
         private bool AdditionalShow(IDirectoryEntryAdapter entry)
         {
@@ -138,7 +135,7 @@ namespace BLAZAM.Gui.UI.Users
         {
             newUserName = new();
             _userCreated = true;
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
         }
     }
 }

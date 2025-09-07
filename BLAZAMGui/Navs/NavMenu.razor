@@ -143,8 +143,8 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
-        await InvokeAsync(StateHasChanged);
+        Monitor.OnDirectoryConnectionChanged += ((state) => { _=UpdateState(); });
+        await UpdateState();
 
 
     }

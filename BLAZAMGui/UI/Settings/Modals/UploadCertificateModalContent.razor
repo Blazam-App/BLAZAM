@@ -3,7 +3,7 @@
 @using System.Security.Cryptography.X509Certificates
 @inherits AppModalContent
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
-    <MudSelectList Label=@AppLocalization[Lang.Certificate_Type] Values="@(new List<string>{"PFX","Crt and Key"})" @bind-Value=SelectedCertType />
+    <MudSelectList Label=@AppLocalization[Lang.Certificate_Type] Values="@(new List<string> { "PFX", "Crt and Key" })" @bind-Value=SelectedCertType />
     @if (SelectedCertType == "PFX")
     {
         <MudFileUpload T="IBrowserFile" FilesChanged="LoadPFX" Accept=".pfx">
@@ -137,8 +137,7 @@
     private async void LoadPFX(IBrowserFile e)
     {
         pfxBytes = await e.ReadByteArrayAsync(5000000);
-
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
 
 
     }
@@ -147,9 +146,7 @@
     private async void LoadCert(IBrowserFile e)
     {
         crtBytes = await e.ReadByteArrayAsync(5000000);
-
-
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
 
 
     }
@@ -158,9 +155,10 @@
     {
         var bytes = await e.ReadByteArrayAsync(5000000);
         if (bytes != null)
+        {
             keyBytes = bytes;
-
-        await InvokeAsync(StateHasChanged);
+        }
+        await UpdateState();
 
 
     }

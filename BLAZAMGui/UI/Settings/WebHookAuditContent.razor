@@ -71,7 +71,7 @@
     private async Task GetAttempts()
     {
         _attempts = await Context.WebHookAttempts.ToListAsync();
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
     }
 }
 

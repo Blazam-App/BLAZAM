@@ -76,7 +76,7 @@ else if (Searcher?.Results.Count == 1)
     readonly string ModelsTypeName = "Search";
     protected string SearchIcon { get; set; } = "";
     string? _searchTermParameter;
-      /// <summary>
+    /// <summary>
     /// The search term that comes from the URI
     /// </summary>
     [Parameter]
@@ -128,13 +128,13 @@ else if (Searcher?.Results.Count == 1)
 
 
 
-        Searcher.OnSearchStarted += (() =>
+        Searcher.OnSearchStarted += (async () =>
+        {
+            await UpdateState();
+        });
+        Searcher.OnSearchCompleted += (async () =>
        {
-           InvokeAsync(StateHasChanged);
-       });
-        Searcher.OnSearchCompleted += (() =>
-       {
-           InvokeAsync(StateHasChanged);
+           await UpdateState();
        });
         Searcher.ResultsCollected += ((batch) =>
              {

@@ -68,8 +68,7 @@ else
         Modal.SetOnYes(SaveChanges);
         Modal.SetYesText(AppLocalization[Lang.Rename_User]);
         Modal.Title = AppLocalization[Lang.Rename_User];
-
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
     }
 
     void DisplayNameChanged(string newName)

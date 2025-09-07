@@ -118,7 +118,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _=Task.Run(() =>
+        _=Task.Run(async() =>
         {
             if (IncludeNested)
             {
@@ -130,10 +130,10 @@ else
                 Members = Group.Members;
             }
             LoadingData = false;
-            InvokeAsync(StateHasChanged);
+            await UpdateState();
 
         });
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
 
     }
 
@@ -141,12 +141,12 @@ else
     public async Task Open()
     {
        IsOpen = true;
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
     }
       public async void Close()
     {
        IsOpen = false;
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
     }
 
 }

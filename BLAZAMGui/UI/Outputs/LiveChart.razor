@@ -25,6 +25,6 @@
                 TimeStamp = DateTime.Now,
                 Value = PollFunc.Invoke()
             });
-        InvokeAsync(StateHasChanged);
+            _ = UpdateState();
     }
 }

@@ -14,8 +14,7 @@ namespace BLAZAM.Gui.UI
         protected void Close()
         {
             Modal.Close();
-            InvokeAsync(StateHasChanged);
-
+            _ = UpdateState();
         }
 
         protected override void OnInitialized()

@@ -63,7 +63,7 @@ namespace BLAZAM.Gui.UI.Users
         {
             await base.OnInitializedAsync();
 
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
 
 
 
@@ -172,7 +172,7 @@ namespace BLAZAM.Gui.UI.Users
             if (await MessageService.Confirm("Are you sure you want to delete " + GroupableEntry.DisplayName + "?", "Delete User"))
             {
                 SavingChanges = true;
-                await InvokeAsync(StateHasChanged);
+                await UpdateState();
 
                 try
                 {

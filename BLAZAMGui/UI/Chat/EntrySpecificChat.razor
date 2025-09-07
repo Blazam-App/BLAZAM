@@ -98,7 +98,7 @@
 
             //Setup chat message listeners
 
-            Chat.OnMessagePosted += ((ChatMessage message) =>
+            Chat.OnMessagePosted += (async (ChatMessage message) =>
            {
                if (message.User != currentUserState.Preferences)
                {
@@ -112,7 +112,7 @@
                        playingBell = true;
                    }
 
-                   InvokeAsync(StateHasChanged);
+                   await UpdateState();
                }
            });
 

@@ -1,4 +1,3 @@
-using BLAZAM.Database.Models;
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
 using BLAZAM.Services.Events;
@@ -14,7 +13,7 @@ namespace BLAZAM.Gui.UI.Computers
         {
             Computer?.MonitorOnlineStatus();
             await base.OnInitializedAsync();
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
             if (Computer != null)
             {
                 Computer.OnOnlineChanged += (async (online) =>
@@ -59,7 +58,7 @@ namespace BLAZAM.Gui.UI.Computers
             if (Computer != null && await MessageService.Confirm("Are you sure you want to delete " + Computer?.CanonicalName + "?", "Delete Computer"))
             {
                 SavingChanges = true;
-                await InvokeAsync(StateHasChanged);
+                await UpdateState();
                 try
                 {
 

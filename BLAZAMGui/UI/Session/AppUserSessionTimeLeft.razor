@@ -39,7 +39,7 @@
             // Start a timer to update the time left every second
             timer = new Timer(_ =>
             {
-                InvokeAsync(StateHasChanged);
+                _ = UpdateState();
             }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
         }
     }

@@ -31,7 +31,7 @@
     {
         await base.OnInitializedAsync();
         settings = await Context.AppSettings.FirstOrDefaultAsync();
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
     }
 
 
