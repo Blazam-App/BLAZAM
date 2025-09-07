@@ -93,3 +93,8 @@ Blazam's Web Installer is the recommended installation method.
 [Manual Installation](https://docs.blazam.org/install/manual)
 
 ## [Contributing](/CONTRIBUTING.md)
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Blazam-App/BLAZAM&type=Date)](https://www.star-history.com/#Blazam-App/BLAZAM&Date)
+
