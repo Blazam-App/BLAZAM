@@ -1,4 +1,3 @@
-// Import necessary namespaces for various functionalities
 using System.Web;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
@@ -12,7 +11,7 @@ using MudBlazor;
 
 namespace BLAZAM.Pages
 {
-    public partial class Search : AppComponentBase
+    public partial class View : AppComponentBase
     {
 
         [CascadingParameter]
@@ -66,26 +65,43 @@ namespace BLAZAM.Pages
         {
             await base.OnInitializedAsync();
             Searcher = new ADSearch(Directory);
-            SearchService.SearchTerm = SearchTermParameter;
-            Searcher.GeneralSearchTerm = SearchTermParameter;
+            SearchService.SearchTerm = _searchTermParameter;
+            Searcher.GeneralSearchTerm = _searchTermParameter;
 
             await base.OnInitializedAsync();
 
 
 
-            Searcher.OnSearchStarted += (async () =>
-            {
-                await StateHasChangedAsync();
+            Searcher.OnSearchStarted += OnSearchUpdated;
+            Searcher.OnSearchCompleted += OnSearchUpdated;
+            Searcher.ResultsCollected += AddResults;
+        }
 
-            });
-            Searcher.OnSearchCompleted += (async () =>
+        public override void Dispose()
+        {
+            base.Dispose();
+            if (Searcher?.OnSearchStarted != null)
             {
-                await StateHasChangedAsync();
-            });
-            Searcher.ResultsCollected += ((batch) =>
-                 {
-                     results.AddRange(batch.Where(r => r.CanRead));
-                 });
+                Searcher.OnSearchStarted -= OnSearchUpdated;
+            }
+            if (Searcher?.OnSearchCompleted != null)
+            {
+                Searcher.OnSearchCompleted -= OnSearchUpdated;
+            }
+
+            if (Searcher?.ResultsCollected != null)
+            {
+                Searcher.ResultsCollected -= AddResults;
+            }
+        }
+
+        private void AddResults(IEnumerable<IDirectoryEntryAdapter> batch)
+        {
+            results.AddRange(batch.Where(r => r.CanRead));
+        }
+        private void OnSearchUpdated()
+        {
+            _ = StateHasChangedAsync();
         }
         /// <summary>
         /// Filter for searching objects of only this type
@@ -110,7 +126,7 @@ namespace BLAZAM.Pages
             results.Clear();
 
             LoadingData = true;
-            if (!SearchTermParameter.IsNullOrEmpty() && SearchTermParameter?.Length > 0)
+            if (!_searchTermParameter.IsNullOrEmpty() && _searchTermParameter?.Length > 0)
                 await InvokeSearch();
             else
                 Searcher?.Results.Clear();
@@ -133,17 +149,19 @@ namespace BLAZAM.Pages
                 Searcher = new ADSearch(Directory);
             else
                 Searcher.Cancel();
-            SearchService.SearchTerm = SearchTermParameter;
-            Searcher.EnabledOnly = !SearchService.IncludeDisabled;
+            SearchService.SearchTerm = _searchTermParameter;
             Searcher.GeneralSearchTerm = SearchService.SearchTerm;
-            Searcher.ObjectTypeFilter = SearchService.SeachObjectType;
+            if (CurrentUser.State.CanSearchDisabled(ActiveDirectoryObjectType.User)
+        || CurrentUser.State.CanSearchDisabled(ActiveDirectoryObjectType.Computer))
+            {
+                Searcher.EnabledOnly = false;
+            }
             Searcher.ExactMatch = true;
 
             //Try exact  match search first
             await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
             if (Searcher.Results.Count < 1)
             {
-                Searcher.ExactMatch = false;
                 results = await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
 
             }

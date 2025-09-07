@@ -72,7 +72,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
         {
             if (_DelegateFilter == value) return;
             _DelegateFilter = value;
-            _ = UpdateState();
+            _ = StateHasChangedAsync();
         }
     }
     AppModal? trashModal;
@@ -86,7 +86,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
 
         settings = Context.PermissionDelegate;
         await RefreshDelegates();
-        await UpdateState();
+        await StateHasChangedAsync();
 
     }
 
@@ -116,7 +116,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
     {
 
         await RefreshDelegates();
-        await UpdateState();
+        await StateHasChangedAsync();
 
     }
 

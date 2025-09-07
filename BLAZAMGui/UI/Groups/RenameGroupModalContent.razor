@@ -31,7 +31,7 @@
     {
         await base.OnInitializedAsync();
         GroupName = Group.CanonicalName;
-        await UpdateState();
+        await StateHasChangedAsync();
     }
 
 

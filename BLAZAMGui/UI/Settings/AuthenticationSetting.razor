@@ -148,7 +148,7 @@
     private async Task DoDuoHealthCheck()
     {
         duoHealthCheckResult = null;
-        await UpdateState();
+        await StateHasChangedAsync();
         try
         {
             duoHealthCheckResult = await Duo.DoHealthCheckAsync();
@@ -157,7 +157,7 @@
         {
 
         }
-        await UpdateState();
+        await StateHasChangedAsync();
     }
 
     protected override async Task Save()
@@ -174,7 +174,7 @@
 
         await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
         await base.Save();
-        await UpdateState();
+        await StateHasChangedAsync();
     }
 
     public class BehaviorConverter : BoolConverter<DuoUnreachableBehavior>

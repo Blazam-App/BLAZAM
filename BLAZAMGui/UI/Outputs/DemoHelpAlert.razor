@@ -45,7 +45,7 @@
                 await Task.Delay(100);
             }
             randomUsers = foundResults;
-            await UpdateState();
+            await StateHasChangedAsync();
         }
     }
 

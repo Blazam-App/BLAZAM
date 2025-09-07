@@ -59,10 +59,10 @@
     {
         await base.OnInitializedAsync();
         Searcher = new(Directory);
-        Searcher.ResultsCollected += (async (batch) => { await UpdateState(); });
+        Searcher.ResultsCollected += (async (batch) => { await StateHasChangedAsync(); });
         Searcher.OnSearchCompleted += (async () =>
         {
-            await UpdateState();
+            await StateHasChangedAsync();
         });
     }
 

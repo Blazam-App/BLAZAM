@@ -160,11 +160,11 @@
             {
                 if (EmailService.IsConfigured)
                     emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
-                await UpdateState();
+                await StateHasChangedAsync();
             });
       
         LoadingData = false;
-        await UpdateState();
+        await StateHasChangedAsync();
     }
     async Task SendTestEmail()
     {

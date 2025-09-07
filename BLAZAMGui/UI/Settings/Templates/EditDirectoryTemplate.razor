@@ -47,7 +47,7 @@
                                                              CategoryAdded="@(async(newCategory)=>{
                                     DirectoryTemplate.Category=newCategory;
                                     categories.Add(newCategory);
-                                    await UpdateState();
+                                    await StateHasChangedAsync();
                                                                                             })" />
                         </AppModal>
                         <MudSwitch Label="@AppLocalization[Lang.Visible]"
@@ -408,7 +408,7 @@
                         
 
                                     <AssignedTemplateGroup Group="group"
-                                                           OnGroupRemoved="@(async (group)=>{await UpdateState();})" />
+                                                           OnGroupRemoved="@(async (group)=>{await StateHasChangedAsync();})" />
            
 
                             }

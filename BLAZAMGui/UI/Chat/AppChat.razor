@@ -229,7 +229,7 @@
                     playingBell = true;
                 }
             }
-            await UpdateState();
+            await StateHasChangedAsync();
         });
     }
 
@@ -240,7 +240,7 @@
             if (currentUserState != null && room.Members.Any(m => m.Id == currentUserState.Id))
             {
                 await RefreshChatRooms();
-                await UpdateState();
+                await StateHasChangedAsync();
             }
         });
     }

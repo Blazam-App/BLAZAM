@@ -19,7 +19,7 @@ namespace BLAZAM.Gui.UI.Users
             {
                 if (selectedStep == value) return;
                 selectedStep = value;
-                _ = UpdateState();
+                _ = StateHasChangedAsync();
 
             }
         }
@@ -43,7 +43,7 @@ namespace BLAZAM.Gui.UI.Users
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            await UpdateState();
+            await StateHasChangedAsync();
         }
 
         private async Task OUSelected(IDirectoryEntryAdapter entry)
@@ -58,7 +58,7 @@ namespace BLAZAM.Gui.UI.Users
                 }
             }
 
-            await UpdateState();
+            await StateHasChangedAsync();
         }
         private async Task CreateCustomUser()
         {
@@ -120,7 +120,7 @@ namespace BLAZAM.Gui.UI.Users
             SelectedTemplate = selectedTemplate;
             custom = false;
             SelectedStep = 1;
-            await UpdateState();
+            await StateHasChangedAsync();
         }
         private bool AdditionalShow(IDirectoryEntryAdapter entry)
         {
@@ -135,7 +135,7 @@ namespace BLAZAM.Gui.UI.Users
         {
             newUserName = new();
             _userCreated = true;
-            await UpdateState();
+            await StateHasChangedAsync();
         }
     }
 }

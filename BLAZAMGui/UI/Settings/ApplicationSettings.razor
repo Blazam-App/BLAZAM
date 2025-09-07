@@ -140,7 +140,7 @@
     private async void LoadIcon(IBrowserFile e)
     {
         settings.AppIcon = await e.ReadByteArrayAsync(5000000);
-        await UpdateState();
+        await StateHasChangedAsync();
 
 
     }

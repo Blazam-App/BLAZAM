@@ -63,7 +63,7 @@ else
         {
 
             progressValue = 100;
-            await UpdateState();
+            await StateHasChangedAsync();
             try
             {
                 if (await DbFactory.ApplyDatabaseMigrationsAsync(true))
@@ -78,7 +78,7 @@ else
             {
                 await MessageService.Error(ex.Message, ex.GetType().FullName);
             }
-            await UpdateState();
+            await StateHasChangedAsync();
 
         });
     }

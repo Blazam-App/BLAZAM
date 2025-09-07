@@ -55,7 +55,7 @@ Model="newField">
 
                 SnackBarService.Success("Field created");
                 await FieldCreated.InvokeAsync(newField);
-                await UpdateState();
+                await StateHasChangedAsync();
                 Close();
 
             }

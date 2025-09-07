@@ -120,7 +120,7 @@ else
             }
             else // Otherwise, just update the UI with the initial step
             {
-                await UpdateState();
+                await StateHasChangedAsync();
             }
             return; // Exit early
         }
@@ -128,12 +128,12 @@ else
         // 2. Check for pending migrations.
         if ((await Context.Database.GetPendingMigrationsAsync()).Any())
         {
-            await UpdateState(); // Update UI before exiting
+            await StateHasChangedAsync(); // Update UI before exiting
             return;
         }
 
         completedSteps = 2;
-        await UpdateState();
+        await StateHasChangedAsync();
 
         // --- Flattened Logic within try/finally ---
         // The try/finally ensures the UI is always updated at the end
@@ -149,7 +149,7 @@ else
             }
 
             completedSteps = 3;
-            await UpdateState();
+            await StateHasChangedAsync();
 
             // 4. Check Active Directory settings.
             var adSettings = await Context.ActiveDirectorySettings.FirstOrDefaultAsync();
@@ -168,7 +168,7 @@ else
         {
             // This `finally` block guarantees a final UI update, which was the
             // behavior of the original method's last line.
-            await UpdateState();
+            await StateHasChangedAsync();
         }
     }
 
