@@ -30,7 +30,7 @@ namespace BLAZAM.Gui.UI.Chat
                 {
                     await Task.Delay(100);
                     await RefreshChatRooms();
-                    await UpdateState();
+                    await StateHasChangedAsync();
                 }
 
             };
@@ -40,7 +40,7 @@ namespace BLAZAM.Gui.UI.Chat
                 {
                     await Task.Delay(50);
 
-                    await UpdateState();
+                    await StateHasChangedAsync();
                 }
             };
         }

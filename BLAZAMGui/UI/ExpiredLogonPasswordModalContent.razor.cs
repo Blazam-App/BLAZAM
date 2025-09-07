@@ -26,7 +26,7 @@ namespace BLAZAM.Gui.UI
         public async Task SaveChanges()
         {
             LoadingData = true;
-            await UpdateState();
+            await StateHasChangedAsync();
             await Task.Run(async () =>
 
             {
@@ -66,7 +66,7 @@ namespace BLAZAM.Gui.UI
             });
 
             LoadingData = false;
-            await UpdateState();
+            await StateHasChangedAsync();
         }
 
         private bool PasswordsValid

@@ -196,7 +196,7 @@
                               Model="@newContact" />
                 <AppModal @ref=_assignToModal>
                     <AssignToModalContent ModelChanged=@(async()=>{
-                                            await UpdateState();
+                                            await StateHasChangedAsync();
                                           }) DirectoryModel="newContact" />
                 </AppModal>
                 <MudButton Disabled=LoadingData
@@ -308,7 +308,7 @@
         {
             if (selectedStep == value) return;
             selectedStep = value;
-            _ = UpdateState();
+            _ = StateHasChangedAsync();
 
         }
     }
@@ -332,7 +332,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await UpdateState();
+        await StateHasChangedAsync();
     }
 
     async void OUSelected(IDirectoryEntryAdapter entry)
@@ -346,7 +346,7 @@
                 SnackBarService.Warning(AppLocalization["You do not have permission to create users in that location"]);
             }
         }
-        await UpdateState();
+        await StateHasChangedAsync();
     }
     async Task CreateCustomUser()
     {
@@ -426,6 +426,6 @@
     {
         newUserName = new();
         _userCreated = true;
-        await UpdateState();
+        await StateHasChangedAsync();
     }
 }

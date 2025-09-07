@@ -113,7 +113,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         protected void InitializeTreeView()
         {
             LoadingData = true;
-            _ = UpdateState();
+            _ = StateHasChangedAsync();
             if (RootOU is null || RootOU.Count < 1)
             {
                 TopLevel = new ADOrganizationalUnit();

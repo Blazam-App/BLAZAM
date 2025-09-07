@@ -26,11 +26,11 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await UpdateState();
+        await StateHasChangedAsync();
 
 
         UserState = CurrentUser.State;
-        await UpdateState();
+        await StateHasChangedAsync();
         if (UserState != null)
         {
             UserState.OnSettingsChanged.Delegate += LoadNotificaions; 
@@ -41,7 +41,7 @@
 
         NotificationPublisher.OnNotificationDeleted.Delegate += LoadNotificaions;
 
-        await UpdateState();
+        await StateHasChangedAsync();
     }
 
     public override void Dispose()
@@ -77,6 +77,6 @@
 
         Notifications = await context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
 
-        await UpdateState();
+        await StateHasChangedAsync();
     }
 }

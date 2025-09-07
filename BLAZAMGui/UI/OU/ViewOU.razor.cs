@@ -10,7 +10,7 @@ namespace BLAZAM.Gui.UI.OU
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            await UpdateState();
+            await StateHasChangedAsync();
             ApplicationEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
@@ -80,7 +80,7 @@ namespace BLAZAM.Gui.UI.OU
             }
 
             SavingChanges = true;
-            await UpdateState();
+            await StateHasChangedAsync();
             try
             {
                 var ouName = OU.CanonicalName;

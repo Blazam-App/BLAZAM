@@ -302,7 +302,7 @@
         {
             SearchResults = SearchResults.Append(result);
         }
-        _= UpdateState();
+        _= StateHasChangedAsync();
     }
     protected override async Task OnInitializedAsync()
     {
@@ -313,7 +313,7 @@
             {
                 var sidMatch = Directory.FindEntryBySID(SelectedSid.ToSidByteArray());
                 await InvokeAsync(() => { SelectedResult = sidMatch; SearchTerm = sidMatch.CanonicalName; });
-                _ = UpdateState();
+                _ = StateHasChangedAsync();
             });
         }
     }

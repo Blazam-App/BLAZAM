@@ -175,7 +175,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 }
 
                 RefreshGroups();
-                await UpdateState();
+                await StateHasChangedAsync();
                 Form?.Validate();
             }
 
@@ -315,7 +315,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         protected async Task RemoveField(DirectoryTemplateFieldValue field)
         {
             DirectoryTemplate.FieldValues.Remove(field);
-            await UpdateState();
+            await StateHasChangedAsync();
         }
 
         private async Task CancelNewTemplate()
@@ -325,7 +325,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         private async Task DiscardChanges()
         {
             _template = originalTemplate;
-            await UpdateState();
+            await StateHasChangedAsync();
         }
         protected async Task SaveTemplate()
         {
