@@ -1,4 +1,3 @@
-// Import necessary namespaces for various functionalities
 using System.Web;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
@@ -120,7 +119,7 @@ namespace BLAZAM.Pages
 
 
         }
-
+        
         /// <summary>
         /// Invokes the actual search function
         /// that processes the current <see cref="SearchService"/>
