@@ -44,7 +44,7 @@
     private async Task GenerateToken()
     {
         LoadingData = true;
-        await UpdateState();
+        await StateHasChangedAsync();
         var token = JwtTokenService.GenerateJwtToken(_apiValidDays);
         var decodedToken = JwtTokenService.DecodeJwtToken(token);
         var raw = decodedToken.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;

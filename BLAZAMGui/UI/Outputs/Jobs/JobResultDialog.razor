@@ -54,7 +54,7 @@
         {
             Job.OnProgressUpdated += (async (value) =>
             {
-                await UpdateState();
+                await StateHasChangedAsync();
             });
         }
     }

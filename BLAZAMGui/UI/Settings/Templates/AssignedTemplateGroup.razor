@@ -47,7 +47,7 @@
             {
                 var sid = Group.GroupSid;
                 ADGroup = Directory.Groups.FindGroupBySID(sid);
-                await UpdateState();
+                await StateHasChangedAsync();
             }catch(Exception ex)
             {
                 Loggers.ActiveDirectoryLogger.Warning("Unable to find group {Error}", ex);

@@ -43,7 +43,7 @@
         Modal.SetTitle(AppLocalization[Lang.Register_Printers]);
         Modal.SetOnYes(async() => { 
             activePanel = 1; 
-            await UpdateState(); 
+            await StateHasChangedAsync(); 
         });
         base.OnInitialized();
 
@@ -101,7 +101,7 @@
                 Modal.SetYesText(AppLocalization[Lang.Next]);
                 Modal.SetOnYes(async () => {
                     activePanel = 1;
-                    await UpdateState();
+                    await StateHasChangedAsync();
                 });
                 _=Modal.RefreshView();
 

@@ -76,7 +76,7 @@
     {
         await base.OnInitializedAsync();
         LoadingData = false;
-        await UpdateState();
+        await StateHasChangedAsync();
 
     }
    

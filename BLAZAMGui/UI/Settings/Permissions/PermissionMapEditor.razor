@@ -177,7 +177,7 @@
                 Context.PermissionMap.Remove(Mapping);
                 await Context.SaveChangesAsync();
             }
-            await UpdateState();
+            await StateHasChangedAsync();
             SnackBarService.Success("Mapping deleted");
             await MappingsChanged.InvokeAsync();
             ApplicationEvents.PermissionsChanged.Invoke();
@@ -194,7 +194,7 @@
         if (Mapping?.Id == 0)
             Context.PermissionMap.Add(Mapping);
         var result = await Context.SaveChangesAsync();
-        await UpdateState();
+        await StateHasChangedAsync();
         SnackBarService.Success("Mapping saved");
         await MappingsChanged.InvokeAsync();
         ApplicationEvents.PermissionsChanged.Invoke();

@@ -98,7 +98,7 @@ namespace BLAZAM.Gui.UI
             {
                 if (_loadingData == value) return;
                 _loadingData = value;
-                _ = UpdateState();
+                _ = StateHasChangedAsync();
 
             }
         }
@@ -148,7 +148,7 @@ namespace BLAZAM.Gui.UI
 
         protected void InvokeStateHasChanged(object? state = null, object? args = null)
         {
-            _ = UpdateState();
+            _ = StateHasChangedAsync();
         }
         /// <summary>
         /// Triggers an asynchronous update of the component's state.
@@ -157,12 +157,11 @@ namespace BLAZAM.Gui.UI
         /// the component that its state has changed, prompting a re-render. It is typically used to ensure the UI
         /// reflects the latest state after an asynchronous operation or external event.</remarks>
         /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public virtual async Task UpdateState()
+        public virtual async Task StateHasChangedAsync()
         {
 
             await InvokeAsync(StateHasChanged);
         }
-
 
 
         public virtual void Dispose()

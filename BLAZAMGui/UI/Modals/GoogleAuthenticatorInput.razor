@@ -58,7 +58,7 @@ TextChanged="@((key)=>{_=Authenticate();})"
             if (validToken)
             {
                 Authenticated = true;
-                await UpdateState();
+                await StateHasChangedAsync();
 
             }
             else if (announce)

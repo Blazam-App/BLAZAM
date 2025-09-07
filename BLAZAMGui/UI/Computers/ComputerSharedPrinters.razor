@@ -72,7 +72,7 @@
         Task.Run(async () =>
         {
             Printers = Computer.SharedPrinters;
-            await UpdateState();
+            await StateHasChangedAsync();
         });
     }
 }

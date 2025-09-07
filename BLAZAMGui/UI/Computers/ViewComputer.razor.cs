@@ -13,7 +13,7 @@ namespace BLAZAM.Gui.UI.Computers
         {
             Computer?.MonitorOnlineStatus();
             await base.OnInitializedAsync();
-            await UpdateState();
+            await StateHasChangedAsync();
             if (Computer != null)
             {
                 Computer.OnOnlineChanged += (async (online) =>
@@ -58,7 +58,7 @@ namespace BLAZAM.Gui.UI.Computers
             if (Computer != null && await MessageService.Confirm("Are you sure you want to delete " + Computer?.CanonicalName + "?", "Delete Computer"))
             {
                 SavingChanges = true;
-                await UpdateState();
+                await StateHasChangedAsync();
                 try
                 {
 

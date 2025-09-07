@@ -203,7 +203,7 @@
         {
             if (_compactView == value) return;
             _compactView = value;
-            _ = UpdateState();
+            _ = StateHasChangedAsync();
         }
     }
     [Inject]
@@ -244,11 +244,11 @@
 
 
         _loadingFilteredEntries = true;
-        await UpdateState();
+        await StateHasChangedAsync();
 
         filteredEntries = RulesProcessor.GetFilteredEntries(Rule);
         _loadingFilteredEntries = false;
-        await UpdateState();
+        await StateHasChangedAsync();
     });
     }
     private async Task ChangeEnabled(AutomationRule rule, bool value)
@@ -270,7 +270,7 @@
     private async void RunRule()
     {
         _ruleRunning = true;
-        await UpdateState();
+        await StateHasChangedAsync();
         var job = await RulesProcessor.ProcessScheduledRule(Rule);
         job.OnProgressUpdated += (progress) =>
         {
@@ -279,7 +279,7 @@
         await job.WaitAsync();
 
         _ruleRunning = false;
-        await UpdateState();
+        await StateHasChangedAsync();
         ReloadRule();
     }
 }
