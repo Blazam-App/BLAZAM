@@ -122,7 +122,7 @@
         protected async Task RefreshEntryComponents()
         {
             SubHeader?.Refresh();
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
         }
         protected void RefreshEntryComponents(object? state, object? args)
         {

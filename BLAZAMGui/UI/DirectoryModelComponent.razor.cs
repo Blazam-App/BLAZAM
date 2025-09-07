@@ -117,8 +117,7 @@ namespace BLAZAM.Gui.UI
             {
                 CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
             }
-
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
 
         }
 

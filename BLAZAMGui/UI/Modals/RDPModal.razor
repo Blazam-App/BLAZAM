@@ -49,6 +49,6 @@
     {
         var hash = await GetPasswordHash();
         rdpUrl = baseRdpUrl + "?__EVENTTARGET=&__EVENTARGUMENT=server=" + computerName + "&user=" + (await Context.ActiveDirectorySettings.FirstOrDefaultAsync())?.Username + "&passwordHash=" + hash + "&connect=Connect%21";
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
     }
 }

@@ -78,7 +78,7 @@
 
         Open = false;
         await _notificationList!.UpdateState();
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
     }
 
 }

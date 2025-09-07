@@ -164,7 +164,6 @@
             SelectedTemplate.DeletedAt = DateTime.Now;
             await Context.SaveChangesAsync();
             SelectedTemplate = null;
-            await InvokeAsync(StateHasChanged);
             Nav.NavigateTo("/templates/");
         }
     }

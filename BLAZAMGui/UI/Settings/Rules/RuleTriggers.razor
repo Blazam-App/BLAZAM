@@ -17,9 +17,10 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-       
-        ViewFilter.ObjectTypeChanged += () => {
-            InvokeAsync(StateHasChanged); 
+
+        ViewFilter.ObjectTypeChanged += async () =>
+        {
+            await UpdateState();
         };
     }
     

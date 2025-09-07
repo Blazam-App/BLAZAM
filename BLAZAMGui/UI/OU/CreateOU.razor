@@ -48,22 +48,10 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
     }
-    /*
-    bool AllowStep(StepNavigationContext context)
-    {
-        switch (context.NextStepName)
-        {
-            case "stepConfigure":
-                return true;
-            case "stepConfirm":
+  
 
-                return newOU != null;
-        }
-        return false;
-    }
-    */
     async void OUSelected(IDirectoryEntryAdapter entry)
     {
         if (entry is IADOrganizationalUnit ou)
@@ -75,8 +63,7 @@
             }
             parentOU = ou;
 
-
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
         }
     }
 

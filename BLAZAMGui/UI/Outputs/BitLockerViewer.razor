@@ -37,8 +37,9 @@
         if (Computer == null) return;
         var recs = await Computer.GetBitLockerRecoveryAsync();
         if (recs != null)
+        {
             _recoveries = recs;
-
-        await InvokeAsync(StateHasChanged);
+        }
+        await UpdateState();
     }
 }

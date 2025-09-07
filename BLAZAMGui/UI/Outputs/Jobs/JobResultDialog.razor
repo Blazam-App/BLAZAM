@@ -52,10 +52,10 @@
 
         if (Job != null)
         {
-            Job.OnProgressUpdated += ((value) =>
-          {
-              InvokeAsync(StateHasChanged);
-          });
+            Job.OnProgressUpdated += (async (value) =>
+            {
+                await UpdateState();
+            });
         }
     }
 

@@ -37,7 +37,7 @@
             {
 
                 _show = _stagedShow;
-                InvokeAsync(StateHasChanged);
+                _ = UpdateState();
 
             }, showCancellationTokenSource.Token);
 

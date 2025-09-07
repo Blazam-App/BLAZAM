@@ -41,13 +41,13 @@
     }
     private void LookupGroup()
     {
-        Task.Run(() =>
+        Task.Run(async() =>
         {
             try
             {
                 var sid = Group.GroupSid;
                 ADGroup = Directory.Groups.FindGroupBySID(sid);
-                InvokeAsync(StateHasChanged);
+                await UpdateState();
             }catch(Exception ex)
             {
                 Loggers.ActiveDirectoryLogger.Warning("Unable to find group {Error}", ex);

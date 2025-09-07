@@ -41,7 +41,10 @@
     {
         Modal.SetYesText(AppLocalization[Lang.Next]);
         Modal.SetTitle(AppLocalization[Lang.Register_Printers]);
-        Modal.SetOnYes(() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
+        Modal.SetOnYes(async() => { 
+            activePanel = 1; 
+            await UpdateState(); 
+        });
         base.OnInitialized();
 
 
@@ -96,29 +99,14 @@
             else
             {
                 Modal.SetYesText(AppLocalization[Lang.Next]);
-                Modal.SetOnYes(() => { activePanel = 1; InvokeAsync(StateHasChanged); return Task.CompletedTask; });
+                Modal.SetOnYes(async () => {
+                    activePanel = 1;
+                    await UpdateState();
+                });
                 _=Modal.RefreshView();
 
             }
         }
     }
-    // protected override bool ValidateModal()
-    // {
 
-    //     if (!validated && destinationOU != null && selectedPrinters != null && selectedPrinters.Count > 0)
-    //     {
-    //         validated = true;
-    //         Modal.YesText = AppLocalization["Register"];
-    //         Modal.OnYes = RegisterSelectedPrinters;
-    //         Modal.RefreshView();
-    //     }
-    //     else if(validated)
-    //     {
-    //         Modal.YesText = AppLocalization[Lang.Next];
-    //         Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
-    //         Modal.RefreshView();
-
-    //     }
-    //     return true;
-    // }
 }

@@ -187,7 +187,6 @@
     public async Task GetLatestUpdate()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         try
         {
             LatestAvailableVersion = await UpdateService.GetUpdates();
@@ -197,7 +196,6 @@
             SnackBarService.Error(ex.Message);
         }
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
     }
 
 
@@ -212,7 +210,7 @@
                 await output.RunAsync();
 
             }
-            await InvokeAsync(StateHasChanged);
+            await UpdateState();
         }
     }
 
@@ -220,7 +218,7 @@
     {
 
         DownladProgress = progress;
-        await InvokeAsync(StateHasChanged);
+        await UpdateState();
 
     }
 
