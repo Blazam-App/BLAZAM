@@ -11,7 +11,7 @@
             Auto-update scheduled! The application will shutdown and update in @timeLeft.Minutes:@timeLeft.Seconds
         </MudBadge>
 
-        Task.Delay(400).ContinueWith((s) => { InvokeAsync(StateHasChanged); });
+        Task.Delay(400).ContinueWith(async (s) => { await StateHasChangedAsync(); });
     }
 }
 
@@ -23,6 +23,6 @@
         await base.OnInitializedAsync();
         SchedueledUpdateTime = AutoUpdateService.ScheduledUpdateTime;
         AutoUpdateService.OnAutoUpdateQueued += ((time) => { SchedueledUpdateTime = time; });
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 }

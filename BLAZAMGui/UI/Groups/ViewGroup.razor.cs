@@ -16,7 +16,7 @@ namespace BLAZAM.Gui.UI.Groups
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
             ApplicationEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
@@ -86,9 +86,7 @@ namespace BLAZAM.Gui.UI.Groups
                 {
                     await jobResults.ShowJobDetailsDialogAsync(MessageService);
                 }
-
-
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
 
             }
 
@@ -100,7 +98,7 @@ namespace BLAZAM.Gui.UI.Groups
 
 
                 SavingChanges = true;
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
                 try
                 {
                     Group.Delete();

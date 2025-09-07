@@ -1,7 +1,4 @@
 using BLAZAM.Database.Models.Audit;
-using BLAZAM.Database.Models.User;
-using BLAZAM.Localization;
-using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets.Admin
 {
@@ -32,22 +29,20 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets.Admin
                 }
 
             };
-
-            _ = RefreshDataAsync();
         }
 
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            await InvokeAsync(StateHasChanged);
-            UserLogons = (await Context.LogonAuditLog.OrderByDescending(u => u.Timestamp).Take(50).ToListAsync());
+            try
+            {
+                UserLogons = (await Context.LogonAuditLog.OrderByDescending(u => u.Timestamp).Take(50).ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "Failed to load user logons for AppLogonsWidget");
+            }
             LoadingData = false;
-            await InvokeAsync(StateHasChanged);
-        }
-
-        void GoTo(DataGridRowClickEventArgs<IADUser> args)
-        {
-            Nav.NavigateTo(args.Item.SearchUri);
         }
     }
 }

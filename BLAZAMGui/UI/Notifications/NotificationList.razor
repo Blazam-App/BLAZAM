@@ -91,7 +91,6 @@
             {
                 LoadingData = true;
             }
-            await InvokeAsync(StateHasChanged);
             var context = await DbFactory.CreateDbContextAsync();
 
             messages = await context.UserNotifications
@@ -99,13 +98,11 @@
             .OrderByDescending(un => un.Notification.Created)
             .ToListAsync();
             LoadingData = false;
-
-            await InvokeAsync(StateHasChanged);
         });
 
 
     }
-    public override async Task UpdateState()
+    public override async Task StateHasChangedAsync()
     {
         await RetrieveMessages();
 

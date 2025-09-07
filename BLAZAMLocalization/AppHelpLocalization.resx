@@ -250,6 +250,9 @@ efforts on what our users think matters most.</value>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>An unexpected error has occured.</value>
   </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>You have unsaved changes</value>
+  </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
     <value>The release branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.</value>
   </data>

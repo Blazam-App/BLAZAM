@@ -358,7 +358,7 @@
         await LevelsChanged.InvokeAsync();
 
         ApplicationEvents.PermissionsChanged.Invoke();
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
     }
 
@@ -451,7 +451,7 @@
             SnackBarService.Success(WorkingModel.Name + " has been deleted");
             await LevelsChanged.InvokeAsync();
         }
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
     /// <summary>
     /// Fields that are either off limits or controled via action permissions

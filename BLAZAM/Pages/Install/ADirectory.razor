@@ -28,7 +28,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
+        Monitor.OnDirectoryConnectionChanged += (async (state) => { await StateHasChangedAsync(); });
         
        
     }
@@ -36,11 +36,11 @@
  
    
    
-    private void ShowNext()
+    private async Task ShowNext()
     {
         disableNext = false;
         StepCompleted.InvokeAsync();
-        InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
 }

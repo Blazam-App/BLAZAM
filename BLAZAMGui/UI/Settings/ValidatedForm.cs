@@ -49,7 +49,7 @@ namespace BLAZAM.Gui.UI.Settings
                     SnackBarService.Error(ex.Message);
 
                 }
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
             }
             else
             {

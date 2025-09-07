@@ -377,7 +377,7 @@
 
         DirectoryTemplate.PopulateFields(User, NewUserName);
         _initialized = true;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
     bool InDirectoryTemplate(IActiveDirectoryField field)

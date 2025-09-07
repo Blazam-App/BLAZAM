@@ -31,7 +31,7 @@
         {
             if (selectedNode == value) return;
             selectedNode = value;
-            InvokeAsync(StateHasChanged);
+            _ = StateHasChangedAsync();
 
         }
     }
@@ -56,8 +56,8 @@
     async Task MappingsChanged()
     {
         if(OUTree !=null){
-            await OUTree.RefreshViewAcync();
-            await InvokeAsync(StateHasChanged);
+            await OUTree.StateHasChangedAsync();
+            await StateHasChangedAsync();
         }
     }
 

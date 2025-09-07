@@ -86,7 +86,7 @@ namespace BLAZAM.Gui.UI
         }
         protected async Task RefreshComponents()
         {
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
             Header?.OnRefreshRequested?.Invoke();
         }
 
@@ -136,7 +136,7 @@ namespace BLAZAM.Gui.UI
                 {
                     SelectedTemplate = Templates.FirstOrDefault(t => t.Id == TemplateIdParameter);
                 }
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
                 Header?.OnRefreshRequested?.Invoke();
             }
             catch (Exception ex)

@@ -201,7 +201,7 @@
                 Model="@newUser" />
                 <AppModal @ref=_assignToModal>
                     <AssignToModalContent ModelChanged=@(async()=>{
-                                          await InvokeAsync(StateHasChanged);
+                                            await StateHasChangedAsync();
                                           }) DirectoryModel="newUser" />
                 </AppModal>
                 <MudButton Disabled=LoadingData

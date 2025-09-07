@@ -22,7 +22,7 @@
     {
 
         await base.OnInitializedAsync();
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
         if (BitLocker != null)
         {

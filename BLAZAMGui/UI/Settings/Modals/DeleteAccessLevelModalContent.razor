@@ -52,7 +52,7 @@
             _usedInMappings = Context.PermissionMap.Where(x => x.AccessLevels.Any(al => al.Id == AccessLevel.Id)).Include(x=>x.PermissionDelegates).ToList();
             LoadingData = false;
         });
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
 

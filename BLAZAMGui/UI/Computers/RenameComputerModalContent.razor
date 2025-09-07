@@ -44,13 +44,13 @@ else
         await base.OnInitializedAsync();
 
         _privateComputerInstance = Directory.FindEntryBySid(Computer.SID.ToSidString()) as IADComputer;
-        _privateComputerInstance.OnOnlineChanged += ((state) => { InvokeAsync(StateHasChanged); });
+        _privateComputerInstance.OnOnlineChanged += (async (state) => { await StateHasChangedAsync(); });
         SaveDisabled = false;
         Modal.SetOnYes(SaveChanges);
         Modal.SetYesText(AppLocalization[Lang.Rename_Computer]);
         Modal.SetTitle(AppLocalization[Lang.Rename_Computer]);
 
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
     void DisplayNameChanged(string newName)

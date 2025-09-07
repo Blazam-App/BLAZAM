@@ -1,5 +1,6 @@
-@inherits AppComponentBase
-<MudDataGrid Items="@Tokens"
+@inherits DatabaseComponentBase
+<MudDataGrid Items="@_tokens"
+    Loading=LoadingData
     Class="mb-5">
     <Columns>
         @if (ShowUser)
@@ -80,14 +81,47 @@
 
 @code {
     [Parameter]
-    public IEnumerable<ApiToken> Tokens { get; set; }
-    [Parameter]
     public bool ShowUser{ get; set; }
+
+    List<ApiToken> _tokens = new();
+
+    [Parameter]
+    public bool ShowAllTokens{ get; set; }
+
+    [Parameter]
+    public bool ShowDeleted{ get; set; }
 
     [Parameter]
     public EventCallback<ApiToken?> OnTokenDeleted { get; set; }
     private async Task Delete(ApiToken? tokenToDelete)
     {
         await OnTokenDeleted.InvokeAsync(tokenToDelete);
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Task.Run(() =>
+{
+    _ = GetTokensAsync();
+});
+    }
+
+    public async Task GetTokensAsync()
+    {
+        LoadingData = true;
+        if(ShowAllTokens){
+            if (ShowDeleted)
+                _tokens = await Context.ApiTokens.Include(t => t.User).ToListAsync();
+            else
+                _tokens = await Context.ApiTokens.Where(t => t.DeletedAt == null).Include(t => t.User).ToListAsync();
+        }
+        else
+        {
+            _tokens = await Context.ApiTokens.Where(t => t.UserId == CurrentUser.State.Id && t.DeletedAt==null).Include(t => t.User).ToListAsync();
+        }
+
+        LoadingData = false;
+
     }
 }

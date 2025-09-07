@@ -1,0 +1,37 @@
+﻿@using BLAZAM.Gui.UI
+@using BLAZAM.Notifications.Services
+@using BLAZAM.Plugins
+@using Microsoft.Extensions.Configuration
+@inherits AppComponentBase
+@attribute [PluginComponent(PageType.Plugin,PageLocation.Settings)]
+
+<MudText>
+    Test Plugin Settings
+</MudText>
+
+@if (BlazamGoogleWorkspacePlugin.Configuration != null)
+{
+    <MudText>Configuration Section: @BlazamGoogleWorkspacePlugin.Configuration.Path</MudText>
+    <MudList T="string">
+
+        @foreach (var child in BlazamGoogleWorkspacePlugin.Configuration.GetChildren())
+        {
+            <MudListItem>
+                <b>@child.Key</b>: @child.Value
+            </MudListItem>
+        }
+    </MudList>
+}
+else
+{
+    <MudText>No configuration found.</MudText>
+}
+
+<MudButton OnClick="TestSnackBar">Test Button</MudButton>
+
+@code {
+    private void TestSnackBar()
+    {
+        SnackBarService.Success("Plugin Toast Notification");
+    }
+}

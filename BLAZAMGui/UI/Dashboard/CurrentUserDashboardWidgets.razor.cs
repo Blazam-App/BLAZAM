@@ -22,7 +22,7 @@ namespace BLAZAM.Gui.UI.Dashboard
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
             if (WidgetService == null)
             {
                 Loggers.SystemLogger.Error(new AppException("WidgetService is not injected properly."), "Widget service not available");
@@ -31,7 +31,7 @@ namespace BLAZAM.Gui.UI.Dashboard
             {
                 allWidgets = new List<Widget>(WidgetService.Available());
             }
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
 
         }
         protected override void OnAfterRender(bool firstRender)
@@ -119,7 +119,7 @@ namespace BLAZAM.Gui.UI.Dashboard
                     Order = order
                 });
                 await CurrentUser.State.SaveDashboardWidgets();
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
                 widgetContainer?.Refresh();
             }
 
@@ -130,8 +130,7 @@ namespace BLAZAM.Gui.UI.Dashboard
             {
                 CurrentUser.State.Preferences?.DashboardWidgets.Remove(widget);
                 await CurrentUser.State.SaveDashboardWidgets();
-
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
 
                 widgetContainer?.Refresh();
             }

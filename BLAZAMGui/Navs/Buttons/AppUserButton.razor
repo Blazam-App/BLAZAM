@@ -81,13 +81,11 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await InvokeAsync(StateHasChanged);
-
+        await StateHasChangedAsync();
         UserState = CurrentUser.State;
-        await InvokeAsync(StateHasChanged);
         if (UserState != null)
             UserState.OnSettingsChanged.Delegate += InvokeStateHasChanged;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
     public override void Dispose()

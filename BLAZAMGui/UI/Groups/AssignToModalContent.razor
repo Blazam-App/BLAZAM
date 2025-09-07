@@ -183,7 +183,7 @@
     async void AddGroupInput()
     {
         additionalGroups.Add(additionalGroups.Count, null);
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
     async Task AssignToGroup()
     {

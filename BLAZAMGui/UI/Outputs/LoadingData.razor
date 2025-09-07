@@ -7,6 +7,6 @@
     public bool Loading { get => loading; set
         {
                 loading = value;
-                InvokeAsync(StateHasChanged);
+                _ = InvokeAsync(StateHasChanged);
     } }
 }

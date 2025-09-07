@@ -594,9 +594,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                using var context = DbFactory.CreateDbContext();
-                _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
-
+                if (_appliedPermissionMappings == null)
+                {
+                    using var context = DbFactory.CreateDbContext();
+                    _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
+                }
                 return _appliedPermissionMappings;
             }
         }
@@ -618,7 +620,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-
+        public void ClearPermissionCache()
+        {
+            _offspringPermissionMappings = null;
+            _appliedPermissionMappings = null;
+        }
 
         [JsonIgnore]
         public virtual bool HasUnsavedChanges

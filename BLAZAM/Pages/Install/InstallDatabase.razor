@@ -33,10 +33,10 @@
             dedicated database. If you are using SQLite as your database option you don't need to worry about this.
         </MudText>
         @if (progressValue > 0)
-            {
-                <MudProgressLinear Value="@progressValue"
-                                          Indeterminate />
-            }
+        {
+            <MudProgressLinear Value="@progressValue"
+                               Indeterminate />
+        }
         <MudContainer Style="width:fit-content">
             <MudButton Class="mx-auto" Variant="Variant.Filled" Color="Color.Primary" @onclick="InstallDB">Install</MudButton>
         </MudContainer>
@@ -63,7 +63,7 @@ else
         {
 
             progressValue = 100;
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
             try
             {
                 if (await DbFactory.ApplyDatabaseMigrationsAsync(true))
@@ -78,7 +78,7 @@ else
             {
                 await MessageService.Error(ex.Message, ex.GetType().FullName);
             }
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
 
         });
     }

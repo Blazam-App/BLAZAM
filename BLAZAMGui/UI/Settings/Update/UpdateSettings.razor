@@ -195,7 +195,7 @@
             originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
 
             settings = await Context.AppSettings.FirstOrDefaultAsync();
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
 
             //Pull encrypted update pass and store encrypted value
             await Task.Run(() =>
@@ -209,7 +209,6 @@
 
         }
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
 
     }
 
@@ -231,8 +230,7 @@
 
         }
 
-
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
     }
 

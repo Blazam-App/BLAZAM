@@ -96,7 +96,7 @@ else
                     Nav.NavigateTo("/home", true);
                     break;
             }
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         }
     }
 

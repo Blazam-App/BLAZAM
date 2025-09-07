@@ -156,22 +156,21 @@
                 settings = set;
             }
         }
-        _ = Task.Run(() =>
+        _ = Task.Run(async () =>
             {
                 if (EmailService.IsConfigured)
                     emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
-                InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
             });
       
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
     async Task SendTestEmail()
     {
         try
         {
             LoadingData = true;
-            await InvokeAsync(StateHasChanged);
             await EmailService.SendTestEmail(testRecipient);
             await MessageService.Success("A test email was sent to " + testRecipient, "Test Email Sent");
 
@@ -181,7 +180,6 @@
             await MessageService.Error(ex.Message, "Test Failed");
         }
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
     }
     protected override async Task Save()
     {

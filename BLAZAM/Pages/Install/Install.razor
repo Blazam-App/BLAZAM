@@ -23,37 +23,37 @@
 else
 {
     <MudTabs Centered Elevation="1" ActivePanelIndex="@selectedStep" ActivePanelIndexChanged="@OnSelectedStepChanged">
-        <MudTabPanel Disabled=@(completedSteps<1)
-        Icon="@(completedSteps>1?Icons.Material.Filled.CheckCircle:null)"
-        ToolTip="Database"
-        Text="1">
+        <MudTabPanel Disabled=@(completedSteps < 1)
+                     Icon="@(completedSteps>1?Icons.Material.Filled.CheckCircle:null)"
+                     ToolTip="Database"
+                     Text="1">
             @if (completedSteps > 0)
             {
-                <InstallDatabase Completed=@(completedSteps>1) StepCompleted="UpdateStatuses" />
+                <InstallDatabase Completed=@(completedSteps > 1) StepCompleted="UpdateStatuses" />
             }
         </MudTabPanel>
-        <MudTabPanel Disabled=@(completedSteps<2)
-        Text="2"
-        ToolTip="Authentication"
-        Icon="@(completedSteps>2?Icons.Material.Filled.CheckCircle:null)">
+        <MudTabPanel Disabled=@(completedSteps < 2)
+                     Text="2"
+                     ToolTip="Authentication"
+                     Icon="@(completedSteps>2?Icons.Material.Filled.CheckCircle:null)">
             @if (completedSteps > 1)
             {
                 <Authentication StepCompleted="UpdateStatuses" />
             }
 
         </MudTabPanel>
-        <MudTabPanel Disabled=@(completedSteps<3)
-        Text="3"
-        ToolTip="Active Directory"
-        Icon="@(completedSteps>3?Icons.Material.Filled.CheckCircle:null)">
+        <MudTabPanel Disabled=@(completedSteps < 3)
+                     Text="3"
+                     ToolTip="Active Directory"
+                     Icon="@(completedSteps>3?Icons.Material.Filled.CheckCircle:null)">
             @if (completedSteps > 2)
             {
-                <ADirectory StepCompleted="(()=>{completedSteps++;})" />
+                <ADirectory StepCompleted="(() => { completedSteps++; })" />
             }
         </MudTabPanel>
-        <MudTabPanel Disabled=@(completedSteps<4)
-        Icon="@Icons.Material.Filled.FlagCircle"
-        ToolTip="Finish">
+        <MudTabPanel Disabled=@(completedSteps < 4)
+                     Icon="@Icons.Material.Filled.FlagCircle"
+                     ToolTip="Finish">
             <h2>Installation Complete</h2>
             <MudButton @onclick="FinalizeInstall" Color="Color.Success">Finalize Install</MudButton>
         </MudTabPanel>
@@ -123,7 +123,7 @@ else
             }
             else // Otherwise, just update the UI with the initial step
             {
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
             }
             return; // Exit early
         }
@@ -131,12 +131,12 @@ else
         // 2. Check for pending migrations.
         if ((await Context.Database.GetPendingMigrationsAsync()).Any())
         {
-            await InvokeAsync(StateHasChanged); // Update UI before exiting
+            await StateHasChangedAsync(); // Update UI before exiting
             return;
         }
 
         completedSteps = 2;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
         // --- Flattened Logic within try/finally ---
         // The try/finally ensures the UI is always updated at the end
@@ -152,7 +152,7 @@ else
             }
 
             completedSteps = 3;
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
 
             // 4. Check Active Directory settings.
             var adSettings = await Context.ActiveDirectorySettings.FirstOrDefaultAsync();
@@ -171,7 +171,7 @@ else
         {
             // This `finally` block guarantees a final UI update, which was the
             // behavior of the original method's last line.
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         }
     }
 
@@ -198,9 +198,12 @@ else
             (await Context.AppSettings.FirstOrDefaultAsync())!.InstallationCompleted = true;
             _ = await Context.SaveChangesAsync();
             ApplicationInfo.InstallationCompleted = true;
-            try{
+            try
+            {
                 Loggers.SystemLogger.Warning("Installation Finalized");
-            }catch{
+            }
+            catch
+            {
                 //Ignore logging errors
             }
             await AnalyticsService.InstallationFinalized();

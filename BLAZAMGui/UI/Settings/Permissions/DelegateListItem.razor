@@ -121,7 +121,7 @@
     {
         Delegate.DelegateSid = _delegateEntry.SID;
         await Context.SaveChangesAsync();
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
         ApplicationEvents.PermissionsChanged.Invoke();
 
     }
