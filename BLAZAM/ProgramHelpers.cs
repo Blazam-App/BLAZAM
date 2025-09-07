@@ -292,7 +292,7 @@ namespace BLAZAM
             builder.Services.AddScoped<JwtTokenService>(); // Service for creating and managing JWTs
             builder.Services.AddSingleton<WebHookPublisher>(); // Service for publishing webhook events
             builder.Services.AddScoped<AppAuthenticationStateProvider>(); // Custom Blazor authentication state provider
-            builder.Services.AddScoped<AppNavManager>(); // Application-wide search functionality
+            builder.Services.AddScoped<AppNavManager>();
             builder.Services.AddScoped<SearchService>(); // Application-wide search functionality
             builder.Services.AddScoped<WidgetService>(); // Service to manage dashboard widgets based on permissions
             builder.Services.AddSingleton<IDuoClientProvider, DuoClientProvider>(); // Duo Security MFA integration
