@@ -75,7 +75,7 @@ Find the Linux demo at https://blazam.org/demo
 * Open source and free: Blazam is community-driven and transparent, with no licensing costs.
 
 ## Visit the Main Website
-[blazam.org](https://blazam.org)
+[https://blazam.org](https://blazam.org)
 
 ## Try the Live Demo
 [Windows Hosted Demo](https://blazam.org/demo)
@@ -83,7 +83,7 @@ Find the Linux demo at https://blazam.org/demo
  [Linux Hosted Demo](https://blazam.org/demo)
 
 ## View the Documentation
-[docs.blazam.org](https://docs.blazam.org)
+[https://docs.blazam.org](https://docs.blazam.org)
 
 ## Ready to Install?
 Blazam's Web Installer is the recommended installation method.
