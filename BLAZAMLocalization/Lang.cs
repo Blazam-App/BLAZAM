@@ -50,6 +50,7 @@
         public static readonly string Unknown_error_while_attempting_to_log_in = "Unknown error while attempting to log in";
         public static readonly string Update_Scheduled = "Update Scheduled";
         public static readonly string Dismiss_all = "Dismiss all";
+        public static readonly string Delete_permission_mapping = "Delete permission mapping";
         public static readonly string No_unread_notifications = "No unread notifications";
         public static readonly string Access_request_sent = "Access request sent";
         public static readonly string Google_Authenticator = "Google Authenticator";

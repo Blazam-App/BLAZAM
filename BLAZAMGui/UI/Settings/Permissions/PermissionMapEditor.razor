@@ -3,7 +3,7 @@
 @if (Mapping != null)
 {
 
-<MudElement Class="py-3"> 
+    <MudElement Class="py-3">
         <EditForm Model="Mapping" OnValidSubmit="@Save">
 
             @if (!ReadOnly && _permissionDelegates != null)
@@ -104,13 +104,13 @@
 
             if (Context != null)
             {
-                if (Mapping.Id != 0)
+                if (Mapping?.Id > 0)
                 {
                     Mapping = await Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Mapping.Id).FirstOrDefaultAsync();
                 }
                 _accessLevels = await Context.AccessLevels.Where(x => x.DeletedAt == null && !x.Name.Equals(AccessLevel.SelfAccessLevelName)).ToListAsync();
                 _permissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin && p.DeletedAt == null).ToListAsync();
-                if (Mapping.Id != 0)
+                if (Mapping?.Id != 0)
                 {
                     ConcatenateStrings();
                 }
@@ -125,7 +125,7 @@
     {
         string concatenated = "";
 
-        Mapping.AccessLevels.Select(a => a.Name).ToList().ForEach(s =>
+        Mapping?.AccessLevels.Select(a => a.Name).ToList().ForEach(s =>
         {
             concatenated += s + SELECTION_DELIMITER;
 
@@ -136,16 +136,19 @@
 
         selectedAccessLevelNames = concatenated;
         concatenated = "";
-        var sids = Mapping.PermissionDelegates.Select(a => a.DelegateSid).ToList();
-        foreach (var sid in sids)
+        var sids = Mapping?.PermissionDelegates.Select(a => a.DelegateSid).ToList();
+        if (sids != null)
         {
-            try
+            foreach (var sid in sids)
             {
-                concatenated += Directory.FindEntryBySID(sid)?.CanonicalName + SELECTION_DELIMITER;
-            }
-            catch (Exception)
-            {
-                concatenated += sid.ToSidString() + SELECTION_DELIMITER;
+                try
+                {
+                    concatenated += Directory.FindEntryBySID(sid)?.CanonicalName + SELECTION_DELIMITER;
+                }
+                catch (Exception)
+                {
+                    concatenated += sid.ToSidString() + SELECTION_DELIMITER;
+                }
             }
         }
 
@@ -157,21 +160,28 @@
 
     async Task DeleteMapping()
     {
-        if (Mapping?.Id == 0)
+        if (await MessageService.Confirm(AppLocalization[Lang.Confirm_deletion], AppLocalization[Lang.Delete_permission_mapping]))
         {
-            Mapping = null;
-        }
 
-        else if (Mapping != null)
-        {
-            Context.PermissionMap.Remove(Mapping);
-            await Context.SaveChangesAsync();
-        }
-        await InvokeAsync(StateHasChanged);
-        SnackBarService.Success("Mapping deleted");
-        await MappingsChanged.InvokeAsync();
-        ApplicationEvents.PermissionsChanged.Invoke();
 
+            if (Mapping?.Id == 0)
+            {
+                Mapping = null;
+            }
+
+            else if (Mapping != null)
+            {
+
+
+
+                Context.PermissionMap.Remove(Mapping);
+                await Context.SaveChangesAsync();
+            }
+            await InvokeAsync(StateHasChanged);
+            SnackBarService.Success("Mapping deleted");
+            await MappingsChanged.InvokeAsync();
+            ApplicationEvents.PermissionsChanged.Invoke();
+        }
     }
 
     string? DelegateToString(PermissionDelegate deleg)

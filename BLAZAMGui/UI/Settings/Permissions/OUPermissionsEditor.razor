@@ -76,6 +76,7 @@
     }
     async Task RefreshData()
     {
+        Node.ClearPermissionCache();
         appliedMappings = Node.DirectPermissionMappings;
         inheritedMappings = Node.InheritedPermissionMappings;
         NewMapping = null;
@@ -85,4 +86,5 @@
     {
         NewMapping = new() { OU = Node.DN };
     }
+  
 }
