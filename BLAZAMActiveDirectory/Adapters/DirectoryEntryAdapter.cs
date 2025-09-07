@@ -628,7 +628,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-
+        public void ClearPermissionCache()
+        {
+            _offspringPermissionMappings = null;
+            _appliedPermissionMappings = null;
+        }
 
         [JsonIgnore]
         public virtual bool HasUnsavedChanges

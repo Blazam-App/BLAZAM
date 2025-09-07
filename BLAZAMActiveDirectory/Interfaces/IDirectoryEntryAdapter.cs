@@ -272,6 +272,13 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         IList<PermissionMapping> OffspringPermissionMappings { get; }
 
         /// <summary>
+        /// Clears the cached permissions for the current enry.
+        /// </summary>
+        /// <remarks>This method invalidates any previously cached permission data, ensuring that
+        /// subsequent permission checks retrieve up-to-date information. Use this method when permissions have changed
+        /// and the cache needs to be refreshed.</remarks>
+        void ClearPermissionCache();
+        /// <summary>
         /// Called when staged changes have been discarded
         /// </summary>
         [JsonIgnore]
