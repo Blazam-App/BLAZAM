@@ -195,7 +195,7 @@ namespace BLAZAM.Services.Background
             if (entry is IADUser user &&
                 (user.SAMAccountName?.Equals(context.ActiveDirectorySettings.First()?.Username, StringComparison.InvariantCultureIgnoreCase) == true
                 || user.UserPrincipalName?.Equals(context.ActiveDirectorySettings.First()?.Username, StringComparison.InvariantCultureIgnoreCase) == true
-                || (context.ActiveDirectorySettings.First()?.Username.EndsWith("\\" + user.SAMAccountName, StringComparison.InvariantCultureIgnoreCase) == true))
+                || context.ActiveDirectorySettings.First()?.Username.EndsWith("\\" + user.SAMAccountName, StringComparison.InvariantCultureIgnoreCase) == true))
             {
                 Loggers.RulesLogger.Information("Preventing rule execution on application identity.");
                 return true;
