@@ -10,26 +10,34 @@ using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
-using BLAZAM.Services.Audit;
 using BLAZAM.Services.Events;
 using BLAZAM.Session;
 using Microsoft.Extensions.Localization;
 
 namespace BLAZAM.Services.Background
 {
+    /// <summary>
+    /// Background service responsible for processing and executing automation rules
+    /// on Active Directory entries, both on schedule and in response to directory events.
+    /// </summary>
     [AutoStartBackgroundService(true)]
     public class RulesProcessor : ActiveDirectoryBackgroundServiceBase
     {
         private readonly Dictionary<AutomationRule, Timer> ScheduledRules = new();
         private bool _initialized;
 
-        private RulesAuditLogger Audit { get; set; }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RulesProcessor"/> class.
+        /// </summary>
         public RulesProcessor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
             Interval = TimeSpan.FromMinutes(5);
         }
 
+        /// <summary>
+        /// Main execution entry point for the background service.
+        /// Subscribes to directory entry events and schedules rules for execution.
+        /// </summary>
         protected override void Execute(object? state = null)
         {
             if (!_initialized)
@@ -40,6 +48,9 @@ namespace BLAZAM.Services.Background
             ScheduleRules();
         }
 
+        /// <summary>
+        /// Schedules enabled automation rules that are due to run soon.
+        /// </summary>
         private void ScheduleRules()
         {
             var rules = GetRules();
@@ -56,12 +67,11 @@ namespace BLAZAM.Services.Background
             {
                 if (!ScheduledRules.ContainsKey(rule))
                 {
-
                     var timeNow = DateTime.Now.TimeOfDay;
                     var timeToRun = rule.ScheduledRunTime;
                     if (timeToRun.HasValue)
                     {
-
+                        // If the scheduled time has already passed today, schedule for tomorrow
                         if (timeToRun.Value < timeNow)
                         {
                             timeToRun = timeToRun.Value.Add(TimeSpan.FromDays(1));
@@ -73,9 +83,12 @@ namespace BLAZAM.Services.Background
                 }
             }
         }
+
+        /// <summary>
+        /// Disposes timers and resources used by the processor.
+        /// </summary>
         protected override void Dispose(bool disposing)
         {
-
             if (disposing)
             {
                 foreach (var scheduledRule in ScheduledRules)
@@ -84,32 +97,38 @@ namespace BLAZAM.Services.Background
                 }
                 ScheduledRules.Clear();
             }
-
-
-
             base.Dispose(disposing);
         }
 
-
+        /// <summary>
+        /// Handles directory entry change events and processes applicable rules.
+        /// </summary>
         private void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedArgs args)
         {
-            if (sender != null && sender.Equals(this)) return;
+            if (sender != null && sender.Equals(this))
+            {
+                return;
+            }
             if (args.EventType != ApplicationEventType.Search)
             {
+                if (IsApplicationIdentity(args.Entry))
+                {
+                    return;
+                }
+
                 var rules = GetRules();
                 if (rules.Count > 0)
                 {
+                    // Find rules matching the entry type and event trigger
                     var applicableRules = rules
                         .Where(r => r.ActiveDirectoryObjectType.Equals(args.Entry.ObjectType)
                         && r.Trigger.Equals(args.EventType.ToNotificationType()))
                         .OrderBy(r => r.Order).ToList();
                     var ruleProcessingJob = new Job("Process entry change rules");
                     ruleProcessingJob.ThreadPriority = ThreadPriority.Lowest;
-
                     ruleProcessingJob.StopOnFailedStep = true;
                     foreach (var ruleForEvent in applicableRules)
                     {
-
                         var ruleStep = new JobStep(ruleForEvent.Name, (step) =>
                         {
                             ProcessMatchedEntry(ruleForEvent, args.Entry);
@@ -122,6 +141,11 @@ namespace BLAZAM.Services.Background
             }
         }
 
+        /// <summary>
+        /// Executes a scheduled automation rule on all matching directory entries.
+        /// </summary>
+        /// <param name="rule">The automation rule to execute.</param>
+        /// <returns>The job representing the rule execution.</returns>
         public async Task<IJob> ProcessScheduledRule(AutomationRule rule)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -133,13 +157,15 @@ namespace BLAZAM.Services.Background
             scheduledRuleJob.ThreadPriority = ThreadPriority.Lowest;
             List<IDirectoryEntryAdapter> filteredEntries;
 
-
             filteredEntries = GetFilteredEntries(rule);
 
-
-            //Execute matched entries
+            // Execute actions for each matched entry
             foreach (var entry in filteredEntries)
             {
+                if (IsApplicationIdentity(entry))
+                {
+                    continue;
+                }
                 Job entryJob = new Job($"Execute on {entry.CanonicalName}");
                 JobStep execApplicableEntriesStep = new($"Execute", (step) =>
                 {
@@ -155,14 +181,32 @@ namespace BLAZAM.Services.Background
             });
             scheduledRuleJob.AddStep(logCompletionStep);
 
-
-
-
             _ = scheduledRuleJob.RunAsync();
             return scheduledRuleJob;
-
         }
 
+        /// <summary>
+        /// Determines if the given directory entry represents the application identity,
+        /// to prevent rules from acting on the application's own account.
+        /// </summary>
+        private bool IsApplicationIdentity(IDirectoryEntryAdapter entry)
+        {
+            using var context = dbFactory.CreateDbContext();
+            if (entry is IADUser user &&
+                (user.SAMAccountName?.Equals(context.ActiveDirectorySettings.First()?.Username, StringComparison.InvariantCultureIgnoreCase) == true
+                || user.UserPrincipalName?.Equals(context.ActiveDirectorySettings.First()?.Username, StringComparison.InvariantCultureIgnoreCase) == true))
+            {
+                Loggers.RulesLogger.Information("Preventing rule execution on application identity.");
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Retrieves all directory entries that match the filters defined in the given rule.
+        /// </summary>
+        /// <param name="rule">The automation rule containing filters.</param>
+        /// <returns>List of matching directory entries.</returns>
         public List<IDirectoryEntryAdapter> GetFilteredEntries(AutomationRule rule)
         {
             List<IDirectoryEntryAdapter> matchedEntries = new();
@@ -170,41 +214,41 @@ namespace BLAZAM.Services.Background
             {
                 foreach (var orFilter in rule.Filters)
                 {
+                    // Each OR filter is processed independently; results are accumulated
                     if (!GetFilteredOrEntried(rule, matchedEntries, directory, orFilter))
                     {
                         continue;
                     }
                 }
-
             }
-
             return matchedEntries;
         }
 
+        /// <summary>
+        /// Applies a single OR filter to the directory and adds matching entries to the result list.
+        /// </summary>
         private static bool GetFilteredOrEntried(AutomationRule rule, List<IDirectoryEntryAdapter> matchedEntries, IActiveDirectoryContext directory, AutomationRuleOrFilter orFilter)
         {
             ADSearch search = new ADSearch(directory);
 
-
-            //Perform search customization for this rule
-
-            //Has enabled filter
+            // Handle enabled/disabled filters
             if (orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate) &&
                 !orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate))
             {
                 search.EnabledOnly = true;
             }
+            // Handle all other fields
             else if (orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate) &&
                 !orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate))
             {
                 search.DisabledOnly = true;
             }
 
-            //Has OU scope
+            // Handle OU scope filters
             if (orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true))
             {
-                var ouFilters = orFilter.AndFilters.Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true) // This part identifies the Filters containing the OU AndFilter
-                    .Select(f => f.Value); // This flattens the collection of AndFilters from the matched Filters
+                var ouFilters = orFilter.AndFilters.Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)
+                    .Select(f => f.Value);
                 var ouFilter = ouFilters.OrderBy(f => f?.Length).FirstOrDefault();
                 if (ouFilter != null && !ouFilter.IsNullOrEmpty())
                 {
@@ -222,16 +266,13 @@ namespace BLAZAM.Services.Background
                 }
             }
 
+            // Restrict search to the rule's object type if specified
             if (rule.ActiveDirectoryObjectType != ActiveDirectoryObjectType.All)
             {
                 search.ObjectTypeFilter = rule.ActiveDirectoryObjectType;
             }
 
-
-
-
-
-
+            // Add all AND filters except for Enabled and OU, which are handled above
             foreach (var andFilters in rule.Filters.Select(x => x.AndFilters))
             {
                 foreach (var andFilter in andFilters)
@@ -241,13 +282,15 @@ namespace BLAZAM.Services.Background
                     {
                         AddAndFilterSearchField(search, andFilter);
                     }
-
                 }
             }
             matchedEntries.AddRange(search.Search());
             return true;
         }
 
+        /// <summary>
+        /// Adds a single AND filter as a search field to the ADSearch object.
+        /// </summary>
         private static void AddAndFilterSearchField(ADSearch search, AutomationRuleAndFilter? andFilter)
         {
             if (andFilter == null)
@@ -274,27 +317,32 @@ namespace BLAZAM.Services.Background
             }
         }
 
+        /// <summary>
+        /// Processes a single directory entry for a given rule, executing all actions if filters pass.
+        /// </summary>
+        /// <param name="ruleForEvent">The rule to process.</param>
+        /// <param name="entry">The directory entry to process.</param>
+        /// <param name="ruleJob">Optional job context for logging/auditing.</param>
+        /// <returns>True if processing should continue, false if it should stop.</returns>
         private bool ProcessMatchedEntry(AutomationRule ruleForEvent, IDirectoryEntryAdapter entry, IJob? ruleJob = null)
         {
             Stopwatch sw = Stopwatch.StartNew();
             Task.Delay(50).Wait();
 
-
-
             Loggers.RulesLogger.Information("Rule {@Rule} processing started on {@Entry}.", ruleForEvent.Name, entry.DN);
 
             Task.Delay(50).Wait();
-
 
             if (OrFiltersPass(ruleForEvent, entry))
             {
                 try
                 {
                     using var context = dbFactory.CreateDbContext();
+
+                    // Update last executed timestamp for the rule
                     var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
                     contextRule.LastExcecuted = DateTime.UtcNow;
                     context.SaveChanges();
-                    context.Dispose();
                     Task.Delay(50).Wait();
 
                 }
@@ -330,8 +378,11 @@ namespace BLAZAM.Services.Background
             Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name, entry.DN, sw.Elapsed);
 
             return true;
-
         }
+
+        /// <summary>
+        /// Marks a rule as triggered by updating its LastTriggered timestamp.
+        /// </summary>
         private void MarkTriggered(AutomationRule rule)
         {
             using var context = dbFactory.CreateDbContext();
@@ -339,6 +390,13 @@ namespace BLAZAM.Services.Background
             contextRule.LastTriggered = DateTime.UtcNow;
             context.SaveChanges();
         }
+
+        /// <summary>
+        /// Evaluates all OR filters for a rule against a directory entry.
+        /// </summary>
+        /// <param name="ruleForEvent">The rule to evaluate.</param>
+        /// <param name="entry">The directory entry to check.</param>
+        /// <returns>True if any OR filter passes, otherwise false.</returns>
         private bool OrFiltersPass(AutomationRule? ruleForEvent, IDirectoryEntryAdapter? entry = null)
         {
             var anyOrTrue = false;
@@ -352,7 +410,6 @@ namespace BLAZAM.Services.Background
                         if (!AndFilterTrue(andFilter, entry))
                         {
                             andTrue = false;
-
                         }
                     }
                     if (andTrue)
@@ -370,6 +427,10 @@ namespace BLAZAM.Services.Background
             return anyOrTrue;
         }
 
+        /// <summary>
+        /// Executes a single action on a directory entry as part of a rule.
+        /// Handles group assignment, enable/disable, move, field modification, etc.
+        /// </summary>
         private void ExecuteAction(AutomationRule rule, AutomationRuleAction action, IDirectoryEntryAdapter entry, IJob? ruleJob = null)
         {
             var eventType = ApplicationEventType.All;
@@ -422,26 +483,21 @@ namespace BLAZAM.Services.Background
                     {
                         if (!account.Enabled) return;
                         account.Enabled = false;
-
                     }
                     break;
                 case AutomationRuleActionType.Enable:
                     eventType = ApplicationEventType.Modify;
-
                     if (account != null)
                     {
                         if (account.Enabled) return;
-
                         account.Enabled = true;
                     }
                     break;
                 case AutomationRuleActionType.Unlock:
                     eventType = ApplicationEventType.Modify;
-
                     if (account != null)
                     {
                         if (!account.LockedOut) return;
-
                         account.LockedOut = false;
                     }
                     break;
@@ -450,19 +506,18 @@ namespace BLAZAM.Services.Background
                     if (account != null)
                     {
                         if (account.LockedOut) return;
-
                         account.LockedOut = true;
                     }
                     break;
                 case AutomationRuleActionType.Move:
                     eventType = ApplicationEventType.Move;
-
                     if (action.Data != null)
                     {
-                        if (entry.GetParent().DN.Equals(action.Data, StringComparison.InvariantCultureIgnoreCase)) return;
-
+                        if (entry.GetParent().DN?.Equals(action.Data, StringComparison.InvariantCultureIgnoreCase) == true)
+                        {
+                            return;
+                        }
                         using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-
                         var ou = directory.OUs.FindOuByDN(action.Data);
                         if (ou != null)
                         {
@@ -478,7 +533,10 @@ namespace BLAZAM.Services.Background
                     {
                         var field = action.FieldValues[0].CurrentField;
                         var existingValue = entry.GetCustomProperty<object>(field.FieldName);
-                        if (existingValue.ToString().Equals(action.FieldValues[0].Value, StringComparison.InvariantCultureIgnoreCase)) return;
+                        if (existingValue?.ToString()?.Equals(action.FieldValues[0].Value, StringComparison.InvariantCultureIgnoreCase) == true)
+                        {
+                            return;
+                        }
                         entry.SetCustomProperty(field.FieldName, action.FieldValues[0].Value);
                     }
                     break;
@@ -487,7 +545,6 @@ namespace BLAZAM.Services.Background
             var result = entry.CommitChanges(ruleJob);
             if (result.FailedSteps.Count == 0)
             {
-                Audit = new(dbFactory, new RulesUserState(dbFactory, rule.Name));
 
                 ApplicationEvents.DirectoryEntryEvent.Invoke(this, new()
                 {
@@ -498,10 +555,15 @@ namespace BLAZAM.Services.Background
                     Origin = origin,
                     EventType = eventType
                 });
-
             }
         }
 
+        /// <summary>
+        /// Evaluates a single AND filter against a directory entry.
+        /// </summary>
+        /// <param name="andFilter">The AND filter to evaluate.</param>
+        /// <param name="entry">The directory entry to check.</param>
+        /// <returns>True if the filter passes, otherwise false.</returns>
         private static bool AndFilterTrue(AutomationRuleAndFilter andFilter, IDirectoryEntryAdapter entry)
         {
             var filterTrue = false;
@@ -518,7 +580,6 @@ namespace BLAZAM.Services.Background
                         case ActiveDirectoryFieldOperator.EqualTo:
                             filterTrue = entry.PropertyValueEquals(defaultField.PropertyName, andFilter.Value);
                             break;
-
                         case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
                             var dateValue3 = entry.GetPropertyValue(defaultField.PropertyName);
                             if (dateValue3 is DateTime dateTime3)
@@ -530,7 +591,6 @@ namespace BLAZAM.Services.Background
                                 filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
                             }
                             break;
-
                         case ActiveDirectoryFieldOperator.FutureTimeFrame:
                             var dateValue4 = entry.GetPropertyValue(defaultField.PropertyName);
                             if (dateValue4 is DateTime dateTime4)
@@ -542,15 +602,12 @@ namespace BLAZAM.Services.Background
                                 filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
                             }
                             break;
-
                         case ActiveDirectoryFieldOperator.StartsWith:
                             filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().StartsWith(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase);
                             break;
-
                         case ActiveDirectoryFieldOperator.EndsWith:
                             filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().EndsWith(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase);
                             break;
-
                         case ActiveDirectoryFieldOperator.AfterNow:
                             var dateValue = entry.GetPropertyValue(defaultField.PropertyName);
                             if (dateValue is DateTime dateTime)
@@ -562,7 +619,6 @@ namespace BLAZAM.Services.Background
                                 filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
                             }
                             break;
-
                         case ActiveDirectoryFieldOperator.BeforeNow:
                             var dateValue2 = entry.GetPropertyValue(defaultField.PropertyName);
                             if (dateValue2 is DateTime dateTime2)
@@ -574,21 +630,16 @@ namespace BLAZAM.Services.Background
                                 filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
                             }
                             break;
-
                         case ActiveDirectoryFieldOperator.Contains:
                             var propertyValue = entry.GetPropertyValue(defaultField.PropertyName).ToString();
                             filterTrue = propertyValue?.Contains(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true;
                             break;
-
                         case ActiveDirectoryFieldOperator.Boolean:
                             if (entry.GetPropertyValue(defaultField.PropertyName) is bool boolValue)
                             {
                                 filterTrue = boolValue == true;
                             }
                             break;
-
-
-
                     }
                 }
                 else if (andFilter.CurrentField is CustomActiveDirectoryField customField)
@@ -598,7 +649,6 @@ namespace BLAZAM.Services.Background
                         case ActiveDirectoryFieldOperator.EqualTo:
                             filterTrue = entry.GetCustomProperty<object>(customField.FieldName).Equals(andFilter.Value);
                             break;
-
                         case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
                             var raw = entry.GetCustomProperty<object>(customField.FieldName);
                             var dateValue3 = raw.AdsValueToDateTime();
@@ -607,7 +657,6 @@ namespace BLAZAM.Services.Background
                                 filterTrue = dateTime3 > DateTime.Now - andFilter.TimeFrame;
                             }
                             break;
-
                         case ActiveDirectoryFieldOperator.FutureTimeFrame:
                             var raw2 = entry.GetCustomProperty<object>(customField.FieldName);
                             var dateValue4 = raw2.AdsValueToDateTime();
@@ -615,17 +664,13 @@ namespace BLAZAM.Services.Background
                             {
                                 filterTrue = dateTime4 > DateTime.Now - andFilter.TimeFrame;
                             }
-
                             break;
-
                         case ActiveDirectoryFieldOperator.StartsWith:
                             filterTrue = entry.GetPropertyValue(customField.FieldName).ToString().StartsWith(andFilter.Value.ToString());
                             break;
-
                         case ActiveDirectoryFieldOperator.EndsWith:
                             filterTrue = entry.GetPropertyValue(customField.FieldName).ToString().EndsWith(andFilter.Value.ToString());
                             break;
-
                         case ActiveDirectoryFieldOperator.AfterNow:
                             var raw3 = entry.GetCustomProperty<object>(customField.FieldName);
                             var dateValue = raw3.AdsValueToDateTime(); if (dateValue is DateTime dateTime)
@@ -633,7 +678,6 @@ namespace BLAZAM.Services.Background
                                 filterTrue = dateTime > DateTime.Now;
                             }
                             break;
-
                         case ActiveDirectoryFieldOperator.BeforeNow:
                             var raw4 = entry.GetCustomProperty<object>(customField.FieldName);
                             var dateValue2 = raw4.AdsValueToDateTime();
@@ -641,27 +685,19 @@ namespace BLAZAM.Services.Background
                             {
                                 filterTrue = dateTime2 < DateTime.Now;
                             }
-
                             break;
-
                         case ActiveDirectoryFieldOperator.Contains:
                             var propertyValue = entry.GetPropertyValue(customField.FieldName).ToString();
                             filterTrue = propertyValue?.Contains(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true;
                             break;
-
                         case ActiveDirectoryFieldOperator.Boolean:
                             if (entry.GetPropertyValue(customField.FieldName) is bool boolValue)
                             {
                                 filterTrue = boolValue == true;
                             }
                             break;
-
-
-
                     }
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -674,6 +710,9 @@ namespace BLAZAM.Services.Background
             return filterTrue;
         }
 
+        /// <summary>
+        /// Retrieves all enabled, non-deleted, and non-expired automation rules from the database.
+        /// </summary>
         private List<AutomationRule> GetRules()
         {
             try
