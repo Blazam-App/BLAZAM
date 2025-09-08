@@ -87,10 +87,8 @@
     {
         await Task.Run(async () =>
         {
-            if (messages == null || messages.Count == 0)
-            {
-                LoadingData = true;
-            }
+            LoadingData = true;
+
             var context = await DbFactory.CreateDbContextAsync();
 
             messages = await context.UserNotifications
@@ -100,11 +98,6 @@
             LoadingData = false;
         });
 
-
-    }
-    public override async Task StateHasChangedAsync()
-    {
-        await RetrieveMessages();
 
     }
 
