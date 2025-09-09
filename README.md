@@ -97,6 +97,6 @@ If you like the project, please give it a star! It helps with visibility and mot
 [![Star History Chart](https://api.star-history.com/svg?repos=Blazam-App/BLAZAM&type=Date)](https://www.star-history.com/#Blazam-App/BLAZAM&Date)
 
 ## Get Paid to Contribute
-If you are interested in contributing to Blazam and recieving compensation for your work, please reach out
+If you are interested in contributing to Blazam and receiving compensation for your work, please reach out
 to admin@blazam.org with your proposal of work and a flat rate. Simple contributions such as bug fixes or small features
 will not be considered. Only larger features that work on muliple components or significant contributions will be considered.

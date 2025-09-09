@@ -192,7 +192,7 @@ namespace BLAZAM.Services.Background
         private bool IsApplicationIdentity(IDirectoryEntryAdapter entry)
         {
             using var context = dbFactory.CreateDbContext();
-            var adUsername = context.ActiveDirectorySettings.First()?.Username;
+            var adUsername = context.ActiveDirectorySettings.FirstOrDefault()?.Username;
             if (entry is IADUser user &&
                 (user.SAMAccountName?.Equals(adUsername, StringComparison.InvariantCultureIgnoreCase) == true
                 || user.UserPrincipalName?.Equals(adUsername, StringComparison.InvariantCultureIgnoreCase) == true
