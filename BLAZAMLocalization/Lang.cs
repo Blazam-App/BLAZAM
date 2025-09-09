@@ -23,6 +23,7 @@
         public static readonly string Print = "Print";
         public static readonly string Fetch_News = "Fetch News";
         public static readonly string Excute = "Execute";
+        public static readonly string Text = "Text";
         public static readonly string Removed_from_Group = "Removed from Group";
         public static readonly string Added_to_Group = "Added to Group";
         public static readonly string Check_for_Update = "Check for Update";

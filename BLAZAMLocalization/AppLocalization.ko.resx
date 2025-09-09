@@ -1275,4 +1275,7 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>세션이 곧 만료됩니다.</value>
   </data>
+  <data name="Text" xml:space="preserve">
+    <value>텍스트</value>
+  </data>
 </root>

@@ -1275,4 +1275,7 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>Twoja sesja wkrótce wygaśnie</value>
   </data>
+  <data name="Text" xml:space="preserve">
+    <value>Tekst</value>
+  </data>
 </root>
