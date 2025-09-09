@@ -13,13 +13,7 @@
         }
         <TemplateColumn Class="" Title="@AppLocalization[Lang.Token]">
             <CellTemplate>
-                @{
-                    var decrypted = context.Item.Token.Decrypt<string>();
-                }
-                <MudStack Row=true>
-                    <MudText>@(decrypted.Substring(0, 10))...</MudText>
-                    <AppCopyButton TextToCopy="@decrypted" />
-                </MudStack>
+               <ApiTokenDisplay Token="@context.Item.Token"/>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization[Lang.Created]">
