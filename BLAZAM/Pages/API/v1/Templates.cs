@@ -22,7 +22,6 @@ namespace BLAZAM.Pages.API.v1
     /// Template API endpoints provide listing of templates
     /// and execution to create users.
     /// </summary>
-    [Route("api/v1/templates")]
     [Authorize(Roles = UserRoles.SuperAdmin)]
     public class Templates : ApiControllerBase
     {
