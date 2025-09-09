@@ -7,7 +7,7 @@
     <AppTooltip @ref=_tooltip ShowOnClick=false ShowOnFocus=false ShowOnHover=false Visible=_showTooltip>
         <TooltipContent>
             <MudAlert Severity="Severity.Info" Variant="Variant.Filled">
-                @AppHelpLocalization[HelpLang.Text_Copied_To_Clipboard, TextToCopy?.Length<40?TextToCopy:"Text"]
+                @AppHelpLocalization[HelpLang.Text_Copied_To_Clipboard, TextToCopy?.Length<40?TextToCopy:AppLocalization[Lang.Text]]
             </MudAlert>
         </TooltipContent>
         <ChildContent>
