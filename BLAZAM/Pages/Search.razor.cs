@@ -12,13 +12,26 @@ using MudBlazor;
 
 namespace BLAZAM.Pages
 {
+    /// <summary>
+    /// Represents a search component that facilitates searching for directory entries based on various parameters and
+    /// filters.
+    /// </summary>
+    /// <remarks>This component integrates with the <see cref="SearchService"/> to manage search parameters
+    /// and performs searches using the <see cref="ADSearch"/> class. It supports initializing search terms from the
+    /// URI, handling cascading parameters, and managing search results.</remarks>
     public partial class Search : AppComponentBase
     {
-
+        /// <summary>
+        /// Gets or sets the search parameters used to configure the search operation.
+        /// </summary>
         [CascadingParameter]
         public SearchService? SearchParameters { get; set; }
 
         readonly string ModelsTypeName = "Search";
+
+        /// <summary>
+        /// Gets or sets the icon used to represent the search functionality.
+        /// </summary>
         protected string SearchIcon { get; set; } = "";
         string? _searchTermParameter;
         /// <summary>
@@ -27,6 +40,15 @@ namespace BLAZAM.Pages
         [Parameter]
         public virtual string? SearchTermParameter { get; set; }
 
+        /// <summary>
+        /// Asynchronously handles updates to component parameters and performs a search operation  if the search term
+        /// has changed.
+        /// </summary>
+        /// <remarks>This method is invoked whenever parameters are set for the component. If the search
+        /// term  has changed, it cancels any ongoing search, decodes the new search term, and initiates a  new search
+        /// operation. The <see cref="LoadingData"/> property is updated to reflect the  loading state during the search
+        /// process.</remarks>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         protected override async Task OnParametersSetAsync()
         {
             var decodedSearchTerm = HttpUtility.UrlDecode(SearchTermParameter);
@@ -44,10 +66,17 @@ namespace BLAZAM.Pages
                 LoadingData = false;
         }
 
-
+        /// <summary>
+        /// Gets or sets the directory searcher used to query Active Directory.
+        /// </summary>
         public ADSearch? Searcher { get; set; }
 
-
+        /// <summary>
+        /// Gets or sets the cascading parameter for the <see cref="MainLayout"/> component.
+        /// </summary>
+        /// <remarks>This property is typically used to share the <see cref="MainLayout"/> instance with
+        /// child components in a Blazor application. Ensure that the property is properly initialized before accessing
+        /// it.</remarks>
         [CascadingParameter]
         public MainLayout? MainLayout { get; set; }
 
@@ -93,6 +122,9 @@ namespace BLAZAM.Pages
         [CascadingParameter]
         public ActiveDirectoryObjectType? SearchObjectType { get; set; }
 
+        /// <summary>
+        /// Gets or sets the collection of directory entry adapters.
+        /// </summary>
         protected virtual List<IDirectoryEntryAdapter> results { get; set; } = new List<IDirectoryEntryAdapter>();
 
 
