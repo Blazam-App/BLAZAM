@@ -2,7 +2,7 @@
 using System.Text.Json;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Templates;
-using BLAZAM.EmailMessage.Email.Notifications;
+using BLAZAM.EmailMessage.Email.Messages;
 using BLAZAM.Gui.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
