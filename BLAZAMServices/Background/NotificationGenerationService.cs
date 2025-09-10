@@ -1,12 +1,10 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.EmailMessage.Email.Base;
-using BLAZAM.EmailMessage.Email.Notifications;
+using BLAZAM.EmailMessage.Email.Messages;
 using BLAZAM.Helpers;
 using BLAZAM.Localization;
 using BLAZAM.Logger;

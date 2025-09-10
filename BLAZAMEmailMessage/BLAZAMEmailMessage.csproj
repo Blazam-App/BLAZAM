@@ -43,10 +43,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Email\Notifications\AccessRequestEmailMessage.razor">
+    <Content Update="Email\Messages\AccessRequestEmailMessage.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-    <Content Update="Email\Notifications\LockedOutEmailMessage.razor">
+    <Content Update="Email\Messages\LockedOutEmailMessage.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>

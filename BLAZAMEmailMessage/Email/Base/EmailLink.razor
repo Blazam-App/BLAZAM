@@ -3,7 +3,7 @@
 {
     @ChildContent
 }else{
-    <MudLink Href="@(appFQDN+URI)">
+    <MudLink Href="@(appFQDN+Uri)">
         @ChildContent
     </MudLink>
 }
@@ -17,7 +17,7 @@
         InvokeAsync(StateHasChanged);
     }
     [Parameter]
-    public string? URI{ get; set; }
+    public string? Uri{ get; set; }
     [Parameter]
     public RenderFragment? ChildContent{ get; set; }
 }
