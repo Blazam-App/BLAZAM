@@ -180,6 +180,7 @@
         public static readonly string Home = "Home";
         public static readonly string Back = "Back";
         public static readonly string Log_In = "Log In";
+        public static readonly string Password_Reset_Requested = "Password Reset Requested";
         public static readonly string Recycle_Bin = "Recycle Bin";
         public static readonly string Deleted = "Deleted";
         public static readonly string Restore = "Restore";
