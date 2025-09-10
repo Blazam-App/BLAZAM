@@ -1,6 +1,4 @@
-﻿using BLAZAM.Database.Models;
-
-namespace BLAZAM.Gui.UI
+﻿namespace BLAZAM.Gui.UI
 {
     /// <summary>
     /// Provides a generic <see cref="IDirectoryEntryAdapter"/> parameter and the modals used on view pages.
@@ -8,7 +6,7 @@ namespace BLAZAM.Gui.UI
     /// 
     /// <para>This is primarily geared towards search result pages</para>
     /// </summary>
-    public class DirectoryEntryViewBase : DatabaseComponentBase
+    public abstract class DirectoryEntryViewBase : DatabaseComponentBase
     {
         [Inject]
         public NotificationGenerationService NotificationGenerationService { get; set; }
@@ -47,17 +45,26 @@ namespace BLAZAM.Gui.UI
             await base.OnInitializedAsync();
             if (DirectoryEntry != null)
             {
-                DirectoryEntry.OnModelChanged += async () =>
-                {
-                    await RefreshEntryComponents();
-                };
+                DirectoryEntry.OnModelChanged.Delegate += RefreshEntryComponents;
 
-                DirectoryEntry.OnDirectoryModelRenamed += Renamed;
+                DirectoryEntry.OnDirectoryModelRenamed.Delegate += Renamed;
 
             }
             if (Context != null)
                 CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
             LoadingData = false;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            if (DirectoryEntry != null)
+            {
+                DirectoryEntry.OnModelChanged.Delegate -= RefreshEntryComponents;
+
+                DirectoryEntry.OnDirectoryModelRenamed.Delegate -= Renamed;
+
+            }
         }
         /// <summary>
         /// Toggles <see cref="EditMode"/>
@@ -67,15 +74,9 @@ namespace BLAZAM.Gui.UI
             EditMode = !EditMode;
         }
 
-        private bool _savingChanges;
         protected bool SavingChanges
         {
-            get => _savingChanges; set
-            {
-                if (_savingChanges = value) return;
-                _savingChanges = value;
-
-            }
+            get; set;
         }
         /// <summary>
         /// Prompts the user for confirmation and sends a discard changes call to the <see cref="IDirectoryEntryAdapter"/> to remove changes if accepted
@@ -109,7 +110,7 @@ namespace BLAZAM.Gui.UI
         /// Called when an entry is renamed to update the current url
         /// </summary>
         /// <param name="renamedEntry"></param>
-        protected void Renamed(IDirectoryEntryAdapter renamedEntry)
+        protected void Renamed(object? state, IDirectoryEntryAdapter renamedEntry)
         {
             Nav.NavigateTo(renamedEntry.SearchUri);
         }
@@ -121,7 +122,11 @@ namespace BLAZAM.Gui.UI
         protected async Task RefreshEntryComponents()
         {
             SubHeader?.Refresh();
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
+        }
+        protected void RefreshEntryComponents(object? state, object? args)
+        {
+            _ = RefreshEntryComponents();
         }
     }
 }

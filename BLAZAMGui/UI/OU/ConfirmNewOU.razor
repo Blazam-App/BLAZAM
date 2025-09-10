@@ -15,10 +15,6 @@
 }
 @code {
 
-    #nullable disable warnings
-
-
-
     [Parameter]
     public EventCallback<IADOrganizationalUnit> Confirmed { get; set; }
 
@@ -34,7 +30,7 @@
             {
                 OU = Directory.OUs.FindOuByDN(OU.DN);
                 SnackBarService.Success(AppLocalization[Lang.OU_created]);
-                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                     {
                         EventType = ApplicationEventType.Create,
                         Entry = OU,

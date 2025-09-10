@@ -1,12 +1,10 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.EmailMessage.Email.Base;
-using BLAZAM.EmailMessage.Email.Notifications;
+using BLAZAM.EmailMessage.Email.Messages;
 using BLAZAM.Helpers;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
@@ -34,7 +32,7 @@ namespace BLAZAM.Services.Background
             _appLocalization = appLocalization;
             _emailService = emailService;
             _webHookPublisher = webHookPublisher;
-            ApplicationEvents.DirectoryEntryChanged.Delegate += ProcessDirectoryEntryChangedEvent;
+            ApplicationEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChangedEvent;
 
         }
         protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
@@ -54,8 +52,10 @@ namespace BLAZAM.Services.Background
                         PostNotification(args, NotificationType.Delete, isSQLite);
                         break;
                     case ApplicationEventType.Create:
-                    case ApplicationEventType.PasswordChange:
                         PostNotification(args, NotificationType.Create, isSQLite);
+                        break;
+                    case ApplicationEventType.PasswordChange:
+                        PostNotification(args, NotificationType.PasswordChange, isSQLite);
                         break;
                     case ApplicationEventType.Assign:
                         PostNotification(args, NotificationType.Assign, isSQLite, args.Target);

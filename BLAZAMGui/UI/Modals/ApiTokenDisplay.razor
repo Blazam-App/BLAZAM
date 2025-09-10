@@ -1,0 +1,37 @@
+@inherits AppComponentBase
+@if (_decryptedToken != null && !LoadingData)
+{
+    <MudStack Row=true>
+        <MudText>@(_decryptedToken.ToPlainText().Substring(0, 10))...</MudText>
+        <AppCopyButton TextToCopy="@_decryptedToken.ToPlainText()" />
+    </MudStack>
+}else if (LoadingData)
+{
+    <MudProgressLinear Indeterminate="true"/>
+}
+@code {
+    [Parameter]
+    public string? Token { get; set; }
+
+    private SecureString? _decryptedToken;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            Task.Run(() =>
+            {
+                LoadingData = true;
+                if (Token != null)
+                {
+                    _decryptedToken = Token.Decrypt<string>()?.ToSecureString();
+                }
+                LoadingData = false;
+                _ = InvokeAsync(StateHasChanged);
+
+            });
+        }
+    }
+
+}

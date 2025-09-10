@@ -23,6 +23,7 @@
         public static readonly string Print = "Print";
         public static readonly string Fetch_News = "Fetch News";
         public static readonly string Excute = "Execute";
+        public static readonly string Text = "Text";
         public static readonly string Removed_from_Group = "Removed from Group";
         public static readonly string Added_to_Group = "Added to Group";
         public static readonly string Check_for_Update = "Check for Update";
@@ -50,6 +51,7 @@
         public static readonly string Unknown_error_while_attempting_to_log_in = "Unknown error while attempting to log in";
         public static readonly string Update_Scheduled = "Update Scheduled";
         public static readonly string Dismiss_all = "Dismiss all";
+        public static readonly string Delete_permission_mapping = "Delete permission mapping";
         public static readonly string No_unread_notifications = "No unread notifications";
         public static readonly string Access_request_sent = "Access request sent";
         public static readonly string Google_Authenticator = "Google Authenticator";
@@ -178,6 +180,7 @@
         public static readonly string Home = "Home";
         public static readonly string Back = "Back";
         public static readonly string Log_In = "Log In";
+        public static readonly string Password_Reset_Requested = "Password Reset Requested";
         public static readonly string Recycle_Bin = "Recycle Bin";
         public static readonly string Deleted = "Deleted";
         public static readonly string Restore = "Restore";

@@ -9,7 +9,7 @@
              Hover="true"
              Color="Color.Success"
              @bind-SelectedValue="SelectedEntry">
-     <ItemTemplate>
+    <ItemTemplate>
         <MudTreeViewItem Value="@context.Value"
                          Items=@GetItems(context.Value)
                          LoadingIconColor="Color.Info"
@@ -33,7 +33,6 @@
     <MudProgressLinear Style="min-width:200px;" Color="Color.Secondary" Indeterminate="true" />
 
 }
-
 
 
 

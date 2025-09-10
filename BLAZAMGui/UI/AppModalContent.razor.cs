@@ -2,9 +2,8 @@ using MudBlazor;
 
 namespace BLAZAM.Gui.UI
 {
-    public class AppModalContent : DirectoryModelComponent
+    public abstract class AppModalContent : DirectoryModelComponent
     {
-#nullable disable warnings
 
         [CascadingParameter] protected AppModal Modal { get; set; }
         [Parameter]
@@ -15,8 +14,7 @@ namespace BLAZAM.Gui.UI
         protected void Close()
         {
             Modal.Close();
-            InvokeAsync(StateHasChanged);
-
+            _ = StateHasChangedAsync();
         }
 
         protected override void OnInitialized()
@@ -24,14 +22,16 @@ namespace BLAZAM.Gui.UI
             base.OnInitialized();
             Modal.YesEnabled = ValidateModal;
         }
+
         protected override void OnAfterRender(bool firstRender)
         {
             base.OnAfterRender(firstRender);
             ValidateModal();
         }
-        protected MudForm? Form { get; set; }
 
-        protected virtual bool IsValid { get; set; } = true;
+        protected new MudForm? Form { get; set; }
+
+        protected new virtual bool IsValid { get; set; } = true;
         private bool _lastIsValid;
         private bool ValidateModal()
         {

@@ -47,7 +47,7 @@
                                                              CategoryAdded="@(async(newCategory)=>{
                                     DirectoryTemplate.Category=newCategory;
                                     categories.Add(newCategory);
-                                    await InvokeAsync(StateHasChanged);
+                                    await StateHasChangedAsync();
                                                                                             })" />
                         </AppModal>
                         <MudSwitch Label="@AppLocalization[Lang.Visible]"
@@ -283,7 +283,7 @@
 
 
                             <MudStack Class="d-flex justify-center align-center mud-height-full">
-                                <MudDataGrid Items="@DirectoryTemplate.EffectiveFieldValues.OrderBy(fv => fv.FieldDisplayName)"
+                                <MudDataGrid Items="@DirectoryTemplate.EffectiveFieldValues.Where(fv=>fv.DeletedAt==null).OrderBy(fv => fv.FieldDisplayName)"
                                              Dense=true
                                              Striped=true
                                              Bordered=true
@@ -408,7 +408,7 @@
                         
 
                                     <AssignedTemplateGroup Group="group"
-                                                           OnGroupRemoved="@(async (group)=>{await InvokeAsync(StateHasChanged);})" />
+                                                           OnGroupRemoved="@(async (group)=>{await StateHasChangedAsync();})" />
            
 
                             }

@@ -11,7 +11,7 @@
             @foreach (var map in inheritedMappings)
             {
                 <MudCard>
-                    <PermissionMapEditor MappingsChanged=@InvokeMappingsChanged Map="map" ReadOnly=true />
+                    <PermissionMapEditor MappingsChanged=@InvokeMappingsChanged Mapping="map" ReadOnly=true />
                 </MudCard>
             }
         </MudExpansionPanel>
@@ -19,11 +19,11 @@
     }
     @foreach (var map in appliedMappings)
     {
-        <PermissionMapEditor MappingsChanged="InvokeMappingsChanged" Map="map" />
+        <PermissionMapEditor MappingsChanged="InvokeMappingsChanged" Mapping="map" />
     }
     @if (NewMapping != null)
     {
-        <PermissionMapEditor MappingsChanged="InvokeMappingsChanged" Map="NewMapping" />
+        <PermissionMapEditor MappingsChanged="InvokeMappingsChanged" Mapping="NewMapping" />
     }else
     {
         <MudButton OnClick="AddNewMapping" Color="Color.Success">Add new mapping</MudButton>
@@ -32,7 +32,6 @@
 
 
 @code {
-    #nullable disable warnings
 
     IDirectoryEntryAdapter _node;
     [Parameter]
@@ -71,19 +70,21 @@
 
     async Task InvokeMappingsChanged()
     {
-        await RefreshData();
-        await InvokeAsync(StateHasChanged);
         await MappingsChanged.InvokeAsync();
+
+        await RefreshData();
     }
     async Task RefreshData()
     {
+        Node.ClearPermissionCache();
         appliedMappings = Node.DirectPermissionMappings;
         inheritedMappings = Node.InheritedPermissionMappings;
         NewMapping = null;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
     void AddNewMapping()
     {
         NewMapping = new() { OU = Node.DN };
     }
+  
 }

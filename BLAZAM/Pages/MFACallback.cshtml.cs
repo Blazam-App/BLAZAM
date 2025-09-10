@@ -11,6 +11,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BLAZAM.Pages
 {
+    /// <summary>
+    /// Handles the callback from Duo Multi-Factor Authentication (MFA) during the authentication process.
+    /// This class processes the response from Duo, validates the state and code parameters,
+    /// and completes the authentication flow for the user.
+    /// </summary>
     public class MFACallbackModel : PageModel
     {
         private readonly WebUserAuditLogger _audit;
@@ -18,6 +23,13 @@ namespace BLAZAM.Pages
         private readonly IDuoClientProvider _duoClientProvider;
         private readonly IApplicationUserStateService _userStateService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MFACallbackModel"/> class with required services for MFA processing.
+        /// </summary>
+        /// <param name="duoClientProvider">Provides Duo client instances for MFA operations.</param>
+        /// <param name="userStateService">Manages application user state and MFA requests.</param>
+        /// <param name="appAuthenticationStateProvider">Handles authentication state transitions.</param>
+        /// <param name="logger">Logs user authentication and audit events.</param>
         public MFACallbackModel(IDuoClientProvider duoClientProvider,
             IApplicationUserStateService userStateService,
             AppAuthenticationStateProvider appAuthenticationStateProvider,
@@ -30,8 +42,19 @@ namespace BLAZAM.Pages
             _userStateService = userStateService;
         }
 
+        /// <summary>
+        /// Gets the authentication response message from the Duo callback.
+        /// </summary>
         public string AuthResponse { get; private set; }
 
+        /// <summary>
+        /// Handles the GET request from Duo's MFA callback, validates the state and code,
+        /// and processes the authentication result.
+        /// </summary>
+        /// <param name="state">The state parameter returned by Duo, used to correlate the MFA request.</param>
+        /// <param name="code">The authorization code returned by Duo for MFA verification.</param>
+        /// <returns>An <see cref="IActionResult"/> representing the outcome of the authentication process.</returns>
+        /// <exception cref="DuoException">Thrown if required parameters are missing or invalid.</exception>
         public async Task<IActionResult> OnGet(string? state = null, string? code = null)
         {
             // Duo should have sent a 'state' and 'code' parameter.  If either is missing or blank, something is wrong.
@@ -62,6 +85,13 @@ namespace BLAZAM.Pages
             return Page();
         }
 
+        /// <summary>
+        /// Processes the Duo callback by exchanging the authorization code for a 2FA result,
+        /// authenticating the user, and redirecting based on the outcome.
+        /// </summary>
+        /// <param name="code">The authorization code from Duo.</param>
+        /// <param name="mFARequest">The MFA request containing user and redirect information.</param>
+        /// <returns>An <see cref="IActionResult"/> indicating success or failure of authentication.</returns>
         private async Task<IActionResult> ProcessCallback(string? code, MFARequest? mFARequest)
         {
             // Get the Duo client again.  This can be either be cached in the session or newly built.

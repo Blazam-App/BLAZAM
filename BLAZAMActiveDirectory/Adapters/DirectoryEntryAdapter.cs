@@ -31,18 +31,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         [JsonIgnore]
-        public AppDelegate? OnModelChanged { get; set; }
+        public AppEvent OnModelChanged { get; set; } = new();
         [JsonIgnore]
-        public AppEvent? OnChangesDiscarded { get; set; }
+        public AppEvent OnChangesDiscarded { get; set; } = new();
 
         [JsonIgnore]
-        public AppDelegate<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+        public AppEvent<IDirectoryEntryAdapter> OnDirectoryModelRenamed { get; set; } = new();
 
         [JsonIgnore]
-        public AppDelegate? OnModelCommited { get; set; }
+        public AppEvent OnModelCommited { get; set; } = new();
 
         [JsonIgnore]
-        public AppDelegate? OnModelDeleted { get; set; }
+        public AppEvent OnModelDeleted { get; set; } = new();
 
         [JsonIgnore]
         public virtual List<AuditChangeLog> Changes
@@ -440,16 +440,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual void MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
             CommitSteps.Add(new JobStep("Move to OU", (JobStep step) =>
-              {
-                  parentOUToMoveTo.EnsureDirectoryEntry();
-                  if (parentOUToMoveTo.DirectoryEntry != null)
-                  {
-                      DirectoryEntry?.MoveTo(parentOUToMoveTo.DirectoryEntry);
+            {
+                parentOUToMoveTo.EnsureDirectoryEntry();
+                if (parentOUToMoveTo.DirectoryEntry != null)
+                {
+                    DirectoryEntry?.MoveTo(parentOUToMoveTo.DirectoryEntry);
 
-                      return true;
-                  }
-                  return false;
-              }));
+                    return true;
+                }
+                return false;
+            }));
 
             HasUnsavedChanges = true;
         }
@@ -602,9 +602,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                using var context = DbFactory.CreateDbContext();
-                _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
-
+                if (_appliedPermissionMappings == null)
+                {
+                    using var context = DbFactory.CreateDbContext();
+                    _appliedPermissionMappings = context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length).ToList();
+                }
                 return _appliedPermissionMappings;
             }
         }
@@ -626,7 +628,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-
+        public void ClearPermissionCache()
+        {
+            _offspringPermissionMappings = null;
+            _appliedPermissionMappings = null;
+        }
 
         [JsonIgnore]
         public virtual bool HasUnsavedChanges
@@ -818,11 +824,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             });
         }
         private IJobStep commitStep => new JobStep("Save directory entry", (step) =>
-                {
-                    DirectoryEntry?.CommitChanges();
+        {
+            DirectoryEntry?.CommitChanges();
 
-                    return true;
-                });
+            return true;
+        });
 
         public virtual IJob CommitChanges(IJob? commitJob = null)
         {
@@ -850,32 +856,32 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     foreach (var p in NewEntryProperties)
                     {
                         propertyStep = new JobStep("Set AD attribute [" + p.Key + "]", (step) =>
-                         {
+                        {
 
 
 
-                             if (!DirectoryEntry.Properties.Contains(p.Key)
-                                 || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
-                             {
-                                 if (p.Value == null
-                             || p.Value is string strValue && strValue.IsNullOrEmpty()
-                             || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
-                                 {
+                            if (!DirectoryEntry.Properties.Contains(p.Key)
+                                || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
+                            {
+                                if (p.Value == null
+                            || p.Value is string strValue && strValue.IsNullOrEmpty()
+                            || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
+                                {
 
-                                     DirectoryEntry.Properties[p.Key].Clear();
+                                    DirectoryEntry.Properties[p.Key].Clear();
 
 
-                                 }
-                                 else
-                                 {
-                                     DirectoryEntry.Properties[p.Key].Value = p.Value;
+                                }
+                                else
+                                {
+                                    DirectoryEntry.Properties[p.Key].Value = p.Value;
 
-                                 }
-                             }
+                                }
+                            }
 
-                             DirectoryEntry.CommitChanges();
-                             return true;
-                         });
+                            DirectoryEntry.CommitChanges();
+                            return true;
+                        });
                         propertyJob.AddStep(propertyStep);
 
                     }
@@ -1274,11 +1280,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (IsDeleted) throw new AppException("Cannot set values for a deleted entry.");
             try
             {
+
                 if (!NewEntry)
                 {
 
                     if (value == null || value is string strValue && strValue == "")
                     {
+                        var currentValue = GetStringAttribute(propertyName);
+                        if ((currentValue == null && value == null) || currentValue?.Equals(value) == true)
+                        {
+                            return;
+                        }
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                         NewEntryProperties[propertyName] = null;
                         HasUnsavedChanges = true;

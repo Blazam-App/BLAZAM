@@ -114,7 +114,6 @@
         <SettingsField>
             <MudButton Disabled="!IsValid"
                        OnClick="Save"
-                       ButtonType="ButtonType.Submit"
                        Color="Color.Success">
                 @AppLocalization[Lang.Save_Changes]
             </MudButton>
@@ -134,7 +133,6 @@
 
         settings = await Context.AppSettings.FirstOrDefaultAsync();
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
 
     }
 
@@ -142,7 +140,7 @@
     private async void LoadIcon(IBrowserFile e)
     {
         settings.AppIcon = await e.ReadByteArrayAsync(5000000);
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
 
     }

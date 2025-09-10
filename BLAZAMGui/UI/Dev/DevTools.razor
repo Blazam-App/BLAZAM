@@ -129,11 +129,11 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        t = new Timer((obj) =>
+        t = new Timer(async (obj) =>
         {
             DirectoryPortOpen = Directory.PortOpen;
             DirectoryStatus = Enum.GetName(typeof(DirectoryConnectionStatus), Directory.Status);
-            InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         }, null, 500, 2000);
     }
     public override void Dispose()

@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace BLAZAM.ActiveDirectory.Exceptions
+﻿namespace BLAZAM.ActiveDirectory.Exceptions
 {
-    [Serializable]
     public class WmiConnectionException : AppException
     {
         public WmiConnectionException()
@@ -17,8 +14,6 @@ namespace BLAZAM.ActiveDirectory.Exceptions
         {
         }
 
-        protected WmiConnectionException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+
     }
 }

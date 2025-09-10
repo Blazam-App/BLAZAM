@@ -249,6 +249,9 @@
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Произошла непредвиденная ошибка.</value>
   </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>У вас есть несохранённые изменения</value>
+  </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
     <value>Рекомендуемой веткой является ветка релиза. Выбор Nightly рекомендуется только для тестовых установок. Dev предназначен только для разработчиков.</value>
   </data>

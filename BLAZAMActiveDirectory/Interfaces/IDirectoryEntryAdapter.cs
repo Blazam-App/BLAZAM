@@ -169,13 +169,13 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Called when pending changes to this entry are commited
         /// </summary>
         [JsonIgnore]
-        AppDelegate? OnModelCommited { get; set; }
+        AppEvent OnModelCommited { get; set; }
 
         /// <summary>
         /// Called when any changes occur to this entry
         /// </summary>
         [JsonIgnore]
-        AppDelegate? OnModelChanged { get; set; }
+        AppEvent OnModelChanged { get; set; }
 
         /// <summary>
         /// If <see cref="NewEntry"/> is true, property changes will be
@@ -207,13 +207,13 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Called when this entry is renamed
         /// </summary>
         [JsonIgnore]
-        AppDelegate<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+        AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
 
         /// <summary>
         /// Called when this entry is deleted
         /// </summary>
         [JsonIgnore]
-        AppDelegate? OnModelDeleted { get; set; }
+        AppEvent OnModelDeleted { get; set; }
         /// <summary>
         /// The directory this entry belongs to
         /// </summary>
@@ -272,10 +272,17 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         IList<PermissionMapping> OffspringPermissionMappings { get; }
 
         /// <summary>
+        /// Clears the cached permissions for the current enry.
+        /// </summary>
+        /// <remarks>This method invalidates any previously cached permission data, ensuring that
+        /// subsequent permission checks retrieve up-to-date information. Use this method when permissions have changed
+        /// and the cache needs to be refreshed.</remarks>
+        void ClearPermissionCache();
+        /// <summary>
         /// Called when staged changes have been discarded
         /// </summary>
         [JsonIgnore]
-        AppEvent? OnChangesDiscarded { get; set; }
+        AppEvent OnChangesDiscarded { get; set; }
         byte[]? Guid { get; set; }
         IADUser? Manager { get; set; }
         IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }

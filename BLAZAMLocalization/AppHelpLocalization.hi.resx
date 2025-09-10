@@ -249,6 +249,9 @@
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>एक अप्रत्याशित त्रुटि हुई है।</value>
   </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>आपके पास बिना सहेजे गए परिवर्तन हैं</value>
+  </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
     <value>रिलीज़ शाखा अनुशंसित शाखा है। नाइटली चुनना केवल परीक्षण प्रतिष्ठानों के लिए अनुशंसित है। देव केवल डेवलपर्स के लिए है।</value>
   </data>

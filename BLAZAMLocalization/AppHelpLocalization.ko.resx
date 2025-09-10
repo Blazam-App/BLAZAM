@@ -249,6 +249,9 @@
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>예기치 않은 오류가 발생했습니다.</value>
   </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>저장되지 않은 변경 사항이 있습니다</value>
+  </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
     <value>릴리스 브랜치가 권장 브랜치입니다. Nightly 선택은 테스트 설치에만 권장됩니다. Dev는 개발자 전용입니다.</value>
   </data>

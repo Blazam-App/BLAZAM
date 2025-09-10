@@ -1,6 +1,6 @@
 
 using BLAZAM.ActiveDirectory;
-
+using BLAZAM.Common.Services;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Duo;
@@ -8,7 +8,7 @@ using BLAZAM.Services.Duo;
 namespace BLAZAM.Gui.UI
 {
 
-    public class AppComponentBase : ComponentBase, IDisposable
+    public abstract class AppComponentBase : ComponentBase, IDisposable
     {
         [Inject]
         protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }
@@ -22,7 +22,7 @@ namespace BLAZAM.Gui.UI
         protected PermissionApplicator PermissionApplicator { get; set; }
 
         [Inject]
-        protected NavigationManager Nav { get; set; }
+        protected AppNavManager Nav { get; set; }
 
         [Inject]
         protected ConnMonitor Monitor { get; set; }
@@ -141,12 +141,27 @@ namespace BLAZAM.Gui.UI
         {
             Nav.NavigateTo(Nav.Uri, forceReload);
         }
-        public virtual async Task UpdateState()
+        protected void Refresh(object? state = null, object? args = null)
+        {
+            Nav.NavigateTo(Nav.Uri, false);
+        }
+
+        protected void InvokeStateHasChanged(object? state = null, object? args = null)
+        {
+            _ = StateHasChangedAsync();
+        }
+        /// <summary>
+        /// Triggers an asynchronous update of the component's state.
+        /// </summary>
+        /// <remarks>This method invokes the <see cref="StateHasChanged"/> method asynchronously to notify
+        /// the component that its state has changed, prompting a re-render. It is typically used to ensure the UI
+        /// reflects the latest state after an asynchronous operation or external event.</remarks>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
+        public virtual async Task StateHasChangedAsync()
         {
 
             await InvokeAsync(StateHasChanged);
         }
-
 
 
         public virtual void Dispose()

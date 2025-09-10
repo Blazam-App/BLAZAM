@@ -2,7 +2,7 @@
 using System.Text.Json;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Templates;
-using BLAZAM.EmailMessage.Email.Notifications;
+using BLAZAM.EmailMessage.Email.Messages;
 using BLAZAM.Gui.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
@@ -10,6 +10,7 @@ using BLAZAM.Pages.API.Data;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -21,8 +22,8 @@ namespace BLAZAM.Pages.API.v1
     /// Template API endpoints provide listing of templates
     /// and execution to create users.
     /// </summary>
-    [Route("api/v1/templates")]
-    public class Templates : ApiController
+    [Authorize(Roles = UserRoles.SuperAdmin)]
+    public class Templates : ApiControllerBase
     {
         private readonly IStringLocalizer<AppLocalization> AppLocalization;
         private readonly EmailService EmailService;
@@ -181,7 +182,7 @@ namespace BLAZAM.Pages.API.v1
 
         private async Task AuditAndNotify(NewUserPayload newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
         {
-            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Create,
                 Entry = entry,
@@ -275,11 +276,10 @@ namespace BLAZAM.Pages.API.v1
         /// <response code="401">Unauthorized - The user is not authenticated.</response>
         /// <response code="403">Forbidden - The user does not have the required role.</response>
         [HttpGet]
-        [Route("list")]
-        public IActionResult List()
+        public async Task<IActionResult> Get()
         {
-            using var context = DbFactory.CreateDbContext();
-            var list = context.DirectoryTemplates.Where(t => t.DeletedAt == null && t.Visible).ToList();
+            using var context = await DbFactory.CreateDbContextAsync();
+            var list = await context.DirectoryTemplates.Where(t => t.DeletedAt == null && t.Visible).ToListAsync();
             return FormatData(list);
 
         }

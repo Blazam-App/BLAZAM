@@ -41,8 +41,10 @@
         orFilter.AndFilters.Remove(andFilter);
         if(orFilter.AndFilters.Count<1){
             await RemoveClicked.InvokeAsync();
-        }else{
-        await InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            await StateHasChangedAsync();
         }
     }
     private void AddAndFilter()

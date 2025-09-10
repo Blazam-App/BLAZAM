@@ -1,9 +1,8 @@
-using BLAZAM.Database.Models;
 using BLAZAM.Gui.UI.Settings;
 
 namespace BLAZAM.Gui.UI
 {
-    public partial class DirectoryModelComponent : ValidatedForm
+    public abstract class DirectoryModelComponent : ValidatedForm
     {
         protected bool EditMode = false;
 
@@ -95,24 +94,54 @@ namespace BLAZAM.Gui.UI
                 LoadingData = false;
 
             }
-            if (Group != null)
-                Group.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
             if (Entry != null)
-                Entry.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
+            {
+                Entry.OnModelChanged.Delegate += InvokeStateHasChanged;
+            }
+            else if (Computer != null)
+            {
+                Computer.OnModelChanged.Delegate += InvokeStateHasChanged;
+            }
+            else if (OU != null)
+            {
+                OU.OnModelChanged.Delegate += InvokeStateHasChanged;
+            }
+            else if (Group != null)
+            {
+                Group.OnModelChanged.Delegate += InvokeStateHasChanged;
+            }
 
-            if (Computer != null)
-                Computer.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
-
-            if (OU != null)
-                OU.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
             if (Context != null)
+            {
                 CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
-            await InvokeAsync(StateHasChanged);
+            }
+            await StateHasChangedAsync();
 
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            if (Entry != null)
+            {
+                Entry.OnModelChanged.Delegate -= InvokeStateHasChanged;
+            }
+            else if (Computer != null)
+            {
+                Computer.OnModelChanged.Delegate -= InvokeStateHasChanged;
+            }
+            else if (OU != null)
+            {
+                OU.OnModelChanged.Delegate -= InvokeStateHasChanged;
+            }
+            else if (Group != null)
+            {
+                Group.OnModelChanged.Delegate -= InvokeStateHasChanged;
+            }
+        }
 
 
         protected async Task RefreshUserGroups()

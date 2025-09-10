@@ -1,7 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Services;
-using BLAZAM.Database.Context;
 using BLAZAM.Notifications.Services;
 
 namespace BLAZAM.ActiveDirectory
@@ -21,7 +20,6 @@ namespace BLAZAM.ActiveDirectory
         public IActiveDirectoryContext CreateActiveDirectoryContext(ActiveDirectoryUserState? currentUserState = null)
         {
             var context = new ActiveDirectoryContext(activeDirectoryContextSeed);
-            _ = context.ConnectAsync();
             context.CurrentUser = currentUserState;
             return context;
 

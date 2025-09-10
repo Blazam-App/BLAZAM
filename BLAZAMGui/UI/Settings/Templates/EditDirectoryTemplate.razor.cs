@@ -1,14 +1,13 @@
-using BLAZAM.Database.Models;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Settings.Templates
 {
     public partial class EditDirectoryTemplate : ValidatedForm
     {
-        string? _testFirstName;
-        string? _testMiddleName;
-        string? _testLastName;
-        bool _showOuTree;
+        private string? _testFirstName;
+        private string? _testMiddleName;
+        private string? _testLastName;
+        private bool _showOuTree;
 
         [Parameter]
         public SetSubHeader? Header { get; set; }
@@ -176,7 +175,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 }
 
                 RefreshGroups();
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
                 Form?.Validate();
             }
 
@@ -316,7 +315,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         protected async Task RemoveField(DirectoryTemplateFieldValue field)
         {
             DirectoryTemplate.FieldValues.Remove(field);
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         }
 
         private async Task CancelNewTemplate()
@@ -326,7 +325,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         private async Task DiscardChanges()
         {
             _template = originalTemplate;
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         }
         protected async Task SaveTemplate()
         {
@@ -363,7 +362,14 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 
                 foreach (var field in DirectoryTemplate.FieldValues)
                 {
-                    field.Field = await Context.ActiveDirectoryFields.FirstOrDefaultAsync(f => f.Id == field.Field.Id);
+                    if (field.Field != null)
+                    {
+                        field.Field = await Context.ActiveDirectoryFields.FirstOrDefaultAsync(f => f.Id == field.Field.Id);
+                    }
+                    else if (field.CustomField != null)
+                    {
+                        field.CustomField = await Context.CustomActiveDirectoryFields.FirstOrDefaultAsync(f => f.Id == field.CustomField.Id);
+                    }
                 }
 
                 DirectoryTemplate.AssignedGroupSids = trackedGroups;

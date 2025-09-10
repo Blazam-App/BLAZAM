@@ -131,7 +131,7 @@
 
                 }
             }
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         }
 
 
@@ -160,7 +160,7 @@
                 SnackBarService.Error(ex.Message);
 
             }
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         }
         else
         {

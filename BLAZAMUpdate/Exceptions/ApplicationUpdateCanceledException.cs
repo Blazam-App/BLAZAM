@@ -1,8 +1,6 @@
-﻿using System.Runtime.Serialization;
-
-namespace BLAZAM.Update.Exceptions
+﻿namespace BLAZAM.Update.Exceptions
 {
-    [Serializable]
+
     public class ApplicationUpdateCanceledException : AppException
     {
         public ApplicationUpdateCanceledException()
@@ -17,8 +15,5 @@ namespace BLAZAM.Update.Exceptions
         {
         }
 
-        protected ApplicationUpdateCanceledException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
     }
 }

@@ -197,7 +197,7 @@ Title="@AppLocalization["Add new Webhook Subscription"]">
         var ou = (IADOrganizationalUnit)entry;
         if (ou != null)
         {
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();            
         }
     }
     private void ToggleType(WebHookSubscription subscription, NotificationType type, bool value)

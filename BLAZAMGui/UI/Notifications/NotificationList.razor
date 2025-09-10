@@ -64,31 +64,31 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await RetrieveMessagesAsync();
+        await RetrieveMessages();
 
-        UserState.OnSettingsChanged += async () =>
-        {
-            await RetrieveMessagesAsync();
-        };
-        NotificationPublisher.OnNotificationPublished += async (notification) =>
-        {
-            await RetrieveMessagesAsync();
-        };
-        NotificationPublisher.OnNotificationDeleted += async () =>
-        {
-            await RetrieveMessagesAsync();
-        };
+        UserState.OnSettingsChanged.Delegate += RetrieveMessagesAsync;
+        NotificationPublisher.OnNotificationPublished.Delegate +=  RetrieveMessagesAsync;
+        NotificationPublisher.OnNotificationDeleted.Delegate += RetrieveMessagesAsync;
 
     }
-    private async Task RetrieveMessagesAsync()
+    public override void Dispose()
+    {
+        base.Dispose();
+        if (UserState != null)
+        {
+            UserState.OnSettingsChanged.Delegate -= RetrieveMessagesAsync;
+
+        }
+        NotificationPublisher.OnNotificationPublished.Delegate -= RetrieveMessagesAsync;
+        NotificationPublisher.OnNotificationDeleted.Delegate -= RetrieveMessagesAsync;
+    }
+    private void RetrieveMessagesAsync(object state, object args) => _ = RetrieveMessages();
+    private async Task RetrieveMessages()
     {
         await Task.Run(async () =>
         {
-            if (messages == null || messages.Count == 0)
-            {
-                LoadingData = true;
-            }
-            await InvokeAsync(StateHasChanged);
+            LoadingData = true;
+
             var context = await DbFactory.CreateDbContextAsync();
 
             messages = await context.UserNotifications
@@ -96,15 +96,8 @@
             .OrderByDescending(un => un.Notification.Created)
             .ToListAsync();
             LoadingData = false;
-
-            await InvokeAsync(StateHasChanged);
         });
 
-
-    }
-    public override async Task UpdateState()
-    {
-        await RetrieveMessagesAsync();
 
     }
 

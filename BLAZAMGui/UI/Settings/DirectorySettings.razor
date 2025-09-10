@@ -182,7 +182,6 @@
 </MudForm>
 @code {
 
-#nullable disable warnings
     ADSettings settings = new ADSettings();
     ActiveDirectoryStatusPanel? statusPanel;
     bool _insert;
@@ -209,7 +208,6 @@
             _insert = true;
         }
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
 
     }
     protected override async Task Save()

@@ -1,5 +1,4 @@
-﻿using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
+﻿using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +15,12 @@ namespace BLAZAM.Notifications.Services
         /// <summary>
         /// Delegate for handling notification published events.
         /// </summary>
-        public AppDelegate<List<UserNotification>> OnNotificationPublished { get; set; }
+        public AppEvent<List<UserNotification>> OnNotificationPublished { get; set; } = new();
 
         /// <summary>
         /// Delegate for handling notification deleted events.
         /// </summary>
-        public AppDelegate OnNotificationDeleted { get; set; }
+        public AppEvent OnNotificationDeleted { get; set; } = new();
 
         /// <summary>Initializes a new instance of the <see cref="NotificationPublisher"/> class.</summary> 
         /// <param name="databaseFactory">Factory for creating database context instances.</param> 

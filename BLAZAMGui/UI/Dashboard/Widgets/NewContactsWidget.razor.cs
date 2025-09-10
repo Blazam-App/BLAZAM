@@ -10,7 +10,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             WidgetType = DashboardWidgetType.NewContacts;
         }
 
-        List<IADContact> NewContacts
+        private List<IADContact> NewContacts
         {
             get => CurrentUser.State.Cache.Get<List<IADContact>>(this.GetType());
             set => CurrentUser.State.Cache.Set(this.GetType(), value);

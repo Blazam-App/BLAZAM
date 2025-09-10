@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace BLAZAM.Global.Exceptions
+﻿namespace BLAZAM.Global.Exceptions
 {
-    [Serializable]
     public class LockedOutUserException : AppException
     {
         public LockedOutUserException()
@@ -17,8 +14,5 @@ namespace BLAZAM.Global.Exceptions
         {
         }
 
-        protected LockedOutUserException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
     }
 }

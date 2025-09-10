@@ -35,14 +35,16 @@ namespace BLAZAM.Pages
         async void AppReadyChanged(ServiceConnectionState state)
         {
             if (state == ServiceConnectionState.Up)
-                await InvokeAsync(StateHasChanged);
+            {
+                await StateHasChangedAsync();
+            }
 
 
         }
         async Task AttemptSignIn(string? otpCode = null)
         {
             attemptingSignIn = true;
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
             LoginRequest? authenticationResult = null;
             if (ValidateInput(LoginRequest))
                 try
@@ -64,7 +66,7 @@ namespace BLAZAM.Pages
 
             await ProcessAuthenticationResult(authenticationResult);
 
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         }
         bool ValidateInput(LoginRequest? validationResult)
         {

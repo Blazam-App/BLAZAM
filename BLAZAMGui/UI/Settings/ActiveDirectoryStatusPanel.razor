@@ -79,7 +79,6 @@
 </MudCard>
 
 @code {
-    #nullable disable warnings
 
     [Parameter]
     public EventCallback DirectoryConnected { get; set; }
@@ -137,7 +136,7 @@
                     //ignore DNS errors, will show from Directory.ConnectionException
                 }
 
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
                 await Task.Delay(1000);
             }
         });
@@ -148,7 +147,7 @@
         if (Directory.Status == DirectoryConnectionStatus.Connecting)
         {
             showProgress = true;
-            InvokeAsync(StateHasChanged);
+            _ = StateHasChangedAsync();
         }
     }
 
@@ -157,7 +156,7 @@
         if (Directory.PortOpen)
         {
             _portStatus = true;
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
 
             if (Directory.Status == DirectoryConnectionStatus.OK)
             {

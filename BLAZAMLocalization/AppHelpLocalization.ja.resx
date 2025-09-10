@@ -249,6 +249,9 @@
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>予期しないエラーが発生しました。</value>
   </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>保存されていない変更があります</value>
+  </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
     <value>リリースブランチが推奨ブランチです。ナイトリーの選択は、テストインストールにのみ推奨されます。Devは開発者専用です。</value>
   </data>

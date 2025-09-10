@@ -77,8 +77,8 @@
         UserState.GetUserSettingFromDB();
 
         Open = false;
-        await _notificationList!.UpdateState();
-        await InvokeAsync(StateHasChanged);
+        await _notificationList!.StateHasChangedAsync();
+        await StateHasChangedAsync();
     }
 
 }

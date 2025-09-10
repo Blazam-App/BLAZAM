@@ -88,10 +88,6 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             return Color.Default;
         }
 
-        public async Task RefreshViewAcync()
-        {
-            await InvokeAsync(StateHasChanged);
-        }
 
         protected virtual IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(IDirectoryEntryAdapter? parent)
         {
@@ -117,7 +113,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         protected void InitializeTreeView()
         {
             LoadingData = true;
-            _ = InvokeAsync(StateHasChanged);
+            _ = StateHasChangedAsync();
             if (RootOU is null || RootOU.Count < 1)
             {
                 TopLevel = new ADOrganizationalUnit();

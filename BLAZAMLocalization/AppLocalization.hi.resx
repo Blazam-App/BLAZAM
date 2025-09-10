@@ -1275,4 +1275,7 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>आपका सत्र समाप्त होने वाला है</value>
   </data>
+  <data name="Text" xml:space="preserve">
+    <value>पाठ</value>
+  </data>
 </root>

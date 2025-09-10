@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
-using BLAZAM.Common.Data;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
@@ -254,6 +253,10 @@ namespace BLAZAM.Helpers
                     continue;
                 }
                 using var fs = file.OpenReadStream();
+                if (fs == null)
+                {
+                    continue;
+                }
                 ZipArchiveEntry entry = archive.CreateEntry(directory.FullPath.Replace(basePath, "") + file.Name + file.Extension);
                 using (Stream es = entry.Open())
                 {

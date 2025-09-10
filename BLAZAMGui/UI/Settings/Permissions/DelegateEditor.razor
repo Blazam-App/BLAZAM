@@ -64,7 +64,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
 
 }
 @code {
-#nullable disable warnings
+
     string _DelegateFilter = "";
     string DelegateFilter
     {
@@ -72,7 +72,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
         {
             if (_DelegateFilter == value) return;
             _DelegateFilter = value;
-            InvokeAsync(StateHasChanged);
+            _ = StateHasChangedAsync();
         }
     }
     AppModal? trashModal;
@@ -86,8 +86,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
 
         settings = Context.PermissionDelegate;
         await RefreshDelegates();
-
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
     }
 
@@ -117,8 +116,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
     {
 
         await RefreshDelegates();
-
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
     }
 

@@ -110,7 +110,7 @@
 
 </MudForm>
 @code {
-#nullable disable warnings
+
     AuthenticationSettings settings = new AuthenticationSettings();
     string newAdminPassword;
     string adminPasswordInDb;
@@ -122,7 +122,6 @@
         _ = Task.Run(async () =>
         {
             LoadingData = true;
-            await InvokeAsync(StateHasChanged);
 
             originalSettings = await Context.AuthenticationSettings.AsNoTracking().FirstOrDefaultAsync();
 
@@ -131,9 +130,8 @@
             //Pull encrypted admin pass and store encrypted value
             adminPasswordInDb = settings?.AdminPassword;
             newAdminPassword = adminPasswordInDb;
-            LoadingData = false;
-            await InvokeAsync(StateHasChanged);
             await DoDuoHealthCheck();
+            LoadingData = false;
 
         });
 
@@ -150,7 +148,7 @@
     private async Task DoDuoHealthCheck()
     {
         duoHealthCheckResult = null;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
         try
         {
             duoHealthCheckResult = await Duo.DoHealthCheckAsync();
@@ -159,7 +157,7 @@
         {
 
         }
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
     protected override async Task Save()
@@ -176,7 +174,7 @@
 
         await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
         await base.Save();
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
     public class BehaviorConverter : BoolConverter<DuoUnreachableBehavior>

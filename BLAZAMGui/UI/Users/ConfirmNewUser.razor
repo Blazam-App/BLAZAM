@@ -1,7 +1,7 @@
 @using System.Security
 @using BLAZAM.Common.Data.Database
 @using BLAZAM.EmailMessage.Email
-@using BLAZAM.EmailMessage.Email.Notifications
+@using BLAZAM.EmailMessage.Email.Messages
 @using BLAZAM.Global.Events
 @inherits DirectoryModelComponent
 @inject IJSRuntime JSRuntime
@@ -253,7 +253,7 @@ else
         try
         {
             disableCreateUserButton = true;
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
 
             var createUserJob = new Job(AppLocalization[Lang.Create_User]);
             createUserJob.StopOnFailedStep = false;
@@ -268,7 +268,7 @@ else
             var result = await User.CommitChangesAsync(createUserJob);
 
             disableCreateUserButton = false;
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
 
             if (result.FailedSteps.Count == 0)
             {
@@ -278,7 +278,7 @@ else
                 Confirmed = true;
                 await OnConfirmed.InvokeAsync();
 
-                ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Create,
                     Entry = User,

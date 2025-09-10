@@ -1,5 +1,4 @@
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
 using BLAZAM.Pages.API.Data;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
@@ -10,8 +9,7 @@ namespace BLAZAM.Pages.API.v1
     /// <summary>
     /// Manages groups in Active Directory
     /// </summary>
-    [Produces("application/json")]
-    public class Group : ApiController
+    public class Group : ApiControllerBase
     {
         /// <summary>
         /// Constructor for the Group API controller

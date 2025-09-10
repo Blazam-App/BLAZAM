@@ -78,7 +78,7 @@
 
 @code {
     bool _groupMembersShown;
-#nullable disable warnings
+
     IDirectoryEntryAdapter? _delegateEntry;
     [Parameter]
     public PermissionDelegate Delegate { get; set; }
@@ -121,7 +121,7 @@
     {
         Delegate.DelegateSid = _delegateEntry.SID;
         await Context.SaveChangesAsync();
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
         ApplicationEvents.PermissionsChanged.Invoke();
 
     }

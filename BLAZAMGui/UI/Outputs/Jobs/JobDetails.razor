@@ -78,8 +78,8 @@
     {
         base.OnInitialized();
         Job.OnProgressUpdated += (async (value) =>
-       {
-           await InvokeAsync(StateHasChanged);
-       });
+        {
+            await StateHasChangedAsync();
+        });
     }
 }

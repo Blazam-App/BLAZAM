@@ -104,7 +104,7 @@ namespace BLAZAM.Helpers
         /// <param name="newUserName">The new user's name details</param>
         public static void PopulateFields(this DirectoryTemplate template, IADUser user, NewUserName newUserName)
         {
-            foreach (var fieldValue in template.EffectiveFieldValues)
+            foreach (var fieldValue in template.EffectiveFieldValues.Where(fv => fv.DeletedAt == null))
             {
                 try
                 {
@@ -186,6 +186,7 @@ namespace BLAZAM.Helpers
 
                 }
             }
+            r?.Dispose();
             return objects;
         }
 
@@ -286,7 +287,7 @@ namespace BLAZAM.Helpers
                 }
                 else
                 {
-                    Loggers.ActiveDirectoryLogger.Warning("Unable to match ad object type. {Object}", sr);
+                    Loggers.ActiveDirectoryLogger.Warning(new AppException("Unable to match ad object type"), "Unable to match ad object type. {Object}", sr);
 
                 }
             }

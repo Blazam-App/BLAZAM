@@ -1,87 +1,75 @@
 @using BLAZAM.Global.Events
 @inherits ValidatedForm
-@if (Map != null)
+@if (Mapping != null)
 {
 
+    <MudElement Class="py-3">
+        <EditForm Model="Mapping" OnValidSubmit="@Save">
 
-    <EditForm Model="Map" OnValidSubmit="@Save">
-
-        @if (!ReadOnly && _permissionDelegates != null)
-        {
-            <MudSelectList Validation="@(_permissionDelegates.Count>0)"
-                           Values=@_permissionDelegates
-                           Placeholder=@AppLocalization["Choose or Search..."]
-                           T="PermissionDelegate"
-                           ToStringFunc=DelegateToString
-                           Label="@AppLocalization[Lang.Delegates]"
-                           MultiSelection=true
-                           @bind-Text=@selectedPermissionDelegateNames
-                           @bind-SelectedValues=@Map.PermissionDelegates />
+            @if (!ReadOnly && _permissionDelegates != null)
+            {
+                <MudSelectList Validation="@(_permissionDelegates.Count > 0)"
+                               Values=@_permissionDelegates
+                               Placeholder=@AppLocalization["Choose or Search..."]
+                               T="PermissionDelegate"
+                               ToStringFunc=DelegateToString
+                               Label="@AppLocalization[Lang.Delegates]"
+                               MultiSelection=true
+                               @bind-Text=@selectedPermissionDelegateNames
+                               @bind-SelectedValues=@Mapping.PermissionDelegates />
 
 
 
-            <MudSelectList Validation="@(_permissionDelegates.Count>0)"
-                           Values=@_accessLevels
-                           Placeholder=@AppLocalization["Choose or Search..."]
-                           T="AccessLevel"
-                           ToStringFunc="item=>item?.Name"
-                           Label="@AppLocalization[Lang.Access_Levels]"
-                           @bind-Text=@selectedAccessLevelNames
-                           MultiSelection="true"
-                           @bind-SelectedValues=@Map.AccessLevels />
+                <MudSelectList Validation="@(_permissionDelegates.Count > 0)"
+                               Values=@_accessLevels
+                               Placeholder=@AppLocalization["Choose or Search..."]
+                               T="AccessLevel"
+                               ToStringFunc="item=>item?.Name"
+                               Label="@AppLocalization[Lang.Access_Levels]"
+                               @bind-Text=@selectedAccessLevelNames
+                               MultiSelection="true"
+                               @bind-SelectedValues=@Mapping.AccessLevels />
 
-            <MudButton Color=Color.Success
-                       Disabled=SaveDisabled
-                       ButtonType="ButtonType.Submit">Save Mapping</MudButton>
-            <AppCloseButton OnClick="DeleteMapping"
-                            Tooltip=@AppLocalization[Lang.Remove] />
-        }
-        else
-        {
-            <MudStack Row=true>
-                @if (selectedPermissionDelegateNames != null)
-                {
-                    @foreach (var pd in selectedPermissionDelegateNames.Split(SELECTION_DELIMITER))
+                <MudButton Color=Color.Success
+                           Disabled=SaveDisabled
+                           ButtonType="ButtonType.Submit">Save Mapping</MudButton>
+                <AppCloseButton OnClick="DeleteMapping"
+                                Tooltip=@AppLocalization[Lang.Remove] />
+            }
+            else
+            {
+                <MudStack Row=true>
+                    @if (selectedPermissionDelegateNames != null)
                     {
-                        <MudButton Disabled="true"
-                                   Color="Color.Secondary">@pd</MudButton>
+                        @foreach (var pd in selectedPermissionDelegateNames.Split(SELECTION_DELIMITER))
+                        {
+                            <MudButton Disabled="true"
+                                       Color="Color.Secondary">@pd</MudButton>
+                        }
                     }
-                }
-                @if (_map?.AccessLevels != null)
-                {
-                    @foreach (var al in _map.AccessLevels)
+                    @if (Mapping?.AccessLevels != null)
                     {
-                        <MudButton Disabled="true"
-                                   Color="Color.Secondary">@al.Name</MudButton>
+                        @foreach (var al in Mapping.AccessLevels)
+                        {
+                            <MudButton Disabled="true"
+                                       Color="Color.Secondary">@al.Name</MudButton>
+                        }
                     }
-                }
-            </MudStack>
-        }
-    </EditForm>
-
+                </MudStack>
+            }
+        </EditForm>
+    </MudElement>
 }
 @code {
     const string SELECTION_DELIMITER = ", ";
 
-    PermissionMapping? _map;
 
     [Parameter]
-    public PermissionMapping? Map
+    public PermissionMapping? Mapping { get; set; }
+    protected override async Task OnParametersSetAsync()
     {
-        get => _map; set
-        {
-            if (_map == value) return;
-
-            _map = value;
-            Task.Run(async () =>
-            {
-
-                await RefreshData();
-
-            });
-
-
-        }
+        await base.OnParametersSetAsync();
+        await RefreshData();
     }
 
     [Parameter]
@@ -110,19 +98,19 @@
 
         if (!LoadingData)
         {
-            if (Map == null) return;
+            if (Mapping == null) return;
 
             LoadingData = true;
 
             if (Context != null)
             {
-                if (Map.Id != 0)
+                if (Mapping?.Id > 0)
                 {
-                    _map = await Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Map.Id).FirstOrDefaultAsync();
+                    Mapping = await Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Mapping.Id).FirstOrDefaultAsync();
                 }
-                _accessLevels = await Context.AccessLevels.Where(x=>x.DeletedAt==null).ToListAsync();
-                _permissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin && p.DeletedAt==null).ToListAsync();
-                if (Map.Id != 0)
+                _accessLevels = await Context.AccessLevels.Where(x => x.DeletedAt == null && !x.Name.Equals(AccessLevel.SelfAccessLevelName)).ToListAsync();
+                _permissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin && p.DeletedAt == null).ToListAsync();
+                if (Mapping?.Id != 0)
                 {
                     ConcatenateStrings();
                 }
@@ -137,31 +125,34 @@
     {
         string concatenated = "";
 
-        _accessLevels.Select(a => a.Name).ToList().ForEach(s =>
+        Mapping?.AccessLevels.Select(a => a.Name).ToList().ForEach(s =>
         {
             concatenated += s + SELECTION_DELIMITER;
 
         });
-        if (concatenated != "")
+        if (!concatenated.IsNullOrEmpty())
 
             concatenated = concatenated.Substring(0, concatenated.Length - 2);
 
         selectedAccessLevelNames = concatenated;
         concatenated = "";
-        var sids = _permissionDelegates.Select(a => a.DelegateSid).ToList();
-        foreach (var sid in sids)
+        var sids = Mapping?.PermissionDelegates.Select(a => a.DelegateSid).ToList();
+        if (sids != null)
         {
-            try
+            foreach (var sid in sids)
             {
-                concatenated += Directory.FindEntryBySID(sid) + ", ";
-            }
-            catch (Exception)
-            {
-                concatenated += sid.ToSidString() + ", ";
+                try
+                {
+                    concatenated += Directory.FindEntryBySID(sid)?.CanonicalName + SELECTION_DELIMITER;
+                }
+                catch (Exception)
+                {
+                    concatenated += sid.ToSidString() + SELECTION_DELIMITER;
+                }
             }
         }
 
-        if (concatenated != "")
+        if (!concatenated.IsNullOrEmpty())
             concatenated = concatenated.Substring(0, concatenated.Length - 2);
 
         selectedPermissionDelegateNames = concatenated;
@@ -169,34 +160,41 @@
 
     async Task DeleteMapping()
     {
-        if (Map?.Id == 0)
+        if (await MessageService.Confirm(AppLocalization[Lang.Confirm_deletion], AppLocalization[Lang.Delete_permission_mapping]))
         {
-            Map = null;
-        }
 
-        else if(Map!=null)
-        {
-            Context.PermissionMap.Remove(Map);
-            await Context.SaveChangesAsync();
-        }
-        await InvokeAsync(StateHasChanged);
-        SnackBarService.Success("Mapping deleted");
-        await MappingsChanged.InvokeAsync();
-        ApplicationEvents.PermissionsChanged.Invoke();
 
+            if (Mapping?.Id == 0)
+            {
+                Mapping = null;
+            }
+
+            else if (Mapping != null)
+            {
+
+
+
+                Context.PermissionMap.Remove(Mapping);
+                await Context.SaveChangesAsync();
+            }
+            await StateHasChangedAsync();
+            SnackBarService.Success("Mapping deleted");
+            await MappingsChanged.InvokeAsync();
+            ApplicationEvents.PermissionsChanged.Invoke();
+        }
     }
 
     string? DelegateToString(PermissionDelegate deleg)
     {
         return deleg?.DelegateName;
-       
+
     }
     new async Task Save()
     {
-        if (Map?.Id == 0)
-            Context.PermissionMap.Add(Map);
+        if (Mapping?.Id == 0)
+            Context.PermissionMap.Add(Mapping);
         var result = await Context.SaveChangesAsync();
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
         SnackBarService.Success("Mapping saved");
         await MappingsChanged.InvokeAsync();
         ApplicationEvents.PermissionsChanged.Invoke();

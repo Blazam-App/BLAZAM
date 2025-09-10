@@ -18,7 +18,6 @@ namespace BLAZAM.Tests.Mocks
 
         public int Id => throw new NotImplementedException();
 
-        public AppDelegate OnSettingsChanged { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string AuditUsername => throw new NotImplementedException();
 
@@ -69,6 +68,8 @@ namespace BLAZAM.Tests.Mocks
         public IList<ReadNewsItem>? ReadNewsItems => throw new NotImplementedException();
 
         public bool ShowPluginPlaceholders { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public AppEvent OnSettingsChanged { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public AppEvent OnReadNewsSaved { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public bool CanSearchDisabled(ActiveDirectoryObjectType objectType)
         {

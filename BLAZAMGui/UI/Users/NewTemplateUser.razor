@@ -311,7 +311,7 @@
             @if (Entry.CanReadAnyCustomFields)
             {
                 <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
-                    @foreach (var field in DirectoryTemplate.EffectiveFieldValues.Where(f => f.CustomField != null))
+                    @foreach (var field in DirectoryTemplate.EffectiveFieldValues.Where(f => f.CustomField != null && f.DeletedAt==null))
                     {
                         @if (field.CustomField != null)
                         {
@@ -358,7 +358,7 @@
 @code {
 
 
-    #nullable disable warnings
+
     [Parameter]
     public EventCallback OnValidSubmit { get; set; }
     [Parameter]
@@ -377,7 +377,7 @@
 
         DirectoryTemplate.PopulateFields(User, NewUserName);
         _initialized = true;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
     bool InDirectoryTemplate(IActiveDirectoryField field)

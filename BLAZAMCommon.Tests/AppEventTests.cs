@@ -32,7 +32,7 @@
         {
             // Arrange
             var appEvent = new AppEvent();
-            appEvent.Delegate = null; // Ensure delegate is null
+            // appEvent.Delegate = null; // Ensure delegate is null
 
             // Act
             var exception = Record.Exception(() => appEvent.Invoke());

@@ -4,6 +4,7 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
@@ -60,8 +61,8 @@ namespace BLAZAM.Pages.API.v1
     /// POST /api/v1/fields/1/restore
     /// </code>
     /// </remarks>
-    [Route("api/v1/fields")]
-    public class Fields : ApiController
+    [Authorize(Roles = UserRoles.SuperAdmin)]
+    public class Fields : ApiControllerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Fields"/> API Controller.

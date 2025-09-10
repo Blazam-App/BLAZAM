@@ -1,26 +1,28 @@
-using BLAZAM.Database.Models.User;
-using BLAZAM.Global.Events;
 using BLAZAM.Gui.Services;
 using BLAZAM.Gui.UI.Dashboard.Widgets;
-using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard
 {
     public partial class CurrentUserDashboardWidgets : AppComponentBase
     {
-        bool _editMode;
-        bool _initialized;
+        private bool _editMode;
+
+        private bool _initialized;
+
         [Inject]
         public WidgetService? WidgetService { get; set; }
+
         public AppDelegate<Widget> OnRefreshWidget { get; set; } = (val) => { };
-        MudDropContainer<UserDashboardWidget>? widgetContainer;
-        List<Widget> allWidgets = new List<Widget>();
+
+        private MudDropContainer<UserDashboardWidget>? widgetContainer;
+
+        private List<Widget> allWidgets = new List<Widget>();
 
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
             if (WidgetService == null)
             {
                 Loggers.SystemLogger.Error(new AppException("WidgetService is not injected properly."), "Widget service not available");
@@ -29,7 +31,7 @@ namespace BLAZAM.Gui.UI.Dashboard
             {
                 allWidgets = new List<Widget>(WidgetService.Available());
             }
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
 
         }
         protected override void OnAfterRender(bool firstRender)
@@ -117,7 +119,7 @@ namespace BLAZAM.Gui.UI.Dashboard
                     Order = order
                 });
                 await CurrentUser.State.SaveDashboardWidgets();
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
                 widgetContainer?.Refresh();
             }
 
@@ -128,8 +130,7 @@ namespace BLAZAM.Gui.UI.Dashboard
             {
                 CurrentUser.State.Preferences?.DashboardWidgets.Remove(widget);
                 await CurrentUser.State.SaveDashboardWidgets();
-
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
 
                 widgetContainer?.Refresh();
             }

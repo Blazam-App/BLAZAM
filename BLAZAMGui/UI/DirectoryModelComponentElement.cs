@@ -1,6 +1,6 @@
 ﻿namespace BLAZAM.Gui.UI
 {
-    public class DirectoryModelComponentElement : AppComponentBase
+    public abstract class DirectoryModelComponentElement : AppComponentBase
     {
         [CascadingParameter]
         public IDirectoryEntryAdapter Entry { get; set; }
