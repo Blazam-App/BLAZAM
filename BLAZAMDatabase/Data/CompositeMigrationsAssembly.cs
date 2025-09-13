@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
+using BLAZAM.Common.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using BLAZAM.Common.Data;
-using System.Linq;
 
 namespace BLAZAM.Database.Data
 {
@@ -38,7 +37,9 @@ namespace BLAZAM.Database.Data
                         var dbContextAttribute = type.GetCustomAttribute<DbContextAttribute>();
                         if (dbContextAttribute == null || dbContextAttribute.ContextType == _context.GetType())
                         {
-                            var migrationId = type.Name;
+                            // Get migration id from attribute or fallback to class name
+                            var migrationAttribute = type.GetCustomAttribute<MigrationAttribute>();
+                            var migrationId = migrationAttribute?.Id ?? type.Name;
                             _migrationTypes[migrationId] = type;
                         }
                     }
