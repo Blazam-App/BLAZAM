@@ -1,6 +1,5 @@
 ﻿using System.Data;
-using System.Linq;
-using BLAZAM.Common.Data;
+using System.Diagnostics.CodeAnalysis;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Database.Exceptions;
@@ -34,7 +33,14 @@ namespace BLAZAM.Database.Context
             base.Dispose();
         }
 
-
+        public override DbSet<TEntity> Set<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TEntity>()
+        {
+            return base.Set<TEntity>();
+        }
+        public override DbSet<TEntity> Set<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TEntity>(string name)
+        {
+            return base.Set<TEntity>(name);
+        }
 
 
 
@@ -347,7 +353,7 @@ namespace BLAZAM.Database.Context
                 var seedMismatch = false;
                 PendingMigrations.ForEach(am =>
                 {
-                    if (am.Contains("seed", StringComparison.OrdinalIgnoreCase))
+                    if (am.StartsWith("seed_", StringComparison.OrdinalIgnoreCase))
                     {
                         seedMismatch = true;
                     }

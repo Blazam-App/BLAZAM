@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace BLAZAM.Database.Interfaces
@@ -18,5 +19,7 @@ namespace BLAZAM.Database.Interfaces
         int SaveChanges(bool acceptAllChangesOnSuccess);
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default);
+        DbSet<TEntity> Set<TEntity>() where TEntity : class;
+        DbSet<TEntity> Set<TEntity>(string name) where TEntity : class;
     }
 }
