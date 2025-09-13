@@ -1,13 +1,27 @@
+using BLAZAM.Global.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace BLAZAM.TestPlugin.Data
+namespace BLAZAPluginTest.Data
 {
-    public class TestPluginDbContext : DbContext
+    public class TestPluginDbContext : DbContext, ISqliteAppDbContext
     {
-        public DbSet<ExampleData> ExampleDatas { get; set; }
-
-        public TestPluginDbContext(DbContextOptions<TestPluginDbContext> options) : base(options)
+        public TestPluginDbContext()
         {
         }
+
+
+        public TestPluginDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite(
+                           "Data Source=database.db").EnableSensitiveDataLogging();
+        }
+
+        public DbSet<ExampleData> ExampleDatas { get; set; }
+
+
     }
 }

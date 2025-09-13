@@ -2,13 +2,14 @@
 using System.Data.SQLite;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Data;
+using BLAZAM.Global.Interfaces;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BLAZAM.Database.Context
 {
-    public class SqliteDatabaseContext : DatabaseContextBase
+    public class SqliteDatabaseContext : DatabaseContextBase, ISqliteAppDbContext
     {
 
 

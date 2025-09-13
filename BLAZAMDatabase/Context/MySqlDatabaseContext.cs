@@ -5,10 +5,11 @@ using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using MySqlConnector;
+using BLAZAM.Global.Interfaces;
 
 namespace BLAZAM.Database.Context
 {
-    public class MySqlDatabaseContext : DatabaseContextBase
+    public class MySqlDatabaseContext : DatabaseContextBase, IMySqlAppDbContext
     {
 
         public MySqlDatabaseContext() : base()

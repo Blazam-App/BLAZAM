@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Data;
+using BLAZAM.Global.Interfaces;
 using BLAZAM.Logger;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BLAZAM.Database.Context
 {
-    public class SqlDatabaseContext : DatabaseContextBase
+    public class SqlDatabaseContext : DatabaseContextBase, ISqlAppDbContext
     {
 
 

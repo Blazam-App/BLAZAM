@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using BLAZAM.Common.Data;
+using BLAZAM.Global.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -35,12 +35,27 @@ namespace BLAZAM.Database.Data
                     {
                         // Only include migrations for the current DbContext type
                         var dbContextAttribute = type.GetCustomAttribute<DbContextAttribute>();
-                        if (dbContextAttribute == null || dbContextAttribute.ContextType == _context.GetType())
+                        if (dbContextAttribute?.ContextType.IsAssignableTo(typeof(ISqlAppDbContext)) == true
+                            && _context.GetType().IsAssignableTo(typeof(ISqlAppDbContext)))
                         {
-                            // Get migration id from attribute or fallback to class name
-                            var migrationAttribute = type.GetCustomAttribute<MigrationAttribute>();
-                            var migrationId = migrationAttribute?.Id ?? type.Name;
-                            _migrationTypes[migrationId] = type;
+                            LoadMigration(type);
+
+                        }
+                        else if (dbContextAttribute?.ContextType.IsAssignableTo(typeof(ISqliteAppDbContext)) == true
+                            && _context.GetType().IsAssignableTo(typeof(ISqliteAppDbContext)))
+                        {
+                            LoadMigration(type);
+
+                        }
+                        else if (dbContextAttribute?.ContextType.IsAssignableTo(typeof(IMySqlAppDbContext)) == true
+                            && _context.GetType().IsAssignableTo(typeof(IMySqlAppDbContext)))
+                        {
+                            LoadMigration(type);
+
+                        }
+                        else if (dbContextAttribute == null || dbContextAttribute.ContextType == _context.GetType())
+                        {
+                            LoadMigration(type);
                         }
                     }
                 }
@@ -51,6 +66,13 @@ namespace BLAZAM.Database.Data
                 kvp => kvp.Key,
                 kvp => (Migration)Activator.CreateInstance(kvp.Value.AsType())!
             );
+        }
+
+        private void LoadMigration(TypeInfo type)
+        {
+            var migrationAttribute = type.GetCustomAttribute<MigrationAttribute>();
+            var migrationId = migrationAttribute?.Id ?? type.Name;
+            _migrationTypes[migrationId] = type;
         }
 
         public IReadOnlyDictionary<string, TypeInfo> Migrations => _migrationTypes;
