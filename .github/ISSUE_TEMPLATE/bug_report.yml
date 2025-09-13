@@ -48,7 +48,7 @@ body:
        - Click the **"Blazam"** branding text at the bottom of the side panel to open the About screen.
        - The version number will be displayed there.
        
-       ![Blazam About Screen](https://your-image-url.com/blazam-about.png)
+       ![Blazam Branding Location](https://raw.githubusercontent.com/Blazam-App/BLAZAM/refs/heads/v1-Dev/.github/img/versionHelp.png)
       placeholder: "e.g., 2.5.1"
     validations:
       required: true
