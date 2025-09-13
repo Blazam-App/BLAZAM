@@ -1,7 +1,7 @@
-using System;
 using System.ComponentModel.DataAnnotations;
+using BLAZAM.Global.Data;
 
-namespace BLAZAM.Database.Models
+namespace BLAZAM.Plugins.DbContext
 {
     /// <summary>
     /// A base class for all plugin database models.

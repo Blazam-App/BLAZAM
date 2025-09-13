@@ -1,4 +1,4 @@
-﻿namespace BLAZAM.Database.Models
+﻿namespace BLAZAM.Global.Data
 {
     /// <summary>
     /// Base class that all Database Model classes should inherit
@@ -7,7 +7,7 @@
     /// Provides an <see cref="Id"/> as well as <see cref="Equals(object?)"/> and
     /// <see cref="GetHashCode"/>
     /// </remarks>
-    public class AppDbSetBase : IEquatable<AppDbSetBase?>, IAppDbSetBase
+    public class AppDbSetBase : IEquatable<AppDbSetBase?>
     {
         public int Id { get; set; }
 
