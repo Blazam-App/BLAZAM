@@ -78,6 +78,18 @@ namespace BLAZAM.Services.Plugins
         /// <param name="pageType">The page type to check.</param>
         /// <returns>True if the page type is an individual entry type.</returns>
         private static bool IsIndividualEntryType(PageType pageType) => IndividualEntryTypes.Contains(pageType);
+        /// <summary>
+        /// Retrieves all <see cref="DbContext"/> types from loaded plugins that implement <see cref="IPluginDbContext"/>.
+        /// </summary>
+        /// <returns>A list of plugin <see cref="DbContext"/> types.</returns>
+        public static List<Type> GetPluginDbContextTypes()
+        {
+            return ApplicationInfo.loadedPlugins
+                .Select(p => p.PluginBase)
+                .OfType<IPluginDbContext>()
+                .Select(dbCtx => dbCtx.DbContextType)
+                .ToList();
+        }
         public static Type? GetPluginSettingsComponent(IPluginBase plugin)
         {
             var matchingPlugin = ApplicationInfo.loadedPlugins.FirstOrDefault(p => p.PluginBase.Equals(plugin));

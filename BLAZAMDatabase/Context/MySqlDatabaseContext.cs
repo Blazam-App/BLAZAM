@@ -1,7 +1,9 @@
 ﻿using System.Data;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Database.Data;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using MySqlConnector;
 
 namespace BLAZAM.Database.Context
@@ -38,7 +40,8 @@ namespace BLAZAM.Database.Context
                           })
 
                           .EnableSensitiveDataLogging()
-                                  .LogTo(Loggers.DatabaseLogger.Information);
+                                  .LogTo(Loggers.DatabaseLogger.Information)
+                                  .ReplaceService<IMigrationsAssembly, CompositeMigrationsAssembly>();
         }
         protected override DataTable SelectAllDataFromTable(string? tableName)
         {

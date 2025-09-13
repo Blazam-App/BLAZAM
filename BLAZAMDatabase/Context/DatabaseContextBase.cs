@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Linq;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Helpers;
@@ -15,6 +16,7 @@ using BLAZAM.FileSystem;
 using BLAZAM.Global.Enums;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using BLAZAM.Plugins;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -190,6 +192,14 @@ namespace BLAZAM.Database.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             DatabaseHelpers.ConfigureModel(modelBuilder, this);
+            var pluginModelCreators = ApplicationInfo.loadedPlugins
+              .Select(p => p.PluginBase)
+              .OfType<IPluginModelCreating>();
+
+            foreach (var creator in pluginModelCreators)
+            {
+                creator.OnModelCreating(modelBuilder);
+            }
         }
 
 

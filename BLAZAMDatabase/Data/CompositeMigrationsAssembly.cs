@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using BLAZAM.Common.Data;
+using System.Linq;
 
 namespace BLAZAM.Database.Data
 {
@@ -22,7 +24,7 @@ namespace BLAZAM.Database.Data
             // Main assembly
             _mainAssembly = _context.GetType().Assembly;
             // Plugin assemblies: customize this as needed for your plugin system
-            _pluginAssemblies = new List<Assembly>(); // Fill with plugin assemblies if available
+            _pluginAssemblies = ApplicationInfo.loadedPlugins.Select(p => p.Assembly).ToList();
 
             // Find all migration types
             _migrationTypes = new Dictionary<string, TypeInfo>();

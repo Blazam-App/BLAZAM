@@ -129,6 +129,16 @@ namespace BLAZAM.Helpers
 
         public static void ConfigureModel(ModelBuilder modelBuilder, DatabaseContextBase context)
         {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(PluginDbSetBase).IsAssignableFrom(entityType.ClrType))
+                {
+                    modelBuilder.Entity(entityType.ClrType, b =>
+                    {
+                        b.ToTable("Plugin." + entityType.ClrType.Name);
+                    });
+                }
+            }
             AddActiveDirectoryFieldData(modelBuilder);
             AddCustomActiveDirectoryFieldConfig(modelBuilder);
             AddAccessLevelConfig(modelBuilder);
