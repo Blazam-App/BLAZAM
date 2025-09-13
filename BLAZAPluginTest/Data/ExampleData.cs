@@ -1,8 +1,9 @@
 
 
-using BLAZAM.Database.Models;
 
-namespace BLAZAM.TestPlugin.Data
+using BLAZAM.Plugins.DbContext;
+
+namespace BLAZAPluginTest.Data
 {
     public class ExampleData : PluginDbSetBase
     {

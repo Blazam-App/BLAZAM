@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Chat;
@@ -8,6 +7,7 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Rules;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
+using BLAZAM.Plugins.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 

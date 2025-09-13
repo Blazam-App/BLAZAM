@@ -1,15 +1,48 @@
 ﻿@using BLAZAM.Gui.UI
 @using BLAZAM.Notifications.Services
 @using BLAZAM.Plugins
-@inherits AppComponentBase
+@using BLAZAPluginTest.Data
+@inherits DatabaseComponentBase
 @attribute [PluginComponent(PageType.Plugin,PageLocation.Settings)]
 
 <MudText>
     Test Plugin Settings
 </MudText>
+
+<MudTextField @bind-Value=data.Name Label="Name" />
+<MudTextField @bind-Value=data.Description Label="Description" />
 <MudButton OnClick="TestSnackBar">Test Button</MudButton>
 @code {
 
+    private ExampleData data = new ExampleData();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var existing = Context.Set<ExampleData>("ExampleDatas").FirstOrDefault();
+        if (existing != null)
+        {
+            data = existing;
+        }
+    }
+
+    private void Save()
+    {
+        if (data.Id == 0)
+        {
+            Context.Set<ExampleData>().Add(data);
+        }
+        var result = Context.SaveChanges();
+        if (result > 0)
+        {
+            SnackBarService.Success("Saved");
+        }
+        else
+        {
+            SnackBarService.Error("Failed to Save");
+        }
+
+    }
     private void TestSnackBar()
     {
         SnackBarService.Success("Plugin Toast Notification");

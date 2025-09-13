@@ -1,12 +1,12 @@
 ﻿using BLAZAM.Global.Data;
 using BLAZAM.Plugins;
-using BLAZAM.TestPlugin.Data;
+using BLAZAPluginTest.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAPluginTest
 {
-    public class BlazamTestPlugin : IPluginBase, IPluginServiceProvider,IPluginDbContext,IPluginModelCreating
+    public class BlazamTestPlugin : IPluginBase, IPluginServiceProvider, IPluginDbContext, IPluginModelCreating
     {
 
 

@@ -1,19 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <RootNamespace>BLAZAM.Plugins</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.19" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BLAZAMFileSystem\BLAZAMFileSystem.csproj" />
-    <ProjectReference Include="..\BLAZAMGlobal\BLAZAMGlobal.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>BLAZAM.Plugins</RootNamespace>
+	</PropertyGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.19" />
+		<PackageReference Include="System.Data.SQLite" Version="2.0.1" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\BLAZAMFileSystem\BLAZAMFileSystem.csproj" />
+		<ProjectReference Include="..\BLAZAMGlobal\BLAZAMGlobal.csproj" />
+	</ItemGroup>
 </Project>

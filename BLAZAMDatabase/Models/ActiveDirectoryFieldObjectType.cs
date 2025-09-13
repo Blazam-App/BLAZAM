@@ -1,4 +1,4 @@
-﻿using BLAZAM.Common.Data;
+﻿
 
 namespace BLAZAM.Database.Models
 {

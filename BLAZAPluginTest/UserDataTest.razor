@@ -4,6 +4,7 @@
 @using BLAZAM.Notifications.Services
 
 @using BLAZAM.Plugins
+@using BLAZAPluginTest.Data
 @inherits PluginDirectoryModelComponentElement
 @attribute [PluginComponent(PageType.User,PageLocation.Account)]
 
@@ -12,6 +13,7 @@
 </MudText>
 <MudButton OnClick="TestSnackBar">Test Button</MudButton>
 @code {
+ 
     private void TestSnackBar()
     {
         SnackBarService.Success("Plugin Toast Notification in "+Account.DisplayName);
