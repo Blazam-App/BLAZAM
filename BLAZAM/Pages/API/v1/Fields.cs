@@ -61,26 +61,22 @@ namespace BLAZAM.Pages.API.v1
     /// POST /api/v1/fields/1/restore
     /// </code>
     /// </remarks>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="Fields"/> API Controller.
+    /// </remarks>
+    /// <param name="applicationUserStateService">Service to manage the current application user's state.</param>
+    /// <param name="audit">Logger for recording user activity for auditing.</param>
+    /// <param name="appDatabaseFactory">Factory to create instances of the application database.</param>
+    /// <param name="httpContextAccessor">Provides access to the current HTTP context.</param>
+    /// <param name="adFactory">Factory to create Active Directory context instances.</param>
     [Authorize(Roles = UserRoles.SuperAdmin)]
-    public class Fields : ApiControllerBase
+    public class Fields(
+        IApplicationUserStateService applicationUserStateService,
+        WebUserAuditLogger audit,
+        IUserDatabaseFactory appDatabaseFactory,
+        IHttpContextAccessor httpContextAccessor,
+        IActiveDirectoryContextFactory adFactory) : ApiControllerBase(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Fields"/> API Controller.
-        /// </summary>
-        /// <param name="applicationUserStateService">Service to manage the current application user's state.</param>
-        /// <param name="audit">Logger for recording user activity for auditing.</param>
-        /// <param name="appDatabaseFactory">Factory to create instances of the application database.</param>
-        /// <param name="httpContextAccessor">Provides access to the current HTTP context.</param>
-        /// <param name="adFactory">Factory to create Active Directory context instances.</param>
-        public Fields(
-            IApplicationUserStateService applicationUserStateService,
-            WebUserAuditLogger audit,
-            IUserDatabaseFactory appDatabaseFactory,
-            IHttpContextAccessor httpContextAccessor,
-            IActiveDirectoryContextFactory adFactory)
-            : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
-        {
-        }
 
         /// <summary>
         /// Returns all custom fields that are not deleted.
@@ -127,7 +123,10 @@ namespace BLAZAM.Pages.API.v1
                 .Include(f => f.ObjectTypes)
                 .FirstOrDefaultAsync(f => f.Id == id && f.DeletedAt == null);
             if (field == null)
+            {
                 return NotFound();
+            }
+
             return FormatData(field);
         }
 
@@ -157,13 +156,17 @@ namespace BLAZAM.Pages.API.v1
         public async Task<IActionResult> Add([FromBody] NewFieldPayload payload)
         {
             if (payload == null)
+            {
                 return BadRequest("Payload required.");
+            }
 
             if (payload.FieldType == null)
+            {
                 return UnprocessableEntity(new List<ValidationResult>
                 {
-                    new ValidationResult("FieldType is required.", new[] { nameof(payload.FieldType) })
+                    new("FieldType is required.", [nameof(payload.FieldType)])
                 });
+            }
 
             var field = new CustomActiveDirectoryField
             {
@@ -171,17 +174,19 @@ namespace BLAZAM.Pages.API.v1
                 FieldName = payload.FieldName,
                 FieldType = payload.FieldType.Value,
                 ObjectTypes = payload.ObjectTypes?
-                    .Select(ot => new ActiveDirectoryFieldObjectType
+                    .Select(static ot => new ActiveDirectoryFieldObjectType
                     {
                         ObjectType = ot,
-                    }).ToList() ?? new List<ActiveDirectoryFieldObjectType>()
+                    }).ToList() ?? []
             };
 
             // Validate
             var validationResults = new List<ValidationResult>();
             var context = new ValidationContext(field, null, null);
             if (!Validator.TryValidateObject(field, context, validationResults, true))
+            {
                 return UnprocessableEntity(validationResults);
+            }
 
             using var db = await DbFactory.CreateDbContextAsync();
             db.CustomActiveDirectoryFields.Add(field);
@@ -189,7 +194,10 @@ namespace BLAZAM.Pages.API.v1
 
             // Assign field ID to object types
             foreach (var ot in field.ObjectTypes)
+            {
                 ot.ActiveDirectoryFieldId = field.Id;
+            }
+
             await db.SaveChangesAsync();
 
             return FormatData(field);
@@ -227,7 +235,9 @@ namespace BLAZAM.Pages.API.v1
                 .FirstOrDefaultAsync(f => f.Id == id && f.DeletedAt == null);
 
             if (field == null)
+            {
                 return NotFound();
+            }
 
             field.DisplayName = payload.DisplayName;
 
@@ -256,7 +266,9 @@ namespace BLAZAM.Pages.API.v1
             var validationResults = new List<ValidationResult>();
             var context = new ValidationContext(field, null, null);
             if (!Validator.TryValidateObject(field, context, validationResults, true))
+            {
                 return UnprocessableEntity(validationResults);
+            }
 
             await db.SaveChangesAsync();
             return FormatData(field);
@@ -282,7 +294,9 @@ namespace BLAZAM.Pages.API.v1
             using var db = await DbFactory.CreateDbContextAsync();
             var field = await db.CustomActiveDirectoryFields.FirstOrDefaultAsync(f => f.Id == id && f.DeletedAt == null);
             if (field == null)
+            {
                 return NotFound();
+            }
 
             field.DeletedAt = DateTime.UtcNow;
             await db.SaveChangesAsync();
@@ -309,7 +323,9 @@ namespace BLAZAM.Pages.API.v1
             using var db = await DbFactory.CreateDbContextAsync();
             var field = await db.CustomActiveDirectoryFields.FirstOrDefaultAsync(f => f.Id == id && f.DeletedAt != null);
             if (field == null)
+            {
                 return NotFound();
+            }
 
             field.DeletedAt = null;
             await db.SaveChangesAsync();

@@ -34,13 +34,13 @@
         /// The fields to set for this user. Template field with values will also
         /// be applied.
         /// </summary>
-        public List<NewUserField>? Fields { get; set; } = new();
+        public List<NewUserField>? Fields { get; set; } = [];
         /// <summary>
         /// A list of groups to assign for this user. The value can be the SID, DN, or
         /// group name. If using group name, the name must be unique and match a single
         /// group in the domain. Template groups will also be applied.
         /// </summary>
-        public List<string>? Groups { get; set; } = new();
+        public List<string>? Groups { get; set; } = [];
 
         /// <summary>
         /// If the template is set to send a welcome email, and requests a destination, will be sent
@@ -65,12 +65,12 @@
                 LastName = "Doe",
                 Username = "johndoe",
                 OU = "OU=Users,DC=example,DC=com",
-                Fields = new List<NewUserField>
-            {
+                Fields =
+            [
                 new() { FieldName = "Department", FieldValue = "Sales" },
                 new() { FieldName = "Title", FieldValue = "Sales Representative" }
-            },
-                Groups = new List<string> { "S-1-5-21-1004336348-1177238915-682003330-512", "S-1-5-21-1004336348-1148567915-615476330-495" }
+            ],
+                Groups = ["S-1-5-21-1004336348-1177238915-682003330-512", "S-1-5-21-1004336348-1148567915-615476330-495"]
             };
         }
     }

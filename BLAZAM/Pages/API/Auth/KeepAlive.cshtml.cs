@@ -2,7 +2,7 @@ using BLAZAM.Session;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BLAZAM.Server.Pages.API.Auth
+namespace BLAZAM.Pages.API.Auth
 {
     /// <summary>
     /// An endpoint for the client to check in to, to extend authentication expiration
@@ -27,6 +27,7 @@ namespace BLAZAM.Server.Pages.API.Auth
                 response.Add("expired", "true");
                 return new JsonResult(response);
             }
+
             response.Add("expired", "false");
             return new JsonResult(response);
 
