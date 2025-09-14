@@ -1,14 +1,8 @@
 // Import necessary namespaces for various functionalities
-using System.Web;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Common.Data;
-using BLAZAM.Gui.Layouts;
-using BLAZAM.Gui.UI;
 using BLAZAM.Services;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
 
 namespace BLAZAM.Pages
 {
@@ -153,13 +147,14 @@ namespace BLAZAM.Pages
 
         }
 
+
         /// <summary>
         /// Invokes the actual search function
         /// that processes the current <see cref="SearchService"/>
         /// settings.
         /// </summary>
         /// <returns></returns>
-        protected async Task InvokeSearch()
+        protected override async Task InvokeSearch()
         {
             if (Searcher == null)
                 Searcher = new ADSearch(Directory);

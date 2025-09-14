@@ -99,7 +99,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
 
                 var treeBranchh = items?.ToTreeItemData();
-                return treeBranchh;
+                return treeBranchh?? new List<TreeItemData<IDirectoryEntryAdapter>>();
 
             }
             catch (Exception)
@@ -263,15 +263,6 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             return await Task.Run(() =>
             {
                 return GetOUChildren(parentNode);
-
-
-            });
-        }
-        protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>?>> GetChildrenAsync(TreeItemData<IDirectoryEntryAdapter> parentNode)
-        {
-            return await Task.Run(() =>
-            {
-                return GetChildren(parentNode);
 
 
             });
