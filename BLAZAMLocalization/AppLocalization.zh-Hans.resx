@@ -1275,4 +1275,7 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>您的会话即将过期</value>
   </data>
+  <data name="Text" xml:space="preserve">
+    <value>文本</value>
+  </data>
 </root>

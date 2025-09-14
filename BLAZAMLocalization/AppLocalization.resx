@@ -1308,4 +1308,7 @@
   <data name="Users_created_in_the_last_14_days" xml:space="preserve">
     <value>Users created in the last 14 days</value>
   </data>
+  <data name="Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
 </root>

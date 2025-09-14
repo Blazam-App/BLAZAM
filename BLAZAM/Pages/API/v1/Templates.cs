@@ -2,7 +2,7 @@
 using System.Text.Json;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Templates;
-using BLAZAM.EmailMessage.Email.Notifications;
+using BLAZAM.EmailMessage.Email.Messages;
 using BLAZAM.Gui.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
@@ -22,7 +22,6 @@ namespace BLAZAM.Pages.API.v1
     /// Template API endpoints provide listing of templates
     /// and execution to create users.
     /// </summary>
-    [Route("api/v1/templates")]
     [Authorize(Roles = UserRoles.SuperAdmin)]
     public class Templates : ApiControllerBase
     {

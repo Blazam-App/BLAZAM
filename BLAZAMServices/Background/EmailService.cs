@@ -4,6 +4,7 @@ using BLAZAM.Database.Services;
 using BLAZAM.EmailMessage;
 using BLAZAM.EmailMessage.Email;
 using BLAZAM.EmailMessage.Email.Base;
+using BLAZAM.EmailMessage.Email.Messages;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
@@ -401,6 +402,24 @@ namespace BLAZAM.Services.Background
                 var message = BuildMessage<TestEmailMessage>("BLAZAM Test Email", to);
 
                 return await TrySend(client, message);
+            }
+            catch (EmailException ex)
+            {
+                Loggers.SystemLogger.Information(ex, "Error trying to send test email");
+                return false;
+
+
+            }
+
+        }
+
+        public async Task<bool> SendPasswordResetEmail(string to, string resetUri)
+        {
+            try
+            {
+                var emailMessage = new PasswordResetEmailMessage();
+                emailMessage.ResetUri = resetUri;
+                return await SendMessage("Password Reset", emailMessage, to);
             }
             catch (EmailException ex)
             {

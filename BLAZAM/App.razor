@@ -6,61 +6,61 @@
 
 <CascadingAuthenticationState>
     <MudRTLProvider RightToLeft=@(CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)>
-    <ErrorBoundary>
+        <ErrorBoundary>
 
-        <ChildContent>
+            <ChildContent>
 
-            <Router AppAssembly="@typeof(App).Assembly">
-                <Found Context="routeData">
-                    <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                        <Authorizing>
-                            Authorizing...
-                        </Authorizing>
-                        <NotAuthorized>
-                            @if (context.User.Identity?.IsAuthenticated != true)
-                            {
-                                <LayoutView Layout="@typeof(LoginLayout)">
-                                    <Login />
-                                </LayoutView>
-                            }
-                            else
-                            {
+                <Router AppAssembly="@typeof(App).Assembly">
+                    <Found Context="routeData">
+                        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                            <Authorizing>
+                                Authorizing...
+                            </Authorizing>
+                            <NotAuthorized>
+                                @if (context.User.Identity?.IsAuthenticated != true)
+                                {
+                                    <LayoutView Layout="@typeof(LoginLayout)">
+                                        <Login />
+                                    </LayoutView>
+                                }
+                                else
+                                {
 
-                                <_403/>
-                               
-                            }
-                        </NotAuthorized>
-                    </AuthorizeRouteView>
-                    <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-                </Found>
-                <NotFound>
-                    <AppPageTitle>Not found</AppPageTitle>
-                    <LayoutView Layout="@typeof(MainLayout)">
-                        <_404 />
-                    </LayoutView>
-                </NotFound>
-            </Router>
+                                    <_403 />
 
-
-        </ChildContent>
-        <ErrorContent>
-            <LayoutView Layout="@typeof(MinLayout)">
-                <UnhandledExceptionPage Error="@context" />
-
-            </LayoutView>
-        </ErrorContent>
-    </ErrorBoundary>
+                                }
+                            </NotAuthorized>
+                        </AuthorizeRouteView>
+                        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+                    </Found>
+                    <NotFound>
+                        <AppPageTitle>Not found</AppPageTitle>
+                        <LayoutView Layout="@typeof(MainLayout)">
+                            <_404 />
+                        </LayoutView>
+                    </NotFound>
+                </Router>
 
 
+            </ChildContent>
+            <ErrorContent>
+                <LayoutView Layout="@typeof(MinLayout)">
+                    <UnhandledExceptionPage Error="@context" />
+
+                </LayoutView>
+            </ErrorContent>
+        </ErrorBoundary>
 
 
 
 
-    <MudThemeProvider IsDarkMode="@darkMode" Theme="@activeTheme.Theme" />
-    <MudDialogProvider />
-    <MudPopoverProvider />
-    <MudSnackbarProvider />
-    <SessionExpirationWarningProvider />
+
+
+        <MudThemeProvider IsDarkMode="@darkMode" Theme="@activeTheme.Theme" />
+        <MudDialogProvider />
+        <MudPopoverProvider />
+        <MudSnackbarProvider />
+        <SessionExpirationWarningProvider />
     </MudRTLProvider>
 </CascadingAuthenticationState>
 
@@ -91,7 +91,7 @@
         }
         catch (Exception ex)
         {
-            Loggers.SystemLogger.Error(ex,"Error while fetching user theme");
+            Loggers.SystemLogger.Error(ex, "Error while fetching user theme");
         }
     }
 

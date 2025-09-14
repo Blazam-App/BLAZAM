@@ -1275,4 +1275,7 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>セッションの有効期限が近づいています</value>
   </data>
+  <data name="Text" xml:space="preserve">
+    <value>テキスト</value>
+  </data>
 </root>
