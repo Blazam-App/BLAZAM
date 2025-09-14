@@ -13,12 +13,12 @@ namespace BLAZAM.Gui.Helpers
         /// <param name="directory">The directory to create the use under</param>
         /// <returns></returns>
         /// <exception cref="AppException"></exception>
-        public static IADUser GenerateTemplateUser(this DirectoryTemplate template, NewUserName newUserName, IActiveDirectoryContext directory, IADOrganizationalUnit? parentOU = null)
+        public static async Task<IADUser> GenerateTemplateUserAsync(this DirectoryTemplate template, NewUserName newUserName, IActiveDirectoryContext directory, IADOrganizationalUnit? parentOU = null)
         {
             IADUser? newUser;
             if (parentOU == null)
             {
-                parentOU = directory.OUs.FindOuByString(template.EffectiveParentOU).FirstOrDefault();
+                parentOU = (await directory.OUs.FindOuByStringAsync(template.EffectiveParentOU)).FirstOrDefault();
             }
             if (parentOU == null) throw new AppException("OU could not be found for new user");
             var displayName = template.GenerateDisplayName(newUserName);
