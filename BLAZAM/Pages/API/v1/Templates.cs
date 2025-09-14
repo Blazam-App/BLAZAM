@@ -22,36 +22,29 @@ namespace BLAZAM.Pages.API.v1
     /// Template API endpoints provide listing of templates
     /// and execution to create users.
     /// </summary>
+    /// <remarks>
+    /// Constructs a new instance of the Templates API controller.
+    /// </remarks>
+    /// <param name="ouNotificationService"></param>
+    /// <param name="email"></param>
+    /// <param name="applicationUserStateService"></param>
+    /// <param name="localizer"></param>
+    /// <param name="audit"></param>
+    /// <param name="appDatabaseFactory"></param>
+    /// <param name="httpContextAccessor"></param>
+    /// <param name="adFactory"></param>
     [Authorize(Roles = UserRoles.SuperAdmin)]
-    public class Templates : ApiControllerBase
+    public class Templates(NotificationGenerationService ouNotificationService,
+        EmailService email,
+        IApplicationUserStateService applicationUserStateService,
+        IStringLocalizer<AppLocalization> localizer,
+        WebUserAuditLogger audit,
+        IUserDatabaseFactory appDatabaseFactory,
+        IHttpContextAccessor httpContextAccessor,
+        IActiveDirectoryContextFactory adFactory) : ApiControllerBase(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
     {
-        private readonly IStringLocalizer<AppLocalization> AppLocalization;
-        private readonly EmailService EmailService;
-
-        /// <summary>
-        /// Constructs a new instance of the Templates API controller.
-        /// </summary>
-        /// <param name="ouNotificationService"></param>
-        /// <param name="email"></param>
-        /// <param name="applicationUserStateService"></param>
-        /// <param name="localizer"></param>
-        /// <param name="audit"></param>
-        /// <param name="appDatabaseFactory"></param>
-        /// <param name="httpContextAccessor"></param>
-        /// <param name="adFactory"></param>
-        public Templates(NotificationGenerationService ouNotificationService,
-            EmailService email,
-            IApplicationUserStateService applicationUserStateService,
-            IStringLocalizer<AppLocalization> localizer,
-            WebUserAuditLogger audit,
-            IUserDatabaseFactory appDatabaseFactory,
-            IHttpContextAccessor httpContextAccessor,
-            IActiveDirectoryContextFactory adFactory)
-            : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
-        {
-            AppLocalization = localizer;
-            EmailService = email;
-        }
+        private readonly IStringLocalizer<AppLocalization> _appLocalization = localizer;
+        private readonly EmailService _emailService = email;
 
 
 
@@ -129,7 +122,7 @@ namespace BLAZAM.Pages.API.v1
                     return new BadRequestObjectResult("There was no OU provided by API call or template!");
                 }
                 //Generate IADUser
-                var newUser = template.GenerateTemplateUser(newUserName, Directory, customOU);
+                var newUser = await template.GenerateTemplateUserAsync(newUserName, Directory, customOU);
 
                 //Override username if provided
                 if (!newUserDetails.Username.IsNullOrEmpty())
@@ -150,9 +143,10 @@ namespace BLAZAM.Pages.API.v1
                 AssignGroups(newUserDetails, newUser);
 
                 //Prepare commit job
-                Job createUserJob = new(AppLocalization[Lang.Create_User]);
-
-                createUserJob.StopOnFailedStep = true;
+                Job createUserJob = new(_appLocalization[Lang.Create_User])
+                {
+                    StopOnFailedStep = true
+                };
 
                 //Commmit
                 var result = await newUser.CommitChangesAsync(createUserJob);
@@ -249,23 +243,24 @@ namespace BLAZAM.Pages.API.v1
             }
         }
 
-        private static bool ValidateInput(NewUserPayload newUserDetails, DirectoryTemplate? template)
+        private static void ValidateInput(NewUserPayload newUserDetails, DirectoryTemplate? template)
         {
             //Check if the request has the required fields for this template
             if (template?.HasRequiredFields() == true)
             {
                 var requiredFields = template.EffectiveFieldValues.Where(fv => fv.Required).ToList();
+                var providedFieldNames = newUserDetails.Fields?.Select(field => field.FieldName).ToList();
+
                 foreach (var field in requiredFields)
                 {
                     //If any are missing return an error with explanation
-                    if (!newUserDetails.Fields?.Any(f => f.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase)) == true)
+                    if (!providedFieldNames?.Any(f => f.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase)) == true)
                     {
                         throw new BadHttpRequestException(field.FieldName + " is a required field");
                     }
                 }
             }
 
-            return true;
         }
 
 
@@ -288,11 +283,13 @@ namespace BLAZAM.Pages.API.v1
         {
             try
             {
-                NewUserWelcomeEmailMessage message = new();
-                message.Domain = user.Directory.ConnectionSettings?.FQDN;
-                message.Username = user.SAMAccountName;
-                message.Password = password;
-                await EmailService.SendMessage(AppLocalization["New Account Details"], message, to);
+                NewUserWelcomeEmailMessage message = new()
+                {
+                    Domain = user.Directory.ConnectionSettings?.FQDN,
+                    Username = user.SAMAccountName,
+                    Password = password
+                };
+                await _emailService.SendMessage(_appLocalization["New Account Details"], message, to);
 
             }
             catch (Exception ex)
