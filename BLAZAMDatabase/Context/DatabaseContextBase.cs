@@ -25,12 +25,7 @@ namespace BLAZAM.Database.Context
     public class DatabaseContextBase : DbContext, IDatabaseContext
     {
         public Exception? LastSaveError { get; set; }
-        public override void Dispose()
-        {
-            ApplicationStatistics.RemoveDBContext();
 
-            base.Dispose();
-        }
 
 
 
@@ -197,8 +192,16 @@ namespace BLAZAM.Database.Context
 
         public bool EntityIsTracked<TEntry>(TEntry? entry)
         {
-            if (entry is null) return false;
-            if (EqualityComparer<TEntry>.Default.Equals(entry, default)) return false;
+            if (entry is null)
+            {
+                return false;
+            }
+
+            if (EqualityComparer<TEntry>.Default.Equals(entry, default))
+            {
+                return false;
+            }
+
             return base.Entry(entry).State != EntityState.Detached;
         }
 
@@ -214,12 +217,16 @@ namespace BLAZAM.Database.Context
         private ServiceConnectionState TestConnection()
         {
             if (ConnectionString == null)
+            {
                 return ServiceConnectionState.Down;
+            }
 
             try
             {
                 if (ConnectionString.FileBased)
+                {
                     return TestSqliteConnection();
+                }
 
                 if (!NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort))
                 {
@@ -229,7 +236,10 @@ namespace BLAZAM.Database.Context
                 }
 
                 if (Database.CanConnect())
+                {
                     return ServiceConnectionState.Up;
+                }
+
             }
             catch (ObjectDisposedException ex)
             {
@@ -271,13 +281,16 @@ namespace BLAZAM.Database.Context
                 DownReason = new("The Sqlite database folder is not writable by the current server user.");
                 return ServiceConnectionState.Down;
             }
+
             if (ConnectionString.File.Exists)
+            {
                 return ServiceConnectionState.Up;
+            }
 
             return ServiceConnectionState.Down;
         }
 
-        private void HandleSqlException(SqlException ex)
+        private static void HandleSqlException(SqlException ex)
         {
             switch (ex.Number)
             {
@@ -308,10 +321,16 @@ namespace BLAZAM.Database.Context
 
             try
             {
-                if (AppliedMigrations.Count() > 0) return true;
+                if (AppliedMigrations.Any())
+                {
+                    return true;
+                }
 
                 if (AuthenticationSettings.FirstOrDefault() == null)
+                {
                     return false;
+                }
+
                 return true;
             }
             catch
@@ -333,7 +352,11 @@ namespace BLAZAM.Database.Context
         {
             get
             {
-                if (!IsSeeded()) return false;
+                if (!IsSeeded())
+                {
+                    return false;
+                }
+
                 var seedMismatch = false;
                 PendingMigrations.ForEach(am =>
                 {
@@ -368,23 +391,22 @@ namespace BLAZAM.Database.Context
                 var file = new SystemFile(fileName);
                 file.EnsureCreated();
                 // Write the data table to the CSV file
-                using (var writer = new StreamWriter(fileName))
-                {
-                    // Write the column names
-                    var columnNames = table.Columns.Cast<DataColumn>().Select(c => c.ColumnName);
-                    writer.WriteLine(string.Join(",", columnNames));
+                using var writer = new StreamWriter(fileName);
+                // Write the column names
+                var columnNames = table.Columns.Cast<DataColumn>().Select(c => c.ColumnName);
+                writer.WriteLine(string.Join(",", columnNames));
 
-                    // Write the rows
-                    foreach (DataRow row in table.Rows)
+                // Write the rows
+                foreach (DataRow row in table.Rows)
+                {
+                    var fields = row.ItemArray.Select(f => f?.ToString());
+                    List<string> lines = [];
+                    foreach (var field in fields)
                     {
-                        var fields = row.ItemArray.Select(f => f?.ToString());
-                        List<string> lines = new();
-                        foreach (var field in fields)
-                        {
-                            lines.Add('"' + field + '"');
-                        }
-                        writer.WriteLine(string.Join(",", lines));
+                        lines.Add('"' + field + '"');
                     }
+
+                    writer.WriteLine(string.Join(",", lines));
                 }
             }
         }
@@ -395,5 +417,20 @@ namespace BLAZAM.Database.Context
 
         }
 
+        public override void Dispose()
+        {
+
+            ApplicationStatistics.RemoveDBContext();
+            GC.SuppressFinalize(this);
+            base.Dispose();
+        }
+
+        public override ValueTask DisposeAsync()
+        {
+
+            ApplicationStatistics.RemoveDBContext();
+            GC.SuppressFinalize(this);
+            return base.DisposeAsync();
+        }
     }
 }
