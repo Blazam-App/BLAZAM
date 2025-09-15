@@ -65,7 +65,7 @@ namespace BLAZAM.Pages.API.v1
             var lng = long.Parse(raw);
 
 
-            var dt = DateTime.UnixEpoch.AddSeconds(lng); ;
+            var dt = DateTime.UnixEpoch.AddSeconds(lng);
             var str = dt.ToString();
             data.Add(title, str);
         }

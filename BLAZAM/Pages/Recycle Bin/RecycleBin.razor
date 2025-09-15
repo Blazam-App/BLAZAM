@@ -95,7 +95,6 @@
         });
     }
 
-    //TODO stop the confimation message on batch restore
     private async Task RestoreSelected()
     {
         if (await MessageService.Confirm("Are you sure you want to restore the selected entries", "Restore?"))
@@ -140,7 +139,7 @@
         var result = (entry.LastKnownParent != null && Directory.RestoreTombstone(entry, entry.LastKnownParent));
         if (result)
         {
-            AuditLogger.System.Analytics.ObjectRestored(entry.ObjectType);
+            AuditLogger.System.Analytics?.ObjectRestored(entry.ObjectType);
         }
         return result;
     }

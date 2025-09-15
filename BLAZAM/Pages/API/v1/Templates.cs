@@ -25,7 +25,6 @@ namespace BLAZAM.Pages.API.v1
     /// <remarks>
     /// Constructs a new instance of the Templates API controller.
     /// </remarks>
-    /// <param name="ouNotificationService"></param>
     /// <param name="email"></param>
     /// <param name="applicationUserStateService"></param>
     /// <param name="localizer"></param>
@@ -34,8 +33,7 @@ namespace BLAZAM.Pages.API.v1
     /// <param name="httpContextAccessor"></param>
     /// <param name="adFactory"></param>
     [Authorize(Roles = UserRoles.SuperAdmin)]
-    public class Templates(NotificationGenerationService ouNotificationService,
-        EmailService email,
+    public class Templates(EmailService email,
         IApplicationUserStateService applicationUserStateService,
         IStringLocalizer<AppLocalization> localizer,
         WebUserAuditLogger audit,

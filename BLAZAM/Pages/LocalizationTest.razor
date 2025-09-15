@@ -5,7 +5,7 @@
 @page "/localizationTest"
 <h3>LocalizationTest</h3>
 
-<MudDataGrid Items="Strings">
+<MudDataGrid Items="_strings">
     <Columns>
         <PropertyColumn Filterable="true" Sortable="true" Property="x=>x.LocalizatinSource" />
         <PropertyColumn Filterable="true" Sortable="true" Property="x=>x.Translates" />
@@ -31,7 +31,7 @@
 
 
 @code {
-    List<LocalizationField> Strings = new();
+    readonly List<LocalizationField> _strings = new();
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -45,7 +45,7 @@
             {
                 translates = false;
             }
-            Strings.Add(new()
+            _strings.Add(new()
                 {
                     Field = field,
                     Key = key,
@@ -63,7 +63,7 @@
             {
                 translates = false;
             }
-            Strings.Add(new()
+            _strings.Add(new()
                 {
                     Field = field,
                     Key = key,
