@@ -20,7 +20,7 @@
         else
         {
             <SettingsField Label="@AppLocalization[Lang.Server]">
-                <MudTextField Disabled=true Label="@AppLocalization[Lang.Server]" Value="@Context?.ConnectionString?.ServerAddress" />
+                <MudTextField Disabled=true Label="@AppLocalization[Lang.Server]" Value="@Context?.ConnectionString?.GetServerAddress()" />
             </SettingsField>
         }
         @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
@@ -32,7 +32,7 @@
         else
         {
             <SettingsField Label="@AppLocalization[Lang.Port]">
-                <MudTextField Disabled=true Label="@AppLocalization[Lang.Port]" Value="@Context?.ConnectionString?.ServerPort" />
+                <MudTextField Disabled=true Label="@AppLocalization[Lang.Port]" Value="@Context?.ConnectionString?.GetServerPort()" />
             </SettingsField>
         }
         @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
@@ -44,7 +44,7 @@
         else
         {
             <SettingsField Label="@AppLocalization[Lang.Database]">
-                <MudTextField Disabled=true Label="@AppLocalization[Lang.Database]" Value="@Context?.ConnectionString?.Database" />
+                <MudTextField Disabled=true Label="@AppLocalization[Lang.Database]" Value="@Context?.ConnectionString?.GetDatabase()" />
             </SettingsField>
         }
         <SettingsField Label="@AppLocalization[Lang.Export_Database]">

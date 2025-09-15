@@ -228,7 +228,7 @@ namespace BLAZAM.Database.Context
                     return TestSqliteConnection();
                 }
 
-                if (!NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort))
+                if (!NetworkTools.IsPortOpen(ConnectionString.GetServerAddress(), ConnectionString.GetServerPort()))
                 {
                     DownReason = new("The database port is not open or is not reachable.");
                     Database.CloseConnection();
