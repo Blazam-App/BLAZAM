@@ -7,7 +7,7 @@ namespace BLAZAM.Gui.UI
         private AppModal? _requestAccessModal;
         private AppModal? _appEventModal;
         private bool _showRequestButton;
-        private IDirectoryEntryAdapter? _parentOU;
+
         [Parameter]
         public EventCallback OnDelete { get; set; }
 
@@ -64,7 +64,6 @@ namespace BLAZAM.Gui.UI
 
             _showRequestButton = (await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowAccessRequest == true
             && await Context.GlobalPermissionRequestActions.CountAsync() > 0;
-            _parentOU = await DirectoryEntry.GetParentAsync();
             LoadingData = false;
 
         }
