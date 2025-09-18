@@ -142,7 +142,7 @@ namespace BLAZAM.Common.Data
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex, "Error trying to impersonate {@Impersonatee}", impersonationUser.Username);
+                Loggers.ActiveDirectoryLogger.Information(ex, "Error trying to impersonate {@Impersonatee}", impersonationUser.Username);
             }
 
             return result;
