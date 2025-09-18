@@ -40,7 +40,7 @@
     protected override void OnInitialized()
     {
 
-        Modal.YesText = AppLocalization[Lang.Close];
+        Modal.SetYesText(AppLocalization[Lang.Close]);
         base.OnInitialized();
 
 
@@ -62,7 +62,7 @@
             imageSrc = FullResolutionPath;
 
             // Notify Blazor that the state has changed to trigger a re-render
-            StateHasChanged();
+            await StateHasChangedAsync();
         }
     }
 }

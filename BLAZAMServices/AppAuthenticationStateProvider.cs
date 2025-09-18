@@ -345,7 +345,7 @@ namespace BLAZAM.Services
         {
             return settings != null &&
                 settings.RequireMFA &&
-                settings.MFAType == MFAType.CiscoDuo &&
+                settings.MFAType == MfaType.CiscoDuo &&
                 settings.DuoSettingsValid &&
                 !loginReq.Impersonation;
         }
@@ -356,7 +356,7 @@ namespace BLAZAM.Services
                 && !loginReq.Impersonation
                 && settings != null
                 && settings.RequireMFA
-                && settings.MFAType == MFAType.GoogleAuthenticator
+                && settings.MFAType == MfaType.GoogleAuthenticator
                 && userSettings.AuthenticatorSecret?.Decrypt<string>().IsNullOrEmpty() == false;
         }
 

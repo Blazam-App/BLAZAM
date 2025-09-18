@@ -28,7 +28,7 @@ namespace BLAZAMDatabase.Tests
             Assert.True(cstring.FileBased);
 
             // Test Database property
-            Assert.Equal("File Based", cstring.Database);
+            Assert.Equal("File Based", cstring.GetDatabase());
         }
 
         [Theory]
@@ -40,10 +40,10 @@ namespace BLAZAMDatabase.Tests
             var cstring = new DatabaseConnectionString(raw, DatabaseType.SQL);
 
             // Test ServerAddress property
-            Assert.Equal("sql-blazam-org", cstring.ServerAddress);
+            Assert.Equal("sql-blazam-org", cstring.GetServerAddress());
 
             // Test Database property
-            Assert.Equal("BlazamTest", cstring.Database);
+            Assert.Equal("BlazamTest", cstring.GetDatabase());
 
             // Test FileBased property
             Assert.False(cstring.FileBased);
@@ -52,7 +52,7 @@ namespace BLAZAMDatabase.Tests
             Assert.Null(cstring.InstanceName);
 
             // Test ServerPort property (should be default 1433 for SQL)
-            Assert.Equal(1433, cstring.ServerPort);
+            Assert.Equal(1433, cstring.GetServerPort());
         }
 
         [Theory]
@@ -64,16 +64,16 @@ namespace BLAZAMDatabase.Tests
             var cstring = new DatabaseConnectionString(raw, DatabaseType.SQL);
 
             // Test ServerAddress property
-            Assert.Equal("sql-blazam-org", cstring.ServerAddress);
+            Assert.Equal("sql-blazam-org", cstring.GetServerAddress());
 
             // Test InstanceName property
             Assert.Equal("SQLEXPRESS", cstring.InstanceName);
 
             // Test ServerPort property
-            Assert.Equal(1433, cstring.ServerPort);
+            Assert.Equal(1433, cstring.GetServerPort());
 
             // Test Database property
-            Assert.Equal("BlazamTest", cstring.Database);
+            Assert.Equal("BlazamTest", cstring.GetDatabase());
 
             // Test FileBased property
             Assert.False(cstring.FileBased);

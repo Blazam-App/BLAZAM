@@ -13,32 +13,14 @@
                 <SettingsField Label="@AppLocalization[Lang.Server]">
 
 
-                    @if (ApplicationInfo.InstallationCompleted
-                                        && ApplicationInfo.InDemoMode
-                                        && UserStateService.CurrentUsername == "Demo")
-                    {
-
-                        <MudTextField Label="@AppLocalization[Lang.Server]"
-                                      AutoFocus=true
-                                      HelperText="Can be your domain name in most environments"
-                                      Value=@("Private")
-                                      Disabled />
-                    }
-                    else
-                    {
 
                         <MudTextField Label="@AppLocalization[Lang.Server]"
                                       AutoFocus=true
                                       Immediate=true
                                       HelperText="Can be your domain name in most environments"
                                       For="(() => settings.ServerAddress)"
-                                      @bind-Value="@(settings.ServerAddress)">
+                                      @bind-Value="@(settings.ServerAddress)"/>
 
-
-
-                        </MudTextField>
-
-                    }
 
                 </SettingsField>
                 <SettingsField Label="@AppLocalization[Lang.Port]">
@@ -53,20 +35,7 @@
                     <MudIcon Icon="IconName.QuestionCircle" Color="Color.Info" />
                     </AppTooltip>*@
 
-                    @if (ApplicationInfo.InstallationCompleted
-                                        && ApplicationInfo.InDemoMode 
-                                        && UserStateService.CurrentUsername == "Demo")
-                    {
-                        <MudNumericField Immediate=true
-                                         Label="@AppLocalization[Lang.Port]"
-                                         HideSpinButtons="true"
-                                         Value="0"
-                                         Disabled />
-
-
-                    }
-                    else
-                    {
+                  
 
                         <MudNumericField Immediate=true
                                          Label="@AppLocalization[Lang.Port]"
@@ -77,7 +46,6 @@
 
 
 
-                    }
 
 
 

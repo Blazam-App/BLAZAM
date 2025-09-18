@@ -1,31 +1,24 @@
-﻿using BLAZAM.Database.Context;
-using BLAZAM.Global.Enums;
+﻿using BLAZAM.Global.Enums;
 using BLAZAM.Pages.Error;
 
-namespace BLAZAM.Server.Middleware
+namespace BLAZAM.Middleware
 {
     /// <summary>
     /// Middleware to redirect requests based on the application's operational status (e.g., database connectivity, installation state).
     /// </summary>
-    internal class ApplicationStatusRedirectMiddleware
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ApplicationStatusRedirectMiddleware"/> class.
+    /// </remarks>
+    /// <param name="next">The next middleware in the pipeline.</param>
+    /// <param name="monitor">The connection monitor service.</param>
+    internal class ApplicationStatusRedirectMiddleware(
+       RequestDelegate next,
+       ConnMonitor monitor)
     {
-        private readonly RequestDelegate _next;
-        private readonly ConnMonitor _monitor;
-        private readonly List<string> _uriIgnoreList = new() { "/static", "/css", "/_content", "/_blazor", "/BLAZAM.styles.css", "/_framework" };
-        private string intendedUri;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApplicationStatusRedirectMiddleware"/> class.
-        /// </summary>
-        /// <param name="next">The next middleware in the pipeline.</param>
-        /// <param name="monitor">The connection monitor service.</param>
-        public ApplicationStatusRedirectMiddleware(
-           RequestDelegate next,
-           ConnMonitor monitor)
-        {
-            _next = next;
-            _monitor = monitor;
-        }
+        private readonly RequestDelegate _next = next;
+        private readonly ConnMonitor _monitor = monitor;
+        private readonly List<string> _uriIgnoreList = ["/static", "/css", "/_content", "/_blazor", "/BLAZAM.styles.css", "/_framework"];
+        private string _intendedUri;
 
         /// <summary>
         /// Invokes the middleware to check application status and perform redirects if necessary.
@@ -41,15 +34,15 @@ namespace BLAZAM.Server.Middleware
                 return;
             }
 
-            intendedUri = context.Request.Path.ToUriComponent();
-            if (!InIgnoreList(intendedUri))
+            _intendedUri = context.Request.Path.ToUriComponent();
+            if (!InIgnoreList(_intendedUri))
             {
                 try
                 {
                     switch (_monitor.AppReady)
                     {
                         case ServiceConnectionState.Connecting:
-                            Loggers.SystemLogger.Information("ApplicationStatusRedirectMiddleware: App not ready (Connecting). Redirecting {IntendedUri} to /.", intendedUri);
+                            Loggers.SystemLogger.Information("ApplicationStatusRedirectMiddleware: App not ready (Connecting). Redirecting {IntendedUri} to /.", _intendedUri);
                             SendTo(context, "/");
                             break;
                         case ServiceConnectionState.Up:
@@ -62,6 +55,7 @@ namespace BLAZAM.Server.Middleware
                                     "Either install an older version of the application. Or create a new database to use with the new version.",
                                     "Database seed mismatch");
                             }
+
                             break;
                         case ServiceConnectionState.Down:
                             RedirectToOops(context,
@@ -76,11 +70,12 @@ namespace BLAZAM.Server.Middleware
                 }
                 catch (Exception ex)
                 {
-                    Loggers.SystemLogger.Error(ex, "Exception in ApplicationStatusRedirectMiddleware for intended URI: {IntendedUri}", intendedUri);
+                    Loggers.SystemLogger.Error(ex, "Exception in ApplicationStatusRedirectMiddleware for intended URI: {IntendedUri}", _intendedUri);
                     SendTo(context, "/oops");
 
                 }
             }
+
             await _next(context);
         }
 
@@ -91,8 +86,10 @@ namespace BLAZAM.Server.Middleware
         /// <param name="uri">The target URI for redirection.</param>
         private void SendTo(HttpContext context, string uri)
         {
-            if (intendedUri != uri)
+            if (_intendedUri != uri)
+            {
                 context.Response.Redirect(uri);
+            }
         }
 
         /// <summary>
@@ -108,7 +105,7 @@ namespace BLAZAM.Server.Middleware
             Oops.ErrorMessage = errorMessage;
             Oops.DetailsMessage = detailsMessage;
             Oops.HelpMessage = helpMessage;
-            Loggers.SystemLogger.Warning("ApplicationStatusRedirectMiddleware: {@LogReason}. Redirecting {@IntendedUri} to /oops.", logReason, intendedUri);
+            Loggers.SystemLogger.Warning("ApplicationStatusRedirectMiddleware: {@LogReason}. Redirecting {@IntendedUri} to /oops.", logReason, _intendedUri);
             SendTo(context, "/oops");
         }
 
@@ -119,7 +116,11 @@ namespace BLAZAM.Server.Middleware
         /// <returns>True if the path is in the ignore list, false otherwise.</returns>
         private bool InIgnoreList(string uriPath)
         {
-            if (_uriIgnoreList.Any(x => uriPath.StartsWith(x))) return true;
+            if (_uriIgnoreList.Any(x => uriPath.StartsWith(x)))
+            {
+                return true;
+            }
+
             return false;
         }
     }

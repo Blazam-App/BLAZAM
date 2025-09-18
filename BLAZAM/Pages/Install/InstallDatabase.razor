@@ -13,17 +13,17 @@
 
         <MudStack Row=true>
             <MudText Style="width:140px;" Typo="Typo.h5">Server</MudText>
-            <MudText>@Context?.ConnectionString?.ServerAddress</MudText>
+            <MudText>@Context?.ConnectionString?.GetServerAddress()</MudText>
         </MudStack>
 
         <MudStack Row=true>
             <MudText Style="width:140px;" Typo="Typo.h5">Port</MudText>
-            <MudText>@Context?.ConnectionString?.ServerPort</MudText>
+            <MudText>@Context?.ConnectionString?.GetServerPort()</MudText>
         </MudStack>
 
         <MudStack Row=true>
             <MudText Style="width:140px;" Typo="Typo.h5">Database</MudText>
-            <MudText>@Context?.ConnectionString?.Database</MudText>
+            <MudText>@Context?.ConnectionString?.GetDatabase()</MudText>
         </MudStack>
 
 

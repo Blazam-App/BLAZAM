@@ -7,3 +7,4 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:BLAZAM.Server.ProgramHelpers.GetInstallationId~System.Guid")]
 [assembly: SuppressMessage("Critical Vulnerability", "S4830:Server certificates should be verified during SSL/TLS connections", Justification = "<Pending>", Scope = "member", Target = "~M:BLAZAM.Server.ProgramHelpers.InjectServices(Microsoft.AspNetCore.Builder.WebApplicationBuilder)~Microsoft.AspNetCore.Builder.WebApplicationBuilder")]
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:BLAZAM.ProgramHelpers.GetInstallationId~System.Guid")]
