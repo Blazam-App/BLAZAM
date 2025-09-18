@@ -88,36 +88,48 @@
     {
         //Wait for a database connection
         await base.OnInitializedAsync();
-
+        LoadingData = false;
         await RefreshData();
 
     }
 
+    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1); // Limits to 1 concurrent access
+
     async Task RefreshData()
     {
-
         if (!LoadingData)
         {
-            if (Mapping == null) return;
-
-            LoadingData = true;
-
-            if (Context != null)
+            await _semaphore.WaitAsync();
+            try
             {
-                if (Mapping?.Id > 0)
+                if (Mapping == null) return;
+
+                LoadingData = true;
+
+                if (Context != null)
                 {
-                    Mapping = await Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Mapping.Id).FirstOrDefaultAsync();
+                    if (Mapping.Id > 0 && !Context.EntityIsTracked(Mapping))
+                    {
+                        Mapping = await Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Mapping.Id).FirstOrDefaultAsync();
+                    }
+                    _accessLevels = await Context.AccessLevels.Where(x => x.DeletedAt == null && !x.Name.Equals(AccessLevel.SelfAccessLevelName)).ToListAsync();
+                    _permissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin && p.DeletedAt == null).ToListAsync();
+                    if (Mapping?.Id != 0)
+                    {
+                        ConcatenateStrings();
+                    }
                 }
-                _accessLevels = await Context.AccessLevels.Where(x => x.DeletedAt == null && !x.Name.Equals(AccessLevel.SelfAccessLevelName)).ToListAsync();
-                _permissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin && p.DeletedAt == null).ToListAsync();
-                if (Mapping?.Id != 0)
-                {
-                    ConcatenateStrings();
-                }
+
+         
+            }
+            finally
+            {     
+                LoadingData = false;
+                _semaphore.Release();
+            
             }
 
         }
-        LoadingData = false;
 
     }
 
