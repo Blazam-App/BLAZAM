@@ -43,7 +43,7 @@
         <AppModal Title=@AppLocalization[Lang.Rename_Group] @ref=@RenameModal>
             @if (RenameModal?.IsShown == true)
             {
-                <RenameGroupModalContent Group="Group" />
+                <RenameGroupModalContent Group="Group" DirectoryModelRenamed=@((renamedGroup) => { Renamed(null, renamedGroup); }) />
             }
         </AppModal>
 
@@ -61,12 +61,12 @@
                         <MudIcon Style="height:150px;min-width:150px;" Icon="@Icons.Material.Filled.Group" />
                     </MudCard>
                     <DynamicMudInput Label="@AppLocalization[Lang.Group_Name]"
-                                     @bind-Value="@Group.CanonicalName"
+                                     @bind-Value="@Group.GroupName"
                                      Disabled=true />
-
+@* 
                     <DynamicMudInput Label="@AppLocalization[Lang.Account_Name]"
                                      @bind-Value="@Group.SAMAccountName"
-                                     Disabled=true />
+                                     Disabled=true /> *@
 
                     <DynamicMudInput Label="@AppLocalization[Lang.Description]"
                                      @bind-Value="@Group.Description"
