@@ -51,7 +51,7 @@
         try
         {
 
-            if (GroupName.IsNullOrEmpty())
+            if (_privateEntryInstance.IsNullOrEmpty())
             {
                 SnackBarService.Warning("You must provide a group name");
                 return;
