@@ -31,12 +31,10 @@
 
     private IADGroup _privateEntryInstance;
 
-    string GroupName;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         Modal.SetOnYes(SaveChanges);
-        GroupName = Group.CanonicalName;
         if (Group != null)
         {
             _privateEntryInstance = Directory.Groups.FindGroupBySID(Group.SID.ToSidString());
@@ -51,7 +49,7 @@
         try
         {
 
-            if (_privateEntryInstance.IsNullOrEmpty())
+            if (_privateEntryInstance.GroupName.IsNullOrEmpty())
             {
                 SnackBarService.Warning("You must provide a group name");
                 return;
