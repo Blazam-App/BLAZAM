@@ -92,7 +92,11 @@
         await RefreshData();
 
     }
-
+    public override void Dispose()
+    {
+        base.Dispose();
+        _semaphore.Dispose();
+    }
     private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1); // Limits to 1 concurrent access
 
     async Task RefreshData()
