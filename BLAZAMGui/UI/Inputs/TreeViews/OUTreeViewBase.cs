@@ -89,18 +89,20 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         }
 
 
-        protected virtual IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(IDirectoryEntryAdapter? parent)
+        protected virtual IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(TreeItemData<IDirectoryEntryAdapter>? parent)
         {
             try
             {
+                if (parent.Expanded || parent.Value.CachedChildren != null)
+                {
+                    var items = parent?.Children
+                        .Where(c => c.Value.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c.Value))
+                        .Select(p => p.Value);
 
-                var items = parent?.Children
-                    .Where(c => c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c));
-
-
-                var treeBranchh = items?.ToTreeItemData();
-                return treeBranchh;
-
+                    var treeBranchh = items?.ToTreeItemData();
+                    return treeBranchh;
+                }
+                return [];
             }
             catch (Exception)
             {
@@ -169,7 +171,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 return;
             }
 
-            if (root.Value.Equals(SelectedEntry))
+            if (root.Value?.Equals(SelectedEntry) == true)
             {
                 root.Selected = true;
                 return;
@@ -195,12 +197,12 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         }
         private bool IsAncestorOfSelected(TreeItemData<IDirectoryEntryAdapter> item)
         {
-            return SelectedEntry.DN?.Contains(item.Value.DN) == true && !SelectedEntry.DN.Equals(item.Value.DN);
+            return SelectedEntry?.DN?.Contains(item.Value.DN) == true && !SelectedEntry.DN.Equals(item.Value.DN);
         }
 
         private void SelectFinalNode(TreeItemData<IDirectoryEntryAdapter> parent)
         {
-            parent.Children.ForEach(c =>
+            parent.Children?.ForEach(c =>
             {
                 if (c.Value is IADOrganizationalUnit ou)
                 {
@@ -208,7 +210,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 }
             });
 
-            var matchingOU = parent.Children.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
+            var matchingOU = parent.Children?.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
             if (matchingOU != null)
                 matchingOU.Selected = true;
         }
@@ -233,19 +235,21 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             }
             return false;
         }
-
-
+        protected bool CanExpand(TreeItemData<IDirectoryEntryAdapter> item)
+        {
+            return (item.Value is IADOrganizationalUnit);
+        }
         protected List<TreeItemData<IDirectoryEntryAdapter>> GetChildren(TreeItemData<IDirectoryEntryAdapter> context)
         {
             if (context.Children?.Count > 0)
             {
                 return context.Children;
             }
-            if (context.Value is IADOrganizationalUnit ou)
+            if (context.Expanded && context.Value is IADOrganizationalUnit ou)
             {
                 return GetOUChildren(ou);
             }
-            return new List<TreeItemData<IDirectoryEntryAdapter>>();
+            return [];
         }
 
         protected List<TreeItemData<IDirectoryEntryAdapter>> GetOUChildren(IDirectoryEntryAdapter ou)

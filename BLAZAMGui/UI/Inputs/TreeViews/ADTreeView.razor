@@ -11,10 +11,10 @@
              @bind-SelectedValue="SelectedEntry">
     <ItemTemplate>
         <MudTreeViewItem Value="@context.Value"
-                         Items=@GetItems(context.Value)
+                         Items=@GetItems(context)
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.Expanded"
-                         @bind-Selected=context.Selected
+                         Selected=@(context.Value?.Equals(SelectedEntry) == true)
                          Text="@context.Value?.CanonicalName"
                          Icon="@context.Value?.TypeIcon()"
                          IconColor=@GetItemColor(context.Value)
@@ -22,7 +22,6 @@
                          CanExpand=@(context.Value is IADOrganizationalUnit)
                          EndText="@EndText?.Invoke(context.Value)"
                          Context="itemContext">
-
         </MudTreeViewItem>
     </ItemTemplate>
 
