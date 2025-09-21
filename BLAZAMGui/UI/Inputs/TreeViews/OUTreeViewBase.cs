@@ -270,14 +270,5 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
             });
         }
-        protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>?>> GetChildrenAsync(TreeItemData<IDirectoryEntryAdapter> parentNode)
-        {
-            return await Task.Run(() =>
-            {
-                return GetChildren(parentNode);
-
-
-            });
-        }
     }
 }

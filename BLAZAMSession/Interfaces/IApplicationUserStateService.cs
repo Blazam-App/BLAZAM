@@ -17,10 +17,6 @@ namespace BLAZAM.Session.Interfaces
         /// </summary>
         IApplicationUserState? CurrentUserState { get; }
 
-        /// <summary>
-        /// Event triggered when a new <see cref="IApplicationUserState"/> is added to the cache.
-        /// </summary>
-        AppDelegate<IApplicationUserState> UserStateAdded { get; set; }
 
         /// <summary>
         /// Gets a list of all currently cached <see cref="IApplicationUserState"/> instances.
