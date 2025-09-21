@@ -32,7 +32,6 @@ namespace BLAZAM.Gui.UI
 
         [Inject]
         protected IActiveDirectoryContextFactory DirectoryFactory { get; set; }
-        
 
         [Inject]
         protected LockedOutUserMonitor LockedOutUserMonitor { get; set; }

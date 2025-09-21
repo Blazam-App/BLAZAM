@@ -1,8 +1,15 @@
 // Import necessary namespaces for various functionalities
+using System.Web;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
+using BLAZAM.Common.Data;
+using BLAZAM.Gui.Layouts;
+using BLAZAM.Gui.UI;
+using BLAZAM.Gui.UI.Outputs;
 using BLAZAM.Services;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace BLAZAM.Pages
 {
@@ -106,9 +113,9 @@ namespace BLAZAM.Pages
                 await StateHasChangedAsync();
             });
             Searcher.ResultsCollected += ((batch) =>
-                 {
-                     results.AddRange(batch.Where(r => r.CanRead));
-                 });
+            {
+                results.AddRange(batch.Where(r => r.CanRead));
+            });
         }
         /// <summary>
         /// Filter for searching objects of only this type
@@ -147,14 +154,13 @@ namespace BLAZAM.Pages
 
         }
 
-
         /// <summary>
         /// Invokes the actual search function
         /// that processes the current <see cref="SearchService"/>
         /// settings.
         /// </summary>
         /// <returns></returns>
-        protected override async Task InvokeSearch()
+        protected async Task InvokeSearch()
         {
             if (Searcher == null)
                 Searcher = new ADSearch(Directory);

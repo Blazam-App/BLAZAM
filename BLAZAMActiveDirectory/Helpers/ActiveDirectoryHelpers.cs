@@ -30,8 +30,6 @@ namespace BLAZAM.Helpers
         {
             return NetworkTools.PingHost(dc.IPAddress);
         }
-
-
         public static IServiceCollection AddActiveDirectoryServices(this IServiceCollection services)
         {
             //Provide a primary Active Directory connection as a service
@@ -41,7 +39,7 @@ namespace BLAZAM.Helpers
             //Provide a per-user Active Directory connection as a service
             services.AddSingleton<IActiveDirectoryContextFactory, ActiveDirectoryContextFactory>();
 
-            //services.AddScoped<ScopedActiveDirectoryContext>();
+            services.AddScoped<ScopedActiveDirectoryContext>();
 
             return services;
         }
@@ -165,7 +163,6 @@ namespace BLAZAM.Helpers
             ouComponents.Reverse();
             return string.Join("/", ouComponents);
         }
-
         /// <summary>
         /// Encapsulates a raw DirectoryEntry search's <see cref="SearchResultCollection"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
         /// </summary>
@@ -241,14 +238,13 @@ namespace BLAZAM.Helpers
             return thisObject;
         }
 
-
         /// <summary>
         /// Encapsulates a raw DirectoryEntry within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
         /// </summary>
         /// <param name="r"></param>
         /// <returns>A <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
 
-        public static IDirectoryEntryAdapter? Encapsulate(this DirectoryEntry? sr, IActiveDirectoryContext context)
+        public static IDirectoryEntryAdapter? Encapsulate(this IDirectoryEntry? sr, IActiveDirectoryContext context)
         {
             if (sr == null) return null;
             IDirectoryEntryAdapter? thisObject = null;
@@ -299,6 +295,191 @@ namespace BLAZAM.Helpers
             }
             return null;
         }
+        /// <summary>
+        /// Encapsulates a raw DirectoryEntry search's <see cref="DirectoryEntries"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
+        /// </summary>
+        /// <remarks>
+        /// This is used when getting child objects from a OU
+        /// </remarks>
+        /// <param name="r"></param>
+        /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
+        public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r, IActiveDirectoryContext context)
+        {
+            List<IDirectoryEntryAdapter> objects = new();
+
+
+            if (r != null)
+            {
+
+                foreach (IDirectoryEntry sr in r)
+                {
+                    var encapsulated = Encapsulate(sr, context);
+                    if (encapsulated != null)
+                        objects.Add(encapsulated);
+
+                }
+            }
+            return objects;
+        }
+
+        public static string? EscapeLdapSearchFilter(this string? input)
+        {
+            if (input.IsNullOrEmpty()) return null;
+            StringBuilder sb = new();
+            foreach (char c in input)
+            {
+                switch (c)
+                {
+                    case '\\':
+                        sb.Append("\\5c");
+                        break;
+                    case '*':
+                        sb.Append("\\2a");
+                        break;
+                    case '(':
+                        sb.Append("\\28");
+                        break;
+                    case ')':
+                        sb.Append("\\29");
+                        break;
+                    case '\0': // Null character
+                        sb.Append("\\00");
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+            }
+            return sb.ToString();
+        }
+
+
+        /// <summary>
+        /// Converts the directory entries to a list.
+        /// </summary>
+        /// <returns>A <see cref="List{T}"/> containing all directory entries as <see cref="IDirectoryEntry"/> objects.</returns>
+        public static List<IDirectoryEntry> ToList(this IDirectoryEntries directoryEntries)
+        {
+            var list = new List<IDirectoryEntry>();
+            var cursor = directoryEntries.GetEnumerator();
+            while (cursor.MoveNext())
+            {
+                if (cursor.Current is IDirectoryEntry entry)
+                {
+                    list.Add(entry);
+                }
+            }
+            return list;
+
+        }
+
+        public static List<ActiveDirectoryFieldOperator> GetOperators(this IActiveDirectoryField field)
+        {
+            List<ActiveDirectoryFieldOperator> applicableOperators = new List<ActiveDirectoryFieldOperator>();
+            if (field == null || field.FieldType == null) return applicableOperators;
+            var fieldType = field.FieldType;
+
+            switch (fieldType)
+            {
+                case ActiveDirectoryFieldType.Text:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.StartsWith);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EndsWith);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
+                    break;
+                case ActiveDirectoryFieldType.StringList:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
+                    break;
+                case ActiveDirectoryFieldType.Date:
+                case ActiveDirectoryFieldType.FileTime:
+                case ActiveDirectoryFieldType.RawData:
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.BeforeNow);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.AfterNow);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.HistoricalTimeFrame);
+                    applicableOperators.Add(ActiveDirectoryFieldOperator.FutureTimeFrame);
+                    break;
+
+            }
+
+            return applicableOperators;
+
+        }
+
+        public static bool IsActionAppropriateForObject(this ActiveDirectoryObjectAction action, ActiveDirectoryObjectType type)
+        {
+
+            switch (type)
+            {
+                case ActiveDirectoryObjectType.User:
+                case ActiveDirectoryObjectType.Computer:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Unlock:
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Enable:
+                        case ActiveDirectoryObjectAction.Disable:
+                        case ActiveDirectoryObjectAction.Rename:
+                        case ActiveDirectoryObjectAction.SetPassword:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Contact:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Rename:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Group:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Unassign:
+                        case ActiveDirectoryObjectAction.Assign:
+                        case ActiveDirectoryObjectAction.Rename:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.Printer:
+                case ActiveDirectoryObjectType.OU:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Move:
+                        case ActiveDirectoryObjectAction.Delete:
+                        case ActiveDirectoryObjectAction.Create:
+                        case ActiveDirectoryObjectAction.Rename:
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.BitLocker:
+                    switch (action)
+                    {
+                        case ActiveDirectoryObjectAction.Delete:
+                            return true;
+                        default:
+                            return false;
+                    }
+
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsActionAppropriateForObject(this ObjectAction action, ActiveDirectoryObjectType type) => IsActionAppropriateForObject(action.Action, type);
+
         /// <summary>
         /// Extracts the parent Distinguished Name (DN) from a given DN string.
         /// </summary>
@@ -495,159 +676,6 @@ namespace BLAZAM.Helpers
             string rdn = dn.Substring(0, match.Index);
             return rdn;
         }
-
-        public static string? EscapeLdapSearchFilter(this string? input)
-        {
-            if (input.IsNullOrEmpty()) return null;
-            StringBuilder sb = new();
-            foreach (char c in input)
-            {
-                switch (c)
-                {
-                    case '\\': sb.Append("\\5c"); break;
-                    case '*': sb.Append("\\2a"); break;
-                    case '(': sb.Append("\\28"); break;
-                    case ')': sb.Append("\\29"); break;
-                    case '\0': sb.Append("\\00"); break;
-                    default:
-                        if (c < 0x20 || c > 0x7E) // Non-printable ASCII
-                            sb.AppendFormat("\\{0:X2}", (int)c);
-                        else
-                            sb.Append(c);
-                        break;
-                }
-            }
-            return sb.ToString();
-        }
-
-
-        /// <summary>
-        /// Converts the directory entries to a list.
-        /// </summary>
-        /// <returns>A <see cref="List{T}"/> containing all directory entries as <see cref="IDirectoryEntry"/> objects.</returns>
-        public static List<IDirectoryEntry> ToList(this IDirectoryEntries directoryEntries)
-        {
-            var list = new List<IDirectoryEntry>();
-            var cursor = directoryEntries.GetEnumerator();
-            while (cursor.MoveNext())
-            {
-                if (cursor.Current is IDirectoryEntry entry)
-                {
-                    list.Add(entry);
-                }
-            }
-            return list;
-
-        }
-
-        public static List<ActiveDirectoryFieldOperator> GetOperators(this IActiveDirectoryField field)
-        {
-            List<ActiveDirectoryFieldOperator> applicableOperators = new List<ActiveDirectoryFieldOperator>();
-            if (field == null || field.FieldType == null) return applicableOperators;
-            var fieldType = field.FieldType;
-
-            switch (fieldType)
-            {
-                case ActiveDirectoryFieldType.Text:
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.StartsWith);
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.EndsWith);
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
-                    break;
-                case ActiveDirectoryFieldType.StringList:
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.Contains);
-                    break;
-                case ActiveDirectoryFieldType.Date:
-                case ActiveDirectoryFieldType.FileTime:
-                case ActiveDirectoryFieldType.RawData:
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.EqualTo);
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.BeforeNow);
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.AfterNow);
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.HistoricalTimeFrame);
-                    applicableOperators.Add(ActiveDirectoryFieldOperator.FutureTimeFrame);
-                    break;
-
-            }
-
-            return applicableOperators;
-
-        }
-
-        public static bool IsActionAppropriateForObject(this ActiveDirectoryObjectAction action, ActiveDirectoryObjectType type)
-        {
-
-            switch (type)
-            {
-                case ActiveDirectoryObjectType.User:
-                case ActiveDirectoryObjectType.Computer:
-                    switch (action)
-                    {
-                        case ActiveDirectoryObjectAction.Unlock:
-                        case ActiveDirectoryObjectAction.Move:
-                        case ActiveDirectoryObjectAction.Delete:
-                        case ActiveDirectoryObjectAction.Create:
-                        case ActiveDirectoryObjectAction.Enable:
-                        case ActiveDirectoryObjectAction.Disable:
-                        case ActiveDirectoryObjectAction.Rename:
-                        case ActiveDirectoryObjectAction.SetPassword:
-                            return true;
-                        default:
-                            return false;
-                    }
-                case ActiveDirectoryObjectType.Contact:
-                    switch (action)
-                    {
-                        case ActiveDirectoryObjectAction.Move:
-                        case ActiveDirectoryObjectAction.Delete:
-                        case ActiveDirectoryObjectAction.Create:
-                        case ActiveDirectoryObjectAction.Rename:
-                            return true;
-                        default:
-                            return false;
-                    }
-                case ActiveDirectoryObjectType.Group:
-                    switch (action)
-                    {
-                        case ActiveDirectoryObjectAction.Move:
-                        case ActiveDirectoryObjectAction.Delete:
-                        case ActiveDirectoryObjectAction.Create:
-                        case ActiveDirectoryObjectAction.Unassign:
-                        case ActiveDirectoryObjectAction.Assign:
-                        case ActiveDirectoryObjectAction.Rename:
-                            return true;
-                        default:
-                            return false;
-                    }
-                case ActiveDirectoryObjectType.Printer:
-                case ActiveDirectoryObjectType.OU:
-                    switch (action)
-                    {
-                        case ActiveDirectoryObjectAction.Move:
-                        case ActiveDirectoryObjectAction.Delete:
-                        case ActiveDirectoryObjectAction.Create:
-                        case ActiveDirectoryObjectAction.Rename:
-                            return true;
-                        default:
-                            return false;
-                    }
-                case ActiveDirectoryObjectType.BitLocker:
-                    switch (action)
-                    {
-                        case ActiveDirectoryObjectAction.Delete:
-                            return true;
-                        default:
-                            return false;
-                    }
-
-                default:
-                    return false;
-            }
-        }
-
-        public static bool IsActionAppropriateForObject(this ObjectAction action, ActiveDirectoryObjectType type) => IsActionAppropriateForObject(action.Action, type);
-
-
 
 
     }
