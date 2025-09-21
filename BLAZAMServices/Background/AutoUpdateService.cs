@@ -86,50 +86,38 @@ namespace BLAZAM.Services.Background
             }
         }
 
+        private static bool TryDeleteDirectoryWithImpersonation(SystemDirectory dir, WindowsImpersonationUser? impersonator)
+        {
+            if (impersonator == null) return false;
+
+            return impersonator.Run(() =>
+            {
+                if (dir.Writable)
+                {
+                    Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
+                    dir.Delete(true);
+                    return true;
+                }
+                return false;
+            });
+        }
         private static void TryDeleteDirectory(IDatabaseContext context, SystemDirectory dir)
         {
             if (dir.Writable)
             {
-
                 Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
                 dir.Delete(true);
+                return;
             }
-            else
-            {
-                Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old staging files");
 
-                var impersonation = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
-                if (impersonation != null && !impersonation.Run(() =>
-                {
-                    if (dir.Writable)
-                    {
+            Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old staging files");
+            var updateImpersonator = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
+            if (TryDeleteDirectoryWithImpersonation(dir, updateImpersonator)) return;
 
-                        Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
-                        dir.Delete(true);
-                        return true;
-                    }
-                    return false;
-                }))
-                {
-                    impersonation = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
-                    if (impersonation != null && !impersonation.Run(() =>
-                    {
-                        if (dir.Writable)
-                        {
+            var adImpersonator = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+            if (TryDeleteDirectoryWithImpersonation(dir, adImpersonator)) return;
 
-                            Loggers.UpdateLogger.Debug("Deleting old staged update directory: {@Directory}", dir.ToString());
-                            dir.Delete(true);
-                            return true;
-
-                        }
-                        return false;
-                    }))
-                    {
-                        Loggers.UpdateLogger.Error("No identities with permission to remove old staging files");
-
-                    }
-                }
-            }
+            Loggers.UpdateLogger.Error("No identities with permission to remove old staging files");
         }
 
         private void CleanDownloadDirectory(IDatabaseContext context)
@@ -157,6 +145,22 @@ namespace BLAZAM.Services.Background
             }
         }
 
+        private static bool TryDeleteFileWithImpersonation(SystemFile file, WindowsImpersonationUser? impersonator)
+        {
+            if (impersonator == null) return false;
+
+            return impersonator.Run(() =>
+            {
+                if (file.Writable)
+                {
+                    Loggers.UpdateLogger.Debug("Deleting old update file {@File}", file);
+                    file.Delete();
+                    return true;
+                }
+                return false;
+            });
+        }
+
         private static void TryDeleteFile(IDatabaseContext context, SystemFile file)
         {
             if (file.Writable)
@@ -164,39 +168,21 @@ namespace BLAZAM.Services.Background
                 Loggers.UpdateLogger.Debug("Deleting old update file {@File}", file);
 
                 file.Delete();
+                return;
 
             }
-            else
-            {
-                Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file {@File}", file);
 
-                var impersonation = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
-                if (impersonation != null && !impersonation.Run(() =>
-                {
-                    if (file.Writable)
-                    {
-                        file.Delete();
-                        return true;
-                    }
-                    return false;
-                }))
-                {
-                    impersonation = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
-                    if (impersonation != null && !impersonation.Run(() =>
-                    {
-                        if (file.Writable)
-                        {
-                            file.Delete();
-                            return true;
-                        }
-                        return false;
-                    }))
-                    {
-                        Loggers.UpdateLogger.Error("No identities with permission to remove old update file {@File}", file);
+            Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file {@File}", file);
 
-                    }
-                }
-            }
+            var impersonation = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
+            if (TryDeleteFileWithImpersonation(file, impersonation)) return;
+
+            impersonation = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+            if (TryDeleteFileWithImpersonation(file, impersonation)) return;
+
+            Loggers.UpdateLogger.Error("No identities with permission to remove old update file {@File}", file);
+
+
         }
 
         protected override void Execute(object? state = null)

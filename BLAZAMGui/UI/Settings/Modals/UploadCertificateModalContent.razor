@@ -122,7 +122,36 @@
                     }
                     break;
                 case "Crt and Key":
+                    if (crtBytes != null && keyBytes != null)
+                    {
+                        try
+                        {
+                            var certPem = System.Text.Encoding.UTF8.GetString(crtBytes);
+                            var keyPem = System.Text.Encoding.UTF8.GetString(keyBytes);
 
+                            var cert = X509Certificate2.CreateFromPem(certPem, keyPem);
+
+                            var rawCert = cert.Export(X509ContentType.Pkcs12);
+                            if (rawCert != null)
+                            {
+                                var cipher = rawCert.Encrypt();
+                                AppSettings.SSLCertificateCipher = cipher;
+                                Close();
+                            }
+                            else
+                            {
+                                SnackBarService.Warning(AppHelpLocalization[HelpLang.Invalid_Cert_Type]);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            SnackBarService.Warning(ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        SnackBarService.Warning("Certificate or key not uploaded.");
+                    }
                     break;
             }
         }
