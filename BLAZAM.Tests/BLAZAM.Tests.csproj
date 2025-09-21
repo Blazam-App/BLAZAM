@@ -57,6 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\BLAZAMUpdate\BLAZAMUpdate.csproj" />
 		<ProjectReference Include="..\BLAZAM\BLAZAM.csproj" />
 	</ItemGroup>
 

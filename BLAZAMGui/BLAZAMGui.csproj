@@ -64,6 +64,7 @@
 		<ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
 		<ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
 		<ProjectReference Include="..\BLAZAMThemes\BLAZAMThemes.csproj" />
+		<ProjectReference Include="..\BLAZAMUpdate\BLAZAMUpdate.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

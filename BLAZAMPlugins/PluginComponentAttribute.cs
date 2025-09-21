@@ -15,6 +15,9 @@
         Printer,
         Widget,
         Plugin,
+        MainMenu,
+        ConfigureMenu,
+        UserMenu
     }
     /// <summary>
     /// Determines the location on the page that the PluginComponent should be shown
@@ -32,6 +35,7 @@
         ContactInfo,
         Name,
         NewSection,
+        MenuItem
     }
     /// <summary>
     /// This attribute provides the nececessary information for Blazam to include the attached Razor component
