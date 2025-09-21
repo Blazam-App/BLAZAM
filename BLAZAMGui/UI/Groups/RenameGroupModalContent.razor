@@ -31,15 +31,16 @@
 
     private IADGroup _privateEntryInstance;
 
-    string GroupName;
+    private string _originalName = String.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         Modal.SetOnYes(SaveChanges);
-        GroupName = Group.CanonicalName;
         if (Group != null)
         {
             _privateEntryInstance = Directory.Groups.FindGroupBySID(Group.SID.ToSidString());
+            _originalName = _privateEntryInstance.GroupName;
         }
         await StateHasChangedAsync();
 
@@ -51,7 +52,7 @@
         try
         {
 
-            if (GroupName.IsNullOrEmpty())
+            if (_privateEntryInstance.GroupName.IsNullOrEmpty())
             {
                 SnackBarService.Warning("You must provide a group name");
                 return;
@@ -59,7 +60,9 @@
 
             SaveDisabled = true;
             LoadingData = true;
-            _privateEntryInstance.Rename(_privateEntryInstance.GroupName);
+            if (_privateEntryInstance.GroupName != _originalName) {
+                _privateEntryInstance.Rename(_privateEntryInstance.GroupName);
+            }
 
             await _privateEntryInstance.CommitChangesAsync();
             SnackBarService.Success("Group has been renamed.");

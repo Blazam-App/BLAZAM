@@ -294,45 +294,57 @@ namespace BLAZAM.Services
                 && loginReq.Password == "demo";
         }
 
+        private async Task<AuthenticationState?> HandleDuoMFA(LoginRequest loginReq, IApplicationUserState newUserState, ClaimsPrincipal userClaim)
+        {
+            var mfaRedirect = await PerformDuoAuthentication(loginReq);
+            if (!mfaRedirect.IsNullOrEmpty())
+            {
+                var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
+                var authResult = await SetUser(twostepState);
+                newUserState.User = userClaim;
+                _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                return authResult;
+            }
+            return null;
+        }
+        private async Task<AuthenticationState?> HandleGoogleAuthenticatorMFA(LoginRequest loginReq, IApplicationUserState newUserState, ClaimsPrincipal userClaim, AppUser? userSettings)
+        {
+            var passcode = loginReq.MFAToken;
+            loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
+            if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken.ToSecureString(), passcode))
+            {
+                var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
+                var authResult = await SetUser(twostepState);
+                newUserState.User = userClaim;
+                _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                return authResult;
+            }
+            return null;
+        }
         private async Task<AuthenticationState?> HandleActiveDirectoryLogin(LoginRequest loginReq, IApplicationUserState newUserState, IDatabaseContext context, AuthenticationSettings? settings)
         {
             try
             {
                 var userClaim = await AttemptADLogin(newUserState, loginReq);
-                if (userClaim != null)
+                if (userClaim == null) return null;
+
+                if (ShouldPerformDuoMFA(settings, loginReq))
                 {
-                    if (ShouldPerformDuoMFA(settings, loginReq))
-                    {
-                        var mfaRedirect = await PerformDuoAuthentication(loginReq);
-                        if (!mfaRedirect.IsNullOrEmpty())
-                        {
-                            var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
-                            var authResult = await SetUser(twostepState);
-                            newUserState.User = userClaim;
-                            _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
-                            return authResult;
-                        }
-                    }
-                    else
-                    {
-                        var userSettings = await GetUserSettings(context, userClaim);
-                        if (ShouldPerformGoogleAuthenticatorMFA(userSettings, loginReq, settings))
-                        {
-                            var passcode = loginReq.MFAToken;
-                            loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
-                            if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken.ToSecureString(), passcode))
-                            {
-                                var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
-                                var authResult = await SetUser(twostepState);
-                                newUserState.User = userClaim;
-                                _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
-                                return authResult;
-                            }
-                        }
-                    }
-                    if (userClaim.Identity?.IsAuthenticated == true)
-                        return await SetUser(userClaim);
+                    var duoResult = await HandleDuoMFA(loginReq, newUserState, userClaim);
+                    if (duoResult != null) return duoResult;
                 }
+                else
+                {
+                    var userSettings = await GetUserSettings(context, userClaim);
+                    if (ShouldPerformGoogleAuthenticatorMFA(userSettings, loginReq, settings))
+                    {
+                        var googleAuthResult = await HandleGoogleAuthenticatorMFA(loginReq, newUserState, userClaim, userSettings);
+                        if (googleAuthResult != null) return googleAuthResult;
+                    }
+                }
+
+                if (userClaim.Identity?.IsAuthenticated == true)
+                    return await SetUser(userClaim);
             }
             catch (DeniedLoginException)
             {

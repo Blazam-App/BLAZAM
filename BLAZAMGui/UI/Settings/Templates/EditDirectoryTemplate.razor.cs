@@ -63,7 +63,6 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         DirectoryTemplate usernameFromTemplate;
         DirectoryTemplate displayNameFromTemplate;
         DirectoryTemplate passwordFromTemplateName;
-        DirectoryTemplate allowUsernameOverrideFromTemplate;
         DirectoryTemplate requirePasswordChangeFromTemplate;
         DirectoryTemplate sendWelcomeEmailFromTemplate;
         DirectoryTemplate askForAlternateEmailFromTemplate;
@@ -139,7 +138,6 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 usernameFromTemplate = GetParentOfValue<string?>(DirectoryTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
                 displayNameFromTemplate = GetParentOfValue<string?>(DirectoryTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
                 passwordFromTemplateName = GetParentOfValue<string?>(DirectoryTemplate.EffectivePasswordFormula, template => template.PasswordFormula); ;
-                allowUsernameOverrideFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange); ;
                 requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange); ;
                 sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail); ;
                 askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); ;

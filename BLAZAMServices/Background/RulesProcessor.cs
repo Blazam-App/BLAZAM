@@ -217,7 +217,7 @@ namespace BLAZAM.Services.Background
                 foreach (var orFilter in rule.Filters)
                 {
                     // Each OR filter is processed independently; results are accumulated
-                    if (!GetFilteredOrEntried(rule, matchedEntries, directory, orFilter))
+                    if (!GetFilteredOrEntries(rule, matchedEntries, directory, orFilter))
                     {
                         continue;
                     }
@@ -225,67 +225,76 @@ namespace BLAZAM.Services.Background
             }
             return matchedEntries;
         }
-
-        /// <summary>
-        /// Applies a single OR filter to the directory and adds matching entries to the result list.
-        /// </summary>
-        private static bool GetFilteredOrEntried(AutomationRule rule, List<IDirectoryEntryAdapter> matchedEntries, IActiveDirectoryContext directory, AutomationRuleOrFilter orFilter)
+        private static void HandleEnabledDisabledFilter(AutomationRuleOrFilter orFilter, ADSearch search)
         {
-            ADSearch search = new ADSearch(directory);
+            var enabledFilters = orFilter.AndFilters.Where(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true);
+            var hasEnable = enabledFilters.Any(f => !f.Negate);
+            var hasDisable = enabledFilters.Any(f => f.Negate);
 
-            // Handle enabled/disabled filters
-            if (orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate) &&
-                !orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate))
+            if (hasEnable && !hasDisable)
             {
                 search.EnabledOnly = true;
             }
-            // Handle all other fields
-            else if (orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && a.Negate) &&
-                !orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true && !a.Negate))
+            else if (hasDisable && !hasEnable)
             {
                 search.DisabledOnly = true;
             }
+        }
 
-            // Handle OU scope filters
-            if (orFilter.AndFilters.Any(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true))
+        private static bool HandleOUScopeFilter(AutomationRuleOrFilter orFilter, IActiveDirectoryContext directory, ADSearch search)
+        {
+            var ouFilter = orFilter.AndFilters
+                .Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)
+                .Select(f => f.Value)
+                .OrderBy(f => f?.Length)
+                .FirstOrDefault();
+
+            if (ouFilter != null && !ouFilter.IsNullOrEmpty())
             {
-                var ouFilters = orFilter.AndFilters.Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)
-                    .Select(f => f.Value);
-                var ouFilter = ouFilters.OrderBy(f => f?.Length).FirstOrDefault();
-                if (ouFilter != null && !ouFilter.IsNullOrEmpty())
+                var ou = directory.OUs.FindOuByDN(ouFilter);
+                ou?.EnsureDirectoryEntry();
+                var ouDE = ou?.DirectoryEntry;
+                if (ouDE != null)
                 {
-                    var ou = directory.OUs.FindOuByDN(ouFilter);
-                    ou?.EnsureDirectoryEntry();
-                    var ouDE = ou?.DirectoryEntry;
-                    if (ouDE != null)
-                    {
-                        search.SearchRoot = ouDE;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    search.SearchRoot = ouDE;
+                }
+                else
+                {
+                    return false;
                 }
             }
+            return true;
+        }
 
-            // Restrict search to the rule's object type if specified
+        private static void AddAndFilters(AutomationRule rule, ADSearch search)
+        {
+            foreach (var andFilter in rule.Filters.SelectMany(x => x.AndFilters))
+            {
+                if (andFilter.Field?.Equals(ActiveDirectoryFields.Enabled) == false
+                    && andFilter.Field?.Equals(ActiveDirectoryFields.OU) == false)
+                {
+                    AddAndFilterSearchField(search, andFilter);
+                }
+            }
+        }
+        /// <summary>
+        /// Applies a single OR filter to the directory and adds matching entries to the result list.
+        /// </summary>
+        private static bool GetFilteredOrEntries(AutomationRule rule, List<IDirectoryEntryAdapter> matchedEntries, IActiveDirectoryContext directory, AutomationRuleOrFilter orFilter)
+        {
+            ADSearch search = new ADSearch(directory);
+
+            HandleEnabledDisabledFilter(orFilter, search);
+
+            if (!HandleOUScopeFilter(orFilter, directory, search)) return false;
+
             if (rule.ActiveDirectoryObjectType != ActiveDirectoryObjectType.All)
             {
                 search.ObjectTypeFilter = rule.ActiveDirectoryObjectType;
             }
 
-            // Add all AND filters except for Enabled and OU, which are handled above
-            foreach (var andFilters in rule.Filters.Select(x => x.AndFilters))
-            {
-                foreach (var andFilter in andFilters)
-                {
-                    if (andFilter.Field?.Equals(ActiveDirectoryFields.Enabled) == false
-                        && andFilter.Field?.Equals(ActiveDirectoryFields.OU) == false)
-                    {
-                        AddAndFilterSearchField(search, andFilter);
-                    }
-                }
-            }
+            AddAndFilters(rule, search);
+
             matchedEntries.AddRange(search.Search());
             return true;
         }
@@ -433,116 +442,179 @@ namespace BLAZAM.Services.Background
         /// Executes a single action on a directory entry as part of a rule.
         /// Handles group assignment, enable/disable, move, field modification, etc.
         /// </summary>
+        private void ExecuteAssignAction(AutomationRuleAction action, IDirectoryEntryAdapter entry, out IDirectoryEntryAdapter? target, out ApplicationEventType eventType)
+        {
+            target = null;
+            eventType = ApplicationEventType.Assign;
+            if (entry is IGroupableDirectoryAdapter groupableEntry)
+            {
+                using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+                var group = directory.Groups.FindGroupBySID(action.GroupSids[0].GroupSid);
+                if (group != null)
+                {
+                    target = group;
+                    if (groupableEntry.IsAMemberOf(group))
+                    {
+                        eventType = ApplicationEventType.All;
+                        return;
+                    };
+                    groupableEntry.AssignTo(group);
+                }
+            }
+        }
+
+        private void ExecuteUnassignAction(AutomationRuleAction action, IDirectoryEntryAdapter entry, out IDirectoryEntryAdapter? target, out ApplicationEventType eventType)
+        {
+            target = null;
+            eventType = ApplicationEventType.Unassign;
+            if (entry is IGroupableDirectoryAdapter groupableEntry)
+            {
+                using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+                var group = directory.Groups.FindGroupBySID(action.GroupSids[0].GroupSid);
+                if (group != null)
+                {
+                    target = group;
+                    if (!groupableEntry.IsAMemberOf(group))
+                    {
+                        eventType = ApplicationEventType.All;
+                        return;
+                    }
+                    groupableEntry.UnassignFrom(group);
+                }
+            }
+        }
+
+        private void ExecuteDisableAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        {
+            eventType = ApplicationEventType.Modify;
+            if (entry is IAccountDirectoryAdapter account)
+            {
+                if (!account.Enabled)
+                {
+                    eventType = ApplicationEventType.All;
+                    return;
+                }
+                account.Enabled = false;
+            }
+        }
+
+        private void ExecuteEnableAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        {
+            eventType = ApplicationEventType.Modify;
+            if (entry is IAccountDirectoryAdapter account)
+            {
+                if (account.Enabled)
+                {
+                    eventType = ApplicationEventType.All;
+                    return;
+                }
+                account.Enabled = true;
+            }
+        }
+
+        private void ExecuteUnlockAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        {
+            eventType = ApplicationEventType.Modify;
+            if (entry is IAccountDirectoryAdapter account)
+            {
+                if (!account.LockedOut)
+                {
+                    eventType = ApplicationEventType.All;
+                    return;
+                }
+                account.LockedOut = false;
+            }
+        }
+
+        private void ExecuteLockoutAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        {
+            eventType = ApplicationEventType.LockedOut;
+            if (entry is IAccountDirectoryAdapter account)
+            {
+                if (account.LockedOut)
+                {
+                    eventType = ApplicationEventType.All;
+                    return;
+                }
+                account.LockedOut = true;
+            }
+        }
+
+        private void ExecuteMoveAction(AutomationRuleAction action, IDirectoryEntryAdapter entry, out IDirectoryEntryAdapter? target, out IDirectoryEntryAdapter? origin, out ApplicationEventType eventType)
+        {
+            target = null;
+            origin = null;
+            eventType = ApplicationEventType.Move;
+            if (action.Data != null)
+            {
+                if (entry.GetParent().DN?.Equals(action.Data, StringComparison.InvariantCultureIgnoreCase) == true)
+                {
+                    eventType = ApplicationEventType.All;
+                    return;
+                }
+                using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+                var ou = directory.OUs.FindOuByDN(action.Data);
+                if (ou != null)
+                {
+                    target = ou;
+                    origin = entry.GetParent();
+                    entry.MoveTo(ou);
+                }
+            }
+        }
+
+        private void ExecuteModifyFieldAction(AutomationRuleAction action, IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        {
+            eventType = ApplicationEventType.Modify;
+            if (action.FieldValues.Count > 0)
+            {
+                var field = action.FieldValues[0].CurrentField;
+                var existingValue = entry.GetCustomProperty<object>(field.FieldName);
+                if (existingValue?.ToString()?.Equals(action.FieldValues[0].Value, StringComparison.InvariantCultureIgnoreCase) == true)
+                {
+                    eventType = ApplicationEventType.All;
+                    return;
+                }
+                entry.SetCustomProperty(field.FieldName, action.FieldValues[0].Value);
+            }
+        }
         private void ExecuteAction(AutomationRule rule, AutomationRuleAction action, IDirectoryEntryAdapter entry, IJob? ruleJob = null)
         {
             var eventType = ApplicationEventType.All;
             IDirectoryEntryAdapter? target = null;
             IDirectoryEntryAdapter? origin = null;
-            var account = entry as IAccountDirectoryAdapter;
+
+
             switch (action.ActionType)
             {
                 case AutomationRuleActionType.Assign:
-                    eventType = ApplicationEventType.Assign;
-                    if (entry is IGroupableDirectoryAdapter groupableEntry)
-                    {
-                        using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
-                        {
-                            var group = directory.Groups.FindGroupBySID(action.GroupSids[0].GroupSid);
-                            if (group != null)
-                            {
-                                target = group;
-                                if (groupableEntry.IsAMemberOf(group))
-                                {
-                                    return;
-                                }
-                                groupableEntry.AssignTo(group);
-                            }
-                        }
-                    }
+                    ExecuteAssignAction(action, entry, out target, out eventType);
                     break;
                 case AutomationRuleActionType.Unassign:
-                    eventType = ApplicationEventType.Unassign;
-                    if (entry is IGroupableDirectoryAdapter groupableEntry2)
-                    {
-                        using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
-                        {
-                            var group = directory.Groups.FindGroupBySID(action.GroupSids[0].GroupSid);
-                            if (group != null)
-                            {
-                                target = group;
-                                if (!groupableEntry2.IsAMemberOf(group))
-                                {
-                                    return;
-                                }
-                                groupableEntry2.UnassignFrom(group);
-                            }
-                        }
-                    }
+                    ExecuteUnassignAction(action, entry, out target, out eventType);
                     break;
                 case AutomationRuleActionType.Disable:
-                    eventType = ApplicationEventType.Modify;
-                    if (account != null)
-                    {
-                        if (!account.Enabled) return;
-                        account.Enabled = false;
-                    }
+                    ExecuteDisableAction(entry, out eventType);
                     break;
                 case AutomationRuleActionType.Enable:
-                    eventType = ApplicationEventType.Modify;
-                    if (account != null)
-                    {
-                        if (account.Enabled) return;
-                        account.Enabled = true;
-                    }
+                    ExecuteEnableAction(entry, out eventType);
                     break;
                 case AutomationRuleActionType.Unlock:
-                    eventType = ApplicationEventType.Modify;
-                    if (account != null)
-                    {
-                        if (!account.LockedOut) return;
-                        account.LockedOut = false;
-                    }
+                    ExecuteUnlockAction(entry, out eventType);
                     break;
                 case AutomationRuleActionType.Lockout:
-                    eventType = ApplicationEventType.LockedOut;
-                    if (account != null)
-                    {
-                        if (account.LockedOut) return;
-                        account.LockedOut = true;
-                    }
+                    ExecuteLockoutAction(entry, out eventType);
                     break;
                 case AutomationRuleActionType.Move:
-                    eventType = ApplicationEventType.Move;
-                    if (action.Data != null)
-                    {
-                        if (entry.GetParent().DN?.Equals(action.Data, StringComparison.InvariantCultureIgnoreCase) == true)
-                        {
-                            return;
-                        }
-                        using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-                        var ou = directory.OUs.FindOuByDN(action.Data);
-                        if (ou != null)
-                        {
-                            target = ou;
-                            origin = entry.GetParent();
-                            entry.MoveTo(ou);
-                        }
-                    }
+                    ExecuteMoveAction(action, entry, out target, out origin, out eventType);
                     break;
                 case AutomationRuleActionType.ModifyField:
-                    eventType = ApplicationEventType.Modify;
-                    if (action.FieldValues.Count > 0)
-                    {
-                        var field = action.FieldValues[0].CurrentField;
-                        var existingValue = entry.GetCustomProperty<object>(field.FieldName);
-                        if (existingValue?.ToString()?.Equals(action.FieldValues[0].Value, StringComparison.InvariantCultureIgnoreCase) == true)
-                        {
-                            return;
-                        }
-                        entry.SetCustomProperty(field.FieldName, action.FieldValues[0].Value);
-                    }
+                    ExecuteModifyFieldAction(action, entry, out eventType);
                     break;
             }
+
+            if (eventType == ApplicationEventType.All) return;
+
             var changes = entry.Changes;
             var result = entry.CommitChanges(ruleJob);
             if (result.FailedSteps.Count == 0)
@@ -566,6 +638,131 @@ namespace BLAZAM.Services.Background
         /// <param name="andFilter">The AND filter to evaluate.</param>
         /// <param name="entry">The directory entry to check.</param>
         /// <returns>True if the filter passes, otherwise false.</returns>
+        private static bool CheckDefaultFieldFilter(AutomationRuleAndFilter andFilter, IDirectoryEntryAdapter entry, ActiveDirectoryField defaultField)
+        {
+            if (andFilter.Field.Equals(ActiveDirectoryFields.OU))
+            {
+                return entry.DN.Contains(andFilter.Value);
+            }
+
+            switch (andFilter.Operator)
+            {
+                case ActiveDirectoryFieldOperator.EqualTo:
+                    return entry.PropertyValueEquals(defaultField.PropertyName, andFilter.Value);
+                case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
+                    var dateValue3 = entry.GetPropertyValue(defaultField.PropertyName);
+                    if (dateValue3 is DateTime dateTime3)
+                    {
+                        return dateTime3 > DateTime.Now - andFilter.TimeFrame;
+                    }
+                    else if (dateValue3 is long fileTime)
+                    {
+                        return fileTime < DateTime.Now.ToFileTimeUtc();
+                    }
+                    break;
+                case ActiveDirectoryFieldOperator.FutureTimeFrame:
+                    var dateValue4 = entry.GetPropertyValue(defaultField.PropertyName);
+                    if (dateValue4 is DateTime dateTime4)
+                    {
+                        return dateTime4 > DateTime.Now - andFilter.TimeFrame;
+                    }
+                    else if (dateValue4 is long fileTime)
+                    {
+                        return fileTime < DateTime.Now.ToFileTimeUtc();
+                    }
+                    break;
+                case ActiveDirectoryFieldOperator.StartsWith:
+                    return entry.GetPropertyValue(defaultField.PropertyName).ToString().StartsWith(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                case ActiveDirectoryFieldOperator.EndsWith:
+                    return entry.GetPropertyValue(defaultField.PropertyName).ToString().EndsWith(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                case ActiveDirectoryFieldOperator.AfterNow:
+                    var dateValue = entry.GetPropertyValue(defaultField.PropertyName);
+                    if (dateValue is DateTime dateTime)
+                    {
+                        return dateTime > DateTime.Now;
+                    }
+                    else if (dateValue is long fileTime)
+                    {
+                        return fileTime < DateTime.Now.ToFileTimeUtc();
+                    }
+                    break;
+                case ActiveDirectoryFieldOperator.BeforeNow:
+                    var dateValue2 = entry.GetPropertyValue(defaultField.PropertyName);
+                    if (dateValue2 is DateTime dateTime2)
+                    {
+                        return dateTime2 < DateTime.Now;
+                    }
+                    else if (dateValue2 is long fileTime)
+                    {
+                        return fileTime < DateTime.Now.ToFileTimeUtc();
+                    }
+                    break;
+                case ActiveDirectoryFieldOperator.Contains:
+                    var propertyValue = entry.GetPropertyValue(defaultField.PropertyName).ToString();
+                    return propertyValue?.Contains(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true;
+                case ActiveDirectoryFieldOperator.Boolean:
+                    if (entry.GetPropertyValue(defaultField.PropertyName) is bool boolValue)
+                    {
+                        return boolValue == true;
+                    }
+                    break;
+            }
+            return false;
+        }
+
+        private static bool CheckCustomFieldFilter(AutomationRuleAndFilter andFilter, IDirectoryEntryAdapter entry, CustomActiveDirectoryField customField)
+        {
+            switch (andFilter.Operator)
+            {
+                case ActiveDirectoryFieldOperator.EqualTo:
+                    return entry.GetCustomProperty<object>(customField.FieldName).Equals(andFilter.Value);
+                case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
+                    var raw = entry.GetCustomProperty<object>(customField.FieldName);
+                    var dateValue3 = raw.AdsValueToDateTime();
+                    if (dateValue3 is DateTime dateTime3)
+                    {
+                        return dateTime3 > DateTime.Now - andFilter.TimeFrame;
+                    }
+                    break;
+                case ActiveDirectoryFieldOperator.FutureTimeFrame:
+                    var raw2 = entry.GetCustomProperty<object>(customField.FieldName);
+                    var dateValue4 = raw2.AdsValueToDateTime();
+                    if (dateValue4 is DateTime dateTime4)
+                    {
+                        return dateTime4 > DateTime.Now - andFilter.TimeFrame;
+                    }
+                    break;
+                case ActiveDirectoryFieldOperator.StartsWith:
+                    return entry.GetPropertyValue(customField.FieldName).ToString().StartsWith(andFilter.Value.ToString());
+                case ActiveDirectoryFieldOperator.EndsWith:
+                    return entry.GetPropertyValue(customField.FieldName).ToString().EndsWith(andFilter.Value.ToString());
+                case ActiveDirectoryFieldOperator.AfterNow:
+                    var raw3 = entry.GetCustomProperty<object>(customField.FieldName);
+                    var dateValue = raw3.AdsValueToDateTime(); if (dateValue is DateTime dateTime)
+                    {
+                        return dateTime > DateTime.Now;
+                    }
+                    break;
+                case ActiveDirectoryFieldOperator.BeforeNow:
+                    var raw4 = entry.GetCustomProperty<object>(customField.FieldName);
+                    var dateValue2 = raw4.AdsValueToDateTime();
+                    if (dateValue2 is DateTime dateTime2)
+                    {
+                        return dateTime2 < DateTime.Now;
+                    }
+                    break;
+                case ActiveDirectoryFieldOperator.Contains:
+                    var propertyValue = entry.GetPropertyValue(customField.FieldName).ToString();
+                    return propertyValue?.Contains(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true;
+                case ActiveDirectoryFieldOperator.Boolean:
+                    if (entry.GetPropertyValue(customField.FieldName) is bool boolValue)
+                    {
+                        return boolValue == true;
+                    }
+                    break;
+            }
+            return false;
+        }
         private static bool AndFilterTrue(AutomationRuleAndFilter andFilter, IDirectoryEntryAdapter entry)
         {
             var filterTrue = false;
@@ -573,138 +770,18 @@ namespace BLAZAM.Services.Background
             {
                 if (andFilter.CurrentField is ActiveDirectoryField defaultField)
                 {
-                    if (andFilter.Field.Equals(ActiveDirectoryFields.OU))
-                    {
-                        return entry.DN.Contains(andFilter.Value);
-                    }
-                    switch (andFilter.Operator)
-                    {
-                        case ActiveDirectoryFieldOperator.EqualTo:
-                            filterTrue = entry.PropertyValueEquals(defaultField.PropertyName, andFilter.Value);
-                            break;
-                        case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
-                            var dateValue3 = entry.GetPropertyValue(defaultField.PropertyName);
-                            if (dateValue3 is DateTime dateTime3)
-                            {
-                                filterTrue = dateTime3 > DateTime.Now - andFilter.TimeFrame;
-                            }
-                            else if (dateValue3 is long fileTime)
-                            {
-                                filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
-                            }
-                            break;
-                        case ActiveDirectoryFieldOperator.FutureTimeFrame:
-                            var dateValue4 = entry.GetPropertyValue(defaultField.PropertyName);
-                            if (dateValue4 is DateTime dateTime4)
-                            {
-                                filterTrue = dateTime4 > DateTime.Now - andFilter.TimeFrame;
-                            }
-                            else if (dateValue4 is long fileTime)
-                            {
-                                filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
-                            }
-                            break;
-                        case ActiveDirectoryFieldOperator.StartsWith:
-                            filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().StartsWith(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase);
-                            break;
-                        case ActiveDirectoryFieldOperator.EndsWith:
-                            filterTrue = entry.GetPropertyValue(defaultField.PropertyName).ToString().EndsWith(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase);
-                            break;
-                        case ActiveDirectoryFieldOperator.AfterNow:
-                            var dateValue = entry.GetPropertyValue(defaultField.PropertyName);
-                            if (dateValue is DateTime dateTime)
-                            {
-                                filterTrue = dateTime > DateTime.Now;
-                            }
-                            else if (dateValue is long fileTime)
-                            {
-                                filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
-                            }
-                            break;
-                        case ActiveDirectoryFieldOperator.BeforeNow:
-                            var dateValue2 = entry.GetPropertyValue(defaultField.PropertyName);
-                            if (dateValue2 is DateTime dateTime2)
-                            {
-                                filterTrue = dateTime2 < DateTime.Now;
-                            }
-                            else if (dateValue2 is long fileTime)
-                            {
-                                filterTrue = fileTime < DateTime.Now.ToFileTimeUtc();
-                            }
-                            break;
-                        case ActiveDirectoryFieldOperator.Contains:
-                            var propertyValue = entry.GetPropertyValue(defaultField.PropertyName).ToString();
-                            filterTrue = propertyValue?.Contains(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true;
-                            break;
-                        case ActiveDirectoryFieldOperator.Boolean:
-                            if (entry.GetPropertyValue(defaultField.PropertyName) is bool boolValue)
-                            {
-                                filterTrue = boolValue == true;
-                            }
-                            break;
-                    }
+                    filterTrue = CheckDefaultFieldFilter(andFilter, entry, defaultField);
                 }
                 else if (andFilter.CurrentField is CustomActiveDirectoryField customField)
                 {
-                    switch (andFilter.Operator)
-                    {
-                        case ActiveDirectoryFieldOperator.EqualTo:
-                            filterTrue = entry.GetCustomProperty<object>(customField.FieldName).Equals(andFilter.Value);
-                            break;
-                        case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
-                            var raw = entry.GetCustomProperty<object>(customField.FieldName);
-                            var dateValue3 = raw.AdsValueToDateTime();
-                            if (dateValue3 is DateTime dateTime3)
-                            {
-                                filterTrue = dateTime3 > DateTime.Now - andFilter.TimeFrame;
-                            }
-                            break;
-                        case ActiveDirectoryFieldOperator.FutureTimeFrame:
-                            var raw2 = entry.GetCustomProperty<object>(customField.FieldName);
-                            var dateValue4 = raw2.AdsValueToDateTime();
-                            if (dateValue4 is DateTime dateTime4)
-                            {
-                                filterTrue = dateTime4 > DateTime.Now - andFilter.TimeFrame;
-                            }
-                            break;
-                        case ActiveDirectoryFieldOperator.StartsWith:
-                            filterTrue = entry.GetPropertyValue(customField.FieldName).ToString().StartsWith(andFilter.Value.ToString());
-                            break;
-                        case ActiveDirectoryFieldOperator.EndsWith:
-                            filterTrue = entry.GetPropertyValue(customField.FieldName).ToString().EndsWith(andFilter.Value.ToString());
-                            break;
-                        case ActiveDirectoryFieldOperator.AfterNow:
-                            var raw3 = entry.GetCustomProperty<object>(customField.FieldName);
-                            var dateValue = raw3.AdsValueToDateTime(); if (dateValue is DateTime dateTime)
-                            {
-                                filterTrue = dateTime > DateTime.Now;
-                            }
-                            break;
-                        case ActiveDirectoryFieldOperator.BeforeNow:
-                            var raw4 = entry.GetCustomProperty<object>(customField.FieldName);
-                            var dateValue2 = raw4.AdsValueToDateTime();
-                            if (dateValue2 is DateTime dateTime2)
-                            {
-                                filterTrue = dateTime2 < DateTime.Now;
-                            }
-                            break;
-                        case ActiveDirectoryFieldOperator.Contains:
-                            var propertyValue = entry.GetPropertyValue(customField.FieldName).ToString();
-                            filterTrue = propertyValue?.Contains(andFilter.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true;
-                            break;
-                        case ActiveDirectoryFieldOperator.Boolean:
-                            if (entry.GetPropertyValue(customField.FieldName) is bool boolValue)
-                            {
-                                filterTrue = boolValue == true;
-                            }
-                            break;
-                    }
+                    filterTrue = CheckCustomFieldFilter(andFilter, entry, customField);
                 }
             }
             catch (Exception ex)
             {
                 Loggers.RulesLogger.Error(ex, "Error checking and filter {@Filter}", andFilter);
             }
+
             if (andFilter.Negate)
             {
                 filterTrue = !filterTrue;
