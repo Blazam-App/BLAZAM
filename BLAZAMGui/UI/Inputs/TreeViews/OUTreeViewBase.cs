@@ -98,7 +98,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                     .Where(c => c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c));
 
 
-                var treeBranchh = items?.ToTreeItemData();
+                var treeBranchh = items?.ToTreeItemData<IDirectoryEntryAdapter>();
                 return treeBranchh;
 
             }
@@ -120,7 +120,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
                 _ = TopLevel.SubOUs;
                 var TopLevelList = new List<IDirectoryEntryAdapter>() { TopLevel };
-                RootOU = TopLevelList.ToTreeItemData();
+                RootOU = TopLevelList.ToTreeItemData<IDirectoryEntryAdapter>();
             }
 
             OpenToSelected();
@@ -169,7 +169,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 return;
             }
 
-            if (root.Value.Equals(SelectedEntry))
+            if (root.Value?.Equals(SelectedEntry) == true)
             {
                 root.Selected = true;
                 return;
@@ -195,20 +195,20 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         }
         private bool IsAncestorOfSelected(TreeItemData<IDirectoryEntryAdapter> item)
         {
-            return SelectedEntry.DN?.Contains(item.Value.DN) == true && !SelectedEntry.DN.Equals(item.Value.DN);
+            return SelectedEntry?.DN?.Contains(item.Value.DN) == true && !SelectedEntry.DN.Equals(item.Value.DN);
         }
 
         private void SelectFinalNode(TreeItemData<IDirectoryEntryAdapter> parent)
         {
-            parent.Children.ForEach(c =>
+            parent.Children?.ForEach(c =>
             {
                 if (c.Value is IADOrganizationalUnit ou)
                 {
-                    c.Children = ou.SubOUs.ToTreeItemData();
+                    c.Children = ou.SubOUs.ToTreeItemData<IDirectoryEntryAdapter>();
                 }
             });
 
-            var matchingOU = parent.Children.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
+            var matchingOU = parent.Children?.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
             if (matchingOU != null)
                 matchingOU.Selected = true;
         }
@@ -252,7 +252,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         {
             if (ou is IADOrganizationalUnit context)
             {
-                return context.TreeViewSubOUs.Where(o => ShouldShowOU(o)).ToTreeItemData();
+                return context.TreeViewSubOUs.Where(o => ShouldShowOU(o)).ToTreeItemData<IDirectoryEntryAdapter>();
             }
             return new List<TreeItemData<IDirectoryEntryAdapter>>();
 

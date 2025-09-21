@@ -14,7 +14,7 @@
                          Items=@GetItems(context.Value)
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.Expanded"
-                         @bind-Selected=context.Selected
+                         Selected="@IsSelected(context)"
                          Text="@context.Value?.CanonicalName"
                          Icon="@context.Value?.TypeIcon()"
                          IconColor=@GetItemColor(context.Value)
@@ -22,7 +22,6 @@
                          CanExpand=@(context.Value is IADOrganizationalUnit)
                          EndText="@EndText?.Invoke(context.Value)"
                          Context="itemContext">
-
         </MudTreeViewItem>
     </ItemTemplate>
 

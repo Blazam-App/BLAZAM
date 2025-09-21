@@ -18,7 +18,10 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
 
 
-
+        bool IsSelected(TreeItemData<IDirectoryEntryAdapter> item)
+        {
+            return item.Selected;
+        }
 
         protected override IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(IDirectoryEntryAdapter? parent)
         {
@@ -41,7 +44,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         {
             return await Task.Run(() =>
             {
-                return GetChildren(parentNode).ToTreeItemData();
+                return GetChildren(parentNode).ToTreeItemData<IDirectoryEntryAdapter>();
 
             });
         }
