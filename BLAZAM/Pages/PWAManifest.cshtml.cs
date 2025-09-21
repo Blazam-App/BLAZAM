@@ -24,7 +24,12 @@ namespace BLAZAM.Pages
         public string theme_color { get; set; } = "#000000";
         public string background_color { get; set; } = "#FFFFFF";
         public string description { get; set; } = "The modern Active Directory management tool.";
+        public ServiceWorker serviceworker { get; set; } = new();
 
+    }
+    public class ServiceWorker
+    {
+        public string src { get; set; }
     }
     [Produces("application/json")]
     public class PWAManifestModel : PageModel
@@ -45,6 +50,7 @@ namespace BLAZAM.Pages
             icon.sizes = "250x250";
             icon.type = "image/png";
             manifest.icons.Add(icon);
+            manifest.serviceworker.src = "/sw.js";
             try
             {
                 var appSettings = await context.AppSettings.FirstOrDefaultAsync();
@@ -58,7 +64,7 @@ namespace BLAZAM.Pages
             {
                 // ignore
             }
-            return Content(JsonConvert.SerializeObject(manifest));
+            return Content(JsonConvert.SerializeObject(manifest, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore }));
 
 
         }
