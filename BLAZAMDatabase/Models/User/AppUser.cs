@@ -23,6 +23,8 @@ namespace BLAZAM.Database.Models.User
         /// The authenticator secret for this user in encrypted form
         /// </summary>
         public string? AuthenticatorSecret { get; set; }
+
+
         public override string? ToString()
         {
             return Username

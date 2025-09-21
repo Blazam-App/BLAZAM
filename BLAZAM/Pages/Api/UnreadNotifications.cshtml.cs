@@ -1,43 +1,48 @@
-using BLAZAM.Database.Models.User;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace BLAZAM.Pages.Api
 {
     public class UnreadNotificationsModel : PageModel
     {
         private readonly IAppDatabaseFactory _dbFactory;
-        private readonly ICurrentUserStateService _currentUser;
+        private IApplicationUserState _currentUser;
+        private readonly IApplicationUserStateService _userStateService;
 
-        public UnreadNotificationsModel(IAppDatabaseFactory dbFactory, ICurrentUserStateService currentUser)
+        public UnreadNotificationsModel(IAppDatabaseFactory dbFactory, IApplicationUserStateService userStateService)
         {
             _dbFactory = dbFactory;
-            _currentUser = currentUser;
+            _userStateService = userStateService;
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            if (_currentUser.State is null)
+            if (User != null)
+            {
+                var user = _userStateService.GetUserState(User);
+                _currentUser = user;
+            }
+            if (_currentUser is null || !_currentUser.IsAuthenticated)
             {
                 return new UnauthorizedResult();
             }
 
             var context = await _dbFactory.CreateDbContextAsync();
+            var messages = await context.UserNotifications
+            .Where(un => un.User.Id == _currentUser.Id && !un.IsRead)
+            .OrderByDescending(un => un.Notification.Created)
+            .ToListAsync();
+
             var notifications = await context.UserNotifications
-                .Where(n => n.User.Id == _currentUser.State.Id && !n.IsRead)
-                .OrderByDescending(n => n.Timestamp)
+                .Include(n => n.Notification)
+                .Where(n => n.User.Id == _currentUser.Id && !n.IsRead)
+                .OrderByDescending(n => n.Notification.Created)
                 .ToListAsync();
 
-            var serializerSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
 
-            return new JsonResult(notifications, serializerSettings);
+            return new JsonResult(notifications);
         }
     }
 }

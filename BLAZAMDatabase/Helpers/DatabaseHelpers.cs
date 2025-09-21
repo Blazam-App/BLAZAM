@@ -108,6 +108,10 @@ namespace BLAZAM.Helpers
         {
             return state.Username?.Equals("admin", StringComparison.InvariantCultureIgnoreCase) == true || state.Username?.Equals("demo", StringComparison.InvariantCultureIgnoreCase) == true;
         }
+        public static bool IsDemo(this AppUser state)
+        {
+            return state.Username?.Equals("demo", StringComparison.InvariantCultureIgnoreCase) == true;
+        }
         public static List<TProperty> GetStaticProperties<TProperty>(this Type staticCollectionType)
         {
 

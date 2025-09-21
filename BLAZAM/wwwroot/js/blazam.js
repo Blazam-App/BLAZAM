@@ -1,7 +1,7 @@
 ﻿let lastRequestTime = 0;
 window.updateCookieExpiration = async () => {
     const currentTime = Date.now();
-    //Only upadte at least 500ms intervals
+    //Only update at least 500ms intervals
     if (currentTime - lastRequestTime > 500) {
         let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
@@ -44,13 +44,12 @@ window.attemptSignIn = async (loginReq) => {
 window.playAudio = async (path) => {
     let audio = new Audio(path);
     audio.play();
-
 };
 
 window.printPage = async () => {
     window.print();
-
 };
+
 window.scrollToBottom = async (id) => {
     const element = document.getElementById(id);
     element.scrollTop = element.scrollHeight;
@@ -87,7 +86,7 @@ window.setGaugeValue = async (id, val, time) => {
 
 window.customAnalyticsEvent = async (eventName, jsonData) => {
     gtag('event', eventName, {
-       jsonData
+        jsonData
     });
 };
 
@@ -151,14 +150,15 @@ window.blazam = {
             if (notifications && notifications.length > 0) {
                 const latestNotification = notifications[0];
                 if (latestNotification.id > window.blazam.lastNotificationId) {
-                    if (navigator.serviceWorker.controller) {
-                        navigator.serviceWorker.controller.postMessage({
-                            type: 'show-notification',
-                            notification: latestNotification
+                    navigator.serviceWorker.ready.then((registration) => {
+                        registration.showNotification(latestNotification.title || "Notification", {
+                            body: latestNotification.message || "",
+                            icon: latestNotification.icon || "/icon-192.png",
+                            tag: latestNotification.tag || "blazam-notification",
                         });
-                    }
-                    window.blazam.lastNotificationId = latestNotification.id;
+                    });
                 }
+                window.blazam.lastNotificationId = latestNotification.id;
             }
         }
     }
@@ -166,3 +166,4 @@ window.blazam = {
 
 // Start polling if the user is already subscribed
 window.blazam.startPolling();
+

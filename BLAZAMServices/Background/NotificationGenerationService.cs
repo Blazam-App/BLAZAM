@@ -175,7 +175,7 @@ namespace BLAZAM.Services.Background
                                             string notificationTitle,
                                             NotificationTemplateComponent? emailMessage)
         {
-            if (user.Id == actor?.Id)
+            if (user.Id == actor?.Id && !user.IsDemo())
                 return;
 
             var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
