@@ -380,9 +380,10 @@
                                     }
                                     else
                                     {
-                                            <OUTreeView SelectedEntry=@SelectedOU
-                                            SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
-                                            StartingSelectedOU=@SelectedOU />
+                                            <ADTreeView ShowAllEntries=false
+                                                SelectedEntry=@SelectedOU
+                                                SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
+                                                StartingSelectedOU=@SelectedOU />
                                             @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty() && DirectoryTemplate.ParentTemplateId != null && !DirectoryTemplate.ParentOU.IsNullOrEmpty())
                                             {
                                                 <RevertTemplateValueButton OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;await LoadData();}) />

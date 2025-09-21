@@ -8,19 +8,20 @@
     <MudTabPanel>
         <ChildContent>
             <MudText>
-                <OUTreeView Label="Parent Organizational Unit"
-                            SelectedEntryChanged="OUSelected"/>
+                <ADTreeView ShowAllEntries=false
+                            Label="Parent Organizational Unit"
+                            SelectedEntryChanged="OUSelected" />
 
                 <MudTextField Immediate=true Label="Organizational Unit Name" @bind-Value=@newOUName />
 
-                <MudButton Disabled=@(parentOU==null || newOUName.IsNullOrEmpty()) Color="Color.Primary" OnClick="CreateNewOU">Next</MudButton>
+                <MudButton Disabled=@(parentOU == null || newOUName.IsNullOrEmpty()) Color="Color.Primary" OnClick="CreateNewOU">Next</MudButton>
             </MudText>
         </ChildContent>
         <TabContent>
             @AppLocalization[Lang.Create]
         </TabContent>
     </MudTabPanel>
-    <MudTabPanel Disabled=@(newOU==null || newOUName.IsNullOrEmpty())>
+    <MudTabPanel Disabled=@(newOU == null || newOUName.IsNullOrEmpty())>
         <ChildContent>
             <MudText>
                 <ConfirmNewOU OU="@newOU" />
@@ -50,7 +51,7 @@
         await base.OnInitializedAsync();
         await StateHasChangedAsync();
     }
-  
+
 
     async void OUSelected(IDirectoryEntryAdapter entry)
     {

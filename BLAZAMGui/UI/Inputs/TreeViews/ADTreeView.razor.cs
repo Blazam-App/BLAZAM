@@ -18,18 +18,14 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
 
 
-        bool IsSelected(TreeItemData<IDirectoryEntryAdapter> item)
-        {
-            return item.Selected;
-        }
 
-        protected override IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(IDirectoryEntryAdapter? parent)
+        protected override IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(TreeItemData<IDirectoryEntryAdapter>? parent)
         {
             try
             {
-                if (parent.IsExpanded || parent.CachedChildren != null)
+                if (parent.Expanded || parent.Value.CachedChildren != null)
                 {
-                    return GetChildren(parent).ToTreeItemData();
+                    return GetChildren(parent.Value).ToTreeItemData();
                 }
             }
             catch (Exception)
@@ -44,7 +40,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         {
             return await Task.Run(() =>
             {
-                return GetChildren(parentNode).ToTreeItemData<IDirectoryEntryAdapter>();
+                return GetChildren(parentNode).ToTreeItemData();
 
             });
         }
