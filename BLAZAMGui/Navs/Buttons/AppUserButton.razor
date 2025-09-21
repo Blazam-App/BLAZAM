@@ -36,7 +36,7 @@
                          Icon="@Icons.Material.Filled.Api">
                 @AppLocalization[Lang.API]
             </MudMenuItem>
-
+        <PluginComponents Page="@PageType.UserMenu" Location="@PageLocation.MenuItem" />
         </AuthorizeView>
         @if (UserState?.Impersonator == null)
         {
