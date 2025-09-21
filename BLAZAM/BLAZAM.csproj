@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.4.7</AssemblyVersion>
-		<Version>2025.09.21.1359</Version>
+		<Version>2025.09.21.1417</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -95,7 +95,6 @@
 		<ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
 		<ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
 		<ProjectReference Include="..\BLAZAMStatic\BLAZAMStatic.csproj" />
-		<ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
