@@ -27,122 +27,106 @@ namespace BLAZAM.Common.Data.Database
         public DatabaseType DatabaseType { get; set; }
 
         /// <summary>
-        /// Returns true if the <see cref="ServerAddress"/> ends with ".db"
+        /// Returns true if the <see cref="GetServerAddress"/> ends with ".db"
         /// </summary>
-        public bool FileBased => ServerAddress.EndsWith(".db");
+        public bool FileBased => GetServerAddress().EndsWith(".db");
 
         /// <summary>
-        /// Returns a file that points to the <see cref="ServerAddress"/>.
+        /// Returns a file that points to the <see cref="GetServerAddress"/>.
         /// This should only be used for SQLite.
         /// </summary>
-        public SystemFile File => new(AddressComponent);
+        public SystemFile File => new(GetAddressComponent());
 
         /// <summary>
         /// The full ConnectionString to the database
         /// </summary>
         public string? Value { get; set; }
-        protected string AddressComponent
+        protected string GetAddressComponent()
         {
-            get
+            if (Value != null)
             {
-                if (Value != null)
+                string search = "data source=";
+                int startIndex = Value.ToLower().IndexOf(search);
+                if (startIndex == -1)
                 {
-                    string search = "data source=";
-                    int startIndex = Value.ToLower().IndexOf(search);
-                    if (startIndex == -1)
+                    search = "server=";
+                    startIndex = Value.ToLower().IndexOf(search);
+                }
+                if (startIndex >= 0)
+                {
+                    startIndex += search.Length;
+                    int endIndex = Value.IndexOf(";", startIndex);
+                    if (endIndex >= 0)
                     {
-                        search = "server=";
-                        startIndex = Value.ToLower().IndexOf(search);
+                        return Value.Substring(startIndex, endIndex - startIndex);
+
                     }
-                    if (startIndex >= 0)
+                    if (endIndex == -1)
                     {
-                        startIndex += search.Length;
-                        int endIndex = Value.IndexOf(";", startIndex);
-                        if (endIndex >= 0)
-                        {
-                            return Value.Substring(startIndex, endIndex - startIndex);
-
-                        }
-                        if (endIndex == -1)
-                        {
-                            return Value.Substring(startIndex);
-
-                        }
+                        return Value.Substring(startIndex);
 
                     }
 
                 }
-                throw new AppException("Connection String missing a Server or Data Source parameter");
+
             }
+            throw new AppException("Connection String missing a Server or Data Source parameter");
+
         }
         /// <summary>
         /// Returns the database connected to based on the full ConnectionString
         /// </summary>
-        public string Database
+        public string GetDatabase()
         {
-            get
-            {
-                if (Value == null)
-                    throw new AppException("Connection String missing a Database or Initial Catalog parameter");
-
-                if (FileBased)
-                    return "File Based";
-
-                string[] keys = { "initial catalog=", "database=" };
-                string lowerValue = Value.ToLower();
-
-                foreach (var key in keys)
-                {
-                    int startIndex = lowerValue.IndexOf(key);
-                    if (startIndex >= 0)
-                    {
-                        startIndex += key.Length;
-                        int endIndex = Value.IndexOf(";", startIndex);
-                        return endIndex >= 0
-                            ? Value.Substring(startIndex, endIndex - startIndex)
-                            : Value.Substring(startIndex);
-                    }
-                }
-
+            if (Value == null)
                 throw new AppException("Connection String missing a Database or Initial Catalog parameter");
+
+            if (FileBased)
+                return "File Based";
+
+            string[] keys = { "initial catalog=", "database=" };
+            string lowerValue = Value.ToLower();
+
+            foreach (var key in keys)
+            {
+                int startIndex = lowerValue.IndexOf(key);
+                if (startIndex >= 0)
+                {
+                    startIndex += key.Length;
+                    int endIndex = Value.IndexOf(";", startIndex);
+                    return endIndex >= 0
+                        ? Value.Substring(startIndex, endIndex - startIndex)
+                        : Value.Substring(startIndex);
+                }
             }
+
+            throw new AppException("Connection String missing a Database or Initial Catalog parameter");
+
         }
         /// <summary>
         /// The server IP or hostname as defined in the ConnectionString
         /// </summary>
-        public string ServerAddress
+        public string GetServerAddress()
         {
-            get
+            var fullAddress = GetAddressComponent();
+
+            if (fullAddress != null)
             {
-
-                var fullAddress = AddressComponent;
-
-                if (fullAddress != null)
+                string[] dataSourceParts = fullAddress.Split(',');
+                if (dataSourceParts.Length > 0)
                 {
-                    string[] dataSourceParts = fullAddress.Split(',');
-                    if (dataSourceParts.Length > 0)
+                    string serverFragment = dataSourceParts[0];
+                    if (serverFragment.StartsWith("tcp:"))
+                        serverFragment = serverFragment.Substring(4);
+                    if (serverFragment.Contains("\\") && !serverFragment.Contains(":\\"))
                     {
-                        string serverFragment = dataSourceParts[0];
-                        if (serverFragment.StartsWith("tcp:"))
-                            serverFragment = serverFragment.Substring(4);
-                        if (serverFragment.Contains("\\") && !serverFragment.Contains(":\\"))
-                        {
-                            serverFragment = serverFragment.Split("\\")[0];
-                        }
-                        return serverFragment;  // Outputs "serverNameOrIp"
+                        serverFragment = serverFragment.Split("\\")[0];
                     }
-
-
-
-
-
-
+                    return serverFragment;  // Outputs "serverNameOrIp"
                 }
-                throw new DatabaseConnectionStringException("Error getting server address from appconfig");
-
             }
 
-
+            throw new DatabaseConnectionStringException("Error getting server address from appconfig");
         }
         /// <summary>
         /// The server IP or hostname as defined in the ConnectionString
@@ -152,7 +136,7 @@ namespace BLAZAM.Common.Data.Database
             get
             {
 
-                var fullAddress = AddressComponent;
+                var fullAddress = GetAddressComponent();
 
                 if (fullAddress != null)
                 {
@@ -184,48 +168,46 @@ namespace BLAZAM.Common.Data.Database
         /// <summary>
         /// The database server port as defined in the ConnectionString
         /// </summary>
-        public int ServerPort
+        public int GetServerPort()
         {
-            get
+
+            var fullAddress = GetAddressComponent();
+
+            if (fullAddress != null)
             {
-
-                var fullAddress = AddressComponent;
-
-                if (fullAddress != null)
+                string[] dataSourceParts = fullAddress.Split(',');
+                if (dataSourceParts.Length == 2)
                 {
-                    string[] dataSourceParts = fullAddress.Split(',');
-                    if (dataSourceParts.Length == 2)
-                    {
-                        string portFragment = dataSourceParts[1];
-                        return int.Parse(portFragment);  // Outputs "serverPort"
-                    }
-                    else if (dataSourceParts.Length == 1)
-                    {
-                        switch (DatabaseType)
-                        {
-                            case DatabaseType.SQL:
-                                return 1433;
-                            case DatabaseType.MySQL:
-                                return 3306;
-                        }
-                        return 0;
-                    }
-                    else
-                    {
-                        throw new AppException("The server string has too many components in AppSettings");
-                    }
-
-
-
-
-
-
+                    string portFragment = dataSourceParts[1];
+                    return int.Parse(portFragment);  // Outputs "serverPort"
                 }
-                throw new DatabaseConnectionStringException("Error getting server port from appconfig");
+                else if (dataSourceParts.Length == 1)
+                {
+                    switch (DatabaseType)
+                    {
+                        case DatabaseType.SQL:
+                            return 1433;
+                        case DatabaseType.MySQL:
+                            return 3306;
+                    }
+                    return 0;
+                }
+                else
+                {
+                    throw new AppException("The server string has too many components in AppSettings");
+                }
+
+
+
+
+
 
             }
-
+            throw new DatabaseConnectionStringException("Error getting server port from appconfig");
 
         }
+
+
+
     }
 }

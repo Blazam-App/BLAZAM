@@ -90,7 +90,7 @@ namespace BLAZAM.Gui.UI.Users
             try
             {
                 LoadingData = true;
-                newUser = SelectedTemplate.GenerateTemplateUser(newUserName, Directory);
+                newUser = await SelectedTemplate.GenerateTemplateUserAsync(newUserName, Directory);
                 _userCreated = false;
 
                 if (IsAdmin || SelectedTemplate.HasEditableFields())

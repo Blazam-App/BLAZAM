@@ -32,27 +32,35 @@
         {
             try
             {
-                var ou = Entry.GetParent() as IADOrganizationalUnit;
+                var ou = await Entry.GetParentAsync() as IADOrganizationalUnit;
                 var items = new List<BreadcrumbItem>();
                 if (ou is not null)
                 {
                     IADOrganizationalUnit? ouCursor = ou;
                     do
                     {
-                        items.Add(new BreadcrumbItem(ouCursor.Name, ouCursor.SearchUri));
-                        ouCursor = ouCursor.GetParent() as IADOrganizationalUnit;
+                        if (ouCursor.Name is not null)
+                        {
+                            items.Add(new BreadcrumbItem(ouCursor.Name, ouCursor.SearchUri));
+                        }
+                        else
+                        {
+                            Loggers.ActiveDirectoryLogger.Information("OU with null name found in breadcrumb generation for {@Entry}", Entry.DN);
+                        }
+                        ouCursor = await ouCursor.GetParentAsync() as IADOrganizationalUnit;
 
                     } while (ouCursor != null);
                 }
                 items.Reverse();
                 _items = items;
-            }catch(ObjectDisposedException ex)
-            {
-                Loggers.ActiveDirectoryLogger.Information(ex,"Object was disposed while building OU Breadcrumb for {@Entry}",Entry.DN);
             }
-            catch(Exception ex)
+            catch (ObjectDisposedException ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex,"Error generating OU Breadcrumbs");
+                Loggers.ActiveDirectoryLogger.Information(ex, "Object was disposed while building OU Breadcrumb for {@Entry}", Entry.DN);
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error generating OU Breadcrumbs");
             }
         }
         await InvokeAsync(StateHasChanged);

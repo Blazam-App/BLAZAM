@@ -21,12 +21,12 @@ namespace BLAZAM.Pages.API.v1
     [Route("api/v1/[controller]")]
     public class ApiControllerBase : ControllerBase
     {
-        private readonly Stopwatch stopwatch = new();
+        private readonly Stopwatch _stopwatch = new();
 
         /// <summary>
         /// A string dictionary that contains the base of the response.
         /// </summary>
-        protected Dictionary<string, object?> ResponseData = new();
+        protected Dictionary<string, object?> ResponseData = [];
         /// <summary>
         /// A factory for <see cref="IDatabaseContext"/> connections
         /// </summary>
@@ -45,7 +45,7 @@ namespace BLAZAM.Pages.API.v1
         /// </summary>
         protected IApplicationUserState? CurrentUserState { get; }
 
-        private readonly JsonSerializerOptions jsonOptions;
+        private readonly JsonSerializerOptions _jsonOptions;
 
         /// <summary>
         /// Creates a new API controller with the required services
@@ -57,10 +57,10 @@ namespace BLAZAM.Pages.API.v1
         /// <param name="adFactory"></param>
         public ApiControllerBase(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
         {
-            jsonOptions = new JsonSerializerOptions();
-            jsonOptions.Converters.Add(new JsonStringEnumConverter());
+            _jsonOptions = new JsonSerializerOptions();
+            _jsonOptions.Converters.Add(new JsonStringEnumConverter());
 
-            stopwatch.Start();
+            _stopwatch.Start();
 
             RequestId = Guid.NewGuid();
             ResponseData.Add("Request Id", RequestId);
@@ -99,7 +99,7 @@ namespace BLAZAM.Pages.API.v1
         /// <returns>A new <see cref="JsonResult"/> containing the <see cref="ResponseData"/></returns>
         protected IActionResult FormatData(object data)
         {
-            stopwatch.Stop();
+            _stopwatch.Stop();
 
 
             if (data is IEnumerable<object> dataEnumerable)
@@ -108,7 +108,7 @@ namespace BLAZAM.Pages.API.v1
 
                 // Serialize each item using its runtime type
                 var serializedItems = dataEnumerable
-                    .Select(item => JsonSerializer.SerializeToElement(item, item.GetType(), jsonOptions))
+                    .Select(item => JsonSerializer.SerializeToElement(item, item.GetType(), _jsonOptions))
                     .ToList();
 
 
@@ -120,7 +120,7 @@ namespace BLAZAM.Pages.API.v1
             }
 
             ResponseData.Add("Finish Time", DateTime.Now.ToString());
-            ResponseData.Add("Runtime", stopwatch.ElapsedMilliseconds + "ms");
+            ResponseData.Add("Runtime", _stopwatch.ElapsedMilliseconds + "ms");
 
             return new JsonResult(ResponseData);
         }
@@ -132,11 +132,8 @@ namespace BLAZAM.Pages.API.v1
         /// <exception cref="DirectorySearchUniquenessException"></exception>
         protected IADGroup? FindGroupByIdentifier(string groupIdentifier)
         {
-            var group = (IADGroup)Directory.FindEntryBySid(groupIdentifier);
-            if (group == null)
-            {
-                group = (IADGroup)Directory.GetDirectoryEntryByDN(groupIdentifier);
-            }
+            var group = (IADGroup?)Directory.FindEntryBySid(groupIdentifier);
+            group ??= (IADGroup?)Directory.GetDirectoryEntryByDN(groupIdentifier);
             if (group == null)
             {
                 var matches = Directory.Groups.FindGroupByString(groupIdentifier, true);
@@ -146,9 +143,12 @@ namespace BLAZAM.Pages.API.v1
                     {
                         throw new DirectorySearchUniquenessException(groupIdentifier);
                     }
+
                     group = matches[0];
                 }
             }
+
+
             return group;
         }
     }

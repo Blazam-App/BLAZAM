@@ -26,13 +26,14 @@ namespace BLAZAM.Pages
         bool DemoCustomLogin = false;
         LoginRequest LoginRequest = new();
 
+
         /// <summary>
         /// Asynchronously initializes the component and sets up the necessary state and event handlers.
         /// </summary>
         /// <remarks>This method sets the redirect URL and callback base URI for the login request based
-        /// on the current navigation URI. Additionally, it subscribes to the <see cref="Monitor.OnAppReadyChanged"/>
-        /// event if the application is not in the "Up" state.</remarks>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// on the current navigation URI.  Additionally, it subscribes to the <see cref="Monitor.OnAppReadyChanged"/>
+        /// event if the application is not in the  <see cref="ServiceConnectionState.Up"/> state.</remarks>
+        /// <returns></returns>
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();

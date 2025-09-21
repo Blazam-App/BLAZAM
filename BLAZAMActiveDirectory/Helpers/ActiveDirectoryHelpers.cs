@@ -248,8 +248,9 @@ namespace BLAZAM.Helpers
         /// <param name="r"></param>
         /// <returns>A <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
 
-        public static IDirectoryEntryAdapter? Encapsulate(this IDirectoryEntry sr, IActiveDirectoryContext context)
+        public static IDirectoryEntryAdapter? Encapsulate(this DirectoryEntry? sr, IActiveDirectoryContext context)
         {
+            if (sr == null) return null;
             IDirectoryEntryAdapter? thisObject = null;
 
             if (sr.PropertyContains(OBJECT_CLASS, "top"))

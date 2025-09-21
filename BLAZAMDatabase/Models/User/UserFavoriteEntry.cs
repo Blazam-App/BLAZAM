@@ -12,15 +12,20 @@
         {
             if (obj is UserFavoriteEntry user)
             {
-                if (user.DN == null) return false;
+                if (user.DN == null)
+                {
+                    return false;
+                }
+
                 return user.DN.Equals(DN) && user.UserId.Equals(UserId);
             }
+
             return false;
         }
 
         public override bool Equals(AppDbSetBase? other)
         {
-            return Equals((object)other);
+            return Equals((object?)other);
         }
 
         public bool Equals(UserFavoriteEntry? other)

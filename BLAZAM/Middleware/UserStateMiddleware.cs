@@ -1,22 +1,18 @@
 ﻿using BLAZAM.Session.Interfaces;
 
-namespace BLAZAM.Server.Middleware
+namespace BLAZAM.Middleware
 {
     /// <summary>
     /// Captures the web browser's authentication cookie to populate the CurrentUserStateService
     /// </summary>
-    public class UserStateMiddleware
+    /// <remarks>
+    /// Creates an instance of this middleware
+    /// </remarks>
+    /// <param name="next">The next middleware in the pipeline.</param>
+    public class UserStateMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
+        private readonly RequestDelegate _next = next;
 
-        /// <summary>
-        /// Creates an instance of this middleware
-        /// </summary>
-        /// <param name="next">The next middleware in the pipeline.</param>
-        public UserStateMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
         /// <summary>
         /// Executes this middleware
         /// </summary>
@@ -54,6 +50,7 @@ namespace BLAZAM.Server.Middleware
 
                 }
             }
+
             return _next(httpContext);
         }
     }

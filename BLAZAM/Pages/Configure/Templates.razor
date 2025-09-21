@@ -13,7 +13,7 @@
 </SetSubHeader>
 
 <MudText Typo="Typo.h4">@AppLocalization[Lang.Templates] <AppDocumentationButton Page="/admin/templates" /></MudText>
-@if (Templates.Any() == true)
+@if (Templates.Any())
 {
 
     <MudCard Elevation="2">
@@ -61,7 +61,7 @@
 
         List<TreeItemData<DirectoryTemplate>> treeData;
 
-        var rootTemplates = Templates.Where(t => t.ParentTemplate == null && t.DeletedAt == null).ToTreeItemData();
+        var rootTemplates = Templates.Where(t => t.ParentTemplate == null && t.DeletedAt == null).ToTreeItemData<DirectoryTemplate>();
 
         treeData = RecursiveFillTreeViewItems(rootTemplates);
         return treeData;

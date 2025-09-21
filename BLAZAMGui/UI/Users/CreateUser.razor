@@ -224,9 +224,9 @@
                 @AppLocalization[Lang.OU]
             </TabContent>
             <ChildContent>
-                <OUTreeView AdditionalVisibilityFilters=@(AdditionalShow)
-                StartRootExpanded=true
-                SelectedEntryChanged="OUSelected" />
+                <ADTreeView ShowAllEntries=false AdditionalVisibilityFilters=@(AdditionalShow)
+                            StartRootExpanded=true
+                            SelectedEntryChanged="OUSelected" />
 
                 <MudTextField Label="@AppLocalization[Lang.Display_Name]"
                 @bind-Value="@customUserDisplayName" />

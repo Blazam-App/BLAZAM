@@ -131,12 +131,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public override bool Rename(string newName)
-        {
-            SAMAccountName = newName;
-            CommitChanges();
-            return base.Rename(newName);
-        }
 
         public override List<AuditChangeLog> Changes
         {

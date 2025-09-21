@@ -29,8 +29,11 @@ namespace BLAZAM.Database.Models
     /// </summary>
     public class ActiveDirectoryField : RecoverableAppDbSetBase, IActiveDirectoryField
     {
+        private const string _desription = "description";
+        private const string _memberOf = "memberOf";
+
         [NotMapped]
-        public new DateTime? DeletedAt { get => null; set { _ = value; return; } }
+        public new DateTime? DeletedAt { get => null; set { _ = value; } }
 
         [Required]
         public string FieldName { get; set; }
@@ -62,23 +65,22 @@ namespace BLAZAM.Database.Models
 
         public override int GetHashCode()
         {
-            if (FieldName == null) return Id.GetHashCode();
+            if (FieldName == null)
+            {
+                return Id.GetHashCode();
+            }
+
             return FieldName.GetHashCode();
         }
 
 
         public override bool Equals(object? obj)
         {
-            if (obj is ActiveDirectoryField)
+            if (obj is ActiveDirectoryField other && other.FieldName == FieldName)
             {
-                var other = obj as ActiveDirectoryField;
-
-                if (other?.FieldName == FieldName)
-                {
-                    return true;
-                }
-
+                return true;
             }
+
             return false;
         }
 
@@ -93,7 +95,7 @@ namespace BLAZAM.Database.Models
                         case "l":
                         case "company":
                         case "department":
-                        case "description":
+                        case _desription:
                         case "employeeId":
                         case "givenname":
                         case "homeDirectory":
@@ -102,7 +104,7 @@ namespace BLAZAM.Database.Models
                         case "logonHours":
                         case "manager":
                         case "mail":
-                        case "memberOf":
+                        case _memberOf:
                         case "middleName":
                         case "pager":
                         case "physicalDeliveryOffice":
@@ -120,6 +122,7 @@ namespace BLAZAM.Database.Models
 
                             return true;
                     }
+
                     break;
                 case ActiveDirectoryObjectType.Contact:
                     switch (FieldName)
@@ -151,6 +154,7 @@ namespace BLAZAM.Database.Models
 
                             return true;
                     }
+
                     break;
                 case ActiveDirectoryObjectType.Computer:
                     switch (FieldName)
@@ -162,6 +166,7 @@ namespace BLAZAM.Database.Models
                         case "site":
                             return true;
                     }
+
                     break;
 
                 case ActiveDirectoryObjectType.Group:
@@ -174,6 +179,7 @@ namespace BLAZAM.Database.Models
                         case "groupType":
                             return true;
                     }
+
                     break;
 
                 case ActiveDirectoryObjectType.OU:
@@ -181,9 +187,8 @@ namespace BLAZAM.Database.Models
                     {
                         case "site":
                             return true;
-
-
                     }
+
                     break;
                 default:
                     switch (FieldName)
@@ -194,15 +199,13 @@ namespace BLAZAM.Database.Models
                         case "distinguishedName":
                         case "objectSID":
                             return true;
-
-
                     }
+
                     break;
 
             }
+
             return false;
-
-
         }
 
 

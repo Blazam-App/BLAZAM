@@ -108,7 +108,7 @@ namespace BLAZAM.FileSystem
                 }
                 catch (UnauthorizedAccessException ex)
                 {
-                    Loggers.SystemLogger.Warning(ex, "FileSystemBase.Writable: UnauthorizedAccessException checking write access for {FullPath}.", FullPath);
+                    Loggers.SystemLogger.Information(ex, "FileSystemBase.Writable: UnauthorizedAccessException checking write access for {FullPath}.", FullPath);
                     return false;
                 }
                 catch (IOException ex)
