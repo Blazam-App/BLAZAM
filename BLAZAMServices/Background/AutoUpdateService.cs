@@ -1,8 +1,5 @@
-﻿using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
-using BLAZAM.Database.Services;
+﻿using BLAZAM.Database.Services;
 using BLAZAM.FileSystem;
-using BLAZAM.Global.Attributes;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
@@ -86,7 +83,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private static bool TryDeleteDirectoryWithImpersonation(SystemDirectory dir, WindowsImpersonationUser? impersonator)
+        private static bool TryDeleteDirectoryWithImpersonation(SystemDirectory dir, WindowsImpersonation? impersonator)
         {
             if (impersonator == null) return false;
 
@@ -145,7 +142,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private static bool TryDeleteFileWithImpersonation(SystemFile file, WindowsImpersonationUser? impersonator)
+        private static bool TryDeleteFileWithImpersonation(SystemFile file, WindowsImpersonation? impersonator)
         {
             if (impersonator == null) return false;
 
