@@ -59,5 +59,17 @@ namespace BLAZAM.Helpers
             }
             return Encryption.Instance.EncryptObject(input);
         }
+        /// <summary>
+        /// Encrypts an object into a ciphertext string.
+        /// </summary>
+        /// <remarks>
+        /// Relies on <see cref="BLAZAM.Common.Data.Encryption.Instance"/>.
+        /// </remarks>
+        /// <param name="input">The object to encrypt. If null, null is returned.</param>
+        /// <returns>The ciphertext string, or null if the input object is null or encryption fails.</returns>
+        public static async Task<string?> EncryptAsync(this object input)
+        {
+            return await Task.Run(input.Encrypt);
+        }
     }
 }

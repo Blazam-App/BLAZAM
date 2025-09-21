@@ -2,86 +2,91 @@
 @using BLAZAM.Services.Audit;
 @using System.Security.Cryptography.X509Certificates
 @inherits AppModalContent
-<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
-    <MudSelectList Label=@AppLocalization[Lang.Certificate_Type] Values="@(new List<string> { "PFX", "Crt and Key" })" @bind-Value=SelectedCertType />
-    @if (SelectedCertType == "PFX")
-    {
-        <MudFileUpload T="IBrowserFile" FilesChanged="LoadPFX" Accept=".pfx">
-            <ActivatorContent>
-                <MudButton HtmlTag="label"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.CloudUpload">
-                    @AppLocalization[Lang.Upload] PFX
-                </MudButton>
-            </ActivatorContent>
-            <SelectedTemplate>
-                @if (context != null)
-                {
-                    <MudText>@context.Name</MudText>
-                }
-                else
-                {
-                    <MudText>@AppLocalization[Lang.No_File]</MudText>
-                }
-            </SelectedTemplate>
-        </MudFileUpload>
-        <MudTextField Label="@AppLocalization[Lang.Password]"
-                      name="Password"
-                      InputType="InputType.Password"
-                      @bind-Value=pfxPassword />
+<MudTabs @bind-ActivePanelIndex=_tabIndex>
+    <MudTabPanel Text="PFX">
+        <MudStack Class="py-5 align-center">
+            <MudFileUpload T="IBrowserFile" FilesChanged="LoadPFX" Accept=".pfx">
+                <ActivatorContent>
+                    <MudButton HtmlTag="label"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.CloudUpload">
+                        @AppLocalization[Lang.Upload] PFX
+                    </MudButton>
+                </ActivatorContent>
+                <SelectedTemplate>
+                    @if (context != null)
+                    {
+                        <MudText Align="Align.Center">@context.Name</MudText>
+                    }
+                    else
+                    {
+                        <MudText Align="Align.Center">@AppLocalization[Lang.No_File]</MudText>
+                    }
+                </SelectedTemplate>
+            </MudFileUpload>
+            <MudTextField Label="@AppLocalization[Lang.Password]"
+                          name="Password"
+                          InputType="InputType.Password"
+                          @bind-Value=pfxPassword />
 
-    }
-    else
-    {
-        <MudFileUpload T="IBrowserFile"
-                       FilesChanged="LoadCert"
-                       Accept=".pem, .crt">
-            <ActivatorContent>
-                <MudButton HtmlTag="label"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.CloudUpload">
-                    @AppLocalization[Lang.Upload_Certificate]
-                </MudButton>
-            </ActivatorContent>
-            <SelectedTemplate>
-                @if (context != null)
-                {
-                    <MudText>@context.Name</MudText>
-                }
-                else
-                {
-                    <MudText>@AppLocalization[Lang.No_File]</MudText>
-                }
-            </SelectedTemplate>
-        </MudFileUpload>
+        </MudStack>
+    </MudTabPanel>
 
-        <MudFileUpload T="IBrowserFile" FilesChanged="LoadKey" Accept=".pem, .key">
-            <ActivatorContent>
-                <MudButton HtmlTag="label"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.CloudUpload">
-                    @AppLocalization[Lang.Upload_Key]
-                </MudButton>
-            </ActivatorContent>
-            <SelectedTemplate>
-                @if (context != null)
-                {
-                    <MudText>@context.Name</MudText>
-                }
-                else
-                {
-                    <MudText>@AppLocalization[Lang.No_File]</MudText>
-                }
-            </SelectedTemplate>
-        </MudFileUpload>
-    }
-</MudContainer>
+    <MudTabPanel Text="CRT and KEY">
+        <MudStack Class="py-5 align-center">
+
+            <MudFileUpload T="IBrowserFile"
+                           FilesChanged="LoadCert"
+                           Accept=".pem, .crt">
+                <ActivatorContent>
+                    <MudButton HtmlTag="label"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.CloudUpload">
+                        @AppLocalization[Lang.Upload_Certificate]
+                    </MudButton>
+                </ActivatorContent>
+                <SelectedTemplate>
+                    @if (context != null)
+                    {
+                        <MudText Align="Align.Center">@context.Name</MudText>
+                    }
+                    else
+                    {
+                        <MudText Align="Align.Center">@AppLocalization[Lang.No_File]</MudText>
+                    }
+                </SelectedTemplate>
+            </MudFileUpload>
+
+            <MudFileUpload T="IBrowserFile" FilesChanged="LoadKey" Accept=".pem, .key">
+                <ActivatorContent>
+                    <MudButton HtmlTag="label"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.CloudUpload">
+                        @AppLocalization[Lang.Upload_Key]
+                    </MudButton>
+                </ActivatorContent>
+                <SelectedTemplate>
+                    @if (context != null)
+                    {
+                        <MudText Align="Align.Center">@context.Name</MudText>
+                    }
+                    else
+                    {
+                        <MudText Align="Align.Center">@AppLocalization[Lang.No_File]</MudText>
+                    }
+                </SelectedTemplate>
+            </MudFileUpload>
+
+        </MudStack>
+    </MudTabPanel>
+</MudTabs>
+<LoadingData Loading=@LoadingData />
 
 @code {
-    string SelectedCertType = "PFX";
+    int _tabIndex;
     string pfxPassword = "";
     byte[] pfxBytes;
     byte[] crtBytes;
@@ -91,38 +96,80 @@
     public AppSettings AppSettings { get; set; }
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         Modal.SetYesText(AppLocalization[Lang.Upload]);
         Modal.SetOnYes(Import);
-        await base.OnInitializedAsync();
+        Modal.YesEnabled = () => !LoadingData;
+        LoadingData = false;
 
     }
 
+    [Parameter]
+    public EventCallback OnSSLCertifcateChanged { get; set; }
 
-    public Task Import()
+    public async Task Import()
     {
         try
         {
-            switch (SelectedCertType)
+            LoadingData = true;
+            switch (_tabIndex)
             {
-                case "PFX":
-                    var cert = new X509Certificate2(pfxBytes, pfxPassword, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
-                    var rawCert2 = cert.Export(X509ContentType.Pkcs12);
-                    var cert2 = new X509Certificate2(rawCert2);
-                    if (rawCert2 != null)
+                case 0:
+                    try
                     {
-                        var cipher = rawCert2?.Encrypt();
-                        AppSettings.SSLCertificateCipher = cipher;
+                        using var cert = new X509Certificate2(pfxBytes, pfxPassword, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
+                        var rawCert = cert.Export(X509ContentType.Pkcs12);
+                        if (rawCert != null)
+                        {
+                            var cipher = await rawCert?.EncryptAsync();
+                            AppSettings.SSLCertificateCipher = cipher;
+                            await OnSSLCertifcateChanged.InvokeAsync();
+                            Close();
+                        }
+                        else
+                        {
+                            SnackBarService.Warning(AppHelpLocalization[HelpLang.Invalid_Cert_Type]);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        SnackBarService.Warning(ex.Message);
+                    }
 
+                    break;
+                case 1:
+                    if (crtBytes != null && keyBytes != null)
+                    {
+                        try
+                        {
+                            var certPem = System.Text.Encoding.UTF8.GetString(crtBytes);
+                            var keyPem = System.Text.Encoding.UTF8.GetString(keyBytes);
 
-                        Close();
+                            using var cert3 = X509Certificate2.CreateFromPem(certPem, keyPem);
+
+                            var rawCert2 = cert3.Export(X509ContentType.Pkcs12);
+                            if (rawCert2 != null)
+                            {
+                                var cipher = await rawCert2.EncryptAsync();
+                                AppSettings.SSLCertificateCipher = cipher;
+
+                                await OnSSLCertifcateChanged.InvokeAsync();
+                                Close();
+                            }
+                            else
+                            {
+                                SnackBarService.Warning(AppHelpLocalization[HelpLang.Invalid_Cert_Type]);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            SnackBarService.Warning(ex.Message);
+                        }
                     }
                     else
                     {
-                        SnackBarService.Warning(AppHelpLocalization[HelpLang.Invalid_Cert_Type]);
+                        SnackBarService.Warning("Certificate or key not uploaded.");
                     }
-                    break;
-                case "Crt and Key":
-
                     break;
             }
         }
@@ -130,7 +177,11 @@
         {
             SnackBarService.Warning(ex.Message);
         }
-        return Task.CompletedTask;
+        finally
+        {
+            LoadingData = false;
+
+        }
 
     }
 

@@ -153,65 +153,64 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
         protected void OpenToSelected()
         {
-            RootOU.First().Children = GetChildren(RootOU.First());
-            if (StartRootExpanded && RootOU != null && RootOU.Count > 0)
+            if (RootOU == null || !RootOU.Any()) return;
+
+            var root = RootOU.First();
+            root.Children = GetChildren(root);
+
+            if (!StartRootExpanded) return;
+
+            root.Expanded = true;
+
+            if (SelectedEntry == null)
             {
-                RootOU.First().Expanded = true;
+                root.Selected = true;
+                SelectedEntry = root.Value;
+                return;
+            }
 
-                if (SelectedEntry != null)
+            if (root.Value.Equals(SelectedEntry))
+            {
+                root.Selected = true;
+                return;
+            }
+
+            var currentNode = root;
+            while (currentNode != null)
+            {
+                currentNode.Children = GetChildren(currentNode);
+                var nextNode = currentNode.Children.FirstOrDefault(IsAncestorOfSelected);
+
+                if (nextNode != null)
                 {
-                    var firstThing = RootOU.First();
-                    if (firstThing is TreeItemData<IDirectoryEntryAdapter> openThis)
-                    {
-                        if (!SelectedEntry.Equals(RootOU.First().Value))
-                        {
-                            openThis.Expanded = true;
-                        }
-
-                        while (openThis != null)
-                        {
-
-                            openThis.Children = GetChildren(openThis);
-                            var child = openThis.Children.FirstOrDefault(
-                                c => SelectedEntry.DN?.Contains(c.Value.DN) == true
-                                                            && !SelectedEntry.DN.Equals(c.Value.DN)
-                                                            );
-                            if (child != null)
-                            {
-                                if (!SelectedEntry.Equals(RootOU.First().Value))
-                                {
-                                    child.Expanded = true;
-                                }
-                                openThis = child;
-                            }
-                            else
-                            {
-                                openThis.Children.ForEach(c =>
-                                {
-                                    if (c.Value is IADOrganizationalUnit ou)
-                                    {
-                                        c.Children = ou.SubOUs.ToTreeItemData();
-                                    }
-                                });
-
-                                var matchingOU = openThis.Children.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
-                                if (matchingOU != null)
-                                    matchingOU.Selected = true;
-                                break;
-                            }
-
-
-                        }
-                    }
+                    nextNode.Expanded = true;
+                    currentNode = nextNode;
                 }
                 else
                 {
-                    RootOU.First().Selected = true;
-                    SelectedEntry = RootOU.First().Value;
+                    SelectFinalNode(currentNode);
+                    break;
                 }
             }
+        }
+        private bool IsAncestorOfSelected(TreeItemData<IDirectoryEntryAdapter> item)
+        {
+            return SelectedEntry.DN?.Contains(item.Value.DN) == true && !SelectedEntry.DN.Equals(item.Value.DN);
+        }
 
+        private void SelectFinalNode(TreeItemData<IDirectoryEntryAdapter> parent)
+        {
+            parent.Children.ForEach(c =>
+            {
+                if (c.Value is IADOrganizationalUnit ou)
+                {
+                    c.Children = ou.SubOUs.ToTreeItemData();
+                }
+            });
 
+            var matchingOU = parent.Children.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
+            if (matchingOU != null)
+                matchingOU.Selected = true;
         }
         /// <summary>
         /// Defines a function to determine whether an Active Directory object should be
