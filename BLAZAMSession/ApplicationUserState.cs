@@ -517,6 +517,7 @@ namespace BLAZAM.Session
 
         private bool CheckDenyPermissions(List<PermissionMapping> possibleAllows, List<PermissionMapping> possibleDenies)
         {
+            if (!possibleAllows.Any()) return false; // No allows, so deny
             if (!possibleDenies.Any()) return true; // No denies, so allow
 
             foreach (var d in possibleDenies)
