@@ -419,14 +419,12 @@ namespace BLAZAM.Database.Context
 
         public override void Dispose()
         {
-            GC.SuppressFinalize(this);
             ApplicationStatistics.RemoveDBContext();
             base.Dispose();
         }
 
         public override ValueTask DisposeAsync()
         {
-            GC.SuppressFinalize(this);
             ApplicationStatistics.RemoveDBContext();
             return base.DisposeAsync();
         }
