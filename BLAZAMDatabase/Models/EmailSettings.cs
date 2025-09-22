@@ -42,7 +42,7 @@ namespace BLAZAM.Database.Models
         public bool Valid()
         {
             if (SMTPServer != null
-                && (!UseSMTPAuth && FromAddress != null) || (UseSMTPAuth && SMTPUsername != null && SMTPPassword != null))
+               && ((!UseSMTPAuth && FromAddress != null) || (UseSMTPAuth && SMTPUsername != null && SMTPPassword != null)))
             {
                 return true;
             }
