@@ -29,7 +29,7 @@ else
                      Text="1">
             @if (completedSteps > 0)
             {
-                <InstallDatabase Completed=@(completedSteps > 1) StepCompleted="UpdateStatuses" />
+                <InstallDatabase Completed=@(completedSteps > 1) StepCompleted="UpdateStatusesAsync" />
             }
         </MudTabPanel>
         <MudTabPanel Disabled=@(completedSteps < 2)
@@ -38,7 +38,7 @@ else
                      Icon="@(completedSteps>2?Icons.Material.Filled.CheckCircle:null)">
             @if (completedSteps > 1)
             {
-                <Authentication StepCompleted="UpdateStatuses" />
+                <Authentication StepCompleted="UpdateStatusesAsync" />
             }
 
         </MudTabPanel>
@@ -95,7 +95,7 @@ else
     {
         await base.OnInitializedAsync();
         //CheckDatabase
-        UpdateStatuses();
+        await UpdateStatusesAsync();
 
 
     }
@@ -104,7 +104,7 @@ else
     /// Checks system statuses sequentially and updates the UI.
     /// Refactored to a Cognitive Complexity of 11.
     /// </summary>
-    async Task UpdateStatuses() // Changed to `async Task` for better error handling
+    async Task UpdateStatusesAsync() // Changed to `async Task` for better error handling
     {
         Context = await DbFactory.CreateDbContextAsync();
         completedSteps = 1;

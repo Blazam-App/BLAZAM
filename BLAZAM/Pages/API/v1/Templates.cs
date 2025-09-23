@@ -121,7 +121,10 @@ namespace BLAZAM.Pages.API.v1
                 }
                 //Generate IADUser
                 var newUser = await template.GenerateTemplateUserAsync(newUserName, Directory, customOU);
-
+                if (newUser == null)
+                {
+                    return new UnprocessableEntityObjectResult("Could not generate user from template");
+                }
                 //Override username if provided
                 if (!newUserDetails.Username.IsNullOrEmpty())
                 {
@@ -207,7 +210,11 @@ namespace BLAZAM.Pages.API.v1
                 foreach (var field in newUserDetails.Fields)
                 {
                     var json = field.FieldValue as JsonElement?;
-                    var kind = json?.ValueKind;
+                    if (json == null)
+                    {
+                        continue;
+                    }
+                    var kind = json.Value.ValueKind;
                     object? value = null;
                     switch (kind)
                     {
