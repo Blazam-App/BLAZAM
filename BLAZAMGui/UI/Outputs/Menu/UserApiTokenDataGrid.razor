@@ -55,7 +55,7 @@
 
         var newToken = new ApiToken()
         {
-            Token = token.Encrypt(),
+            Token = await token.EncryptAsync(),
             UserId = CurrentUser.State.Id,
             ExpiresAt = dt,
             TokenHash = token.GetAppHashCode()

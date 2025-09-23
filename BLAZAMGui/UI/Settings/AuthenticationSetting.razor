@@ -166,7 +166,7 @@
         if (!newAdminPassword.Equals(adminPasswordInDb) || decryptedPass.Equals(adminPasswordInDb))
         {
 
-            settings.AdminPassword = newAdminPassword.Encrypt();
+            settings.AdminPassword = await newAdminPassword.EncryptAsync();
 
             adminPasswordInDb = settings.AdminPassword;
 

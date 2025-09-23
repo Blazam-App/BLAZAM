@@ -96,7 +96,7 @@
             if (settings.Id == 0)
                 Context.AuthenticationSettings.Add(settings);
 
-            settings.AdminPassword = settings.AdminPasswordConfirmed.Encrypt();
+            settings.AdminPassword = await settings.AdminPasswordConfirmed.EncryptAsync();
             await Context.SaveChangesAsync();
             settings = await Context.AuthenticationSettings.FirstAsync();
             await StepCompleted.InvokeAsync();
