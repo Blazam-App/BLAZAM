@@ -97,6 +97,7 @@
         @if (!ApplicationInfo.IsUnderIIS || ApplicationInfo.InDebugMode)
         {
             <SettingsField Label="@AppLocalization[Lang.SSL_Certificate]">
+                <CertificateDetails @ref=_certDetails AppSettings=@settings/>
                 <MudButton OnClick="()=>{uploadCertificateModal?.ShowAsync();}"
                            Variant="Variant.Filled"
                            Color="Color.Primary"
@@ -106,7 +107,7 @@
 
             </SettingsField>
             <AppModal @ref="uploadCertificateModal" Title=@AppLocalization[Lang.Upload_Certificate]>
-                <UploadCertificateModalContent AppSettings="settings" />
+                <UploadCertificateModalContent AppSettings="settings" OnSSLCertifcateChanged="@(() => { _certDetails?.LoadCertDetails(); })" />
             </AppModal>
         }
 
@@ -124,7 +125,7 @@
 <LoadingData Loading=LoadingData />
 @code {
     AppSettings settings = new AppSettings();
-
+    CertificateDetails? _certDetails;
     AppModal? uploadCertificateModal;
     protected override async Task OnInitializedAsync()
     {

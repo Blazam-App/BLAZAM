@@ -52,6 +52,29 @@ namespace BLAZAM.Helpers
 
         }
 
+        public static List<TreeItemData<IDirectoryEntryAdapter>> ToTreeItemData(this IEnumerable<IDirectoryEntryAdapter> items)
+        {
+            List<TreeItemData<IDirectoryEntryAdapter>> treeData = new();
+
+            items.ForEach(x =>
+            {
+                treeData.Add(new() { Value = x, Selected = x.IsSelected });
+
+            });
+            return treeData;
+        }
+
+        public static List<TreeItemData<IADOrganizationalUnit>> ToTreeItemData(this IEnumerable<IADOrganizationalUnit> items)
+        {
+            List<TreeItemData<IADOrganizationalUnit>> treeData = new();
+
+            items.ForEach(x =>
+            {
+                treeData.Add(new() { Value = x, Selected = x.IsSelected });
+
+            });
+            return treeData;
+        }
         public static List<TreeItemData<T>> ToTreeItemData<T>(this IEnumerable<T> items)
         {
             List<TreeItemData<T>> treeData = new();

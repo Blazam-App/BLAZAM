@@ -1,13 +1,23 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BLAZAM.Pages.API.v1
 {
+    /// <summary>
+    /// A simple API endpoint to test the API configuration and return details about the authenticated user. 
+    /// </summary>
     public class Test : ApiControllerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Test"/> class with the specified services and dependencies.
+        /// </summary>
+        /// <param name="applicationUserStateService">A service for managing the state of the application user.</param>
+        /// <param name="audit">The logger used for auditing user actions.</param>
+        /// <param name="appDatabaseFactory">A factory for creating instances of the application database.</param>
+        /// <param name="httpContextAccessor">Provides access to the current HTTP context.</param>
+        /// <param name="adFactory">A factory for creating Active Directory context instances.</param>
         public Test(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
         {
         }
@@ -52,10 +62,11 @@ namespace BLAZAM.Pages.API.v1
         private void AddDateTime(dynamic data, string title, string key)
         {
             var raw = User.Claims.FirstOrDefault(x => x.Type == key)?.Value;
+            if (raw == null) return;
             var lng = long.Parse(raw);
 
 
-            var dt = DateTime.UnixEpoch.AddSeconds(lng); ;
+            var dt = DateTime.UnixEpoch.AddSeconds(lng);
             var str = dt.ToString();
             data.Add(title, str);
         }

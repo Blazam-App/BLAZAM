@@ -110,6 +110,7 @@
 
                 </MudNavLink>
             }
+            <PluginComponents Page="@PageType.ConfigureMenu" Location="@PageLocation.MenuItem" />
         </MudNavGroup>
 
         <MudNavLink Href="/audit"
@@ -117,6 +118,7 @@
             @AppLocalization[Lang.Audit]
 
         </MudNavLink>
+        <PluginComponents Page="@PageType.MainMenu" Location="@PageLocation.MenuItem" />
     </AuthorizeView>
 
 

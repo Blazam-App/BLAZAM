@@ -362,47 +362,54 @@ namespace BLAZAM.Services.Background
             notification.Level = NotificationLevel.Info;
         }
 
+        private void HandleBlockedEmailSubscriptions(NotificationSubscription effectiveSubscription, NotificationSubscription subscription)
+        {
+            foreach (var type in subscription.NotificationTypes)
+            {
+                effectiveSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
+            }
+        }
+
+        private void HandleAllowedEmailSubscriptions(NotificationSubscription effectiveSubscription, NotificationSubscription subscription)
+        {
+            var newTypes = subscription.NotificationTypes
+                .Where(type => !effectiveSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType))
+                .Select(type => new SubscriptionNotificationType { NotificationType = type.NotificationType });
+
+            effectiveSubscription.NotificationTypes.AddRange(newTypes);
+        }
         public NotificationSubscription CalculateEffectiveEmailSubscriptions(AppUser user, IDirectoryEntryAdapter ou)
         {
             if (ou is not IADOrganizationalUnit)
                 ou = ou.GetParent();
             if (ou is not IADOrganizationalUnit)
                 return default;
-            using var context = Context;
-            NotificationSubscription effectiveByEmailSubscription = new();
 
-            effectiveByEmailSubscription = new();
-            effectiveByEmailSubscription.OU = ou.DN;
-            effectiveByEmailSubscription.User = user;
-            effectiveByEmailSubscription.ByEmail = true;
+            using var context = Context;
+            var effectiveByEmailSubscription = new NotificationSubscription
+            {
+                OU = ou.DN,
+                User = user,
+                ByEmail = true
+            };
+
             var userSubscriptions = context.NotificationSubscriptions
                 .Where(x => x.DeletedAt == null && x.UserId == user.Id && ou.DN.Contains(x.OU))
                 .OrderBy(x => x.OU)
                 .ToList();
+
             foreach (var sub in userSubscriptions)
             {
+                if (!sub.ByEmail) continue;
 
-                if (sub.Block && sub.ByEmail)
+                if (sub.Block)
                 {
-                    foreach (var type in sub.NotificationTypes)
-                    {
-                        effectiveByEmailSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
-                    }
-
+                    HandleBlockedEmailSubscriptions(effectiveByEmailSubscription, sub);
                 }
                 else
                 {
-
-                    if (sub.ByEmail)
-                    {
-                        effectiveByEmailSubscription.NotificationTypes.AddRange(from type in sub.NotificationTypes
-                                                                                where !effectiveByEmailSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType)
-                                                                                select new SubscriptionNotificationType() { NotificationType = type.NotificationType });
-                    }
-
-
+                    HandleAllowedEmailSubscriptions(effectiveByEmailSubscription, sub);
                 }
-
             }
             return effectiveByEmailSubscription;
         }

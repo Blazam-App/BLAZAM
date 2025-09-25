@@ -11,13 +11,27 @@ using MudBlazor;
 
 namespace BLAZAM.Pages
 {
+    /// <summary>
+    /// Represents a view component that facilitates searching within a directory structure.
+    /// </summary>
+    /// <remarks>This class provides functionality for initializing search parameters, performing searches,
+    /// and managing search results. It integrates with cascading parameters such as <see cref="SearchService"/>, <see
+    /// cref="MainLayout"/>, and <see cref="SearchObjectType"/>  to enable seamless interaction with the application's
+    /// state and layout. The search process is managed through the <see cref="ADSearch"/>  object, which handles the
+    /// execution of search queries and result collection.</remarks>
     public partial class View : AppComponentBase
     {
-
+        /// <summary>
+        /// Gets or sets the search parameters used to configure the search operation.
+        /// </summary>
         [CascadingParameter]
         public SearchService? SearchParameters { get; set; }
 
         readonly string ModelsTypeName = "Search";
+
+        /// <summary>
+        /// Gets or sets the icon used to represent the search functionality.
+        /// </summary>
         protected string SearchIcon { get; set; } = "";
         string? _searchTermParameter;
         /// <summary>
@@ -26,6 +40,14 @@ namespace BLAZAM.Pages
         [Parameter]
         public virtual string? SearchTermParameter { get; set; }
 
+        /// <summary>
+        /// Asynchronously handles updates to component parameters and triggers a search operation  if the search term
+        /// has changed.
+        /// </summary>
+        /// <remarks>This method decodes the search term parameter and compares it to the previously
+        /// stored value.  If the search term has changed, it cancels any ongoing search, updates the internal state, 
+        /// and initiates a new search operation. If the search term is empty, the loading state is reset.</remarks>
+        /// <returns></returns>
         protected override async Task OnParametersSetAsync()
         {
             var decodedSearchTerm = HttpUtility.UrlDecode(SearchTermParameter);
@@ -43,10 +65,17 @@ namespace BLAZAM.Pages
                 LoadingData = false;
         }
 
+        /// <summary>
+        /// Gets or sets the directory searcher used to perform Active Directory queries.
+        /// </summary>
+        /// <remarks>This property allows customization of the searcher used for querying Active
+        /// Directory.  Ensure the searcher is properly configured before performing any operations that depend on
+        /// it.</remarks>
+        protected ADSearch? Searcher { get; set; }
 
-        public ADSearch? Searcher { get; set; }
-
-
+        /// <summary>
+        /// Gets or sets the cascading parameter for the main layout of the application.
+        /// </summary>
         [CascadingParameter]
         public MainLayout? MainLayout { get; set; }
 
@@ -77,6 +106,12 @@ namespace BLAZAM.Pages
             Searcher.ResultsCollected += AddResults;
         }
 
+        /// <summary>
+        /// Releases the resources used by the current instance and unsubscribes from all event handlers.
+        /// </summary>
+        /// <remarks>This method ensures that all event subscriptions associated with the <see
+        /// cref="Searcher"/> object are removed to prevent memory leaks. It also calls the base class's <see
+        /// cref="Dispose"/> method to release any additional resources.</remarks>
         public override void Dispose()
         {
             base.Dispose();
@@ -109,6 +144,9 @@ namespace BLAZAM.Pages
         [CascadingParameter]
         public ActiveDirectoryObjectType? SearchObjectType { get; set; }
 
+        /// <summary>
+        /// Gets or sets the collection of directory entry adapters.
+        /// </summary>
         protected virtual List<IDirectoryEntryAdapter> results { get; set; } = new List<IDirectoryEntryAdapter>();
 
 

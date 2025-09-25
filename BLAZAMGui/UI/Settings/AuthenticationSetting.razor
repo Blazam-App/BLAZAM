@@ -30,11 +30,11 @@
 
 
         <SettingsField Label="@AppLocalization[Lang.MFA_Type]">
-            <MudRadioGroup Value="settings.MFAType" ValueChanged="@((MFAType type)=>{MFATypeChanged(type);})">
-                <MudRadio Value="MFAType.CiscoDuo">
+            <MudRadioGroup Value="settings.MFAType" ValueChanged="@((MfaType type)=>{MFATypeChanged(type);})">
+                <MudRadio Value="MfaType.CiscoDuo">
                     @AppLocalization[Lang.Cisco_Duo]
                 </MudRadio>
-                <MudRadio Value="MFAType.GoogleAuthenticator">
+                <MudRadio Value="MfaType.GoogleAuthenticator">
                     @AppLocalization[Lang.Google_Authenticator]
                 </MudRadio>
 
@@ -42,7 +42,7 @@
 
 
         </SettingsField>
-        @if (settings.MFAType == MFAType.CiscoDuo)
+        @if (settings.MFAType == MfaType.CiscoDuo)
         {
             <SettingsField Label="@AppLocalization[Lang.Duo_Security_MFA]">
 
@@ -91,7 +91,7 @@
 
             <MudSwitch Label=@AppLocalization[Lang.Force_MFA]
                        T="bool" @bind-Value="@settings.RequireMFA"
-                       Disabled="settings.MFAType==MFAType.CiscoDuo && duoHealthCheckResult!=true"
+                       Disabled="settings.MFAType==MfaType.CiscoDuo && duoHealthCheckResult!=true"
                        UncheckedColor="Color.Error"
                        Color="Color.Success" />
 
@@ -137,10 +137,10 @@
 
 
     }
-    private void MFATypeChanged(MFAType type)
+    private void MFATypeChanged(MfaType type)
     {
         settings.MFAType = type;
-        if (type == MFAType.CiscoDuo && !settings.DuoSettingsValid)
+        if (type == MfaType.CiscoDuo && !settings.DuoSettingsValid)
         {
             settings.RequireMFA = false;
         }
@@ -166,7 +166,7 @@
         if (!newAdminPassword.Equals(adminPasswordInDb) || decryptedPass.Equals(adminPasswordInDb))
         {
 
-            settings.AdminPassword = newAdminPassword.Encrypt();
+            settings.AdminPassword = await newAdminPassword.EncryptAsync();
 
             adminPasswordInDb = settings.AdminPassword;
 

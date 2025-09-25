@@ -23,7 +23,11 @@
             </MudDataGrid>
         </MudTabPanel>
         <MudTabPanel Text="@AppLocalization[Lang.OU]">
-            <OUTreeView SelectedEntry="destinationOU" SelectedEntryChanged="destinationOUChanged" StartingSelectedOU="null" StartRootExpanded=true />
+            <ADTreeView ShowAllEntries=false
+                SelectedEntry="destinationOU" 
+                SelectedEntryChanged="destinationOUChanged" 
+                StartingSelectedOU="null" 
+                StartRootExpanded=true />
         </MudTabPanel>
 
     </MudTabs>

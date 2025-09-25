@@ -89,18 +89,20 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         }
 
 
-        protected virtual IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(IDirectoryEntryAdapter? parent)
+        protected virtual IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(TreeItemData<IDirectoryEntryAdapter>? parent)
         {
             try
             {
+                if (parent.Expanded || parent.Value.CachedChildren != null)
+                {
+                    var items = parent?.Children
+                        .Where(c => c.Value.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c.Value))
+                        .Select(p => p.Value);
 
-                var items = parent?.Children
-                    .Where(c => c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c));
-
-
-                var treeBranchh = items?.ToTreeItemData();
-                return treeBranchh;
-
+                    var treeBranchh = items?.ToTreeItemData();
+                    return treeBranchh;
+                }
+                return [];
             }
             catch (Exception)
             {
@@ -153,65 +155,64 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
         protected void OpenToSelected()
         {
-            RootOU.First().Children = GetChildren(RootOU.First());
-            if (StartRootExpanded && RootOU != null && RootOU.Count > 0)
+            if (RootOU == null || !RootOU.Any()) return;
+
+            var root = RootOU.First();
+            root.Children = GetChildren(root);
+
+            if (!StartRootExpanded) return;
+
+            root.Expanded = true;
+
+            if (SelectedEntry == null)
             {
-                RootOU.First().Expanded = true;
+                root.Selected = true;
+                SelectedEntry = root.Value;
+                return;
+            }
 
-                if (SelectedEntry != null)
+            if (root.Value?.Equals(SelectedEntry) == true)
+            {
+                root.Selected = true;
+                return;
+            }
+
+            var currentNode = root;
+            while (currentNode != null)
+            {
+                currentNode.Children = GetChildren(currentNode);
+                var nextNode = currentNode.Children.FirstOrDefault(IsAncestorOfSelected);
+
+                if (nextNode != null)
                 {
-                    var firstThing = RootOU.First();
-                    if (firstThing is TreeItemData<IDirectoryEntryAdapter> openThis)
-                    {
-                        if (!SelectedEntry.Equals(RootOU.First().Value))
-                        {
-                            openThis.Expanded = true;
-                        }
-
-                        while (openThis != null)
-                        {
-
-                            openThis.Children = GetChildren(openThis);
-                            var child = openThis.Children.FirstOrDefault(
-                                c => SelectedEntry.DN?.Contains(c.Value.DN) == true
-                                                            && !SelectedEntry.DN.Equals(c.Value.DN)
-                                                            );
-                            if (child != null)
-                            {
-                                if (!SelectedEntry.Equals(RootOU.First().Value))
-                                {
-                                    child.Expanded = true;
-                                }
-                                openThis = child;
-                            }
-                            else
-                            {
-                                openThis.Children.ForEach(c =>
-                                {
-                                    if (c.Value is IADOrganizationalUnit ou)
-                                    {
-                                        c.Children = ou.SubOUs.ToTreeItemData();
-                                    }
-                                });
-
-                                var matchingOU = openThis.Children.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
-                                if (matchingOU != null)
-                                    matchingOU.Selected = true;
-                                break;
-                            }
-
-
-                        }
-                    }
+                    nextNode.Expanded = true;
+                    currentNode = nextNode;
                 }
                 else
                 {
-                    RootOU.First().Selected = true;
-                    SelectedEntry = RootOU.First().Value;
+                    SelectFinalNode(currentNode);
+                    break;
                 }
             }
+        }
+        private bool IsAncestorOfSelected(TreeItemData<IDirectoryEntryAdapter> item)
+        {
+            return SelectedEntry?.DN?.Contains(item.Value.DN) == true && !SelectedEntry.DN.Equals(item.Value.DN);
+        }
 
+        private void SelectFinalNode(TreeItemData<IDirectoryEntryAdapter> parent)
+        {
+            parent.Children?.ForEach(c =>
+            {
+                if (c.Value is IADOrganizationalUnit ou)
+                {
+                    c.Children = ou.SubOUs.ToTreeItemData();
+                }
+            });
 
+            var matchingOU = parent.Children?.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
+            if (matchingOU != null)
+                matchingOU.Selected = true;
         }
         /// <summary>
         /// Defines a function to determine whether an Active Directory object should be
@@ -234,19 +235,21 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             }
             return false;
         }
-
-
+        protected bool CanExpand(TreeItemData<IDirectoryEntryAdapter> item)
+        {
+            return (item.Value is IADOrganizationalUnit);
+        }
         protected List<TreeItemData<IDirectoryEntryAdapter>> GetChildren(TreeItemData<IDirectoryEntryAdapter> context)
         {
             if (context.Children?.Count > 0)
             {
                 return context.Children;
             }
-            if (context.Value is IADOrganizationalUnit ou)
+            if (context.Expanded && context.Value is IADOrganizationalUnit ou)
             {
                 return GetOUChildren(ou);
             }
-            return new List<TreeItemData<IDirectoryEntryAdapter>>();
+            return [];
         }
 
         protected List<TreeItemData<IDirectoryEntryAdapter>> GetOUChildren(IDirectoryEntryAdapter ou)

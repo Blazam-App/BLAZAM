@@ -515,6 +515,28 @@ namespace BLAZAM.Session
                         );
         }
 
+        private bool CheckDenyPermissions(List<PermissionMapping> possibleAllows, List<PermissionMapping> possibleDenies)
+        {
+            if (!possibleAllows.Any()) return false; // No allows, so deny
+            if (!possibleDenies.Any()) return true; // No denies, so allow
+
+            foreach (var d in possibleDenies)
+            {
+                if (d.OU.Length > possibleAllows.OrderByDescending(r => r.OU.Length).First().OU.Length)
+                    return false;
+            }
+
+            var mostSpecificAllowOuLength = possibleAllows.Max(r => r.OU.Length);
+            var mostSpecificDenyOuLengthForMatchingAllows = possibleDenies
+                .Where(d => possibleAllows.Any(a => a.OU.Equals(d.OU, StringComparison.OrdinalIgnoreCase) || d.OU.StartsWith(a.OU + ",", StringComparison.OrdinalIgnoreCase)))
+                .Select(d => d.OU.Length)
+                .DefaultIfEmpty(0)
+                .Max();
+
+            if (mostSpecificDenyOuLengthForMatchingAllows >= mostSpecificAllowOuLength) return false;
+
+            return true;
+        }
         public bool HasPermission(string dnTarget, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector, bool nestedSearch)
         {
             if (IsSuperAdmin) return true;
@@ -523,60 +545,32 @@ namespace BLAZAM.Session
             if (!nestedSearch)
             {
                 baseSearch = PermissionMappings
-                    .Where(pm => dnTarget.Contains(pm.OU, StringComparison.OrdinalIgnoreCase)).OrderByDescending(pm => pm.OU.Length); // Added StringComparison
+                    .Where(pm => dnTarget.Contains(pm.OU, StringComparison.OrdinalIgnoreCase)).OrderByDescending(pm => pm.OU.Length);
             }
             else
             {
                 baseSearch = PermissionMappings
-                    .Where(pm => pm.OU.Contains(dnTarget, StringComparison.OrdinalIgnoreCase)).OrderByDescending(pm => pm.OU.Length); // Added StringComparison
+                    .Where(pm => pm.OU.Contains(dnTarget, StringComparison.OrdinalIgnoreCase)).OrderByDescending(pm => pm.OU.Length);
             }
 
             try
             {
-                var possibleAllows = allowSelector.Invoke(baseSearch).ToList(); // Renamed
+                var possibleAllows = allowSelector.Invoke(baseSearch).ToList();
+                if (!possibleAllows.Any()) return false;
+
                 if (denySelector != null)
                 {
                     var possibleDenies = denySelector.Invoke(baseSearch).ToList();
-                    if (possibleAllows.Any())
-                    {
-                        if (possibleDenies.Any())
-                        {
-                            // This logic correctly prioritizes more specific deny rules over allows.
-                            foreach (var d in possibleDenies)
-                            {
-                                // If a deny rule's OU is more specific (longer) than the most specific allow rule's OU, deny access.
-                                if (d.OU.Length > possibleAllows.OrderByDescending(r => r.OU.Length).First().OU.Length)
-                                    return false;
-                            }
-                            // If no deny rule is more specific, and there's an allow, it's allowed (unless a deny is equally specific)
-                            // A more precise check would be: if the most specific deny is >= most specific allow, deny.
-                            // For now, this means if allows exist, and no *more* specific denies exist, it's an allow.
-                            // This could be an issue if an equally specific deny exists.
-                            // However, the current logic implies if allows exist, and no *more* specific deny exists, allow.
-                            // Let's refine: if the most specific deny is as specific or more specific than the most specific allow, deny.
-                            var mostSpecificAllowOuLength = possibleAllows.Max(r => r.OU.Length);
-                            var mostSpecificDenyOuLengthForMatchingAllows = possibleDenies
-                                .Where(d => possibleAllows.Any(a => a.OU.Equals(d.OU, StringComparison.OrdinalIgnoreCase) || d.OU.StartsWith(a.OU + ",", StringComparison.OrdinalIgnoreCase))) // Check if deny is related to an allow path
-                                .Select(d => d.OU.Length)
-                                .DefaultIfEmpty(0) // Handle case where no denies match allow paths
-                                .Max();
-                            if (mostSpecificDenyOuLengthForMatchingAllows >= mostSpecificAllowOuLength) return false;
-
-
-                            return true; // Allows exist, and no deny rule is more specific
-                        }
-                        return true; // Allows exist, no denies exist
-                    }
-                    return false; // No allows
+                    return CheckDenyPermissions(possibleAllows, possibleDenies);
                 }
                 else
                 {
-                    return possibleAllows.Any();
+                    return true; // Has allows, no deny selector
                 }
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex, "ApplicationUserState.HasPermission (DN Target): Error checking permissions for DN {DNTarget}.", dnTarget); // Include ex and DN
+                Loggers.SystemLogger.Error(ex, "ApplicationUserState.HasPermission (DN Target): Error checking permissions for DN {DNTarget}.", dnTarget);
             }
             return false;
         }

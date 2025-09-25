@@ -43,11 +43,6 @@ namespace BLAZAM.Pages
         }
 
         /// <summary>
-        /// Gets the authentication response message from the Duo callback.
-        /// </summary>
-        public string AuthResponse { get; private set; }
-
-        /// <summary>
         /// Handles the GET request from Duo's MFA callback, validates the state and code,
         /// and processes the authentication result.
         /// </summary>

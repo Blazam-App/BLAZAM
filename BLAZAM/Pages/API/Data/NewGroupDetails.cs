@@ -30,7 +30,7 @@ namespace BLAZAM.Pages.API.Data
         /// group name. If using group name, the name must be unique and match a single
         /// group in the domain.
         /// </summary>
-        public List<string>? Groups { get; set; } = new();
+        public List<string>? Groups { get; set; } = [];
 
     }
     /// <summary>
@@ -50,7 +50,7 @@ namespace BLAZAM.Pages.API.Data
                 Description = "A new group for testing",
                 Email = "test@example.com",
                 OU = "OU=Groups,DC=example,DC=com",
-                Groups = new List<string> { "S-1-5-21-1004336348-1177238915-682003330-512", "S-1-5-21-1004336348-1148567915-615476330-495" }
+                Groups = ["S-1-5-21-1004336348-1177238915-682003330-512", "S-1-5-21-1004336348-1148567915-615476330-495"]
             };
         }
     }

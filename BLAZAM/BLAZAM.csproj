@@ -5,8 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
-		<AssemblyVersion>1.4.7</AssemblyVersion>
-		<Version>2025.09.10.0026</Version>
+		<AssemblyVersion>1.4.8</AssemblyVersion>
+		<Version>2025.09.23.0333</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -95,7 +95,7 @@
 		<ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
 		<ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
 		<ProjectReference Include="..\BLAZAMStatic\BLAZAMStatic.csproj" />
-		<ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
+		<ProjectReference Include="..\BLAZAMUpdate\BLAZAMUpdate.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -27,13 +27,11 @@
 
     private AppModal? navLockModal;
     private TaskCompletionSource<bool>? navLockTcs;
-    private LocationChangingContext? pendingContext;
 
     private async Task OnBeforeInternalNavigation(LocationChangingContext context)
     {
         // Show the modal and wait for user response
         navLockTcs = new TaskCompletionSource<bool>();
-        pendingContext = context;
         await navLockModal!.ShowAsync();
 
         var isConfirmed = await navLockTcs.Task;

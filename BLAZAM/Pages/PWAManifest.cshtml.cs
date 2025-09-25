@@ -56,7 +56,7 @@ namespace BLAZAM.Pages
             }
             catch
             {
-
+                // ignore
             }
             return Content(JsonConvert.SerializeObject(manifest));
 
