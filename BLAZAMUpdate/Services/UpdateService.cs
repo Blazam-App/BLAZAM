@@ -120,14 +120,20 @@ namespace BLAZAM.Update.Services
             //Get the first release,which should be the most recent
             latestBranchRelease = branchReleases.FirstOrDefault();
             //Store all other releases for use later
-            AvailableUpdates.Clear();
+            lock (_updateCheckLock)
+            {
+                AvailableUpdates.Clear();
+            }
 
             var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
-            EncapsulateBetaReleases(betaStableReleases);
-            EncapsulateStableReleases(stableReleases);
-            EncapsulateLatestRelease(latestBranchRelease);
-            RemoveIncompatibleReleases();
+            lock (_updateCheckLock)
+            {
 
+                EncapsulateBetaReleases(betaStableReleases);
+                EncapsulateStableReleases(stableReleases);
+                EncapsulateLatestRelease(latestBranchRelease);
+                RemoveIncompatibleReleases();
+            }
         }
 
         private void RemoveIncompatibleReleases()
@@ -443,6 +449,18 @@ namespace BLAZAM.Update.Services
         public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
 
         public List<ApplicationUpdate> IncompatibleUpdates { get; private set; } = new();
-        public ApplicationUpdate? NewestAvailableUpdate => AvailableUpdates.OrderByDescending(x => x.Version).FirstOrDefault();
+        private readonly object _updateCheckLock = new();
+        public ApplicationUpdate? NewestAvailableUpdate
+        {
+            get
+            {
+                ApplicationUpdate? latest = null;
+                lock (_updateCheckLock)
+                {
+                    latest = AvailableUpdates.OrderByDescending(x => x.Version).FirstOrDefault();
+                }
+                return latest;
+            }
+        }
     }
 }
