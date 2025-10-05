@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.4.8</AssemblyVersion>
-		<Version>2025.10.05.2018</Version>
+		<Version>2025.10.05.2034</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -64,8 +64,8 @@
 		<PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
 		<PackageReference Include="Serilog" Version="4.3.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.3" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.6" />
 		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.9" />
 		<PackageReference Include="System.DirectoryServices" Version="9.0.9" />
 
