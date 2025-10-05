@@ -147,7 +147,7 @@
             </SettingsField>
 
 
-            @if (settings?.AutoUpdate == true)
+            @if (settings.AutoUpdate)
             {
                 <SettingsField Label="@AppLocalization[Lang.Auto_Update_Time]">
 
@@ -180,7 +180,7 @@
     UpdateCredential? updateCredential = null;
     ManualApplicationUpdater? appUpdateComponent;
     AppSettings? settings = new AppSettings();
-    List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev, ApplicationReleaseBranches.BetaDev };
+    readonly List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev, ApplicationReleaseBranches.BetaDev };
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
