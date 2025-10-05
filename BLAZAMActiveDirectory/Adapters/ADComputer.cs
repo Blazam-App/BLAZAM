@@ -17,14 +17,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
     {
 
         private ADComputerSessions? _sessionManager;
-        private WmiConnection? _wmiConnection;
-        private WmiConnection? wmiConnection
+        private IRemoteManagementConnection? _wmiConnection;
+        private IRemoteManagementConnection? wmiConnection
         {
             get
             {
                 if (CanonicalName == null)
                 {
-                    return null;
+                    _wmiConnection= new PSConnection(Directory, this);
                 }
 
                 _wmiConnection ??= new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
@@ -319,7 +319,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     try
                     {
-                        if (SearchResult != null && !_pingCancellationTokenSource.IsCancellationRequested && CanonicalName != null)
+                        if (DirectoryEntry != null && !_pingCancellationTokenSource.IsCancellationRequested && CanonicalName != null)
                         {
                             Ping(timeout);
                         }

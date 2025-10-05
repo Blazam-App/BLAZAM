@@ -1,7 +1,6 @@
 @{
     var account = Entry as IAccountDirectoryAdapter;
 
-
 }
 <AppTooltip Text="@Entry.ObjectType.ToString()">
     <MudIcon Color=@(account!=null&&account.Disabled?Color.Error:Color.Default) Icon="@Entry.TypeIcon()" />
