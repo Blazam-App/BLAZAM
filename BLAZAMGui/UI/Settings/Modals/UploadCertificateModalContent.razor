@@ -88,9 +88,9 @@
 @code {
     int _tabIndex;
     string pfxPassword = "";
-    byte[] pfxBytes;
-    byte[] crtBytes;
-    byte[] keyBytes;
+    byte[]? pfxBytes;
+    byte[]? crtBytes;
+    byte[]? keyBytes;
 
     [Parameter]
     public AppSettings AppSettings { get; set; }
@@ -112,65 +112,13 @@
         try
         {
             LoadingData = true;
-            switch (_tabIndex)
+            if (_tabIndex == 0)
             {
-                case 0:
-                    try
-                    {
-                        using var cert = new X509Certificate2(pfxBytes, pfxPassword, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
-                        var rawCert = cert.Export(X509ContentType.Pkcs12);
-                        if (rawCert != null)
-                        {
-                            var cipher = await rawCert?.EncryptAsync();
-                            AppSettings.SSLCertificateCipher = cipher;
-                            await OnSSLCertifcateChanged.InvokeAsync();
-                            Close();
-                        }
-                        else
-                        {
-                            SnackBarService.Warning(AppHelpLocalization[HelpLang.Invalid_Cert_Type]);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        SnackBarService.Warning(ex.Message);
-                    }
-
-                    break;
-                case 1:
-                    if (crtBytes != null && keyBytes != null)
-                    {
-                        try
-                        {
-                            var certPem = System.Text.Encoding.UTF8.GetString(crtBytes);
-                            var keyPem = System.Text.Encoding.UTF8.GetString(keyBytes);
-
-                            using var cert3 = X509Certificate2.CreateFromPem(certPem, keyPem);
-
-                            var rawCert2 = cert3.Export(X509ContentType.Pkcs12);
-                            if (rawCert2 != null)
-                            {
-                                var cipher = await rawCert2.EncryptAsync();
-                                AppSettings.SSLCertificateCipher = cipher;
-
-                                await OnSSLCertifcateChanged.InvokeAsync();
-                                Close();
-                            }
-                            else
-                            {
-                                SnackBarService.Warning(AppHelpLocalization[HelpLang.Invalid_Cert_Type]);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            SnackBarService.Warning(ex.Message);
-                        }
-                    }
-                    else
-                    {
-                        SnackBarService.Warning("Certificate or key not uploaded.");
-                    }
-                    break;
+                await ImportPfx();
+            }
+            else if (_tabIndex == 1)
+            {
+                await ImportCrtAndKey();
             }
         }
         catch (Exception ex)
@@ -180,9 +128,70 @@
         finally
         {
             LoadingData = false;
-
         }
+    }
 
+    private async Task ImportPfx()
+    {
+        if (pfxBytes == null || pfxBytes.Length == 0)
+        {
+            SnackBarService.Warning("No PFX file uploaded.");
+            return;
+        }
+        try
+        {
+            using var cert = new X509Certificate2(pfxBytes, pfxPassword, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
+            var rawCert = cert.Export(X509ContentType.Pkcs12);
+            if (rawCert != null)
+            {
+                var cipher = await rawCert.EncryptAsync();
+                AppSettings.SSLCertificateCipher = cipher;
+                await OnSSLCertifcateChanged.InvokeAsync();
+                Close();
+            }
+            else
+            {
+                SnackBarService.Warning(AppHelpLocalization[HelpLang.Invalid_Cert_Type]);
+            }
+        }
+        catch (Exception ex)
+        {
+            SnackBarService.Warning(ex.Message);
+        }
+    }
+
+    private async Task ImportCrtAndKey()
+    {
+        if (crtBytes == null || keyBytes == null)
+        {
+            SnackBarService.Warning("Certificate or key not uploaded.");
+            return;
+        }
+        try
+        {
+            var certPem = System.Text.Encoding.UTF8.GetString(crtBytes);
+            var keyPem = System.Text.Encoding.UTF8.GetString(keyBytes);
+
+            using var cert3 = X509Certificate2.CreateFromPem(certPem, keyPem);
+
+            var rawCert2 = cert3.Export(X509ContentType.Pkcs12);
+            if (rawCert2 != null)
+            {
+                var cipher = await rawCert2.EncryptAsync();
+                AppSettings.SSLCertificateCipher = cipher;
+
+                await OnSSLCertifcateChanged.InvokeAsync();
+                Close();
+            }
+            else
+            {
+                SnackBarService.Warning(AppHelpLocalization[HelpLang.Invalid_Cert_Type]);
+            }
+        }
+        catch (Exception ex)
+        {
+            SnackBarService.Warning(ex.Message);
+        }
     }
 
     private async void LoadPFX(IBrowserFile e)

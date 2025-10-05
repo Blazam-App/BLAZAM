@@ -961,14 +961,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     case ActiveDirectoryObjectType.Group:
                     case ActiveDirectoryObjectType.Printer:
                     case ActiveDirectoryObjectType.Computer:
-                        if (forceDeleteChildren)
+                        if (forceDeleteChildren && DirectoryEntry != null)
                         {
-                            var children = DirectoryEntry?.Children;
+                            var children = DirectoryEntry.Children;
                             if (children != null)
                             {
                                 foreach (IDirectoryEntry child in children)
                                 {
-                                    DirectoryEntry?.Children.Remove(child);
+                                    DirectoryEntry.Children.Remove(child);
                                 }
                             }
 

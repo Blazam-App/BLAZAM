@@ -105,7 +105,7 @@ namespace BLAZAM.Database.Models
                     }
                     else
                     {
-                        return AppName[..14];
+                        return AppName.Length > 14 ? AppName[..14] : AppName;
                     }
 
                 }

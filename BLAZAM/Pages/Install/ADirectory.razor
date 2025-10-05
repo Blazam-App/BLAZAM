@@ -39,7 +39,7 @@
     private async Task ShowNext()
     {
         disableNext = false;
-        StepCompleted.InvokeAsync();
+        await StepCompleted.InvokeAsync();
         await StateHasChangedAsync();
     }
 

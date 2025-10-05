@@ -221,7 +221,7 @@
         {
             if (newUpdatePassword != null && !newUpdatePassword.Equals(updatePasswordInDb))
             {
-                settings.UpdatePassword = newUpdatePassword.Encrypt();
+                settings.UpdatePassword = await newUpdatePassword.EncryptAsync();
 
                 updatePasswordInDb = settings.UpdatePassword;
             }

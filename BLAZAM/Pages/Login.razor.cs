@@ -31,7 +31,7 @@ namespace BLAZAM.Pages
         /// Asynchronously initializes the component and sets up the necessary state and event handlers.
         /// </summary>
         /// <remarks>This method sets the redirect URL and callback base URI for the login request based
-        /// on the current navigation URI.  Additionally, it subscribes to the <see cref="Monitor.OnAppReadyChanged"/>
+        /// on the current navigation URI.  Additionally, it subscribes to the <see cref="ConnMonitor.OnAppReadyChanged"/>
         /// event if the application is not in the  <see cref="ServiceConnectionState.Up"/> state.</remarks>
         /// <returns></returns>
         protected override async Task OnInitializedAsync()
@@ -140,7 +140,7 @@ namespace BLAZAM.Pages
                         Nav.NavigateTo(authenticationResult.MFARedirect);
                     break;
                 case LoginResultStatus.GoogleAuthenticatorRequested:
-                    await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken.ToSecureString());
+                    await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken?.ToSecureString());
                     break;
                 case LoginResultStatus.OK:
                     attemptingSignIn = true;

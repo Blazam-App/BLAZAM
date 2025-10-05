@@ -47,7 +47,7 @@ namespace BLAZAM.Pages
         /// </summary>
         /// <remarks>This method is invoked whenever parameters are set for the component. If the search
         /// term  has changed, it cancels any ongoing search, decodes the new search term, and initiates a  new search
-        /// operation. The <see cref="LoadingData"/> property is updated to reflect the  loading state during the search
+        /// operation. The <see cref="AppComponentBase.LoadingData"/> property is updated to reflect the  loading state during the search
         /// process.</remarks>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         protected override async Task OnParametersSetAsync()
