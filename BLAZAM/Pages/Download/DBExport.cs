@@ -1,6 +1,4 @@
 using System.IO.Compression;
-using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using Microsoft.AspNetCore.Authorization;

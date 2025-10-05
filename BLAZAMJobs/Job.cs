@@ -92,18 +92,28 @@ namespace BLAZAM.Jobs
         /// Used for scheduled triggering
         /// </summary>
         /// <param name="state"></param>
-        private void TriggerRun(object? state) => Run();
+        private void TriggerRun(object? state) => RunStep();
 
-        public override bool Run()
+        public async Task<bool> RunAsync() => await Task.Run(Run);
+
+        public bool Run()
         {
+            JobBroker.GetRunToken();
+            var runSuccess = RunStep();
+            JobBroker.ReleaseRunToken();
+            return runSuccess;
+        }
+        public override bool RunStep()
+        {
+
             if (Identity != null)
             {
-                return Identity.Run(() =>
-                {
-                    return Execute();
-                });
+                return Identity.Run(Execute);
             }
-            return Execute();
+            else
+            {
+                return Execute();
+            }
 
         }
         public void AddStep(IJobStep step)
@@ -123,6 +133,7 @@ namespace BLAZAM.Jobs
         }
         private bool Execute()
         {
+
             var cancelToken = cancellationTokenSource.Token;
 
             runScheduler?.Dispose();
@@ -198,6 +209,7 @@ namespace BLAZAM.Jobs
             Progress = 100;
 
 
+
             return FailedSteps.Count < 1 && Result != JobResult.Cancelled;
         }
         /// <summary>
@@ -208,7 +220,7 @@ namespace BLAZAM.Jobs
         private bool ExecuteStep(IJobStep step)
         {
             Result = JobResult.Running;
-            if (!step.Run() && step.Result != JobResult.Cancelled)
+            if (!step.RunStep() && step.Result != JobResult.Cancelled)
             {
                 FailedSteps.Add(step);
                 if (StopOnFailedStep || step.StopOnFailedStep)
@@ -263,6 +275,7 @@ namespace BLAZAM.Jobs
                 }
                 // Set progress to 100 immediately on cancellation
                 Progress = 100;
+
             }
         }
 
