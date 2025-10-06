@@ -57,7 +57,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public AppDelegate<IRemoteSession> OnSessionDown { get; set; }
         public AppDelegate<IRemoteSession> OnSessionUpdated { get; set; }
 
-        private Timer t;
+        private readonly Timer t;
         public RemoteSession(ITerminalServicesSession session, IADComputer host)
         {
             Host = host;
@@ -233,12 +233,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override bool Equals(object? obj)
         {
-            if (obj is IRemoteSession other && other.Server != null)
+            if (obj is IRemoteSession other && other.Server != null
+                && (other.SessionId.Equals(SessionId) && other.Server.ServerName.Equals(Server?.ServerName)))
             {
-                if (other.SessionId.Equals(SessionId) && other.Server.ServerName.Equals(Server?.ServerName))
-                {
-                    return true;
-                }
+                return true;
+
             }
             return false;
         }
@@ -248,12 +247,37 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return (SessionId + Server?.ServerName).GetHashCode();
         }
 
+        private bool _disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    // Dispose managed resources
+                    t?.Dispose();
+                    if (Session != null && Session.Server != null)
+                    {
+                        Session.Server.Close();
+                    }
+                    Session = null;
+                }
+                // Free unmanaged resources (if any) here
+
+                _disposed = true;
+            }
+        }
+
         public void Dispose()
         {
-            t?.Dispose();
-            if (Session != null && Session.Server != null)
-                Session.Server.Close();
-            Session = null;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~RemoteSession()
+        {
+            Dispose(false);
         }
     }
 }

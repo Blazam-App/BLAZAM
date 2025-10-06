@@ -55,27 +55,12 @@ namespace BLAZAM.Jobs
 
 
 
-        /// <summary>
-        /// Run this job/step immediately
-        /// </summary>
-        /// <remarks>
-        /// Calling this overrides any schedule that may have been set
-        /// </remarks>
-        /// <returns></returns>
-        bool Run();
 
-        /// <summary>
-        /// Run this job/step immediately and asynchronously
-        /// </summary>
-        /// <remarks>
-        /// Calling this overrides any schedule that may have been set
-        /// </remarks>
-        /// <returns></returns>
-        Task<bool> RunAsync();
 
         /// <summary>
         /// Cancels this job/step after the current action finishes if execution already started
         /// </summary>
         void Cancel();
+        bool RunStep();
     }
 }

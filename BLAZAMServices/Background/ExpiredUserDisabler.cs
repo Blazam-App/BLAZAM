@@ -1,6 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Services;
-using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
