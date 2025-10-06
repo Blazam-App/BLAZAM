@@ -10,6 +10,7 @@
     case "float":
         <MudNumericField HelperText="@HelperText"
                          T=T
+                         Required=@Required
                          Label="@Label"
                          Immediate=@Immediate
                          HideSpinButtons="false"
@@ -20,6 +21,7 @@
 
     case "String":
         <MudTextField Label="@Label" T=T
+                      Required=@Required
                       HelperText="@HelperText"
                       Immediate=@Immediate
                       Clearable=@Clearable
@@ -32,6 +34,7 @@
     case "Boolean":
         <MudStack>
             <MudSwitch Color=@Color
+                       Required=@Required
                        UncheckedColor=@UncheckedColor
                        T="T"
                        ReadOnly=@ReadOnly
@@ -43,6 +46,7 @@
         break;
     case "DateTime":
         <MudDatePicker Clearable=@Clearable
+                       Required=@Required
                        HelperText="@HelperText"
                        ReadOnly=@ReadOnly
                        Label="@Label"
@@ -120,7 +124,8 @@
                 Value = default;
         }
     }
-
+    [Parameter]
+    public bool Required { get; set; }
     [Parameter]
     public InputType InputType { get; set; }
 
