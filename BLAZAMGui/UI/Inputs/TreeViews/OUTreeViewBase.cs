@@ -23,7 +23,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         /// </remarks>
         [Parameter]
         public IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? RootOU { get; set; } = new List<TreeItemData<IDirectoryEntryAdapter>>();
-        protected IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GuiOU { get; set; } = new List<TreeItemData<IDirectoryEntryAdapter>>();
+
         [Parameter]
         public IADOrganizationalUnit? StartingSelectedOU
         {
@@ -88,7 +88,10 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             return Color.Default;
         }
 
-
+        protected bool GetExpanded(TreeItemData<IDirectoryEntryAdapter> item)
+        {
+            return item.Expanded;
+        }
         protected virtual IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(TreeItemData<IDirectoryEntryAdapter>? parent)
         {
             try
@@ -99,8 +102,9 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                         .Where(c => c.Value.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c.Value))
                         .Select(p => p.Value);
 
-                    var treeBranchh = items?.ToTreeItemData();
-                    return treeBranchh;
+                    var treeBranch = items?.ToTreeItemData();
+                    //OpenToSelected(treeBranch);
+                    return treeBranch;
                 }
                 return [];
             }
@@ -125,9 +129,9 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 RootOU = TopLevelList.ToTreeItemData();
             }
 
-            OpenToSelected();
+            OpenToSelected(RootOU);
 
-            GuiOU = new List<TreeItemData<IDirectoryEntryAdapter>>(RootOU);
+
 
             LoadingData = false;
         }
@@ -153,11 +157,11 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             });
         }
 
-        protected void OpenToSelected()
+        protected void OpenToSelected(IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? rootOU)
         {
-            if (RootOU == null || !RootOU.Any()) return;
+            if (rootOU == null || !rootOU.Any()) return;
 
-            var root = RootOU.First();
+            var root = rootOU.First();
             root.Children = GetChildren(root);
 
             if (!StartRootExpanded) return;
@@ -176,7 +180,6 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 root.Selected = true;
                 return;
             }
-
             var currentNode = root;
             while (currentNode != null)
             {

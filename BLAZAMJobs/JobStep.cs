@@ -49,7 +49,7 @@ namespace BLAZAM.Jobs
             }
         }
 
-        public override bool Run()
+        public override bool RunStep()
         {
             var cancelToken = cancellationTokenSource.Token;
             try

@@ -61,7 +61,7 @@ namespace BLAZAM.Jobs
         /// </summary>
         public System.Threading.ThreadPriority ThreadPriority { get; set; } = System.Threading.ThreadPriority.Normal;
 
-        public virtual async Task<bool> RunAsync()
+        internal virtual async Task<bool> RunStepAsync()
         {
             // Set thread priority for the task's thread
             if (ThreadPriority != ThreadPriority.Normal)
@@ -80,15 +80,15 @@ namespace BLAZAM.Jobs
             {
                 return await Task.Run(() =>
                 {
-                    return Run();
+                    return RunStep();
                 });
             }
         }
         private void RunBackground()
         {
-            _ = Run();
+            _ = RunStep();
         }
-        public virtual bool Run()
+        public virtual bool RunStep()
         {
             throw new AppException("This step contains no action.");
         }

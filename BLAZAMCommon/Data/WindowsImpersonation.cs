@@ -127,6 +127,10 @@ namespace BLAZAM.Common.Data
                       );
 
                 }
+                catch (IdentityNotMappedException ex)
+                {
+                    Loggers.ActiveDirectoryLogger.Information(ex, "The identity could not be mapped to a Windows account {@Impersonatee}", impersonationUser.Username);
+                }
                 catch (Exception ex)
                 {
                     Loggers.ActiveDirectoryLogger.Error(ex, "Error running impersonated action {@Impersonatee}", impersonationUser.Username);
