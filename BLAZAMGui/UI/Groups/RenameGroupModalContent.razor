@@ -1,8 +1,8 @@
 ﻿@inherits AppModalContent
 
-@if (Group != null)
+@if (_privateEntryInstance != null)
 {
-    if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
+    if (_privateEntryInstance.CanEditField(ActiveDirectoryFields.SAMAccountName))
     {
 
 
@@ -14,7 +14,7 @@
 
 
 
-    if (Group.CanEditField(ActiveDirectoryFields.Mail))
+    if (_privateEntryInstance.CanEditField(ActiveDirectoryFields.Mail))
     {
 
 
