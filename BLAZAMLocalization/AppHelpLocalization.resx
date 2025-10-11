@@ -223,6 +223,9 @@ efforts on what our users think matters most.</value>
   <data name="No_Request_Actions_Available" xml:space="preserve">
     <value>There are no actions available to request for this entry.</value>
   </data>
+  <data name="No_Request_Fields_Available" xml:space="preserve">
+    <value>There are no fields available to request for this entry</value>
+  </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>Generating a new authenticator token will invalidate the existing one!</value>
   </data>

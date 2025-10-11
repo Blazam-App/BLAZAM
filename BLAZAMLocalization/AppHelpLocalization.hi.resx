@@ -222,6 +222,9 @@
   <data name="No_Request_Actions_Available" xml:space="preserve">
     <value>इस प्रविष्टि के लिए अनुरोध करने के लिए कोई कार्रवाई उपलब्ध नहीं है।</value>
   </data>
+  <data name="No_Request_Fields_Available" xml:space="preserve">
+    <value />
+  </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>एक नया प्रमाणक टोकन जनरेट करने से मौजूदा टोकन अमान्य हो जाएगा!</value>
   </data>

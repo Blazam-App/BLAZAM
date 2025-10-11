@@ -7,7 +7,8 @@
 
 @if (_objectActions != null && _objectActions.Count > 0 && globalPermissionRequestActions.Count > 0)
 {
-    @if (_dbAllowedActions.Any(x => x.IsActionAppropriateForObject(Entry.ObjectType)))
+    <MudText Typo="Typo.h6">@AppLocalization["Actions"]</MudText>
+    @if (_dbAllowedActions.Any(x => x.IsActionAppropriateForObject(Entry.ObjectType) && !IsActionDisabled(x)))
     {
         <MudChipSet T="ActiveDirectoryObjectAction"
                     @bind-SelectedValues="_selectedActions"
@@ -18,10 +19,9 @@
                     SelectedColor="Color.Success">
             @foreach (var action in _objectActions)
             {
-                if (action.IsActionAppropriateForObject(Entry.ObjectType) && globalPermissionRequestActions.Any(x => x.ObjectAction == action))
+                if (action.IsActionAppropriateForObject(Entry.ObjectType) && globalPermissionRequestActions.Any(x => x.ObjectAction == action) && !IsActionDisabled(action))
                 {
                     <MudChip Value="action"
-                             Disabled="@(IsActionDisabled(action))"
                              Text="@AppLocalization[action.ToString()]" />
                 }
             }
@@ -35,6 +35,33 @@
 
     }
 
+    <MudText Typo="Typo.h6">@AppLocalization["Fields"]</MudText>
+
+    @if (_dbAllowedFields.Any(x => x.IsFieldAppropriateForObject(Entry.ObjectType) && !Entry.CanEditField(x)))
+    {
+        <MudChipSet T="IActiveDirectoryField"
+                    @bind-SelectedValues="_selectedFields"
+                    SelectionMode="SelectionMode.MultiSelection"
+                    Color="Color.Info"
+                    CheckedIcon="@Icons.Material.Filled.Check"
+                    IconColor="Color.Success"
+                    SelectedColor="Color.Success">
+            @foreach (var field in _dbAllowedFields.Where(x => x.IsFieldAppropriateForObject(Entry.ObjectType) && !Entry.CanEditField(x)))
+            {
+              
+                    <MudChip Value="field"
+                             Text="@AppLocalization[field.ToString()]" />
+                
+            }
+        </MudChipSet>
+
+
+    }
+    else
+    {
+        <MudAlert Severity="Severity.Info">@AppHelpLocalization[HelpLang.No_Request_Fields_Available]</MudAlert>
+
+    }
 }
 <LoadingData Loading=LoadingData />
 @code {
@@ -44,17 +71,22 @@
 
 
 
-    IReadOnlyCollection<ActiveDirectoryObjectAction>? _selectedActions = new List<ActiveDirectoryObjectAction>();
+    IReadOnlyCollection<ActiveDirectoryObjectAction>? _selectedActions = [];
+    IReadOnlyCollection<IActiveDirectoryField>? _selectedFields = [];
 
     List<ActiveDirectoryObjectAction> _objectActions;
     List<ActiveDirectoryObjectAction> _dbAllowedActions;
-    List<GlobalPermissionRequestAction> globalPermissionRequestActions = new();
+    List<IActiveDirectoryField> _dbAllowedFields;
+    List<GlobalPermissionRequestAction> globalPermissionRequestActions = [];
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         _objectActions = ActiveDirectoryObjectAction.Assign.ToList();
         _dbAllowedActions = await Context.GlobalPermissionRequestActions.Select(x => x.ObjectAction).ToListAsync();
+        _dbAllowedFields = (await Context.ActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList();
+        _dbAllowedFields.AddRange((await Context.CustomActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList());
+        _dbAllowedFields = _dbAllowedFields.OrderBy(x => x.DisplayName).ToList();
         globalPermissionRequestActions = await Context.GlobalPermissionRequestActions.ToListAsync();
         Modal.SetOnYes(Submit);
     }
@@ -80,6 +112,20 @@
                 await PublishAndTrackNotificationAsync(adminUsers, notification);
 
                 await SendAccessRequestEmailsAsync(adminUsers, notification, action);
+            }
+            foreach (var field in _selectedFields)
+            {
+                var notification = GenerateNotification(field);
+                if (notification == null)
+                {
+                    LogNotificationError(field);
+                    LoadingData = false;
+                    continue;
+                }
+
+                await PublishAndTrackNotificationAsync(adminUsers, notification);
+
+                await SendAccessRequestEmailsAsync(adminUsers, notification, field);
             }
             SnackBarService.Success(AppLocalization[Lang.Access_request_sent]);
         }
@@ -125,10 +171,19 @@
         notificationGenerationService.PackageRequest(Entry, action, CurrentUser.State, out var notification);
         return notification;
     }
+    private NotificationMessage GenerateNotification(IActiveDirectoryField field)
+    {
+        notificationGenerationService.PackageRequest(Entry, field, CurrentUser.State, out var notification);
+        return notification;
+    }
 
     private void LogNotificationError(ActiveDirectoryObjectAction action)
     {
         Loggers.SystemLogger.Error("Failed to generate notification for action {Action} on entry {Entry}", action, Entry.CanonicalName);
+    }
+    private void LogNotificationError(IActiveDirectoryField field)
+    {
+        Loggers.SystemLogger.Error("Failed to generate notification for field {Field} on entry {Entry}", field.DisplayName, Entry.CanonicalName);
     }
 
     private async Task PublishAndTrackNotificationAsync(List<AppUser> adminUsers, NotificationMessage notification)
@@ -140,7 +195,7 @@
         }
     }
 
-    private async Task SendAccessRequestEmailsAsync(List<AppUser> adminUsers, NotificationMessage notification, ActiveDirectoryObjectAction action)
+    private async Task SendAccessRequestEmailsAsync(List<AppUser> adminUsers, NotificationMessage notification, object requestedItem)
     {
         AccessRequestEmailMessage requestEmail = new AccessRequestEmailMessage
         {
@@ -152,7 +207,7 @@
             if (EmailService.IsConfigured && !user.Email.IsNullOrEmpty())
             {
                 string body = CurrentUser.Username + " " + AppLocalization["is requesting"]
-                    + " " + AppLocalization[action.ToString()].ToString().ToLower() + " " + AppLocalization["access to"] + " " +
+                    + " " + AppLocalization[requestedItem.ToString()].ToString().ToLower() + " " + AppLocalization["access to"] + " " +
                     Entry.CanonicalName;
                 if (user.Email==null || user.Email.IsNullOrEmpty())
                 {
@@ -161,7 +216,7 @@
                 }
                 if(notification.Title == null)
                 {
-                    Loggers.SystemLogger.Information("Notification title is null for action {Action} on entry {Entry}", action, Entry.CanonicalName);
+                    Loggers.SystemLogger.Information("Notification title is null for action {Action} on entry {Entry}", requestedItem, Entry.CanonicalName);
                     continue;
                 }
                 await EmailService.SendMessage(notification.Title, requestEmail, user.Email);
@@ -174,34 +229,34 @@
         switch (action)
         {
             case ActiveDirectoryObjectAction.Assign:
-                return !IsGroupAssignable(Entry);
+                return IsGroupAssignable(Entry);
 
             case ActiveDirectoryObjectAction.Unassign:
-                return !IsGroupUnassignable(Entry);
+                return IsGroupUnassignable(Entry);
 
             case ActiveDirectoryObjectAction.Move:
-                return !Entry.CanMove;
+                return Entry.CanMove;
 
             case ActiveDirectoryObjectAction.Delete:
-                return !Entry.CanDelete;
+                return Entry.CanDelete;
 
             case ActiveDirectoryObjectAction.Disable:
-                return !IsAccountDisableable(Entry);
+                return IsAccountDisableable(Entry);
 
             case ActiveDirectoryObjectAction.Enable:
-                return !IsAccountEnableable(Entry);
+                return IsAccountEnableable(Entry);
 
             case ActiveDirectoryObjectAction.SetPassword:
-                return !IsPasswordSettable(Entry);
+                return IsPasswordSettable(Entry);
 
             case ActiveDirectoryObjectAction.Rename:
-                return !Entry.CanRename;
+                return Entry.CanRename;
 
             case ActiveDirectoryObjectAction.Create:
-                return !Entry.CanCreate;
+                return Entry.CanCreate;
 
             case ActiveDirectoryObjectAction.Unlock:
-                return !IsAccountUnlockable(Entry);
+                return IsAccountUnlockable(Entry);
 
             default:
                 return false;
@@ -224,5 +279,6 @@
         entry is IAccountDirectoryAdapter adapter && adapter.CanSetPassword;
 
     private bool IsAccountUnlockable(object entry) =>
-        entry is IAccountDirectoryAdapter adapter && adapter.CanDisable;
+        entry is IAccountDirectoryAdapter adapter 
+        && adapter.CanUnlock;
 }

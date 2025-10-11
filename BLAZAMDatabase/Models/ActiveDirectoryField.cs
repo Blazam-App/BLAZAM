@@ -111,7 +111,6 @@ namespace BLAZAM.Database.Models
                         case "postalCode":
                         case "profilePath":
                         case "scriptPath":
-                        case "site":
                         case "sn":
                         case "st":
                         case "streetAddress":
@@ -131,7 +130,7 @@ namespace BLAZAM.Database.Models
                         case "cn":
                         case "company":
                         case "department":
-                        case "description":
+                        case _desription:
                         case "displayName":
                         case "distinguishedName":
                         case "employeeId":
@@ -139,7 +138,7 @@ namespace BLAZAM.Database.Models
                         case "homePhone":
                         case "manager":
                         case "mail":
-                        case "memberOf":
+                        case _memberOf:
                         case "middleName":
                         case "objectSID":
                         case "pager":
@@ -159,11 +158,10 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.Computer:
                     switch (FieldName)
                     {
-                        case "memberOf":
-                        case "description":
+                        case _memberOf:
+                        case _desription:
                         case "operatingSystemVersion":
                         case "msLAPS-Password":
-                        case "site":
                             return true;
                     }
 
@@ -172,10 +170,9 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.Group:
                     switch (FieldName)
                     {
-                        case "description":
+                        case _desription:
                         case "mail":
-                        case "memberOf":
-                        case "site":
+                        case _memberOf:
                         case "groupType":
                             return true;
                     }
@@ -183,18 +180,13 @@ namespace BLAZAM.Database.Models
                     break;
 
                 case ActiveDirectoryObjectType.OU:
-                    switch (FieldName)
-                    {
-                        case "site":
-                            return true;
-                    }
 
                     break;
                 default:
                     switch (FieldName)
                     {
                         case "cn":
-                        case "description":
+                        case _desription:
                         case "displayName":
                         case "distinguishedName":
                         case "objectSID":
@@ -208,7 +200,7 @@ namespace BLAZAM.Database.Models
             return false;
         }
 
-
     }
+
 
 }
