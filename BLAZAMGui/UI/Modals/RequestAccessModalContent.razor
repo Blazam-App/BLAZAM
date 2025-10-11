@@ -48,10 +48,10 @@
                     SelectedColor="Color.Success">
             @foreach (var field in _dbAllowedFields.Where(x => x.IsFieldAppropriateForObject(Entry.ObjectType) && !Entry.CanEditField(x)))
             {
-              
-                    <MudChip Value="field"
-                             Text="@AppLocalization[field.ToString()]" />
-                
+
+                <MudChip Value="field"
+                         Text="@AppLocalization[field.ToString()]" />
+
             }
         </MudChipSet>
 
@@ -92,7 +92,7 @@
     }
     public async Task Submit()
     {
-        if (_selectedActions != null && _selectedActions.Count > 0)
+        if ((_selectedActions != null && _selectedActions.Count > 0) || (_selectedFields != null && _selectedFields.Count > 0))
         {
             LoadingData = true;
             await StateHasChangedAsync();
@@ -139,10 +139,19 @@
         var adminUsers = new List<AppUser>();
         await Parallel.ForEachAsync(users, async (user, cancellationToken) =>
         {
-            var adUser = Directory.Users.FindUserBySID(user.UserGUID);
-            var userState = new ApplicationUserState(DbFactory);
             try
             {
+                if (user.IsAdminOrDemo())
+                {
+                    lock (adminUsers)
+                    {
+                        adminUsers.Add(user);
+                        return; 
+                    } 
+                }
+                var adUser = Directory.Users.FindUserBySID(user.UserGUID);
+                var userState = new ApplicationUserState(DbFactory);
+
                 var appUser = await AppAuthenticationStateProvider.CreateDirectoryPrincipal(userState, adUser);
                 if (appUser == null)
                 {
@@ -150,7 +159,7 @@
                     return;
                 }
                 userState.User = appUser;
-                if (userState.IsSuperAdmin || user.IsAdminOrDemo())
+                if (userState.IsSuperAdmin)
                 {
                     lock (adminUsers)
                     {
@@ -161,6 +170,10 @@
             catch (DeniedLoginException)
             {
                 //Ignore users who can't login
+            }
+            catch(Exception ex)
+            {
+               Loggers.SystemLogger.Error(ex,"Error attempting to create access request.");
             }
         });
         return adminUsers;
@@ -209,12 +222,12 @@
                 string body = CurrentUser.Username + " " + AppLocalization["is requesting"]
                     + " " + AppLocalization[requestedItem.ToString()].ToString().ToLower() + " " + AppLocalization["access to"] + " " +
                     Entry.CanonicalName;
-                if (user.Email==null || user.Email.IsNullOrEmpty())
+                if (user.Email == null || user.Email.IsNullOrEmpty())
                 {
                     Loggers.SystemLogger.Information("User {Username} has no email configured, skipping email notification.", user.Username);
                     continue;
                 }
-                if(notification.Title == null)
+                if (notification.Title == null)
                 {
                     Loggers.SystemLogger.Information("Notification title is null for action {Action} on entry {Entry}", requestedItem, Entry.CanonicalName);
                     continue;
@@ -279,6 +292,6 @@
         entry is IAccountDirectoryAdapter adapter && adapter.CanSetPassword;
 
     private bool IsAccountUnlockable(object entry) =>
-        entry is IAccountDirectoryAdapter adapter 
+        entry is IAccountDirectoryAdapter adapter
         && adapter.CanUnlock;
 }
