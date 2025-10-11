@@ -1,6 +1,16 @@
 ﻿@using BLAZAM.Global.Events
 @inherits AppComponentBase
-<MudText Typo="Typo.h4">@AppLocalization[Lang.Rules] <AppDocumentationButton Page="/admin/rules" /></MudText>
+<MudStack Row="true">
+    <MudText Typo="Typo.h4">
+        @AppLocalization[Lang.Rules] <AppDocumentationButton Page="/admin/rules" />
+    </MudText>
+    <MudSpacer/>
+    <AppIconButton
+        Tooltip="@AppLocalization[Lang.Global_Settings]"
+         Size=Size.Large
+        Icon="@Icons.Material.Filled.Settings"
+        OnClick="@(()=>{_=_settingsModal.ShowAsync();})"/>
+</MudStack>
 <MudAlert Severity="Severity.Warning" Variant="Variant.Filled" Class="mb-3">
     Rules are still in Beta, some filters/actions may not work and action failure is untracked.
     <br /><br />
@@ -57,8 +67,13 @@
 
         </MudItem>
     </MudGrid>
+
+    <AppModal @ref="_settingsModal">
+        <GlobalRuleSettingsModalContent />
+        </AppModal>
 </CascadingValue>
 @code {
+    AppModal? _settingsModal;
     bool _compactView;
     public AppDelegate? CreateRule { get; set; }
     [Parameter]
