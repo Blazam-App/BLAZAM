@@ -36,6 +36,22 @@ namespace BLAZAM.ActiveDirectory
         }
         private CancellationTokenSource? _connectionCTS = new();
 
+        public string DomainSid
+        {
+            get
+            {
+                if (RootDirectoryEntry != null)
+                {
+                    var sidBytes = RootDirectoryEntry.Properties["objectSid"].Value as byte[];
+                    if (sidBytes != null)
+                    {
+                        var sid = new SecurityIdentifier(sidBytes, 0);
+                        return sid.ToString();
+                    }
+                }
+                return string.Empty;
+            }
+        }
         private const string LDAP_PROTO = "LDAP://";
         private readonly WmiFactory _wmiFactory;
         private readonly IEncryptionService _encryption;

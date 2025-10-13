@@ -2,7 +2,6 @@
 using System.DirectoryServices.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
@@ -98,6 +97,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         List<DomainController> DomainControllers { get; }
         DomainControllerEventLogReader EventLogReader { get; }
         Exception? ConnectionException { get; set; }
+        string DomainSid { get; }
 
         /// <summary>
         /// Searches for an Active Directory object by it's SID
