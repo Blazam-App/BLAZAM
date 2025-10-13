@@ -97,7 +97,6 @@ namespace BLAZAM.Database.Models
                         case "department":
                         case _desription:
                         case "employeeId":
-                        case "givenname":
                         case "homeDirectory":
                         case "homeDrive":
                         case "homePhone":
@@ -105,13 +104,11 @@ namespace BLAZAM.Database.Models
                         case "manager":
                         case "mail":
                         case _memberOf:
-                        case "middleName":
                         case "pager":
                         case "physicalDeliveryOffice":
                         case "postalCode":
                         case "profilePath":
                         case "scriptPath":
-                        case "sn":
                         case "st":
                         case "streetAddress":
                         case "telephoneNumber":
@@ -127,24 +124,20 @@ namespace BLAZAM.Database.Models
                     switch (FieldName)
                     {
                         case "l":
-                        case "cn":
                         case "company":
                         case "department":
                         case _desription:
                         case "displayName":
                         case "distinguishedName":
                         case "employeeId":
-                        case "givenname":
                         case "homePhone":
                         case "manager":
                         case "mail":
                         case _memberOf:
-                        case "middleName":
                         case "objectSID":
                         case "pager":
                         case "physicalDeliveryOffice":
                         case "postalCode":
-                        case "sn":
                         case "st":
                         case "streetAddress":
                         case "telephoneNumber":
@@ -185,11 +178,7 @@ namespace BLAZAM.Database.Models
                 default:
                     switch (FieldName)
                     {
-                        case "cn":
                         case _desription:
-                        case "displayName":
-                        case "distinguishedName":
-                        case "objectSID":
                             return true;
                     }
 
