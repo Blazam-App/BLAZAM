@@ -173,7 +173,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         }
 
-        public bool IsAMemberOf(IADGroup? group, IGroupableDirectoryAdapter? userOrGroup, bool v, bool ignoreDisabledUsers = true)
+        public bool IsANestedMemberOf(IADGroup? group, IGroupableDirectoryAdapter? userOrGroup, bool v, bool ignoreDisabledUsers = true)
         {
             if (group == null) return false;
             return new ADSearch(Directory)
