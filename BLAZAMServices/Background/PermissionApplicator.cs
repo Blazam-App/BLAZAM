@@ -77,7 +77,7 @@ namespace BLAZAM.Services.Background
 
                     if (permissiondelegate != null
                         &&
-                        (permissiondelegate is IADGroup && directoryUser.IsAMemberOf(permissiondelegate as IADGroup)
+                        (permissiondelegate is IADGroup && directoryUser.IsANestedMemberOf(permissiondelegate as IADGroup)
                         || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
                     {
                         webUser.PermissionDelegates.Add(l);
