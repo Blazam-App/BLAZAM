@@ -17,7 +17,7 @@
     {
         foreach (var message in messages.Where(m => !m.IsRead).ToList())
         {
-            @if (message.Notification.MessageType == MessageType.AccessRequest)
+            @if (message.Notification.MessageType == MessageType.EditAccessRequest)
             {
                 <RequestNotificationMessageListItem Notification="@message" />
             }

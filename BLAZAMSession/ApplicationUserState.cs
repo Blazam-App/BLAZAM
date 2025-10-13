@@ -134,7 +134,7 @@ namespace BLAZAM.Session
             {
                 using var context = await _dbFactory.CreateDbContextAsync();
                 var messages = await context.UserNotifications
-                    .Where(un => un.User.Id == Id && !un.IsRead && un.Notification.MessageType != MessageType.AccessRequest)
+                    .Where(un => un.User.Id == Id && !un.IsRead && un.Notification.MessageType != MessageType.EditAccessRequest)
                     .ToListAsync();
 
                 if (!messages.Any()) return true; // No messages to mark, consider it a success
