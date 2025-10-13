@@ -12,6 +12,7 @@ using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Services.Events;
 using BLAZAM.Session;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace BLAZAM.Services.Background
@@ -32,6 +33,10 @@ namespace BLAZAM.Services.Background
         public RulesProcessor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
             Interval = TimeSpan.FromMinutes(5);
+            Task.Delay(15000).ContinueWith((state) =>
+            {
+                _ = SeedExcludedGroups();
+            });
         }
 
         /// <summary>
@@ -43,8 +48,11 @@ namespace BLAZAM.Services.Background
             if (!_initialized)
             {
                 ApplicationEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChanged;
+
                 _initialized = true;
+
             }
+
             ScheduleRules();
         }
 
@@ -103,7 +111,7 @@ namespace BLAZAM.Services.Background
         /// <summary>
         /// Handles directory entry change events and processes applicable rules.
         /// </summary>
-        private void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedArgs args)
+        private async void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedArgs args)
         {
             if (sender != null && sender.Equals(this))
             {
@@ -111,7 +119,7 @@ namespace BLAZAM.Services.Background
             }
             if (args.EventType != ApplicationEventType.Search)
             {
-                if (IsApplicationIdentity(args.Entry))
+                if (await ShouldSkipEntry(args.Entry))
                 {
                     return;
                 }
@@ -157,12 +165,12 @@ namespace BLAZAM.Services.Background
             scheduledRuleJob.ThreadPriority = ThreadPriority.Lowest;
             List<IDirectoryEntryAdapter> filteredEntries;
 
-            filteredEntries = GetFilteredEntries(rule);
+            filteredEntries = await GetFilteredEntries(rule);
 
             // Execute actions for each matched entry
             foreach (var entry in filteredEntries)
             {
-                if (IsApplicationIdentity(entry))
+                if (await ShouldSkipEntry(entry))
                 {
                     continue;
                 }
@@ -185,6 +193,71 @@ namespace BLAZAM.Services.Background
             return scheduledRuleJob;
         }
 
+        private async Task SeedExcludedGroups()
+        {
+            using var context = await dbFactory.CreateDbContextAsync();
+            var existing = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
+            if (existing == null)
+            {
+                existing = new();
+
+
+                // Try to resolve the actual SIDs for the current domain/forest
+                using var adContext = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+                var domainAdminsGroup = adContext.Groups.FindGroupBySID(adContext.DomainSid + "-512");
+                var domainControllersGroup = adContext.Groups.FindGroupBySID(adContext.DomainSid + "-516");
+                var enterpriseDCGroup = adContext.Groups.FindGroupBySID("S-1-5-9");
+                var enterpriseAdminsGroup = adContext.Groups.FindGroupBySID(adContext.DomainSid + "-519");
+
+                if (domainAdminsGroup != null)
+                {
+                    existing.ExcludedGroups.Add(new() { Sid = domainAdminsGroup.SID.ToSidString() });
+                }
+                if (domainControllersGroup != null)
+                {
+                    existing.ExcludedGroups.Add(new() { Sid = domainControllersGroup.SID.ToSidString() });
+                }
+                if (enterpriseAdminsGroup != null)
+                {
+                    existing.ExcludedGroups.Add(new AutomationRuleExcludedGroupSid() { Sid = enterpriseAdminsGroup.SID.ToSidString() });
+                }
+                if (enterpriseDCGroup != null)
+                {
+                    existing.ExcludedGroups.Add(new AutomationRuleExcludedGroupSid() { Sid = enterpriseDCGroup.SID.ToSidString() });
+                }
+
+                context.GlobalAutomationRuleSettings.Add(existing);
+                await context.SaveChangesAsync();
+            }
+        }
+        private async Task<bool> ShouldSkipEntry(IDirectoryEntryAdapter entry)
+        {
+            using var context = await dbFactory.CreateDbContextAsync();
+            using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+            if (IsApplicationIdentity(entry))
+            {
+                return true;
+            }
+            if (entry is IGroupableDirectoryAdapter groupableEntry)
+            {
+                var ruleSetttings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
+                if (ruleSetttings == null)
+                {
+                    await SeedExcludedGroups();
+                    ruleSetttings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
+                }
+                foreach (var groupSid in ruleSetttings.ExcludedGroups)
+                {
+                    var group = directory.Groups.FindGroupBySID(groupSid.Sid);
+                    if (groupableEntry.IsANestedMemberOf(group))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
         /// <summary>
         /// Determines if the given directory entry represents the application identity,
         /// to prevent rules from acting on the application's own account.
@@ -209,7 +282,7 @@ namespace BLAZAM.Services.Background
         /// </summary>
         /// <param name="rule">The automation rule containing filters.</param>
         /// <returns>List of matching directory entries.</returns>
-        public List<IDirectoryEntryAdapter> GetFilteredEntries(AutomationRule rule)
+        public async Task<List<IDirectoryEntryAdapter>> GetFilteredEntries(AutomationRule rule)
         {
             List<IDirectoryEntryAdapter> matchedEntries = new();
             using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
@@ -223,7 +296,16 @@ namespace BLAZAM.Services.Background
                     }
                 }
             }
-            return matchedEntries;
+            List<IDirectoryEntryAdapter> matchedEntries2 = new();
+
+            foreach (var entry in matchedEntries)
+            {
+                if (!(await ShouldSkipEntry(entry)))
+                {
+                    matchedEntries2.Add(entry);
+                }
+            }
+            return matchedEntries2;
         }
         private static void HandleEnabledDisabledFilter(AutomationRuleOrFilter orFilter, ADSearch search)
         {
@@ -453,11 +535,12 @@ namespace BLAZAM.Services.Background
                 if (group != null)
                 {
                     target = group;
-                    if (groupableEntry.IsAMemberOf(group))
+                    if (groupableEntry.IsANestedMemberOf(group))
                     {
                         eventType = ApplicationEventType.All;
                         return;
-                    };
+                    }
+                    ;
                     groupableEntry.AssignTo(group);
                 }
             }
@@ -474,7 +557,7 @@ namespace BLAZAM.Services.Background
                 if (group != null)
                 {
                     target = group;
-                    if (!groupableEntry.IsAMemberOf(group))
+                    if (!groupableEntry.IsANestedMemberOf(group))
                     {
                         eventType = ApplicationEventType.All;
                         return;
