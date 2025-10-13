@@ -230,7 +230,7 @@
            LoadingData = true;
            using var context = await DbFactory.CreateDbContextAsync();
            Rule = await context.AutomationRules.FirstAsync(r => r.Id == Rule.Id);
-           filteredEntries = RulesProcessor.GetFilteredEntries(Rule);
+           filteredEntries = await RulesProcessor.GetFilteredEntries(Rule);
            LoadingData = false;
            LoadFilteredEntries();
 
@@ -246,7 +246,7 @@
         _loadingFilteredEntries = true;
         await StateHasChangedAsync();
 
-        filteredEntries = RulesProcessor.GetFilteredEntries(Rule);
+        filteredEntries = await RulesProcessor.GetFilteredEntries(Rule);
         _loadingFilteredEntries = false;
         await StateHasChangedAsync();
     });
