@@ -5,7 +5,7 @@ namespace BLAZAM.Database.Models.User
 {
 
     public enum NotificationLevel { Info, Success, Warning, Error }
-    public enum MessageType { Notification, AccessRequest }
+    public enum MessageType { Notification, EditAccessRequest, ReadAccessRequest }
     /// <summary>
     /// A notification message for the web user. These are
     /// placed under the user's notifications panel
