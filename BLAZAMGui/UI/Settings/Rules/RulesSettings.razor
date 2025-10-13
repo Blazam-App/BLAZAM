@@ -11,13 +11,10 @@
         Icon="@Icons.Material.Filled.Settings"
         OnClick="@(()=>{_=_settingsModal.ShowAsync();})"/>
 </MudStack>
-<MudAlert Severity="Severity.Warning" Variant="Variant.Filled" Class="mb-3">
-    Rules are still in Beta, some filters/actions may not work and action failure is untracked.
+<MudAlert Severity="Severity.Info" Variant="Variant.Filled" Class="mb-3">
+    Rules will never run against the account provided to Blazam.
     <br /><br />
-    Additionally: Rules currently have no protection against a rule disabling every account in the domain.<br />
-    Caution is advised. Check the "Matches" list to ensure rule filtering is as intended.
-    <br /><br />
-    Therefore, rules are not recommended to be used on production environments at this time.
+    Use the Rule Settings button to configure excluded groups you want to protect from rule execution.
 </MudAlert>
 <CascadingValue Value="ViewFilter">
     <MudGrid Class="border-1">
