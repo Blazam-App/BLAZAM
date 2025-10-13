@@ -104,7 +104,7 @@ namespace BLAZAM.Database.Context
         }
 
         //Data tables
-        public virtual DbSet<GenericSidList> LockedOutUsers { get; set; }
+        public virtual DbSet<LockedOutUser> LockedOutUsers { get; set; }
 
         //App Settings
         public virtual DbSet<AppSettings> AppSettings { get; set; }
@@ -161,6 +161,7 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<PermissionDelegate> PermissionDelegate { get; set; }
         public virtual DbSet<PermissionMapping> PermissionMap { get; set; }
         public virtual DbSet<GlobalPermissionSettings> GlobalPermissionSettings { get; set; }
+        public virtual DbSet<GlobalAutomationRuleSettings> GlobalAutomationRuleSettings { get; set; }
         public virtual DbSet<GlobalPermissionRequestAction> GlobalPermissionRequestActions { get; set; }
 
         public virtual DbSet<ChatRoom> ChatRooms { get; set; }

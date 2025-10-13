@@ -25,7 +25,7 @@ namespace BLAZAM.Services.Background
         {
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
 
-            List<GenericSidList> usersInTable = new();
+            List<LockedOutUser> usersInTable = new();
 
             List<IADUser> lockedOutUsers = new();
             Job executeJob = new(AppLocalization["Monitor Locked Out Users"]);
@@ -50,7 +50,7 @@ namespace BLAZAM.Services.Background
 
         }
 
-        private bool AnalyzeUsers(IActiveDirectoryContext directory, List<GenericSidList> usersInTable, List<IADUser> lockedOutUsers)
+        private bool AnalyzeUsers(IActiveDirectoryContext directory, List<LockedOutUser> usersInTable, List<IADUser> lockedOutUsers)
         {
             using var context = dbFactory.CreateDbContext();
 
@@ -61,7 +61,7 @@ namespace BLAZAM.Services.Background
             return true;
         }
 
-        private void AddNewlyLockedOutUsers(IDatabaseContext context, List<GenericSidList> usersInTable, List<IADUser> lockedOutUsers)
+        private void AddNewlyLockedOutUsers(IDatabaseContext context, List<LockedOutUser> usersInTable, List<IADUser> lockedOutUsers)
         {
             foreach (var user in lockedOutUsers.Where(u => u != null && u.LockedOut))
             {
@@ -88,7 +88,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private void RemoveUnlockedUsers(IDatabaseContext context, IActiveDirectoryContext directory, List<GenericSidList> usersInTable)
+        private void RemoveUnlockedUsers(IDatabaseContext context, IActiveDirectoryContext directory, List<LockedOutUser> usersInTable)
         {
             foreach (var user in usersInTable.Where(u => u != null))
             {
