@@ -40,6 +40,7 @@
         public static readonly string User_locked_out = "User locked out";
         public static readonly string Group_member_removed = "Group member removed";
         public static readonly string Object_deleted = "Object deleted";
+        public static readonly string Excluded_Groups = "Excluded Groups";
         public static readonly string Entry_modified = "Entry modified";
         public static readonly string Username_is_missing = "Username is missing";
         public static readonly string Password_is_missing = "Password is missing";
