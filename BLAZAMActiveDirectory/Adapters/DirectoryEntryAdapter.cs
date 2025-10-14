@@ -387,17 +387,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
-        public virtual byte[]? Guid
+        public virtual Guid? Guid
         {
             get
             {
                 var bytes = GetAttribute<byte[]>("objectGUID");
-
-                return bytes;
+                var guid = bytes.ToGuid();
+                return guid;
             }
             set
             {
-                SetAttribute("objectGUID", value);
+                SetAttribute("objectGUID", value?.ToByteArray());
             }
 
         }

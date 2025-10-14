@@ -41,7 +41,7 @@
         /// <remarks>
         /// Although a list, the GUI currently restricts this to one item
         /// </remarks>
-        public List<AutomationRuleGroupSid> GroupSids { get; set; } = new();
+        public List<AutomationRuleGroupGuid> GroupGuids { get; set; } = new();
         public Guid ActionGuid { get; set; }
 
         public override bool Equals(object? obj)

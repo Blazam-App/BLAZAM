@@ -1,21 +1,21 @@
 ﻿@inherits AppModalContent
 <MudText Typo="Typo.h6">@AppLocalization[Lang.Excluded_Groups]</MudText>
 <MudList T="string">
-    @foreach (var sid in GroupSids)
+    @foreach (var sid in GroupGuids)
     {
         <MudListItem Dense="true">
             <MudStack Row=true>
-                    <DirectoryEntryLink Class="my-auto" Sid="@sid.Sid" />
+                    <DirectoryEntryLink Class="my-auto" Guid="@sid.Guid" />
                 <MudSpacer />
                 <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                Color="Color.Error"
                                OnClick="async ()=>
                                 {
-                                    GroupSids.Remove(sid);
+                                    GroupGuids.Remove(sid);
                                     var settings = await Context.GlobalAutomationRuleSettings.Include(x => x.ExcludedGroups).FirstOrDefaultAsync();
                                     if (settings != null)
                                     {
-                                        settings.ExcludedGroups = GroupSids;
+                                        settings.ExcludedGroups = GroupGuids;
                                         await Context.SaveChangesAsync();
                                     }
                                     await InvokeAsync(StateHasChanged);
@@ -31,13 +31,13 @@
 <MudStack Row=true>
     <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group" @bind-SelectedResult=_selectedGroup @ref=_searchBox />
     <AppIconButton Icon="@Icons.Material.Filled.Add"
-                   OnClick="@(()=>{GroupSids.Add(new(){Sid=_selectedGroup?.SID.ToSidString()});_selectedGroup=null;_searchBox.Clear();})" />
+                   OnClick="@(()=>{GroupGuids.Add(new(){Guid=_selectedGroup.Guid.Value});_selectedGroup=null;_searchBox.Clear();})" />
 </MudStack>
 
 
 @code {
     ADAutoComplete? _searchBox;
-    List<AutomationRuleExcludedGroupSid> GroupSids = [];
+    List<AutomationRuleExcludedGroupGuid> GroupGuids = [];
     IDirectoryEntryAdapter? _selectedGroup;
     protected override async Task OnInitializedAsync()
     {
@@ -48,7 +48,7 @@
         var settings = await Context.GlobalAutomationRuleSettings.Include(x => x.ExcludedGroups).FirstOrDefaultAsync();
         if (settings != null)
         {
-            GroupSids = settings.ExcludedGroups.ToList();
+            GroupGuids = settings.ExcludedGroups.ToList();
         }
     }
     private async Task SaveChanges()
@@ -63,7 +63,7 @@
                 await Context.GlobalAutomationRuleSettings.AddAsync(existing);
             }
             existing.ExcludedGroups.Clear();
-            existing.ExcludedGroups.AddRange(GroupSids);
+            existing.ExcludedGroups.AddRange(GroupGuids);
             var result = await Context.SaveChangesAsync();
             if (result > 0)
             {

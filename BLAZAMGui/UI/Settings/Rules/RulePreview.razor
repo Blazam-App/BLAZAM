@@ -101,16 +101,16 @@
                                       Label="@AppLocalization[Lang.Value]"
                                       Value=@action.FieldValues[0].Value?.ToString() />
                     }
-                    @if (action.GroupSids.Count > 0)
+                    @if (action.GroupGuids.Count > 0)
                     {
                         <MudTextField T="string"
                                       ReadOnly="true"
                                       Label="@AppLocalization[Lang.Group]"
-                                      Value=@action.GroupSids.FirstOrDefault()?.GroupSid.ToString() />
+                                      Value=@action.GroupGuids.FirstOrDefault()?.GroupGuid.ToString() />
                         <MudTextField T="string"
                                       ReadOnly="true"
                                       Label="@AppLocalization[Lang.Assign]"
-                                      Value=@action.GroupSids.FirstOrDefault()?.Assigned.ToString() />
+                                      Value=@action.GroupGuids.FirstOrDefault()?.Assigned.ToString() />
                     }
                 </MudStack>
             }

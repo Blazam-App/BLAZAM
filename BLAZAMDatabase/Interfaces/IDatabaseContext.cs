@@ -264,7 +264,7 @@ namespace BLAZAM.Database.Interfaces
         /// <summary>
         /// The group SIDs used in automation rules for targeting groups.
         /// </summary>
-        DbSet<AutomationRuleGroupSid> AutomationRuleGroupSids { get; set; }
+        DbSet<AutomationRuleGroupGuid> AutomationRuleGroupGuids { get; set; }
 
         /// <summary>
         /// The actions performed by automation rules.

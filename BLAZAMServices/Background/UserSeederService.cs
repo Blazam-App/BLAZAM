@@ -49,7 +49,7 @@ namespace BLAZAM.Services.Background
 
                     foreach (var deleg in delegates)
                     {
-                        var entry = activeDirectoryContext.FindEntryBySID(deleg.DelegateSid);
+                        var entry = activeDirectoryContext.FindGlobalEntryBySid(deleg.DelegateSid);
                         ProcessDirectoryEntry(entry);
                     }
                 }

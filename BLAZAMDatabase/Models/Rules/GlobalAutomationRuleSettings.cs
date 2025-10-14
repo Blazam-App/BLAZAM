@@ -2,7 +2,7 @@
 {
     public class GlobalAutomationRuleSettings : AppDbSetBase
     {
-        public List<AutomationRuleExcludedGroupSid> ExcludedGroups { get; set; } = [];
+        public List<AutomationRuleExcludedGroupGuid> ExcludedGroups { get; set; } = [];
 
 
     }

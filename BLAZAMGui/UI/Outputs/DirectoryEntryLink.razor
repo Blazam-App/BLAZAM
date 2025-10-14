@@ -22,9 +22,13 @@
     [Parameter]
     public Align Align{ get; set; }
 
-  
+
     [Parameter]
     public string? Sid { get; set; }
+
+
+    [Parameter]
+    public Guid? Guid { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -36,13 +40,21 @@
     {
 
         await base.OnParametersSetAsync();
-        if (Entry == null && !Sid.IsNullOrEmpty())
-        {      
-            LoadingData = true;
-            Entry = Directory.FindEntryBySid(Sid); 
-            LoadingData = false;
+        if (Entry == null)
+        {
+            if (!Sid.IsNullOrEmpty())
+            {
+                LoadingData = true;
+                Entry = Directory.FindGlobalEntryBySid(Sid);
+                LoadingData = false;
+            }else if(Guid!=null && Guid != System.Guid.Empty)
+            {
+                LoadingData = true;
+                Entry = Directory.FindGlobalEntryByGuid(Guid.Value);
+                LoadingData = false;
+            }
         }
-  
+
 
     }
     [Parameter]

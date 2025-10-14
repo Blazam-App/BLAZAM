@@ -238,7 +238,7 @@ namespace BLAZAM.Helpers
         {
             modelBuilder.Entity<AutomationRuleAction>(entity =>
             {
-                entity.Navigation(e => e.GroupSids).AutoInclude();
+                entity.Navigation(e => e.GroupGuids).AutoInclude();
                 entity.Navigation(e => e.FieldValues).AutoInclude();
             });
         }

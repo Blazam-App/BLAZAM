@@ -43,7 +43,7 @@ else
     {
         await base.OnInitializedAsync();
 
-        _privateComputerInstance = Directory.FindEntryBySid(Computer.SID.ToSidString()) as IADComputer;
+        _privateComputerInstance = Directory.FindGlobalEntryBySid(Computer.SID.ToSidString()) as IADComputer;
         _privateComputerInstance.OnOnlineChanged += (async (state) => { await StateHasChangedAsync(); });
         SaveDisabled = false;
         Modal.SetOnYes(SaveChanges);

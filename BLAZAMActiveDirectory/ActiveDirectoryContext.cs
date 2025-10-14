@@ -840,34 +840,38 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error("Error attempting to restore " + model.CanonicalName + "{@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Error attempting to restore {@Entry}", model.CanonicalName);
                 }
             }
             return false;
 
         }
 
-        public IDirectoryEntryAdapter? FindEntryBySID(byte[] sid) => FindEntryBySid(sid.ToSidString());
-        public IDirectoryEntryAdapter? FindEntryBySid(string sid)
+        public IDirectoryEntryAdapter? FindGlobalEntryBySid(byte[] sid) => FindGlobalEntryBySid(sid.ToSidString());
+        public IDirectoryEntryAdapter? FindGlobalEntryBySid(string sid)
         {
-            var searcher = new ADSearch(this);
-            searcher.SearchRoot = RootDirectoryEntry;
+            var searcher = new ADSearch(this)
+            {
+                SearchRoot = RootDirectoryEntry
+            };
             searcher.Fields.SID = sid;
             var result = searcher.Search().FirstOrDefault();
             return result;
         }
-        public IDirectoryEntryAdapter? FindEntryByGuid(string guid) => FindEntryByGuid(Guid.Parse(guid).ToByteArray());
+        public IDirectoryEntryAdapter? FindGlobalEntryByGuid(string guid) => FindGlobalEntryByGuid(Guid.Parse(guid).ToByteArray());
 
-        public IDirectoryEntryAdapter? FindEntryByGuid(byte[] guid)
+        public IDirectoryEntryAdapter? FindGlobalEntryByGuid(Guid guid) => FindGlobalEntryByGuid(guid.ToByteArray());
+
+        public IDirectoryEntryAdapter? FindGlobalEntryByGuid(byte[] guid)
         {
             if (guid == null) return null;
             return new ADSearch(this)
             {
-                ObjectTypeFilter = ActiveDirectoryObjectType.Contact,
+                SearchRoot = RootDirectoryEntry,
                 Fields = new() { GUID = guid },
                 ExactMatch = true
 
-            }.Search<ADContact, IADContact>().FirstOrDefault();
+            }.Search().FirstOrDefault();
         }
 
         public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn)

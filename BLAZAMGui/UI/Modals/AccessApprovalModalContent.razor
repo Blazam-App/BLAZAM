@@ -96,7 +96,7 @@
         LoadingData = true;
 
         var _creator = await Context.UserSettings.FirstOrDefaultAsync(x => x.Id == Request.Notification.CreatorId);
-        var _creatorAD = Directory.FindEntryBySid(_creator.UserGUID);
+        var _creatorAD = Directory.FindGlobalEntryBySid(_creator.UserGUID);
 
         _delegate = await PrepareDelegate(_creator, _creatorAD);
         _target = Directory.GetDirectoryEntryByDN(Request.Notification.TargetDN)!;

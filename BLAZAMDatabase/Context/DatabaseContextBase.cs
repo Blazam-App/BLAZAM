@@ -120,7 +120,7 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<AutomationRuleActionFieldValue> AutomationRuleFieldValues { get; set; }
         public virtual DbSet<AutomationRuleOrFilter> AutomationRuleOrFilter { get; set; }
         public virtual DbSet<AutomationRuleAndFilter> AutomationRuleAndFilters { get; set; }
-        public virtual DbSet<AutomationRuleGroupSid> AutomationRuleGroupSids { get; set; }
+        public virtual DbSet<AutomationRuleGroupGuid> AutomationRuleGroupGuids { get; set; }
         public virtual DbSet<AutomationRuleAction> AutomationRuleActions { get; set; }
 
 

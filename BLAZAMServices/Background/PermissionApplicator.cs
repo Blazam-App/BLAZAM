@@ -38,7 +38,7 @@ namespace BLAZAM.Services.Background
                 var sid = userState.Preferences?.UserGUID;
                 if (!sid.IsNullOrEmpty() && sid.StartsWith('S'))
                 {
-                    var adObj = _directory.FindEntryBySID(sid.ToSidByteArray());
+                    var adObj = _directory.FindGlobalEntryBySid(sid.ToSidByteArray());
                     if (adObj is IADUser adUser)
                     {
                         LoadPermissions(userState, adUser);
@@ -73,7 +73,7 @@ namespace BLAZAM.Services.Background
                 var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).ToListAsync();
                 foreach (var l in cursor)
                 {
-                    var permissiondelegate = ActiveDirectoryContext.SystemInstance.FindEntryBySID(l.DelegateSid);
+                    var permissiondelegate = ActiveDirectoryContext.SystemInstance.FindGlobalEntryBySid(l.DelegateSid);
 
                     if (permissiondelegate != null
                         &&

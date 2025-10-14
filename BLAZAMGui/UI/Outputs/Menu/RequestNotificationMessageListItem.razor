@@ -126,7 +126,7 @@ else
                 _creatorAppUser = appUser;
                 if (!appUser.IsAdminOrDemo())
                 {
-                    var directoryUser = Directory.FindEntryBySid(appUser.UserGUID);
+                    var directoryUser = Directory.FindGlobalEntryBySid(appUser.UserGUID);
                     if (directoryUser != null && directoryUser is IADUser)
                     {
                         _creator = directoryUser as IADUser;

@@ -24,7 +24,7 @@
     {
         simRan = false;
         await StateHasChangedAsync();
-        simTarget = Directory.FindEntryBySID(Target.SID);
+        simTarget = Directory.FindGlobalEntryBySid(Target.SID);
         var permissionApplicator = new PermissionApplicator(UserStateService, DbFactory, Directory);
         var simUser = new ApplicationUserState(DbFactory);
         await permissionApplicator.LoadPermissions(simUser, selectedUser as IADUser);

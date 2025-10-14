@@ -92,7 +92,7 @@ namespace BLAZAM.Services.Background
         {
             foreach (var user in usersInTable.Where(u => u != null))
             {
-                var adUser = directory.FindEntryBySid(user.Sid) as IADUser;
+                var adUser = directory.FindGlobalEntryBySid(user.Sid) as IADUser;
                 if (adUser != null && !adUser.LockedOut)
                 {
                     var existing = context.LockedOutUsers.FirstOrDefault(x => x.Sid == user.Sid);
