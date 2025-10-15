@@ -2,43 +2,53 @@
 <MudText Align="Align.End">
     @AppLocalization[Lang.Nested_Members]
 </MudText>
-<MudText Align="Align.End" Typo="Typo.body2">
-    @AppLocalization[Lang.Members]: @Members.Count
-</MudText>
-@if (Members.Any(m => m is IADGroup))
+@if (LoadingData)
 {
-
-    <MudText Align="Align.End" Typo="Typo.body2">
-        @AppLocalization[Lang.Groups]: @Members.Count(m => m is IADGroup)
-    </MudText>
+ <MudContainer Class="pt-10 align-items-end relative">
+     <LoadingData Loading=LoadingData DarkBackground=false/>
+ </MudContainer>
+ 
 }
-@if (Members.Any(m => m is IADUser))
+else
 {
-
     <MudText Align="Align.End" Typo="Typo.body2">
-        @AppLocalization[Lang.Users]: @Members.Count(m => m is IADUser)
+        @AppLocalization[Lang.Members]: @Members.Count
     </MudText>
-}
-@if (Members.Any(m => m is IADComputer))
-{
+    @if (Members.Any(m => m is IADGroup))
+    {
 
-    <MudText Align="Align.End" Typo="Typo.body2">
-        @AppLocalization[Lang.Computers]: @Members.Count(m => m is IADComputer)
-    </MudText>
-}
-@if (Members.Any(m => m is IADPrinter))
-{
+        <MudText Align="Align.End" Typo="Typo.body2">
+            @AppLocalization[Lang.Groups]: @Members.Count(m => m is IADGroup)
+        </MudText>
+    }
+    @if (Members.Any(m => m is IADUser))
+    {
 
-    <MudText Align="Align.End" Typo="Typo.body2">
-        @AppLocalization[Lang.Printers]: @Members.Count(m => m is IADPrinter)
-    </MudText>
-}
-@if (Members.Any(m => m is IADContact))
-{
+        <MudText Align="Align.End" Typo="Typo.body2">
+            @AppLocalization[Lang.Users]: @Members.Count(m => m is IADUser)
+        </MudText>
+    }
+    @if (Members.Any(m => m is IADComputer))
+    {
 
-    <MudText Align="Align.End" Typo="Typo.body2">
-        @AppLocalization[Lang.Contacts]: @Members.Count(m => m is IADContact)
-    </MudText>
+        <MudText Align="Align.End" Typo="Typo.body2">
+            @AppLocalization[Lang.Computers]: @Members.Count(m => m is IADComputer)
+        </MudText>
+    }
+    @if (Members.Any(m => m is IADPrinter))
+    {
+
+        <MudText Align="Align.End" Typo="Typo.body2">
+            @AppLocalization[Lang.Printers]: @Members.Count(m => m is IADPrinter)
+        </MudText>
+    }
+    @if (Members.Any(m => m is IADContact))
+    {
+
+        <MudText Align="Align.End" Typo="Typo.body2">
+            @AppLocalization[Lang.Contacts]: @Members.Count(m => m is IADContact)
+        </MudText>
+    }
 }
 @code {
     [Parameter]
@@ -53,9 +63,9 @@
         {
             Task.Run(() =>
             {
-
+                LoadingData = true;
                 Members = Group.NestedMembers.ToList();
-                InvokeStateHasChanged();
+                LoadingData = false;
             });
         }
     }
