@@ -134,7 +134,9 @@ namespace BLAZAM.Logger
             var systemLoggerBuilder = CreateLogBuilder()
                     .WriteTo.File(logPath + @"system\system.txt",
                     rollingInterval: RollingInterval.Hour,
-                    retainedFileCountLimit:null,
+                    retainedFileCountLimit: null,
+                    fileSizeLimitBytes: 10000000,
+                    rollOnFileSizeLimit: true,
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}",
                     retainedFileTimeLimit: TimeSpan.FromDays(30))
                     .WriteTo.Logger(lc =>
@@ -174,6 +176,8 @@ namespace BLAZAM.Logger
                 .WriteTo.File(logFilePath,
                 rollingInterval: rollingInterval,
                     retainedFileCountLimit: null,
+                    fileSizeLimitBytes: 10000000,
+                    rollOnFileSizeLimit: true,
          outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}",
          retainedFileTimeLimit: TimeSpan.FromDays(30))
 
