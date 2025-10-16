@@ -133,7 +133,7 @@ namespace BLAZAM.Services.Background
         /// <summary>
         /// Processes an Active Directory entry, ensuring users are seeded.
         /// </summary>
-        private void ProcessDirectoryEntry(object? entry)
+        private async Task ProcessDirectoryEntry(object? entry)
         {
             if (entry is IADUser user)
             {
@@ -141,7 +141,7 @@ namespace BLAZAM.Services.Background
             }
             else if (entry is IADGroup group)
             {
-                foreach (var member in group.NestedMembers)
+                foreach (var member in await group.GetNestedMembersAsync())
                 {
                     if (member is IADUser aduser)
                         EnsureUserExists(aduser);

@@ -492,6 +492,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         private void AddResults<T, I>(SearchResultCollection lastResults) where T : I, IDirectoryEntryAdapter, new()
         {
+            if (lastResults.Count == 0) return;
             List<IDirectoryEntryAdapter> last;
             if (_currentUserActiveDirectoryContext != null)
             {

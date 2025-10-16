@@ -12,7 +12,7 @@
 else
 {
     <MudText Align="Align.End" Typo="Typo.body2">
-        @AppLocalization[Lang.Members]: @Members.Count
+        @AppLocalization[Lang.Members]: @Members.Count()
     </MudText>
     @if (Members.Any(m => m is IADGroup))
     {
@@ -54,17 +54,17 @@ else
     [Parameter]
     public IADGroup Group { get; set; }
 
-    private List<IGroupableDirectoryAdapter> Members { get; set; } = new();
+    private IEnumerable<IGroupableDirectoryAdapter> Members { get; set; } = [];
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
         if (Group != null)
         {
-            Task.Run(() =>
+            Task.Run(async() =>
             {
                 LoadingData = true;
-                Members = Group.NestedMembers.ToList();
+                Members = await Group.GetNestedMembersAsync();
                 LoadingData = false;
             });
         }

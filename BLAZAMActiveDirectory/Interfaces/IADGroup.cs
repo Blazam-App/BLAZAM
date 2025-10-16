@@ -53,11 +53,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Gets an enumerable collection of all nested members, including those in child groups.
         /// </summary>
-        /// <remarks>
-        /// This property is ignored during JSON serialization due to the <see cref="JsonIgnoreAttribute"/>.
-        /// </remarks>
-        [JsonIgnore]
-        IEnumerable<IGroupableDirectoryAdapter> NestedMembers { get; }
+        Task<IEnumerable<IGroupableDirectoryAdapter>> GetNestedMembersAsync();
 
         /// <summary>
         /// Gets the list of group memberships scheduled to be removed from this group.
