@@ -33,11 +33,11 @@
         @AppLocalization[Lang.Printers]: @Members.Count(m => m is IADPrinter)
     </MudText>
 }
-@if (Members.Any(m => m is IADContact))
+@if (Members.Any(m => m is IADContact && m is not IADUser))
 {
 
     <MudText Align="Align.End" Typo="Typo.body2">
-        @AppLocalization[Lang.Contacts]: @Members.Count(m => m is IADContact)
+        @AppLocalization[Lang.Contacts]: @Members.Count(m => m is IADContact && m is not IADUser)
     </MudText>
 }
 @if (Members.Count(m => !m.CanRead) > 0)
