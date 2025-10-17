@@ -1,10 +1,11 @@
-﻿using System.Net;
+﻿using Microsoft.AspNetCore.Components;
+using System;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Components;
 
 namespace BLAZAM.Helpers
 {
@@ -48,7 +49,12 @@ namespace BLAZAM.Helpers
                 return hash;
             }
         }
-
+        public static string AppTrim(this string str)
+        {
+            var trimmed = str.Trim();
+            trimmed = str.Trim('⠀');
+            return trimmed;
+        }
         /// <summary>
         /// Determines whether a string is null or an empty string.
         /// </summary>
