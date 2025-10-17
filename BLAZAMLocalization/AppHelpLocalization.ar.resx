@@ -205,7 +205,7 @@
     <value>تستخدم {0} من التعيينات مستوى الوصول هذا وسيتم حذفها</value>
   </data>
   <data name="Missing_First_Or_Last_Name" xml:space="preserve">
-    <value>والاسم الأخيريجب تقديم كل من الاسم الأول </value>
+    <value>والاسم الأخير يجب تقديم كل من الاسم الأول </value>
   </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>لتعديل اسم المستخدم، انقر فوق زر إعادة التسمية في شريط الأدوات/قائمة الإعدادات</value>
