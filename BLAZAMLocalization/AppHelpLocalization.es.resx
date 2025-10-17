@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>Las asignaciones de {0} utilizan este nivel de acceso y se eliminarán</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>Debe proporcionar tanto un nombre como un apellido</value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>Para modificar el nombre del usuario, haga clic en el botón de cambio de nombre en la barra de herramientas/menú de engranajes</value>
   </data>
