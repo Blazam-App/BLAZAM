@@ -129,6 +129,8 @@
                     bool conflictWarning = false;
                     if (conflictingEntry != null && conflictingEntry.SAMAccountName?.Equals(newUser?.SAMAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
                     {
+                        Loggers.ActiveDirectoryLogger.Information("Username conflict detected when creating user: {@NewUserName}{@ExistingUser}", newUser?.SAMAccountName,conflictingEntry.DN);
+
                        _usernameStepValid = false;
                         conflictWarning = true;
                     }
