@@ -52,7 +52,7 @@ namespace BLAZAM.Helpers
         public static string AppTrim(this string str)
         {
             var trimmed = str.Trim();
-            trimmed = str.Trim('⠀');
+            trimmed = trimmed.Trim('⠀');
             return trimmed;
         }
         /// <summary>
