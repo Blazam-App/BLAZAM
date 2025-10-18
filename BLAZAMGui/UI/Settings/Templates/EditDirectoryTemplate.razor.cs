@@ -373,7 +373,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 DirectoryTemplate.AssignedGroupSids = trackedGroups;
                 await Context.DirectoryTemplates.AddAsync(DirectoryTemplate);
                 var result = await Context.SaveChangesAsync();
-
+                Analytics.DirectoryTemplateCreated(DirectoryTemplate.Name); 
                 Header?.OnRefreshRequested?.Invoke();
                 if (result > 0)
                 {
@@ -399,6 +399,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             var result = await Context.SaveChangesAsync();
             if (result > 0)
             {
+                Analytics.DirectoryTemplateEdited(DirectoryTemplate.Name);
                 SnackBarService.Success("Template changes saved");
             }
             else

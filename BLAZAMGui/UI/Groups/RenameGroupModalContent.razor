@@ -6,7 +6,11 @@
     {
 
 
-        <MudTextField AutoFocus=true Label="@AppLocalization[Lang.Group_Name]" @bind-Value="@_privateEntryInstance.GroupName" />
+        <MudTextField AutoFocus=true 
+            Label="@AppLocalization[Lang.Group_Name]" 
+            Value="@_privateEntryInstance.GroupName"
+                      Required=true
+                      ValueChanged="((string val) => { _privateEntryInstance.GroupName = val.AppTrim(); })" />
 
 
 

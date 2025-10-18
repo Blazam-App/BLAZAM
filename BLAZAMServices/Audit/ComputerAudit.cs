@@ -22,6 +22,7 @@ namespace BLAZAM.Services.Audit
         }
         public override async Task<bool> Changed(IDirectoryEntryAdapter changedEntry, List<AuditChangeLog> changes)
         {
+            Analytics?.ObjectModified(ActiveDirectoryObjectType.Computer);
             await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Computer_Edited, changedEntry, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));
             return true;
         }
