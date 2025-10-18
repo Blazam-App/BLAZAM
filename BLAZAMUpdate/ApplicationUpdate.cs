@@ -266,7 +266,7 @@ namespace BLAZAM.Update
         {
             Loggers.UpdateLogger?.Information("Running update as: {RunningUser}", WindowsIdentity.GetCurrent().Name);
 
-
+           
 
             SystemDirectory updaterDirFromStagedUpdate = new(UpdateStagingDirectory.FullPath + "updater\\");
             SystemDirectory updaterDir = new(_applicationRootDirectory.FullPath + "updater\\");

@@ -251,6 +251,14 @@ namespace BLAZAM.Pages.API.v1
         private static void ValidateInput(NewUserPayload newUserDetails, DirectoryTemplate? template)
         {
             //Check if the request has the required fields for this template
+            if(newUserDetails.FirstName.AppTrim().IsNullOrEmpty())
+            {
+                throw new BadHttpRequestException("FirstName is required");
+            }
+            if (newUserDetails.LastName.AppTrim().IsNullOrEmpty())
+            {
+                throw new BadHttpRequestException("LastName is required");
+            }
             if (template?.HasRequiredFields() == true)
             {
                 var requiredFields = template.EffectiveFieldValues.Where(fv => fv.Required).ToList();

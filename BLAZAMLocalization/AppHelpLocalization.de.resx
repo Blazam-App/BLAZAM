@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>{0}-Zuordnungen verwenden diese Zugriffsebene und werden gelöscht.</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>Sie müssen sowohl einen Vor- als auch einen Nachnamen angeben</value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>Um den Benutzernamen zu ändern, klicken Sie auf die Schaltfläche Umbenennen in der Symbolleiste/im Zahnradmenü.</value>
   </data>
