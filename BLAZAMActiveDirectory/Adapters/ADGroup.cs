@@ -198,15 +198,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             MembersToRemove = new();
             MembersToAdd = new();
             //CachedChildren = new List<IDirectoryEntryAdapter>();
-            _groupMembersCache = new List<IADGroup>();
-            _userMembersCache = new();
             base.DiscardChanges();
             OnModelChanged?.Invoke();
 
         }
         public bool HasMembers => UserMembers.Count > 0 || GroupMembers.Count > 0;
 
-        private List<IADUser> _userMembersCache;
 
         /// <summary>
         /// The members of this group, that are users themselves
@@ -216,26 +213,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (_userMembersCache == null)
-                {
-                    _userMembersCache = Directory.Groups.GetDirectUserMembers(this);
-                }
-                var temp = new List<IADUser>(_userMembersCache);
-                temp.AddRange(MembersToAdd.Where(m => m.Member is IADUser).Select(m => m.Member).Cast<IADUser>());
-
-                MembersToRemove.ForEach(u =>
-                {
-                    if (u.Member is IADUser user)
-                    {
-                        temp.Remove(user);
-                    }
-                });
-                temp = temp.OrderBy(u => u.CanonicalName).ToList();
-                return temp;
+                return Members.Where(m => m is IADUser).Cast<IADUser>().ToList();
             }
         }
 
-        private List<IADGroup> _groupMembersCache;
         /// <summary>
         /// The members of this group, that are groups themselves
         /// </summary>
@@ -244,23 +225,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (_groupMembersCache == null)
-                {
-                    _groupMembersCache = Directory.Groups.GetGroupMembers(this);
-                }
-                var temp = new List<IADGroup>(_groupMembersCache);
-                temp.AddRange(MembersToAdd.Where(m => m.Member is IADGroup).Select(m => m.Member).Cast<IADGroup>());
-
-                MembersToRemove.ForEach(u =>
-                {
-                    if (u.Member is IADGroup group)
-                    {
-                        temp.Remove(group);
-                    }
-                });
-
-                temp = temp.OrderBy(u => u.CanonicalName).ToList();
-                return temp;
+                return Members.Where(m => m is IADGroup).Cast<IADGroup>().ToList();
             }
         }
         public List<string>? MembersAsStrings

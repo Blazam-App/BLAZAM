@@ -80,6 +80,7 @@ namespace BLAZAM.Services.Audit
         }
         public override async Task<bool> Changed(IDirectoryEntryAdapter changedEntry, List<AuditChangeLog> changes)
         {
+            Analytics?.ObjectModified(ActiveDirectoryObjectType.Group);
 
             await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.Group_Edited,

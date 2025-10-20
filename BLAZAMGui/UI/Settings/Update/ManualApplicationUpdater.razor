@@ -206,6 +206,8 @@
             var output = LatestAvailableVersion.GetUpdateJob();
             if (output != null)
             {
+                Analytics.UpdateAttempted(LatestAvailableVersion.Version.ToString());
+
                 _ = MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization[Lang.Update]);
                 await output.RunAsync();
 
