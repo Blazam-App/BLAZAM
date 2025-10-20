@@ -3,10 +3,9 @@
 {
     if (_privateEntryInstance != null)
     {
-        <NewUserNameEntry NewUserName="_newUsername"/>
         <MudStack Class="px-7">
             <MudTextField AutoFocus=true
-                                Required=true
+                          Required=true
                           Label="@AppLocalization[Lang.First_Name]"
                           @bind-Value="@_privateEntryInstance.GivenName" />
 
@@ -48,10 +47,10 @@ else
                          Color="Color.Primary" />
 }
 <MudAlert Severity="Severity.Info">@AppLocalization[HelpLang.Discard_Other_Changes_Warning]</MudAlert>
-            @code {
+@code {
 
-        private IADContact _privateEntryInstance;
-        NewUserName _newUsername;
+    private IADContact _privateEntryInstance;
+    NewUserName _newUsername = new();
     [Parameter]
     public EventCallback<IDirectoryEntryAdapter> DirectoryModelRenamed { get; set; }
 
