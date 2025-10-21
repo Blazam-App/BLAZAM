@@ -262,7 +262,7 @@ namespace BLAZAM.Services
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task UpdateAttempted(string version)
         {
-           await PostClientSideCustomEvent("update_attempted", new object[] { version });
+           await PostClientSideCustomEvent("update_attempted", version );
         }
         
         /// <summary>
@@ -297,7 +297,7 @@ namespace BLAZAM.Services
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Warning(ex,"Error attepmting to send Google Analytics event {EventName}", eventName);
+                Loggers.SystemLogger.Warning(ex,"Error attempting to send Google Analytics event {EventName}", eventName);
             }
         }
 
@@ -387,7 +387,7 @@ namespace BLAZAM.Services
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Warning(ex,"Error attepmting to send Google Analytics event {EventName}", eventName);
+                Loggers.SystemLogger.Warning(ex,"Error attempting to send Google Analytics event {EventName}", eventName);
             }
         }
 
