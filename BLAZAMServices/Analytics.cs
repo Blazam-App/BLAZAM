@@ -262,7 +262,7 @@ namespace BLAZAM.Services
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task UpdateAttempted(string version)
         {
-           await PostClientSideCustomEvent("update_attempted", new object[] { version });
+           await PostClientSideCustomEvent("update_attempted", version );
         }
         
         /// <summary>
