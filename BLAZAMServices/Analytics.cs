@@ -297,7 +297,7 @@ namespace BLAZAM.Services
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Warning(ex,"Error attepmting to send Google Analytics event {EventName}", eventName);
+                Loggers.SystemLogger.Warning(ex,"Error attempting to send Google Analytics event {EventName}", eventName);
             }
         }
 
@@ -387,7 +387,7 @@ namespace BLAZAM.Services
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Warning(ex,"Error attepmting to send Google Analytics event {EventName}", eventName);
+                Loggers.SystemLogger.Warning(ex,"Error attempting to send Google Analytics event {EventName}", eventName);
             }
         }
 
