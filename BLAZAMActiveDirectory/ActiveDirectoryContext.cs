@@ -564,7 +564,7 @@ namespace BLAZAM.ActiveDirectory
             }
             else
             {
-                Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
+                Loggers.ActiveDirectoryLogger.Information("Active Directory test failed");
 
                 Status = DirectoryConnectionStatus.BadConfiguration;
                 if (FailedConnectionAttempts < 10)
