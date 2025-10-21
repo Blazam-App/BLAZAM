@@ -112,7 +112,7 @@ else
     [Parameter]
     public int PageSize { get; set; } = 25;
 
-    List<IGroupableDirectoryAdapter> Members{ get; set; }
+    IEnumerable<IGroupableDirectoryAdapter> Members{ get; set; }
 
 
     protected override async Task OnInitializedAsync()
@@ -120,9 +120,10 @@ else
         await base.OnInitializedAsync();
         _=Task.Run(async() =>
         {
+            LoadingData = true;
             if (IncludeNested)
             {
-                Members = Group.NestedMembers.ToList();
+                Members = await Group.GetNestedMembersAsync();
             }
             else
             {
@@ -133,7 +134,6 @@ else
             await StateHasChangedAsync();
 
         });
-        await StateHasChangedAsync();
 
     }
 

@@ -249,19 +249,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute("groupType", value);
             }
         }
-        /// <summary>
-        /// Gathers group and sub-group members in realtime
-        /// </summary>
-        [JsonIgnore]
-        public IEnumerable<IGroupableDirectoryAdapter> NestedMembers
+
+        public async Task<IEnumerable<IGroupableDirectoryAdapter>> GetNestedMembersAsync()
         {
-            get
-            {
+            
                 ADSearch search = new(Directory);
                 search.Fields.NestedMemberOf = this;
-                var result = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
+                var result = await search.SearchAsync<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
                 return result;
-            }
+            
         }
 
         /// <summary>
