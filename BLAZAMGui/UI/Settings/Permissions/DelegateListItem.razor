@@ -122,6 +122,7 @@
         Delegate.DelegateSid = _delegateEntry.SID;
         await Context.SaveChangesAsync();
         await StateHasChangedAsync();
+        _ = Analytics.PermissionDelegateChanged(_delegateEntry.ObjectType);
         ApplicationEvents.PermissionsChanged.Invoke();
 
     }
