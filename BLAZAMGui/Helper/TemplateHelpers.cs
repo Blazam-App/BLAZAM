@@ -15,15 +15,20 @@ namespace BLAZAM.Gui.Helpers
         /// <exception cref="AppException"></exception>
         public static async Task<IADUser> GenerateTemplateUserAsync(this DirectoryTemplate template, NewUserName newUserName, IActiveDirectoryContext directory, IADOrganizationalUnit? parentOU = null)
         {
+            Loggers.ActiveDirectoryLogger.Information("Generating user from template {@TemplateName} for {@NewUserName}", template.Name, newUserName);
             IADUser? newUser;
             if (parentOU == null)
             {
+                Loggers.ActiveDirectoryLogger.Debug("No parent OU specified, searching for template effective parent OU {@EffectiveParentOU}", template.EffectiveParentOU);
                 parentOU = (await directory.OUs.FindOuByStringAsync(template.EffectiveParentOU)).FirstOrDefault();
             }
             if (parentOU == null) throw new AppException("OU could not be found for new user");
+            Loggers.ActiveDirectoryLogger.Debug("Using parent OU {@ParentOU} for new user creation", parentOU.DN);
             var displayName = template.GenerateDisplayName(newUserName);
+            Loggers.ActiveDirectoryLogger.Debug("Generated display name {@DisplayName} for new user", displayName);
             try
             {
+                Loggers.ActiveDirectoryLogger.Information("Creating user {@DisplayName} in {@ContainerName}", displayName, parentOU.DN);
                 newUser = parentOU.CreateUser(displayName);
 
                 newUser.SAMAccountName = template.GenerateUsername(newUserName);
@@ -47,6 +52,7 @@ namespace BLAZAM.Gui.Helpers
                         newUser.AssignTo(group);
 
                 });
+                Loggers.ActiveDirectoryLogger.Information("User {@DisplayName} staged successfully in {@ContainerName}", displayName, parentOU.DN);
                 return newUser;
             }
             catch (Exception ex)

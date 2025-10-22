@@ -124,18 +124,21 @@
             </TabContent>
             <ChildContent>
                 @{
-
+                    Loggers.ActiveDirectoryLogger.Information("Checking for username conflicts for new user: {@NewUserName}", newUser?.SAMAccountName);
                     var conflictingEntry = Directory.Users.FindUserByUsername(newUser?.SAMAccountName, false, true);
                     bool conflictWarning = false;
                     if (conflictingEntry != null && conflictingEntry.SAMAccountName?.Equals(newUser?.SAMAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
                     {
-                        Loggers.ActiveDirectoryLogger.Information("Username conflict detected when creating user: {@NewUserName}{@ExistingUser}", newUser?.SAMAccountName,conflictingEntry.DN);
+
+
+                        Loggers.ActiveDirectoryLogger.Information("Username conflict detected when creating user: {@NewUserName}{@ExistingUserDN}{@ExistingUserSamAccountName}", newUser?.SAMAccountName,conflictingEntry.DN, conflictingEntry.SAMAccountName);
 
                        _usernameStepValid = false;
                         conflictWarning = true;
                     }
                     else
                     {
+                        Loggers.ActiveDirectoryLogger.Debug("No username conflict detected for new user: {@NewUserName}", newUser?.SAMAccountName);
                         if (newUser?.SAMAccountName.IsNullOrEmpty() == false)
                         {
                             _usernameStepValid = true;
