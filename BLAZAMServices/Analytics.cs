@@ -3,6 +3,7 @@ using BLAZAM.Database.Context;
 using BLAZAM.Logger;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
+using System.DirectoryServices;
 using System.Net.Http;
 using System.Text;
 
@@ -18,6 +19,9 @@ namespace BLAZAM.Services
         private readonly IJSRuntime _jsRuntime;
         private readonly HttpClient? _httpClient;
 
+        /// <summary>
+        /// Gets the Google Analytics 4 property ID for the production environment.
+        /// </summary>
         protected string? ProductionGA4Property
         {
             get
@@ -262,9 +266,9 @@ namespace BLAZAM.Services
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task UpdateAttempted(string version)
         {
-           await PostClientSideCustomEvent("update_attempted", version );
+            await PostClientSideCustomEvent("update_attempted", version);
         }
-        
+
         /// <summary>
         /// Posts an analytics event for a notification being dismissed.
         /// </summary>
@@ -297,7 +301,7 @@ namespace BLAZAM.Services
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Warning(ex,"Error attempting to send Google Analytics event {EventName}", eventName);
+                Loggers.SystemLogger.Warning(ex, "Error attempting to send Google Analytics event {EventName}", eventName);
             }
         }
 
@@ -387,7 +391,7 @@ namespace BLAZAM.Services
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Warning(ex,"Error attempting to send Google Analytics event {EventName}", eventName);
+                Loggers.SystemLogger.Warning(ex, "Error attempting to send Google Analytics event {EventName}", eventName);
             }
         }
 
@@ -414,11 +418,79 @@ namespace BLAZAM.Services
         /// </summary>
         /// <param name="mappingName">Mapping identifier/type.</param>
         /// <param name="action">Action performed: created/updated/deleted.</param>
-        public async Task PermissionMappingChanged(string mappingName, string action)
+        public async Task PermissionMappingChanged(int numberOfDelegates)
         {
-            await PostClientSideCustomEvent("permission_mapping_changed", new { mappingName, action });
+            await PostClientSideCustomEvent("permission_mapping_changed", numberOfDelegates);
         }
 
+      /// <summary>
+      /// Triggers a client-side event indicating that a permission mapping has been created.
+      /// </summary>
+      /// <remarks>This method sends a custom event named "permission_mapping_created" to the client side, 
+      /// including the specified number of delegates as part of the event data.</remarks>
+      /// <param name="numberOfDelegates">The number of delegates involved in the permission mapping. Must be a non-negative integer.</param>
+      /// <returns></returns>
+        public async Task PermissionMappingCreated(int numberOfDelegates)
+        {
+            await PostClientSideCustomEvent("permission_mapping_created", numberOfDelegates);
+        }
+
+        /// <summary>
+        /// Triggers a client-side event indicating that a permission mapping has been deleted.
+        /// </summary>
+        /// <remarks>This method sends a custom event named "permission_mapping_deleted" to the client
+        /// side. It is typically used to notify the client of changes in permission mappings.</remarks>
+        /// <returns></returns>
+        public async Task PermissionMappingDeleted()
+        {
+            await PostClientSideCustomEvent("permission_mapping_deleted");
+        }
+
+        /// <summary>
+        /// Sends a custom event indicating that a permission delegate has been created.
+        /// </summary>
+        /// <remarks>This method triggers an asynchronous operation to post a client-side event named
+        /// "permission_delegate_created".</remarks>
+        /// <param name="objectType">The type of Active Directory object for which the permission delegate was created.</param>
+        /// <returns></returns>
+        public async Task PermissionDelegateCreated(ActiveDirectoryObjectType objectType)
+        {
+            await PostClientSideCustomEvent("permission_delegate_created", objectType);
+        }
+
+        /// <summary>
+        /// Notifies that the permission delegate has changed for a specified Active Directory object type.
+        /// </summary>
+        /// <remarks>This method triggers a client-side event to handle changes in permission
+        /// delegation.</remarks>
+        /// <param name="objectType">The type of Active Directory object for which the permission delegate has changed.</param>
+        /// <returns></returns>
+        public async Task PermissionDelegateChanged(ActiveDirectoryObjectType objectType)
+        {
+            await PostClientSideCustomEvent("permission_delegate_changed", objectType);
+        }
+
+        /// <summary>
+        /// Triggers an event indicating that the permission access level has changed.
+        /// </summary>
+        /// <remarks>This method asynchronously posts a custom event named
+        /// "permission_access_level_changed" to the client side.</remarks>
+        /// <returns></returns>
+        public async Task PermissionAccessLevelChanged()
+        {
+            await PostClientSideCustomEvent("permission_access_level_changed");
+        }
+
+        /// <summary>
+        /// Sends a custom event indicating that a permission access level has been created.
+        /// </summary>
+        /// <remarks>This method triggers a client-side event named "permission_access_level_created". It
+        /// is intended to notify listeners about the creation of a new permission access level.</remarks>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public async Task PermissionAccessLevelCreated()
+        {
+            await PostClientSideCustomEvent("permission_access_level_created");
+        }
         /// <summary>
         /// Posts an analytics event when a dashboard widget is added.
         /// </summary>

@@ -27,7 +27,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
     public EventCallback DelegateAdded { get; set; }
 
     PermissionDelegate NewPermissionDelegate = new PermissionDelegate();
-    public async Task AddGroup()
+    public async Task AddDelegate()
     {
         try
         {
@@ -49,7 +49,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
                 await Context.SaveChangesAsync();
                 NewPermissionDelegate = new PermissionDelegate();
                 await DelegateAdded.InvokeAsync();
-
+                _ = Analytics.PermissionDelegateCreated(selectedDelegate.ObjectType);
                 await Modal.CloseAsync();
             }
             return;
@@ -65,7 +65,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Modal.SetOnYes(AddGroup);
+        Modal.SetOnYes(AddDelegate);
     }
 
 }

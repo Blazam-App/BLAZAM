@@ -124,13 +124,13 @@
                     }
                 }
 
-         
+
             }
             finally
-            {     
+            {
                 LoadingData = false;
                 _semaphore.Release();
-            
+
             }
 
         }
@@ -196,6 +196,7 @@
             await StateHasChangedAsync();
             SnackBarService.Success("Mapping deleted");
             await MappingsChanged.InvokeAsync();
+            _ = Analytics.PermissionMappingDeleted();
             ApplicationEvents.PermissionsChanged.Invoke();
         }
     }
@@ -208,11 +209,15 @@
     new async Task Save()
     {
         if (Mapping?.Id == 0)
+        {
             Context.PermissionMap.Add(Mapping);
+            _ = Analytics.PermissionMappingCreated(Mapping.PermissionDelegates.Count());
+        }
         var result = await Context.SaveChangesAsync();
         await StateHasChangedAsync();
         SnackBarService.Success("Mapping saved");
         await MappingsChanged.InvokeAsync();
+        _ = Analytics.PermissionMappingChanged(Mapping?.PermissionDelegates.Count() ?? -1);
         ApplicationEvents.PermissionsChanged.Invoke();
 
     }
