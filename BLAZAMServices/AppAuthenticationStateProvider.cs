@@ -10,9 +10,11 @@ using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Background;
 using BLAZAM.Services.Duo;
+using BLAZAM.Services.Exceptions;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using DuoUniversal;
+using MailKit;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -302,8 +304,8 @@ namespace BLAZAM.Services
                 var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
                 var authResult = await SetUser(twostepState);
                 newUserState.User = userClaim;
-                _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
-                return authResult;
+                _userStateService.SetMFAUserState(MfaType.CiscoDuo, loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                throw new DuoMFARequestedException(loginReq.DuoRequested(authResult));
             }
             return null;
         }
@@ -316,8 +318,8 @@ namespace BLAZAM.Services
                 var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
                 var authResult = await SetUser(twostepState);
                 newUserState.User = userClaim;
-                _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
-                return authResult;
+                _userStateService.SetMFAUserState(MfaType.GoogleAuthenticator, loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                throw new GoogleMFARequestedException(loginReq.GoogleAuthenticatorRequested(authResult));
             }
             return null;
         }
@@ -331,7 +333,10 @@ namespace BLAZAM.Services
                 if (ShouldPerformDuoMFA(settings, loginReq))
                 {
                     var duoResult = await HandleDuoMFA(loginReq, newUserState, userClaim);
-                    if (duoResult != null) return duoResult;
+                    if (duoResult != null)
+                    {
+                        return duoResult;
+                    }
                 }
                 else
                 {
@@ -339,7 +344,10 @@ namespace BLAZAM.Services
                     if (ShouldPerformGoogleAuthenticatorMFA(userSettings, loginReq, settings))
                     {
                         var googleAuthResult = await HandleGoogleAuthenticatorMFA(loginReq, newUserState, userClaim, userSettings);
-                        if (googleAuthResult != null) return googleAuthResult;
+                        if (googleAuthResult != null)
+                        {
+                            return googleAuthResult;
+                        }
                     }
                 }
 

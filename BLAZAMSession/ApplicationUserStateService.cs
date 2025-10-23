@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims; // Added
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Models;
 using BLAZAM.Helpers; // Added for GetAppHashCode
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
@@ -161,10 +162,10 @@ namespace BLAZAM.Session
         /// <param name="mfaToken">The MFA token (e.g., Duo state).</param> 
         /// <param name="state">The user state associated with this MFA attempt.</param> 
         /// <param name="returnURL">The URL to return to after MFA completion.</param>
-        public void SetMFAUserState(string mfaToken, IApplicationUserState state, string returnURL = "/")
+        public void SetMFAUserState(MfaType mfaType, string mfaToken, IApplicationUserState state, string returnURL = "/")
         {
             Loggers.SystemLogger.Information("ApplicationUserStateService.SetMFAUserState: Adding MFA request to queue for UserGUID {UserGUID}, MFAToken (hash): {MFATokenHash}.", state?.User?.FindFirstValue(ClaimTypes.Sid) ?? "Unknown", mfaToken?.GetAppHashCode().ToString() ?? "N/A");
-            MFARequest mfaRequest = new(mfaToken, returnURL, state);
+            MFARequest mfaRequest = new(mfaType,mfaToken, returnURL, state);
             _mfaLoginQueue.Add(mfaRequest);
             Task.Delay(90000).ContinueWith((val) =>
             {

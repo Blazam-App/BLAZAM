@@ -1,6 +1,7 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Services;
 using BLAZAM.Services.Audit;
+using BLAZAM.Services.Exceptions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -80,6 +81,10 @@ namespace BLAZAM.Server.Pages
                 }
                 return new JsonResult(req);
 
+            }
+            catch(MFARequestedException ex)
+            {
+                return new JsonResult(ex.LoginRequest);
             }
             catch (Exception ex)
             {

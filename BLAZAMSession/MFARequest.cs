@@ -1,4 +1,5 @@
-﻿using BLAZAM.Session.Interfaces;
+﻿using BLAZAM.Database.Models;
+using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.Session
 {
@@ -7,6 +8,8 @@ namespace BLAZAM.Session
     /// </summary>
     public class MFARequest : IEquatable<MFARequest?>
     {
+
+        public readonly MfaType mfaType;
         /// <summary>
         /// The MFA token associated with this request (e.g., a state token from Duo). This field is read-only.
         /// </summary>
@@ -28,8 +31,9 @@ namespace BLAZAM.Session
         /// <param name="mfaToken">The MFA token.</param>
         /// <param name="redirectUrl">The URL to redirect to after MFA.</param>
         /// <param name="user">The user state initiating the MFA request.</param>
-        public MFARequest(string mfaToken, string redirectUrl, IApplicationUserState user)
+        public MFARequest(MfaType mfaType,string mfaToken, string redirectUrl, IApplicationUserState user)
         {
+            this.mfaType = mfaType;
             this.mfaToken = mfaToken;
             this.redirectUrl = redirectUrl;
             this.user = user;
