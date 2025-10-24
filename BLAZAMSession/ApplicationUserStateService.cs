@@ -16,10 +16,10 @@ namespace BLAZAM.Session
     {
 
 
-        private readonly static object _mfaQueueLock = new();
+        private static readonly object _mfaQueueLock = new();
 
 
-        private readonly static object _userStatesLock = new();
+        private static readonly object _userStatesLock = new();
 
         /// <summary>
         /// Gets the singleton instance of the ApplicationUserStateService.
