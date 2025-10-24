@@ -8,8 +8,8 @@ namespace BLAZAM.Session
     /// </summary>
     public class ApplicationUserSessionCache : IApplicationUserSessionCache, IDisposable
     {
-        private readonly Dictionary<Type, object> _typeCache = new();
-        private readonly Dictionary<string, object> _stringCache = new();
+        private readonly Dictionary<Type, object> _typeCache = [];
+        private readonly Dictionary<string, object> _stringCache = [];
         private bool _disposedValue;
 
         /// <summary>

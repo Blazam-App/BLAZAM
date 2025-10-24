@@ -1,6 +1,6 @@
-﻿using System.Net;
+﻿using Cassia;
+using System.Net;
 using System.Security.Principal;
-using Cassia;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {

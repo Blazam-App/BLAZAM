@@ -1,9 +1,9 @@
-﻿using System.Security.Claims; // Required for ClaimsPrincipal
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims; // Required for ClaimsPrincipal
 
 namespace BLAZAM.Session.Interfaces
 {
@@ -15,7 +15,7 @@ namespace BLAZAM.Session.Interfaces
         /// <summary>
         /// Gets this user's unique ID as stored in the application database (corresponds to AppUser.Id).
         /// </summary>
-        public int Id { get; }
+        int Id { get; }
 
         /// <summary>
         /// Event triggered when user-specific settings or preferences change.

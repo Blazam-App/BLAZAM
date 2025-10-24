@@ -1,8 +1,8 @@
-﻿using System.Security.Claims;
-using BLAZAM.Database.Models.Audit;
+﻿using BLAZAM.Database.Models.Audit;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
+using System.Security.Claims;
 
 namespace BLAZAM.Services.Audit
 {
@@ -50,9 +50,13 @@ namespace BLAZAM.Services.Audit
                     Username = UserState?.AuditUsername,
                 };
                 if (ipAddress != null)
+                {
                     newAuditEntry.IpAddress = ipAddress;
+                }
                 else
+                {
                     newAuditEntry.IpAddress = UserState?.IPAddress;
+                }
 
                 context.LogonAuditLog.Add(newAuditEntry);
                 await context.SaveChangesAsync();

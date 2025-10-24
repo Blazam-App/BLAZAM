@@ -1,5 +1,4 @@
-﻿using BLAZAM.Database.Context;
-using BLAZAM.Services.Events;
+﻿using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
 

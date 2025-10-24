@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using BLAZAM.Helpers;
+﻿using BLAZAM.Helpers;
+using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Common.Data.Validators
 {
@@ -13,7 +13,11 @@ namespace BLAZAM.Common.Data.Validators
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value == null || (value is string str && str.IsNullOrEmpty())) return null;
+            if (value == null || (value is string str && str.IsNullOrEmpty()))
+            {
+                return null;
+            }
+
             if (value is string strValue && !strValue.IsNullOrEmpty())
             {
                 var ipValidator = new ValidIpAttribute();

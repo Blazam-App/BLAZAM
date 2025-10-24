@@ -62,10 +62,11 @@ namespace BLAZAM.Services.Background
 
 
 
-            Job executeJob = new(AppLocalization["Retry failed emails"]);
-
-            executeJob.StopOnFailedStep = true;
-            List<EmailAuditLog> failedEmails = new List<EmailAuditLog>();
+            Job executeJob = new(AppLocalization["Retry failed emails"])
+            {
+                StopOnFailedStep = true
+            };
+            List<EmailAuditLog> failedEmails = [];
             JobStep prepareStep = new(AppLocalization["Check for failed emails"], (state) =>
             {
                 using var context = dbFactory.CreateDbContext();
@@ -79,11 +80,17 @@ namespace BLAZAM.Services.Background
 
                 foreach (var email in failedEmails)
                 {
-                    if (email == null) continue;
+                    if (email == null)
+                    {
+                        continue;
+                    }
+
                     if (!email.Delivered)
                     {
-                        MimeMessage message = new MimeMessage();
-                        message.Sender = MailboxAddress.Parse(email.From);
+                        MimeMessage message = new MimeMessage
+                        {
+                            Sender = MailboxAddress.Parse(email.From)
+                        };
                         message.To.Add(MailboxAddress.Parse(email.To));
                         message.Cc.Add(MailboxAddress.Parse(email.Cc));
                         message.Bcc.Add(MailboxAddress.Parse(email.Bcc));
@@ -213,15 +220,21 @@ namespace BLAZAM.Services.Background
         }
         private MimeMessage BuildMessage(string subject, string to, string body, string? cc = null, string? bcc = null)
         {
-            var email = new MimeMessage();
-            email.MessageId = Guid.NewGuid().ToString();
+            var email = new MimeMessage
+            {
+                MessageId = Guid.NewGuid().ToString()
+            };
 
             if (!IsConfigured)
+            {
                 throw new EmailException("Email settings are invalid.");
+            }
 
             EmailSettings? settings = GetSettings();
             if (settings == null)
+            {
                 throw new EmailException("Unknown error creating email message.");
+            }
 
             SetSender(email, settings);
             AddRecipients(email, to, cc, bcc, settings);
@@ -244,12 +257,18 @@ namespace BLAZAM.Services.Background
         private void SetSender(MimeMessage email, EmailSettings settings)
         {
             if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty())
+            {
                 email.Sender = MailboxAddress.Parse(settings.SMTPUsername);
+            }
             else
+            {
                 email.Sender = MailboxAddress.Parse(settings.FromAddress);
+            }
 
             if (!settings.FromName.IsNullOrEmpty())
+            {
                 email.Sender.Name = settings.FromName;
+            }
 
             email.From.Add(email.Sender);
         }
@@ -257,13 +276,24 @@ namespace BLAZAM.Services.Background
         private void AddRecipients(MimeMessage email, string to, string? cc, string? bcc, EmailSettings settings)
         {
             if (to != null)
+            {
                 email.To.Add(MailboxAddress.Parse(to));
+            }
+
             if (cc != null)
+            {
                 email.Cc.Add(MailboxAddress.Parse(cc));
+            }
+
             if (bcc != null)
+            {
                 email.Bcc.Add(MailboxAddress.Parse(bcc));
+            }
+
             if (!settings.AdminBcc.IsNullOrEmpty())
+            {
                 email.Bcc.Add(MailboxAddress.Parse(settings.AdminBcc));
+            }
         }
 
 
@@ -417,8 +447,10 @@ namespace BLAZAM.Services.Background
         {
             try
             {
-                var emailMessage = new PasswordResetEmailMessage();
-                emailMessage.ResetUri = resetUri;
+                var emailMessage = new PasswordResetEmailMessage
+                {
+                    ResetUri = resetUri
+                };
                 return await SendMessage("Password Reset", emailMessage, to);
             }
             catch (EmailException ex)

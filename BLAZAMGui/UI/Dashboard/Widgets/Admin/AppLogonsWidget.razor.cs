@@ -10,7 +10,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets.Admin
             WidgetType = DashboardWidgetType.AppLogons;
         }
 
-        List<LogonAuditLog> UserLogons
+        private List<LogonAuditLog> UserLogons
         {
             get => CurrentUser.State?.Cache.Get<List<LogonAuditLog>>(this.GetType());
             set => CurrentUser.State?.Cache.Set(this.GetType(), value);

@@ -29,12 +29,14 @@ namespace BLAZAM.Gui.UI
             get => Options?.CloseButton == true; set
             {
                 if (Options == null)
+                {
                     Options = new()
                     {
                         BackdropClick = value,
                         CloseButton = value,
                         CloseOnEscapeKey = value
                     };
+                }
 
                 RefreshView();
             }
@@ -123,7 +125,10 @@ namespace BLAZAM.Gui.UI
             set
             {
                 if (value == Modal.Visible)
+                {
                     return;
+                }
+
                 Modal.Visible = value;
                 IsShownChanged.InvokeAsync(value);
             }
@@ -196,9 +201,13 @@ namespace BLAZAM.Gui.UI
         private void YesClicked()
         {
             if (OnYes != null)
+            {
                 OnYes.Invoke();
+            }
             else
+            {
                 Close();
+            }
         }
 
     }

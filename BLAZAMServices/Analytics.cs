@@ -1,10 +1,6 @@
-﻿using AngleSharp.Dom;
-using BLAZAM.Database.Context;
-using BLAZAM.Logger;
+﻿using BLAZAM.Logger;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
-using System.DirectoryServices;
-using System.Net.Http;
 using System.Text;
 
 namespace BLAZAM.Services
@@ -351,7 +347,7 @@ namespace BLAZAM.Services
                     else
                     {
                         // if complex, include as nested object; GA4 params expects primitives, so convert complex objects to a JSON string under 'payload'
-                        var token = data.GetType().IsPrimitive ? data : (object)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(data))!;
+                        var token = data.GetType().IsPrimitive ? data : JsonConvert.DeserializeObject(JsonConvert.SerializeObject(data))!;
                         // Prefer to send simple key/value pairs; for anything else send as 'payload' string
                         eventParams = token is Newtonsoft.Json.Linq.JObject jo ? jo : new { payload = JsonConvert.SerializeObject(data) };
                     }
@@ -423,13 +419,13 @@ namespace BLAZAM.Services
             await PostClientSideCustomEvent("permission_mapping_changed", numberOfDelegates);
         }
 
-      /// <summary>
-      /// Triggers a client-side event indicating that a permission mapping has been created.
-      /// </summary>
-      /// <remarks>This method sends a custom event named "permission_mapping_created" to the client side, 
-      /// including the specified number of delegates as part of the event data.</remarks>
-      /// <param name="numberOfDelegates">The number of delegates involved in the permission mapping. Must be a non-negative integer.</param>
-      /// <returns></returns>
+        /// <summary>
+        /// Triggers a client-side event indicating that a permission mapping has been created.
+        /// </summary>
+        /// <remarks>This method sends a custom event named "permission_mapping_created" to the client side, 
+        /// including the specified number of delegates as part of the event data.</remarks>
+        /// <param name="numberOfDelegates">The number of delegates involved in the permission mapping. Must be a non-negative integer.</param>
+        /// <returns></returns>
         public async Task PermissionMappingCreated(int numberOfDelegates)
         {
             await PostClientSideCustomEvent("permission_mapping_created", numberOfDelegates);

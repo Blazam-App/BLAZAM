@@ -1,8 +1,8 @@
-﻿using System.Text.Json.Serialization;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Database.Models;
 using BLAZAM.Jobs;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -24,8 +24,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (IsDomainLocalGroup) return GroupScope.DomainLocal;
-                if (IsGlobalGroup) return GroupScope.Global;
+                if (IsDomainLocalGroup)
+                {
+                    return GroupScope.DomainLocal;
+                }
+
+                if (IsGlobalGroup)
+                {
+                    return GroupScope.Global;
+                }
+
                 return GroupScope.Universal;
             }
             set
@@ -115,8 +123,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public List<GroupMembership> MembersToRemove { get; private set; } = new List<GroupMembership>();
-        public List<GroupMembership> MembersToAdd { get; private set; } = new List<GroupMembership>();
+        public List<GroupMembership> MembersToRemove { get; private set; } = [];
+        public List<GroupMembership> MembersToAdd { get; private set; } = [];
         public override string? DisplayName { get => base.CanonicalName; set => base.CanonicalName = value; }
         public string? GroupName
         {
@@ -195,8 +203,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override void DiscardChanges()
         {
-            MembersToRemove = new();
-            MembersToAdd = new();
+            MembersToRemove = [];
+            MembersToAdd = [];
             //CachedChildren = new List<IDirectoryEntryAdapter>();
             base.DiscardChanges();
             OnModelChanged?.Invoke();
@@ -252,12 +260,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public async Task<IEnumerable<IGroupableDirectoryAdapter>> GetNestedMembersAsync()
         {
-            
-                ADSearch search = new(Directory);
-                search.Fields.NestedMemberOf = this;
-                var result = await search.SearchAsync<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
-                return result;
-            
+
+            ADSearch search = new(Directory);
+            search.Fields.NestedMemberOf = this;
+            var result = await search.SearchAsync<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
+            return result;
+
         }
 
         /// <summary>
@@ -271,7 +279,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 var temp = MembersAsStrings;
                 ADSearch search = new(Directory);
 
-                List<IGroupableDirectoryAdapter> members = new();
+                List<IGroupableDirectoryAdapter> members = [];
                 temp?.ForEach(t =>
                 {
                     search.Results.Clear();
@@ -294,7 +302,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 MembersToAdd.ForEach(m =>
                 {
                     if (!members.Contains(m.Member))
+                    {
                         members.Add(m.Member);
+                    }
                 });
                 return members;
             }
@@ -322,7 +332,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public int CompareTo(object? obj)
         {
             if (obj is ADGroup g)
+            {
                 return CanonicalName.CompareTo(g.CanonicalName);
+            }
+
             return 0;
         }
 

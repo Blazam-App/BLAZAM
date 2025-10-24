@@ -1,7 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
 using BLAZAM.Global.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,7 +36,11 @@ namespace BLAZAM.Services.Background
             get { return AppDatabaseFactory.FatalError != null ? ServiceConnectionState.Down : _appReady; }
             protected set
             {
-                if (_appReady == value) return;
+                if (_appReady == value)
+                {
+                    return;
+                }
+
                 _appReady = value;
                 OnAppReadyChanged?.Invoke(value);
 
@@ -100,24 +103,23 @@ namespace BLAZAM.Services.Background
         {
             Task.Run(() =>
             {
-                using (var context = _factory.CreateDbContext())
+                using var context = _factory.CreateDbContext();
+
+                try
                 {
-
-                    try
+                    var temp = context.Database.GetPendingMigrations();
+                    if (temp != null && temp.Count() > 0)
                     {
-                        var temp = context.Database.GetPendingMigrations();
-                        if (temp != null && temp.Count() > 0)
-                            DatabaseUpdatePending = true;
-                        else
-                            DatabaseUpdatePending = false;
-
+                        DatabaseUpdatePending = true;
                     }
-                    catch (Exception)
+                    else
                     {
-                        // If we can't connect to the database, assume an update is pending
+                        DatabaseUpdatePending = false;
                     }
-
-
+                }
+                catch (Exception)
+                {
+                    // If we can't connect to the database, assume an update is pending
                 }
             });
 

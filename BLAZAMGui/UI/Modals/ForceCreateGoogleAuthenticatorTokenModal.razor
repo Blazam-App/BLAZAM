@@ -22,7 +22,7 @@
         await base.OnInitializedAsync();
         var settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
 
-        if (settings != null && settings.RequireMFA && !CurrentUser.State.IsAdminOrDemo() && CurrentUser.State.Preferences.AuthenticatorSecret.IsNullOrEmpty())
+        if (settings != null && settings.RequireMFA && settings.MFAType==MfaType.GoogleAuthenticator && !CurrentUser.State.IsAdminOrDemo() && CurrentUser.State.Preferences.AuthenticatorSecret.IsNullOrEmpty())
         {
             _show = true;
         }

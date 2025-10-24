@@ -1,6 +1,6 @@
 ﻿
-using System.Security; // Added for SecurityException
 using BLAZAM.Logger;
+using System.Security; // Added for SecurityException
 
 
 namespace BLAZAM.FileSystem
@@ -73,7 +73,7 @@ namespace BLAZAM.FileSystem
         {
             get
             {
-                List<SystemDirectory> dirs = new();
+                List<SystemDirectory> dirs = [];
                 try
                 {
                     if (Exists)
@@ -108,7 +108,7 @@ namespace BLAZAM.FileSystem
         {
             get
             {
-                List<SystemFile> files = new();
+                List<SystemFile> files = [];
                 try
                 {
                     if (Exists)
@@ -134,7 +134,7 @@ namespace BLAZAM.FileSystem
         {
 
 
-            List<SystemFile> files = new();
+            List<SystemFile> files = [];
             try
             {
                 if (Exists)
@@ -222,7 +222,9 @@ namespace BLAZAM.FileSystem
 
             var directories = Directory.GetDirectories(FullPath, "*", SearchOption.AllDirectories).AsEnumerable();
             if (copyingDownTree)
+            {
                 directories = directories.Where(d => !d.Contains(parentDirectory.FullPath));
+            }
 
             foreach (string dirPath in directories)
             {
@@ -239,7 +241,9 @@ namespace BLAZAM.FileSystem
 
             var files = Directory.GetFiles(FullPath, "*.*", SearchOption.AllDirectories).AsEnumerable();
             if (copyingDownTree)
+            {
                 files = files.Where(f => !f.Contains(parentDirectory.FullPath));
+            }
 
             foreach (string newPath in files)
             {

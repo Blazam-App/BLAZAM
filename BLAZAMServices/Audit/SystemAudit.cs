@@ -1,5 +1,4 @@
-﻿using BLAZAM.Database.Context;
-using BLAZAM.Database.Models.Audit;
+﻿using BLAZAM.Database.Models.Audit;
 using BLAZAM.Helpers;
 using Microsoft.JSInterop;
 

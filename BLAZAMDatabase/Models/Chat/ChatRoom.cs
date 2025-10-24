@@ -1,7 +1,7 @@
 ﻿
-using System.ComponentModel.DataAnnotations.Schema;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Database.Models.Chat
 {
@@ -12,13 +12,17 @@ namespace BLAZAM.Database.Models.Chat
         {
             get
             {
-                if (!_name.IsNullOrEmpty()) return _name;
+                if (!_name.IsNullOrEmpty())
+                {
+                    return _name;
+                }
+
                 return String.Join(", ", Members.OrderBy(m => m.Username).Select(m => m.Username).ToArray());
             }
             set => _name = value;
         }
-        public List<ChatMessage> Messages { get; set; } = new();
-        public List<AppUser> Members { get; set; } = new();
+        public List<ChatMessage> Messages { get; set; } = [];
+        public List<AppUser> Members { get; set; } = [];
         [NotMapped]
         public int MemberCount { get => Members.Count; set { _ = value; } }
         public long MembersHash

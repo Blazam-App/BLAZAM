@@ -20,14 +20,18 @@ namespace BLAZAM.Gui.Services
             var applicationUser = _currentUserStateService.State;
             var widgets = new List<Widget>();
             if (applicationUser == null)
+            {
                 return widgets;
+            }
 
             bool isSuperAdmin = applicationUser.IsSuperAdmin;
 
             void AddWidgetIf(bool condition, Widget widget)
             {
                 if (condition)
+                {
                     widgets.Add(widget);
+                }
             }
 
             AddWidgetIf(isSuperAdmin || applicationUser.CanUnlockUsers,

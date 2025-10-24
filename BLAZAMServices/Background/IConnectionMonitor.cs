@@ -4,9 +4,9 @@ namespace BLAZAM.Services.Background
 {
     public interface IConnectionMonitor
     {
-        public ServiceConnectionState Status { get; }
-        public AppDelegate<ServiceConnectionState>? OnConnectedChanged { get; set; }
+        ServiceConnectionState Status { get; }
+        AppDelegate<ServiceConnectionState>? OnConnectedChanged { get; set; }
 
-        public void Monitor();
+        void Monitor();
     }
 }

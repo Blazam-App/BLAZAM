@@ -24,7 +24,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             LoadingData = false;
 
         }
-        void GoTo(DataGridRowClickEventArgs<IADUser> args)
+        private void GoTo(DataGridRowClickEventArgs<IADUser> args)
         {
             Nav.NavigateTo(args.Item.SearchUri);
         }

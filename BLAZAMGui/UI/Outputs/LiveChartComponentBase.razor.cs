@@ -13,7 +13,11 @@ namespace BLAZAM.Gui.UI.Outputs
         {
             get => enabled; set
             {
-                if (enabled == value) return;
+                if (enabled == value)
+                {
+                    return;
+                }
+
                 enabled = value;
                 if (enabled)
                 {
@@ -48,15 +52,17 @@ namespace BLAZAM.Gui.UI.Outputs
         [Parameter]
         public int History { get; set; } = 120;
         private Timer _pollingTimer;
-        protected List<DataPoint> Data = new();
+        protected List<DataPoint> Data = [];
         private bool enabled;
 
         protected List<ChartSeries> DataSeries
         {
             get
             {
-                var series = new List<ChartSeries>();
-                series.Add(new ChartSeries { Data = Data.OrderBy(d => d.TimeStamp).Select(g => g.Value).ToArray(), Name = "CPU Usage" });
+                var series = new List<ChartSeries>
+                {
+                    new ChartSeries { Data = Data.OrderBy(d => d.TimeStamp).Select(g => g.Value).ToArray(), Name = "CPU Usage" }
+                };
                 return series;
             }
         }
@@ -85,7 +91,10 @@ namespace BLAZAM.Gui.UI.Outputs
         protected void Tick(object state)
         {
             if (Data.Count >= History)
+            {
                 Data.Remove(Data.First());
+            }
+
             Task.Run(() =>
             {
                 PollData();

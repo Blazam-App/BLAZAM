@@ -1,6 +1,4 @@
-﻿using BLAZAM.Database.Interfaces;
-
-namespace BLAZAM.Services.Background
+﻿namespace BLAZAM.Services.Background
 {
     public class DatabaseMonitor : ConnectionMonitor
     {
