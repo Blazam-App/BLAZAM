@@ -1,23 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLAZAM.Services.Exceptions
+﻿namespace BLAZAM.Services.Exceptions
 {
-    public class GoogleMFARequestedException : MFARequestedException
+    public class GoogleMFARequestedException : AppException
     {
-        public GoogleMFARequestedException(LoginRequest state) : base(state)
+        public LoginRequest LoginRequest { get; set; }
+        public GoogleMFARequestedException(LoginRequest state)
         {
+            LoginRequest = state;
         }
 
-        public GoogleMFARequestedException(LoginRequest state, string? message) : base(state, message)
+        public GoogleMFARequestedException(LoginRequest state, string? message) : base(message)
         {
+            LoginRequest = state;
+
         }
 
-        public GoogleMFARequestedException(LoginRequest state, string? message, Exception? innerException) : base(state, message, innerException)
+        public GoogleMFARequestedException(LoginRequest state, string? message, Exception? innerException) : base(message, innerException)
         {
+            LoginRequest = state;
         }
+
+
     }
 }
