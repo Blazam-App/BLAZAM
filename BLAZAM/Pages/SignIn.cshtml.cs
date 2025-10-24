@@ -82,7 +82,7 @@ namespace BLAZAM.Server.Pages
                 return new JsonResult(req);
 
             }
-            catch(GoogleMFARequestedException ex)
+            catch (GoogleMFARequestedException ex)
             {
                 return new JsonResult(ex.LoginRequest);
             }

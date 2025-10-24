@@ -1,9 +1,9 @@
 ﻿
 
+using BLAZAM.Helpers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
-using BLAZAM.Helpers;
 
 namespace BLAZAM.Jobs
 {

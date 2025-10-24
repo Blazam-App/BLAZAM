@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using BLAZAM.Helpers;
+﻿using BLAZAM.Helpers;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Database.Models.Notifications
 {

@@ -1,5 +1,4 @@
-﻿using System.Data;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Database.Exceptions;
@@ -19,6 +18,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace BLAZAM.Database.Context
 {

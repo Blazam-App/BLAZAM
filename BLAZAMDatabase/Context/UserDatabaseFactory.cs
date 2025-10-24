@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Common.Data.Database;
-using BLAZAM.Database.Interfaces;
 
 namespace BLAZAM.Database.Context
 {

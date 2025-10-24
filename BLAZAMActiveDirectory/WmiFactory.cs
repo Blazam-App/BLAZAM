@@ -1,8 +1,8 @@
-﻿using System.Management;
-using System.Runtime.InteropServices;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using System.Management;
+using System.Runtime.InteropServices;
 
 namespace BLAZAM.Common.Data.Services
 {

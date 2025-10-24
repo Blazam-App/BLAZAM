@@ -1,12 +1,4 @@
-﻿using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
-using System.DirectoryServices.Protocols;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Security.Principal;
-using BLAZAM.ActiveDirectory.Adapters;
+﻿using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
@@ -19,6 +11,14 @@ using BLAZAM.Global.Enums;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
+using System.Diagnostics;
+using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Security.Principal;
 
 namespace BLAZAM.ActiveDirectory
 {

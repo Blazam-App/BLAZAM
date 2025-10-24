@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using BLAZAM.Common.Data; // Assuming ApplicationInfo, SystemDirectory, ApplicationVersion are here
+﻿using BLAZAM.Common.Data; // Assuming ApplicationInfo, SystemDirectory, ApplicationVersion are here
 using BLAZAM.FileSystem;
 using BLAZAM.Plugins;    // Assuming IPluginBase is here
 using Microsoft.Extensions.Configuration;
 using Moq;
+using System.Diagnostics;
 
 namespace BLAZAMCommon.Tests.Data
 {

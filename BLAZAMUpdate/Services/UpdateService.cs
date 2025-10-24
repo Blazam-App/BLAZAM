@@ -1,6 +1,4 @@
-﻿using System.Runtime.ExceptionServices;
-using System.Security.Principal;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
 using BLAZAM.Localization;
@@ -9,6 +7,8 @@ using BLAZAM.Update.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Octokit;
+using System.Runtime.ExceptionServices;
+using System.Security.Principal;
 
 namespace BLAZAM.Update.Services
 {

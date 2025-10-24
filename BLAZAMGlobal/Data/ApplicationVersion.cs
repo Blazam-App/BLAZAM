@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
+﻿using BLAZAM.Global.Exceptions;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
-using BLAZAM.Global.Exceptions;
 
 namespace BLAZAM.Global.Data
 {

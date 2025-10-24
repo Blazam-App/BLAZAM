@@ -1,8 +1,7 @@
-using System.IO.Compression;
-using BLAZAM.Common.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.IO.Compression;
 
 namespace BLAZAM.Server.Pages.Download
 {

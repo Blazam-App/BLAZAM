@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Security.AccessControl;
-using BLAZAM.ActiveDirectory.Data;
+﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
+using System.Security.AccessControl;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

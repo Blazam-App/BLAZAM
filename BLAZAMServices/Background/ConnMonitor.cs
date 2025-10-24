@@ -1,7 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
 using BLAZAM.Global.Enums;
 using Microsoft.EntityFrameworkCore;
 

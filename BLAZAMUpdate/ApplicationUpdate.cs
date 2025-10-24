@@ -1,13 +1,13 @@
-﻿using System.Diagnostics;
-using System.IO.Compression;
-using System.Security.Principal;
-using System.Text;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.FileSystem;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Update.Services;
+using System.Diagnostics;
+using System.IO.Compression;
+using System.Security.Principal;
+using System.Text;
 
 namespace BLAZAM.Update
 {
@@ -266,7 +266,7 @@ namespace BLAZAM.Update
         {
             Loggers.UpdateLogger?.Information("Running update as: {RunningUser}", WindowsIdentity.GetCurrent().Name);
 
-           
+
 
             SystemDirectory updaterDirFromStagedUpdate = new(UpdateStagingDirectory.FullPath + "updater\\");
             SystemDirectory updaterDir = new(_applicationRootDirectory.FullPath + "updater\\");

@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
+using System.Diagnostics;
 
 namespace BLAZAM.Common.Data
 

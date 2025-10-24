@@ -1,5 +1,4 @@
-﻿using BLAZAM.Database.Context;
-using DuoUniversal;
+﻿using DuoUniversal;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Services.Duo

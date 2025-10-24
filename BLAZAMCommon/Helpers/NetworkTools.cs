@@ -1,7 +1,7 @@
-﻿using System.Net;
+﻿using BLAZAM.Common.Data.Validators;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using BLAZAM.Common.Data.Validators;
 
 namespace BLAZAM.Common.Helpers
 {

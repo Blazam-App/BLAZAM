@@ -1,11 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Security;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace BLAZAM.Helpers
 {

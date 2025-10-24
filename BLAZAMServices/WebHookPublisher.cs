@@ -1,17 +1,14 @@
-﻿using System.Net;
-using System.Security.Cryptography;
-using System.Text;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Models.Notifications;
-using BLAZAM.Global.Data.Strings;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 
 
 namespace BLAZAM.Services

@@ -1,11 +1,10 @@
-﻿using System.Security.Claims; // Added
-using BLAZAM.Database.Context;
-using BLAZAM.Database.Models;
+﻿using BLAZAM.Database.Models;
 using BLAZAM.Helpers; // Added for GetAppHashCode
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims; // Added
 
 namespace BLAZAM.Session
 {
@@ -151,12 +150,14 @@ namespace BLAZAM.Session
                 existingState = UserStates.FirstOrDefault(s => s.User.FindFirstValue(ClaimTypes.Sid) == userClaim.FindFirstValue(ClaimTypes.Sid)
                                                            && s.User.FindFirstValue(ClaimTypes.Actor) == userClaim.FindFirstValue(ClaimTypes.Actor));
             }
+
             if (existingState == null)
             {
                 existingState = CreateUserState(userClaim);
                 Loggers.SystemLogger.Information("ApplicationUserStateService.GetUserState: No existing ApplicationUserState found for SID {UserSid}, ActorSID {ActorSid}. Creating and caching new state.", userClaim.FindFirstValue(ClaimTypes.Sid) ?? "N/A", userClaim.FindFirstValue(ClaimTypes.Actor) ?? "N/A");
                 AddUserState(existingState); // This will also invoke UserStateAdded
             }
+
             existingState.LastAccessed = DateTime.UtcNow;
             return existingState;
         }
@@ -167,6 +168,7 @@ namespace BLAZAM.Session
             {
                 UserStates.Add(state);
             }
+
             UserStateAdded?.Invoke(state); // Invoke event after adding
         }
         /// <summary>Stores an MFA request temporarily, associating an MFA token with a user state and return URL. Typically used during an MFA challenge flow.</summary> 

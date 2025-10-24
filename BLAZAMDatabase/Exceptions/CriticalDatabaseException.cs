@@ -1,6 +1,4 @@
-﻿using BLAZAM.Database.Interfaces;
-
-namespace BLAZAM.Database.Exceptions
+﻿namespace BLAZAM.Database.Exceptions
 {
     public class CriticalDatabaseException : AppException
     {

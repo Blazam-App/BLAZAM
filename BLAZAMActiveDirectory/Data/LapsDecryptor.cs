@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿using BLAZAM.Logger;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
-using BLAZAM.Logger;
 using static BLAZAM.ActiveDirectory.Data.Win32;
 
 namespace BLAZAM.ActiveDirectory.Data

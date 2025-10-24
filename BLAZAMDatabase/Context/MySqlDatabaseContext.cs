@@ -1,8 +1,8 @@
-﻿using System.Data;
-using BLAZAM.Common.Data.Database;
+﻿using BLAZAM.Common.Data.Database;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
+using System.Data;
 
 namespace BLAZAM.Database.Context
 {

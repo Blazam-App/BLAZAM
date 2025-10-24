@@ -1,5 +1,4 @@
-﻿using BLAZAM.Database.Context;
-using BLAZAM.Localization;
+﻿using BLAZAM.Localization;
 using BLAZAM.Services.Background;
 using Microsoft.Extensions.Localization;
 

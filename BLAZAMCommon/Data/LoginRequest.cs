@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BLAZAM.Helpers;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.ComponentModel.DataAnnotations;
 using System.Security;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
-using BLAZAM.Helpers;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BLAZAM.Common.Data
 {
@@ -77,9 +77,9 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-        public LoginRequest DuoRequested(AuthenticationState state,string? mfaRedirect)
+        public LoginRequest DuoRequested(AuthenticationState state, string? mfaRedirect)
         {
-            MFARedirect= mfaRedirect;
+            MFARedirect = mfaRedirect;
             AuthenticationState = state;
             AuthenticationResult = LoginResultStatus.DuoRequested;
 

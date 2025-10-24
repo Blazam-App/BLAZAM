@@ -1,9 +1,9 @@
-﻿using System.ComponentModel;
-using System.Net;
-using System.Security.Principal;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using Cassia;
 using Serilog;
+using System.ComponentModel;
+using System.Net;
+using System.Security.Principal;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

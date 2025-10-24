@@ -31,7 +31,7 @@ namespace BLAZAM.Session
         /// <param name="mfaToken">The MFA token.</param>
         /// <param name="redirectUrl">The URL to redirect to after MFA.</param>
         /// <param name="user">The user state initiating the MFA request.</param>
-        public MFARequest(MfaType mfaType,string mfaToken, string redirectUrl, IApplicationUserState user)
+        public MFARequest(MfaType mfaType, string mfaToken, string redirectUrl, IApplicationUserState user)
         {
             this.mfaType = mfaType;
             this.mfaToken = mfaToken;

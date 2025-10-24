@@ -1,5 +1,4 @@
-﻿using BLAZAM.Database.Context;
-using BLAZAM.Helpers;
+﻿using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;

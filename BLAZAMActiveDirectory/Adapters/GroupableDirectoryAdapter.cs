@@ -1,10 +1,10 @@
-﻿using System.Data;
-using System.Text.Json.Serialization;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
+using System.Data;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

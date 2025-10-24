@@ -1,8 +1,6 @@
-﻿using System.Security.Claims;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
@@ -14,12 +12,12 @@ using BLAZAM.Services.Exceptions;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using DuoUniversal;
-using MailKit;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 
 namespace BLAZAM.Services

@@ -1,7 +1,7 @@
-﻿using System.ComponentModel;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Logger;
 using Cassia;
+using System.ComponentModel;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

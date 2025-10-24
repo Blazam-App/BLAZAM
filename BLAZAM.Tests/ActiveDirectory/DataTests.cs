@@ -1,7 +1,7 @@
 ﻿
-using System.Security;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Helpers;
+using System.Security;
 
 namespace BLAZAM.Tests.ActiveDirectory
 {

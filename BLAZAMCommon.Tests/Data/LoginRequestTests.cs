@@ -1,8 +1,8 @@
-﻿using System.Security.Claims;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Helpers;
 using Microsoft.AspNetCore.Components.Authorization;
 using Moq;
+using System.Security.Claims;
 
 namespace BLAZAMCommon.Tests.Data
 {
@@ -267,7 +267,7 @@ namespace BLAZAMCommon.Tests.Data
 
 
             // Act
-            var result = loginRequest.DuoRequested(mockAuthState.Object,null);
+            var result = loginRequest.DuoRequested(mockAuthState.Object, null);
 
             // Assert
             Assert.Equal(LoginResultStatus.DuoRequested, loginRequest.AuthenticationResult);

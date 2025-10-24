@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Services.Audit;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
+using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Pages.API.v1
 {

@@ -1,9 +1,9 @@
-﻿using System.Security.Claims; // Required for ClaimsPrincipal
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims; // Required for ClaimsPrincipal
 
 namespace BLAZAM.Session.Interfaces
 {

@@ -1,10 +1,4 @@
-﻿using System.Data;
-using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
-using System.Reflection;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using BLAZAM.ActiveDirectory.Data;
+﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
@@ -15,6 +9,12 @@ using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
+using System.Data;
+using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
+using System.Reflection;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
@@ -13,7 +12,7 @@ namespace BLAZAM.Helpers
     /// </summary>
     public static class StringHelpers
     {
-        
+
 
         /// <summary>
         /// Generates a consistent hash code for a string that does not change with application restarts.

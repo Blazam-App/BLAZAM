@@ -1,8 +1,8 @@
-﻿using System.Text.Json.Serialization;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Database.Models;
 using BLAZAM.Jobs;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -252,12 +252,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public async Task<IEnumerable<IGroupableDirectoryAdapter>> GetNestedMembersAsync()
         {
-            
-                ADSearch search = new(Directory);
-                search.Fields.NestedMemberOf = this;
-                var result = await search.SearchAsync<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
-                return result;
-            
+
+            ADSearch search = new(Directory);
+            search.Fields.NestedMemberOf = this;
+            var result = await search.SearchAsync<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
+            return result;
+
         }
 
         /// <summary>

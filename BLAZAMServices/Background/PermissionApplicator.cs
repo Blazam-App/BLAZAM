@@ -1,13 +1,12 @@
-﻿using System.Security.Claims;
-using BLAZAM.ActiveDirectory;
+﻿using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BLAZAM.Services.Background
 {

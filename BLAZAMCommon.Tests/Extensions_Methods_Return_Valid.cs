@@ -1,5 +1,5 @@
-using System.Globalization;
 using BLAZAM.Helpers;
+using System.Globalization;
 using static BLAZAM.Helpers.CommonHelpers;
 
 namespace BLAZAMCommon.Tests

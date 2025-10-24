@@ -1,13 +1,13 @@
-﻿using System.Diagnostics;
-using System.Security.Claims;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.Pages.API.v1
 {
