@@ -14,7 +14,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         protected DirectoryTemplate originalTemplate;
 
 
-        AppModal? categoryModal;
+        private AppModal? categoryModal;
         protected string groupText;
         protected List<string> categories = [];
         protected List<TemplateVariable> usernameVariables
@@ -60,12 +60,12 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         private List<DirectoryTemplate> dropdownTemplates = [];
         private DirectoryTemplate _template;
 
-        DirectoryTemplate usernameFromTemplate;
-        DirectoryTemplate displayNameFromTemplate;
-        DirectoryTemplate passwordFromTemplateName;
-        DirectoryTemplate requirePasswordChangeFromTemplate;
-        DirectoryTemplate sendWelcomeEmailFromTemplate;
-        DirectoryTemplate askForAlternateEmailFromTemplate;
+        private DirectoryTemplate usernameFromTemplate;
+        private DirectoryTemplate displayNameFromTemplate;
+        private DirectoryTemplate passwordFromTemplateName;
+        private DirectoryTemplate requirePasswordChangeFromTemplate;
+        private DirectoryTemplate sendWelcomeEmailFromTemplate;
+        private DirectoryTemplate askForAlternateEmailFromTemplate;
 
 
         protected bool fieldDrawerOpen;

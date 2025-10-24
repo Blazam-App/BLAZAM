@@ -43,7 +43,7 @@ namespace BLAZAM.Gui.UI.Dashboard
                 StateHasChanged();
             }
         }
-        bool ItemSelector(UserDashboardWidget item, string dropzone)
+        private bool ItemSelector(UserDashboardWidget item, string dropzone)
         {
             return item.Slot == dropzone;
         }
@@ -101,7 +101,7 @@ namespace BLAZAM.Gui.UI.Dashboard
                 widget.Order = idx++;
         }
 
-        async Task AddWidget(DashboardWidgetType widgetType)
+        private async Task AddWidget(DashboardWidgetType widgetType)
         {
             var order = 0;
             if (CurrentUser.State != null)
@@ -125,7 +125,7 @@ namespace BLAZAM.Gui.UI.Dashboard
             }
 
         }
-        async Task RemoveWidget(UserDashboardWidget widget)
+        private async Task RemoveWidget(UserDashboardWidget widget)
         {
             if (CurrentUser.State != null)
             {

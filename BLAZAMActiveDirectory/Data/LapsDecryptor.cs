@@ -122,7 +122,7 @@ namespace BLAZAM.ActiveDirectory.Data
 
         }
 
-        int delegateCallback(IntPtr pvCallbackCtxt, IntPtr pbData, int cbData, [MarshalAs(UnmanagedType.Bool)] bool fFinal)
+        private int delegateCallback(IntPtr pvCallbackCtxt, IntPtr pbData, int cbData, [MarshalAs(UnmanagedType.Bool)] bool fFinal)
         {
             try
             {

@@ -15,7 +15,7 @@ namespace BLAZAM.Session.Interfaces
         /// <summary>
         /// Gets this user's unique ID as stored in the application database (corresponds to AppUser.Id).
         /// </summary>
-        public int Id { get; }
+        int Id { get; }
 
         /// <summary>
         /// Event triggered when user-specific settings or preferences change.

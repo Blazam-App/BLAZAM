@@ -27,13 +27,13 @@ namespace BLAZAM.Pages
         [CascadingParameter]
         public SearchService? SearchParameters { get; set; }
 
-        readonly string ModelsTypeName = "Search";
+        private readonly string ModelsTypeName = "Search";
 
         /// <summary>
         /// Gets or sets the icon used to represent the search functionality.
         /// </summary>
         protected string SearchIcon { get; set; } = "";
-        string? _searchTermParameter;
+        private string? _searchTermParameter;
         /// <summary>
         /// The search term that comes from the URI
         /// </summary>

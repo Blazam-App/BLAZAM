@@ -5,8 +5,8 @@ namespace BLAZAM.Services.Duo
 {
     public interface IDuoClientProvider
     {
-        public Client GetDuoClient(string callbackUri);
-        public Task<bool> DoHealthCheckAsync();
+        Client GetDuoClient(string callbackUri);
+        Task<bool> DoHealthCheckAsync();
     }
     public class DuoClientProvider : IDuoClientProvider
     {
