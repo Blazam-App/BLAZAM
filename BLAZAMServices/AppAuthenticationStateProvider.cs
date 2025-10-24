@@ -373,6 +373,7 @@ namespace BLAZAM.Services
 
                 if (userClaim.Identity?.IsAuthenticated == true)
                 {
+                    loginReq.AuthenticationResult = LoginResultStatus.OK;   
                     return await SetUser(userClaim);
                 }
             }
@@ -386,7 +387,7 @@ namespace BLAZAM.Services
         private bool ShouldPerformDuoMFA(AuthenticationSettings? settings, LoginRequest loginReq)
         {
             return settings != null &&
-                settings.RequireMFA &&
+                settings.DuoEnabled &&
                 settings.MFAType == MfaType.CiscoDuo &&
                 settings.DuoSettingsValid &&
                 !loginReq.Impersonation;
