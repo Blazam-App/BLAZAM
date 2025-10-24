@@ -77,8 +77,9 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-        public LoginRequest DuoRequested(AuthenticationState state)
+        public LoginRequest DuoRequested(AuthenticationState state,string? mfaRedirect)
         {
+            MFARedirect= mfaRedirect;
             AuthenticationState = state;
             AuthenticationResult = LoginResultStatus.DuoRequested;
 
