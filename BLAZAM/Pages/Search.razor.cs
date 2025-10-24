@@ -54,7 +54,9 @@ namespace BLAZAM.Pages
             var decodedSearchTerm = HttpUtility.UrlDecode(SearchTermParameter);
 
             if (_searchTermParameter == decodedSearchTerm)
+            {
                 return;
+            }
 
             LoadingData = true;
             Searcher?.Cancel();
@@ -63,7 +65,9 @@ namespace BLAZAM.Pages
             await PerformSearch();
 
             if (_searchTermParameter.IsNullOrEmpty())
+            {
                 LoadingData = false;
+            }
         }
 
         /// <summary>
@@ -143,9 +147,14 @@ namespace BLAZAM.Pages
 
             LoadingData = true;
             if (!SearchTermParameter.IsNullOrEmpty() && SearchTermParameter?.Length > 0)
+            {
                 await InvokeSearch();
+            }
             else
+            {
                 Searcher?.Results.Clear();
+            }
+
             LoadingData = false;
 
 
@@ -162,9 +171,14 @@ namespace BLAZAM.Pages
         protected async Task InvokeSearch()
         {
             if (Searcher == null)
+            {
                 Searcher = new ADSearch(Directory);
+            }
             else
+            {
                 Searcher.Cancel();
+            }
+
             SearchService.SearchTerm = SearchTermParameter;
             Searcher.EnabledOnly = !SearchService.IncludeDisabled;
             Searcher.GeneralSearchTerm = SearchService.SearchTerm;

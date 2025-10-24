@@ -24,8 +24,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (IsDomainLocalGroup) return GroupScope.DomainLocal;
-                if (IsGlobalGroup) return GroupScope.Global;
+                if (IsDomainLocalGroup)
+                {
+                    return GroupScope.DomainLocal;
+                }
+
+                if (IsGlobalGroup)
+                {
+                    return GroupScope.Global;
+                }
+
                 return GroupScope.Universal;
             }
             set
@@ -294,7 +302,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 MembersToAdd.ForEach(m =>
                 {
                     if (!members.Contains(m.Member))
+                    {
                         members.Add(m.Member);
+                    }
                 });
                 return members;
             }
@@ -322,7 +332,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public int CompareTo(object? obj)
         {
             if (obj is ADGroup g)
+            {
                 return CanonicalName.CompareTo(g.CanonicalName);
+            }
+
             return 0;
         }
 

@@ -27,13 +27,20 @@
         public void AddValue(double value)
         {
             if (_history.Count == memory)
+            {
                 _history.RemoveAt(0);
+            }
+
             _history.Add(value);
 
         }
         public double GetAverage(int roundedDecimalPlaces = 0)
         {
-            if (_history.Count == 0) return 0;
+            if (_history.Count == 0)
+            {
+                return 0;
+            }
+
             if (roundedDecimalPlaces > 0)
             {
                 return Math.Round(_history.Average(), roundedDecimalPlaces);

@@ -40,8 +40,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 if (childOUCache == null)
+                {
                     childOUCache = Directory.OUs.FindSubOusByDN(DN).OrderBy(ou => ou.CanonicalName).AsQueryable();
-
+                }
 
                 return childOUCache;
             }
@@ -91,10 +92,26 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (CanReadUsers) return true;
-                if (CanReadGroups) return true;
-                if (CanReadComputers) return true;
-                if (CanReadPrinters) return true;
+                if (CanReadUsers)
+                {
+                    return true;
+                }
+
+                if (CanReadGroups)
+                {
+                    return true;
+                }
+
+                if (CanReadComputers)
+                {
+                    return true;
+                }
+
+                if (CanReadPrinters)
+                {
+                    return true;
+                }
+
                 return false;
             }
         }

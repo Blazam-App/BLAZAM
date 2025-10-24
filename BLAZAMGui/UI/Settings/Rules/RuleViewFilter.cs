@@ -8,7 +8,11 @@
         {
             get => _trigger; set
             {
-                if (_trigger == value) return;
+                if (_trigger == value)
+                {
+                    return;
+                }
+
                 _trigger = value;
                 TriggerChanged?.Invoke();
 
@@ -19,7 +23,11 @@
         {
             get => _objectType; set
             {
-                if (_objectType == value) return;
+                if (_objectType == value)
+                {
+                    return;
+                }
+
                 _objectType = value;
                 if (!Trigger.IsNotificationAppropriateForObject(value))
                 {

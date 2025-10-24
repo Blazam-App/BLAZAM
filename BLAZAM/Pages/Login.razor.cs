@@ -42,7 +42,9 @@ namespace BLAZAM.Pages
             var currentUri = new Uri(Nav.Uri);
             LoginRequest.CallbackBaseUri = currentUri.Scheme + "://" + currentUri.Authority;
             if (Monitor.AppReady != ServiceConnectionState.Up)
+            {
                 Monitor.OnAppReadyChanged += AppReadyChanged;
+            }
         }
 
 
@@ -61,6 +63,7 @@ namespace BLAZAM.Pages
             await StateHasChangedAsync();
             LoginRequest? authenticationResult = null;
             if (ValidateInput(LoginRequest))
+            {
                 try
                 {
                     if (!otpCode.IsNullOrEmpty())
@@ -75,6 +78,7 @@ namespace BLAZAM.Pages
                     Loggers.SystemLogger.Error(ex, "Error attempting logon");
                     SnackBarService.Info(ex.Message);
                 }
+            }
 
             attemptingSignIn = false;
 
@@ -88,19 +92,29 @@ namespace BLAZAM.Pages
             {
                 validationResult = new();
             }
-            if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !DemoCustomLogin)) return true;
-
+            if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !DemoCustomLogin))
+            {
+                return true;
+            }
 
             if (LoginRequest.Password.IsNullOrEmpty())
+            {
                 validationResult.AuthenticationResult = LoginResultStatus.NoPassword;
+            }
+
             if (LoginRequest.Username.IsNullOrEmpty())
+            {
                 validationResult.AuthenticationResult = LoginResultStatus.NoUsername;
+            }
+
             return false;
         }
         private async Task ProcessAuthenticationResult(LoginRequest? authenticationResult = null)
         {
-            if (authenticationResult == null) return;
-
+            if (authenticationResult == null)
+            {
+                return;
+            }
 
             switch (authenticationResult.AuthenticationResult)
             {
@@ -137,7 +151,10 @@ namespace BLAZAM.Pages
                 case LoginResultStatus.DuoRequested:
                     attemptingSignIn = true;
                     if (authenticationResult.MFARedirect != null)
+                    {
                         Nav.NavigateTo(authenticationResult.MFARedirect);
+                    }
+
                     break;
                 case LoginResultStatus.GoogleAuthenticatorRequested:
                     await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken?.ToSecureString());

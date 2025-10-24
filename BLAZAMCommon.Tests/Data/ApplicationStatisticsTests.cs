@@ -21,7 +21,11 @@ namespace BLAZAMCommon.Tests.Data
         private static T GetStaticField<T>(string fieldName)
         {
             FieldInfo field = typeof(ApplicationStatistics).GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Static);
-            if (field == null) throw new FieldAccessException($"Static field '{fieldName}' not found in ApplicationStatistics.");
+            if (field == null)
+            {
+                throw new FieldAccessException($"Static field '{fieldName}' not found in ApplicationStatistics.");
+            }
+
             return (T)field.GetValue(null);
         }
 
@@ -29,7 +33,11 @@ namespace BLAZAMCommon.Tests.Data
         private static void SetStaticField(string fieldName, object value)
         {
             FieldInfo field = typeof(ApplicationStatistics).GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Static);
-            if (field == null) throw new FieldAccessException($"Static field '{fieldName}' not found in ApplicationStatistics.");
+            if (field == null)
+            {
+                throw new FieldAccessException($"Static field '{fieldName}' not found in ApplicationStatistics.");
+            }
+
             field.SetValue(null, value);
         }
 

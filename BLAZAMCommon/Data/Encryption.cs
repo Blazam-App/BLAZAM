@@ -59,7 +59,11 @@ namespace BLAZAM.Common.Data
         {
             Instance = this;
 
-            if (keySeedString == null || keySeedString == "") return;
+            if (keySeedString == null || keySeedString == "")
+            {
+                return;
+            }
+
             KeySeedString = keySeedString;
             KeySize = keySize;
             GenerateApiKeyFromSeedString();
@@ -200,7 +204,11 @@ namespace BLAZAM.Common.Data
         public T? DecryptObject<T>(string? cipherText)
         {
 
-            if (cipherText == null) return default;
+            if (cipherText == null)
+            {
+                return default;
+            }
+
             try
             {
                 var newDecrypted = DecryptSaltedObjectV2<T>(cipherText);
@@ -243,7 +251,11 @@ namespace BLAZAM.Common.Data
 
         private T? DecryptOldUnsaltedObject<T>(string? cipherText)
         {
-            if (cipherText == null) return default;
+            if (cipherText == null)
+            {
+                return default;
+            }
+
             byte[] buffer = Convert.FromBase64String(cipherText);
 
             byte[] iv = buffer.Take(16).ToArray<byte>();

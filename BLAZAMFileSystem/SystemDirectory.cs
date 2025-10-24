@@ -222,7 +222,9 @@ namespace BLAZAM.FileSystem
 
             var directories = Directory.GetDirectories(FullPath, "*", SearchOption.AllDirectories).AsEnumerable();
             if (copyingDownTree)
+            {
                 directories = directories.Where(d => !d.Contains(parentDirectory.FullPath));
+            }
 
             foreach (string dirPath in directories)
             {
@@ -239,7 +241,9 @@ namespace BLAZAM.FileSystem
 
             var files = Directory.GetFiles(FullPath, "*.*", SearchOption.AllDirectories).AsEnumerable();
             if (copyingDownTree)
+            {
                 files = files.Where(f => !f.Contains(parentDirectory.FullPath));
+            }
 
             foreach (string newPath in files)
             {

@@ -186,7 +186,10 @@ namespace BLAZAM.Services
                 if (subscription.WebHookSignature == WebHookSignature.HMAC)
                 {
                     if (subscription.HmacKey is null || subscription.HmacKey.IsNullOrEmpty())
+                    {
                         throw new AppException("HMAC Key not supplied to subscription set to use it.");
+                    }
+
                     var key = subscription.HmacKey.Decrypt<string>();
                     if (key != null && key.StartsWith(prefix))
                     {

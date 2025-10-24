@@ -85,7 +85,10 @@ namespace BLAZAM.Services.Background
 
         private static bool TryDeleteDirectoryWithImpersonation(SystemDirectory dir, WindowsImpersonation? impersonator)
         {
-            if (impersonator == null) return false;
+            if (impersonator == null)
+            {
+                return false;
+            }
 
             return impersonator.Run(() =>
             {
@@ -109,10 +112,16 @@ namespace BLAZAM.Services.Background
 
             Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old staging files");
             var updateImpersonator = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
-            if (TryDeleteDirectoryWithImpersonation(dir, updateImpersonator)) return;
+            if (TryDeleteDirectoryWithImpersonation(dir, updateImpersonator))
+            {
+                return;
+            }
 
             var adImpersonator = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
-            if (TryDeleteDirectoryWithImpersonation(dir, adImpersonator)) return;
+            if (TryDeleteDirectoryWithImpersonation(dir, adImpersonator))
+            {
+                return;
+            }
 
             Loggers.UpdateLogger.Error("No identities with permission to remove old staging files");
         }
@@ -144,7 +153,10 @@ namespace BLAZAM.Services.Background
 
         private static bool TryDeleteFileWithImpersonation(SystemFile file, WindowsImpersonation? impersonator)
         {
-            if (impersonator == null) return false;
+            if (impersonator == null)
+            {
+                return false;
+            }
 
             return impersonator.Run(() =>
             {
@@ -172,10 +184,16 @@ namespace BLAZAM.Services.Background
             Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file {@File}", file);
 
             var impersonation = context.AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
-            if (TryDeleteFileWithImpersonation(file, impersonation)) return;
+            if (TryDeleteFileWithImpersonation(file, impersonation))
+            {
+                return;
+            }
 
             impersonation = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
-            if (TryDeleteFileWithImpersonation(file, impersonation)) return;
+            if (TryDeleteFileWithImpersonation(file, impersonation))
+            {
+                return;
+            }
 
             Loggers.UpdateLogger.Error("No identities with permission to remove old update file {@File}", file);
 
@@ -210,7 +228,9 @@ namespace BLAZAM.Services.Background
 
                     IsUpdateAvailable = true;
                     if (!appSettings.AutoUpdate || appSettings.AutoUpdateTime == null)
+                    {
                         return true;
+                    }
 
                     if (!latestUpdate.PassesPrerequisiteChecks)
                     {

@@ -170,7 +170,11 @@ namespace BLAZAM.Update.Services
                     //Get the release filename to check that the release zip exists
                     var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
                     //Create that update object
-                    if (fn == null) continue;
+                    if (fn == null)
+                    {
+                        continue;
+                    }
+
                     try
                     {
                         AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
@@ -191,7 +195,10 @@ namespace BLAZAM.Update.Services
                 {
                     //Get the release filename to prepare a version object
                     var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
-                    if (fn == null) continue;
+                    if (fn == null)
+                    {
+                        continue;
+                    }
                     //Create that update object
                     try
                     {
@@ -240,21 +247,30 @@ namespace BLAZAM.Update.Services
                 }
             }
 
-            if (SelectedBranch == null) SelectedBranch = ApplicationReleaseBranches.Stable;
+            if (SelectedBranch == null)
+            {
+                SelectedBranch = ApplicationReleaseBranches.Stable;
+            }
         }
 
         private ApplicationUpdate? EncapsulateUpdate(Release? releaseToEncapsulate, string Branch)
         {
             if (releaseToEncapsulate == null)
+            {
                 return null;
+            }
 
             var filename = Path.GetFileNameWithoutExtension(releaseToEncapsulate.Assets.FirstOrDefault()?.Name);
             if (filename == null)
+            {
                 throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
+            }
 
             var versionStart = filename.IndexOf("-v");
             if (versionStart < 0 || versionStart + 2 >= filename.Length)
+            {
                 throw new ApplicationUpdateException("Version string not found in filename");
+            }
 
             var releaseVersion = new ApplicationVersion(filename[(versionStart + 2)..]);
 
@@ -319,11 +335,15 @@ namespace BLAZAM.Update.Services
                 Loggers.UpdateLogger.Information("Checking update credentials");
 
                 if (ApplicationInfo.applicationRoot.Writable)
+                {
                     return UpdateCredential.Application;
+                }
 
                 //Test Directory Credentials
                 if (TestDirectoryCredentials())
+                {
                     return UpdateCredential.Active_Directory;
+                }
 
                 // Active Directory credentials don't exist or don't have write permissions to the application directory
 
@@ -331,7 +351,9 @@ namespace BLAZAM.Update.Services
 
                 //Test Update Credentials
                 if (TestCustomCredentials())
+                {
                     return UpdateCredential.Custom;
+                }
 
                 return UpdateCredential.None;
             }
@@ -368,7 +390,11 @@ namespace BLAZAM.Update.Services
             var appSettings = context.AppSettings.FirstOrDefault();
             if (appSettings != null)
             {
-                if (!appSettings.UseUpdateCredentials) return false;
+                if (!appSettings.UseUpdateCredentials)
+                {
+                    return false;
+                }
+
                 impersonation = appSettings?.CreateUpdateImpersonator();
 
                 if (impersonation != null)
@@ -378,7 +404,10 @@ namespace BLAZAM.Update.Services
                         Loggers.UpdateLogger.Information("Checking custom update credential permissions: " + WindowsIdentity.GetCurrent().Name);
 
                         if (ApplicationInfo.applicationRoot.Writable)
+                        {
                             return true;
+                        }
+
                         return false;
                     });
                 }
@@ -406,7 +435,11 @@ namespace BLAZAM.Update.Services
 
         private bool TestDirectoryCredentials()
         {
-            if (_dbFactory == null) return false;
+            if (_dbFactory == null)
+            {
+                return false;
+            }
+
             using var context = _dbFactory.CreateDbContext();
             //Prepare impersonation
             WindowsImpersonation? impersonation = null;
@@ -416,7 +449,9 @@ namespace BLAZAM.Update.Services
             var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
             //Make sure we got the settings
             if (adSettings != null)
+            {
                 impersonation = adSettings.CreateDirectoryAdminImpersonator();
+            }
             //Make sure impersonation set up and test write permissions
             if (impersonation != null)
             {
@@ -434,7 +469,10 @@ namespace BLAZAM.Update.Services
                        return false;
                    }
                    if (ApplicationInfo.applicationRoot.Writable)
+                   {
                        return true;
+                   }
+
                    return false;
 
                });

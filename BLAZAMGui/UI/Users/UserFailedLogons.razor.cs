@@ -14,7 +14,11 @@ namespace BLAZAM.Gui.UI.Users
             get => _user; set
 
             {
-                if (_user != null && _user.Equals(value)) return;
+                if (_user != null && _user.Equals(value))
+                {
+                    return;
+                }
+
                 if (value is IADUser adUser)
                 {
                     _user = adUser;

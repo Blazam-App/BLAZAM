@@ -12,7 +12,11 @@ namespace BLAZAM.Database.Models.Chat
         {
             get
             {
-                if (!_name.IsNullOrEmpty()) return _name;
+                if (!_name.IsNullOrEmpty())
+                {
+                    return _name;
+                }
+
                 return String.Join(", ", Members.OrderBy(m => m.Username).Select(m => m.Username).ToArray());
             }
             set => _name = value;

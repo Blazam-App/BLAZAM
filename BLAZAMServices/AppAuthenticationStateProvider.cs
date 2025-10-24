@@ -117,9 +117,13 @@ namespace BLAZAM.Services
                 options.LoginPath = new PathString("/login");
                 options.LogoutPath = new PathString("/logout");
                 if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                {
                     options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
+                }
                 else
+                {
                     options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
+                }
 
                 options.SlidingExpiration = true;
             };
@@ -224,7 +228,9 @@ namespace BLAZAM.Services
                 newUserState.User = authenticationState.User;
             }
             if (newUserState.User != null)
+            {
                 _userStateService.SetUserState(newUserState);
+            }
 
             if (authenticationState != null)
             {
@@ -237,7 +243,9 @@ namespace BLAZAM.Services
                 return loginReq;
             }
             else
+            {
                 return loginReq.BadCredentials();
+            }
         }
 
         private bool IsUnauthorizedImpersonation(LoginRequest loginReq)
@@ -337,7 +345,10 @@ namespace BLAZAM.Services
             try
             {
                 var userClaim = await AttemptADLogin(newUserState, loginReq);
-                if (userClaim == null) return null;
+                if (userClaim == null)
+                {
+                    return null;
+                }
 
                 if (ShouldPerformDuoMFA(settings, loginReq))
                 {
@@ -361,7 +372,9 @@ namespace BLAZAM.Services
                 }
 
                 if (userClaim.Identity?.IsAuthenticated == true)
+                {
                     return await SetUser(userClaim);
+                }
             }
             catch (DeniedLoginException)
             {
@@ -438,7 +451,10 @@ namespace BLAZAM.Services
             using var context = await _factory.CreateDbContextAsync();
 
             var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
-            if (settings == null) throw new AppException("Could not get settings"); // Existing check, good.
+            if (settings == null)
+            {
+                throw new AppException("Could not get settings"); // Existing check, good.
+            }
 
             // Initiate the Duo authentication for a specific username
 

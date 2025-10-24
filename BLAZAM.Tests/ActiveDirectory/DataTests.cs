@@ -15,7 +15,9 @@ namespace BLAZAM.Tests.ActiveDirectory
             string json = "{\"n\":\"TestAccount\",\"t\":\"01D9F7A2B6C0A000\",\"p\":\"TestPassword\"}";
             SecureString secureJson = new SecureString();
             foreach (char c in json)
+            {
                 secureJson.AppendChar(c);
+            }
 
             // Act
             var credential = new LapsCredential(secureJson);

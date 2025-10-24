@@ -21,7 +21,11 @@ namespace BLAZAM.Services
         {
             get => includeDisabled; set
             {
-                if (includeDisabled == value) return;
+                if (includeDisabled == value)
+                {
+                    return;
+                }
+
                 includeDisabled = value;
                 DisabledOptionChanged();
             }
@@ -94,7 +98,9 @@ namespace BLAZAM.Services
         {
             Loggers.SystemLogger.Debug("SearchService.Search: Search called. Current SearchTerm: '{CurrentSearchTerm}', Provided searchTerm parameter: '{ProvidedSearchTerm}'", SearchTerm, searchTerm);
             if (searchTerm != null)
+            {
                 SearchTerm = searchTerm;
+            }
 
             Loggers.SystemLogger.Debug("SearchService.Search: Navigating to /search/{FinalSearchTerm}", SearchTerm);
             _nav.NavigateTo("/search/" + SearchTerm);

@@ -13,7 +13,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if ((int)Capacity == 0) return 0;
+                if ((int)Capacity == 0)
+                {
+                    return 0;
+                }
+
                 return UsedSpace / Capacity * 100;
             }
         }

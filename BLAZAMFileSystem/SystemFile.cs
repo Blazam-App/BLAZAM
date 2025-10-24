@@ -141,7 +141,11 @@ namespace BLAZAM.FileSystem
         {
             get
             {
-                if (this.Exists) return base.Writable; // base.Writable checks the file itself
+                if (this.Exists)
+                {
+                    return base.Writable; // base.Writable checks the file itself
+                }
+
                 return ParentDirectory.Writable; // Checks parent directory if file doesn't exist
             }
         }
@@ -203,7 +207,9 @@ namespace BLAZAM.FileSystem
         public void EnsureCreated()
         {
             if (!Exists)
+            {
                 Create();
+            }
         }
 
         /// <summary>

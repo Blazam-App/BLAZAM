@@ -44,8 +44,13 @@ namespace BLAZAM.Common.Data
             get
             {
                 if (Username != null && Username.Length > 0)
+                {
                     if (Password != null && Password.Length > 0)
+                    {
                         return true;
+                    }
+                }
+
                 return false;
             }
         }

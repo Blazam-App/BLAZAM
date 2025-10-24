@@ -116,10 +116,20 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// <returns>A list of search results converted and casted to supplied types</returns>
         public List<TInterface> Search<TObject, TInterface>(CancellationToken? token = null) where TObject : TInterface, IDirectoryEntryAdapter, new()
         {
-            if (token != null) cancellationToken = token;
-            else cancellationToken = new CancellationToken();
+            if (token != null)
+            {
+                cancellationToken = token;
+            }
+            else
+            {
+                cancellationToken = new CancellationToken();
+            }
+
             if (cancellationToken?.IsCancellationRequested == true)
+            {
                 return [];
+            }
+
             InitializeSearch();
             try
             {
@@ -145,7 +155,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 }
                 if (SearchDeleted)
+                {
                     searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + "(isDeleted=TRUE)" + ")";
+                }
 
                 // Generalized FilterQuery for GeneralSearchTerm
                 if (GeneralSearchTerm != null)
@@ -222,32 +234,69 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     FilterQuery = "";
 
                     if (!Fields.CN.IsNullOrEmpty())
+                    {
                         FilterQuery += $"(cn=*{Fields.CN}*)";
+                    }
+
                     if (Fields.Changed != null)
+                    {
                         FilterQuery += $"(whenChanged>={Fields.Changed.Value.ToString("yyyyMMddHHmmss.fZ")})";
+                    }
+
                     if (Fields.Created != null)
+                    {
                         FilterQuery += $"(whenCreated>={Fields.Created.Value.ToString("yyyyMMddHHmmss.fZ")})";
+                    }
+
                     if (!Fields.SamAccountName.IsNullOrEmpty())
+                    {
                         FilterQuery += $"(samaccountname=*{Fields.SamAccountName}*)";
+                    }
+
                     if (Fields.LastLogonTime != null)
+                    {
                         FilterQuery += $"(lastLogonTimestamp<={Fields.LastLogonTime})(!(lastLogonTimestamp=0))";
+                    }
+
                     if (Fields.ExpireTime != null)
+                    {
                         FilterQuery += $"(accountExpires<={Fields.ExpireTime.Value.ToFileTimeUtc().ToString()})(!(accountExpires=0))";
+                    }
 
                     if (!Fields.DN.IsNullOrEmpty())
+                    {
                         FilterQuery += $"(distinguishedName={Fields.DN})";
+                    }
+
                     if (!Fields.MemberOf.IsNullOrEmpty())
+                    {
                         FilterQuery += $"(memberOf=*{Fields.DN})*";
+                    }
+
                     if (!Fields.SID.IsNullOrEmpty())
+                    {
                         FilterQuery += $"(objectSid={Fields.SID})";
+                    }
+
                     if (Fields.GUID != null)
+                    {
                         FilterQuery += $"(objectGUID={Fields.GUID.ToHexADString()})";
+                    }
+
                     if (Fields.NestedMemberOf != null)
+                    {
                         FilterQuery += $"(memberOf:1.2.840.113556.1.4.1941:={Fields.NestedMemberOf.DN})";
+                    }
+
                     if (Fields.BitLockerRecoveryId != null)
+                    {
                         FilterQuery += $"(name=*{Fields.BitLockerRecoveryId}*)";
+                    }
+
                     if (Fields.PasswordLastSet != null)
+                    {
                         FilterQuery += $"(pwdLastSet>={Fields.PasswordLastSet.Value.ToFileTimeUtc().ToString()})";
+                    }
 
                     if (FieldValues.Count > 0)
                     {
@@ -287,12 +336,18 @@ namespace BLAZAM.ActiveDirectory.Searchers
                                 case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
                                     op = ">=";
                                     if (field.Value is TimeSpan timeSpan2)
+                                    {
                                         searchValue = DateTime.Now.Subtract(timeSpan2).ToFileTimeUtc().ToString();
+                                    }
+
                                     break;
                                 case ActiveDirectoryFieldOperator.FutureTimeFrame:
                                     op = "<=";
                                     if (field.Value is TimeSpan timeSpan3)
+                                    {
                                         searchValue = DateTime.Now.Add(timeSpan3).ToFileTimeUtc().ToString();
+                                    }
+
                                     break;
                                 case ActiveDirectoryFieldOperator.BeforeNow:
                                     op = "<=";
@@ -351,24 +406,31 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 }
 
                 if (cancellationToken?.IsCancellationRequested == true)
+                {
                     return [];
+                }
 
                 PrepareSearcher(searcher);
                 if (cancellationToken?.IsCancellationRequested == true)
+                {
                     return [];
-
+                }
 
                 PerformSearch<TObject, TInterface>(searcher, PageSize);
 
                 if (cancellationToken?.IsCancellationRequested == true)
+                {
                     return [];
+                }
 
                 SearchState = SearchState.Completed;
 
 
 
                 if (cancellationToken?.IsCancellationRequested == true)
+                {
                     return [];
+                }
 
                 OnSearchCompleted?.Invoke();
                 stopwatch.Stop();
@@ -414,10 +476,16 @@ namespace BLAZAM.ActiveDirectory.Searchers
             SearchResultCollection lastResults;
             try
             {
-                if (cancellationToken?.IsCancellationRequested == true) return;
+                if (cancellationToken?.IsCancellationRequested == true)
+                {
+                    return;
+                }
 
                 lastResults = searcher.FindAll();
-                if (cancellationToken?.IsCancellationRequested == true) return;
+                if (cancellationToken?.IsCancellationRequested == true)
+                {
+                    return;
+                }
 
                 var count = lastResults.Count;
             }
@@ -434,21 +502,28 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 var approxTotal = searcher.VirtualListView?.ApproximateTotal;
                 var progress = 0;
                 if (approxTotal != null && approxTotal > 0)
+                {
                     progress = _searchResults.Count / approxTotal.Value;
+                }
             }
             if (lastResults.Count < pageSize)
+            {
                 moreResults = false;
+            }
 
             while (moreResults && cancellationToken?.IsCancellationRequested != true && searcher.VirtualListView != null)
             {
                 if (searcher.VirtualListView != null)
+                {
                     searcher.VirtualListView.Offset += pageSize;
+                }
 
                 lastResults = searcher.FindAll();
                 AddResults<TObject, TInterface>(lastResults);
                 if (searcher.VirtualListView == null || lastResults.Count < pageSize)
+                {
                     moreResults = false;
-
+                }
             }
 
 
@@ -492,7 +567,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         private void AddResults<T, I>(SearchResultCollection lastResults) where T : I, IDirectoryEntryAdapter, new()
         {
-            if (lastResults.Count == 0) return;
+            if (lastResults.Count == 0)
+            {
+                return;
+            }
+
             List<IDirectoryEntryAdapter> last;
             if (_currentUserActiveDirectoryContext != null)
             {

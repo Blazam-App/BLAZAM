@@ -62,7 +62,10 @@ namespace BLAZAM.Helpers
             {
                 return true;
             }
-            if (url.StartsWith("https://localhost")) return true;
+            if (url.StartsWith("https://localhost"))
+            {
+                return true;
+            }
             // Original logic for empty string was handled by the IsNullOrEmpty check above.
             return url[0] == '/' && (url.Length == 1 ||
                     url[1] != '/' && url[1] != '\\') ||   // "/" or "/foo" but not "//" or "/\"
@@ -94,13 +97,20 @@ namespace BLAZAM.Helpers
         /// <returns>The plain text string.</returns>
         public static string ToPlainText(this SecureString? secureString)
         {
-            if (secureString == null) return string.Empty;
+            if (secureString == null)
+            {
+                return string.Empty;
+            }
+
             IntPtr bstrPtr = Marshal.SecureStringToBSTR(secureString);
             try
             {
                 var plainText = Marshal.PtrToStringBSTR(bstrPtr);
                 if (plainText == null)
+                {
                     plainText = string.Empty;
+                }
+
                 return plainText;
             }
             finally
@@ -130,7 +140,11 @@ namespace BLAZAM.Helpers
         /// <returns>A user-friendly OU path, or null if the input is null.</returns>
         public static string? ToPrettyOu(this string? ou)
         {
-            if (ou == null) return null;
+            if (ou == null)
+            {
+                return null;
+            }
+
             var ouComponents = Regex.Matches(ou, @"OU=([^,]*)")
                 .Select(m => m.Groups[1].Value)
                 .ToList();

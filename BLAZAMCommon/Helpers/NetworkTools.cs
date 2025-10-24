@@ -24,7 +24,10 @@ namespace BLAZAM.Common.Helpers
             bool pingable = false;
 
             IPAddress? ip = TryResolveHostIP(hostNameOrAddress);
-            if (ip == null) return false;
+            if (ip == null)
+            {
+                return false;
+            }
 
             Ping pinger = new();
             try
@@ -71,7 +74,10 @@ namespace BLAZAM.Common.Helpers
 
 
             IPAddress? ip = TryResolveHostIP(hostNameOrAddress);
-            if (ip == null) return false;
+            if (ip == null)
+            {
+                return false;
+            }
 
             foreach (int port in ports)
             {
@@ -113,11 +119,22 @@ namespace BLAZAM.Common.Helpers
 
         public static IPAddress? ResolveHostIP(string hostNameOrAddress)
         {
-            if (hostNameOrAddress == null) throw new ArgumentNullException(nameof(hostNameOrAddress));
-            if (hostNameOrAddress == string.Empty) throw new ArgumentException(nameof(hostNameOrAddress));
+            if (hostNameOrAddress == null)
+            {
+                throw new ArgumentNullException(nameof(hostNameOrAddress));
+            }
+
+            if (hostNameOrAddress == string.Empty)
+            {
+                throw new ArgumentException(nameof(hostNameOrAddress));
+            }
 
             var validator = new ValidIpAttribute();
-            if (validator.IsValid(hostNameOrAddress)) return IPAddress.Parse(hostNameOrAddress);
+            if (validator.IsValid(hostNameOrAddress))
+            {
+                return IPAddress.Parse(hostNameOrAddress);
+            }
+
             try
             {
                 IPAddress[] addresses = Dns.GetHostAddresses(hostNameOrAddress);

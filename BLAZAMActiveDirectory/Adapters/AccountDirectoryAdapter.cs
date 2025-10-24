@@ -51,7 +51,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (CurrentUser?.IsSuperAdmin == true) return true;
+                if (CurrentUser?.IsSuperAdmin == true)
+                {
+                    return true;
+                }
+
                 return CurrentUser?.PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == ObjectType && om.AllowDisabled))) == true;
 
             }
@@ -298,7 +302,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (PasswordLastSet == null) return true;
+                if (PasswordLastSet == null)
+                {
+                    return true;
+                }
+
                 return PasswordLastSet == DateTime.MinValue;
             }
             set
@@ -356,10 +364,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 if (value == null)
+                {
                     SetAttribute(pwdLastSet, 0);
+                }
                 else
+                {
                     SetAttribute(pwdLastSet, -1);
-
+                }
             }
 
         }
@@ -371,16 +382,29 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public bool SetPassword(SecureString password, bool requireChange = false)
         {
-            if (SAMAccountName == null) throw new AppException("samaccount name not found!");
-            if (DirectorySettings == null) throw new AppException("Directory settings not found when trying to change directory user password");
+            if (SAMAccountName == null)
+            {
+                throw new AppException("samaccount name not found!");
+            }
+
+            if (DirectorySettings == null)
+            {
+                throw new AppException("Directory settings not found when trying to change directory user password");
+            }
 
             var directoryPassword = DirectorySettings.Password.Decrypt().ToSecureString();
-            if (directoryPassword == null) return false;
+            if (directoryPassword == null)
+            {
+                return false;
+            }
 
             try
             {
                 if (TryInvokeSetPassword(password))
+                {
                     return true;
+                }
+
                 if (OperatingSystem.IsWindows())
                 {
                     // If we are on Windows, we can use the PrincipalContext to set the password
@@ -392,7 +416,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 Loggers.ActiveDirectoryLogger.Error(ex, "Error setting entry password");
                 if (!Debugger.IsAttached)
+                {
                     throw new AppException("Unable to set password", ex);
+                }
             }
             return false;
         }
@@ -414,7 +440,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private bool TryPrincipalContextSetPassword(SecureString password, bool requireChange, SecureString directoryPassword)
         {
             if (DirectorySettings == null)
+            {
                 throw new AppException("Directory settings not found when trying to change directory user password");
+            }
+
             using PrincipalContext pContext = new(
                 ContextType.Domain,
                 DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
@@ -426,9 +455,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 up.SetPassword(password.ToPlainText());
                 if (requireChange)
+                {
                     up.ExpirePasswordNow();
+                }
+
                 if (NewEntry)
+                {
                     up.PasswordNotRequired = false;
+                }
+
                 up.Save();
             }
             return true;

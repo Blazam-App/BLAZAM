@@ -19,7 +19,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             get => searchState; set
             {
-                if (searchState == value) return;
+                if (searchState == value)
+                {
+                    return;
+                }
+
                 searchState = value;
                 SearchStateChanged.InvokeAsync(value);
             }

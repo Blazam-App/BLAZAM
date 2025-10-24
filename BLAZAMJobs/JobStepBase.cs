@@ -12,8 +12,16 @@ namespace BLAZAM.Jobs
         {
             get
             {
-                if (Result == JobResult.Running && StartTime != null) return DateTime.Now - StartTime;
-                if (EndTime == null) return null;
+                if (Result == JobResult.Running && StartTime != null)
+                {
+                    return DateTime.Now - StartTime;
+                }
+
+                if (EndTime == null)
+                {
+                    return null;
+                }
+
                 return EndTime - StartTime;
             }
         }
@@ -28,7 +36,11 @@ namespace BLAZAM.Jobs
         {
             get => progress; set
             {
-                if (value != null && progress != null && Math.Abs((value - (float)progress).Value) < 0.1) return;
+                if (value != null && progress != null && Math.Abs((value - (float)progress).Value) < 0.1)
+                {
+                    return;
+                }
+
                 if (value != null)
                 {
                     value = Math.Clamp(value.Value, 0, 100);
@@ -43,7 +55,10 @@ namespace BLAZAM.Jobs
         {
             get => _result; protected set
             {
-                if (value == _result) return;
+                if (value == _result)
+                {
+                    return;
+                }
 
                 _result = value;
 

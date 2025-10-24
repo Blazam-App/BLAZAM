@@ -85,7 +85,9 @@ namespace BLAZAM.Gui.UI.Computers
         private async Task SaveChanges()
         {
             if (Computer == null || !await MessageService.Confirm("Are you sure you want to save the changes?"))
+            {
                 return;
+            }
 
             SavingChanges = true;
             await RefreshEntryComponents();

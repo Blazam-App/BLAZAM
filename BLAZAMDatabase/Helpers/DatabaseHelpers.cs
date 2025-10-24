@@ -307,9 +307,13 @@ namespace BLAZAM.Helpers
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                }
                 else
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                }
             });
         }
 
@@ -319,9 +323,13 @@ namespace BLAZAM.Helpers
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                }
                 else
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                }
             });
         }
 
@@ -331,9 +339,14 @@ namespace BLAZAM.Helpers
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                }
                 else
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                }
+
                 entity.HasData(new AuthenticationSettings
                 {
                     Id = 1,
@@ -348,9 +361,13 @@ namespace BLAZAM.Helpers
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                }
                 else
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                }
             });
         }
 

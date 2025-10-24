@@ -400,7 +400,11 @@ namespace BLAZAMCommon.Tests.Data
     {
         public static bool SameVersionAs_Corrected(this ApplicationVersion current, ApplicationVersion other)
         {
-            if (other is null) return false;
+            if (other is null)
+            {
+                return false;
+            }
+
             return current.CompareTo(other) == 0;
         }
     }

@@ -39,11 +39,16 @@ namespace BLAZAM.Services.Background
                     EnsureSelfExists();
 
                     if (_applicationInfo.InDemoMode)
+                    {
                         EnsureDemoExists();
+                    }
 
                     using var context = dbFactory.CreateDbContext();
                     using var activeDirectoryContext = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-                    if (context.Status != ServiceConnectionState.Up) return false;
+                    if (context.Status != ServiceConnectionState.Up)
+                    {
+                        return false;
+                    }
 
                     var delegates = context.PermissionDelegate
                         .Where(x => x.DeletedAt == null)
@@ -146,7 +151,9 @@ namespace BLAZAM.Services.Background
                 foreach (var member in await group.GetNestedMembersAsync())
                 {
                     if (member is IADUser aduser)
+                    {
                         EnsureUserExists(aduser);
+                    }
                 }
             }
         }

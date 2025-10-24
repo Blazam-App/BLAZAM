@@ -51,7 +51,10 @@
 
             }
             if (Context != null)
+            {
                 CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
+            }
+
             LoadingData = false;
         }
 
@@ -102,7 +105,10 @@
         {
             DateTime? expireTime = null;
             if (time != null && time != DateTime.MinValue)
+            {
                 expireTime = time.Value.AddDays(1);
+            }
+
             return expireTime;
         }
 

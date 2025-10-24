@@ -13,7 +13,11 @@ namespace BLAZAM.Gui.UI.Outputs
         {
             get => enabled; set
             {
-                if (enabled == value) return;
+                if (enabled == value)
+                {
+                    return;
+                }
+
                 enabled = value;
                 if (enabled)
                 {
@@ -87,7 +91,10 @@ namespace BLAZAM.Gui.UI.Outputs
         protected void Tick(object state)
         {
             if (Data.Count >= History)
+            {
                 Data.Remove(Data.First());
+            }
+
             Task.Run(() =>
             {
                 PollData();

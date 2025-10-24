@@ -50,9 +50,13 @@ namespace BLAZAM.Services.Audit
                     Username = UserState?.AuditUsername,
                 };
                 if (ipAddress != null)
+                {
                     newAuditEntry.IpAddress = ipAddress;
+                }
                 else
+                {
                     newAuditEntry.IpAddress = UserState?.IPAddress;
+                }
 
                 context.LogonAuditLog.Add(newAuditEntry);
                 await context.SaveChangesAsync();

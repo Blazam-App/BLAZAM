@@ -36,7 +36,11 @@ namespace BLAZAM.Services.Background
             get { return AppDatabaseFactory.FatalError != null ? ServiceConnectionState.Down : _appReady; }
             protected set
             {
-                if (_appReady == value) return;
+                if (_appReady == value)
+                {
+                    return;
+                }
+
                 _appReady = value;
                 OnAppReadyChanged?.Invoke(value);
 
@@ -105,10 +109,13 @@ namespace BLAZAM.Services.Background
                 {
                     var temp = context.Database.GetPendingMigrations();
                     if (temp != null && temp.Count() > 0)
+                    {
                         DatabaseUpdatePending = true;
+                    }
                     else
+                    {
                         DatabaseUpdatePending = false;
-
+                    }
                 }
                 catch (Exception)
                 {

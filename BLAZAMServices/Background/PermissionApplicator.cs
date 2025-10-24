@@ -117,7 +117,9 @@ namespace BLAZAM.Services.Background
             using var context = _factory.CreateDbContext();
             var selfEdit = context.GlobalPermissionSettings.Any() && context.GlobalPermissionSettings.First()?.AllowSelfModification == true;
             if (user.PermissionDelegates.Count < 1 && !selfEdit)
+            {
                 throw new DeniedLoginException();
+            }
 
             List<Claim> userRoles = [];
 
@@ -161,13 +163,17 @@ namespace BLAZAM.Services.Background
         private static void AddRoleIf(List<Claim> claims, bool condition, string role)
         {
             if (condition)
+            {
                 claims.Add(new Claim(ClaimTypes.Role, role));
+            }
         }
 
         private static void AddClaimIfNotNull(List<Claim> claims, string type, string? value)
         {
             if (!string.IsNullOrEmpty(value))
+            {
                 claims.Add(new Claim(type, value));
+            }
         }
     }
 }

@@ -109,7 +109,10 @@ namespace BLAZAM.Update
 
                 var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory;
                 if (Debugger.IsAttached)
+                {
                     args += "bin\\Debug\\net8.0\\";
+                }
+
                 args += "'";
 
                 return args;
@@ -153,7 +156,11 @@ namespace BLAZAM.Update
         {
             get
             {
-                if (PreRequisiteChecks.Count == 0) return true;
+                if (PreRequisiteChecks.Count == 0)
+                {
+                    return true;
+                }
+
                 foreach (var check in PreRequisiteChecks)
                 {
                     if (!check.Invoke())
@@ -171,8 +178,9 @@ namespace BLAZAM.Update
         {
 
             if (cancellationTokenSource == null || cancellationTokenSource.IsCancellationRequested)
+            {
                 cancellationTokenSource = new CancellationTokenSource();
-
+            }
 
             Job updateJob = new("Applying application update", "System", cancellationTokenSource)
             {
@@ -394,7 +402,10 @@ namespace BLAZAM.Update
             return await Task.Run(() =>
             {
 
-                if (!UpdateFile.Exists) return false;
+                if (!UpdateFile.Exists)
+                {
+                    return false;
+                }
 
                 Loggers.UpdateLogger?.Debug("Attempting unzip of {UpdatePath}", UpdateFile);
 
@@ -455,13 +466,19 @@ namespace BLAZAM.Update
                         }
 
                         UpdateDownloadDirectory.EnsureCreated();
-                        if (UpdateFile.Exists) UpdateFile.Delete();
+                        if (UpdateFile.Exists)
+                        {
+                            UpdateFile.Delete();
+                        }
 
                         using var streamToReadFrom = await response.Content.ReadAsStreamAsync();
                         using var streamToWriteTo = UpdateFile.OpenWriteStream();
                         progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
                         bool result = await WriteStreamWithProgress(streamToReadFrom, streamToWriteTo, progress, step);
-                        if (!result) return false;
+                        if (!result)
+                        {
+                            return false;
+                        }
                     }
                     retries = 0;
                 }

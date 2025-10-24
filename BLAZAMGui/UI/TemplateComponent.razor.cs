@@ -22,10 +22,13 @@ namespace BLAZAM.Gui.UI
             get
             {
                 if (SelectedCategory == null || SelectedCategory == "" || SelectedCategory == "All")
+                {
                     return templates;
+                }
                 else
+                {
                     return templates.Where(t => t.Category == SelectedCategory);
-
+                }
             }
             set => templates = value;
         }
@@ -61,7 +64,11 @@ namespace BLAZAM.Gui.UI
         {
             get => selectedTemplate; set
             {
-                if (selectedTemplate == value) return;
+                if (selectedTemplate == value)
+                {
+                    return;
+                }
+
                 selectedTemplate = value;
 
                 _templateIdParameter = value?.Id;
@@ -124,7 +131,10 @@ namespace BLAZAM.Gui.UI
             {
                 var temp = await Context.DirectoryTemplates.Include(t => t.ParentTemplate).OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
                 if (temp != null)
+                {
                     Templates = temp;
+                }
+
                 var cats = await Context.DirectoryTemplates.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().ToListAsync();
                 if (cats != null)
                 {

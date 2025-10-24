@@ -29,7 +29,11 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         {
             get => _startingSelectedNode; set
             {
-                if (value == _startingSelectedNode) return;
+                if (value == _startingSelectedNode)
+                {
+                    return;
+                }
+
                 _startingSelectedNode = value;
                 SelectedEntry = value;
 
@@ -50,14 +54,20 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         {
             get => _selectedEntry; set
             {
-                if (value == _selectedEntry) return;
+                if (value == _selectedEntry)
+                {
+                    return;
+                }
+
                 if (value != null)
                 {
                     var cache = _selectedEntry;
 
                     _selectedEntry = value;
-                    if (cache == null && RootOU?.Count > 0 && value == RootOU.First()) return;
-
+                    if (cache == null && RootOU?.Count > 0 && value == RootOU.First())
+                    {
+                        return;
+                    }
 
                     InvokeAsync(() => { SelectedEntryChanged.InvokeAsync(value); });
 
@@ -81,9 +91,20 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         {
             if (item is IAccountDirectoryAdapter account)
             {
-                if (account.Disabled) return Color.Error;
-                if (account.LockedOut) return Color.Warning;
-                if (account.Created > DateTime.Now.AddDays(-14)) return Color.Success;
+                if (account.Disabled)
+                {
+                    return Color.Error;
+                }
+
+                if (account.LockedOut)
+                {
+                    return Color.Warning;
+                }
+
+                if (account.Created > DateTime.Now.AddDays(-14))
+                {
+                    return Color.Success;
+                }
             }
             return Color.Default;
         }
@@ -159,12 +180,18 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
         protected void OpenToSelected(IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? rootOU)
         {
-            if (rootOU == null || !rootOU.Any()) return;
+            if (rootOU == null || !rootOU.Any())
+            {
+                return;
+            }
 
             var root = rootOU.First();
             root.Children = GetChildren(root);
 
-            if (!StartRootExpanded) return;
+            if (!StartRootExpanded)
+            {
+                return;
+            }
 
             root.Expanded = true;
 
@@ -215,7 +242,9 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
             var matchingOU = parent.Children?.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
             if (matchingOU != null)
+            {
                 matchingOU.Selected = true;
+            }
         }
         /// <summary>
         /// Defines a function to determine whether an Active Directory object should be
@@ -230,10 +259,16 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             if (entry is IADOrganizationalUnit ou)
             {
                 if (ou.CanRead)
+                {
                     return true;
+                }
+
                 if (AdditionalVisibilityFilters != null)
                 {
-                    if (AdditionalVisibilityFilters(entry)) return true;
+                    if (AdditionalVisibilityFilters(entry))
+                    {
+                        return true;
+                    }
                 }
             }
             return false;

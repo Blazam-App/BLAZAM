@@ -84,9 +84,15 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             set
             {
                 if (_template == value)
+                {
                     return;
+                }
+
                 if (Context != null && value.Id > 0)
+                {
                     value = Context.DirectoryTemplates.First(dt => dt.Id == value.Id);
+                }
+
                 _template = value;
                 originalTemplate = value;
                 SelectedOU = Directory?.OUs.FindOuByDN(value.EffectiveParentOU);
@@ -112,10 +118,13 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 {
                     var existing = await Context.DirectoryTemplateGroups.Where(g => g.GroupSid == group.SID.ToSidString()).FirstOrDefaultAsync();
                     if (existing == null)
+                    {
                         existing = new DirectoryTemplateGroup()
                         {
                             GroupSid = group.SID.ToSidString()
                         };
+                    }
+
                     DirectoryTemplate.AssignedGroupSids.Add(existing);
                     SelectedGroup = null;
                 }
@@ -161,7 +170,11 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 if (DirectoryTemplate != null && Context != null && !Context.EntityIsTracked(DirectoryTemplate) == true)
                 {
                     var matching = await Context.DirectoryTemplates.Include(dt => dt.ParentTemplate).Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
-                    if (matching != null) _template = matching;
+                    if (matching != null)
+                    {
+                        _template = matching;
+                    }
+
                     await LoadParentOU();
                 }
                 using (var dropdownContext = await DbFactory.CreateDbContextAsync())
@@ -187,7 +200,10 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             var templateCursor = DirectoryTemplate;
             var templateValue = valueSelector.Invoke(templateCursor);
             if (!EqualityComparer<T>.Default.Equals(templateValue, default(T)) && templateValue.Equals(value))
+            {
                 return null;
+            }
+
             while (templateCursor?.ParentTemplateId != null)
             {
                 if (templateCursor.ParentTemplate == null)
@@ -211,7 +227,10 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         private async Task LoadParentOU()
         {
             if (!DirectoryTemplate.EffectiveParentOU.IsNullOrEmpty())
+            {
                 SelectedOU = (await Directory.OUs.FindOuByStringAsync(DirectoryTemplate.EffectiveParentOU)).FirstOrDefault();
+            }
+
             if (SelectedOU == null)
             {
                 SelectedOU = Directory.OUs.GetApplicationRootOU();
@@ -269,7 +288,9 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 {
                     var temp = Directory.Groups.FindGroupBySID(sid.GroupSid);
                     if (temp != null)
+                    {
                         TemplateGroups.Add(temp);
+                    }
                 }
             }
         }
@@ -323,7 +344,9 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         protected async Task SaveTemplate()
         {
             if (Context == null)
+            {
                 throw new AppException("Database not available");
+            }
 
             DirectoryTemplate.ParentOU = SelectedOU?.DN;
 

@@ -15,7 +15,11 @@ namespace BLAZAM.Gui.UI
         {
             get => _group; set
             {
-                if (_group == value) return;
+                if (_group == value)
+                {
+                    return;
+                }
+
                 _group = value;
 
             }
@@ -28,7 +32,11 @@ namespace BLAZAM.Gui.UI
         {
             get => _groups; set
             {
-                if (_groups == value) return;
+                if (_groups == value)
+                {
+                    return;
+                }
+
                 _groups = value;
                 if (_groups != null)
                 {
@@ -63,7 +71,11 @@ namespace BLAZAM.Gui.UI
         {
             get => _entry; set
             {
-                if (_entry == value) return;
+                if (_entry == value)
+                {
+                    return;
+                }
+
                 _entry = value;
                 EntryChanged.InvokeAsync(_entry);
                 if (User != null)
@@ -151,8 +163,9 @@ namespace BLAZAM.Gui.UI
             await Task.Run(() =>
             {
                 if (GroupableEntry != null)
+                {
                     memberOfGroups = GroupableEntry.MemberOf;
-
+                }
             });
 
             LoadingData = false;
@@ -174,7 +187,9 @@ namespace BLAZAM.Gui.UI
             await Task.Run(() =>
             {
                 if (Group != null)
+                {
                     memberOfGroups = Group.MemberOf;
+                }
             });
 
             LoadingData = false;
@@ -188,7 +203,9 @@ namespace BLAZAM.Gui.UI
             await Task.Run(() =>
             {
                 if (Computer != null)
+                {
                     memberOfGroups = Computer.MemberOf;
+                }
             });
 
             LoadingData = false;

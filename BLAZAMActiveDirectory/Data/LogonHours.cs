@@ -73,7 +73,10 @@ namespace BLAZAM.ActiveDirectory.Data
         public void SetLogonHour(DayOfWeek day, int hour, bool allowed)
         {
             if (hour < 0 || hour >= 24)
+            {
                 throw new ArgumentOutOfRangeException(nameof(hour), "Hour must be between 0 and 23.");
+            }
+
             AdjustFromTimeZoneOffset(ref day, ref hour);
 
             schedule[(int)day, hour] = allowed;
@@ -82,7 +85,10 @@ namespace BLAZAM.ActiveDirectory.Data
         public bool GetLogonHour(DayOfWeek day, int hour)
         {
             if (hour < 0 || hour >= 24)
+            {
                 throw new ArgumentOutOfRangeException(nameof(hour), "Hour must be between 0 and 23.");
+            }
+
             AdjustFromTimeZoneOffset(ref day, ref hour);
             return schedule[(int)day, hour];
         }
@@ -117,9 +123,15 @@ namespace BLAZAM.ActiveDirectory.Data
 
         public void DecodeLogonHours(byte[] logonHours)
         {
-            if (logonHours == null) return;
+            if (logonHours == null)
+            {
+                return;
+            }
+
             if (logonHours.Length != BytesCount)
+            {
                 throw new ArgumentException($"Logon hours must be {BytesCount} bytes long.");
+            }
 
             int bitIndex = 0;
 
@@ -143,7 +155,9 @@ namespace BLAZAM.ActiveDirectory.Data
         public byte[] FromHexString(string hex)
         {
             if (hex.Length != BytesCount * 2)
+            {
                 throw new ArgumentException($"Hex string must be {BytesCount * 2} characters long.");
+            }
 
             byte[] logonHours = new byte[BytesCount];
             for (int i = 0; i < logonHours.Length; i++)
@@ -156,7 +170,9 @@ namespace BLAZAM.ActiveDirectory.Data
         public void ToggleHour(DayOfWeek day, int hour)
         {
             if (hour < 0 || hour >= 24)
+            {
                 throw new ArgumentOutOfRangeException(nameof(hour), "Hour must be between 0 and 23.");
+            }
 
             schedule[(int)day, hour] = !schedule[(int)day, hour];
         }

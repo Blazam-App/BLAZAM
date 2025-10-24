@@ -290,7 +290,10 @@ namespace BLAZAM.Services.Background
 
             HandleEnabledDisabledFilter(orFilter, search);
 
-            if (!HandleOUScopeFilter(orFilter, directory, search)) return false;
+            if (!HandleOUScopeFilter(orFilter, directory, search))
+            {
+                return false;
+            }
 
             if (rule.ActiveDirectoryObjectType != ActiveDirectoryObjectType.All)
             {
@@ -618,7 +621,10 @@ namespace BLAZAM.Services.Background
                     break;
             }
 
-            if (eventType == ApplicationEventType.All) return;
+            if (eventType == ApplicationEventType.All)
+            {
+                return;
+            }
 
             var changes = entry.Changes;
             var result = entry.CommitChanges(ruleJob);

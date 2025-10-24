@@ -99,12 +99,18 @@ namespace BLAZAM.Database.Models.Templates
             var localValue = localSelector.Invoke(this);
             if (EqualityComparer<T>.Default.Equals(localValue, default))
             {
-                if (ParentTemplate == null) return default;
+                if (ParentTemplate == null)
+                {
+                    return default;
+                }
+
                 var effectiveValue = effectiveSelector.Invoke(ParentTemplate);
                 return effectiveValue;
             }
             else
+            {
                 return localValue;
+            }
         }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -249,9 +255,17 @@ namespace BLAZAM.Database.Models.Templates
         }
         public string ReplaceVariables(string? toParse, NewUserName? newUser = null, string? username = null)
         {
-            if (toParse.IsNullOrEmpty()) return "";
+            if (toParse.IsNullOrEmpty())
+            {
+                return "";
+            }
+
             var regex = new Regex(@"\{(?<var>\w+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
-            if (!regex.IsMatch(toParse)) return toParse;
+            if (!regex.IsMatch(toParse))
+            {
+                return toParse;
+            }
+
             return regex.Replace(toParse, match =>
             {
                 var variable = match.Groups["var"].Value.ToLower();
@@ -283,7 +297,10 @@ namespace BLAZAM.Database.Models.Templates
         private string ProcessVariable(string? value, string? modifier, string? argument)
         {
             // Return empty string for null/empty input for consistency and safety.
-            if (string.IsNullOrEmpty(value)) return string.Empty;
+            if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
+            }
 
             // The "regex" modifier is special because it uses the argument for its pattern,
             // so we handle it as a distinct case.
@@ -327,7 +344,11 @@ namespace BLAZAM.Database.Models.Templates
         }
         private string Substring(string? str, int start, int count)
         {
-            if (str == null || str.IsNullOrEmpty()) return "";
+            if (str == null || str.IsNullOrEmpty())
+            {
+                return "";
+            }
+
             return str.Substring(start, count);
         }
         private static readonly Random _random = new();

@@ -43,7 +43,11 @@ namespace BLAZAM.Services.Background
             {
                 foreach (var user in expiredUsers)
                 {
-                    if (user == null) continue;
+                    if (user == null)
+                    {
+                        continue;
+                    }
+
                     if (user.Enabled)
                     {
                         var original = directory.Users.FindUserBySID(user.SID.ToSidString());

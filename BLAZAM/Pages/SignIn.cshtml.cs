@@ -64,6 +64,7 @@ namespace BLAZAM.Server.Pages
 
                     await HttpContext.SignInAsync(result.AuthenticationState.User);
                     if (result.AuthenticationState.User.Identity?.IsAuthenticated == true)
+                    {
                         if (result.Impersonation)
                         {
 
@@ -76,6 +77,8 @@ namespace BLAZAM.Server.Pages
                             await _auditLogger.Logon.Login(result.AuthenticationState.User, req.IPAddress);
 
                         }
+                    }
+
                     req.AuthenticationState = null;
                     req.ImpersonatorClaims = null;
                 }

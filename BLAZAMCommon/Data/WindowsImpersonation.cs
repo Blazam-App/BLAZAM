@@ -99,7 +99,10 @@ namespace BLAZAM.Common.Data
                 var impersonatedToken = ImpersonatedToken;
 
 
-                if (impersonatedToken == null) throw new AppException("The impersonation user is invalid. Check settings.");
+                if (impersonatedToken == null)
+                {
+                    throw new AppException("The impersonation user is invalid. Check settings.");
+                }
 
 
                 // Check the identity.

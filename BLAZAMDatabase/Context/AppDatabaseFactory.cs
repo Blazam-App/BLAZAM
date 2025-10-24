@@ -178,9 +178,13 @@ namespace BLAZAM.Database.Context
                             //flag is set
                             var appSettings = context.AppSettings.FirstOrDefault();
                             if (appSettings != null)
+                            {
                                 return appSettings.InstallationCompleted;
+                            }
                             else
+                            {
                                 return false;
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -209,7 +213,10 @@ namespace BLAZAM.Database.Context
             get
             {
                 var _dbType = _configuration.GetValue<string>("DatabaseType");
-                if (_dbType == null) throw new DatabaseException("DatabaseType missing in configuration file");
+                if (_dbType == null)
+                {
+                    throw new DatabaseException("DatabaseType missing in configuration file");
+                }
 
                 switch (_dbType.ToLower())
                 {
@@ -292,7 +299,9 @@ namespace BLAZAM.Database.Context
                     {
                         var pendingMigrations = context.Database.GetPendingMigrations();
                         if (pendingMigrations.Count() > 0)
+                        {
                             Migrate(context);
+                        }
                     }
                     else
                     {

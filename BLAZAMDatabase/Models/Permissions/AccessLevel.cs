@@ -23,7 +23,11 @@ namespace BLAZAM.Database.Models.Permissions
 
         public int CompareTo(AccessLevel? other)
         {
-            if (other == null) return 1;
+            if (other == null)
+            {
+                return 1;
+            }
+
             return Id.CompareTo(other.Id);
         }
 
@@ -36,7 +40,10 @@ namespace BLAZAM.Database.Models.Permissions
         {
             if (obj is AccessLevel al)
             {
-                if (al.Id == Id) return true;
+                if (al.Id == Id)
+                {
+                    return true;
+                }
             }
             return base.Equals(obj);
         }

@@ -16,8 +16,16 @@ namespace BLAZAM.Jobs
 
         public static void AddJob(IJob job)
         {
-            if (Jobs.Contains(job)) return;
-            if (Jobs.Count == _maxJobs) Jobs.RemoveAt(_maxJobs - 1);
+            if (Jobs.Contains(job))
+            {
+                return;
+            }
+
+            if (Jobs.Count == _maxJobs)
+            {
+                Jobs.RemoveAt(_maxJobs - 1);
+            }
+
             Jobs.Add(job);
             job.OnProgressUpdated += (progress) => { OnUpdate?.Invoke(); };
             OnUpdate?.Invoke();

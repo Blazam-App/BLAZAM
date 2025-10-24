@@ -146,7 +146,10 @@ namespace BLAZAMCommon.Tests
                     //Calculate xor of the two 256 bit keys
                     int variance = key.BitDifference(otherKey);
                     //Update lowestVariance if needed
-                    if (variance < lowestVariance) lowestVariance = variance;
+                    if (variance < lowestVariance)
+                    {
+                        lowestVariance = variance;
+                    }
                 });
                 lowestVariances.Add(lowestVariance);
             });

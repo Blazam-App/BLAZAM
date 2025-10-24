@@ -18,10 +18,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             Computer = host;
             if (Computer.IsOnline == true)
+            {
                 RefreshSessions();
+            }
             else
-                Computer.OnOnlineChanged += (status) => { if (status) RefreshSessions(); };
-
+            {
+                Computer.OnOnlineChanged += (status) => { if (status) { RefreshSessions(); } };
+            }
         }
 
 

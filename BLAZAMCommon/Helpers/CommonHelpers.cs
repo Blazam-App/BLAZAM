@@ -105,11 +105,15 @@ namespace BLAZAM.Helpers
 
             // Check if both objects are null or same reference
             if (ReferenceEquals(changed, original))
+            {
                 return [];
+            }
 
             // Check if both objects are of the same type if both were provided
             if (changed is not null && original is not null && changed.GetType() != original.GetType())
+            {
                 throw new ArgumentException("Objects must be of the same type");
+            }
 
             var changes = BuildAuditChangeLog(changed, original);
 
@@ -198,11 +202,17 @@ namespace BLAZAM.Helpers
             PropertyInfo[]? properties = null;
 
             if (changed != null)
+            {
                 properties = changed.GetType().GetProperties();
+            }
             else if (original != null)
+            {
                 properties = original.GetType().GetProperties();
+            }
             else
+            {
                 return changes; // Both are null, no properties to compare
+            }
 
             foreach (var property in properties)
             {
@@ -224,8 +234,16 @@ namespace BLAZAM.Helpers
 
         private static bool IsChanged(object? oldValue, object? newValue)
         {
-            if (oldValue == null && newValue == null) return false;
-            if (oldValue == null || newValue == null) return true;
+            if (oldValue == null && newValue == null)
+            {
+                return false;
+            }
+
+            if (oldValue == null || newValue == null)
+            {
+                return true;
+            }
+
             return !oldValue.Equals(newValue);
         }
 
@@ -286,7 +304,9 @@ namespace BLAZAM.Helpers
             }
 
             if (destinationFile.Exists)
+            {
                 destinationFile.Delete();
+            }
 
             using var outStream = destinationFile.OpenWriteStream();
             memoryStream.Seek(0, SeekOrigin.Begin);
@@ -322,13 +342,19 @@ namespace BLAZAM.Helpers
             if (image.Height > image.Width)
             {
                 if (cropToSquare)
+                {
                     image.Mutate(x => x.Crop(image.Width, image.Width));
+                }
+
                 image.Mutate(x => x.Resize(0, maxDimension));
             }
             else
             {
                 if (cropToSquare)
+                {
                     image.Mutate(x => x.Crop(image.Height, image.Height));
+                }
+
                 image.Mutate(x => x.Resize(maxDimension, 0));
             }
             using var ms = new MemoryStream();
@@ -397,7 +423,11 @@ namespace BLAZAM.Helpers
         /// <returns>A long representing the FILETIME UTC, or null.</returns>
         public static long? DateTimeToAdsValue(this DateTime? value)
         {
-            if (value == null) return null;
+            if (value == null)
+            {
+                return null;
+            }
+
             try
             {
                 var maxFileTime = DateTime.Parse("Sunday, November 16, 4769 9:46:40 AM Z");
@@ -421,8 +451,15 @@ namespace BLAZAM.Helpers
         /// <returns>A nullable DateTime in UTC, or null if conversion fails or the ADSI value represents a null/zero time.</returns>
         public static DateTime? AdsValueToDateTime(this object? value)
         {
-            if (value == null) return null;
-            if (value is DateTime dtValue) return dtValue;
+            if (value == null)
+            {
+                return null;
+            }
+
+            if (value is DateTime dtValue)
+            {
+                return dtValue;
+            }
 
             long? fileTime = value switch
             {
@@ -432,13 +469,19 @@ namespace BLAZAM.Helpers
                 _ => null
             };
 
-            if (fileTime is null or 0) return null;
+            if (fileTime is null or 0)
+            {
+                return null;
+            }
 
             try
             {
                 var dateTime = DateTime.FromFileTimeUtc(fileTime.Value);
                 if (dateTime.Equals(ADS_NULL_TIME) || dateTime.Equals(DateTime.MinValue))
+                {
                     return null;
+                }
+
                 return dateTime;
             }
             catch
@@ -467,7 +510,11 @@ namespace BLAZAM.Helpers
         /// <returns>A nullable Guid. Returns null if guidBytes is null.</returns>
         public static Guid? ToGuid(this byte[]? guidBytes)
         {
-            if (null == guidBytes) return null;
+            if (null == guidBytes)
+            {
+                return null;
+            }
+
             try
             {
                 return new Guid(guidBytes);
@@ -485,7 +532,11 @@ namespace BLAZAM.Helpers
         /// <returns>An LDAP-compatible hex string, or null if byteArray is null.</returns>
         public static string? ToHexADString(this byte[]? byteArray)
         {
-            if (null == byteArray) return null;
+            if (null == byteArray)
+            {
+                return null;
+            }
+
             var hexString = Convert.ToHexString(byteArray);
             return ToLdapHexString(hexString);
         }
@@ -526,7 +577,11 @@ namespace BLAZAM.Helpers
         /// <returns>The string representation of the SID, or an empty string if sid is null.</returns>
         public static string ToSidString(this byte[]? sid)
         {
-            if (null == sid) return "";
+            if (null == sid)
+            {
+                return "";
+            }
+
             try
             {
                 var securityIdentifier = new SecurityIdentifier(sid, 0);
@@ -545,7 +600,11 @@ namespace BLAZAM.Helpers
         /// <returns>The byte array representation of the SID, or an empty array if sidString is null or empty.</returns>
         public static byte[] ToSidByteArray(this string sidString)
         {
-            if (string.IsNullOrEmpty(sidString)) return Array.Empty<byte>();
+            if (string.IsNullOrEmpty(sidString))
+            {
+                return Array.Empty<byte>();
+            }
+
             try
             {
                 var securityIdentifier = new SecurityIdentifier(sidString);
