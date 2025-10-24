@@ -255,8 +255,8 @@ namespace BLAZAM.Helpers
                 entity.Navigation(e => e.Field).AutoInclude();
                 entity.Property(e => e.TimeFrame)
                     .HasConversion(new ValueConverter<TimeSpan?, long?>(
-                        v => v.HasValue ? v.Value.Ticks : (long?)null,
-                        v => v.HasValue ? TimeSpan.FromTicks(v.Value) : (TimeSpan?)null
+                        v => v.HasValue ? v.Value.Ticks : null,
+                        v => v.HasValue ? TimeSpan.FromTicks(v.Value) : null
                     ));
             });
         }

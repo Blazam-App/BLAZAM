@@ -347,7 +347,7 @@ namespace BLAZAM.Services
                     else
                     {
                         // if complex, include as nested object; GA4 params expects primitives, so convert complex objects to a JSON string under 'payload'
-                        var token = data.GetType().IsPrimitive ? data : (object)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(data))!;
+                        var token = data.GetType().IsPrimitive ? data : JsonConvert.DeserializeObject(JsonConvert.SerializeObject(data))!;
                         // Prefer to send simple key/value pairs; for anything else send as 'payload' string
                         eventParams = token is Newtonsoft.Json.Linq.JObject jo ? jo : new { payload = JsonConvert.SerializeObject(data) };
                     }
