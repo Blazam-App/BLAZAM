@@ -67,42 +67,40 @@ namespace BLAZAM.Services.Background
         /// <returns></returns>
         public async Task LoadPermissions(IApplicationUserState webUser, IADUser directoryUser)
         {
-            using (var Context = await _factory.CreateDbContextAsync())
+            using var Context = await _factory.CreateDbContextAsync();
+            var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).ToListAsync();
+            foreach (var l in cursor)
             {
-                var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).ToListAsync();
-                foreach (var l in cursor)
+                var permissiondelegate = ActiveDirectoryContext.SystemInstance.FindEntryBySID(l.DelegateSid);
+
+                if (permissiondelegate != null
+                    &&
+                    (permissiondelegate is IADGroup && directoryUser.IsAMemberOf(permissiondelegate as IADGroup)
+                    || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
                 {
-                    var permissiondelegate = ActiveDirectoryContext.SystemInstance.FindEntryBySID(l.DelegateSid);
-
-                    if (permissiondelegate != null
-                        &&
-                        (permissiondelegate is IADGroup && directoryUser.IsAMemberOf(permissiondelegate as IADGroup)
-                        || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
-                    {
-                        webUser.PermissionDelegates.Add(l);
-                        webUser.PermissionMappings.AddRange(l.PermissionsMaps);
-                    }
-
+                    webUser.PermissionDelegates.Add(l);
+                    webUser.PermissionMappings.AddRange(l.PermissionsMaps);
                 }
-#pragma warning disable S6966 // Awaitable method should be used
-                if (Context.GlobalPermissionSettings.Any() && Context.GlobalPermissionSettings.First()?.AllowSelfModification == true)
-                {
-                    var dbSelfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
-                    if (dbSelfAccessLevel != null)
-                    {
-
-                        webUser.PermissionMappings.Add(new()
-                        {
-                            AccessLevels = new List<AccessLevel>() { dbSelfAccessLevel },
-                            Id = -1,
-                            OU = directoryUser.DN
-                        });
-                    }
-
-                }
-#pragma warning restore S6966 // Awaitable method should be used
 
             }
+#pragma warning disable S6966 // Awaitable method should be used
+            if (Context.GlobalPermissionSettings.Any() && Context.GlobalPermissionSettings.First()?.AllowSelfModification == true)
+            {
+                var dbSelfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
+                if (dbSelfAccessLevel != null)
+                {
+
+                    webUser.PermissionMappings.Add(new()
+                    {
+                        AccessLevels = [dbSelfAccessLevel],
+                        Id = -1,
+                        OU = directoryUser.DN
+                    });
+                }
+
+            }
+#pragma warning restore S6966 // Awaitable method should be used
+
         }
 
 
@@ -121,7 +119,7 @@ namespace BLAZAM.Services.Background
             if (user.PermissionDelegates.Count < 1 && !selfEdit)
                 throw new DeniedLoginException();
 
-            List<Claim> userRoles = new();
+            List<Claim> userRoles = [];
 
             if (user.PermissionDelegates.Any(p => p.IsSuperAdmin))
             {

@@ -16,13 +16,13 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 
         AppModal? categoryModal;
         protected string groupText;
-        protected List<string> categories = new();
+        protected List<string> categories = [];
         protected List<TemplateVariable> usernameVariables
         {
             get
             {
-                return new List<TemplateVariable>()
-                {
+                return
+                [
                     new TemplateVariable()
                     {
                         DisplayName = AppLocalization[Lang.First_Name],
@@ -53,11 +53,11 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                         DisplayName = AppLocalization[Lang.Last_Initial],
                         Value = "{li}"
                     },
-                };
+                ];
             }
         }
 
-        private List<DirectoryTemplate> dropdownTemplates = new();
+        private List<DirectoryTemplate> dropdownTemplates = [];
         private DirectoryTemplate _template;
 
         DirectoryTemplate usernameFromTemplate;
@@ -70,7 +70,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 
         protected bool fieldDrawerOpen;
 
-        protected List<IActiveDirectoryField> fields = new();
+        protected List<IActiveDirectoryField> fields = [];
 
         protected override async Task OnInitializedAsync()
         {
@@ -153,11 +153,8 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 await LoadCategories();
                 if (DirectoryTemplate.ParentTemplate is null && DirectoryTemplate.ParentTemplateId > 0)
                 {
-                    using (var parentContext = await DbFactory.CreateDbContextAsync())
-                    {
-                        DirectoryTemplate.ParentTemplate = await parentContext.DirectoryTemplates.FirstOrDefaultAsync(t => t.ParentTemplateId.Equals(DirectoryTemplate.ParentTemplateId) && t.DeletedAt == null);
-
-                    }
+                    using var parentContext = await DbFactory.CreateDbContextAsync();
+                    DirectoryTemplate.ParentTemplate = await parentContext.DirectoryTemplates.FirstOrDefaultAsync(t => t.ParentTemplateId.Equals(DirectoryTemplate.ParentTemplateId) && t.DeletedAt == null);
                 }
 
 
@@ -253,14 +250,12 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 
         protected IADOrganizationalUnit? SelectedOU;
         protected IDirectoryEntryAdapter? SelectedGroup;
-        protected List<IDirectoryEntryAdapter> TemplateGroups = new();
+        protected List<IDirectoryEntryAdapter> TemplateGroups = [];
         protected async Task LoadCategories()
         {
 
-            using (var categoryContext = await DbFactory.CreateDbContextAsync())
-            {
-                categories = await categoryContext.DirectoryTemplates.Select(t => t.Category).Distinct().ToListAsync();
-            }
+            using var categoryContext = await DbFactory.CreateDbContextAsync();
+            categories = await categoryContext.DirectoryTemplates.Select(t => t.Category).Distinct().ToListAsync();
 
         }
 

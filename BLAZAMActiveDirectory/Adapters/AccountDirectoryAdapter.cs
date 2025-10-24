@@ -100,7 +100,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 var coms = GetNonReplicatedProperty<object>("lastLogon");
-                List<DateTime?> times = new();
+                List<DateTime?> times = [];
                 foreach (var c in coms)
                 {
                     if (c is DateTime dt)
@@ -415,23 +415,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (DirectorySettings == null)
                 throw new AppException("Directory settings not found when trying to change directory user password");
-            using (PrincipalContext pContext = new(
+            using PrincipalContext pContext = new(
                 ContextType.Domain,
                 DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
                 DirectorySettings.Username + "@" + DirectorySettings.FQDN,
                 directoryPassword.ToPlainText()
-            ))
+            );
+            UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
+            if (up != null)
             {
-                UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
-                if (up != null)
-                {
-                    up.SetPassword(password.ToPlainText());
-                    if (requireChange)
-                        up.ExpirePasswordNow();
-                    if (NewEntry)
-                        up.PasswordNotRequired = false;
-                    up.Save();
-                }
+                up.SetPassword(password.ToPlainText());
+                if (requireChange)
+                    up.ExpirePasswordNow();
+                if (NewEntry)
+                    up.PasswordNotRequired = false;
+                up.Save();
             }
             return true;
         }

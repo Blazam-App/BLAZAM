@@ -165,37 +165,34 @@ namespace BLAZAM.Database.Context
         /// <exception cref="DatabaseException"></exception>
         private bool CheckInstallation()
         {
-            using (var context = CreateDbContext())
+            using var context = CreateDbContext();
+            if (context != null)
             {
-                if (context != null)
+                try
                 {
-                    try
+                    if (context.IsSeeded())
                     {
-                        if (context.IsSeeded())
+                        try
                         {
-                            try
-                            {
-                                //Grab the app settings to check that the install completed
-                                //flag is set
-                                var appSettings = context.AppSettings.FirstOrDefault();
-                                if (appSettings != null)
-                                    return appSettings.InstallationCompleted;
-                                else
-                                    return false;
-                            }
-                            catch (Exception ex)
-                            {
-                                Loggers.DatabaseLogger.Error(ex, "There was an error checking the installation flag in the database.");
-                            }
-
+                            //Grab the app settings to check that the install completed
+                            //flag is set
+                            var appSettings = context.AppSettings.FirstOrDefault();
+                            if (appSettings != null)
+                                return appSettings.InstallationCompleted;
+                            else
+                                return false;
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new DatabaseException("The database could not be checked for installation.", ex);
+                        catch (Exception ex)
+                        {
+                            Loggers.DatabaseLogger.Error(ex, "There was an error checking the installation flag in the database.");
+                        }
+
                     }
                 }
-
+                catch (Exception ex)
+                {
+                    throw new DatabaseException("The database could not be checked for installation.", ex);
+                }
             }
             return false;
         }
@@ -286,26 +283,24 @@ namespace BLAZAM.Database.Context
 
             try
             {
-                using (var context = CreateDbContext())
+                using var context = CreateDbContext();
+                if (context != null
+                    && context.Status == ServiceConnectionState.Up
+                    && (context.IsSeeded() || force))
                 {
-                    if (context != null
-                        && context.Status == ServiceConnectionState.Up
-                        && (context.IsSeeded() || force))
+                    if (!context.SeedMismatch)
                     {
-                        if (!context.SeedMismatch)
-                        {
-                            var pendingMigrations = context.Database.GetPendingMigrations();
-                            if (pendingMigrations.Count() > 0)
-                                Migrate(context);
-                        }
-                        else
-                        {
-                            throw new DatabaseException("Database incompatible with current application version.");
-                        }
+                        var pendingMigrations = context.Database.GetPendingMigrations();
+                        if (pendingMigrations.Count() > 0)
+                            Migrate(context);
                     }
-
-                    return true;
+                    else
+                    {
+                        throw new DatabaseException("Database incompatible with current application version.");
+                    }
                 }
+
+                return true;
             }
             catch (DatabaseException ex)
             {

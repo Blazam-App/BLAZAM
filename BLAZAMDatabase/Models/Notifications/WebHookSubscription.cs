@@ -26,12 +26,12 @@ namespace BLAZAM.Database.Models.Notifications
         /// <summary>
         /// The notification types this subscription should trigger on
         /// </summary>
-        public List<SubscriptionWebHookType> NotificationTypes { get; set; } = new();
+        public List<SubscriptionWebHookType> NotificationTypes { get; set; } = [];
         /// <summary>
         /// Currently not used, but could be used for future per OU mapping of webhook subscriptions
         /// </summary>
         public string? OU { get; set; }
-        public List<WebHookAttempt> WebHookAttempts { get; set; } = new();
+        public List<WebHookAttempt> WebHookAttempts { get; set; } = [];
 
         /// <summary>
         /// Whether or not to ignore SSL Certificate verification when sending the webhook

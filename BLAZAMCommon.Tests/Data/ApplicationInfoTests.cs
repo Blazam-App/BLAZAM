@@ -31,7 +31,7 @@ namespace BLAZAMCommon.Tests.Data
                 ApplicationInfo.runningProcess = Process.GetCurrentProcess();
             }
             // Reset static lists to new instances to avoid interference between tests
-            ApplicationInfo.listeningAddresses = new List<string>();
+            ApplicationInfo.listeningAddresses = [];
         }
 
         public void Dispose()

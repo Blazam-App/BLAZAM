@@ -147,7 +147,7 @@ namespace BLAZAM.Update
 
         public IApplicationRelease Release { get; set; }
 
-        public List<Func<bool>> PreRequisiteChecks { get; private set; } = new();
+        public List<Func<bool>> PreRequisiteChecks { get; private set; } = [];
 
         public bool PassesPrerequisiteChecks
         {
@@ -174,8 +174,10 @@ namespace BLAZAM.Update
                 cancellationTokenSource = new CancellationTokenSource();
 
 
-            Job updateJob = new("Applying application update", "System", cancellationTokenSource);
-            updateJob.StopOnFailedStep = true;
+            Job updateJob = new("Applying application update", "System", cancellationTokenSource)
+            {
+                StopOnFailedStep = true
+            };
             var cleanDownloadStep = new JobStep("Cleaning previous downloads", CleanDownload);
             var downloadStep = new JobStep("Download latest version", Download);
             var cleanStageStep = new JobStep("Cleaning staging area", CleanStaging);
@@ -398,27 +400,25 @@ namespace BLAZAM.Update
 
                 UpdateStagingDirectory.EnsureCreated();
 
-                using (var streamToReadFrom = UpdateFile.OpenReadStream())
+                using var streamToReadFrom = UpdateFile.OpenReadStream();
+                if (streamToReadFrom == null)
                 {
-                    if (streamToReadFrom == null)
-                    {
-                        return false;
-                    }
-                    try
-                    {
-                        var zip = new ZipArchive(streamToReadFrom);
-                        zip.ExtractToDirectory(UpdateStagingDirectory.FullPath, true);
-                        Loggers.UpdateLogger?.Debug("{UpdatePath} unzipped successfully to {StagingPath}", UpdateFile, UpdateStagingDirectory);
+                    return false;
+                }
+                try
+                {
+                    var zip = new ZipArchive(streamToReadFrom);
+                    zip.ExtractToDirectory(UpdateStagingDirectory.FullPath, true);
+                    Loggers.UpdateLogger?.Debug("{UpdatePath} unzipped successfully to {StagingPath}", UpdateFile, UpdateStagingDirectory);
 
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.UpdateLogger?.Error(ex, "Error while extracting update zip");
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Loggers.UpdateLogger?.Error(ex, "Error while extracting update zip");
 
-                        return false;
+                    return false;
 
-                    }
                 }
             });
 
@@ -457,13 +457,11 @@ namespace BLAZAM.Update
                         UpdateDownloadDirectory.EnsureCreated();
                         if (UpdateFile.Exists) UpdateFile.Delete();
 
-                        using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
-                        using (var streamToWriteTo = UpdateFile.OpenWriteStream())
-                        {
-                            progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
-                            bool result = await WriteStreamWithProgress(streamToReadFrom, streamToWriteTo, progress, step);
-                            if (!result) return false;
-                        }
+                        using var streamToReadFrom = await response.Content.ReadAsStreamAsync();
+                        using var streamToWriteTo = UpdateFile.OpenWriteStream();
+                        progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
+                        bool result = await WriteStreamWithProgress(streamToReadFrom, streamToWriteTo, progress, step);
+                        if (!result) return false;
                     }
                     retries = 0;
                 }

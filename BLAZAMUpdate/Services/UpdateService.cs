@@ -32,7 +32,7 @@ namespace BLAZAM.Update.Services
         /// <summary>
         /// All updates released under the stable branch
         /// </summary>
-        public List<ApplicationUpdate> AvailableUpdates { get; set; } = new();
+        public List<ApplicationUpdate> AvailableUpdates { get; set; } = [];
 
         public SystemDirectory BackupPath
         {
@@ -448,7 +448,7 @@ namespace BLAZAM.Update.Services
         /// </summary>
         public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
 
-        public List<ApplicationUpdate> IncompatibleUpdates { get; private set; } = new();
+        public List<ApplicationUpdate> IncompatibleUpdates { get; private set; } = [];
         private readonly object _updateCheckLock = new();
         public ApplicationUpdate? NewestAvailableUpdate
         {

@@ -147,7 +147,7 @@ namespace BLAZAM.Pages
         /// <summary>
         /// Gets or sets the collection of directory entry adapters.
         /// </summary>
-        protected virtual List<IDirectoryEntryAdapter> results { get; set; } = new List<IDirectoryEntryAdapter>();
+        protected virtual List<IDirectoryEntryAdapter> results { get; set; } = [];
 
 
         /// <summary>

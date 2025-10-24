@@ -28,7 +28,7 @@
                 ObjectTypeChanged?.Invoke();
             }
         }
-        private readonly List<NotificationType> _triggerTypes = new();
+        private readonly List<NotificationType> _triggerTypes = [];
         public List<NotificationType> GetObjectTypeTriggers()
         {
             return _triggerTypes.Where(t => t.IsNotificationAppropriateForObject(ObjectType)).ToList();

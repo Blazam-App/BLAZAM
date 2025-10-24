@@ -17,8 +17,8 @@ namespace BLAZAM.Database.Models.Chat
             }
             set => _name = value;
         }
-        public List<ChatMessage> Messages { get; set; } = new();
-        public List<AppUser> Members { get; set; } = new();
+        public List<ChatMessage> Messages { get; set; } = [];
+        public List<AppUser> Members { get; set; } = [];
         [NotMapped]
         public int MemberCount { get => Members.Count; set { _ = value; } }
         public long MembersHash

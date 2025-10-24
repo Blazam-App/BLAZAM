@@ -99,24 +99,20 @@ namespace BLAZAM.Services.Background
         {
             Task.Run(() =>
             {
-                using (var context = _factory.CreateDbContext())
+                using var context = _factory.CreateDbContext();
+
+                try
                 {
+                    var temp = context.Database.GetPendingMigrations();
+                    if (temp != null && temp.Count() > 0)
+                        DatabaseUpdatePending = true;
+                    else
+                        DatabaseUpdatePending = false;
 
-                    try
-                    {
-                        var temp = context.Database.GetPendingMigrations();
-                        if (temp != null && temp.Count() > 0)
-                            DatabaseUpdatePending = true;
-                        else
-                            DatabaseUpdatePending = false;
-
-                    }
-                    catch (Exception)
-                    {
-                        // If we can't connect to the database, assume an update is pending
-                    }
-
-
+                }
+                catch (Exception)
+                {
+                    // If we can't connect to the database, assume an update is pending
                 }
             });
 

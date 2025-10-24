@@ -42,9 +42,11 @@ namespace BLAZAM.Services
 
             var userId = context.Principal?.Identity?.Name; // Get the user ID (already present, just for clarity)
 
-            var userState = new ApplicationUserState(_dbFactory);
-            userState.User = context.Principal;
-            userState.IPAddress = context.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+            var userState = new ApplicationUserState(_dbFactory)
+            {
+                User = context.Principal,
+                IPAddress = context.HttpContext?.Connection?.RemoteIpAddress?.ToString()
+            };
             _userStateService.SetUserState(userState);
 
             using var dbContext = await _dbFactory.CreateDbContextAsync();

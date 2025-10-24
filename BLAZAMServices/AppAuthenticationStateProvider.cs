@@ -158,12 +158,12 @@ namespace BLAZAM.Services
         }
         private static ClaimsPrincipal GetDemoUser()
         {
-            List<Claim> claims = new()
-            {
+            List<Claim> claims =
+            [
                 new Claim(ClaimTypes.Sid, "2"),
                 new Claim(ClaimTypes.Name, "Demo"),
                 new Claim(ClaimTypes.Actor, "2")
-            };
+            ];
             claims.AddSuperAdmin();
             claims.AddAllRoles();
             var identity = new ClaimsIdentity(claims.ToArray(), AppAuthenticationTypes.LocalAuthentication);
@@ -171,12 +171,12 @@ namespace BLAZAM.Services
         }
         private static ClaimsPrincipal GetLocalAdmin(string name = "admin")
         {
-            List<Claim> claims = new()
-            {
+            List<Claim> claims =
+            [
                  new Claim(ClaimTypes. Sid, "1"),
                     new Claim(ClaimTypes.Name, name),
                     new Claim(ClaimTypes.Actor,"1")
-            };
+            ];
             claims.AddSuperAdmin();
             claims.AddAllRoles();
             var identity = new ClaimsIdentity(claims.ToArray(), AppAuthenticationTypes.LocalAuthentication);
@@ -210,36 +210,34 @@ namespace BLAZAM.Services
                 return loginReq.NoUsername();
             }
 
-            using (var context = await _factory.CreateDbContextAsync())
+            using var context = await _factory.CreateDbContextAsync();
+            var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
+            if (settings == null)
             {
-                var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
-                if (settings == null)
-                {
-                    Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.Login: AuthenticationSettings are null from database.");
-                }
-
-                authenticationState = await HandleLoginByType(loginReq, newUserState, context, settings);
-
-                if (authenticationState?.User != null)
-                {
-                    newUserState.User = authenticationState.User;
-                }
-                if (newUserState.User != null)
-                    _userStateService.SetUserState(newUserState);
-
-                if (authenticationState != null)
-                {
-                    if (loginReq.AuthenticationResult == LoginResultStatus.OK)
-                    {
-                        Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: User {UserName} successfully logged in. Final ClaimsPrincipal Name: {PrincipalName}", loginReq.Username, authenticationState.User?.Identity?.Name);
-                        return loginReq.Success(authenticationState);
-
-                    }
-                    return loginReq;
-                }
-                else
-                    return loginReq.BadCredentials();
+                Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.Login: AuthenticationSettings are null from database.");
             }
+
+            authenticationState = await HandleLoginByType(loginReq, newUserState, context, settings);
+
+            if (authenticationState?.User != null)
+            {
+                newUserState.User = authenticationState.User;
+            }
+            if (newUserState.User != null)
+                _userStateService.SetUserState(newUserState);
+
+            if (authenticationState != null)
+            {
+                if (loginReq.AuthenticationResult == LoginResultStatus.OK)
+                {
+                    Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: User {UserName} successfully logged in. Final ClaimsPrincipal Name: {PrincipalName}", loginReq.Username, authenticationState.User?.Identity?.Name);
+                    return loginReq.Success(authenticationState);
+
+                }
+                return loginReq;
+            }
+            else
+                return loginReq.BadCredentials();
         }
 
         private bool IsUnauthorizedImpersonation(LoginRequest loginReq)
@@ -437,51 +435,46 @@ namespace BLAZAM.Services
 
         private async Task<string> PerformDuoAuthentication(LoginRequest loginReq)
         {
-            using (var context = await _factory.CreateDbContextAsync())
+            using var context = await _factory.CreateDbContextAsync();
+
+            var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
+            if (settings == null) throw new AppException("Could not get settings"); // Existing check, good.
+
+            // Initiate the Duo authentication for a specific username
+
+            // Get a Duo client
+            Client duoClient = _duoClientProvider.GetDuoClient(loginReq.CallbackBaseUri + "/mfacallback");
+
+            // Check if Duo seems to be healthy and able to service authentications.
+            var isDuoHealthy = await duoClient.DoHealthCheck();
+            if (!isDuoHealthy)
             {
-
-                var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
-                if (settings == null) throw new AppException("Could not get settings"); // Existing check, good.
-
-                // Initiate the Duo authentication for a specific username
-
-                // Get a Duo client
-                Client duoClient = _duoClientProvider.GetDuoClient(loginReq.CallbackBaseUri + "/mfacallback");
-
-                // Check if Duo seems to be healthy and able to service authentications.
-                var isDuoHealthy = await duoClient.DoHealthCheck();
-                if (!isDuoHealthy)
+                if (settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Block)
                 {
-                    if (settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Block)
-                    {
-                        Loggers.SystemLogger.Error("AppAuthenticationStateProvider.PerformDuoAuthentication: Duo health check failed and DuoUnreachableBehavior is Block for user {UserName}.", loginReq.Username);
-                        // Potentially throw or return empty to signify failure to redirect,
-                        // which Login method will then handle. For now, just logging and returning empty.
-                        return String.Empty;
-                    }
-                    if (settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Bypass)
-                    {
-                        return String.Empty; //Bypass Duo
-                    }
+                    Loggers.SystemLogger.Error("AppAuthenticationStateProvider.PerformDuoAuthentication: Duo health check failed and DuoUnreachableBehavior is Block for user {UserName}.", loginReq.Username);
+                    // Potentially throw or return empty to signify failure to redirect,
+                    // which Login method will then handle. For now, just logging and returning empty.
+                    return String.Empty;
                 }
-                // Generate a random state value to tie the authentication steps together
-                string state = Client.GenerateState();
-
-                // Save the mfa state back to the login request
-                loginReq.MFAToken = state;
-
-                // Get the URI of the Duo prompt from the client.  This includes an embedded authentication request.
-                string promptUri = duoClient.GenerateAuthUri(loginReq.Username, state);
-
-                // Set up the redirect after successful mfa
-                loginReq.MFARedirect = promptUri;
-
-
-                return promptUri;
-
-
-
+                if (settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Bypass)
+                {
+                    return String.Empty; //Bypass Duo
+                }
             }
+            // Generate a random state value to tie the authentication steps together
+            string state = Client.GenerateState();
+
+            // Save the mfa state back to the login request
+            loginReq.MFAToken = state;
+
+            // Get the URI of the Duo prompt from the client.  This includes an embedded authentication request.
+            string promptUri = duoClient.GenerateAuthUri(loginReq.Username, state);
+
+            // Set up the redirect after successful mfa
+            loginReq.MFARedirect = promptUri;
+
+
+            return promptUri;
         }
 
         /// <summary>

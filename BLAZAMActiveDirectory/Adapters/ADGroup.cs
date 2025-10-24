@@ -115,8 +115,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public List<GroupMembership> MembersToRemove { get; private set; } = new List<GroupMembership>();
-        public List<GroupMembership> MembersToAdd { get; private set; } = new List<GroupMembership>();
+        public List<GroupMembership> MembersToRemove { get; private set; } = [];
+        public List<GroupMembership> MembersToAdd { get; private set; } = [];
         public override string? DisplayName { get => base.CanonicalName; set => base.CanonicalName = value; }
         public string? GroupName
         {
@@ -195,8 +195,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override void DiscardChanges()
         {
-            MembersToRemove = new();
-            MembersToAdd = new();
+            MembersToRemove = [];
+            MembersToAdd = [];
             //CachedChildren = new List<IDirectoryEntryAdapter>();
             base.DiscardChanges();
             OnModelChanged?.Invoke();
@@ -271,7 +271,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 var temp = MembersAsStrings;
                 ADSearch search = new(Directory);
 
-                List<IGroupableDirectoryAdapter> members = new();
+                List<IGroupableDirectoryAdapter> members = [];
                 temp?.ForEach(t =>
                 {
                     search.Results.Clear();

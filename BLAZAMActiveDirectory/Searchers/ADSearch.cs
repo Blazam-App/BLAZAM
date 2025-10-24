@@ -26,7 +26,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
     {
 
         public ADSearchFields Fields { get; set; } = new();
-        public List<ADFieldValue> FieldValues { get; set; } = new();
+        public List<ADFieldValue> FieldValues { get; set; } = [];
 
 
         /// <summary>
@@ -70,9 +70,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public ActiveDirectoryObjectType? ObjectTypeFilter { get; set; }
         public bool? EnabledOnly { get; set; }
         public int MaxResults { get; set; } = 500;
-        private List<SearchResult> _searchResults = new();
+        private List<SearchResult> _searchResults = [];
 
-        public List<IDirectoryEntryAdapter> Results { get; set; } = new();
+        public List<IDirectoryEntryAdapter> Results { get; set; } = [];
         public string LdapQuery { get; private set; }
         public bool SearchDeleted { get; set; } = false;
         public bool DisabledOnly { get; set; }
@@ -119,7 +119,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             if (token != null) cancellationToken = token;
             else cancellationToken = new CancellationToken();
             if (cancellationToken?.IsCancellationRequested == true)
-                return new();
+                return [];
             InitializeSearch();
             try
             {
@@ -351,24 +351,24 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 }
 
                 if (cancellationToken?.IsCancellationRequested == true)
-                    return new();
+                    return [];
 
                 PrepareSearcher(searcher);
                 if (cancellationToken?.IsCancellationRequested == true)
-                    return new();
+                    return [];
 
 
                 PerformSearch<TObject, TInterface>(searcher, PageSize);
 
                 if (cancellationToken?.IsCancellationRequested == true)
-                    return new();
+                    return [];
 
                 SearchState = SearchState.Completed;
 
 
 
                 if (cancellationToken?.IsCancellationRequested == true)
-                    return new();
+                    return [];
 
                 OnSearchCompleted?.Invoke();
                 stopwatch.Stop();
@@ -392,7 +392,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             OnSearchCompleted?.Invoke();
             stopwatch.Stop();
 
-            return new List<TInterface>();
+            return [];
 
 
         }

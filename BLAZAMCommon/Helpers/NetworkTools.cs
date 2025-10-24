@@ -79,23 +79,21 @@ namespace BLAZAM.Common.Helpers
                 {
                     throw new ArgumentOutOfRangeException(nameof(ports), "Ports must be between 1-65535");
                 }
-                using (TcpClient client = new())
+                using TcpClient client = new();
+                try
                 {
-                    try
-                    {
 
-                        client.Connect(ip, port);
-                        portOpen = true; // Port is open
-                        break; // Exit loop since one open port is found
-                    }
-                    catch (SocketException)
-                    {
-                        // SocketException is caught, portOpen remains false for this port, loop continues.
-                    }
-                    finally
-                    {
-                        client.Close();
-                    }
+                    client.Connect(ip, port);
+                    portOpen = true; // Port is open
+                    break; // Exit loop since one open port is found
+                }
+                catch (SocketException)
+                {
+                    // SocketException is caught, portOpen remains false for this port, loop continues.
+                }
+                finally
+                {
+                    client.Close();
                 }
             }
             return portOpen;

@@ -38,14 +38,15 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             try
             {
-                ADSearch search = new(Directory);
-
-                search.ObjectTypeFilter = searchType;
-                search.SearchRoot = Directory.GetDirectoryEntry(searchBaseDN);
-                search.FilterQuery = fieldQuery;
-                search.MaxResults = returnCount;
-                search.SearchScope = searchScope;
-                search.EnabledOnly = enabledOnly;
+                ADSearch search = new(Directory)
+                {
+                    ObjectTypeFilter = searchType,
+                    SearchRoot = Directory.GetDirectoryEntry(searchBaseDN),
+                    FilterQuery = fieldQuery,
+                    MaxResults = returnCount,
+                    SearchScope = searchScope,
+                    EnabledOnly = enabledOnly
+                };
                 var results = search.Search();
                 return results;
             }
@@ -66,7 +67,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         protected List<T> ConvertTo<T>(SearchResultCollection r) where T : IDirectoryEntryAdapter, new()
         {
-            List<T> objects = new();
+            List<T> objects = [];
 
 
             if (r != null && r.Count > 0)

@@ -37,7 +37,7 @@ namespace BLAZAM.Gui.UI
                 }
             }
         }
-        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = new List<CustomActiveDirectoryField>();
+        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = [];
         [Parameter]
         public IADUser User
         {
@@ -75,7 +75,7 @@ namespace BLAZAM.Gui.UI
         }
         [Parameter]
         public EventCallback<IDirectoryEntryAdapter> EntryChanged { get; set; }
-        protected List<IADGroup> memberOfGroups = new();
+        protected List<IADGroup> memberOfGroups = [];
 
         [Parameter]
         public IADOrganizationalUnit OU { get; set; }

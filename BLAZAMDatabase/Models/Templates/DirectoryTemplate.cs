@@ -109,7 +109,7 @@ namespace BLAZAM.Database.Models.Templates
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-        public List<DirectoryTemplateGroup> AssignedGroupSids { get; set; } = new();
+        public List<DirectoryTemplateGroup> AssignedGroupSids { get; set; } = [];
         [NotMapped]
         public List<DirectoryTemplateGroup> EffectiveAssignedGroupSids
         {
@@ -125,7 +125,7 @@ namespace BLAZAM.Database.Models.Templates
             }
         }
 
-        public List<DirectoryTemplateFieldValue> FieldValues { get; set; } = new();
+        public List<DirectoryTemplateFieldValue> FieldValues { get; set; } = [];
         [NotMapped]
 
         public List<DirectoryTemplateFieldValue> EffectiveFieldValues

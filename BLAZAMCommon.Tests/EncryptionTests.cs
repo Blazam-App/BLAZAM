@@ -104,8 +104,8 @@ namespace BLAZAMCommon.Tests
 
         }
 
-        private List<string> testSeedStrings = new()
-        {
+        private List<string> testSeedStrings =
+        [
             TestSeedString,
         "differentseedkeystring",
         "differentseedkeystrin",
@@ -123,12 +123,12 @@ namespace BLAZAMCommon.Tests
         "6",
         "@",
         "reallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallylongseedstring"
-        };
+        ];
 
         [Fact]
         public void Accetable_KeyVariance()
         {
-            List<byte[]> generatedKeys = new();
+            List<byte[]> generatedKeys = [];
 
             testSeedStrings.ForEach(seedString =>
             {
@@ -136,7 +136,7 @@ namespace BLAZAMCommon.Tests
                 generatedKeys.Add(encryption.APITokenKey);
             });
 
-            List<int> lowestVariances = new();
+            List<int> lowestVariances = [];
             generatedKeys.ForEach(key =>
             {
                 //Compare against all other keys and return lowest variance value
@@ -159,7 +159,7 @@ namespace BLAZAMCommon.Tests
         [Fact]
         public void Key_Tests()
         {
-            List<byte[]> generatedKeys = new();
+            List<byte[]> generatedKeys = [];
 
             testSeedStrings.ForEach(seedString =>
             {

@@ -81,12 +81,10 @@ namespace BLAZAM.Helpers
             ArgumentNullException.ThrowIfNull(input);
 
             // Use MD5 hash to get a 16-byte hash of the string
-            using (MD5 md5 = MD5.Create())
-            {
-                byte[] hash = md5.ComputeHash(Encoding.Default.GetBytes(input));
-                // Create a new Guid using the hash
-                return new Guid(hash);
-            }
+            using MD5 md5 = MD5.Create();
+            byte[] hash = md5.ComputeHash(Encoding.Default.GetBytes(input));
+            // Create a new Guid using the hash
+            return new Guid(hash);
         }
 
         /// <summary>

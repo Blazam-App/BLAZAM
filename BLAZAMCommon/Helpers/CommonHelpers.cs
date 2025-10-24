@@ -105,7 +105,7 @@ namespace BLAZAM.Helpers
 
             // Check if both objects are null or same reference
             if (ReferenceEquals(changed, original))
-                return new List<AuditChangeLog>();
+                return [];
 
             // Check if both objects are of the same type if both were provided
             if (changed is not null && original is not null && changed.GetType() != original.GetType())
@@ -194,7 +194,7 @@ namespace BLAZAM.Helpers
         /// <returns>A list of <see cref="AuditChangeLog"/> detailing the differences.</returns>
         private static List<AuditChangeLog> BuildAuditChangeLog(object? changed, object? original = null)
         {
-            List<AuditChangeLog> changes = new();
+            List<AuditChangeLog> changes = [];
             PropertyInfo[]? properties = null;
 
             if (changed != null)
@@ -258,10 +258,8 @@ namespace BLAZAM.Helpers
                     continue;
                 }
                 ZipArchiveEntry entry = archive.CreateEntry(directory.FullPath.Replace(basePath, "") + file.Name + file.Extension);
-                using (Stream es = entry.Open())
-                {
-                    fs.CopyTo(es);
-                }
+                using Stream es = entry.Open();
+                fs.CopyTo(es);
 
             }
 
@@ -320,26 +318,22 @@ namespace BLAZAM.Helpers
             {
                 return Array.Empty<byte>();
             }
-            using (var image = Image.Load(rawImage))
+            using var image = Image.Load(rawImage);
+            if (image.Height > image.Width)
             {
-                if (image.Height > image.Width)
-                {
-                    if (cropToSquare)
-                        image.Mutate(x => x.Crop(image.Width, image.Width));
-                    image.Mutate(x => x.Resize(0, maxDimension));
-                }
-                else
-                {
-                    if (cropToSquare)
-                        image.Mutate(x => x.Crop(image.Height, image.Height));
-                    image.Mutate(x => x.Resize(maxDimension, 0));
-                }
-                using (var ms = new MemoryStream())
-                {
-                    image.SaveAsPng(ms);
-                    return ms.ToArray();
-                }
+                if (cropToSquare)
+                    image.Mutate(x => x.Crop(image.Width, image.Width));
+                image.Mutate(x => x.Resize(0, maxDimension));
             }
+            else
+            {
+                if (cropToSquare)
+                    image.Mutate(x => x.Crop(image.Height, image.Height));
+                image.Mutate(x => x.Resize(maxDimension, 0));
+            }
+            using var ms = new MemoryStream();
+            image.SaveAsPng(ms);
+            return ms.ToArray();
         }
 
         /// <summary>

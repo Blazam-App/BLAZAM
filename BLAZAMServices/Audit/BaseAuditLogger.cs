@@ -31,7 +31,7 @@ namespace BLAZAM.Services.Audit
             BitLocker = new BitLockerAudit(factory, userState);
         }
 
-        protected static List<Guid> HandledEvents { get; set; } = new();
+        protected static List<Guid> HandledEvents { get; set; } = [];
 
         public void ProcessDirectoryEntryChangedEvent(DirectoryEntryChangedArgs args)
         {

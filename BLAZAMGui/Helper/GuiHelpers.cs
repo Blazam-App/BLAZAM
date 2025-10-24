@@ -14,11 +14,9 @@ namespace BLAZAM.Helpers
             byte[] fileBytes;
             using (var stream = file.OpenReadStream(maxReadBytes))
             {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await stream.CopyToAsync(memoryStream);
-                    fileBytes = memoryStream.ToArray();
-                }
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                fileBytes = memoryStream.ToArray();
             }
             return fileBytes;
         }
@@ -54,7 +52,7 @@ namespace BLAZAM.Helpers
 
         public static List<TreeItemData<IDirectoryEntryAdapter>> ToTreeItemData(this IEnumerable<IDirectoryEntryAdapter> items)
         {
-            List<TreeItemData<IDirectoryEntryAdapter>> treeData = new();
+            List<TreeItemData<IDirectoryEntryAdapter>> treeData = [];
 
             items.ForEach(x =>
             {
@@ -66,7 +64,7 @@ namespace BLAZAM.Helpers
 
         public static List<TreeItemData<IADOrganizationalUnit>> ToTreeItemData(this IEnumerable<IADOrganizationalUnit> items)
         {
-            List<TreeItemData<IADOrganizationalUnit>> treeData = new();
+            List<TreeItemData<IADOrganizationalUnit>> treeData = [];
 
             items.ForEach(x =>
             {
@@ -77,7 +75,7 @@ namespace BLAZAM.Helpers
         }
         public static List<TreeItemData<T>> ToTreeItemData<T>(this IEnumerable<T> items)
         {
-            List<TreeItemData<T>> treeData = new();
+            List<TreeItemData<T>> treeData = [];
 
             items.ForEach(x =>
             {

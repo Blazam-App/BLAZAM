@@ -14,8 +14,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public List<IADBitLockerRecovery> FindByRecoveryId(string searchTerm)
         {
-            var searchFields = new ADSearchFields();
-            searchFields.BitLockerRecoveryId = searchTerm;
+            var searchFields = new ADSearchFields
+            {
+                BitLockerRecoveryId = searchTerm
+            };
             return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.BitLocker,

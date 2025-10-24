@@ -48,15 +48,17 @@ namespace BLAZAM.Gui.UI.Outputs
         [Parameter]
         public int History { get; set; } = 120;
         private Timer _pollingTimer;
-        protected List<DataPoint> Data = new();
+        protected List<DataPoint> Data = [];
         private bool enabled;
 
         protected List<ChartSeries> DataSeries
         {
             get
             {
-                var series = new List<ChartSeries>();
-                series.Add(new ChartSeries { Data = Data.OrderBy(d => d.TimeStamp).Select(g => g.Value).ToArray(), Name = "CPU Usage" });
+                var series = new List<ChartSeries>
+                {
+                    new ChartSeries { Data = Data.OrderBy(d => d.TimeStamp).Select(g => g.Value).ToArray(), Name = "CPU Usage" }
+                };
                 return series;
             }
         }

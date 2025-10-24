@@ -364,12 +364,10 @@ namespace BLAZAM.Services
         {
             var toSign = $"{msgId}.{timestamp.ToUnixTimeSeconds().ToString()}.{payload}";
             var toSignBytes = SafeUTF8Encoding.GetBytes(toSign);
-            using (var hmac = new HMACSHA256(key))
-            {
-                var hash = hmac.ComputeHash(toSignBytes);
-                var signature = Convert.ToBase64String(hash);
-                return $"v1,{signature}";
-            }
+            using var hmac = new HMACSHA256(key);
+            var hash = hmac.ComputeHash(toSignBytes);
+            var signature = Convert.ToBase64String(hash);
+            return $"v1,{signature}";
         }
 
         /// <summary>

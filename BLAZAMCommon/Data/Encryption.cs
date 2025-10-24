@@ -296,38 +296,33 @@ namespace BLAZAM.Common.Data
             aes.Key = keyPackage.Key;
             aes.IV = iv;
             ICryptoTransform encryptor = aes.CreateEncryptor();
-            using (MemoryStream memoryStream = new())
+            using MemoryStream memoryStream = new();
+            using CryptoStream cryptoStream = new(
+                memoryStream,
+                encryptor,
+                CryptoStreamMode.Write);
+
+            var serialized = JsonConvert.SerializeObject(obj);
+            byte[] data = Encoding.UTF8.GetBytes(serialized);
+            cryptoStream.Write(data, 0, data.Length);
+            cryptoStream.FlushFinalBlock();
+
+            encryptedBytes = memoryStream.ToArray();
+
+            var encryptedMessage = iv;
+
+
+            for (int i = 0; i < encryptedBytes.Length; i++)
             {
-                using (CryptoStream cryptoStream = new(
-                    memoryStream,
-                    encryptor,
-                    CryptoStreamMode.Write))
-                {
 
-                    var serialized = JsonConvert.SerializeObject(obj);
-                    byte[] data = Encoding.UTF8.GetBytes(serialized);
-                    cryptoStream.Write(data, 0, data.Length);
-                    cryptoStream.FlushFinalBlock();
-
-                    encryptedBytes = memoryStream.ToArray();
-
-                    var encryptedMessage = iv;
-
-
-                    for (int i = 0; i < encryptedBytes.Length; i++)
-                    {
-
-                        encryptedMessage = encryptedMessage.Append(encryptedBytes[i]).ToArray();
-                    }
-                    var cipherText = Convert.ToBase64String(encryptedMessage);
-                    cipherText = Convert.ToBase64String(keyPackage.Salt) + "," + cipherText;
-
-
-
-                    return cipherText;
-
-                }
+                encryptedMessage = encryptedMessage.Append(encryptedBytes[i]).ToArray();
             }
+            var cipherText = Convert.ToBase64String(encryptedMessage);
+            cipherText = Convert.ToBase64String(keyPackage.Salt) + "," + cipherText;
+
+
+
+            return cipherText;
         }
 
 

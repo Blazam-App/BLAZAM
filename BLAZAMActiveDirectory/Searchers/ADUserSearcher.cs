@@ -93,14 +93,14 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
-                FieldValues = new()
-                {
+                FieldValues =
+                [
                     new()
                     {
                         Field=ActiveDirectoryFields.LockedOut,
                          Operator = ActiveDirectoryFieldOperator.BeforeNow
                     }
-                },
+                ],
 
 
             }.Search<ADUser, IADUser>();

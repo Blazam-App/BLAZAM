@@ -73,7 +73,7 @@ namespace BLAZAM.FileSystem
         {
             get
             {
-                List<SystemDirectory> dirs = new();
+                List<SystemDirectory> dirs = [];
                 try
                 {
                     if (Exists)
@@ -108,7 +108,7 @@ namespace BLAZAM.FileSystem
         {
             get
             {
-                List<SystemFile> files = new();
+                List<SystemFile> files = [];
                 try
                 {
                     if (Exists)
@@ -134,7 +134,7 @@ namespace BLAZAM.FileSystem
         {
 
 
-            List<SystemFile> files = new();
+            List<SystemFile> files = [];
             try
             {
                 if (Exists)

@@ -8,7 +8,7 @@ namespace BLAZAM.Gui.UI
     public abstract class TemplateComponent : ValidatedForm
     {
         protected MudTabs? Tabs;
-        private IEnumerable<DirectoryTemplate> templates = new List<DirectoryTemplate>();
+        private IEnumerable<DirectoryTemplate> templates = [];
         private string? selectedCategory;
         private DirectoryTemplate? selectedTemplate;
 

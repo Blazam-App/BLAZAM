@@ -47,7 +47,7 @@ namespace BLAZAM.Helpers
         {
             var list = enumerable.ToList();
             if (list.Count < 1) return list;
-            List<IDirectoryEntryAdapter> mathingItems = new();
+            List<IDirectoryEntryAdapter> mathingItems = [];
             for (int x = 0; x < list.Count; x++)
             {
 
@@ -169,7 +169,7 @@ namespace BLAZAM.Helpers
         /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
         public static List<IDirectoryEntryAdapter> Encapsulate(this SearchResultCollection r, IActiveDirectoryContext context)
         {
-            List<IDirectoryEntryAdapter> objects = new();
+            List<IDirectoryEntryAdapter> objects = [];
 
 
             if (r != null && r.Count > 0)
@@ -309,7 +309,7 @@ namespace BLAZAM.Helpers
         /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
         public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r, IActiveDirectoryContext context)
         {
-            List<IDirectoryEntryAdapter> objects = new();
+            List<IDirectoryEntryAdapter> objects = [];
 
 
             if (r != null)
@@ -360,7 +360,7 @@ namespace BLAZAM.Helpers
 
         public static List<ActiveDirectoryFieldOperator> GetOperators(this IActiveDirectoryField field)
         {
-            List<ActiveDirectoryFieldOperator> applicableOperators = new List<ActiveDirectoryFieldOperator>();
+            List<ActiveDirectoryFieldOperator> applicableOperators = [];
             if (field == null || field.FieldType == null) return applicableOperators;
             var fieldType = field.FieldType;
 

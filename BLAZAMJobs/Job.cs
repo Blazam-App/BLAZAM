@@ -32,8 +32,8 @@ namespace BLAZAM.Jobs
             }
         }
 
-        public IList<IJobStep> FailedSteps { get; protected set; } = new List<IJobStep>();
-        public IList<IJobStep> PassedSteps { get; protected set; } = new List<IJobStep>();
+        public IList<IJobStep> FailedSteps { get; protected set; } = [];
+        public IList<IJobStep> PassedSteps { get; protected set; } = [];
 
 
         public Guid Id { get; set; }

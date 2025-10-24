@@ -5,7 +5,7 @@ namespace BLAZAM.Gui.UI.Users
 {
     public partial class UserFailedLogons : DatabaseComponentBase
     {
-        private List<FailedADLogonEvent> _events = new();
+        private List<FailedADLogonEvent> _events = [];
 
         private IADUser? _user;
         [CascadingParameter]

@@ -17,7 +17,7 @@ namespace BLAZAM.Database.Context
 
         public Task<bool> ApplyDatabaseMigrationsAsync(bool force = false) => _appDatabaseFactory.ApplyDatabaseMigrationsAsync(force);
 
-        private List<IDatabaseContext> _userContexts = new();
+        private List<IDatabaseContext> _userContexts = [];
 
         public IDatabaseContext CreateDbContext()
         {

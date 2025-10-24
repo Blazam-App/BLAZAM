@@ -22,7 +22,7 @@
         /// <summary>
         /// A store of all custom fields defined
         /// </summary>
-        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = new List<CustomActiveDirectoryField>();
+        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = [];
 
         protected AppModal? AssignToModal { get; set; }
         protected AppModal? MoveToModal { get; set; }

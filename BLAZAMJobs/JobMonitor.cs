@@ -5,7 +5,7 @@ namespace BLAZAM.Jobs
     public static class JobMonitor
     {
         public static AppDelegate? OnUpdate { get; set; }
-        private static List<IJob> Jobs = new();
+        private static List<IJob> Jobs = [];
         public static List<IJob> AllJobs => Jobs;
         public static IEnumerable<IJob> RunningJobs => Jobs.Where(x => x.Result == JobResult.Running);
         public static IEnumerable<IJob> FailedJobs => Jobs.Where(x => x.Result == JobResult.Failed);

@@ -29,10 +29,10 @@ namespace BLAZAM.Session
         public ClaimsPrincipal? Impersonator { get; set; }
 
 
-        public List<PermissionDelegate> PermissionDelegates { get; set; } = new();
+        public List<PermissionDelegate> PermissionDelegates { get; set; } = [];
 
 
-        public List<PermissionMapping> PermissionMappings { get; set; } = new();
+        public List<PermissionMapping> PermissionMappings { get; set; } = [];
 
 
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
@@ -44,9 +44,9 @@ namespace BLAZAM.Session
         /// <summary>
         /// Gets the list of user's favorite directory entries. Returns an empty list if preferences are not loaded.
         /// </summary>
-        public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries ?? new List<UserFavoriteEntry>();
+        public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries ?? [];
 
-        public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems ?? new List<ReadNewsItem>(); // Corrected to List
+        public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems ?? []; // Corrected to List
 
 
         public int Id => Preferences != null ? Preferences.Id : 0;
@@ -228,7 +228,7 @@ namespace BLAZAM.Session
                         dbUserSettings.ProfilePicture = Preferences.ProfilePicture;
                         dbUserSettings.SearchDisabledUsers = Preferences.SearchDisabledUsers;
                         dbUserSettings.SearchDisabledComputers = Preferences.SearchDisabledComputers;
-                        dbUserSettings.FavoriteEntries = Preferences.FavoriteEntries ?? new List<UserFavoriteEntry>();
+                        dbUserSettings.FavoriteEntries = Preferences.FavoriteEntries ?? [];
                         dbUserSettings.AuthenticatorSecret = Preferences.AuthenticatorSecret;
                         dbUserSettings.Email = Preferences.Email;
                         await context.SaveChangesAsync();
@@ -411,7 +411,7 @@ namespace BLAZAM.Session
         /// <summary>
         /// Gets or sets the list of notification subscriptions for the user. Modifying this list requires saving user settings.
         /// </summary>
-        public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions ?? new List<NotificationSubscription>(); set { if (userSettings != null) userSettings.NotificationSubscriptions = value; } } // Added null check for userSettings in setter
+        public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions ?? []; set { if (userSettings != null) userSettings.NotificationSubscriptions = value; } } // Added null check for userSettings in setter
 
         /// <summary>
         /// Checks if the user has a specific action permission on a given object type, without OU context.

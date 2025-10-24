@@ -29,11 +29,7 @@ namespace BLAZAM.Helpers
         }
         public static List<NotificationType> GetNotificationTypes(this ActiveDirectoryObjectType objectType)
         {
-            List<NotificationType> _triggerTypes = new();
-            foreach (NotificationType type in Enum.GetValues(typeof(NotificationType)))
-            {
-                _triggerTypes.Add(type);
-            }
+            List<NotificationType> _triggerTypes = Enum.GetValues(typeof(NotificationType)).Cast<NotificationType>().ToList();
             _triggerTypes = _triggerTypes.OrderBy(t => t.ToString()).ToList();
             return _triggerTypes.Where(t => t.IsNotificationAppropriateForObject(objectType)).ToList();
 

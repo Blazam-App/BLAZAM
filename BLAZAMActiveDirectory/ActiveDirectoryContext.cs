@@ -245,7 +245,7 @@ namespace BLAZAM.ActiveDirectory
             ConnectionSettings.Password.Decrypt()
             );
 
-        public List<DomainController> DomainControllers { get; private set; } = new();
+        public List<DomainController> DomainControllers { get; private set; } = [];
 
 
         private async Task KeepAlive()
@@ -804,10 +804,10 @@ namespace BLAZAM.ActiveDirectory
             {
                 connection.Bind();
                 connection.SessionOptions.ProtocolVersion = 3;
-                DirectoryAttributeModification isDeleteAttributeMod = new();
+                DirectoryAttributeModification isDeleteAttributeMod = [];
                 isDeleteAttributeMod.Name = "isDeleted";
                 isDeleteAttributeMod.Operation = DirectoryAttributeOperation.Delete;
-                DirectoryAttributeModification dnAttributeMod = new();
+                DirectoryAttributeModification dnAttributeMod = [];
                 dnAttributeMod.Name = ActiveDirectoryFields.DistinguishedName.FieldName;
                 dnAttributeMod.Operation = DirectoryAttributeOperation.Replace;
                 dnAttributeMod.Add(newDN);
@@ -834,8 +834,10 @@ namespace BLAZAM.ActiveDirectory
         public IDirectoryEntryAdapter? FindEntryBySID(byte[] sid) => FindEntryBySid(sid.ToSidString());
         public IDirectoryEntryAdapter? FindEntryBySid(string sid)
         {
-            var searcher = new ADSearch(this);
-            searcher.SearchRoot = RootDirectoryEntry;
+            var searcher = new ADSearch(this)
+            {
+                SearchRoot = RootDirectoryEntry
+            };
             searcher.Fields.SID = sid;
             var result = searcher.Search().FirstOrDefault();
             return result;
@@ -857,8 +859,10 @@ namespace BLAZAM.ActiveDirectory
         public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn)
         {
             if (dn == null) return null;
-            var searcher = new ADSearch(this);
-            searcher.SearchRoot = RootDirectoryEntry;
+            var searcher = new ADSearch(this)
+            {
+                SearchRoot = RootDirectoryEntry
+            };
             searcher.Fields.DN = dn;
             var result = searcher.Search().FirstOrDefault();
             return result;

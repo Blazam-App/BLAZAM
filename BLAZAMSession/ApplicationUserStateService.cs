@@ -28,7 +28,7 @@ namespace BLAZAM.Session
         private IHttpContextAccessor _httpContextAccessor { get; set; }
         private readonly IAppDatabaseFactory _factory;
         private int? Timeout { get; set; }
-        private readonly List<MFARequest> _mfaLoginQueue = new();
+        private readonly List<MFARequest> _mfaLoginQueue = [];
 
         /// <summary>Event triggered when a new <see cref="IApplicationUserState"/> is added to the cache. Primarily for internal use or advanced scenarios.</summary>
         public AppDelegate<IApplicationUserState> UserStateAdded { get; set; }
@@ -37,7 +37,7 @@ namespace BLAZAM.Session
         public AppDelegate<IApplicationUserState> OnUserStateRemoved { get; set; }
 
         /// <summary>Gets the list of currently cached <see cref="IApplicationUserState"/> objects. Use with caution; direct manipulation is not recommended.</summary>
-        public IList<IApplicationUserState> UserStates { get; private set; } = new List<IApplicationUserState>();
+        public IList<IApplicationUserState> UserStates { get; private set; } = [];
 
         private readonly Timer? t;
 

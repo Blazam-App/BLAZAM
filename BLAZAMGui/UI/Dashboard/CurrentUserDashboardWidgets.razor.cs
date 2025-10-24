@@ -17,7 +17,7 @@ namespace BLAZAM.Gui.UI.Dashboard
 
         private MudDropContainer<UserDashboardWidget>? widgetContainer;
 
-        private List<Widget> allWidgets = new List<Widget>();
+        private List<Widget> allWidgets = [];
 
         protected override async Task OnInitializedAsync()
         {
@@ -29,7 +29,7 @@ namespace BLAZAM.Gui.UI.Dashboard
             }
             else
             {
-                allWidgets = new List<Widget>(WidgetService.Available());
+                allWidgets = [.. WidgetService.Available()];
             }
             await StateHasChangedAsync();
 

@@ -22,7 +22,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         /// Defaults to the App Base root
         /// </remarks>
         [Parameter]
-        public IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? RootOU { get; set; } = new List<TreeItemData<IDirectoryEntryAdapter>>();
+        public IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? RootOU { get; set; } = [];
 
         [Parameter]
         public IADOrganizationalUnit? StartingSelectedOU
@@ -110,7 +110,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             }
             catch (Exception)
             {
-                return new List<TreeItemData<IDirectoryEntryAdapter>>();
+                return [];
 
             }
 
@@ -261,7 +261,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             {
                 return context.TreeViewSubOUs.Where(o => ShouldShowOU(o)).ToTreeItemData();
             }
-            return new List<TreeItemData<IDirectoryEntryAdapter>>();
+            return [];
 
         }
         protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>?>> GetOUChildrenAsync(IDirectoryEntryAdapter parentNode)

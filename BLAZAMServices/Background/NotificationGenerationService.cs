@@ -422,10 +422,12 @@ namespace BLAZAM.Services.Background
                 return default;
             using var context = Context;
             NotificationSubscription effectiveInAppSubscription = new();
-            effectiveInAppSubscription = new();
-            effectiveInAppSubscription.OU = ou.DN;
-            effectiveInAppSubscription.User = user;
-            effectiveInAppSubscription.InApp = true;
+            effectiveInAppSubscription = new()
+            {
+                OU = ou.DN,
+                User = user,
+                InApp = true
+            };
 
             var userSubscriptions = context.NotificationSubscriptions
                 .Where(x => x.DeletedAt == null && x.UserId == user.Id && ou.DN.Contains(x.OU))

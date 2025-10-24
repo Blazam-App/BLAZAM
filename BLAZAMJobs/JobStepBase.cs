@@ -66,9 +66,11 @@ namespace BLAZAM.Jobs
             // Set thread priority for the task's thread
             if (ThreadPriority != ThreadPriority.Normal)
             {
-                Thread thread = new Thread(this.RunBackground);
-                thread.Name = "RunAsyncJob";
-                thread.Priority = ThreadPriority;
+                Thread thread = new Thread(this.RunBackground)
+                {
+                    Name = "RunAsyncJob",
+                    Priority = ThreadPriority
+                };
                 thread.Start();
                 while (Result != JobResult.Passed && Result != JobResult.Failed && Result != JobResult.Cancelled)
                 {

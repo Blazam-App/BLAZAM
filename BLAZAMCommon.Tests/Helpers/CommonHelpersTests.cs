@@ -24,7 +24,7 @@ namespace BLAZAMCommon.Tests.Helpers
 
             public TestClass()
             {
-                ListProperty = new List<string>();
+                ListProperty = [];
             }
         }
 
@@ -590,16 +590,12 @@ namespace BLAZAMCommon.Tests.Helpers
 
         private byte[] CreateTestPng(int width, int height)
         {
-            using (var image = new Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(width, height))
-            {
-                // You can fill the image with a color if needed, but for resizing, a blank one is fine.
-                // image[0,0] = SixLabors.ImageSharp.PixelFormats.Rgba32.ParseHex("FF0000"); // Example: Red pixel
-                using (var ms = new MemoryStream())
-                {
-                    image.Save(ms, new PngEncoder());
-                    return ms.ToArray();
-                }
-            }
+            using var image = new Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(width, height);
+            // You can fill the image with a color if needed, but for resizing, a blank one is fine.
+            // image[0,0] = SixLabors.ImageSharp.PixelFormats.Rgba32.ParseHex("FF0000"); // Example: Red pixel
+            using var ms = new MemoryStream();
+            image.Save(ms, new PngEncoder());
+            return ms.ToArray();
         }
 
 
@@ -612,15 +608,13 @@ namespace BLAZAMCommon.Tests.Helpers
             var resizedImageBytes = originalImage.ResizeRawImage(maxDimension, cropToSquare: false);
             Assert.NotEmpty(resizedImageBytes);
 
-            using (var image = Image.Load(resizedImageBytes))
-            {
-                // Height should be maxDimension (25)
-                // Width should be scaled: 50 * (25/100) = 12.5. ImageSharp might round to 12 or 13.
-                // Helper: if (image.Height > image.Width) -> image.Mutate(x => x.Resize(0, maxDimension));
-                // This means height becomes maxDimension, width is scaled.
-                Assert.Equal(maxDimension, image.Height);
-                Assert.InRange(image.Width, 12, 13); // Original aspect ratio 0.5. New width should be 25 * 0.5 = 12.5
-            }
+            using var image = Image.Load(resizedImageBytes);
+            // Height should be maxDimension (25)
+            // Width should be scaled: 50 * (25/100) = 12.5. ImageSharp might round to 12 or 13.
+            // Helper: if (image.Height > image.Width) -> image.Mutate(x => x.Resize(0, maxDimension));
+            // This means height becomes maxDimension, width is scaled.
+            Assert.Equal(maxDimension, image.Height);
+            Assert.InRange(image.Width, 12, 13); // Original aspect ratio 0.5. New width should be 25 * 0.5 = 12.5
         }
 
         [Fact]
@@ -632,15 +626,13 @@ namespace BLAZAMCommon.Tests.Helpers
             var resizedImageBytes = originalImage.ResizeRawImage(maxDimension, cropToSquare: false);
             Assert.NotEmpty(resizedImageBytes);
 
-            using (var image = Image.Load(resizedImageBytes))
-            {
-                // Width should be maxDimension (25)
-                // Height should be scaled: 50 * (25/100) = 12.5.
-                // Helper: else (width >= height) -> image.Mutate(x => x.Resize(maxDimension, 0));
-                // This means width becomes maxDimension, height is scaled.
-                Assert.Equal(maxDimension, image.Width);
-                Assert.InRange(image.Height, 12, 13); // Original aspect ratio 2.0. New height should be 25 / 2.0 = 12.5
-            }
+            using var image = Image.Load(resizedImageBytes);
+            // Width should be maxDimension (25)
+            // Height should be scaled: 50 * (25/100) = 12.5.
+            // Helper: else (width >= height) -> image.Mutate(x => x.Resize(maxDimension, 0));
+            // This means width becomes maxDimension, height is scaled.
+            Assert.Equal(maxDimension, image.Width);
+            Assert.InRange(image.Height, 12, 13); // Original aspect ratio 2.0. New height should be 25 / 2.0 = 12.5
         }
 
         [Fact]
@@ -652,14 +644,12 @@ namespace BLAZAMCommon.Tests.Helpers
             var resizedImageBytes = originalImage.ResizeRawImage(maxDimension, cropToSquare: true);
             Assert.NotEmpty(resizedImageBytes);
 
-            using (var image = Image.Load(resizedImageBytes))
-            {
-                // Helper: if (image.Height > image.Width) -> crop(image.Width, image.Width) -> crop(50,50)
-                // Then resize(0, maxDimension) -> resize(0,25) on the 50x50 image.
-                // This should result in 25x25.
-                Assert.Equal(maxDimension, image.Width);
-                Assert.Equal(maxDimension, image.Height);
-            }
+            using var image = Image.Load(resizedImageBytes);
+            // Helper: if (image.Height > image.Width) -> crop(image.Width, image.Width) -> crop(50,50)
+            // Then resize(0, maxDimension) -> resize(0,25) on the 50x50 image.
+            // This should result in 25x25.
+            Assert.Equal(maxDimension, image.Width);
+            Assert.Equal(maxDimension, image.Height);
         }
 
         [Fact]
@@ -671,14 +661,12 @@ namespace BLAZAMCommon.Tests.Helpers
             var resizedImageBytes = originalImage.ResizeRawImage(maxDimension, cropToSquare: true);
             Assert.NotEmpty(resizedImageBytes);
 
-            using (var image = Image.Load(resizedImageBytes))
-            {
-                // Helper: else (width >= height) -> crop(image.Height, image.Height) -> crop(50,50)
-                // Then resize(maxDimension, 0) -> resize(25,0) on the 50x50 image.
-                // This should result in 25x25.
-                Assert.Equal(maxDimension, image.Width);
-                Assert.Equal(maxDimension, image.Height);
-            }
+            using var image = Image.Load(resizedImageBytes);
+            // Helper: else (width >= height) -> crop(image.Height, image.Height) -> crop(50,50)
+            // Then resize(maxDimension, 0) -> resize(25,0) on the 50x50 image.
+            // This should result in 25x25.
+            Assert.Equal(maxDimension, image.Width);
+            Assert.Equal(maxDimension, image.Height);
         }
 
         [Fact]
@@ -689,12 +677,10 @@ namespace BLAZAMCommon.Tests.Helpers
 
             var resizedImageBytes = originalImage.ResizeRawImage(maxDimension, cropToSquare: true);
             Assert.NotEmpty(resizedImageBytes);
-            using (var image = Image.Load(resizedImageBytes))
-            {
-                // Crop(100,100) does nothing. Resize(50,0) makes it 50x50.
-                Assert.Equal(maxDimension, image.Width);
-                Assert.Equal(maxDimension, image.Height);
-            }
+            using var image = Image.Load(resizedImageBytes);
+            // Crop(100,100) does nothing. Resize(50,0) makes it 50x50.
+            Assert.Equal(maxDimension, image.Width);
+            Assert.Equal(maxDimension, image.Height);
         }
 
         #endregion ResizeRawImage Tests
