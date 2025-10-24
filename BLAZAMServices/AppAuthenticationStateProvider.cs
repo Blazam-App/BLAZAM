@@ -234,8 +234,10 @@ namespace BLAZAM.Services
                     if (loginReq.AuthenticationResult == LoginResultStatus.OK)
                     {
                         Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: User {UserName} successfully logged in. Final ClaimsPrincipal Name: {PrincipalName}", loginReq.Username, authenticationState.User?.Identity?.Name);
+                        return loginReq.Success(authenticationState);
+
                     }
-                    return loginReq.Success(authenticationState);
+                    return loginReq;
                 }
                 else
                     return loginReq.BadCredentials();
@@ -263,6 +265,8 @@ namespace BLAZAM.Services
             }
             else if (IsDemoLogin(loginReq, settings))
             {
+
+                loginReq.AuthenticationResult = LoginResultStatus.OK;
                 return await SetUser(GetDemoUser());
             }
             else
@@ -282,9 +286,14 @@ namespace BLAZAM.Services
         {
             var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
             if (loginReq.Password == adminPass)
+            {
+                loginReq.AuthenticationResult = LoginResultStatus.OK;
                 return await SetUser(GetLocalAdmin());
+            }
             else
+            {
                 await _audit.Logon.AttemptedLogin(GetLocalAdmin(), loginReq.IPAddress);
+            }
             return null;
         }
 
@@ -305,7 +314,11 @@ namespace BLAZAM.Services
                 var authResult = await SetUser(twostepState);
                 newUserState.User = userClaim;
                 _userStateService.SetMFAUserState(MfaType.CiscoDuo, loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
-                throw new DuoMFARequestedException(loginReq.DuoRequested(authResult));
+                loginReq.MFARedirect = mfaRedirect;
+                loginReq.AuthenticationState = authResult;
+                loginReq.AuthenticationResult = LoginResultStatus.DuoRequested;
+                //throw new DuoMFARequestedException(loginReq.DuoRequested(authResult,mfaRedirect));
+                return authResult;
             }
             return null;
         }
