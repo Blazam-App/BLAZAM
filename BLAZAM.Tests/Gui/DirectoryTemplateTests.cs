@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models.Templates;
+﻿using BLAZAM.Database.Models.Templates;
 using BLAZAM.Global.Data;
 
 namespace BLAZAM.Tests.Gui

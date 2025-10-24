@@ -1,6 +1,4 @@
-﻿using BLAZAM.Global.Enums;
-
-namespace BLAZAM.Common.Interfaces
+﻿namespace BLAZAM.Common.Interfaces
 {
     public interface IEncryptionService
     {

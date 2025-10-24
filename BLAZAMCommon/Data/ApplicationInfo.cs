@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
+using System.Diagnostics;
 
 namespace BLAZAM.Common.Data
 
@@ -45,7 +45,7 @@ namespace BLAZAM.Common.Data
         /// <returns>
         /// A list of address strings eg: {"https://localhost:7900/","http://localhost:5900/"}
         /// </returns>
-        public static IEnumerable<string> listeningAddresses { get; set; } = new List<string>();
+        public static IEnumerable<string> listeningAddresses { get; set; } = [];
 
         /// <summary>
         /// A static access to <see cref="InDebugMode"/>
@@ -116,7 +116,7 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// A list of plugins that were found
         /// </summary>
-        public static List<LoadedPlugin> loadedPlugins { get; set; } = new();
+        public static List<LoadedPlugin> loadedPlugins { get; set; } = [];
 
         /// <summary>
         /// A list of plugins that were found

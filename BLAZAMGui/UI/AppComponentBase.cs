@@ -96,7 +96,11 @@ namespace BLAZAM.Gui.UI
         {
             get => _loadingData; set
             {
-                if (_loadingData == value) return;
+                if (_loadingData == value)
+                {
+                    return;
+                }
+
                 _loadingData = value;
                 _ = InvokeAsync(StateHasChanged);
 

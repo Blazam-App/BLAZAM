@@ -1,8 +1,8 @@
-﻿using System.Text.Json.Serialization;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Database.Models;
 using BLAZAM.Jobs;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -24,8 +24,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (IsDomainLocalGroup) return GroupScope.DomainLocal;
-                if (IsGlobalGroup) return GroupScope.Global;
+                if (IsDomainLocalGroup)
+                {
+                    return GroupScope.DomainLocal;
+                }
+
+                if (IsGlobalGroup)
+                {
+                    return GroupScope.Global;
+                }
+
                 return GroupScope.Universal;
             }
             set
@@ -115,8 +123,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public List<GroupMembership> MembersToRemove { get; private set; } = new List<GroupMembership>();
-        public List<GroupMembership> MembersToAdd { get; private set; } = new List<GroupMembership>();
+        public List<GroupMembership> MembersToRemove { get; private set; } = [];
+        public List<GroupMembership> MembersToAdd { get; private set; } = [];
         public override string? DisplayName { get => base.CanonicalName; set => base.CanonicalName = value; }
         public string? GroupName
         {
@@ -195,18 +203,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override void DiscardChanges()
         {
-            MembersToRemove = new();
-            MembersToAdd = new();
+            MembersToRemove = [];
+            MembersToAdd = [];
             //CachedChildren = new List<IDirectoryEntryAdapter>();
-            _groupMembersCache = new List<IADGroup>();
-            _userMembersCache = new();
             base.DiscardChanges();
             OnModelChanged?.Invoke();
 
         }
         public bool HasMembers => UserMembers.Count > 0 || GroupMembers.Count > 0;
 
-        private List<IADUser> _userMembersCache;
 
         /// <summary>
         /// The members of this group, that are users themselves
@@ -216,26 +221,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (_userMembersCache == null)
-                {
-                    _userMembersCache = Directory.Groups.GetDirectUserMembers(this);
-                }
-                var temp = new List<IADUser>(_userMembersCache);
-                temp.AddRange(MembersToAdd.Where(m => m.Member is IADUser).Select(m => m.Member).Cast<IADUser>());
-
-                MembersToRemove.ForEach(u =>
-                {
-                    if (u.Member is IADUser user)
-                    {
-                        temp.Remove(user);
-                    }
-                });
-                temp = temp.OrderBy(u => u.CanonicalName).ToList();
-                return temp;
+                return Members.Where(m => m is IADUser).Cast<IADUser>().ToList();
             }
         }
 
-        private List<IADGroup> _groupMembersCache;
         /// <summary>
         /// The members of this group, that are groups themselves
         /// </summary>
@@ -244,23 +233,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (_groupMembersCache == null)
-                {
-                    _groupMembersCache = Directory.Groups.GetGroupMembers(this);
-                }
-                var temp = new List<IADGroup>(_groupMembersCache);
-                temp.AddRange(MembersToAdd.Where(m => m.Member is IADGroup).Select(m => m.Member).Cast<IADGroup>());
-
-                MembersToRemove.ForEach(u =>
-                {
-                    if (u.Member is IADGroup group)
-                    {
-                        temp.Remove(group);
-                    }
-                });
-
-                temp = temp.OrderBy(u => u.CanonicalName).ToList();
-                return temp;
+                return Members.Where(m => m is IADGroup).Cast<IADGroup>().ToList();
             }
         }
         public List<string>? MembersAsStrings
@@ -284,19 +257,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute("groupType", value);
             }
         }
-        /// <summary>
-        /// Gathers group and sub-group members in realtime
-        /// </summary>
-        [JsonIgnore]
-        public IEnumerable<IGroupableDirectoryAdapter> NestedMembers
+
+        public async Task<IEnumerable<IGroupableDirectoryAdapter>> GetNestedMembersAsync()
         {
-            get
-            {
-                ADSearch search = new(Directory);
-                search.Fields.NestedMemberOf = this;
-                var result = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
-                return result;
-            }
+
+            ADSearch search = new(Directory);
+            search.Fields.NestedMemberOf = this;
+            var result = await search.SearchAsync<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
+            return result;
+
         }
 
         /// <summary>
@@ -310,7 +279,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 var temp = MembersAsStrings;
                 ADSearch search = new(Directory);
 
-                List<IGroupableDirectoryAdapter> members = new();
+                List<IGroupableDirectoryAdapter> members = [];
                 temp?.ForEach(t =>
                 {
                     search.Results.Clear();
@@ -333,7 +302,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 MembersToAdd.ForEach(m =>
                 {
                     if (!members.Contains(m.Member))
+                    {
                         members.Add(m.Member);
+                    }
                 });
                 return members;
             }
@@ -361,7 +332,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public int CompareTo(object? obj)
         {
             if (obj is ADGroup g)
+            {
                 return CanonicalName.CompareTo(g.CanonicalName);
+            }
+
             return 0;
         }
 

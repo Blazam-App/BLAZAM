@@ -1,9 +1,9 @@
 ﻿
 
+using BLAZAM.Helpers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
-using BLAZAM.Helpers;
 
 namespace BLAZAM.Jobs
 {
@@ -32,8 +32,8 @@ namespace BLAZAM.Jobs
             }
         }
 
-        public IList<IJobStep> FailedSteps { get; protected set; } = new List<IJobStep>();
-        public IList<IJobStep> PassedSteps { get; protected set; } = new List<IJobStep>();
+        public IList<IJobStep> FailedSteps { get; protected set; } = [];
+        public IList<IJobStep> PassedSteps { get; protected set; } = [];
 
 
         public Guid Id { get; set; }

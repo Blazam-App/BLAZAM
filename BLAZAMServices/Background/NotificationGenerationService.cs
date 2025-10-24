@@ -40,10 +40,14 @@ namespace BLAZAM.Services.Background
             lock (_notificationLock)
             {
                 if (!IsSupportedObjectType(args.ObjectType))
+                {
                     return;
+                }
 
                 if (!IsSupportedEventType(args.EventType))
+                {
                     return;
+                }
 
                 var isSQLite = _databaseFactory.DatabaseType == DatabaseType.SQLite;
                 switch (args.EventType)
@@ -176,7 +180,9 @@ namespace BLAZAM.Services.Background
                                             NotificationTemplateComponent? emailMessage)
         {
             if (user.Id == actor?.Id)
+            {
                 return;
+            }
 
             var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
             var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
@@ -205,7 +211,9 @@ namespace BLAZAM.Services.Background
             NotificationSubscription? effectiveEmailSubscriptions)
         {
             if (effectiveEmailSubscriptions?.NotificationTypes.Any(x => x.NotificationType == notificationType) != true)
+            {
                 return;
+            }
 
             if (emailMessage == null)
             {
@@ -327,7 +335,11 @@ namespace BLAZAM.Services.Background
                     break;
                 case NotificationType.LockedOut:
                     var sourceUser = source as IADUser;
-                    if (sourceUser == null) return;
+                    if (sourceUser == null)
+                    {
+                        return;
+                    }
+
                     notificationTitle += _appLocalization[Lang.Locked_Out];
                     notificationBody += _appLocalization["has been locked out at "] + sourceUser.LockoutTime?.ToLocalTime();
                     var lockedOutMessage = NotificationType.LockedOut.ToNotification<LockedOutEmailMessage>();
@@ -381,9 +393,14 @@ namespace BLAZAM.Services.Background
         public NotificationSubscription CalculateEffectiveEmailSubscriptions(AppUser user, IDirectoryEntryAdapter ou)
         {
             if (ou is not IADOrganizationalUnit)
+            {
                 ou = ou.GetParent();
+            }
+
             if (ou is not IADOrganizationalUnit)
+            {
                 return default;
+            }
 
             using var context = Context;
             var effectiveByEmailSubscription = new NotificationSubscription
@@ -400,7 +417,10 @@ namespace BLAZAM.Services.Background
 
             foreach (var sub in userSubscriptions)
             {
-                if (!sub.ByEmail) continue;
+                if (!sub.ByEmail)
+                {
+                    continue;
+                }
 
                 if (sub.Block)
                 {
@@ -417,15 +437,23 @@ namespace BLAZAM.Services.Background
         public NotificationSubscription CalculateEffectiveInAppSubscriptions(AppUser user, IDirectoryEntryAdapter ou)
         {
             if (ou is not IADOrganizationalUnit)
+            {
                 ou = ou.GetParent();
+            }
+
             if (ou is not IADOrganizationalUnit)
+            {
                 return default;
+            }
+
             using var context = Context;
             NotificationSubscription effectiveInAppSubscription = new();
-            effectiveInAppSubscription = new();
-            effectiveInAppSubscription.OU = ou.DN;
-            effectiveInAppSubscription.User = user;
-            effectiveInAppSubscription.InApp = true;
+            effectiveInAppSubscription = new()
+            {
+                OU = ou.DN,
+                User = user,
+                InApp = true
+            };
 
             var userSubscriptions = context.NotificationSubscriptions
                 .Where(x => x.DeletedAt == null && x.UserId == user.Id && ou.DN.Contains(x.OU))

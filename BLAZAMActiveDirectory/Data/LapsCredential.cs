@@ -1,7 +1,7 @@
-﻿using System.Globalization;
-using System.Security;
-using BLAZAM.Helpers;
+﻿using BLAZAM.Helpers;
 using Newtonsoft.Json;
+using System.Globalization;
+using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Data
 {

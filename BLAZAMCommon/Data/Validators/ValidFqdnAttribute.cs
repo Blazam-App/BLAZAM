@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BLAZAM.Helpers;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using BLAZAM.Helpers;
 
 namespace BLAZAM.Common.Data.Validators
 {
@@ -14,15 +14,22 @@ namespace BLAZAM.Common.Data.Validators
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value == null || (value is string str && str.IsNullOrEmpty())) return null;
+            if (value == null || (value is string str && str.IsNullOrEmpty()))
+            {
+                return null;
+            }
+
             if (value is string strValue)
             {
                 if (!strValue.IsNullOrEmpty())
+                {
                     if (Regex.IsMatch(strValue,
                         "^(?!:\\/\\/)(?=.{1,255}$)(([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.){1,127}(?![0-9]*$)([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))$",
                         RegexOptions.IgnoreCase))
+                    {
                         return ValidationResult.Success;
-
+                    }
+                }
             }
             return new ValidationResult(GetErrorMessage(validationContext));
 

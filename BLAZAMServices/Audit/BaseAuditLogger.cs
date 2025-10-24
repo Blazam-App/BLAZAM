@@ -1,5 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
 using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
 
@@ -32,7 +31,7 @@ namespace BLAZAM.Services.Audit
             BitLocker = new BitLockerAudit(factory, userState);
         }
 
-        protected static List<Guid> HandledEvents { get; set; } = new();
+        protected static List<Guid> HandledEvents { get; set; } = [];
 
         public void ProcessDirectoryEntryChangedEvent(DirectoryEntryChangedArgs args)
         {
@@ -288,17 +287,29 @@ namespace BLAZAM.Services.Audit
         public async Task Searched(IDirectoryEntryAdapter searchedEntry)
         {
             if (searchedEntry is IADUser)
+            {
                 await User.Searched(searchedEntry);
+            }
             else if (searchedEntry is IADGroup)
+            {
                 await Group.Searched(searchedEntry);
+            }
             else if (searchedEntry is IADComputer)
+            {
                 await Computer.Searched(searchedEntry);
+            }
             else if (searchedEntry is IADOrganizationalUnit)
+            {
                 await OU.Searched(searchedEntry);
+            }
             else if (searchedEntry is IADPrinter)
+            {
                 await Printer.Searched(searchedEntry);
+            }
             else if (searchedEntry is IADBitLockerRecovery)
+            {
                 await BitLocker.Searched(searchedEntry);
+            }
         }
 
 

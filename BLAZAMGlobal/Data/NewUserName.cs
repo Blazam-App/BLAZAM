@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Global.Data
+﻿using BLAZAM.Helpers;
+
+namespace BLAZAM.Global.Data
 {
     public class NewUserName
     {
@@ -8,6 +10,13 @@
 
         public string? Surname { get; set; } = "";
 
-
+        public bool IsValid(string field)
+        {
+            if (GivenName.AppTrim().IsNullOrEmpty() || Surname.AppTrim().IsNullOrEmpty())
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

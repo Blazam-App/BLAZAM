@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>Les mappages {0} utilisent ce niveau d'accès et seront supprimés</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>Vous devez fournir à la fois un prénom et un nom de famille</value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>Pour modifier le nom de l'utilisateur, cliquez sur le bouton Renommer dans la barre d'outils/le menu engrenage</value>
   </data>

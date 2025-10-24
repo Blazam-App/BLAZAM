@@ -50,7 +50,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public IADUser? FindUserByDN(string? dn, bool ignoreDisabledUsers = true)
         {
-            if (dn.IsNullOrEmpty()) return null;
+            if (dn.IsNullOrEmpty())
+            {
+                return null;
+            }
+
             return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
@@ -93,14 +97,14 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
-                FieldValues = new()
-                {
+                FieldValues =
+                [
                     new()
                     {
                         Field=ActiveDirectoryFields.LockedOut,
                          Operator = ActiveDirectoryFieldOperator.BeforeNow
                     }
-                },
+                ],
 
 
             }.Search<ADUser, IADUser>();
@@ -182,7 +186,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
         }
         public IADUser? FindUserBySID(string? sid)
         {
-            if (sid == null) return null;
+            if (sid == null)
+            {
+                return null;
+            }
+
             return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,

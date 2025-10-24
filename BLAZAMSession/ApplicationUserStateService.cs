@@ -1,10 +1,10 @@
-﻿using System.Security.Claims; // Added
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Models;
 using BLAZAM.Helpers; // Added for GetAppHashCode
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims; // Added
 
 namespace BLAZAM.Session
 {
@@ -13,6 +13,13 @@ namespace BLAZAM.Session
     /// </summary>
     public class ApplicationUserStateService : IApplicationUserStateService
     {
+
+
+        private static readonly object _mfaQueueLock = new();
+
+
+        private static readonly object _userStatesLock = new();
+
         /// <summary>
         /// Gets the singleton instance of the ApplicationUserStateService.
         /// </summary>
@@ -21,7 +28,7 @@ namespace BLAZAM.Session
         private IHttpContextAccessor _httpContextAccessor { get; set; }
         private readonly IAppDatabaseFactory _factory;
         private int? Timeout { get; set; }
-        private readonly List<MFARequest> _mfaLoginQueue = new();
+        private readonly List<MFARequest> _mfaLoginQueue = [];
 
         /// <summary>Event triggered when a new <see cref="IApplicationUserState"/> is added to the cache. Primarily for internal use or advanced scenarios.</summary>
         public AppDelegate<IApplicationUserState> UserStateAdded { get; set; }
@@ -30,7 +37,7 @@ namespace BLAZAM.Session
         public AppDelegate<IApplicationUserState> OnUserStateRemoved { get; set; }
 
         /// <summary>Gets the list of currently cached <see cref="IApplicationUserState"/> objects. Use with caution; direct manipulation is not recommended.</summary>
-        public IList<IApplicationUserState> UserStates { get; private set; } = new List<IApplicationUserState>();
+        public IList<IApplicationUserState> UserStates { get; private set; } = [];
 
         private readonly Timer? t;
 
@@ -138,8 +145,11 @@ namespace BLAZAM.Session
             }
 
             IApplicationUserState? existingState;
-            existingState = UserStates.FirstOrDefault(s => s.User.FindFirstValue(ClaimTypes.Sid) == userClaim.FindFirstValue(ClaimTypes.Sid)
-                                                       && s.User.FindFirstValue(ClaimTypes.Actor) == userClaim.FindFirstValue(ClaimTypes.Actor));
+            lock (_userStatesLock)
+            {
+                existingState = UserStates.FirstOrDefault(s => s.User.FindFirstValue(ClaimTypes.Sid) == userClaim.FindFirstValue(ClaimTypes.Sid)
+                                                           && s.User.FindFirstValue(ClaimTypes.Actor) == userClaim.FindFirstValue(ClaimTypes.Actor));
+            }
 
             if (existingState == null)
             {
@@ -147,28 +157,49 @@ namespace BLAZAM.Session
                 Loggers.SystemLogger.Information("ApplicationUserStateService.GetUserState: No existing ApplicationUserState found for SID {UserSid}, ActorSID {ActorSid}. Creating and caching new state.", userClaim.FindFirstValue(ClaimTypes.Sid) ?? "N/A", userClaim.FindFirstValue(ClaimTypes.Actor) ?? "N/A");
                 AddUserState(existingState); // This will also invoke UserStateAdded
             }
+
             existingState.LastAccessed = DateTime.UtcNow;
             return existingState;
         }
 
         private void AddUserState(IApplicationUserState state)
         {
-            UserStates.Add(state);
+            lock (_userStatesLock)
+            {
+                UserStates.Add(state);
+            }
+
             UserStateAdded?.Invoke(state); // Invoke event after adding
         }
-
         /// <summary>Stores an MFA request temporarily, associating an MFA token with a user state and return URL. Typically used during an MFA challenge flow.</summary> 
         /// <param name="mfaToken">The MFA token (e.g., Duo state).</param> 
         /// <param name="state">The user state associated with this MFA attempt.</param> 
         /// <param name="returnURL">The URL to return to after MFA completion.</param>
-        public void SetMFAUserState(string mfaToken, IApplicationUserState state, string returnURL = "/")
+        public void SetMFAUserState(MfaType mfaType, string mfaToken, IApplicationUserState state, string returnURL = "/")
         {
+            ClaimsPrincipal? clonedPrincipal = null;
+            if (state?.User != null)
+            {
+                clonedPrincipal = state.User.Clone();
+            }
+
+            if (clonedPrincipal != null)
+            {
+                // Create a fresh ApplicationUserState with the cloned principal so the queued MFARequest keeps a stable principal
+                state = CreateUserState(clonedPrincipal);
+            }
             Loggers.SystemLogger.Information("ApplicationUserStateService.SetMFAUserState: Adding MFA request to queue for UserGUID {UserGUID}, MFAToken (hash): {MFATokenHash}.", state?.User?.FindFirstValue(ClaimTypes.Sid) ?? "Unknown", mfaToken?.GetAppHashCode().ToString() ?? "N/A");
-            MFARequest mfaRequest = new(mfaToken, returnURL, state);
-            _mfaLoginQueue.Add(mfaRequest);
+            MFARequest mfaRequest = new(mfaType, mfaToken, returnURL, state);
+            lock (_mfaQueueLock)
+            {
+                _mfaLoginQueue.Add(mfaRequest);
+            }
             Task.Delay(90000).ContinueWith((val) =>
             {
-                _mfaLoginQueue.Remove(mfaRequest);
+                lock (_mfaQueueLock)
+                {
+                    _mfaLoginQueue.Remove(mfaRequest);
+                }
             });
             SetUserState(state); // Ensure state is managed if not already
         }
@@ -178,21 +209,35 @@ namespace BLAZAM.Session
         /// <returns>The <see cref="MFARequest"/> if found; otherwise, null.</returns>
         public MFARequest? GetMFARequest(string mfaToken)
         {
-            var request = _mfaLoginQueue.FirstOrDefault(q => q.mfaToken.Equals(mfaToken));
-            if (request != null)
+            lock (_mfaQueueLock)
             {
-                _mfaLoginQueue.Remove(request);
+                var request = _mfaLoginQueue.FirstOrDefault(q => q.mfaToken.Equals(mfaToken));
+                if (request != null)
+                {
+                    _mfaLoginQueue.Remove(request);
+                }
+
+                return request;
             }
-            return request;
         }
 
         /// <summary>Adds or updates an <see cref="IApplicationUserState"/> in the cache. Typically called internally or upon login.</summary> 
         /// <param name="state">The user state to cache.</param>
         public void SetUserState(IApplicationUserState state)
         {
-            if (state != null && !UserStates.Contains(state)) // Check if it's already there before adding
+
+            if (state != null)
             {
-                AddUserState(state);
+                var stateExists = true;
+                lock (_userStatesLock)
+                {
+                    stateExists = UserStates.Contains(state); // Check if it's already there before adding
+                }
+                if (!stateExists)
+                {
+                    AddUserState(state);
+                }
+
             }
         }
 
@@ -207,10 +252,13 @@ namespace BLAZAM.Session
             }
             try
             {
-                if (UserStates.Contains(state)) // Check before removing
+                lock (_userStatesLock)
                 {
-                    UserStates.Remove(state);
-                    OnUserStateRemoved?.Invoke(state); // Invoke event
+                    if (UserStates.Contains(state)) // Check before removing
+                    {
+                        UserStates.Remove(state);
+                        OnUserStateRemoved?.Invoke(state); // Invoke event
+                    }
                 }
             }
             catch (Exception ex)

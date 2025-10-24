@@ -8,7 +8,7 @@
         /// <summary>
         /// The and filters which cumulatively represent this OrFilter's value
         /// </summary>
-        public List<AutomationRuleAndFilter> AndFilters { get; set; } = new();
+        public List<AutomationRuleAndFilter> AndFilters { get; set; } = [];
         /// <summary>
         /// The rule that this filter belongs to
         /// </summary>
