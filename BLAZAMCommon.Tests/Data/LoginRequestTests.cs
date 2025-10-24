@@ -267,7 +267,7 @@ namespace BLAZAMCommon.Tests.Data
 
 
             // Act
-            var result = loginRequest.DuoRequested(mockAuthState.Object);
+            var result = loginRequest.DuoRequested(mockAuthState.Object,null);
 
             // Assert
             Assert.Equal(LoginResultStatus.DuoRequested, loginRequest.AuthenticationResult);
