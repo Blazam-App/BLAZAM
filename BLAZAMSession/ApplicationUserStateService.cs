@@ -186,7 +186,10 @@ namespace BLAZAM.Session
             if (clonedPrincipal != null)
             {
                 // Create a fresh ApplicationUserState with the cloned principal so the queued MFARequest keeps a stable principal
+                var oldState = state;
                 state = CreateUserState(clonedPrincipal);
+                state.PermissionDelegates.AddRange(oldState.PermissionDelegates);
+                state.PermissionMappings.AddRange(oldState.PermissionMappings);
             }
             Loggers.SystemLogger.Information("ApplicationUserStateService.SetMFAUserState: Adding MFA request to queue for UserGUID {UserGUID}, MFAToken (hash): {MFATokenHash}.", state?.User?.FindFirstValue(ClaimTypes.Sid) ?? "Unknown", mfaToken?.GetAppHashCode().ToString() ?? "N/A");
             MFARequest mfaRequest = new(mfaType, mfaToken, returnURL, state);
