@@ -263,6 +263,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             ADSearch search = new(Directory);
             search.Fields.NestedMemberOf = this;
+            search.EnabledOnly = false;
             var result = await search.SearchAsync<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
             return result;
 
@@ -284,6 +285,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     search.Results.Clear();
                     search.Fields.DN = t;
+                    search.EnabledOnly = false;
                     var member = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>()?.FirstOrDefault();
                     if (member != null)
                     {
