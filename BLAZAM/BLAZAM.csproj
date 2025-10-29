@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.4.11</AssemblyVersion>
-		<Version>2025.10.29.2153</Version>
+		<Version>2025.10.29.2204</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -49,10 +49,6 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.21" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.21" />
 		<PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.3.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.21">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.10" />
