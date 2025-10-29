@@ -24,19 +24,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.21" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.21">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 
-		<!-- Force Roslyn to a single version to avoid NU1107 -->
-		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2">
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.2">
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
 
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.10" />
