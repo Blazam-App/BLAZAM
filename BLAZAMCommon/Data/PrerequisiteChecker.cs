@@ -8,14 +8,20 @@
             {
                 string? sharedFrameworkPath = GetSharedFrameworkPath();
                 if (string.IsNullOrEmpty(sharedFrameworkPath))
+                {
                     return false;
+                }
 
                 if (!Directory.Exists(sharedFrameworkPath))
+                {
                     return false;
+                }
 
                 var dirs = Directory.GetDirectories(sharedFrameworkPath);
                 if (dirs == null || dirs.Length == 0)
+                {
                     return false;
+                }
 
                 return dirs.Any(dir => dir.Contains("8."));
             }

@@ -1,12 +1,16 @@
 ﻿@inherits AppModalContent
 
-@if (Group != null)
+@if (_privateEntryInstance != null)
 {
-    if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
+    if (_privateEntryInstance.CanEditField(ActiveDirectoryFields.SAMAccountName))
     {
 
 
-        <MudTextField AutoFocus=true Label="@AppLocalization[Lang.Group_Name]" @bind-Value="@_privateEntryInstance.GroupName" />
+        <MudTextField AutoFocus=true 
+            Label="@AppLocalization[Lang.Group_Name]" 
+            Value="@_privateEntryInstance.GroupName"
+                      Required=true
+                      ValueChanged="((string val) => { _privateEntryInstance.GroupName = val.AppTrim(); })" />
 
 
 
@@ -14,7 +18,7 @@
 
 
 
-    if (Group.CanEditField(ActiveDirectoryFields.Mail))
+    if (_privateEntryInstance.CanEditField(ActiveDirectoryFields.Mail))
     {
 
 

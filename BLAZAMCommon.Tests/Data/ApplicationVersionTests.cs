@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using Moq;
+﻿using Moq;
+using System.Reflection;
 
 // If AppException is a custom type and not provided, you might need a placeholder for the tests to compile:
 // namespace BLAZAM.Common.Data
@@ -400,7 +400,11 @@ namespace BLAZAMCommon.Tests.Data
     {
         public static bool SameVersionAs_Corrected(this ApplicationVersion current, ApplicationVersion other)
         {
-            if (other is null) return false;
+            if (other is null)
+            {
+                return false;
+            }
+
             return current.CompareTo(other) == 0;
         }
     }

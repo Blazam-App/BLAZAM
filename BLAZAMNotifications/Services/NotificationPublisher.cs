@@ -37,7 +37,7 @@ namespace BLAZAM.Notifications.Services
         /// <param name="notificationMessage">The notification message to publish. If its Id is 0, it will be added to the database.</param> 
         /// <returns>A task representing the asynchronous operation.</returns>
         public Task PublishNotification(AppUser user, NotificationMessage notificationMessage)
-            => PublishNotification(new List<AppUser> { user }, notificationMessage);
+            => PublishNotification([user], notificationMessage);
 
         /// <summary>Publishes a notification to a list of users.</summary> 
         /// <param name="users">The list of users to receive the notification. Null users or users not found in DB will be skipped.</param> 
@@ -112,7 +112,7 @@ namespace BLAZAM.Notifications.Services
 
         private List<UserNotification> CreateUserNotifications(IDatabaseContext context, List<AppUser> users, NotificationMessage notificationMessage)
         {
-            List<UserNotification> sentNotifications = new();
+            List<UserNotification> sentNotifications = [];
             foreach (var user in users)
             {
                 if (user == null)

@@ -18,7 +18,7 @@ namespace BLAZAM.Pages
     {
         public string short_name { get; set; } = "Blazam";
         public string name { get; set; } = "Blazam";
-        public List<ManifestIcon> icons { get; set; } = new();
+        public List<ManifestIcon> icons { get; set; } = [];
         public string start_url { get; set; } = ".";
         public string display { get; set; } = "minimal-ui";
         public string theme_color { get; set; } = "#000000";
@@ -40,10 +40,12 @@ namespace BLAZAM.Pages
         {
             var context = await _factory.CreateDbContextAsync();
             var manifest = new PWAManifest();
-            var icon = new ManifestIcon();
-            icon.src = @StaticAssets.ApplicationIconUri;
-            icon.sizes = "250x250";
-            icon.type = "image/png";
+            var icon = new ManifestIcon
+            {
+                src = @StaticAssets.ApplicationIconUri,
+                sizes = "250x250",
+                type = "image/png"
+            };
             manifest.icons.Add(icon);
             try
             {

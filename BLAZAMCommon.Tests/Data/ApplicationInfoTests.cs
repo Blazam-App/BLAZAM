@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using BLAZAM.Common.Data; // Assuming ApplicationInfo, SystemDirectory, ApplicationVersion are here
+﻿using BLAZAM.Common.Data; // Assuming ApplicationInfo, SystemDirectory, ApplicationVersion are here
 using BLAZAM.FileSystem;
 using BLAZAM.Plugins;    // Assuming IPluginBase is here
 using Microsoft.Extensions.Configuration;
 using Moq;
+using System.Diagnostics;
 
 namespace BLAZAMCommon.Tests.Data
 {
@@ -31,7 +31,7 @@ namespace BLAZAMCommon.Tests.Data
                 ApplicationInfo.runningProcess = Process.GetCurrentProcess();
             }
             // Reset static lists to new instances to avoid interference between tests
-            ApplicationInfo.listeningAddresses = new List<string>();
+            ApplicationInfo.listeningAddresses = [];
         }
 
         public void Dispose()

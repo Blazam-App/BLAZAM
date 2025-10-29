@@ -15,6 +15,12 @@ using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
+using System.Data;
+using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
+using System.Reflection;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -69,12 +75,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
 
                     if (currentValue == null && prop.Value != null || currentValue != null && !currentValue.Equals(prop.Value))
+                    {
                         changes.Add(new AuditChangeLog()
                         {
                             Field = prop.Key,
                             OldValue = DirectoryEntry?.GetPropertyValue(prop.Key),
                             NewValue = prop.Value
                         });
+                    }
                 }
 
                 return changes;
@@ -118,7 +126,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get => _directory;
             private set
             {
-                if (value.Equals(_directory)) return;
+                if (value.Equals(_directory))
+                {
+                    return;
+                }
+
                 _directory = value;
                 _currentUser = value.CurrentUser;
             }
@@ -179,8 +191,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (DirectoryEntry is null)
             {
                 FetchDirectoryEntry();
-                if (DirectoryEntry == null) throw new MissingDirectoryEntryException("The DirectoryEntry for this object could not be retrieved");
-
+                if (DirectoryEntry == null)
+                {
+                    throw new MissingDirectoryEntryException("The DirectoryEntry for this object could not be retrieved");
+                }
             }
         }
 
@@ -189,7 +203,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 if (Classes == null || !Classes.Contains("top"))
+                {
                     return ActiveDirectoryObjectType.OU;
+                }
 
                 return GetObjectTypeFromClasses(Classes);
             }
@@ -198,19 +214,39 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private static ActiveDirectoryObjectType GetObjectTypeFromClasses(List<string> classes)
         {
             if (classes.Contains("computer"))
+            {
                 return ActiveDirectoryObjectType.Computer;
+            }
+
             if (classes.Contains("user"))
+            {
                 return ActiveDirectoryObjectType.User;
+            }
+
             if (classes.Contains("group"))
+            {
                 return ActiveDirectoryObjectType.Group;
+            }
+
             if (classes.Contains("organizationalUnit"))
+            {
                 return ActiveDirectoryObjectType.OU;
+            }
+
             if (classes.Contains("printQueue"))
+            {
                 return ActiveDirectoryObjectType.Printer;
+            }
+
             if (classes.Contains("contact"))
+            {
                 return ActiveDirectoryObjectType.Contact;
+            }
+
             if (classes.Contains("msFVE-RecoveryInformation"))
+            {
                 return ActiveDirectoryObjectType.BitLocker;
+            }
 
             return ActiveDirectoryObjectType.OU;
         }
@@ -224,9 +260,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 if (DirectoryEntry == null)
+                {
                     return GetStringAttribute("adspath");
+                }
                 else
+                {
                     return DirectoryEntry.Path;
+                }
             }
             set
             {
@@ -244,7 +284,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (cn != null)
                 {
                     if (cn.Contains("DEL:"))
+                    {
                         return cn.Substring(0, cn.IndexOf("DEL:")).Replace("\n", "");
+                    }
+
                     return cn;
                 }
                 return null;
@@ -424,8 +467,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (DirectoryEntry != null)
                     DirectoryEntry.SetPropertyValue("objectclass", value);
                 else
+                {
                     Loggers.ActiveDirectoryLogger.Error("Error setting objectClass for {@DN}", DN);
-
+                }
             }
         }
 
@@ -459,7 +503,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
 
             EnsureDirectoryEntry();
-            if (DirectoryEntry == null || DirectoryEntry.Parent == null) return null;
+            if (DirectoryEntry == null || DirectoryEntry.Parent == null)
+            {
+                return null;
+            }
 
             var parent = DirectoryEntry.Parent.Encapsulate(Directory);
 
@@ -481,7 +528,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                if (CurrentUser == null) return false;
+                if (CurrentUser == null)
+                {
+                    return false;
+                }
+
                 if (DN == null)
                 {
                     throw new AppException("The directory object " + DN + " did not load a distinguished name.");
@@ -562,7 +613,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected virtual bool HasActionPermission(ObjectAction action, ActiveDirectoryObjectType? objectType = null)
         {
-            if (CurrentUser == null) return false;
+            if (CurrentUser == null)
+            {
+                return false;
+            }
+
             objectType ??= ObjectType;
             return CurrentUser.HasActionPermission(DN, action, objectType.Value);
         }
@@ -759,7 +814,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Directory = directory;
 
             if (searchResult != null)
+            {
                 SearchResult = searchResult;
+            }
             if (searchResultEntry != null)
             {
                 DirectoryEntry = new LdapDirectoryEntry(searchResultEntry, directory);
@@ -871,7 +928,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         if (p.Value == null
                                || p.Value is string strValue && strValue.IsNullOrEmpty()
-                               || p.Value is DateTime dateValue && dateValue == DateTime.MinValue) continue;
+                               || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
+                        {
+                            continue;
+                        }
+
                         propertyStep = new JobStep("Set " + p.Key, (step) =>
                         {
                             DirectoryEntry.SetPropertyValue(p.Key, p.Value);
@@ -1016,14 +1077,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             PostCommitSteps.Clear();
             if (SearchResult != null)
+            {
                 FetchDirectoryEntry();
+            }
 
             OnChangesDiscarded?.Invoke();
 
         }
         private void FetchDirectoryEntry()
         {
-            if (SearchResult is null) throw new CriticalActiveDirectoryException(Directory, nameof(SearchResult));
+            if (SearchResult is null)
+            {
+                throw new CriticalActiveDirectoryException(Directory, nameof(SearchResult));
+            }
 
             DirectoryEntry = SearchResult.GetDirectoryEntry().ToIDirectoryEntry(Directory);
 
@@ -1123,7 +1189,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 try
                 {
                     if (NewEntryProperties.ContainsKey(propertyName))
+                    {
                         return (T)NewEntryProperties[propertyName];
+                    }
                 }
                 catch (InvalidCastException ex)
                 {
@@ -1161,7 +1229,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     return (T)NewEntryProperties[propertyName];
                 }
-
+            }
+            catch (InvalidCastException ex)
+            {
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+            }
                 if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
                 {
                     var val = DirectoryEntry.GetPropertyValue(propertyName);
@@ -1228,7 +1300,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     //Asked for string list but may have found just a single string
                     string? str = GetValue<string>(propertyName);
                     if (str != null)
+                    {
                         rawValue = [str];
+                    }
                 }
                 if (rawValue != null)
                 {
@@ -1236,7 +1310,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         string? str = o?.ToString();
                         if (str != null)
+                        {
                             values.Add(str);
+                        }
                     }
                 }
                 return values;
@@ -1256,7 +1332,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <param name="value"></param>
         protected virtual void SetAttribute(string propertyName, object? value)
         {
-            if (IsDeleted) throw new AppException("Cannot set values for a deleted entry.");
+            if (IsDeleted)
+            {
+                throw new AppException("Cannot set values for a deleted entry.");
+            }
+
             try
             {
 
@@ -1298,7 +1378,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected DateTime? SetFileTimeAttribute(string attribute, DateTime? value)
         {
             if (value == null)
+            {
                 value = CommonHelpers.ADS_NULL_TIME;
+            }
+
             var dateTime = value.Value;
             if (dateTime.Kind == DateTimeKind.Unspecified)
             {
@@ -1323,7 +1406,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 NewEntryProperties.Remove(propertyName);
                 if (NewEntryProperties.Count < 1)
+                {
                     HasUnsavedChanges = false;
+                }
             }
         }
 
@@ -1381,9 +1466,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public override int GetHashCode()
         {
             if (DN != null)
+            {
                 return DN.GetHashCode();
+            }
             else
+            {
                 return -1;
+            }
         }
 
 

@@ -12,7 +12,10 @@ namespace BLAZAM.Gui.UI.Inputs
             set
             {
                 if (searchTerm == value)
+                {
                     return;
+                }
+
                 searchTerm = value;
                 SearchTermChanged.InvokeAsync(value);
                 _ = StateHasChangedAsync();

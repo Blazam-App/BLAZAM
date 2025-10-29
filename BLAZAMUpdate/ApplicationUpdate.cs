@@ -1,13 +1,13 @@
-﻿using System.Diagnostics;
-using System.IO.Compression;
-using System.Security.Principal;
-using System.Text;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.FileSystem;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Update.Services;
+using System.Diagnostics;
+using System.IO.Compression;
+using System.Security.Principal;
+using System.Text;
 
 namespace BLAZAM.Update
 {
@@ -146,13 +146,17 @@ namespace BLAZAM.Update
 
         public IApplicationRelease Release { get; set; }
 
-        public List<Func<bool>> PreRequisiteChecks { get; private set; } = new();
+        public List<Func<bool>> PreRequisiteChecks { get; private set; } = [];
 
         public bool PassesPrerequisiteChecks
         {
             get
             {
-                if (PreRequisiteChecks.Count == 0) return true;
+                if (PreRequisiteChecks.Count == 0)
+                {
+                    return true;
+                }
+
                 foreach (var check in PreRequisiteChecks)
                 {
                     if (!check.Invoke())
@@ -170,11 +174,14 @@ namespace BLAZAM.Update
         {
 
             if (cancellationTokenSource == null || cancellationTokenSource.IsCancellationRequested)
+            {
                 cancellationTokenSource = new CancellationTokenSource();
+            }
 
-
-            Job updateJob = new("Applying application update", "System", cancellationTokenSource);
-            updateJob.StopOnFailedStep = true;
+            Job updateJob = new("Applying application update", "System", cancellationTokenSource)
+            {
+                StopOnFailedStep = true
+            };
             var cleanDownloadStep = new JobStep("Cleaning previous downloads", CleanDownload);
             var downloadStep = new JobStep("Download latest version", Download);
             var cleanStageStep = new JobStep("Cleaning staging area", CleanStaging);
@@ -391,33 +398,34 @@ namespace BLAZAM.Update
             return await Task.Run(() =>
             {
 
-                if (!UpdateFile.Exists) return false;
+                if (!UpdateFile.Exists)
+                {
+                    return false;
+                }
 
                 Loggers.UpdateLogger?.Debug("Attempting unzip of {UpdatePath}", UpdateFile);
 
                 UpdateStagingDirectory.EnsureCreated();
 
-                using (var streamToReadFrom = UpdateFile.OpenReadStream())
+                using var streamToReadFrom = UpdateFile.OpenReadStream();
+                if (streamToReadFrom == null)
                 {
-                    if (streamToReadFrom == null)
-                    {
-                        return false;
-                    }
-                    try
-                    {
-                        var zip = new ZipArchive(streamToReadFrom);
-                        zip.ExtractToDirectory(UpdateStagingDirectory.FullPath, true);
-                        Loggers.UpdateLogger?.Debug("{UpdatePath} unzipped successfully to {StagingPath}", UpdateFile, UpdateStagingDirectory);
+                    return false;
+                }
+                try
+                {
+                    var zip = new ZipArchive(streamToReadFrom);
+                    zip.ExtractToDirectory(UpdateStagingDirectory.FullPath, true);
+                    Loggers.UpdateLogger?.Debug("{UpdatePath} unzipped successfully to {StagingPath}", UpdateFile, UpdateStagingDirectory);
 
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.UpdateLogger?.Error(ex, "Error while extracting update zip");
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Loggers.UpdateLogger?.Error(ex, "Error while extracting update zip");
 
-                        return false;
+                    return false;
 
-                    }
                 }
             });
 
@@ -454,14 +462,18 @@ namespace BLAZAM.Update
                         }
 
                         UpdateDownloadDirectory.EnsureCreated();
-                        if (UpdateFile.Exists) UpdateFile.Delete();
-
-                        using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
-                        using (var streamToWriteTo = UpdateFile.OpenWriteStream())
+                        if (UpdateFile.Exists)
                         {
-                            progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
-                            bool result = await WriteStreamWithProgress(streamToReadFrom, streamToWriteTo, progress, step);
-                            if (!result) return false;
+                            UpdateFile.Delete();
+                        }
+
+                        using var streamToReadFrom = await response.Content.ReadAsStreamAsync();
+                        using var streamToWriteTo = UpdateFile.OpenWriteStream();
+                        progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
+                        bool result = await WriteStreamWithProgress(streamToReadFrom, streamToWriteTo, progress, step);
+                        if (!result)
+                        {
+                            return false;
                         }
                     }
                     retries = 0;

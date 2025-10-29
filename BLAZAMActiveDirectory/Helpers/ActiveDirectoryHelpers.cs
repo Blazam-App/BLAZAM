@@ -13,6 +13,10 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Logger;
 using Microsoft.Extensions.DependencyInjection;
+using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.Helpers
 {
@@ -47,8 +51,12 @@ namespace BLAZAM.Helpers
         public static IEnumerable<IDirectoryEntryAdapter> MoveToTop(this IEnumerable<IDirectoryEntryAdapter> enumerable, Func<IDirectoryEntryAdapter, bool> matchingPredicate)
         {
             var list = enumerable.ToList();
-            if (list.Count < 1) return list;
-            List<IDirectoryEntryAdapter> mathingItems = new();
+            if (list.Count < 1)
+            {
+                return list;
+            }
+
+            List<IDirectoryEntryAdapter> mathingItems = [];
             for (int x = 0; x < list.Count; x++)
             {
 
@@ -110,12 +118,20 @@ namespace BLAZAM.Helpers
                 try
                 {
                     if (fieldValue.Field != null && fieldValue.Value != null)
+                    {
                         if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
+                        {
                             user.HomeDirectory = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
+                        }
                         else
+                        {
                             user.NewEntryProperties[fieldValue.Field.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
+                        }
+                    }
                     else if (fieldValue.CustomField != null && fieldValue.Value != null)
+                    {
                         user.NewEntryProperties[fieldValue.CustomField.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -126,7 +142,11 @@ namespace BLAZAM.Helpers
         }
         public static string? DnToOu(this string? dN)
         {
-            if (dN == null) return null;
+            if (dN == null)
+            {
+                return null;
+            }
+
             var ouComponents = Regex.Matches(dN, @"OU=([^,]+)")
                             .Select(m => m.Value)
                             .ToList();
@@ -136,7 +156,11 @@ namespace BLAZAM.Helpers
 
         public static string? ToPrettyOu(this IADOrganizationalUnit? ou)
         {
-            if (ou == null) return null;
+            if (ou == null)
+            {
+                return null;
+            }
+
             var ouComponents = Regex.Matches(ou.DN, @"OU=([^,]*)")
                 .Select(m => m.Groups[1].Value)
                 .ToList();
@@ -156,7 +180,11 @@ namespace BLAZAM.Helpers
         /// <returns></returns>
         public static string? PrettifyOu(string? ou)
         {
-            if (ou == null) return null;
+            if (ou == null)
+            {
+                return null;
+            }
+
             var ouComponents = Regex.Matches(ou, @"OU=([^,]*)")
                 .Select(m => m.Groups[1].Value)
                 .ToList();
@@ -170,7 +198,7 @@ namespace BLAZAM.Helpers
         /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
         public static List<IDirectoryEntryAdapter> Encapsulate(this SearchResultCollection r, IActiveDirectoryContext context)
         {
-            List<IDirectoryEntryAdapter> objects = new();
+            List<IDirectoryEntryAdapter> objects = [];
 
 
             if (r != null && r.Count > 0)
@@ -251,7 +279,11 @@ namespace BLAZAM.Helpers
 
         public static IDirectoryEntryAdapter? Encapsulate(this IDirectoryEntry? sr, IActiveDirectoryContext context)
         {
-            if (sr == null) return null;
+            if (sr == null)
+            {
+                return null;
+            }
+
             IDirectoryEntryAdapter? thisObject = null;
 
             if (sr.PropertyContains(OBJECT_CLASS, "top"))
@@ -310,7 +342,7 @@ namespace BLAZAM.Helpers
         /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
         public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r, IActiveDirectoryContext context)
         {
-            List<IDirectoryEntryAdapter> objects = new();
+            List<IDirectoryEntryAdapter> objects = [];
 
 
             if (r != null)
@@ -320,8 +352,9 @@ namespace BLAZAM.Helpers
                 {
                     var encapsulated = Encapsulate(sr, context);
                     if (encapsulated != null)
+                    {
                         objects.Add(encapsulated);
-
+                    }
                 }
             }
             return objects;
@@ -329,7 +362,11 @@ namespace BLAZAM.Helpers
 
         public static string? EscapeLdapSearchFilter(this string? input)
         {
-            if (input.IsNullOrEmpty()) return null;
+            if (input.IsNullOrEmpty())
+            {
+                return null;
+            }
+
             StringBuilder sb = new();
             foreach (char c in input)
             {
@@ -380,8 +417,12 @@ namespace BLAZAM.Helpers
 
         public static List<ActiveDirectoryFieldOperator> GetOperators(this IActiveDirectoryField field)
         {
-            List<ActiveDirectoryFieldOperator> applicableOperators = new List<ActiveDirectoryFieldOperator>();
-            if (field == null || field.FieldType == null) return applicableOperators;
+            List<ActiveDirectoryFieldOperator> applicableOperators = [];
+            if (field == null || field.FieldType == null)
+            {
+                return applicableOperators;
+            }
+
             var fieldType = field.FieldType;
 
             switch (fieldType)

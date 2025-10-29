@@ -17,29 +17,29 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.19" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.19" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.19" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.19" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.19" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.19" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.19">
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.21" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.21" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.21" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.21" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.21" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.21" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.21">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.10" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
 		<PackageReference Include="Moq" Version="4.20.72" />
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.3" />
 		<PackageReference Include="Serilog" Version="4.3.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
-		<PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.8" />
-		<PackageReference Include="System.Management" Version="9.0.8" />
-		<PackageReference Include="System.Security.Permissions" Version="9.0.8" />
+		<PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.10" />
+		<PackageReference Include="System.Management" Version="9.0.10" />
+		<PackageReference Include="System.Security.Permissions" Version="9.0.10" />
 		<PackageReference Include="xunit" Version="2.9.3" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.4">
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>

@@ -10,7 +10,11 @@ namespace BLAZAM.Services.Background
         {
             get => _connected; set
             {
-                if (value == _connected) return;
+                if (value == _connected)
+                {
+                    return;
+                }
+
                 _connected = value;
                 OnConnectedChanged?.Invoke(value);
             }

@@ -7,8 +7,8 @@ namespace BLAZAM.Gui.UI.Computers
 {
     public partial class ViewComputer : DirectoryEntryViewBase
     {
-        AppModal? _rebootModal;
-        IADComputer? Computer => DirectoryEntry as IADComputer;
+        private AppModal? _rebootModal;
+        private IADComputer? Computer => DirectoryEntry as IADComputer;
         protected override async Task OnInitializedAsync()
         {
             Computer?.MonitorOnlineStatus();
@@ -36,7 +36,7 @@ namespace BLAZAM.Gui.UI.Computers
         }
 
 
-        async Task Unlock()
+        private async Task Unlock()
         {
             if (Computer != null && await MessageService.Confirm("Are you sure you want to unlock " + Computer?.CanonicalName + "?", "Unlock Computer"))
             {
@@ -44,7 +44,7 @@ namespace BLAZAM.Gui.UI.Computers
             }
 
         }
-        async Task ExpireLapsPassword()
+        private async Task ExpireLapsPassword()
         {
             if (Computer != null && await MessageService.Confirm("Are you sure you want to expire the LAPS password for " + Computer?.CanonicalName + "?", "Expire Password"))
             {
@@ -53,7 +53,7 @@ namespace BLAZAM.Gui.UI.Computers
 
         }
 
-        async Task DeleteComputer()
+        private async Task DeleteComputer()
         {
             if (Computer != null && await MessageService.Confirm("Are you sure you want to delete " + Computer?.CanonicalName + "?", "Delete Computer"))
             {
@@ -82,10 +82,12 @@ namespace BLAZAM.Gui.UI.Computers
                 await RefreshEntryComponents();
             }
         }
-        async Task SaveChanges()
+        private async Task SaveChanges()
         {
             if (Computer == null || !await MessageService.Confirm("Are you sure you want to save the changes?"))
+            {
                 return;
+            }
 
             SavingChanges = true;
             await RefreshEntryComponents();

@@ -14,7 +14,11 @@ namespace BLAZAM.Gui.UI.Users
         {
             get => password; set
             {
-                if (password == value) return;
+                if (password == value)
+                {
+                    return;
+                }
+
                 password = value;
                 PasswordChanged.InvokeAsync(password);
             }
@@ -30,7 +34,11 @@ namespace BLAZAM.Gui.UI.Users
         {
             get => confirmPassword; set
             {
-                if (confirmPassword == value) return;
+                if (confirmPassword == value)
+                {
+                    return;
+                }
+
                 confirmPassword = value;
                 ConfirmPasswordChanged.InvokeAsync(confirmPassword);
             }

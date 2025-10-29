@@ -16,8 +16,9 @@ namespace BLAZAM.Common.Data
         public static void RemoveADContext()
         {
             if (ADContextCount > 0)
+            {
                 ADContextCount--;
-
+            }
         }
         public static readonly List<Guid> LdapConnections = new ();
         public static void RemoveLdapConnection(Guid guid)
@@ -43,8 +44,9 @@ namespace BLAZAM.Common.Data
         public static void RemoveDBContext()
         {
             if (DBContextCount > 0)
+            {
                 DBContextCount--;
-
+            }
         }
         public static RollingAverage MemoryUsage { get; private set; } = new(5);
         public static RollingAverage CPUUsage { get; private set; } = new(5);

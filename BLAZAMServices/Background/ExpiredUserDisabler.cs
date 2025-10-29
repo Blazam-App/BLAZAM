@@ -1,6 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Services;
-using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
@@ -29,8 +28,10 @@ namespace BLAZAM.Services.Background
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
 
             var expiredUsers = new List<IADUser>();
-            Job executeJob = new(AppLocalization["Disable Expired Users"]);
-            executeJob.StopOnFailedStep = true;
+            Job executeJob = new(AppLocalization["Disable Expired Users"])
+            {
+                StopOnFailedStep = true
+            };
 
             JobStep prepareStep = new(AppLocalization["Collect data"], (state) =>
             {
@@ -42,12 +43,16 @@ namespace BLAZAM.Services.Background
             {
                 foreach (var user in expiredUsers)
                 {
-                    if (user == null) continue;
+                    if (user == null)
+                    {
+                        continue;
+                    }
+
                     if (user.Enabled)
                     {
                         var original = directory.Users.FindUserBySID(user.SID.ToSidString());
                         user.Enabled = false;
-                        List<AuditChangeLog>? changes = new(user.Changes);
+                        List<AuditChangeLog>? changes = [.. user.Changes];
                         var result = user.CommitChanges();
 
                         if (result.Result == JobResult.Passed)

@@ -13,6 +13,7 @@
         public static readonly string Unsaved_Navigation_Warning = "Unsaved_Navigation_Warning";
         public static readonly string Mapping_Use_Access_Level = "Mapping_Use_Access_Level";
         public static readonly string Text_Copied_To_Clipboard = "Text_Copied_To_Clipboard";
+        public static readonly string Missing_First_Or_Last_Name = "Missing_First_Or_Last_Name";
         public static readonly string Navigate_Away_Confirmation = "Navigate_Away_Confirmation";
         public static readonly string Duplicate_Name_Conflict = "Duplicate_Name_Conflict";
         public static readonly string No_Request_Actions_Available = "No_Request_Actions_Available";

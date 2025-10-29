@@ -8,14 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.19" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.19" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
-    <PackageReference Include="MudBlazor" Version="8.11.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.21" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.21" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.10" />
+    <PackageReference Include="MudBlazor" Version="8.13.0" />
     <PackageReference Include="MudBlazor.ThemeManager" Version="3.0.0" />
-    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.8" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.10" />
   </ItemGroup>
 
 </Project>

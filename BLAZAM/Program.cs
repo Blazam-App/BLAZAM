@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting.WindowsServices; // Required for running as a Windows Service
 using Serilog; // Logging library
+using System.Diagnostics; // For checking if debugger is attached
+using System.Net; // For IP address handling
+using System.Security.Cryptography.X509Certificates; // For SSL certificate handling
 
 namespace BLAZAM
 {
@@ -66,7 +69,9 @@ namespace BLAZAM
 
             // Ensure the configuration (e.g., appsettings.json) was loaded successfully.
             if (builder.Configuration is null)
+            {
                 throw new AppException("The appsettings.json configuration file was not loaded");
+            }
 
             // Initialize custom application properties (likely from ApplicationInfo class).
             builder.IntializeProperties(); // Note: Typo in original method name 'IntializeProperties'
@@ -296,7 +301,10 @@ namespace BLAZAM
             Loggers.SystemLogger.Information("Kestrel listening for HTTP on {Address}:{Port}", ipAddress, httpPort);
 
             // Stop if no HTTPS port is defined.
-            if (httpsPort <= 0) return;
+            if (httpsPort <= 0)
+            {
+                return;
+            }
 
             // Configure HTTPS endpoint if the certificate is valid.
             if (cert?.HasPrivateKey == true)

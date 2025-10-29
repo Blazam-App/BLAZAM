@@ -11,7 +11,10 @@ namespace BLAZAM.Database.Models.Permissions
             if (obj is FieldAccessLevel)
             {
                 var o = obj as FieldAccessLevel;
-                if (o.Name.Equals(Name)) return true;
+                if (o.Name.Equals(Name))
+                {
+                    return true;
+                }
             }
             return false;
         }

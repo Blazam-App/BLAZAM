@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using System.Collections;
 using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO.Compression;
@@ -6,8 +8,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 
 namespace BLAZAM.Helpers
 {
@@ -105,11 +105,15 @@ namespace BLAZAM.Helpers
 
             // Check if both objects are null or same reference
             if (ReferenceEquals(changed, original))
-                return new List<AuditChangeLog>();
+            {
+                return [];
+            }
 
             // Check if both objects are of the same type if both were provided
             if (changed is not null && original is not null && changed.GetType() != original.GetType())
+            {
                 throw new ArgumentException("Objects must be of the same type");
+            }
 
             var changes = BuildAuditChangeLog(changed, original);
 
@@ -194,15 +198,21 @@ namespace BLAZAM.Helpers
         /// <returns>A list of <see cref="AuditChangeLog"/> detailing the differences.</returns>
         private static List<AuditChangeLog> BuildAuditChangeLog(object? changed, object? original = null)
         {
-            List<AuditChangeLog> changes = new();
+            List<AuditChangeLog> changes = [];
             PropertyInfo[]? properties = null;
 
             if (changed != null)
+            {
                 properties = changed.GetType().GetProperties();
+            }
             else if (original != null)
+            {
                 properties = original.GetType().GetProperties();
+            }
             else
+            {
                 return changes; // Both are null, no properties to compare
+            }
 
             foreach (var property in properties)
             {
@@ -224,8 +234,16 @@ namespace BLAZAM.Helpers
 
         private static bool IsChanged(object? oldValue, object? newValue)
         {
-            if (oldValue == null && newValue == null) return false;
-            if (oldValue == null || newValue == null) return true;
+            if (oldValue == null && newValue == null)
+            {
+                return false;
+            }
+
+            if (oldValue == null || newValue == null)
+            {
+                return true;
+            }
+
             return !oldValue.Equals(newValue);
         }
 
@@ -258,10 +276,8 @@ namespace BLAZAM.Helpers
                     continue;
                 }
                 ZipArchiveEntry entry = archive.CreateEntry(directory.FullPath.Replace(basePath, "") + file.Name + file.Extension);
-                using (Stream es = entry.Open())
-                {
-                    fs.CopyTo(es);
-                }
+                using Stream es = entry.Open();
+                fs.CopyTo(es);
 
             }
 
@@ -288,7 +304,9 @@ namespace BLAZAM.Helpers
             }
 
             if (destinationFile.Exists)
+            {
                 destinationFile.Delete();
+            }
 
             using var outStream = destinationFile.OpenWriteStream();
             memoryStream.Seek(0, SeekOrigin.Begin);
@@ -320,26 +338,28 @@ namespace BLAZAM.Helpers
             {
                 return Array.Empty<byte>();
             }
-            using (var image = Image.Load(rawImage))
+            using var image = Image.Load(rawImage);
+            if (image.Height > image.Width)
             {
-                if (image.Height > image.Width)
+                if (cropToSquare)
                 {
-                    if (cropToSquare)
-                        image.Mutate(x => x.Crop(image.Width, image.Width));
-                    image.Mutate(x => x.Resize(0, maxDimension));
+                    image.Mutate(x => x.Crop(image.Width, image.Width));
                 }
-                else
-                {
-                    if (cropToSquare)
-                        image.Mutate(x => x.Crop(image.Height, image.Height));
-                    image.Mutate(x => x.Resize(maxDimension, 0));
-                }
-                using (var ms = new MemoryStream())
-                {
-                    image.SaveAsPng(ms);
-                    return ms.ToArray();
-                }
+
+                image.Mutate(x => x.Resize(0, maxDimension));
             }
+            else
+            {
+                if (cropToSquare)
+                {
+                    image.Mutate(x => x.Crop(image.Height, image.Height));
+                }
+
+                image.Mutate(x => x.Resize(maxDimension, 0));
+            }
+            using var ms = new MemoryStream();
+            image.SaveAsPng(ms);
+            return ms.ToArray();
         }
 
         /// <summary>
@@ -403,7 +423,11 @@ namespace BLAZAM.Helpers
         /// <returns>A long representing the FILETIME UTC, or null.</returns>
         public static long? DateTimeToAdsValue(this DateTime? value)
         {
-            if (value == null) return null;
+            if (value == null)
+            {
+                return null;
+            }
+
             try
             {
                 var maxFileTime = DateTime.Parse("Sunday, November 16, 4769 9:46:40 AM Z");
@@ -427,8 +451,15 @@ namespace BLAZAM.Helpers
         /// <returns>A nullable DateTime in UTC, or null if conversion fails or the ADSI value represents a null/zero time.</returns>
         public static DateTime? AdsValueToDateTime(this object? value)
         {
-            if (value == null) return null;
-            if (value is DateTime dtValue) return dtValue;
+            if (value == null)
+            {
+                return null;
+            }
+
+            if (value is DateTime dtValue)
+            {
+                return dtValue;
+            }
 
             long? fileTime = value switch
             {
@@ -438,13 +469,19 @@ namespace BLAZAM.Helpers
                 _ => null
             };
 
-            if (fileTime is null or 0) return null;
+            if (fileTime is null or 0)
+            {
+                return null;
+            }
 
             try
             {
                 var dateTime = DateTime.FromFileTimeUtc(fileTime.Value);
                 if (dateTime.Equals(ADS_NULL_TIME) || dateTime.Equals(DateTime.MinValue))
+                {
                     return null;
+                }
+
                 return dateTime;
             }
             catch
@@ -473,7 +510,11 @@ namespace BLAZAM.Helpers
         /// <returns>A nullable Guid. Returns null if guidBytes is null.</returns>
         public static Guid? ToGuid(this byte[]? guidBytes)
         {
-            if (null == guidBytes) return null;
+            if (null == guidBytes)
+            {
+                return null;
+            }
+
             try
             {
                 return new Guid(guidBytes);
@@ -491,7 +532,11 @@ namespace BLAZAM.Helpers
         /// <returns>An LDAP-compatible hex string, or null if byteArray is null.</returns>
         public static string? ToHexADString(this byte[]? byteArray)
         {
-            if (null == byteArray) return null;
+            if (null == byteArray)
+            {
+                return null;
+            }
+
             var hexString = Convert.ToHexString(byteArray);
             return ToLdapHexString(hexString);
         }

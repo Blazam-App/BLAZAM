@@ -1,4 +1,4 @@
-﻿using BLAZAM.Global.Exceptions;
+﻿using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
 
 namespace BLAZAM.Tests.Jobs
@@ -6,33 +6,7 @@ namespace BLAZAM.Tests.Jobs
     public class JobTests
     {
 
-        private static IJob TestJob
-        {
-            get
-            {
-                var job = new Job("Test Job");
-                var job2 = new Job("Nested Job");
-                var step1 = new JobStep("Regular Step Passes", (step) => { Task.Delay(200).Wait(); return true; });
-                var step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
-#pragma warning disable CS0162 // Unreachable code detected
-                var step3 = new JobStep("Regular Step Throws", (step) => { Task.Delay(200).Wait(); throw new AppException("Test exception"); return false; });
-#pragma warning restore CS0162 // Unreachable code detected
-                var step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(200).Wait(); return true; });
-                var step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
-#pragma warning disable CS0162 // Unreachable code detected
-                var step6 = new JobStep("Nested Step Throws", (step) => { Task.Delay(200).Wait(); throw new AppException("Test exception"); return false; });
-#pragma warning restore CS0162 // Unreachable code detected
-
-                job.AddStep(step1);
-                job.AddStep(step2);
-                job.AddStep(step3);
-                job2.AddStep(step4);
-                job2.AddStep(step5);
-                job2.AddStep(step6);
-                job.AddStep(job2);
-                return job;
-            }
-        }
+        private static IJob TestJob => JobHelpers.TestJob;
         [Fact]
         public void Job_Stops_On_Error_When_Stop_Enabled()
         {

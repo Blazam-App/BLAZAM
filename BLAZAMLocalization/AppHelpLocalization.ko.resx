@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>{0} 매핑은 이 액세스 수준을 사용하며 삭제됩니다.</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>이름과 성을 모두 입력해야 합니다</value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>사용자 이름을 수정하려면 도구 모음/기어 메뉴에서 이름 바꾸기 버튼을 클릭하십시오.</value>
   </data>

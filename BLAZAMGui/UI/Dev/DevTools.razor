@@ -3,17 +3,28 @@
 @inherits AppComponentBase
 @inject IHttpContextAccessor ca
 
-@* <MudPaper Class="mud-theme-dark py-3" Width="250px" Elevation="0">
-    <MudNavMenu Color="Color.Success" Bordered="true"> *@
-
-
 <MudText Typo="Typo.h6">Dev Tools</MudText>
 <MudText>Debugger Attached: @Debugger.IsAttached</MudText>
-<MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>
-            {SnackBarService.Success("Test Notification " + Guid.NewGuid());
-            })">Test Notification</MudButton>
-<MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>{SnackbarBroadcastService.Success("Test Broadcast " + Guid.NewGuid(),"Test");})">Test Broadcast</MudButton>
-<MudButton Color="Color.Primary" style="height:35px;" OnClick=TestNotificationBroadcast>Test Notification Broadcast</MudButton>
+<MudButton Color="Color.Primary"
+           Style="height:35px;"
+           OnClick=SendTestNoification>
+    Test Notification
+</MudButton>
+<MudButton Color=" Color.Primary"
+           Style="height:35px;"
+           OnClick=SendTestBroadcast>
+    Test Broadcast
+</MudButton>
+<MudButton Color="Color.Primary"
+           Style="height:35px;"
+           OnClick=TestNotificationBroadcast>
+    Test Notification Broadcast
+</MudButton>
+<MudButton Color="Color.Primary"
+           Style="height:35px;"
+           OnClick=RunTestJob>
+    Run Test Job
+</MudButton>
 
 <MudCard Class="mud-theme-dark">
     <MudCardHeader>
@@ -27,12 +38,12 @@
 
 <MudDataGrid Items="@UserStateService.UserStates">
     <Columns>
-        <PropertyColumn Title="Username" Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
-        <PropertyColumn Title="IP Address" Property="x => x.IPAddress==null?null:x.IPAddress" />
+        <PropertyColumn Title="Username" Property="x => x.User.Identity == null ? null : x.User.Identity.Name" />
+        <PropertyColumn Title="IP Address" Property="x => x.IPAddress == null ? null : x.IPAddress" />
 
-        <PropertyColumn Title="Auth Type" Property="x => x.User.Identity==null || x.User.Identity.AuthenticationType==null?null:x.User.Identity.AuthenticationType.ToString()" />
-        <PropertyColumn Title="Authenticated" Property="x => x.User.Identity==null?null:x.User.Identity.IsAuthenticated.ToString()" />
-        <PropertyColumn Property="s=>s.Ticket!=null && s.Ticket.Principal!=null  && s.Ticket.Principal.Identity!=null?s.Ticket.Principal.Identity.Name:null" />
+        <PropertyColumn Title="Auth Type" Property="x => x.User.Identity == null || x.User.Identity.AuthenticationType == null ? null : x.User.Identity.AuthenticationType.ToString()" />
+        <PropertyColumn Title="Authenticated" Property="x => x.User.Identity == null ? null : x.User.Identity.IsAuthenticated.ToString()" />
+        <PropertyColumn Property="s => s.Ticket != null && s.Ticket.Principal != null && s.Ticket.Principal.Identity != null ? s.Ticket.Principal.Identity.Name : null" />
 
         <PropertyColumn Title="Last URI" Property="x => x.LastUri" />
         <PropertyColumn Title="Super Admin" Property="x => x.IsSuperAdmin" />
@@ -46,7 +57,7 @@
                 @context.Item.Ticket?.Properties.ExpiresUtc?.LocalDateTime
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Title="Session Expiration Time" Property="x => x.Ticket==null?null:(DateTimeOffset.UtcNow-x.Ticket.Properties.ExpiresUtc)" />
+        <PropertyColumn Title="Session Expiration Time" Property="x => x.Ticket == null ? null : (DateTimeOffset.UtcNow - x.Ticket.Properties.ExpiresUtc)" />
 
 
 
@@ -149,10 +160,26 @@
     async Task TestNotificationBroadcast()
     {
         await NotificationPublisher.PublishNotification(new NotificationMessage()
-            {
-                Level = NotificationLevel.Info,
-                Message = "This is a test notification",
-                Title = "Test"
-            });
+        {
+            Level = NotificationLevel.Info,
+            Message = "This is a test notification",
+            Title = "Test"
+        });
+    }
+    void SendTestNoification()
+    {
+        SnackBarService.Success("Test Notification " + Guid.NewGuid());
+
+    }
+    void SendTestBroadcast()
+    {
+        SnackbarBroadcastService.Success("Test Broadcast " + Guid.NewGuid(), "Test");
+
+    }
+    async Task RunTestJob()
+    {
+        var job = JobHelpers.TestJob;
+        await job.ShowJobDetailsDialogAsync(MessageService);
+        await job.RunAsync();
     }
 }

@@ -22,7 +22,7 @@
         /// <summary>
         /// A store of all custom fields defined
         /// </summary>
-        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = new List<CustomActiveDirectoryField>();
+        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = [];
 
         protected AppModal? AssignToModal { get; set; }
         protected AppModal? MoveToModal { get; set; }
@@ -51,7 +51,10 @@
 
             }
             if (Context != null)
+            {
                 CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
+            }
+
             LoadingData = false;
         }
 
@@ -102,7 +105,10 @@
         {
             DateTime? expireTime = null;
             if (time != null && time != DateTime.MinValue)
+            {
                 expireTime = time.Value.AddDays(1);
+            }
+
             return expireTime;
         }
 

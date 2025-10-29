@@ -1,5 +1,4 @@
 // Import necessary namespaces for various functionalities
-using System.Security;
 using BLAZAM.Common.Data;
 using BLAZAM.Global.Enums;
 using BLAZAM.Gui.UI.Modals;
@@ -7,6 +6,7 @@ using BLAZAM.Gui.UI.Settings;
 using BLAZAM.Localization;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
+using System.Security;
 
 namespace BLAZAM.Pages
 {
@@ -19,12 +19,12 @@ namespace BLAZAM.Pages
     /// state during the login process, including redirecting users upon successful authentication.</remarks>
     public partial class Login : ValidatedForm
     {
-        GoogleAuthenticatorModal? googleAuthenticatorModal;
+        private GoogleAuthenticatorModal? googleAuthenticatorModal;
 
-        bool attemptingSignIn = false;
-        string redirectUrl;
-        bool DemoCustomLogin = false;
-        LoginRequest LoginRequest = new();
+        private bool attemptingSignIn = false;
+        private string redirectUrl;
+        private bool DemoCustomLogin = false;
+        private LoginRequest LoginRequest = new();
 
 
         /// <summary>
@@ -42,11 +42,13 @@ namespace BLAZAM.Pages
             var currentUri = new Uri(Nav.Uri);
             LoginRequest.CallbackBaseUri = currentUri.Scheme + "://" + currentUri.Authority;
             if (Monitor.AppReady != ServiceConnectionState.Up)
+            {
                 Monitor.OnAppReadyChanged += AppReadyChanged;
+            }
         }
 
 
-        async void AppReadyChanged(ServiceConnectionState state)
+        private async void AppReadyChanged(ServiceConnectionState state)
         {
             if (state == ServiceConnectionState.Up)
             {
@@ -55,12 +57,13 @@ namespace BLAZAM.Pages
 
 
         }
-        async Task AttemptSignIn(string? otpCode = null)
+        private async Task AttemptSignIn(string? otpCode = null)
         {
             attemptingSignIn = true;
             await StateHasChangedAsync();
             LoginRequest? authenticationResult = null;
             if (ValidateInput(LoginRequest))
+            {
                 try
                 {
                     if (!otpCode.IsNullOrEmpty())
@@ -75,6 +78,7 @@ namespace BLAZAM.Pages
                     Loggers.SystemLogger.Error(ex, "Error attempting logon");
                     SnackBarService.Info(ex.Message);
                 }
+            }
 
             attemptingSignIn = false;
 
@@ -82,25 +86,35 @@ namespace BLAZAM.Pages
 
             await StateHasChangedAsync();
         }
-        bool ValidateInput(LoginRequest? validationResult)
+        private bool ValidateInput(LoginRequest? validationResult)
         {
             if (validationResult == null)
             {
                 validationResult = new();
             }
-            if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !DemoCustomLogin)) return true;
-
+            if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !DemoCustomLogin))
+            {
+                return true;
+            }
 
             if (LoginRequest.Password.IsNullOrEmpty())
+            {
                 validationResult.AuthenticationResult = LoginResultStatus.NoPassword;
+            }
+
             if (LoginRequest.Username.IsNullOrEmpty())
+            {
                 validationResult.AuthenticationResult = LoginResultStatus.NoUsername;
+            }
+
             return false;
         }
-        async Task ProcessAuthenticationResult(LoginRequest? authenticationResult = null)
+        private async Task ProcessAuthenticationResult(LoginRequest? authenticationResult = null)
         {
-            if (authenticationResult == null) return;
-
+            if (authenticationResult == null)
+            {
+                return;
+            }
 
             switch (authenticationResult.AuthenticationResult)
             {
@@ -137,21 +151,23 @@ namespace BLAZAM.Pages
                 case LoginResultStatus.DuoRequested:
                     attemptingSignIn = true;
                     if (authenticationResult.MFARedirect != null)
+                    {
                         Nav.NavigateTo(authenticationResult.MFARedirect);
+                    }
+
                     break;
                 case LoginResultStatus.GoogleAuthenticatorRequested:
                     await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken?.ToSecureString());
                     break;
                 case LoginResultStatus.OK:
                     attemptingSignIn = true;
-
                     Nav.NavigateTo(redirectUrl, true);
 
                     break;
             }
 
         }
-        async Task PerformGoogleAuthenticatorValidation(SecureString? mfaToken)
+        private async Task PerformGoogleAuthenticatorValidation(SecureString? mfaToken)
         {
             if (googleAuthenticatorModal != null)
             {

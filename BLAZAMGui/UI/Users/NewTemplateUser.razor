@@ -315,20 +315,11 @@
                     {
                         @if (field.CustomField != null)
                         {
-                            <MudTextField Immediate=true
-                                          Validation=@(()=>{
-                                                          if(field.Required && Entry.NewEntryProperties[field.CustomField.FieldName]!=null
-                                                          && Entry.NewEntryProperties[field.CustomField.FieldName].ToString()!="")
-                                                          {
-                                                          return true;
-                                                          }
-                                                          else
-                                                          {
-                                                              return false;
-                                                          }
-                                                     })
+                            <DynamicMudInput Immediate=true
+                                          Required=@(field.Required)
                                           Label="@field.FieldDisplayName"
-                                          @bind-Value="@Entry.NewEntryProperties[field.CustomField.FieldName]"
+                                          Value="@Entry.NewEntryProperties[field.CustomField.FieldName].ToString()"
+                                          ValueChanged="@((string val)=>{ Entry.NewEntryProperties[field.CustomField.FieldName]=val;})"
                                           Disabled=@(!IsAdmin && !IsEditableTemplateField(field.CustomField)) />
                         }
                     }
@@ -404,7 +395,20 @@
             return DirectoryTemplate.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Required);
     }
 
+    bool ValidateCustomField(DirectoryTemplateFieldValue field)
+    {
 
+        if (field.Required && Entry.NewEntryProperties[field.CustomField.FieldName] != null
+        && Entry.NewEntryProperties[field.CustomField.FieldName].ToString() != "")
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
 
 
 }

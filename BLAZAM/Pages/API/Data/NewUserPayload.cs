@@ -16,7 +16,7 @@
         /// <summary>
         /// The surname for this user
         /// </summary>
-        public string? LastName { get; set; }
+        public string LastName { get; set; }
         /// <summary>
         /// If set, overrides the template generated username
         /// </summary>

@@ -11,6 +11,11 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
+using System.Data;
+using System.Diagnostics;
+using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
+using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -52,7 +57,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (CurrentUser?.IsSuperAdmin == true) return true;
+                if (CurrentUser?.IsSuperAdmin == true)
+                {
+                    return true;
+                }
+
                 return CurrentUser?.PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == ObjectType && om.AllowDisabled))) == true;
 
             }
@@ -101,7 +110,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 var coms = GetNonReplicatedProperty<object>("lastLogon");
-                List<DateTime?> times = new();
+                List<DateTime?> times = [];
                 foreach (var c in coms)
                 {
                     if (c is DateTime dt)
@@ -299,7 +308,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (PasswordLastSet == null) return true;
+                if (PasswordLastSet == null)
+                {
+                    return true;
+                }
+
                 return PasswordLastSet == DateTime.MinValue;
             }
             set
@@ -357,10 +370,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 if (value == null)
+                {
                     SetAttribute(pwdLastSet, 0);
+                }
                 else
+                {
                     SetAttribute(pwdLastSet, -1);
-
+                }
             }
 
         }
@@ -372,16 +388,29 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public bool SetPassword(SecureString password, bool requireChange = false)
         {
-            if (SAMAccountName == null) throw new AppException("samaccount name not found!");
-            if (DirectorySettings == null) throw new AppException("Directory settings not found when trying to change directory user password");
+            if (SAMAccountName == null)
+            {
+                throw new AppException("samaccount name not found!");
+            }
+
+            if (DirectorySettings == null)
+            {
+                throw new AppException("Directory settings not found when trying to change directory user password");
+            }
 
             var directoryPassword = DirectorySettings.Password.Decrypt().ToSecureString();
-            if (directoryPassword == null) return false;
+            if (directoryPassword == null)
+            {
+                return false;
+            }
 
             try
             {
                 if (TryInvokeSetPassword(password))
+                {
                     return true;
+                }
+
                 if (OperatingSystem.IsWindows())
                 {
                     // If we are on Windows, we can use the PrincipalContext to set the password
@@ -411,7 +440,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 Loggers.ActiveDirectoryLogger.Error(ex, "Error setting entry password");
                 if (!Debugger.IsAttached)
+                {
                     throw new AppException("Unable to set password", ex);
+                }
             }
             return false;
         }
@@ -434,24 +465,31 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private bool TryPrincipalContextSetPassword(SecureString password, bool requireChange, SecureString directoryPassword)
         {
             if (DirectorySettings == null)
+            {
                 throw new AppException("Directory settings not found when trying to change directory user password");
-            using (PrincipalContext pContext = new(
+            }
+
+            using PrincipalContext pContext = new(
                 ContextType.Domain,
                 DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
                 DirectorySettings.Username + "@" + DirectorySettings.FQDN,
                 directoryPassword.ToPlainText()
-            ))
+            );
+            UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
+            if (up != null)
             {
-                UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
-                if (up != null)
+                up.SetPassword(password.ToPlainText());
+                if (requireChange)
                 {
-                    up.SetPassword(password.ToPlainText());
-                    if (requireChange)
-                        up.ExpirePasswordNow();
-                    if (NewEntry)
-                        up.PasswordNotRequired = false;
-                    up.Save();
+                    up.ExpirePasswordNow();
                 }
+
+                if (NewEntry)
+                {
+                    up.PasswordNotRequired = false;
+                }
+
+                up.Save();
             }
             return true;
         }

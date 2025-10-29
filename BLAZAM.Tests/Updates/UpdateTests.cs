@@ -27,7 +27,10 @@ namespace BLAZAM.Tests.Updates
         {
             var latest = await _updateService.GetUpdates();
             if (latest != null)
+            {
                 await latest.Download(null);
+            }
+
             if (latest == null)
             {
                 Assert.NotNull(latest);
