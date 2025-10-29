@@ -1,7 +1,6 @@
 ﻿using BLAZAM.Database.Models;
 using BLAZAM.Helpers; // Added for GetAppHashCode
 using BLAZAM.Logger;
-using BLAZAM.Session.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,13 +27,14 @@ namespace BLAZAM.Session
 
         private IHttpContextAccessor _httpContextAccessor { get; set; }
         private readonly IAppDatabaseFactory _factory;
-        private static readonly object _userStatesLock=new();
-
         private int? Timeout { get; set; }
         private readonly List<MFARequest> _mfaLoginQueue = [];
 
+        /// <summary>Event triggered when a new <see cref="IApplicationUserState"/> is added to the cache. Primarily for internal use or advanced scenarios.</summary>
+        public AppDelegate<IApplicationUserState> UserStateAdded { get; set; }
 
-
+        /// <summary>Event triggered when an <see cref="IApplicationUserState"/> is removed from the cache, either due to timeout or explicit logout.</summary>
+        public AppDelegate<IApplicationUserState> OnUserStateRemoved { get; set; }
 
         /// <summary>Gets the list of currently cached <see cref="IApplicationUserState"/> objects. Use with caution; direct manipulation is not recommended.</summary>
         public IList<IApplicationUserState> UserStates { get; private set; } = [];
@@ -74,22 +74,18 @@ namespace BLAZAM.Session
         {
             try
             {
-                lock (_userStatesLock)
+                if (state is List<IApplicationUserState> userStates)
                 {
-                    if (state is List<IApplicationUserState> userStates)
+                    var temp = new List<IApplicationUserState>(userStates); // Iterate over a copy
+                    var now = DateTime.UtcNow;
+                    temp.ForEach(x =>
                     {
-                        var temp = new List<IApplicationUserState>(userStates); // Iterate over a copy
-                        var now = DateTime.UtcNow;
-                        temp.ForEach(x =>
+                        if (Timeout.HasValue && (now - x.LastAccessed).TotalMinutes > Timeout * 3)
                         {
-                            if (Timeout.HasValue && (now - x.LastAccessed).TotalMinutes > Timeout * 3)
-                            {
-                                userStates.Remove(x); // Remove from original list
-                                UserStateEvents.UserTimedOut.Invoke(x);
-                                ActiveDirectoryEvents.LoggedOnUserCountChanged.Invoke(userStates.Count);
-                            }
-                        });
-                    }
+                            userStates.Remove(x); // Remove from original list
+                            OnUserStateRemoved?.Invoke(x); // Invoke event
+                        }
+                    });
                 }
             }
             catch (Exception ex)

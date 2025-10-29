@@ -1223,46 +1223,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 }
             }
-            try
+            if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
             {
-                if (NewEntryProperties.ContainsKey(propertyName))
+                var val = DirectoryEntry.GetPropertyValue(propertyName);
+                if (val is null)
                 {
-                    return (T)NewEntryProperties[propertyName];
+                    return default;
                 }
-            }
-            catch (InvalidCastException ex)
-            {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-            }
-                if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
+                else
                 {
-                    var val = DirectoryEntry.GetPropertyValue(propertyName);
-                    if (val is null)
-                    {
-                        return default;
-                    }
-                    else
-                    {
-                        return (T?)val;
-                    }
+                    return (T?)val;
                 }
-
-            }
-
-
-            catch (InvalidCastException ex)
-            {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-
-            }
-
-            catch
-            {
-                return default;
             }
             return default;
-
-
         }
 
         protected virtual string? GetStringAttribute(string propertyName)

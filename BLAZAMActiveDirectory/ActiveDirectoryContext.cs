@@ -312,33 +312,36 @@ namespace BLAZAM.ActiveDirectory
 
                 if (IsCancelRequested)
                 {
-                    return;
+                    return null;
                 }
                     ConnectDatabase(context);
 
 
                 if (IsCancelRequested)
                 {
-                    return;
+                    return null;
                 }
                     GetConnectionSettings(context, out ad);
                 }
 
-                if (IsCancelRequested) return;
+                if (IsCancelRequested)
+                {
+                    return null;
+                }
 
                 PerformNetworkTests(ad);
 
 
                 if (IsCancelRequested)
                 {
-                    return;
+                    return null;
                 }
 
                 InitializeDirectoryEntries(ad);
 
                 if (IsCancelRequested)
                 {
-                    return;
+                    return null;
                 }
               
 
@@ -493,7 +496,7 @@ namespace BLAZAM.ActiveDirectory
         private void GetConnectionSettings(IDatabaseContext context, out ADSettings? ad)
         {
             //Ok get the latest settings
-            ad = _context?.ActiveDirectorySettings.FirstOrDefault();
+            ad = context?.ActiveDirectorySettings.FirstOrDefault();
             if (IsCancelRequested)
             {
                 return;
