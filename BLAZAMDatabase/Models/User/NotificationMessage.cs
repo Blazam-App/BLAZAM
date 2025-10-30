@@ -29,7 +29,7 @@ namespace BLAZAM.Database.Models.User
         public string? TargetDN { get; set; }
 
         /// <summary>
-        /// The action being requested access to
+        /// The action being requested
         /// </summary>
         public ActiveDirectoryObjectAction? Action { get; set; }
 
@@ -63,6 +63,8 @@ namespace BLAZAM.Database.Models.User
         /// The custom field id being referenced
         /// </summary>
         public int? CustomFieldId { get; set; }
+        public ActiveDirectoryField? Field { get; set; }
+        public CustomActiveDirectoryField? CustomField { get; set; }
         /// <summary>
         /// The field id being referenced
         /// </summary>

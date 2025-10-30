@@ -19,7 +19,11 @@
         {
             @if (message.Notification.MessageType == MessageType.EditAccessRequest)
             {
-                <RequestNotificationMessageListItem Notification="@message" />
+                <EditRequestNotificationMessageListItem Notification="@message" />
+            }
+            @if (message.Notification.MessageType == MessageType.ReadAccessRequest)
+            {
+                <ReadRequestNotificationMessageListItem Notification="@message" />
             }
             else
             {
