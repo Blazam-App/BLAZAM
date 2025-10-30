@@ -225,6 +225,9 @@
   <data name="No_Request_Actions_Available" xml:space="preserve">
     <value>No hay acciones disponibles para solicitar para esta entrada.</value>
   </data>
+  <data name="No_Request_Fields_Available" xml:space="preserve">
+    <value />
+  </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>¡Generar un nuevo token de autenticación invalidará el existente!</value>
   </data>
