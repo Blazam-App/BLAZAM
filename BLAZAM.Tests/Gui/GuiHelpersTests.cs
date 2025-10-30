@@ -1,7 +1,7 @@
-﻿using System.Text;
-using BLAZAM.Helpers; // Assuming this is the namespace for GuiHelpers
+﻿using BLAZAM.Helpers; // Assuming this is the namespace for GuiHelpers
 using Microsoft.AspNetCore.Components.Forms;
 using Moq;
+using System.Text;
 // Add using statements for IApplicationUserState, ActiveDirectoryUserState, NewsItem, AppDialogService, IDialogReference, TreeItemData, etc.
 // For example:
 // using ApplicationNews;

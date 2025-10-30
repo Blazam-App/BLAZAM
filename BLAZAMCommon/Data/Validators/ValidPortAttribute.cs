@@ -25,8 +25,9 @@ namespace BLAZAM.Common.Data.Validators
             if (value is int intValue)
             {
                 if (intValue > 0 && intValue < 65536)
+                {
                     return ValidationResult.Success;
-
+                }
             }
 
             return new ValidationResult(GetErrorMessage(validationContext));

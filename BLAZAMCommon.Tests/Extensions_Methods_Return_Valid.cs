@@ -1,5 +1,5 @@
-using System.Globalization;
 using BLAZAM.Helpers;
+using System.Globalization;
 using static BLAZAM.Helpers.CommonHelpers;
 
 namespace BLAZAMCommon.Tests
@@ -53,9 +53,11 @@ namespace BLAZAMCommon.Tests
         [Fact]
         public void DateTimeToAdsAndBack_ReturnsValid()
         {
-            var valid = new ADsLargeInteger();
-            valid.HighPart = 31021155;
-            valid.LowPart = 1790853120;
+            var valid = new ADsLargeInteger
+            {
+                HighPart = 31021155,
+                LowPart = 1790853120
+            };
 
             string dateString = "3/25/2023 12:00:00 AM";
             string format = "M/d/yyyy h:mm:ss tt";
@@ -95,9 +97,11 @@ namespace BLAZAMCommon.Tests
         [Fact]
         public void AdsValueToDateTime_ReturnsValid()
         {
-            var test = new ADsLargeInteger();
-            test.HighPart = 31021155;
-            test.LowPart = 1790853120;
+            var test = new ADsLargeInteger
+            {
+                HighPart = 31021155,
+                LowPart = 1790853120
+            };
             var valid = DateTime.Parse("3/17/2023 12:00:00 AM");
             var converted = test.AdsValueToDateTime();
             bool result = converted.Equals(valid);

@@ -1,8 +1,6 @@
-﻿using System.Security.Claims;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
@@ -10,6 +8,7 @@ using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Background;
 using BLAZAM.Services.Duo;
+using BLAZAM.Services.Exceptions;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using DuoUniversal;
@@ -18,6 +17,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 
 namespace BLAZAM.Services
@@ -117,9 +117,13 @@ namespace BLAZAM.Services
                 options.LoginPath = new PathString("/login");
                 options.LogoutPath = new PathString("/logout");
                 if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                {
                     options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
+                }
                 else
+                {
                     options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
+                }
 
                 options.SlidingExpiration = true;
             };
@@ -158,12 +162,12 @@ namespace BLAZAM.Services
         }
         private static ClaimsPrincipal GetDemoUser()
         {
-            List<Claim> claims = new()
-            {
+            List<Claim> claims =
+            [
                 new Claim(ClaimTypes.Sid, "2"),
                 new Claim(ClaimTypes.Name, "Demo"),
                 new Claim(ClaimTypes.Actor, "2")
-            };
+            ];
             claims.AddSuperAdmin();
             claims.AddAllRoles();
             var identity = new ClaimsIdentity(claims.ToArray(), AppAuthenticationTypes.LocalAuthentication);
@@ -171,12 +175,12 @@ namespace BLAZAM.Services
         }
         private static ClaimsPrincipal GetLocalAdmin(string name = "admin")
         {
-            List<Claim> claims = new()
-            {
+            List<Claim> claims =
+            [
                  new Claim(ClaimTypes. Sid, "1"),
                     new Claim(ClaimTypes.Name, name),
                     new Claim(ClaimTypes.Actor,"1")
-            };
+            ];
             claims.AddSuperAdmin();
             claims.AddAllRoles();
             var identity = new ClaimsIdentity(claims.ToArray(), AppAuthenticationTypes.LocalAuthentication);
@@ -210,33 +214,37 @@ namespace BLAZAM.Services
                 return loginReq.NoUsername();
             }
 
-            using (var context = await _factory.CreateDbContextAsync())
+            using var context = await _factory.CreateDbContextAsync();
+            var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
+            if (settings == null)
             {
-                var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
-                if (settings == null)
-                {
-                    Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.Login: AuthenticationSettings are null from database.");
-                }
+                Loggers.SystemLogger.Warning("AppAuthenticationStateProvider.Login: AuthenticationSettings are null from database.");
+            }
 
-                authenticationState = await HandleLoginByType(loginReq, newUserState, context, settings);
+            authenticationState = await HandleLoginByType(loginReq, newUserState, context, settings);
 
-                if (authenticationState?.User != null)
-                {
-                    newUserState.User = authenticationState.User;
-                }
-                if (newUserState.User != null)
-                    _userStateService.SetUserState(newUserState);
+            if (authenticationState?.User != null)
+            {
+                newUserState.User = authenticationState.User;
+            }
+            if (newUserState.User != null)
+            {
+                _userStateService.SetUserState(newUserState);
+            }
 
-                if (authenticationState != null)
+            if (authenticationState != null)
+            {
+                if (loginReq.AuthenticationResult == LoginResultStatus.OK)
                 {
-                    if (loginReq.AuthenticationResult == LoginResultStatus.OK)
-                    {
-                        Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: User {UserName} successfully logged in. Final ClaimsPrincipal Name: {PrincipalName}", loginReq.Username, authenticationState.User?.Identity?.Name);
-                    }
+                    Loggers.SystemLogger.Information("AppAuthenticationStateProvider.Login: User {UserName} successfully logged in. Final ClaimsPrincipal Name: {PrincipalName}", loginReq.Username, authenticationState.User?.Identity?.Name);
                     return loginReq.Success(authenticationState);
+
                 }
-                else
-                    return loginReq.BadCredentials();
+                return loginReq;
+            }
+            else
+            {
+                return loginReq.BadCredentials();
             }
         }
 
@@ -261,6 +269,8 @@ namespace BLAZAM.Services
             }
             else if (IsDemoLogin(loginReq, settings))
             {
+
+                loginReq.AuthenticationResult = LoginResultStatus.OK;
                 return await SetUser(GetDemoUser());
             }
             else
@@ -280,9 +290,14 @@ namespace BLAZAM.Services
         {
             var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
             if (loginReq.Password == adminPass)
+            {
+                loginReq.AuthenticationResult = LoginResultStatus.OK;
                 return await SetUser(GetLocalAdmin());
+            }
             else
+            {
                 await _audit.Logon.AttemptedLogin(GetLocalAdmin(), loginReq.IPAddress);
+            }
             return null;
         }
 
@@ -302,7 +317,11 @@ namespace BLAZAM.Services
                 var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
                 var authResult = await SetUser(twostepState);
                 newUserState.User = userClaim;
-                _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                _userStateService.SetMFAUserState(MfaType.CiscoDuo, loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                loginReq.MFARedirect = mfaRedirect;
+                loginReq.AuthenticationState = authResult;
+                loginReq.AuthenticationResult = LoginResultStatus.DuoRequested;
+                //throw new DuoMFARequestedException(loginReq.DuoRequested(authResult,mfaRedirect));
                 return authResult;
             }
             return null;
@@ -316,8 +335,8 @@ namespace BLAZAM.Services
                 var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
                 var authResult = await SetUser(twostepState);
                 newUserState.User = userClaim;
-                _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
-                return authResult;
+                _userStateService.SetMFAUserState(MfaType.GoogleAuthenticator, loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
+                throw new GoogleMFARequestedException(loginReq.GoogleAuthenticatorRequested(authResult));
             }
             return null;
         }
@@ -326,12 +345,18 @@ namespace BLAZAM.Services
             try
             {
                 var userClaim = await AttemptADLogin(newUserState, loginReq);
-                if (userClaim == null) return null;
+                if (userClaim == null)
+                {
+                    return null;
+                }
 
                 if (ShouldPerformDuoMFA(settings, loginReq))
                 {
                     var duoResult = await HandleDuoMFA(loginReq, newUserState, userClaim);
-                    if (duoResult != null) return duoResult;
+                    if (duoResult != null)
+                    {
+                        return duoResult;
+                    }
                 }
                 else
                 {
@@ -339,12 +364,18 @@ namespace BLAZAM.Services
                     if (ShouldPerformGoogleAuthenticatorMFA(userSettings, loginReq, settings))
                     {
                         var googleAuthResult = await HandleGoogleAuthenticatorMFA(loginReq, newUserState, userClaim, userSettings);
-                        if (googleAuthResult != null) return googleAuthResult;
+                        if (googleAuthResult != null)
+                        {
+                            return googleAuthResult;
+                        }
                     }
                 }
 
                 if (userClaim.Identity?.IsAuthenticated == true)
+                {
+                    loginReq.AuthenticationResult = LoginResultStatus.OK;   
                     return await SetUser(userClaim);
+                }
             }
             catch (DeniedLoginException)
             {
@@ -356,7 +387,7 @@ namespace BLAZAM.Services
         private bool ShouldPerformDuoMFA(AuthenticationSettings? settings, LoginRequest loginReq)
         {
             return settings != null &&
-                settings.RequireMFA &&
+                settings.DuoEnabled &&
                 settings.MFAType == MfaType.CiscoDuo &&
                 settings.DuoSettingsValid &&
                 !loginReq.Impersonation;
@@ -418,51 +449,49 @@ namespace BLAZAM.Services
 
         private async Task<string> PerformDuoAuthentication(LoginRequest loginReq)
         {
-            using (var context = await _factory.CreateDbContextAsync())
+            using var context = await _factory.CreateDbContextAsync();
+
+            var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
+            if (settings == null)
             {
-
-                var settings = await context.AuthenticationSettings.FirstOrDefaultAsync();
-                if (settings == null) throw new AppException("Could not get settings"); // Existing check, good.
-
-                // Initiate the Duo authentication for a specific username
-
-                // Get a Duo client
-                Client duoClient = _duoClientProvider.GetDuoClient(loginReq.CallbackBaseUri + "/mfacallback");
-
-                // Check if Duo seems to be healthy and able to service authentications.
-                var isDuoHealthy = await duoClient.DoHealthCheck();
-                if (!isDuoHealthy)
-                {
-                    if (settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Block)
-                    {
-                        Loggers.SystemLogger.Error("AppAuthenticationStateProvider.PerformDuoAuthentication: Duo health check failed and DuoUnreachableBehavior is Block for user {UserName}.", loginReq.Username);
-                        // Potentially throw or return empty to signify failure to redirect,
-                        // which Login method will then handle. For now, just logging and returning empty.
-                        return String.Empty;
-                    }
-                    if (settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Bypass)
-                    {
-                        return String.Empty; //Bypass Duo
-                    }
-                }
-                // Generate a random state value to tie the authentication steps together
-                string state = Client.GenerateState();
-
-                // Save the mfa state back to the login request
-                loginReq.MFAToken = state;
-
-                // Get the URI of the Duo prompt from the client.  This includes an embedded authentication request.
-                string promptUri = duoClient.GenerateAuthUri(loginReq.Username, state);
-
-                // Set up the redirect after successful mfa
-                loginReq.MFARedirect = promptUri;
-
-
-                return promptUri;
-
-
-
+                throw new AppException("Could not get settings"); // Existing check, good.
             }
+
+            // Initiate the Duo authentication for a specific username
+
+            // Get a Duo client
+            Client duoClient = _duoClientProvider.GetDuoClient(loginReq.CallbackBaseUri + "/mfacallback");
+
+            // Check if Duo seems to be healthy and able to service authentications.
+            var isDuoHealthy = await duoClient.DoHealthCheck();
+            if (!isDuoHealthy)
+            {
+                if (settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Block)
+                {
+                    Loggers.SystemLogger.Error("AppAuthenticationStateProvider.PerformDuoAuthentication: Duo health check failed and DuoUnreachableBehavior is Block for user {UserName}.", loginReq.Username);
+                    // Potentially throw or return empty to signify failure to redirect,
+                    // which Login method will then handle. For now, just logging and returning empty.
+                    return String.Empty;
+                }
+                if (settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Bypass)
+                {
+                    return String.Empty; //Bypass Duo
+                }
+            }
+            // Generate a random state value to tie the authentication steps together
+            string state = Client.GenerateState();
+
+            // Save the mfa state back to the login request
+            loginReq.MFAToken = state;
+
+            // Get the URI of the Duo prompt from the client.  This includes an embedded authentication request.
+            string promptUri = duoClient.GenerateAuthUri(loginReq.Username, state);
+
+            // Set up the redirect after successful mfa
+            loginReq.MFARedirect = promptUri;
+
+
+            return promptUri;
         }
 
         /// <summary>

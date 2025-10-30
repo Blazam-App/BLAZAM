@@ -1,8 +1,8 @@
-﻿using System.Web;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
+using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -40,8 +40,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 if (childOUCache == null)
+                {
                     childOUCache = Directory.OUs.FindSubOusByDN(DN).OrderBy(ou => ou.CanonicalName).AsQueryable();
-
+                }
 
                 return childOUCache;
             }
@@ -91,10 +92,26 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (CanReadUsers) return true;
-                if (CanReadGroups) return true;
-                if (CanReadComputers) return true;
-                if (CanReadPrinters) return true;
+                if (CanReadUsers)
+                {
+                    return true;
+                }
+
+                if (CanReadGroups)
+                {
+                    return true;
+                }
+
+                if (CanReadComputers)
+                {
+                    return true;
+                }
+
+                if (CanReadPrinters)
+                {
+                    return true;
+                }
+
                 return false;
             }
         }

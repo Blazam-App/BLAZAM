@@ -77,7 +77,10 @@ namespace BLAZAM.Gui.UI
         {
             get
             {
-                if (DirectoryEntry.DN == null) return false;
+                if (DirectoryEntry.DN == null)
+                {
+                    return false;
+                }
 
                 UserFavoriteEntry newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
 
@@ -88,7 +91,10 @@ namespace BLAZAM.Gui.UI
         {
             try
             {
-                if (DirectoryEntry.DN == null) return;
+                if (DirectoryEntry.DN == null)
+                {
+                    return;
+                }
 
                 UserFavoriteEntry? newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
                 if (CurrentUser.State.Preferences.FavoriteEntries.Any(f => f.Equals(newFavorrite)))

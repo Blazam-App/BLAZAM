@@ -1,9 +1,8 @@
-﻿using System.Text;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
+using System.Text;
 
 namespace BLAZAM.Services.Audit
 {
@@ -88,6 +87,8 @@ namespace BLAZAM.Services.Audit
         }
         public override async Task<bool> Changed(IDirectoryEntryAdapter changedEntry, List<AuditChangeLog> changes)
         {
+            Analytics?.ObjectModified(ActiveDirectoryObjectType.User);
+
             await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.User_Edited,
                 changedEntry,

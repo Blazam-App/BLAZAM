@@ -43,12 +43,20 @@ namespace BLAZAM.Database.Models.Templates
 
         public override string? ToString()
         {
-            if (Field != null) return Field.ToString() + "=" + Value;
+            if (Field != null)
+            {
+                return Field.ToString() + "=" + Value;
+            }
+
             return CustomField?.ToString() + "=" + Value;
         }
         public override bool Equals(object? obj)
         {
-            if (!base.Equals(obj)) return false;
+            if (!base.Equals(obj))
+            {
+                return false;
+            }
+
             if (obj is DirectoryTemplateFieldValue other)
             {
                 return other.FieldDisplayName == FieldDisplayName && other.Value == Value;

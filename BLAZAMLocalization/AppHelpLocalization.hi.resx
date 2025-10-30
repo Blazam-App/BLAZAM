@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>{0} मैपिंग इस पहुँच स्तर का उपयोग करते हैं और हटा दिए जाएँगे</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>पहला नाम और अंतिम नाम दोनों प्रदान करना आवश्यक है।</value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>उपयोगकर्ता का नाम संशोधित करने के लिए टूलबार/गियर मेनू में नाम बदलें बटन पर क्लिक करें</value>
   </data>

@@ -40,7 +40,9 @@
 
         </ActivatorContent>
     </MudFileUpload>
+
     <MudTextField T="string" @bind-Text=@CurrentUser.State.Preferences.Email Label=@AppLocalization[Lang.Email] />
+    
     <MudNavGroup Title="Themes">
         @foreach (var theme in ApplicationTheme.Themes)
         {
@@ -54,13 +56,14 @@
         Class="ma-4"
         T="bool"
         Label="Toggle Light/Dark Mode" />
-
-
     </MudNavGroup>
-    @if (authSettings != null && authSettings.MFAType == MfaType.GoogleAuthenticator)
+
+    @if (!CurrentUser.State.IsAdminOrDemo() && authSettings != null && authSettings.MFAType == MfaType.GoogleAuthenticator)
     {
         <CreateGoogleAuthenticationToken/>
     }
+
+    @*//TODO Add explanation of missing google authenticator for admin and demo*@
 
     @if (CurrentUser.State.IsSuperAdmin)
     {

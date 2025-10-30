@@ -1,4 +1,4 @@
-﻿<MudOverlay Visible="Loading" DarkBackground="true" Absolute="true">
+﻿<MudOverlay Visible="Loading" DarkBackground="DarkBackground" Absolute="true">
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
 </MudOverlay>
 @code {
@@ -9,4 +9,6 @@
                 loading = value;
                 _ = InvokeAsync(StateHasChanged);
     } }
+    [Parameter]
+    public bool DarkBackground { get; set; } = true;
 }

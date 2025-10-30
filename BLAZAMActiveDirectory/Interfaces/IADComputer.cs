@@ -1,7 +1,7 @@
-﻿using System.Net;
+﻿using BLAZAM.ActiveDirectory.Adapters;
+using System.Net;
 using System.Security;
 using System.Text.Json.Serialization;
-using BLAZAM.ActiveDirectory.Adapters;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {

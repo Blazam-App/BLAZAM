@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using System.Diagnostics;
 namespace BLAZAM.ActiveDirectory.Searchers
 {
     public class SearchBase
@@ -19,7 +19,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             get => searchState; set
             {
-                if (searchState == value) return;
+                if (searchState == value)
+                {
+                    return;
+                }
+
                 searchState = value;
                 SearchStateChanged.InvokeAsync(value);
             }

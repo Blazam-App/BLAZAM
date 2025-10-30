@@ -1,8 +1,8 @@
-﻿using System.Management;
-using System.Runtime.InteropServices;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using System.Management;
+using System.Runtime.InteropServices;
 
 namespace BLAZAM.Common.Data.Services
 {
@@ -20,12 +20,14 @@ namespace BLAZAM.Common.Data.Services
             var settings = Directory.ConnectionSettings;
             if (settings != null)
             {
-                ConnectionOptions connectionOptions = new();
-                connectionOptions.Username = settings.Username + "@" + settings.FQDN;
-                connectionOptions.SecurePassword = settings.Password.Decrypt().ToSecureString();
-                connectionOptions.Impersonation = ImpersonationLevel.Impersonate;
-                connectionOptions.Timeout = TimeSpan.FromSeconds(5);
-                connectionOptions.Authentication = AuthenticationLevel.PacketPrivacy;
+                ConnectionOptions connectionOptions = new()
+                {
+                    Username = settings.Username + "@" + settings.FQDN,
+                    SecurePassword = settings.Password.Decrypt().ToSecureString(),
+                    Impersonation = ImpersonationLevel.Impersonate,
+                    Timeout = TimeSpan.FromSeconds(5),
+                    Authentication = AuthenticationLevel.PacketPrivacy
+                };
 
                 ManagementScope managementScope = new(string.Format("\\\\{0}\\root\\cimv2", hostName), connectionOptions);
                 try

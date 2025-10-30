@@ -1,5 +1,4 @@
 // Import necessary namespaces for various functionalities
-using System.Web;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
@@ -9,6 +8,7 @@ using BLAZAM.Gui.UI;
 using BLAZAM.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using System.Web;
 
 namespace BLAZAM.Pages
 {
@@ -27,13 +27,13 @@ namespace BLAZAM.Pages
         [CascadingParameter]
         public SearchService? SearchParameters { get; set; }
 
-        readonly string ModelsTypeName = "Search";
+        private readonly string ModelsTypeName = "Search";
 
         /// <summary>
         /// Gets or sets the icon used to represent the search functionality.
         /// </summary>
         protected string SearchIcon { get; set; } = "";
-        string? _searchTermParameter;
+        private string? _searchTermParameter;
         /// <summary>
         /// The search term that comes from the URI
         /// </summary>
@@ -54,7 +54,9 @@ namespace BLAZAM.Pages
             var decodedSearchTerm = HttpUtility.UrlDecode(SearchTermParameter);
 
             if (_searchTermParameter == decodedSearchTerm)
+            {
                 return;
+            }
 
             LoadingData = true;
             Searcher?.Cancel();
@@ -63,7 +65,9 @@ namespace BLAZAM.Pages
             await PerformSearch();
 
             if (_searchTermParameter.IsNullOrEmpty())
+            {
                 LoadingData = false;
+            }
         }
 
         /// <summary>
@@ -125,7 +129,7 @@ namespace BLAZAM.Pages
         /// <summary>
         /// Gets or sets the collection of directory entry adapters.
         /// </summary>
-        protected virtual List<IDirectoryEntryAdapter> results { get; set; } = new List<IDirectoryEntryAdapter>();
+        protected virtual List<IDirectoryEntryAdapter> results { get; set; } = [];
 
 
         /// <summary>
@@ -143,9 +147,14 @@ namespace BLAZAM.Pages
 
             LoadingData = true;
             if (!SearchTermParameter.IsNullOrEmpty() && SearchTermParameter?.Length > 0)
+            {
                 await InvokeSearch();
+            }
             else
+            {
                 Searcher?.Results.Clear();
+            }
+
             LoadingData = false;
 
 
@@ -162,9 +171,14 @@ namespace BLAZAM.Pages
         protected async Task InvokeSearch()
         {
             if (Searcher == null)
+            {
                 Searcher = new ADSearch(Directory);
+            }
             else
+            {
                 Searcher.Cancel();
+            }
+
             SearchService.SearchTerm = SearchTermParameter;
             Searcher.EnabledOnly = !SearchService.IncludeDisabled;
             Searcher.GeneralSearchTerm = SearchService.SearchTerm;

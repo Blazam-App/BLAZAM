@@ -85,17 +85,19 @@
             </SettingsField>
 
         }
+        else
+        {
+            <SettingsField Label="@AppLocalization[Lang.Force_MFA]">
 
+                <MudSwitch Label=@AppLocalization[Lang.Force_MFA]
+                           T="bool" @bind-Value="@settings.RequireMFA"
+                           UncheckedColor="Color.Error"
+                           Color="Color.Success" />
 
-        <SettingsField Label="@AppLocalization[Lang.Force_MFA]">
+            </SettingsField>
+        }
 
-            <MudSwitch Label=@AppLocalization[Lang.Force_MFA]
-                       T="bool" @bind-Value="@settings.RequireMFA"
-                       Disabled="settings.MFAType==MfaType.CiscoDuo && duoHealthCheckResult!=true"
-                       UncheckedColor="Color.Error"
-                       Color="Color.Success" />
-
-        </SettingsField>
+      
         <SettingsField>
 
             <MudButton Disabled="SaveDisabled"

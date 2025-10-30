@@ -14,16 +14,20 @@ namespace BLAZAM.Database.Models.Permissions
         /// <summary>
         /// All the applied object access mappings for Deny,Read
         /// </summary>
-        public List<ObjectAccessMapping> ObjectMap { get; set; } = new();
-        public List<ActionAccessMapping> ActionMap { get; set; } = new();
-        public List<FieldAccessMapping> FieldMap { get; set; } = new();
+        public List<ObjectAccessMapping> ObjectMap { get; set; } = [];
+        public List<ActionAccessMapping> ActionMap { get; set; } = [];
+        public List<FieldAccessMapping> FieldMap { get; set; } = [];
         public List<PermissionMapping> PermissionMaps { get; set; }
 
 
 
         public int CompareTo(AccessLevel? other)
         {
-            if (other == null) return 1;
+            if (other == null)
+            {
+                return 1;
+            }
+
             return Id.CompareTo(other.Id);
         }
 
@@ -36,7 +40,10 @@ namespace BLAZAM.Database.Models.Permissions
         {
             if (obj is AccessLevel al)
             {
-                if (al.Id == Id) return true;
+                if (al.Id == Id)
+                {
+                    return true;
+                }
             }
             return base.Equals(obj);
         }

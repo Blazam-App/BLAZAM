@@ -26,8 +26,10 @@ namespace BLAZAM.Services.Background
 
         protected override void Execute(object? state = null)
         {
-            Job seedJob = new(AppLocalization["Seed New Users"]);
-            seedJob.StopOnFailedStep = true;
+            Job seedJob = new(AppLocalization["Seed New Users"])
+            {
+                StopOnFailedStep = true
+            };
 
             JobStep step = new(AppLocalization["Check for new users"], (state) =>
             {
@@ -37,11 +39,16 @@ namespace BLAZAM.Services.Background
                     EnsureSelfExists();
 
                     if (_applicationInfo.InDemoMode)
+                    {
                         EnsureDemoExists();
+                    }
 
                     using var context = dbFactory.CreateDbContext();
                     using var activeDirectoryContext = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-                    if (context.Status != ServiceConnectionState.Up) return false;
+                    if (context.Status != ServiceConnectionState.Up)
+                    {
+                        return false;
+                    }
 
                     var delegates = context.PermissionDelegate
                         .Where(x => x.DeletedAt == null)
@@ -133,7 +140,7 @@ namespace BLAZAM.Services.Background
         /// <summary>
         /// Processes an Active Directory entry, ensuring users are seeded.
         /// </summary>
-        private void ProcessDirectoryEntry(object? entry)
+        private async Task ProcessDirectoryEntry(object? entry)
         {
             if (entry is IADUser user)
             {
@@ -141,10 +148,12 @@ namespace BLAZAM.Services.Background
             }
             else if (entry is IADGroup group)
             {
-                foreach (var member in group.NestedMembers)
+                foreach (var member in await group.GetNestedMembersAsync())
                 {
                     if (member is IADUser aduser)
+                    {
                         EnsureUserExists(aduser);
+                    }
                 }
             }
         }

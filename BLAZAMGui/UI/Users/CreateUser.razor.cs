@@ -17,7 +17,11 @@ namespace BLAZAM.Gui.UI.Users
             get => selectedStep; set
 
             {
-                if (selectedStep == value) return;
+                if (selectedStep == value)
+                {
+                    return;
+                }
+
                 selectedStep = value;
                 _ = StateHasChangedAsync();
 
@@ -51,7 +55,9 @@ namespace BLAZAM.Gui.UI.Users
             if (entry is IADOrganizationalUnit ou)
             {
                 if (ou.CanCreateUser)
+                {
                     selectedOU = ou;
+                }
                 else
                 {
                     SnackBarService.Warning(AppLocalization["You do not have permission to create users in that location"]);
@@ -68,7 +74,10 @@ namespace BLAZAM.Gui.UI.Users
                 {
                     if (newUser == null)
                     {
-                        if (customUserDisplayName == null) SnackBarService.Error(AppLocalization["No display name was set"]);
+                        if (customUserDisplayName == null)
+                        {
+                            SnackBarService.Error(AppLocalization["No display name was set"]);
+                        }
                         else
                         {
                             newUser = selectedOU.CreateUser(customUserDisplayName.Trim());
@@ -86,7 +95,11 @@ namespace BLAZAM.Gui.UI.Users
         }
         private async Task CreateTemplateUser()
         {
-            if (SelectedTemplate?.ParentOU == null) throw new AppException("Parent OU for template user was not set on creation!");
+            if (SelectedTemplate?.ParentOU == null)
+            {
+                throw new AppException("Parent OU for template user was not set on creation!");
+            }
+
             try
             {
                 LoadingData = true;
@@ -126,8 +139,15 @@ namespace BLAZAM.Gui.UI.Users
         {
             if (entry is IADOrganizationalUnit ou)
             {
-                if (ou.CanCreateUser) return true;
-                if (ou.CanCreateUserInSubOUs) return true;
+                if (ou.CanCreateUser)
+                {
+                    return true;
+                }
+
+                if (ou.CanCreateUserInSubOUs)
+                {
+                    return true;
+                }
             }
             return false;
         }

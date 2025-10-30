@@ -1,5 +1,4 @@
-﻿using System.Security.Claims; // Added
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
@@ -9,6 +8,7 @@ using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims; // Added
 
 namespace BLAZAM.Session
 {
@@ -29,10 +29,10 @@ namespace BLAZAM.Session
         public ClaimsPrincipal? Impersonator { get; set; }
 
 
-        public List<PermissionDelegate> PermissionDelegates { get; set; } = new();
+        public List<PermissionDelegate> PermissionDelegates { get; set; } = [];
 
 
-        public List<PermissionMapping> PermissionMappings { get; set; } = new();
+        public List<PermissionMapping> PermissionMappings { get; set; } = [];
 
 
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
@@ -44,9 +44,9 @@ namespace BLAZAM.Session
         /// <summary>
         /// Gets the list of user's favorite directory entries. Returns an empty list if preferences are not loaded.
         /// </summary>
-        public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries ?? new List<UserFavoriteEntry>();
+        public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries ?? [];
 
-        public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems ?? new List<ReadNewsItem>(); // Corrected to List
+        public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems ?? []; // Corrected to List
 
 
         public int Id => Preferences != null ? Preferences.Id : 0;
@@ -137,7 +137,10 @@ namespace BLAZAM.Session
                     .Where(un => un.User.Id == Id && !un.IsRead && un.Notification.MessageType != MessageType.AccessRequest)
                     .ToListAsync();
 
-                if (!messages.Any()) return true; // No messages to mark, consider it a success
+                if (!messages.Any())
+                {
+                    return true; // No messages to mark, consider it a success
+                }
 
                 foreach (var notification in messages)
                 {
@@ -180,7 +183,11 @@ namespace BLAZAM.Session
                     {
                         userSettings = new AppUser();
                         string? email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-                        if (email != null) userSettings.Email = email;
+                        if (email != null)
+                        {
+                            userSettings.Email = email;
+                        }
+
                         userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
                         userSettings.Username = Username; // Assuming Username property is correctly populated
                         context.UserSettings.Add(userSettings);
@@ -228,9 +235,10 @@ namespace BLAZAM.Session
                         dbUserSettings.ProfilePicture = Preferences.ProfilePicture;
                         dbUserSettings.SearchDisabledUsers = Preferences.SearchDisabledUsers;
                         dbUserSettings.SearchDisabledComputers = Preferences.SearchDisabledComputers;
-                        dbUserSettings.FavoriteEntries = Preferences.FavoriteEntries ?? new List<UserFavoriteEntry>();
+                        dbUserSettings.FavoriteEntries = Preferences.FavoriteEntries ?? [];
                         dbUserSettings.AuthenticatorSecret = Preferences.AuthenticatorSecret;
                         dbUserSettings.Email = Preferences.Email;
+                        dbUserSettings.Username = Username;
                         await context.SaveChangesAsync();
                     }
                 }
@@ -274,7 +282,10 @@ namespace BLAZAM.Session
 
         public async Task SaveDashboardWidgets()
         {
-            if (Preferences == null) return;
+            if (Preferences == null)
+            {
+                return;
+            }
 
             try
             {
@@ -283,7 +294,10 @@ namespace BLAZAM.Session
                     .Include(u => u.DashboardWidgets)
                     .FirstOrDefaultAsync(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid));
 
-                if (dbUserSettings == null) return;
+                if (dbUserSettings == null)
+                {
+                    return;
+                }
 
                 // Build lookup dictionaries for efficient access
                 var prefWidgets = Preferences.DashboardWidgets.ToDictionary(w => w.WidgetType);
@@ -325,14 +339,21 @@ namespace BLAZAM.Session
         {
             get
             {
-                if (User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin)) return true;
+                if (User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin))
+                {
+                    return true;
+                }
+
                 if (PermissionDelegates != null)
+                {
                     return PermissionDelegates.Any(p => p.IsSuperAdmin);
+                }
+
                 return false;
             }
         }
 
-        public string? Username => User?.Identity?.Name;
+        public string? Username => User?.Claims.FirstOrDefault(c=>c.Type==ClaimTypes.WindowsAccountName)?.Value;
 
         public bool IsAuthenticated => User?.Identity?.IsAuthenticated == true;
 
@@ -361,7 +382,11 @@ namespace BLAZAM.Session
 
         public override bool Equals(object? obj)
         {
-            if (obj == null) return false;
+            if (obj == null)
+            {
+                return false;
+            }
+
             if (obj is ApplicationUserState otherState)
             {
                 // Ensure User and otherState.User and their SIDs/Actors are not null before comparing
@@ -411,7 +436,7 @@ namespace BLAZAM.Session
         /// <summary>
         /// Gets or sets the list of notification subscriptions for the user. Modifying this list requires saving user settings.
         /// </summary>
-        public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions ?? new List<NotificationSubscription>(); set { if (userSettings != null) userSettings.NotificationSubscriptions = value; } } // Added null check for userSettings in setter
+        public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions ?? []; set { if (userSettings != null) { userSettings.NotificationSubscriptions = value; } } } // Added null check for userSettings in setter
 
         /// <summary>
         /// Checks if the user has a specific action permission on a given object type, without OU context.
@@ -438,7 +463,11 @@ namespace BLAZAM.Session
         /// </summary>
         private bool HasPermission(ActiveDirectoryObjectType objectType, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null)
         {
-            if (IsSuperAdmin) return true;
+            if (IsSuperAdmin)
+            {
+                return true;
+            }
+
             var baseSearch = PermissionMappings;
             try
             {
@@ -467,7 +496,11 @@ namespace BLAZAM.Session
 
         public bool CanSearchDisabled(ActiveDirectoryObjectType objectType)
         {
-            if (IsSuperAdmin == true) return true;
+            if (IsSuperAdmin == true)
+            {
+                return true;
+            }
+
             return PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == objectType && om.AllowDisabled))) == true;
         }
 
@@ -477,7 +510,11 @@ namespace BLAZAM.Session
 
             try
             {
-                if (IsSuperAdmin == true) return true;
+                if (IsSuperAdmin == true)
+                {
+                    return true;
+                }
+
                 return PermissionMappings.Any(
                            m => m.AccessLevels.Any(
                                a => a.ObjectMap.Any(
@@ -504,7 +541,11 @@ namespace BLAZAM.Session
         /// <summary>Checks if the user has create permissions for a specific object type.</summary>
         private bool HasObjectCreatePermissions(ActiveDirectoryObjectType objectType)
         {
-            if (IsSuperAdmin == true) return true;
+            if (IsSuperAdmin == true)
+            {
+                return true;
+            }
+
             return PermissionMappings.Any(
                         m => m.AccessLevels.Any(
                             a => a.ObjectMap.Any(
@@ -517,13 +558,22 @@ namespace BLAZAM.Session
 
         private bool CheckDenyPermissions(List<PermissionMapping> possibleAllows, List<PermissionMapping> possibleDenies)
         {
-            if (!possibleAllows.Any()) return false; // No allows, so deny
-            if (!possibleDenies.Any()) return true; // No denies, so allow
+            if (!possibleAllows.Any())
+            {
+                return false; // No allows, so deny
+            }
+
+            if (!possibleDenies.Any())
+            {
+                return true; // No denies, so allow
+            }
 
             foreach (var d in possibleDenies)
             {
                 if (d.OU.Length > possibleAllows.OrderByDescending(r => r.OU.Length).First().OU.Length)
+                {
                     return false;
+                }
             }
 
             var mostSpecificAllowOuLength = possibleAllows.Max(r => r.OU.Length);
@@ -533,13 +583,19 @@ namespace BLAZAM.Session
                 .DefaultIfEmpty(0)
                 .Max();
 
-            if (mostSpecificDenyOuLengthForMatchingAllows >= mostSpecificAllowOuLength) return false;
+            if (mostSpecificDenyOuLengthForMatchingAllows >= mostSpecificAllowOuLength)
+            {
+                return false;
+            }
 
             return true;
         }
         public bool HasPermission(string dnTarget, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector, bool nestedSearch)
         {
-            if (IsSuperAdmin) return true;
+            if (IsSuperAdmin)
+            {
+                return true;
+            }
 
             IOrderedEnumerable<PermissionMapping>? baseSearch = null;
             if (!nestedSearch)
@@ -556,7 +612,10 @@ namespace BLAZAM.Session
             try
             {
                 var possibleAllows = allowSelector.Invoke(baseSearch).ToList();
-                if (!possibleAllows.Any()) return false;
+                if (!possibleAllows.Any())
+                {
+                    return false;
+                }
 
                 if (denySelector != null)
                 {
