@@ -792,9 +792,16 @@ namespace BLAZAM.ActiveDirectory
                             catch (DirectoryServicesCOMException ex)
                             {
                                 Loggers.ActiveDirectoryLogger.Information(ex, "Error authenticating user: {@Message}", ex.Message);
+                                
                                 if (ex.ExtendedErrorMessage.Contains("data 773, v4563"))
                                 {
+                                    //The users password requires a reset at next logon
                                     return findUser;
+                                }
+                                if (ex.ExtendedErrorMessage.Contains("data 532, v4563"))
+                                {
+                                    //The users password has expired by a password policy
+                                    //return findUser;
                                 }
                                 switch (ex.Message)
                                 {

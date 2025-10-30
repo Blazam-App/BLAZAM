@@ -238,6 +238,7 @@ namespace BLAZAM.Session
                         dbUserSettings.FavoriteEntries = Preferences.FavoriteEntries ?? [];
                         dbUserSettings.AuthenticatorSecret = Preferences.AuthenticatorSecret;
                         dbUserSettings.Email = Preferences.Email;
+                        dbUserSettings.Username = Username;
                         await context.SaveChangesAsync();
                     }
                 }
@@ -352,7 +353,7 @@ namespace BLAZAM.Session
             }
         }
 
-        public string? Username => User?.Identity?.Name;
+        public string? Username => User?.Claims.FirstOrDefault(c=>c.Type==ClaimTypes.WindowsAccountName)?.Value;
 
         public bool IsAuthenticated => User?.Identity?.IsAuthenticated == true;
 
