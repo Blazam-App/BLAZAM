@@ -93,6 +93,7 @@
         public static readonly string Custom = "Custom";
         public static readonly string Computers = "Computers";
         public static readonly string Printers = "Printers";
+        public static readonly string Contacts = "Contacts";
         public static readonly string Services = "Services";
         public static readonly string Sessions = "Sessions";
         public static readonly string Additional_Fields = "Additional Fields";
@@ -211,6 +212,8 @@
         public static readonly string Remove = "Remove";
         public static readonly string Changed = "Changed";
         public static readonly string Members = "Members";
+        public static readonly string Direct_Members = "Direct Members";
+        public static readonly string Nested_Members = "Nested Members";
         public static readonly string Unlock = "Unlock";
         public static readonly string Assign_To = "Assign To";
         public static readonly string Rename = "Rename";

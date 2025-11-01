@@ -1,13 +1,12 @@
-﻿using System.Security.Claims;
-using BLAZAM.ActiveDirectory;
+﻿using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BLAZAM.Services.Background
 {
@@ -68,7 +67,9 @@ namespace BLAZAM.Services.Background
         /// <returns></returns>
         public async Task LoadPermissions(IApplicationUserState webUser, IADUser directoryUser)
         {
-            using (var Context = await _factory.CreateDbContextAsync())
+            using var Context = await _factory.CreateDbContextAsync();
+            var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).ToListAsync();
+            foreach (var l in cursor)
             {
                 var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).ToListAsync();
                 foreach (var l in cursor)
@@ -84,26 +85,34 @@ namespace BLAZAM.Services.Background
                         webUser.PermissionMappings.AddRange(l.PermissionsMaps);
                     }
 
-                }
-#pragma warning disable S6966 // Awaitable method should be used
-                if (Context.GlobalPermissionSettings.Any() && Context.GlobalPermissionSettings.First()?.AllowSelfModification == true)
+                if (permissiondelegate != null
+                    &&
+                    (permissiondelegate is IADGroup && directoryUser.IsAMemberOf(permissiondelegate as IADGroup)
+                    || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
                 {
-                    var dbSelfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
-                    if (dbSelfAccessLevel != null)
-                    {
-
-                        webUser.PermissionMappings.Add(new()
-                        {
-                            AccessLevels = new List<AccessLevel>() { dbSelfAccessLevel },
-                            Id = -1,
-                            OU = directoryUser.DN
-                        });
-                    }
-
+                    webUser.PermissionDelegates.Add(l);
+                    webUser.PermissionMappings.AddRange(l.PermissionsMaps);
                 }
-#pragma warning restore S6966 // Awaitable method should be used
 
             }
+#pragma warning disable S6966 // Awaitable method should be used
+            if (Context.GlobalPermissionSettings.Any() && Context.GlobalPermissionSettings.First()?.AllowSelfModification == true)
+            {
+                var dbSelfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
+                if (dbSelfAccessLevel != null)
+                {
+
+                    webUser.PermissionMappings.Add(new()
+                    {
+                        AccessLevels = [dbSelfAccessLevel],
+                        Id = -1,
+                        OU = directoryUser.DN
+                    });
+                }
+
+            }
+#pragma warning restore S6966 // Awaitable method should be used
+
         }
 
 
@@ -120,9 +129,11 @@ namespace BLAZAM.Services.Background
             using var context = _factory.CreateDbContext();
             var selfEdit = context.GlobalPermissionSettings.Any() && context.GlobalPermissionSettings.First()?.AllowSelfModification == true;
             if (user.PermissionDelegates.Count < 1 && !selfEdit)
+            {
                 throw new DeniedLoginException();
+            }
 
-            List<Claim> userRoles = new();
+            List<Claim> userRoles = [];
 
             if (user.PermissionDelegates.Any(p => p.IsSuperAdmin))
             {
@@ -164,13 +175,17 @@ namespace BLAZAM.Services.Background
         private static void AddRoleIf(List<Claim> claims, bool condition, string role)
         {
             if (condition)
+            {
                 claims.Add(new Claim(ClaimTypes.Role, role));
+            }
         }
 
         private static void AddClaimIfNotNull(List<Claim> claims, string type, string? value)
         {
             if (!string.IsNullOrEmpty(value))
+            {
                 claims.Add(new Claim(type, value));
+            }
         }
     }
 }

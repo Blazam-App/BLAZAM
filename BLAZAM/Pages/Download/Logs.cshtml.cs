@@ -1,8 +1,7 @@
-using System.IO.Compression;
-using BLAZAM.Common.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.IO.Compression;
 
 namespace BLAZAM.Server.Pages.Download
 {
@@ -25,16 +24,14 @@ namespace BLAZAM.Server.Pages.Download
 
         private static byte[] GenerateZip()
         {
-            using (MemoryStream memoryStream = new())
+            using MemoryStream memoryStream = new();
+            using (ZipArchive zip = new(memoryStream, ZipArchiveMode.Create))
             {
-                using (ZipArchive zip = new(memoryStream, ZipArchiveMode.Create))
-                {
-                    var logPath = Loggers.LogPath;
-                    // Recursively add files and subdirectories to the zip archive
-                    zip.AddToZip(new SystemDirectory(logPath), logPath);
-                }
-                return memoryStream.ToArray();
+                var logPath = Loggers.LogPath;
+                // Recursively add files and subdirectories to the zip archive
+                zip.AddToZip(new SystemDirectory(logPath), logPath);
             }
+            return memoryStream.ToArray();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Chat;
@@ -10,6 +9,7 @@ using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Reflection;
 
 namespace BLAZAM.Helpers
 {
@@ -29,11 +29,7 @@ namespace BLAZAM.Helpers
         }
         public static List<NotificationType> GetNotificationTypes(this ActiveDirectoryObjectType objectType)
         {
-            List<NotificationType> _triggerTypes = new();
-            foreach (NotificationType type in Enum.GetValues(typeof(NotificationType)))
-            {
-                _triggerTypes.Add(type);
-            }
+            List<NotificationType> _triggerTypes = Enum.GetValues(typeof(NotificationType)).Cast<NotificationType>().ToList();
             _triggerTypes = _triggerTypes.OrderBy(t => t.ToString()).ToList();
             return _triggerTypes.Where(t => t.IsNotificationAppropriateForObject(objectType)).ToList();
 
@@ -260,8 +256,8 @@ namespace BLAZAM.Helpers
                 entity.Navigation(e => e.Field).AutoInclude();
                 entity.Property(e => e.TimeFrame)
                     .HasConversion(new ValueConverter<TimeSpan?, long?>(
-                        v => v.HasValue ? v.Value.Ticks : (long?)null,
-                        v => v.HasValue ? TimeSpan.FromTicks(v.Value) : (TimeSpan?)null
+                        v => v.HasValue ? v.Value.Ticks : null,
+                        v => v.HasValue ? TimeSpan.FromTicks(v.Value) : null
                     ));
             });
         }
@@ -312,9 +308,13 @@ namespace BLAZAM.Helpers
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                }
                 else
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                }
             });
         }
 
@@ -324,9 +324,13 @@ namespace BLAZAM.Helpers
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                }
                 else
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                }
             });
         }
 
@@ -336,9 +340,14 @@ namespace BLAZAM.Helpers
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                }
                 else
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                }
+
                 entity.HasData(new AuthenticationSettings
                 {
                     Id = 1,
@@ -353,9 +362,13 @@ namespace BLAZAM.Helpers
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                }
                 else
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                }
             });
         }
 

@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

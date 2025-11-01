@@ -1,7 +1,7 @@
-﻿using System.Security.Claims;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using Moq;
+using System.Security.Claims;
 
 namespace BLAZAMCommon.Tests.Data
 {

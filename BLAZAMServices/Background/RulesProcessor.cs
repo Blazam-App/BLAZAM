@@ -15,6 +15,8 @@ using BLAZAM.Services.Events;
 using BLAZAM.Session;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Data;
+using System.Diagnostics;
 
 namespace BLAZAM.Services.Background
 {
@@ -25,7 +27,7 @@ namespace BLAZAM.Services.Background
     [AutoStartBackgroundService(true)]
     public class RulesProcessor : ActiveDirectoryBackgroundServiceBase
     {
-        private readonly Dictionary<AutomationRule, Timer> ScheduledRules = new();
+        private readonly Dictionary<AutomationRule, Timer> ScheduledRules = [];
         private bool _initialized;
 
         /// <summary>
@@ -133,9 +135,11 @@ namespace BLAZAM.Services.Background
                         .Where(r => r.ActiveDirectoryObjectType.Equals(args.Entry.ObjectType)
                         && r.Trigger.Equals(args.EventType.ToNotificationType()))
                         .OrderBy(r => r.Order).ToList();
-                    var ruleProcessingJob = new Job("Process entry change rules");
-                    ruleProcessingJob.ThreadPriority = ThreadPriority.Lowest;
-                    ruleProcessingJob.StopOnFailedStep = true;
+                    var ruleProcessingJob = new Job("Process entry change rules")
+                    {
+                        ThreadPriority = ThreadPriority.Lowest,
+                        StopOnFailedStep = true
+                    };
                     foreach (var ruleForEvent in applicableRules)
                     {
                         var ruleStep = new JobStep(ruleForEvent.Name, (step) =>
@@ -162,8 +166,10 @@ namespace BLAZAM.Services.Background
 
             MarkTriggered(rule);
 
-            Job scheduledRuleJob = new Job(AppLocalization[Lang.Scheduled_Rule], AppLocalization[Lang.Rules] + " " + rule.Name);
-            scheduledRuleJob.ThreadPriority = ThreadPriority.Lowest;
+            Job scheduledRuleJob = new Job(AppLocalization[Lang.Scheduled_Rule], AppLocalization[Lang.Rules] + " " + rule.Name)
+            {
+                ThreadPriority = ThreadPriority.Lowest
+            };
             List<IDirectoryEntryAdapter> filteredEntries;
 
             filteredEntries = await GetFilteredEntries(rule);
@@ -303,7 +309,7 @@ namespace BLAZAM.Services.Background
         /// <returns>List of matching directory entries.</returns>
         public async Task<List<IDirectoryEntryAdapter>> GetFilteredEntries(AutomationRule rule)
         {
-            List<IDirectoryEntryAdapter> matchedEntries = new();
+            List<IDirectoryEntryAdapter> matchedEntries = [];
             using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
             {
                 foreach (var orFilter in rule.Filters)
@@ -387,7 +393,10 @@ namespace BLAZAM.Services.Background
 
             HandleEnabledDisabledFilter(orFilter, search);
 
-            if (!HandleOUScopeFilter(orFilter, directory, search)) return false;
+            if (!HandleOUScopeFilter(orFilter, directory, search))
+            {
+                return false;
+            }
 
             if (rule.ActiveDirectoryObjectType != ActiveDirectoryObjectType.All)
             {
@@ -715,7 +724,10 @@ namespace BLAZAM.Services.Background
                     break;
             }
 
-            if (eventType == ApplicationEventType.All) return;
+            if (eventType == ApplicationEventType.All)
+            {
+                return;
+            }
 
             var changes = entry.Changes;
             var result = entry.CommitChanges(ruleJob);

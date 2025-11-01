@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using BLAZAM.Database.Context;
 
 namespace BLAZAM.Session
 {

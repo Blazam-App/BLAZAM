@@ -48,9 +48,13 @@ namespace BLAZAM.Helpers
         public static WindowsImpersonation? CreateUpdateImpersonator(this AppSettings settings)
         {
             if (settings != null && settings.UpdateUsername != null && settings.UpdatePassword != null)
+            {
                 return new(settings.GetUpdateImpersonationUser());
+            }
             else
+            {
                 return null;
+            }
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
-using System.DirectoryServices;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
+using System.DirectoryServices;
 
 namespace BLAZAM.ActiveDirectory.Data
 {
@@ -78,8 +78,10 @@ namespace BLAZAM.ActiveDirectory.Data
                     try
                     {
                         using EventLogSession session = new EventLogSession(domainController);
-                        var eventLogQuery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=4625 or EventID=4771 or EventID=4740)]] and *[EventData[Data[@Name='TargetUserName'] and (Data='" + user.SAMAccountName + "' or Data='" + user.UserPrincipalName + "')]]");
-                        eventLogQuery.Session = session;
+                        var eventLogQuery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=4625 or EventID=4771 or EventID=4740)]] and *[EventData[Data[@Name='TargetUserName'] and (Data='" + user.SAMAccountName + "' or Data='" + user.UserPrincipalName + "')]]")
+                        {
+                            Session = session
+                        };
 
                         using var reader = new EventLogReader(eventLogQuery);
                         for (EventRecord eventdetail = reader.ReadEvent(); eventdetail != null; eventdetail = reader.ReadEvent())

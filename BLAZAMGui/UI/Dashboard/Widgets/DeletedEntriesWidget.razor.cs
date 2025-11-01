@@ -18,8 +18,11 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            var search = new ADSearch(Directory) { SearchRoot = Directory.GetDeleteObjectsEntry() };
-            search.SearchDeleted = true;
+            var search = new ADSearch(Directory)
+            {
+                SearchRoot = Directory.GetDeleteObjectsEntry(),
+                SearchDeleted = true
+            };
             search.Fields.Changed = DateTime.Now.AddDays(-14);
             DeletedEntries = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
             LoadingData = false;

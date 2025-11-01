@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>{0} 對應使用此存取層級並將被刪除</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>您必須同時提供名字和姓氏</value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>要修改使用者名稱，請按一下工具列/齒輪功能表中的重新命名按鈕</value>
   </data>

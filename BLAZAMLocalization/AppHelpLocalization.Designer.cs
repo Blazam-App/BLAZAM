@@ -323,6 +323,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You must provide both a first and last name.
+        /// </summary>
+        public static string Missing_First_Or_Last_Name {
+            get {
+                return ResourceManager.GetString("Missing_First_Or_Last_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To modify the user&apos;s name click the rename button in the toolbar/gear menu.
         /// </summary>
         public static string Modify_Name_Redirect {

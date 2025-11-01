@@ -44,7 +44,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
             });
         }
-        private Dictionary<IDirectoryEntryAdapter, IEnumerable<IDirectoryEntryAdapter>?> _childrenCache = new();
+        private Dictionary<IDirectoryEntryAdapter, IEnumerable<IDirectoryEntryAdapter>?> _childrenCache = [];
         protected IEnumerable<IDirectoryEntryAdapter> GetChildren(IDirectoryEntryAdapter parentNode)
         {
 
@@ -69,10 +69,10 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 }
                 else
                 {
-                    _childrenCache[parentNode] = new List<IDirectoryEntryAdapter>();
+                    _childrenCache[parentNode] = [];
                 }
             }
-            return _childrenCache[parentNode] ?? new List<IDirectoryEntryAdapter>();
+            return _childrenCache[parentNode] ?? [];
 
         }
     }

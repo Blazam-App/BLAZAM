@@ -17,7 +17,10 @@ namespace BLAZAM.ActiveDirectory.Data
             Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector,
             bool nestedSearch)
         {
-            if (IsSuperAdmin) return true;
+            if (IsSuperAdmin)
+            {
+                return true;
+            }
 
             IOrderedEnumerable<PermissionMapping> baseSearch = !nestedSearch
                 ? PermissionMappings.Where(pm => dnTarget.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length)
@@ -27,14 +30,20 @@ namespace BLAZAM.ActiveDirectory.Data
             {
                 var possibleReads = allowSelector(baseSearch).ToList();
                 if (possibleReads.Count == 0)
+                {
                     return false;
+                }
 
                 if (denySelector == null)
+                {
                     return true;
+                }
 
                 var possibleDenys = denySelector(baseSearch).ToList();
                 if (possibleDenys.Count == 0)
+                {
                     return true;
+                }
 
                 int maxReadLength = possibleReads.Max(r => r.OU.Length);
                 bool hasDenyWithLongerOU = possibleDenys.Any(d => d.OU.Length > maxReadLength);

@@ -17,7 +17,7 @@ namespace BLAZAM.Gui.UI.Dashboard
 
         private MudDropContainer<UserDashboardWidget>? widgetContainer;
 
-        private List<Widget> allWidgets = new List<Widget>();
+        private List<Widget> allWidgets = [];
 
         protected override async Task OnInitializedAsync()
         {
@@ -29,7 +29,7 @@ namespace BLAZAM.Gui.UI.Dashboard
             }
             else
             {
-                allWidgets = new List<Widget>(WidgetService.Available());
+                allWidgets = [.. WidgetService.Available()];
             }
             await StateHasChangedAsync();
 
@@ -43,20 +43,30 @@ namespace BLAZAM.Gui.UI.Dashboard
                 StateHasChanged();
             }
         }
-        bool ItemSelector(UserDashboardWidget item, string dropzone)
+        private bool ItemSelector(UserDashboardWidget item, string dropzone)
         {
             return item.Slot == dropzone;
         }
 
         private Task ItemDropped(MudItemDropInfo<UserDashboardWidget> dropItem)
         {
-            if (dropItem.Item == null) return Task.CompletedTask;
-            if (CurrentUser.State == null) return Task.CompletedTask;
+            if (dropItem.Item == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            if (CurrentUser.State == null)
+            {
+                return Task.CompletedTask;
+            }
 
             var droppedWidget = CurrentUser.State.Preferences?.DashboardWidgets
                 .FirstOrDefault(w => w.WidgetType == dropItem.Item.WidgetType);
 
-            if (droppedWidget == null) return Task.CompletedTask;
+            if (droppedWidget == null)
+            {
+                return Task.CompletedTask;
+            }
 
             // Update the Slot of the dropped widget
             droppedWidget.Slot = dropItem.DropzoneIdentifier;
@@ -73,7 +83,10 @@ namespace BLAZAM.Gui.UI.Dashboard
             UserDashboardWidget droppedWidget,
             MudItemDropInfo<UserDashboardWidget> dropItem)
         {
-            if (dashboardWidgets == null) return;
+            if (dashboardWidgets == null)
+            {
+                return;
+            }
 
             // Remove from original slot
             var originalSlotWidgets = dashboardWidgets
@@ -82,7 +95,9 @@ namespace BLAZAM.Gui.UI.Dashboard
                 .ToList();
 
             for (int i = 0; i < originalSlotWidgets.Count; i++)
+            {
                 originalSlotWidgets[i].Order = i;
+            }
 
             // Remove from new slot and insert at new index
             var newSlotWidgets = dashboardWidgets
@@ -93,15 +108,19 @@ namespace BLAZAM.Gui.UI.Dashboard
             newSlotWidgets.Insert(dropItem.IndexInZone, droppedWidget);
 
             for (int i = 0; i < newSlotWidgets.Count; i++)
+            {
                 newSlotWidgets[i].Order = i;
+            }
 
             // Update the dashboardWidgets list
             int idx = 0;
             foreach (var widget in dashboardWidgets.Where(w => w.Slot == dropItem.DropzoneIdentifier).OrderBy(w => w.Order))
+            {
                 widget.Order = idx++;
+            }
         }
 
-        async Task AddWidget(DashboardWidgetType widgetType)
+        private async Task AddWidget(DashboardWidgetType widgetType)
         {
             var order = 0;
             if (CurrentUser.State != null)
@@ -120,18 +139,19 @@ namespace BLAZAM.Gui.UI.Dashboard
                 });
                 await CurrentUser.State.SaveDashboardWidgets();
                 await StateHasChangedAsync();
+                Analytics.DashboardWidgetAdded(widgetType.ToString());
                 widgetContainer?.Refresh();
             }
 
         }
-        async Task RemoveWidget(UserDashboardWidget widget)
+        private async Task RemoveWidget(UserDashboardWidget widget)
         {
             if (CurrentUser.State != null)
             {
                 CurrentUser.State.Preferences?.DashboardWidgets.Remove(widget);
                 await CurrentUser.State.SaveDashboardWidgets();
                 await StateHasChangedAsync();
-
+                Analytics.DashboardWidgetRemoved(widget.WidgetType.ToString());
                 widgetContainer?.Refresh();
             }
 

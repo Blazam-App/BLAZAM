@@ -42,7 +42,10 @@
 
 
             // Check that the arrays have the same length
-            if (a.Length != b.Length) throw new ArgumentException("Arrays must have the same length");
+            if (a.Length != b.Length)
+            {
+                throw new ArgumentException("Arrays must have the same length");
+            }
 
             // Initialize a counter for different bits
             int diff = 0;
@@ -74,8 +77,10 @@
                 Array.Reverse(byteArray);
             }
             if (length != null)
+            {
                 // Pad the byte array to the desired length with zeroes
                 Array.Resize(ref byteArray, (int)length);
+            }
 
             return byteArray;
         }

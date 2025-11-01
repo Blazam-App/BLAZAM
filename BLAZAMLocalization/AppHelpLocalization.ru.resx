@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>Сопоставления {0} используют этот уровень доступа и будут удалены</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>Вы должны указать как имя, так и фамилию</value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>Чтобы изменить имя пользователя, нажмите кнопку «Переименовать» на панели инструментов / в меню шестеренки.</value>
   </data>

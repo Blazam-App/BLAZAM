@@ -24,7 +24,10 @@ namespace BLAZAM.ActiveDirectory
             try
             {
                 IADsLargeInteger v = value as IADsLargeInteger;
-                if (null == v) return DateTime.MinValue;
+                if (null == v)
+                {
+                    return DateTime.MinValue;
+                }
 
                 long dV = ((long)v.HighPart << 32) + v.LowPart;
                 return DateTime.FromFileTime(dV);

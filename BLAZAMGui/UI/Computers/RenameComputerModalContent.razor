@@ -4,7 +4,9 @@
     <ViewSection Title=@AppLocalization[Lang.Name]>
         @if (Computer.IsOnline == true)
         {
-            <MudTextField Value="_privateComputerInstance.CanonicalName" ValueChanged="((string val)=>{newName=val;})" />
+            <MudTextField Value="_privateComputerInstance.CanonicalName"
+                          Required=true
+                          ValueChanged="((string val) => { newName = val.AppTrim(); })" />
         }
         else if (Computer.IsOnline == false)
         {
@@ -19,7 +21,7 @@
     </ViewSection>
     <ViewSection>
 
-        <MudCheckBox @bind-Value=_rebootAfterRename Label="@AppLocalization[Lang.Reboot]"/>
+        <MudCheckBox @bind-Value=_rebootAfterRename Label="@AppLocalization[Lang.Reboot]" />
         @if (_rebootAfterRename)
         {
             <MudDateTimePicker @bind-DateTime=_date />
@@ -76,7 +78,7 @@ else
         }
         SaveDisabled = true;
         LoadingData = true;
-        if(await Computer.RenameAsync(newName))
+        if (await Computer.RenameAsync(newName))
         {
             if (_rebootAfterRename)
             {
@@ -101,13 +103,13 @@ else
             SnackBarService.Error(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred]);
 
         }
-        
+
 
         LoadingData = false;
 
         SaveDisabled = false;
     }
-    
+
 
 }
 

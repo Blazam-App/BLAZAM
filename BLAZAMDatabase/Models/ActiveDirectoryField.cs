@@ -1,7 +1,7 @@
 ﻿
+using BLAZAM.Common.Data;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BLAZAM.Common.Data;
 
 namespace BLAZAM.Database.Models
 {

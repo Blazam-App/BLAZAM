@@ -29,7 +29,7 @@
         /// <remarks>
         /// Although a list, the GUI currently restricts this to one item
         /// </remarks>
-        public List<AutomationRuleActionFieldValue> FieldValues { get; set; } = new();
+        public List<AutomationRuleActionFieldValue> FieldValues { get; set; } = [];
 
         /// <summary>
         /// Dynamic JSON data to hold data for actions other than field changes or direct group assignments

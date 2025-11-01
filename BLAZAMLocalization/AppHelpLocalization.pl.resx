@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>Mapowania {0} używają tego poziomu dostępu i zostaną usunięte</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>Musisz podać zarówno imię, jak i nazwisko</value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>Aby zmodyfikować nazwę użytkownika, kliknij przycisk Zmień nazwę na pasku narzędzi/w menu koła zębatego</value>
   </data>

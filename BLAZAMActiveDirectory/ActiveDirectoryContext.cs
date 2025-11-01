@@ -1,12 +1,4 @@
-﻿using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
-using System.DirectoryServices.Protocols;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Security.Principal;
-using BLAZAM.ActiveDirectory.Adapters;
+﻿using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
@@ -19,6 +11,14 @@ using BLAZAM.Global.Enums;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
+using System.Diagnostics;
+using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Security.Principal;
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -29,7 +29,11 @@ namespace BLAZAM.ActiveDirectory
         {
             get
             {
-                if (_currentUser != null) return _currentUser;
+                if (_currentUser != null)
+                {
+                    return _currentUser;
+                }
+
                 return null;
             }
             set => _currentUser = value;
@@ -167,7 +171,9 @@ namespace BLAZAM.ActiveDirectory
         public DirectoryEntry GetDirectoryEntry(string? baseDN = null)
         {
             if (baseDN == null || baseDN == "")
+            {
                 baseDN = ConnectionSettings?.ApplicationBaseDN;
+            }
 
             return new DirectoryEntry(
                 LDAP_PROTO + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + baseDN,
@@ -214,7 +220,10 @@ namespace BLAZAM.ActiveDirectory
                     && ConnectionSettings.ServerAddress != null
                     && ConnectionSettings.ServerAddress != ""
                     && ConnectionSettings.ServerPort != 0)
+                {
                     return NetworkTools.IsPortOpen(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort);
+                }
+
                 return false;
             }
         }
@@ -226,7 +235,11 @@ namespace BLAZAM.ActiveDirectory
         {
             get => _status; set
             {
-                if (_status == value) return;
+                if (_status == value)
+                {
+                    return;
+                }
+
                 _status = value;
                 OnStatusChanged?.Invoke(_status);
             }
@@ -261,7 +274,7 @@ namespace BLAZAM.ActiveDirectory
             ConnectionSettings.Password.Decrypt()
             );
 
-        public List<DomainController> DomainControllers { get; private set; } = new();
+        public List<DomainController> DomainControllers { get; private set; } = [];
 
 
         private async Task KeepAlive()
@@ -341,22 +354,34 @@ namespace BLAZAM.ActiveDirectory
             {
                 ConnectDatabase();
 
-                if (IsCancelRequested) return;
+                if (IsCancelRequested)
+                {
+                    return;
+                }
 
                 ADSettings? ad;
 
                 GetConnectionSettings(out ad);
 
-                if (IsCancelRequested) return;
+                if (IsCancelRequested)
+                {
+                    return;
+                }
 
                 PerformNetworkTests(ad);
 
 
-                if (IsCancelRequested) return;
+                if (IsCancelRequested)
+                {
+                    return;
+                }
 
                 InitializeDirectoryEntries(ad);
 
-                if (IsCancelRequested) return;
+                if (IsCancelRequested)
+                {
+                    return;
+                }
 
                 PerformConnectionTests(ad);
 
@@ -368,7 +393,9 @@ namespace BLAZAM.ActiveDirectory
                 Loggers.ActiveDirectoryLogger.Warning(ex, "Unable to resolve Active Directory server address");
                 Status = DirectoryConnectionStatus.ServerDown;
                 if (FailedConnectionAttempts < 10)
+                {
                     FailedConnectionAttempts++;
+                }
             }
             catch (DirectoryOperationException ex)
             {
@@ -378,7 +405,9 @@ namespace BLAZAM.ActiveDirectory
 
                 Status = DirectoryConnectionStatus.BadConfiguration;
                 if (FailedConnectionAttempts < 10)
+                {
                     FailedConnectionAttempts++;
+                }
             }
             catch (CryptographicException ex)
             {
@@ -387,8 +416,9 @@ namespace BLAZAM.ActiveDirectory
                 Loggers.ActiveDirectoryLogger.Warning(ex, "Unable to decrypt Active Directory password");
                 Status = DirectoryConnectionStatus.EncryptionError;
                 if (FailedConnectionAttempts < 10)
+                {
                     FailedConnectionAttempts++;
-
+                }
             }
             catch (DirectoryServicesCOMException ex)
             {
@@ -417,7 +447,9 @@ namespace BLAZAM.ActiveDirectory
                         break;
                 }
                 if (FailedConnectionAttempts < 10)
+                {
                     FailedConnectionAttempts++;
+                }
             }
             catch (COMException ex)
             {
@@ -440,7 +472,9 @@ namespace BLAZAM.ActiveDirectory
                         break;
                 }
                 if (FailedConnectionAttempts < 10)
+                {
                     FailedConnectionAttempts++;
+                }
             }
             catch (CriticalActiveDirectoryException ex)
             {
@@ -469,7 +503,9 @@ namespace BLAZAM.ActiveDirectory
                         break;
                 }
                 if (FailedConnectionAttempts < 10)
+                {
                     FailedConnectionAttempts++;
+                }
             }
             finally
             {
@@ -491,7 +527,10 @@ namespace BLAZAM.ActiveDirectory
         {
             //Ok get the latest settings
             ad = _context?.ActiveDirectorySettings.FirstOrDefault();
-            if (IsCancelRequested) return;
+            if (IsCancelRequested)
+            {
+                return;
+            }
 
             if (ad == null)
             {
@@ -511,7 +550,9 @@ namespace BLAZAM.ActiveDirectory
             {
                 Status = DirectoryConnectionStatus.Unconfigured;
                 if (FailedConnectionAttempts < 10)
+                {
                     FailedConnectionAttempts++;
+                }
             }
         }
 
@@ -520,7 +561,10 @@ namespace BLAZAM.ActiveDirectory
             //We want the latest settings each connection attempt so we make a new database connection
             _context = Factory.CreateDbContext();
 
-            if (IsCancelRequested) return;
+            if (IsCancelRequested)
+            {
+                return;
+            }
 
             Loggers.ActiveDirectoryLogger.Information("Connecting to settings database");
 
@@ -535,7 +579,10 @@ namespace BLAZAM.ActiveDirectory
                 {
                     Status = DirectoryConnectionStatus.UnreachableConfiguration;
                     if (FailedConnectionAttempts < 10)
+                    {
                         FailedConnectionAttempts++;
+                    }
+
                     return;
                 }
 #pragma warning restore S1066 // Mergeable "if" statements should be combined
@@ -580,11 +627,14 @@ namespace BLAZAM.ActiveDirectory
             }
             else
             {
-                Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
+                Loggers.ActiveDirectoryLogger.Information("Active Directory test failed");
 
                 Status = DirectoryConnectionStatus.BadConfiguration;
                 if (FailedConnectionAttempts < 10)
+                {
                     FailedConnectionAttempts++;
+                }
+
                 throw new CriticalActiveDirectoryException(this, "Active Directory test failed");
 
             }
@@ -612,7 +662,10 @@ namespace BLAZAM.ActiveDirectory
 
         private void PerformNetworkTests(ADSettings? ad)
         {
-            if (ad == null) throw new CriticalActiveDirectoryException(this, "Missing configuration");
+            if (ad == null)
+            {
+                throw new CriticalActiveDirectoryException(this, "Missing configuration");
+            }
 
             Loggers.ActiveDirectoryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
 
@@ -624,7 +677,10 @@ namespace BLAZAM.ActiveDirectory
 
                 Status = DirectoryConnectionStatus.ServerDown;
                 if (FailedConnectionAttempts < 10)
+                {
                     FailedConnectionAttempts++;
+                }
+
                 throw new CriticalActiveDirectoryException(this, "Active Directory port is not open");
 
             }
@@ -752,9 +808,16 @@ namespace BLAZAM.ActiveDirectory
                             catch (DirectoryServicesCOMException ex)
                             {
                                 Loggers.ActiveDirectoryLogger.Information(ex, "Error authenticating user: {@Message}", ex.Message);
+                                
                                 if (ex.ExtendedErrorMessage.Contains("data 773, v4563"))
                                 {
+                                    //The users password requires a reset at next logon
                                     return findUser;
+                                }
+                                if (ex.ExtendedErrorMessage.Contains("data 532, v4563"))
+                                {
+                                    //The users password has expired by a password policy
+                                    //return findUser;
                                 }
                                 switch (ex.Message)
                                 {
@@ -802,8 +865,16 @@ namespace BLAZAM.ActiveDirectory
         /// <exception cref="AppException"></exception>
         public bool RestoreTombstone(IDirectoryEntryAdapter model, IADOrganizationalUnit newOU)
         {
-            if (!model.IsDeleted) throw new AppException(model.CanonicalName + " is not deleted");
-            if (ConnectionSettings is null) throw new AppException("Active Directory Connection Settings are missing for this enttry");
+            if (!model.IsDeleted)
+            {
+                throw new AppException(model.CanonicalName + " is not deleted");
+            }
+
+            if (ConnectionSettings is null)
+            {
+                throw new AppException("Active Directory Connection Settings are missing for this enttry");
+            }
+
             string newDN = "CN=" + model.CanonicalName + "," + newOU.DN;
 
             LdapConnection connection = new(
@@ -820,10 +891,10 @@ namespace BLAZAM.ActiveDirectory
             {
                 connection.Bind();
                 connection.SessionOptions.ProtocolVersion = 3;
-                DirectoryAttributeModification isDeleteAttributeMod = new();
+                DirectoryAttributeModification isDeleteAttributeMod = [];
                 isDeleteAttributeMod.Name = "isDeleted";
                 isDeleteAttributeMod.Operation = DirectoryAttributeOperation.Delete;
-                DirectoryAttributeModification dnAttributeMod = new();
+                DirectoryAttributeModification dnAttributeMod = [];
                 dnAttributeMod.Name = ActiveDirectoryFields.DistinguishedName.FieldName;
                 dnAttributeMod.Operation = DirectoryAttributeOperation.Replace;
                 dnAttributeMod.Add(newDN);
@@ -864,7 +935,11 @@ namespace BLAZAM.ActiveDirectory
 
         public IDirectoryEntryAdapter? FindGlobalEntryByGuid(byte[] guid)
         {
-            if (guid == null) return null;
+            if (guid == null)
+            {
+                return null;
+            }
+
             return new ADSearch(this)
             {
                 SearchRoot = RootDirectoryEntry,
@@ -876,9 +951,15 @@ namespace BLAZAM.ActiveDirectory
 
         public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn)
         {
-            if (dn == null) return null;
-            var searcher = new ADSearch(this);
-            searcher.SearchRoot = RootDirectoryEntry;
+            if (dn == null)
+            {
+                return null;
+            }
+
+            var searcher = new ADSearch(this)
+            {
+                SearchRoot = RootDirectoryEntry
+            };
             searcher.Fields.DN = dn;
             var result = searcher.Search().FirstOrDefault();
             return result;

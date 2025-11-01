@@ -75,7 +75,10 @@ namespace BLAZAM.Gui.UI
             {
 
                 if (newPassword != null && newPassword != "")
+                {
                     return newPassword == newPasswordConfirm;
+                }
+
                 return false;
             }
         }

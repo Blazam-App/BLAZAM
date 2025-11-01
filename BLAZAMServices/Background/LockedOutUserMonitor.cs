@@ -27,10 +27,11 @@ namespace BLAZAM.Services.Background
 
             List<LockedOutUser> usersInTable = new();
 
-            List<IADUser> lockedOutUsers = new();
-            Job executeJob = new(AppLocalization["Monitor Locked Out Users"]);
-
-            executeJob.StopOnFailedStep = true;
+            List<IADUser> lockedOutUsers = [];
+            Job executeJob = new(AppLocalization["Monitor Locked Out Users"])
+            {
+                StopOnFailedStep = true
+            };
 
             JobStep prepareStep = new(AppLocalization["Prepare data"], (state) =>
             {

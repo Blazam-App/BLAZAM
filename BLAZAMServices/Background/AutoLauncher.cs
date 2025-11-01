@@ -13,7 +13,9 @@ namespace BLAZAM.Services.Background
             this.info = info;
             this.httpClientFactory = httpClientFactory;
             if (httpClientFactory != null)
+            {
                 t = new Timer(SendRequest, null, TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
+            }
         }
 
         private async void SendRequest(object? state)

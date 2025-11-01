@@ -1,5 +1,5 @@
-﻿using System.Security.Claims;
-using BLAZAM.Global.Data;
+﻿using BLAZAM.Global.Data;
+using System.Security.Claims;
 
 namespace BLAZAM.Global.Helpers
 {

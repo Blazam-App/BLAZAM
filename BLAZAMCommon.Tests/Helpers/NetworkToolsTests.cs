@@ -1,7 +1,7 @@
-using System.Net;
-using System.Net.Sockets;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Common.Helpers;
+using System.Net;
+using System.Net.Sockets;
 
 namespace BLAZAMCommon.Tests.Helpers
 {

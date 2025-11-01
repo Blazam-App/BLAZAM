@@ -1,9 +1,9 @@
-﻿using System.ComponentModel;
-using System.Net;
-using System.Security.Principal;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using Cassia;
 using Serilog;
+using System.ComponentModel;
+using System.Net;
+using System.Security.Principal;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -15,14 +15,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get => _session; set
             {
-                if (_session == value) return;
+                if (_session == value)
+                {
+                    return;
+                }
+
                 _session = value;
                 if (_session != null)
                 {
                     Host.Directory.Impersonation.Run(() =>
                     {
                         if (!_session.Server.IsOpen)
+                        {
                             _session.Server.Open();
+                        }
+
                         try
                         {
 
@@ -152,7 +159,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Host.Directory.Impersonation.Run(() =>
             {
                 if (_session?.Server.IsOpen == false)
+                {
                     _session.Server.Open();
+                }
+
                 _session?.Logoff(synchronous);
                 _session?.Server.Close();
                 return true;
@@ -166,7 +176,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Host.Directory.Impersonation.Run(() =>
             {
                 if (_session?.Server.IsOpen == false)
+                {
                     _session.Server.Open();
+                }
+
                 _session?.Disconnect(synchronous);
                 _session?.Server.Close();
                 return true;
@@ -181,7 +194,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Host.Directory.Impersonation.Run(() =>
             {
                 if (_session?.Server.IsOpen == false)
+                {
                     _session.Server.Open();
+                }
+
                 _session?.MessageBox(message, "Administrator Message");
                 _session?.Server.Close();
                 return true;
@@ -200,15 +216,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 Host.Directory.Impersonation.Run(() =>
                 {
                     if (_session?.Server.IsOpen == false)
+                    {
                         _session.Server.Open();
+                    }
+
                     if (_session?.Server.IsOpen == true)
                     {
                         int id = _session.SessionId;
                         ITerminalServicesSession updated = _session.Server.GetSession(id);
                         if (updated != null)
-
+                        {
                             Task.Run(() => { Session = updated; OnSessionUpdated?.Invoke(this); });
-
+                        }
                     }
                     return true;
                 });

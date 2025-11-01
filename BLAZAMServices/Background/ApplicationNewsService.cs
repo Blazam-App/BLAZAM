@@ -1,11 +1,11 @@
-﻿using System.Text.Json;
-using ApplicationNews;
+﻿using ApplicationNews;
 using BLAZAM.Database.Services;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.Extensions.Localization;
+using System.Text.Json;
 
 namespace BLAZAM.Services.Background
 {
