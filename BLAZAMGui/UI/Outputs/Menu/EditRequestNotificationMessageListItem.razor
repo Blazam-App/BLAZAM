@@ -97,7 +97,7 @@ else if(Notification.Notification.Action!=null)
     <AppModal @ref=_approvalModal Title="@AppLocalization[Lang.Approve_Request]">
         @if (_approvalModal.IsShown)
         {
-            <AccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
+            <ActionAccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
         }
     </AppModal>
 }
@@ -169,7 +169,7 @@ else if(Notification.Notification.Action==null)
     <AppModal @ref=_approvalModal Title="@AppLocalization[Lang.Approve_Request]">
         @if (_approvalModal.IsShown)
         {
-            <AccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
+            <FieldAccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
         }
     </AppModal>
     }

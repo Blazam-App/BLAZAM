@@ -97,7 +97,7 @@ else if (Notification.Notification.Action != null)
     <AppModal @ref=_approvalModal Title="@AppLocalization[Lang.Approve_Request]">
         @if (_approvalModal.IsShown)
         {
-            <AccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
+            <ActionAccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
         }
     </AppModal>
 }
@@ -131,7 +131,7 @@ else if (Notification.Notification.Action == null)
                         <MudLink Typo="Typo.caption" Href="@_creator?.SearchUri" Disabled="@(_creator == null)">
                             @(_creator != null ? _creator.DisplayName : _creatorAppUser?.Username)
                         </MudLink>
-                        @AppLocalization["is requesting read access on"]
+                        @AppLocalization["is requesting read access for "]
                         @if (Notification.Notification.Field != null)
                         {
                             @AppLocalization[Notification.Notification.Field.ToString()].ToString().ToLower()
@@ -140,7 +140,7 @@ else if (Notification.Notification.Action == null)
                         {
                             @AppLocalization[Notification.Notification.CustomField.ToString()].ToString().ToLower()
                         }
-                        @AppLocalization["for"]
+                        @AppLocalization[" on"]
                         <MudLink Typo="Typo.caption" Href="@_target?.SearchUri" Disabled=@(_target == null)>
                             @(_target != null ? _target.CanonicalName : Notification.Notification.TargetDN)
                         </MudLink>
@@ -176,7 +176,7 @@ else if (Notification.Notification.Action == null)
     <AppModal @ref=_approvalModal Title="@AppLocalization[Lang.Approve_Request]">
         @if (_approvalModal.IsShown)
         {
-            <AccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
+            <FieldAccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
         }
     </AppModal>
 }
@@ -230,7 +230,7 @@ else if (Notification.Notification.Action == null)
         {
             try
             {
-                if (await NotificationPublisher.DeleteNotification(Notification.Notification, Notification.User))
+                if (await NotificationPublisher.DeleteNotification(Notification.Notification, CurrentUser.State.Preferences))
                 {
                     SnackBarService.Info(AppLocalization[Lang.Request_Denied]);
                     await AnalyticsService.AccessRequestDenied(Notification.Notification.Title);
@@ -249,7 +249,7 @@ else if (Notification.Notification.Action == null)
     {
 
         SnackBarService.Success(AppLocalization[Lang.Request_Approved]);
-        if (!await NotificationPublisher.DeleteNotification(Notification.Notification, Notification.User))
+        if (!await NotificationPublisher.DeleteNotification(Notification.Notification, CurrentUser.State.Preferences))
         {
             Loggers.SystemLogger.Error(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred]);
 
