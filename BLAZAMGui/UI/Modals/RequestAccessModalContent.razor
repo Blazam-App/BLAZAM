@@ -37,20 +37,41 @@
 
     <MudText Typo="Typo.h6">@AppLocalization["Fields"]</MudText>
 
-    @if (_dbAllowedFields.Any(x => x.IsFieldAppropriateForObject(Entry.ObjectType) && !Entry.CanEditField(x)))
+    @if (_dbAllowedFields.Any(x => x.Field.IsFieldAppropriateForObject(Entry.ObjectType) && !Entry.CanEditField(x.Field)))
     {
-        <MudChipSet T="IActiveDirectoryField"
+        <MudChipSet T="RequestedField"
                     @bind-SelectedValues="_selectedFields"
                     SelectionMode="SelectionMode.MultiSelection"
                     Color="Color.Info"
                     CheckedIcon="@Icons.Material.Filled.Check"
                     IconColor="Color.Success"
                     SelectedColor="Color.Success">
-            @foreach (var field in _dbAllowedFields.Where(x => x.IsFieldAppropriateForObject(Entry.ObjectType) && !Entry.CanEditField(x)))
+            @foreach (var field in _dbAllowedFields.Where(x => x.Field.IsFieldAppropriateForObject(Entry.ObjectType) && !Entry.CanEditField(x.Field)))
             {
 
-                <MudChip Value="field"
-                         Text="@AppLocalization[field.ToString()]" />
+                <MudChip Value="field">
+                    <MudText>
+                        @AppLocalization[field.Field.ToString()]
+                    </MudText>
+                    @{
+                        var _canRead=false;
+                        if (Entry.CanReadField(field.Field))
+                        {
+                            _canRead = true;
+                        }
+                    }
+                    <MudToggleIconButton Color="Color.Error"
+                    Disabled=@(!_selectedFields.Contains(field)) 
+                    Toggled=@(field.AccessRequested.Id==FieldAccessLevels.Edit.Id)
+                    ToggledChanged="@((bool on)=>{
+if(on){
+field.AccessRequested=FieldAccessLevels.Edit;
+}
+else{
+field.AccessRequested=FieldAccessLevels.Read;
+}
+})" Icon="@Icons.Material.Filled.Edit" ToggledColor="Color.Primary" />
+                </MudChip>
 
             }
         </MudChipSet>
@@ -72,11 +93,11 @@
 
 
     IReadOnlyCollection<ActiveDirectoryObjectAction>? _selectedActions = [];
-    IReadOnlyCollection<IActiveDirectoryField>? _selectedFields = [];
+    IReadOnlyCollection<RequestedField>? _selectedFields = [];
 
     List<ActiveDirectoryObjectAction> _objectActions;
     List<ActiveDirectoryObjectAction> _dbAllowedActions;
-    List<IActiveDirectoryField> _dbAllowedFields;
+    List<RequestedField> _dbAllowedFields;
     List<GlobalPermissionRequestAction> globalPermissionRequestActions = [];
 
     protected override async Task OnInitializedAsync()
@@ -84,9 +105,9 @@
         await base.OnInitializedAsync();
         _objectActions = ActiveDirectoryObjectAction.Assign.ToList();
         _dbAllowedActions = await Context.GlobalPermissionRequestActions.Select(x => x.ObjectAction).ToListAsync();
-        _dbAllowedFields = (await Context.ActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList();
-        _dbAllowedFields.AddRange((await Context.CustomActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList());
-        _dbAllowedFields = _dbAllowedFields.OrderBy(x => x.DisplayName).ToList();
+        _dbAllowedFields = AsRequestedFields((await Context.ActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>()).ToList();
+        _dbAllowedFields.AddRange(AsRequestedFields((await Context.CustomActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList()));
+        _dbAllowedFields = _dbAllowedFields.OrderBy(x => x.Field.DisplayName).ToList();
         globalPermissionRequestActions = await Context.GlobalPermissionRequestActions.ToListAsync();
         Modal.SetOnYes(Submit);
     }
@@ -115,10 +136,10 @@
             }
             foreach (var field in _selectedFields)
             {
-                var notification = GenerateNotification(field);
+                var notification = GenerateNotification(field.Field, field.AccessRequested);
                 if (notification == null)
                 {
-                    LogNotificationError(field);
+                    LogNotificationError(field.Field);
                     LoadingData = false;
                     continue;
                 }
@@ -146,8 +167,8 @@
                     lock (adminUsers)
                     {
                         adminUsers.Add(user);
-                        return; 
-                    } 
+                        return;
+                    }
                 }
                 var adUser = Directory.Users.FindUserBySID(user.UserGUID);
                 var userState = new ApplicationUserState(DbFactory);
@@ -171,9 +192,9 @@
             {
                 //Ignore users who can't login
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-               Loggers.SystemLogger.Error(ex,"Error attempting to create access request.");
+                Loggers.SystemLogger.Error(ex, "Error attempting to create access request.");
             }
         });
         return adminUsers;
@@ -184,9 +205,9 @@
         notificationGenerationService.PackageRequest(Entry, action, CurrentUser.State, out var notification);
         return notification;
     }
-    private NotificationMessage GenerateNotification(IActiveDirectoryField field)
+    private NotificationMessage GenerateNotification(IActiveDirectoryField field, FieldAccessLevel accessRequested)
     {
-        notificationGenerationService.PackageRequest(Entry, field, CurrentUser.State, out var notification);
+        notificationGenerationService.PackageRequest(Entry, field, accessRequested, CurrentUser.State, out var notification);
         return notification;
     }
 
@@ -207,7 +228,6 @@
             await AnalyticsService.AccessRequestCreated(notification.Title);
         }
     }
-
     private async Task SendAccessRequestEmailsAsync(List<AppUser> adminUsers, NotificationMessage notification, object requestedItem)
     {
         AccessRequestEmailMessage requestEmail = new AccessRequestEmailMessage
@@ -294,4 +314,27 @@
     private bool IsAccountUnlockable(object entry) =>
         entry is IAccountDirectoryAdapter adapter
         && adapter.CanUnlock;
+
+    private IEnumerable<RequestedField> AsRequestedFields(IEnumerable<IActiveDirectoryField> fields)
+    {
+        var requestedFields = new List<RequestedField>();
+        foreach (var field in fields)
+        {
+            var newRequestedField = new RequestedField { Field = field };
+            if (Entry.CanReadField(field))
+            {
+                newRequestedField.AccessRequested = FieldAccessLevels.Edit;
+            }
+
+            requestedFields.Add(newRequestedField);
+        }
+
+        return requestedFields;
+
+    }
+    private class RequestedField
+    {
+        public IActiveDirectoryField Field { get; set; }
+        public FieldAccessLevel? AccessRequested { get; set; } = FieldAccessLevels.Read;
+    }
 }

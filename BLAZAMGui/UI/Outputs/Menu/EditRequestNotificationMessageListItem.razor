@@ -30,7 +30,7 @@
 
     </MudCard>
 }
-else
+else if(Notification.Notification.Action!=null)
 {
     <MudCard Class="py-3"
              Elevation="2">
@@ -97,10 +97,82 @@ else
     <AppModal @ref=_approvalModal Title="@AppLocalization[Lang.Approve_Request]">
         @if (_approvalModal.IsShown)
         {
-            <AccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
+            <ActionAccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
         }
     </AppModal>
 }
+
+else if(Notification.Notification.Action==null)
+{
+    <MudCard Class="py-3"
+             Elevation="2">
+        <MudStack Row=true
+                  Class="px-4">
+            <MudIcon Icon="@Icons.Material.Filled.ThumbsUpDown"
+                     Color="Color.Warning" />
+
+            <MudStack>
+                @if (Notification.Notification.Title.IsNullOrEmpty())
+                {
+                    <MudText Typo="Typo.subtitle2">
+                        @AppHelpLocalization[HelpLang.Request_To,@AppLocalization[Notification.Notification.FieldId.ToString()]]
+                    </MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.subtitle2">
+                        @AppHelpLocalization[HelpLang.Request_To,@AppLocalization[Notification.Notification.Title]]
+                   </MudText>
+                }
+
+                @if (Notification.Notification.Message.IsNullOrEmpty())
+                {
+                    <MudText Typo="Typo.caption">
+                        <MudLink Typo="Typo.caption" Href="@_creator?.SearchUri" Disabled="@(_creator==null)">
+                            @(_creator != null ? _creator.DisplayName : _creatorAppUser?.Username)
+                        </MudLink>
+                        @AppLocalization["is requesting"]
+                        @AppLocalization[Notification.Notification.Action.ToString()].ToString().ToLower()
+                        @AppLocalization["access to"]
+                        <MudLink Typo="Typo.caption" Href="@_target?.SearchUri" Disabled=@(_target==null)>
+                            @(_target != null ? _target.CanonicalName : Notification.Notification.TargetDN)
+                        </MudLink>
+                    </MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.subtitle2" Style="">
+                        @((MarkupString)Notification.Notification.Message)
+                    </MudText>
+                }
+                <MudStack Row="true">
+                    <MudButton Size="Size.Small"
+                               Variant="Variant.Filled"
+                               StartIcon="@Icons.Material.Filled.ThumbDownAlt"
+                               OnClick="DenyRequest"
+                               Color="Color.Error">@AppLocalization[Lang.Deny]</MudButton>
+                    <MudSpacer />
+                    <MudButton Size="Size.Small"
+                               Variant="Variant.Filled"
+                               StartIcon="@Icons.Material.Filled.ThumbUpAlt"
+                               OnClick="@(()=>{_=_approvalModal.ShowAsync();})"
+                               Color="Color.Success">@AppLocalization[Lang.Approve]</MudButton>
+                </MudStack>
+
+            </MudStack>
+            <MudSpacer />
+
+        </MudStack>
+
+    </MudCard>
+
+    <AppModal @ref=_approvalModal Title="@AppLocalization[Lang.Approve_Request]">
+        @if (_approvalModal.IsShown)
+        {
+            <FieldAccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
+        }
+    </AppModal>
+    }
 @code {
     AppModal? _approvalModal;
     [Parameter]
@@ -126,7 +198,7 @@ else
                 _creatorAppUser = appUser;
                 if (!appUser.IsAdminOrDemo())
                 {
-                    var directoryUser = Directory.FindEntryBySid(appUser.UserGUID);
+                    var directoryUser = Directory.FindGlobalEntryBySid(appUser.UserGUID);
                     if (directoryUser != null && directoryUser is IADUser)
                     {
                         _creator = directoryUser as IADUser;

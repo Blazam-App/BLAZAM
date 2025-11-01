@@ -1,18 +1,81 @@
 ﻿@inherits AppModalContent
+<MudText Typo="Typo.h6">@AppLocalization[Lang.Excluded_Groups]</MudText>
+<MudList T="string">
+    @foreach (var sid in GroupGuids)
+    {
+        <MudListItem Dense="true">
+            <MudStack Row=true>
+                    <DirectoryEntryLink Class="my-auto" Guid="@sid.Guid" />
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               OnClick="async ()=>
+                                {
+                                    GroupGuids.Remove(sid);
+                                    var settings = await Context.GlobalAutomationRuleSettings.Include(x => x.ExcludedGroups).FirstOrDefaultAsync();
+                                    if (settings != null)
+                                    {
+                                        settings.ExcludedGroups = GroupGuids;
+                                        await Context.SaveChangesAsync();
+                                    }
+                                    await InvokeAsync(StateHasChanged);
+                                }" />
+        </MudStack>
 
+
+
+                                                                   </MudListItem>
+        }
+
+</MudList>
 <MudStack Row=true>
-    <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group" @bind-SelectedResult=_selectedGroup />
- 
+    <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group" @bind-SelectedResult=_selectedGroup @ref=_searchBox />
+    <AppIconButton Icon="@Icons.Material.Filled.Add"
+                   OnClick="@(()=>{GroupGuids.Add(new(){Guid=_selectedGroup.Guid.Value});_selectedGroup=null;_searchBox.Clear();})" />
 </MudStack>
 
 
 @code {
-    List<GenericSidList> GroupSids = [];
+    ADAutoComplete? _searchBox;
+    List<AutomationRuleExcludedGroupGuid> GroupGuids = [];
     IDirectoryEntryAdapter? _selectedGroup;
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        Modal.SetOnYes(()=>{ return Task.CompletedTask; });
-    }
+        await base.OnInitializedAsync();
+        Modal.YesEnabled = () => { return !LoadingData; };
 
+        Modal.SetOnYes(SaveChanges);
+        var settings = await Context.GlobalAutomationRuleSettings.Include(x => x.ExcludedGroups).FirstOrDefaultAsync();
+        if (settings != null)
+        {
+            GroupGuids = settings.ExcludedGroups.ToList();
+        }
+    }
+    private async Task SaveChanges()
+    {
+        LoadingData = true;
+        try
+        {
+            var existing = await Context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
+            if (existing == null)
+            {
+                existing = new Database.Models.Rules.GlobalAutomationRuleSettings();
+                await Context.GlobalAutomationRuleSettings.AddAsync(existing);
+            }
+            existing.ExcludedGroups.Clear();
+            existing.ExcludedGroups.AddRange(GroupGuids);
+            var result = await Context.SaveChangesAsync();
+            if (result > 0)
+            {
+                SnackBarService.Success(AppLocalization[Lang.Changes_have_been_saved]);
+            }
+            await Modal.CloseAsync();
+        }
+        catch (Exception ex)
+        {
+            SnackBarService.Error(ex.Message);
+        }
+        LoadingData = false;
+
+    }
 }

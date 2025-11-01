@@ -88,7 +88,7 @@
             SnackBarService.Error("Error trying to create permission mapping");
             await LoadData();
         }
-        
+
     }
 
     private async Task LoadData()
@@ -96,11 +96,13 @@
         LoadingData = true;
 
         var _creator = await Context.UserSettings.FirstOrDefaultAsync(x => x.Id == Request.Notification.CreatorId);
-        var _creatorAD = Directory.FindEntryBySid(_creator.UserGUID);
+        var _creatorAD = Directory.FindGlobalEntryBySid(_creator.UserGUID);
 
         _delegate = await PrepareDelegate(_creator, _creatorAD);
         _target = Directory.GetDirectoryEntryByDN(Request.Notification.TargetDN)!;
-        _accessLevel = await PrepareAccessLevel(_target, Request.Notification.Action);
+        var fieldAccessLevel = Request.Notification.MessageType == MessageType.EditAccessRequest ? FieldAccessLevels.Edit : FieldAccessLevels.Read;
+        IActiveDirectoryField field = Request.Notification.Field != null ? Request.Notification.Field : Request.Notification.CustomField;
+        _accessLevel = await PrepareAccessLevel(_target, field, fieldAccessLevel);
         _permissionMapping = await PreparePermissionMapping(_target, _accessLevel, _delegate, _creator);
 
         LoadingData = false;
@@ -121,31 +123,38 @@
         return _deleg;
     }
 
-    private async Task<AccessLevel> PrepareAccessLevel(IDirectoryEntryAdapter _target, ActiveDirectoryObjectAction? action)
+    private async Task<AccessLevel> PrepareAccessLevel(IDirectoryEntryAdapter _target, IActiveDirectoryField action, FieldAccessLevel accessLevel)
     {
         var _accessLvl = await Context.AccessLevels.FirstOrDefaultAsync(x => x.ObjectMap.Count == 1
             && x.ObjectMap.Any(x => x.ObjectType == _target.ObjectType)
-            && x.ActionMap.Count == 1 && x.ActionMap.Any(x => x.AllowOrDeny == true && x.ObjectAction.Action == action));
+            && x.FieldMap.Count == 1 && x.FieldMap.Any(x => x.FieldAccessLevel.Id == accessLevel.Id && ((x.Field != null && x.Field.Id == action.Id) || (x.CustomField != null && x.CustomField.Id == action.Id))));
         if (_accessLvl == null)
         {
-            var objActions = await Context.ObjectActionFlag.ToListAsync();
 
             var objectMap = new ObjectAccessMapping()
             {
                 ObjectAccessLevelId = ObjectAccessLevels.Read.Id,
                 ObjectType = _target != null ? _target.ObjectType : ActiveDirectoryObjectType.Group
             };
-            var actionMap = new ActionAccessMapping()
+            var fieldMap = new FieldAccessMapping()
             {
-                ObjectActionId = objActions.First(x => x.Action == action).Id,
-                AllowOrDeny = true,
+
+                FieldAccessLevelId = accessLevel.Id,
                 ObjectType = _target != null ? _target.ObjectType : ActiveDirectoryObjectType.Group
             };
+            if(action is ActiveDirectoryField)
+            {
+                fieldMap.FieldId = action.Id;
+            }
+            else
+            {
+                fieldMap.CustomFieldId = action.Id;
+            }
             return new AccessLevel()
             {
-                ActionMap = new List<ActionAccessMapping>() { actionMap },
+                FieldMap = new List<FieldAccessMapping>() { fieldMap },
                 ObjectMap = new List<ObjectAccessMapping>() { objectMap },
-                Name = AppLocalization[action.ToString()!] + " " + AppLocalization[_target!.ObjectType.ToString()]
+                Name = AppLocalization[accessLevel.Name]+" "+AppLocalization[action.ToString()!]
             };
         }
         _accessLvl.DeletedAt = null;

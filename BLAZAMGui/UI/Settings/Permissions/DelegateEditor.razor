@@ -40,7 +40,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
     Title="Deleted Delegates">
     @foreach (var deleg in AllDelegates.Where(l => l.DeletedAt != null))
     {
-        var model = Directory.FindEntryBySID(deleg.DelegateSid);
+        var model = Directory.FindGlobalEntryBySid(deleg.DelegateSid);
         <MudContainer>
             <b>@model?.ObjectType</b><br />
             <MudText>@model?.CanonicalName</MudText>

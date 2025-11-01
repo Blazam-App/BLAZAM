@@ -91,7 +91,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _delegateEntry = Directory.FindEntryBySID(Delegate.DelegateSid);
+        _delegateEntry = Directory.FindGlobalEntryBySid(Delegate.DelegateSid);
         if (_delegateEntry != null)
         {
             if (Delegate.DelegateName != _delegateEntry.CanonicalName)

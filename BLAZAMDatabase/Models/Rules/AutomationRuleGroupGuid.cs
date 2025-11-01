@@ -1,8 +1,8 @@
 ﻿namespace BLAZAM.Database.Models.Rules
 {
-    public class AutomationRuleGroupSid : AppDbSetBase
+    public class AutomationRuleGroupGuid : AppDbSetBase
     {
-        public string GroupSid { get; set; }
+        public Guid GroupGuid { get; set; }
         public AutomationRuleAction AutomationRuleAction { get; set; }
 
         /// <summary>

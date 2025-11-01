@@ -152,6 +152,7 @@ namespace BLAZAM.Helpers
             AddChatRoomConfig(modelBuilder);
             AddChatMessageConfig(modelBuilder);
             AddNotificationSubscriptionConfig(modelBuilder);
+            AddNotificationMessageConfig(modelBuilder);
             AddUnreadChatMessageConfig(modelBuilder);
 
         }
@@ -234,7 +235,7 @@ namespace BLAZAM.Helpers
         {
             modelBuilder.Entity<AutomationRuleAction>(entity =>
             {
-                entity.Navigation(e => e.GroupSids).AutoInclude();
+                entity.Navigation(e => e.GroupGuids).AutoInclude();
                 entity.Navigation(e => e.FieldValues).AutoInclude();
             });
         }
@@ -387,6 +388,15 @@ namespace BLAZAM.Helpers
             modelBuilder.Entity<UserNotification>(entity =>
             {
                 entity.Navigation(e => e.Notification).AutoInclude();
+            });
+        }
+
+        internal static void AddNotificationMessageConfig(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<NotificationMessage>(entity =>
+            {
+                entity.Navigation(e => e.Field).AutoInclude();
+                entity.Navigation(e => e.CustomField).AutoInclude();
             });
         }
 

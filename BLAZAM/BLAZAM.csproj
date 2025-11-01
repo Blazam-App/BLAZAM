@@ -24,6 +24,10 @@
 		<None Remove="nssm.exe" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Include="..\BLAZAMGui\UI\Inputs\ADAutoComplete.razor.cs" Link="ADAutoComplete.razor.cs" />
+	</ItemGroup>
+
 
 
 

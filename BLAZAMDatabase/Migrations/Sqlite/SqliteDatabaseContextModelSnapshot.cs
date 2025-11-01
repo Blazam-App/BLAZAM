@@ -909,6 +909,25 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         });
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.AutomationRuleExcludedGroupGuid", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("GlobalAutomationRuleSettingsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GlobalAutomationRuleSettingsId");
+
+                    b.ToTable("AutomationRuleExcludedGroupGuid");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Chat.ChatMessage", b =>
                 {
                     b.Property<int>("Id")
@@ -1107,7 +1126,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.ToTable("FailedADLogonEvents");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.GenericSidList", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.LockedOutUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1779,7 +1798,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.ToTable("AutomationRuleAndFilters");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupSid", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupGuid", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1791,15 +1810,14 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<int>("AutomationRuleActionId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("GroupSid")
-                        .IsRequired()
+                    b.Property<Guid>("GroupGuid")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AutomationRuleActionId");
 
-                    b.ToTable("AutomationRuleGroupSids");
+                    b.ToTable("AutomationRuleGroupGuids");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
@@ -1819,6 +1837,17 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasIndex("AutomationRuleId");
 
                     b.ToTable("AutomationRuleOrFilter");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.GlobalAutomationRuleSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GlobalAutomationRuleSettings");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
@@ -2250,6 +2279,13 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasForeignKey("CustomActiveDirectoryFieldId");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.AutomationRuleExcludedGroupGuid", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Rules.GlobalAutomationRuleSettings", null)
+                        .WithMany("ExcludedGroups")
+                        .HasForeignKey("GlobalAutomationRuleSettingsId");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Chat.ChatMessage", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Chat.ChatRoom", "ChatRoom")
@@ -2426,10 +2462,10 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("OrFilter");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupSid", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupGuid", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Rules.AutomationRuleAction", "AutomationRuleAction")
-                        .WithMany("GroupSids")
+                        .WithMany("GroupGuids")
                         .HasForeignKey("AutomationRuleActionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2618,12 +2654,17 @@ namespace BLAZAM.Common.Migrations.Sqlite
                 {
                     b.Navigation("FieldValues");
 
-                    b.Navigation("GroupSids");
+                    b.Navigation("GroupGuids");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
                 {
                     b.Navigation("AndFilters");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.GlobalAutomationRuleSettings", b =>
+                {
+                    b.Navigation("ExcludedGroups");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>

@@ -19,12 +19,7 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <DirectoryEntryTooltipPopover Entry="@context.Item">
-                    <DirectoryEntryContextMenu Entry="@context.Item"
-                                               OnChanged="RefreshDataAsync">
-                        <MudText>@context.Item?.CanonicalName</MudText>
-                    </DirectoryEntryContextMenu>
-                </DirectoryEntryTooltipPopover>
+                <DirectoryEntryLink Entry="@context.Item" OnChanged="RefreshDataAsync" />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Locked_Out]>

@@ -159,7 +159,7 @@
             {
                 try
                 {
-                    concatenated += Directory.FindEntryBySID(sid)?.CanonicalName + SELECTION_DELIMITER;
+                    concatenated += Directory.FindGlobalEntryBySid(sid)?.CanonicalName + SELECTION_DELIMITER;
                 }
                 catch (Exception)
                 {

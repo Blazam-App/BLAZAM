@@ -1,4 +1,7 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using System.Data;
+using System.Diagnostics;
+using BLAZAM.ActiveDirectory;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Database.Models;
@@ -10,6 +13,7 @@ using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Services.Events;
 using BLAZAM.Session;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Data;
 using System.Diagnostics;
@@ -32,6 +36,10 @@ namespace BLAZAM.Services.Background
         public RulesProcessor(IActiveDirectoryContextFactory activeDirectoryContextFactory, IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(activeDirectoryContextFactory, dbFactory, appLocalization)
         {
             Interval = TimeSpan.FromMinutes(5);
+            Task.Delay(15000).ContinueWith((state) =>
+            {
+                _ = SeedExcludedGroups();
+            });
         }
 
         /// <summary>
@@ -43,8 +51,11 @@ namespace BLAZAM.Services.Background
             if (!_initialized)
             {
                 ApplicationEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChanged;
+
                 _initialized = true;
+
             }
+
             ScheduleRules();
         }
 
@@ -103,7 +114,7 @@ namespace BLAZAM.Services.Background
         /// <summary>
         /// Handles directory entry change events and processes applicable rules.
         /// </summary>
-        private void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedArgs args)
+        private async void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedArgs args)
         {
             if (sender != null && sender.Equals(this))
             {
@@ -111,7 +122,7 @@ namespace BLAZAM.Services.Background
             }
             if (args.EventType != ApplicationEventType.Search)
             {
-                if (IsApplicationIdentity(args.Entry))
+                if (await ShouldSkipEntry(args.Entry))
                 {
                     return;
                 }
@@ -161,12 +172,12 @@ namespace BLAZAM.Services.Background
             };
             List<IDirectoryEntryAdapter> filteredEntries;
 
-            filteredEntries = GetFilteredEntries(rule);
+            filteredEntries = await GetFilteredEntries(rule);
 
             // Execute actions for each matched entry
             foreach (var entry in filteredEntries)
             {
-                if (IsApplicationIdentity(entry))
+                if (await ShouldSkipEntry(entry))
                 {
                     continue;
                 }
@@ -189,6 +200,89 @@ namespace BLAZAM.Services.Background
             return scheduledRuleJob;
         }
 
+        private async Task SeedExcludedGroups()
+        {
+            using var context = await dbFactory.CreateDbContextAsync();
+            var existing = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
+            if (existing == null)
+            {
+                existing = new();
+
+
+                // Try to resolve the actual SIDs for the current domain/forest
+                using var adContext = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+
+                if (adContext.Status != DirectoryConnectionStatus.OK)
+                {
+                    Loggers.ActiveDirectoryLogger.Information("Cancelling excluded rule group seeding because connection is not established.");
+                    return;
+                }
+
+
+                var domainAdminsGroup = adContext.FindGlobalEntryBySid(adContext.DomainSid + "-512") as IADGroup;
+                var domainControllersGroup = adContext.FindGlobalEntryBySid(adContext.DomainSid + "-516") as IADGroup;
+                var enterpriseDCGroup = adContext.FindGlobalEntryBySid("S-1-5-9") as IADGroup;
+                var enterpriseAdminsGroup = adContext.FindGlobalEntryBySid(adContext.DomainSid + "-519") as IADGroup;
+                bool seededAny = false;
+                if (domainAdminsGroup != null)
+                {
+                    existing.ExcludedGroups.Add(new() { Guid = domainAdminsGroup.Guid.Value });
+                    seededAny = true;
+                }
+                if (domainControllersGroup != null)
+                {
+                    existing.ExcludedGroups.Add(new() { Guid = domainControllersGroup.Guid.Value });
+                    seededAny = true;
+
+                }
+                if (enterpriseAdminsGroup != null)
+                {
+                    existing.ExcludedGroups.Add(new() { Guid = enterpriseAdminsGroup.Guid.Value });
+                    seededAny = true;
+
+                }
+                if (enterpriseDCGroup != null)
+                {
+                    existing.ExcludedGroups.Add(new() { Guid = enterpriseDCGroup.Guid.Value });
+                    seededAny = true;
+
+                }
+                if (seededAny)
+                {
+                    context.GlobalAutomationRuleSettings.Add(existing);
+                    await context.SaveChangesAsync();
+                }
+
+            }
+        }
+        private async Task<bool> ShouldSkipEntry(IDirectoryEntryAdapter entry)
+        {
+            using var context = await dbFactory.CreateDbContextAsync();
+            using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+            if (IsApplicationIdentity(entry))
+            {
+                return true;
+            }
+            if (entry is IGroupableDirectoryAdapter groupableEntry)
+            {
+                var ruleSetttings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
+                if (ruleSetttings == null)
+                {
+                    await SeedExcludedGroups();
+                    ruleSetttings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
+                }
+                foreach (var groupGuid in ruleSetttings.ExcludedGroups)
+                {
+                    var group = directory.FindGlobalEntryByGuid(groupGuid.Guid);
+                    if (groupableEntry.IsANestedMemberOf(group as IADGroup))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
         /// <summary>
         /// Determines if the given directory entry represents the application identity,
         /// to prevent rules from acting on the application's own account.
@@ -213,7 +307,7 @@ namespace BLAZAM.Services.Background
         /// </summary>
         /// <param name="rule">The automation rule containing filters.</param>
         /// <returns>List of matching directory entries.</returns>
-        public List<IDirectoryEntryAdapter> GetFilteredEntries(AutomationRule rule)
+        public async Task<List<IDirectoryEntryAdapter>> GetFilteredEntries(AutomationRule rule)
         {
             List<IDirectoryEntryAdapter> matchedEntries = [];
             using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
@@ -227,7 +321,16 @@ namespace BLAZAM.Services.Background
                     }
                 }
             }
-            return matchedEntries;
+            List<IDirectoryEntryAdapter> matchedEntries2 = new();
+
+            foreach (var entry in matchedEntries)
+            {
+                if (!(await ShouldSkipEntry(entry)))
+                {
+                    matchedEntries2.Add(entry);
+                }
+            }
+            return matchedEntries2;
         }
         private static void HandleEnabledDisabledFilter(AutomationRuleOrFilter orFilter, ADSearch search)
         {
@@ -456,11 +559,11 @@ namespace BLAZAM.Services.Background
             if (entry is IGroupableDirectoryAdapter groupableEntry)
             {
                 using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-                var group = directory.Groups.FindGroupBySID(action.GroupSids[0].GroupSid);
+                var group = directory.FindGlobalEntryByGuid(action.GroupGuids[0].GroupGuid) as IADGroup;
                 if (group != null)
                 {
                     target = group;
-                    if (groupableEntry.IsAMemberOf(group))
+                    if (groupableEntry.IsANestedMemberOf(group))
                     {
                         eventType = ApplicationEventType.All;
                         return;
@@ -478,11 +581,11 @@ namespace BLAZAM.Services.Background
             if (entry is IGroupableDirectoryAdapter groupableEntry)
             {
                 using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-                var group = directory.Groups.FindGroupBySID(action.GroupSids[0].GroupSid);
+                var group = directory.FindGlobalEntryByGuid(action.GroupGuids[0].GroupGuid) as IADGroup;
                 if (group != null)
                 {
                     target = group;
-                    if (!groupableEntry.IsAMemberOf(group))
+                    if (!groupableEntry.IsANestedMemberOf(group))
                     {
                         eventType = ApplicationEventType.All;
                         return;

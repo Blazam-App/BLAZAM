@@ -229,7 +229,7 @@ namespace BLAZAM.Database.Interfaces
         /// <summary>
         /// The list of users currently locked out of the system.
         /// </summary>
-        DbSet<GenericSidList> LockedOutUsers { get; set; }
+        DbSet<LockedOutUser> LockedOutUsers { get; set; }
 
         /// <summary>
         /// The audit log for email events and deliveries.
@@ -264,12 +264,13 @@ namespace BLAZAM.Database.Interfaces
         /// <summary>
         /// The group SIDs used in automation rules for targeting groups.
         /// </summary>
-        DbSet<AutomationRuleGroupSid> AutomationRuleGroupSids { get; set; }
+        DbSet<AutomationRuleGroupGuid> AutomationRuleGroupGuids { get; set; }
 
         /// <summary>
         /// The actions performed by automation rules.
         /// </summary>
         DbSet<AutomationRuleAction> AutomationRuleActions { get; set; }
+        DbSet<GlobalAutomationRuleSettings> GlobalAutomationRuleSettings { get; set; }
 
         /// <summary>
         /// Exports all database tables to CSV files in the specified directory.
