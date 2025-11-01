@@ -238,9 +238,9 @@ else if (Notification.Notification.Action == null)
 
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                SnackBarService.Warning(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred]);
+                SnackBarService.Warning(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred] + " " + ex.Message);
 
             }
         }
