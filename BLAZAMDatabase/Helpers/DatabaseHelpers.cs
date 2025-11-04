@@ -152,6 +152,7 @@ namespace BLAZAM.Helpers
             AddChatRoomConfig(modelBuilder);
             AddChatMessageConfig(modelBuilder);
             AddNotificationSubscriptionConfig(modelBuilder);
+            AddGlobalPermissionSettingsConfig(modelBuilder);
             AddNotificationMessageConfig(modelBuilder);
             AddUnreadChatMessageConfig(modelBuilder);
 
@@ -423,6 +424,14 @@ namespace BLAZAM.Helpers
             modelBuilder.Entity<ChatMessage>(entity =>
             {
                 entity.Navigation(e => e.User).AutoInclude();
+            });
+        }
+
+        internal static void AddGlobalPermissionSettingsConfig(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<GlobalPermissionSettings>(entity =>
+            {
+                entity.Navigation(e => e.RequestableFields).AutoInclude();
             });
         }
 

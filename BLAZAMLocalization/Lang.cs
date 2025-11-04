@@ -356,7 +356,8 @@
         public static readonly string Credentials_OK = "Credentials OK";
         public static readonly string Allow_self_edit = "Allow self edit";
         public static readonly string Server_Port_Open = "Server Port Open";
-        public static readonly string Allow_access_requests = "Allow access requests";
+        public static readonly string Allow_action_access_requests = "Allow action access requests";
+        public static readonly string Allow_field_access_requests = "Allow field access requests";
         public static readonly string Global_Permission_Settings = "Global Permission Settings";
         public static readonly string Application_User = "Application User";
         public static readonly string Confirm_deletion = "Confirm deletion";

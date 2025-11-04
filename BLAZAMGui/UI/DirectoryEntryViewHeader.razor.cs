@@ -62,7 +62,7 @@ namespace BLAZAM.Gui.UI
             await base.OnInitializedAsync();
             LoadingData = true;
 
-            _showRequestButton = (await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowAccessRequest == true
+            _showRequestButton = (await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowActionAccessRequest == true
             && await Context.GlobalPermissionRequestActions.CountAsync() > 0;
             LoadingData = false;
 

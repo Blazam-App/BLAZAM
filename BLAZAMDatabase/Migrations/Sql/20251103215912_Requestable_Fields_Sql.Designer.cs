@@ -4,16 +4,19 @@ using BLAZAM.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BLAZAM.Common.Migrations.Sql
+namespace BLAZAM.Database.Migrations.Sql
 {
     [DbContext(typeof(SqlDatabaseContext))]
-    partial class SqlDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20251103215912_Requestable_Fields_Sql")]
+    partial class Requestable_Fields_Sql
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1548,10 +1551,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("AllowActionAccessRequest")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("AllowFieldAccessRequest")
+                    b.Property<bool>("AllowAccessRequest")
                         .HasColumnType("bit");
 
                     b.Property<bool>("AllowSelfModification")

@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.20")
+                .HasAnnotation("ProductVersion", "8.0.21")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -1509,6 +1509,37 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("GlobalPermissionRequestActions");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestField", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AllowEdit")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int?>("CustomFieldId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FieldId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GlobalPermissionSettingsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomFieldId");
+
+                    b.HasIndex("FieldId");
+
+                    b.HasIndex("GlobalPermissionSettingsId");
+
+                    b.ToTable("GlobalPermissionRequestField");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
                 {
                     b.Property<int>("Id")
@@ -1517,7 +1548,10 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("AllowAccessRequest")
+                    b.Property<bool>("AllowActionAccessRequest")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("AllowFieldAccessRequest")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("AllowSelfModification")
@@ -2199,6 +2233,10 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasIndex("CreatorId");
 
+                    b.HasIndex("CustomFieldId");
+
+                    b.HasIndex("FieldId");
+
                     b.ToTable("NotificationMessages");
                 });
 
@@ -2506,6 +2544,25 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("FieldAccessLevel");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestField", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", "CustomField")
+                        .WithMany()
+                        .HasForeignKey("CustomFieldId");
+
+                    b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
+                        .WithMany()
+                        .HasForeignKey("FieldId");
+
+                    b.HasOne("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", null)
+                        .WithMany("RequestableFields")
+                        .HasForeignKey("GlobalPermissionSettingsId");
+
+                    b.Navigation("CustomField");
+
+                    b.Navigation("Field");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", "ObjectAccessLevel")
@@ -2644,7 +2701,19 @@ namespace BLAZAM.Common.Migrations.MySql
                         .WithMany()
                         .HasForeignKey("CreatorId");
 
+                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", "CustomField")
+                        .WithMany()
+                        .HasForeignKey("CustomFieldId");
+
+                    b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
+                        .WithMany()
+                        .HasForeignKey("FieldId");
+
                     b.Navigation("Creator");
+
+                    b.Navigation("CustomField");
+
+                    b.Navigation("Field");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.ReadNewsItem", b =>
@@ -2744,6 +2813,11 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Navigation("ActionMap");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
+                {
+                    b.Navigation("RequestableFields");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
