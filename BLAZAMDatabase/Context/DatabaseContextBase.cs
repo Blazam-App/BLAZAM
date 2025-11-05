@@ -163,6 +163,7 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<GlobalPermissionSettings> GlobalPermissionSettings { get; set; }
         public virtual DbSet<GlobalAutomationRuleSettings> GlobalAutomationRuleSettings { get; set; }
         public virtual DbSet<GlobalPermissionRequestAction> GlobalPermissionRequestActions { get; set; }
+        public virtual DbSet<GlobalPermissionRequestField> GlobalPermissionRequestFields { get; set; }
 
         public virtual DbSet<ChatRoom> ChatRooms { get; set; }
         public virtual DbSet<ChatMessage> ChatMessages { get; set; }
