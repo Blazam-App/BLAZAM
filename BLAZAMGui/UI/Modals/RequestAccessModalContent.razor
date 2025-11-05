@@ -48,7 +48,7 @@
                     SelectedColor="Color.Success">
             @foreach (var field in _dbAllowedFields.Where(x => x.Field.IsFieldAppropriateForObject(Entry.ObjectType) && !Entry.CanEditField(x.Field)))
             {
-
+             
                 <MudChip Value="field">
                     <MudText>
                         @AppLocalization[field.Field.ToString()]
@@ -60,17 +60,20 @@
                             _canRead = true;
                         }
                     }
-                    <MudToggleIconButton Color="Color.Error"
-                    Disabled=@(!_selectedFields.Contains(field)) 
-                    Toggled=@(field.AccessRequested.Id==FieldAccessLevels.Edit.Id)
-                    ToggledChanged="@((bool on)=>{
-if(on){
-field.AccessRequested=FieldAccessLevels.Edit;
-}
-else{
-field.AccessRequested=FieldAccessLevels.Read;
-}
-})" Icon="@Icons.Material.Filled.Edit" ToggledColor="Color.Primary" />
+                    <MudToggleIconButton Color="Color.Primary"
+                                        Disabled=@(!_selectedFields.Contains(field)|| !field.CanRequestEdit) 
+                                        Toggled=@(field.AccessRequested.Id==FieldAccessLevels.Edit.Id)
+                                        ToggledChanged="@((bool on)=>{
+                                            if(on){
+                                                field.AccessRequested=FieldAccessLevels.Edit;
+                                            }
+                                            else{
+                                                field.AccessRequested=FieldAccessLevels.Read;
+                                            }
+                                        })"
+                                        Icon="@Icons.Material.Filled.Visibility"
+                                        ToggledIcon="@Icons.Material.Filled.Edit"
+                                        ToggledColor="Color.Primary"/>
                 </MudChip>
 
             }
@@ -105,9 +108,13 @@ field.AccessRequested=FieldAccessLevels.Read;
         await base.OnInitializedAsync();
         _objectActions = ActiveDirectoryObjectAction.Assign.ToList();
         _dbAllowedActions = await Context.GlobalPermissionRequestActions.Select(x => x.ObjectAction).ToListAsync();
-        _dbAllowedFields = AsRequestedFields((await Context.ActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>()).ToList();
-        _dbAllowedFields.AddRange(AsRequestedFields((await Context.CustomActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList()));
-        _dbAllowedFields = _dbAllowedFields.OrderBy(x => x.Field.DisplayName).ToList();
+        var globalPermissionRequestFields = await Context.GlobalPermissionRequestFields.ToListAsync();
+        if(globalPermissionRequestFields != null)
+        {
+            var allowedFields = globalPermissionRequestFields.ToList();
+            _dbAllowedFields = AsRequestedFields(allowedFields).ToList();
+        }
+
         globalPermissionRequestActions = await Context.GlobalPermissionRequestActions.ToListAsync();
         Modal.SetOnYes(Submit);
     }
@@ -315,13 +322,13 @@ field.AccessRequested=FieldAccessLevels.Read;
         entry is IAccountDirectoryAdapter adapter
         && adapter.CanUnlock;
 
-    private IEnumerable<RequestedField> AsRequestedFields(IEnumerable<IActiveDirectoryField> fields)
+    private IEnumerable<RequestedField> AsRequestedFields(IEnumerable<GlobalPermissionRequestField> fields)
     {
         var requestedFields = new List<RequestedField>();
         foreach (var field in fields)
         {
-            var newRequestedField = new RequestedField { Field = field };
-            if (Entry.CanReadField(field))
+            var newRequestedField = new RequestedField { Field = field.CurrentField, CanRequestEdit=field.AllowEdit };
+              if (Entry.CanReadField(field.CurrentField))
             {
                 newRequestedField.AccessRequested = FieldAccessLevels.Edit;
             }
@@ -336,5 +343,6 @@ field.AccessRequested=FieldAccessLevels.Read;
     {
         public IActiveDirectoryField Field { get; set; }
         public FieldAccessLevel? AccessRequested { get; set; } = FieldAccessLevels.Read;
+        public bool CanRequestEdit { get; set; }
     }
 }
