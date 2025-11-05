@@ -1526,18 +1526,13 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int?>("FieldId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GlobalPermissionSettingsId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CustomFieldId");
 
                     b.HasIndex("FieldId");
 
-                    b.HasIndex("GlobalPermissionSettingsId");
-
-                    b.ToTable("GlobalPermissionRequestField");
+                    b.ToTable("GlobalPermissionRequestFields");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
@@ -2554,10 +2549,6 @@ namespace BLAZAM.Common.Migrations.MySql
                         .WithMany()
                         .HasForeignKey("FieldId");
 
-                    b.HasOne("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", null)
-                        .WithMany("RequestableFields")
-                        .HasForeignKey("GlobalPermissionSettingsId");
-
                     b.Navigation("CustomField");
 
                     b.Navigation("Field");
@@ -2813,11 +2804,6 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Navigation("ActionMap");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
-                {
-                    b.Navigation("RequestableFields");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
