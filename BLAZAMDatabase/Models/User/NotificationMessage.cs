@@ -10,7 +10,7 @@ namespace BLAZAM.Database.Models.User
     /// A notification message for the web user. These are
     /// placed under the user's notifications panel
     /// </summary>
-    public class NotificationMessage : AppDbSetBase, IEquatable<NotificationMessage?>
+    public class NotificationMessage : ActiveDirectoryFieldDbSet, IEquatable<NotificationMessage?>
     {
 
         /// <summary>
@@ -59,16 +59,6 @@ namespace BLAZAM.Database.Models.User
         public DateTime Created { get; set; } = DateTime.Now;
 
         public bool Dismissable { get; set; } = true;
-        /// <summary>
-        /// The custom field id being referenced
-        /// </summary>
-        public int? CustomFieldId { get; set; }
-        public ActiveDirectoryField? Field { get; set; }
-        public CustomActiveDirectoryField? CustomField { get; set; }
-        /// <summary>
-        /// The field id being referenced
-        /// </summary>
-        public int? FieldId { get; set; }
 
         /// <summary>
         /// True if the Id's match or the <see cref="Level"/>, 
