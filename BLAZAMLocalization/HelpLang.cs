@@ -14,6 +14,9 @@
         public static readonly string Mapping_Use_Access_Level = "Mapping_Use_Access_Level";
         public static readonly string Text_Copied_To_Clipboard = "Text_Copied_To_Clipboard";
         public static readonly string Missing_First_Or_Last_Name = "Missing_First_Or_Last_Name";
+        public static readonly string Read_Field_Access_Request_Notification_Message = "Read_Field_Access_Request_Notification_Message";
+        public static readonly string Edit_Field_Access_Request_Notification_Message = "Edit_Field_Access_Request_Notification_Message";
+        public static readonly string Action_Access_Request_Notification_Message = "Action_Access_Request_Notification_Message";
         public static readonly string Navigate_Away_Confirmation = "Navigate_Away_Confirmation";
         public static readonly string Duplicate_Name_Conflict = "Duplicate_Name_Conflict";
         public static readonly string No_Request_Actions_Available = "No_Request_Actions_Available";
@@ -62,6 +65,7 @@
         public static readonly string Created = "Created";
         public static readonly string Locked_Out = "Locked_Out";
         public static readonly string Request_To = "Request_To";
+        public static readonly string Request_For = "Request_For";
         public static readonly string Updated = "Updated";
         public static readonly string Deleted = "Deleted";
     }
