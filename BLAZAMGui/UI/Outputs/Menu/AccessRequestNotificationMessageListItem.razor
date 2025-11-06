@@ -30,7 +30,7 @@
 
     </MudCard>
 }
-else if(Notification.Notification.Action!=null)
+else if (Notification.Notification.Action != null)
 {
     <MudCard Class="py-3"
              Elevation="2">
@@ -43,30 +43,29 @@ else if(Notification.Notification.Action!=null)
                 @if (Notification.Notification.Title.IsNullOrEmpty())
                 {
                     <MudText Typo="Typo.subtitle2">
-                        @AppHelpLocalization[HelpLang.Request_To,@AppLocalization[Notification.Notification.Action.ToString()]]
+                        @AppHelpLocalization[HelpLang.Request_To, @AppLocalization[Notification.Notification.Action.ToString()]]
                     </MudText>
                 }
                 else
                 {
                     <MudText Typo="Typo.subtitle2">
-                        @AppHelpLocalization[HelpLang.Request_To,@AppLocalization[Notification.Notification.Title]]
-                   </MudText>
+                        @AppHelpLocalization[HelpLang.Request_To, @AppLocalization[Notification.Notification.Title]]
+                    </MudText>
                 }
 
                 @if (Notification.Notification.Message.IsNullOrEmpty())
                 {
                     <MudText Typo="Typo.caption">
-                        <MudLink Typo="Typo.caption" Href="@_creator?.SearchUri" Disabled="@(_creator==null)">
+                        <MudLink Typo="Typo.caption" Href="@_creator?.SearchUri" Disabled="@(_creator == null)">
                             @(_creator != null ? _creator.DisplayName : _creatorAppUser?.Username)
                         </MudLink>
-                        @AppLocalization["is requesting"]
-                        @AppLocalization[Notification.Notification.Action.ToString()].ToString().ToLower()
-                        @AppLocalization["access to"]
-                        <MudLink Typo="Typo.caption" Href="@_target?.SearchUri" Disabled=@(_target==null)>
-                            @(_target != null ? _target.CanonicalName : Notification.Notification.TargetDN)
-                        </MudLink>
-                    </MudText>
-                }
+                        @AppHelpLocalization[HelpLang.Action_Access_Request_Notification_Message,
+                        AppLocalization[Notification.Notification.Action.ToString()].ToString().ToLower()]
+                <MudLink Typo="Typo.caption" Href="@_target?.SearchUri" Disabled=@(_target == null)>
+                    @(_target != null ? _target.CanonicalName : Notification.Notification.TargetDN)
+                </MudLink>
+            </MudText>
+                        }
                 else
                 {
                     <MudText Typo="Typo.subtitle2" Style="">
@@ -102,7 +101,7 @@ else if(Notification.Notification.Action!=null)
     </AppModal>
 }
 
-else if(Notification.Notification.Action==null)
+else if (Notification.Notification.Action == null)
 {
     <MudCard Class="py-3"
              Elevation="2">
@@ -115,26 +114,34 @@ else if(Notification.Notification.Action==null)
                 @if (Notification.Notification.Title.IsNullOrEmpty())
                 {
                     <MudText Typo="Typo.subtitle2">
-                        @AppHelpLocalization[HelpLang.Request_To,@AppLocalization[Notification.Notification.FieldId.ToString()]]
+                        @AppHelpLocalization[HelpLang.Request_For, @AppLocalization[Notification.Notification.Field.DisplayName]]
                     </MudText>
                 }
                 else
                 {
                     <MudText Typo="Typo.subtitle2">
-                        @AppHelpLocalization[HelpLang.Request_To,@AppLocalization[Notification.Notification.Title]]
-                   </MudText>
+                        @AppLocalization[Notification.Notification.Title]
+                    </MudText>
                 }
 
                 @if (Notification.Notification.Message.IsNullOrEmpty())
                 {
                     <MudText Typo="Typo.caption">
-                        <MudLink Typo="Typo.caption" Href="@_creator?.SearchUri" Disabled="@(_creator==null)">
+                        <MudLink Typo="Typo.caption" Href="@_creator?.SearchUri" Disabled="@(_creator == null)">
                             @(_creator != null ? _creator.DisplayName : _creatorAppUser?.Username)
                         </MudLink>
-                        @AppLocalization["is requesting"]
-                        @AppLocalization[Notification.Notification.Action.ToString()].ToString().ToLower()
-                        @AppLocalization["access to"]
-                        <MudLink Typo="Typo.caption" Href="@_target?.SearchUri" Disabled=@(_target==null)>
+                        @if (Notification.Notification.MessageType == MessageType.EditAccessRequest)
+                        {
+                            @AppHelpLocalization[HelpLang.Edit_Field_Access_Request_Notification_Message,
+                            AppLocalization[Notification.Notification.CurrentField.DisplayName].ToString().ToLower()]
+                                }
+                        else
+                        {
+                            @AppHelpLocalization[HelpLang.Read_Field_Access_Request_Notification_Message,
+                            AppLocalization[Notification.Notification.CurrentField.DisplayName].ToString().ToLower()]
+                                }
+
+                        <MudLink Typo="Typo.caption" Href="@_target?.SearchUri" Disabled=@(_target == null)>
                             @(_target != null ? _target.CanonicalName : Notification.Notification.TargetDN)
                         </MudLink>
                     </MudText>
@@ -172,7 +179,7 @@ else if(Notification.Notification.Action==null)
             <FieldAccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
         }
     </AppModal>
-    }
+}
 @code {
     AppModal? _approvalModal;
     [Parameter]
@@ -223,7 +230,7 @@ else if(Notification.Notification.Action==null)
         {
             try
             {
-                if (await NotificationPublisher.DeleteNotification(Notification.Notification, Notification.User))
+                if (await NotificationPublisher.DeleteNotification(Notification))
                 {
                     SnackBarService.Info(AppLocalization[Lang.Request_Denied]);
                     await AnalyticsService.AccessRequestDenied(Notification.Notification.Title);
@@ -231,9 +238,9 @@ else if(Notification.Notification.Action==null)
 
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                SnackBarService.Warning(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred]);
+                SnackBarService.Warning(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred] + " " + ex.Message);
 
             }
         }
@@ -242,7 +249,7 @@ else if(Notification.Notification.Action==null)
     {
 
         SnackBarService.Success(AppLocalization[Lang.Request_Approved]);
-        if (!await NotificationPublisher.DeleteNotification(Notification.Notification, Notification.User))
+        if (!await NotificationPublisher.DeleteNotification(Notification))
         {
             Loggers.SystemLogger.Error(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred]);
 
