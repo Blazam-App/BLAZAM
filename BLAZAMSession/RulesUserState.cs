@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using BLAZAM.Localization;
+using System.Security.Claims;
 
 namespace BLAZAM.Session
 {
@@ -6,9 +7,10 @@ namespace BLAZAM.Session
     {
         public RulesUserState(IAppDatabaseFactory factory, string? ruleName = null) : base(factory)
         {
-            var username = "Rules" + " [" + ruleName + "]";
+            var username = AppLocalization.Rule.ToString() + " [" + ruleName + "]";
             var identity = new ClaimsIdentity();
             identity.AddClaim(new Claim(ClaimTypes.Name, username));
+            identity.AddClaim(new Claim(ClaimTypes.WindowsAccountName, username));
             this.User = new ClaimsPrincipal();
             this.User.AddIdentity(identity);
         }
