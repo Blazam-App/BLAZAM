@@ -537,6 +537,9 @@
   <data name="Last Logon" xml:space="preserve">
     <value>上次登录</value>
   </data>
+  <data name="LAPS_Password" xml:space="preserve">
+    <value>LAPS 密码</value>
+  </data>
   <data name="Last Name" xml:space="preserve">
     <value>姓</value>
   </data>
@@ -1277,5 +1280,26 @@
   </data>
   <data name="Text" xml:space="preserve">
     <value>文本</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>规则</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>规则</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>创建规则</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>对象类型</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>扳机</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>行动后</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>行动前</value>
   </data>
 </root>

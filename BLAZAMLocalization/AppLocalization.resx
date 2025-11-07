@@ -1311,4 +1311,25 @@
   <data name="Text" xml:space="preserve">
     <value>Text</value>
   </data>
+  <data name="Rule" xml:space="preserve">
+    <value>Rule</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>Rules</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>Create Rule</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>Object Type</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>Trigger</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>After Action</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>Before Action</value>
+  </data>
 </root>

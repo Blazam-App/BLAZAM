@@ -268,6 +268,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to After Action.
+        /// </summary>
+        public static string After_Action {
+            get {
+                return ResourceManager.GetString("After Action", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
         public static string All {
@@ -561,6 +570,15 @@ namespace BLAZAM.Localization {
         public static string Bearer {
             get {
                 return ResourceManager.GetString("Bearer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Before Action.
+        /// </summary>
+        public static string Before_Action {
+            get {
+                return ResourceManager.GetString("Before Action", resourceCulture);
             }
         }
         
@@ -903,6 +921,15 @@ namespace BLAZAM.Localization {
         public static string Create_OU {
             get {
                 return ResourceManager.GetString("Create OU", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Rule.
+        /// </summary>
+        public static string Create_Rule {
+            get {
+                return ResourceManager.GetString("Create Rule", resourceCulture);
             }
         }
         
@@ -2212,6 +2239,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Object Type.
+        /// </summary>
+        public static string Object_Type {
+            get {
+                return ResourceManager.GetString("Object Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Office.
         /// </summary>
         public static string Office {
@@ -2806,6 +2842,24 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rule.
+        /// </summary>
+        public static string Rule {
+            get {
+                return ResourceManager.GetString("Rule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rules.
+        /// </summary>
+        public static string Rules {
+            get {
+                return ResourceManager.GetString("Rules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Running.
         /// </summary>
         public static string Running {
@@ -3225,6 +3279,15 @@ namespace BLAZAM.Localization {
         public static string Token_Lifetime {
             get {
                 return ResourceManager.GetString("Token Lifetime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trigger.
+        /// </summary>
+        public static string Trigger {
+            get {
+                return ResourceManager.GetString("Trigger", resourceCulture);
             }
         }
         
