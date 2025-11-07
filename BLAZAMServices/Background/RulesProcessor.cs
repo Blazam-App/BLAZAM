@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Data;
 using System.Diagnostics;
+using BLAZAM.Services.Audit;
 
 namespace BLAZAM.Services.Background
 {
@@ -40,6 +41,7 @@ namespace BLAZAM.Services.Background
             {
                 _ = SeedExcludedGroups();
             });
+            _ = new RulesAuditLogger(dbFactory);
         }
 
         /// <summary>
