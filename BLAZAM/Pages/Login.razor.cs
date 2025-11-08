@@ -5,7 +5,6 @@ using BLAZAM.Gui.UI.Modals;
 using BLAZAM.Gui.UI.Settings;
 using BLAZAM.Localization;
 using Microsoft.JSInterop;
-using Newtonsoft.Json;
 using System.Security;
 
 namespace BLAZAM.Pages
@@ -71,7 +70,7 @@ namespace BLAZAM.Pages
                         LoginRequest.MFAToken = otpCode;
                     }
                     var response = await JSRuntime.InvokeAsync<string>("attemptSignIn", LoginRequest);
-                    authenticationResult = JsonConvert.DeserializeObject<LoginRequest>(response);
+                    authenticationResult = response.FromJson<LoginRequest>();
                 }
                 catch (Exception ex)
                 {
