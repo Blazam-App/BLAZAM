@@ -144,6 +144,7 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<RequestAuditLog> RequestAuditLog { get; set; }
         public virtual DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
         public virtual DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
+        public virtual DbSet<AutomationRuleAuditLog> AutomationRuleAuditLog { get; set; }
 
 
 
