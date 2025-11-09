@@ -136,6 +136,7 @@ namespace BLAZAM.Helpers
             AddAutomationRuleConfig(modelBuilder);
             AddAutomationRuleActionConfig(modelBuilder);
             AddAutomationRuleOrFilterConfig(modelBuilder);
+            AddGlobalAutomationRuleSettingsConfig(modelBuilder);
             AddAutomationRuleAndFilterConfig(modelBuilder);
             AddAutomationRuleActionFieldValueConfig(modelBuilder);
             AddDirectoryTemplateFieldValueConfig(modelBuilder);
@@ -435,6 +436,14 @@ namespace BLAZAM.Helpers
             {
                 entity.Navigation(e => e.Field).AutoInclude();
                 entity.Navigation(e => e.CustomField).AutoInclude();
+            });
+        }
+
+        internal static void AddGlobalAutomationRuleSettingsConfig(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<GlobalAutomationRuleSettings>(entity =>
+            {
+                entity.Navigation(e => e.ExcludedGroups).AutoInclude();
             });
         }
 
