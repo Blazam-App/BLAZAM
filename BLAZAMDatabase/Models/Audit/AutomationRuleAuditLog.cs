@@ -34,8 +34,6 @@ namespace BLAZAM.Database.Models.Audit
         public string? FilterSnapshot { get; set; }
         public bool? MatchesFilter { get; set; }
         public NotificationType? Trigger { get; set; }
-
-
-
+        public Guid? ExecutionId { get; set; }
     }
 }
