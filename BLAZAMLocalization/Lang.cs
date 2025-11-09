@@ -62,6 +62,7 @@
         public static readonly string Is_Revoked = "Is Revoked";
         public static readonly string User_is_disabled = "User is disabled";
         public static readonly string Never_used = "Never used";
+        public static readonly string Compact_View = "Compact View";
         public static readonly string Dedicated_To = "Dedicated To";
         public static readonly string In_Loving_Memory = "In Loving Memory";
         public static readonly string Source_Code = "Source Code";
@@ -160,6 +161,7 @@
         public static readonly string Action = "Action";
         public static readonly string Data = "Data";
         public static readonly string Remove_Or_Filter = "Remove Or Filter";
+        public static readonly string Rules_Enabled = "Rules Enabled";
         public static readonly string Add_And_Filter = "Add And Filter";
         public static readonly string IP_Address = "IP Address";
         public static readonly string Fields = "Fields";
