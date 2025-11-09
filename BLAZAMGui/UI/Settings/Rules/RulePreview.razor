@@ -95,7 +95,7 @@
                         <MudTextField T="string"
                                       ReadOnly="true"
                                       Label="@AppLocalization[Lang.Field]"
-                                      Value=@action.FieldValues[0].CurrentField.DisplayName />
+                                      Value=@action.FieldValues[0].CurrentField?.DisplayName />
                         <MudTextField T="string"
                                       ReadOnly="true"
                                       Label="@AppLocalization[Lang.Value]"
@@ -169,7 +169,7 @@
                 <MudStack Class="mud-width-full" Row="true">
                     <MudSpacer />
                     <MudButton Color="Color.Primary"
-                               Disabled="@(!Rule.Enabled||_ruleRunning)"
+                               Disabled="@(!Rule.Enabled||_ruleRunning || _settings?.RulesEnabled!=true)"
                                OnClick="@(RunRule)">
                         @AppLocalization[Lang.Run_Now]
                     </MudButton>
@@ -213,15 +213,31 @@
     public EventCallback EditClicked { get; set; }
 
     [Parameter]
+    public AppEvent ReloadEvent{ get; set; }
+
+    [Parameter]
     public EventCallback CopyClicked { get; set; }
+
+    private GlobalAutomationRuleSettings? _settings;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        LoadingData = false;
-        LoadFilteredEntries();
+        ReloadRule();
+        ReloadEvent.Delegate += TriggerReloadRule;
     }
-    private void ReloadRule()
+    public override void Dispose()
+    {
+        base.Dispose();
+        ReloadEvent.Delegate -= TriggerReloadRule;
+
+    }
+
+    private void TriggerReloadRule(object? obj,object? args)
+    {
+        ReloadRule();
+    }
+    public void ReloadRule()
     {
         _ = Task.Run(async () =>
        {
@@ -229,6 +245,7 @@
 
            LoadingData = true;
            using var context = await DbFactory.CreateDbContextAsync();
+           _settings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
            Rule = await context.AutomationRules.FirstAsync(r => r.Id == Rule.Id);
            filteredEntries = await RulesProcessor.GetFilteredEntries(Rule);
            LoadingData = false;
@@ -272,6 +289,12 @@
         _ruleRunning = true;
         await StateHasChangedAsync();
         var job = await RulesProcessor.ProcessScheduledRule(Rule);
+        if (job == null)
+        {
+            _ruleRunning = false;
+            await StateHasChangedAsync();
+            return;
+        }
         job.OnProgressUpdated += (progress) =>
         {
             LoadFilteredEntries();
