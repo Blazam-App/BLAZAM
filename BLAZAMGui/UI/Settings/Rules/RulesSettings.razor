@@ -1,4 +1,5 @@
-﻿@using BLAZAM.Global.Events
+﻿@using BLAZAM.Database.Models.Rules
+@using BLAZAM.Global.Events
 @inherits AppComponentBase
 <MudStack Row="true">
     <MudText Typo="Typo.h4">
@@ -11,6 +12,12 @@
         Icon="@Icons.Material.Filled.Settings"
         OnClick="@(()=>{_=_settingsModal.ShowAsync();})"/>
 </MudStack>
+@if (_settings?.RulesEnabled != true)
+{
+    <MudAlert Severity="Severity.Warning" Variant="Variant.Filled" Class="mb-3">
+        Rules are currently disabled.
+    </MudAlert> 
+}
 <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Class="mb-3">
     Rules will never run against the account provided to Blazam.
     <br /><br />
@@ -23,7 +30,6 @@
                 <MudCard>
                     <MudText Typo="Typo.h6" Class="my-3 ps-3">@AppLocalization[Lang.Object_Type]</MudText>
                     <MudDivider />
-
                     <RuleObjectTypes />
                 </MudCard>
                 <MudCard>
@@ -36,7 +42,7 @@
                                                             _compactView=val;
                                                             _=InvokeAsync(StateHasChanged);
                                                             })"
-                    Label="Compact View"
+                    Label=@AppLocalization[Lang.Compact_View]
                     Color="Color.Success"
                     UncheckedColor="Color.Error" />
                 </MudCard>
@@ -58,7 +64,7 @@
                     </MudButton>
                 </MudStack>
                 <MudDivider />
-                <RulesForTrigger CompactView="_compactView"
+                <RulesForTrigger @ref=_ruleForTriggerDisplay CompactView="_compactView"
                 RulesSettings="this" />
             </MudCard>
 
@@ -66,7 +72,7 @@
     </MudGrid>
 
     <AppModal @ref="_settingsModal">
-        <GlobalRuleSettingsModalContent />
+        <GlobalRuleSettingsModalContent Settings="_settings" OnSaved="@(async()=>{await StateHasChangedAsync();await _ruleForTriggerDisplay.GetRulesAsync();})"/>
         </AppModal>
 </CascadingValue>
 @code {
@@ -75,9 +81,9 @@
     public AppDelegate? CreateRule { get; set; }
     [Parameter]
     public RuleViewFilter ViewFilter { get; set; }
-
+    GlobalAutomationRuleSettings? _settings;
     List<NotificationType> triggerTypes = new();
-
+    RulesForTrigger? _ruleForTriggerDisplay;
 
     protected override void OnInitialized()
     {
@@ -89,5 +95,6 @@
         triggerTypes = triggerTypes.OrderBy(t => t.ToString()).ToList();
         ViewFilter.ObjectTypeChanged += () => InvokeAsync(StateHasChanged);
         ViewFilter.TriggerChanged += () => InvokeAsync(StateHasChanged);
+        _settings = DbFactory.CreateDbContext()?.GlobalAutomationRuleSettings.FirstOrDefault();
     }
 }
