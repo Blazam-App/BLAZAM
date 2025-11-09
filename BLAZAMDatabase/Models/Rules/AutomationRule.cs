@@ -1,5 +1,7 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Notifications;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.Database.Models.Rules
 {
@@ -96,13 +98,17 @@ namespace BLAZAM.Database.Models.Rules
         /// <summary>
         /// Or List of Ands to filter object by
         /// </summary>
+        [JsonIgnore]
         public List<AutomationRuleOrFilter> Filters { get; set; } = [];
 
         /// <summary>
         /// The actions to perform if this rule's filters are applicable to this triggering event
         /// </summary>
+        [JsonIgnore]
         public List<AutomationRuleAction> Actions { get; set; } = [];
 
+        [NotMapped]
+        public Guid? ExecutionId { get; set; }
         public override string ToString()
         {
             return Name ?? "New Rule";
