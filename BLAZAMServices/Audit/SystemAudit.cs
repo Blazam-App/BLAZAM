@@ -9,12 +9,6 @@ namespace BLAZAM.Services.Audit
         public SystemAudit(IAppDatabaseFactory factory, IJSRuntime? jSRuntime = null) : base(factory, jSRuntime)
         {
         }
-
-        public async Task<bool> LogMessage(string message)
-        {
-
-            return await Log(message);
-        }
         public async Task<bool> APITokenCreated(string username)
         {
             return await Log("API_Token_Created", null, null, username);
