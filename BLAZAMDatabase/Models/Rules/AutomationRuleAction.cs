@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Database.Models.Rules
+﻿using System.Text.Json.Serialization;
+
+namespace BLAZAM.Database.Models.Rules
 {
     public enum AutomationRuleActionType
     {
@@ -29,6 +31,7 @@
         /// <remarks>
         /// Although a list, the GUI currently restricts this to one item
         /// </remarks>
+        [JsonIgnore]
         public List<AutomationRuleActionFieldValue> FieldValues { get; set; } = [];
 
         /// <summary>
