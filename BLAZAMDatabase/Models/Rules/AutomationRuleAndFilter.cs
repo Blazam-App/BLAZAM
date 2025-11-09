@@ -1,9 +1,14 @@
-﻿namespace BLAZAM.Database.Models.Rules
+﻿
+
+using System.Text.Json.Serialization;
+
+namespace BLAZAM.Database.Models.Rules
 {
 
     public class AutomationRuleAndFilter : ActiveDirectoryFieldDbSet
     {
 
+        [JsonIgnore]
         public AutomationRuleOrFilter OrFilter { get; set; }
         public int OrFilterId { get; set; }
 
