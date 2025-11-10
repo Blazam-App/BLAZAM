@@ -529,7 +529,6 @@ namespace BLAZAM.Services.Background
                 {
                     Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name, entry.DN, sw.Elapsed);
 
-                    _audit.RuleExecutionFinished(ruleForEvent, sw.Elapsed);
                     return false;
                 }
             }
