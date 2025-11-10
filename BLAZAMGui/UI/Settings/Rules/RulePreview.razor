@@ -1,6 +1,8 @@
 @inherits DatabaseComponentBase
+@using BLAZAM.Database.Models.Audit
 @using BLAZAM.Database.Models.Rules
 @using BLAZAM.Gui.UI.Dashboard.Widgets
+@using Serilog.Events
 <MudPaper Elevation="1" Class="pa-4 my-4">
     <MudStack>
         <MudStack Row=true>
@@ -184,17 +186,37 @@
                 </MudStack>
 
             }
+            <MudButton Color="@(_auditErrors.Count == 0 ? Color.Primary : Color.Error)"
+                       OnClick="@(()=>{_auditPopoverOpen=!_auditPopoverOpen;})">
+                @AppLocalization[Lang.Audit]
+            </MudButton>
+
+            @if (_auditPopoverOpen)
+            {
+                <MudDataGrid Items="_recentAudits">
+                    <Columns>
+                        <PropertyColumn Title="@AppLocalization[Lang.Timestamp]" Property="x => x.Timestamp" />
+                        <PropertyColumn Title="@AppLocalization[Lang.Type]" Property="x => x.EventType" />
+                        <PropertyColumn Title="@AppLocalization["Level"]" Property="x => x.Level" />
+                        <PropertyColumn Title="@AppLocalization[Lang.Message]" Property="x => x.Message" />
+
+                    </Columns>
+                </MudDataGrid>
+            }
         }
     </MudStack>
 </MudPaper>
 <LoadingData Loading="LoadingData" />
 @code {
     private bool _matchedPopoverOpen;
+    private bool _auditPopoverOpen;
     private bool _loadingFilteredEntries;
     private List<IDirectoryEntryAdapter> filteredEntries = new();
     [Parameter]
     public AutomationRule Rule { get; set; }
     bool _ruleRunning;
+    private List<AutomationRuleAuditLog> _auditErrors = [];
+    private List<AutomationRuleAuditLog> _recentAudits = [];
     bool _compactView;
     [Parameter]
     public bool CompactView
@@ -213,7 +235,7 @@
     public EventCallback EditClicked { get; set; }
 
     [Parameter]
-    public AppEvent ReloadEvent{ get; set; }
+    public AppEvent ReloadEvent { get; set; }
 
     [Parameter]
     public EventCallback CopyClicked { get; set; }
@@ -233,7 +255,7 @@
 
     }
 
-    private void TriggerReloadRule(object? obj,object? args)
+    private void TriggerReloadRule(object? obj, object? args)
     {
         ReloadRule();
     }
@@ -248,6 +270,16 @@
            _settings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
            Rule = await context.AutomationRules.FirstAsync(r => r.Id == Rule.Id);
            filteredEntries = await RulesProcessor.GetFilteredEntries(Rule);
+           var auditTimestampCutoff = DateTime.UtcNow.Subtract(TimeSpan.FromDays(30));
+           _auditErrors = await Context.AutomationRuleAuditLog
+               .Where(x => x.Level == LogEventLevel.Error && x.AutomationRuleId == Rule.Id && x.Timestamp>auditTimestampCutoff)
+               .OrderByDescending(x => x.Timestamp)
+               .ToListAsync();
+           _recentAudits = await Context.AutomationRuleAuditLog
+               .Where(x => x.AutomationRuleId == Rule.Id && x.Timestamp > auditTimestampCutoff)
+               .OrderByDescending(x => x.Timestamp)
+               .Take(100)
+               .ToListAsync();
            LoadingData = false;
            LoadFilteredEntries();
 
