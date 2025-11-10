@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Notifications;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -20,6 +21,7 @@ namespace BLAZAM.Database.Models.Rules
         /// <summary>
         /// The name of this rule
         /// </summary>
+        [Required]
         public string Name { get; set; }
 
         /// <summary>
