@@ -28,7 +28,7 @@
     </MudStack>
 </MudContainer>
 @code {
-    List<string> allowedWorkstations = new();
+    List<string> allowedWorkstations = [];
     ADAutoComplete? _searchBox;
     protected override async Task OnInitializedAsync()
     {
@@ -36,7 +36,7 @@
         Modal.SetOnYes(SaveChanges);
         Modal.Title = "Log On To";
         var data = User.LogOnTo?.Split(',');
-        if (data != null)
+        if (data != null && data.Any(d=>!d.IsNullOrEmpty()))
         {
             allowedWorkstations.AddRange(data);
         }

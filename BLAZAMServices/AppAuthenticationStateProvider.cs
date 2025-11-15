@@ -166,6 +166,7 @@ namespace BLAZAM.Services
             [
                 new Claim(ClaimTypes.Sid, "2"),
                 new Claim(ClaimTypes.Name, "Demo"),
+                new Claim(ClaimTypes.WindowsAccountName, "Demo"),
                 new Claim(ClaimTypes.Actor, "2")
             ];
             claims.AddSuperAdmin();
@@ -179,6 +180,8 @@ namespace BLAZAM.Services
             [
                  new Claim(ClaimTypes. Sid, "1"),
                     new Claim(ClaimTypes.Name, name),
+                new Claim(ClaimTypes.WindowsAccountName, name),
+
                     new Claim(ClaimTypes.Actor,"1")
             ];
             claims.AddSuperAdmin();

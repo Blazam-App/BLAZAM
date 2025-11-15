@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
@@ -369,6 +370,22 @@ namespace BLAZAM.Services.Background
                 TargetDN = target.DN,
                 MessageType = MessageType.AccessRequest,
                 Title = _appLocalization["Request to"] + " " + _appLocalization[action.ToString()]
+            };
+
+            notification.Level = NotificationLevel.Info;
+        }
+
+        public void PackageRequest(IDirectoryEntryAdapter target, IActiveDirectoryField field, IApplicationUserState? actor, out NotificationMessage notification)
+        {
+            notification = new NotificationMessage()
+            {
+                FieldId = (field as ActiveDirectoryField)?.Id,
+                CustomFieldId = (field as CustomActiveDirectoryField)?.Id,
+                CreatorId = actor?.Preferences.Id,
+                Level = NotificationLevel.Info,
+                TargetDN = target.DN,
+                MessageType = MessageType.AccessRequest,
+                Title = _appLocalization["Request for"] + " " + _appLocalization[field.DisplayName]
             };
 
             notification.Level = NotificationLevel.Info;
