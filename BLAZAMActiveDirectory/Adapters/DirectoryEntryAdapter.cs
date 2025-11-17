@@ -202,12 +202,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
+
                 if (Classes == null || !Classes.Contains("top"))
                 {
                     return ActiveDirectoryObjectType.OU;
                 }
 
                 return GetObjectTypeFromClasses(Classes);
+
             }
         }
 

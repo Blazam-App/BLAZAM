@@ -277,7 +277,7 @@ else
                 SnackBarService.Success("User has been created");
                 Confirmed = true;
                 await OnConfirmed.InvokeAsync();
-
+                User = (IADUser?)Directory.GetDirectoryEntryByDN(User.DN)!;
                 ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Create,

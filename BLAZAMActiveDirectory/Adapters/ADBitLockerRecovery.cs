@@ -1,10 +1,12 @@
 ﻿
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADBitLockerRecovery : DirectoryEntryAdapter, IADBitLockerRecovery
     {
+        public override ActiveDirectoryObjectType ObjectType => ActiveDirectoryObjectType.BitLocker;
 
 
         public Guid? RecoveryId

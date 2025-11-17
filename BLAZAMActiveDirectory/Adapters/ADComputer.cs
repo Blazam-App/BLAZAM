@@ -38,6 +38,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
+        public override ActiveDirectoryObjectType ObjectType => ActiveDirectoryObjectType.Computer;
+
         public async Task<List<IADBitLockerRecovery>?> GetBitLockerRecoveryAsync()
         {
             var recovery = await Directory.BitLocker.FindByComputerAsync(this);

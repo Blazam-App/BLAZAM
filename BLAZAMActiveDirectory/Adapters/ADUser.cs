@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
@@ -12,6 +13,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADUser : AccountDirectoryAdapter, IADUser
     {
+        public override ActiveDirectoryObjectType ObjectType => ActiveDirectoryObjectType.User;
 
         public string? LogOnTo
         {

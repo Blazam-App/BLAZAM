@@ -386,6 +386,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are no fields available to request for this entry.
+        /// </summary>
+        public static string No_Request_Fields_Available {
+            get {
+                return ResourceManager.GetString("No_Request_Fields_Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generating a new authenticator token will invalidate the existing one!.
         /// </summary>
         public static string Overwrite_Auth_Token_Confirmation {

@@ -10,6 +10,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
     {
         private IEnumerable<IADOrganizationalUnit>? childOUCache;
 
+        public override ActiveDirectoryObjectType ObjectType => ActiveDirectoryObjectType.OU;
 
         public async Task<bool> HasChildrenAsync()
         {

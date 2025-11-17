@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Jobs;
 using System.Text.Json.Serialization;
@@ -19,6 +20,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected const int ADS_GROUP_TYPE_DOMAIN_LOCAL_GROUP = 0x4;
         protected const int ADS_GROUP_TYPE_UNIVERSAL_GROUP = 0x8;
         protected const int ADS_GROUP_TYPE_SECURITY_ENABLED = unchecked((int)0x80000000);
+        public override ActiveDirectoryObjectType ObjectType => ActiveDirectoryObjectType.Group;
 
         public GroupScope GroupScope
         {
