@@ -8,9 +8,8 @@ namespace BLAZAM.ActiveDirectory
     /// </summary>
     public class ScopedActiveDirectoryContext : IDisposable
     {
-        private IActiveDirectoryContextFactory _contextFactory;
+        private readonly IActiveDirectoryContextFactory _contextFactory;
         private bool disposedValue;
-
         public IActiveDirectoryContext Context { get; }
 
         /// <summary>
@@ -24,6 +23,10 @@ namespace BLAZAM.ActiveDirectory
             ApplicationStatistics.AddADContext();
 
         }
+        ~ScopedActiveDirectoryContext()
+        {
+                ApplicationStatistics.RemoveADContext();
+        }
         /// <summary>
         /// Removes all created <see cref="IActiveDirectoryContext"/>'s created by this user's factory
         /// </summary>
@@ -34,7 +37,6 @@ namespace BLAZAM.ActiveDirectory
                 if (disposing)
                 {
                     ApplicationStatistics.RemoveADContext();
-
                     Context.Dispose();
 
                 }
