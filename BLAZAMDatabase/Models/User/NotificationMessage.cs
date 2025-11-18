@@ -62,11 +62,11 @@ namespace BLAZAM.Database.Models.User
         /// <summary>
         /// The custom field id being referenced
         /// </summary>
-        public int? CustomFieldId { get; set; }
+        //public int? CustomFieldId { get; set; }
         /// <summary>
         /// The field id being referenced
         /// </summary>
-        public int? FieldId { get; set; }
+        //public int? FieldId { get; set; }
 
         /// <summary>
         /// True if the Id's match or the <see cref="Level"/>, 
