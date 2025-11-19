@@ -59,6 +59,8 @@ namespace BLAZAM.Database.Models.User
         public DateTime Created { get; set; } = DateTime.Now;
 
         public bool Dismissable { get; set; } = true;
+
+        /// TODO : Implement when field requests are merged.
         /// <summary>
         /// The custom field id being referenced
         /// </summary>
