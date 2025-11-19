@@ -38,6 +38,7 @@ namespace BLAZAM.Database.Models
         /// <returns>True if this field should apply, otherwise false</returns>
         bool IsFieldAppropriateForObject(ActiveDirectoryObjectType objectType);
 
+
         /// <summary>
         /// 
         /// </summary>

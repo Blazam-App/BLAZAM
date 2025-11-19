@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADContact : GroupableDirectoryAdapter, IADContact
     {
+
+        public override ActiveDirectoryObjectType ObjectType => ActiveDirectoryObjectType.Contact;
+
         public byte[]? ThumbnailPhoto
         {
 

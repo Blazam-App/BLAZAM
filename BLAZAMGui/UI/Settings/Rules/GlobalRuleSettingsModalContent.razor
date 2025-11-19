@@ -1,0 +1,18 @@
+﻿@inherits AppModalContent
+
+<MudStack Row=true>
+    <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group" @bind-SelectedResult=_selectedGroup />
+ 
+</MudStack>
+
+
+@code {
+    List<GenericSidList> GroupSids = [];
+    IDirectoryEntryAdapter? _selectedGroup;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal.SetOnYes(()=>{ return Task.CompletedTask; });
+    }
+
+}

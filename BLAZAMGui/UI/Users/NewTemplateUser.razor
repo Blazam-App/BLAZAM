@@ -16,15 +16,75 @@
                     </MudAlert>
                 }
             }
+            @if (InDirectoryTemplate(ActiveDirectoryFields.LogonHours) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.LogOnTo) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.AccountExpires)
+                    )
+            {
+
+                <ViewSection Title=@AppLocalization[Lang.Account]>
+                    @if (InDirectoryTemplate(ActiveDirectoryFields.AccountExpires))
+                    {
+                        <DynamicMudInput T=DateTime?
+                                         Clearable=true
+                                         Label="@AppLocalization[Lang.Account_Expiration]"
+                                         Value="@User.ExpireTime?.ToLocalTime()"
+                                         ValueChanged="@((value)=>{User.ExpireTime=value;})"
+                                         Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.AccountExpires)) />
+                    }
+                    <MudStack Row=true>
+                        @if (InDirectoryTemplate(ActiveDirectoryFields.LogOnTo))
+                        {
+                            <MudButton Variant="Variant.Filled"
+                                       Color="@(User.LogOnTo == null || User.LogOnTo == String.Empty?Color.Primary:Color.Warning)"
+                                       OnClick="@(()=>{_logOnToModal?.ShowAsync();})"
+                                       Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.LogOnTo))>
+                                @AppLocalization[Lang.Log_On_To]
+                            </MudButton>
+
+                            <AppModal Title=@AppLocalization[Lang.Log_On_To] @ref=@_logOnToModal>
+                                @if (_logOnToModal?.IsShown == true)
+                                {
+                                    <LogOnToModalContent Entry="User" />
+                                }
+                            </AppModal>
+
+
+
+                        }
+                        @if (InDirectoryTemplate(ActiveDirectoryFields.LogonHours))
+                        {
+                            <MudButton Variant="Variant.Filled"
+                                       Color="@(Color.Primary)"
+                                       OnClick="@(()=>{_logonHoursModal?.ShowAsync();})"
+                                       Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.LogonHours))>
+                                @AppLocalization[Lang.Logon_Hours]
+                            </MudButton>
+
+                            <AppModal Title=@AppLocalization[Lang.Logon_Hours]
+                                      @ref=@_logonHoursModal
+                                      Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
+                                @if (_logonHoursModal?.IsShown == true)
+                                {
+                                    <LogonHoursModalContent Entry="User" />
+                                }
+                            </AppModal>
+                        }
+
+                    </MudStack>
+
+
+                </ViewSection>
+            }
 
             @if (InDirectoryTemplate(ActiveDirectoryFields.Description) ||
-           InDirectoryTemplate(ActiveDirectoryFields.Mail) ||
-           InDirectoryTemplate(ActiveDirectoryFields.EmployeeId) ||
-           InDirectoryTemplate(ActiveDirectoryFields.Department) ||
-           InDirectoryTemplate(ActiveDirectoryFields.Company) ||
-           InDirectoryTemplate(ActiveDirectoryFields.Title) ||
-           InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
-           )
+                    InDirectoryTemplate(ActiveDirectoryFields.Mail) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.EmployeeId) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.Department) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.Company) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.Title) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
+                    )
             {
                 <ViewSection Title=@AppLocalization[Lang.Organization]>
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
@@ -44,23 +104,23 @@
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Mail))
                     {
                         @if (DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true &&
-                       (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field?.Id == ActiveDirectoryFields.Mail.Id) 
-                       && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field?.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
+                                    (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field?.Id == ActiveDirectoryFields.Mail.Id)
+                                    && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field?.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
                         {
 
                         }
 
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Email_Address]"
-                                      @bind-Value="Contact.Email"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.Mail))
-                                      Required=@((DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true)||
-                          IsRequiredTemplateField(ActiveDirectoryFields.Mail)) />
+                    <MudTextField Immediate=true
+                                  Label="@AppLocalization[Lang.Email_Address]"
+                                  @bind-Value="Contact.Email"
+                                  Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.Mail))
+                                  Required=@((DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true)||
+                                                            IsRequiredTemplateField(ActiveDirectoryFields.Mail)) />
 
 
 
 
-                    }
+                        }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.EmployeeId))
                     {
 
@@ -134,12 +194,12 @@
             }
 
             @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone) ||
-           InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
-           InDirectoryTemplate(ActiveDirectoryFields.POBox) ||
-           InDirectoryTemplate(ActiveDirectoryFields.City) ||
-           InDirectoryTemplate(ActiveDirectoryFields.State) ||
-           InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
-           )
+                    InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.POBox) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.City) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.State) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
+                    )
             {
                 <ViewSection Title=@AppLocalization[Lang.Contact_Info]>
 
@@ -244,10 +304,10 @@
 
             }
             @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory) ||
-           InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
-           InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
-           InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
-           )
+                    InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
+                    InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
+                    )
             {
                 <ViewSection Title=@AppLocalization[Lang.Profile]>
                     @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
@@ -311,16 +371,16 @@
             @if (Entry.CanReadAnyCustomFields)
             {
                 <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
-                    @foreach (var field in DirectoryTemplate.EffectiveFieldValues.Where(f => f.CustomField != null && f.DeletedAt==null))
+                    @foreach (var field in DirectoryTemplate.EffectiveFieldValues.Where(f => f.CustomField != null && f.DeletedAt == null))
                     {
                         @if (field.CustomField != null)
                         {
                             <DynamicMudInput Immediate=true
-                                          Required=@(field.Required)
-                                          Label="@field.FieldDisplayName"
-                                          Value="@Entry.NewEntryProperties[field.CustomField.FieldName].ToString()"
-                                          ValueChanged="@((string val)=>{ Entry.NewEntryProperties[field.CustomField.FieldName]=val;})"
-                                          Disabled=@(!IsAdmin && !IsEditableTemplateField(field.CustomField)) />
+                                             Required=@(field.Required)
+                                             Label="@field.FieldDisplayName"
+                                             Value="@Entry.NewEntryProperties[field.CustomField.FieldName].ToString()"
+                                             ValueChanged="@((string val) => { Entry.NewEntryProperties[field.CustomField.FieldName] = val; })"
+                                             Disabled=@(!IsAdmin && !IsEditableTemplateField(field.CustomField)) />
                         }
                     }
                 </ViewSection>
@@ -347,8 +407,8 @@
 
 
 @code {
-
-
+    private AppModal? _logOnToModal;
+    private AppModal? _logonHoursModal;
 
     [Parameter]
     public EventCallback OnValidSubmit { get; set; }

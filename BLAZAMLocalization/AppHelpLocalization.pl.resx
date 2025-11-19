@@ -225,6 +225,9 @@
   <data name="No_Request_Actions_Available" xml:space="preserve">
     <value>Dla tego wpisu nie są dostępne żadne działania do żądania.</value>
   </data>
+  <data name="No_Request_Fields_Available" xml:space="preserve">
+    <value />
+  </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>Wygenerowanie nowego tokenu uwierzytelniającego unieważni istniejący!</value>
   </data>

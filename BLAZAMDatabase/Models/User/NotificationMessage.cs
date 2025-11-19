@@ -60,6 +60,16 @@ namespace BLAZAM.Database.Models.User
 
         public bool Dismissable { get; set; } = true;
 
+        /// TODO : Implement when field requests are merged.
+        /// <summary>
+        /// The custom field id being referenced
+        /// </summary>
+        //public int? CustomFieldId { get; set; }
+        /// <summary>
+        /// The field id being referenced
+        /// </summary>
+        //public int? FieldId { get; set; }
+
         /// <summary>
         /// True if the Id's match or the <see cref="Level"/>, 
         /// <see cref="Title"/>, and <see cref="Message"/> match
