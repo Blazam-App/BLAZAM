@@ -240,6 +240,18 @@ namespace BLAZAM.Tests.Gui
             // Current implementation returns full string if length is greater than value length
             Assert.Equal("John", result);
         }
+        [Fact]
+        public void ShouldRemoveDiacritics()
+        {
+            var userWithDiacritics = new NewUserName
+            {
+                GivenName = "Jöhn",
+                Surname = "Döe"
+            };
+
+            var result = _template.ReplaceVariables("{fn:d}{ln:d}", userWithDiacritics);
+            Assert.Equal("JohnDoe", result);
+        }
     }
 
 

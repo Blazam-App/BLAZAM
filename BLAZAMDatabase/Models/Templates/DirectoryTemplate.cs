@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
 
@@ -218,6 +220,26 @@ namespace BLAZAM.Database.Models.Templates
         [NotMapped]
         public HashSet<DirectoryTemplate> ChildTemplates { get; set; }
 
+        public static string RemoveDiacritics(string text)
+        {
+            var normalizedString = text.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder(capacity: normalizedString.Length);
+
+            for (int i = 0; i < normalizedString.Length; i++)
+            {
+                char c = normalizedString[i];
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder
+                .ToString()
+                .Normalize(NormalizationForm.FormC);
+        }
+
         public string GenerateUsername(NewUserName newUser)
         {
             return ReplaceVariables(EffectiveUsernameFormula, newUser);
@@ -331,6 +353,9 @@ namespace BLAZAM.Database.Models.Templates
             // Second, apply the case modifier to the (now possibly truncated) value.
             switch (modifier)
             {
+                case "d":
+                    value = RemoveDiacritics(value);
+                    break;
                 case "u":
                     value = value.ToUpper();
                     break;
