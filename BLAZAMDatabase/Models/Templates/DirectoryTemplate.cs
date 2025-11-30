@@ -221,7 +221,7 @@ namespace BLAZAM.Database.Models.Templates
         [NotMapped]
         public HashSet<DirectoryTemplate> ChildTemplates { get; set; }
 
-        
+
 
         public string GenerateUsername(NewUserName newUser)
         {
@@ -286,14 +286,52 @@ namespace BLAZAM.Database.Models.Templates
                     case "ln": return ProcessVariable(newUser?.Surname, modifier, arg);
                     case "li": return ProcessVariable(Substring(newUser?.Surname, 0, 1), modifier, arg);
                     case "username": return username ?? ReplaceVariables(EffectiveUsernameFormula, newUser).Replace(" ", "");
+                    case "alphanumsym":
+                        var ch = RandomLetterDigitOrSymbol();
+                        if (modifier == "u")
+                        {
+                            return ch.ToUpper();
+                        }
+                        else if (modifier == "l")
+                        {
+                            return ch.ToLower();
+                        }
+                        else
+                        {
+                            return ch;
+                        }
                     case "alphanum":
-                        var ch = RandomLetterOrDigit();
-                        return modifier == "u" ? ch.ToUpper() : ch.ToLower();
+                        var ch2 = RandomLetterOrDigit();
+                        if (modifier == "u")
+                        {
+                            return ch2.ToUpper();
+                        }
+                        else if (modifier == "l")
+                        {
+                            return ch2.ToLower();
+                        }
+                        else
+                        {
+                            return ch2;
+                        }
                     case "alpha":
                         var letter = RandomLetter();
-                        return modifier == "u" ? letter.ToUpper() : letter.ToLower();
+                        if (modifier == "u")
+                        {
+                            return letter.ToUpper();
+                        }
+                        else if (modifier == "l")
+                        {
+                            return letter.ToLower();
+                        }
+                        else
+                        {
+                            return letter;
+                        }
                     case "num":
                         return RandomNumber().ToString();
+                    case "sym":
+                        return RandomSymbol().ToString();
                     default:
                         return match.Value; // preserve unknown variables
                 }
@@ -366,17 +404,64 @@ namespace BLAZAM.Database.Models.Templates
             return str.Substring(start, count);
         }
         private static readonly Random _random = new();
-
-        private static string RandomLetterOrDigit()
+        private static string RandomLetterDigitOrSymbol(int? index = null)
         {
-            var index = _random.Next(36);
-            return index < 10 ? ((char)('0' + index)).ToString() : ((char)('a' + index - 10)).ToString();
+            if (index == null)
+            {
+                index = _random.Next(62);
+            }
+            if (index < 10)
+            {
+                // digits 0-9
+                return ((char)('0' + index)).ToString();
+            }
+            else if (index < 36)
+            {
+                // letters a-z
+                return RandomLetter(index - 10);
+            }
+            else
+            {
+                // symbols
+                return RandomSymbol(index - 36);
+            }
+        }
+        private static string RandomLetterOrDigit(int? index = null)
+        {
+            if (index == null)
+            {
+                index = _random.Next(36);
+            }
+            if (index < 10)
+            {
+                // digits 0-9
+                return ((char)('0' + index)).ToString();
+            }
+
+            return RandomLetter(index - 10);
         }
 
-        private static string RandomLetter()
+        private static string RandomLetter(int? index = null)
         {
-            var index = _random.Next(26);
-            return ((char)('a' + index)).ToString();
+            if (index == null)
+            {
+                index = _random.Next(26);
+            }
+            var letter = (char)('a' + index);
+            // 50/50 chance to return uppercase or lowercase
+            return (_random.Next(2) == 0) ? char.ToUpperInvariant(letter).ToString() : letter.ToString();
+
+        }
+        private static string RandomSymbol(int? index = null)
+        {
+            if (index == null)
+            {
+                index = _random.Next(26);
+            }
+            // symbols
+            var symbols = "!@#$%^&*()-_=+[]{}|;:,.<>?";
+            return symbols[(index.Value) % symbols.Length].ToString();
+
         }
 
         private static int RandomNumber()
