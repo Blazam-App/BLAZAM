@@ -1,10 +1,10 @@
+@using BLAZAM.Gui.UI.Shared
  @inherits DatabaseComponentBase
-<MudDataGrid Virtualize=true
-             Height="600px"
-             ColumnResizeMode="ResizeMode.Container"
+<TimeframeSelector OnTimeframeChanged="TimeframeChanged" />
+<MudDataGrid ColumnResizeMode="ResizeMode.Container"
              FixedHeader=true
              Hideable=true
-             Items="@_attempts.OrderByDescending(ae=>ae.LastAttemptTimestamp)"
+             Items="@_attempts"
              Filterable="true"
              SortMode="@SortMode.Multiple"
              Groupable="false">
@@ -62,15 +62,25 @@
 </MudDataGrid>
 
 @code {
+    private DateTime? StartDate = DateTime.Today.AddDays(-7);
+    private DateTime? EndDate = DateTime.Today;
     private List<WebHookAttempt> _attempts = new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _ = GetAttempts();
+        await GetAttempts(StartDate, EndDate);
     }
-    private async Task GetAttempts()
+    private async Task TimeframeChanged((DateTime? start, DateTime? end) dates)
     {
-        _attempts = await Context.WebHookAttempts.ToListAsync();
+        StartDate = dates.start;
+        EndDate = dates.end;
+        await GetAttempts(StartDate, EndDate);
+    }
+    private async Task GetAttempts(DateTime? startDate, DateTime? endDate)
+    {
+        if (startDate == null || endDate == null) return;
+
+        _attempts = await Context.WebHookAttempts.Where(e => e.LastAttemptTimestamp >= startDate && e.LastAttemptTimestamp < endDate.Value.AddDays(1)).OrderByDescending(e=>e.LastAttemptTimestamp).ToListAsync();
         await StateHasChangedAsync();
     }
 }

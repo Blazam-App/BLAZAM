@@ -1,0 +1,7 @@
+@namespace BLAZAM.Gui.UI.Shared
+@inherits AppComponentBase
+<MudPaper Class="d-flex ga-2 pa-2 mb-2">
+    <MudDatePicker @bind-Date="StartDate" Label="@AppLocalization[Lang.Start_Date]" />
+    <MudDatePicker @bind-Date="EndDate" Label="@AppLocalization[Lang.End_Date]" />
+    <MudButton OnClick="Apply" Variant="Variant.Filled" Color="Color.Primary">@AppLocalization[Lang.Apply]</MudButton>
+</MudPaper>
