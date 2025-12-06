@@ -10,6 +10,12 @@ namespace BLAZAM.Database.Models.Permissions
         public List<PermissionMapping> PermissionsMaps { get; set; }
         public string? DelegateName { get; set; }
 
+        public bool AllowPasswordReset { get; set; }
+
+        public bool RequirePINOnPasswordReset { get; set; }
+
+        public int MinimumPINLength { get; set; } = 4;
+        public bool RequireQAOnPasswordReset { get; set; }
 
         public int CompareTo(object? obj)
         {

@@ -18,12 +18,15 @@
         public static readonly string Founder = "Founder";
         public static readonly string Founded = "Founded";
         public static readonly string Plugins = "Plugins";
+        public static readonly string Question = "Question";
+        public static readonly string Answer = "Answer";
         public static readonly string Execution_Schedule = "Execution Schedule";
         public static readonly string Go_To_User = "Go To User";
         public static readonly string Print = "Print";
         public static readonly string Fetch_News = "Fetch News";
         public static readonly string Excute = "Execute";
         public static readonly string Text = "Text";
+        public static readonly string PIN = "PIN";
         public static readonly string Removed_from_Group = "Removed from Group";
         public static readonly string Added_to_Group = "Added to Group";
         public static readonly string Check_for_Update = "Check for Update";
@@ -44,6 +47,7 @@
         public static readonly string Entry_modified = "Entry modified";
         public static readonly string Username_is_missing = "Username is missing";
         public static readonly string Password_is_missing = "Password is missing";
+        public static readonly string Password_Reset_Settings = "Password Reset Settings";
         public static readonly string Login_request_is_missing = "Login request is missing";
         public static readonly string Account_is_locked_out = "Account is locked out";
         public static readonly string Username_or_password_not_correct = "Username or password not correct";
@@ -52,6 +56,7 @@
         public static readonly string Unknown_error_while_attempting_to_log_in = "Unknown error while attempting to log in";
         public static readonly string Update_Scheduled = "Update Scheduled";
         public static readonly string Dismiss_all = "Dismiss all";
+        public static readonly string Security_Questions = "Security Questions";
         public static readonly string Delete_permission_mapping = "Delete permission mapping";
         public static readonly string No_unread_notifications = "No unread notifications";
         public static readonly string Access_request_sent = "Access request sent";
@@ -66,6 +71,7 @@
         public static readonly string Dedicated_To = "Dedicated To";
         public static readonly string In_Loving_Memory = "In Loving Memory";
         public static readonly string Source_Code = "Source Code";
+        public static readonly string Password_Reset_Enabled = "Password Reset Enabled";
         public static readonly string Start_typing_to_search = "Start typing to search...";
         public static readonly string Not_a_member_of_any_groups = "Not a member of any groups";
         public static readonly string Sorry_no_result_were_found = "Sorry no result were found 😒";
@@ -113,6 +119,7 @@
         public static readonly string Reset_Password = "Reset Password";
         public static readonly string Rename_User = "Rename User";
         public static readonly string Employee_Id = "Employee Id";
+        public static readonly string Not_Configured = "Not Configured";
         public static readonly string Contact_Info = "Contact Info";
         public static readonly string Home_Phone = "Home Phone";
         public static readonly string Street_Address = "Street Address";

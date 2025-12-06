@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
@@ -590,6 +591,9 @@ namespace BLAZAM.Session
 
             return true;
         }
+
+        public EffectivePasswordResetPolicy EffectivePasswordResetPolicy =>  new EffectivePasswordResetPolicy(PermissionDelegates);
+
         public bool HasPermission(string dnTarget, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector, bool nestedSearch)
         {
             if (IsSuperAdmin)
