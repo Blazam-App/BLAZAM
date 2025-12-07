@@ -121,6 +121,11 @@
         public static readonly string Employee_Id = "Employee Id";
         public static readonly string Not_Configured = "Not Configured";
         public static readonly string Contact_Info = "Contact Info";
+        public static readonly string Allow_password_reset = "Allow password reset";
+        public static readonly string Required_email = "Required email";
+        public static readonly string Required_PIN = "Required PIN";
+        public static readonly string Minimum_length = "Minimum length";
+        public static readonly string Required_QA = "Require questions and answers";
         public static readonly string Home_Phone = "Home Phone";
         public static readonly string Street_Address = "Street Address";
         public static readonly string PO_Box = "PO Box";

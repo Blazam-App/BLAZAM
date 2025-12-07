@@ -406,6 +406,8 @@ namespace BLAZAM.Helpers
         {
             modelBuilder.Entity<PermissionDelegate>(entity =>
             {
+                entity.Property(p => p.RequireEmailOnPasswordReset).HasDefaultValue(true);
+                entity.Property(p => p.MinimumPINLength).HasDefaultValue(4);
                 entity.HasIndex(e => e.DelegateSid).IsUnique();
             });
         }
