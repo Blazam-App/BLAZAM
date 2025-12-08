@@ -69,16 +69,27 @@
             @if (Delegate.AllowPasswordReset)
             {
                 <MudContainer>
-                    <MudSwitch @bind-Value="Delegate.RequireEmailOnPasswordReset"
-                               UncheckedColor="Color.Error"
-                               Color="Color.Success"
-                               Label="@AppLocalization[Lang.Required_email]" />
+                    <MudStack Row="true">
+                        @{
+                            bool emailDisabled = (_appSettings == null || _appSettings.AppFQDN.IsNullOrEmpty() || _emailSettings == null || !_emailSettings.Enabled);
+                        }
+                        <MudSwitch @bind-Value="Delegate.RequireEmailOnPasswordReset"
+                                   UncheckedColor="Color.Error"
+                                   Color="Color.Success"
+                                   Disabled="@emailDisabled"
+                                   Label="@AppLocalization[Lang.Required_email]" />
+                        @if (emailDisabled)
+                        {
+                            <MudAlert Severity="Severity.Info" Variant="Variant.Filled">The FQDN must be filled in AppSettings and Email enabled.</MudAlert>
+
+                        }
+                    </MudStack>
                     <MudStack Row=true>
                         <MudSwitch @bind-Value="Delegate.RequirePINOnPasswordReset"
-                               UncheckedColor="Color.Error"
-                               Color="Color.Success"
-                               Label="@AppLocalization[Lang.Required_PIN]" />
-            
+                                   UncheckedColor="Color.Error"
+                                   Color="Color.Success"
+                                   Label="@AppLocalization[Lang.Required_PIN]" />
+
                         @if (Delegate.RequirePINOnPasswordReset)
                         {
                             <MudNumericField @bind-Value="Delegate.MinimumPINLength"
@@ -117,9 +128,14 @@
     [Parameter]
     public EventCallback DelegateDeleted { get; set; }
 
+    private AppSettings? _appSettings;
+    private Database.Models.EmailSettings? _emailSettings;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        _appSettings = await Context.AppSettings.FirstOrDefaultAsync();
+        _emailSettings = await Context.EmailSettings.FirstOrDefaultAsync();
         _delegateEntry = Directory.FindGlobalEntryBySid(Delegate.DelegateSid);
         if (_delegateEntry != null)
         {

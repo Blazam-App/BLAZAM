@@ -35,7 +35,7 @@
           id="login-form">
         <MudContainer Style="max-width:300px;"
                       Class="py-4">
-            @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
+            @if (!ApplicationInfo.InDemoMode || _demoCustomLogin)
             {
 
 
@@ -87,7 +87,7 @@
                     <MudButton Disabled=@attemptingSignIn Class="my-6" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
 
                     <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
-                        <MudMenuItem OnClick=@(async () => { DemoCustomLogin = true;  await StateHasChangedAsync(); })>@AppLocalization["Custom Login"]</MudMenuItem>
+                        <MudMenuItem OnClick=@(async () => { _demoCustomLogin = true; await StateHasChangedAsync(); })>@AppLocalization["Custom Login"]</MudMenuItem>
                     </MudMenu>
                 </MudButtonGroup>
 
@@ -97,6 +97,14 @@
 
         <LoadingData Loading=attemptingSignIn />
     </form>
+    @if (_passwordResetAvailable)
+    {
+        <MudElement Class="d-flex mud-width-full justify-center">
+            <MudLink Href="/reset"
+                Style="font-size:0.8em;">Forgot password?</MudLink>
+
+        </MudElement>
+    }
     <MudElement Class="d-flex mud-width-full justify-end">
         <Copyright Style="font-size:0.8em;" />
 

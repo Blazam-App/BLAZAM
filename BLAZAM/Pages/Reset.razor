@@ -1,0 +1,84 @@
+﻿@page "/reset"
+@page "/reset/{ResetToken}"
+@using BLAZAM.Static;
+@using System.Security
+@inject IHttpContextAccessor HttpContextAccessor
+@inherits ValidatedForm
+@inject IJSRuntime JSRuntime
+@layout LoginLayout
+@if (attemptingSignIn)
+{
+    <MudProgressLinear Color="Color.Info" Indeterminate=true />
+}
+<AppPageTitle>@AppLocalization[Lang.Login]</AppPageTitle>
+
+<MudElement Class="brand-icon">
+    <MudImage Src="@StaticAssets.ApplicationIconUri" />
+
+</MudElement>
+
+
+<MudContainer Class="py-5">
+
+
+    <GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
+
+
+
+    <FullAppName />
+
+
+
+    
+        <MudContainer Style="max-width:300px;"
+                      Class="py-4">
+           
+
+                <MudTextField Disabled=@attemptingSignIn
+                              Class="justify-center"
+                              AutoFocus=true
+                              Label=@AppLocalization[Lang.Username]
+                              name="Username"
+                              @bind-Value=LoginRequest.Username />
+
+           
+                <MudButton OnClick=@(() => { attemptingSignIn = true; })
+                           Class="my-5"
+                           ButtonType=ButtonType.Submit
+                           Color="Color.Primary">
+                    @AppLocalization[Lang.Log_In]
+                </MudButton>
+
+        </MudContainer>
+
+        <LoadingData Loading=attemptingSignIn />
+  
+    <MudElement Class="d-flex mud-width-full justify-end">
+        <Copyright Style="font-size:0.8em;" />
+
+    </MudElement>
+
+
+
+
+</MudContainer>
+<style>
+    .brand-icon {
+        position: fixed;
+        left: 5px;
+        top: 5px;
+    }
+
+        .brand-icon img {
+            max-width: 65px;
+            max-height: 65px;
+        }
+
+    .login-form input {
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+

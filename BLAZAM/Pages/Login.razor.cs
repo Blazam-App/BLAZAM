@@ -1,5 +1,6 @@
 // Import necessary namespaces for various functionalities
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Global.Enums;
 using BLAZAM.Gui.UI.Modals;
 using BLAZAM.Gui.UI.Settings;
@@ -22,9 +23,14 @@ namespace BLAZAM.Pages
 
         private bool attemptingSignIn = false;
         private string redirectUrl;
-        private bool DemoCustomLogin = false;
+        private bool _demoCustomLogin = false;
+        private bool _passwordResetAvailable;
         private LoginRequest LoginRequest = new();
 
+        private void SetPasswordResetAvailable()
+        {
+            _passwordResetAvailable = Context.PermissionDelegate.Any(d => d.AllowPasswordReset);
+        }
 
         /// <summary>
         /// Asynchronously initializes the component and sets up the necessary state and event handlers.
@@ -44,6 +50,10 @@ namespace BLAZAM.Pages
             {
                 Monitor.OnAppReadyChanged += AppReadyChanged;
             }
+            else
+            {
+                SetPasswordResetAvailable();
+            }
         }
 
 
@@ -51,6 +61,8 @@ namespace BLAZAM.Pages
         {
             if (state == ServiceConnectionState.Up)
             {
+                SetPasswordResetAvailable();
+
                 await StateHasChangedAsync();
             }
 
@@ -91,7 +103,7 @@ namespace BLAZAM.Pages
             {
                 validationResult = new();
             }
-            if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !DemoCustomLogin))
+            if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !_demoCustomLogin))
             {
                 return true;
             }
