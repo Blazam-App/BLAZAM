@@ -122,7 +122,7 @@ else
                 <AppTooltip Text="@AppLocalization[Lang.Rename]">
 
                     <MudIconButton OnClick="@OnRename"
-                                   Disabled=@(!DirectoryEntry.CanRename)
+                                   Disabled=@(!DirectoryEntry.CanRename || (DirectoryEntry is IADComputer computer && computer.IsOnline!=true))
                                    Icon="@Icons.Material.Filled.DriveFileRenameOutline"
                                    aria-label="rename" />
 
@@ -140,7 +140,7 @@ else
                     <AppTooltip Text="@AppLocalization[Lang.Reboot_Shutdown]">
 
                         <MudIconButton OnClick="@OnRebootOrShutdown"
-                                       Disabled=@(!CurrentUser.State.IsSuperAdmin||ApplicationInfo.InDemoMode)
+                                       Disabled=@(!CurrentUser.State.IsSuperAdmin||ApplicationInfo.InDemoMode || (DirectoryEntry is IADComputer computer && computer.IsOnline!=true))
                                        Icon="@Icons.Material.Filled.RestartAlt"
                                        aria-label="restart" />
                     </AppTooltip>
