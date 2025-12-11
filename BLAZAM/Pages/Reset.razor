@@ -6,10 +6,6 @@
 @inherits ValidatedForm
 @inject IJSRuntime JSRuntime
 @layout LoginLayout
-@if (attemptingSignIn)
-{
-    <MudProgressLinear Color="Color.Info" Indeterminate=true />
-}
 <AppPageTitle>@AppLocalization[Lang.Login]</AppPageTitle>
 
 <MudElement Class="brand-icon">
@@ -34,7 +30,7 @@
                       Class="py-4">
            
 
-                <MudTextField Disabled=@attemptingSignIn
+                <MudTextField Disabled=@LoadingData
                               Class="justify-center"
                               AutoFocus=true
                               Label=@AppLocalization[Lang.Username]
@@ -42,8 +38,7 @@
                               @bind-Value=LoginRequest.Username />
 
            
-                <MudButton OnClick=@(() => { attemptingSignIn = true; })
-                           Class="my-5"
+                <MudButton Class="my-5"
                            ButtonType=ButtonType.Submit
                            Color="Color.Primary">
                     @AppLocalization[Lang.Log_In]
@@ -51,7 +46,7 @@
 
         </MudContainer>
 
-        <LoadingData Loading=attemptingSignIn />
+        <LoadingData Loading=LoadingData />
   
     <MudElement Class="d-flex mud-width-full justify-end">
         <Copyright Style="font-size:0.8em;" />
