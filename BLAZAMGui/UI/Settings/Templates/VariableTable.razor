@@ -18,6 +18,9 @@
             <td>
                 <MudStack>
                     <span>
+                        d
+                    </span>
+                    <span>
                         u
                     </span>
                     <span>
@@ -31,10 +34,13 @@
             <td>
                 <MudStack>
                     <span>
-                        Upper Case
+                        Removes diacritics
                     </span>
                     <span>
-                        Lower Case
+                        Force Upper Case
+                    </span>
+                    <span>
+                        Force Lower Case
                     </span>
                     <span>
                         Regular Expression
@@ -69,6 +75,9 @@
             <td>
                 <MudStack>
                     <span>
+                        d
+                    </span>
+                    <span>
                         u
                     </span>
                     <span>
@@ -79,10 +88,13 @@
             <td>
                 <MudStack>
                     <span>
-                        Upper Case
+                        Removes diacritics
                     </span>
                     <span>
-                        Lower Case
+                        Force Upper Case
+                    </span>
+                    <span>
+                        Force Lower Case
                     </span>
                 </MudStack>
             </td>
@@ -95,6 +107,9 @@
             <td>@AppLocalization[Lang.Middle_Name]</td>
             <td>
                 <MudStack>
+                    <span>
+                        d
+                    </span>
                     <span>
                         u
                     </span>
@@ -109,10 +124,13 @@
             <td>
                 <MudStack>
                     <span>
-                        Upper Case
+                        Removes diacritics
                     </span>
                     <span>
-                        Lower Case
+                        Force Upper Case
+                    </span>
+                    <span>
+                        Force Lower Case
                     </span>
                     <span>
                         Regular Expression
@@ -147,6 +165,9 @@
             <td>
                 <MudStack>
                     <span>
+                        d
+                    </span>
+                    <span>
                         u
                     </span>
                     <span>
@@ -157,10 +178,13 @@
             <td>
                 <MudStack>
                     <span>
-                        Upper Case
+                        Removes diacritics
                     </span>
                     <span>
-                        Lower Case
+                        Force Upper Case
+                    </span>
+                    <span>
+                        Force Lower Case
                     </span>
                 </MudStack>
             </td>
@@ -172,6 +196,9 @@
             <td>@AppLocalization[Lang.Last_Name]</td>
             <td>
                 <MudStack>
+                    <span>
+                        d
+                    </span>
                     <span>
                         u
                     </span>
@@ -186,10 +213,13 @@
             <td>
                 <MudStack>
                     <span>
-                        Upper Case
+                        Removes diacritics
                     </span>
                     <span>
-                        Lower Case
+                        Force Upper Case
+                    </span>
+                    <span>
+                        Force Lower Case
                     </span>
                     <span>
                         Regular Expression
@@ -224,6 +254,9 @@
             <td>
                 <MudStack>
                     <span>
+                        d
+                    </span>
+                    <span>
                         u
                     </span>
                     <span>
@@ -234,10 +267,13 @@
             <td>
                 <MudStack>
                     <span>
-                        Upper Case
+                        Removes diacritics
                     </span>
                     <span>
-                        Lower Case
+                        Force Upper Case
+                    </span>
+                    <span>
+                        Force Lower Case
                     </span>
                 </MudStack>
             </td>
@@ -251,6 +287,9 @@
             <td>
                 <MudStack>
                     <span>
+                        d
+                    </span>
+                    <span>
                         u
                     </span>
                     <span>
@@ -261,10 +300,40 @@
             <td>
                 <MudStack>
                     <span>
-                        Upper Case
+                        Removes diacritics
                     </span>
                     <span>
-                        Lower Case
+                        Force Upper Case
+                    </span>
+                    <span>
+                        Force Lower Case
+                    </span>
+                </MudStack>
+            </td>
+            <td></td>
+            <td></td>
+
+        </tr>
+        <tr>
+            <td>alphanumsym</td>
+            <td>@AppLocalization["Random letter, number, or symbol"]</td>
+            <td>
+                <MudStack>
+                    <span>
+                        u
+                    </span>
+                    <span>
+                        l
+                    </span>
+                </MudStack>
+            </td>
+            <td>
+                <MudStack>
+                    <span>
+                        Force Upper Case
+                    </span>
+                    <span>
+                        Force Lower Case
                     </span>
                 </MudStack>
             </td>
@@ -288,10 +357,10 @@
             <td>
                 <MudStack>
                     <span>
-                        Upper Case
+                        Force Upper Case
                     </span>
                     <span>
-                        Lower Case
+                        Force Lower Case
                     </span>
                 </MudStack>
             </td>
@@ -315,13 +384,22 @@
             <td>
                 <MudStack>
                     <span>
-                        Upper Case
+                        Force Upper Case
                     </span>
                     <span>
-                        Lower Case
+                        Force Lower Case
                     </span>
                 </MudStack>
             </td>
+            <td></td>
+            <td></td>
+
+        </tr>
+        <tr>
+            <td>sym</td>
+            <td>@AppLocalization["Random symbol"]</td>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
 
@@ -361,7 +439,10 @@
             <td>{fn:l[2]}</td>
             <td>Returns the first two characters of the first name in lower case</td>
         </tr>
-
+        <tr>
+            <td>{fn:du}</td>
+            <td>Returns the whole first name with diacritics removed and in upper case. Modifiers can be chained.</td>
+        </tr>
         <tr>
             <td>{ln:regex[^(.{3})(.*Jr)$]}</td>
             <td>A regex search on the last name pulling the first 3 characters and includes Jr if the last name ends in Jr</td>
