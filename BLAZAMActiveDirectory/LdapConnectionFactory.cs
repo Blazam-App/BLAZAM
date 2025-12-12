@@ -289,9 +289,12 @@ namespace BLAZAM.ActiveDirectory
                 connection.SessionOptions.SecureSocketLayer = true;
                 connection.SessionOptions.ProtocolVersion = 3;
                 connection.SessionOptions.ReferralChasing = ReferralChasingOptions.None;
-
+                connection.SessionOptions.VerifyServerCertificate = (con, cm) =>
+                {
+                    return true;
+                };
                 // 4. Provide credentials
-                NetworkCredential credential = new NetworkCredential(settings.Username, settings.Password.Decrypt().ToSecureString());
+                NetworkCredential credential = new NetworkCredential(settings.Username+"@"+settings.FQDN, settings.Password.Decrypt().ToSecureString());
                 connection.Credential = credential;
                 // 5. Bind to the server (establish the connection and authenticate)
                 Loggers.ActiveDirectoryLogger.Information($"Attempting LDAPS connection to {settings.ServerAddress}:{settings.ServerPort} as {settings.Username}...");
