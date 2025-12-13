@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.DirectoryServices.Protocols;
-using System.Net; 
+using System.Net;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
@@ -11,7 +11,7 @@ namespace BLAZAM.ActiveDirectory
 {
     public class LdapConnectionFactory : IDisposable
     {
-        public static int PoolSize => (5*_connectedUsers);
+        public static int PoolSize => (5 * _connectedUsers);
         private static int _connectedUsers { get; set; }
         private Timer? _disposerTimer = null;
         private static readonly object _poolLock = new object();
@@ -23,7 +23,7 @@ namespace BLAZAM.ActiveDirectory
 
         public LdapConnectionFactory()
         {
-            ActiveDirectoryEvents.LoggedOnUserCountChanged.Delegate += (state,count) =>
+            ActiveDirectoryEvents.LoggedOnUserCountChanged.Delegate += (state, count) =>
             {
                 _connectedUsers = count;
             };
@@ -41,7 +41,7 @@ namespace BLAZAM.ActiveDirectory
         }
         public static void SetConnectedUsers(int connectedUsers)
         {
-           
+
         }
         public static AppEvent? OnCountChanged { get; set; } = new();
 
@@ -185,7 +185,7 @@ namespace BLAZAM.ActiveDirectory
                 {
                     var count = _connectionPool.Count;
                     if (count < PoolSize) return;
-                    for (int i = 0; i < count-PoolSize; i++)
+                    for (int i = 0; i < count - PoolSize; i++)
                     {
                         if (!_connectionPool[i].IsDisposed
                             && _connectionPool[i].Expires != null
@@ -220,7 +220,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (Exception ex)
                 {
-                   Loggers.ActiveDirectoryLogger.Information(ex, "Error during connection pool cleanup.");
+                    Loggers.ActiveDirectoryLogger.Information(ex, "Error during connection pool cleanup.");
                 }
 
             }
@@ -289,12 +289,11 @@ namespace BLAZAM.ActiveDirectory
                 connection.SessionOptions.SecureSocketLayer = true;
                 connection.SessionOptions.ProtocolVersion = 3;
                 connection.SessionOptions.ReferralChasing = ReferralChasingOptions.None;
-                connection.SessionOptions.VerifyServerCertificate = (con, cm) =>
-                {
-                    return true;
-                };
+
+
+
                 // 4. Provide credentials
-                NetworkCredential credential = new NetworkCredential(settings.Username+"@"+settings.FQDN, settings.Password.Decrypt().ToSecureString());
+                NetworkCredential credential = new NetworkCredential(settings.Username + "@" + settings.FQDN, settings.Password.Decrypt().ToSecureString());
                 connection.Credential = credential;
                 // 5. Bind to the server (establish the connection and authenticate)
                 Loggers.ActiveDirectoryLogger.Information($"Attempting LDAPS connection to {settings.ServerAddress}:{settings.ServerPort} as {settings.Username}...");
@@ -319,7 +318,7 @@ namespace BLAZAM.ActiveDirectory
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error($"General Exception during LDAPS connection: {ex.Message}");
+                Loggers.ActiveDirectoryLogger.Error(ex, "General Exception during LDAPS connection");
                 if (connection != null)
                 {
                     connection.Dispose();
@@ -328,6 +327,8 @@ namespace BLAZAM.ActiveDirectory
                 return false;
             }
         }
+
+
 
         /// <summary>
         /// Establishes a secure LDAP connection using StartTLS.
@@ -351,22 +352,18 @@ namespace BLAZAM.ActiveDirectory
 
             try
             {
-               
+
                 // 1. Create LdapConnection object targeting the standard LDAP port
                 LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier(settings.ServerAddress, settings.ServerPort);
                 var currentConnection = new LdapConnection(identifier);
 
-                // 2. (Optional but Recommended) Configure server certificate validation
-                // connection.SessionOptions.VerifyServerCertificate = new VerifyServerCertificateCallback(ServerCallback);
-
                 // 3. Provide credentials
-                NetworkCredential credential = new NetworkCredential(settings.Username, settings.Password.Decrypt().ToSecureString(), settings.FQDN);
+                NetworkCredential credential = new NetworkCredential(settings.Username + "@" + settings.FQDN, settings.Password.Decrypt().ToSecureString());
                 currentConnection.SessionOptions.ProtocolVersion = 3;
                 currentConnection.Timeout = TimeSpan.FromSeconds(5);
-                currentConnection.SessionOptions.TcpKeepAlive = true;
                 if (OperatingSystem.IsWindows())
                 {
-                    //currentConnection.AuthType = AuthType.Negotiate;
+                    currentConnection.SessionOptions.TcpKeepAlive = true;
                     currentConnection.SessionOptions.Signing = true;
                     currentConnection.SessionOptions.Sealing = true;
                 }
@@ -377,12 +374,8 @@ namespace BLAZAM.ActiveDirectory
                 }
                 currentConnection.SessionOptions.ReferralChasing = ReferralChasingOptions.None;
 
-                currentConnection.SessionOptions.VerifyServerCertificate = (state, crt) =>
-                {
-                    return true;
-                };
 
-                if (OperatingSystem.IsLinux() && !StartTls(currentConnection)) return false;
+                if (OperatingSystem.IsLinux() && settings.UseTLS && !StartTls(currentConnection)) return false;
 
 
                 currentConnection.Credential = credential;
@@ -400,10 +393,14 @@ namespace BLAZAM.ActiveDirectory
                 {
                     throw new CriticalActiveDirectoryException(null, "Certificate provided by Active Directory is not trusted by the machine running Blazam.");
                 }
-                Loggers.ActiveDirectoryLogger.Information(ldapEx, "LDAP Exception during StartTLS connection: {@ldapEx}");
+                if (ldapEx.ErrorCode == 49)
+                {
+                    throw new CriticalActiveDirectoryException(null, "The supplied credential is invalid.");
+                }
+                Loggers.ActiveDirectoryLogger.Information(ldapEx, "LDAP Exception during connection");
                 if (ldapEx.ServerErrorMessage != null)
                 {
-                    Loggers.ActiveDirectoryLogger.Information($"Server Error Message: {ldapEx.ServerErrorMessage}");
+                    Loggers.ActiveDirectoryLogger.Information(ldapEx, "Server Error");
                 }
                 if (connection != null)
                 {
@@ -412,9 +409,10 @@ namespace BLAZAM.ActiveDirectory
                 }
                 return false;
             }
+            
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Warning($"General Exception during StartTLS connection: {ex.Message}");
+                Loggers.ActiveDirectoryLogger.Warning(ex, "General Exception during StartTLS connection");
                 if (connection != null)
                 {
                     connection.Dispose();
@@ -430,46 +428,12 @@ namespace BLAZAM.ActiveDirectory
             lock (_tlsLock)
             {
                 var tlsStarted = false;
-                int attempts = 0;
 
-                while (!tlsStarted && attempts < 5)
-                {
-                    attempts++;
-                    // Create a Task for the blocking operation
-                    // Use a CancellationTokenSource to allow for cancellation attempts if the task gets "stuck"
-                    using (var cancellationTokenSource = new CancellationTokenSource())
-                    {
-                        var connectionTask = Task.Run(() =>
-                        {
-                            try
-                            {
-                                //Task.Delay(200).Wait();
+                currentConnection.SessionOptions.StartTransportLayerSecurity(null);
 
-                                currentConnection.SessionOptions.StartTransportLayerSecurity(null);
-                                //Task.Delay(100).Wait();
 
-                                tlsStarted = true;
-                            }
-                            catch (OperationCanceledException)
-                            {
-                                Loggers.ActiveDirectoryLogger.Warning($"StartTransportLayerSecurity was cancelled for {currentConnection.SessionOptions.HostName}.");
-                                throw; // Re-throw to be caught outside
-                            }
-                        }, cancellationTokenSource.Token);
-                        var timeout = Stopwatch.StartNew();
-                        while (currentConnection.SessionOptions.SecureSocketLayer == false && timeout.Elapsed < TimeSpan.FromSeconds(10))
-                        {
-                            Task.Delay(50).Wait();
-                        }
+                tlsStarted = true;
 
-                        if (!currentConnection.SessionOptions.SecureSocketLayer)
-                        {
-                            return false;
-                        }
-                        timeout.Stop();
-
-                    }
-                }
 
 
                 return true;
@@ -549,4 +513,4 @@ namespace BLAZAM.ActiveDirectory
             GC.SuppressFinalize(this);
         }
     }
-    }
+}
