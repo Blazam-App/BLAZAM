@@ -5,13 +5,13 @@
 
         <SettingsField Label="@AppLocalization[Lang.Allow_access_requests]">
 
-            <MudSwitch @bind-Value=settings.AllowAccessRequest
+            <MudSwitch @bind-Value=settings.AllowActionAccessRequest
                        T=bool
                        Class="mt-0"
                        Color="Color.Success"
                        Label=@AppLocalization[Lang.Allow_access_requests] />
         </SettingsField>
-        @if (settings.AllowAccessRequest)
+        @if (settings.AllowActionAccessRequest)
         {
             <SettingsField Label="@AppLocalization[Lang.Actions]">
 
@@ -102,7 +102,7 @@
     private async Task AddAction(ActiveDirectoryObjectAction action)
     {
 
-        if (settings.AllowAccessRequest)
+        if (settings.AllowActionAccessRequest)
         {
             if (!await Context.GlobalPermissionRequestActions.AnyAsync(x => x.ObjectAction == action))
             {
