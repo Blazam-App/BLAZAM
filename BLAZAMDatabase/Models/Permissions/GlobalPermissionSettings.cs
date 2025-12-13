@@ -4,7 +4,7 @@
     {
         public bool AllowSelfModification { get; set; }
 
-        public bool AllowAccessRequest { get; set; }
+        public bool AllowActionAccessRequest { get; set; }
 
     }
 }
