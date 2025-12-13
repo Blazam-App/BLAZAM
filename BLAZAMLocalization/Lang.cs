@@ -269,6 +269,7 @@
         public static readonly string Value = "Value";
         public static readonly string Negate = "Negate";
         public static readonly string Domain = "Domain";
+        public static readonly string Apply = "Apply";
         public static readonly string Update = "Update";
         public static readonly string Loading = "Loading";
         public static readonly string Login = "Login";
@@ -340,6 +341,8 @@
         public static readonly string DB_Connections = "DB Connections";
         public static readonly string You_have_unsaved_changes = "You have unsaved changes";
         public static readonly string Active_Directory_Settings = "Active Directory Settings";
+        public static readonly string Start_Date = "Start Date";
+        public static readonly string End_Date = "End Date";
         public static readonly string Copy_Template = "Copy Template";
         public static readonly string New_Template = "New Template";
         public static readonly string CPU = "CPU";

@@ -1,8 +1,8 @@
 @using BLAZAM.Gui.UI.Shared
 @inherits SettingsComponents
 <MudText Typo="Typo.h4">@AppLocalization[Lang.User_Activity]</MudText>
-<TimeframeSelector OnTimeframeChanged="TimeframeChanged" />
-<MudDataGrid Items="@GetUserActivity()">
+
+<MudDataGrid Items="@UserStateService.UserStates">
     <Columns>
         <PropertyColumn Title=@AppLocalization[Lang.Username] Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
         <TemplateColumn Title=@AppLocalization[Lang.IP_Address]>
@@ -29,27 +29,5 @@
     </Columns>
 </MudDataGrid>
 @code {
-    private DateTime? StartDate = DateTime.Today.AddDays(-7);
-    private DateTime? EndDate = DateTime.Today;
 
-    private async Task TimeframeChanged((DateTime? start, DateTime? end) dates)
-    {
-        StartDate = dates.start;
-        EndDate = dates.end;
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private IEnumerable<BLAZAM.Session.UserConnectionState> GetUserActivity()
-    {
-        var query = UserStateService.UserStates.AsQueryable();
-        if (StartDate.HasValue)
-        {
-            query = query.Where(u => u.LastAccessed >= StartDate.Value);
-        }
-        if (EndDate.HasValue)
-        {
-            query = query.Where(u => u.LastAccessed < EndDate.Value.AddDays(1));
-        }
-        return query.Where(u => u.User.Identity?.IsAuthenticated == true);
-    }
 }
