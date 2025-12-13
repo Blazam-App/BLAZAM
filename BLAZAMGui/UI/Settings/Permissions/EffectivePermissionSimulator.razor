@@ -37,7 +37,7 @@
     {
         simRan = false;
         await StateHasChangedAsync();
-        var simUser = await selectedUser.GetApplicationUser(UserStateService, DbFactory, Directory);
+        var simUser = await selectedUser.GetApplicationUser(UserStateService, DbFactory, Directory,AppAuthenticationStateProvider);
         target.SetCurrentUser(simUser.ToActiveDirectoryUserState());
         simRan = true;
         await StateHasChangedAsync();

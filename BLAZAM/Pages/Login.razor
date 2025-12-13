@@ -4,116 +4,119 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inherits ValidatedForm
 @inject IJSRuntime JSRuntime
-@layout LoginLayout
-@if (attemptingSignIn)
-{
-    <MudProgressLinear Color="Color.Info" Indeterminate=true />
-}
-<AppPageTitle>@AppLocalization[Lang.Login]</AppPageTitle>
+<LayoutView Layout="@typeof(LoginLayout)">
 
-<MudElement Class="brand-icon">
-    <MudImage Src="@StaticAssets.ApplicationIconUri" />
-
-</MudElement>
-
-
-<MudContainer Class="py-5">
-
-
-    <GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
-
-
-
-    <FullAppName />
-
-
-
-    <form onsubmit="@(async () => { await AttemptSignIn(); })"
-          class="login-form"
-          method="post"
-          action="/signin"
-          id="login-form">
-        <MudContainer Style="max-width:300px;"
-                      Class="py-4">
-            @if (!ApplicationInfo.InDemoMode || _demoCustomLogin)
-            {
-
-
-
-                <MudTextField Disabled=@attemptingSignIn
-                              Class="justify-center"
-                              AutoFocus=true
-                              Label=@AppLocalization[Lang.Username]
-                              name="Username"
-                              @bind-Value=LoginRequest.Username />
-
-                <MudTextField Disabled=@attemptingSignIn
-                              Class="justify-center"
-                              Label=@AppLocalization[Lang.Password]
-                              name="Password"
-                              InputType="InputType.Password"
-                              @bind-Value=LoginRequest.Password />
-
-                <MudTextField Class="d-none"
-                              name="ReturnUrl"
-                              Value="@redirectUrl" />
-
-                <MudButton OnClick=@(() => { attemptingSignIn = true; })
-                           Class="my-5"
-                           ButtonType=ButtonType.Submit
-                           Color="Color.Primary">
-                    @AppLocalization[Lang.Log_In]
-                </MudButton>
-
-
-
-            }
-            else if (ApplicationInfo.InDemoMode)
-            {
-                LoginRequest.Username = "demo";
-                LoginRequest.Password = "demo";
-
-
-                <MudContainer Class="d-none">
-
-                    <MudTextField name="username" Value=@("demo") hidden />
-                    <MudTextField name="password" InputType="InputType.Password" Value=@("demo") hidden />
-                    <MudTextField name="ReturnUrl" Value="@redirectUrl" />
-                </MudContainer>
-                <LoginConnectionWarnings />
-                <MudButtonGroup Color=Color.Primary Variant="Variant.Outlined">
-
-
-                    <MudButton Disabled=@attemptingSignIn Class="my-6" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
-
-                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
-                        <MudMenuItem OnClick=@(async () => { _demoCustomLogin = true; await StateHasChangedAsync(); })>@AppLocalization["Custom Login"]</MudMenuItem>
-                    </MudMenu>
-                </MudButtonGroup>
-
-            }
-
-        </MudContainer>
-
-        <LoadingData Loading=attemptingSignIn />
-    </form>
-    @if (_passwordResetAvailable)
+    @if (attemptingSignIn)
     {
-        <MudElement Class="d-flex mud-width-full justify-center">
-            <MudLink Href="/reset"
-                Style="font-size:0.8em;">Forgot password?</MudLink>
-
-        </MudElement>
+        <MudProgressLinear Color="Color.Info" Indeterminate=true />
     }
-    <MudElement Class="d-flex mud-width-full justify-end">
-        <Copyright Style="font-size:0.8em;" />
+    <AppPageTitle>@AppLocalization[Lang.Login]</AppPageTitle>
+
+    <MudElement Class="brand-icon">
+        <MudImage Src="@StaticAssets.ApplicationIconUri" />
 
     </MudElement>
 
 
+    <MudContainer Class="py-5">
 
 
-</MudContainer>
+        <GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
+
+
+
+        <FullAppName />
+
+
+
+        <form onsubmit="@(async () => { await AttemptSignIn(); })"
+              class="login-form"
+              method="post"
+              action="/signin"
+              id="login-form">
+            <MudContainer Style="max-width:300px;"
+                          Class="py-4">
+                @if (!ApplicationInfo.InDemoMode || _demoCustomLogin)
+                {
+
+
+
+                    <MudTextField Disabled=@attemptingSignIn
+                                  Class="justify-center"
+                                  AutoFocus=true
+                                  Label=@AppLocalization[Lang.Username]
+                                  name="Username"
+                                  @bind-Value=LoginRequest.Username />
+
+                    <MudTextField Disabled=@attemptingSignIn
+                                  Class="justify-center"
+                                  Label=@AppLocalization[Lang.Password]
+                                  name="Password"
+                                  InputType="InputType.Password"
+                                  @bind-Value=LoginRequest.Password />
+
+                    <MudTextField Class="d-none"
+                                  name="ReturnUrl"
+                                  Value="@redirectUrl" />
+
+                    <MudButton OnClick=@(() => { attemptingSignIn = true; })
+                               Class="my-5"
+                               ButtonType=ButtonType.Submit
+                               Color="Color.Primary">
+                        @AppLocalization[Lang.Log_In]
+                    </MudButton>
+
+
+
+                }
+                else if (ApplicationInfo.InDemoMode)
+                {
+                    LoginRequest.Username = "demo";
+                    LoginRequest.Password = "demo";
+
+
+                    <MudContainer Class="d-none">
+
+                        <MudTextField name="username" Value=@("demo") hidden />
+                        <MudTextField name="password" InputType="InputType.Password" Value=@("demo") hidden />
+                        <MudTextField name="ReturnUrl" Value="@redirectUrl" />
+                    </MudContainer>
+                    <LoginConnectionWarnings />
+                    <MudButtonGroup Color=Color.Primary Variant="Variant.Outlined">
+
+
+                        <MudButton Disabled=@attemptingSignIn Class="my-6" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
+
+                        <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                            <MudMenuItem OnClick=@(async () => { _demoCustomLogin = true; await StateHasChangedAsync(); })>@AppLocalization["Custom Login"]</MudMenuItem>
+                        </MudMenu>
+                    </MudButtonGroup>
+
+                }
+
+            </MudContainer>
+
+            <LoadingData Loading=attemptingSignIn />
+        </form>
+        @if (_passwordResetAvailable)
+        {
+            <MudElement Class="d-flex mud-width-full justify-center">
+                <MudLink Href="/reset"
+                         Style="font-size:0.8em;">Forgot password?</MudLink>
+
+            </MudElement>
+        }
+        <MudElement Class="d-flex mud-width-full justify-end">
+            <Copyright Style="font-size:0.8em;" />
+
+        </MudElement>
+
+
+
+
+    </MudContainer>
+</LayoutView>
+
 <style>
     .brand-icon {
         position: fixed;

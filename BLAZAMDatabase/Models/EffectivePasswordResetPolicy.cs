@@ -6,6 +6,7 @@ namespace BLAZAM.Database.Models
     {
         public bool CanResetPassword { get; private set; }
         public bool RequirePIN { get; private set; }
+        public bool RequireEmail { get; private set; }
         public int MinimumPINLength { get; private set; }
         public bool RequireQA { get; private set; }
 
@@ -25,6 +26,9 @@ namespace BLAZAM.Database.Models
 
             // If ANY role requires a PIN, we enforce it.
             RequirePIN = delegates.Any(d => d.RequirePINOnPasswordReset);
+
+            // If ANY role requires a PIN, we enforce it.
+            RequireEmail = delegates.Any(d => d.RequireEmailOnPasswordReset);
 
             // If ANY role requires Q&A, we enforce it.
             RequireQA = delegates.Any(d => d.RequireQAOnPasswordReset);

@@ -26,6 +26,8 @@ namespace BLAZAM.Gui.UI
 
         [Inject]
         protected ConnMonitor Monitor { get; set; }
+        [Inject]
+        protected AppAuthenticationStateProvider AppAuthenticationStateProvider { get; set; }
 
         [Inject]
         protected ApplicationInfo ApplicationInfo { get; set; }

@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
+using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -68,7 +69,7 @@ namespace BLAZAM.Services.Background
         public async Task LoadPermissions(IApplicationUserState webUser, IADUser directoryUser)
         {
             using var Context = await _factory.CreateDbContextAsync();
-
+        
             var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).ToListAsync();
             foreach (var l in cursor)
             {

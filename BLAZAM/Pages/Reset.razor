@@ -5,58 +5,62 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inherits ValidatedForm
 @inject IJSRuntime JSRuntime
-@layout LoginLayout
-<AppPageTitle>@AppLocalization[Lang.Login]</AppPageTitle>
+<LayoutView Layout="@typeof(LoginLayout)">
 
-<MudElement Class="brand-icon">
-    <MudImage Src="@StaticAssets.ApplicationIconUri" />
+    <AppPageTitle>@AppLocalization[Lang.Login]</AppPageTitle>
 
-</MudElement>
-
-
-<MudContainer Class="py-5">
-
-
-    <GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
-
-
-
-    <FullAppName />
-
-
-
-    
-        <MudContainer Style="max-width:300px;"
-                      Class="py-4">
-           
-
-                <MudTextField Disabled=@LoadingData
-                              Class="justify-center"
-                              AutoFocus=true
-                              Label=@AppLocalization[Lang.Username]
-                              name="Username"
-                              @bind-Value=LoginRequest.Username />
-
-           
-                <MudButton Class="my-5"
-                           ButtonType=ButtonType.Submit
-                           Color="Color.Primary">
-                    @AppLocalization[Lang.Log_In]
-                </MudButton>
-
-        </MudContainer>
-
-        <LoadingData Loading=LoadingData />
-  
-    <MudElement Class="d-flex mud-width-full justify-end">
-        <Copyright Style="font-size:0.8em;" />
+    <MudElement Class="brand-icon">
+        <MudImage Src="@StaticAssets.ApplicationIconUri" />
 
     </MudElement>
 
 
+    <MudContainer Class="py-5">
 
 
-</MudContainer>
+        <GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
+
+
+
+        <FullAppName />
+
+
+
+
+        <MudContainer Style="max-width:300px;"
+                      Class="py-4">
+
+
+            <MudTextField Disabled=@LoadingData
+                          Class="justify-center"
+                          AutoFocus=true
+                          Label=@AppLocalization[Lang.Username]
+                          name="Username"
+                          @bind-Value=LoginRequest.Username />
+
+
+            <MudButton OnClick="AttemptResetPassword"
+                       Class="my-5"
+                       ButtonType=ButtonType.Submit
+                       Color="Color.Primary">
+                @AppLocalization[Lang.Reset_Password]
+            </MudButton>
+
+        </MudContainer>
+
+        <LoadingData Loading=LoadingData />
+
+        <MudElement Class="d-flex mud-width-full justify-end">
+            <Copyright Style="font-size:0.8em;" />
+
+        </MudElement>
+
+
+
+
+    </MudContainer>
+</LayoutView>
+
 <style>
     .brand-icon {
         position: fixed;
