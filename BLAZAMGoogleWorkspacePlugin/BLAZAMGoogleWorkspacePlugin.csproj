@@ -15,9 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Apis" Version="1.72.0" />
+    <PackageReference Include="Google.Apis" Version="1.73.0" />
     <PackageReference Include="Google.Apis.Admin.Directory.directory_v1" Version="1.72.0.3946" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.72.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.73.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.22" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.22" />
   </ItemGroup>
