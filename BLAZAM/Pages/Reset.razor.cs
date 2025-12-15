@@ -1,27 +1,32 @@
 // Import necessary namespaces for various functionalities
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Global.Enums;
+using BLAZAM.Gui.UI;
 using BLAZAM.Gui.UI.Modals;
 using BLAZAM.Gui.UI.Settings;
 using BLAZAM.Localization;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using System.Runtime.CompilerServices;
-using System.Security;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Pages
 {
     public partial class Reset : ValidatedForm
     {
+        private AppModal? _resetModel;
+        private EffectivePasswordResetPolicy? _effectiveResetPolicy = null;
+        private bool _tokenValid;
+        private bool _qaValid;
+        private bool _pinValid;
+        private bool _tokenRequired = true;
+        private IADUser _userToReset;
         private const string Not_Allowed_Message = "Either the user does not exist or can not reset their password";
         private GoogleAuthenticatorModal? googleAuthenticatorModal;
 
         [Parameter]
-        public string ResetToken { get; set; }
-        private string redirectUrl;
-        private bool _passwordResetAvailable;
+        public string Token { get; set; }
         private LoginRequest LoginRequest = new();
 
 
@@ -35,11 +40,27 @@ namespace BLAZAM.Pages
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            redirectUrl = Nav.Uri;
-            LoginRequest.ReturnUrl = Nav.Uri;
-            var currentUri = new Uri(Nav.Uri);
-            LoginRequest.CallbackBaseUri = currentUri.Scheme + "://" + currentUri.Authority;
-            _passwordResetAvailable = Context.PermissionDelegate.Any(d => d.AllowPasswordReset);
+
+            if (!Token.IsNullOrEmpty())
+            {
+                var usersettings = await Context.UserSettings.Include(x => x.PasswordResetSettings).FirstOrDefaultAsync(x => x.PasswordResetSettings.ResetToken == Token);
+                if (usersettings?.PasswordResetSettings.TokenExpiration?.Decrypt<DateTime>() > DateTime.UtcNow)
+                {
+                    _tokenValid = true;
+                    _userToReset = Directory.Users.FindUserBySID(usersettings.UserGUID);
+                    if (_userToReset != null)
+                    {
+                        LoginRequest.Username = _userToReset.SAMAccountName;
+                        await AttemptResetPassword();
+                        SnackBarService.Success("Token Valid!");
+                    }
+                }
+                else
+                {
+                    SnackBarService.Error("Either the token has expired or the token is invalid");
+                }
+            }
+
             LoadingData = false;
         }
 
@@ -54,40 +75,57 @@ namespace BLAZAM.Pages
                     SnackBarService.Warning(Not_Allowed_Message);
                     return;
                 }
-                var appUser = await user.GetApplicationUser(UserStateService, DbFactory, Directory,AppAuthenticationStateProvider);
+                var appUser = await user.GetApplicationUser(UserStateService, DbFactory, Directory, AppAuthenticationStateProvider);
                 if (appUser is null)
                 {
                     SnackBarService.Warning(Not_Allowed_Message);
                     return;
                 }
+
                 var eprp = new EffectivePasswordResetPolicy(appUser.PermissionDelegates);
                 if (eprp.CanResetPassword)
                 {
-                    if (eprp.RequireEmail)
+                    if (eprp.RequireEmail && !_tokenValid)
                     {
                         if (appUser.Preferences.Email.IsNullOrEmpty())
                         {
                             SnackBarService.Warning("No email configured for user");
                             return;
                         }
-                        var resetToken = Guid.NewGuid();
-                        appUser.Preferences.PasswordResetSettings.ResetToken = resetToken.Encrypt();
-                        EmailService.SendPasswordResetEmail(appUser.Preferences.Email,"https://"+DatabaseCache.ApplicationSettings.AppFQDN+"/reset?token="+resetToken);
+                        var resetToken = Guid.NewGuid().ToString();
+                        appUser.Preferences.PasswordResetSettings.ResetToken = resetToken.ToString();
+                        appUser.Preferences.PasswordResetSettings.TokenExpiration = DateTime.UtcNow.AddDays(1).Encrypt();
+                        await appUser.SaveBasicUserPreferences();
+                        EmailService.SendPasswordResetEmail(appUser.Preferences.Email, "https://" + DatabaseCache.ApplicationSettings.AppFQDN + "/reset/" + resetToken);
 
 
                         SnackBarService.Info("Verification email sent for password reset.");
                     }
                     else
                     {
+                        _tokenRequired = false;
+                        _effectiveResetPolicy = eprp;
                         if (eprp.RequirePIN)
                         {
+
                             SnackBarService.Info("PIN required for password reset.");
+                        }
+                        else
+                        {
+                            _pinValid = true;
                         }
                         if (eprp.RequireQA)
                         {
                             SnackBarService.Info("Security Questions required for password reset.");
                         }
-
+                        else
+                        {
+                            _qaValid = true;
+                        }
+                        if (_pinValid && _qaValid)
+                        {
+                            _resetModel?.ShowAsync();
+                        }
                     }
                 }
                 else

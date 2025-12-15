@@ -1,5 +1,6 @@
 ﻿@page "/reset"
-@page "/reset/{ResetToken}"
+@page "/reset/{Token}"
+@using BLAZAM.Gui.UI.Users
 @using BLAZAM.Static;
 @using System.Security
 @inject IHttpContextAccessor HttpContextAccessor
@@ -30,22 +31,30 @@
         <MudContainer Style="max-width:300px;"
                       Class="py-4">
 
+            @if (Token.IsNullOrEmpty() && _tokenRequired)
+            {
+                <MudTextField Disabled=@LoadingData
+                              Class="justify-center"
+                              AutoFocus=true
+                              Label=@AppLocalization[Lang.Username]
+                              name="Username"
+                              @bind-Value=LoginRequest.Username />
 
-            <MudTextField Disabled=@LoadingData
-                          Class="justify-center"
-                          AutoFocus=true
-                          Label=@AppLocalization[Lang.Username]
-                          name="Username"
-                          @bind-Value=LoginRequest.Username />
 
-
-            <MudButton OnClick="AttemptResetPassword"
-                       Class="my-5"
-                       ButtonType=ButtonType.Submit
-                       Color="Color.Primary">
-                @AppLocalization[Lang.Reset_Password]
-            </MudButton>
-
+                <MudButton OnClick="AttemptResetPassword"
+                           Class="my-5"
+                           ButtonType=ButtonType.Submit
+                           Color="Color.Primary">
+                    @AppLocalization[Lang.Reset_Password]
+                </MudButton>
+            }
+            else
+            {
+                <MudText>Token: @Token</MudText>
+                 <AppModal @ref=_resetModel Options="new() { MaxWidth = MaxWidth.Small, FullWidth = true }">
+            <ChangeUserPasswordModalContent User="_userToReset" AdminReset=false />
+        </AppModal>
+            }
         </MudContainer>
 
         <LoadingData Loading=LoadingData />
