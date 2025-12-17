@@ -882,29 +882,29 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-                             if (!DirectoryEntry.ContainsProperty(p.Key)
-                                 || DirectoryEntry.GetPropertyValue(p.Key)?.Equals(p.Value) != true)
-                             {
-                                 if (p.Value == null
-                             || p.Value is string strValue && strValue.IsNullOrEmpty()
-                             || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
-                                 {
+                            if (!DirectoryEntry.ContainsProperty(p.Key)
+                                || DirectoryEntry.GetPropertyValue(p.Key)?.Equals(p.Value) != true)
+                            {
+                                if (p.Value == null
+                            || p.Value is string strValue && strValue.IsNullOrEmpty()
+                            || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
+                                {
 
-                                     DirectoryEntry.ClearPropertyValue(p.Key);
+                                    DirectoryEntry.ClearPropertyValue(p.Key);
 
 
-                                 }
-                                 else
-                                 {
-                                     DirectoryEntry.SetPropertyValue(p.Key, p.Value);
+                                }
+                                else
+                                {
+                                    DirectoryEntry.SetPropertyValue(p.Key, p.Value);
 
                                 }
                             }
 
 
-                             //DirectoryEntry.CommitChanges();
-                             return true;
-                         });
+                            //DirectoryEntry.CommitChanges();
+                            return true;
+                        });
                         propertyJob.AddStep(propertyStep);
 
                     }
@@ -1204,27 +1204,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     Loggers.ActiveDirectoryLogger.Error(ex, "Unexpected error while getting property value for {@PropertyName}", propertyName);
                 }
 
-
-
-
-
-                //Check for exising edits to this entry
-                try
-                {
-                    if (NewEntryProperties.ContainsKey(propertyName))
-                        return (T)NewEntryProperties[propertyName];
-                }
-                catch (InvalidCastException ex)
-                {
-                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
-
-                }
-                catch
-                {
-                    return default;
-
-                }
             }
+
+
+
+            //Check for exising edits to this entry
+            try
+            {
+                if (NewEntryProperties.ContainsKey(propertyName))
+                    return (T)NewEntryProperties[propertyName];
+            }
+            catch (InvalidCastException ex)
+            {
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+
+            }
+            catch
+            {
+                return default;
+
+            }
+        
             if (DirectoryEntry != null && DirectoryEntry.ContainsProperty(propertyName))
             {
                 var val = DirectoryEntry.GetPropertyValue(propertyName);
@@ -1234,221 +1234,221 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 else
                 {
-                    return (T?)val;
-                }
-            }
-            return default;
+                    return (T?) val;
+    }
+}
+return default;
         }
 
         protected virtual string? GetStringAttribute(string propertyName)
+{
+    try
+    {
+        return GetValue<string>(propertyName)?.ToString();
+
+
+    }
+    catch (ArgumentOutOfRangeException)
+    {
+        return "";
+    }
+    catch (Exception)
+    {
+
+        return "";
+    }
+
+}
+
+protected virtual List<string>? GetStringListAttribute(string propertyName)
+{
+    try
+    {
+        List<string> values = [];
+        object[]? rawValue = null;
+        try
         {
-            try
-            {
-                return GetValue<string>(propertyName)?.ToString();
-
-
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                return "";
-            }
-            catch (Exception)
-            {
-
-                return "";
-            }
-
+            rawValue = GetValue<object[]>(propertyName);
         }
-
-        protected virtual List<string>? GetStringListAttribute(string propertyName)
+        catch (InvalidCastException)
         {
-            try
+            //Asked for string list but may have found just a single string
+            string? str = GetValue<string>(propertyName);
+            if (str != null)
             {
-                List<string> values = [];
-                object[]? rawValue = null;
-                try
-                {
-                    rawValue = GetValue<object[]>(propertyName);
-                }
-                catch (InvalidCastException)
-                {
-                    //Asked for string list but may have found just a single string
-                    string? str = GetValue<string>(propertyName);
-                    if (str != null)
-                    {
-                        rawValue = [str];
-                    }
-                }
-                if (rawValue != null)
-                {
-                    foreach (object o in rawValue)
-                    {
-                        string? str = o?.ToString();
-                        if (str != null)
-                        {
-                            values.Add(str);
-                        }
-                    }
-                }
-                return values;
-
-            }
-            catch (Exception)
-            {
-                return null;
+                rawValue = [str];
             }
         }
-        public virtual void SetCustomProperty(string propertyName, object? value) => SetAttribute(propertyName, value);
-        /// <summary>
-        /// Sets an attribute value. Note that this change is uncommited, <see cref="CommitChanges"/>
-        /// must be called afterwards for the change to persist.
-        /// </summary>
-        /// <param name="propertyName"></param>
-        /// <param name="value"></param>
-        protected virtual void SetAttribute(string propertyName, object? value)
+        if (rawValue != null)
         {
-            if (IsDeleted)
+            foreach (object o in rawValue)
             {
-                throw new AppException("Cannot set values for a deleted entry.");
-            }
-
-            try
-            {
-
-                if (!NewEntry)
+                string? str = o?.ToString();
+                if (str != null)
                 {
+                    values.Add(str);
+                }
+            }
+        }
+        return values;
 
-                    if (value == null || value is string strValue && strValue == "")
-                    {
-                        var currentValue = GetStringAttribute(propertyName);
-                        if ((currentValue == null && value == null) || currentValue?.Equals(value) == true)
-                        {
-                            return;
-                        }
+    }
+    catch (Exception)
+    {
+        return null;
+    }
+}
+public virtual void SetCustomProperty(string propertyName, object? value) => SetAttribute(propertyName, value);
+/// <summary>
+/// Sets an attribute value. Note that this change is uncommited, <see cref="CommitChanges"/>
+/// must be called afterwards for the change to persist.
+/// </summary>
+/// <param name="propertyName"></param>
+/// <param name="value"></param>
+protected virtual void SetAttribute(string propertyName, object? value)
+{
+    if (IsDeleted)
+    {
+        throw new AppException("Cannot set values for a deleted entry.");
+    }
+
+    try
+    {
+
+        if (!NewEntry)
+        {
+
+            if (value == null || value is string strValue && strValue == "")
+            {
+                var currentValue = GetStringAttribute(propertyName);
+                if ((currentValue == null && value == null) || currentValue?.Equals(value) == true)
+                {
+                    return;
+                }
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                        NewEntryProperties[propertyName] = null;
-                        HasUnsavedChanges = true;
+                NewEntryProperties[propertyName] = null;
+                HasUnsavedChanges = true;
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                    }
-                    else
-                    {
-                        SetNewProperty(propertyName, value);
-                    }
-
-                }
-                else
-                {
-                    SetNewProperty(propertyName, value);
-                }
-
-
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                // This exception can occur if the attribute is not available for this object class in AD.
-            }
-        }
-
-
-        protected DateTime? SetFileTimeAttribute(string attribute, DateTime? value)
-        {
-            if (value == null)
-            {
-                value = CommonHelpers.ADS_NULL_TIME;
-            }
-
-            var dateTime = value.Value;
-            if (dateTime.Kind == DateTimeKind.Unspecified)
-            {
-                dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Local);
-            }
-            SetAttribute(attribute, dateTime.ToUniversalTime().ToFileTime().ToString());
-            return value;
-        }
-
-
-        private void SetNewProperty(string propertyName, object? value)
-        {
-            var existingValue = DirectoryEntry?.GetPropertyValue(propertyName);
-            if (value != null && !value.Equals(existingValue))
-            {
-                NewEntryProperties[propertyName] = value;
-
-                HasUnsavedChanges = true;
-                OnModelChanged?.Invoke();
-            }
-            else if (value == null && NewEntryProperties.ContainsKey(propertyName))
-            {
-                NewEntryProperties.Remove(propertyName);
-                if (NewEntryProperties.Count < 1)
-                {
-                    HasUnsavedChanges = false;
-                }
-            }
-        }
-
-
-        public virtual bool Rename(string newName)
-        {
-            newName = newName.Replace(",", "\\,");
-            DirectoryEntry?.Rename(newName);
-            OnDirectoryModelRenamed?.Invoke(this);
-            return true;
-        }
-        protected virtual void RemoveFromListProperty(string propertyName, object? value)
-        {
-            try
-            {
-
-                DirectoryEntry?.RemovePropertyValue(propertyName, value);
-
-                HasUnsavedChanges = true;
-
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                // This exception can occur if the attribute is not available for this object class in AD.
-            }
-        }
-
-        protected virtual void AddToListProperty(string propertyName, object? value)
-        {
-            try
-            {
-                DirectoryEntry?.AddPropertyValue(propertyName, value);
-                HasUnsavedChanges = true;
-
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                // This exception can occur if the attribute is not available for this object class in AD.
-            }
-        }
-
-        public virtual void Dispose()
-        {
-            DirectoryEntry?.Dispose();
-            SearchResult = null;
-
-        }
-
-        public override bool Equals(object? obj)
-        {
-            return obj is DirectoryEntryAdapter model &&
-                   DN == model.DN;
-        }
-
-        public override int GetHashCode()
-        {
-            if (DN != null)
-            {
-                return DN.GetHashCode();
             }
             else
             {
-                return -1;
+                SetNewProperty(propertyName, value);
             }
+
         }
+        else
+        {
+            SetNewProperty(propertyName, value);
+        }
+
+
+    }
+    catch (ArgumentOutOfRangeException)
+    {
+        // This exception can occur if the attribute is not available for this object class in AD.
+    }
+}
+
+
+protected DateTime? SetFileTimeAttribute(string attribute, DateTime? value)
+{
+    if (value == null)
+    {
+        value = CommonHelpers.ADS_NULL_TIME;
+    }
+
+    var dateTime = value.Value;
+    if (dateTime.Kind == DateTimeKind.Unspecified)
+    {
+        dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Local);
+    }
+    SetAttribute(attribute, dateTime.ToUniversalTime().ToFileTime().ToString());
+    return value;
+}
+
+
+private void SetNewProperty(string propertyName, object? value)
+{
+    var existingValue = DirectoryEntry?.GetPropertyValue(propertyName);
+    if (value != null && !value.Equals(existingValue))
+    {
+        NewEntryProperties[propertyName] = value;
+
+        HasUnsavedChanges = true;
+        OnModelChanged?.Invoke();
+    }
+    else if (value == null && NewEntryProperties.ContainsKey(propertyName))
+    {
+        NewEntryProperties.Remove(propertyName);
+        if (NewEntryProperties.Count < 1)
+        {
+            HasUnsavedChanges = false;
+        }
+    }
+}
+
+
+public virtual bool Rename(string newName)
+{
+    newName = newName.Replace(",", "\\,");
+    DirectoryEntry?.Rename(newName);
+    OnDirectoryModelRenamed?.Invoke(this);
+    return true;
+}
+protected virtual void RemoveFromListProperty(string propertyName, object? value)
+{
+    try
+    {
+
+        DirectoryEntry?.RemovePropertyValue(propertyName, value);
+
+        HasUnsavedChanges = true;
+
+    }
+    catch (ArgumentOutOfRangeException)
+    {
+        // This exception can occur if the attribute is not available for this object class in AD.
+    }
+}
+
+protected virtual void AddToListProperty(string propertyName, object? value)
+{
+    try
+    {
+        DirectoryEntry?.AddPropertyValue(propertyName, value);
+        HasUnsavedChanges = true;
+
+    }
+    catch (ArgumentOutOfRangeException)
+    {
+        // This exception can occur if the attribute is not available for this object class in AD.
+    }
+}
+
+public virtual void Dispose()
+{
+    DirectoryEntry?.Dispose();
+    SearchResult = null;
+
+}
+
+public override bool Equals(object? obj)
+{
+    return obj is DirectoryEntryAdapter model &&
+           DN == model.DN;
+}
+
+public override int GetHashCode()
+{
+    if (DN != null)
+    {
+        return DN.GetHashCode();
+    }
+    else
+    {
+        return -1;
+    }
+}
 
 
     }
