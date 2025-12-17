@@ -88,6 +88,11 @@ jobs:
     permissions: write-all
 
     steps:
+      - name: Clean existing release zips
+        shell: bash
+        run: |
+          find . -maxdepth 1 -type f -name 'blazam-dev-beta-v*.zip' -print -delete || true
+
       - name: Download latest BetaDev1 release artifact
         uses: robinraju/release-downloader@v1.8
         with:
