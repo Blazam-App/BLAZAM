@@ -1,23 +1,30 @@
 ﻿@using BLAZAM.Helpers
-@if(appFQDN.IsNullOrEmpty())
+@if (_appFQDN.IsNullOrEmpty())
 {
     @ChildContent
-}else{
-    <MudLink Href="@(appFQDN+Uri)">
+}
+else
+{
+
+    <a style="@Style" href="@(_forceHttps ? "https://" : "http://" + _appFQDN + Href)">
         @ChildContent
-    </MudLink>
+    </a>
 }
 
 @code {
-    string? appFQDN;
+    string? _appFQDN;
+    bool _forceHttps;
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        appFQDN = DatabaseCache.ApplicationSettings.AppFQDN;
+        _appFQDN = DatabaseCache.ApplicationSettings.AppFQDN;
+        _forceHttps = DatabaseCache.ApplicationSettings.ForceHTTPS;
         InvokeAsync(StateHasChanged);
     }
     [Parameter]
-    public string? Uri{ get; set; }
+    public string? Href { get; set; }
     [Parameter]
-    public RenderFragment? ChildContent{ get; set; }
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public string Style { get; set; }
 }

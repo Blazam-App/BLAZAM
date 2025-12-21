@@ -30,8 +30,7 @@
 
         <MudContainer Style="max-width:300px;"
                       Class="py-4">
-
-            @if (Token.IsNullOrEmpty() && _tokenRequired)
+            @if (!_attemptReset)
             {
                 <MudTextField Disabled=@LoadingData
                               Class="justify-center"
@@ -48,13 +47,29 @@
                     @AppLocalization[Lang.Reset_Password]
                 </MudButton>
             }
-            else
+            @if (Token.IsNullOrEmpty() && _tokenRequired)
             {
-                <MudText>Token: @Token</MudText>
-                 <AppModal @ref=_resetModel Options="new() { MaxWidth = MaxWidth.Small, FullWidth = true }">
-            <ChangeUserPasswordModalContent User="_userToReset" AdminReset=false />
-        </AppModal>
+               <MudText>Check your email for a reset link.</MudText>
             }
+            else if(_askForPin)
+            {
+                <MudText>@AppLocalization[Lang.PIN]</MudText>
+                 <MudTextField T="string" @bind-Value=_submittedPin/>
+
+                <MudButton OnClick="CheckPin"
+                           Class="my-5"
+                           ButtonType=ButtonType.Submit
+                           Color="Color.Primary">
+                    @AppLocalization[Lang.Reset_Password]
+                </MudButton>
+            }
+            @if (!_errorMessage.IsNullOrEmpty())
+            {
+                <MudText>@_errorMessage</MudText>
+            }
+            <AppModal @ref=_resetModel Options="new() { MaxWidth = MaxWidth.Small, FullWidth = true }">
+                <ChangeUserPasswordModalContent User="_userToReset" AdminReset=false />
+            </AppModal>
         </MudContainer>
 
         <LoadingData Loading=LoadingData />

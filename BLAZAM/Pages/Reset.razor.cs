@@ -8,6 +8,7 @@ using BLAZAM.Gui.UI;
 using BLAZAM.Gui.UI.Modals;
 using BLAZAM.Gui.UI.Settings;
 using BLAZAM.Localization;
+using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,11 +17,17 @@ namespace BLAZAM.Pages
     public partial class Reset : ValidatedForm
     {
         private AppModal? _resetModel;
+        private IApplicationUserState? _appUser;
         private EffectivePasswordResetPolicy? _effectiveResetPolicy = null;
         private bool _tokenValid;
         private bool _qaValid;
         private bool _pinValid;
-        private bool _tokenRequired = true;
+        private bool _attemptReset;
+        private bool _askForPin;
+        private bool _askForAnswers;
+        private bool _tokenRequired;
+        private string _submittedPin;
+        private string _errorMessage;
         private IADUser _userToReset;
         private const string Not_Allowed_Message = "Either the user does not exist or can not reset their password";
         private GoogleAuthenticatorModal? googleAuthenticatorModal;
@@ -63,9 +70,27 @@ namespace BLAZAM.Pages
 
             LoadingData = false;
         }
+        private async Task CheckPin()
+        {
+            if (_appUser?.Preferences.PasswordResetSettings.PIN.IsNullOrEmpty()!=false)
+            {
+                return;
+            }
+            if (_submittedPin.Equals(_appUser.Preferences.PasswordResetSettings.PIN?.Decrypt()))
+            {
+                
 
+                _pinValid = true;
+                _= AttemptResetPassword();
+            }
+            else
+            {
+                SnackBarService.Error("Invalid PIN entered.");
+            }
+        }
         private async Task AttemptResetPassword()
         {
+            _attemptReset = true;
             LoadingData = true;
             try
             {
@@ -75,28 +100,29 @@ namespace BLAZAM.Pages
                     SnackBarService.Warning(Not_Allowed_Message);
                     return;
                 }
-                var appUser = await user.GetApplicationUser(UserStateService, DbFactory, Directory, AppAuthenticationStateProvider);
-                if (appUser is null)
+                _appUser = await user.GetApplicationUser(UserStateService, DbFactory, Directory, AppAuthenticationStateProvider);
+                if (_appUser is null)
                 {
                     SnackBarService.Warning(Not_Allowed_Message);
                     return;
                 }
 
-                var eprp = new EffectivePasswordResetPolicy(appUser.PermissionDelegates);
+                var eprp = new EffectivePasswordResetPolicy(_appUser.PermissionDelegates);
                 if (eprp.CanResetPassword)
                 {
                     if (eprp.RequireEmail && !_tokenValid)
                     {
-                        if (appUser.Preferences.Email.IsNullOrEmpty())
+                        _tokenRequired = true;
+                        if (_appUser.Preferences.Email.IsNullOrEmpty())
                         {
                             SnackBarService.Warning("No email configured for user");
                             return;
                         }
                         var resetToken = Guid.NewGuid().ToString();
-                        appUser.Preferences.PasswordResetSettings.ResetToken = resetToken.ToString();
-                        appUser.Preferences.PasswordResetSettings.TokenExpiration = DateTime.UtcNow.AddDays(1).Encrypt();
-                        await appUser.SaveBasicUserPreferences();
-                        EmailService.SendPasswordResetEmail(appUser.Preferences.Email, "https://" + DatabaseCache.ApplicationSettings.AppFQDN + "/reset/" + resetToken);
+                        _appUser.Preferences.PasswordResetSettings.ResetToken = resetToken.ToString();
+                        _appUser.Preferences.PasswordResetSettings.TokenExpiration = DateTime.UtcNow.AddDays(1).Encrypt();
+                        await _appUser.SaveBasicUserPreferences();
+                        EmailService.SendPasswordResetEmail(_appUser.Preferences.Email, "/reset/" + resetToken);
 
 
                         SnackBarService.Info("Verification email sent for password reset.");
@@ -104,19 +130,40 @@ namespace BLAZAM.Pages
                     else
                     {
                         _tokenRequired = false;
+                        _tokenValid = true;
                         _effectiveResetPolicy = eprp;
-                        if (eprp.RequirePIN)
+                        if (eprp.RequirePIN && !_pinValid)
                         {
-
-                            SnackBarService.Info("PIN required for password reset.");
+                            if (_appUser.Preferences?.PasswordResetSettings?.PIN != null)
+                            {
+                                SnackBarService.Info("PIN required for password reset.");
+                                _askForPin = true;
+                                _askForAnswers = false;
+                            }
+                            else
+                            {
+                                SnackBarService.Error("PIN required but not configured.");
+                                _errorMessage = "Your account is not configured for account recovery, please contact your system administrator.";
+                            }
                         }
                         else
                         {
                             _pinValid = true;
                         }
-                        if (eprp.RequireQA)
+                        if (eprp.RequireQA && !_qaValid)
                         {
                             SnackBarService.Info("Security Questions required for password reset.");
+                            if (_appUser.Preferences?.PasswordResetSettings?.Question1 != null)
+                            {
+                                SnackBarService.Info("Security Questions required for password reset.");
+                                _askForAnswers = true;
+                                _askForPin = false;
+                            }
+                            else
+                            {
+                                SnackBarService.Error("Security Questions required but not configured.");
+                                _errorMessage = "Your account is not configured for account recovery, please contact your system administrator.";
+                            }
                         }
                         else
                         {
