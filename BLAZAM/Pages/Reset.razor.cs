@@ -107,10 +107,10 @@ namespace BLAZAM.Pages
                     return;
                 }
 
-                var eprp = new EffectivePasswordResetPolicy(_appUser.PermissionDelegates);
-                if (eprp.CanResetPassword)
+                 _effectiveResetPolicy = new EffectivePasswordResetPolicy(_appUser.PermissionDelegates);
+                if (_effectiveResetPolicy.CanResetPassword)
                 {
-                    if (eprp.RequireEmail && !_tokenValid)
+                    if (_effectiveResetPolicy.RequireEmail && !_tokenValid)
                     {
                         _tokenRequired = true;
                         if (_appUser.Preferences.Email.IsNullOrEmpty())
@@ -119,11 +119,13 @@ namespace BLAZAM.Pages
                             return;
                         }
                         var resetToken = Guid.NewGuid().ToString();
+                        var resetExpiration = DateTime.UtcNow.AddDays(1);
                         _appUser.Preferences.PasswordResetSettings.ResetToken = resetToken.ToString();
-                        _appUser.Preferences.PasswordResetSettings.TokenExpiration = DateTime.UtcNow.AddDays(1).Encrypt();
-                        await _appUser.SaveBasicUserPreferences();
-                        EmailService.SendPasswordResetEmail(_appUser.Preferences.Email, "/reset/" + resetToken);
 
+                        _appUser.Preferences.PasswordResetSettings.TokenExpiration = resetExpiration.Encrypt();
+                        await _appUser.SaveBasicUserPreferences();
+                        EmailService.SendPasswordResetEmail(_appUser.Preferences.Email, "/reset/" + resetToken,resetExpiration);
+                        await AuditLogger.System.PasswordResetRequested(CurrentUser?.State?.IPAddress, _appUser.AuditUsername);
 
                         SnackBarService.Info("Verification email sent for password reset.");
                     }
@@ -131,8 +133,8 @@ namespace BLAZAM.Pages
                     {
                         _tokenRequired = false;
                         _tokenValid = true;
-                        _effectiveResetPolicy = eprp;
-                        if (eprp.RequirePIN && !_pinValid)
+                      
+                        if (_effectiveResetPolicy.RequirePIN && !_pinValid)
                         {
                             if (_appUser.Preferences?.PasswordResetSettings?.PIN != null)
                             {
@@ -150,7 +152,7 @@ namespace BLAZAM.Pages
                         {
                             _pinValid = true;
                         }
-                        if (eprp.RequireQA && !_qaValid)
+                        if (_effectiveResetPolicy.RequireQA && !_qaValid)
                         {
                             SnackBarService.Info("Security Questions required for password reset.");
                             if (_appUser.Preferences?.PasswordResetSettings?.Question1 != null)
