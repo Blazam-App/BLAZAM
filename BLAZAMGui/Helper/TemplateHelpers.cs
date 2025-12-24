@@ -1,6 +1,4 @@
-﻿
 using BLAZAM.Global.Data;
-
 namespace BLAZAM.Gui.Helpers
 {
     public static class TemplateHelpers
@@ -38,6 +36,7 @@ namespace BLAZAM.Gui.Helpers
                 newUser.SAMAccountName = template.GenerateUsername(newUserName);
                 newUser.DisplayName = displayName;
                 newUser.StagePasswordChange(template.GeneratePassword(newUserName).ToSecureString());
+                newUser.StageEnable();
                 if (template.EffectiveRequirePasswordChange == true)
                 {
                     newUser.StageRequirePasswordChange(true);
@@ -72,12 +71,10 @@ namespace BLAZAM.Gui.Helpers
             catch (Exception ex)
             {
                 Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create user in {@ContainerName}", parentOU.DN);
+
                 throw;
             }
-
-
-
-
+          
         }
     }
 }
