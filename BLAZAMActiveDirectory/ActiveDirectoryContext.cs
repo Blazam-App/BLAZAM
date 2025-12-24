@@ -50,7 +50,7 @@ namespace BLAZAM.ActiveDirectory
 
         public int FailedConnectionAttempts { get; set; } = 0;
 
-        private AuthType AuthType
+        public AuthType AuthType
         {
             get
             {

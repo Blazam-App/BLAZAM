@@ -54,7 +54,7 @@
         @if (OperatingSystem.IsWindows())
         {
             <MudItem xs="8">
-                @AppLocalization[Lang.Connection_Type]
+                @AppLocalization["Encryption Type"]
             </MudItem>
             <MudItem xs="4">
                 <StatusCheck Status=@GetEncryptionTypeStatus()
@@ -101,13 +101,13 @@
 
 @code {
 
-        [Parameter]
-        public EventCallback DirectoryConnected {get; set; }
+    [Parameter]
+    public EventCallback DirectoryConnected {get; set; }
 
-        bool _monitoring = false;
-        bool? _portStatus = null;
-        bool? _credStatus = null;
-        bool showProgress = true;
+    bool _monitoring = false;
+    bool? _portStatus = null;
+    bool? _credStatus = null;
+    bool showProgress = true;
     private AppLdapConnection? _connection;
     protected override async Task OnInitializedAsync()
     {
@@ -152,7 +152,7 @@
 
                 try
                 {
-                   await UpdatePortAndCredentials();
+                    await UpdatePortAndCredentials();
                 }
                 catch (UnresolvableAddressException)
                 {
@@ -215,6 +215,7 @@
     {
         if (Directory.Status != DirectoryConnectionStatus.OK) return false;
         if (Directory.AppRootDirectoryEntry == null) return false;
+        if (Directory.AppRootDirectoryEntry.SslEnabled && Directory.AuthType == AuthType.Negotiate) return true;
         var authType = Directory.AppRootDirectoryEntry.EncryptionType;
         if (authType.Equals(CipherAlgorithmType.Aes256) ||
             authType.Equals(CipherAlgorithmType.Aes192)) return true;
@@ -229,6 +230,8 @@
     private string? GetEncryptionType()
     {
         if (Directory.Status != DirectoryConnectionStatus.OK) return null;
+
+        if (Directory.AuthType == AuthType.Negotiate) return "Negotiate";
         return Directory.AppRootDirectoryEntry?.EncryptionType.ToString();
     }
     private string? GetConnectionType()
