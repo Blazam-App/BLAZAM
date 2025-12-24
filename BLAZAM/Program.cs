@@ -149,6 +149,16 @@ namespace BLAZAM
                 AppInstance.Environment.EnvironmentName = "Development"; // Explicitly set environment name if needed
                 AppInstance.UseDeveloperExceptionPage();
             }
+            // Get the PathBase from the configuration
+            var pathBase = AppInstance.Configuration.GetValue<string>("PathBase");
+
+            // If a PathBase is configured, apply it to the request pipeline
+            if (!string.IsNullOrEmpty(pathBase))
+            {
+                // Log the PathBase being used for debugging and operational visibility
+                Log.Information("Using PathBase: {PathBase}", pathBase);
+                AppInstance.UsePathBase(pathBase);
+            }
             // Use response compression middleware
             AppInstance.UseResponseCompression();
             // Custom middleware to manage user state.
