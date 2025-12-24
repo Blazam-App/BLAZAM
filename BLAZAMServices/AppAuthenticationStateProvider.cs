@@ -453,7 +453,7 @@ namespace BLAZAM.Services
             return await CreateDirectoryPrincipal(loginUser, user, loginReq);
         }
 
-        public async Task<string> PerformDuoAuthentication(LoginRequest loginReq)
+        public async Task<string> PerformDuoAuthentication(LoginRequest loginReq,string callbackUri="/mfacallback")
         {
             using var context = await _factory.CreateDbContextAsync();
 
@@ -466,7 +466,7 @@ namespace BLAZAM.Services
             // Initiate the Duo authentication for a specific username
 
             // Get a Duo client
-            Client duoClient = _duoClientProvider.GetDuoClient(loginReq.CallbackBaseUri + "/mfacallback");
+            Client duoClient = _duoClientProvider.GetDuoClient(loginReq.CallbackBaseUri + callbackUri);
 
             // Check if Duo seems to be healthy and able to service authentications.
             var isDuoHealthy = await duoClient.DoHealthCheck();

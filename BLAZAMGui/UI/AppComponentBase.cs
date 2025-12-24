@@ -33,6 +33,9 @@ namespace BLAZAM.Gui.UI
         protected ApplicationInfo ApplicationInfo { get; set; }
 
         [Inject]
+        protected PasswordResetService PasswordResetService { get; set; }
+
+        [Inject]
         protected IActiveDirectoryContextFactory DirectoryFactory { get; set; }
 
         [Inject]

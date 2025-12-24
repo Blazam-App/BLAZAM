@@ -8,6 +8,7 @@ using BLAZAM.Gui.UI;
 using BLAZAM.Gui.UI.Modals;
 using BLAZAM.Gui.UI.Settings;
 using BLAZAM.Localization;
+using BLAZAM.Services.Duo;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ namespace BLAZAM.Pages
         private bool _tokenValid;
         private bool _qaValid;
         private bool _pinValid;
+        private bool _mfaValid;
         private bool _attemptReset;
         private bool _askForPin;
         private bool _askForAnswers;
@@ -44,9 +46,18 @@ namespace BLAZAM.Pages
         private GoogleAuthenticatorModal? googleAuthenticatorModal;
         private AppModal? _iFrameModal;
         private string _duoAuthUri;
+        private LoginRequest LoginRequest = new();
+
+        [SupplyParameterFromQuery(Name = "state")]
+        public string? State { get; set; }
+
+        [SupplyParameterFromQuery(Name = "code")]
+        public string? Code { get; set; }
+
         [Parameter]
         public string Token { get; set; }
-        private LoginRequest LoginRequest = new();
+
+
 
 
         /// <summary>
@@ -79,7 +90,22 @@ namespace BLAZAM.Pages
                     SnackBarService.Error("Either the token has expired or the token is invalid");
                 }
             }
-
+            if(!State.IsNullOrEmpty() && !Code.IsNullOrEmpty())
+            {
+                //Duo callback
+                DuoClientProvider duoClientProvider = new(DbFactory);
+                var resetReq = PasswordResetService.GetPasswordResetRequestFromMFAToken(State);
+                _userToReset = resetReq.User;
+                if (await duoClientProvider.VerifyCallback( Nav.BaseUri + "/reset" , _userToReset.SAMAccountName, Code))
+                {
+                    Token = resetReq.Token;
+                    _mfaValid = true;
+                    _pinValid = true;
+                    _qaValid = true;
+                    AttemptResetPassword();
+                }
+                
+            }
             LoadingData = false;
         }
         private async Task CheckPin()
@@ -274,20 +300,20 @@ namespace BLAZAM.Pages
                         }
                         if (_pinValid && _qaValid)
                         {
-                            LoginRequest lr = new LoginRequest();
                             var currentUri = new Uri(Nav.Uri);
-                            lr.CallbackBaseUri = currentUri.Scheme + "://" + currentUri.Authority;
-                            lr.Username = _appUser.Username;
+                            LoginRequest.CallbackBaseUri = currentUri.Scheme + "://" + currentUri.Authority;
+                            LoginRequest.Username = _appUser.Username;
                             using var context = await DbFactory.CreateDbContextAsync();
                             var authSettings = await context.AuthenticationSettings.FirstOrDefaultAsync();
-                            if(_auth.ShouldPerformDuoMFA(authSettings, lr))
+                            if (_auth.ShouldPerformDuoMFA(authSettings, LoginRequest))
                             {
-                                _duoAuthUri = await _auth.PerformDuoAuthentication(lr);
-                                _= _iFrameModal?.ShowAsync();
+                                _duoAuthUri = await _auth.PerformDuoAuthentication(LoginRequest, "/reset");
+                                PasswordResetService.AddAuthorizedRequest(_userToReset, LoginRequest.MFAToken);
+                                Nav.NavigateTo(_duoAuthUri, true);
                                 LoadingData = false;
                                 return;
                             }
-                            else if(_auth.ShouldPerformGoogleAuthenticatorMFA(_appUser.Preferences, lr, authSettings))
+                            else if (_auth.ShouldPerformGoogleAuthenticatorMFA(_appUser.Preferences, LoginRequest, authSettings))
                             {
 
                             }
