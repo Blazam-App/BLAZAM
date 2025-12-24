@@ -386,7 +386,7 @@ namespace BLAZAM.Services
             return null;
         }
 
-        private bool ShouldPerformDuoMFA(AuthenticationSettings? settings, LoginRequest loginReq)
+        public bool ShouldPerformDuoMFA(AuthenticationSettings? settings, LoginRequest loginReq)
         {
             return settings != null &&
                 settings.DuoEnabled &&
@@ -395,8 +395,12 @@ namespace BLAZAM.Services
                 !loginReq.Impersonation;
         }
 
-        private bool ShouldPerformGoogleAuthenticatorMFA(AppUser? userSettings, LoginRequest loginReq, AuthenticationSettings? settings)
+        public bool ShouldPerformGoogleAuthenticatorMFA(AppUser? userSettings, LoginRequest loginReq, AuthenticationSettings? settings)
         {
+            if(userSettings!=null && userSettings.AuthenticatorSecret?.Decrypt().IsNullOrEmpty()==false)
+            {
+                return true;
+            }
             return userSettings != null
                 && !loginReq.Impersonation
                 && settings != null
@@ -449,7 +453,7 @@ namespace BLAZAM.Services
             return await CreateDirectoryPrincipal(loginUser, user, loginReq);
         }
 
-        private async Task<string> PerformDuoAuthentication(LoginRequest loginReq)
+        public async Task<string> PerformDuoAuthentication(LoginRequest loginReq)
         {
             using var context = await _factory.CreateDbContextAsync();
 

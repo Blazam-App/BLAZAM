@@ -5,35 +5,43 @@
     <MudForm @ref=Form @bind-IsValid=IsValid>
 
         <MudTextField T="string"
+                      Immediate=true
                       @bind-Text=@CurrentUser.State.Preferences.Email
                       Label=@AppLocalization[Lang.Email]
                       Required=_eprp.RequireEmail />
 
         <MudTextField T="string"
                       InputType="InputType.Password"
+                      Immediate=true
                       @bind-Text=@pin
                       Label=@AppLocalization[Lang.PIN]
                       Required=_eprp.RequirePIN />
         <MudTextField T="string"
+                      Immediate=true
                       @bind-Text=@question1
                       Label=@AppLocalization[Lang.Question] />
         <MudTextField T="string"
+                      Immediate=true
                       @bind-Text=@answer1
                       Label=@AppLocalization[Lang.Answer] />
 
         <MudTextField T="string"
+                      Immediate=true
                       @bind-Text=@question2
                       Label=@AppLocalization[Lang.Question] />
         <MudTextField T="string"
+                      Immediate=true
                       @bind-Text=@answer2
                       Label=@AppLocalization[Lang.Answer] />
 
 
         <MudTextField T="string"
                       @bind-Text=@question3
+                      Immediate=true
                       Label=@AppLocalization[Lang.Question] />
         <MudTextField T="string"
                       @bind-Text=@answer3
+                      Immediate=true
                       Label=@AppLocalization[Lang.Answer] />
 
     </MudForm>
@@ -59,9 +67,16 @@
         Modal.SetOnYes(SaveSettings);
         Modal.YesEnabled = () => { return !LoadingData; };
         _eprp = new EffectivePasswordResetPolicy(CurrentUser.State.PermissionDelegates);
-        _ = LoadExistingSettings();
-    }
 
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            _ = LoadExistingSettings();
+        }
+    }
     private async Task LoadExistingSettings()
     {
         try
@@ -98,6 +113,20 @@
     {
         LoadingData = true;
         await Modal.RefreshView();
+        if (!question1.IsNullOrEmpty() || !question2.IsNullOrEmpty() || !question3.IsNullOrEmpty())
+        {
+            if (question1.IsNullOrEmpty()
+                || question2.IsNullOrEmpty()
+                || question3.IsNullOrEmpty()
+                || answer1.IsNullOrEmpty()
+                || answer2.IsNullOrEmpty()
+                || answer3.IsNullOrEmpty())
+            {
+                SnackBarService.Warning("All questions and answers must be provided.");
+                LoadingData = false;
+                return;
+            }
+        }
         var pr = CurrentUser.State.Preferences.PasswordResetSettings;
         if (pin != pr.PIN)
         {

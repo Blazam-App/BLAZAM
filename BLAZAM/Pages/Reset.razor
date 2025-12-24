@@ -6,6 +6,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inherits ValidatedForm
 @inject IJSRuntime JSRuntime
+@inject AppAuthenticationStateProvider _auth;
 <LayoutView Layout="@typeof(LoginLayout)">
 
     <AppPageTitle>@AppLocalization[Lang.Login]</AppPageTitle>
@@ -40,7 +41,7 @@
                               @bind-Value=LoginRequest.Username />
 
 
-                <MudButton OnClick="AttemptResetPassword"
+                <MudButton OnClick="StartAttemptPasswordReset"
                            Class="my-5"
                            ButtonType=ButtonType.Submit
                            Color="Color.Primary">
@@ -49,14 +50,42 @@
             }
             @if (Token.IsNullOrEmpty() && _tokenRequired)
             {
-               <MudText>Check your email for a reset link.</MudText>
+                <MudText>Check your email for a reset link.</MudText>
             }
-            else if(_askForPin)
+            else if (_askForPin && !_pinValid)
             {
                 <MudText>@AppLocalization[Lang.PIN]</MudText>
-                 <MudTextField T="string" @bind-Value=_submittedPin/>
+                <MudTextField InputType=InputType.Password
+                              T="string"
+                              @bind-Value=_submittedPin />
 
                 <MudButton OnClick="CheckPin"
+                           Class="my-5"
+                           ButtonType=ButtonType.Submit
+                           Color="Color.Primary">
+                    @AppLocalization[Lang.Reset_Password]
+                </MudButton>
+            }
+            else if (_askForAnswers)
+            {
+                <MudText>@AppLocalization[Lang.Security_Questions]</MudText>
+                <MudText>
+                    @_question1
+                </MudText>
+                <MudTextField Class="align-center" T="string"
+                              @bind-Value=_submittedAnswer1 />
+                <MudText>
+                    @_question2
+                </MudText>
+                <MudTextField T="string"
+                              @bind-Value=_submittedAnswer2 />
+                <MudText>
+                    @_question3
+                </MudText>
+                <MudTextField T="string"
+                              @bind-Value=_submittedAnswer3 />
+
+                <MudButton OnClick="CheckAnswers"
                            Class="my-5"
                            ButtonType=ButtonType.Submit
                            Color="Color.Primary">
@@ -67,8 +96,11 @@
             {
                 <MudText>@_errorMessage</MudText>
             }
-            <AppModal @ref=_resetModel Options="new() { MaxWidth = MaxWidth.Small, FullWidth = true }">
-                <ChangeUserPasswordModalContent User="_userToReset" AdminReset=false />
+            <AppModal @ref=_resetModel
+                      Options="new() { MaxWidth = MaxWidth.Small, FullWidth = true }">
+                <ChangeUserPasswordModalContent User="_userToReset"
+                                                AdminReset=false
+                                                EntryChanged="PasswordResetCompleted" />
             </AppModal>
         </MudContainer>
 
@@ -80,7 +112,9 @@
         </MudElement>
 
 
-
+        <AppModal @ref=_iFrameModal>
+            <IFrameModalContent Src="@_duoAuthUri"/>
+        </AppModal>
 
     </MudContainer>
 </LayoutView>
