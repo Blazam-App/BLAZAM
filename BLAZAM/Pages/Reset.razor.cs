@@ -8,6 +8,7 @@ using BLAZAM.Gui.UI;
 using BLAZAM.Gui.UI.Modals;
 using BLAZAM.Gui.UI.Settings;
 using BLAZAM.Localization;
+using BLAZAM.Services.Audit;
 using BLAZAM.Services.Duo;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components;
@@ -15,15 +16,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Pages
 {
-    public partial class Reset : ValidatedForm
+    public partial class Reset : ValidatedForm, IDisposable
     {
 
-        private static readonly List<ResetAttempt> _resetAttempts = new();
+        private static List<ResetAttempt> _resetAttempts = new();
         private readonly object _resetLock = new();
 
 
+        private AuthenticationSettings authSettings;
+
         private AppModal? _resetModel;
         private IApplicationUserState? _appUser;
+        private WebUserAuditLogger? _resetAuditLogger;
+
+        private IApplicationUserState? appUser
+        {
+            get => _appUser; set
+            {
+                if (_appUser == value)
+                {
+                    return;
+                }
+                _appUser = value;
+                if (value != null)
+                {
+                    _resetAuditLogger = new WebUserAuditLogger(DbFactory, value, JS);
+
+                }
+            }
+        }
         private EffectivePasswordResetPolicy? _effectiveResetPolicy = null;
         private bool _tokenValid;
         private bool _qaValid;
@@ -44,7 +65,6 @@ namespace BLAZAM.Pages
         private IADUser _userToReset;
         private const string Not_Allowed_Message = "Either the user does not exist or can not reset their password";
         private GoogleAuthenticatorModal? googleAuthenticatorModal;
-        private AppModal? _iFrameModal;
         private string _duoAuthUri;
         private LoginRequest LoginRequest = new();
 
@@ -71,6 +91,12 @@ namespace BLAZAM.Pages
         {
             await base.OnInitializedAsync();
 
+            var currentUri = new Uri(Nav.Uri);
+            LoginRequest.CallbackBaseUri = currentUri.Scheme + "://" + currentUri.Authority;
+
+            using var context = await DbFactory.CreateDbContextAsync();
+            authSettings = await context.AuthenticationSettings.FirstOrDefaultAsync();
+
             if (!Token.IsNullOrEmpty())
             {
                 var usersettings = await Context.UserSettings.Include(x => x.PasswordResetSettings).FirstOrDefaultAsync(x => x.PasswordResetSettings.ResetToken == Token);
@@ -90,33 +116,35 @@ namespace BLAZAM.Pages
                     SnackBarService.Error("Either the token has expired or the token is invalid");
                 }
             }
-            if(!State.IsNullOrEmpty() && !Code.IsNullOrEmpty())
+            if (!State.IsNullOrEmpty() && !Code.IsNullOrEmpty())
             {
                 //Duo callback
                 DuoClientProvider duoClientProvider = new(DbFactory);
                 var resetReq = PasswordResetService.GetPasswordResetRequestFromMFAToken(State);
                 _userToReset = resetReq.User;
-                if (await duoClientProvider.VerifyCallback( Nav.BaseUri + "/reset" , _userToReset.SAMAccountName, Code))
+                if (await duoClientProvider.VerifyCallback(Nav.BaseUri + "reset", _userToReset.SAMAccountName, Code))
                 {
                     Token = resetReq.Token;
+                    LoginRequest.Username = _userToReset.SAMAccountName;
                     _mfaValid = true;
+                    _tokenValid = true;
                     _pinValid = true;
                     _qaValid = true;
                     AttemptResetPassword();
                 }
-                
+
             }
             LoadingData = false;
         }
         private async Task CheckPin()
         {
             LoadingData = true;
-            if (_appUser?.Preferences.PasswordResetSettings.PIN.IsNullOrEmpty() != false)
+            if (appUser?.Preferences.PasswordResetSettings.PIN.IsNullOrEmpty() != false)
             {
                 LoadingData = false;
                 return;
             }
-            if (_submittedPin.Equals(_appUser.Preferences.PasswordResetSettings.PIN?.Decrypt()))
+            if (_submittedPin.Equals(appUser.Preferences.PasswordResetSettings.PIN?.Decrypt()))
             {
 
 
@@ -134,19 +162,20 @@ namespace BLAZAM.Pages
         private async Task CheckAnswers()
         {
             LoadingData = true;
-            if (_appUser?.Preferences.PasswordResetSettings.Answer1.IsNullOrEmpty() != false)
+            if (appUser?.Preferences.PasswordResetSettings.Answer1.IsNullOrEmpty() != false)
             {
                 LoadingData = false;
                 return;
             }
-            if (CheckAnswer(_submittedAnswer1, _appUser.Preferences.PasswordResetSettings.Answer1?.Decrypt()))
+            if (CheckAnswer(_submittedAnswer1, appUser.Preferences.PasswordResetSettings.Answer1?.Decrypt()))
             {
-                if (CheckAnswer(_submittedAnswer2, _appUser.Preferences.PasswordResetSettings.Answer2?.Decrypt()))
+                if (CheckAnswer(_submittedAnswer2, appUser.Preferences.PasswordResetSettings.Answer2?.Decrypt()))
                 {
-                    if (CheckAnswer(_submittedAnswer3, _appUser.Preferences.PasswordResetSettings.Answer3?.Decrypt()))
+                    if (CheckAnswer(_submittedAnswer3, appUser.Preferences.PasswordResetSettings.Answer3?.Decrypt()))
                     {
                         _qaValid = true;
                         _ = AttemptResetPassword();
+                        return;
                     }
                 }
             }
@@ -174,9 +203,9 @@ namespace BLAZAM.Pages
 
         private void PasswordResetCompleted()
         {
-            _appUser.Preferences.PasswordResetSettings.TokenExpiration = null;
-            _appUser.Preferences.PasswordResetSettings.ResetToken = null;
-            _appUser.SaveBasicUserPreferences();
+            appUser.Preferences.PasswordResetSettings.TokenExpiration = null;
+            appUser.Preferences.PasswordResetSettings.ResetToken = null;
+            appUser.SaveBasicUserPreferences();
             Nav.NavigateTo("/login");
 
 
@@ -191,10 +220,8 @@ namespace BLAZAM.Pages
                     SnackBarService.Error("Too many reset attempts. Please try again later.");
                     return;
                 }
-                foreach (var expiredAttempt in _resetAttempts.Where(x => x.AttemptTime < DateTime.UtcNow.AddMinutes(-5)))
-                {
-                    _resetAttempts.Remove(expiredAttempt);
-                }
+                _resetAttempts = _resetAttempts.Where(x => x.AttemptTime > DateTime.UtcNow.AddMinutes(-5)).ToList();
+
                 _resetAttempts.Add(new ResetAttempt
                 {
                     Username = LoginRequest.Username,
@@ -208,6 +235,8 @@ namespace BLAZAM.Pages
 
             _attemptReset = true;
             LoadingData = true;
+            await Task.Delay(10);
+            await StateHasChangedAsync();
             try
             {
                 var user = Directory.Users.FindUserByUsername(LoginRequest.Username, exactMatch: true);
@@ -216,110 +245,109 @@ namespace BLAZAM.Pages
                     SnackBarService.Warning(Not_Allowed_Message);
                     return;
                 }
-                _appUser = await user.GetApplicationUser(UserStateService, DbFactory, Directory, AppAuthenticationStateProvider);
-                if (_appUser is null)
+                appUser = await user.GetApplicationUser(UserStateService, DbFactory, Directory, AppAuthenticationStateProvider);
+                if (appUser is null)
                 {
                     SnackBarService.Warning(Not_Allowed_Message);
                     return;
                 }
-
-                _effectiveResetPolicy = new EffectivePasswordResetPolicy(_appUser.PermissionDelegates);
+                _effectiveResetPolicy = new EffectivePasswordResetPolicy(appUser.PermissionDelegates);
                 if (_effectiveResetPolicy.CanResetPassword)
                 {
                     if (_effectiveResetPolicy.RequireEmail && !_tokenValid)
                     {
-
-
-
-
                         _tokenRequired = true;
-                        if (_appUser.Preferences.Email.IsNullOrEmpty())
+                        if (appUser.Preferences.Email.IsNullOrEmpty())
                         {
                             SnackBarService.Warning("No email configured for user");
                             return;
                         }
                         var resetToken = Guid.NewGuid().ToString();
                         var resetExpiration = DateTime.UtcNow.AddDays(1);
-                        _appUser.Preferences.PasswordResetSettings.ResetToken = resetToken.ToString();
+                        appUser.Preferences.PasswordResetSettings.ResetToken = resetToken.ToString();
 
-                        _appUser.Preferences.PasswordResetSettings.TokenExpiration = resetExpiration.Encrypt();
-                        await _appUser.SaveBasicUserPreferences();
-                        EmailService.SendPasswordResetEmail(_appUser.Preferences.Email, "/reset/" + resetToken, resetExpiration);
-                        await AuditLogger.System.PasswordResetRequested(CurrentUser?.State?.IPAddress, _appUser.AuditUsername);
+                        appUser.Preferences.PasswordResetSettings.TokenExpiration = resetExpiration.Encrypt();
+                        await appUser.SaveBasicUserPreferences();
+                        EmailService.SendPasswordResetEmail(appUser.Preferences.Email, "/reset/" + resetToken, resetExpiration);
+                        await AuditLogger.System.PasswordResetRequested(CurrentUser?.State?.IPAddress, appUser.AuditUsername);
 
 
 
                         SnackBarService.Info("Verification email sent for password reset.");
+                        return;
+                    }
+
+                    _tokenRequired = false;
+                    _tokenValid = true;
+
+                    if ((_effectiveResetPolicy.RequirePIN && !_pinValid) ||
+                        (appUser.Preferences?.PasswordResetSettings?.PIN != null && !_pinValid))
+                    {
+
+
+                        if (appUser.Preferences?.PasswordResetSettings?.PIN != null)
+                        {
+                            SnackBarService.Info("PIN required for password reset.");
+                            _askForPin = true;
+                            return;
+                        }
+                        else
+                        {
+                            SnackBarService.Error("PIN required but not configured.");
+                            _errorMessage = "Your account is not configured for account recovery, please contact your system administrator.";
+                        }
                     }
                     else
                     {
-                        _tokenRequired = false;
-                        _tokenValid = true;
-
-                        if ((_effectiveResetPolicy.RequirePIN && !_pinValid) ||
-                            (_appUser.Preferences?.PasswordResetSettings?.PIN != null && !_pinValid))
+                        _pinValid = true;
+                    }
+                    if ((_effectiveResetPolicy.RequireQA && !_qaValid) ||
+                        (appUser.Preferences?.PasswordResetSettings?.Question1 != null && !_qaValid))
+                    {
+                        SnackBarService.Info("Security Questions required for password reset.");
+                        if (appUser.Preferences?.PasswordResetSettings?.Question1 != null)
                         {
-
-
-                            if (_appUser.Preferences?.PasswordResetSettings?.PIN != null)
-                            {
-                                SnackBarService.Info("PIN required for password reset.");
-                                _askForPin = true;
-                            }
-                            else
-                            {
-                                SnackBarService.Error("PIN required but not configured.");
-                                _errorMessage = "Your account is not configured for account recovery, please contact your system administrator.";
-                            }
-                        }
-                        else
-                        {
-                            _pinValid = true;
-                        }
-                        if ((_effectiveResetPolicy.RequireQA && !_qaValid) ||
-                            (_appUser.Preferences?.PasswordResetSettings?.Question1 != null && !_qaValid))
-                        {
+                            _question1 = appUser?.Preferences.PasswordResetSettings.Question1?.Decrypt();
+                            _question2 = appUser?.Preferences.PasswordResetSettings.Question2?.Decrypt();
+                            _question3 = appUser?.Preferences.PasswordResetSettings.Question3?.Decrypt();
                             SnackBarService.Info("Security Questions required for password reset.");
-                            if (_appUser.Preferences?.PasswordResetSettings?.Question1 != null)
-                            {
-                                _question1 = _appUser?.Preferences.PasswordResetSettings.Question1?.Decrypt();
-                                _question2 = _appUser?.Preferences.PasswordResetSettings.Question2?.Decrypt();
-                                _question3 = _appUser?.Preferences.PasswordResetSettings.Question3?.Decrypt();
-                                SnackBarService.Info("Security Questions required for password reset.");
-                                _askForAnswers = true;
-                            }
-                            else
-                            {
-                                SnackBarService.Error("Security Questions required but not configured.");
-                                _errorMessage = "Your account is not configured for account recovery, please contact your system administrator.";
-                            }
+                            _askForAnswers = true;
+                            return;
                         }
                         else
                         {
-                            _qaValid = true;
-                        }
-                        if (_pinValid && _qaValid)
-                        {
-                            var currentUri = new Uri(Nav.Uri);
-                            LoginRequest.CallbackBaseUri = currentUri.Scheme + "://" + currentUri.Authority;
-                            LoginRequest.Username = _appUser.Username;
-                            using var context = await DbFactory.CreateDbContextAsync();
-                            var authSettings = await context.AuthenticationSettings.FirstOrDefaultAsync();
-                            if (_auth.ShouldPerformDuoMFA(authSettings, LoginRequest))
-                            {
-                                _duoAuthUri = await _auth.PerformDuoAuthentication(LoginRequest, "/reset");
-                                PasswordResetService.AddAuthorizedRequest(_userToReset, LoginRequest.MFAToken);
-                                Nav.NavigateTo(_duoAuthUri, true);
-                                LoadingData = false;
-                                return;
-                            }
-                            else if (_auth.ShouldPerformGoogleAuthenticatorMFA(_appUser.Preferences, LoginRequest, authSettings))
-                            {
-
-                            }
-                            _resetModel?.ShowAsync();
+                            SnackBarService.Error("Security Questions required but not configured.");
+                            _errorMessage = "Your account is not configured for account recovery, please contact your system administrator.";
                         }
                     }
+                    else
+                    {
+                        _qaValid = true;
+                    }
+                    if (_auth.ShouldPerformDuoMFA(authSettings, LoginRequest) && !_mfaValid)
+                    {
+                        _duoAuthUri = await _auth.PerformDuoAuthentication(LoginRequest, "/reset");
+                        PasswordResetService.AddAuthorizedRequest(_userToReset, LoginRequest.MFAToken);
+                        Nav.NavigateTo(_duoAuthUri, true);
+                        LoadingData = false;
+                        return;
+                    }
+                    else if (_auth.ShouldPerformGoogleAuthenticatorMFA(appUser.Preferences, LoginRequest, authSettings) && !_mfaValid)
+                    {
+                        _= googleAuthenticatorModal?.ShowAsync(_appUser?.Preferences.AuthenticatorSecret?.Decrypt().ToSecureString());
+                        return;
+                    }
+                    else
+                    {
+                        _mfaValid = true;
+                    }
+                    if (_pinValid && _qaValid && _mfaValid)
+                    {
+
+
+                        _resetModel?.ShowAsync();
+                    }
+
                 }
                 else
                 {
@@ -327,12 +355,26 @@ namespace BLAZAM.Pages
                     return;
                 }
             }
+            catch (Exception ex)
+            {
+                SnackBarService.Error(ex.Message);
+            }
             finally
             {
                 LoadingData = false;
             }
         }
+        private void GoogleAuthSuccessful()
+        {
+            _mfaValid = true;
 
+            _= AttemptResetPassword();
+        }
+        public override void Dispose()
+        {
+            base.Dispose();
+            _resetAuditLogger?.Dispose();
+        }
     }
     class ResetAttempt
     {

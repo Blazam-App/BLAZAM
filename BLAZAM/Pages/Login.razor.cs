@@ -42,6 +42,10 @@ namespace BLAZAM.Pages
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
+            if (CurrentUser.State.IsAuthenticated)
+            {
+                Nav.NavigateTo("/home");
+            }
             redirectUrl = Nav.Uri;
             LoginRequest.ReturnUrl = Nav.Uri;
             var currentUri = new Uri(Nav.Uri);

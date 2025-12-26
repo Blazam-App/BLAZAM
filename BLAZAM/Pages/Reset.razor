@@ -1,6 +1,7 @@
 ﻿@page "/reset"
 @page "/reset/{Token}"
 @using BLAZAM.Gui.UI.Users
+@using BLAZAM.Services.Audit
 @using BLAZAM.Static;
 @using System.Security
 @inject IHttpContextAccessor HttpContextAccessor
@@ -16,18 +17,12 @@
 
     </MudElement>
 
-
     <MudContainer Class="py-5">
 
-
-        <GoogleAuthenticatorModal @ref=googleAuthenticatorModal />
 
 
 
         <FullAppName />
-
-
-
 
         <MudContainer Style="max-width:300px;"
                       Class="py-4">
@@ -42,7 +37,8 @@
 
 
                 <MudButton OnClick="StartAttemptPasswordReset"
-                           Class="my-5"
+                           Class="mt-5"
+                           Disabled=@(LoginRequest.Username.IsNullOrEmpty())
                            ButtonType=ButtonType.Submit
                            Color="Color.Primary">
                     @AppLocalization[Lang.Reset_Password]
@@ -60,7 +56,7 @@
                               @bind-Value=_submittedPin />
 
                 <MudButton OnClick="CheckPin"
-                           Class="my-5"
+                           Class="mt-5"
                            ButtonType=ButtonType.Submit
                            Color="Color.Primary">
                     @AppLocalization[Lang.Reset_Password]
@@ -86,7 +82,7 @@
                               @bind-Value=_submittedAnswer3 />
 
                 <MudButton OnClick="CheckAnswers"
-                           Class="my-5"
+                           Class="mt-5"
                            ButtonType=ButtonType.Submit
                            Color="Color.Primary">
                     @AppLocalization[Lang.Reset_Password]
@@ -96,12 +92,8 @@
             {
                 <MudText>@_errorMessage</MudText>
             }
-            <AppModal @ref=_resetModel
-                      Options="new() { MaxWidth = MaxWidth.Small, FullWidth = true }">
-                <ChangeUserPasswordModalContent User="_userToReset"
-                                                AdminReset=false
-                                                EntryChanged="PasswordResetCompleted" />
-            </AppModal>
+            <br/>
+            <MudButton Class="mt-2" Color=Color.Primary Href="/login">@AppLocalization[Lang.Back]</MudButton>
         </MudContainer>
 
         <LoadingData Loading=LoadingData />
@@ -111,14 +103,17 @@
 
         </MudElement>
 
-
-        <AppModal @ref=_iFrameModal>
-            <IFrameModalContent Src="@_duoAuthUri"/>
-        </AppModal>
-
     </MudContainer>
 </LayoutView>
 
+<AppModal @ref=_resetModel
+          Options="new() { MaxWidth = MaxWidth.Small, FullWidth = true }">
+    <ChangeUserPasswordModalContent User="_userToReset"
+                                    AdminReset=false
+                                    EntryChanged="PasswordResetCompleted" />
+</AppModal>
+
+<GoogleAuthenticatorModal @ref=googleAuthenticatorModal OnAuthenticated="GoogleAuthSuccessful" />
 <style>
     .brand-icon {
         position: fixed;
