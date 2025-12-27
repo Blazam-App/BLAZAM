@@ -18,7 +18,7 @@ namespace BLAZAM.Database.Models.Templates
     public class DirectoryTemplate : RecoverableAppDbSetBase
     {
         private Regex variableSearch = new Regex(@"\{(?<var>[\w#\.\- ]+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
-//        private Regex variableSearch = new Regex(@"\{(?<var>\w+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
+
         public DirectoryTemplate? ParentTemplate { get; set; } = null;
         public int? ParentTemplateId { get; set; } = null;
 
