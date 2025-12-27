@@ -155,15 +155,6 @@
 
     }
 
-    async Task UploadProfilePicture(IBrowserFile profilePictureFile)
-    {
-        var rawBytes = await profilePictureFile.ReadByteArrayAsync();
-
-        if (rawBytes != null)
-        {
-            CurrentUser.State.Preferences.ProfilePicture = rawBytes.ResizeRawImage(100, true);
-        }
-    }
 
 
 }
