@@ -60,6 +60,7 @@
         public static readonly string Upate_Branch_Definition = "Upate_Branch_Definition";
         public static readonly string Update_Credential_Is_Application = "Update_Credential_Is_Application";
         public static readonly string Update_Credential_Is_AD = "Update_Credential_Is_AD";
+        public static readonly string Password_Reset_Settings_Description = "Password_Reset_Settings_Description";
         public static readonly string Update_Credential_Is_Custom = "Update_Credential_Is_Custom";
         public static readonly string Update_Credential_Is_Invalid = "Update_Credential_Is_Invalid";
         public static readonly string Created = "Created";

@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Database.Models.Audit;
 using BLAZAM.Helpers;
 using Microsoft.JSInterop;
+using System.Net;
 
 namespace BLAZAM.Services.Audit
 {
@@ -22,7 +23,11 @@ namespace BLAZAM.Services.Audit
                 );
         }
 
-
+        public async Task<bool> PasswordResetRequested(string? ipAddress, string? username)
+        {
+            string afterAction = ipAddress != null ? $"IP Address: {ipAddress}" : "IP Address: Unknown";
+            return await Log("Password_Reset_Requested", null, afterAction, username);
+        }
         private async Task<bool> Log(string action,
 
             string? beforeAction = null,
@@ -38,7 +43,7 @@ namespace BLAZAM.Services.Audit
                     Username = username,
                     BeforeAction = beforeAction,
                     AfterAction = afterAction,
-                    Timestamp = DateTime.Now,
+                    Timestamp = DateTime.UtcNow,
 
 
 

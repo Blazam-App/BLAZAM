@@ -10,65 +10,105 @@
             </MudText>
 
             <MudSwitch T=bool
-            UncheckedColor="Color.Error"
-            Color="Color.Success"
-            Label=@AppLocalization[Lang.Super_User]
-            Value="Delegate.IsSuperAdmin"
-            Disabled=true />
+                       UncheckedColor="Color.Error"
+                       Color="Color.Success"
+                       Label=@AppLocalization[Lang.Super_User]
+                       Value="Delegate.IsSuperAdmin"
+                       Disabled=true />
         </MudStack>
 
 
     </TitleContent>
     <ChildContent>
-        <MudStack Row=true>
-
-
-
-            <ADAutoComplete Label="@AppLocalization[Lang.Delgate_Name]"
-            SearchObjectType="ActiveDirectoryObjectType.All"
-            @bind-SelectedResult=@_delegateEntry
-            CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
-            @*<ADGroupAutoComplete @bind-SelectedGroup="@Group"/>*@
+        <MudStack>
+            <MudStack Row=true>
+                <ADAutoComplete Label="@AppLocalization[Lang.Delgate_Name]"
+                                SearchObjectType="ActiveDirectoryObjectType.All"
+                                @bind-SelectedResult=@_delegateEntry
+                                CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
+                @*<ADGroupAutoComplete @bind-SelectedGroup="@Group"/>*@
 
 
 
 
 
-            <MudSwitch T=bool
-            UncheckedColor="Color.Error"
-            Color="Color.Success"
-            Label=@AppLocalization[Lang.Super_User]
-            Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin")
-            @bind-Value="Delegate.IsSuperAdmin" />
+                <MudSwitch T=bool
+                           UncheckedColor="Color.Error"
+                           Color="Color.Success"
+                           Label=@AppLocalization[Lang.Super_User]
+                           Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin")
+                           @bind-Value="Delegate.IsSuperAdmin" />
 
 
 
 
-            @if (_delegateEntry is IADGroup delegateGroup)
-            {
+                @if (_delegateEntry is IADGroup delegateGroup)
+                {
+                    <MudButton Variant="Variant.Outlined"
+                               OnClick="@(()=>{_groupMembersShown=true;})"
+                               Color="Color.Info">
+                        @AppLocalization[Lang.Show_All_Members]
+                    </MudButton>
+
+                }
+
                 <MudButton Variant="Variant.Outlined"
-                OnClick="@(()=>{_groupMembersShown=true;})"
-                Color="Color.Info">
-                    @AppLocalization[Lang.Show_All_Members]
+                           @onclick="Save"
+                           Color="Color.Success">
+                    @AppLocalization[Lang.Save_Changes]
                 </MudButton>
 
+                <AppCloseButton @onclick="DeleteDelegate"
+                                Tooltip=@AppLocalization[Lang.Remove]
+                                Color="Color.Error" />
+            </MudStack>
+            <MudSwitch @bind-Value="Delegate.AllowPasswordReset"
+                       UncheckedColor="Color.Error"
+                       Color="Color.Success"
+                       Label="@AppLocalization[Lang.Allow_password_reset]" />
+            @if (Delegate.AllowPasswordReset)
+            {
+                <MudContainer>
+                    <MudStack Row="true">
+                        @{
+                            bool emailDisabled = (_appSettings == null || _appSettings.AppFQDN.IsNullOrEmpty() || _emailSettings == null || !_emailSettings.Enabled);
+                        }
+                        <MudSwitch @bind-Value="Delegate.RequireEmailOnPasswordReset"
+                                   UncheckedColor="Color.Error"
+                                   Color="Color.Success"
+                                   Disabled="@emailDisabled"
+                                   Label="@AppLocalization[Lang.Required_email]" />
+                        @if (emailDisabled)
+                        {
+                            <MudAlert Severity="Severity.Info" Variant="Variant.Filled">The FQDN must be filled in AppSettings and Email enabled.</MudAlert>
+
+                        }
+                    </MudStack>
+                    <MudStack Row=true>
+                        <MudSwitch @bind-Value="Delegate.RequirePINOnPasswordReset"
+                                   UncheckedColor="Color.Error"
+                                   Color="Color.Success"
+                                   Label="@AppLocalization[Lang.Required_PIN]" />
+
+                        @if (Delegate.RequirePINOnPasswordReset)
+                        {
+                            <MudNumericField @bind-Value="Delegate.MinimumPINLength"
+                                             Label="@AppLocalization[Lang.Minimum_length]" />
+                        }
+                    </MudStack>
+
+                    <MudSwitch @bind-Value="Delegate.RequireQAOnPasswordReset"
+                               UncheckedColor="Color.Error"
+                               Color="Color.Success"
+                               Label="@AppLocalization[Lang.Required_QA]" />
+                </MudContainer>
             }
-
-            <MudButton Variant="Variant.Outlined"
-            @onclick="Save"
-            Color="Color.Success">
-                @AppLocalization[Lang.Save_Changes]
-            </MudButton>
-
-            <AppCloseButton @onclick="DeleteDelegate"
-            Tooltip=@AppLocalization[Lang.Remove]
-            Color="Color.Error" />
         </MudStack>
         @if (_groupMembersShown)
         {
             <MudDivider />
-            <GroupMembersPopover Group="@(_delegateEntry as IADGroup)" 
-            IncludeNested=true />
+            <GroupMembersPopover Group="@(_delegateEntry as IADGroup)"
+                                 IncludeNested=true />
 
         }
 
@@ -88,9 +128,14 @@
     [Parameter]
     public EventCallback DelegateDeleted { get; set; }
 
+    private AppSettings? _appSettings;
+    private Database.Models.EmailSettings? _emailSettings;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        _appSettings = await Context.AppSettings.FirstOrDefaultAsync();
+        _emailSettings = await Context.EmailSettings.FirstOrDefaultAsync();
         _delegateEntry = Directory.FindGlobalEntryBySid(Delegate.DelegateSid);
         if (_delegateEntry != null)
         {
