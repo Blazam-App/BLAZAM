@@ -17,6 +17,7 @@ namespace BLAZAM.Database.Models.Templates
     [Index(nameof(Name), IsUnique = true)]
     public class DirectoryTemplate : RecoverableAppDbSetBase
     {
+        private Regex variableSearch = new Regex(@"\{(?<var>[\w#\.\- ]+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
 
         public DirectoryTemplate? ParentTemplate { get; set; } = null;
         public int? ParentTemplateId { get; set; } = null;
@@ -218,9 +219,20 @@ namespace BLAZAM.Database.Models.Templates
         [NotMapped]
         public HashSet<DirectoryTemplate> ChildTemplates { get; set; }
 
-        public string GenerateUsername(NewUserName newUser)
+        [NotMapped]
+        public bool HasIncrementorVariable
         {
-            return ReplaceVariables(EffectiveUsernameFormula, newUser);
+            get
+            {
+
+                return variableSearch.Matches(EffectiveUsernameFormula)
+                    .Any(match => match.Groups["var"].Value == "#");
+            }
+        }
+        public string GenerateUsername(NewUserName newUser, int? incrementedNumber = null)
+        {
+            return ReplaceVariables(EffectiveUsernameFormula, newUser,incrementedNumber:incrementedNumber);
+            
 
         }
         public string ReplaceVariablesOld(string toParse, NewUserName newUser)
@@ -253,20 +265,19 @@ namespace BLAZAM.Database.Models.Templates
             return toParse;
 
         }
-        public string ReplaceVariables(string? toParse, NewUserName? newUser = null, string? username = null)
+        public string ReplaceVariables(string? toParse, NewUserName? newUser = null, string? username = null, int? incrementedNumber = null)
         {
             if (toParse.IsNullOrEmpty())
             {
                 return "";
             }
 
-            var regex = new Regex(@"\{(?<var>\w+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
-            if (!regex.IsMatch(toParse))
+            if (!variableSearch.IsMatch(toParse))
             {
                 return toParse;
             }
 
-            return regex.Replace(toParse, match =>
+            return variableSearch.Replace(toParse, match =>
             {
                 var variable = match.Groups["var"].Value.ToLower();
                 var modifier = match.Groups["mod"].Value;
@@ -274,6 +285,11 @@ namespace BLAZAM.Database.Models.Templates
 
                 switch (variable)
                 {
+                    case "#": return incrementedNumber?.ToString() ?? "";
+                    case ".": return incrementedNumber != null ? "." : "";
+                    case "_": return incrementedNumber != null ? "_" : "";
+                    case "-": return incrementedNumber != null ? "-" : "";
+                    case " ": return incrementedNumber != null ? " " : "";
                     case "fn": return ProcessVariable(newUser?.GivenName, modifier, arg);
                     case "fi": return ProcessVariable(Substring(newUser?.GivenName, 0, 1), modifier, arg);
                     case "mn": return ProcessVariable(newUser?.MiddleName, modifier, arg);
