@@ -285,7 +285,7 @@ namespace BLAZAM.Database.Models.Templates
 
                 switch (variable)
                 {
-                    case "#": return incrementedNumber.ToString() ?? "";
+                    case "#": return incrementedNumber?.ToString() ?? "";
                     case ".": return incrementedNumber != null ? "." : "";
                     case "_": return incrementedNumber != null ? "_" : "";
                     case "-": return incrementedNumber != null ? "-" : "";
