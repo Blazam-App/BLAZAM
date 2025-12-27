@@ -35,7 +35,7 @@ namespace BLAZAM.Gui.Helpers
                 Loggers.ActiveDirectoryLogger.Information("Creating user {@DisplayName} in {@ContainerName}", displayName, parentOU.DN);
                 newUser = parentOU.CreateUser(displayName);
 
-                newUser.SAMAccountName = template.GenerateUsername(newUserName);
+                newUser.SAMAccountName = template.GenerateUsername(newUserName,directory);
                 newUser.DisplayName = displayName;
                 newUser.StagePasswordChange(template.GeneratePassword(newUserName).ToSecureString());
                 if (template.EffectiveRequirePasswordChange == true)

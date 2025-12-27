@@ -223,9 +223,9 @@ namespace BLAZAM.Database.Models.Templates
 
 
 
-        public string GenerateUsername(NewUserName newUser)
+        public string GenerateUsername(NewUserName newUser, IActiveDirectoryContext directory)
         {
-            return ReplaceVariables(EffectiveUsernameFormula, newUser);
+            return ReplaceVariables(EffectiveUsernameFormula, newUser,null,directory);
 
         }
         public string ReplaceVariablesOld(string toParse, NewUserName newUser)
@@ -258,20 +258,32 @@ namespace BLAZAM.Database.Models.Templates
             return toParse;
 
         }
-        public string ReplaceVariables(string? toParse, NewUserName? newUser = null, string? username = null)
+        public string ReplaceVariables(string? toParse, NewUserName? newUser = null, string? username = null, IActiveDirectoryContext? directory = null)
         {
-            if (toParse.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(toParse))
             {
                 return "";
             }
 
-            var regex = new Regex(@"\{(?<var>\w+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
-            if (!regex.IsMatch(toParse))
+            const string incrementorPlaceholder = "::BLAZAM_INCREMENTOR::";
+            string? incrementorTemplate = null;
+            bool hasIncrementor = false;
+
+            if (directory != null)
             {
-                return toParse;
+                var incrementorRegex = new Regex(@"{[^#}]*#[^}]*}");
+                var incrementorMatch = incrementorRegex.Match(toParse);
+                if (incrementorMatch.Success)
+                {
+                    hasIncrementor = true;
+                    incrementorTemplate = incrementorMatch.Value;
+                    toParse = incrementorRegex.Replace(toParse, incrementorPlaceholder, 1);
+                    toParse = incrementorRegex.Replace(toParse, "");
+                }
             }
 
-            return regex.Replace(toParse, match =>
+            var variableRegex = new Regex(@"\{(?<var>\w+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
+            string processedUsername = variableRegex.Replace(toParse, match =>
             {
                 var variable = match.Groups["var"].Value.ToLower();
                 var modifier = match.Groups["mod"].Value;
@@ -285,57 +297,45 @@ namespace BLAZAM.Database.Models.Templates
                     case "mi": return ProcessVariable(Substring(newUser?.MiddleName, 0, 1), modifier, arg);
                     case "ln": return ProcessVariable(newUser?.Surname, modifier, arg);
                     case "li": return ProcessVariable(Substring(newUser?.Surname, 0, 1), modifier, arg);
-                    case "username": return username ?? ReplaceVariables(EffectiveUsernameFormula, newUser).Replace(" ", "");
+                    case "username": return username ?? ReplaceVariables(EffectiveUsernameFormula, newUser, null, directory).Replace(" ", "");
                     case "alphanumsym":
                         var ch = RandomLetterDigitOrSymbol();
-                        if (modifier == "u")
-                        {
-                            return ch.ToUpper();
-                        }
-                        else if (modifier == "l")
-                        {
-                            return ch.ToLower();
-                        }
-                        else
-                        {
-                            return ch;
-                        }
+                        if (modifier == "u") return ch.ToUpper(); else if (modifier == "l") return ch.ToLower(); else return ch;
                     case "alphanum":
                         var ch2 = RandomLetterOrDigit();
-                        if (modifier == "u")
-                        {
-                            return ch2.ToUpper();
-                        }
-                        else if (modifier == "l")
-                        {
-                            return ch2.ToLower();
-                        }
-                        else
-                        {
-                            return ch2;
-                        }
+                        if (modifier == "u") return ch2.ToUpper(); else if (modifier == "l") return ch2.ToLower(); else return ch2;
                     case "alpha":
                         var letter = RandomLetter();
-                        if (modifier == "u")
-                        {
-                            return letter.ToUpper();
-                        }
-                        else if (modifier == "l")
-                        {
-                            return letter.ToLower();
-                        }
-                        else
-                        {
-                            return letter;
-                        }
-                    case "num":
-                        return RandomNumber().ToString();
-                    case "sym":
-                        return RandomSymbol().ToString();
-                    default:
-                        return match.Value; // preserve unknown variables
+                        if (modifier == "u") return letter.ToUpper(); else if (modifier == "l") return letter.ToLower(); else return letter;
+                    case "num": return RandomNumber().ToString();
+                    case "sym": return RandomSymbol().ToString();
+                    default: return match.Value;
                 }
             });
+
+            if (!hasIncrementor)
+            {
+                return processedUsername;
+            }
+
+            string baseUsername = processedUsername.Replace(incrementorPlaceholder, "");
+            if (!directory.Users.Exists(baseUsername))
+            {
+                return baseUsername;
+            }
+
+            int increment = 2;
+            while (true)
+            {
+                string numberPart = incrementorTemplate.Replace("#", increment.ToString()).TrimStart('{').TrimEnd('}');
+                string potentialUsername = processedUsername.Replace(incrementorPlaceholder, numberPart);
+
+                if (!directory.Users.Exists(potentialUsername))
+                {
+                    return potentialUsername;
+                }
+                increment++;
+            }
         }
         private string ProcessVariable(string? value, string? modifier, string? argument)
         {
@@ -478,11 +478,11 @@ namespace BLAZAM.Database.Models.Templates
         }
         public string GenerateDisplayName(NewUserName newUser)
         {
-            return ReplaceVariables(EffectiveDisplayNameFormula, newUser);
+            return ReplaceVariables(EffectiveDisplayNameFormula, newUser,null,null);
         }
         public string GeneratePassword(NewUserName newUser)
         {
-            return ReplaceVariables(EffectivePasswordFormula, newUser);
+            return ReplaceVariables(EffectivePasswordFormula, newUser, null, null);
         }
 
         public override string? ToString()
