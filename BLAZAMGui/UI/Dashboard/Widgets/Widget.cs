@@ -14,6 +14,8 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         public DashboardWidgetType WidgetType { get; set; }
         [Parameter]
         public int ItemsPerPage { get; set; } = 5;
+        [Parameter]
+        public string? JsonSettings { get; set; }   
         [CascadingParameter]
         public CurrentUserDashboardWidgets CurrentUserDashboardWidgets { get; set; }
 
@@ -62,6 +64,19 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             try
             {
                 CurrentUser.State.Preferences.DashboardWidgets.First(w => w.WidgetType.Equals(WidgetType)).ItemsPerPage = rowPerPage;
+                await CurrentUser.State.SaveDashboardWidgets();
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error("Error attempting to set a widgets rows per page preference. {Error}", ex);
+            }
+        }
+
+        protected async Task SetWidgetJson(object? obj)
+        {
+            try
+            {
+                CurrentUser.State.Preferences.DashboardWidgets.First(w => w.WidgetType.Equals(WidgetType)).JsonSettings = obj.ToJson();
                 await CurrentUser.State.SaveDashboardWidgets();
             }
             catch (Exception ex)

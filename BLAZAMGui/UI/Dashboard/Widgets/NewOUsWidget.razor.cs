@@ -2,11 +2,11 @@ using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
-    public partial class NewOUsWidget : Widget
+    public partial class NewOUsWidget : TimeFrameWidget
     {
         public NewOUsWidget()
         {
-            Title = Localization.AppLocalization.OUs_created_in_the_last_14_days;
+            Title = Localization.AppLocalization.New_OUs;
             WidgetType = DashboardWidgetType.NewOus;
         }
 
@@ -20,7 +20,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            NewOUs = (await Directory.OUs.FindNewOUsAsync()).Where(u => u.CanRead).ToList();
+            NewOUs = (await Directory.OUs.FindNewOUsAsync((int)_timeFrame?.TotalDays)).Where(u => u.CanRead).ToList();
 
             LoadingData = false;
 

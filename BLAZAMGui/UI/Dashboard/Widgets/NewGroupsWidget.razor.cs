@@ -2,11 +2,11 @@ using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
-    public partial class NewGroupsWidget : Widget
+    public partial class NewGroupsWidget : TimeFrameWidget
     {
         public NewGroupsWidget()
         {
-            Title = Localization.AppLocalization.Groups_created_in_the_last_14_days;
+            Title = Localization.AppLocalization.New_Groups;
             WidgetType = DashboardWidgetType.NewGroups;
         }
 
@@ -19,7 +19,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            NewGroups = (await Directory.Groups.FindNewGroupsAsync()).Where(u => u.CanRead).ToList();
+            NewGroups = (await Directory.Groups.FindNewGroupsAsync((int)_timeFrame?.TotalDays)).Where(u => u.CanRead).ToList();
 
             LoadingData = false;
 
