@@ -2,11 +2,11 @@ using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
-    public partial class NewPrintersWidget : Widget
+    public partial class NewPrintersWidget : TimeFrameWidget
     {
         public NewPrintersWidget()
         {
-            Title = Localization.AppLocalization.Printers_created_in_the_last_14_days;
+            Title = Localization.AppLocalization.New_Printers;
             WidgetType = DashboardWidgetType.NewPrinters;
         }
 
@@ -20,7 +20,9 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            NewPrinters = (await Directory.Printers.FindNewPrintersAsync(14, false)).Where(u => u.CanRead).ToList();
+            LoadSettings();
+
+            NewPrinters = (await Directory.Printers.FindNewPrintersAsync((int)_timeFrame?.TotalDays, false)).Where(u => u.CanRead).ToList();
 
             LoadingData = false;
 

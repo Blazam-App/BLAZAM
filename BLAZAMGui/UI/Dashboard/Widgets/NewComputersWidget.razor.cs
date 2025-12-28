@@ -2,11 +2,11 @@ using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
-    public partial class NewComputersWidget : Widget
+    public partial class NewComputersWidget : TimeFrameWidget
     {
         public NewComputersWidget()
         {
-            Title = Localization.AppLocalization.Computers_created_in_the_last_14_days;
+            Title = Localization.AppLocalization.New_Computers;
             WidgetType = DashboardWidgetType.NewComputers;
         }
 
@@ -19,7 +19,9 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            NewComputers = (await Directory.Computers.FindNewComputersAsync()).Where(u => u.CanRead).ToList();
+            LoadSettings();
+
+            NewComputers = (await Directory.Computers.FindNewComputersAsync((int)_timeFrame?.TotalDays)).Where(u => u.CanRead).ToList();
 
             LoadingData = false;
 

@@ -17,8 +17,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         Task<List<IADUser>> FindNewUsersAsync(int maxAgeInDays = 14, bool ignoreDisabledUsers = true);
         List<IADUser>? FindChangedUsers(bool ignoreDisabledUsers = true, int daysBackToSearch = 90);
         Task<List<IADUser>> FindChangedUsersAsync(bool ignoreDisabledUsers = true);
-        Task<List<IADUser>> FindChangedPasswordUsersAsync(bool ignoreDisabledUsers = true);
-        List<IADUser>? FindChangedPasswordUsers(bool ignoreDisabledUsers = true);
+        Task<List<IADUser>> FindChangedPasswordUsersAsync(int maxAgeInDays = 90, bool ignoreDisabledUsers = true);
+        List<IADUser>? FindChangedPasswordUsers(int maxAgeInDays = 90, bool ignoreDisabledUsers = true);
         List<IADUser> FindExpiredUsers(bool ignoreDisabledUsers = true);
         IADUser? FindUserByDN(string? dn, bool ignoreDisabledUsers = true);
     }
