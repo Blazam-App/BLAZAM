@@ -77,7 +77,7 @@ namespace BLAZAM.Services.Background
                         {
                             EventType = ApplicationEventType.LockedOut,
                             Entry = user,
-                            Actor = new SystemUserState(dbFactory)
+                            Actor = new ActiveDirectoryUserState(dbFactory)
                         });
 
                         if (OperatingSystem.IsWindows())
