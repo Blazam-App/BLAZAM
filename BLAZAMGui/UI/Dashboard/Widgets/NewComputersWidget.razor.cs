@@ -19,6 +19,8 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
+            LoadSettings();
+
             NewComputers = (await Directory.Computers.FindNewComputersAsync((int)_timeFrame?.TotalDays)).Where(u => u.CanRead).ToList();
 
             LoadingData = false;

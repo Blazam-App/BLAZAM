@@ -20,6 +20,8 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
+            LoadSettings();
+
             NewPrinters = (await Directory.Printers.FindNewPrintersAsync((int)_timeFrame?.TotalDays, false)).Where(u => u.CanRead).ToList();
 
             LoadingData = false;

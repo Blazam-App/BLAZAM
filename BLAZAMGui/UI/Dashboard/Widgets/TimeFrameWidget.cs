@@ -10,13 +10,24 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
     {
         protected TimeSpan? _timeFrame = TimeSpan.FromDays(14);
 
+        public TimeFrameWidget():base()
+        {
+            LoadSettings();
+        }
         protected async Task SetTimeFrame(TimeSpan? timeFrame)
         {
             _timeFrame = timeFrame;
             await SetWidgetJson(timeFrame);
             
         }
-
+        protected void LoadSettings()
+        {
+            TimeSpan? jsonTimespan = JsonSettings?.FromJson<TimeSpan>();
+            if (jsonTimespan.HasValue)
+            {
+                _timeFrame = jsonTimespan;
+            }
+        }
 
     }
 }

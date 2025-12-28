@@ -19,6 +19,8 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
+            LoadSettings();
+
             NewContacts = (await Directory.Contacts.FindNewContactsAsync((int)_timeFrame?.TotalDays, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
 
             LoadingData = false;

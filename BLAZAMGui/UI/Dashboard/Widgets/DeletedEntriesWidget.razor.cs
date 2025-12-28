@@ -1,3 +1,5 @@
+using BLAZAM.Database.Models;
+
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
     public partial class DeletedEntriesWidget : TimeFrameWidget
@@ -18,11 +20,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            TimeSpan? jsonTimespan = JsonSettings?.FromJson<TimeSpan>();
-            if (jsonTimespan.HasValue)
-            {
-                _timeFrame = jsonTimespan;
-            }
+            LoadSettings();
 
             var search = new ADSearch(Directory)
             {
