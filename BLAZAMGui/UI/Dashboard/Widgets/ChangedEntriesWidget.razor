@@ -1,5 +1,9 @@
-﻿@inherits Widget
+﻿@inherits TimeFrameWidget
 @attribute [Authorize]
+<MudTimeFramePicker TimeFrame=@_timeFrame
+                    TimeFrameChanged=SetTimeFrame
+                    Disabled="@(!CurrentUserDashboardWidgets.EditMode)"
+                    Class="mx-3" />
 <MudDataGrid T="IDirectoryEntryAdapter"
              Items="ChangedEntries"
              RowClick="@RowClicked"

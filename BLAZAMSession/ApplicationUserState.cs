@@ -332,6 +332,7 @@ namespace BLAZAM.Session
                         dbWidget.Slot = prefWidget.Slot;
                         dbWidget.Order = prefWidget.Order;
                         dbWidget.ItemsPerPage = prefWidget.ItemsPerPage;
+                        dbWidget.JsonSettings = prefWidget.JsonSettings;
                     }
                     else
                     {

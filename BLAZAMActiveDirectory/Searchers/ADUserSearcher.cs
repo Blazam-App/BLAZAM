@@ -139,17 +139,17 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         }
 
-        public async Task<List<IADUser>> FindChangedPasswordUsersAsync(bool ignoreDisabledUsers = true)
+        public async Task<List<IADUser>> FindChangedPasswordUsersAsync(int maxAgeInDays = 90, bool ignoreDisabledUsers = true)
         {
             return await Task.Run(() =>
             {
-                return FindChangedPasswordUsers(ignoreDisabledUsers);
+                return FindChangedPasswordUsers(maxAgeInDays, ignoreDisabledUsers);
             });
         }
 
-        public List<IADUser> FindChangedPasswordUsers(bool ignoreDisabledUsers = true)
+        public List<IADUser> FindChangedPasswordUsers(int maxAgeInDays = 90, bool ignoreDisabledUsers = true)
         {
-            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
+            var timeframe = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
 
             var results = new ADSearch(Directory)
             {
@@ -157,7 +157,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 EnabledOnly = ignoreDisabledUsers,
                 Fields = new()
                 {
-                    PasswordLastSet = threeMonthsAgo
+                    PasswordLastSet = timeframe
                 }
 
             }.Search<ADUser, IADUser>();
