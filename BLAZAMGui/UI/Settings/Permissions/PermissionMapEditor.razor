@@ -95,20 +95,25 @@
     public override void Dispose()
     {
         base.Dispose();
-        _semaphore.Dispose();
     }
-    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1); // Limits to 1 concurrent access
+    private readonly object _refreshLock = new object(); // Limits to 1 concurrent access
 
     async Task RefreshData()
     {
+        lock (_refreshLock)
+        {
+            Loggers.SystemLogger.Debug("Refresh lock available.");
+        }
         if (!LoadingData)
         {
-            await _semaphore.WaitAsync();
+           
+                LoadingData = true;
             try
             {
+
+         
                 if (Mapping == null) return;
 
-                LoadingData = true;
 
                 if (Context != null)
                 {
@@ -129,7 +134,6 @@
             finally
             {
                 LoadingData = false;
-                _semaphore.Release();
 
             }
 

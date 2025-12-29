@@ -383,8 +383,8 @@ namespace BLAZAM.Services.Background
             }
             notification = new NotificationMessage()
             {
-                FieldId = (field as ActiveDirectoryField)?.Id,
-                CustomFieldId = (field as CustomActiveDirectoryField)?.Id,
+                //FieldId = (field as ActiveDirectoryField)?.Id,
+                //CustomFieldId = (field as CustomActiveDirectoryField)?.Id,
                 CreatorId = actor?.Preferences.Id,
                 Level = NotificationLevel.Info,
                 TargetDN = target.DN,
