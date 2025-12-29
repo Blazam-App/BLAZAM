@@ -5,8 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
-		<AssemblyVersion>1.4.12</AssemblyVersion>
-		<Version>2025.11.29.1930</Version>
+		<AssemblyVersion>1.4.11</AssemblyVersion>
+		<Version>2025.12.28.1859</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -22,6 +22,10 @@
 
 	<ItemGroup>
 		<None Remove="nssm.exe" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="..\BLAZAMGui\UI\Inputs\ADAutoComplete.razor.cs" Link="ADAutoComplete.razor.cs" />
 	</ItemGroup>
 
 

@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
@@ -134,7 +135,7 @@ namespace BLAZAM.Session
             {
                 using var context = await _dbFactory.CreateDbContextAsync();
                 var messages = await context.UserNotifications
-                    .Where(un => un.User.Id == Id && !un.IsRead && un.Notification.MessageType != MessageType.AccessRequest)
+                    .Where(un => un.User.Id == Id && !un.IsRead && un.Notification.MessageType != MessageType.EditAccessRequest)
                     .ToListAsync();
 
                 if (!messages.Any())
@@ -175,6 +176,7 @@ namespace BLAZAM.Session
                     .Include(x => x.FavoriteEntries) // Eager load other related entities if needed
                     .Include(x => x.ReadNewsItems)
                     .Include(x => x.DashboardWidgets)
+                    .Include(x => x.PasswordResetSettings)
                     .FirstOrDefault(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid));
 
                 if (userSettings == null)
@@ -227,7 +229,7 @@ namespace BLAZAM.Session
                 try
                 {
                     using var context = await _dbFactory.CreateDbContextAsync();
-                    var dbUserSettings = await context.UserSettings.FirstOrDefaultAsync(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid));
+                    var dbUserSettings = await context.UserSettings.Include(x => x.PasswordResetSettings).FirstOrDefaultAsync(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid));
                     if (dbUserSettings != null)
                     {
                         dbUserSettings.Theme = Preferences.Theme;
@@ -239,6 +241,24 @@ namespace BLAZAM.Session
                         dbUserSettings.AuthenticatorSecret = Preferences.AuthenticatorSecret;
                         dbUserSettings.Email = Preferences.Email;
                         dbUserSettings.Username = Username;
+                        if(Preferences.PasswordResetSettings !=null && Preferences.PasswordResetSettings.Id > 0)
+                        {
+                            var dbPasswordSettings =dbUserSettings.PasswordResetSettings;
+                            if (dbPasswordSettings != null)
+                            {
+                                dbPasswordSettings.PIN = Preferences.PasswordResetSettings.PIN; 
+                                dbPasswordSettings.Question1 = Preferences.PasswordResetSettings.Question1;
+                                dbPasswordSettings.Answer1 = Preferences.PasswordResetSettings.Answer1;
+                                dbPasswordSettings.Question2 = Preferences.PasswordResetSettings.Question2;
+
+                                dbPasswordSettings.Answer2 = Preferences.PasswordResetSettings.Answer2;
+                                dbPasswordSettings.Question3 = Preferences.PasswordResetSettings.Question3;
+
+                                dbPasswordSettings.Answer3 = Preferences.PasswordResetSettings.Answer3;
+                                dbPasswordSettings.TokenExpiration = Preferences.PasswordResetSettings.TokenExpiration;
+                                dbPasswordSettings.ResetToken = Preferences.PasswordResetSettings.ResetToken;
+                            }
+                        }
                         await context.SaveChangesAsync();
                     }
                 }
@@ -312,6 +332,7 @@ namespace BLAZAM.Session
                         dbWidget.Slot = prefWidget.Slot;
                         dbWidget.Order = prefWidget.Order;
                         dbWidget.ItemsPerPage = prefWidget.ItemsPerPage;
+                        dbWidget.JsonSettings = prefWidget.JsonSettings;
                     }
                     else
                     {
@@ -339,7 +360,7 @@ namespace BLAZAM.Session
         {
             get
             {
-                if (User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin))
+                if (User?.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin)==true)
                 {
                     return true;
                 }
@@ -590,6 +611,9 @@ namespace BLAZAM.Session
 
             return true;
         }
+
+        public EffectivePasswordResetPolicy EffectivePasswordResetPolicy =>  new EffectivePasswordResetPolicy(PermissionDelegates);
+
         public bool HasPermission(string dnTarget, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector, bool nestedSearch)
         {
             if (IsSuperAdmin)

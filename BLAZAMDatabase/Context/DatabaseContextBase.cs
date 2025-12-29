@@ -104,7 +104,7 @@ namespace BLAZAM.Database.Context
         }
 
         //Data tables
-        public virtual DbSet<GenericSidList> LockedOutUsers { get; set; }
+        public virtual DbSet<LockedOutUser> LockedOutUsers { get; set; }
 
         //App Settings
         public virtual DbSet<AppSettings> AppSettings { get; set; }
@@ -120,7 +120,7 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<AutomationRuleActionFieldValue> AutomationRuleFieldValues { get; set; }
         public virtual DbSet<AutomationRuleOrFilter> AutomationRuleOrFilter { get; set; }
         public virtual DbSet<AutomationRuleAndFilter> AutomationRuleAndFilters { get; set; }
-        public virtual DbSet<AutomationRuleGroupSid> AutomationRuleGroupSids { get; set; }
+        public virtual DbSet<AutomationRuleGroupGuid> AutomationRuleGroupGuids { get; set; }
         public virtual DbSet<AutomationRuleAction> AutomationRuleActions { get; set; }
 
 
@@ -144,6 +144,7 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<RequestAuditLog> RequestAuditLog { get; set; }
         public virtual DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
         public virtual DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
+        public virtual DbSet<AutomationRuleAuditLog> AutomationRuleAuditLog { get; set; }
 
 
 
@@ -161,7 +162,9 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<PermissionDelegate> PermissionDelegate { get; set; }
         public virtual DbSet<PermissionMapping> PermissionMap { get; set; }
         public virtual DbSet<GlobalPermissionSettings> GlobalPermissionSettings { get; set; }
+        public virtual DbSet<GlobalAutomationRuleSettings> GlobalAutomationRuleSettings { get; set; }
         public virtual DbSet<GlobalPermissionRequestAction> GlobalPermissionRequestActions { get; set; }
+        public virtual DbSet<GlobalPermissionRequestField> GlobalPermissionRequestFields { get; set; }
 
         public virtual DbSet<ChatRoom> ChatRooms { get; set; }
         public virtual DbSet<ChatMessage> ChatMessages { get; set; }

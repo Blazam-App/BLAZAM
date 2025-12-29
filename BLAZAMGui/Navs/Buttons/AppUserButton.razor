@@ -8,7 +8,7 @@
     <ActivatorContent>
 
         <AppTooltip Text="@CurrentUser.Username">
-            <CurrentUserAvatarIcon UserState="@UserState" />
+            <CurrentUserAvatarIcon UserState="@_userState" />
         </AppTooltip>
     </ActivatorContent>
     <ChildContent>
@@ -25,7 +25,13 @@
                      Icon="@Icons.Material.Filled.Settings">
             @AppLocalization[Lang.Profile_Settings]
         </MudMenuItem>
-
+        @if (_eprp.CanResetPassword)
+        {
+             <MudMenuItem OnClick="@(()=>{recoveryModal?.ShowAsync();})"
+                     Icon="@Icons.Material.Filled.Password">
+            @AppLocalization[Lang.Password_Reset_Settings]
+        </MudMenuItem>
+        }
         <MudMenuItem Href="https://docs.blazam.org"
                      Target="_blank"
                      Icon="@Icons.Material.Filled.Book">
@@ -38,7 +44,7 @@
             </MudMenuItem>
         <PluginComponents Page="@PageType.UserMenu" Location="@PageLocation.MenuItem" />
         </AuthorizeView>
-        @if (UserState?.Impersonator == null)
+        @if (_userState?.Impersonator == null)
         {
             <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/logout",true);})" Icon="@Icons.Material.Filled.Logout">
                 @AppLocalization[Lang.Sign_Out]
@@ -54,9 +60,15 @@
     </ChildContent>
 </MudMenu>
 <AppModal @ref=profileModal
-          Title="Profile Settings">
+          Title=@AppLocalization[Lang.Profile_Settings]>
     <CascadingValue Value="mainLayout">
         <AppUserProfileModalContent />
+    </CascadingValue>
+</AppModal>
+<AppModal @ref=recoveryModal
+          Title=@AppLocalization[Lang.Password_Reset_Settings]>
+    <CascadingValue Value="mainLayout">
+        <AppUserRecoverySettingsModalContent />
     </CascadingValue>
 </AppModal>
 <AppModal @ref=apiModal
@@ -71,20 +83,22 @@
 </AppModal>
 @code {
     AppModal? profileModal;
+    AppModal? recoveryModal;
     AppModal? apiModal;
 
     [CascadingParameter]
     public MainLayout? mainLayout { get; set; }
 
-    private IApplicationUserState? UserState;
-
+    private IApplicationUserState? _userState;
+    private EffectivePasswordResetPolicy? _eprp;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await StateHasChangedAsync();
-        UserState = CurrentUser.State;
-        if (UserState != null)
-            UserState.OnSettingsChanged.Delegate += InvokeStateHasChanged;
+        _userState = CurrentUser.State;
+        _eprp = new EffectivePasswordResetPolicy(_userState.PermissionDelegates);
+        if (_userState != null)
+            _userState.OnSettingsChanged.Delegate += InvokeStateHasChanged;
         await StateHasChangedAsync();
     }
 
@@ -92,7 +106,7 @@
     {
         base.Dispose();
         
-        if (UserState != null)
-            UserState.OnSettingsChanged.Delegate -= InvokeStateHasChanged;
+        if (_userState != null)
+            _userState.OnSettingsChanged.Delegate -= InvokeStateHasChanged;
     }
 }

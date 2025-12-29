@@ -196,9 +196,9 @@ namespace BLAZAM.Tests.Session
             var mfaRequest = new MFARequest(MfaType.CiscoDuo, expectedToken, expectedRedirectUrl, mockUser.Object);
 
             // Assert
-            Assert.Equal(expectedToken, mfaRequest.mfaToken);
-            Assert.Equal(expectedRedirectUrl, mfaRequest.redirectUrl);
-            Assert.Same(mockUser.Object, mfaRequest.user); // Check reference equality for the user object
+            Assert.Equal(expectedToken, mfaRequest.MfaToken);
+            Assert.Equal(expectedRedirectUrl, mfaRequest.RedirectUrl);
+            Assert.Same(mockUser.Object, mfaRequest.User); // Check reference equality for the user object
         }
 
         [Theory]
@@ -305,7 +305,7 @@ namespace BLAZAM.Tests.Session
             // Act & Assert
             // Note: Hash code collisions are possible but unlikely for simple string differences.
             // This test primarily checks that the hash code isn't a constant.
-            if (requestA.mfaToken != requestB.mfaToken) // Ensure tokens are actually different
+            if (requestA.MfaToken != requestB.MfaToken) // Ensure tokens are actually different
             {
                 Assert.NotEqual(requestA.GetHashCode(), requestB.GetHashCode());
             }
