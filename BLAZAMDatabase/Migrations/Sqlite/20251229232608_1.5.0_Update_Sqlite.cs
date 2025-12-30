@@ -125,7 +125,7 @@ WHERE ""DirectoryTemplateId"" IS NOT NULL;
                 nullable: true);
 
             migrationBuilder.AddColumn<bool>(
-                name: "AllowFieldAccessRequestAllowFieldAccessRequest",
+                name: "AllowFieldAccessRequest",
                 table: "GlobalPermissionSettings",
                 type: "INTEGER",
                 nullable: false,
@@ -304,11 +304,6 @@ WHERE ""DirectoryTemplateId"" IS NOT NULL;
                 name: "IX_AutomationRuleGroupGuids_AutomationRuleActionId",
                 table: "AutomationRuleGroupGuids",
                 column: "AutomationRuleActionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DirectoryTemplateDirectoryTemplateGroup_TemplatesId",
-                table: "DirectoryTemplateDirectoryTemplateGroup",
-                column: "TemplatesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GlobalPermissionRequestFields_CustomFieldId",

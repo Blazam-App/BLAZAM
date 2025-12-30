@@ -25,7 +25,7 @@ namespace BLAZAM.Services.Background
     /// Background service responsible for processing and executing automation rules
     /// on Active Directory entries, both on schedule and in response to directory events.
     /// </summary>
-    [AutoStartBackgroundService(true)]
+    [AutoStartBackgroundService()]
     public class RulesProcessor : ActiveDirectoryBackgroundServiceBase
     {
         private readonly Dictionary<AutomationRule, Timer> ScheduledRules = [];
