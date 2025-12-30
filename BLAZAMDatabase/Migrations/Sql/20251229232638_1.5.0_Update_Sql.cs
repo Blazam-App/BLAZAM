@@ -11,12 +11,48 @@ namespace BLAZAM.Database.Migrations.Sql
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // 1. Create the new join table first
+            migrationBuilder.CreateTable(
+                name: "DirectoryTemplateDirectoryTemplateGroup",
+                columns: table => new
+                {
+                    AssignedGroupSidsId = table.Column<int>(type: "int", nullable: false),
+                    TemplatesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DirectoryTemplateDirectoryTemplateGroup", x => new { x.AssignedGroupSidsId, x.TemplatesId });
+                    table.ForeignKey(
+                        name: "FK_DirectoryTemplateDirectoryTemplateGroup_DirectoryTemplateGroups_AssignedGroupSidsId",
+                        column: x => x.AssignedGroupSidsId,
+                        principalTable: "DirectoryTemplateGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DirectoryTemplateDirectoryTemplateGroup_DirectoryTemplates_TemplatesId",
+                        column: x => x.TemplatesId,
+                        principalTable: "DirectoryTemplates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DirectoryTemplateDirectoryTemplateGroup_TemplatesId",
+                table: "DirectoryTemplateDirectoryTemplateGroup",
+                column: "TemplatesId");
+
+            // 2. Copy existing relationships into the join table
+            migrationBuilder.Sql(@"
+INSERT INTO [DirectoryTemplateDirectoryTemplateGroup] ([AssignedGroupSidsId], [TemplatesId])
+SELECT [Id], [DirectoryTemplateId]
+FROM [DirectoryTemplateGroups]
+WHERE [DirectoryTemplateId] IS NOT NULL;
+");
+
+            // 3. Now drop the old column and constraints
             migrationBuilder.DropForeignKey(
                 name: "FK_DirectoryTemplateGroups_DirectoryTemplates_DirectoryTemplateId",
                 table: "DirectoryTemplateGroups");
-
-            migrationBuilder.DropTable(
-                name: "AutomationRuleGroupSids");
 
             migrationBuilder.DropIndex(
                 name: "IX_DirectoryTemplateGroups_DirectoryTemplateId",
@@ -26,10 +62,14 @@ namespace BLAZAM.Database.Migrations.Sql
                 name: "DirectoryTemplateId",
                 table: "DirectoryTemplateGroups");
 
+            // Standard migration operations continue...
+            migrationBuilder.DropTable(
+                name: "AutomationRuleGroupSids");
+
             migrationBuilder.RenameColumn(
                 name: "AllowAccessRequest",
                 table: "GlobalPermissionSettings",
-                newName: "AllowFieldAccessRequest");
+                newName: "AllowActionAccessRequest");
 
             migrationBuilder.AddColumn<string>(
                 name: "JsonSettings",
@@ -85,7 +125,7 @@ namespace BLAZAM.Database.Migrations.Sql
                 nullable: true);
 
             migrationBuilder.AddColumn<bool>(
-                name: "AllowActionAccessRequest",
+                name: "AllowFieldAccessRequest",
                 table: "GlobalPermissionSettings",
                 type: "bit",
                 nullable: false,
@@ -139,30 +179,6 @@ namespace BLAZAM.Database.Migrations.Sql
                         name: "FK_AutomationRuleGroupGuids_AutomationRuleActions_AutomationRuleActionId",
                         column: x => x.AutomationRuleActionId,
                         principalTable: "AutomationRuleActions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DirectoryTemplateDirectoryTemplateGroup",
-                columns: table => new
-                {
-                    AssignedGroupSidsId = table.Column<int>(type: "int", nullable: false),
-                    TemplatesId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DirectoryTemplateDirectoryTemplateGroup", x => new { x.AssignedGroupSidsId, x.TemplatesId });
-                    table.ForeignKey(
-                        name: "FK_DirectoryTemplateDirectoryTemplateGroup_DirectoryTemplateGroups_AssignedGroupSidsId",
-                        column: x => x.AssignedGroupSidsId,
-                        principalTable: "DirectoryTemplateGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DirectoryTemplateDirectoryTemplateGroup_DirectoryTemplates_TemplatesId",
-                        column: x => x.TemplatesId,
-                        principalTable: "DirectoryTemplates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -290,11 +306,6 @@ namespace BLAZAM.Database.Migrations.Sql
                 column: "AutomationRuleActionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DirectoryTemplateDirectoryTemplateGroup_TemplatesId",
-                table: "DirectoryTemplateDirectoryTemplateGroup",
-                column: "TemplatesId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_GlobalPermissionRequestFields_CustomFieldId",
                 table: "GlobalPermissionRequestFields",
                 column: "CustomFieldId");
@@ -345,8 +356,7 @@ namespace BLAZAM.Database.Migrations.Sql
             migrationBuilder.DropTable(
                 name: "AutomationRuleGroupGuids");
 
-            migrationBuilder.DropTable(
-                name: "DirectoryTemplateDirectoryTemplateGroup");
+            // Moved DropTable for DirectoryTemplateDirectoryTemplateGroup to end of method
 
             migrationBuilder.DropTable(
                 name: "GlobalPermissionRequestFields");
@@ -403,19 +413,36 @@ namespace BLAZAM.Database.Migrations.Sql
                 table: "NotificationMessages");
 
             migrationBuilder.DropColumn(
-                name: "AllowActionAccessRequest",
+                name: "AllowFieldAccessRequest",
                 table: "GlobalPermissionSettings");
 
             migrationBuilder.RenameColumn(
-                name: "AllowFieldAccessRequest",
+                name: "AllowActionAccessRequest",
                 table: "GlobalPermissionSettings",
                 newName: "AllowAccessRequest");
 
+            // Restore the old column
             migrationBuilder.AddColumn<int>(
                 name: "DirectoryTemplateId",
                 table: "DirectoryTemplateGroups",
                 type: "int",
                 nullable: true);
+
+            // Copy data back from join table
+            migrationBuilder.Sql(@"
+UPDATE g
+SET g.[DirectoryTemplateId] = m.[TemplateId]
+FROM [DirectoryTemplateGroups] g
+JOIN (
+    SELECT [AssignedGroupSidsId] AS [GroupId], MIN([TemplatesId]) AS [TemplateId]
+    FROM [DirectoryTemplateDirectoryTemplateGroup]
+    GROUP BY [AssignedGroupSidsId]
+) m ON g.[Id] = m.[GroupId];
+");
+
+            // Now drop the join table
+            migrationBuilder.DropTable(
+                name: "DirectoryTemplateDirectoryTemplateGroup");
 
             migrationBuilder.CreateTable(
                 name: "AutomationRuleGroupSids",
