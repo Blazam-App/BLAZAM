@@ -65,6 +65,7 @@
                         }
                     </AppModal>
 
+
                     <MudGrid>
                         <MudItem xs="12" md="3">
                             <DetailsSection AssignToClicked=@(()=>{AssignToModal?.ShowAsync();})/>
@@ -73,9 +74,11 @@
                         <MudItem xs=12 md="9">
                             <MudStack>
 
+
                                 <NameSection />
 
                                 <AccountSection PasswordChanged="PasswordChanged" ConfirmPasswordChanged="ConfirmPasswordChanged" />
+
 
                             </MudStack>
 
@@ -98,6 +101,7 @@
                                 {
                                     <CustomDirectoryField Disabled=@(!EditMode || !CanEditField(field)) Entry="GroupableEntry" Field="@field" />
 
+
                                 }
                             }
 
@@ -118,6 +122,8 @@
     <LoadingData Loading=SavingChanges />
 
 
+}else{
+    var lost = "lost";
 }
 
 
