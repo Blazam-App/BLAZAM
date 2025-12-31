@@ -266,7 +266,7 @@ namespace BLAZAM.Pages
                         var resetExpiration = DateTime.UtcNow.AddDays(1);
                         appUser.Preferences.PasswordResetSettings.ResetToken = resetToken.ToString();
 
-                        appUser.Preferences.PasswordResetSettings.TokenExpiration = resetExpiration.Encrypt();
+                        appUser.Preferences.PasswordResetSettings.TokenExpiration = await resetExpiration.EncryptAsync();
                         await appUser.SaveBasicUserPreferences();
                         EmailService.SendPasswordResetEmail(appUser.Preferences.Email, "/reset/" + resetToken, resetExpiration);
                         await AuditLogger.System.PasswordResetRequested(CurrentUser?.State?.IPAddress, appUser.AuditUsername);
