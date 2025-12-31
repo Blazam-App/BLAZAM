@@ -1,4 +1,9 @@
-﻿namespace BLAZAM.Database.Models.Rules
+﻿
+
+
+using System.Text.Json.Serialization;
+
+namespace BLAZAM.Database.Models.Rules
 {
     /// <summary>
     /// An or filter which is really a collection of ands
@@ -12,6 +17,7 @@
         /// <summary>
         /// The rule that this filter belongs to
         /// </summary>
+        [JsonIgnore]
         public AutomationRule AutomationRule { get; set; }
         public int AutomationRuleId { get; set; }
         public Guid FilterGuid { get; set; }

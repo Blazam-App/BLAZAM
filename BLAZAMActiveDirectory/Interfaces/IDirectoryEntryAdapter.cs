@@ -286,7 +286,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         [JsonIgnore]
         AppEvent OnChangesDiscarded { get; set; }
-        byte[]? Guid { get; set; }
+        Guid? Guid { get; set; }
         IADUser? Manager { get; set; }
         IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
 

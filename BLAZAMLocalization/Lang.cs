@@ -18,12 +18,15 @@
         public static readonly string Founder = "Founder";
         public static readonly string Founded = "Founded";
         public static readonly string Plugins = "Plugins";
+        public static readonly string Question = "Question";
+        public static readonly string Answer = "Answer";
         public static readonly string Execution_Schedule = "Execution Schedule";
         public static readonly string Go_To_User = "Go To User";
         public static readonly string Print = "Print";
         public static readonly string Fetch_News = "Fetch News";
         public static readonly string Excute = "Execute";
         public static readonly string Text = "Text";
+        public static readonly string PIN = "PIN";
         public static readonly string Removed_from_Group = "Removed from Group";
         public static readonly string Added_to_Group = "Added to Group";
         public static readonly string Check_for_Update = "Check for Update";
@@ -40,9 +43,11 @@
         public static readonly string User_locked_out = "User locked out";
         public static readonly string Group_member_removed = "Group member removed";
         public static readonly string Object_deleted = "Object deleted";
+        public static readonly string Excluded_Groups = "Excluded Groups";
         public static readonly string Entry_modified = "Entry modified";
         public static readonly string Username_is_missing = "Username is missing";
         public static readonly string Password_is_missing = "Password is missing";
+        public static readonly string Password_Reset_Settings = "Password Reset Settings";
         public static readonly string Login_request_is_missing = "Login request is missing";
         public static readonly string Account_is_locked_out = "Account is locked out";
         public static readonly string Username_or_password_not_correct = "Username or password not correct";
@@ -51,6 +56,7 @@
         public static readonly string Unknown_error_while_attempting_to_log_in = "Unknown error while attempting to log in";
         public static readonly string Update_Scheduled = "Update Scheduled";
         public static readonly string Dismiss_all = "Dismiss all";
+        public static readonly string Security_Questions = "Security Questions";
         public static readonly string Delete_permission_mapping = "Delete permission mapping";
         public static readonly string No_unread_notifications = "No unread notifications";
         public static readonly string Access_request_sent = "Access request sent";
@@ -61,9 +67,11 @@
         public static readonly string Is_Revoked = "Is Revoked";
         public static readonly string User_is_disabled = "User is disabled";
         public static readonly string Never_used = "Never used";
+        public static readonly string Compact_View = "Compact View";
         public static readonly string Dedicated_To = "Dedicated To";
         public static readonly string In_Loving_Memory = "In Loving Memory";
         public static readonly string Source_Code = "Source Code";
+        public static readonly string Password_Reset_Enabled = "Password Reset Enabled";
         public static readonly string Start_typing_to_search = "Start typing to search...";
         public static readonly string Not_a_member_of_any_groups = "Not a member of any groups";
         public static readonly string Sorry_no_result_were_found = "Sorry no result were found 😒";
@@ -111,7 +119,13 @@
         public static readonly string Reset_Password = "Reset Password";
         public static readonly string Rename_User = "Rename User";
         public static readonly string Employee_Id = "Employee Id";
+        public static readonly string Not_Configured = "Not Configured";
         public static readonly string Contact_Info = "Contact Info";
+        public static readonly string Allow_password_reset = "Allow password reset";
+        public static readonly string Required_email = "Required email";
+        public static readonly string Required_PIN = "Required PIN";
+        public static readonly string Minimum_length = "Minimum length";
+        public static readonly string Required_QA = "Require questions and answers";
         public static readonly string Home_Phone = "Home Phone";
         public static readonly string Street_Address = "Street Address";
         public static readonly string PO_Box = "PO Box";
@@ -122,6 +136,7 @@
         public static readonly string System_Settings = "System Settings";
         public static readonly string Impersonate_User = "Impersonate User";
         public static readonly string Group_Membership_Changes = "Group Membership Changes";
+        public static readonly string Allow_Edit_Request = "Allow Edit Request";
         public static readonly string In_App = "In App";
         public static readonly string To_Email = "To Email";
         public static readonly string Memory_Chart = "Memory Chart";
@@ -158,6 +173,7 @@
         public static readonly string Action = "Action";
         public static readonly string Data = "Data";
         public static readonly string Remove_Or_Filter = "Remove Or Filter";
+        public static readonly string Rules_Enabled = "Rules Enabled";
         public static readonly string Add_And_Filter = "Add And Filter";
         public static readonly string IP_Address = "IP Address";
         public static readonly string Fields = "Fields";
@@ -359,7 +375,8 @@
         public static readonly string Credentials_OK = "Credentials OK";
         public static readonly string Allow_self_edit = "Allow self edit";
         public static readonly string Server_Port_Open = "Server Port Open";
-        public static readonly string Allow_access_requests = "Allow access requests";
+        public static readonly string Allow_action_access_requests = "Allow action access requests";
+        public static readonly string Allow_field_access_requests = "Allow field access requests";
         public static readonly string Global_Permission_Settings = "Global Permission Settings";
         public static readonly string Application_User = "Application User";
         public static readonly string Confirm_deletion = "Confirm deletion";
@@ -578,14 +595,14 @@
         public static readonly string Reboot_Shutdown_Success = "Reboot_Shutdown_Success";
         public static readonly string Reboot_Shutdown_Failure = "Reboot_Shutdown_Failure";
         public static readonly string Disabled_users_changed_in_the_last_90_days = "Disabled users changed in the last 90 days";
-        public static readonly string Entries_changed_in_the_last_24_hours = "Entries changed in the last 24 hours";
-        public static readonly string Passwords_changed_in_the_last_90_days = "Passwords changed in the last 90 days";
-        public static readonly string Entries_deleted_in_the_last_14_days = "Entries deleted in the last 14 days";
-        public static readonly string Computers_created_in_the_last_14_days = "Computers created in the last 14 days";
-        public static readonly string Contacts_created_in_the_last_14_days = "Contacts created in the last 14 days";
-        public static readonly string Groups_created_in_the_last_14_days = "Groups created in the last 14 days";
-        public static readonly string OUs_created_in_the_last_14_days = "OU\'s created in the last 14 days";
-        public static readonly string Printers_created_in_the_last_14_days = "Printers created in the last 14 days";
-        public static readonly string Users_created_in_the_last_14_days = "Users created in the last 14 days";
+        public static readonly string Changed_Entries = "Entries changed in the last 24 hours";
+        public static readonly string Changed_Passwords = "Passwords changed in the last 90 days";
+        public static readonly string Deleted_Entries = "Deleted_Entries";
+        public static readonly string New_Computers = "Computers created in the last 14 days";
+        public static readonly string New_Contacts = "Contacts created in the last 14 days";
+        public static readonly string New_Groups = "Groups created in the last 14 days";
+        public static readonly string New_OUs = "OU\'s created in the last 14 days";
+        public static readonly string New_Printers = "Printers created in the last 14 days";
+        public static readonly string New_Users = "Users created in the last 14 days";
     }
 }

@@ -35,13 +35,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public virtual bool IsAMemberOf(IADGroup? group)
+        public virtual bool IsANestedMemberOf(IADGroup? group)
         {
             if (group is null)
             {
                 return false;
             }
-            return Directory.Groups.IsAMemberOf(group, this, true);
+            return Directory.Groups.IsANestedMemberOf(group, this, true);
 
         }
 

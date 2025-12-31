@@ -147,39 +147,35 @@ namespace BLAZAM.Notifications.Services
             return PublishNotification(allUsers, notificationMessage); // Return the task
         }
 
-        /// <summary>Deletes a specific notification message. In the current implementation, this removes the root message, affecting all users who received it.</summary> 
+        /// <summary>Deletes a specific notification message. </summary> 
         /// <param name="notificationMessage">The notification message to delete. Must not be null.</param> 
         /// <param name="user">The user initiating the delete (currently unused in logic but good for context or future permissions). Must not be null.</param> 
         /// <returns>True if deletion was successful, false otherwise.</returns>
-        public async Task<bool> DeleteNotification(NotificationMessage notificationMessage, AppUser user)
+        public async Task<bool> DeleteNotification(UserNotification notification)
         {
-            if (notificationMessage == null)
+            if (notification == null)
             {
-                Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: 'notificationMessage' is null. Cannot delete notification.");
+                Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: 'notification' is null. Cannot delete notification.");
                 return await Task.FromResult(false); // Corrected to await Task.FromResult
             }
-            if (user == null)
-            {
-                Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: 'user' is null. Cannot delete notification for unspecified user.");
-                return await Task.FromResult(false); // Corrected to await Task.FromResult
-            }
+           
             try
             {
                 using var context = await _databaseFactory.CreateDbContextAsync();
-                var dbNotification = await context.NotificationMessages.FirstOrDefaultAsync(x => x.Id == notificationMessage.Id);
+                var dbNotification = await context.UserNotifications.FirstOrDefaultAsync(x => x.Id == notification.Id);
                 if (dbNotification == null)
                 {
-                    Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: NotificationMessage with ID {NotificationId} not found in database. Cannot delete.", notificationMessage.Id);
+                    Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: UserNotification with ID {NotificationId} not found in database. Cannot delete.", notification.Id);
                     return false;
                 }
-                context.NotificationMessages.Remove(dbNotification);
+                context.UserNotifications.Remove(dbNotification);
                 await context.SaveChangesAsync();
                 this.OnNotificationDeleted?.Invoke();
                 return true;
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex, "Error deleting notification with ID {NotificationId}. Error: {ErrorMessage}", notificationMessage.Id, ex.Message); // Use ex.Message and include ID
+                Loggers.SystemLogger.Error(ex, "Error deleting notification with ID {NotificationId}. Error: {ErrorMessage}", notification.Id, ex.Message); // Use ex.Message and include ID
                 return false;
             }
         }

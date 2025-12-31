@@ -2,7 +2,6 @@ using BLAZAM.Static;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace BLAZAM.Pages
 {
@@ -60,7 +59,7 @@ namespace BLAZAM.Pages
             {
                 // ignore
             }
-            return Content(JsonConvert.SerializeObject(manifest));
+            return Content(manifest.ToJson());
 
 
         }

@@ -214,7 +214,7 @@ namespace BLAZAM.Session
         {
             lock (_mfaQueueLock)
             {
-                var request = _mfaLoginQueue.FirstOrDefault(q => q.mfaToken.Equals(mfaToken));
+                var request = _mfaLoginQueue.FirstOrDefault(q => q.MfaToken.Equals(mfaToken));
                 if (request != null)
                 {
                     _mfaLoginQueue.Remove(request);

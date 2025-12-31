@@ -368,15 +368,19 @@ namespace BLAZAM.Services.Background
                 CreatorId = actor?.Preferences.Id,
                 Level = NotificationLevel.Info,
                 TargetDN = target.DN,
-                MessageType = MessageType.AccessRequest,
+                MessageType = MessageType.EditAccessRequest,
                 Title = _appLocalization["Request to"] + " " + _appLocalization[action.ToString()]
             };
 
             notification.Level = NotificationLevel.Info;
         }
 
-        public void PackageRequest(IDirectoryEntryAdapter target, IActiveDirectoryField field, IApplicationUserState? actor, out NotificationMessage notification)
+        public void PackageRequest(IDirectoryEntryAdapter target, IActiveDirectoryField field, FieldAccessLevel accessRequested, IApplicationUserState? actor, out NotificationMessage notification)
         {
+            if (accessRequested.Id == FieldAccessLevels.Deny.Id)
+            {
+                throw new ArgumentException("Access requested cannot be Deny", nameof(accessRequested));
+            }
             notification = new NotificationMessage()
             {
                 //FieldId = (field as ActiveDirectoryField)?.Id,
@@ -384,7 +388,7 @@ namespace BLAZAM.Services.Background
                 CreatorId = actor?.Preferences.Id,
                 Level = NotificationLevel.Info,
                 TargetDN = target.DN,
-                MessageType = MessageType.AccessRequest,
+                MessageType = accessRequested.Id == FieldAccessLevels.Edit.Id ? MessageType.EditAccessRequest : accessRequested.Id == FieldAccessLevels.Read.Id ? MessageType.ReadAccessRequest : MessageType.Notification,
                 Title = _appLocalization["Request for"] + " " + _appLocalization[field.DisplayName]
             };
 

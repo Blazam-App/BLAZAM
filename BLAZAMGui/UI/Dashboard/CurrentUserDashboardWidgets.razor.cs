@@ -6,7 +6,7 @@ namespace BLAZAM.Gui.UI.Dashboard
 {
     public partial class CurrentUserDashboardWidgets : AppComponentBase
     {
-        private bool _editMode;
+        public bool EditMode { get; protected set; }
 
         private bool _initialized;
 

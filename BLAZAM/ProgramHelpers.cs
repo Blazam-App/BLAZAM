@@ -320,6 +320,7 @@ namespace BLAZAM
             builder.Services.AddMudMarkdownServices(); // Add services for rendering Markdown using MudBlazor components
             builder.Services.AddScoped<AppSnackBarService>(); // Custom wrapper/service for MudBlazor Snackbar
             builder.Services.AddScoped<AppDialogService>(); // Custom wrapper/service for MudBlazor Dialog
+            builder.Services.AddSingleton<PasswordResetService>(); 
 
             // --- Notification Generation ---
             builder.Services.AddSingleton<NotificationGenerationService>(); // Service responsible for generating notifications
