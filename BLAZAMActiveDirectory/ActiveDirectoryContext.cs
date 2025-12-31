@@ -47,7 +47,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 if (RootDirectoryEntry != null)
                 {
-                    var sidBytes = RootDirectoryEntry.Properties["objectSid"].Value as byte[];
+                    var sidBytes = RootDirectoryEntry.GetPropertyValue("objectSid") as byte[];
                     if (sidBytes != null)
                     {
                         var sid = new SecurityIdentifier(sidBytes, 0);

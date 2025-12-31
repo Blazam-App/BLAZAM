@@ -96,6 +96,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         Exception? ConnectionException { get; set; }
         List<string> DomainControllers { get; }
         AuthType AuthType { get; }
+        string DomainSid { get; }
 
         /// <summary>
         /// Searches for an Active Directory object by it's SID
