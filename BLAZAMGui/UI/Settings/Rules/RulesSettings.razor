@@ -9,6 +9,7 @@
     <AppIconButton
         Tooltip="@AppLocalization[Lang.Global_Settings]"
          Size=Size.Large
+         Disabled=@(_settings==null)
         Icon="@Icons.Material.Filled.Settings"
         OnClick="@(()=>{_=_settingsModal.ShowAsync();})"/>
 </MudStack>

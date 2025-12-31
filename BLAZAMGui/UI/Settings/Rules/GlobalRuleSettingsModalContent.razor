@@ -45,7 +45,7 @@
     List<AutomationRuleExcludedGroupGuid> GroupGuids = [];
 
     [Parameter]
-    public GlobalAutomationRuleSettings Settings { get; set; }
+    public GlobalAutomationRuleSettings Settings { get; set; } = new();
 
     [Parameter]
     public EventCallback OnSaved { get; set; }
