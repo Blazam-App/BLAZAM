@@ -89,7 +89,7 @@ We have users in Ukraine... we support Ukraine in the current conflict with Russ
 
 ## Star History
 If you like the project, please give it a star! It helps with visibility and motivates us to keep improving it.
-[![Star History Chart](https://api.star-history.com/svg?repos=Blazam-App/BLAZAM&type=Date)](https://www.star-history.com/#Blazam-App/BLAZAM&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=Blazam-App/BLAZAM&type=date&legend=top-left)](https://www.star-history.com/#Blazam-App/BLAZAM&type=date&legend=top-left)
 
 ## Get Paid to Contribute
 If you are interested in contributing to Blazam and receiving compensation for your work, please reach out
