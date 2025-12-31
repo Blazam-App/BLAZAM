@@ -36,6 +36,19 @@ namespace BLAZAM.Gui.Helpers
                 newUser = parentOU.CreateUser(displayName);
 
                 newUser.SAMAccountName = template.GenerateUsername(newUserName);
+                if (template.HasIncrementorVariable)
+                {
+                    var conflictAttempt = 0;
+                    while(directory.Users.FindUserByUsername(newUser.SAMAccountName,exactMatch:true) != null)
+                    {
+                        newUser.SAMAccountName = template.GenerateUsername(newUserName, conflictAttempt + 2);
+                        conflictAttempt++;
+                        if (conflictAttempt > 28)
+                        {
+                            throw new AppException("Could not generate a unique username after multiple attempts. Please adjust the template or try again.");
+                        }
+                    }
+                }
                 newUser.DisplayName = displayName;
                 newUser.StagePasswordChange(template.GeneratePassword(newUserName).ToSecureString());
                 if (template.EffectiveRequirePasswordChange == true)

@@ -1206,6 +1206,9 @@
   <data name="Retry Count" xml:space="preserve">
     <value>عدد المحاولات</value>
   </data>
+  <data name="Send  Welcome Email" xml:space="preserve">
+    <value>إرسال بريد الترحيب الإلكتروني</value>
+  </data>
   <data name="Session Expired" xml:space="preserve">
     <value>انتهت صلاحية الجلسة</value>
   </data>
@@ -1305,10 +1308,28 @@
   <data name="Users_created_in_the_last_14_days" xml:space="preserve">
     <value>المستخدمون الذين تم إنشاؤهم في آخر 14 يومًا</value>
   </data>
-  <data name="Send  Welcome Email" xml:space="preserve">
-    <value>إرسال بريد الترحيب الإلكتروني</value>
-  </data>
   <data name="Text" xml:space="preserve">
     <value>نص</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>قاعدة</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>قواعد</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>إنشاء القاعدة</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>نوع الكائن</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>مشغل</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>بعد العمل</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>قبل العمل</value>
   </data>
 </root>

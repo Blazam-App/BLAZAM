@@ -413,6 +413,51 @@
             <td></td>
 
         </tr>
+        <tr>
+            <td>#</td>
+            <td>@AppLocalization["Username Number Incrementor"]</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+
+        </tr>
+        <tr>
+            <td>.</td>
+            <td>@AppLocalization["Username Incrementor Separator"]</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+
+        </tr>
+        <tr>
+            <td> </td>
+            <td>@AppLocalization["Username Incrementor Separator"]</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+
+        </tr>
+        <tr>
+            <td>_</td>
+            <td>@AppLocalization["Username Incrementor Separator"]</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+
+        </tr>
+        <tr>
+            <td>-</td>
+            <td>@AppLocalization["Username Incrementor Separator"]</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+
+        </tr>
     </tbody>
 </MudSimpleTable>
 <MudText Typo="Typo.h6">
@@ -440,6 +485,10 @@
             <td>Returns the first two characters of the first name in lower case</td>
         </tr>
         <tr>
+            <td>{fi:l}{ln:l}{.}{#}</td>
+            <td>Returns the first initial in lower case, the last name in lower case, and if a username conflicts, a period separator and an incrementing number to resolve the conflict.</td>
+        </tr>
+
             <td>{fn:du}</td>
             <td>Returns the whole first name with diacritics removed and in upper case. Modifiers can be chained.</td>
         </tr>

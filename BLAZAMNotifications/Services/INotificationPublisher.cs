@@ -7,7 +7,7 @@ namespace BLAZAM.Notifications.Services
         AppEvent<List<UserNotification>> OnNotificationPublished { get; set; }
         AppEvent OnNotificationDeleted { get; set; }
 
-        Task<bool> DeleteNotification(NotificationMessage notificationMessage, AppUser user);
+        Task<bool> DeleteNotification(UserNotification notificationMessage);
 
         /// <summary>
         /// Publishes a notification to a single user

@@ -132,7 +132,7 @@ namespace BLAZAM.Pages.API.v1
         /// <exception cref="DirectorySearchUniquenessException"></exception>
         protected IADGroup? FindGroupByIdentifier(string groupIdentifier)
         {
-            var group = (IADGroup?)Directory.FindEntryBySid(groupIdentifier);
+            var group = (IADGroup?)Directory.FindGlobalEntryBySid(groupIdentifier);
             group ??= (IADGroup?)Directory.GetDirectoryEntryByDN(groupIdentifier);
             if (group == null)
             {

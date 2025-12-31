@@ -17,9 +17,9 @@
     {
         foreach (var message in messages.Where(m => !m.IsRead).ToList())
         {
-            @if (message.Notification.MessageType == MessageType.AccessRequest)
+            @if (message.Notification.MessageType == MessageType.EditAccessRequest || message.Notification.MessageType == MessageType.ReadAccessRequest)
             {
-                <RequestNotificationMessageListItem Notification="@message" />
+                <AccessRequestNotificationMessageListItem Notification="@message" />
             }
             else
             {
@@ -93,6 +93,7 @@
 
             messages = await context.UserNotifications
             .Where(un => un.User.Id == UserState.Id)
+            .Include(un=>un.User)
             .OrderByDescending(un => un.Notification.Created)
             .ToListAsync();
             LoadingData = false;

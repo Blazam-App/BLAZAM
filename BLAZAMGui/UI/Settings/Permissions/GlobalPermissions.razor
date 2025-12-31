@@ -3,33 +3,33 @@
 <MudForm @ref=Form @bind-IsValid=IsValid Model="settings">
     <MudStack Spacing="5">
 
-        <SettingsField Label="@AppLocalization[Lang.Allow_access_requests]">
+        <SettingsField Label="@AppLocalization[Lang.Allow_action_access_requests]">
 
             <MudSwitch @bind-Value=settings.AllowActionAccessRequest
                        T=bool
                        Class="mt-0"
                        Color="Color.Success"
-                       Label=@AppLocalization[Lang.Allow_access_requests] />
+                       Label=@AppLocalization[Lang.Allow_action_access_requests] />
         </SettingsField>
         @if (settings.AllowActionAccessRequest)
         {
-            <SettingsField Label="@AppLocalization[Lang.Actions]">
+            <SettingsField >
 
 
-
+                <MudText>@AppLocalization[Lang.Actions]</MudText>
                 <MudStack Class="ms-4">
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Assign)"
-                               ValueChanged="@(async (bool  val)=>{ await AddAction(ActiveDirectoryObjectAction.Assign); })"
+                               ValueChanged="@(async (bool val) => { await AddAction(ActiveDirectoryObjectAction.Assign); })"
                                Color="Color.Success">
                         @AppLocalization[Lang.Assign]
                     </MudSwitch>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unassign)"
-                               ValueChanged="@(async (bool  val)=>{ await AddAction(ActiveDirectoryObjectAction.Unassign); })"
+                               ValueChanged="@(async (bool val) => { await AddAction(ActiveDirectoryObjectAction.Unassign); })"
                                Color="Color.Success">
                         @AppLocalization[Lang.Unassign]
                     </MudSwitch>
                     <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unlock)"
-                               ValueChanged="@(async (bool  val)=>{ await AddAction(ActiveDirectoryObjectAction.Unlock); })"
+                               ValueChanged="@(async (bool val) => { await AddAction(ActiveDirectoryObjectAction.Unlock); })"
                                Color="Color.Success">
                         @AppLocalization[Lang.Unlock]
                     </MudSwitch>
@@ -38,7 +38,49 @@
 
             </SettingsField>
         }
+        <SettingsField Label="@AppLocalization[Lang.Allow_field_access_requests]">
 
+            <MudSwitch @bind-Value=settings.AllowFieldAccessRequest
+                       T=bool
+                       Class="mt-0"
+                       Color="Color.Success"
+                       Label=@AppLocalization[Lang.Allow_field_access_requests] />
+        </SettingsField>
+        @if (settings.AllowFieldAccessRequest)
+        {
+            <SettingsField>
+                <MudStack Row=true>
+                    <MudSelectList T="IActiveDirectoryField"
+                                   @bind-Value="@_selectedField"
+                                   Values=@_allFields.Where(x => !globalPermissionRequestFields.Any(y => (y.Field!=null && y.Field.Equals(x))||(y.CustomField!=null && y.CustomField.Equals(x)))) />
+                    <AppIconButton Icon="@Icons.Material.Filled.Add"
+                                   Disabled="@(_selectedField==null)"
+                                   Color="Color.Success"
+                                   OnClick="@(() => { AddRequestableField(); })" />
+                </MudStack>
+                <MudDataGrid Items="globalPermissionRequestFields">
+                    <Columns>
+                        <PropertyColumn Property="@(x => x.Field != null ? x.Field.DisplayName : x.CustomField.DisplayName)" />
+                        <TemplateColumn Title="@AppLocalization[Lang.Allow_Edit_Request]">
+                            <CellTemplate>
+                                <MudSwitch @bind-Value=context.Item.AllowEdit
+                                           T=bool
+                                           Class="mt-0"
+                                           Color="Color.Success" />
+                            </CellTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn Title="@AppLocalization[Lang.Remove]">
+                            <CellTemplate>
+                                <AppIconButton Icon="@Icons.Material.Filled.Remove"
+                                               Color="Color.Error"
+                                               OnClick="@(() => { RemoveRequestableField(context.Item); })" />
+                            </CellTemplate>
+                        </TemplateColumn>
+
+                    </Columns>
+                </MudDataGrid>
+            </SettingsField>
+        }
         <SettingsField Label="@AppLocalization[Lang.Allow_self_edit]">
 
             <MudSwitch @bind-Value=settings.AllowSelfModification
@@ -54,8 +96,7 @@
         </SettingsField>
         <MudDivider />
         <SettingsField>
-            <MudButton Disabled="@(!IsValid ||(settings.AllowSelfModification && selfAccessLevel.Id==0))"
-                       ButtonType="ButtonType.Submit"
+            <MudButton Disabled="@(!IsValid || (settings.AllowSelfModification && selfAccessLevel.Id == 0))"
                        OnClick="Save"
                        Color="Color.Success">
                 @AppLocalization[Lang.Save_Changes]
@@ -68,8 +109,11 @@
 <LoadingData Loading=LoadingData />
 
 @code {
+    IActiveDirectoryField? _selectedField;
+    List<IActiveDirectoryField> _allFields = [];
     GlobalPermissionSettings settings = new GlobalPermissionSettings();
-    List<GlobalPermissionRequestAction> globalPermissionRequestActions = new List<GlobalPermissionRequestAction>();
+    List<GlobalPermissionRequestAction> globalPermissionRequestActions = [];
+    List<GlobalPermissionRequestField> globalPermissionRequestFields = [];
     AccessLevel selfAccessLevel = new();
     protected override async Task OnInitializedAsync()
     {
@@ -80,10 +124,15 @@
         var dbData = await Context.GlobalPermissionSettings
         .FirstOrDefaultAsync();
 
+        _allFields = (await Context.ActiveDirectoryFields.ToListAsync()).Cast<IActiveDirectoryField>().ToList();
+        _allFields.AddRange((await Context.CustomActiveDirectoryFields.Where(x => x.DeletedAt == null).ToListAsync()).Cast<IActiveDirectoryField>());
+        _allFields = _allFields.OrderBy(x => x.DisplayName).ToList();
+
         if (dbData != null)
         {
             settings = dbData;
             globalPermissionRequestActions = await Context.GlobalPermissionRequestActions.ToListAsync();
+            globalPermissionRequestFields = await Context.GlobalPermissionRequestFields.ToListAsync();
         }
 
         var dbSelfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
@@ -98,7 +147,27 @@
         LoadingData = false;
 
     }
-
+    private async Task RemoveRequestableField(GlobalPermissionRequestField requestableField)
+    {
+        globalPermissionRequestFields.Remove(globalPermissionRequestFields.First(x => x.Id == requestableField.Id));
+        Context.GlobalPermissionRequestFields.Remove(Context.GlobalPermissionRequestFields.First(x => x.Id == requestableField.Id));
+    }
+    private async Task AddRequestableField()
+    {
+        if (_selectedField == null) return;
+        var requestableField = new GlobalPermissionRequestField();
+        if (_selectedField is ActiveDirectoryField adField)
+        {
+            requestableField.Field = adField;
+        }
+        if (_selectedField is CustomActiveDirectoryField customField)
+        {
+            requestableField.CustomField = customField;
+        }
+        Context.GlobalPermissionRequestFields.Add(requestableField);
+        globalPermissionRequestFields.Add(requestableField);
+        _selectedField = null;
+    }
     private async Task AddAction(ActiveDirectoryObjectAction action)
     {
 
@@ -152,7 +221,7 @@
             try
             {
 
-                await Context.SaveChangesAsync();
+                var result = await Context.SaveChangesAsync();
                 SnackBarService.Success("Settings have been saved");
             }
             catch (Exception ex)

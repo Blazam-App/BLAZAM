@@ -240,6 +240,9 @@
   <data name="Request_To" xml:space="preserve">
     <value>{0} से अनुरोध करें</value>
   </data>
+  <data name="Request_For" xml:space="preserve">
+    <value>{0} से अनुरोध करें</value>
+  </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>यह नियम हर बार तब फायर होगा जब कोई {0} {1} होगा</value>
   </data>
@@ -278,5 +281,15 @@
   <data name="Update_Credential_Is_Invalid" xml:space="preserve">
     <value>एप्लिकेशन निर्देशिका में लिखने की अनुमति के साथ कोई क्रेडेंशियल कॉन्फ़िगर नहीं किया गया है!
 कस्टम अपडेट क्रेडेंशियल कॉन्फ़िगर करने का प्रयास करें।</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

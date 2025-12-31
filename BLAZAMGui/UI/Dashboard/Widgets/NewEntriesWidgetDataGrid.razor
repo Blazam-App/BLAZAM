@@ -20,19 +20,7 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <DirectoryEntryTooltipPopover Entry="@context.Item">
-                    <DirectoryEntryContextMenu Entry="@context.Item"
-                                               OnChanged="OnChanged">
-                        @if (context.Item is IADGroup group)
-                        {
-                            <GroupWithDescriptionTooltip Group="group" />
-                        }
-                        else
-                        {
-                            <MudText>@context.Item?.CanonicalName</MudText>
-                        }
-                    </DirectoryEntryContextMenu>
-                </DirectoryEntryTooltipPopover>
+                <DirectoryEntryLink Entry="@context.Item" OnChanged="OnChanged"/>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Created]>

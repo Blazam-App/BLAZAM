@@ -136,6 +136,7 @@ namespace BLAZAM.Helpers
             AddAutomationRuleConfig(modelBuilder);
             AddAutomationRuleActionConfig(modelBuilder);
             AddAutomationRuleOrFilterConfig(modelBuilder);
+            AddGlobalAutomationRuleSettingsConfig(modelBuilder);
             AddAutomationRuleAndFilterConfig(modelBuilder);
             AddAutomationRuleActionFieldValueConfig(modelBuilder);
             AddDirectoryTemplateFieldValueConfig(modelBuilder);
@@ -152,6 +153,8 @@ namespace BLAZAM.Helpers
             AddChatRoomConfig(modelBuilder);
             AddChatMessageConfig(modelBuilder);
             AddNotificationSubscriptionConfig(modelBuilder);
+            AddGlobalPermissionRequestFieldConfig(modelBuilder);
+            AddNotificationMessageConfig(modelBuilder);
             AddUnreadChatMessageConfig(modelBuilder);
 
         }
@@ -234,7 +237,7 @@ namespace BLAZAM.Helpers
         {
             modelBuilder.Entity<AutomationRuleAction>(entity =>
             {
-                entity.Navigation(e => e.GroupSids).AutoInclude();
+                entity.Navigation(e => e.GroupGuids).AutoInclude();
                 entity.Navigation(e => e.FieldValues).AutoInclude();
             });
         }
@@ -390,10 +393,21 @@ namespace BLAZAM.Helpers
             });
         }
 
+        internal static void AddNotificationMessageConfig(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<NotificationMessage>(entity =>
+            {
+                entity.Navigation(e => e.Field).AutoInclude();
+                entity.Navigation(e => e.CustomField).AutoInclude();
+            });
+        }
+
         internal static void AddPermissionDelegateConfig(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<PermissionDelegate>(entity =>
             {
+                entity.Property(p => p.RequireEmailOnPasswordReset).HasDefaultValue(true);
+                entity.Property(p => p.MinimumPINLength).HasDefaultValue(4);
                 entity.HasIndex(e => e.DelegateSid).IsUnique();
             });
         }
@@ -413,6 +427,25 @@ namespace BLAZAM.Helpers
             modelBuilder.Entity<ChatMessage>(entity =>
             {
                 entity.Navigation(e => e.User).AutoInclude();
+            });
+        }
+
+
+
+        internal static void AddGlobalPermissionRequestFieldConfig(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<GlobalPermissionRequestField>(entity =>
+            {
+                entity.Navigation(e => e.Field).AutoInclude();
+                entity.Navigation(e => e.CustomField).AutoInclude();
+            });
+        }
+
+        internal static void AddGlobalAutomationRuleSettingsConfig(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<GlobalAutomationRuleSettings>(entity =>
+            {
+                entity.Navigation(e => e.ExcludedGroups).AutoInclude();
             });
         }
 

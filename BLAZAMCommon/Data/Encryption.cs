@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BLAZAM.Helpers;
+using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -145,7 +146,7 @@ namespace BLAZAM.Common.Data
 
             using StreamReader streamReader = new(cryptoStream);
 
-            var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+            var decrypted = streamReader.ReadToEnd().FromJson<T>();
             return decrypted;
 
 
@@ -184,7 +185,7 @@ namespace BLAZAM.Common.Data
 
             using StreamReader streamReader = new(cryptoStream);
 
-            var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+            var decrypted = streamReader.ReadToEnd().FromJson<T>();
             return decrypted;
 
 
@@ -270,7 +271,7 @@ namespace BLAZAM.Common.Data
 
             using StreamReader streamReader = new(cryptoStream);
 
-            return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+            return streamReader.ReadToEnd().FromJson<T>();
 
 
 
@@ -314,8 +315,7 @@ namespace BLAZAM.Common.Data
                 encryptor,
                 CryptoStreamMode.Write);
 
-            var serialized = JsonConvert.SerializeObject(obj);
-            byte[] data = Encoding.UTF8.GetBytes(serialized);
+            byte[] data = Encoding.UTF8.GetBytes(obj.ToJson());
             cryptoStream.Write(data, 0, data.Length);
             cryptoStream.FlushFinalBlock();
 

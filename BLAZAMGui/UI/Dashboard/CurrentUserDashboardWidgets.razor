@@ -7,7 +7,7 @@
 {
     @if (CurrentUser.State != null && CurrentUser.State.Preferences != null && allWidgets.Count > 0)
     {
-        if (_editMode)
+        if (EditMode)
         {
             <MudAlert Severity="Severity.Info">
                 @AppHelpLocalization[HelpLang.Rearrange_Dashboard_Help]
@@ -22,8 +22,8 @@
                               ItemsSelector="ItemSelector"
                               ItemDraggingClass="mud-info-text"
                               DisabledClass=""
-                              ItemsClassSelector=@((item,name)=>{return !_editMode ? "cursor-default" : "cursor-move";})
-                              ItemDisabled=@((item)=>{return !_editMode;})
+                              ItemsClassSelector=@((item,name)=>{return !EditMode ? "cursor-default" : "cursor-move";})
+                              ItemDisabled=@((item)=>{return !EditMode;})
                               ItemDropped="ItemDropped"
                               Class="d-flex flex-wrap flex-grow-1 mud-width-full  my-5 cursor-">
                 <ChildContent>
@@ -80,7 +80,7 @@
                                                    OnClick="@(()=>{OnRefreshWidget?.Invoke(widget);})" />
 
 
-                                    <AppCloseButton Disabled="!_editMode"
+                                    <AppCloseButton Disabled="!EditMode"
                                                     Tooltip=@AppLocalization[Lang.Remove]
                                                     OnClick=@(async()=>{await RemoveWidget(context);}) />
 
@@ -89,6 +89,7 @@
 
                                     <DynamicComponent Parameters="@(new Dictionary<string,object>(){
                                                                                   {"ItemsPerPage",context.ItemsPerPage>5?context.ItemsPerPage:5},
+                                                                                  {"JsonSettings",context.JsonSettings},
                                                                                   {"WidgetType",context.WidgetType}
                                                                                   })"
                                   Type="@widget.GetType()" />
@@ -115,7 +116,7 @@
             </MudContainer>
 
         }
-        if (_editMode)
+        if (EditMode)
         {
             <MudAlert Severity="Severity.Info">
                 @AppHelpLocalization[HelpLang.Rearrange_Dashboard_Help]
@@ -126,11 +127,11 @@
                   Style="justify-content: flex-end;"
                   Row=true>
             <AppTooltip Text=@AppLocalization[Lang.Edit]>
-                <MudFab StartIcon="@(!_editMode ? Icons.Material.Filled.Edit : Icons.Material.Filled.EditOff)"
-                        Color="@(!_editMode ? Color.Success : Color.Error)"
-                        OnClick="@(()=>{_editMode = !_editMode; widgetContainer?.Refresh();})" />
+                <MudFab StartIcon="@(!EditMode ? Icons.Material.Filled.Edit : Icons.Material.Filled.EditOff)"
+                        Color="@(!EditMode ? Color.Success : Color.Error)"
+                        OnClick="@(()=>{EditMode = !EditMode; widgetContainer?.Refresh();})" />
             </AppTooltip>
-            @if (_editMode)
+            @if (EditMode)
             {
                 if (allWidgets.Count > CurrentUser.State?.Preferences?.DashboardWidgets.Count)
                 {

@@ -40,6 +40,22 @@ namespace BLAZAM.ActiveDirectory
         }
         private CancellationTokenSource? _connectionCTS = new();
 
+        public string DomainSid
+        {
+            get
+            {
+                if (RootDirectoryEntry != null)
+                {
+                    var sidBytes = RootDirectoryEntry.Properties["objectSid"].Value as byte[];
+                    if (sidBytes != null)
+                    {
+                        var sid = new SecurityIdentifier(sidBytes, 0);
+                        return sid.ToString();
+                    }
+                }
+                return string.Empty;
+            }
+        }
         private const string LDAP_PROTO = "LDAP://";
         private readonly WmiFactory _wmiFactory;
         private readonly IEncryptionService _encryption;
@@ -895,15 +911,15 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error("Error attempting to restore " + model.CanonicalName + "{@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Error attempting to restore {@Entry}", model.CanonicalName);
                 }
             }
             return false;
 
         }
 
-        public IDirectoryEntryAdapter? FindEntryBySID(byte[] sid) => FindEntryBySid(sid.ToSidString());
-        public IDirectoryEntryAdapter? FindEntryBySid(string sid)
+        public IDirectoryEntryAdapter? FindGlobalEntryBySid(byte[] sid) => FindGlobalEntryBySid(sid.ToSidString());
+        public IDirectoryEntryAdapter? FindGlobalEntryBySid(string sid)
         {
             var searcher = new ADSearch(this)
             {
@@ -913,9 +929,11 @@ namespace BLAZAM.ActiveDirectory
             var result = searcher.Search().FirstOrDefault();
             return result;
         }
-        public IDirectoryEntryAdapter? FindEntryByGuid(string guid) => FindEntryByGuid(Guid.Parse(guid).ToByteArray());
+        public IDirectoryEntryAdapter? FindGlobalEntryByGuid(string guid) => FindGlobalEntryByGuid(Guid.Parse(guid).ToByteArray());
 
-        public IDirectoryEntryAdapter? FindEntryByGuid(byte[] guid)
+        public IDirectoryEntryAdapter? FindGlobalEntryByGuid(Guid guid) => FindGlobalEntryByGuid(guid.ToByteArray());
+
+        public IDirectoryEntryAdapter? FindGlobalEntryByGuid(byte[] guid)
         {
             if (guid == null)
             {
@@ -924,11 +942,11 @@ namespace BLAZAM.ActiveDirectory
 
             return new ADSearch(this)
             {
-                ObjectTypeFilter = ActiveDirectoryObjectType.Contact,
+                SearchRoot = RootDirectoryEntry,
                 Fields = new() { GUID = guid },
                 ExactMatch = true
 
-            }.Search<ADContact, IADContact>().FirstOrDefault();
+            }.Search().FirstOrDefault();
         }
 
         public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn)

@@ -443,13 +443,14 @@ namespace BLAZAM.Services.Background
 
         }
 
-        public async Task<bool> SendPasswordResetEmail(string to, string resetUri)
+        public async Task<bool> SendPasswordResetEmail(string to, string resetUri,DateTime? expires=null)
         {
             try
             {
                 var emailMessage = new PasswordResetEmailMessage
                 {
-                    ResetUri = resetUri
+                    ResetUri = resetUri,
+                    Expires = expires
                 };
                 return await SendMessage("Password Reset", emailMessage, to);
             }
