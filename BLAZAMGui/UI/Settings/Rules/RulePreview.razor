@@ -1,6 +1,8 @@
 @inherits DatabaseComponentBase
+@using BLAZAM.Database.Models.Audit
 @using BLAZAM.Database.Models.Rules
 @using BLAZAM.Gui.UI.Dashboard.Widgets
+@using Serilog.Events
 <MudPaper Elevation="1" Class="pa-4 my-4">
     <MudStack>
         <MudStack Row=true>
@@ -95,22 +97,22 @@
                         <MudTextField T="string"
                                       ReadOnly="true"
                                       Label="@AppLocalization[Lang.Field]"
-                                      Value=@action.FieldValues[0].CurrentField.DisplayName />
+                                      Value=@action.FieldValues[0].CurrentField?.DisplayName />
                         <MudTextField T="string"
                                       ReadOnly="true"
                                       Label="@AppLocalization[Lang.Value]"
                                       Value=@action.FieldValues[0].Value?.ToString() />
                     }
-                    @if (action.GroupSids.Count > 0)
+                    @if (action.GroupGuids.Count > 0)
                     {
                         <MudTextField T="string"
                                       ReadOnly="true"
                                       Label="@AppLocalization[Lang.Group]"
-                                      Value=@action.GroupSids.FirstOrDefault()?.GroupSid.ToString() />
+                                      Value=@action.GroupGuids.FirstOrDefault()?.GroupGuid.ToString() />
                         <MudTextField T="string"
                                       ReadOnly="true"
                                       Label="@AppLocalization[Lang.Assign]"
-                                      Value=@action.GroupSids.FirstOrDefault()?.Assigned.ToString() />
+                                      Value=@action.GroupGuids.FirstOrDefault()?.Assigned.ToString() />
                     }
                 </MudStack>
             }
@@ -169,7 +171,7 @@
                 <MudStack Class="mud-width-full" Row="true">
                     <MudSpacer />
                     <MudButton Color="Color.Primary"
-                               Disabled="@(!Rule.Enabled||_ruleRunning)"
+                               Disabled="@(!Rule.Enabled||_ruleRunning || _settings?.RulesEnabled!=true)"
                                OnClick="@(RunRule)">
                         @AppLocalization[Lang.Run_Now]
                     </MudButton>
@@ -184,17 +186,37 @@
                 </MudStack>
 
             }
+            <MudButton Color="@(_auditErrors.Count == 0 ? Color.Primary : Color.Error)"
+                       OnClick="@(()=>{_auditPopoverOpen=!_auditPopoverOpen;})">
+                @AppLocalization[Lang.Audit]
+            </MudButton>
+
+            @if (_auditPopoverOpen)
+            {
+                <MudDataGrid Items="_recentAudits">
+                    <Columns>
+                        <PropertyColumn Title="@AppLocalization[Lang.Timestamp]" Property="x => x.Timestamp" />
+                        <PropertyColumn Title="@AppLocalization[Lang.Type]" Property="x => x.EventType" />
+                        <PropertyColumn Title="@AppLocalization["Level"]" Property="x => x.Level" />
+                        <PropertyColumn Title="@AppLocalization[Lang.Message]" Property="x => x.Message" />
+
+                    </Columns>
+                </MudDataGrid>
+            }
         }
     </MudStack>
 </MudPaper>
 <LoadingData Loading="LoadingData" />
 @code {
     private bool _matchedPopoverOpen;
+    private bool _auditPopoverOpen;
     private bool _loadingFilteredEntries;
     private List<IDirectoryEntryAdapter> filteredEntries = new();
     [Parameter]
     public AutomationRule Rule { get; set; }
     bool _ruleRunning;
+    private List<AutomationRuleAuditLog> _auditErrors = [];
+    private List<AutomationRuleAuditLog> _recentAudits = [];
     bool _compactView;
     [Parameter]
     public bool CompactView
@@ -213,15 +235,31 @@
     public EventCallback EditClicked { get; set; }
 
     [Parameter]
+    public AppEvent ReloadEvent { get; set; }
+
+    [Parameter]
     public EventCallback CopyClicked { get; set; }
+
+    private GlobalAutomationRuleSettings? _settings;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        LoadingData = false;
-        LoadFilteredEntries();
+        ReloadRule();
+        ReloadEvent.Delegate += TriggerReloadRule;
     }
-    private void ReloadRule()
+    public override void Dispose()
+    {
+        base.Dispose();
+        ReloadEvent.Delegate -= TriggerReloadRule;
+
+    }
+
+    private void TriggerReloadRule(object? obj, object? args)
+    {
+        ReloadRule();
+    }
+    public void ReloadRule()
     {
         _ = Task.Run(async () =>
        {
@@ -229,8 +267,19 @@
 
            LoadingData = true;
            using var context = await DbFactory.CreateDbContextAsync();
+           _settings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
            Rule = await context.AutomationRules.FirstAsync(r => r.Id == Rule.Id);
-           filteredEntries = RulesProcessor.GetFilteredEntries(Rule);
+           filteredEntries = await RulesProcessor.GetFilteredEntries(Rule);
+           var auditTimestampCutoff = DateTime.UtcNow.Subtract(TimeSpan.FromDays(30));
+           _auditErrors = await Context.AutomationRuleAuditLog
+               .Where(x => x.Level == LogEventLevel.Error && x.AutomationRuleId == Rule.Id && x.Timestamp>auditTimestampCutoff)
+               .OrderByDescending(x => x.Timestamp)
+               .ToListAsync();
+           _recentAudits = await Context.AutomationRuleAuditLog
+               .Where(x => x.AutomationRuleId == Rule.Id && x.Timestamp > auditTimestampCutoff)
+               .OrderByDescending(x => x.Timestamp)
+               .Take(100)
+               .ToListAsync();
            LoadingData = false;
            LoadFilteredEntries();
 
@@ -246,7 +295,7 @@
         _loadingFilteredEntries = true;
         await StateHasChangedAsync();
 
-        filteredEntries = RulesProcessor.GetFilteredEntries(Rule);
+        filteredEntries = await RulesProcessor.GetFilteredEntries(Rule);
         _loadingFilteredEntries = false;
         await StateHasChangedAsync();
     });
@@ -272,6 +321,12 @@
         _ruleRunning = true;
         await StateHasChangedAsync();
         var job = await RulesProcessor.ProcessScheduledRule(Rule);
+        if (job == null)
+        {
+            _ruleRunning = false;
+            await StateHasChangedAsync();
+            return;
+        }
         job.OnProgressUpdated += (progress) =>
         {
             LoadFilteredEntries();

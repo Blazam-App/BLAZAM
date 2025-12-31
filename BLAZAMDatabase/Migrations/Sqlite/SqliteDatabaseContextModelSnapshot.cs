@@ -15,7 +15,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.15");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.22");
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
@@ -29,7 +29,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("FieldMapId");
 
-                    b.ToTable("AccessLevelFieldAccessMapping", (string)null);
+                    b.ToTable("AccessLevelFieldAccessMapping");
                 });
 
             modelBuilder.Entity("AccessLevelObjectAccessMapping", b =>
@@ -44,7 +44,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("ObjectMapId");
 
-                    b.ToTable("AccessLevelObjectAccessMapping", (string)null);
+                    b.ToTable("AccessLevelObjectAccessMapping");
                 });
 
             modelBuilder.Entity("AccessLevelPermissionMapping", b =>
@@ -59,7 +59,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("PermissionMapsId");
 
-                    b.ToTable("AccessLevelPermissionMapping", (string)null);
+                    b.ToTable("AccessLevelPermissionMapping");
                 });
 
             modelBuilder.Entity("AppUserChatRoom", b =>
@@ -74,7 +74,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("MembersId");
 
-                    b.ToTable("AppUserChatRoom", (string)null);
+                    b.ToTable("AppUserChatRoom");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.ADSettings", b =>
@@ -110,7 +110,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActiveDirectorySettings", null, t =>
+                    b.ToTable("ActiveDirectorySettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
@@ -139,7 +139,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActiveDirectoryFields", (string)null);
+                    b.ToTable("ActiveDirectoryFields");
 
                     b.HasData(
                         new
@@ -467,7 +467,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                             Id = 41,
                             DisplayName = "Locked Out",
                             FieldName = "lockoutTime",
-                            FieldType = 6,
+                            FieldType = 5,
                             PropertyName = "LockedOut"
                         },
                         new
@@ -493,6 +493,14 @@ namespace BLAZAM.Common.Migrations.Sqlite
                             FieldName = "lastLogonTimestamp",
                             FieldType = 1,
                             PropertyName = "LastLogonTimestamp"
+                        },
+                        new
+                        {
+                            Id = 45,
+                            DisplayName = "LAPS Password",
+                            FieldName = "msLAPS-Password",
+                            FieldType = 0,
+                            PropertyName = "LapsPassword"
                         });
                 });
 
@@ -515,7 +523,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("CustomActiveDirectoryFieldId");
 
-                    b.ToTable("ActiveDirectoryFieldObjectMappings", (string)null);
+                    b.ToTable("ActiveDirectoryFieldObjectMappings");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.AppSettings", b =>
@@ -587,10 +595,62 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppSettings", null, t =>
+                    b.ToTable("AppSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.AutomationRuleAuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ActionSnapshot")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AutomationRuleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("EventType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid?>("ExecutionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FilterSnapshot")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool?>("MatchesFilter")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RuleSnapshot")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StackTrace")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TargetGuid")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("Trigger")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AutomationRuleId");
+
+                    b.ToTable("AutomationRuleAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.DirectoryEntryAuditLog", b =>
@@ -628,7 +688,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("DirectoryEntryAuditLogs", (string)null);
+                    b.ToTable("DirectoryEntryAuditLogs");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.EmailAuditLog", b =>
@@ -675,7 +735,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailAuditLog", (string)null);
+                    b.ToTable("EmailAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.LogonAuditLog", b =>
@@ -709,7 +769,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("LogonAuditLog", (string)null);
+                    b.ToTable("LogonAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.PermissionsAuditLog", b =>
@@ -743,7 +803,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("PermissionsAuditLog", (string)null);
+                    b.ToTable("PermissionsAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.RequestAuditLog", b =>
@@ -777,7 +837,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("RequestAuditLog", (string)null);
+                    b.ToTable("RequestAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.SettingsAuditLog", b =>
@@ -811,7 +871,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("SettingsAuditLog", (string)null);
+                    b.ToTable("SettingsAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.SystemAuditLog", b =>
@@ -845,7 +905,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("SystemAuditLog", (string)null);
+                    b.ToTable("SystemAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.AuthenticationSettings", b =>
@@ -883,7 +943,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuthenticationSettings", null, t =>
+                    b.ToTable("AuthenticationSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
@@ -899,6 +959,53 @@ namespace BLAZAM.Common.Migrations.Sqlite
                             RequireMFA = false,
                             SessionTimeout = 15
                         });
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.AutomationRuleExcludedGroupGuid", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("GlobalAutomationRuleSettingsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GlobalAutomationRuleSettingsId");
+
+                    b.ToTable("AutomationRuleExcludedGroupGuid");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Chat.ChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChatRoomId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatRoomId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Chat.ChatRoom", b =>
@@ -925,7 +1032,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChatRooms", (string)null);
+                    b.ToTable("ChatRooms");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Chat.UnreadChatMessage", b =>
@@ -947,7 +1054,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("ChatMessageId");
 
-                    b.ToTable("UnreadChatMessages", (string)null);
+                    b.ToTable("UnreadChatMessages");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.CustomActiveDirectoryField", b =>
@@ -972,7 +1079,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("CustomActiveDirectoryFields", (string)null);
+                    b.ToTable("CustomActiveDirectoryFields");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.EmailSettings", b =>
@@ -1019,7 +1126,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailSettings", null, t =>
+                    b.ToTable("EmailSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
@@ -1044,7 +1151,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailTemplates", (string)null);
+                    b.ToTable("EmailTemplates");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.FailedADLogonEvent", b =>
@@ -1068,10 +1175,10 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("FailedADLogonEvents", (string)null);
+                    b.ToTable("FailedADLogonEvents");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.GenericSidList", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.LockedOutUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1086,7 +1193,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("LockedOutUsers", (string)null);
+                    b.ToTable("LockedOutUsers");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
@@ -1118,7 +1225,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NotificationSubscriptions", (string)null);
+                    b.ToTable("NotificationSubscriptions");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionNotificationType", b =>
@@ -1137,7 +1244,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("NotificationSubscriptionId");
 
-                    b.ToTable("SubscriptionNotificationType", (string)null);
+                    b.ToTable("SubscriptionNotificationType");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionWebHookType", b =>
@@ -1156,7 +1263,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("WebHookSubscriptionId");
 
-                    b.ToTable("SubscriptionWebHookType", (string)null);
+                    b.ToTable("SubscriptionWebHookType");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookAttempt", b =>
@@ -1211,7 +1318,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("WebHookSubscriptionId");
 
-                    b.ToTable("WebHookAttempts", (string)null);
+                    b.ToTable("WebHookAttempts");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookSubscription", b =>
@@ -1256,7 +1363,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("WebHookSubscriptions", (string)null);
+                    b.ToTable("WebHookSubscriptions");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
@@ -1274,7 +1381,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccessLevels", (string)null);
+                    b.ToTable("AccessLevels");
 
                     b.HasData(
                         new
@@ -1308,7 +1415,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("ObjectActionId");
 
-                    b.ToTable("ActionAccessMapping", (string)null);
+                    b.ToTable("ActionAccessMapping");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.FieldAccessLevel", b =>
@@ -1326,7 +1433,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("FieldAccessLevel", (string)null);
+                    b.ToTable("FieldAccessLevel");
 
                     b.HasData(
                         new
@@ -1375,7 +1482,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("FieldId");
 
-                    b.ToTable("AccessLevelFieldMapping", (string)null);
+                    b.ToTable("AccessLevelFieldMapping");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestAction", b =>
@@ -1389,7 +1496,31 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("GlobalPermissionRequestActions", (string)null);
+                    b.ToTable("GlobalPermissionRequestActions");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestField", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("AllowEdit")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CustomFieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("FieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomFieldId");
+
+                    b.HasIndex("FieldId");
+
+                    b.ToTable("GlobalPermissionRequestFields");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
@@ -1398,7 +1529,10 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("AllowAccessRequest")
+                    b.Property<bool>("AllowActionAccessRequest")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("AllowFieldAccessRequest")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("AllowSelfModification")
@@ -1406,7 +1540,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("GlobalPermissionSettings", (string)null);
+                    b.ToTable("GlobalPermissionSettings");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
@@ -1424,7 +1558,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("ObjectAccessLevel", (string)null);
+                    b.ToTable("ObjectAccessLevel");
 
                     b.HasData(
                         new
@@ -1463,7 +1597,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("ObjectAccessLevelId");
 
-                    b.ToTable("AccessLevelObjectMapping", (string)null);
+                    b.ToTable("AccessLevelObjectMapping");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAction", b =>
@@ -1481,7 +1615,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("ObjectActionFlag", (string)null);
+                    b.ToTable("ObjectActionFlag");
 
                     b.HasData(
                         new
@@ -1552,6 +1686,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("AllowPasswordReset")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("DelegateName")
                         .HasColumnType("TEXT");
 
@@ -1565,12 +1702,28 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<bool>("IsSuperAdmin")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("MinimumPINLength")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(4);
+
+                    b.Property<bool>("RequireEmailOnPasswordReset")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("RequirePINOnPasswordReset")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("RequireQAOnPasswordReset")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DelegateSid")
                         .IsUnique();
 
-                    b.ToTable("PermissionDelegate", (string)null);
+                    b.ToTable("PermissionDelegate");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.PermissionMapping", b =>
@@ -1588,7 +1741,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("PermissionMap", (string)null);
+                    b.ToTable("PermissionMap");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRule", b =>
@@ -1642,7 +1795,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("AutomationRules", (string)null);
+                    b.ToTable("AutomationRules");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAction", b =>
@@ -1667,7 +1820,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("AutomationRuleId");
 
-                    b.ToTable("AutomationRuleActions", (string)null);
+                    b.ToTable("AutomationRuleActions");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleActionFieldValue", b =>
@@ -1696,7 +1849,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("FieldId");
 
-                    b.ToTable("AutomationRuleFieldValues", (string)null);
+                    b.ToTable("AutomationRuleFieldValues");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleAndFilter", b =>
@@ -1740,10 +1893,10 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("OrFilterId");
 
-                    b.ToTable("AutomationRuleAndFilters", (string)null);
+                    b.ToTable("AutomationRuleAndFilters");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupSid", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupGuid", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1755,15 +1908,14 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<int>("AutomationRuleActionId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("GroupSid")
-                        .IsRequired()
+                    b.Property<Guid>("GroupGuid")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AutomationRuleActionId");
 
-                    b.ToTable("AutomationRuleGroupSids", (string)null);
+                    b.ToTable("AutomationRuleGroupGuids");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
@@ -1782,7 +1934,21 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("AutomationRuleId");
 
-                    b.ToTable("AutomationRuleOrFilter", (string)null);
+                    b.ToTable("AutomationRuleOrFilter");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.GlobalAutomationRuleSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("RulesEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GlobalAutomationRuleSettings");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
@@ -1844,7 +2010,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("ParentTemplateId");
 
-                    b.ToTable("DirectoryTemplates", (string)null);
+                    b.ToTable("DirectoryTemplates");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValue", b =>
@@ -1879,7 +2045,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("FieldId");
 
-                    b.ToTable("DirectoryTemplateFieldValues", (string)null);
+                    b.ToTable("DirectoryTemplateFieldValues");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateGroup", b =>
@@ -1888,18 +2054,13 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("DirectoryTemplateId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("GroupSid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DirectoryTemplateId");
-
-                    b.ToTable("DirectoryTemplateGroups", (string)null);
+                    b.ToTable("DirectoryTemplateGroups");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.ApiToken", b =>
@@ -1940,7 +2101,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ApiTokens", (string)null);
+                    b.ToTable("ApiTokens");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
@@ -1982,7 +2143,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasIndex("UserGUID")
                         .IsUnique();
 
-                    b.ToTable("UserSettings", (string)null);
+                    b.ToTable("UserSettings");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.NotificationMessage", b =>
@@ -2000,11 +2161,17 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<int?>("CreatorId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("CustomFieldId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("Dismissable")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("Expires")
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("FieldId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Level")
                         .HasColumnType("INTEGER");
@@ -2028,7 +2195,11 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("NotificationMessages", (string)null);
+                    b.HasIndex("CustomFieldId");
+
+                    b.HasIndex("FieldId");
+
+                    b.ToTable("NotificationMessages");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.ReadNewsItem", b =>
@@ -2050,7 +2221,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReadNewsItems", (string)null);
+                    b.ToTable("ReadNewsItems");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserDashboardWidget", b =>
@@ -2061,6 +2232,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.Property<int>("ItemsPerPage")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("JsonSettings")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Order")
                         .HasColumnType("INTEGER");
@@ -2079,7 +2253,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserDashboardWidgets", (string)null);
+                    b.ToTable("UserDashboardWidgets");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserFavoriteEntry", b =>
@@ -2099,7 +2273,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserFavoriteEntries", (string)null);
+                    b.ToTable("UserFavoriteEntries");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserNotification", b =>
@@ -2123,23 +2297,40 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserNotifications", (string)null);
+                    b.ToTable("UserNotifications");
                 });
 
-            modelBuilder.Entity("BLAZAM.Server.Data.ChatMessage", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.User.UserPasswordResetSettings", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ChatRoomId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
+                    b.Property<string>("Answer1")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Timestamp")
+                    b.Property<string>("Answer2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Answer3")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PIN")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Question1")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Question2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Question3")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ResetToken")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TokenExpiration")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
@@ -2147,11 +2338,25 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChatRoomId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
-                    b.HasIndex("UserId");
+                    b.ToTable("UserPasswordResetSettings");
+                });
 
-                    b.ToTable("ChatMessages", (string)null);
+            modelBuilder.Entity("DirectoryTemplateDirectoryTemplateGroup", b =>
+                {
+                    b.Property<int>("AssignedGroupSidsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TemplatesId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("AssignedGroupSidsId", "TemplatesId");
+
+                    b.HasIndex("TemplatesId");
+
+                    b.ToTable("DirectoryTemplateDirectoryTemplateGroup");
                 });
 
             modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>
@@ -2166,7 +2371,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("PermissionsMapsId");
 
-                    b.ToTable("PermissionDelegatePermissionMapping", (string)null);
+                    b.ToTable("PermissionDelegatePermissionMapping");
                 });
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
@@ -2236,9 +2441,46 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasForeignKey("CustomActiveDirectoryFieldId");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.AutomationRuleAuditLog", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Rules.AutomationRule", "AutomationRule")
+                        .WithMany()
+                        .HasForeignKey("AutomationRuleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AutomationRule");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.AutomationRuleExcludedGroupGuid", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Rules.GlobalAutomationRuleSettings", null)
+                        .WithMany("ExcludedGroups")
+                        .HasForeignKey("GlobalAutomationRuleSettingsId");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Chat.ChatMessage", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Chat.ChatRoom", "ChatRoom")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatRoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChatRoom");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Chat.UnreadChatMessage", b =>
                 {
-                    b.HasOne("BLAZAM.Server.Data.ChatMessage", "ChatMessage")
+                    b.HasOne("BLAZAM.Database.Models.Chat.ChatMessage", "ChatMessage")
                         .WithMany("NotReadBy")
                         .HasForeignKey("ChatMessageId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2329,6 +2571,21 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("FieldAccessLevel");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestField", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", "CustomField")
+                        .WithMany()
+                        .HasForeignKey("CustomFieldId");
+
+                    b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
+                        .WithMany()
+                        .HasForeignKey("FieldId");
+
+                    b.Navigation("CustomField");
+
+                    b.Navigation("Field");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", "ObjectAccessLevel")
@@ -2393,10 +2650,10 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("OrFilter");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupSid", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleGroupGuid", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Rules.AutomationRuleAction", "AutomationRuleAction")
-                        .WithMany("GroupSids")
+                        .WithMany("GroupGuids")
                         .HasForeignKey("AutomationRuleActionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2443,13 +2700,6 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("Field");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateGroup", b =>
-                {
-                    b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplate", null)
-                        .WithMany("AssignedGroupSids")
-                        .HasForeignKey("DirectoryTemplateId");
-                });
-
             modelBuilder.Entity("BLAZAM.Database.Models.User.ApiToken", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
@@ -2467,7 +2717,19 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .WithMany()
                         .HasForeignKey("CreatorId");
 
+                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", "CustomField")
+                        .WithMany()
+                        .HasForeignKey("CustomFieldId");
+
+                    b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
+                        .WithMany()
+                        .HasForeignKey("FieldId");
+
                     b.Navigation("Creator");
+
+                    b.Navigation("CustomField");
+
+                    b.Navigation("Field");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.ReadNewsItem", b =>
@@ -2522,23 +2784,30 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BLAZAM.Server.Data.ChatMessage", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.User.UserPasswordResetSettings", b =>
                 {
-                    b.HasOne("BLAZAM.Database.Models.Chat.ChatRoom", "ChatRoom")
-                        .WithMany("Messages")
-                        .HasForeignKey("ChatRoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("PasswordResetSettings")
+                        .HasForeignKey("BLAZAM.Database.Models.User.UserPasswordResetSettings", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ChatRoom");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DirectoryTemplateDirectoryTemplateGroup", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplateGroup", null)
+                        .WithMany()
+                        .HasForeignKey("AssignedGroupSidsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplate", null)
+                        .WithMany()
+                        .HasForeignKey("TemplatesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>
@@ -2554,6 +2823,11 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasForeignKey("PermissionsMapsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Chat.ChatMessage", b =>
+                {
+                    b.Navigation("NotReadBy");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Chat.ChatRoom", b =>
@@ -2599,7 +2873,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                 {
                     b.Navigation("FieldValues");
 
-                    b.Navigation("GroupSids");
+                    b.Navigation("GroupGuids");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Rules.AutomationRuleOrFilter", b =>
@@ -2607,10 +2881,13 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("AndFilters");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Rules.GlobalAutomationRuleSettings", b =>
+                {
+                    b.Navigation("ExcludedGroups");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
                 {
-                    b.Navigation("AssignedGroupSids");
-
                     b.Navigation("FieldValues");
                 });
 
@@ -2626,12 +2903,10 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.Navigation("Notifications");
 
-                    b.Navigation("ReadNewsItems");
-                });
+                    b.Navigation("PasswordResetSettings")
+                        .IsRequired();
 
-            modelBuilder.Entity("BLAZAM.Server.Data.ChatMessage", b =>
-                {
-                    b.Navigation("NotReadBy");
+                    b.Navigation("ReadNewsItems");
                 });
 #pragma warning restore 612, 618
         }

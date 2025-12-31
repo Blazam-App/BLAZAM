@@ -8,7 +8,7 @@
 
 <SetSubHeader @ref=Header>
 
-    <EditDirectoryTemplateHeader TemplateSelected="SelectedTemplate"/>
+    <EditDirectoryTemplateHeader OnTemplateChanged="TemplateChanged" TemplateSelected="SelectedTemplate"/>
   
 </SetSubHeader>
 
@@ -36,13 +36,13 @@
 
 @code {
     IReadOnlyCollection<TreeItemData<DirectoryTemplate>> TemplateTreeItemData = new List<TreeItemData<DirectoryTemplate>>();
-    
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await RefreshComponents();
 
-      
+
         if (Templates?.Any() == true)
         {
             TemplateTreeItemData = CreateTemplateTreeItemData();
@@ -52,8 +52,12 @@
     }
 
 
-  
-   
+
+    private async Task TemplateChanged(DirectoryTemplate template)
+    {
+        SelectedTemplate = template;
+        await StateHasChangedAsync();
+    }
 
 
     private IReadOnlyCollection<TreeItemData<DirectoryTemplate>> CreateTemplateTreeItemData()

@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
+using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -37,7 +38,7 @@ namespace BLAZAM.Services.Background
                 var sid = userState.Preferences?.UserGUID;
                 if (!sid.IsNullOrEmpty() && sid.StartsWith('S'))
                 {
-                    var adObj = _directory.FindEntryBySID(sid.ToSidByteArray());
+                    var adObj = _directory.FindGlobalEntryBySid(sid.ToSidByteArray());
                     if (adObj is IADUser adUser)
                     {
                         LoadPermissions(userState, adUser);
@@ -68,14 +69,24 @@ namespace BLAZAM.Services.Background
         public async Task LoadPermissions(IApplicationUserState webUser, IADUser directoryUser)
         {
             using var Context = await _factory.CreateDbContextAsync();
+        
             var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).ToListAsync();
             foreach (var l in cursor)
             {
-                var permissiondelegate = ActiveDirectoryContext.SystemInstance.FindEntryBySID(l.DelegateSid);
+                var permissiondelegate = ActiveDirectoryContext.SystemInstance.FindGlobalEntryBySid(l.DelegateSid);
 
                 if (permissiondelegate != null
                     &&
-                    (permissiondelegate is IADGroup && directoryUser.IsAMemberOf(permissiondelegate as IADGroup)
+                    (permissiondelegate is IADGroup && directoryUser.IsANestedMemberOf(permissiondelegate as IADGroup)
+                    || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
+                {
+                    webUser.PermissionDelegates.Add(l);
+                    webUser.PermissionMappings.AddRange(l.PermissionsMaps);
+                }
+
+                if (permissiondelegate != null
+                    &&
+                    (permissiondelegate is IADGroup && directoryUser.IsANestedMemberOf(permissiondelegate as IADGroup)
                     || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
                 {
                     webUser.PermissionDelegates.Add(l);

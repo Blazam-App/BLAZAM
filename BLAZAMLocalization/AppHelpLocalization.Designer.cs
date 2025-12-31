@@ -79,6 +79,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  is requesting {0} access on .
+        /// </summary>
+        public static string Action_Access_Request_Notification_Message {
+            get {
+                return ResourceManager.GetString("Action_Access_Request_Notification_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Scan the code below from your authenticator app.
         /// </summary>
         public static string Authenticator_Setup_One {
@@ -260,6 +269,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  is requesting edit access for {0} on .
+        /// </summary>
+        public static string Edit_Field_Access_Request_Notification_Message {
+            get {
+                return ResourceManager.GetString("Edit_Field_Access_Request_Notification_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Set up a GA4 account and enter your tracking ID here to collect data on the usage of your installation..
         /// </summary>
         public static string GA4_Instructions {
@@ -404,6 +422,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  is requesting read access for {0} on .
+        /// </summary>
+        public static string Read_Field_Access_Request_Notification_Message {
+            get {
+                return ResourceManager.GetString("Read_Field_Access_Request_Notification_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rearrange dashboard widgets by dragging items to a new position.
         /// </summary>
         public static string Rearrange_Dashboard_Help {
@@ -423,6 +450,15 @@ namespace BLAZAM.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to Request to {0}.
+        /// </summary>
+        public static string Request_For {
+            get {
+                return ResourceManager.GetString("Request_For", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request for {0}.
         /// </summary>
         public static string Request_To {
             get {

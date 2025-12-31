@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Newtonsoft.Json;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
@@ -181,5 +182,10 @@ namespace BLAZAM.Helpers
             // Return the DN
             return dnBuilder.ToString();
         }
+        public static T? FromJson<T>(this string json)
+        {
+            return JsonConvert.DeserializeObject<T>(json);
+        }
     }
+
 }

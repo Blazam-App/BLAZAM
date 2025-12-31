@@ -182,7 +182,7 @@ namespace BLAZAM.Services
                     data.Add("targetType", target.ObjectType.ToString());
                 }
                 payload.Add("data", data);
-                var payloadString = System.Text.Json.JsonSerializer.Serialize(payload);
+                var payloadString = payload.ToJson();
                 if (subscription.WebHookSignature == WebHookSignature.HMAC)
                 {
                     if (subscription.HmacKey is null || subscription.HmacKey.IsNullOrEmpty())

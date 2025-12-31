@@ -25,6 +25,8 @@
         public int Order { get; set; }
         public int ItemsPerPage { get; set; } = 5;
 
+        public string? JsonSettings { get; set; }
+
         public AppUser User { get; set; }
         public int UserId { get; set; }
 

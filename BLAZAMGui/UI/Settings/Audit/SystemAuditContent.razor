@@ -1,0 +1,60 @@
+﻿@inherits DatabaseComponentBase
+
+@if (ApplicationInfo.InDemoMode && CurrentUser.Username == "Demo")
+{
+    <MudText>Disabled in demo</MudText>
+}
+else
+{
+<TimeframeSelector OnTimeframeChanged="TimeframeChanged" />
+
+    <MudDataGrid Height="600px"
+                 ColumnResizeMode="ResizeMode.Container"
+                 FixedHeader=true
+                 Hideable=true
+                 Items="@systemAuditEntries.OrderByDescending(ae => ae.Timestamp)"
+                 Filterable="false"
+                 SortMode="@SortMode.Multiple"
+                 Groupable="false">
+        <Columns>
+            <TemplateColumn Title=@AppLocalization[Lang.Timestamp] Sortable="true">
+                <CellTemplate>
+                    <MudText>
+                        @context.Item.Timestamp.ToLocalTime()
+                    </MudText>
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.Username" Title="@AppLocalization[Lang.Username]" />
+            <PropertyColumn Property="x => x.IpAddress" Title="@AppLocalization[Lang.IP_Address]" />
+            <PropertyColumn Property="x => x.Target" Title="@AppLocalization[Lang.Target]" />
+            <PropertyColumn Property="x => x.BeforeAction" Title="@AppLocalization[Lang.Before_Action]" />
+            <PropertyColumn Property="x => x.AfterAction" Title="@AppLocalization[Lang.After_Action]" />
+
+        </Columns>
+    </MudDataGrid>
+}
+
+
+
+@code {
+    private List<SystemAuditLog> systemAuditEntries = new();
+    private DateTime? StartDate = DateTime.Today.AddDays(-7);
+    private DateTime? EndDate = DateTime.Today;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await GetAttempts(StartDate, EndDate);
+    }
+    private async Task TimeframeChanged((DateTime? start, DateTime? end) dates)
+    {
+
+        await GetAttempts(dates.start, dates.end);
+    }
+    private async Task GetAttempts(DateTime? startDate, DateTime? endDate)
+    {
+        if (startDate == null || endDate == null) return;
+        systemAuditEntries = await Context.SystemAuditLog.Where(e => e.Timestamp >= startDate && e.Timestamp < endDate.Value.AddDays(1)).OrderByDescending(e => e.Timestamp).ToListAsync();
+        await StateHasChangedAsync();
+    }
+}

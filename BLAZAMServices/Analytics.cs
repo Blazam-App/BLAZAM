@@ -291,7 +291,7 @@ namespace BLAZAM.Services
                 }
                 else
                 {
-                    await _jsRuntime.InvokeVoidAsync("customAnalyticsEvent", new object[] { eventName, JsonConvert.SerializeObject(new object[] { data }) });
+                    await _jsRuntime.InvokeVoidAsync("customAnalyticsEvent", new object[] { eventName, new object[] { data }.ToJson() });
 
                 }
             }
@@ -349,7 +349,7 @@ namespace BLAZAM.Services
                         // if complex, include as nested object; GA4 params expects primitives, so convert complex objects to a JSON string under 'payload'
                         var token = data.GetType().IsPrimitive ? data : JsonConvert.DeserializeObject(JsonConvert.SerializeObject(data))!;
                         // Prefer to send simple key/value pairs; for anything else send as 'payload' string
-                        eventParams = token is Newtonsoft.Json.Linq.JObject jo ? jo : new { payload = JsonConvert.SerializeObject(data) };
+                        eventParams = token is Newtonsoft.Json.Linq.JObject jo ? jo : new { payload = data.ToJson() };
                     }
 
                     var payload = new
@@ -364,8 +364,8 @@ namespace BLAZAM.Services
                         }
                     }
                     };
-
-                    var json = JsonConvert.SerializeObject(payload);
+                    
+                    var json = payload.ToJson();
                     var url = $"https://www.google-analytics.com/mp/collect?measurement_id={measurementId}&api_secret={apiSecret}";
 
                     using var content = new StringContent(json, Encoding.UTF8, "application/json");

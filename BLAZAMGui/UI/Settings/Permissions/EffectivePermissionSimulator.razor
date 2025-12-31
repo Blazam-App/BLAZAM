@@ -37,9 +37,7 @@
     {
         simRan = false;
         await StateHasChangedAsync();
-        var permissionApplicator = new PermissionApplicator(UserStateService, DbFactory, Directory);
-        var simUser = new ApplicationUserState(DbFactory);
-        await permissionApplicator.LoadPermissions(simUser, selectedUser as IADUser);
+        var simUser = await selectedUser.GetApplicationUser(UserStateService, DbFactory, Directory,AppAuthenticationStateProvider);
         target.SetCurrentUser(simUser.ToActiveDirectoryUserState());
         simRan = true;
         await StateHasChangedAsync();

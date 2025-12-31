@@ -537,6 +537,9 @@
   <data name="Last Logon" xml:space="preserve">
     <value>अंतिम लॉगऑन</value>
   </data>
+  <data name="LAPS_Password" xml:space="preserve">
+    <value>LAPS पासवर्ड</value>
+  </data>
   <data name="Last Name" xml:space="preserve">
     <value>अंतिम नाम</value>
   </data>
@@ -1277,5 +1280,26 @@
   </data>
   <data name="Text" xml:space="preserve">
     <value>पाठ</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>नियम</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>नियम</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>नियम बनाएं</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>वस्तु प्रकार</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>चालू कर देना</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>कार्रवाई के बाद</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>कार्रवाई से पहले</value>
   </data>
 </root>

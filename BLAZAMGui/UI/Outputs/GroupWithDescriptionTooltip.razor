@@ -1,13 +1,36 @@
-﻿@if(!Group.Description.IsNullOrEmpty()){
+﻿@inherits AppComponentBase
+@if (Group != null)
+{
+    if (!Group.Description.IsNullOrEmpty())
+    {
 
-    <AppTooltip Inline=false Text="@Group.Description">
-        <MudElement Class="d-block" Style="overflow:hidden; text-overflow:ellipsis;">@Group.CanonicalName</MudElement>
-    </AppTooltip>
+        <AppTooltip Inline=false Text="@Group.Description">
+            <MudElement Class="d-block" Style="overflow:hidden; text-overflow:ellipsis;">@Group.CanonicalName</MudElement>
+        </AppTooltip>
 
-}else{
-    <MudElement Class="">@Group.CanonicalName</MudElement>
+    }
+    else
+    {
+        <MudElement Class="">@Group.CanonicalName</MudElement>
+    }
 }
+
+<LoadingData Loading=LoadingData /> 
+
 @code {
     [Parameter]
-    public IADGroup Group { get; set; }
+    public IADGroup? Group { get; set; }
+
+    [Parameter]
+    public string? Sid { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (Group == null && !Sid.IsNullOrEmpty())
+        {
+            Group = Directory.Groups.FindGroupBySID(Sid);
+        }
+        LoadingData = false;
+    }
 }

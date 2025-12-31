@@ -537,6 +537,9 @@
   <data name="Last Logon" xml:space="preserve">
     <value>Dernière connexion</value>
   </data>
+  <data name="LAPS_Password" xml:space="preserve">
+    <value>Mot de passe LAPS</value>
+  </data>
   <data name="Last Name" xml:space="preserve">
     <value>Nom de famille</value>
   </data>
@@ -1277,5 +1280,26 @@
   </data>
   <data name="Text" xml:space="preserve">
     <value>Texte</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>Règle</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>Règles</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>Créer une règle</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>Type d'objet</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>Déclenchement</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>Après l'action</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>Avant l'action</value>
   </data>
 </root>

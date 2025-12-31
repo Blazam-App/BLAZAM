@@ -38,6 +38,7 @@
     <ProjectReference Include="..\BLAZAMActiveDirectory\BLAZAMActiveDirectory.csproj" />
     <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
+    <ProjectReference Include="..\BLAZAMGlobal\BLAZAMGlobal.csproj" />
     <ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
     <ProjectReference Include="..\BLAZAMUpdate\BLAZAMUpdate.csproj" />
   </ItemGroup>
