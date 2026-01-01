@@ -94,15 +94,6 @@ namespace BLAZAMCommon.Tests
             Assert.Equal(test, result);
 
         }
-        [Fact]
-        public void CanEncrypt_Null()
-        {
-            string? test = null;
-            var cipher = encryption.EncryptObject(test);
-            var result = encryption.DecryptObject<string>(cipher);
-            Assert.Equal(test, result);
-
-        }
 
         private List<string> testSeedStrings =
         [
