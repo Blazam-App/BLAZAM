@@ -79,27 +79,11 @@
 
 
 @code {
-    List<LogonAuditLog> logonEntries = new();
-    List<DirectoryEntryAuditLog> auditEntries = new();
-    List<SystemAuditLog> systemAuditEntries = new();
     protected override async Task OnInitializedAsync()
     {
 
         await base.OnInitializedAsync();
         BaseUri = "/audit";
-        using (var context = await DbFactory.CreateDbContextAsync())
-        {
-            auditEntries = await context.DirectoryEntryAuditLogs.ToListAsync();
-            logonEntries = await context.LogonAuditLog.ToListAsync();
-
-            systemAuditEntries = await context.SystemAuditLog.ToListAsync();
-
-
-
-
-        }
-
-
     }
 
 }
