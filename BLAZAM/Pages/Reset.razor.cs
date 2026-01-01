@@ -16,6 +16,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Pages
 {
+    /// <summary>
+    /// Provides functionality for handling the user password reset process, including validation of reset tokens, PINs,
+    /// security questions, and multi-factor authentication (MFA) as required by policy.
+    /// </summary>
+    /// <remarks>The Reset component manages the workflow for securely resetting a user's password. It
+    /// supports multiple verification steps such as email token validation, PIN entry, security questions, and MFA (Duo
+    /// or Google Authenticator), depending on the configured reset policy. The component is intended to be used in
+    /// scenarios where users need to recover or reset their credentials in a secure and auditable manner. This class is
+    /// not thread-safe and should be used per request or per user session. Implements IDisposable to release resources
+    /// associated with audit logging.</remarks>
     public partial class Reset : ValidatedForm, IDisposable
     {
 
