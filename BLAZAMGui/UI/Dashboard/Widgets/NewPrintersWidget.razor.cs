@@ -22,7 +22,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             LoadingData = true;
             LoadSettings();
 
-            NewPrinters = (await Directory.Printers.FindNewPrintersAsync((int)_timeFrame?.TotalDays, false)).Where(u => u.CanRead).ToList();
+            NewPrinters = (await Directory.Printers.FindNewPrintersAsync((int)_timeFrame!.Value.TotalDays, false)).Where(u => u.CanRead).ToList();
 
             LoadingData = false;
 

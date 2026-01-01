@@ -84,7 +84,7 @@
             LoadingData = false;
         }catch(Exception ex)
         {
-            Loggers.DatabaseLogger.Error("Error adding approved permission mapping {Error}", ex.InnerException);
+            Loggers.DatabaseLogger.Error(ex.InnerException,"Error adding approved permission mapping");
             SnackBarService.Error("Error trying to create permission mapping");
             await LoadData();
         }

@@ -21,7 +21,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             LoadingData = true;
             LoadSettings();
 
-            NewGroups = (await Directory.Groups.FindNewGroupsAsync((int)_timeFrame?.TotalDays)).Where(u => u.CanRead).ToList();
+            NewGroups = (await Directory.Groups.FindNewGroupsAsync((int)_timeFrame!.Value.TotalDays)).Where(u => u.CanRead).ToList();
 
             LoadingData = false;
 
