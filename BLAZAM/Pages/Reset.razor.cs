@@ -27,7 +27,7 @@ namespace BLAZAM.Pages
 
         private AppModal? _resetModel;
         private IApplicationUserState? _appUser;
-        private WebUserAuditLogger? _resetAuditLogger
+        private WebUserAuditLogger? _resetAuditLogger;
         private IApplicationUserState? appUser
         {
             get => _appUser; set
