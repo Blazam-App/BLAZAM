@@ -77,12 +77,19 @@ namespace BLAZAM.Pages
         private string _duoAuthUri;
         private LoginRequest LoginRequest = new();
 
+        /// <summary>
+        /// Gets or sets the state parameter returned from the MFA provider during the password reset process.
+        /// </summary>
         [SupplyParameterFromQuery(Name = "state")]
         public string? State { get; set; }
-
+        /// <summary>
+        /// Gets or sets the authorization code returned from the MFA provider during the password reset process.   
+        /// </summary>
         [SupplyParameterFromQuery(Name = "code")]
         public string? Code { get; set; }
-
+        /// <summary>
+        /// Gets or sets the password reset token used to validate the user's password reset request.
+        /// </summary>
         [Parameter]
         public string Token { get; set; }
 
@@ -145,7 +152,11 @@ namespace BLAZAM.Pages
             }
             LoadingData = false;
         }
-        private async Task CheckPin()
+        /// <summary>
+        /// Asynchronously checks the submitted PIN against the stored PIN for the user.
+        /// </summary>
+        /// <returns></returns>
+        private async Task CheckPinAsync()
         {
             LoadingData = true;
             if (appUser?.Preferences.PasswordResetSettings.PIN.IsNullOrEmpty() != false)
@@ -168,7 +179,11 @@ namespace BLAZAM.Pages
 
             }
         }
-        private async Task CheckAnswers()
+        /// <summary>
+        /// Asynchronously checks the submitted answers to security questions against the stored answers for the user.
+        /// </summary>
+        /// <returns></returns>
+        private async Task CheckAnswersAsync()
         {
             LoadingData = true;
             if (appUser?.Preferences.PasswordResetSettings.Answer1.IsNullOrEmpty() != false)
@@ -176,18 +191,16 @@ namespace BLAZAM.Pages
                 LoadingData = false;
                 return;
             }
-            if (CheckAnswer(_submittedAnswer1, appUser.Preferences.PasswordResetSettings.Answer1?.Decrypt()))
+            if (CheckAnswer(_submittedAnswer1, appUser.Preferences.PasswordResetSettings.Answer1?.Decrypt())
+                && CheckAnswer(_submittedAnswer2, appUser.Preferences.PasswordResetSettings.Answer2?.Decrypt())
+                && CheckAnswer(_submittedAnswer3, appUser.Preferences.PasswordResetSettings.Answer3?.Decrypt()))
             {
-                if (CheckAnswer(_submittedAnswer2, appUser.Preferences.PasswordResetSettings.Answer2?.Decrypt()))
-                {
-                    if (CheckAnswer(_submittedAnswer3, appUser.Preferences.PasswordResetSettings.Answer3?.Decrypt()))
-                    {
-                        _qaValid = true;
-                        _ = AttemptResetPassword();
-                        return;
-                    }
-                }
+                _qaValid = true;
+                _ = AttemptResetPassword();
+                return;
             }
+
+
             LoadingData = false;
 
 
@@ -343,7 +356,7 @@ namespace BLAZAM.Pages
                     }
                     else if (_auth.ShouldPerformGoogleAuthenticatorMFA(appUser.Preferences, LoginRequest, authSettings) && !_mfaValid)
                     {
-                        _= googleAuthenticatorModal?.ShowAsync(_appUser?.Preferences.AuthenticatorSecret?.Decrypt().ToSecureString());
+                        _ = googleAuthenticatorModal?.ShowAsync(_appUser?.Preferences.AuthenticatorSecret?.Decrypt().ToSecureString());
                         return;
                     }
                     else
@@ -377,7 +390,7 @@ namespace BLAZAM.Pages
         {
             _mfaValid = true;
 
-            _= AttemptResetPassword();
+            _ = AttemptResetPassword();
         }
         public override void Dispose()
         {
