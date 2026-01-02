@@ -40,6 +40,7 @@
     <Columns>
         <PropertyColumn Title="Username" Property="x => x.User.Identity == null ? null : x.User.Identity.Name" />
         <PropertyColumn Title="IP Address" Property="x => x.IPAddress == null ? null : x.IPAddress" />
+        <PropertyColumn Title="Browser" Property="x => x.Browser == null ? null : x.Browser" />
 
         <PropertyColumn Title="Auth Type" Property="x => x.User.Identity == null || x.User.Identity.AuthenticationType == null ? null : x.User.Identity.AuthenticationType.ToString()" />
         <PropertyColumn Title="Authenticated" Property="x => x.User.Identity == null ? null : x.User.Identity.IsAuthenticated.ToString()" />

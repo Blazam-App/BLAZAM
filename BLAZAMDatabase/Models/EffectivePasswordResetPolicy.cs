@@ -35,7 +35,7 @@ namespace BLAZAM.Database.Models
 
             // We take the MAXIMUM length defined across all roles to ensure 
             // the highest security standard is met.
-            MinimumPINLength = delegates.Any() ? delegates.Max(d => d.MinimumPINLength) : 4;
+            MinimumPINLength = delegates.Max(d => d.MinimumPINLength);
         }
     }
 }

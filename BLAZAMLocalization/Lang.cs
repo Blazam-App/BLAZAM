@@ -129,6 +129,7 @@
         public static readonly string Home_Phone = "Home Phone";
         public static readonly string Street_Address = "Street Address";
         public static readonly string PO_Box = "PO Box";
+        public static readonly string Browser = "Browser";
         public static readonly string Home_Directory = "Home Directory";
         public static readonly string Home_Drive = "Home Drive";
         public static readonly string Script_Path = "Script Path";

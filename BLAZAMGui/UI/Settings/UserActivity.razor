@@ -10,7 +10,8 @@
                 <IPAddress>@context.Item.IPAddress</IPAddress>
             </CellTemplate>
         </TemplateColumn>
-       
+        <PropertyColumn Title=@AppLocalization[Lang.Browser] Property="x => x.Browser == null ? null : x.Browser" />
+
         <TemplateColumn Title=@AppLocalization[Lang.Impersonator]>
             <CellTemplate>
                 <MudText>@context.Item.Impersonator?.Identity?.Name</MudText>

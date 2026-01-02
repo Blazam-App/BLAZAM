@@ -1,129 +1,151 @@
 ﻿@using BLAZAM.Database.Interfaces
 @using BLAZAM.Global.Events
 @inherits ValidatedForm
-<MudExpansionPanel Dense Text="">
-    <TitleContent>
-        <MudStack Row=true>
-            <MudText Typo="Typo.h6">
-                @Delegate.DelegateName
 
-            </MudText>
-
-            <MudSwitch T=bool
-                       UncheckedColor="Color.Error"
-                       Color="Color.Success"
-                       Label=@AppLocalization[Lang.Super_User]
-                       Value="Delegate.IsSuperAdmin"
-                       Disabled=true />
-        </MudStack>
-
-
-    </TitleContent>
-    <ChildContent>
-        <MudStack>
+@if (_delegate != null)
+{
+    <MudExpansionPanel Dense Text="">
+        <TitleContent>
             <MudStack Row=true>
-                <ADAutoComplete Label="@AppLocalization[Lang.Delgate_Name]"
-                                SearchObjectType="ActiveDirectoryObjectType.All"
-                                @bind-SelectedResult=@_delegateEntry
-                                CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
-                @*<ADGroupAutoComplete @bind-SelectedGroup="@Group"/>*@
+                <MudText Typo="Typo.h6">
+                    @_delegate.DelegateName
 
-
-
-
+                </MudText>
 
                 <MudSwitch T=bool
                            UncheckedColor="Color.Error"
                            Color="Color.Success"
                            Label=@AppLocalization[Lang.Super_User]
-                           Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin")
-                           @bind-Value="Delegate.IsSuperAdmin" />
-
-
-
-
-                @if (_delegateEntry is IADGroup delegateGroup)
-                {
-                    <MudButton Variant="Variant.Outlined"
-                               OnClick="@(()=>{_groupMembersShown=true;})"
-                               Color="Color.Info">
-                        @AppLocalization[Lang.Show_All_Members]
-                    </MudButton>
-
-                }
-
-                <MudButton Variant="Variant.Outlined"
-                           @onclick="Save"
-                           Color="Color.Success">
-                    @AppLocalization[Lang.Save_Changes]
-                </MudButton>
-
-                <AppCloseButton @onclick="DeleteDelegate"
-                                Tooltip=@AppLocalization[Lang.Remove]
-                                Color="Color.Error" />
+                           Value="_delegate.IsSuperAdmin"
+                           Disabled=true />
             </MudStack>
-            <MudSwitch @bind-Value="Delegate.AllowPasswordReset"
-                       UncheckedColor="Color.Error"
-                       Color="Color.Success"
-                       Label="@AppLocalization[Lang.Allow_password_reset]" />
-            @if (Delegate.AllowPasswordReset)
-            {
-                <MudContainer>
-                    <MudStack Row="true">
-                        @{
-                            bool emailDisabled = (_appSettings == null || _appSettings.AppFQDN.IsNullOrEmpty() || _emailSettings == null || !_emailSettings.Enabled);
-                        }
-                        <MudSwitch @bind-Value="Delegate.RequireEmailOnPasswordReset"
-                                   UncheckedColor="Color.Error"
-                                   Color="Color.Success"
-                                   Disabled="@emailDisabled"
-                                   Label="@AppLocalization[Lang.Required_email]" />
-                        @if (emailDisabled)
-                        {
-                            <MudAlert Severity="Severity.Info" Variant="Variant.Filled">The FQDN must be filled in AppSettings and Email enabled.</MudAlert>
 
-                        }
-                    </MudStack>
-                    <MudStack Row=true>
-                        <MudSwitch @bind-Value="Delegate.RequirePINOnPasswordReset"
-                                   UncheckedColor="Color.Error"
-                                   Color="Color.Success"
-                                   Label="@AppLocalization[Lang.Required_PIN]" />
 
-                        @if (Delegate.RequirePINOnPasswordReset)
-                        {
-                            <MudNumericField @bind-Value="Delegate.MinimumPINLength"
-                                             Label="@AppLocalization[Lang.Minimum_length]" />
-                        }
-                    </MudStack>
+        </TitleContent>
+        <ChildContent>
 
-                    <MudSwitch @bind-Value="Delegate.RequireQAOnPasswordReset"
+            <MudStack>
+                <MudStack Row=true>
+                    <ADAutoComplete Label="@AppLocalization[Lang.Delgate_Name]"
+                                    SearchObjectType="ActiveDirectoryObjectType.All"
+                                    @bind-SelectedResult=@_delegateEntry
+                                    CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
+
+
+
+
+
+
+                    <MudSwitch T=bool
                                UncheckedColor="Color.Error"
                                Color="Color.Success"
-                               Label="@AppLocalization[Lang.Required_QA]" />
-                </MudContainer>
+                               Label=@AppLocalization[Lang.Super_User]
+                               Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin")
+                               @bind-Value="_delegate.IsSuperAdmin" />
+
+
+
+
+                    @if (_delegateEntry is IADGroup delegateGroup)
+                    {
+                        <MudButton Variant="Variant.Outlined"
+                                   OnClick="@(()=>{_groupMembersShown=true;})"
+                                   Color="Color.Info">
+                            @AppLocalization[Lang.Show_All_Members]
+                        </MudButton>
+
+                    }
+
+                    <MudButton Variant="Variant.Outlined"
+                               @onclick="Save"
+                               Color="Color.Success">
+                        @AppLocalization[Lang.Save_Changes]
+                    </MudButton>
+
+                    <AppCloseButton @onclick="DeleteDelegate"
+                                    Tooltip=@AppLocalization[Lang.Remove]
+                                    Color="Color.Error" />
+
+                </MudStack>
+                <MudSwitch @bind-Value="_delegate.AllowPasswordReset"
+                           UncheckedColor="Color.Error"
+                           Color="Color.Success"
+                           Label="@AppLocalization[Lang.Allow_password_reset]" />
+                @if (_delegate.AllowPasswordReset)
+                {
+                    <MudContainer>
+                        <MudStack Row="true">
+                            @{
+                                bool emailDisabled = (_appSettings == null || _appSettings.AppFQDN.IsNullOrEmpty() || _emailSettings == null || !_emailSettings.Enabled);
+                            }
+                            <MudSwitch @bind-Value="_delegate.RequireEmailOnPasswordReset"
+                                       UncheckedColor="Color.Error"
+                                       Color="Color.Success"
+                                       Disabled="@emailDisabled"
+                                       Label="@AppLocalization[Lang.Required_email]" />
+                            @if (emailDisabled)
+                            {
+                                <MudAlert Severity="Severity.Info" Variant="Variant.Filled">The FQDN must be filled in AppSettings and Email enabled.</MudAlert>
+
+                            }
+                        </MudStack>
+                        <MudStack Row=true>
+                            <MudSwitch @bind-Value="_delegate.RequirePINOnPasswordReset"
+                                       UncheckedColor="Color.Error"
+                                       Color="Color.Success"
+                                       Label="@AppLocalization[Lang.Required_PIN]" />
+
+                            @if (_delegate.RequirePINOnPasswordReset)
+                            {
+                                <MudNumericField @bind-Value="_delegate.MinimumPINLength"
+                                                 Label="@AppLocalization[Lang.Minimum_length]" />
+                            }
+                        </MudStack>
+
+                        <MudSwitch @bind-Value="_delegate.RequireQAOnPasswordReset"
+                                   UncheckedColor="Color.Error"
+                                   Color="Color.Success"
+                                   Label="@AppLocalization[Lang.Required_QA]" />
+                    </MudContainer>
+                }
+            </MudStack>
+            @if (_groupMembersShown)
+            {
+                <MudDivider />
+                <GroupMembersPopover Group="@(_delegateEntry as IADGroup)"
+                                     IncludeNested=true />
+
             }
-        </MudStack>
-        @if (_groupMembersShown)
-        {
-            <MudDivider />
-            <GroupMembersPopover Group="@(_delegateEntry as IADGroup)"
-                                 IncludeNested=true />
 
-        }
-
-    </ChildContent>
-</MudExpansionPanel>
-
-
+        </ChildContent>
+    </MudExpansionPanel>
+}
+@if (LoadingData)
+{
+    <MudExpansionPanel Dense Text="">
+        <TitleContent>
+            <LoadingData Loading=LoadingData />
+            <MudStack Row=true>
+                <MudSkeleton SkeletonType="SkeletonType.Text" Width="180px" Height="30px" />
+                <MudSwitch T=bool
+                           UncheckedColor="Color.Error"
+                           Color="Color.Success"
+                           Label=@AppLocalization[Lang.Super_User]
+                           Disabled=true />
+            </MudStack>
+        </TitleContent>
+        <ChildContent>
+        </ChildContent>
+    </MudExpansionPanel>
+}
 @code {
-    bool _groupMembersShown;
+    private bool _groupMembersShown;
 
-    IDirectoryEntryAdapter? _delegateEntry;
+    private IDirectoryEntryAdapter? _delegateEntry;
+    private PermissionDelegate _delegate { get; set; }
+
     [Parameter]
     public PermissionDelegate Delegate { get; set; }
-    [Parameter]
-    public new IDatabaseContext Context { get; set; }
 
     [Parameter]
     public EventCallback DelegateDeleted { get; set; }
@@ -134,28 +156,45 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _appSettings = await Context.AppSettings.FirstOrDefaultAsync();
-        _emailSettings = await Context.EmailSettings.FirstOrDefaultAsync();
-        _delegateEntry = Directory.FindGlobalEntryBySid(Delegate.DelegateSid);
-        if (_delegateEntry != null)
+
+        try
         {
-            if (Delegate.DelegateName != _delegateEntry.CanonicalName)
+            LoadingData = true;
+
+            _appSettings = await Context.AppSettings.FirstOrDefaultAsync();
+            _emailSettings = await Context.EmailSettings.FirstOrDefaultAsync();
+
+            _delegate = await Context.PermissionDelegate.FirstAsync(x => x.Id == Delegate.Id);
+            _delegateEntry = Directory.FindGlobalEntryBySid(_delegate.DelegateSid);
+            if (_delegateEntry != null)
             {
-                Delegate.DelegateName = _delegateEntry.CanonicalName;
+                if (_delegate.DelegateName != _delegateEntry.CanonicalName)
+                {
+                    _delegate.DelegateName = _delegateEntry.CanonicalName;
+                    var result = await Context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                _delegate.DelegateName = ("(" + _delegate.DelegateSid.ToSidString() + ")").Trim();
                 var result = await Context.SaveChangesAsync();
             }
         }
-        else
+        catch (Exception ex)
         {
-            Delegate.DelegateName = ("(" + Delegate.DelegateSid.ToSidString() + ")").Trim();
-            var result = await Context.SaveChangesAsync();
+            Loggers.SystemLogger.Information(ex, "Unexpected error loading delegate list item.");
+        }
+        finally
+        {
+            LoadingData = false;
+
         }
     }
 
 
     async Task DeleteDelegate()
     {
-        Delegate.DeletedAt = DateTime.UtcNow;
+        _delegate.DeletedAt = DateTime.UtcNow;
         await Context.SaveChangesAsync();
         SnackBarService.Success(AppLocalization[Lang.Delegate_removed]);
         await DelegateDeleted.InvokeAsync();
@@ -164,9 +203,10 @@
     }
     protected async override Task Save()
     {
-        Delegate.DelegateSid = _delegateEntry.SID;
+        _delegate.DelegateSid = _delegateEntry.SID;
         await Context.SaveChangesAsync();
         await StateHasChangedAsync();
+        SnackBarService.Success(AppLocalization[Lang.Changes_have_been_saved]);
         _ = Analytics.PermissionDelegateChanged(_delegateEntry.ObjectType);
         ApplicationEvents.PermissionsChanged.Invoke();
 

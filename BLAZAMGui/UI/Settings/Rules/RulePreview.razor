@@ -187,7 +187,7 @@
 
             }
             <MudButton Color="@(_auditErrors.Count == 0 ? Color.Primary : Color.Error)"
-                       OnClick="@(()=>{_auditPopoverOpen=!_auditPopoverOpen;})">
+                       OnClick="@(()=>{_auditPopoverOpen = !_auditPopoverOpen;})">
                 @AppLocalization[Lang.Audit]
             </MudButton>
 

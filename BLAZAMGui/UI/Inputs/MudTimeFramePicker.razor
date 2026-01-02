@@ -40,6 +40,15 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+      
+        foreach (TimeUnit val in Enum.GetValues(typeof(TimeUnit)))
+        {
+            _timeUnits.Add(val);
+        }
+    }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
         if (TimeFrame != null)
         {
             if (TimeFrame.Value.TotalDays > 364)
@@ -72,10 +81,6 @@
                 _selectedTimeUnit = TimeUnit.Minute;
                 _count = (int)TimeFrame.Value.TotalMinutes;
             }
-        }
-        foreach (TimeUnit val in Enum.GetValues(typeof(TimeUnit)))
-        {
-            _timeUnits.Add(val);
         }
     }
     private void SetTimeFrame()

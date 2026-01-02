@@ -21,7 +21,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         {
             LoadingData = true;
             LoadSettings();
-            LockedUsers = (await Directory.Users.FindChangedPasswordUsersAsync((int)_timeFrame?.TotalDays,false)).Where(u => u.CanRead).ToList();
+            LockedUsers = (await Directory.Users.FindChangedPasswordUsersAsync((int)_timeFrame!.Value.TotalDays, false)).Where(u => u.CanRead).ToList();
             LoadingData = false;
 
         }

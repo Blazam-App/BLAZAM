@@ -21,7 +21,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             LoadingData = true;
             LoadSettings();
 
-            NewContacts = (await Directory.Contacts.FindNewContactsAsync((int)_timeFrame?.TotalDays, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
+            NewContacts = (await Directory.Contacts.FindNewContactsAsync((int)_timeFrame!.Value.TotalDays, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
 
             LoadingData = false;
 

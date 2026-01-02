@@ -40,6 +40,8 @@ namespace BLAZAM.Session
 
         public bool ShowPluginPlaceholders { get; set; } = false;
 
+        public string? Browser { get; set; }
+
         public string? IPAddress { get; set; }
 
         /// <summary>

@@ -55,7 +55,7 @@
                               T="string"
                               @bind-Value=_submittedPin />
 
-                <MudButton OnClick="CheckPin"
+                <MudButton OnClick="CheckPinAsync"
                            Class="mt-5"
                            ButtonType=ButtonType.Submit
                            Color="Color.Primary">
@@ -81,7 +81,7 @@
                 <MudTextField T="string"
                               @bind-Value=_submittedAnswer3 />
 
-                <MudButton OnClick="CheckAnswers"
+                <MudButton OnClick="CheckAnswersAsync"
                            Class="mt-5"
                            ButtonType=ButtonType.Submit
                            Color="Color.Primary">
