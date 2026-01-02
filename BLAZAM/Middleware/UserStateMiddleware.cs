@@ -47,11 +47,13 @@ namespace BLAZAM.Middleware
 
 
                     currentUserStateService.State.IPAddress = httpContext.Connection.RemoteIpAddress.ToString();
-                    if (httpContext.Request.Headers.TryGetValue("User-Agent", out var userAgent))
-                    {
-                        currentUserStateService.State.Browser = userAgent.ToString();
-                    }
+                  
 
+                }
+                if (currentUserStateService.State != null
+                    && httpContext.Request.Headers.TryGetValue("User-Agent", out var userAgent))
+                {
+                    currentUserStateService.State.Browser = userAgent.ToString();
                 }
             }
 
