@@ -93,7 +93,7 @@
 
             messages = await context.UserNotifications
             .Where(un => un.User.Id == UserState.Id)
-            .Include(un=>un.User)
+            //.Include(un=>un.User)
             .OrderByDescending(un => un.Notification.Created)
             .ToListAsync();
             LoadingData = false;

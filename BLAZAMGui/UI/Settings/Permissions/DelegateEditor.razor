@@ -23,14 +23,13 @@
 @if (AllDelegates.Count > 0)
 {
     var delegates = AllDelegates.Where(l => l.DeletedAt == null);
-    @foreach (var pl in delegates)
+    @foreach (var deleg in delegates)
     {
-        <DelegateListItem Delegate="pl" 
-            Context="Context" 
+        <DelegateListItem Delegate="deleg" 
             DelegateDeleted="DelegatesChanged" />
     }
 }
-
+<LoadingData Loading=LoadingData/>
 <MudButton Color=Color.Success 
 OnClick="@(()=>{addGroupModal?.ShowAsync();})">
     @AppLocalization[Lang.Create_New_Delegation_Target]
