@@ -150,7 +150,7 @@
     private async Task RemoveRequestableField(GlobalPermissionRequestField requestableField)
     {
         globalPermissionRequestFields.Remove(globalPermissionRequestFields.First(x => x.Id == requestableField.Id));
-        Context.GlobalPermissionRequestFields.Remove(Context.GlobalPermissionRequestFields.First(x => x.Id == requestableField.Id));
+        Context.GlobalPermissionRequestFields.Remove(await Context.GlobalPermissionRequestFields.FirstAsync(x => x.Id == requestableField.Id));
     }
     private async Task AddRequestableField()
     {

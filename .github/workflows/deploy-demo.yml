@@ -32,7 +32,7 @@ jobs:
           New-Item -Path C:\inetpub\wwwroot -Name "app_offline.htm" -ItemType "file" -ErrorAction Continue
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o C:\inetpub\wwwroot BLAZAM/BLAZAM.csproj
+        run: dotnet publish -c Release -o C:\inetpub\demo.blazam.org BLAZAM/BLAZAM.csproj
 
       - name: Restart Demo Website
         shell: pwsh

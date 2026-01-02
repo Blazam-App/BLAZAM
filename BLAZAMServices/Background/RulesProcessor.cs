@@ -135,7 +135,7 @@ namespace BLAZAM.Services.Background
             {
                 return;
             }
-            if ((await dbFactory.CreateDbContextAsync())?.GlobalAutomationRuleSettings.FirstOrDefault()?.RulesEnabled != true)
+            if (!(await (await dbFactory.CreateDbContextAsync())!.GlobalAutomationRuleSettings.FirstOrDefaultAsync())!.RulesEnabled)
             {
                 return;
             }

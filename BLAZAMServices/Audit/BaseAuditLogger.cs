@@ -30,6 +30,7 @@ namespace BLAZAM.Services.Audit
             Printer = new PrinterAudit(factory, userState);
             Logon = new LogonAudit(factory, userState);
             BitLocker = new BitLockerAudit(factory, userState);
+            Email = new EmailAudit(factory);
         }
 
         protected static List<Guid> HandledEvents { get; set; } = [];

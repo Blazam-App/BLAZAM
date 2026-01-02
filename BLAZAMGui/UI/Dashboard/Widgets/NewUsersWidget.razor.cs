@@ -19,7 +19,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            NewUsers = (await Directory.Users.FindNewUsersAsync((int)_timeFrame?.TotalDays, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
+            NewUsers = (await Directory.Users.FindNewUsersAsync((int)_timeFrame!.Value.TotalDays, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
 
             LoadingData = false;
 

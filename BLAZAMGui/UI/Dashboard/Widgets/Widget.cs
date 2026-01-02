@@ -68,7 +68,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error attempting to set a widgets rows per page preference. {Error}", ex);
+                Loggers.SystemLogger.Error(ex,"Error attempting to set a widgets rows per page preference.");
             }
         }
 
@@ -81,7 +81,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error attempting to set a widgets rows per page preference. {Error}", ex);
+                Loggers.SystemLogger.Error(ex,"Error attempting to set a widgets rows per page preference.");
             }
         }
 

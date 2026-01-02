@@ -151,9 +151,9 @@ namespace BLAZAM.Notifications.Services
         /// <param name="notificationMessage">The notification message to delete. Must not be null.</param> 
         /// <param name="user">The user initiating the delete (currently unused in logic but good for context or future permissions). Must not be null.</param> 
         /// <returns>True if deletion was successful, false otherwise.</returns>
-        public async Task<bool> DeleteNotification(UserNotification notification)
+        public async Task<bool> DeleteNotification(UserNotification notificationMessage)
         {
-            if (notification == null)
+            if (notificationMessage == null)
             {
                 Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: 'notification' is null. Cannot delete notification.");
                 return await Task.FromResult(false); // Corrected to await Task.FromResult
@@ -162,10 +162,10 @@ namespace BLAZAM.Notifications.Services
             try
             {
                 using var context = await _databaseFactory.CreateDbContextAsync();
-                var dbNotification = await context.UserNotifications.FirstOrDefaultAsync(x => x.Id == notification.Id);
+                var dbNotification = await context.UserNotifications.FirstOrDefaultAsync(x => x.Id == notificationMessage.Id);
                 if (dbNotification == null)
                 {
-                    Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: UserNotification with ID {NotificationId} not found in database. Cannot delete.", notification.Id);
+                    Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: UserNotification with ID {NotificationId} not found in database. Cannot delete.", notificationMessage.Id);
                     return false;
                 }
                 context.UserNotifications.Remove(dbNotification);
@@ -175,7 +175,7 @@ namespace BLAZAM.Notifications.Services
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex, "Error deleting notification with ID {NotificationId}. Error: {ErrorMessage}", notification.Id, ex.Message); // Use ex.Message and include ID
+                Loggers.SystemLogger.Error(ex, "Error deleting notification with ID {NotificationId}. Error: {ErrorMessage}", notificationMessage.Id, ex.Message); // Use ex.Message and include ID
                 return false;
             }
         }
