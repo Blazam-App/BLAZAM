@@ -1,0 +1,62 @@
+﻿@inherits AppComponentBase
+<DirectoryEntryTooltipPopover Entry="@Entry">
+    <DirectoryEntryContextMenu Entry="@Entry"
+                               OnChanged="OnChanged">
+
+            <MudText Class="@Class" Align="@Align" Style="@Style" Color="@Color">@(Entry!=null?Entry.CanonicalName:Sid)</MudText>
+        
+    </DirectoryEntryContextMenu>
+</DirectoryEntryTooltipPopover>
+
+@code {
+    [Parameter]
+    public IDirectoryEntryAdapter? Entry { get; set; }
+    [Parameter]
+    public string Class { get; set; }
+    [Parameter]
+    public string Style{ get; set; }
+
+    [Parameter]
+    public Color Color{ get; set; }
+
+    [Parameter]
+    public Align Align{ get; set; }
+
+
+    [Parameter]
+    public string? Sid { get; set; }
+
+
+    [Parameter]
+    public Guid? Guid { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        LoadingData = false;
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+
+        await base.OnParametersSetAsync();
+        if (Entry == null)
+        {
+            if (!Sid.IsNullOrEmpty())
+            {
+                LoadingData = true;
+                Entry = Directory.FindGlobalEntryBySid(Sid);
+                LoadingData = false;
+            }else if(Guid!=null && Guid != System.Guid.Empty)
+            {
+                LoadingData = true;
+                Entry = Directory.FindGlobalEntryByGuid(Guid.Value);
+                LoadingData = false;
+            }
+        }
+
+
+    }
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
+}

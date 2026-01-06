@@ -128,6 +128,9 @@
     AppModal? RestoreModal;
 
     [Parameter]
+    public EventCallback<DirectoryTemplate?> OnTemplateChanged { get; set; }
+
+    [Parameter]
     public DirectoryTemplate? TemplateSelected{ get => SelectedTemplate; set => SelectedTemplate = value; }
 
     protected override async Task OnInitializedAsync()
@@ -145,6 +148,7 @@
     {
         SelectedTemplate = (DirectoryTemplate)template.Clone(Context);
         await RefreshComponents();
+        OnTemplateChanged.InvokeAsync(SelectedTemplate);
 
 
     }

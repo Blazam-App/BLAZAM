@@ -1,10 +1,11 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
+using Octokit;
 
 namespace BLAZAM.Services.Audit
 {
-    public class BaseAuditLogger
+    public class BaseAuditLogger: IDisposable
     {
         public SystemAudit System { get; set; }
         public UserAudit User { get; set; }
@@ -29,6 +30,7 @@ namespace BLAZAM.Services.Audit
             Printer = new PrinterAudit(factory, userState);
             Logon = new LogonAudit(factory, userState);
             BitLocker = new BitLockerAudit(factory, userState);
+            Email = new EmailAudit(factory);
         }
 
         protected static List<Guid> HandledEvents { get; set; } = [];
@@ -45,7 +47,7 @@ namespace BLAZAM.Services.Audit
 
                 // If an actor is associated with the event, initialize the audit services
                 // that will log the changes.
-                if (args.Actor != null)
+                if (args.Actor != null && args.Actor.AuditUsername!=null)
                 {
                     InitializeAuditServices(args.Actor);
                 }
@@ -312,7 +314,17 @@ namespace BLAZAM.Services.Audit
             }
         }
 
-
-
+        public void Dispose()
+        {
+            ApplicationEvents.DirectoryEntryEvent.Delegate -= TriggerDirectoryEntryChangedEvent;
+            System = null;
+            User = null;
+            Group = null;
+            Computer = null;
+            OU = null;
+            Printer = null;
+            Logon = null;
+            BitLocker = null;
+        }
     }
 }

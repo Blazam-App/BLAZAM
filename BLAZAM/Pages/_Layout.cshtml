@@ -16,17 +16,17 @@
     <base href="~/" />
 
     <link rel="icon" type="image/x-icon" href=@StaticAssets.FaviconUri>
-    <link href="css/site.css" rel="stylesheet" asp-append-version="true" />
+    <link href="/css/site.css" rel="stylesheet" asp-append-version="true" />
     <link href="BLAZAM.styles.css" rel="stylesheet" asp-append-version="true" />
 
 
-    <link href="/css/google/fonts.css" rel="stylesheet"/>
+    <link href="/lib/google/fonts.css" rel="stylesheet" asp-append-version="true" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" asp-append-version="true" />
     <link href="_content/MudBlazor.Markdown/MudBlazor.Markdown.min.css" rel="stylesheet" asp-append-version="true" />
 
-    <link rel="stylesheet" href="/css/fontawesome/all.min.css">
+    <link rel="stylesheet" href="/lib/fontawesome/all.min.css" asp-append-version="true">
 
-    <link rel="manifest" href="manifest.json" />
+    <link rel="manifest" href="manifest.json" asp-append-version="true"/>
 
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
@@ -102,7 +102,7 @@
     }
 
     <script src="~/js/blazam.js" asp-append-version="true"></script>
-    <script src="~/lib/svg-gauge/dist/gauge.min.js"></script>
+    <script src="~/lib/svg-gauge/dist/gauge.min.js" asp-append-version="true"></script>
 
 
 

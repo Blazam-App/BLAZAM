@@ -21,6 +21,6 @@ namespace BLAZAM.Database.Models.Audit
         public string? ServerResponse { get; set; }
 
         [NotMapped]
-        public bool Delivered { get { return ServerResponse?.StartsWith("2") == true; } }
+        public bool Delivered { get { return ServerResponse?.StartsWith("2") == true || ServerResponse?.StartsWith("Message received") == true; } }
     }
 }

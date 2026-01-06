@@ -70,6 +70,8 @@ namespace BLAZAM.Tests.Mocks
         public bool ShowPluginPlaceholders { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public AppEvent OnSettingsChanged { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public AppEvent OnReadNewsSaved { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string? _browser="Google Chrome";
+        public string? Browser { get => _browser; set => _browser=value; }
 
         public bool CanSearchDisabled(ActiveDirectoryObjectType objectType)
         {

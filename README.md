@@ -12,6 +12,9 @@
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
 
+## v1.5.0
+The next update to Blazam is in the final stages of preparation. This is a truly massive update, adding more functionality since the official release of Blazam in August of 2024... We hope you all enjoy the tremendous progress that has been made.
+
 ## Screenshots
 ![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)
 ![image](https://github.com/user-attachments/assets/cfa35e1f-facb-4c64-8ad4-1a48de5f4a82)
@@ -89,7 +92,7 @@ We have users in Ukraine... we support Ukraine in the current conflict with Russ
 
 ## Star History
 If you like the project, please give it a star! It helps with visibility and motivates us to keep improving it.
-[![Star History Chart](https://api.star-history.com/svg?repos=Blazam-App/BLAZAM&type=Date)](https://www.star-history.com/#Blazam-App/BLAZAM&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=Blazam-App/BLAZAM&type=date&legend=top-left)](https://www.star-history.com/#Blazam-App/BLAZAM&type=date&legend=top-left)
 
 ## Get Paid to Contribute
 If you are interested in contributing to Blazam and receiving compensation for your work, please reach out

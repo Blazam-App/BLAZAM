@@ -5,12 +5,12 @@ namespace BLAZAM.Database.Models.User
 {
 
     public enum NotificationLevel { Info, Success, Warning, Error }
-    public enum MessageType { Notification, AccessRequest }
+    public enum MessageType { Notification, EditAccessRequest, ReadAccessRequest }
     /// <summary>
     /// A notification message for the web user. These are
     /// placed under the user's notifications panel
     /// </summary>
-    public class NotificationMessage : AppDbSetBase, IEquatable<NotificationMessage?>
+    public class NotificationMessage : ActiveDirectoryFieldDbSet, IEquatable<NotificationMessage?>
     {
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace BLAZAM.Database.Models.User
         public string? TargetDN { get; set; }
 
         /// <summary>
-        /// The action being requested access to
+        /// The action being requested
         /// </summary>
         public ActiveDirectoryObjectAction? Action { get; set; }
 
@@ -60,15 +60,15 @@ namespace BLAZAM.Database.Models.User
 
         public bool Dismissable { get; set; } = true;
 
-        /// TODO : Implement when field requests are merged.
+        
         /// <summary>
         /// The custom field id being referenced
         /// </summary>
-        //public int? CustomFieldId { get; set; }
+        public int? CustomFieldId { get; set; }
         /// <summary>
         /// The field id being referenced
         /// </summary>
-        //public int? FieldId { get; set; }
+        public int? FieldId { get; set; }
 
         /// <summary>
         /// True if the Id's match or the <see cref="Level"/>, 

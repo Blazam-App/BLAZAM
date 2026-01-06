@@ -1,0 +1,160 @@
+@inherits AppModalContent
+@using BLAZAM.Helpers
+@using System.Security
+<MudStack>
+    <MudForm @ref=Form @bind-IsValid=IsValid>
+
+        <MudTextField T="string"
+                      Immediate=true
+                      @bind-Text=@CurrentUser.State.Preferences.Email
+                      Label=@AppLocalization[Lang.Email]
+                      Required=_eprp.RequireEmail />
+
+        <MudTextField T="string"
+                      InputType="InputType.Password"
+                      Immediate=true
+                      @bind-Text=@pin
+                      Label=@AppLocalization[Lang.PIN]
+                      Required=_eprp.RequirePIN />
+        <MudTextField T="string"
+                      Immediate=true
+                      @bind-Text=@question1
+                      Label=@AppLocalization[Lang.Question] />
+        <MudTextField T="string"
+                      Immediate=true
+                      @bind-Text=@answer1
+                      Label=@AppLocalization[Lang.Answer] />
+
+        <MudTextField T="string"
+                      Immediate=true
+                      @bind-Text=@question2
+                      Label=@AppLocalization[Lang.Question] />
+        <MudTextField T="string"
+                      Immediate=true
+                      @bind-Text=@answer2
+                      Label=@AppLocalization[Lang.Answer] />
+
+
+        <MudTextField T="string"
+                      @bind-Text=@question3
+                      Immediate=true
+                      Label=@AppLocalization[Lang.Question] />
+        <MudTextField T="string"
+                      @bind-Text=@answer3
+                      Immediate=true
+                      Label=@AppLocalization[Lang.Answer] />
+
+    </MudForm>
+
+    <LoadingData Loading=LoadingData />
+</MudStack>
+@code {
+    private string pin = "";
+    private string question1 = "";
+    private string answer1 = "";
+    private string question2 = "";
+    private string answer2 = "";
+    private string question3 = "";
+    private string answer3 = "";
+    private EffectivePasswordResetPolicy _eprp;
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Modal.SetYesText(AppLocalization[Lang.Save]);
+        Modal.SetOnYes(SaveSettings);
+        Modal.YesEnabled = () => { return !LoadingData; };
+        _eprp = new EffectivePasswordResetPolicy(CurrentUser.State.PermissionDelegates);
+
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            _ = LoadExistingSettings();
+        }
+    }
+    private async Task LoadExistingSettings()
+    {
+        try
+        {
+            LoadingData = true;
+            await Modal.RefreshView();
+
+            if (CurrentUser.State.Preferences.PasswordResetSettings != null)
+            {
+                // Decrypt for editing
+                pin = CurrentUser.State.Preferences.PasswordResetSettings.PIN ?? "";
+                question1 = CurrentUser.State.Preferences.PasswordResetSettings.Question1?.Decrypt() ?? "";
+                answer1 = CurrentUser.State.Preferences.PasswordResetSettings.Answer1?.Decrypt() ?? "";
+                question2 = CurrentUser.State.Preferences.PasswordResetSettings.Question2?.Decrypt() ?? "";
+                answer2 = CurrentUser.State.Preferences.PasswordResetSettings.Answer2?.Decrypt() ?? "";
+                question3 = CurrentUser.State.Preferences.PasswordResetSettings.Question3?.Decrypt() ?? "";
+                answer3 = CurrentUser.State.Preferences.PasswordResetSettings.Answer3?.Decrypt() ?? "";
+            }
+        }
+        catch (Exception ex)
+        {
+            SnackBarService.Error(AppLocalization[Lang.Error] + " " + ex.Message);
+        }
+        finally
+        {
+            LoadingData = false;
+            await Modal.RefreshView();
+        }
+    }
+
+
+
+    private async Task SaveSettings()
+    {
+        LoadingData = true;
+        await Modal.RefreshView();
+        if (!question1.IsNullOrEmpty() || !question2.IsNullOrEmpty() || !question3.IsNullOrEmpty())
+        {
+            if (question1.IsNullOrEmpty()
+                || question2.IsNullOrEmpty()
+                || question3.IsNullOrEmpty()
+                || answer1.IsNullOrEmpty()
+                || answer2.IsNullOrEmpty()
+                || answer3.IsNullOrEmpty())
+            {
+                SnackBarService.Warning("All questions and answers must be provided.");
+                LoadingData = false;
+                return;
+            }
+        }
+        var pr = CurrentUser.State.Preferences.PasswordResetSettings;
+        if (pin != pr.PIN)
+        {
+            pr.PIN = string.IsNullOrEmpty(pin) ? null : await pin.EncryptAsync();
+        }
+        pr.Question1 = string.IsNullOrEmpty(question1) ? null : await question1.EncryptAsync();
+        pr.Answer1 = string.IsNullOrEmpty(answer1) ? null : await answer1.EncryptAsync();
+        pr.Question2 = string.IsNullOrEmpty(question2) ? null : await question2.EncryptAsync();
+        pr.Answer2 = string.IsNullOrEmpty(answer2) ? null : await answer2.EncryptAsync();
+        pr.Question3 = string.IsNullOrEmpty(question3) ? null : await question3.EncryptAsync();
+        pr.Answer3 = string.IsNullOrEmpty(answer3) ? null : await answer3.EncryptAsync();
+
+        if (await CurrentUser.State.SaveAllUserSettings())
+        {
+            SnackBarService.Success(AppLocalization[Lang.Settings_saved]);
+            await Modal.CloseAsync();
+        }
+        else
+        {
+            SnackBarService.Warning(AppLocalization[Lang.Failed_to_save_settings]);
+
+        }
+        LoadingData = false;
+        await Modal.RefreshView();
+
+
+    }
+
+
+
+}

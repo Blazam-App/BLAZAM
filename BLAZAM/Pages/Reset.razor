@@ -1,0 +1,136 @@
+﻿@page "/reset"
+@page "/reset/{Token}"
+@using BLAZAM.Gui.UI.Users
+@using BLAZAM.Services.Audit
+@using BLAZAM.Static;
+@using System.Security
+@inject IHttpContextAccessor HttpContextAccessor
+@inherits ValidatedForm
+@inject IJSRuntime JSRuntime
+@inject AppAuthenticationStateProvider _auth;
+<LayoutView Layout="@typeof(LoginLayout)">
+
+    <AppPageTitle>@AppLocalization[Lang.Login]</AppPageTitle>
+
+    <MudElement Class="brand-icon">
+        <MudImage Src="@StaticAssets.ApplicationIconUri" />
+
+    </MudElement>
+
+    <MudContainer Class="py-5">
+
+
+
+
+        <FullAppName />
+
+        <MudContainer Style="max-width:300px;"
+                      Class="py-4">
+            @if (!_attemptReset)
+            {
+                <MudTextField Disabled=@LoadingData
+                              Class="justify-center"
+                              AutoFocus=true
+                              Label=@AppLocalization[Lang.Username]
+                              name="Username"
+                              @bind-Value=LoginRequest.Username />
+
+
+                <MudButton OnClick="StartAttemptPasswordReset"
+                           Class="mt-5"
+                           Disabled=@(LoginRequest.Username.IsNullOrEmpty())
+                           ButtonType=ButtonType.Submit
+                           Color="Color.Primary">
+                    @AppLocalization[Lang.Reset_Password]
+                </MudButton>
+            }
+            @if (Token.IsNullOrEmpty() && _tokenRequired)
+            {
+                <MudText>Check your email for a reset link.</MudText>
+            }
+            else if (_askForPin && !_pinValid)
+            {
+                <MudText>@AppLocalization[Lang.PIN]</MudText>
+                <MudTextField InputType=InputType.Password
+                              T="string"
+                              @bind-Value=_submittedPin />
+
+                <MudButton OnClick="CheckPinAsync"
+                           Class="mt-5"
+                           ButtonType=ButtonType.Submit
+                           Color="Color.Primary">
+                    @AppLocalization[Lang.Reset_Password]
+                </MudButton>
+            }
+            else if (_askForAnswers)
+            {
+                <MudText>@AppLocalization[Lang.Security_Questions]</MudText>
+                <MudText>
+                    @_question1
+                </MudText>
+                <MudTextField Class="align-center" T="string"
+                              @bind-Value=_submittedAnswer1 />
+                <MudText>
+                    @_question2
+                </MudText>
+                <MudTextField T="string"
+                              @bind-Value=_submittedAnswer2 />
+                <MudText>
+                    @_question3
+                </MudText>
+                <MudTextField T="string"
+                              @bind-Value=_submittedAnswer3 />
+
+                <MudButton OnClick="CheckAnswersAsync"
+                           Class="mt-5"
+                           ButtonType=ButtonType.Submit
+                           Color="Color.Primary">
+                    @AppLocalization[Lang.Reset_Password]
+                </MudButton>
+            }
+            @if (!_errorMessage.IsNullOrEmpty())
+            {
+                <MudText>@_errorMessage</MudText>
+            }
+            <br/>
+            <MudButton Class="mt-2" Color=Color.Primary Href="/login">@AppLocalization[Lang.Back]</MudButton>
+        </MudContainer>
+
+        <LoadingData Loading=LoadingData />
+
+        <MudElement Class="d-flex mud-width-full justify-end">
+            <Copyright Style="font-size:0.8em;" />
+
+        </MudElement>
+
+    </MudContainer>
+</LayoutView>
+
+<AppModal @ref=_resetModel
+          Options="new() { MaxWidth = MaxWidth.Small, FullWidth = true }">
+    <ChangeUserPasswordModalContent User="_userToReset"
+                                    AdminReset=false
+                                    EntryChanged="PasswordResetCompleted" />
+</AppModal>
+
+<GoogleAuthenticatorModal @ref=googleAuthenticatorModal OnAuthenticated="GoogleAuthSuccessful" />
+<style>
+    .brand-icon {
+        position: fixed;
+        left: 5px;
+        top: 5px;
+    }
+
+        .brand-icon img {
+            max-width: 65px;
+            max-height: 65px;
+        }
+
+    .login-form input {
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+

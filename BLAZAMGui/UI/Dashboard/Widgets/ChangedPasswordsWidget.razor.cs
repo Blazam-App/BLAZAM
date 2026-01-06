@@ -1,11 +1,17 @@
+using Newtonsoft.Json.Linq;
+
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
-    public partial class ChangedPasswordsWidget : Widget
+    public partial class ChangedPasswordsWidget : TimeFrameWidget
     {
         public ChangedPasswordsWidget()
         {
-            Title = Localization.AppLocalization.Passwords_changed_in_the_last_90_days;
+            Title = Localization.AppLocalization.Changed_Passwords;
             WidgetType = DashboardWidgetType.PasswordsChanged;
+            if (_timeFrame == null)
+            {
+                _timeFrame = TimeSpan.FromDays(90);
+            }
         }
 
         private List<IADUser> LockedUsers = [];
@@ -14,7 +20,8 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            LockedUsers = (await Directory.Users.FindChangedPasswordUsersAsync(false)).Where(u => u.CanRead).ToList();
+            LoadSettings();
+            LockedUsers = (await Directory.Users.FindChangedPasswordUsersAsync((int)_timeFrame!.Value.TotalDays, false)).Where(u => u.CanRead).ToList();
             LoadingData = false;
 
         }

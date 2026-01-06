@@ -19,10 +19,11 @@
 
 
     [Parameter]
-    public DateTime EndDate { get; set; } = DateTime.Today;
+    public DateTime? EndDate { get; set; } = DateTime.Today;
 
     [Parameter]
-    public int Days { get; set; } = 14;
+    public DateTime? StartDate { get; set; } = DateTime.Today.AddDays(-14); // Adding StartDate parameter
+
 
     /// <summary>
     /// The height of the chart
@@ -35,22 +36,87 @@
 
 
 
-
-
     List<ChartSeries> LoginSeries = new();
-    ChartSeries loginChart = new();
-    ChartSeries uniqueUsersChart = new();
+
+
     List<LogonAuditLog> logonEntries = new();
     IEnumerable<DateTime> allDates;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        loginChart = new() { Name = AppLocalization[Lang.Daily_Logins] };
-        uniqueUsersChart = new() { Name = AppLocalization[Lang.Daily_Users] };
-        var startDate = EndDate.AddDays(-1 * Days);
-        allDates = Enumerable.Range(0, (int)(EndDate - startDate).TotalDays + 1)
-                                 .Select(d => startDate.AddDays(d));
+        GenerateLoginSeries();
+    }
+    public async Task GenerateLoginSeries()
+    {
+        LoginSeries.Clear();
+        ChartSeries loginChart = new() { Name = AppLocalization[Lang.Daily_Logins] };
+        ChartSeries uniqueUsersChart = new() { Name = AppLocalization[Lang.Daily_Users] };
+
+        // 1. Determine date range and calculate step size
+        var start = StartDate ?? DateTime.Today.AddDays(-14);
+        var end = EndDate ?? DateTime.Today;
+        var totalDays = (int)(end - start).TotalDays + 1;
+
+        // Ensure at least 1 day
+        if (totalDays < 1) totalDays = 1;
+
+        // Calculate step to limit to max 30 points
+        int maxPoints = 15;
+        int step = (int)Math.Ceiling((double)totalDays / maxPoints);
+        if (step < 1) step = 1;
+
+        // 2. Generate the bucket start dates for X-Axis
+        var bucketDates = new List<DateTime>();
+        for (int i = 0; i < totalDays; i += step)
+        {
+            bucketDates.Add(start.AddDays(i));
+        }
+        allDates = bucketDates;
+
+        using (var context = await DbFactory.CreateDbContextAsync())
+        {
+            // 3. Fetch only relevant logs from DB (Optimization)
+            var dbStart = start.Date;
+            var dbEnd = end.Date.AddDays(1);
+
+            logonEntries = await context.LogonAuditLog
+                .Where(l => l.Timestamp >= dbStart && l.Timestamp < dbEnd)
+                .ToListAsync();
+
+            var loginCounts = new List<double>();
+            var uniqueLoginCounts = new List<double>();
+
+            // 4. Aggregate data into buckets
+            foreach (var date in bucketDates)
+            {
+                var windowStart = date.Date;
+                var windowEnd = date.Date.AddDays(step);
+
+                var windowEntries = logonEntries
+                    .Where(ae => ae.Action == "Login" &&
+                                 ae.Timestamp.Date >= windowStart &&
+                                 ae.Timestamp.Date < windowEnd);
+
+                loginCounts.Add((double)windowEntries.Count());
+                uniqueLoginCounts.Add((double)windowEntries.DistinctBy(g => g.Username).Count());
+            }
+
+            loginChart.Data = loginCounts.ToArray();
+            uniqueUsersChart.Data = uniqueLoginCounts.ToArray();
+
+            LoginSeries.Add(loginChart);
+            LoginSeries.Add(uniqueUsersChart);
+            InvokeStateHasChanged();
+        }
+    }
+    public async Task GenerateLoginSeries2()
+    {
+        LoginSeries.Clear();
+        ChartSeries loginChart = new() { Name = AppLocalization[Lang.Daily_Logins] };
+        ChartSeries uniqueUsersChart = new() { Name = AppLocalization[Lang.Daily_Users] };
+        allDates = Enumerable.Range(0, (int)(EndDate.Value - StartDate.Value).TotalDays + 1)
+                                 .Select(d => StartDate.Value.AddDays(d));
         using (var context = await DbFactory.CreateDbContextAsync())
         {
 
@@ -78,8 +144,7 @@
 
             LoginSeries.Add(loginChart);
             LoginSeries.Add(uniqueUsersChart);
+            InvokeStateHasChanged();
         }
-
-
-    }
+}
 }

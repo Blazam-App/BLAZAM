@@ -1,11 +1,11 @@
 // Import necessary namespaces for various functionalities
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Global.Enums;
 using BLAZAM.Gui.UI.Modals;
 using BLAZAM.Gui.UI.Settings;
 using BLAZAM.Localization;
 using Microsoft.JSInterop;
-using Newtonsoft.Json;
 using System.Security;
 
 namespace BLAZAM.Pages
@@ -23,9 +23,14 @@ namespace BLAZAM.Pages
 
         private bool attemptingSignIn = false;
         private string redirectUrl;
-        private bool DemoCustomLogin = false;
+        private bool _demoCustomLogin = false;
+        private bool _passwordResetAvailable;
         private LoginRequest LoginRequest = new();
 
+        private void SetPasswordResetAvailable()
+        {
+            _passwordResetAvailable = Context.PermissionDelegate.Any(d => d.AllowPasswordReset);
+        }
 
         /// <summary>
         /// Asynchronously initializes the component and sets up the necessary state and event handlers.
@@ -37,6 +42,10 @@ namespace BLAZAM.Pages
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
+            if (CurrentUser.State.IsAuthenticated)
+            {
+                Nav.NavigateTo("/home");
+            }
             redirectUrl = Nav.Uri;
             LoginRequest.ReturnUrl = Nav.Uri;
             var currentUri = new Uri(Nav.Uri);
@@ -45,6 +54,10 @@ namespace BLAZAM.Pages
             {
                 Monitor.OnAppReadyChanged += AppReadyChanged;
             }
+            else
+            {
+                SetPasswordResetAvailable();
+            }
         }
 
 
@@ -52,6 +65,8 @@ namespace BLAZAM.Pages
         {
             if (state == ServiceConnectionState.Up)
             {
+                SetPasswordResetAvailable();
+
                 await StateHasChangedAsync();
             }
 
@@ -71,7 +86,7 @@ namespace BLAZAM.Pages
                         LoginRequest.MFAToken = otpCode;
                     }
                     var response = await JSRuntime.InvokeAsync<string>("attemptSignIn", LoginRequest);
-                    authenticationResult = JsonConvert.DeserializeObject<LoginRequest>(response);
+                    authenticationResult = response.FromJson<LoginRequest>();
                 }
                 catch (Exception ex)
                 {
@@ -92,7 +107,7 @@ namespace BLAZAM.Pages
             {
                 validationResult = new();
             }
-            if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !DemoCustomLogin))
+            if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !_demoCustomLogin))
             {
                 return true;
             }

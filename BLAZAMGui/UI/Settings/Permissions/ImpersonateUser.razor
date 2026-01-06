@@ -44,7 +44,7 @@ else
             try
             {
                 var response = await JSRuntime.InvokeAsync<string>("attemptSignIn", imperonationRequest);
-                authenticationResult = JsonConvert.DeserializeObject<LoginRequest>(response);
+                authenticationResult = response.FromJson<LoginRequest>();
 
             }
             catch (Exception ex)

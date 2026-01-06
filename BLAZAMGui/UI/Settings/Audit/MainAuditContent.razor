@@ -1,0 +1,91 @@
+﻿@using BLAZAM.Database.Models.Audit
+@using BLAZAM.Gui.UI.Shared
+@inherits DatabaseComponentBase
+<TimeframeSelector OnTimeframeChanged="TimeframeChanged" />
+
+<MudDataGrid Height="600px"
+             ColumnResizeMode="ResizeMode.Container"
+             FixedHeader=true
+             Hideable=true
+             Items="@auditEntries.Where(ae => ae.Action != "Login" && ae.Action != "Logout").OrderByDescending(ae => ae.Timestamp)"
+             Filterable="false"
+             SortMode="@SortMode.Multiple"
+             Groupable="false">
+    <Columns>
+        <PropertyColumn Property="x => x.Timestamp" Title=@AppLocalization[Lang.Timestamp] Sortable="true">
+            <CellTemplate>
+                <MudText>
+                    @context.Item.Timestamp.ToLocalTime()
+                </MudText>
+            </CellTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="x => x.Username" Filterable="true" Title="@AppLocalization[Lang.Username]" />
+        @if (!ApplicationInfo.InDemoMode)
+        {
+            <PropertyColumn Property="x => x.IpAddress" Title=@AppLocalization[Lang.IP_Address]
+                            Filterable="true">
+                <CellTemplate>
+                    <IPAddress>
+                        @context.Item.IpAddress
+                    </IPAddress>
+                </CellTemplate>
+            </PropertyColumn>
+        }
+        else
+        {
+            <TemplateColumn Title=@AppLocalization[Lang.IP_Address]>
+                <CellTemplate>
+                    <IPAddress>
+                        @context.Item.IpAddress
+                    </IPAddress>
+                </CellTemplate>
+            </TemplateColumn>
+        }
+        <PropertyColumn Property="x => x.Action"
+                        Filterable=true
+                        Title="@AppLocalization[Lang.Action]">
+            <CellTemplate>
+                <MudText>@AppLocalization[context.Item.Action]</MudText>
+            </CellTemplate>
+        </PropertyColumn>
+
+        <PropertyColumn Property="x => x.Target"
+                        Filterable=true
+                        Title="@AppLocalization[Lang.Target]">
+            <CellTemplate>
+                <MudLink Href="@("/view/" + context.Item.Target)">@context.Item.Target</MudLink>
+            </CellTemplate>
+        </PropertyColumn>
+
+        <PropertyColumn Property="x => x.BeforeAction"
+                        Filterable="true"
+                        Title="@AppLocalization[Lang.Before_Action]" />
+
+        <PropertyColumn Property="x => x.AfterAction"
+                        Filterable="true"
+                        Title="@AppLocalization[Lang.After_Action]" />
+
+    </Columns>
+</MudDataGrid>
+@code {
+    private List<DirectoryEntryAuditLog> auditEntries = new();
+    private DateTime? StartDate = DateTime.Today.AddDays(-7);
+    private DateTime? EndDate = DateTime.Today;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await GetAttempts(StartDate, EndDate);
+    }
+    private async Task TimeframeChanged((DateTime? start, DateTime? end) dates)
+    {
+ 
+        await GetAttempts(dates.start, dates.end);
+    }
+    private async Task GetAttempts(DateTime? startDate, DateTime? endDate)
+    {
+        if (startDate == null || endDate == null) return;
+        auditEntries = await Context.DirectoryEntryAuditLogs.Where(e => e.Timestamp >= startDate && e.Timestamp < endDate.Value.AddDays(1)).OrderByDescending(e => e.Timestamp).ToListAsync();
+        await StateHasChangedAsync();
+    }
+}

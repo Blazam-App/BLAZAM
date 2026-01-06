@@ -2,11 +2,11 @@ using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
-    public partial class NewContactsWidget : Widget
+    public partial class NewContactsWidget : TimeFrameWidget
     {
         public NewContactsWidget()
         {
-            Title = Localization.AppLocalization.Contacts_created_in_the_last_14_days;
+            Title = Localization.AppLocalization.New_Contacts;
             WidgetType = DashboardWidgetType.NewContacts;
         }
 
@@ -19,7 +19,9 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            NewContacts = (await Directory.Contacts.FindNewContactsAsync(14, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
+            LoadSettings();
+
+            NewContacts = (await Directory.Contacts.FindNewContactsAsync((int)_timeFrame!.Value.TotalDays, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
 
             LoadingData = false;
 

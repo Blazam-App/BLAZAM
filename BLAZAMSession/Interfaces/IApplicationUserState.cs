@@ -136,6 +136,7 @@ namespace BLAZAM.Session.Interfaces
         /// </summary>
         bool ShowPluginPlaceholders { get; set; }
         AppEvent OnReadNewsSaved { get; set; }
+        string? Browser { get; set; }
 
         /// <summary>
         /// Checks if the user can search for disabled objects of a specific type based on their permissions.

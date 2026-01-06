@@ -25,7 +25,7 @@ namespace BLAZAM.Services.Background
         {
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
 
-            List<GenericSidList> usersInTable = [];
+            List<LockedOutUser> usersInTable = new();
 
             List<IADUser> lockedOutUsers = [];
             Job executeJob = new(AppLocalization["Monitor Locked Out Users"])
@@ -51,7 +51,7 @@ namespace BLAZAM.Services.Background
 
         }
 
-        private bool AnalyzeUsers(IActiveDirectoryContext directory, List<GenericSidList> usersInTable, List<IADUser> lockedOutUsers)
+        private bool AnalyzeUsers(IActiveDirectoryContext directory, List<LockedOutUser> usersInTable, List<IADUser> lockedOutUsers)
         {
             using var context = dbFactory.CreateDbContext();
 
@@ -62,7 +62,7 @@ namespace BLAZAM.Services.Background
             return true;
         }
 
-        private void AddNewlyLockedOutUsers(IDatabaseContext context, List<GenericSidList> usersInTable, List<IADUser> lockedOutUsers)
+        private void AddNewlyLockedOutUsers(IDatabaseContext context, List<LockedOutUser> usersInTable, List<IADUser> lockedOutUsers)
         {
             foreach (var user in lockedOutUsers.Where(u => u != null && u.LockedOut))
             {
@@ -77,7 +77,7 @@ namespace BLAZAM.Services.Background
                         {
                             EventType = ApplicationEventType.LockedOut,
                             Entry = user,
-                            Actor = new SystemUserState(dbFactory)
+                            Actor = new ActiveDirectoryUserState(dbFactory)
                         });
 
                         if (OperatingSystem.IsWindows())
@@ -89,11 +89,11 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private void RemoveUnlockedUsers(IDatabaseContext context, IActiveDirectoryContext directory, List<GenericSidList> usersInTable)
+        private void RemoveUnlockedUsers(IDatabaseContext context, IActiveDirectoryContext directory, List<LockedOutUser> usersInTable)
         {
             foreach (var user in usersInTable.Where(u => u != null))
             {
-                var adUser = directory.FindEntryBySid(user.Sid) as IADUser;
+                var adUser = directory.FindGlobalEntryBySid(user.Sid) as IADUser;
                 if (adUser != null && !adUser.LockedOut)
                 {
                     var existing = context.LockedOutUsers.FirstOrDefault(x => x.Sid == user.Sid);
