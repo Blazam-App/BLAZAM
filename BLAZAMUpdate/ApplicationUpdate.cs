@@ -67,7 +67,6 @@ namespace BLAZAM.Update
             get => new(UpdateTempDirectory + "download" + Path.DirectorySeparatorChar);
         }
 
-
         /// <summary>
         /// The local path to the downloaded zip file
         /// </summary>
@@ -92,12 +91,12 @@ namespace BLAZAM.Update
         {
             get
             {
-                var testPath = new SystemFile(_applicationRootDirectory + @"bin\Debug\net8.0\updater\update.ps1");
+                var testPath = new SystemFile(_applicationRootDirectory + $"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}net8.0{Path.DirectorySeparatorChar}updater{Path.DirectorySeparatorChar}update.ps1");
 
 
                 if (!testPath.Exists)
                 {
-                    testPath = new SystemFile(_applicationRootDirectory + @"updater\update.ps1");
+                    testPath = new SystemFile(_applicationRootDirectory + $"updater{Path.DirectorySeparatorChar}update.ps1");
                 }
                 return testPath;
             }
@@ -109,10 +108,7 @@ namespace BLAZAM.Update
 
                 var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory;
                 if (Debugger.IsAttached)
-                {
-                    args += "bin\\Debug\\net8.0\\";
-                }
-
+                    args += $"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}net8.0{Path.DirectorySeparatorChar}";
                 args += "'";
 
                 return args;
@@ -278,8 +274,8 @@ namespace BLAZAM.Update
 
 
 
-            SystemDirectory updaterDirFromStagedUpdate = new(UpdateStagingDirectory.FullPath + "updater\\");
-            SystemDirectory updaterDir = new(_applicationRootDirectory.FullPath + "updater\\");
+            SystemDirectory updaterDirFromStagedUpdate = new(UpdateStagingDirectory.FullPath + $"updater{Path.DirectorySeparatorChar}");
+            SystemDirectory updaterDir = new(_applicationRootDirectory.FullPath + $"updater{Path.DirectorySeparatorChar}");
 
 
 

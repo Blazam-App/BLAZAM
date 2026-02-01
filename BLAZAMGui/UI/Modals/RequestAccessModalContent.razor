@@ -90,11 +90,6 @@
 <LoadingData Loading=LoadingData />
 @code {
 
-    [Inject]
-    private AppAuthenticationStateProvider AppAuthenticationStateProvider { get; set; }
-
-
-
     IReadOnlyCollection<ActiveDirectoryObjectAction>? _selectedActions = [];
     IReadOnlyCollection<RequestedField>? _selectedFields = [];
 

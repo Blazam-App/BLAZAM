@@ -5,8 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
-		<AssemblyVersion>1.5.0</AssemblyVersion>
-		<Version>2026.01.03.0043</Version>
+		<AssemblyVersion>1.5.1</AssemblyVersion>
+		<Version>2026.02.01.0314</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -39,6 +39,10 @@
 		<Content Include="nssm.exe">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+		<Content Include="static\img\maggie.png">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -66,6 +70,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Include="Octokit" Version="14.0.0" />
 		<PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
+		<PackageReference Include="PreMailer.Net" Version="2.7.2" />
 		<PackageReference Include="Serilog" Version="4.3.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
@@ -82,6 +87,9 @@
 		<PackageReference Include="System.Management" Version="9.0.11" />
 
 		<PackageReference Include="System.Security.Permissions" Version="9.0.11" />
+
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -101,6 +109,7 @@
 		<ProjectReference Include="..\BLAZAMStatic\BLAZAMStatic.csproj" />
 		<ProjectReference Include="..\BLAZAMUpdate\BLAZAMUpdate.csproj" />
 	</ItemGroup>
+
 
 	<ItemGroup>
 		<Compile Update="Properties\Resources.Designer.cs">
