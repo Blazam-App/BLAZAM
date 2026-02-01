@@ -73,7 +73,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public ActiveDirectoryObjectType? ObjectTypeFilter { get; set; }
         public bool? EnabledOnly { get; set; }
         public int MaxResults { get; set; } = 500;
-        private List<SearchResult> _searchResults = new();
 
         public List<IDirectoryEntryAdapter> Results { get; set; } = new();
         public string LdapFilter { get; private set; }

@@ -384,6 +384,9 @@ namespace BLAZAM.Helpers
                     case ')':
                         sb.Append("\\29");
                         break;
+                    case '/':
+                        sb.Append("\\2f");
+                        break;
                     case '\0': // Null character
                         sb.Append("\\00");
                         break;

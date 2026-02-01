@@ -21,6 +21,7 @@ using System.DirectoryServices.ActiveDirectory;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -33,7 +34,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return "/view/" + CanonicalName;
+                return "/view/" + HttpUtility.UrlEncode(CanonicalName);
             }
         }
         [JsonIgnore]
