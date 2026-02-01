@@ -3,6 +3,7 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -35,7 +36,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// The application scoped directory entry root
         /// </summary>
-        DirectoryEntry? AppRootDirectoryEntry { get; }
+        IDirectoryEntry? AppRootDirectoryEntry { get; }
 
         /// <summary>
         /// Provides OU search functions
@@ -91,12 +92,10 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         WindowsImpersonation Impersonation { get; }
 
-        /// <summary>
-        /// A list of the domain controllers that are members of the domain that was connected
-        /// </summary>
-        List<DomainController> DomainControllers { get; }
         DomainControllerEventLogReader EventLogReader { get; }
         Exception? ConnectionException { get; set; }
+        List<string> DomainControllers { get; }
+        AuthType AuthType { get; }
         string DomainSid { get; }
 
         /// <summary>
@@ -152,7 +151,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// server connectivity.
         /// </summary>
         /// <returns></returns>
-        void Connect();
+        AppLdapConnection? CheckConnect();
 
         /// <summary>
         /// Connects to an Active Directory server asynchronously.
@@ -161,13 +160,13 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// server connectivity.
         /// </summary>
         /// <returns></returns>
-        Task ConnectAsync();
+        Task<AppLdapConnection?> CheckConnectionAsync();
 
         /// <summary>
         /// Collects all deleted object from the Active Directory recycle bin
         /// </summary>
         /// <returns></returns>
-        DirectoryEntry GetDeleteObjectsEntry();
+        IDirectoryEntry GetDeleteObjectsEntry();
 
         /// <summary>
         /// Returns the directory entry of the given Base distinguished
@@ -176,7 +175,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         /// <param name="baseDN"></param>
         /// <returns></returns>
-        DirectoryEntry GetDirectoryEntry(string? baseDN = null);
+        IDirectoryEntry GetDirectoryEntry(string? baseDN = null);
 
         /// <summary>
         /// Restores an Active Directory object from the recycle bin
@@ -192,6 +191,9 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <param name="dn">The DN to search for</param>
         /// <returns>The matching entry, otherwise null</returns>
         IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn);
-        Task CancelConnection();
+        Task CancelCheckConnection();
+        AppLdapConnection GetConnection();
+        Task<AppLdapConnection> GetConnectionAsync();
+        void Dispose();
     }
 }

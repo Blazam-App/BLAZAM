@@ -5,6 +5,7 @@ using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
 using BLAZAM.Gui.Layouts;
 using BLAZAM.Gui.UI;
+using BLAZAM.Gui.UI.Outputs;
 using BLAZAM.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -116,9 +117,9 @@ namespace BLAZAM.Pages
                 await StateHasChangedAsync();
             });
             Searcher.ResultsCollected += ((batch) =>
-                 {
-                     results.AddRange(batch.Where(r => r.CanRead));
-                 });
+            {
+                results.AddRange(batch.Where(r => r.CanRead));
+            });
         }
         /// <summary>
         /// Filter for searching objects of only this type
