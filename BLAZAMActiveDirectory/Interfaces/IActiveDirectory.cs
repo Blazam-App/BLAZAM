@@ -194,6 +194,5 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         Task CancelCheckConnection();
         AppLdapConnection GetConnection();
         Task<AppLdapConnection> GetConnectionAsync();
-        void Dispose();
     }
 }
