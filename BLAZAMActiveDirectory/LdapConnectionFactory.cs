@@ -375,7 +375,11 @@ namespace BLAZAM.ActiveDirectory
                 currentConnection.SessionOptions.ReferralChasing = ReferralChasingOptions.None;
 
 
-                if (OperatingSystem.IsLinux() && settings.UseTLS && !StartTls(currentConnection)) return false;
+                if (OperatingSystem.IsLinux() && settings.UseTLS && !StartTls(currentConnection))
+                {
+                    Loggers.ActiveDirectoryLogger.Information("StartTLS failed to initiate.");
+                    return false;
+                }
 
 
                 currentConnection.Credential = credential;
@@ -459,10 +463,8 @@ namespace BLAZAM.ActiveDirectory
                             {
                                 try
                                 {
-                                    //Task.Delay(200).Wait();
 
                                     currentConnection.SessionOptions.StopTransportLayerSecurity();
-                                    //Task.Delay(100).Wait();
 
                                     tlsStarted = true;
                                 }
@@ -497,10 +499,6 @@ namespace BLAZAM.ActiveDirectory
         {
             if (!disposedValue)
             {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects)
-                }
                 ClearPool();
                 disposedValue = true;
             }
