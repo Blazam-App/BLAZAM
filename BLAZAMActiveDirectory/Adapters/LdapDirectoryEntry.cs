@@ -258,7 +258,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
                     {
-                        existingCache.Attributes[attributeName.ToLower()] = null;
+                        GetSingleAttribute(attributeName, existingCache);
+                        if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
+                        {
+                            existingCache.Attributes[attributeName.ToLower()] = null;
+                        }
                     }
                     return existingCache.Attributes[attributeName.ToLower()];
                 }
@@ -278,7 +282,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
             {
-                existingCache.Attributes[attributeName.ToLower()] = null;
+                GetSingleAttribute(attributeName, existingCache);
+                if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
+                {
+                    existingCache.Attributes[attributeName.ToLower()] = null;
+                }
             }
 
             _propertiesCollected = true;
@@ -288,7 +296,25 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         }
+        private void GetSingleAttribute(string attributeName, EntryCache? existingCache)
+        {
+            // Search request to get ALL user attributes for the specified DN
+            SearchRequest allAttributesSearchRequest = new SearchRequest(
+                DN,                                 // The DN of the object
+                "(objectClass=*)",                  // Filter to match the object
+                System.DirectoryServices.Protocols.SearchScope.Base, // Target a specific object
+                attributeName                                // Request all user attributes
+            );
 
+
+            var searchResponse = SendRequestAndGetResponse<SearchResponse>(allAttributesSearchRequest);
+
+
+
+            SearchResultEntry entry = searchResponse.Entries[0];
+
+            ProcessAttributes(existingCache, entry);
+        }
         private void GetAllAttributes(EntryCache? existingCache)
         {
 
