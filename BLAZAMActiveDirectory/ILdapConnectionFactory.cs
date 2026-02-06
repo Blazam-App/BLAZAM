@@ -4,7 +4,7 @@ using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.ActiveDirectory
 {
-    public interface ILdapConnectionFactory
+    public interface ILdapConnectionFactory:IDisposable
     {
         int Count { get; }
         AppEvent? OnCountChanged { get; set; }
@@ -13,7 +13,6 @@ namespace BLAZAM.ActiveDirectory
         AppLdapConnection? Connect(ADSettings settings);
         bool ConnectWithLdaps(ADSettings settings, out LdapConnection? connection);
         bool ConnectWithStartTls(ADSettings settings, out LdapConnection? connection);
-        void Dispose();
         bool StopTls(LdapConnection currentConnection);
     }
 }
