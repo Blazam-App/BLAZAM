@@ -34,7 +34,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return "/view/" + HttpUtility.UrlEncode(CanonicalName);
+                return "/view/" + Uri.EscapeDataString(CanonicalName);
             }
         }
         [JsonIgnore]
