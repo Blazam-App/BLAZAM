@@ -134,6 +134,7 @@
         public static readonly string Home_Drive = "Home Drive";
         public static readonly string Script_Path = "Script Path";
         public static readonly string Profile_Path = "Profile Path";
+        public static readonly string Telephone_Number = "Telephone Number";
         public static readonly string System_Settings = "System Settings";
         public static readonly string Impersonate_User = "Impersonate User";
         public static readonly string Group_Membership_Changes = "Group Membership Changes";

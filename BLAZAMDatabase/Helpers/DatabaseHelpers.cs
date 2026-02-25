@@ -15,6 +15,36 @@ namespace BLAZAM.Helpers
 {
     public static class DatabaseHelpers
     {
+        /// <summary>
+        /// Checks if the given field is in the template, whether editable or not
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public static bool InTemplate(this DirectoryTemplate? template, IActiveDirectoryField field)
+        {
+            if (template == null)
+            {
+                return false;
+            }
+            return template.EffectiveFieldValues.Any(f => (f.Field != null && f.Field.FieldName == field.FieldName) || (f.CustomField != null && f.CustomField.FieldName == field.FieldName));
+
+        }
+
+        public static bool IsEditableField (this DirectoryTemplate template, IActiveDirectoryField field)
+        {
+            if (field is ActiveDirectoryField)
+                return template.EffectiveFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
+            else
+                return template.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Editable);
+        }
+
+        public static bool IsRequiredField (this DirectoryTemplate template, IActiveDirectoryField field)
+        {
+            if (field is ActiveDirectoryField)
+                return template.EffectiveFieldValues.Any(f => f.Field?.FieldName == field.FieldName && f.Required);
+            else
+                return template.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Required);
+        }
         public static long GetMembersHash(this IEnumerable<AppUser> members)
         {
             long hash = 0;
