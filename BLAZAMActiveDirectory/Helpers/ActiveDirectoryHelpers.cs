@@ -602,7 +602,7 @@ namespace BLAZAM.Helpers
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error("Error encapsulating SearchResultEntryCollection: {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex,"Error encapsulating SearchResultEntryCollection");
                 // Depending on desired behavior, might clear objects or throw
             }
             return objects;

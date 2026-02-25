@@ -70,7 +70,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             _isNew = isNew;
             // Immediately place a new attribute dictionary into the static DirectoryCache for this proposed DN.
             var initialAttributes = new Dictionary<string, object?> { { "distinguishedname", proposedDn } };
-            _attributeCache = initialAttributes;
+            
             DirectoryCache.SetEntryCache(proposedDn, initialAttributes);
         }
         // NEW: Static factory method to create a new directory entry in memory.
@@ -232,22 +232,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         private bool _propertiesCollected = false;
-        private Dictionary<string, object?> _attributeCache = new();
 
         private object? Search(string attributeName)
         {
 
             var existingCache = DirectoryCache.GetEntryCache(DN);
-            //var existingCache = new EntryCache(_attributeCache);
-            //if (_attributeCache.ContainsKey(attributeName))
-            //{
-            //    return _attributeCache[attributeName];
-            //}
-            //else if (_propertiesCollected)
-            //{
-            //    _attributeCache[attributeName] = null;
-            //    return null;
-            //}
             if (existingCache != null)
             {
                 if (existingCache.Attributes.ContainsKey(attributeName.ToLower()))
@@ -258,7 +247,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
                     {
-                        existingCache.Attributes[attributeName.ToLower()] = null;
+                        GetSingleAttribute(attributeName, existingCache);
+                        if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
+                        {
+                            existingCache.Attributes[attributeName.ToLower()] = null;
+                        }
                     }
                     return existingCache.Attributes[attributeName.ToLower()];
                 }
@@ -278,7 +271,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
             {
-                existingCache.Attributes[attributeName.ToLower()] = null;
+                GetSingleAttribute(attributeName, existingCache);
+                if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
+                {
+                    existingCache.Attributes[attributeName.ToLower()] = null;
+                }
             }
 
             _propertiesCollected = true;
@@ -288,7 +285,25 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         }
+        private void GetSingleAttribute(string attributeName, EntryCache? existingCache)
+        {
+            // Search request to get ALL user attributes for the specified DN
+            SearchRequest allAttributesSearchRequest = new SearchRequest(
+                DN,                                 // The DN of the object
+                "(objectClass=*)",                  // Filter to match the object
+                SearchScope.Base, // Target a specific object
+                attributeName                                // Request all user attributes
+            );
 
+
+            var searchResponse = SendRequestAndGetResponse<SearchResponse>(allAttributesSearchRequest);
+
+
+
+            SearchResultEntry entry = searchResponse.Entries[0];
+
+            ProcessAttributes(existingCache, entry);
+        }
         private void GetAllAttributes(EntryCache? existingCache)
         {
 
@@ -296,7 +311,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             SearchRequest allAttributesSearchRequest = new SearchRequest(
                 DN,                                 // The DN of the object
                 "(objectClass=*)",                  // Filter to match the object
-                System.DirectoryServices.Protocols.SearchScope.Base, // Target a specific object
+                SearchScope.Base, // Target a specific object
                 null                                // Request all user attributes
             );
 
@@ -369,7 +384,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
 
             }
-            _attributeCache = existingCache.Attributes;
             DirectoryCache.SetEntryCache(DN, existingCache.Attributes);
         }
 
@@ -406,7 +420,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     SearchRequest schemaSearchRequest = new SearchRequest(
                        _namingContextCache,
                        $"(objectClass=attributeSchema)",
-                       System.DirectoryServices.Protocols.SearchScope.Subtree,
+                       SearchScope.Subtree,
                        "attributeSyntax", "oMSyntax", "isSingleValued", "oMObjectClass", "cn" // "cn" can be useful for debugging
                    );
 
@@ -447,7 +461,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SearchRequest schemaSearchRequest = new SearchRequest(
                     _namingContextCache,
                     $"(&(objectClass=attributeSchema)(ldapDisplayName={propertyName}))",
-                    System.DirectoryServices.Protocols.SearchScope.Subtree,
+                    SearchScope.Subtree,
                     "attributeSyntax", "oMSyntax", "isSingleValued", "oMObjectClass", "cn" // "cn" can be useful for debugging
                 );
 
@@ -616,7 +630,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if (rawValue is byte[] bytesSD)
                     {
                         // For simplicity, returning as string representation or bytes
-                        return Convert.ToBase64String(bytesSD); // Or process further
+                        return Convert.ToBase64String(bytesSD); 
                     }
                     return rawValue;
 
@@ -684,10 +698,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public bool UsePropertyCache { get; set; }
 
-        public void Close()
-        {
-            //Nothing stays open
-        }
+  
 
         public void CommitChanges()
         {
@@ -753,7 +764,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
             return null;
-            //return UnderlyingEntry.Invoke(methodName, args);
         }
 
         private bool InvokeRemove(object[]? args)
@@ -792,22 +802,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <returns>True if the password was set successfully; otherwise, false.</returns>
         public bool SetUserPasswordLdap(string newPassword)
         {
-
-            // The password for unicodePwd must be a UTF-16LE encoded string, enclosed in double quotes.
-
-            //string formattedPassword = "\"" + newPassword + "a\"";
-            //byte[] newPasswordBytes = Encoding.Unicode.GetBytes(formattedPassword);
-
             string formattedPassword2 = "\"" + newPassword + "\"";
             byte[] newPasswordBytes2 = Encoding.Unicode.GetBytes(formattedPassword2);
 
             if (Invoke("unicodePwd", DirectoryAttributeOperation.Replace, newPasswordBytes2))
             {
-                //if(Invoke("unicodePwd", DirectoryAttributeOperation.Replace, newPasswordBytes2))
-                //{
-                //    SetPropertyValue("pwdLastSet", DateTime.Now);
-                //    return true;
-                //}
                 return true;
             }
             return false;
@@ -850,20 +849,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             else
             {
-                // Log the specific LDAP error:
-                // string errorMessage = modifyResponse.ErrorMessage;
-                // ResultCode resultCode = modifyResponse.ResultCode;
-                // Log.Error($"Failed to set password for {userDistinguishedName}. LDAP Error: {resultCode} - {errorMessage}");
-
-                // Your original code caught TargetInvocationException HResult -2146232828 (0x80131604)
-                // and returned false. You would need to map specific LDAP ResultCodes to this behavior
-                // if you know what underlying ADSI error that HResult represented.
-                // For example, password policy violations often return ConstraintViolation or UnwillingToPerform.
-                // if (resultCode == ResultCode.ConstraintViolation || resultCode == ResultCode.UnwillingToPerform)
-                // {
-                //     // This might be equivalent to the scenario where your Invoke call failed with that HResult
-                //     return false;
-                // }
                 return false; // General failure to set password
             }
 
