@@ -1,42 +1,45 @@
 ﻿@inherits DirectoryModelComponentElement
 
-@if (User != null &&
-     (User.CanReadField(ActiveDirectoryFields.HomeDirectory) ||
-     User.CanReadField(ActiveDirectoryFields.HomeDrive) ||
-     User.CanReadField(ActiveDirectoryFields.ScriptPath) ||
-     User.CanReadField(ActiveDirectoryFields.ProfilePath))
-     )
+@if (ShowSection)
 {
     <ViewSection Title=@AppLocalization[Lang.Profile]>
 
-            @if (User.CanReadField(ActiveDirectoryFields.HomeDirectory))
-            {
-                <MudStack Row=true Spacing="0">
+        @if (ShowField(ActiveDirectoryFields.HomeDirectory))
+        {
+            <MudStack Row=true Spacing="0">
 
-                    <DynamicMudInput T=string Label="@AppLocalization[Lang.Home_Directory]"
-                    @bind-Value="@User.HomeDirectory"
-                    Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
-                    @if (!User.HomeDirectory.IsNullOrEmpty())
-                    {
+                <DynamicMudInput T=string Label="@AppLocalization[Lang.Home_Directory]"
+                                 @bind-Value="@User.HomeDirectory"
+                                 Disabled=@(DisableField(ActiveDirectoryFields.HomeDirectory)) />
+                @if (!User.HomeDirectory.IsNullOrEmpty())
+                {
 
-                        <MudIcon Class="align-middle" Icon="@(homeDirectoryExists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
-                        Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
-                    }
-                    <AppCopyButton TextToCopy=@User.HomeDirectory />
-                </MudStack>
-            }
-            @if (User.CanReadField(ActiveDirectoryFields.HomeDrive))
-            {
-                <HomeDriveSelect Label="@AppLocalization[Lang.Home_Drive]" @bind-DriveLetter="@User.HomeDrive" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDrive)) />
-            }
-            @if (User.CanReadField(ActiveDirectoryFields.ScriptPath))
-            {
-                <DynamicMudInput T=string Label="@AppLocalization[Lang.Script_Path]" @bind-Value="@User.ScriptPath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ScriptPath)) />
-            }
-            @if (User.CanReadField(ActiveDirectoryFields.ProfilePath))
-            {
-                <DynamicMudInput T=string Label="@AppLocalization[Lang.Profile_Path]" @bind-Value="@User.ProfilePath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) />
-            }
+                    <MudIcon Class="align-middle" Icon="@(homeDirectoryExists? Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
+                             Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
+                }
+                <AppCopyButton TextToCopy=@User.HomeDirectory />
+            </MudStack>
+        }
+        @if (ShowField(ActiveDirectoryFields.HomeDrive))
+        {
+            <HomeDriveSelect Label="@AppLocalization[Lang.Home_Drive]"
+                             @bind-DriveLetter="@User.HomeDrive"
+                             Disabled=@(DisableField(ActiveDirectoryFields.HomeDrive)) />
+        }
+        @if (ShowField(ActiveDirectoryFields.ScriptPath))
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Script_Path]"
+                             @bind-Value="@User.ScriptPath"
+                             Disabled=@(DisableField(ActiveDirectoryFields.ScriptPath)) />
+        }
+        @if (ShowField(ActiveDirectoryFields.ProfilePath))
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Profile_Path]"
+                             @bind-Value="@User.ProfilePath"
+                             Disabled=@(DisableField(ActiveDirectoryFields.ProfilePath)) />
+        }
 
         <PluginComponents Page="@PageType.User" Location="@PageLocation.Profile" />
 
@@ -63,9 +66,13 @@
 
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Warning(ex,"Error checking user h-drive");
+                Loggers.ActiveDirectoryLogger.Warning(ex, "Error checking user h-drive");
 
             }
         }
     }
+    bool ShowSection => ShowField(ActiveDirectoryFields.HomeDirectory) ||
+     ShowField(ActiveDirectoryFields.HomeDrive) ||
+     ShowField(ActiveDirectoryFields.ScriptPath) ||
+     ShowField(ActiveDirectoryFields.ProfilePath);
 }
