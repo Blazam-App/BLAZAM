@@ -15,13 +15,6 @@ using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
-using System.Data;
-using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
-using System.Reflection;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -34,7 +27,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return "/view/" + Uri.EscapeDataString(CanonicalName);
+                return "/view/" + Uri.EscapeDataString(CanonicalName ?? String.Empty);
             }
         }
         [JsonIgnore]

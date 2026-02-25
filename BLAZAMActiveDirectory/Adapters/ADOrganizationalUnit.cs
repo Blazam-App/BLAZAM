@@ -51,7 +51,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        public override string SearchUri => "/view/" + Uri.EscapeDataString(DN);
+        public override string SearchUri => "/view/" + Uri.EscapeDataString(DN ?? String.Empty);
 
         public override string? CanonicalName
         {

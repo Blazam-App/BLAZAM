@@ -104,7 +104,7 @@ namespace BLAZAM.Services
             }
 
             Loggers.SystemLogger.Debug("SearchService.Search: Navigating to /search/{FinalSearchTerm}", SearchTerm);
-            _nav.NavigateTo("/search/" + Uri.EscapeDataString(SearchTerm));
+            _nav.NavigateTo("/search/" + Uri.EscapeDataString(SearchTerm??String.Empty));
 
 
 
