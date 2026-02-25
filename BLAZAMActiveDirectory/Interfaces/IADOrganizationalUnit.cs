@@ -25,6 +25,10 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         IADUser CreateUser(string containerName);
         IADContact CreateContact(string containerName);
         IADOrganizationalUnit CreateOU(string containerName);
+        /// <summary>
+        /// Get Sub OU's
+        /// </summary>
+        /// <returns></returns>
         Task<IEnumerable<IDirectoryEntryAdapter>> GetChildrenAsync();
         Task<bool> HasChildrenAsync();
         IADPrinter CreatePrinter(string containerName, string uncPath, string shortServerName);
