@@ -31,7 +31,7 @@ echo "--> Fetching the SSL certificate from $SERVER_ADDRESS:$SERVER_PORT..."
 # 2>/dev/null suppresses connection errors from printing to the console.
 CERT_CONTENT=$(openssl s_client -connect $SERVER_ADDRESS:$SERVER_PORT </dev/null 2>/dev/null | openssl x509 -outform PEM)
 
-if [ -z "$CERT_CONTENT" ]; then
+if [[ -z "$CERT_CONTENT" ]]; then
     echo "!!! Failed to retrieve certificate from $SERVER_ADDRESS:$SERVER_PORT. !!!"
     echo "!!! Please check the address, port, and network connectivity. !!!"
     exit 1
