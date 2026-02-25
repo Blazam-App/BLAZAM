@@ -10,6 +10,7 @@
 
                 <DynamicMudInput T=string Label="@AppLocalization[Lang.Home_Directory]"
                                  @bind-Value="@User.HomeDirectory"
+                                 Required=@(RequireField(ActiveDirectoryFields.HomeDirectory))
                                  Disabled=@(DisableField(ActiveDirectoryFields.HomeDirectory)) />
                 @if (!User.HomeDirectory.IsNullOrEmpty())
                 {
@@ -24,6 +25,7 @@
         {
             <HomeDriveSelect Label="@AppLocalization[Lang.Home_Drive]"
                              @bind-DriveLetter="@User.HomeDrive"
+                             Required=@(RequireField(ActiveDirectoryFields.HomeDrive))
                              Disabled=@(DisableField(ActiveDirectoryFields.HomeDrive)) />
         }
         @if (ShowField(ActiveDirectoryFields.ScriptPath))
@@ -31,6 +33,7 @@
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.Script_Path]"
                              @bind-Value="@User.ScriptPath"
+                             Required=@(RequireField(ActiveDirectoryFields.ScriptPath))
                              Disabled=@(DisableField(ActiveDirectoryFields.ScriptPath)) />
         }
         @if (ShowField(ActiveDirectoryFields.ProfilePath))
@@ -38,6 +41,7 @@
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.Profile_Path]"
                              @bind-Value="@User.ProfilePath"
+                             Required=@(RequireField(ActiveDirectoryFields.ProfilePath))
                              Disabled=@(DisableField(ActiveDirectoryFields.ProfilePath)) />
         }
 

@@ -51,6 +51,21 @@
             }
         }
 
+        protected bool RequireField(IActiveDirectoryField field)
+        {
+            if (Disabled)
+            {
+                return false;
+            }
+            if (Template == null)
+            {
+                return false;
+            }
+            else
+            {
+                return !IsAdmin && !Template.IsRequiredField(field);
+            }
+        }
         protected bool DisableField(IActiveDirectoryField field)
         {
             if(Disabled)

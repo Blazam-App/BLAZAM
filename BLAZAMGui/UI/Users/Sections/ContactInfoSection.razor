@@ -8,6 +8,7 @@
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.Telephone_Number]"
                              @bind-Value="@Contact.TelephoneNumber"
+                             Required=@(RequireField(ActiveDirectoryFields.TelephoneNumber))
                              Disabled=@(DisableField(ActiveDirectoryFields.TelephoneNumber)) />
 
         }
@@ -16,6 +17,7 @@
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.Home_Phone]"
                              @bind-Value="@Contact.HomePhone"
+                             Required=@(RequireField(ActiveDirectoryFields.HomePhone))
                              Disabled=@(DisableField(ActiveDirectoryFields.HomePhone)) />
 
         }
@@ -24,6 +26,7 @@
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.Street_Address]"
                              @bind-Value="@Contact.StreetAddress"
+                             Required=@(RequireField(ActiveDirectoryFields.StreetAddress))
                              Disabled=@(DisableField(ActiveDirectoryFields.StreetAddress)) />
         }
         @if (ShowField(ActiveDirectoryFields.POBox))
@@ -31,6 +34,7 @@
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.PO_Box]"
                              @bind-Value="@Contact.POBox"
+                             Required=@(RequireField(ActiveDirectoryFields.POBox))
                              Disabled=@(DisableField(ActiveDirectoryFields.POBox)) />
         }
         @if (ShowField(ActiveDirectoryFields.City))
@@ -38,6 +42,7 @@
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.City]"
                              @bind-Value="@Contact.City"
+                             Required=@(RequireField(ActiveDirectoryFields.City))
                              Disabled=@(DisableField(ActiveDirectoryFields.City)) />
         }
         @if (ShowField(ActiveDirectoryFields.State))
@@ -45,6 +50,7 @@
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.State]"
                              @bind-Value="@Contact.State"
+                             Required=@(RequireField(ActiveDirectoryFields.State))
                              Disabled=@(DisableField(ActiveDirectoryFields.State)) />
         }
         @if (ShowField(ActiveDirectoryFields.PostalCode))
@@ -52,6 +58,7 @@
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.Zip_Code]"
                              @bind-Value="@Contact.Zip"
+                             Required=@(RequireField(ActiveDirectoryFields.PostalCode))
                              Disabled=@(DisableField(ActiveDirectoryFields.PostalCode)) />
         }
 

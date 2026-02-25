@@ -18,6 +18,8 @@
         <DynamicMudInput T=string
                          Label="@AppLocalization[Lang.Description]"
                          @bind-Value="@Contact.Description"
+                             Required=@(RequireField(ActiveDirectoryFields.Description))
+
                              Disabled=@(DisableField(ActiveDirectoryFields.Description)) />
     }
 
@@ -26,6 +28,7 @@
         <DynamicMudInput T=string
                          Label="@AppLocalization[Lang.Email_Address]"
                          @bind-Value="@Contact.Email"
+                             Required=@(RequireField(ActiveDirectoryFields.Mail))
                              Disabled=@(DisableField(ActiveDirectoryFields.Mail)) />
     }
 
@@ -34,6 +37,7 @@
         <DynamicMudInput T=string
                          Label="@AppLocalization[Lang.Employee_Id]"
                          @bind-Value="@Contact.EmployeeId"
+                             Required=@(RequireField(ActiveDirectoryFields.EmployeeId))
                          Disabled=@(DisableField(ActiveDirectoryFields.EmployeeId)) />
     }
     @if (ShowField(ActiveDirectoryFields.Department))
@@ -41,6 +45,7 @@
         <DynamicMudInput T=string
                          Label="@AppLocalization[Lang.Department]"
                          @bind-Value="@Contact.Department"
+                             Required=@(RequireField(ActiveDirectoryFields.Department))
                          Disabled=@(DisableField(ActiveDirectoryFields.Department)) />
     }
     @if (ShowField(ActiveDirectoryFields.Company))
@@ -48,6 +53,7 @@
         <DynamicMudInput T=string
                          Label="@AppLocalization[Lang.Company]"
                          @bind-Value="@Contact.Company"
+                             Required=@(RequireField(ActiveDirectoryFields.Company))
                          Disabled=@(DisableField(ActiveDirectoryFields.Company)) />
     }
     @if (ShowField(ActiveDirectoryFields.Manager))
@@ -56,6 +62,7 @@
                         Label="@AppLocalization[Lang.Manager]"
                         SelectedResult=Contact.Manager
                         SelectedResultChanged="@((user)=>{Contact.Manager=user as IADUser;})"
+
                         Disabled=@(DisableField(ActiveDirectoryFields.Manager)) />
     }
     @if (ShowField(ActiveDirectoryFields.Title))
@@ -63,6 +70,7 @@
         <DynamicMudInput T=string
                          Label="@AppLocalization[Lang.Job_Title]"
                          @bind-Value="@Contact.Title"
+                             Required=@(RequireField(ActiveDirectoryFields.Title))
                          Disabled=@(DisableField(ActiveDirectoryFields.Title)) />
     }
     @if (ShowField(ActiveDirectoryFields.PhysicalDeliveryOffice))
@@ -70,6 +78,7 @@
         <DynamicMudInput T=string
                          Label="@AppLocalization[Lang.Office]"
                          @bind-Value="@Contact.PhysicalDeliveryOfficeName"
+                             Required=@(RequireField(ActiveDirectoryFields.PhysicalDeliveryOffice))
                          Disabled=@(DisableField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
     }
 

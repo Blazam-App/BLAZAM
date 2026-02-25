@@ -18,6 +18,11 @@
                                 </MudAlert>
                             }
                         }
+                        @if (InDirectoryTemplate(ActiveDirectoryFields.Thumbnail)){
+                            <ContactThumbnailPhoto Contact=Contact
+                                                   Required=@(DirectoryTemplate.IsRequiredField(ActiveDirectoryFields.Thumbnail))
+                                Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(ActiveDirectoryFields.Thumbnail)) />
+                         }
                         @if (InDirectoryTemplate(ActiveDirectoryFields.LogonHours) ||
                                             InDirectoryTemplate(ActiveDirectoryFields.LogOnTo) ||
                                             InDirectoryTemplate(ActiveDirectoryFields.AccountExpires)
@@ -91,7 +96,7 @@
                                           Label="@AppLocalization[Lang.Site]"
                                           @bind-Value="@Contact.Site"
                                           Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(ActiveDirectoryFields.Site))
-                                          Required=@(IsRequiredTemplateField(ActiveDirectoryFields.Site)) />
+                                          Required=@(DirectoryTemplate.IsRequiredField(ActiveDirectoryFields.Site)) />
 
                         }
 
@@ -167,15 +172,7 @@
         return DirectoryTemplate.EffectiveFieldValues.Any(f => (f.Field != null && f.Field.FieldName == field.FieldName) || (f.CustomField != null && f.CustomField.FieldName == field.FieldName));
     }
 
-    bool IsRequiredTemplateField(IActiveDirectoryField field)
-    {
 
-
-        if (field is ActiveDirectoryField)
-            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field?.FieldName == field.FieldName && f.Required);
-        else
-            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Required);
-    }
 
     bool ValidateCustomField(DirectoryTemplateFieldValue field)
     {

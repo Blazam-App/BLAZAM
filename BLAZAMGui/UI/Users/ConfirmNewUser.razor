@@ -11,7 +11,11 @@
 <AppPageTitle>@AppLocalization[Lang.Confirm_User_Creation]</AppPageTitle>
 
 
-
+@if (DirectoryTemplate.InTemplate(ActiveDirectoryFields.Thumbnail))
+{
+    <ContactThumbnailPhoto Contact=Contact
+                           Disabled=true/>
+}
 
 <MudTextField Label="@AppLocalization[Lang.OU]"
               Value="@Contact.OU.ToPrettyOu()"
@@ -43,9 +47,6 @@
               Value="@User.NewPassword.ToPlainText()"
               Disabled=true />
 
-<MudTextField Label="@AppLocalization[Lang.Email_Address]"
-              Value="@Contact.Email"
-              Disabled=true />
 <CascadingValue Value="GroupableEntry">
     <CascadingValue Value="Entry">
         <CascadingValue Value="DirectoryTemplate">
@@ -54,13 +55,7 @@
             <ContactInfoSection Disabled=true />
            
            
-            <ProfileSection Disabled=true />
-         
-
-
-
-
-
+            <ProfileSection Disabled=true />  
 
 
             <ViewSection Title=@AppLocalization[Lang.Groups]>
@@ -73,6 +68,7 @@
                 }
 
             </ViewSection>
+
             @if (GroupableEntry.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
             {
                 <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
