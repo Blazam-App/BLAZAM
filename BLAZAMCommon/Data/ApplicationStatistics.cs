@@ -20,7 +20,8 @@ namespace BLAZAM.Common.Data
                 ADContextCount--;
             }
         }
-        public static readonly List<Guid> LdapConnections = new ();
+        public static int LdapConnectionCount => LdapConnections.Count;
+        private static readonly List<Guid> LdapConnections = new ();
         public static void RemoveLdapConnection(Guid guid)
         {
             LdapConnections.Remove(guid);

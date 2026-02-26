@@ -359,7 +359,11 @@ namespace BLAZAM.Helpers
             }
             return objects;
         }
-
+        /// <summary>
+        /// Escapes special characters in a string for use in an LDAP search filter, following RFC 4515 guidelines. The characters that are escaped include: \, *, (, ), /, and the null character.
+        /// </summary>
+        /// <param name="input">The input string to escape.</param>
+        /// <returns>The escaped string suitable for LDAP search filters.</returns>
         public static string? EscapeLdapSearchFilter(this string? input)
         {
             if (input.IsNullOrEmpty())
@@ -417,7 +421,11 @@ namespace BLAZAM.Helpers
             return list;
 
         }
-
+        /// <summary>
+        /// Returns a list of applicable <see cref="ActiveDirectoryFieldOperator"/> for a given <see cref="IActiveDirectoryField"/>'s <see cref="ActiveDirectoryFieldType"/>.
+        /// </summary>
+        /// <param name="field">The field for which to retrieve applicable operators.</param>
+        /// <returns>A list of <see cref="ActiveDirectoryFieldOperator"/> that can be used with the specified field type.</returns>
         public static List<ActiveDirectoryFieldOperator> GetOperators(this IActiveDirectoryField field)
         {
             List<ActiveDirectoryFieldOperator> applicableOperators = [];
@@ -455,7 +463,12 @@ namespace BLAZAM.Helpers
             return applicableOperators;
 
         }
-
+        /// <summary>
+        /// Determines if a given <see cref="ActiveDirectoryObjectAction"/> is appropriate for a specified <see cref="ActiveDirectoryObjectType"/>. This method checks the compatibility of actions such as Move, Delete, Create, etc., with object types like User, Group, Computer, etc., based on typical Active Directory operations and constraints.
+        /// </summary>
+        /// <param name="action">The action to check for compatibility.</param>
+        /// <param name="type">The object type to check against.</param>
+        /// <returns>True if the action is appropriate for the object type; otherwise, false.</returns>
         public static bool IsActionAppropriateForObject(this ActiveDirectoryObjectAction action, ActiveDirectoryObjectType type)
         {
 
@@ -526,7 +539,12 @@ namespace BLAZAM.Helpers
                     return false;
             }
         }
-
+        /// <summary>
+        /// Determines if a given <see cref="ObjectAction"/> is appropriate for a specified <see cref="ActiveDirectoryObjectType"/> by evaluating the action's associated <see cref="ActiveDirectoryObjectAction"/> against the object type. This method serves as an extension to directly assess the suitability of an <see cref="ObjectAction"/> instance for a particular Active Directory object type, facilitating permission checks and action validations in the context of Active Directory management.
+        /// </summary>
+        /// <param name="action">The <see cref="ObjectAction"/> to check for compatibility.</param>
+        /// <param name="type">The <see cref="ActiveDirectoryObjectType"/> to check against.</param>
+        /// <returns>True if the action is appropriate for the object type; otherwise, false.</returns>
         public static bool IsActionAppropriateForObject(this ObjectAction action, ActiveDirectoryObjectType type) => IsActionAppropriateForObject(action.Action, type);
 
         /// <summary>
@@ -566,6 +584,8 @@ namespace BLAZAM.Helpers
             // The parent DN is the substring starting right after the matched comma.
             return dn.Substring(match.Index + 1);
         }
+
+
         public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry)
         {
             return null;

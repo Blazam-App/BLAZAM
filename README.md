@@ -12,11 +12,6 @@
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
 
-## v1.5.1
-This update introduces major code changes to the interaction with Active Directory. All AD code has been rewritten with a lower-level code API that may have issues previous versions did not encounter. This is the official release candidate for Linux.
-
-We will recall this update if the community feedback indicates a serious issue. Re-applying the files from the v1.5.0 zip file will revert all changes made by this update.
-
 ## Screenshots
 ![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)
 ![image](https://github.com/user-attachments/assets/cfa35e1f-facb-4c64-8ad4-1a48de5f4a82)

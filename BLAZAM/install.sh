@@ -58,7 +58,7 @@ send_to_seq() {
 
         # Get the OS Version from /etc/os-release
         local os_version="unknown"
-        if [ -f /etc/os-release ]; then
+        if [[ -f /etc/os-release ]]; then
             os_version=$(source /etc/os-release && echo "$PRETTY_NAME")
         fi
 
@@ -116,7 +116,7 @@ log_error() {
 # 1. Run pre-flight checks to ensure the script can execute.
 pre_flight_checks() {
     log_info "Running pre-flight checks..."
-    if [ "$(id -u)" -ne 0 ]; then
+    if [[ "$(id -u)" -ne 0 ]]; then
         log_error "This script must be run as root. Please use sudo."
     fi
     if ! command -v wget &>/dev/null || ! command -v unzip &>/dev/null; then
@@ -132,7 +132,7 @@ get_user_input() {
 
     # Prompt for Domain Name
     read -r -p "Enter the domain name or IP for Blazam (e.g., blazam.example.com): " DOMAIN_NAME
-    if [ -z "${DOMAIN_NAME}" ]; then
+    if [[ -z "${DOMAIN_NAME}" ]]; then
         log_warn "No domain name entered. Defaulting to 'localhost'."
         DOMAIN_NAME="localhost"
     fi

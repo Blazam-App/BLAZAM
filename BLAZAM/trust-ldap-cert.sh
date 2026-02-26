@@ -13,7 +13,7 @@ SERVER_PORT="636"
 # --- End Configuration ---
 
 # Check for root/sudo privileges
-if [ "$EUID" -ne 0 ]; then
+if [[ "$EUID" -ne 0 ]]; then
   echo "!!! This script must be run as root or with sudo. !!!"
   exit 1
 fi
@@ -31,7 +31,7 @@ echo "--> Fetching the SSL certificate from $SERVER_ADDRESS:$SERVER_PORT..."
 # 2>/dev/null suppresses connection errors from printing to the console.
 CERT_CONTENT=$(openssl s_client -connect $SERVER_ADDRESS:$SERVER_PORT </dev/null 2>/dev/null | openssl x509 -outform PEM)
 
-if [ -z "$CERT_CONTENT" ]; then
+if [[ -z "$CERT_CONTENT" ]]; then
     echo "!!! Failed to retrieve certificate from $SERVER_ADDRESS:$SERVER_PORT. !!!"
     echo "!!! Please check the address, port, and network connectivity. !!!"
     exit 1
@@ -48,13 +48,13 @@ UPDATE_COMMAND=""
 CERT_FILENAME="$SERVER_ADDRESS.crt"
 
 # Check for Debian/Ubuntu
-if [ -f /etc/debian_version ]; then
+if [[ -f /etc/debian_version ]]; then
     echo "--> Detected Debian-based OS (Ubuntu, Debian, Mint)."
     CERT_PATH="/usr/local/share/ca-certificates/$CERT_FILENAME"
     UPDATE_COMMAND="update-ca-certificates"
 
 # Check for Red Hat/CentOS
-elif [ -f /etc/redhat-release ]; then
+elif [[ -f /etc/redhat-release ]]; then
     echo "--> Detected Red Hat-based OS (CentOS, RHEL, Fedora)."
     CERT_PATH="/etc/pki/ca-trust/source/anchors/$CERT_FILENAME"
     UPDATE_COMMAND="update-ca-trust"
@@ -67,7 +67,7 @@ fi
 echo "--> Installing certificate to $CERT_PATH..."
 cp "$CERT_FILE" "$CERT_PATH"
 
-if [ $? -ne 0 ]; then
+if [[ $? -ne 0 ]]; then
     echo "!!! Failed to copy certificate to system store. Check permissions. !!!"
     rm "$CERT_FILE"
     exit 1
@@ -76,7 +76,7 @@ fi
 echo "--> Updating system certificate store..."
 $UPDATE_COMMAND
 
-if [ $? -eq 0 ]; then
+if [[ $? -eq 0 ]]; then
     echo "==================================================================="
     echo "SUCCESS: Certificate for $SERVER_ADDRESS has been installed and trusted."
     echo "You should now be able to establish a secure LDAP connection."

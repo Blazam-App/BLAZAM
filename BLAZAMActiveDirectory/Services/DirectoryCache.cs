@@ -10,7 +10,7 @@ namespace BLAZAM.ActiveDirectory.Services
     public static class DirectoryCache
     {
         private static ConcurrentDictionary<string, EntryCache> DirectoryEntries = new();
-        
+
         public static EntryCache? GetEntryCache(string dn)
         {
             if (DirectoryEntries.ContainsKey(dn) && DateTime.Now - DirectoryEntries[dn].Created < TimeSpan.FromMinutes(2))
@@ -27,13 +27,15 @@ namespace BLAZAM.ActiveDirectory.Services
         public static void ClearAll()
         {
             DirectoryEntries.Clear();
-            
+
         }
-        public static void Clear(string dn)
+        public static void Clear(string? dn)
         {
+            if (dn == null) return;
+
             if (DirectoryEntries.ContainsKey(dn))
             {
-                DirectoryEntries.Remove(dn,out var test);
+                DirectoryEntries.Remove(dn, out var test);
             }
         }
     }

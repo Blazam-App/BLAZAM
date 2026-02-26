@@ -4,7 +4,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        _count = ApplicationStatistics.LdapConnections.Count;
+        _count = ApplicationStatistics.LdapConnectionCount;
         ApplicationStatistics.OnLdapCountChanged.Delegate+= (c,count) => { _count = count; InvokeAsync(StateHasChanged); };
     }
 }
