@@ -401,13 +401,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         // First, find the schema naming context
                         var rootDseRequest = new SearchRequest("", "(objectClass=*)",SearchScope.Base, "schemaNamingContext");
                         var rootDseResponse = SendRequestAndGetResponse<SearchResponse>(rootDseRequest);
-                        if (rootDseResponse?.Entries.Count == 0)
+                        if (rootDseResponse==null || rootDseResponse.Entries.Count == 0)
                         {
                             throw new AppException("Could not read RootDSE to find schema naming context.");
                         }
-                        string schemaNamingContext = rootDseResponse.Entries[0].Attributes["schemaNamingContext"][0].ToString();
 
-                        _namingContextCache = schemaNamingContext;
+                        _namingContextCache = rootDseResponse.Entries[0].Attributes["schemaNamingContext"][0].ToString()??String.Empty;
                     }
                 }
             }
@@ -742,7 +741,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 else
                 {
-                    throw new DirectoryException($"Failed to create entry. LDAP Error: {response.ResultCode} - {response.ErrorMessage}");
+                    throw new DirectoryException($"Failed to create entry. LDAP Error: {response?.ResultCode} - {response?.ErrorMessage}");
                 }
             }
         }
