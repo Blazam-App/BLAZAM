@@ -22,7 +22,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
@@ -372,19 +372,23 @@ namespace BLAZAM
                     In = ParameterLocation.Header, // Location of the token
                     Type = SecuritySchemeType.Http, // Type of scheme
                     Scheme = JwtBearerDefaults.AuthenticationScheme, // Authentication scheme name ("Bearer")
-                    BearerFormat = "JWT", // Format hint
-                    Reference = new OpenApiReference // Reference for linking security requirements
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
+                    BearerFormat = "JWT"
+                    // REMOVED: The 'Reference' property has been removed in Microsoft.OpenApi v2.x
                 };
+
                 c.SchemaFilter<EnumSchemaFilter>();
+
+                // Define the scheme ID we want to use (e.g., "Bearer")
+                string schemeId = JwtBearerDefaults.AuthenticationScheme;
+
                 // Add the security definition to Swagger
-                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+                c.AddSecurityDefinition(schemeId, jwtSecurityScheme);
+
                 // Add a security requirement globally (forces auth for all endpoints shown in Swagger UI)
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
-                    { jwtSecurityScheme, Array.Empty<string>() } // Link the requirement to the definition
+                // UPDATED: Now requires a delegate and uses OpenApiSecuritySchemeReference
+                c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+                {
+                    [new OpenApiSecuritySchemeReference(schemeId, document)] = Array.Empty<string>().ToList()
                 });
             });
 
