@@ -42,12 +42,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Directory = directory;
             Dictionary<string, object?> entryAttributes = new();
             var cache = DirectoryCache.GetEntryCache(DN);
-            if (cache == null) cache = new EntryCache(entryAttributes);
+            if (cache == null)
+            {
+                cache = new EntryCache(entryAttributes);
+            }
             ProcessAttributes(cache, sre);
 
 
         }
-
+        /// <summary>
+        /// The full LDAP path to this directory entry, constructed from the connection context and the entry's distinguished name (DN).
+        /// </summary>
         public string Path
         {
             get
@@ -73,7 +78,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             
             DirectoryCache.SetEntryCache(proposedDn, initialAttributes);
         }
-        // NEW: Static factory method to create a new directory entry in memory.
         /// <summary>
         /// Creates a new directory entry in memory. Call CommitChanges() to save it to the directory.
         /// </summary>
@@ -167,23 +171,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return;
             }
             Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
-            return;
         }
 
         public void RemovePropertyValue(string propertyName, object? value)
         {
             Invoke(propertyName, DirectoryAttributeOperation.Delete, value);
-            return;
         }
         public void AddPropertyValue(string propertyName, object? value)
         {
             Invoke(propertyName, DirectoryAttributeOperation.Add, value);
-            return;
         }
         public void ClearPropertyValue(string propertyName)
         {
             Invoke(propertyName, DirectoryAttributeOperation.Delete, null);
-            return;
         }
         public bool ContainsProperty(string propertyName)
         {
@@ -326,7 +326,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         }
-
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <param name="existingCache"></param>
+        /// <param name="entry"></param>
         private void ProcessAttributes(EntryCache? existingCache, SearchResultEntry entry)
         {
             GetNamingContext();
@@ -343,8 +347,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     // Schema not found for this attribute.
                     // Cache null for this attribute, consistent with original behavior for unresolvable schema.
                     existingCache.Attributes[currentAttributeLdapName.ToLower()] = null;
-                    // Log: $"Schema not found for attribute '{currentAttributeLdapName}'. Caching as null."
-                    Console.WriteLine($"Warning: Schema not found for attribute '{currentAttributeLdapName}'. It will be cached as null.");
+                    Loggers.ActiveDirectoryLogger.Warning("Warning: Schema not found for attribute '{currentAttributeLdapName}'. It will be cached as null.", currentAttributeLdapName);
 
                     continue;
                 }
@@ -378,8 +381,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    // Log: $"Error converting attribute '{currentAttributeLdapName}': {ex.Message}. Caching as null."
-                    Console.WriteLine($"Error converting attribute '{currentAttributeLdapName}': {ex.Message}. It will be cached as null.");
+                    Loggers.ActiveDirectoryLogger.Warning(ex, "Error converting attribute '{currentAttributeLdapName}'. It will be cached as null.");
                     existingCache.Attributes[currentAttributeLdapName.ToLower()] = null; // Cache null if conversion fails
                 }
 
@@ -397,9 +399,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if (_namingContextCache.IsNullOrEmpty())
                     {
                         // First, find the schema naming context
-                        var rootDseRequest = new SearchRequest("", "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, "schemaNamingContext");
+                        var rootDseRequest = new SearchRequest("", "(objectClass=*)",SearchScope.Base, "schemaNamingContext");
                         var rootDseResponse = SendRequestAndGetResponse<SearchResponse>(rootDseRequest);
-                        if (rootDseResponse.Entries.Count == 0)
+                        if (rootDseResponse?.Entries.Count == 0)
                         {
                             throw new AppException("Could not read RootDSE to find schema naming context.");
                         }
@@ -442,16 +444,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             }
                             else
                             {
-                                // Log: $"Schema not found for attribute '{attributeLdapDisplayName}'."
-                                Console.WriteLine($"Warning: Schema not found for attribute '{propertyName}'.");
+                                Loggers.ActiveDirectoryLogger.Information("Warning: Schema not found for attribute {PropertyName}.", propertyName);
                             }
 
                         }
                     }
                     catch (Exception ex)
                     {
-                        // Log: $"Error fetching schema for attribute '{attributeLdapDisplayName}': {ex.Message}"
-                        Console.WriteLine($"Error fetching schema for attribute '{propertyName}': {ex.Message}. Schema will be considered not found.");
+                        Loggers.ActiveDirectoryLogger.Warning(ex, "Error fetching schema for attribute {propertyName}. Schema will be considered not found.", propertyName);
                     }
                 }
             }
@@ -478,14 +478,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         else
                         {
                             // Log: $"Schema not found for attribute '{attributeLdapDisplayName}'."
-                            Loggers.ActiveDirectoryLogger.Information($"Warning: Schema not found for attribute '{propertyName}'.");
+                            Loggers.ActiveDirectoryLogger.Information("Warning: Schema not found for attribute {PropertyName}.", propertyName);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Log: $"Error fetching schema for attribute '{attributeLdapDisplayName}': {ex.Message}"
-                    Loggers.ActiveDirectoryLogger.Warning($"Error fetching schema for attribute '{propertyName}': {ex.Message}. Schema will be considered not found.");
+                    Loggers.ActiveDirectoryLogger.Warning(ex,"Error fetching schema for attribute {propertyName}. Schema will be considered not found.",propertyName);
                 }
             }
         }
@@ -540,7 +539,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if (rawValue is byte[] bytesInt)
                     {
                         // Decode the byte array (which represents a string) into a string first.
-                        var stringValue = System.Text.Encoding.UTF8.GetString(bytesInt);
+                        var stringValue = Encoding.UTF8.GetString(bytesInt);
                         // Then, parse the resulting string to an integer.
                         return int.Parse(stringValue);
                     }
@@ -717,7 +716,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     // distinguishedName is part of the request DN, not an attribute in the payload.
                     if (attr.Key.Equals("distinguishedname", StringComparison.OrdinalIgnoreCase)) continue;
                     if (attr.Key.Equals("cn", StringComparison.OrdinalIgnoreCase)) continue;
-                    // if (attr.Key.Equals("objectClass", StringComparison.OrdinalIgnoreCase)) continue;
                     if (attr.Key.Equals("name", StringComparison.OrdinalIgnoreCase)) continue;
 
                     var dirAttr = new DirectoryAttribute(attr.Key);
@@ -737,7 +735,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (addRequest.Attributes.Count == 0) throw new InvalidOperationException("Cannot commit a new entry with no attributes.");
 
                 var response = SendRequestAndGetResponse<AddResponse>(addRequest);
-                if (response.ResultCode == ResultCode.Success)
+                if (response?.ResultCode == ResultCode.Success)
                 {
                     _isNew = false; // The object is now "live".
                     RefreshCache(); // Refresh the cache with any server-side generated attributes.
@@ -841,7 +839,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             var modifyResponse = SendRequestAndGetResponse<ModifyResponse>(modifyRequest);
 
             // Check the result code from the LDAP server
-            if (modifyResponse.ResultCode == ResultCode.Success)
+            if (modifyResponse?.ResultCode == ResultCode.Success)
             {
                 // Invalidate the cache for this entry upon successful modification.
                 RefreshCache();
@@ -926,7 +924,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private void PerformModifyDN(string newRdn, string newParentDn)
         {
             // Store the original DN for logging and cache clearing
-            string oldDn = this.DN;
+            string? oldDn = this.DN;
 
 
 
@@ -942,7 +940,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
                 // Send the request
-                var response = SendRequestAndGetResponse<ModifyDNResponse>(request);
+                SendRequestAndGetResponse<ModifyDNResponse>(request);
                 // On success, update the object's state to its new DN
                 this.DN = newRdn + "," + newParentDn;
 
@@ -967,10 +965,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <typeparam name="T">The expected DirectoryResponse type.</typeparam>
         /// <param name="request">The DirectoryRequest to be sent.</param>
         /// <returns>The resulting DirectoryResponse, cast to the specified type.</returns>
-        private T SendRequestAndGetResponse<T>(DirectoryRequest request) where T : DirectoryResponse
+        private T? SendRequestAndGetResponse<T>(DirectoryRequest request) where T : DirectoryResponse
         {
             using var connection = Directory.GetConnection();
-            return (T)connection?.SendRequest(request);
+            return (T?)connection?.SendRequest(request);
         }
 
         public List<LdapDirectoryEntry> GetDomainControllers()
@@ -999,10 +997,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (!disposedValue)
             {
-                if (disposing)
-                {
-                   
-                }
 
                 disposedValue = true;
             }
