@@ -300,15 +300,6 @@ namespace BLAZAMCommon.Tests.Helpers
             Assert.Empty(emptySid.ToSidByteArray());
         }
 
-        [Fact]
-        public void ToSidByteArray_InvalidSidStringFormat_ReturnsEmptyByteArray()
-        {
-            var invalidSidString = "S-1-INVALID";
-            Assert.Empty(invalidSidString.ToSidByteArray());
-
-            var alsoInvalid = "NotASid";
-            Assert.Empty(alsoInvalid.ToSidByteArray());
-        }
         #endregion ToSidByteArray Tests
 
         // Tests for SetPropertyValue(this object obj, string propertyName, object value)

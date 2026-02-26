@@ -51,7 +51,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        public override string SearchUri => "/view/" + HttpUtility.UrlEncode(DN);
+        public override string SearchUri => "/view/" + Uri.EscapeDataString(DN ?? String.Empty);
 
         public override string? CanonicalName
         {
@@ -239,8 +239,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             EnsureDirectoryEntry();
             IADOrganizationalUnit newOU = new ADOrganizationalUnit();
-
-            newOU.Parse(directoryEntry: DirectoryEntry!.Children.Add("OU=" + containerName.Trim(), "OrganizationalUnit"), directory: Directory);
+            newOU.Parse(directoryEntry: LdapDirectoryEntry.Create(ActiveDirectoryObjectType.OU, containerName.Trim(), DN, Directory), directory: Directory);
             newOU.NewEntry = true;
             return newOU;
         }
@@ -254,20 +253,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public IADUser CreateUser(string containerName)
         {
 
-            EnsureDirectoryEntry();
-
-            var fullContainerName = "CN=" + containerName.Trim().Replace(",", "\\,");
             try
             {
                 IADUser newUser = new ADUser();
-                newUser.Parse(directoryEntry: DirectoryEntry!.Children.Add(fullContainerName, "user"), directory: Directory);
+                newUser.Parse(directoryEntry: LdapDirectoryEntry.Create(ActiveDirectoryObjectType.User,
+                    containerName, DN, Directory),
+                    directory: Directory);
                 newUser.NewEntry = true;
-                newUser.Enabled = true;
                 return newUser;
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create user in {@ContainerName}", fullContainerName);
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error while attempting to create user in {@ContainerName}", containerName);
                 throw;
             }
         }
@@ -287,7 +284,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
                 ADContact newContact = new ADContact();
-                newContact.Parse(directoryEntry: DirectoryEntry!.Children.Add(fullContainerName, "contact"), directory: Directory);
+                newContact.Parse(directoryEntry: LdapDirectoryEntry.Create(ActiveDirectoryObjectType.Contact,
+                    containerName, DN, Directory),
+                    directory: Directory);
+
                 newContact.NewEntry = true;
                 return newContact;
             }
@@ -310,8 +310,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             EnsureDirectoryEntry();
             IADGroup newGroup = new ADGroup();
-
-            newGroup.Parse(directoryEntry: DirectoryEntry!.Children.Add("CN=" + containerName.Trim(), "group"), directory: Directory);
+            newGroup.Parse(directoryEntry: LdapDirectoryEntry.Create(ActiveDirectoryObjectType.Group,
+                containerName, DN, Directory),
+                directory: Directory);
             newGroup.NewEntry = true;
             newGroup.SAMAccountName = containerName.Trim();
             return newGroup;
@@ -330,7 +331,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             EnsureDirectoryEntry();
 
             IADPrinter newPrinter = new ADPrinter();
-            newPrinter.Parse(directoryEntry: DirectoryEntry!.Children.Add("CN=" + shortServerName + "-" + containerName.Trim(), "printQueue"), directory: Directory);
+            newPrinter.Parse(directoryEntry: LdapDirectoryEntry.Create(ActiveDirectoryObjectType.Printer,
+                shortServerName + "-" + containerName.Trim(), DN, Directory),
+                directory: Directory);
+
             newPrinter.NewEntry = true;
             newPrinter.UncName = uncPath;
             newPrinter.PrinterName = containerName.Trim();
@@ -350,7 +354,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             EnsureDirectoryEntry();
 
             IADPrinter newPrinter = new ADPrinter();
-            newPrinter.Parse(directoryEntry: DirectoryEntry!.Children.Add("CN=" + sharedPrinter.Host.CanonicalName + "-" + sharedPrinter.ShareName.Trim(), "printQueue"), directory: Directory);
+            newPrinter.Parse(directoryEntry: LdapDirectoryEntry.Create(ActiveDirectoryObjectType.Printer,
+                sharedPrinter.Host.CanonicalName + "-" + sharedPrinter.ShareName.Trim(), DN, Directory),
+                directory: Directory);
             newPrinter.NewEntry = true;
             newPrinter.UncName = "\\\\" + sharedPrinter.Host.CanonicalName + "\\" + sharedPrinter.ShareName;
             newPrinter.PrinterName = sharedPrinter.Name.Trim();

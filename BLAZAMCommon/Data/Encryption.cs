@@ -1,5 +1,6 @@
-﻿using BLAZAM.Helpers;
+using BLAZAM.Helpers;
 using Newtonsoft.Json;
+using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,7 +9,8 @@ namespace BLAZAM.Common.Data
     public class Encryption
     {
         private const string OldSalt = "BLAZAM_SALT";
-        public static Encryption Instance { get; set; }
+        private readonly object _cipherCacheLock=new();
+        public static Encryption Instance;
 
 
 
@@ -154,7 +156,7 @@ namespace BLAZAM.Common.Data
             throw new AppException("Unable to decrypt cipherText");
 
         }
-
+        private Dictionary<string, SecureString> _cipherCache = new();
         /// <summary>
         /// Decrypts cipher-text
         /// </summary>
@@ -165,7 +167,14 @@ namespace BLAZAM.Common.Data
         /// <exception cref="AppException"></exception>
         private T? DecryptSaltedObjectV2<T>(string? cipherText)
         {
-
+            lock (_cipherCacheLock)
+            {
+                if (_cipherCache.ContainsKey(cipherText))
+                {
+                    var decryptedCache = JsonConvert.DeserializeObject<T>(_cipherCache[cipherText].ToPlainText());
+                    return decryptedCache;
+                }
+            }
 
             var saltCipherArray = cipherText.Split(',');
             byte[] buffer = Convert.FromBase64String(saltCipherArray[1]);
@@ -184,8 +193,12 @@ namespace BLAZAM.Common.Data
             using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
 
             using StreamReader streamReader = new(cryptoStream);
-
-            var decrypted = streamReader.ReadToEnd().FromJson<T>();
+            var streamData = streamReader.ReadToEnd();
+            lock (_cipherCacheLock)
+            {
+                _cipherCache[cipherText] = streamData.ToSecureString();
+            }
+            var decrypted = JsonConvert.DeserializeObject<T>(streamData);
             return decrypted;
 
 

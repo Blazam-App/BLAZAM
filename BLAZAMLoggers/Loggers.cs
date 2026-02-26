@@ -103,6 +103,21 @@ namespace BLAZAM.Logger
                 _systemLogger = value;
             }
         }
+        
+      
+        private static ILogger? _aspLogger;
+        public static ILogger AspNetLogger
+        {
+            get
+            {
+                EnsureLogger(ref _aspLogger);
+                return _aspLogger;
+            }
+            private set
+            {
+                _aspLogger = value;
+            }
+        }
 
         private static ILogger? _pluginManager;
         public static ILogger PluginLogger
@@ -117,6 +132,7 @@ namespace BLAZAM.Logger
                 _pluginManager = value;
             }
         }
+
 
 
 

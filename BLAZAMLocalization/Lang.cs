@@ -134,6 +134,7 @@
         public static readonly string Home_Drive = "Home Drive";
         public static readonly string Script_Path = "Script Path";
         public static readonly string Profile_Path = "Profile Path";
+        public static readonly string Telephone_Number = "Telephone Number";
         public static readonly string System_Settings = "System Settings";
         public static readonly string Impersonate_User = "Impersonate User";
         public static readonly string Group_Membership_Changes = "Group Membership Changes";
@@ -328,6 +329,7 @@
         public static readonly string Main = "Main";
         public static readonly string Error = "Error";
         public static readonly string System = "System";
+        public static readonly string Encrypted = "Encrypted";
         public static readonly string Create_User = "Create User";
         public static readonly string Create_Group = "Create Group";
         public static readonly string Create_OU = "Create OU";

@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components;
+using System.Web;
 
 namespace BLAZAM.Services
 {
@@ -103,7 +104,7 @@ namespace BLAZAM.Services
             }
 
             Loggers.SystemLogger.Debug("SearchService.Search: Navigating to /search/{FinalSearchTerm}", SearchTerm);
-            _nav.NavigateTo("/search/" + SearchTerm);
+            _nav.NavigateTo("/search/" + Uri.EscapeDataString(SearchTerm??String.Empty));
 
 
 
