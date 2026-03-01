@@ -20,8 +20,6 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            LoadSettings();
-
             NewOUs = (await Directory.OUs.FindNewOUsAsync((int)_timeFrame!.Value.TotalDays)).Where(u => u.CanRead).ToList();
 
             LoadingData = false;
