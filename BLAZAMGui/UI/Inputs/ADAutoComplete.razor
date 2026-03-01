@@ -26,8 +26,10 @@
                  ToStringFunc="item=>item?.CanonicalName"
                  AdornmentColor="Color.Tertiary"
                  ProgressIndicatorColor="Color.Secondary"
-                 Adornment="Adornment.Start"
+                 Adornment="@Adornment"
+                 AdornmentText="@AdornmentText"
                  AdornmentIcon="@AdornmentIcon"
+                 OnAdornmentClick="OnAdornmentClick"
                  Variant="@Variant">
     <ItemTemplate>
 

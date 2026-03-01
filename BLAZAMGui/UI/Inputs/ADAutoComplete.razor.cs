@@ -23,7 +23,11 @@ namespace BLAZAM.Gui.UI.Inputs
         [Parameter]
         public string? Class { get; set; }
         [Parameter]
+        public string? AdornmentText { get; set; }
+        [Parameter]
         public string AdornmentIcon { get; set; } = Icons.Material.Filled.Search;
+        [Parameter]
+        public Adornment Adornment { get; set; } = Adornment.Start;
         [Parameter]
         public Origin TransformOrigin { get; set; } = Origin.TopCenter;
 
@@ -118,6 +122,10 @@ namespace BLAZAM.Gui.UI.Inputs
 
         [Parameter]
         public EventCallback<IEnumerable<IDirectoryEntryAdapter>> SearchResultsChanged { get; set; }
+
+
+        [Parameter]
+        public EventCallback OnAdornmentClick { get; set; }
 
         private IDirectoryEntryAdapter? _selectedResult;
         [Parameter]
