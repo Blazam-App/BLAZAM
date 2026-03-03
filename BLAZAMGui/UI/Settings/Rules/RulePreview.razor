@@ -2,6 +2,7 @@
 @using BLAZAM.Database.Models.Audit
 @using BLAZAM.Database.Models.Rules
 @using BLAZAM.Gui.UI.Dashboard.Widgets
+@using BLAZAM.Services.Helpers
 @using Serilog.Events
 <MudPaper Elevation="1" Class="pa-4 my-4">
     <MudStack>
@@ -301,8 +302,8 @@
 
         _loadingFilteredEntries = true;
         await StateHasChangedAsync();
-
-        filteredEntries = await RulesProcessor.GetFilteredEntries(Rule);
+        
+        filteredEntries = await Rule.Filters.GetFilteredEntries(Rule.ActiveDirectoryObjectType,DbFactory,Directory);
         _loadingFilteredEntries = false;
         await StateHasChangedAsync();
     });

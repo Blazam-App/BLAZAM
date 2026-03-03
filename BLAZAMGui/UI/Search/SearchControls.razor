@@ -86,7 +86,8 @@
 {
     <AppModal @ref="_advancedSearchModal"
         Title="Advanced Search" 
-        YesText="@AppLocalization[Lang.Search]">
+        YesText="@AppLocalization[Lang.Search]"
+    OnYes="InitiateAdvancedSearch">
     <AdvancedFilterEditor Filters="Filters" />
 </AppModal>
 }
@@ -95,4 +96,11 @@
 @code {
     private List<AutomationRuleOrFilter> Filters = new();
     private AppModal? _advancedSearchModal;
+
+    private Task InitiateAdvancedSearch(){
+        _advancedSearchModal?.CloseAsync();
+        SearchService.AdvancedSearch(Filters);
+
+        return Task.CompletedTask;
+    }
 }

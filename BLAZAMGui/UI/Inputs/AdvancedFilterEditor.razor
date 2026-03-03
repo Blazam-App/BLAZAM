@@ -47,6 +47,9 @@
         </MudStack>
 
 @code {
+
+    [CascadingParameter] protected AppModal Modal { get; set; }
+
     [Parameter]
     public List<AutomationRuleOrFilter> Filters { get; set; } = new List<AutomationRuleOrFilter>();
 

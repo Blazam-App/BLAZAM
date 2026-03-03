@@ -12,6 +12,7 @@ using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Events;
+using BLAZAM.Services.Helpers;
 using BLAZAM.Session;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -41,7 +42,8 @@ namespace BLAZAM.Services.Background
             _audit = new RuleAudit(dbFactory);
             Task.Delay(15000).ContinueWith((state) =>
             {
-                _ = SeedExcludedGroups();
+                using var directory=activeDirectoryContextFactory.CreateActiveDirectoryContext();
+                _ = dbFactory.SeedExcludedGroups(directory);
             });
             _ = new RulesAuditLogger(dbFactory);
         }
@@ -139,7 +141,8 @@ namespace BLAZAM.Services.Background
             {
                 return;
             }
-            if (await ShouldSkipEntry(args.Entry))
+            using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+            if (await args.Entry.ShouldSkipEntry(dbFactory,directory))
             {
                 return;
             }
@@ -199,12 +202,13 @@ namespace BLAZAM.Services.Background
             };
             List<IDirectoryEntryAdapter> filteredEntries;
 
-            filteredEntries = await GetFilteredEntries(rule);
+            using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+            filteredEntries = await rule.Filters.GetFilteredEntries(rule.ActiveDirectoryObjectType, dbFactory,directory);
             _ = _audit.RuleFilterEvaluated(rule, rule.Filters.ToJson());
             // Execute actions for each matched entry
             foreach (var entry in filteredEntries)
             {
-                if (await ShouldSkipEntry(entry))
+                if (await entry.ShouldSkipEntry(dbFactory, directory))
                 {
                     _audit.RuleMatchSkipped(rule, entry);
                     continue;
@@ -229,244 +233,8 @@ namespace BLAZAM.Services.Background
             return scheduledRuleJob;
         }
 
-        private async Task SeedExcludedGroups()
-        {
-            using var context = await dbFactory.CreateDbContextAsync();
-            var existing = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
-            if (existing == null)
-            {
-                existing = new();
 
-
-                // Try to resolve the actual SIDs for the current domain/forest
-                using var adContext = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-
-                if (adContext.Status != DirectoryConnectionStatus.OK)
-                {
-                    Loggers.ActiveDirectoryLogger.Information("Cancelling excluded rule group seeding because connection is not established.");
-                    return;
-                }
-
-
-                var domainAdminsGroup = adContext.FindGlobalEntryBySid(adContext.DomainSid + "-512") as IADGroup;
-                var domainControllersGroup = adContext.FindGlobalEntryBySid(adContext.DomainSid + "-516") as IADGroup;
-                var enterpriseDCGroup = adContext.FindGlobalEntryBySid("S-1-5-9") as IADGroup;
-                var enterpriseAdminsGroup = adContext.FindGlobalEntryBySid(adContext.DomainSid + "-519") as IADGroup;
-                bool seededAny = false;
-                if (domainAdminsGroup != null)
-                {
-                    existing.ExcludedGroups.Add(new() { Guid = domainAdminsGroup.Guid.Value });
-                    seededAny = true;
-                }
-                if (domainControllersGroup != null)
-                {
-                    existing.ExcludedGroups.Add(new() { Guid = domainControllersGroup.Guid.Value });
-                    seededAny = true;
-
-                }
-                if (enterpriseAdminsGroup != null)
-                {
-                    existing.ExcludedGroups.Add(new() { Guid = enterpriseAdminsGroup.Guid.Value });
-                    seededAny = true;
-
-                }
-                if (enterpriseDCGroup != null)
-                {
-                    existing.ExcludedGroups.Add(new() { Guid = enterpriseDCGroup.Guid.Value });
-                    seededAny = true;
-
-                }
-                if (seededAny)
-                {
-                    context.GlobalAutomationRuleSettings.Add(existing);
-                    await context.SaveChangesAsync();
-                }
-
-            }
-        }
-        private async Task<bool> ShouldSkipEntry(IDirectoryEntryAdapter entry)
-        {
-            using var context = await dbFactory.CreateDbContextAsync();
-            using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-            if (IsApplicationIdentity(entry))
-            {
-                return true;
-            }
-            if (entry is IGroupableDirectoryAdapter groupableEntry)
-            {
-                var ruleSetttings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
-                if (ruleSetttings == null)
-                {
-                    await SeedExcludedGroups();
-                    ruleSetttings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
-                }
-                foreach (var groupGuid in ruleSetttings.ExcludedGroups)
-                {
-                    var group = directory.FindGlobalEntryByGuid(groupGuid.Guid);
-                    if (groupableEntry.IsANestedMemberOf(group as IADGroup))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-        /// <summary>
-        /// Determines if the given directory entry represents the application identity,
-        /// to prevent rules from acting on the application's own account.
-        /// </summary>
-        private bool IsApplicationIdentity(IDirectoryEntryAdapter entry)
-        {
-            using var context = dbFactory.CreateDbContext();
-            var adUsername = context.ActiveDirectorySettings.FirstOrDefault()?.Username;
-            if (entry is IADUser user &&
-                (user.SAMAccountName?.Equals(adUsername, StringComparison.InvariantCultureIgnoreCase) == true
-                || user.UserPrincipalName?.Equals(adUsername, StringComparison.InvariantCultureIgnoreCase) == true
-                || adUsername?.EndsWith("\\" + user.SAMAccountName, StringComparison.InvariantCultureIgnoreCase) == true))
-            {
-                Loggers.RulesLogger.Information("Preventing rule execution on application identity.");
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Retrieves all directory entries that match the filters defined in the given rule.
-        /// </summary>
-        /// <param name="rule">The automation rule containing filters.</param>
-        /// <returns>List of matching directory entries.</returns>
-        public async Task<List<IDirectoryEntryAdapter>> GetFilteredEntries(AutomationRule rule)
-        {
-            List<IDirectoryEntryAdapter> matchedEntries = [];
-
-            using (var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext())
-            {
-                foreach (var orFilter in rule.Filters)
-                {
-                    // Each OR filter is processed independently; results are accumulated
-                    if (!GetFilteredOrEntries(rule, matchedEntries, directory, orFilter))
-                    {
-                        continue;
-                    }
-                }
-            }
-            List<IDirectoryEntryAdapter> matchedEntries2 = new();
-
-            foreach (var entry in matchedEntries)
-            {
-                if (!(await ShouldSkipEntry(entry)))
-                {
-                    matchedEntries2.Add(entry);
-                }
-            }
-            return matchedEntries2;
-        }
-        private static void HandleEnabledDisabledFilter(AutomationRuleOrFilter orFilter, ADSearch search)
-        {
-            var enabledFilters = orFilter.AndFilters.Where(a => a.Field?.Equals(ActiveDirectoryFields.Enabled) == true);
-            var hasEnable = enabledFilters.Any(f => !f.Negate);
-            var hasDisable = enabledFilters.Any(f => f.Negate);
-
-            if (hasEnable && !hasDisable)
-            {
-                search.EnabledOnly = true;
-            }
-            else if (hasDisable && !hasEnable)
-            {
-                search.DisabledOnly = true;
-            }
-        }
-
-        private static bool HandleOUScopeFilter(AutomationRuleOrFilter orFilter, IActiveDirectoryContext directory, ADSearch search)
-        {
-            var ouFilter = orFilter.AndFilters
-                .Where(a => a.Field?.Equals(ActiveDirectoryFields.OU) == true)
-                .Select(f => f.Value)
-                .OrderBy(f => f?.Length)
-                .FirstOrDefault();
-
-            if (ouFilter != null && !ouFilter.IsNullOrEmpty())
-            {
-                var ou = directory.OUs.FindOuByDN(ouFilter);
-                ou?.EnsureDirectoryEntry();
-                var ouDE = ou?.DirectoryEntry;
-                if (ouDE != null)
-                {
-                    search.SearchRoot = ouDE;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private static void AddAndFilters(AutomationRule rule, ADSearch search)
-        {
-            foreach (var andFilter in rule.Filters.SelectMany(x => x.AndFilters))
-            {
-                if (andFilter.Field?.Equals(ActiveDirectoryFields.Enabled) == false
-                    && andFilter.Field?.Equals(ActiveDirectoryFields.OU) == false)
-                {
-                    AddAndFilterSearchField(search, andFilter);
-                }
-            }
-        }
-        /// <summary>
-        /// Applies a single OR filter to the directory and adds matching entries to the result list.
-        /// </summary>
-        private static bool GetFilteredOrEntries(AutomationRule rule, List<IDirectoryEntryAdapter> matchedEntries, IActiveDirectoryContext directory, AutomationRuleOrFilter orFilter)
-        {
-            ADSearch search = new ADSearch(directory);
-
-            HandleEnabledDisabledFilter(orFilter, search);
-
-            if (!HandleOUScopeFilter(orFilter, directory, search))
-            {
-                return false;
-            }
-
-            if (rule.ActiveDirectoryObjectType != ActiveDirectoryObjectType.All)
-            {
-                search.ObjectTypeFilter = rule.ActiveDirectoryObjectType;
-            }
-
-            AddAndFilters(rule, search);
-
-            matchedEntries.AddRange(search.Search());
-            return true;
-        }
-
-        /// <summary>
-        /// Adds a single AND filter as a search field to the ADSearch object.
-        /// </summary>
-        private static void AddAndFilterSearchField(ADSearch search, AutomationRuleAndFilter? andFilter)
-        {
-            if (andFilter == null)
-            {
-                throw new ArgumentNullException(nameof(andFilter));
-            }
-            try
-            {
-                var fieldValue = new ADFieldValue()
-                {
-                    Field = andFilter.CurrentField,
-                    Value = andFilter.TimeFrame == null ? andFilter.Value : andFilter.TimeFrame,
-                    Operator = andFilter.Operator,
-                    Negate = andFilter.Negate
-                };
-                if (andFilter.CurrentField is ActiveDirectoryField defaultField || andFilter.CurrentField is CustomActiveDirectoryField)
-                {
-                    search.FieldValues.Add(fieldValue);
-                }
-            }
-            catch (Exception ex)
-            {
-                Loggers.RulesLogger.Warning(ex, "Unable to set search field value {@Field}{@Value}", andFilter.Field, andFilter.Value);
-            }
-        }
+      
 
         /// <summary>
         /// Processes a single directory entry for a given rule, executing all actions if filters pass.
