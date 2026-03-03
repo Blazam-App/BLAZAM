@@ -40,10 +40,10 @@ namespace BLAZAM.Services.Background
         {
             Interval = TimeSpan.FromMinutes(5);
             _audit = new RuleAudit(dbFactory);
-            Task.Delay(15000).ContinueWith((state) =>
+            Task.Delay(15000).ContinueWith(async (state) =>
             {
                 using var directory=activeDirectoryContextFactory.CreateActiveDirectoryContext();
-                _ = dbFactory.SeedExcludedGroups(directory);
+                await dbFactory.SeedExcludedGroups(directory);
             });
             _ = new RulesAuditLogger(dbFactory);
         }
