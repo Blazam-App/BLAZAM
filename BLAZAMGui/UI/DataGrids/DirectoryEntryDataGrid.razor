@@ -1,0 +1,67 @@
+﻿@inherits AppComponentBase
+<MudDataGrid T="IDirectoryEntryAdapter"
+             Items="Entries"
+             RowClick="@RowClicked"
+             RowClass="cursor-pointer"
+             Dense=true
+             Filterable=true
+             RowsPerPage="@ItemsPerPage"
+             RowsPerPageChanged="@ItemsPerPageChanged"
+             FilterMode="DataGridFilterMode.Simple"
+             Loading=@LoadingData
+             Square=true
+             ColumnResizeMode="ResizeMode.Column"
+             Virtualize=true
+             Class="py-0"
+             SortMode="SortMode.Single">
+    <Columns>
+        <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
+            <CellTemplate>
+                <DirectoryEntryTypeIcon Entry=context.Item />
+
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title=@AppLocalization[Lang.Name]>
+            <CellTemplate>
+                <DirectoryEntryLink Entry="@context.Item" OnChanged="EntryChanged" />
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title=@AppLocalization[Lang.Changed]>
+            <CellTemplate>
+                @if (context.Item?.LastChanged != null)
+                {
+                    <MudText>@context.Item.LastChanged?.ToLocalTime()</MudText>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="IDirectoryEntryAdapter" />
+    </PagerContent>
+    <NoRecordsContent>
+        <MudText>@AppLocalization[Lang.No_Favorites]</MudText>
+    </NoRecordsContent>
+</MudDataGrid>
+
+@code {
+    [Parameter] 
+    public EventCallback<DataGridRowClickEventArgs<IDirectoryEntryAdapter>> RowClicked { get; set; }
+
+    [Parameter]
+    public List<IDirectoryEntryAdapter> Entries { get; set; } = new List<IDirectoryEntryAdapter>();
+
+    [Parameter]
+    public int ItemsPerPage { get; set; } = 5;
+
+    [Parameter]
+    public string NoResultsMessage { get; set; }="No Results Found";
+
+    [Parameter]
+    public bool IsLoadingData { get=>LoadingData; set=>LoadingData=value; }
+
+    [Parameter]
+    public EventCallback<int> ItemsPerPageChanged { get; set; }
+
+    [Parameter]
+    public EventCallback EntryChanged{ get; set; }
+}

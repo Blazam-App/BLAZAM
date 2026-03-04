@@ -4,14 +4,12 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
     public partial class ChangedPasswordsWidget : TimeFrameWidget
     {
+        protected override TimeSpan? _timeFrame => JsonSettings?.FromJson<TimeSpan>()??TimeSpan.FromDays(90);
+
         public ChangedPasswordsWidget()
         {
             Title = Localization.AppLocalization.Changed_Passwords;
             WidgetType = DashboardWidgetType.PasswordsChanged;
-            if (_timeFrame == null)
-            {
-                _timeFrame = TimeSpan.FromDays(90);
-            }
         }
 
         private List<IADUser> LockedUsers = [];
@@ -20,7 +18,6 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            LoadSettings();
             LockedUsers = (await Directory.Users.FindChangedPasswordUsersAsync((int)_timeFrame!.Value.TotalDays, false)).Where(u => u.CanRead).ToList();
             LoadingData = false;
 

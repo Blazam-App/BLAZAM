@@ -1,6 +1,10 @@
-﻿using BLAZAM.Logger;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.ActiveDirectory.Searchers;
+using BLAZAM.Database.Models.Rules;
+using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components;
+using MudBlazor.Charts;
 using System.Web;
 
 namespace BLAZAM.Services
@@ -11,6 +15,7 @@ namespace BLAZAM.Services
     public class SearchService
     {
         private readonly IApplicationUserStateService _userStateService;
+        private readonly IActiveDirectoryContext _directory;
         private readonly NavigationManager _nav;
         private bool includeDisabled = false;
         private string? searchTerm;
@@ -45,6 +50,7 @@ namespace BLAZAM.Services
         /// Gets or sets the type of Active Directory object to filter searches by. Defaults to All.
         /// </summary>
         public ActiveDirectoryObjectType SeachObjectType { get; set; } = ActiveDirectoryObjectType.All;
+        public List<AutomationRuleOrFilter> Filters { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchService"/> class.
@@ -52,14 +58,14 @@ namespace BLAZAM.Services
         /// <param name="userStateService">Service for accessing current user state and preferences.</param>
         /// <param name="nav">Navigation manager for redirecting to search pages.</param>
         /// <exception cref="ArgumentNullException">Thrown if userStateService or nav is null.</exception>
-        public SearchService(IApplicationUserStateService userStateService, NavigationManager nav)
+        public SearchService(IApplicationUserStateService userStateService, NavigationManager nav, IActiveDirectoryContext directory)
         {
             ArgumentNullException.ThrowIfNull(userStateService);
 
             ArgumentNullException.ThrowIfNull(nav);
 
 
-
+            _directory = directory;
             _userStateService = userStateService;
             _nav = nav;
             includeDisabled = _userStateService.CurrentUserState?.Preferences?.SearchDisabledUsers == true;
@@ -105,6 +111,25 @@ namespace BLAZAM.Services
 
             Loggers.SystemLogger.Debug("SearchService.Search: Navigating to /search/{FinalSearchTerm}", SearchTerm);
             _nav.NavigateTo("/search/" + Uri.EscapeDataString(SearchTerm??String.Empty));
+
+
+
+        }
+
+        /// <summary>
+        /// Performs a search. If a searchTerm parameter is provided, it updates the current <see cref="SearchTerm"/>. Navigates to the search page.
+        /// </summary>
+        /// <param name="filter">Filter to apply for the advanced search.</param>
+        public void AdvancedSearch(List<AutomationRuleOrFilter> filters)
+        {
+            Loggers.SystemLogger.Debug("SearchService.Search: Search called. Current SearchTerm: '{CurrentSearchTerm}', Provided searchTerm parameter: '{ProvidedSearchTerm}'", SearchTerm, searchTerm);
+            if (filters != null)
+            {
+                Filters = filters;
+            }
+
+            Loggers.SystemLogger.Debug("SearchService.Search: Navigating to /advsearch");
+            _nav.NavigateTo("/advsearch/"+Guid.NewGuid());
 
 
 

@@ -163,7 +163,7 @@ namespace BLAZAM.Pages
         /// null or empty.
         /// </remarks>
         /// <returns></returns>
-        protected async Task PerformSearch()
+        protected virtual async Task PerformSearch()
         {
             results.Clear();
 
