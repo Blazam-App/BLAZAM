@@ -85,6 +85,7 @@
 @if (IsAdmin)
 {
     <AppModal @ref="_advancedSearchModal"
+        Options="new(){ FullWidth=true, MaxWidth=MaxWidth.Medium}"
         Title="Advanced Search" 
         YesText="@AppLocalization[Lang.Search]"
     OnYes="InitiateAdvancedSearch">
@@ -100,7 +101,6 @@
     private Task InitiateAdvancedSearch(){
         _advancedSearchModal?.CloseAsync();
         SearchService.AdvancedSearch(Filters);
-
         return Task.CompletedTask;
     }
 }

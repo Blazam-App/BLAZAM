@@ -24,10 +24,23 @@ namespace BLAZAM.Pages
     /// URI, handling cascading parameters, and managing search results.</remarks>
     public partial class AdvSearch : SearchPageBase
     {
-        protected override async Task OnInitializedAsync()
+        [Parameter]
+        public string? seachGuid { get; set; }
+
+        private string? _previousSeachGuid;
+
+        protected override async Task OnParametersSetAsync()
         {
-           await base.OnInitializedAsync();
-            if(SearchService.Filters!=null && SearchService.Filters.Count > 0)
+            if (_previousSeachGuid != seachGuid)
+            {
+                _previousSeachGuid = seachGuid;
+                await PerformSearch();
+            }
+        }
+        protected override async Task PerformSearch()
+        {
+            LoadingData = true;
+            if (SearchService.Filters != null && SearchService.Filters.Count > 0)
             {
                 Searcher.Results = await SearchService.Filters.GetFilteredEntries(SearchService.SeachObjectType, DbFactory, Directory);
             }

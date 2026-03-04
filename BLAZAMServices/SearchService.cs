@@ -129,7 +129,7 @@ namespace BLAZAM.Services
             }
 
             Loggers.SystemLogger.Debug("SearchService.Search: Navigating to /advsearch");
-            _nav.NavigateTo("/advsearch");
+            _nav.NavigateTo("/advsearch/"+Guid.NewGuid());
 
 
 

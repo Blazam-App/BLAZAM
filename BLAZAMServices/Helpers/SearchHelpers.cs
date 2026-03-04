@@ -70,7 +70,7 @@ namespace BLAZAM.Services.Helpers
             }
             search.AddAndFilters(filter);
 
-            matchedEntries.AddRange(search.Search());
+            matchedEntries.AddRange(search.Search().Where(e=>e.CanRead));
             return true;
         }
 
