@@ -32,7 +32,7 @@ namespace BLAZAM.Notifications.Services
         private async Task<bool?> ShowMessage(MarkupString message, string? title = null, string? yesText = null, string? noText = null, string? cancelText = null)
         {
             Loggers.SystemLogger.Debug("AppDialogService.ShowMessage (MarkupString): Attempting to show message box with Title '{DialogTitle}'.", title);
-            return await _dialog.ShowMessageBox(title, message, yesText, noText, cancelText, DialogOptions);
+            return await _dialog.ShowMessageBoxAsync(title, message, yesText, noText, cancelText, DialogOptions);
         }
 
         /// <summary>Shows a pre-formatted message box.</summary>
@@ -99,7 +99,7 @@ namespace BLAZAM.Notifications.Services
         public async Task<bool> Confirm(string message, string? title = null)
         {
             Loggers.SystemLogger.Debug("AppDialogService.Confirm: Displaying confirmation dialog with Title '{DialogTitle}'.", title);
-            return await _dialog.ShowMessageBox(title, message, "OK", null, "Cancel") == true;
+            return await _dialog.ShowMessageBoxAsync(title, message, "OK", null, "Cancel") == true;
         }
     }
 }

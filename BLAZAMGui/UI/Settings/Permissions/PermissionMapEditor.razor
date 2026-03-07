@@ -210,19 +210,19 @@
         return deleg?.DelegateName;
 
     }
-    new async Task Save()
+    protected override async Task Save()
     {
         if (Mapping?.Id == 0)
         {
             Context.PermissionMap.Add(Mapping);
             _ = Analytics.PermissionMappingCreated(Mapping.PermissionDelegates.Count());
         }
-        var result = await Context.SaveChangesAsync();
+
+        _ = await Context.SaveChangesAsync();
         await StateHasChangedAsync();
         SnackBarService.Success("Mapping saved");
         await MappingsChanged.InvokeAsync();
         _ = Analytics.PermissionMappingChanged(Mapping?.PermissionDelegates.Count() ?? -1);
         ApplicationEvents.PermissionsChanged.Invoke();
-
     }
 }

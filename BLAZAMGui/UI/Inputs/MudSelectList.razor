@@ -44,7 +44,7 @@
                 {
                     <MudMenuItem Style="min-width:max-content;"
                                  Class="py-0 px-3 ma-0"
-                                 OnClick="@(()=>{ToggleSelected(val);})"
+                                 OnClick="@(async ()=> await ToggleSelected(val))"
                                  AutoClose=@(!MultiSelection)>
                         <MudStack Class="pa-0 ma-0"
                                   Row=true
@@ -52,7 +52,7 @@
                             @if (MultiSelection)
                             {
                                 <MudCheckBox T=bool
-                                             ValueChanged="@(()=>{ToggleSelected(val);})"
+                                             ValueChanged="@(async ()=> await ToggleSelected(val))"
                                              Value="SelectedValues.Contains(val)" />
                             }
                             @if (ToStringFunc != null)
@@ -118,39 +118,36 @@
     }
 
 
-    private void ToggleSelected(T item)
+    [Parameter]
+    public new IEnumerable<T> SelectedValues { get; set; } = Enumerable.Empty<T>();
+
+    [Parameter]
+    public new EventCallback<IEnumerable<T>> SelectedValuesChanged { get; set; }
+
+    private async Task ToggleSelected(T item)
     {
         if (SelectedValues.Contains(item))
         {
-            @if (MultiSelection)
+            if (MultiSelection)
             {
-                SelectedValues = SelectedValues.Where(x => !x.Equals(item));
-                SelectedValuesChanged.InvokeAsync(SelectedValues);
-
+                SelectedValues = SelectedValues.Where(x => !x!.Equals(item)).ToList();
+                await SelectedValuesChanged.InvokeAsync(SelectedValues);
             }
-
         }
         else
         {
-            @if (MultiSelection)
+            if (MultiSelection)
             {
-                SelectedValues = SelectedValues.Append(item);
-                SelectedValuesChanged.InvokeAsync(SelectedValues);
-
+                SelectedValues = SelectedValues.Append(item).ToList();
+                await SelectedValuesChanged.InvokeAsync(SelectedValues);
             }
             else
             {
                 SelectedValues = new List<T>() { item };
                 Value = item;
-                ValueChanged.InvokeAsync(item);
-
+                await ValueChanged.InvokeAsync(item);
             }
         }
-
-
-
-
-
     }
 }
 

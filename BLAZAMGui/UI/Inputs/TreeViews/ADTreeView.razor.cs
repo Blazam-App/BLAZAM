@@ -19,21 +19,21 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
 
 
-        protected override IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(TreeItemData<IDirectoryEntryAdapter>? parent)
+        protected override IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(ITreeItemData<IDirectoryEntryAdapter>? parent)
         {
             try
             {
-                if (parent.Expanded || parent.Value.CachedChildren != null)
+                if (parent?.Expanded == true || parent?.Value?.CachedChildren != null)
                 {
                     return GetChildren(parent.Value).ToTreeItemData();
                 }
             }
             catch (Exception)
             {
-                return null;
+                return [];
 
             }
-            return null;
+            return [];
 
         }
         protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>> GetChildrenAsync(IDirectoryEntryAdapter parentNode)
