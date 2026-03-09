@@ -12,9 +12,9 @@
 
 
     [Parameter]
-    public ChartOptions ChartOptions { get; set; } = new()
+    public LineChartOptions ChartOptions { get; set; } = new()
         {
-            InterpolationOption = InterpolationOption.Straight
+             InterpolationOption = InterpolationOption.Straight
         };
 
 
@@ -36,7 +36,7 @@
 
 
 
-    List<ChartSeries> LoginSeries = new();
+    List<ChartSeries<double>> LoginSeries = new();
 
 
     List<LogonAuditLog> logonEntries = new();
@@ -50,8 +50,8 @@
     public async Task GenerateLoginSeries()
     {
         LoginSeries.Clear();
-        ChartSeries loginChart = new() { Name = AppLocalization[Lang.Daily_Logins] };
-        ChartSeries uniqueUsersChart = new() { Name = AppLocalization[Lang.Daily_Users] };
+        ChartSeries<double> loginChart = new() { Name = AppLocalization[Lang.Daily_Logins] };
+        ChartSeries<double> uniqueUsersChart = new() { Name = AppLocalization[Lang.Daily_Users] };
 
         // 1. Determine date range and calculate step size
         var start = StartDate ?? DateTime.Today.AddDays(-14);
@@ -113,8 +113,9 @@
     public async Task GenerateLoginSeries2()
     {
         LoginSeries.Clear();
-        ChartSeries loginChart = new() { Name = AppLocalization[Lang.Daily_Logins] };
-        ChartSeries uniqueUsersChart = new() { Name = AppLocalization[Lang.Daily_Users] };
+        ChartSeries<double> loginChart = new() { Name = AppLocalization[Lang.Daily_Logins] };
+        ChartSeries<double> uniqueUsersChart = new() { Name = AppLocalization[Lang.Daily_Users] };
+
         allDates = Enumerable.Range(0, (int)(EndDate.Value - StartDate.Value).TotalDays + 1)
                                  .Select(d => StartDate.Value.AddDays(d));
         using (var context = await DbFactory.CreateDbContextAsync())

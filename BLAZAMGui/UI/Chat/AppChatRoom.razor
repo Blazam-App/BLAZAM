@@ -112,9 +112,8 @@
 
                 };
             Chat.PostMessage(message);
-            draftMessage = "";
-            await messageTextField!.Clear();
-            await StateHasChangedAsync();
+            draftMessage = string.Empty;
+            await StateHasChangedAsync(); ;
             ScrollToBottom();
 
         }

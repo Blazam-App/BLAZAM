@@ -14,7 +14,7 @@
 
         <AppTooltip Text="@Filter.Field?.FieldName">
             <MudSelectList T="IActiveDirectoryField"
-                           Values="_fields"
+                           Options="_fields"
                            @bind-Value="Filter.CurrentField" />
         </AppTooltip>
         @if (Filter.Field?.Id == ActiveDirectoryFields.OU.Id)
@@ -36,7 +36,7 @@
         {
             if (Filter.CurrentField?.FieldType != ActiveDirectoryFieldType.Boolean)
             {
-                <MudSelectList Values="Filter.CurrentField?.GetOperators()"
+                <MudSelectList Options="Filter.CurrentField?.GetOperators()"
                                @bind-Value="Filter.Operator" />
 
                 @switch (Filter.Operator)

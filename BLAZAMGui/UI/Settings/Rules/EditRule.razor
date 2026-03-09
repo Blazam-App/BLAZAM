@@ -7,14 +7,14 @@
         <MudGrid>
             <MudItem xs="6" sm="4" md="3" lg="2" xl="1">
                 <MudSelectList Label="@AppLocalization[Lang.Object_Type]"
-                               Values="_adObjectTypes"
+                               Options="_adObjectTypes"
                                For="@(() => _workingRule.ActiveDirectoryObjectType)"
                                @bind-Value=_workingRule.ActiveDirectoryObjectType />
             </MudItem>
             <MudItem xs="6" sm="4" md="3" lg="2" xl="1">
                 <MudSelectList Label="@AppLocalization[Lang.Triggers]"
                                For="@(() => _workingRule.Trigger)"
-                               Values="_workingRule.ActiveDirectoryObjectType.GetNotificationTypes()"
+                               Options="_workingRule.ActiveDirectoryObjectType.GetNotificationTypes()"
                                @bind-Value=_workingRule.Trigger />
             </MudItem>
             <MudItem xs="6" sm="4" md="6" lg="8" xl="10">
@@ -41,7 +41,7 @@
 
             <AppTooltip Text="This feature is still under construction">
                 <MudSelectList T=ScheduleInterval?
-                               Values="_scheduleTypes"
+                               Options="_scheduleTypes"
                                @bind-Value=Rule.ScheduleInterval
                                Disabled="true" />
             </AppTooltip>
