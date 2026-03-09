@@ -52,7 +52,7 @@
                 <MudStack Row=true>
                     <MudSelectList T="IActiveDirectoryField"
                                    @bind-Value="@_selectedField"
-                                   Values=@_allFields.Where(x => !globalPermissionRequestFields.Any(y => (y.Field!=null && y.Field.Equals(x))||(y.CustomField!=null && y.CustomField.Equals(x)))) />
+                                   Options=@_allFields.Where(x => !globalPermissionRequestFields.Any(y => (y.Field!=null && y.Field.Equals(x))||(y.CustomField!=null && y.CustomField.Equals(x)))) />
                     <AppIconButton Icon="@Icons.Material.Filled.Add"
                                    Disabled="@(_selectedField==null)"
                                    Color="Color.Success"

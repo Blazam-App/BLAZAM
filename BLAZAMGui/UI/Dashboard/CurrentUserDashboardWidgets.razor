@@ -140,7 +140,7 @@
                              TransformOrigin="Origin.TopRight">
                         <ActivatorContent>
                             <AppTooltip Text=@AppLocalization[Lang.Add_Widget]>
-                                <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
+                                <MudFab @onclick="@(() => context.ToggleAsync())" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
                             </AppTooltip>
                         </ActivatorContent>
                         <ChildContent>

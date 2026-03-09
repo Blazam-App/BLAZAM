@@ -18,7 +18,7 @@
                                                         await ParentTemplateChanged(null);
                                                         })"
                                        Label=@AppLocalization[Lang.Parent_Template]
-                                       Values="@dropdownTemplates.OrderBy(t=>t.Name)"
+                                       Options="@dropdownTemplates.OrderBy(t=>t.Name)"
                                        Value="@DirectoryTemplate.ParentTemplate"
                                        ValueChanged="@ParentTemplateChanged" />
 
@@ -38,7 +38,7 @@
                                        AdornmentIcon="@Icons.Material.Filled.Add"
                                        AdornmentColor="@Color.Success"
                                        OnAdornmentClick="@(()=>{_=categoryModal?.ShowAsync();})"
-                                       Values="@(categories.Count>0?categories:new List<string>())"
+                                       Options="@(categories.Count>0?categories:new List<string>())"
                                        ValueChanged="@((value)=>{DirectoryTemplate.Category=value;})"
                                        @bind-Text=DirectoryTemplate.Category
                                        Label="@AppLocalization[Lang.Template_Category]" />

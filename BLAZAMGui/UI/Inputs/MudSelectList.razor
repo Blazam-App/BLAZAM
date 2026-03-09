@@ -1,4 +1,5 @@
-@inherits MudSelect<T>
+@using System.Text
+@inherits MudElement
 @typeparam T
 
 <MudStack Row=true>
@@ -7,7 +8,7 @@
 
     }
     <MudMenu Dense=true
-        Disabled="@Disabled"
+             Disabled="@Disabled"
              Style="@(Style+" min-width:100px;")"
              FullWidth=true
              @ref=_selectMenu
@@ -16,11 +17,12 @@
              MaxHeight="200"
              AnchorOrigin="Origin.BottomCenter"
              TransformOrigin="Origin.TopCenter"
+
              PopoverClass="minw-max">
         <ActivatorContent>
-            <MudField Disabled="@Disabled" Label="@Label">
+            <MudField Disabled="@Disabled" Label="@Label" @onclick="@(() => context.ToggleAsync())" >
                 <MudStack Row=true>
-                    @if (SelectedValues.Count() > 0 || Value!=null)
+                    @if (Selected.Count() > 0 || Value != null)
                     {
                         <MudText>
                             @Text
@@ -33,14 +35,14 @@
                         </MudElement>
                     }
                     <MudSpacer />
-                    <MudIcon Class="align-end" Icon="@(_selectMenu?.Open==true?Icons.Material.Filled.ArrowDropUp:Icons.Material.Filled.ArrowDropDown)" />
+                    <MudIcon Class="align-end" Icon="@(_selectMenu?.Open == true ? Icons.Material.Filled.ArrowDropUp : Icons.Material.Filled.ArrowDropDown)" />
                 </MudStack>
             </MudField>
         </ActivatorContent>
         <ChildContent>
-            @if (Values != null && Values.Count() > 0)
+            @if (Options != null && Options.Count() > 0)
             {
-                @foreach (var val in Values)
+                @foreach (var val in Options)
                 {
                     <MudMenuItem Style="min-width:max-content;"
                                  Class="py-0 px-3 ma-0"
@@ -53,7 +55,7 @@
                             {
                                 <MudCheckBox T=bool
                                              ValueChanged="@(async ()=> await ToggleSelected(val))"
-                                             Value="SelectedValues.Contains(val)" />
+                                             Value="Selected.Contains(val)" />
                             }
                             @if (ToStringFunc != null)
                             {
@@ -78,7 +80,7 @@
     {
         if (!AdornmentIcon.IsNullOrEmpty())
         {
-            <MudIconButton Ripple=@(OnAdornmentClick.HasDelegate?true:false)
+            <MudIconButton Ripple=@(OnAdornmentClick.HasDelegate ? true : false)
                            Icon="@AdornmentIcon"
                            Color="@AdornmentColor"
                            OnClick="@OnAdornmentClick"
@@ -89,61 +91,121 @@
 
 @code {
     private MudMenu? _selectMenu;
+
     [Parameter]
     public Color Color { get; set; }
-    private IEnumerable<T> _values;
-    [Parameter]
-    public IEnumerable<T> Values
-    {
-        get => _values; set
-        {
-            _values = value;
-            Text = "";
-            if (_values != null && _values.Count() > 0)
-            {
-                foreach (var item in _values)
-                {
-                    if (item!=null)
-                    {
-                        Text += ToStringFunc?.Invoke(item) + ", ";
-                    }
-                }
-                if (Text != "")
-                {
-                    Text = Text.Substring(0, Text.Length - 2);
-                }
-            }
 
+    [Parameter]
+    public Color AdornmentColor { get; set; }
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? AdornmentIcon { get; set; }
+
+    [Parameter]
+    public string? AdornmentAriaLabel { get; set; }
+
+    [Parameter]
+    public Adornment Adornment { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnAdornmentClick { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public bool MultiSelection { get; set; }
+
+    [Parameter]
+    public Func<T, string> ToStringFunc { get; set; }
+
+    private T _value;
+
+    [Parameter]
+    public T Value
+    {
+        get => _value;
+        set
+        {
+            _value = value;
+            Selected = [_value];
         }
     }
 
+    [Parameter]
+    public EventCallback<T> ValueChanged { get; set; }
+
+
+    private string? Text
+    {
+        get
+        {
+            var sb = new StringBuilder();
+            if (Selected.Count() > 0)
+            {
+                int i = 0;
+                foreach (var item in Selected)
+                {
+                    if (item != null)
+                    {
+                        if (i > 0)
+                        {
+                            sb.Append(", ");
+                        }
+                        if (ToStringFunc != null)
+                        {
+                            sb.Append(ToStringFunc?.Invoke(item));
+                        }
+                        else
+                        {
+                            sb.Append(item.ToString());
+
+                        }
+                        i++;
+
+                    }
+                }
+            }
+            return sb.ToString();
+        }
+    }
 
     [Parameter]
-    public new IEnumerable<T> SelectedValues { get; set; } = Enumerable.Empty<T>();
+    public IEnumerable<T> Options { get; set; }
+
 
     [Parameter]
-    public new EventCallback<IEnumerable<T>> SelectedValuesChanged { get; set; }
+    public IEnumerable<T> Selected { get; set; } = Enumerable.Empty<T>();
+
+    [Parameter]
+    public EventCallback<IEnumerable<T>> SelectedChanged { get; set; }
 
     private async Task ToggleSelected(T item)
     {
-        if (SelectedValues.Contains(item))
+        if (Selected.Contains(item))
         {
             if (MultiSelection)
             {
-                SelectedValues = SelectedValues.Where(x => !x!.Equals(item)).ToList();
-                await SelectedValuesChanged.InvokeAsync(SelectedValues);
+                Selected = Selected.Where(x => !x!.Equals(item)).ToList();
+                await SelectedChanged.InvokeAsync(Selected);
             }
         }
         else
         {
             if (MultiSelection)
             {
-                SelectedValues = SelectedValues.Append(item).ToList();
-                await SelectedValuesChanged.InvokeAsync(SelectedValues);
+                Selected = Selected.Append(item).ToList();
+                await SelectedChanged.InvokeAsync(Selected);
             }
             else
             {
-                SelectedValues = new List<T>() { item };
+                Selected = new List<T>() { item };
                 Value = item;
                 await ValueChanged.InvokeAsync(item);
             }

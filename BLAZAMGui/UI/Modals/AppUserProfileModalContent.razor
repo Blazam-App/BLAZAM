@@ -8,7 +8,6 @@
     }
     <MudFileUpload T="IBrowserFile"
     FilesChanged="UploadProfilePicture">
-        <ActivatorContent>
 
             <MudButton HtmlTag="label"
             Variant="Variant.Filled"
@@ -38,7 +37,6 @@
 
             }
 
-        </ActivatorContent>
     </MudFileUpload>
 
     <MudTextField T="string" @bind-Text=@CurrentUser.State.Preferences.Email Label=@AppLocalization[Lang.Email] />

@@ -3,12 +3,12 @@
 <MudStack Row=true>
 
         <MudSelectList T="AutomationRuleActionType"
-                       Values="_actionTypes"
+                       Options="_actionTypes"
                        @bind-Value=Action.ActionType />
         @switch (Action.ActionType)
         {
             case AutomationRuleActionType.ModifyField:
-                <MudSelectList T="IActiveDirectoryField" Values="_fields"
+                <MudSelectList T="IActiveDirectoryField" Options="_fields"
                                Value=_selectedField
                                ValueChanged="@((IActiveDirectoryField field)=>{FieldChanged(field);})" />
                 @if (_selectedField != null)

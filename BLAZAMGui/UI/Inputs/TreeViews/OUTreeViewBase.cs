@@ -22,7 +22,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         /// Defaults to the App Base root
         /// </remarks>
         [Parameter]
-        public IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? RootOU { get; set; } = [];
+        public IReadOnlyCollection<ITreeItemData<IDirectoryEntryAdapter>>? RootOU { get; set; } = [];
 
         [Parameter]
         public IADOrganizationalUnit? StartingSelectedOU
@@ -111,9 +111,13 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
         protected bool GetExpanded(ITreeItemData<IDirectoryEntryAdapter> item)
         {
+            if (item.Value.CachedChildren == null)
+            {
+                item.Children = GetChildren(item);
+            }
             return item.Expanded;
         }
-        protected virtual IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(ITreeItemData<IDirectoryEntryAdapter>? parent)
+        protected virtual IReadOnlyCollection<ITreeItemData<IDirectoryEntryAdapter>> GetItems(ITreeItemData<IDirectoryEntryAdapter>? parent)
         {
             try
             {
@@ -147,6 +151,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
                 _ = TopLevel.SubOUs;
                 var TopLevelList = new List<IDirectoryEntryAdapter>() { TopLevel };
+
                 RootOU = TopLevelList.ToTreeItemData();
             }
 
@@ -178,7 +183,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             });
         }
 
-        protected void OpenToSelected(IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? rootOU)
+        protected void OpenToSelected(IReadOnlyCollection<ITreeItemData<IDirectoryEntryAdapter>>? rootOU)
         {
             if (rootOU == null || !rootOU.Any())
             {
@@ -283,10 +288,12 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             {
                 return context.Children;
             }
+
             if (context.Expanded && context.Value is IADOrganizationalUnit ou)
             {
                 return GetOUChildren(ou);
             }
+
             return [];
         }
 
