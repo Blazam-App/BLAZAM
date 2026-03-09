@@ -153,6 +153,8 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 var TopLevelList = new List<IDirectoryEntryAdapter>() { TopLevel };
 
                 RootOU = TopLevelList.ToTreeItemData();
+                RootOU.First().Expanded = true;
+                RootOU.First().Expandable = true;
             }
 
             OpenToSelected(RootOU);
