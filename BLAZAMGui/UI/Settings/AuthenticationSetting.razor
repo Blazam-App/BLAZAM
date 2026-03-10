@@ -60,9 +60,9 @@
             <SettingsField Label="@AppLocalization[Lang.Duo_Unreachable_Behavior]">
 
                 <MudSwitch Label=@AppLocalization[settings.DuoUnreachableBehavior.ToString()]
-                           T="DuoUnreachableBehavior"
-                           Converter=@(new BehaviorConverter())
-                           @bind-Value="@settings.DuoUnreachableBehavior"
+                           T="bool"
+                           Value="@(settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Bypass)"
+                           ValueChanged="OnDuoUnreachableBehaviorChanged"
                            UncheckedColor="Color.Error"
                            Color="Color.Success"
                            Disabled=@(duoHealthCheckResult!=true) />
@@ -113,10 +113,10 @@
 </MudForm>
 @code {
 
-    AuthenticationSettings settings = new AuthenticationSettings();
-    string newAdminPassword;
-    string adminPasswordInDb;
-    bool? duoHealthCheckResult = null;
+        AuthenticationSettings settings = new AuthenticationSettings();
+        string newAdminPassword;
+        string adminPasswordInDb;
+        bool? duoHealthCheckResult = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -178,47 +178,11 @@
         await base.Save();
         await StateHasChangedAsync();
     }
-
-    public class BehaviorConverter : BoolConverter<DuoUnreachableBehavior>
+    private void OnDuoUnreachableBehaviorChanged(bool value)
     {
-
-        public BehaviorConverter()
-        {
-            SetFunc = OnSet;
-            GetFunc = OnGet;
-        }
-
-        private DuoUnreachableBehavior OnGet(bool? value)
-        {
-            try
-            {
-                return (value == true) ? DuoUnreachableBehavior.Bypass : DuoUnreachableBehavior.Block;
-            }
-            catch (Exception e)
-            {
-                UpdateGetError("Conversion error: " + e.Message);
-                return default;
-            }
-        }
-
-        private bool? OnSet(DuoUnreachableBehavior arg)
-        {
-
-            try
-            {
-                return (int)arg == 1;
-
-            }
-            catch (FormatException e)
-            {
-                UpdateSetError("Conversion error: " + e.Message);
-                return null;
-            }
-        }
-
+        settings.DuoUnreachableBehavior = value
+            ? DuoUnreachableBehavior.Bypass
+            : DuoUnreachableBehavior.Block;
     }
-    private bool? DuoUnreachableBehaviorConverter(DuoUnreachableBehavior val)
-    {
-        return (int)val == 1;
-    }
+   
 }

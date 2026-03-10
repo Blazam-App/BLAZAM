@@ -69,14 +69,12 @@
                 }
             </MudContainer>
             <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon" Accept="image/*">
-                <ActivatorContent>
                     <MudButton HtmlTag="label"
                                Variant="Variant.Filled"
                                Color="Color.Primary"
                                StartIcon="@Icons.Material.Filled.CloudUpload">
                         @AppLocalization[Lang.Upload_Icon]
                     </MudButton>
-                </ActivatorContent>
             </MudFileUpload>
             <MudAlert Severity="Severity.Info">@AppLocalization["Changes may take up to 24 hrs to take effect"]</MudAlert>
         </SettingsField>

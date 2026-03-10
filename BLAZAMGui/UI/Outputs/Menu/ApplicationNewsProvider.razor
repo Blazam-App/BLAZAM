@@ -22,7 +22,8 @@
                       BadgeClass="badge-repos cursor-pointer"
                       Content="@unreadItems.Count">
                 <AppTooltip Text=@("Blazam "+AppLocalization[Lang.News])>
-                    <AppIconButton Size="Size.Large"
+                    <AppIconButton OnClick="@(() => context.ToggleAsync())" 
+                        Size="Size.Large"
                                    Icon="@Icons.Material.TwoTone.NewReleases"
                                    Color="@color" />
                 </AppTooltip>

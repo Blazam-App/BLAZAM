@@ -36,7 +36,7 @@ namespace BLAZAM.Gui.UI.Outputs
         [Parameter]
         public int YAxisTicks { get; set; } = 20;
 
-        public ChartOptions ChartOptions => new()
+        public LineChartOptions ChartOptions => new()
         {
             InterpolationOption = Data.Count > 3 ? InterpolationOption.NaturalSpline : InterpolationOption.Straight,
             YAxisTicks = YAxisTicks,
@@ -55,14 +55,18 @@ namespace BLAZAM.Gui.UI.Outputs
         protected List<DataPoint> Data = [];
         private bool enabled;
 
-        protected List<ChartSeries> DataSeries
+        protected List<ChartSeries<double>> DataSeries
         {
             get
             {
-                var series = new List<ChartSeries>
-                {
-                    new ChartSeries { Data = Data.OrderBy(d => d.TimeStamp).Select(g => g.Value).ToArray(), Name = "CPU Usage" }
-                };
+                List<ChartSeries<double>> series =
+                [
+                    new ChartSeries<double>
+            {
+                Data = Data.OrderBy(d => d.TimeStamp).Select(g => g.Value).ToArray(),
+                Name = SeriesName ?? "CPU Usage"
+            }
+                ];
                 return series;
             }
         }

@@ -2,7 +2,7 @@
 <MudMenu Dense=true
          ActivationEvent=MouseEvent.RightClick>
     <ActivatorContent>
-        <div class="pa-0 ma-0 " >
+        <div @onclick="@(() => context.ToggleAsync())" class="pa-0 ma-0 ">
             @if (Text != null)
             {
                 @Text
