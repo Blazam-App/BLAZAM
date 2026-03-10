@@ -380,7 +380,7 @@ namespace BLAZAM.Session
         {
             get
             {
-                return !IsSuperAdmin && (PermissionDelegates == null || PermissionDelegates.Count == 0);
+                return !IsSuperAdmin && (PermissionMappings.Count==1 && PermissionMappings[0]?.Id==-1);
             }
         }
 
