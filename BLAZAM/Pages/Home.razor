@@ -65,12 +65,12 @@ else
         {
             // ignored if the database isn't available
         }
-        if (CurrentUser.State.IsSelfEditOnly)
+        if (CurrentUser.State != null && CurrentUser.State.IsSelfEditOnly)
         {
             var sid = CurrentUser.State.Preferences?.UserGUID;
-            if (sid != null)
+            if (sid != null && sid.StartsWith("S-"))
             {
-                currentUserEntry = Directory.FindGlobalEntryBySid(sid.ToSidByteArray());
+                currentUserEntry = Directory.FindGlobalEntryBySid(sid);
             }
         }
         await StateHasChangedAsync();

@@ -1,7 +1,7 @@
 @inherits AppComponentBase
 @attribute [Authorize]
 
-@if (!CurrentUser.State.IsSelfEditOnly)
+@if (CurrentUser.State != null && !CurrentUser.State.IsSelfEditOnly)
 {
     <MudForm Style="width:100%" Class="mx-2" @onsubmit="(() => { SearchService.SearchAsync(); })">
 

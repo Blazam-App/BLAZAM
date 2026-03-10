@@ -32,7 +32,7 @@
                 Icon="@Icons.Material.Filled.Dashboard">
         @AppLocalization[Lang.Home]
     </MudNavLink>
-    @if (!CurrentUser.State.IsSelfEditOnly)
+    @if (CurrentUser.State != null && !CurrentUser.State.IsSelfEditOnly)
     {
         <NavBrowseButton SelectedEntryChanged=@((entry) => { SelectedEntryChanged.InvokeAsync(entry); })
                          BrowseExpandedChanged=@((value) => { BrowseExpandedChanged.InvokeAsync(value); }) />
