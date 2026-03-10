@@ -40,11 +40,19 @@
     </MudAlert>
 }
 
-<CurrentUserDashboardWidgets />
+@if (CurrentUser.State.IsSelfEditOnly && currentUserEntry != null)
+{
+    <ViewDirectoryEntry DirectoryEntry="currentUserEntry" />
+}
+else
+{
+    <CurrentUserDashboardWidgets />
+}
 
 @code {
     MarkupString? MOTD;
     bool _motdShown;
+    IDirectoryEntryAdapter? currentUserEntry;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -57,8 +65,16 @@
         {
             // ignored if the database isn't available
         }
+        if (CurrentUser.State.IsSelfEditOnly)
+        {
+            var sid = CurrentUser.State.Preferences?.UserGUID;
+            if (sid != null)
+            {
+                currentUserEntry = Directory.FindGlobalEntryBySid(sid.ToSidByteArray());
+            }
+        }
         await StateHasChangedAsync();
     }
-  
+
 
 }
