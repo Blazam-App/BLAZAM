@@ -285,31 +285,60 @@ namespace BLAZAM.Update.Services
 
             if (releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
             {
-                update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update));
+                update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update,"8"));
+            }
+            else if (releaseVersion.NewerThan(new ApplicationVersion("1.5.99")))
+            {
+                update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update,"10"));
             }
 
             return update;
         }
 
-        private bool CheckAspCorePrerequisites(ApplicationUpdate update)
+        private bool CheckAspCorePrerequisites(ApplicationUpdate update,string version)
         {
-            if (!ApplicationInfo.isUnderIIS)
+            switch (version)
             {
-                if (!PrerequisiteChecker.CheckForAspCore())
-                {
-                    update.PrequisiteMessage = AppLocalization?["ASP NET Core 8 Runtime is missing."] ?? "ASP NET Core 8 Runtime is missing.";
-                    return false;
-                }
+                case "8":
+                    if (!ApplicationInfo.isUnderIIS)
+                    {
+                        if (!PrerequisiteChecker.CheckForAspCore8())
+                        {
+                            update.PrequisiteMessage = AppLocalization?["ASP NET Core 8 Runtime is missing."] ?? "ASP NET Core 8 Runtime is missing.";
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if (!PrerequisiteChecker.CheckForAspCoreHosting8())
+                        {
+                            update.PrequisiteMessage = AppLocalization?["ASP NET Core 8 Web Hosting Bundle is missing."] ?? "ASP NET Core 8 Web Hosting Bundle is missing.";
+                            return false;
+                        }
+                    }
+                    return true;
+
+                case "10":
+                    if (!ApplicationInfo.isUnderIIS)
+                    {
+                        if (!PrerequisiteChecker.CheckForAspCore10())
+                        {
+                            update.PrequisiteMessage = AppLocalization?["ASP NET Core 10 Runtime is missing."] ?? "ASP NET Core 10 Runtime is missing.";
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if (!PrerequisiteChecker.CheckForAspCoreHosting10())
+                        {
+                            update.PrequisiteMessage = AppLocalization?["ASP NET Core 10 Web Hosting Bundle is missing."] ?? "ASP NET Core 10 Web Hosting Bundle is missing.";
+                            return false;
+                        }
+                    }
+                    return true;
+
             }
-            else
-            {
-                if (!PrerequisiteChecker.CheckForAspCoreHosting())
-                {
-                    update.PrequisiteMessage = AppLocalization?["ASP NET Core 8 Web Hosting Bundle is missing."] ?? "ASP NET Core 8 Web Hosting Bundle is missing.";
-                    return false;
-                }
-            }
-            return true;
+            return false;
         }
 
         private async void CheckForUpdate(object? state)
