@@ -606,7 +606,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 if (value is CustomActiveDirectoryField field)
                 {
                     DefaultField = null;
-                    CustomField = field;
+                    CustomField = @field;
                 }
                 else if (value is ActiveDirectoryField field2)
                 {

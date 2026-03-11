@@ -26,8 +26,8 @@ namespace BLAZAM.Database.Models
                 if (value is CustomActiveDirectoryField field)
                 {
                     Field = null;
-                    CustomField = field;
-                    CustomFieldId = field.Id;
+                    CustomField = @field;
+                    CustomFieldId = @field.Id;
                 }
                 else if (value is ActiveDirectoryField field2)
                 {
