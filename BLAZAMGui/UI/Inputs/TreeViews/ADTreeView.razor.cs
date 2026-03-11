@@ -22,7 +22,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         {
             try
             {
-                if (parent?.Expanded == true || parent?.Value?.CachedChildren == null)
+                if (parent != null && (parent.Expanded == true || parent.Value?.CachedChildren == null))
                 {
                     parent.Children = GetChildren(parent.Value).ToTreeItemData();
                     return parent.Children;

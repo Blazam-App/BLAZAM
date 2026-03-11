@@ -376,7 +376,15 @@ namespace BLAZAM.Session
             }
         }
 
-        public string? Username => User?.Claims.FirstOrDefault(c=>c.Type==ClaimTypes.WindowsAccountName)?.Value;
+        public bool IsSelfEditOnly
+        {
+            get
+            {
+                return !IsSuperAdmin && (PermissionMappings != null && PermissionMappings.Count == 1 && PermissionMappings[0].Id == -1);
+            }
+        }
+
+        public string? Username => User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value;
 
         public bool IsAuthenticated => User?.Identity?.IsAuthenticated == true;
 
