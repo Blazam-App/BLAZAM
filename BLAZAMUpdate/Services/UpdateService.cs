@@ -282,15 +282,16 @@ namespace BLAZAM.Update.Services
             };
 
             var update = new ApplicationUpdate(_applicationInfo, this, _dbFactory) { Release = release };
-
-            if (releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
+            
+            if (releaseVersion.NewerThan(new ApplicationVersion("1.5.99")))
+            {
+                update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update, "10"));
+            }
+            else if (releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
             {
                 update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update,"8"));
             }
-            else if (releaseVersion.NewerThan(new ApplicationVersion("1.5.99")))
-            {
-                update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update,"10"));
-            }
+            
 
             return update;
         }
