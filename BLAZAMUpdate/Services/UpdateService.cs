@@ -51,7 +51,7 @@ namespace BLAZAM.Update.Services
         /// <summary>
         /// The branch configured in the database
         /// </summary>
-        public string SelectedBranch { get; set; } = ApplicationReleaseBranches.Stable;
+        public string SelectedBranch { get; set; } = ApplicationReleaseBranches.Net8ReleasePrefix;
 
         private const string Publisher_Name = "BLAZAM-APP";
         private const string Repository_Name = "Blazam";
@@ -115,8 +115,10 @@ namespace BLAZAM.Update.Services
             //Filter the releases to the selected branch
             var branchReleases = releases
                 .Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
-            var stableReleases = releases
-                .Where(r => r.TagName.Contains(ApplicationReleaseBranches.Stable, StringComparison.OrdinalIgnoreCase));
+            var net8Releases = releases
+                .Where(r => r.TagName.Contains(ApplicationReleaseBranches.Net8ReleasePrefix, StringComparison.OrdinalIgnoreCase));
+            var net10Releases = releases
+                .Where(r => r.TagName.Contains(ApplicationReleaseBranches.Net10ReleasePrefix, StringComparison.OrdinalIgnoreCase));
             //Get the first release,which should be the most recent
             latestBranchRelease = branchReleases.FirstOrDefault();
             //Store all other releases for use later
@@ -130,7 +132,8 @@ namespace BLAZAM.Update.Services
             {
 
                 EncapsulateBetaReleases(betaStableReleases);
-                EncapsulateStableReleases(stableReleases);
+                EncapsulateStableReleases(net8Releases);
+                EncapsulateStableReleases(net10Releases, ApplicationReleaseBranches.Net10ReleasePrefix);
                 EncapsulateLatestRelease(latestBranchRelease);
                 RemoveIncompatibleReleases();
             }
@@ -150,7 +153,7 @@ namespace BLAZAM.Update.Services
             if (latestBranchRelease != null)
             {
                 var latestBranchUpdate = EncapsulateUpdate(latestBranchRelease, SelectedBranch);
-                if (latestBranchUpdate != null && latestBranchUpdate.Branch != ApplicationReleaseBranches.Stable && latestBranchUpdate.Branch != "Stable")
+                if (latestBranchUpdate != null && latestBranchUpdate.Branch != ApplicationReleaseBranches.Net8ReleasePrefix && latestBranchUpdate.Branch != "Stable")
                 {
                     if (!AvailableUpdates.Contains(latestBranchUpdate))
                     {
@@ -161,7 +164,7 @@ namespace BLAZAM.Update.Services
             }
         }
 
-        private void EncapsulateStableReleases(IEnumerable<Release> stableReleases)
+        private void EncapsulateStableReleases(IEnumerable<Release> stableReleases, string applicationReleaseBranch = ApplicationReleaseBranches.Net8ReleasePrefix)
         {
             foreach (var release in stableReleases)
             {
@@ -177,7 +180,7 @@ namespace BLAZAM.Update.Services
 
                     try
                     {
-                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+                        AvailableUpdates.Add(EncapsulateUpdate(release, applicationReleaseBranch));
                     }
                     catch (Exception ex)
                     {
@@ -202,7 +205,7 @@ namespace BLAZAM.Update.Services
                     //Create that update object
                     try
                     {
-                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Net8ReleasePrefix));
 
                     }
                     catch (Exception ex)
@@ -228,13 +231,13 @@ namespace BLAZAM.Update.Services
                     using var context = await _dbFactory.CreateDbContextAsync();
                     var settings = await context.AppSettings.FirstAsync();
                     SelectedBranch = settings.UpdateBranch;
-                    if (SelectedBranch.Equals(ApplicationReleaseBranches.Stable, StringComparison.InvariantCultureIgnoreCase))
+                    if (SelectedBranch.Equals(ApplicationReleaseBranches.Net8ReleasePrefix, StringComparison.InvariantCultureIgnoreCase))
                     {
                         return;
                     }
                     if (SelectedBranch.Equals("Stable", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        SelectedBranch = ApplicationReleaseBranches.Stable;
+                        SelectedBranch = ApplicationReleaseBranches.Net8ReleasePrefix;
 
                         settings.UpdateBranch = SelectedBranch;
                         await context.SaveChangesAsync();
@@ -249,7 +252,7 @@ namespace BLAZAM.Update.Services
 
             if (SelectedBranch == null)
             {
-                SelectedBranch = ApplicationReleaseBranches.Stable;
+                SelectedBranch = ApplicationReleaseBranches.Net8ReleasePrefix;
             }
         }
 
@@ -282,21 +285,21 @@ namespace BLAZAM.Update.Services
             };
 
             var update = new ApplicationUpdate(_applicationInfo, this, _dbFactory) { Release = release };
-            
+
             if (releaseVersion.NewerThan(new ApplicationVersion("1.5.99")))
             {
                 update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update, "10"));
             }
             else if (releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
             {
-                update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update,"8"));
+                update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update, "8"));
             }
-            
+
 
             return update;
         }
 
-        private bool CheckAspCorePrerequisites(ApplicationUpdate update,string version)
+        private bool CheckAspCorePrerequisites(ApplicationUpdate update, string version)
         {
             switch (version)
             {
