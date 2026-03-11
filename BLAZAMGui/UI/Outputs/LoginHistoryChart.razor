@@ -1,8 +1,9 @@
 @using BLAZAM.Database.Models.Audit
 @inherits AppComponentBase
 <MudChart ChartType="ChartType.Line"
+          T="double"
           ChartSeries="@LoginSeries"
-          XAxisLabels="@(allDates.Select(d=>d.ToLocalTime().ToString("M/d")).ToArray())"
+          ChartLabels="@(allDates.Select(d=>d.ToLocalTime().ToString("M/d")).ToArray())"
           Width="100%"
           Height=@Height
           ChartOptions="@ChartOptions"></MudChart>
@@ -13,9 +14,9 @@
 
     [Parameter]
     public LineChartOptions ChartOptions { get; set; } = new()
-        {
-             InterpolationOption = InterpolationOption.Straight
-        };
+    {
+        InterpolationOption = InterpolationOption.Straight
+    };
 
 
     [Parameter]
@@ -147,5 +148,5 @@
             LoginSeries.Add(uniqueUsersChart);
             InvokeStateHasChanged();
         }
-}
+    }
 }
