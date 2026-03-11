@@ -40,7 +40,7 @@
     </MudAlert>
 }
 
-@if (CurrentUser.State.IsSelfEditOnly && currentUserEntry != null)
+@if (CurrentUser.State?.IsSelfEditOnly == true && currentUserEntry != null)
 {
     <ViewDirectoryEntry DirectoryEntry="currentUserEntry" />
 }
