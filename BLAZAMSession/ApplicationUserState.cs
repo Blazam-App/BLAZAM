@@ -380,11 +380,11 @@ namespace BLAZAM.Session
         {
             get
             {
-                return !IsSuperAdmin && (PermissionDelegates == null || PermissionDelegates.Count == 0);
+                return !IsSuperAdmin && (PermissionMappings != null && PermissionMappings.Count == 1 && PermissionMappings[0].Id == -1);
             }
         }
 
-        public string? Username => User?.Claims.FirstOrDefault(c=>c.Type==ClaimTypes.WindowsAccountName)?.Value;
+        public string? Username => User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value;
 
         public bool IsAuthenticated => User?.Identity?.IsAuthenticated == true;
 
