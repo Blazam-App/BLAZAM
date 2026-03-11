@@ -395,7 +395,7 @@ namespace BLAZAM.Session
                 string? auditUsername = Username;
                 if (Impersonator != null)
                 {
-                    auditUsername += " impersonated by " + Impersonator?.Identity?.Name;
+                    auditUsername += " impersonated by " + Impersonator.Identity?.Name;
                 }
                 return auditUsername;
             }
