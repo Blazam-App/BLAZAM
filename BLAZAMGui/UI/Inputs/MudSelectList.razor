@@ -22,7 +22,7 @@
         <ActivatorContent>
             <MudField Disabled="@Disabled" Label="@Label" @onclick="@(() => context.ToggleAsync())" >
                 <MudStack Row=true>
-                    @if (Selected.Count() > 0 || Value != null)
+                    @if (Selected.Count() > 0 || !EqualityComparer<T>.Default.Equals(Value, default(T)))
                     {
                         <MudText>
                             @Text
