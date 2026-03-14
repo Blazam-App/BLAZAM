@@ -17,30 +17,58 @@ namespace BLAZAM.Common.Data
         {
             get
             {
-                //Use interactive logon
                 var domain = impersonationUser.FQDN ?? "";
                 var username = impersonationUser.Username;
                 var phPassword = Marshal.SecureStringToGlobalAllocUnicode(impersonationUser.Password);
-                bool returnValue = LogonUser(username,
-                        domain,
-                        phPassword,
-                        LOGON32_LOGON_BATCH,
-                        LOGON32_PROVIDER_DEFAULT,
-                        out safeAccessTokenHandle);
-
-
-
-                Marshal.ZeroFreeGlobalAllocUnicode(phPassword);
-                if (false == returnValue)
+                try
                 {
-                    int ret = Marshal.GetLastWin32Error();
-                    Loggers.ActiveDirectoryLogger.Warning("LogonUser failed with error code : {0}", ret);
-                    var exception = new System.ComponentModel.Win32Exception(ret);
-                    if (exception.NativeErrorCode == 1326)
-                    {
+                    // Try batch logon first; works for admin accounts and accounts with
+                    // "Log on as a batch job" right explicitly granted.
+                    bool returnValue = LogonUser(username,
+                            domain,
+                            phPassword,
+                            LOGON32_LOGON_BATCH,
+                            LOGON32_PROVIDER_DEFAULT,
+                            out safeAccessTokenHandle);
 
-                        throw new AuthenticationException(exception.Message);
+                    if (!returnValue)
+                    {
+                        int ret = Marshal.GetLastWin32Error();
+                        Loggers.ActiveDirectoryLogger.Warning("LogonUser (batch) failed with error code : {0}", ret);
+                        var exception = new System.ComponentModel.Win32Exception(ret);
+                        if (exception.NativeErrorCode == 1326)
+                        {
+                            throw new AuthenticationException(exception.Message);
+                        }
+
+                        // Fall back to interactive logon for local accounts that lack the
+                        // "Log on as a batch job" privilege (non-admin accounts by default).
+                        Loggers.ActiveDirectoryLogger.Information("Falling back to interactive logon for {Username}", username);
+                        returnValue = LogonUser(username,
+                                domain,
+                                phPassword,
+                                LOGON32_LOGON_INTERACTIVE,
+                                LOGON32_PROVIDER_DEFAULT,
+                                out safeAccessTokenHandle);
+
+                        if (!returnValue)
+                        {
+                            ret = Marshal.GetLastWin32Error();
+                            Loggers.ActiveDirectoryLogger.Warning("LogonUser (interactive) failed with error code : {0}", ret);
+                            var interactiveLogonException = new System.ComponentModel.Win32Exception(ret);
+                            if (interactiveLogonException.NativeErrorCode == 1326)
+                            {
+                                throw new AuthenticationException(interactiveLogonException.Message);
+                            }
+                            // Both logon attempts failed; safeAccessTokenHandle will be invalid.
+                            // Run<T> handles invalid tokens by catching the exception from RunImpersonated.
+                            Loggers.ActiveDirectoryLogger.Warning("All logon attempts failed for {Username}; impersonation will not succeed.", username);
+                        }
                     }
+                }
+                finally
+                {
+                    Marshal.ZeroFreeGlobalAllocUnicode(phPassword);
                 }
                 return safeAccessTokenHandle;
 

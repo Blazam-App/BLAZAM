@@ -432,11 +432,22 @@ namespace BLAZAM.Update.Services
 
                 if (impersonation != null)
                 {
+                    var tempDirectory = _applicationInfo.TempDirectory;
                     return impersonation.Run(() =>
                     {
                         Loggers.UpdateLogger.Information("Checking custom update credential permissions: " + WindowsIdentity.GetCurrent().Name);
 
-                        if (ApplicationInfo.applicationRoot.Writable)
+                        // Local administrators can always perform updates.
+                        var currentPrincipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+                        if (currentPrincipal.IsInRole(WindowsBuiltInRole.Administrator))
+                        {
+                            return true;
+                        }
+
+                        // Non-admin accounts are sufficient when they have write access to
+                        // both the application directory and the Blazam temp directory used
+                        // for downloads, staging, and backups.
+                        if (ApplicationInfo.applicationRoot.Writable && tempDirectory.Writable)
                         {
                             return true;
                         }
