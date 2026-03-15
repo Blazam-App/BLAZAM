@@ -7,6 +7,7 @@ using BLAZAM.Update.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Octokit;
+using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 using System.Security.Principal;
 
@@ -34,15 +35,12 @@ namespace BLAZAM.Update.Services
         /// </summary>
         public List<ApplicationUpdate> AvailableUpdates { get; set; } = [];
 
-        public SystemDirectory BackupPath
-        {
-            get => new(Path.Combine(UpdateTempDirectory.FullPath,
-                "backup",
-                _applicationInfo.RunningVersion.ToString()));
-        }
+        /// <summary>
+        /// 
+        /// </summary>
         public SystemDirectory BackupDirectory
         {
-            get => new(Path.Combine(UpdateTempDirectory.FullPath,
+            get => new(Path.Combine(ApplicationIdentityTempDirectory.FullPath,
                 "backup",
                 _applicationInfo.RunningVersion.ToString()));
         }
@@ -56,14 +54,58 @@ namespace BLAZAM.Update.Services
         private const string Publisher_Name = "BLAZAM-APP";
         private const string Repository_Name = "Blazam";
 
-        public SystemDirectory UpdateTempDirectory { get; }
+        /// <summary>
+        /// Gets the temporary directory used for update operations under the application identity.
+        /// </summary>
+        /// <remarks>Use this method to obtain the location where temporary files related to update
+        /// processes should be stored. The returned directory is accessible under the application's identity and may
+        /// differ from user-specific temporary directories.</remarks>
+        /// <returns>A SystemDirectory representing the temporary directory for update operations. The directory is associated
+        /// with the application identity.</returns>
+        public SystemDirectory GetUpdateIdentityTempDirectory()
+        {
 
+
+            return ApplicationIdentityTempDirectory;
+            /*
+             * Following code could be used for custom or AD identity temp directories... but we probably won't
+            switch (UpdateCredential)
+            {
+
+                case UpdateCredential.Active_Directory:
+                case UpdateCredential.Custom:
+                    var identity = GetUpdateIdentity();
+                    if (identity != null)
+                    {
+                        return identity.Run(() =>
+                        {
+                            Loggers.ActiveDirectoryLogger.Information("Update Identity: {@identity}", WindowsIdentity.GetCurrent().Name);
+                            //Get temp path while impersonating the update identity to ensure we have access to it
+                            var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                            var tempPath = Path.Combine(userProfile, "AppData", "Local", "Temp", "Blazam", "update" + Path.DirectorySeparatorChar);
+                            return new SystemDirectory(tempPath);
+                        });
+                    }
+                    break;
+            }
+
+            return ApplicationIdentityTempDirectory;
+            */
+        }
+
+        public SystemDirectory ApplicationIdentityTempDirectory
+        {
+            get
+            {
+                return new SystemDirectory(_applicationInfo.TempDirectory + "update" + Path.DirectorySeparatorChar);
+            }
+        }
         private readonly IAppDatabaseFactory? _dbFactory;
         private readonly ApplicationInfo _applicationInfo;
 
         public UpdateService(ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null, IStringLocalizer<AppLocalization>? appLocalization = null)
         {
-            UpdateTempDirectory = new SystemDirectory(applicationInfo.TempDirectory + "update" + Path.DirectorySeparatorChar);
+
             _dbFactory = dbFactory;
             _applicationInfo = applicationInfo;
             AppLocalization = appLocalization;
@@ -367,7 +409,7 @@ namespace BLAZAM.Update.Services
             {
                 Loggers.UpdateLogger.Information("Checking update credentials");
 
-                if (ApplicationInfo.applicationRoot.Writable)
+                if (ApplicationInfo.applicationRoot.Writable && !Debugger.IsAttached)
                 {
                     return UpdateCredential.Application;
                 }
@@ -391,29 +433,41 @@ namespace BLAZAM.Update.Services
                 return UpdateCredential.None;
             }
         }
-
-        public WindowsImpersonation? GetUpdateCredentials()
+        /// <summary>
+        /// Retrieves the impersonation identity to be used for update operations based on the configured update
+        /// credential.
+        /// </summary>
+        /// <remarks>The returned impersonation identity depends on the value of the <see cref="UpdateCredential"/>. If
+        /// Active Directory or Custom credentials are configured, the method attempts to create an impersonator using
+        /// the relevant settings. If Application credentials are used, no impersonation is performed and <see
+        /// langword="null"/> is returned.</remarks>
+        /// <returns>A <see cref="WindowsImpersonation"/> instance representing the identity for update operations, or <see
+        /// langword="null"/> if no impersonation is required.</returns>
+        public WindowsImpersonation GetUpdateIdentity()
         {
             switch (UpdateCredential)
             {
-                case UpdateCredential.Application:
-                    return null;
                 case UpdateCredential.Active_Directory:
                     //Pull ad settings to test if app ad account can write to the application directory
-                    using (var context = _dbFactory.CreateDbContext())
+                    using (var context = _dbFactory?.CreateDbContext())
                     {
-                        var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
-                        return adSettings?.CreateDirectoryAdminImpersonator();
+                        var adSettings = context?.ActiveDirectorySettings.FirstOrDefault();
+                        return adSettings != null ? adSettings.CreateDirectoryAdminImpersonator() : new WindowsImpersonation(null);
                     }
                 case UpdateCredential.Custom:
-                    using (var context2 = _dbFactory.CreateDbContext())
+                    using (var context2 = _dbFactory?.CreateDbContext())
                     {
-                        var appSettings = context2.AppSettings.FirstOrDefault();
-                        return appSettings?.CreateUpdateImpersonator();
+                        var appSettings = context2?.AppSettings.FirstOrDefault();
+                        if(appSettings != null)
+                        {
+                            var identity = appSettings.CreateUpdateImpersonator();
+                            return identity ?? new WindowsImpersonation(null);
+                        }
                     }
-                default:
-                    return null;
+                    break;
+                   
             }
+            return new WindowsImpersonation(null);
         }
         private bool TestCustomCredentials()
         {
@@ -450,7 +504,7 @@ namespace BLAZAM.Update.Services
 
         public async Task<bool> Backup()
         {
-            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupPath);
+            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupDirectory);
             try
             {
                 var result = await Task.Run(() => { return _applicationInfo.ApplicationRoot.CopyTo(BackupDirectory); });
@@ -514,10 +568,7 @@ namespace BLAZAM.Update.Services
             return false;
         }
 
-        /// <summary>
-        /// Returns true if any configured credentials have write permission to the app directory
-        /// </summary>
-        public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
+
 
         public List<ApplicationUpdate> IncompatibleUpdates { get; private set; } = [];
         private readonly object _updateCheckLock = new();

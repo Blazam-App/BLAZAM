@@ -35,6 +35,7 @@ namespace BLAZAM.Update
 
         public string Branch { get => Release.Branch; }
 
+        private readonly ApplicationInfo _applicationInfo;
         private readonly IAppDatabaseFactory _dbFactory;
         private readonly UpdateService _updateService;
 
@@ -44,9 +45,9 @@ namespace BLAZAM.Update
         /// <returns>
         /// eg: C:\user\appdata\local\temp\BLAZAM\update\
         ///</returns>
-        private static SystemDirectory UpdateTempDirectory { get; set; }
+        private SystemDirectory UpdateTempDirectory => _updateService.GetUpdateIdentityTempDirectory();
 
-        public static SystemDirectory StagingDirectory =>
+        public SystemDirectory StagingDirectory =>
             new(UpdateTempDirectory + "staged" + Path.DirectorySeparatorChar);
 
         /// <summary>
@@ -62,7 +63,7 @@ namespace BLAZAM.Update
         /// <returns>
         /// eg: C:\inetpub\blazam\Writable\Update\Download\
         /// </returns>
-        public static SystemDirectory UpdateDownloadDirectory
+        public SystemDirectory UpdateDownloadDirectory
         {
             get => new(UpdateTempDirectory + "download" + Path.DirectorySeparatorChar);
         }
@@ -128,12 +129,12 @@ namespace BLAZAM.Update
 
         public ApplicationUpdate(ApplicationInfo applicationInfo, UpdateService updateService, IAppDatabaseFactory dbFactory)
         {
+            _applicationInfo = applicationInfo;
             _dbFactory = dbFactory;
             _updateService = updateService;
             _runningProcess = applicationInfo.RunningProcess;
             _runningVersion = applicationInfo.RunningVersion;
             _applicationRootDirectory = applicationInfo.ApplicationRoot;
-            UpdateTempDirectory = new SystemDirectory(applicationInfo.TempDirectory + $"update{Path.DirectorySeparatorChar}");
         }
 
         /// <summary>
@@ -186,7 +187,7 @@ namespace BLAZAM.Update
             var downloadStep = new JobStep("Download latest version", Download);
             var cleanStageStep = new JobStep("Cleaning staging area", CleanStaging);
             var stageStep = new JobStep("Extract files", ExtractFiles);
-            var stagingCheckStep = new JobStep("Check prepared files", (step) => { return UpdateStagingDirectory.Exists && UpdateStagingDirectory.Files.Count > 3; });
+            var stagingCheckStep = new JobStep("Check prepared files", CheckExtractedFiles);
             var bakupStep = new JobStep("Create backup", (step) => { return _updateService.Backup(); });
             var updateUpdaterStep = new JobStep("Apply Files", UpdateUpdater);
             var updateStep = new JobStep("Apply Files", InitiateFileCopy);
@@ -206,25 +207,36 @@ namespace BLAZAM.Update
 
         }
 
+        private bool CheckExtractedFiles(JobStep? step)
+        {
+            return _updateService.GetUpdateIdentity().Run(() =>
+            {
+                return UpdateStagingDirectory.Exists && UpdateStagingDirectory.Files.Count > 3;
+            });
+        }
+
         private bool UpdateUpdater(JobStep step)
         {
-            var updaterSource = new SystemDirectory(Path.Combine(UpdateStagingDirectory.FullPath,
-                                                                                "updater"));
-            var updaterDestination = new SystemDirectory(Path.Combine(_applicationRootDirectory.FullPath,
-                                                                                "updater"));
-            Loggers.UpdateLogger.Debug("Copying updater script");
-            Loggers.UpdateLogger.Debug("Source: {Source}", updaterSource);
-            Loggers.UpdateLogger.Debug("Dest: {Destination}", updaterDestination);
-            if (updaterSource.Exists && updaterSource.Files.Count > 0 && updaterSource.CopyTo(updaterDestination))
+            return _updateService.GetUpdateIdentity().Run(() =>
             {
-                Loggers.UpdateLogger.Debug("Updater script copied successfully");
-                return true;
-            }
-            else
-            {
-                Loggers.UpdateLogger.Error("Failed to copy updater script from {Source} to {Destination}", updaterSource, updaterDestination);
-            }
-            return false;
+                var updaterSource = new SystemDirectory(Path.Combine(UpdateStagingDirectory.FullPath,
+                                                                                "updater"));
+                var updaterDestination = new SystemDirectory(Path.Combine(_applicationRootDirectory.FullPath,
+                                                                                    "updater"));
+                Loggers.UpdateLogger.Debug("Copying updater script");
+                Loggers.UpdateLogger.Debug("Source: {Source}", updaterSource);
+                Loggers.UpdateLogger.Debug("Dest: {Destination}", updaterDestination);
+                if (updaterSource.Exists && updaterSource.Files.Count > 0 && updaterSource.CopyTo(updaterDestination))
+                {
+                    Loggers.UpdateLogger.Debug("Updater script copied successfully");
+                    return true;
+                }
+                else
+                {
+                    Loggers.UpdateLogger.Error("Failed to copy updater script from {Source} to {Destination}", updaterSource, updaterDestination);
+                }
+                return false;
+            });
         }
 
         private static async Task<bool> Wait(JobStep? step)
@@ -236,24 +248,7 @@ namespace BLAZAM.Update
         private async Task<bool> InitiateFileCopy(JobStep? step)
         {
             using var context = await _dbFactory.CreateDbContextAsync();
-            var updateCredentials = _updateService.GetUpdateCredentials();
-            if (updateCredentials != null)
-            {
-                return await updateCredentials.RunAsync(() =>
-                {
-                    try
-                    {
-                        return ApplyFiles();
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.UpdateLogger?.Error(ex, "Error applying update");
-
-                    }
-                    return false;
-                });
-            }
-            else
+            return await _updateService.GetUpdateIdentity().RunAsync(() =>
             {
                 try
                 {
@@ -264,12 +259,13 @@ namespace BLAZAM.Update
                     Loggers.UpdateLogger?.Error(ex, "Error applying update");
 
                 }
-            }
-            return false;
+                return false;
+            });
         }
 
         private bool ApplyFiles()
         {
+
             Loggers.UpdateLogger?.Information("Running update as: {RunningUser}", WindowsIdentity.GetCurrent().Name);
 
 
@@ -375,6 +371,7 @@ namespace BLAZAM.Update
                     return false;
                 }
             });
+
         }
         public async Task<bool> CleanStaging(IJobStep? step)
         {
@@ -438,6 +435,7 @@ namespace BLAZAM.Update
         public async Task<bool> Download(JobStep? step)
         {
 
+
             if (Release == null)
             {
                 return false;
@@ -492,6 +490,7 @@ namespace BLAZAM.Update
                 }
             }
             return true;
+
         }
 
         private void LogDownloadAttempt()
