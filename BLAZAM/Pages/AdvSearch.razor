@@ -1,41 +1,30 @@
-﻿@page "/search"
-@page "/search/{SearchTermParameter}"
+﻿@page "/advsearch"
+@page "/advsearch/{seachGuid}"
 @using System.Web
 @using BLAZAM.Global.Data
+@using BLAZAM.Gui.UI.DataGrids
 
 @inherits SearchPageBase
 @attribute [Authorize(Roles = (UserRoles.SearchOUs + "," + UserRoles.SearchComputers + "," + UserRoles.SearchGroups + "," + UserRoles.SearchUsers + "," + UserRoles.SuperAdmin))]
-<AuthorizeView Roles="@(UserRoles.SearchOUs + ","+UserRoles.SearchComputers + ","+UserRoles.SearchGroups + "," +UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
+<AuthorizeView Roles="@(UserRoles.SearchOUs + "," + UserRoles.SearchComputers + "," + UserRoles.SearchGroups + "," + UserRoles.SearchUsers + "," + UserRoles.SuperAdmin)">
 
 
-<DemoHelpAlert />
+    <DemoHelpAlert />
 
 
 
     @if (Searcher?.Results.Count > 1)
     {
+        <DirectoryEntryDataGrid IsLoadingData=LoadingData
+                                Entries="Searcher.Results"
+                                ItemsPerPage="50"
+                                NoResultsMessage="@AppLocalization[Lang.No_matching_results]"
+                                RowClicked="@((u)=>{ Nav.NavigateTo(u.Item.SearchUri);})" />
         <MudStack Row=true>
             Results found: @Searcher.Results.Count
-            Time elapsed: @Searcher.SearchTime
         </MudStack>
 
-        <Virtualize Items="Searcher.Results" TItem="IDirectoryEntryAdapter" Context="u" OverscanCount="30">
-            <ItemContent>
-                @if (u.CanRead)
-                {
-                    <SearchResult Entry="u" OnSelected=@(()=>{
-                          Searcher.Results.Clear();Searcher.Results.Add(u);
-                          }) />
-
-
-                }
-            </ItemContent>
-            <Placeholder>
-                <MudText Typo="Typo.h1">@AppLocalization[Lang.Loading]...</MudText>
-
-
-            </Placeholder>
-        </Virtualize>
+      
     }
     else if (Searcher?.Results.Count == 1)
     {
@@ -53,12 +42,7 @@
                 <ViewDirectoryEntry DirectoryEntry="result" />
             }
         }
-        @*        else
-    {
-    <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
-
-    }
-    *@
+       
     }
 
     else if (LoadingData)

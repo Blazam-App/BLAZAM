@@ -43,6 +43,11 @@ namespace BLAZAM.Session.Interfaces
         bool IsSuperAdmin { get; }
 
         /// <summary>
+        /// Gets a value indicating whether the user has only self-edit permissions.
+        /// </summary>
+        bool IsSelfEditOnly { get; }
+
+        /// <summary>
         /// Gets or sets the timestamp of the user's last access or activity.
         /// </summary>
         DateTime LastAccessed { get; set; }

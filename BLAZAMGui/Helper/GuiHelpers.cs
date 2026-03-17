@@ -56,7 +56,7 @@ namespace BLAZAM.Helpers
 
             items.ForEach(x =>
             {
-                treeData.Add(new() { Value = x, Selected = x.IsSelected });
+                treeData.Add(new TreeItemData<IDirectoryEntryAdapter>() { Value = x, Selected = x.IsSelected });
 
             });
             return treeData;

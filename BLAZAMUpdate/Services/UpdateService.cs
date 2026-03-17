@@ -7,6 +7,7 @@ using BLAZAM.Update.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Octokit;
+using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 using System.Security.Principal;
 
@@ -34,15 +35,12 @@ namespace BLAZAM.Update.Services
         /// </summary>
         public List<ApplicationUpdate> AvailableUpdates { get; set; } = [];
 
-        public SystemDirectory BackupPath
-        {
-            get => new(Path.Combine(UpdateTempDirectory.FullPath,
-                "backup",
-                _applicationInfo.RunningVersion.ToString()));
-        }
+        /// <summary>
+        /// 
+        /// </summary>
         public SystemDirectory BackupDirectory
         {
-            get => new(Path.Combine(UpdateTempDirectory.FullPath,
+            get => new(Path.Combine(ApplicationIdentityTempDirectory.FullPath,
                 "backup",
                 _applicationInfo.RunningVersion.ToString()));
         }
@@ -51,19 +49,63 @@ namespace BLAZAM.Update.Services
         /// <summary>
         /// The branch configured in the database
         /// </summary>
-        public string SelectedBranch { get; set; } = ApplicationReleaseBranches.Stable;
+        public string SelectedBranch { get; set; } = ApplicationReleaseBranches.Net8ReleasePrefix;
 
         private const string Publisher_Name = "BLAZAM-APP";
         private const string Repository_Name = "Blazam";
 
-        public SystemDirectory UpdateTempDirectory { get; }
+        /// <summary>
+        /// Gets the temporary directory used for update operations under the application identity.
+        /// </summary>
+        /// <remarks>Use this method to obtain the location where temporary files related to update
+        /// processes should be stored. The returned directory is accessible under the application's identity and may
+        /// differ from user-specific temporary directories.</remarks>
+        /// <returns>A SystemDirectory representing the temporary directory for update operations. The directory is associated
+        /// with the application identity.</returns>
+        public SystemDirectory GetUpdateIdentityTempDirectory()
+        {
 
+
+            return ApplicationIdentityTempDirectory;
+            /*
+             * Following code could be used for custom or AD identity temp directories... but we probably won't
+            switch (UpdateCredential)
+            {
+
+                case UpdateCredential.Active_Directory:
+                case UpdateCredential.Custom:
+                    var identity = GetUpdateIdentity();
+                    if (identity != null)
+                    {
+                        return identity.Run(() =>
+                        {
+                            Loggers.ActiveDirectoryLogger.Information("Update Identity: {@identity}", WindowsIdentity.GetCurrent().Name);
+                            //Get temp path while impersonating the update identity to ensure we have access to it
+                            var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                            var tempPath = Path.Combine(userProfile, "AppData", "Local", "Temp", "Blazam", "update" + Path.DirectorySeparatorChar);
+                            return new SystemDirectory(tempPath);
+                        });
+                    }
+                    break;
+            }
+
+            return ApplicationIdentityTempDirectory;
+            */
+        }
+
+        public SystemDirectory ApplicationIdentityTempDirectory
+        {
+            get
+            {
+                return new SystemDirectory(_applicationInfo.TempDirectory + "update" + Path.DirectorySeparatorChar);
+            }
+        }
         private readonly IAppDatabaseFactory? _dbFactory;
         private readonly ApplicationInfo _applicationInfo;
 
         public UpdateService(ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null, IStringLocalizer<AppLocalization>? appLocalization = null)
         {
-            UpdateTempDirectory = new SystemDirectory(applicationInfo.TempDirectory + "update" + Path.DirectorySeparatorChar);
+
             _dbFactory = dbFactory;
             _applicationInfo = applicationInfo;
             AppLocalization = appLocalization;
@@ -115,8 +157,10 @@ namespace BLAZAM.Update.Services
             //Filter the releases to the selected branch
             var branchReleases = releases
                 .Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
-            var stableReleases = releases
-                .Where(r => r.TagName.Contains(ApplicationReleaseBranches.Stable, StringComparison.OrdinalIgnoreCase));
+            var net8Releases = releases
+                .Where(r => r.TagName.Contains(ApplicationReleaseBranches.Net8ReleasePrefix, StringComparison.OrdinalIgnoreCase));
+            var net10Releases = releases
+                .Where(r => r.TagName.Contains(ApplicationReleaseBranches.Net10ReleasePrefix, StringComparison.OrdinalIgnoreCase));
             //Get the first release,which should be the most recent
             latestBranchRelease = branchReleases.FirstOrDefault();
             //Store all other releases for use later
@@ -130,7 +174,8 @@ namespace BLAZAM.Update.Services
             {
 
                 EncapsulateBetaReleases(betaStableReleases);
-                EncapsulateStableReleases(stableReleases);
+                EncapsulateStableReleases(net8Releases);
+                EncapsulateStableReleases(net10Releases, ApplicationReleaseBranches.Net10ReleasePrefix);
                 EncapsulateLatestRelease(latestBranchRelease);
                 RemoveIncompatibleReleases();
             }
@@ -150,7 +195,7 @@ namespace BLAZAM.Update.Services
             if (latestBranchRelease != null)
             {
                 var latestBranchUpdate = EncapsulateUpdate(latestBranchRelease, SelectedBranch);
-                if (latestBranchUpdate != null && latestBranchUpdate.Branch != ApplicationReleaseBranches.Stable && latestBranchUpdate.Branch != "Stable")
+                if (latestBranchUpdate != null && latestBranchUpdate.Branch != ApplicationReleaseBranches.Net8ReleasePrefix && latestBranchUpdate.Branch != "Stable")
                 {
                     if (!AvailableUpdates.Contains(latestBranchUpdate))
                     {
@@ -161,7 +206,7 @@ namespace BLAZAM.Update.Services
             }
         }
 
-        private void EncapsulateStableReleases(IEnumerable<Release> stableReleases)
+        private void EncapsulateStableReleases(IEnumerable<Release> stableReleases, string applicationReleaseBranch = ApplicationReleaseBranches.Net8ReleasePrefix)
         {
             foreach (var release in stableReleases)
             {
@@ -177,7 +222,7 @@ namespace BLAZAM.Update.Services
 
                     try
                     {
-                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+                        AvailableUpdates.Add(EncapsulateUpdate(release, applicationReleaseBranch));
                     }
                     catch (Exception ex)
                     {
@@ -202,7 +247,7 @@ namespace BLAZAM.Update.Services
                     //Create that update object
                     try
                     {
-                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Net8ReleasePrefix));
 
                     }
                     catch (Exception ex)
@@ -228,13 +273,13 @@ namespace BLAZAM.Update.Services
                     using var context = await _dbFactory.CreateDbContextAsync();
                     var settings = await context.AppSettings.FirstAsync();
                     SelectedBranch = settings.UpdateBranch;
-                    if (SelectedBranch.Equals(ApplicationReleaseBranches.Stable, StringComparison.InvariantCultureIgnoreCase))
+                    if (SelectedBranch.Equals(ApplicationReleaseBranches.Net8ReleasePrefix, StringComparison.InvariantCultureIgnoreCase))
                     {
                         return;
                     }
                     if (SelectedBranch.Equals("Stable", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        SelectedBranch = ApplicationReleaseBranches.Stable;
+                        SelectedBranch = ApplicationReleaseBranches.Net8ReleasePrefix;
 
                         settings.UpdateBranch = SelectedBranch;
                         await context.SaveChangesAsync();
@@ -249,7 +294,7 @@ namespace BLAZAM.Update.Services
 
             if (SelectedBranch == null)
             {
-                SelectedBranch = ApplicationReleaseBranches.Stable;
+                SelectedBranch = ApplicationReleaseBranches.Net8ReleasePrefix;
             }
         }
 
@@ -283,33 +328,63 @@ namespace BLAZAM.Update.Services
 
             var update = new ApplicationUpdate(_applicationInfo, this, _dbFactory) { Release = release };
 
-            if (releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
+            if (releaseVersion.NewerThan(new ApplicationVersion("1.5.99")))
             {
-                update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update));
+                update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update, "10"));
             }
+            else if (releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
+            {
+                update.PreRequisiteChecks.Add(() => CheckAspCorePrerequisites(update, "8"));
+            }
+
 
             return update;
         }
 
-        private bool CheckAspCorePrerequisites(ApplicationUpdate update)
+        private bool CheckAspCorePrerequisites(ApplicationUpdate update, string version)
         {
-            if (!ApplicationInfo.isUnderIIS)
+            switch (version)
             {
-                if (!PrerequisiteChecker.CheckForAspCore())
-                {
-                    update.PrequisiteMessage = AppLocalization?["ASP NET Core 8 Runtime is missing."] ?? "ASP NET Core 8 Runtime is missing.";
-                    return false;
-                }
+                case "8":
+                    if (!ApplicationInfo.isUnderIIS)
+                    {
+                        if (!PrerequisiteChecker.CheckForAspCore8())
+                        {
+                            update.PrequisiteMessage = AppLocalization?["ASP NET Core 8 Runtime is missing."] ?? "ASP NET Core 8 Runtime is missing.";
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if (!PrerequisiteChecker.CheckForAspCoreHosting8())
+                        {
+                            update.PrequisiteMessage = AppLocalization?["ASP NET Core 8 Web Hosting Bundle is missing."] ?? "ASP NET Core 8 Web Hosting Bundle is missing.";
+                            return false;
+                        }
+                    }
+                    return true;
+
+                case "10":
+                    if (!ApplicationInfo.isUnderIIS)
+                    {
+                        if (!PrerequisiteChecker.CheckForAspCore10())
+                        {
+                            update.PrequisiteMessage = AppLocalization?["ASP NET Core 10 Runtime is missing."] ?? "ASP NET Core 10 Runtime is missing.";
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if (!PrerequisiteChecker.CheckForAspCoreHosting10())
+                        {
+                            update.PrequisiteMessage = AppLocalization?["ASP NET Core 10 Web Hosting Bundle is missing."] ?? "ASP NET Core 10 Web Hosting Bundle is missing.";
+                            return false;
+                        }
+                    }
+                    return true;
+
             }
-            else
-            {
-                if (!PrerequisiteChecker.CheckForAspCoreHosting())
-                {
-                    update.PrequisiteMessage = AppLocalization?["ASP NET Core 8 Web Hosting Bundle is missing."] ?? "ASP NET Core 8 Web Hosting Bundle is missing.";
-                    return false;
-                }
-            }
-            return true;
+            return false;
         }
 
         private async void CheckForUpdate(object? state)
@@ -334,7 +409,7 @@ namespace BLAZAM.Update.Services
             {
                 Loggers.UpdateLogger.Information("Checking update credentials");
 
-                if (ApplicationInfo.applicationRoot.Writable)
+                if (ApplicationInfo.applicationRoot.Writable && !Debugger.IsAttached)
                 {
                     return UpdateCredential.Application;
                 }
@@ -358,29 +433,43 @@ namespace BLAZAM.Update.Services
                 return UpdateCredential.None;
             }
         }
-
-        public WindowsImpersonation? GetUpdateCredentials()
+        /// <summary>
+        /// Retrieves a Windows impersonation identity used for performing update operations based on the configured
+        /// update credential.
+        /// </summary>
+        /// <remarks>The returned impersonation identity depends on the value of UpdateCredential. If
+        /// Active Directory credentials are configured and available, the method returns an impersonator for the
+        /// directory admin. If custom credentials are configured, it returns an impersonator based on application
+        /// settings. If neither is available, a default impersonation is returned. This method does not throw
+        /// exceptions for missing or invalid credentials; callers should check the returned identity for validity
+        /// before performing update operations.</remarks>
+        /// <returns>A WindowsImpersonation instance representing the identity to use for updates. If no suitable identity is
+        /// found, returns a default impersonation with no credentials.</returns>
+        public WindowsImpersonation GetUpdateIdentity()
         {
             switch (UpdateCredential)
             {
-                case UpdateCredential.Application:
-                    return null;
                 case UpdateCredential.Active_Directory:
                     //Pull ad settings to test if app ad account can write to the application directory
-                    using (var context = _dbFactory.CreateDbContext())
+                    using (var context = _dbFactory?.CreateDbContext())
                     {
-                        var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
-                        return adSettings?.CreateDirectoryAdminImpersonator();
+                        var adSettings = context?.ActiveDirectorySettings.FirstOrDefault();
+                        return adSettings != null ? adSettings.CreateDirectoryAdminImpersonator() : new WindowsImpersonation(null);
                     }
                 case UpdateCredential.Custom:
-                    using (var context2 = _dbFactory.CreateDbContext())
+                    using (var context2 = _dbFactory?.CreateDbContext())
                     {
-                        var appSettings = context2.AppSettings.FirstOrDefault();
-                        return appSettings?.CreateUpdateImpersonator();
+                        var appSettings = context2?.AppSettings.FirstOrDefault();
+                        if(appSettings != null)
+                        {
+                            var identity = appSettings.CreateUpdateImpersonator();
+                            return identity ?? new WindowsImpersonation(null);
+                        }
                     }
-                default:
-                    return null;
+                    break;
+                   
             }
+            return new WindowsImpersonation(null);
         }
         private bool TestCustomCredentials()
         {
@@ -417,7 +506,7 @@ namespace BLAZAM.Update.Services
 
         public async Task<bool> Backup()
         {
-            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupPath);
+            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupDirectory);
             try
             {
                 var result = await Task.Run(() => { return _applicationInfo.ApplicationRoot.CopyTo(BackupDirectory); });
@@ -481,10 +570,7 @@ namespace BLAZAM.Update.Services
             return false;
         }
 
-        /// <summary>
-        /// Returns true if any configured credentials have write permission to the app directory
-        /// </summary>
-        public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
+
 
         public List<ApplicationUpdate> IncompatibleUpdates { get; private set; } = [];
         private readonly object _updateCheckLock = new();

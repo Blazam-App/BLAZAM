@@ -100,19 +100,22 @@
     AppModal? addFieldModal;
     List<CustomActiveDirectoryField> ADFields { get; set; } = new();
 
-    async Task<GridData<CustomActiveDirectoryField>> RefreshData(GridState<CustomActiveDirectoryField> currentState)
+    async Task<GridData<CustomActiveDirectoryField>> RefreshData(GridState<CustomActiveDirectoryField> currentState, CancellationToken cancellationToken)
     {
         LoadingData = true;
         if (Context != null)
         {
-            ADFields = await Context.CustomActiveDirectoryFields.Where(x => x.DeletedAt == null).ToListAsync();
+            ADFields = await Context.CustomActiveDirectoryFields.Where(x => x.DeletedAt == null).ToListAsync(cancellationToken);
         }
-        var data = new GridData<CustomActiveDirectoryField>();
-        data.Items = ADFields;
-        data.TotalItems = ADFields.Count;
+
+        var data = new GridData<CustomActiveDirectoryField>
+        {
+            Items = ADFields,
+            TotalItems = ADFields.Count
+        };
+
         LoadingData = false;
         return data;
-
     }
     async Task FieldCreated(CustomActiveDirectoryField newField)
     {
@@ -136,34 +139,36 @@
         }
 
     }
-    async Task SaveChanges()
+    async Task<DataGridEditFormAction> SaveChanges(CustomActiveDirectoryField changedField)
     {
-        if (Context != null)
+        if (Context == null)
         {
-            foreach (var field in ADFields)
+            return DataGridEditFormAction.KeepOpen;
+        }
+
+        foreach (var field in ADFields)
+        {
+            for (int x = 0; x < field.ObjectTypes.Count; x++)
             {
-                for (int x = 0; x < field.ObjectTypes.Count; x++)
+                var trackedObjType = await Context.ActiveDirectoryFieldObjectMappings.FirstOrDefaultAsync(
+                    oType => oType.ObjectType == field.ObjectTypes[x].ObjectType &&
+                             oType.ActiveDirectoryFieldId == field.Id);
+
+                if (trackedObjType != null)
                 {
-                    var trackedObjType = await Context.ActiveDirectoryFieldObjectMappings.FirstOrDefaultAsync(
-                        oType => oType.ObjectType == field.ObjectTypes[x].ObjectType && 
-                                 oType.ActiveDirectoryFieldId == field.Id);
-                    
-                    if (trackedObjType != null)
-                    {
-                        field.ObjectTypes[x] = trackedObjType;
-                    }
+                    field.ObjectTypes[x] = trackedObjType;
                 }
-            }
-            if (await Context.SaveChangesAsync() > 0)
-            {
-                SnackBarService.Success("Field Updated");
-            }
-            else
-            {
-                SnackBarService.Error("Field could not be updated");
             }
         }
 
+        if (await Context.SaveChangesAsync() > 0)
+        {
+            SnackBarService.Success("Field Updated");
+            return DataGridEditFormAction.Close;
+        }
+
+        SnackBarService.Error("Field could not be updated");
+        return DataGridEditFormAction.KeepOpen;
     }
 
     void ToggleObjectType(CustomActiveDirectoryField field, ActiveDirectoryObjectType objectType, bool newValue)

@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using Serilog.Events;
+using System.Diagnostics;
 
 namespace BLAZAM.Logger
 {
@@ -195,12 +196,22 @@ namespace BLAZAM.Logger
                     fileSizeLimitBytes: 10000000,
                     rollOnFileSizeLimit: true,
          outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}",
-         retainedFileTimeLimit: TimeSpan.FromDays(30))
-
-                .WriteTo.Logger(lc =>
+         retainedFileTimeLimit: TimeSpan.FromDays(30));
+            if (!Debugger.IsAttached)
+            {
+                loggerBuilder.WriteTo.Logger(lc =>
                 {
                     lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
                 });
+            }
+            else
+            {
+                loggerBuilder.WriteTo.Logger(lc =>
+                {
+                    lc.WriteTo.Console();
+                });
+            }
+                
             if (SendToSeqServer)
             {
                 loggerBuilder.WriteTo.Seq(SeqServerUri, apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning);

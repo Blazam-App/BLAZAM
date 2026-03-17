@@ -27,7 +27,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return "/view/" + Uri.EscapeDataString(CanonicalName ?? String.Empty);
+                return "/view/" + Uri.EscapeDataString(DN ?? String.Empty);
             }
         }
         [JsonIgnore]

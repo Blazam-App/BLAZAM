@@ -38,9 +38,9 @@ namespace BLAZAM.Services.Background
             _applicationInfo = applicationInfo;
             this.factory = factory;
             this.updateService = updateService;
-            directoryCleaner = new Timer(CleanDirectories, null, TimeSpan.FromSeconds(30), TimeSpan.FromHours(20));
+            //directoryCleaner = new Timer(CleanDirectories, null, TimeSpan.FromSeconds(30), TimeSpan.FromHours(20));
         }
-
+        /*
         private void CleanDirectories(object? state)
         {
             using var context = factory.CreateDbContext();
@@ -199,7 +199,7 @@ namespace BLAZAM.Services.Background
 
 
         }
-
+        */
         protected override void Execute(object? state = null)
         {
             using var context = factory.CreateDbContext();
