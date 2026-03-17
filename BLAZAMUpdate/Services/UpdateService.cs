@@ -434,15 +434,17 @@ namespace BLAZAM.Update.Services
             }
         }
         /// <summary>
-        /// Retrieves the impersonation identity to be used for update operations based on the configured update
-        /// credential.
+        /// Retrieves a Windows impersonation identity used for performing update operations based on the configured
+        /// update credential.
         /// </summary>
-        /// <remarks>The returned impersonation identity depends on the value of the <see cref="UpdateCredential"/>. If
-        /// Active Directory or Custom credentials are configured, the method attempts to create an impersonator using
-        /// the relevant settings. If Application credentials are used, no impersonation is performed and <see
-        /// langword="null"/> is returned.</remarks>
-        /// <returns>A <see cref="WindowsImpersonation"/> instance representing the identity for update operations, or <see
-        /// langword="null"/> if no impersonation is required.</returns>
+        /// <remarks>The returned impersonation identity depends on the value of UpdateCredential. If
+        /// Active Directory credentials are configured and available, the method returns an impersonator for the
+        /// directory admin. If custom credentials are configured, it returns an impersonator based on application
+        /// settings. If neither is available, a default impersonation is returned. This method does not throw
+        /// exceptions for missing or invalid credentials; callers should check the returned identity for validity
+        /// before performing update operations.</remarks>
+        /// <returns>A WindowsImpersonation instance representing the identity to use for updates. If no suitable identity is
+        /// found, returns a default impersonation with no credentials.</returns>
         public WindowsImpersonation GetUpdateIdentity()
         {
             switch (UpdateCredential)
