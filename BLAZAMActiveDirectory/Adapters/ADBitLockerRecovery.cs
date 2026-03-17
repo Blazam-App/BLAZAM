@@ -14,6 +14,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 var rawData = GetAttribute<byte[]>("msFVE-RecoveryGuid");
+                if (rawData == null)
+                {
+                    return null;
+                }
                 var id = new Guid(rawData);
                 return id;
             }
