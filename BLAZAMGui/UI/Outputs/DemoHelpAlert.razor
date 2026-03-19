@@ -1,52 +1,62 @@
 ﻿@inherits AppComponentBase
-
-@if (ApplicationInfo.InDemoMode && randomUsers.Count>0)
+@if (LoadingData)
+{
+    <MudProgressLinear Color=Color.Primary Indeterminate=true />
+}
+else if (ApplicationInfo.InDemoMode && randomUsers.Count > 0)
 {
     <MudAlert Class="my-2"
-    Icon="@Icons.Material.Filled.QuestionMark"
-    Dense=true
-    Severity="Severity.Info" 
-    Variant="Variant.Outlined">
+              Icon="@Icons.Material.Filled.QuestionMark"
+              Dense=true
+              Severity="Severity.Info"
+              Variant="Variant.Outlined">
         Try searching @(string.Join(", ", randomUsers.Select(u => u.Sn)))...
     </MudAlert>
 }
 
 @code {
-    List<IADUser> randomUsers {
+    List<IADUser> randomUsers
+    {
         get => CurrentUser.State.Cache.Get<List<IADUser>>("demoRandomUsers");
         set => CurrentUser.State.Cache.Set("demoRandomUsers", value);
     }
     readonly Random random = new Random();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await base.OnInitializedAsync();
-        
+        base.OnInitialized();
+
         // Only run in demo mode
-        if (!ApplicationInfo.InDemoMode){
+        if (!ApplicationInfo.InDemoMode)
+        {
             return;
         }
-        
-        if (randomUsers.IsNullOrEmpty())
+        LoadingData = true;
+        Task.Run(async () =>
         {
-            var foundResults = new List<IADUser>();
-            while (foundResults.Count < 3)
+            if (randomUsers.IsNullOrEmpty())
             {
-                var threeLetters = GenerateRandomThreeLetters();
-                var results = (await Directory.Users.FindUsersByStringAsync("", false))
-                                .Where(u => !u.Sn.IsNullOrEmpty())
-                                .ToList();
-                if (results.Any())
+                var foundResults = new List<IADUser>();
+                while (foundResults.Count < 3)
                 {
-                    foundResults.Add(results[random.Next(0, results.Count)]);
-                    foundResults.Add(results[random.Next(0, results.Count)]);
-                    foundResults.Add(results[random.Next(0, results.Count)]);
+                    var threeLetters = GenerateRandomThreeLetters();
+                    var results = (await Directory.Users.FindUsersByStringAsync("", false))
+                                    .Where(u => !u.Sn.IsNullOrEmpty())
+                                    .ToList();
+                    if (results.Any())
+                    {
+                        foundResults.Add(results[random.Next(0, results.Count)]);
+                        foundResults.Add(results[random.Next(0, results.Count)]);
+                        foundResults.Add(results[random.Next(0, results.Count)]);
+                    }
+                    await Task.Delay(100);
                 }
-                await Task.Delay(100);
+                randomUsers = foundResults;
+                LoadingData = false;
+                await StateHasChangedAsync();
             }
-            randomUsers = foundResults;
-            await StateHasChangedAsync();
-        }
+        });
+       
     }
 
     private string GenerateRandomThreeLetters()
