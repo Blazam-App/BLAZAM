@@ -292,4 +292,7 @@ Try configuring custom update credentials.</value>
   <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
     <value> is requesting edit access for {0} on </value>
   </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>Require the user to change their password at next logon</value>
+  </data>
 </root>

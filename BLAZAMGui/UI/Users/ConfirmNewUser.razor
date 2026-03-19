@@ -159,7 +159,7 @@ else
             {
                 User = (IADUser?)Directory.GetDirectoryEntryByDN(User.DN)!;
                 User.NewPassword = _userPassword;
-                SnackBarService.Success("User has been created");
+                SnackBarService.Success(AppHelpLocalization[HelpLang.Created,AppLocalization[Lang.User]]);
                 Confirmed = true;
                 await OnConfirmed.InvokeAsync();
                 User = (IADUser?)Directory.GetDirectoryEntryByDN(User.DN)!;
