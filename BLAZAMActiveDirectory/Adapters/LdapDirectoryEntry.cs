@@ -420,10 +420,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     SearchRequest schemaSearchRequest = new SearchRequest(
                        _namingContextCache,
-                       $"(objectClass=attributeSchema)",
+                       $"(&(objectClass=attributeSchema)(cn={propertyName}))", // Filter by specific property name
                        SearchScope.Subtree,
-                       "attributeSyntax", "oMSyntax", "isSingleValued", "oMObjectClass", "cn" // "cn" can be useful for debugging
-                   );
+                       "attributeSyntax", "oMSyntax", "isSingleValued", "oMObjectClass", "cn"
+                    );
 
                     try
                     {
