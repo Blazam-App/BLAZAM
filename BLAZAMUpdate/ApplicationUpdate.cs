@@ -108,8 +108,33 @@ namespace BLAZAM.Update
             {
 
                 var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory;
+
+
+
                 if (Debugger.IsAttached)
+                {
                     args += $"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}net8.0{Path.DirectorySeparatorChar}";
+                }
+
+                switch (_updateService.UpdateCredential)
+                {
+                    case UpdateCredential.Active_Directory:
+                        var adSettings = _dbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault();
+                        if (adSettings != null)
+                        {
+                            args += $" -Username '{adSettings.Username}' -Password '{adSettings.Password}' -Domain '{adSettings.FQDN}'";
+                        }
+                        break;
+                    case UpdateCredential.Custom:
+                        var appSettings = _dbFactory.CreateDbContext().AppSettings.FirstOrDefault();
+                        if (appSettings != null)
+                        {
+                            args += $" -Username '{appSettings.UpdateUsername}' -Password '{appSettings.UpdatePassword}' -Domain '{appSettings.UpdateDomain}'";
+                        }
+                        break;
+
+                }
+
                 args += "'";
 
                 return args;

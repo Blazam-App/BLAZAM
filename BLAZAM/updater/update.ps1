@@ -36,7 +36,6 @@ if ($processId -eq "") {
 }
 
 Write-Host("Username: " + $Username);
-Write-Host("Password: " + $Password);
 Write-Host("Domain: " + $Domain);
 Write-Host("ApplicationDirectory: " + $ApplicationDirectory);
 Write-Host("Update Source Path: " + $UpdateSourcePath);
