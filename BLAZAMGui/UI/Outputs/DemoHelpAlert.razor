@@ -1,18 +1,22 @@
 ﻿@inherits AppComponentBase
-@if (LoadingData)
+@if (ApplicationInfo.InDemoMode)
 {
-    <MudProgressLinear Color=Color.Primary Indeterminate=true />
+    if (LoadingData)
+    {
+        <MudProgressLinear Color=Color.Primary Indeterminate=true />
+    }
+    else if (randomUsers.Count > 0)
+    {
+        <MudAlert Class="my-2"
+                  Icon="@Icons.Material.Filled.QuestionMark"
+                  Dense=true
+                  Severity="Severity.Info"
+                  Variant="Variant.Outlined">
+            Try searching @(string.Join(", ", randomUsers.Select(u => u.Sn)))...
+        </MudAlert>
+    }
 }
-else if (ApplicationInfo.InDemoMode && randomUsers.Count > 0)
-{
-    <MudAlert Class="my-2"
-              Icon="@Icons.Material.Filled.QuestionMark"
-              Dense=true
-              Severity="Severity.Info"
-              Variant="Variant.Outlined">
-        Try searching @(string.Join(", ", randomUsers.Select(u => u.Sn)))...
-    </MudAlert>
-}
+
 
 @code {
     List<IADUser> randomUsers
@@ -29,6 +33,7 @@ else if (ApplicationInfo.InDemoMode && randomUsers.Count > 0)
         // Only run in demo mode
         if (!ApplicationInfo.InDemoMode)
         {
+            LoadingData = false;
             return;
         }
         LoadingData = true;
