@@ -509,7 +509,9 @@ namespace BLAZAM.Update.Services
             Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupDirectory);
             try
             {
-                var result = await Task.Run(() => { return _applicationInfo.ApplicationRoot.CopyTo(BackupDirectory); });
+                var result = await Task.Run(() => { 
+                    return _applicationInfo.ApplicationRoot.CopyTo(BackupDirectory);
+                });
 
                 Loggers.UpdateLogger?.Debug("Backup result: {@BackupResult}", result.ToString());
 

@@ -15,35 +15,45 @@ namespace BLAZAM.Common.Data
 
         private SafeAccessTokenHandle GetImpersonatedToken()
         {
-            if (impersonationUser == null)
+            nint phPassword=0;
+            try
             {
-                throw new AppException("Attempted to impersonate without an impersonation user");
+                if (impersonationUser == null)
+                {
+                    throw new AppException("Attempted to impersonate without an impersonation user");
+                }
+                //Use interactive logon
+                var domain = impersonationUser.FQDN ?? "";
+                var username = impersonationUser.Username;
+                phPassword = Marshal.SecureStringToGlobalAllocUnicode(impersonationUser.Password);
+                bool returnValue = LogonUser(username,
+                        domain,
+                        phPassword,
+                        LOGON32_LOGON_INTERACTIVE,
+                        LOGON32_PROVIDER_DEFAULT,
+                        out safeAccessTokenHandle);
+
+
+
+                if (!returnValue)
+                {
+                    int ret = Marshal.GetLastWin32Error();
+                    Loggers.ActiveDirectoryLogger.Warning("LogonUser failed with error code : {0}", ret);
+                    var exception = new System.ComponentModel.Win32Exception(ret);
+
+
+                    throw new AuthenticationException(exception.Message);
+
+                }
+                return safeAccessTokenHandle;
             }
-            //Use interactive logon
-            var domain = impersonationUser.FQDN ?? "";
-            var username = impersonationUser.Username;
-            var phPassword = Marshal.SecureStringToGlobalAllocUnicode(impersonationUser.Password);
-            bool returnValue = LogonUser(username,
-                    domain,
-                    phPassword,
-                    LOGON32_LOGON_NETWORK,
-                    LOGON32_PROVIDER_DEFAULT,
-                    out safeAccessTokenHandle);
-
-
-
-            Marshal.ZeroFreeGlobalAllocUnicode(phPassword);
-            if (!returnValue)
+            finally
             {
-                int ret = Marshal.GetLastWin32Error();
-                Loggers.ActiveDirectoryLogger.Warning("LogonUser failed with error code : {0}", ret);
-                var exception = new System.ComponentModel.Win32Exception(ret);
-
-
-                throw new AuthenticationException(exception.Message);
-
+                if (phPassword != 0)
+                {
+                    Marshal.ZeroFreeGlobalAllocUnicode(phPassword);
+                }
             }
-            return safeAccessTokenHandle;
 
         }
 
