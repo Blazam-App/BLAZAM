@@ -355,6 +355,9 @@ namespace BLAZAM.Update
             {
                 StartInfo = new ProcessStartInfo
                 {
+                    UserName= _updateIdentity.ImpersonationUser.Username,
+                    Password = _updateIdentity.ImpersonationUser.Password,
+                    Domain = _updateIdentity.ImpersonationUser.FQDN,
                     FileName = UpdateCommandProcess,
                     Arguments = UpdateCommandArguments,
                     RedirectStandardOutput = true, // Enable output redirection
