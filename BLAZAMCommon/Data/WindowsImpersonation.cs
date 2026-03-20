@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32.SafeHandles;
+﻿using BLAZAM.Helpers;
+using Microsoft.Win32.SafeHandles;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
@@ -10,22 +11,22 @@ namespace BLAZAM.Common.Data
     public class WindowsImpersonation
     {
         private SafeAccessTokenHandle safeAccessTokenHandle;
-        private WindowsImpersonationUser? impersonationUser;
+        public WindowsImpersonationUser? ImpersonationUser { get; private set; }
         private readonly WindowsIdentity ApplicationIdentity;
 
         private SafeAccessTokenHandle GetImpersonatedToken()
         {
-            nint phPassword=0;
+            nint phPassword = 0;
             try
             {
-                if (impersonationUser == null)
+                if (ImpersonationUser == null)
                 {
                     throw new AppException("Attempted to impersonate without an impersonation user");
                 }
                 //Use interactive logon
-                var domain = impersonationUser.FQDN ?? "";
-                var username = impersonationUser.Username;
-                phPassword = Marshal.SecureStringToGlobalAllocUnicode(impersonationUser.Password);
+                var domain = ImpersonationUser.FQDN ?? "";
+                var username = ImpersonationUser.Username;
+                phPassword = Marshal.SecureStringToGlobalAllocUnicode(ImpersonationUser.Password);
                 bool returnValue = LogonUser(username,
                         domain,
                         phPassword,
@@ -76,13 +77,137 @@ namespace BLAZAM.Common.Data
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         private static extern bool CloseHandle(IntPtr handle);
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern bool CreateProcessAsUser(
+            SafeAccessTokenHandle hToken,
+            string? lpApplicationName,
+            string lpCommandLine,
+            IntPtr lpProcessAttributes,
+            IntPtr lpThreadAttributes,
+            bool bInheritHandles,
+            uint dwCreationFlags,
+            IntPtr lpEnvironment,
+            string? lpCurrentDirectory,
+            ref STARTUPINFO lpStartupInfo,
+            out PROCESS_INFORMATION lpProcessInformation);
+
+        [DllImport("kernel32.dll")]
+        private static extern uint WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        private struct STARTUPINFO
+        {
+            public int cb;
+            public string? lpReserved;
+            public string? lpDesktop;
+            public string? lpTitle;
+            public int dwX;
+            public int dwY;
+            public int dwXSize;
+            public int dwYSize;
+            public int dwXCountChars;
+            public int dwYCountChars;
+            public int dwFillAttribute;
+            public int dwFlags;
+            public short wShowWindow;
+            public short cbReserved2;
+            public IntPtr lpReserved2;
+            public IntPtr hStdInput;
+            public IntPtr hStdOutput;
+            public IntPtr hStdError;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct PROCESS_INFORMATION
+        {
+            public IntPtr hProcess;
+            public IntPtr hThread;
+            public int dwProcessId;
+            public int dwThreadId;
+        }
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern bool CreateProcessWithLogonW(
+            string lpUsername,
+            string lpDomain,
+            IntPtr lpPassword,
+            int dwLogonFlags,
+            string lpApplicationName,
+            string lpCommandLine,
+            int dwCreationFlags,
+            IntPtr lpEnvironment,
+            string lpCurrentDirectory,
+            ref STARTUPINFO lpStartupInfo,
+            out PROCESS_INFORMATION lpProcessInformation);
+
+        private const int LOGON_WITH_PROFILE = 0x00000001;
+        private const int CREATE_NO_WINDOW = 0x08000000;
+
+        /// <summary>
+        /// Ensures the user profile exists by launching a minimal process as the user
+        /// </summary>
+        public void EnsureProfileExists()
+        {
+            if (ImpersonationUser == null) return;
+
+
+           
+            nint phPassword = 0;
+            try
+            {
+                var si = new STARTUPINFO { cb = Marshal.SizeOf<STARTUPINFO>() };
+                var domain = ImpersonationUser.FQDN ?? "";
+                var username = ImpersonationUser.Username;
+
+                phPassword = Marshal.SecureStringToGlobalAllocUnicode(ImpersonationUser.Password);
+
+                // Launch cmd.exe /c exit - minimal process that creates profile
+                bool success = CreateProcessWithLogonW(
+                    username,
+                    domain,
+                    phPassword,
+                    LOGON_WITH_PROFILE,  // This flag loads the profile
+                    null,
+                    "cmd.exe /c exit",
+                    CREATE_NO_WINDOW,
+                    IntPtr.Zero,
+                    null,
+                    ref si,
+                    out PROCESS_INFORMATION pi);
+
+                if (success)
+                {
+                    Loggers.ActiveDirectoryLogger.Information("Profile creation process launched for {@User}", username);
+                    // Wait for process to complete (5 second timeout)
+                    WaitForSingleObject(pi.hProcess, 5000);
+                    CloseHandle(pi.hProcess);
+                    CloseHandle(pi.hThread);
+                }
+                else
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    Loggers.ActiveDirectoryLogger.Warning("Failed to create profile process for {@User}: Error {Error}",
+                        username, error);
+                }
+            }
+            finally
+            {
+                if (phPassword != 0)
+                {
+                    Marshal.ZeroFreeGlobalAllocUnicode(phPassword);
+                }
+            }
+
+        }
+
         /// <summary>
         /// Creates a new impersonation context under the provided <see cref="WindowsImpersonationUser"/>
         /// </summary>
         /// <param name="user"></param>
         public WindowsImpersonation(WindowsImpersonationUser? user)
         {
-            impersonationUser = user;
+            ImpersonationUser = user;
             ApplicationIdentity = WindowsIdentity.GetCurrent();
         }
         /// <summary>
@@ -116,7 +241,7 @@ namespace BLAZAM.Common.Data
         private T? RunImpersonated<T>(Func<T> executeTask)
         {
             // If no impersonation user provided, run as application identity
-            if (impersonationUser == null)
+            if (ImpersonationUser == null)
             {
                 Loggers.ActiveDirectoryLogger.Information("Running as application identity: {@Identity}", WindowsIdentity.GetCurrent().Name);
                 return executeTask();
@@ -132,6 +257,8 @@ namespace BLAZAM.Common.Data
                     throw new AppException("The impersonation user is invalid. Check settings.");
                 }
 
+               
+
                 // Check the identity.
                 Loggers.ActiveDirectoryLogger.Information("Before impersonation: {@PreIdentity}", WindowsIdentity.GetCurrent().Name);
 
@@ -143,24 +270,27 @@ namespace BLAZAM.Common.Data
                       {
                           // Check the identity.
                           var impersonatedIdentity = WindowsIdentity.GetCurrent();
-                          if (impersonationUser.Username != ApplicationIdentity.Name && impersonatedIdentity.Name.Equals(ApplicationIdentity.Name))
+                          if (ImpersonationUser.Username != ApplicationIdentity.Name && impersonatedIdentity.Name.Equals(ApplicationIdentity.Name))
                           {
                               var exception = new AppException("Impersonation running as application identity");
                               ExceptionDispatchInfo.SetCurrentStackTrace(exception);
                               Loggers.ActiveDirectoryLogger.Information(exception, "Impersonation running as application identity");
                           }
                           Loggers.ActiveDirectoryLogger.Information("During impersonation: {@PostIdentity}", WindowsIdentity.GetCurrent().Name);
+
+
+
                           result = executeTask();
                       }
                       );
                 }
                 catch (IdentityNotMappedException ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Information(ex, "The identity could not be mapped to a Windows account {@Impersonatee}", impersonationUser.Username);
+                    Loggers.ActiveDirectoryLogger.Information(ex, "The identity could not be mapped to a Windows account {@Impersonatee}", ImpersonationUser.Username);
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Error(ex, "Error running impersonated action {@Impersonatee}", impersonationUser.Username);
+                    Loggers.ActiveDirectoryLogger.Error(ex, "Error running impersonated action {@Impersonatee}", ImpersonationUser.Username);
                 }
                 finally
                 {
@@ -169,11 +299,11 @@ namespace BLAZAM.Common.Data
             }
             catch (AuthenticationException ex)
             {
-                Loggers.ActiveDirectoryLogger.Information(ex, "Bad credentials trying to impersonate user {@Username}", impersonationUser.Username);
+                Loggers.ActiveDirectoryLogger.Information(ex, "Bad credentials trying to impersonate user {@Username}", ImpersonationUser.Username);
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Information(ex, "Error trying to impersonate {@Impersonatee}", impersonationUser.Username);
+                Loggers.ActiveDirectoryLogger.Information(ex, "Error trying to impersonate {@Impersonatee}", ImpersonationUser.Username);
             }
 
             return result;
