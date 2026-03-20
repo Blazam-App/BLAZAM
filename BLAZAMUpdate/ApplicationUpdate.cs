@@ -315,8 +315,7 @@ namespace BLAZAM.Update
 
         private bool ApplyFiles()
         {
-            return _updateIdentity.Run(() =>
-            {
+       
                 Loggers.UpdateLogger?.Information("Running update as: {RunningUser}", WindowsIdentity.GetCurrent().Name);
 
 
@@ -346,7 +345,6 @@ namespace BLAZAM.Update
 
                     throw new ApplicationUpdateException("Updater script did not run.");
                 }
-            });
         }
 
         private bool InvokeUpdateExecutable()
