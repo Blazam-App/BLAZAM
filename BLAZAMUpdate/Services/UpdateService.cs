@@ -53,7 +53,7 @@ namespace BLAZAM.Update.Services
 
         private const string Publisher_Name = "BLAZAM-APP";
         private const string Repository_Name = "Blazam";
-
+        private static List<string> initializedProfiles = [];
         /// <summary>
         /// Gets the temporary directory used for update operations under the application identity.
         /// </summary>
@@ -65,32 +65,36 @@ namespace BLAZAM.Update.Services
         public SystemDirectory GetUpdateIdentityTempDirectory()
         {
 
-
-            return ApplicationIdentityTempDirectory;
-            /*
-             * Following code could be used for custom or AD identity temp directories... but we probably won't
-            switch (UpdateCredential)
+            if (OperatingSystem.IsWindows())
             {
 
-                case UpdateCredential.Active_Directory:
-                case UpdateCredential.Custom:
-                    var identity = GetUpdateIdentity();
-                    if (identity != null)
-                    {
-                        return identity.Run(() =>
-                        {
-                            Loggers.ActiveDirectoryLogger.Information("Update Identity: {@identity}", WindowsIdentity.GetCurrent().Name);
-                            //Get temp path while impersonating the update identity to ensure we have access to it
-                            var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                            var tempPath = Path.Combine(userProfile, "AppData", "Local", "Temp", "Blazam", "update" + Path.DirectorySeparatorChar);
-                            return new SystemDirectory(tempPath);
-                        });
-                    }
-                    break;
-            }
+                switch (UpdateCredential)
+                {
 
+                    case UpdateCredential.Active_Directory:
+                    case UpdateCredential.Custom:
+                        var identity = GetUpdateIdentity();
+                        if (identity != null)
+                        {
+                            if (identity.ImpersonationUser !=null && !initializedProfiles.Contains(identity.ImpersonationUser.Username))
+                            {
+                                identity.EnsureProfileExists();
+                                initializedProfiles.Add(identity.ImpersonationUser.Username);
+                            }
+                            return identity.Run(() =>
+                            {
+                                Loggers.ActiveDirectoryLogger.Information("Update Identity: {@identity}", WindowsIdentity.GetCurrent().Name);
+                                //Get temp path while impersonating the update identity to ensure we have access to it
+                                var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                                var tempPath = Path.Combine(userProfile, "AppData", "Local", "Temp", "Blazam", "update" + Path.DirectorySeparatorChar);
+                                return new SystemDirectory(tempPath);
+                            });
+                        }
+                        break;
+                }
+            }
             return ApplicationIdentityTempDirectory;
-            */
+
         }
 
         public SystemDirectory ApplicationIdentityTempDirectory
@@ -460,14 +464,14 @@ namespace BLAZAM.Update.Services
                     using (var context2 = _dbFactory?.CreateDbContext())
                     {
                         var appSettings = context2?.AppSettings.FirstOrDefault();
-                        if(appSettings != null)
+                        if (appSettings != null)
                         {
                             var identity = appSettings.CreateUpdateImpersonator();
                             return identity ?? new WindowsImpersonation(null);
                         }
                     }
                     break;
-                   
+
             }
             return new WindowsImpersonation(null);
         }
@@ -509,7 +513,8 @@ namespace BLAZAM.Update.Services
             Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupDirectory);
             try
             {
-                var result = await Task.Run(() => { 
+                var result = await Task.Run(() =>
+                {
                     return _applicationInfo.ApplicationRoot.CopyTo(BackupDirectory);
                 });
 
