@@ -91,14 +91,14 @@ namespace BLAZAM.Update
         {
             get
             {
-                return "cmd";
+                return "Powershell";
             }
         }
         public string UpdateCommandArguments
         {
             get
             {
-                return "/c start Powershell -ExecutionPolicy Bypass -command \"& '" + CommandProcessPath
+                return "-ExecutionPolicy Bypass -command \"& '" + CommandProcessPath
                     + "' " + CommandArguments + "\"";
             }
         }
@@ -351,53 +351,60 @@ namespace BLAZAM.Update
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    UserName= _updateIdentity.ImpersonationUser.Username,
-                    Password = _updateIdentity.ImpersonationUser.Password,
-                    Domain = _updateIdentity.ImpersonationUser.FQDN,
-                    FileName = UpdateCommandProcess,
-                    Arguments = UpdateCommandArguments,
-                    RedirectStandardOutput = true, // Enable output redirection
-                    RedirectStandardError = true,
-                    UseShellExecute = false,       // Required for redirection
-                    CreateNoWindow = true,
-                }
-            };
 
-            Loggers.UpdateLogger?.Information("Starting update process");
-            process.Start();
-            Loggers.UpdateLogger?.Information("Update process id: {@ProcessId}", process.Id);
+            var runAs = new RunAs(_updateIdentity.ImpersonationUser);
 
-            // Read and log the output asynchronously
-            var output = new StringBuilder();
-            process.OutputDataReceived += (sender, e) =>
-            {
-                if (!string.IsNullOrEmpty(e.Data))
-                {
-                    output.AppendLine(e.Data);
-                    Loggers.UpdateLogger?.Information("Update process output: {@ProcessOutput}", e.Data);
-                }
-            };
-            process.ErrorDataReceived += (sender, e) =>
-            {
-                if (!string.IsNullOrEmpty(e.Data))
-                {
-                    output.AppendLine(e.Data);
-                    Loggers.UpdateLogger?.Error("Update process error: {@ProcessOutput}", e.Data); // Log as error
-                }
-            };
-            process.BeginOutputReadLine(); // Start asynchronous reading
+            // Execute a command
+            bool success = runAs.ExecuteCommand(UpdateCommand);
 
-            process.WaitForExit();
+
+            //var process = new Process
+            //{
+            //    StartInfo = new ProcessStartInfo
+            //    {
+            //        UserName= _updateIdentity.ImpersonationUser.Username,
+            //        Password = _updateIdentity.ImpersonationUser.Password,
+            //        Domain = _updateIdentity.ImpersonationUser.FQDN,
+            //        FileName = UpdateCommandProcess,
+            //        Arguments = UpdateCommandArguments,
+            //        RedirectStandardOutput = true, // Enable output redirection
+            //        RedirectStandardError = true,
+            //        UseShellExecute = false,       // Required for redirection
+            //        CreateNoWindow = true,
+            //    }
+            //};
+
+            //Loggers.UpdateLogger?.Information("Starting update process");
+            //process.Start();
+            //Loggers.UpdateLogger?.Information("Update process id: {@ProcessId}", process.Id);
+
+            //// Read and log the output asynchronously
+            //var output = new StringBuilder();
+            //process.OutputDataReceived += (sender, e) =>
+            //{
+            //    if (!string.IsNullOrEmpty(e.Data))
+            //    {
+            //        output.AppendLine(e.Data);
+            //        Loggers.UpdateLogger?.Information("Update process output: {@ProcessOutput}", e.Data);
+            //    }
+            //};
+            //process.ErrorDataReceived += (sender, e) =>
+            //{
+            //    if (!string.IsNullOrEmpty(e.Data))
+            //    {
+            //        output.AppendLine(e.Data);
+            //        Loggers.UpdateLogger?.Error("Update process error: {@ProcessOutput}", e.Data); // Log as error
+            //    }
+            //};
+            //process.BeginOutputReadLine(); // Start asynchronous reading
+
+            //process.WaitForExit();
             stopwatch.Stop();
-            Loggers.UpdateLogger?.Information("Update process exited in {@ExeecutionTime}: {@ExitCode}", stopwatch.ElapsedMilliseconds + "ms", process.ExitCode);
+            //Loggers.UpdateLogger?.Information("Update process exited in {@ExeecutionTime}: {@ExitCode}", stopwatch.ElapsedMilliseconds + "ms", process.ExitCode);
 
 
             // Log the complete output (if needed)
-            Loggers.UpdateLogger?.Information("Complete update process output:\n{@ProcessOutput}", output.ToString());
+           // Loggers.UpdateLogger?.Information("Complete update process output:\n{@ProcessOutput}", output.ToString());
 
             return true;
         }

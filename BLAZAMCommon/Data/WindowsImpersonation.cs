@@ -75,74 +75,6 @@ namespace BLAZAM.Common.Data
         private static extern bool LogonUser(string lpszUsername, string lpszDomain, IntPtr lpszPassword,
     int dwLogonType, int dwLogonProvider, out SafeAccessTokenHandle phToken);
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-        private static extern bool CloseHandle(IntPtr handle);
-
-        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern bool CreateProcessAsUser(
-            SafeAccessTokenHandle hToken,
-            string? lpApplicationName,
-            string lpCommandLine,
-            IntPtr lpProcessAttributes,
-            IntPtr lpThreadAttributes,
-            bool bInheritHandles,
-            uint dwCreationFlags,
-            IntPtr lpEnvironment,
-            string? lpCurrentDirectory,
-            ref STARTUPINFO lpStartupInfo,
-            out PROCESS_INFORMATION lpProcessInformation);
-
-        [DllImport("kernel32.dll")]
-        private static extern uint WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        private struct STARTUPINFO
-        {
-            public int cb;
-            public string? lpReserved;
-            public string? lpDesktop;
-            public string? lpTitle;
-            public int dwX;
-            public int dwY;
-            public int dwXSize;
-            public int dwYSize;
-            public int dwXCountChars;
-            public int dwYCountChars;
-            public int dwFillAttribute;
-            public int dwFlags;
-            public short wShowWindow;
-            public short cbReserved2;
-            public IntPtr lpReserved2;
-            public IntPtr hStdInput;
-            public IntPtr hStdOutput;
-            public IntPtr hStdError;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct PROCESS_INFORMATION
-        {
-            public IntPtr hProcess;
-            public IntPtr hThread;
-            public int dwProcessId;
-            public int dwThreadId;
-        }
-
-        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern bool CreateProcessWithLogonW(
-            string lpUsername,
-            string lpDomain,
-            IntPtr lpPassword,
-            int dwLogonFlags,
-            string lpApplicationName,
-            string lpCommandLine,
-            int dwCreationFlags,
-            IntPtr lpEnvironment,
-            string lpCurrentDirectory,
-            ref STARTUPINFO lpStartupInfo,
-            out PROCESS_INFORMATION lpProcessInformation);
-
-        private const int LOGON_WITH_PROFILE = 0x00000001;
-        private const int CREATE_NO_WINDOW = 0x08000000;
 
         /// <summary>
         /// Ensures the user profile exists by launching a minimal process as the user
@@ -152,52 +84,22 @@ namespace BLAZAM.Common.Data
             if (ImpersonationUser == null) return;
 
 
-           
-            nint phPassword = 0;
-            try
+
+
+            var runAs = new RunAs(ImpersonationUser);
+
+            // Execute a command
+            bool success = runAs.ExecuteCommand("cmd.exe /c exit");
+
+
+            if (success)
             {
-                var si = new STARTUPINFO { cb = Marshal.SizeOf<STARTUPINFO>() };
-                var domain = ImpersonationUser.FQDN ?? "";
-                var username = ImpersonationUser.Username;
+                Loggers.ActiveDirectoryLogger.Information("Profile creation process launched for {@User}", ImpersonationUser.Username);
 
-                phPassword = Marshal.SecureStringToGlobalAllocUnicode(ImpersonationUser.Password);
-
-                // Launch cmd.exe /c exit - minimal process that creates profile
-                bool success = CreateProcessWithLogonW(
-                    username,
-                    domain,
-                    phPassword,
-                    LOGON_WITH_PROFILE,  // This flag loads the profile
-                    null,
-                    "cmd.exe /c exit",
-                    CREATE_NO_WINDOW,
-                    IntPtr.Zero,
-                    null,
-                    ref si,
-                    out PROCESS_INFORMATION pi);
-
-                if (success)
-                {
-                    Loggers.ActiveDirectoryLogger.Information("Profile creation process launched for {@User}", username);
-                    // Wait for process to complete (5 second timeout)
-                    WaitForSingleObject(pi.hProcess, 5000);
-                    CloseHandle(pi.hProcess);
-                    CloseHandle(pi.hThread);
-                }
-                else
-                {
-                    int error = Marshal.GetLastWin32Error();
-                    Loggers.ActiveDirectoryLogger.Warning("Failed to create profile process for {@User}: Error {Error}",
-                        username, error);
-                }
             }
-            finally
-            {
-                if (phPassword != 0)
-                {
-                    Marshal.ZeroFreeGlobalAllocUnicode(phPassword);
-                }
-            }
+
+
+
 
         }
 
@@ -257,7 +159,7 @@ namespace BLAZAM.Common.Data
                     throw new AppException("The impersonation user is invalid. Check settings.");
                 }
 
-               
+
 
                 // Check the identity.
                 Loggers.ActiveDirectoryLogger.Information("Before impersonation: {@PreIdentity}", WindowsIdentity.GetCurrent().Name);
