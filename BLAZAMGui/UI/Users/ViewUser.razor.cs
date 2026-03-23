@@ -7,20 +7,20 @@ namespace BLAZAM.Gui.UI.Users
 {
     public partial class ViewUser : DirectoryEntryViewBase
     {
-        private string password;
+        private string _password;
 
         [Parameter]
         public string Password
         {
-            get => password; set
+            get => _password; set
             {
-                if (password == value)
+                if (_password == value)
                 {
                     return;
                 }
 
-                password = value;
-                PasswordChanged.InvokeAsync(password);
+                _password = value;
+                PasswordChanged.InvokeAsync(_password);
             }
         }
 
@@ -28,19 +28,19 @@ namespace BLAZAM.Gui.UI.Users
         public EventCallback<string> PasswordChanged { get; set; }
 
 
-        private string confirmPassword;
+        private string _confirmPassword;
         [Parameter]
         public string ConfirmPassword
         {
-            get => confirmPassword; set
+            get => _confirmPassword; set
             {
-                if (confirmPassword == value)
+                if (_confirmPassword == value)
                 {
                     return;
                 }
 
-                confirmPassword = value;
-                ConfirmPasswordChanged.InvokeAsync(confirmPassword);
+                _confirmPassword = value;
+                ConfirmPasswordChanged.InvokeAsync(_confirmPassword);
             }
         }
         [Parameter]
@@ -78,13 +78,13 @@ namespace BLAZAM.Gui.UI.Users
 
             ApplicationEvents.DirectoryEntryEvent.Invoke(new()
             {
-               
-                    EventType = ApplicationEventType.Search,
-                    Entry = Contact,
-                    Actor = CurrentUser.State
 
-                });
-            
+                EventType = ApplicationEventType.Search,
+                Entry = Contact,
+                Actor = CurrentUser.State
+
+            });
+
             LoadingData = false;
             await RefreshEntryComponents();
 
@@ -205,8 +205,36 @@ namespace BLAZAM.Gui.UI.Users
                 await RefreshEntryComponents();
             }
         }
+        private bool _disposed = false;
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                base.Dispose();
+                // Dispose managed resources here
+                // For example:
+                // - Unsubscribe from events
+                // - Dispose of disposable objects (GroupableEntry, User, Contact, etc.)
+                _confirmPassword = String.Empty;
+                _password = String.Empty;
+                if (GroupableEntry is IDisposable disposableGroupable)
+                {
+                    disposableGroupable.Dispose();
+                }
+            }
+
+            _disposed = true;
+        }
 
     }
 }
