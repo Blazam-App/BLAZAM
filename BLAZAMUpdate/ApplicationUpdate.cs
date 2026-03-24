@@ -132,24 +132,24 @@ namespace BLAZAM.Update
 
                 args += "'";
 
-                switch (_updateService.UpdateCredential)
-                {
-                    case UpdateCredential.Active_Directory:
-                        var adSettings = _dbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault();
-                        if (adSettings != null)
-                        {
-                            args += $" -Username '{adSettings.Username}' -Password '{adSettings.Password.Decrypt()}' -Domain '{adSettings.FQDN}'";
-                        }
-                        break;
-                    case UpdateCredential.Custom:
-                        var appSettings = _dbFactory.CreateDbContext().AppSettings.FirstOrDefault();
-                        if (appSettings != null)
-                        {
-                            args += $" -Username '{appSettings.UpdateUsername}' -Password '{appSettings.UpdatePassword?.Decrypt()}' -Domain '{appSettings.UpdateDomain}'";
-                        }
-                        break;
+                //switch (_updateService.UpdateCredential)
+                //{
+                //    case UpdateCredential.Active_Directory:
+                //        var adSettings = _dbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault();
+                //        if (adSettings != null)
+                //        {
+                //            args += $" -Username '{adSettings.Username}' -Password '{adSettings.Password.Decrypt()}' -Domain '{adSettings.FQDN}'";
+                //        }
+                //        break;
+                //    case UpdateCredential.Custom:
+                //        var appSettings = _dbFactory.CreateDbContext().AppSettings.FirstOrDefault();
+                //        if (appSettings != null)
+                //        {
+                //            args += $" -Username '{appSettings.UpdateUsername}' -Password '{appSettings.UpdatePassword?.Decrypt()}' -Domain '{appSettings.UpdateDomain}'";
+                //        }
+                //        break;
 
-                }
+                //}
 
 
                 return args;
@@ -294,119 +294,28 @@ namespace BLAZAM.Update
             await Task.Delay(60000);
             return false;
         }
+
         private async Task<bool> InitiateFileCopy(JobStep? step)
         {
-
-            using var context = await _dbFactory.CreateDbContextAsync();
-            return await _updateIdentity.RunAsync(() =>
-            {
-                try
-                {
-                    return ApplyFiles();
-                }
-                catch (Exception ex)
-                {
-                    Loggers.UpdateLogger?.Error(ex, "Error applying update");
-
-                }
-                return false;
-            });
-        }
-
-        private bool ApplyFiles()
-        {
-       
-                Loggers.UpdateLogger?.Information("Running update as: {RunningUser}", WindowsIdentity.GetCurrent().Name);
-
-
-
-                SystemDirectory updaterDirFromStagedUpdate = new(UpdateStagingDirectory.FullPath + $"updater{Path.DirectorySeparatorChar}");
-                SystemDirectory updaterDir = new(_applicationRootDirectory.FullPath + $"updater{Path.DirectorySeparatorChar}");
-
-
-
-
-
-                //Update the updater first
-                updaterDirFromStagedUpdate.CopyTo(updaterDir);
-                Loggers.UpdateLogger?.Information("Updater updated");
-
-                //If the updater updated we can  run the updater
-                var updaterRan = InvokeUpdateExecutable();
-
-                if (updaterRan)
-                {
-                    Loggers.UpdateLogger?.Information("Update process started");
-
-                    return true;
-                }
-                else
-                {
-
-                    throw new ApplicationUpdateException("Updater script did not run.");
-                }
-        }
-
-        private bool InvokeUpdateExecutable()
-        {
+            var cmd = UpdateCommandProcess;
+            var args = UpdateCommandArguments;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
+
+
 
             var runAs = new RunAs(_updateIdentity.ImpersonationUser);
 
             // Execute a command
-            bool success = runAs.ExecuteCommand(UpdateCommand);
+
+            bool success = runAs.ExecuteCommand(cmd + " " + args);
 
 
-            //var process = new Process
-            //{
-            //    StartInfo = new ProcessStartInfo
-            //    {
-            //        UserName= _updateIdentity.ImpersonationUser.Username,
-            //        Password = _updateIdentity.ImpersonationUser.Password,
-            //        Domain = _updateIdentity.ImpersonationUser.FQDN,
-            //        FileName = UpdateCommandProcess,
-            //        Arguments = UpdateCommandArguments,
-            //        RedirectStandardOutput = true, // Enable output redirection
-            //        RedirectStandardError = true,
-            //        UseShellExecute = false,       // Required for redirection
-            //        CreateNoWindow = true,
-            //    }
-            //};
 
-            //Loggers.UpdateLogger?.Information("Starting update process");
-            //process.Start();
-            //Loggers.UpdateLogger?.Information("Update process id: {@ProcessId}", process.Id);
-
-            //// Read and log the output asynchronously
-            //var output = new StringBuilder();
-            //process.OutputDataReceived += (sender, e) =>
-            //{
-            //    if (!string.IsNullOrEmpty(e.Data))
-            //    {
-            //        output.AppendLine(e.Data);
-            //        Loggers.UpdateLogger?.Information("Update process output: {@ProcessOutput}", e.Data);
-            //    }
-            //};
-            //process.ErrorDataReceived += (sender, e) =>
-            //{
-            //    if (!string.IsNullOrEmpty(e.Data))
-            //    {
-            //        output.AppendLine(e.Data);
-            //        Loggers.UpdateLogger?.Error("Update process error: {@ProcessOutput}", e.Data); // Log as error
-            //    }
-            //};
-            //process.BeginOutputReadLine(); // Start asynchronous reading
-
-            //process.WaitForExit();
             stopwatch.Stop();
-            //Loggers.UpdateLogger?.Information("Update process exited in {@ExeecutionTime}: {@ExitCode}", stopwatch.ElapsedMilliseconds + "ms", process.ExitCode);
-
-
-            // Log the complete output (if needed)
-           // Loggers.UpdateLogger?.Information("Complete update process output:\n{@ProcessOutput}", output.ToString());
 
             return true;
+
         }
 
 
