@@ -23,7 +23,7 @@ namespace BLAZAM.Update
         /// <summary>
         /// Token source for cancelling this update when in progress
         /// </summary>
-        private CancellationTokenSource cancellationTokenSource { get; set; } = new CancellationTokenSource();
+        private CancellationTokenSource _cancellationTokenSource { get; set; } = new CancellationTokenSource();
 
         public static AppDelegate OnUpdateStarted { get; set; }
 
@@ -214,12 +214,12 @@ namespace BLAZAM.Update
         public IJob GetUpdateJob()
         {
 
-            if (cancellationTokenSource == null || cancellationTokenSource.IsCancellationRequested)
+            if (_cancellationTokenSource == null || _cancellationTokenSource.IsCancellationRequested)
             {
-                cancellationTokenSource = new CancellationTokenSource();
+                _cancellationTokenSource = new CancellationTokenSource();
             }
 
-            Job updateJob = new("Applying application update", "System", cancellationTokenSource)
+            Job updateJob = new("Applying application update", "System", _cancellationTokenSource)
             {
                 StopOnFailedStep = true
             };
@@ -399,7 +399,7 @@ namespace BLAZAM.Update
 
         public void Cancel()
         {
-            cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Cancel();
         }
         public async Task<bool> Download(JobStep? step)
         {
@@ -476,15 +476,15 @@ namespace BLAZAM.Update
             int bytesRead;
             int totalBytesRead = 0;
 
-            while ((bytesRead = await readStream.ReadAsync(buffer, 0, buffer.Length, cancellationTokenSource.Token)) > 0)
+            while ((bytesRead = await readStream.ReadAsync(buffer, 0, buffer.Length, _cancellationTokenSource.Token)) > 0)
             {
-                if (cancellationTokenSource.IsCancellationRequested)
+                if (_cancellationTokenSource.IsCancellationRequested)
                 {
                     DownloadPercentageChanged?.Invoke(null);
                     return false;
                 }
 
-                await writeStream.WriteAsync(buffer, 0, bytesRead, cancellationTokenSource.Token);
+                await writeStream.WriteAsync(buffer, 0, bytesRead, _cancellationTokenSource.Token);
                 totalBytesRead += bytesRead;
                 progress.CompletedBytes = totalBytesRead;
                 if (step != null)
