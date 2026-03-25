@@ -303,18 +303,18 @@ namespace BLAZAM.Update
             stopwatch.Start();
 
 
-
+            Loggers.UpdateLogger.Information("Initiating file copy with command: {Command} {Arguments}", cmd, args);
             var runAs = new RunAs(_updateIdentity.ImpersonationUser);
 
             // Execute a command
 
             bool success = runAs.ExecuteCommand(cmd + " " + args);
 
-
+            Loggers.UpdateLogger.Information("File copy command executed with result: {Success} in {ElapsedMilliseconds}ms", success, stopwatch.ElapsedMilliseconds);
 
             stopwatch.Stop();
 
-            return true;
+            return success;
 
         }
 
