@@ -413,9 +413,11 @@ namespace BLAZAM.Update.Services
             {
                 Loggers.UpdateLogger.Information("Checking update credentials");
 
-                if (ApplicationInfo.applicationRoot.Writable && !Debugger.IsAttached)
+
+                //Test Update Credentials
+                if (TestCustomCredentials())
                 {
-                    return UpdateCredential.Application;
+                    return UpdateCredential.Custom;
                 }
 
                 //Test Directory Credentials
@@ -424,15 +426,17 @@ namespace BLAZAM.Update.Services
                     return UpdateCredential.Active_Directory;
                 }
 
-                // Active Directory credentials don't exist or don't have write permissions to the application directory
-
-
-
-                //Test Update Credentials
-                if (TestCustomCredentials())
+                if (ApplicationInfo.applicationRoot.Writable && !Debugger.IsAttached)
                 {
-                    return UpdateCredential.Custom;
+                    return UpdateCredential.Application;
                 }
+
+              
+
+
+
+
+              
 
                 return UpdateCredential.None;
             }
