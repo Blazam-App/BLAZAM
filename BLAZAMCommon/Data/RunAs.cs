@@ -30,6 +30,10 @@ namespace BLAZAM.Common.Data
         [DllImport("kernel32.dll")]
         private static extern uint WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetExitCodeProcess(IntPtr hProcess, out uint lpExitCode);
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private struct STARTUPINFO
         {
@@ -81,7 +85,9 @@ namespace BLAZAM.Common.Data
         /// <param name="command">The command to execute (e.g., "cmd.exe /c exit")</param>
         /// <param name="timeoutMs">Timeout in milliseconds (default: 5000, use 0 for infinite)</param>
         /// <param name="workingDirectory">The working directory for the process (optional)</param>
-        /// <returns>True if the command executed successfully, false otherwise</returns>
+        /// <returns>True if the command executed successfully with exit code 0</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the process returns a non-zero exit code.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Thrown when the process fails to start.</exception>
         public bool ExecuteCommand(string command, uint timeoutMs = 5000, string? workingDirectory = null)
         {
             if (string.IsNullOrWhiteSpace(command))
@@ -120,8 +126,18 @@ namespace BLAZAM.Common.Data
                     uint waitTime = timeoutMs == 0 ? INFINITE : timeoutMs;
                     WaitForSingleObject(pi.hProcess, waitTime);
                     
+                    // Retrieve process exit code
+                    GetExitCodeProcess(pi.hProcess, out uint exitCode);
+                    
                     CloseHandle(pi.hProcess);
                     CloseHandle(pi.hThread);
+                    
+                    if (exitCode != 0)
+                    {
+                        var errorMsg = $"Command execution returned a non-zero exit code: {exitCode}";
+                        Loggers.ActiveDirectoryLogger.Warning(errorMsg);
+                        throw new InvalidOperationException(errorMsg);
+                    }
                     
                     return true;
                 }
@@ -134,7 +150,7 @@ namespace BLAZAM.Common.Data
                         command, 
                         error);
                     
-                    return false;
+                    throw new System.ComponentModel.Win32Exception(error, $"Failed to start process. Win32 Error Code: {error}");
                 }
             }
             finally
