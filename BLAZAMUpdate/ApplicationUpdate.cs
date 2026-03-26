@@ -229,7 +229,7 @@ namespace BLAZAM.Update
             var cleanStageStep = new JobStep("Cleaning staging area", CleanStaging);
             var stageStep = new JobStep("Extract files", ExtractFiles);
             var stagingCheckStep = new JobStep("Check prepared files", CheckExtractedFiles);
-            var bakupStep = new JobStep("Create backup", (step) => { return _updateService.Backup(); });
+            var bakupStep = new JobStep("Create backup", Backup);
             var updateUpdaterStep = new JobStep("Update updater", UpdateUpdater);
             var updateStep = new JobStep("Apply Files", InitiateFileCopy);
             var waitForRestart = new JobStep("Wait for completion...", Wait);
@@ -262,6 +262,15 @@ namespace BLAZAM.Update
             {
                 return UpdateStagingDirectory.Exists && UpdateStagingDirectory.Files.Count > 3;
             });
+        }
+        
+        private async Task<bool> Backup(JobStep? step)
+        {
+            var progress = new Progress<FileProgress>(p =>
+            {
+                step!.Progress = p.FilePercentage;
+            });
+            return await _updateService.Backup(progress); 
         }
 
         private bool UpdateUpdater(JobStep step)

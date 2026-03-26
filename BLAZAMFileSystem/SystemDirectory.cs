@@ -1,5 +1,4 @@
-﻿
-using BLAZAM.Logger;
+﻿using BLAZAM.Logger;
 using System.Security; // Added for SecurityException
 
 
@@ -197,8 +196,9 @@ namespace BLAZAM.FileSystem
         /// Copies the entire directory tree (all files and subdirectories) to the specified target directory. Overwrites files if they exist.
         /// </summary>
         /// <param name="parentDirectory">The target directory to copy into.</param>
-        /// <returns>True if the copy operation completes without critical errors (some individual file copy errors might be logged but allow continuation); false otherwise.</returns>
-        public bool CopyTo(SystemDirectory parentDirectory)
+        /// <param name="onProgress">Optional progress tracker callback.</param>
+        /// <returns>True if the copy operation completes without critical errors; false otherwise.</returns>
+        public bool CopyTo(SystemDirectory parentDirectory, IProgress<FileProgress>? onProgress = null)
         {
             if (parentDirectory == null)
             {
@@ -206,12 +206,7 @@ namespace BLAZAM.FileSystem
                 return false;
             }
 
-            bool copyingDownTree = false;
-            if (parentDirectory.FullPath.Contains(FullPath))
-            {
-                copyingDownTree = true;
-            }
-
+            bool copyingDownTree = parentDirectory.FullPath.Contains(FullPath);
             if (!Exists)
             {
                 Loggers.SystemLogger.Warning("SystemDirectory.CopyTo: Source directory {SourcePath} does not exist. Cannot copy.", FullPath);
@@ -220,11 +215,10 @@ namespace BLAZAM.FileSystem
 
             bool anyError = false;
 
+            // Handle Directories
             var directories = Directory.GetDirectories(FullPath, "*", SearchOption.AllDirectories).AsEnumerable();
             if (copyingDownTree)
-            {
                 directories = directories.Where(d => !d.Contains(parentDirectory.FullPath));
-            }
 
             foreach (string dirPath in directories)
             {
@@ -235,26 +229,47 @@ namespace BLAZAM.FileSystem
                 catch (Exception ex)
                 {
                     Loggers.SystemLogger.Error(ex, "SystemDirectory.CopyTo: Failed to create destination subdirectory {DestDirPath} when copying from {SourcePath}.", dirPath.Replace(FullPath, parentDirectory.FullPath), FullPath);
-                    anyError = true; // Mark error, but continue if possible
+                    anyError = true;
                 }
             }
 
+            // Handle Files
             var files = Directory.GetFiles(FullPath, "*.*", SearchOption.AllDirectories).AsEnumerable();
             if (copyingDownTree)
-            {
                 files = files.Where(f => !f.Contains(parentDirectory.FullPath));
+
+            var filesList = files.ToList();
+            
+            // 1. Calculate the total size of all files going to be copied
+            long totalSize = 0;
+            foreach (var f in filesList)
+            {
+                totalSize += new FileInfo(f).Length;
             }
 
-            foreach (string newPath in files)
+            FileProgress progress = new FileProgress
+            {
+                ExpectedSize = totalSize,
+                CompletedBytes = 0
+            };
+
+            foreach (string newPath in filesList)
             {
                 try
                 {
-                    File.Copy(newPath, newPath.Replace(FullPath, parentDirectory.FullPath), true);
+                    FileInfo fInfo = new FileInfo(newPath);
+                    string destPath = newPath.Replace(FullPath, parentDirectory.FullPath);
+
+                    File.Copy(newPath, destPath, true);
+
+                    // 2. Report progress after the file copies successfully
+                    progress.CompletedBytes += fInfo.Length;
+                    onProgress?.Report(progress);
                 }
                 catch (Exception ex)
                 {
                     Loggers.SystemLogger.Error(ex, "SystemDirectory.CopyTo: Failed to copy file {SourceFilePath} to {DestFilePath}.", newPath, newPath.Replace(FullPath, parentDirectory.FullPath));
-                    anyError = true; // Mark error, but continue
+                    anyError = true;
                 }
             }
             return !anyError;

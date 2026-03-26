@@ -512,14 +512,14 @@ namespace BLAZAM.Update.Services
             return false;
         }
 
-        public async Task<bool> Backup()
+        public async Task<bool> Backup(IProgress<FileProgress>? onProgress=null)
         {
             Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupDirectory);
             try
             {
                 var result = await Task.Run(() =>
                 {
-                    return _applicationInfo.ApplicationRoot.CopyTo(BackupDirectory);
+                    return _applicationInfo.ApplicationRoot.CopyTo(BackupDirectory, onProgress);
                 });
 
                 Loggers.UpdateLogger?.Debug("Backup result: {@BackupResult}", result.ToString());
