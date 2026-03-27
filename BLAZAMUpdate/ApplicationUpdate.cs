@@ -132,25 +132,6 @@ namespace BLAZAM.Update
 
                 args += "'";
 
-                //switch (_updateService.UpdateCredential)
-                //{
-                //    case UpdateCredential.Active_Directory:
-                //        var adSettings = _dbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault();
-                //        if (adSettings != null)
-                //        {
-                //            args += $" -Username '{adSettings.Username}' -Password '{adSettings.Password.Decrypt()}' -Domain '{adSettings.FQDN}'";
-                //        }
-                //        break;
-                //    case UpdateCredential.Custom:
-                //        var appSettings = _dbFactory.CreateDbContext().AppSettings.FirstOrDefault();
-                //        if (appSettings != null)
-                //        {
-                //            args += $" -Username '{appSettings.UpdateUsername}' -Password '{appSettings.UpdatePassword?.Decrypt()}' -Domain '{appSettings.UpdateDomain}'";
-                //        }
-                //        break;
-
-                //}
-
 
                 return args;
 
