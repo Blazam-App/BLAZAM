@@ -226,7 +226,7 @@ namespace BLAZAM.Update
             updateJob.AddStep(updateUpdaterStep);
             updateJob.AddStep(updateStep);
             updateJob.AddStep(waitForRestart);
-            
+
             Loggers.UpdateLogger?.Debug("Update job created with {StepCount} steps", updateJob.Steps.Count);
             return updateJob;
 
@@ -259,7 +259,7 @@ namespace BLAZAM.Update
                 bool exists = UpdateStagingDirectory.Exists;
                 int fileCount = exists ? UpdateStagingDirectory.Files.Count : 0;
                 bool passed = exists && fileCount > 3;
-                
+
                 if (passed)
                 {
                     Loggers.UpdateLogger?.Information("Extracted files verified. Found {FileCount} files in staging directory", fileCount);
@@ -268,11 +268,11 @@ namespace BLAZAM.Update
                 {
                     Loggers.UpdateLogger?.Warning("Extracted files check failed. Directory exists: {Exists}, File count: {FileCount}", exists, fileCount);
                 }
-                
+
                 return passed;
             });
         }
-        
+
         private async Task<bool> Backup(JobStep? step)
         {
             Loggers.UpdateLogger?.Information("Starting application backup before applying update");
@@ -281,7 +281,7 @@ namespace BLAZAM.Update
                 step!.Progress = p.FilePercentage;
             });
             bool result = await _updateService.Backup(progress);
-            
+
             if (result)
             {
                 Loggers.UpdateLogger?.Information("Application backup completed successfully");
@@ -290,7 +290,7 @@ namespace BLAZAM.Update
             {
                 Loggers.UpdateLogger?.Error("Application backup failed");
             }
-            
+
             return result;
         }
 
@@ -340,7 +340,54 @@ namespace BLAZAM.Update
 
             // Execute a command
 
-            bool success = runAs.ExecuteCommand(cmd + " " + args);
+            bool success = runAs.ExecuteCommandHeadless(cmd + " " + args);
+
+            //var success = _updateIdentity.Run(() =>
+            //{
+            //    var process = new Process
+            //    {
+            //        StartInfo = new ProcessStartInfo
+            //        {
+            //            FileName = UpdateCommandProcess,
+            //            Arguments = UpdateCommandArguments,
+            //            RedirectStandardOutput = true, // Enable output redirection
+            //            RedirectStandardError = true,
+            //            UseShellExecute = false,       // Required for redirection
+            //            CreateNoWindow = true,
+            //        }
+            //    };
+
+            //    Loggers.UpdateLogger?.Information("Starting update process");
+            //    process.Start();
+            //    Loggers.UpdateLogger?.Information("Update process id: {@ProcessId}", process.Id);
+
+            //    // Read and log the output asynchronously
+            //    var output = new StringBuilder();
+            //    process.OutputDataReceived += (sender, e) =>
+            //    {
+            //        if (!string.IsNullOrEmpty(e.Data))
+            //        {
+            //            output.AppendLine(e.Data);
+            //            Loggers.UpdateLogger?.Information("Update process output: {@ProcessOutput}", e.Data);
+            //        }
+            //    };
+            //    process.ErrorDataReceived += (sender, e) =>
+            //    {
+            //        if (!string.IsNullOrEmpty(e.Data))
+            //        {
+            //            output.AppendLine(e.Data);
+            //            Loggers.UpdateLogger?.Error("Update process error: {@ProcessOutput}", e.Data); // Log as error
+            //        }
+            //    };
+            //    process.BeginOutputReadLine(); // Start asynchronous reading
+
+            //    process.WaitForExit();
+
+            //    return true;
+
+            //});
+
+
 
             Loggers.UpdateLogger.Information("File copy command executed with result: {Success} in {ElapsedMilliseconds}ms", success, stopwatch.ElapsedMilliseconds);
 

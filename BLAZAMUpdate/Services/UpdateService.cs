@@ -514,7 +514,7 @@ namespace BLAZAM.Update.Services
 
         public async Task<bool> Backup(IProgress<FileProgress>? onProgress=null)
         {
-            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupDirectory);
+            Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupDirectory.FullPath);
             try
             {
                 var result = await Task.Run(() =>

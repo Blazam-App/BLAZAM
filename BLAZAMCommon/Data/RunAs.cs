@@ -10,6 +10,8 @@ namespace BLAZAM.Common.Data
     {
         private readonly WindowsImpersonationUser _user;
 
+        #region P/Invoke
+
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern bool CreateProcessWithLogonW(
             string lpUsername,
@@ -23,6 +25,49 @@ namespace BLAZAM.Common.Data
             string? lpCurrentDirectory,
             ref STARTUPINFO lpStartupInfo,
             out PROCESS_INFORMATION lpProcessInformation);
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern bool LogonUser(
+            string lpszUsername,
+            string lpszDomain,
+            IntPtr lpszPassword,
+            int dwLogonType,
+            int dwLogonProvider,
+            out IntPtr phToken);
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern bool CreateProcessAsUser(
+            IntPtr hToken,
+            string? lpApplicationName,
+            string? lpCommandLine,
+            IntPtr lpProcessAttributes,
+            IntPtr lpThreadAttributes,
+            bool bInheritHandles,
+            int dwCreationFlags,
+            IntPtr lpEnvironment,
+            string? lpCurrentDirectory,
+            ref STARTUPINFO lpStartupInfo,
+            out PROCESS_INFORMATION lpProcessInformation);
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern bool CreateProcessWithTokenW(
+            IntPtr hToken,
+            int dwLogonFlags,
+            string? lpApplicationName,
+            string? lpCommandLine,
+            int dwCreationFlags,
+            IntPtr lpEnvironment,
+            string? lpCurrentDirectory,
+            ref STARTUPINFO lpStartupInfo,
+            out PROCESS_INFORMATION lpProcessInformation);
+
+        [DllImport("userenv.dll", SetLastError = true)]
+        private static extern bool CreateEnvironmentBlock(
+            out IntPtr lpEnvironment, IntPtr hToken, bool bInherit);
+
+        [DllImport("userenv.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool DestroyEnvironmentBlock(IntPtr lpEnvironment);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         private static extern bool CloseHandle(IntPtr handle);
@@ -67,8 +112,13 @@ namespace BLAZAM.Common.Data
         }
 
         private const int LOGON_WITH_PROFILE = 0x00000001;
+        private const int LOGON32_LOGON_BATCH = 4;
+        private const int LOGON32_PROVIDER_DEFAULT = 0;
         private const int CREATE_NO_WINDOW = 0x08000000;
+        private const int CREATE_UNICODE_ENVIRONMENT = 0x00000400;
         private const uint INFINITE = 0xFFFFFFFF;
+
+        #endregion
 
         /// <summary>
         /// Creates a new RunAs instance with the specified user credentials
@@ -80,7 +130,8 @@ namespace BLAZAM.Common.Data
         }
 
         /// <summary>
-        /// Executes a command as the specified user
+        /// Executes a command as the specified user via CreateProcessWithLogonW.
+        /// Requires an interactive desktop/window station — not suitable for headless services.
         /// </summary>
         /// <param name="command">The command to execute (e.g., "cmd.exe /c exit")</param>
         /// <param name="timeoutMs">Timeout in milliseconds (default: 5000, use 0 for infinite)</param>
@@ -159,6 +210,120 @@ namespace BLAZAM.Common.Data
                 {
                     Marshal.ZeroFreeGlobalAllocUnicode(phPassword);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Executes a command as the specified user via CreateProcessAsUser.
+        /// Works in headless/non-interactive service contexts (IIS, Windows Service)
+        /// without requiring a desktop or window station.
+        /// </summary>
+        /// <param name="command">The command to execute</param>
+        /// <param name="timeoutMs">Timeout in milliseconds (default: 5000, use 0 for infinite)</param>
+        /// <param name="workingDirectory">The working directory for the process (optional)</param>
+        /// <returns>True if the command executed successfully with exit code 0</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the process returns a non-zero exit code.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Thrown when LogonUser or CreateProcessAsUser fails.</exception>
+        public bool ExecuteCommandHeadless(string command, uint timeoutMs = 5000, string? workingDirectory = null)
+        {
+            if (string.IsNullOrWhiteSpace(command))
+                throw new ArgumentException("Command cannot be null or empty", nameof(command));
+
+            nint phPassword = 0;
+            IntPtr hToken = IntPtr.Zero;
+            IntPtr envBlock = IntPtr.Zero;
+
+            try
+            {
+                var domain = _user.FQDN ?? "";
+                var username = _user.Username;
+                phPassword = Marshal.SecureStringToGlobalAllocUnicode(_user.Password);
+
+                // LOGON32_LOGON_BATCH works without an interactive session
+                bool logonOk = LogonUser(
+                    username, domain, phPassword,
+                    LOGON32_LOGON_BATCH,
+                    LOGON32_PROVIDER_DEFAULT,
+                    out hToken);
+
+                if (!logonOk)
+                {
+                    int err = Marshal.GetLastWin32Error();
+                    Loggers.ActiveDirectoryLogger.Warning(
+                        "LogonUser (batch) failed for {@User}, Error: {Error}", username, err);
+                    throw new System.ComponentModel.Win32Exception(err,
+                        $"LogonUser failed. Win32 Error Code: {err}");
+                }
+
+                // Build the user's environment so PATH, TEMP, etc. resolve correctly
+                if (!CreateEnvironmentBlock(out envBlock, hToken, false))
+                {
+                    Loggers.ActiveDirectoryLogger.Warning(
+                        "CreateEnvironmentBlock failed for {@User}; using inherited environment", username);
+                    envBlock = IntPtr.Zero;
+                }
+
+                var si = new STARTUPINFO
+                {
+                    cb = Marshal.SizeOf<STARTUPINFO>(),
+                    lpDesktop = ""   // empty string → non-interactive desktop
+                };
+
+                int flags = CREATE_NO_WINDOW;
+                if (envBlock != IntPtr.Zero)
+                    flags |= CREATE_UNICODE_ENVIRONMENT;
+
+                bool success = CreateProcessWithTokenW(
+                    hToken,
+                    LOGON_WITH_PROFILE,
+                    null,
+                    command,
+                    flags,
+                    envBlock,
+                    workingDirectory,
+                    ref si,
+                    out PROCESS_INFORMATION pi);
+
+                if (success)
+                {
+                    Loggers.ActiveDirectoryLogger.Information(
+                        "Headless command executed as {@User}: {Command}", username, command);
+
+                    uint waitTime = timeoutMs == 0 ? INFINITE : timeoutMs;
+                    WaitForSingleObject(pi.hProcess, waitTime);
+
+                    GetExitCodeProcess(pi.hProcess, out uint exitCode);
+
+                    CloseHandle(pi.hProcess);
+                    CloseHandle(pi.hThread);
+
+                    if (exitCode != 0)
+                    {
+                        var errorMsg = $"Command execution returned a non-zero exit code: {exitCode}";
+                        Loggers.ActiveDirectoryLogger.Warning(errorMsg);
+                        throw new InvalidOperationException(errorMsg);
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    Loggers.ActiveDirectoryLogger.Warning(
+                        "Failed to execute headless command as {@User}: {Command}, Error: {Error}",
+                        username, command, error);
+                    throw new System.ComponentModel.Win32Exception(error,
+                        $"Failed to start process. Win32 Error Code: {error}");
+                }
+            }
+            finally
+            {
+                if (phPassword != 0)
+                    Marshal.ZeroFreeGlobalAllocUnicode(phPassword);
+                if (envBlock != IntPtr.Zero)
+                    DestroyEnvironmentBlock(envBlock);
+                if (hToken != IntPtr.Zero)
+                    CloseHandle(hToken);
             }
         }
     }
