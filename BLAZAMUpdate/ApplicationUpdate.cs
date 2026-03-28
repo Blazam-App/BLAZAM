@@ -339,18 +339,14 @@ namespace BLAZAM.Update
             Loggers.UpdateLogger.Information("Initiating file copy with command: {Command} {Arguments}", cmd, args);
             Loggers.UpdateLogger.Debug("Running as user: {Username}", _updateIdentity.ImpersonationUser?.Username ?? "Application");
 
-            var success = UpdateTaskScheduler.ScheduleUpdateTask(
-               args,
-               _updateIdentity,
-               UpdateTempDirectory,
-               _applicationRootDirectory.FullPath);
+            var proc = Process.Start("schtasks /run /tn \"Update Blazam\"");
+            
 
-
-            Loggers.UpdateLogger.Information("File copy command executed with result: {Success} in {ElapsedMilliseconds}ms", success, stopwatch.ElapsedMilliseconds);
+            Loggers.UpdateLogger.Information("File copy command executed with result: {Success} in {ElapsedMilliseconds}ms", proc.ExitCode == 0, stopwatch.ElapsedMilliseconds);
 
             stopwatch.Stop();
 
-            return success;
+            return proc.ExitCode == 0;
 
         }
 
