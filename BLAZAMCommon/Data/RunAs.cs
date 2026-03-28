@@ -147,6 +147,119 @@ namespace BLAZAM.Common.Data
             nint phPassword = 0;
             try
             {
+                const int LOGON32_LOGON_INTERACTIVE = 2;
+
+                var si = new STARTUPINFO { cb = Marshal.SizeOf<STARTUPINFO>() };
+                var domain = _user.FQDN ?? "";
+                var username = _user.Username;
+
+                phPassword = Marshal.SecureStringToGlobalAllocUnicode(_user.Password);
+
+                // Attempt interactive logon first
+                bool success = CreateProcessWithLogonW(
+                    username,
+                    domain,
+                    phPassword,
+                    LOGON_WITH_PROFILE,
+                    null,
+                    command,
+                    CREATE_NO_WINDOW,
+                    IntPtr.Zero,
+                    workingDirectory,
+                    ref si,
+                    out PROCESS_INFORMATION pi);
+
+                if (!success)
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    Loggers.ActiveDirectoryLogger.Warning(
+                        "CreateProcessWithLogonW (interactive) failed for {@User}: {Command}, Error: {Error}",
+                        username, command, error);
+
+                    // Fallback to batch logon if interactive logon fails
+                    success = CreateProcessWithLogonW(
+                        username,
+                        domain,
+                        phPassword,
+                        LOGON32_LOGON_BATCH,
+                        null,
+                        command,
+                        CREATE_NO_WINDOW,
+                        IntPtr.Zero,
+                        workingDirectory,
+                        ref si,
+                        out pi);
+
+                    if (!success)
+                    {
+                        error = Marshal.GetLastWin32Error();
+                        Loggers.ActiveDirectoryLogger.Warning(
+                            "CreateProcessWithLogonW (batch) also failed for {@User}: {Command}, Error: {Error}",
+                            username, command, error);
+
+                        throw new System.ComponentModel.Win32Exception(error,
+                            $"Failed to start process. Win32 Error Code: {error}");
+                    }
+                }
+
+                Loggers.ActiveDirectoryLogger.Information(
+                    "Command executed as {@User}: {Command}",
+                    username,
+                    command);
+
+                // Wait for process to complete
+                uint waitTime = timeoutMs == 0 ? INFINITE : timeoutMs;
+                WaitForSingleObject(pi.hProcess, waitTime);
+
+                // Retrieve process exit code
+                GetExitCodeProcess(pi.hProcess, out uint exitCode);
+
+                CloseHandle(pi.hProcess);
+                CloseHandle(pi.hThread);
+
+                if (exitCode != 0)
+                {
+                    var errorMsg = $"Command execution returned a non-zero exit code: {exitCode}";
+                    Loggers.ActiveDirectoryLogger.Warning(errorMsg);
+                    throw new InvalidOperationException(errorMsg);
+                }
+
+                return true;
+            }
+            finally
+            {
+                if (phPassword != 0)
+                {
+                    Marshal.ZeroFreeGlobalAllocUnicode(phPassword);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Launches a command as the specified user via CreateProcessWithLogonW
+        /// without waiting for the process to complete. The child process is created
+        /// by the Secondary Logon service (seclogon), so it is fully independent of
+        /// the calling process and survives the caller's exit.
+        ///
+        /// <para>
+        /// The resulting token is UAC-filtered (INTERACTIVE logon). The process will
+        /// have the user's personal SID active for ALLOW checks, but the Administrators
+        /// group SID is deny-only. Ensure the target user has explicit file-system ACLs
+        /// on any directories the process needs to write to.
+        /// </para>
+        /// </summary>
+        /// <param name="command">The command to execute</param>
+        /// <param name="workingDirectory">The working directory for the process (optional)</param>
+        /// <returns>The process ID of the launched process</returns>
+        /// <exception cref="System.ComponentModel.Win32Exception">Thrown when the process fails to start.</exception>
+        public int LaunchDetached(string command, string? workingDirectory = null)
+        {
+            if (string.IsNullOrWhiteSpace(command))
+                throw new ArgumentException("Command cannot be null or empty", nameof(command));
+
+            nint phPassword = 0;
+            try
+            {
                 var si = new STARTUPINFO { cb = Marshal.SizeOf<STARTUPINFO>() };
                 var domain = _user.FQDN ?? "";
                 var username = _user.Username;
@@ -168,48 +281,30 @@ namespace BLAZAM.Common.Data
 
                 if (success)
                 {
+                    int pid = pi.dwProcessId;
                     Loggers.ActiveDirectoryLogger.Information(
-                        "Command executed as {@User}: {Command}", 
-                        username, 
-                        command);
+                        "Detached process launched as {@User}: {Command} (PID {Pid})",
+                        username, command, pid);
 
-                    // Wait for process to complete
-                    uint waitTime = timeoutMs == 0 ? INFINITE : timeoutMs;
-                    WaitForSingleObject(pi.hProcess, waitTime);
-                    
-                    // Retrieve process exit code
-                    GetExitCodeProcess(pi.hProcess, out uint exitCode);
-                    
+                    // Release handles immediately — we intentionally do not wait
                     CloseHandle(pi.hProcess);
                     CloseHandle(pi.hThread);
-                    
-                    if (exitCode != 0)
-                    {
-                        var errorMsg = $"Command execution returned a non-zero exit code: {exitCode}";
-                        Loggers.ActiveDirectoryLogger.Warning(errorMsg);
-                        throw new InvalidOperationException(errorMsg);
-                    }
-                    
-                    return true;
+                    return pid;
                 }
                 else
                 {
                     int error = Marshal.GetLastWin32Error();
                     Loggers.ActiveDirectoryLogger.Warning(
-                        "Failed to execute command as {@User}: {Command}, Error: {Error}",
-                        username, 
-                        command, 
-                        error);
-                    
-                    throw new System.ComponentModel.Win32Exception(error, $"Failed to start process. Win32 Error Code: {error}");
+                        "Failed to launch detached process as {@User}: {Command}, Error: {Error}",
+                        username, command, error);
+                    throw new System.ComponentModel.Win32Exception(error,
+                        $"Failed to start detached process. Win32 Error Code: {error}");
                 }
             }
             finally
             {
                 if (phPassword != 0)
-                {
                     Marshal.ZeroFreeGlobalAllocUnicode(phPassword);
-                }
             }
         }
 

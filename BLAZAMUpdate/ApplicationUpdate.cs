@@ -40,7 +40,9 @@ namespace BLAZAM.Update
         private readonly IAppDatabaseFactory _dbFactory;
         private readonly UpdateService _updateService;
 
-
+       /// <summary>
+       /// Use <see cref="UpdateTempDirectory"/> instead
+       /// </summary>
         private SystemDirectory? _updateTempDirectory;
         /// <summary>
         /// The application update directory, in temporary files
@@ -336,57 +338,12 @@ namespace BLAZAM.Update
 
             Loggers.UpdateLogger.Information("Initiating file copy with command: {Command} {Arguments}", cmd, args);
             Loggers.UpdateLogger.Debug("Running as user: {Username}", _updateIdentity.ImpersonationUser?.Username ?? "Application");
-            var runAs = new RunAs(_updateIdentity.ImpersonationUser);
 
-            // Execute a command
-
-            bool success = runAs.ExecuteCommandHeadless(cmd + " " + args);
-
-            //var success = _updateIdentity.Run(() =>
-            //{
-            //    var process = new Process
-            //    {
-            //        StartInfo = new ProcessStartInfo
-            //        {
-            //            FileName = UpdateCommandProcess,
-            //            Arguments = UpdateCommandArguments,
-            //            RedirectStandardOutput = true, // Enable output redirection
-            //            RedirectStandardError = true,
-            //            UseShellExecute = false,       // Required for redirection
-            //            CreateNoWindow = true,
-            //        }
-            //    };
-
-            //    Loggers.UpdateLogger?.Information("Starting update process");
-            //    process.Start();
-            //    Loggers.UpdateLogger?.Information("Update process id: {@ProcessId}", process.Id);
-
-            //    // Read and log the output asynchronously
-            //    var output = new StringBuilder();
-            //    process.OutputDataReceived += (sender, e) =>
-            //    {
-            //        if (!string.IsNullOrEmpty(e.Data))
-            //        {
-            //            output.AppendLine(e.Data);
-            //            Loggers.UpdateLogger?.Information("Update process output: {@ProcessOutput}", e.Data);
-            //        }
-            //    };
-            //    process.ErrorDataReceived += (sender, e) =>
-            //    {
-            //        if (!string.IsNullOrEmpty(e.Data))
-            //        {
-            //            output.AppendLine(e.Data);
-            //            Loggers.UpdateLogger?.Error("Update process error: {@ProcessOutput}", e.Data); // Log as error
-            //        }
-            //    };
-            //    process.BeginOutputReadLine(); // Start asynchronous reading
-
-            //    process.WaitForExit();
-
-            //    return true;
-
-            //});
-
+            var success = UpdateTaskScheduler.ScheduleUpdateTask(
+               args,
+               _updateIdentity,
+               UpdateTempDirectory,
+               _applicationRootDirectory.FullPath);
 
 
             Loggers.UpdateLogger.Information("File copy command executed with result: {Success} in {ElapsedMilliseconds}ms", success, stopwatch.ElapsedMilliseconds);

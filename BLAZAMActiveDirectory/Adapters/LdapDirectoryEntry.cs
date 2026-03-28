@@ -261,7 +261,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 existingCache = new(new());
             }
             if (_isNew) return null;
-            Loggers.ActiveDirectoryLogger.Information("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}", Directory != null && Directory.ConnectionSettings != null);
+            Loggers.ActiveDirectoryLogger.Debug("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}", Directory != null && Directory.ConnectionSettings != null);
 
             GetAllAttributes(existingCache);
 
