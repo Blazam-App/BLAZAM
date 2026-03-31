@@ -12,7 +12,13 @@ function Quit {
 
 function StopApp {
     New-Item -Path $global:destination -Name "app_offline.htm" -ItemType "file" -Force
-    Stop-Service -Name "Blazam" -Force -ErrorAction Continue
+    try {
+        Stop-Service -Name "Blazam" -Force -ErrorAction Stop
+        Write-Host("Blazam service stopped successfully.")
+    } catch {
+        Write-Host("Warning: Failed to stop Blazam service - " + $_.Exception.Message)
+        Write-Host("Continuing with update anyway...")
+    }
     Start-Sleep -Seconds 15
 }
 

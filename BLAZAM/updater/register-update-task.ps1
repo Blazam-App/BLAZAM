@@ -7,6 +7,17 @@ $taskDesc    = "Runs the BLAZAM update.ps1 script daily at 2:00 AM."
 $scriptPath  = Join-Path $PSScriptRoot "update.ps1"
 $triggerTime = "02:00"
 
+# Require administrator privileges
+$currentPrincipal = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
+if (-not $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Write-Host ""
+    Write-Warning "This script must be run as Administrator."
+    Write-Host "Please re-launch PowerShell as Administrator and try again." -ForegroundColor Red
+    Write-Host ""
+    pause
+    exit 1
+}
+
 Write-Host ""
 Write-Host "========================================="
 Write-Host "  BLAZAM Scheduled Update Task Setup"
@@ -19,6 +30,7 @@ Write-Host ""
 
 if (!(Test-Path -Path $scriptPath -PathType Leaf)) {
     Write-Error "update.ps1 not found at expected path: $scriptPath"
+    pause
     exit 1
 }
 
@@ -45,32 +57,32 @@ if ($useCustomCreds -eq "y") {
 
 Write-Host ""
 Write-Host "Registering scheduled task '$taskName'..."
-
-# Build the task components
-$action  = New-ScheduledTaskAction `
-    -Execute "powershell.exe" `
-    -Argument "-NonInteractive -NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`""
-
-$trigger = New-ScheduledTaskTrigger -Daily -At $triggerTime
-
-$settings = New-ScheduledTaskSettingsSet `
-    -ExecutionTimeLimit (New-TimeSpan -Hours 1) `
-    -StartWhenAvailable `
-    -MultipleInstances IgnoreNew
-
-$principal = New-ScheduledTaskPrincipal `
-    -UserId    $taskUser `
-    -RunLevel  $runLevel `
-    -LogonType $logonType
-
-# Remove existing task if present
-if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
-    Write-Host "Existing task '$taskName' found. Removing before re-registering..."
-    Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
-}
-
-# Register the task
 try {
+    # Build the task components
+    $action  = New-ScheduledTaskAction `
+        -Execute "powershell.exe" `
+        -Argument "-NonInteractive -NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`""
+
+    $trigger = New-ScheduledTaskTrigger -Daily -At $triggerTime
+
+    $settings = New-ScheduledTaskSettingsSet `
+        -ExecutionTimeLimit (New-TimeSpan -Hours 1) `
+        -StartWhenAvailable `
+        -MultipleInstances IgnoreNew
+
+    $principal = New-ScheduledTaskPrincipal `
+        -UserId    $taskUser `
+        -RunLevel  $runLevel `
+        -LogonType $logonType
+
+    # Remove existing task if present
+    if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
+        Write-Host "Existing task '$taskName' found. Removing before re-registering..."
+        Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
+    }
+
+    # Register the task
+
     if ($useCustomCreds -eq "y") {
         Register-ScheduledTask `
             -TaskName   $taskName `
@@ -97,6 +109,7 @@ try {
     Write-Host "It will run daily at $triggerTime as: $taskUser"
 } catch {
     Write-Error "Failed to register scheduled task: $_"
+    pause
     exit 1
 } finally {
     # Clear the plaintext password from memory
@@ -105,5 +118,6 @@ try {
         [System.GC]::Collect()
     }
 }
-
+pause
+    
 Write-Host ""
