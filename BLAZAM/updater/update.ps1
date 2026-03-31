@@ -57,6 +57,12 @@ function ApplyUpdate {
     Start-Sleep -Seconds 2
 }
 
+function CleanupStaged {
+    Write-Host("Cleaning up staged folder: " + $global:source)
+    Get-ChildItem -Path $global:source -Force | Remove-Item -Recurse -Force
+    Write-Host("Staged folder cleaned successfully.")
+}
+
 $global:source = Join-Path $PSScriptRoot "staged"
 $global:destination = (Get-Item (Join-Path $PSScriptRoot "..")).FullName + "\"
 
@@ -86,6 +92,8 @@ ApplyUpdate
 
 Write-Host("Restarting Application")
 StartApp
+
+CleanupStaged
 
 Write-Host("Web Application successfully updated")
 Stop-Transcript
