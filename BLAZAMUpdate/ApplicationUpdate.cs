@@ -64,12 +64,12 @@ namespace BLAZAM.Update
         }
 
         public SystemDirectory StagingDirectory =>
-            new(UpdateTempDirectory + "staged" + Path.DirectorySeparatorChar);
+            new(_applicationRootDirectory.FullPath + Path.DirectorySeparatorChar + "updater" + Path.DirectorySeparatorChar + "staged" + Path.DirectorySeparatorChar);
 
         /// <summary>
         /// The local staging directory path for this update
         /// </summary>
-        public SystemDirectory UpdateStagingDirectory { get => new(StagingDirectory + Version.Version); }
+        public SystemDirectory UpdateStagingDirectory { get => StagingDirectory; }
 
 
 
@@ -88,7 +88,7 @@ namespace BLAZAM.Update
         /// The local path to the downloaded zip file
         /// </summary>
         public SystemFile UpdateFile { get => new(UpdateDownloadDirectory + Version.Version + ".zip"); }
-        public string UpdateCommand => UpdateCommandProcess + " " + UpdateCommandArguments;
+        public string UpdateCommand => UpdateCommandProcess;
         public static string UpdateCommandProcess
         {
             get
@@ -96,14 +96,7 @@ namespace BLAZAM.Update
                 return "Powershell";
             }
         }
-        public string UpdateCommandArguments
-        {
-            get
-            {
-                return "-ExecutionPolicy Bypass -command \"& '" + CommandProcessPath
-                    + "' " + CommandArguments + "\"";
-            }
-        }
+      
         private SystemFile CommandProcessPath
         {
             get
@@ -118,27 +111,7 @@ namespace BLAZAM.Update
                 return testPath;
             }
         }
-        private string CommandArguments
-        {
-            get
-            {
-
-                var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory;
-
-
-
-                if (Debugger.IsAttached)
-                {
-                    args += $"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}net8.0{Path.DirectorySeparatorChar}";
-                }
-
-                args += "'";
-
-
-                return args;
-
-            }
-        }
+       
 
         /// <summary>
         /// Called when download progress has changed
@@ -146,7 +119,6 @@ namespace BLAZAM.Update
         public AppDelegate<FileProgress?> DownloadPercentageChanged { get; set; }
 
         private readonly ApplicationVersion _runningVersion;
-        private readonly Process _runningProcess;
         private readonly SystemDirectory _applicationRootDirectory;
         private WindowsImpersonation _updateIdentity;
 
@@ -155,7 +127,6 @@ namespace BLAZAM.Update
             _applicationInfo = applicationInfo;
             _dbFactory = dbFactory;
             _updateService = updateService;
-            _runningProcess = applicationInfo.RunningProcess;
             _runningVersion = applicationInfo.RunningVersion;
             _applicationRootDirectory = applicationInfo.ApplicationRoot;
         }
@@ -226,8 +197,8 @@ namespace BLAZAM.Update
             updateJob.AddStep(stagingCheckStep);
             updateJob.AddStep(bakupStep);
             updateJob.AddStep(updateUpdaterStep);
-            updateJob.AddStep(updateStep);
-            updateJob.AddStep(waitForRestart);
+            //updateJob.AddStep(updateStep);
+            //updateJob.AddStep(waitForRestart);
 
             Loggers.UpdateLogger?.Debug("Update job created with {StepCount} steps", updateJob.Steps.Count);
             return updateJob;
@@ -241,6 +212,8 @@ namespace BLAZAM.Update
             Loggers.UpdateLogger?.Debug("Ensuring update identity profile exists");
             try
             {
+                _ = UpdateTempDirectory;
+
                 _updateIdentity = _updateService.GetUpdateIdentity();
                 // Ensure profile exists before impersonation
                 _updateIdentity.EnsureProfileExists();
@@ -331,12 +304,11 @@ namespace BLAZAM.Update
         private async Task<bool> InitiateFileCopy(JobStep? step)
         {
             var cmd = UpdateCommandProcess;
-            var args = UpdateCommandArguments;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
 
-            Loggers.UpdateLogger.Information("Initiating file copy with command: {Command} {Arguments}", cmd, args);
+            Loggers.UpdateLogger.Information("Initiating file copy with command: {Command} {Arguments}", cmd);
             Loggers.UpdateLogger.Debug("Running as user: {Username}", _updateIdentity.ImpersonationUser?.Username ?? "Application");
 
             var proc = Process.Start("schtasks /run /tn \"Update Blazam\"");
