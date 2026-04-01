@@ -23,17 +23,24 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     }
                     if (SamAccountName != null)
+                    {
                         searchQuery += "(samaccountname=*" + SamAccountName + "*)";
+                    }
 
                     if (GivenName != null)
+                    {
                         searchQuery += "(givenname=*" + GivenName + "*)";
+                    }
 
                     if (Surname != null)
+                    {
                         searchQuery += "(sn=*" + Surname + "*)";
+                    }
 
                     if (DisplayName != null)
+                    {
                         searchQuery += "(displayName=*" + DisplayName + "*))";
-
+                    }
 
                     searchQuery += ");";
                     return searchQuery;

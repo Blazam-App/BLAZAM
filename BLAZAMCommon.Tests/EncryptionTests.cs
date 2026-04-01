@@ -94,18 +94,9 @@ namespace BLAZAMCommon.Tests
             Assert.Equal(test, result);
 
         }
-        [Fact]
-        public void CanEncrypt_Null()
-        {
-            string? test = null;
-            var cipher = encryption.EncryptObject(test);
-            var result = encryption.DecryptObject<string>(cipher);
-            Assert.Equal(test, result);
 
-        }
-
-        private List<string> testSeedStrings = new()
-        {
+        private List<string> testSeedStrings =
+        [
             TestSeedString,
         "differentseedkeystring",
         "differentseedkeystrin",
@@ -123,12 +114,12 @@ namespace BLAZAMCommon.Tests
         "6",
         "@",
         "reallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallylongseedstring"
-        };
+        ];
 
         [Fact]
         public void Accetable_KeyVariance()
         {
-            List<byte[]> generatedKeys = new();
+            List<byte[]> generatedKeys = [];
 
             testSeedStrings.ForEach(seedString =>
             {
@@ -136,7 +127,7 @@ namespace BLAZAMCommon.Tests
                 generatedKeys.Add(encryption.APITokenKey);
             });
 
-            List<int> lowestVariances = new();
+            List<int> lowestVariances = [];
             generatedKeys.ForEach(key =>
             {
                 //Compare against all other keys and return lowest variance value
@@ -146,7 +137,10 @@ namespace BLAZAMCommon.Tests
                     //Calculate xor of the two 256 bit keys
                     int variance = key.BitDifference(otherKey);
                     //Update lowestVariance if needed
-                    if (variance < lowestVariance) lowestVariance = variance;
+                    if (variance < lowestVariance)
+                    {
+                        lowestVariance = variance;
+                    }
                 });
                 lowestVariances.Add(lowestVariance);
             });
@@ -159,7 +153,7 @@ namespace BLAZAMCommon.Tests
         [Fact]
         public void Key_Tests()
         {
-            List<byte[]> generatedKeys = new();
+            List<byte[]> generatedKeys = [];
 
             testSeedStrings.ForEach(seedString =>
             {

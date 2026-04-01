@@ -1,0 +1,106 @@
+﻿@using BLAZAM.Database.Models.Rules
+@inherits AppModalContent
+<MudText Typo="Typo.h6">@AppLocalization[Lang.Rules_Enabled]</MudText>
+
+<MudSwitch UncheckedColor=Color.Error Color=Color.Success T="bool" @bind-Value=Settings.RulesEnabled />
+
+<MudText Typo="Typo.h6">@AppLocalization[Lang.Excluded_Groups]</MudText>
+<MudList T="string">
+    @foreach (var sid in GroupGuids)
+    {
+        <MudListItem Dense="true">
+            <MudStack Row=true>
+                    <DirectoryEntryLink Class="my-auto" Guid="@sid.Guid" />
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               OnClick="async ()=>
+                                {
+                                    GroupGuids.Remove(sid);
+                                    var settings = await Context.GlobalAutomationRuleSettings.Include(x => x.ExcludedGroups).FirstOrDefaultAsync();
+                                    if (settings != null)
+                                    {
+                                        settings.ExcludedGroups = GroupGuids;
+                                        await Context.SaveChangesAsync();
+                                    }
+                                    await InvokeAsync(StateHasChanged);
+                                }" />
+        </MudStack>
+
+
+
+                                                                   </MudListItem>
+        }
+
+</MudList>
+<MudStack Row=true>
+    <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group" @bind-SelectedResult=_selectedGroup @ref=_searchBox />
+    <AppIconButton Icon="@Icons.Material.Filled.Add"
+                   OnClick="@(()=>{GroupGuids.Add(new(){Guid=_selectedGroup.Guid.Value});_selectedGroup=null;_searchBox.Clear();})" />
+</MudStack>
+
+
+@code {
+    ADAutoComplete? _searchBox;
+    List<AutomationRuleExcludedGroupGuid> GroupGuids = [];
+
+    [Parameter]
+    public GlobalAutomationRuleSettings Settings { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnSaved { get; set; }
+
+    IDirectoryEntryAdapter? _selectedGroup;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Modal.YesEnabled = () => { return !LoadingData; };
+
+        Modal.SetOnYes(SaveChanges);
+        if (Settings != null)
+        {
+            GroupGuids = Settings.ExcludedGroups.ToList();
+        }
+    }
+    private async Task SaveChanges()
+    {
+        LoadingData = true;
+        try
+        {
+            var existing = await Context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
+            if (existing == null)
+            {
+                existing = new Database.Models.Rules.GlobalAutomationRuleSettings();
+                await Context.GlobalAutomationRuleSettings.AddAsync(existing);
+            }
+            var existingGroups = new List<AutomationRuleExcludedGroupGuid>(existing.ExcludedGroups);
+            existing.ExcludedGroups.Clear();
+            for(int x =0; x < GroupGuids.Count; x++)
+            {
+                if (GroupGuids[x].Id != 0)
+                {
+                    var existingGroup = existingGroups.FirstOrDefault(g => g.Id == GroupGuids[x].Id);
+                    if (existingGroup != null)
+                    {
+                        GroupGuids[x] = existingGroup;
+                    }
+                }
+            }
+            existing.ExcludedGroups.AddRange(GroupGuids);
+            existing.RulesEnabled = Settings.RulesEnabled;
+            var result = await Context.SaveChangesAsync();
+            if (result > 0)
+            {
+                await OnSaved.InvokeAsync();
+                SnackBarService.Success(AppLocalization[Lang.Changes_have_been_saved]);
+            }
+            await Modal.CloseAsync();
+        }
+        catch (Exception ex)
+        {
+            SnackBarService.Error(ex.Message);
+        }
+        LoadingData = false;
+
+    }
+}

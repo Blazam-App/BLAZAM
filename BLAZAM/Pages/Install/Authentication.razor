@@ -1,4 +1,4 @@
-﻿@using System.Text.Json
+﻿
 @using System.Net
 @using System.Diagnostics
 @using BLAZAM.Common.Data.Validators
@@ -84,7 +84,7 @@
             settings.AdminPasswordConfirmed = settings.AdminPassword;
 
         }
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
     }
 
@@ -96,7 +96,7 @@
             if (settings.Id == 0)
                 Context.AuthenticationSettings.Add(settings);
 
-            settings.AdminPassword = settings.AdminPasswordConfirmed.Encrypt();
+            settings.AdminPassword = await settings.AdminPasswordConfirmed.EncryptAsync();
             await Context.SaveChangesAsync();
             settings = await Context.AuthenticationSettings.FirstAsync();
             await StepCompleted.InvokeAsync();
@@ -108,6 +108,6 @@
 
 
         }
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 }

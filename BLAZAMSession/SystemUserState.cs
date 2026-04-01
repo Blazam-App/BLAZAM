@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using BLAZAM.Database.Context;
 
 namespace BLAZAM.Session
 {
@@ -9,6 +8,7 @@ namespace BLAZAM.Session
         {
             var identity = new ClaimsIdentity();
             identity.AddClaim(new Claim(ClaimTypes.Name, "Blazam"));
+            identity.AddClaim(new Claim(ClaimTypes.WindowsAccountName, "Blazam"));
             this.User = new System.Security.Claims.ClaimsPrincipal();
             this.User.AddIdentity(identity);
         }

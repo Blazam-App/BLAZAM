@@ -1,8 +1,6 @@
-﻿using System.Runtime.Serialization;
-
-namespace BLAZAM.Database.Exceptions
+﻿namespace BLAZAM.Database.Exceptions
 {
-    [Serializable]
+
     public class DatabaseException : AppException
     {
         public DatabaseException()
@@ -17,8 +15,5 @@ namespace BLAZAM.Database.Exceptions
         {
         }
 
-        protected DatabaseException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
     }
 }

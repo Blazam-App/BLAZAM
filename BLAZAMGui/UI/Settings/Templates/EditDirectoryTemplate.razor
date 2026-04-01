@@ -18,7 +18,7 @@
                                                         await ParentTemplateChanged(null);
                                                         })"
                                        Label=@AppLocalization[Lang.Parent_Template]
-                                       Values="@dropdownTemplates.OrderBy(t=>t.Name)"
+                                       Options="@dropdownTemplates.OrderBy(t=>t.Name)"
                                        Value="@DirectoryTemplate.ParentTemplate"
                                        ValueChanged="@ParentTemplateChanged" />
 
@@ -38,7 +38,7 @@
                                        AdornmentIcon="@Icons.Material.Filled.Add"
                                        AdornmentColor="@Color.Success"
                                        OnAdornmentClick="@(()=>{_=categoryModal?.ShowAsync();})"
-                                       Values="@(categories.Count>0?categories:new List<string>())"
+                                       Options="@(categories.Count>0?categories:new List<string>())"
                                        ValueChanged="@((value)=>{DirectoryTemplate.Category=value;})"
                                        @bind-Text=DirectoryTemplate.Category
                                        Label="@AppLocalization[Lang.Template_Category]" />
@@ -47,7 +47,7 @@
                                                              CategoryAdded="@(async(newCategory)=>{
                                     DirectoryTemplate.Category=newCategory;
                                     categories.Add(newCategory);
-                                    await InvokeAsync(StateHasChanged);
+                                    await StateHasChangedAsync();
                                                                                             })" />
                         </AppModal>
                         <MudSwitch Label="@AppLocalization[Lang.Visible]"
@@ -283,7 +283,7 @@
 
 
                             <MudStack Class="d-flex justify-center align-center mud-height-full">
-                                <MudDataGrid Items="@DirectoryTemplate.EffectiveFieldValues.OrderBy(fv => fv.FieldDisplayName)"
+                                <MudDataGrid Items="@DirectoryTemplate.EffectiveFieldValues.Where(fv=>fv.DeletedAt==null).OrderBy(fv => fv.FieldDisplayName)"
                                              Dense=true
                                              Striped=true
                                              Bordered=true
@@ -380,9 +380,10 @@
                                     }
                                     else
                                     {
-                                            <OUTreeView SelectedEntry=@SelectedOU
-                                            SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
-                                            StartingSelectedOU=@SelectedOU />
+                                            <ADTreeView ShowAllEntries=false
+                                                SelectedEntry=@SelectedOU
+                                                SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
+                                                StartingSelectedOU=@SelectedOU />
                                             @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty() && DirectoryTemplate.ParentTemplateId != null && !DirectoryTemplate.ParentOU.IsNullOrEmpty())
                                             {
                                                 <RevertTemplateValueButton OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;await LoadData();}) />
@@ -408,7 +409,7 @@
                         
 
                                     <AssignedTemplateGroup Group="group"
-                                                           OnGroupRemoved="@(async (group)=>{await InvokeAsync(StateHasChanged);})" />
+                                                           OnGroupRemoved="@(async (group)=>{await StateHasChangedAsync();})" />
            
 
                             }

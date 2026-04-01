@@ -1,12 +1,15 @@
 ﻿namespace BLAZAM.Gui.UI
 {
-    public class DirectoryModelComponentElement : AppComponentBase
+    public abstract class DirectoryModelComponentElement : AppComponentBase
     {
         [CascadingParameter]
         public IDirectoryEntryAdapter Entry { get; set; }
         [CascadingParameter]
         public bool EditMode { get; set; }
-
+        [CascadingParameter]
+        public DirectoryTemplate? Template { get; set; }
+        [Parameter]
+        public bool Disabled{ get; set; }
         protected string SectionMudStackClasses => "flex-wrap gap-1";
 
         public IAccountDirectoryAdapter Account
@@ -35,6 +38,48 @@
         public IGroupableDirectoryAdapter GroupableEntry
         {
             get => Entry as IGroupableDirectoryAdapter; set => Entry = value;
+        }
+        protected bool ShowField(IActiveDirectoryField field)
+        {
+            if (Template == null)
+            {
+                return GroupableEntry.CanReadField(field);
+            }
+            else
+            {
+                return Template.InTemplate(field);
+            }
+        }
+
+        protected bool RequireField(IActiveDirectoryField field)
+        {
+            if (Disabled)
+            {
+                return false;
+            }
+            if (Template == null)
+            {
+                return false;
+            }
+            else
+            {
+                return !IsAdmin && !Template.IsRequiredField(field);
+            }
+        }
+        protected bool DisableField(IActiveDirectoryField field)
+        {
+            if(Disabled)
+            {
+                return true;
+            }
+            if (Template == null)
+            {
+                return !EditMode || !GroupableEntry.CanEditField(field);
+            }
+            else
+            {
+                return !IsAdmin && !Template.IsEditableField(field);
+            }
         }
     }
 }

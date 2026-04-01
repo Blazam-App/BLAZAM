@@ -3,15 +3,15 @@ namespace BLAZAMDatabase.Tests
 {
     public class ConnectionStringTests
     {
-        const string Valid_SQLite_Connection_String = "Data Source=C:\\ProgramData\\Blazam\\database.db;";
-        const string Valid_SQLite_Connection_String2 = "data source=C:\\ProgramData\\Blazam\\database.db;";
-        const string Valid_SQLite_Connection_String3 = "Data Source=C:\\ProgramData\\Blazam\\database.db";
-        const string Valid_SQL_Connection_String = "Data Source=sql-blazam-org;Database=BlazamTest;User Id=sa;Password=blazam;";
-        const string Valid_SQL_Connection_String2 = "data source=sql-blazam-org;database=BlazamTest;user id=sa;password=blazam;";
-        const string Valid_SQL_Connection_String3 = "Data Source=sql-blazam-org;Database=BlazamTest;User Id=sa;Password=blazam";
-        const string Valid_SQLExpress_Connection_String = "Data Source=sql-blazam-org\\SQLEXPRESS,1433;Database=BlazamTest;User Id=sa;Password=blazam;";
-        const string Valid_SQLExpress_Connection_String2 = "data source=sql-blazam-org\\SQLEXPRESS,1433;database=BlazamTest;user id=sa;password=blazam;";
-        const string Valid_SQLExpress_Connection_String3 = "Data Source=sql-blazam-org\\SQLEXPRESS,1433;Database=BlazamTest;User Id=sa;Password=blazam";
+        private const string Valid_SQLite_Connection_String = "Data Source=C:\\ProgramData\\Blazam\\database.db;";
+        private const string Valid_SQLite_Connection_String2 = "data source=C:\\ProgramData\\Blazam\\database.db;";
+        private const string Valid_SQLite_Connection_String3 = "Data Source=C:\\ProgramData\\Blazam\\database.db";
+        private const string Valid_SQL_Connection_String = "Data Source=sql-blazam-org;Database=BlazamTest;User Id=sa;Password=blazam;";
+        private const string Valid_SQL_Connection_String2 = "data source=sql-blazam-org;database=BlazamTest;user id=sa;password=blazam;";
+        private const string Valid_SQL_Connection_String3 = "Data Source=sql-blazam-org;Database=BlazamTest;User Id=sa;Password=blazam";
+        private const string Valid_SQLExpress_Connection_String = "Data Source=sql-blazam-org\\SQLEXPRESS,1433;Database=BlazamTest;User Id=sa;Password=blazam;";
+        private const string Valid_SQLExpress_Connection_String2 = "data source=sql-blazam-org\\SQLEXPRESS,1433;database=BlazamTest;user id=sa;password=blazam;";
+        private const string Valid_SQLExpress_Connection_String3 = "Data Source=sql-blazam-org\\SQLEXPRESS,1433;Database=BlazamTest;User Id=sa;Password=blazam";
 
         [Theory]
         [InlineData(Valid_SQLite_Connection_String)]
@@ -28,7 +28,7 @@ namespace BLAZAMDatabase.Tests
             Assert.True(cstring.FileBased);
 
             // Test Database property
-            Assert.Equal("File Based", cstring.Database);
+            Assert.Equal("File Based", cstring.GetDatabase());
         }
 
         [Theory]
@@ -40,10 +40,10 @@ namespace BLAZAMDatabase.Tests
             var cstring = new DatabaseConnectionString(raw, DatabaseType.SQL);
 
             // Test ServerAddress property
-            Assert.Equal("sql-blazam-org", cstring.ServerAddress);
+            Assert.Equal("sql-blazam-org", cstring.GetServerAddress());
 
             // Test Database property
-            Assert.Equal("BlazamTest", cstring.Database);
+            Assert.Equal("BlazamTest", cstring.GetDatabase());
 
             // Test FileBased property
             Assert.False(cstring.FileBased);
@@ -52,7 +52,7 @@ namespace BLAZAMDatabase.Tests
             Assert.Null(cstring.InstanceName);
 
             // Test ServerPort property (should be default 1433 for SQL)
-            Assert.Equal(1433, cstring.ServerPort);
+            Assert.Equal(1433, cstring.GetServerPort());
         }
 
         [Theory]
@@ -64,16 +64,16 @@ namespace BLAZAMDatabase.Tests
             var cstring = new DatabaseConnectionString(raw, DatabaseType.SQL);
 
             // Test ServerAddress property
-            Assert.Equal("sql-blazam-org", cstring.ServerAddress);
+            Assert.Equal("sql-blazam-org", cstring.GetServerAddress());
 
             // Test InstanceName property
             Assert.Equal("SQLEXPRESS", cstring.InstanceName);
 
             // Test ServerPort property
-            Assert.Equal(1433, cstring.ServerPort);
+            Assert.Equal(1433, cstring.GetServerPort());
 
             // Test Database property
-            Assert.Equal("BlazamTest", cstring.Database);
+            Assert.Equal("BlazamTest", cstring.GetDatabase());
 
             // Test FileBased property
             Assert.False(cstring.FileBased);

@@ -5,14 +5,17 @@
         /// <summary>
         /// Called when permission are changed by an admin
         /// </summary>
-        public EventHandler Delegate { get; set; }
+        public event EventHandler Delegate;
 
         /// <summary>
         /// Send event so each user can update permissions
         /// </summary>
-        public void Invoke()
+        public void Invoke(object? sender = null)
         {
-            Delegate?.Invoke(null, EventArgs.Empty);
+            if (Delegate != null)
+            {
+                Delegate.Invoke(sender, EventArgs.Empty);
+            }
 
         }
     }

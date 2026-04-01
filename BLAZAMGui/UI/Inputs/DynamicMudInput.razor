@@ -1,14 +1,7 @@
 ﻿@inherits MudField
 @typeparam T
-@{
-    var type = typeof(T);
-    if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-    {
-        type = Nullable.GetUnderlyingType(type);
 
-    }
-}
-@switch (type.Name)
+@switch (_type?.Name)
 {
     case "int":
     case "Int32":
@@ -17,6 +10,7 @@
     case "float":
         <MudNumericField HelperText="@HelperText"
                          T=T
+                         Required=@Required
                          Label="@Label"
                          Immediate=@Immediate
                          HideSpinButtons="false"
@@ -27,6 +21,7 @@
 
     case "String":
         <MudTextField Label="@Label" T=T
+                      Required=@Required
                       HelperText="@HelperText"
                       Immediate=@Immediate
                       Clearable=@Clearable
@@ -39,6 +34,7 @@
     case "Boolean":
         <MudStack>
             <MudSwitch Color=@Color
+                       Required=@Required
                        UncheckedColor=@UncheckedColor
                        T="T"
                        ReadOnly=@ReadOnly
@@ -50,6 +46,7 @@
         break;
     case "DateTime":
         <MudDatePicker Clearable=@Clearable
+                       Required=@Required
                        HelperText="@HelperText"
                        ReadOnly=@ReadOnly
                        Label="@Label"
@@ -60,7 +57,7 @@
         break;
     default:
 
-        throw new AppException("The input type: " + type.Name + " could not be matched with a MudInput component");
+        throw new AppException("The input type: " + _type?.Name + " could not be matched with a MudInput component");
 
 }
 
@@ -68,8 +65,6 @@
 @code {
     private T? objValue;
 
-    [Parameter]
-    public Func<T, T> ValueTransformer { get; set; }
 
     [Parameter]
     public T? Value
@@ -77,16 +72,13 @@
         get => objValue;
         set
         {
-            if (EqualityComparer<T?>.Default.Equals(objValue, default(T?))){
-
+            if (objValue?.Equals(value) == true
+            || (EqualityComparer<T?>.Default.Equals(objValue, default(T?))
+            && EqualityComparer<T?>.Default.Equals(value, default(T?))))
+            {
+                return;
             }
-            if (objValue?.Equals(value) == true 
-            || (EqualityComparer<T?>.Default.Equals(objValue, default(T?)) && EqualityComparer<T?>.Default.Equals(value, default(T?)))) return;
-            if (!EqualityComparer<T?>.Default.Equals(objValue, default(T?))
-                && ValueTransformer != null)
-                value = ValueTransformer.Invoke(value);
             objValue = value;
-            //if (!value.Equals(initializedValue))
             ValueChanged.InvokeAsync(value);
 
         }
@@ -119,9 +111,8 @@
     {
         get
         {
-            if (Value is DateTime time)
-                if (time != DateTime.MinValue)
-                    return time;
+            if (Value is DateTime time && time != DateTime.MinValue)
+                return time;
             return null;
         }
         set
@@ -133,10 +124,22 @@
                 Value = default;
         }
     }
-
+    [Parameter]
+    public bool Required { get; set; }
     [Parameter]
     public InputType InputType { get; set; }
 
+    private Type? _type;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _type = typeof(T);
+        if (_type.IsGenericType && _type.GetGenericTypeDefinition() == typeof(Nullable<>))
+        {
+            _type = Nullable.GetUnderlyingType(_type);
+
+        }
+    }
 
 }

@@ -1,20 +1,30 @@
 @inherits AppModalContent
 @using BLAZAM.Database.Models.Rules
 @inject BLAZAM.Services.Analytics AnalyticsService
-<MudStack>
+<MudForm @ref=Form Model="_workingRule">
     @if (_workingRule != null)
     {
-        <MudSelectList Label="@AppLocalization[Lang.Object_Type]"
-                       Values="_adObjectTypes"
-                       @bind-Value=_workingRule.ActiveDirectoryObjectType />
+        <MudGrid>
+            <MudItem xs="6" sm="4" md="3" lg="2" xl="1">
+                <MudSelectList Label="@AppLocalization[Lang.Object_Type]"
+                               Options="_adObjectTypes"
+                               For="@(() => _workingRule.ActiveDirectoryObjectType)"
+                               @bind-Value=_workingRule.ActiveDirectoryObjectType />
+            </MudItem>
+            <MudItem xs="6" sm="4" md="3" lg="2" xl="1">
+                <MudSelectList Label="@AppLocalization[Lang.Triggers]"
+                               For="@(() => _workingRule.Trigger)"
+                               Options="_workingRule.ActiveDirectoryObjectType.GetNotificationTypes()"
+                               @bind-Value=_workingRule.Trigger />
+            </MudItem>
+            <MudItem xs="6" sm="4" md="6" lg="8" xl="10">
+                <MudTextField @bind-Value=@_workingRule.Name
+                              Immediate=true
+                              For="@(() => _workingRule.Name)"
+                              Label="@AppLocalization[Lang.Name]" />
+            </MudItem>
 
-        <MudSelectList Label="@AppLocalization[Lang.Triggers]"
-                       Values="_workingRule.ActiveDirectoryObjectType.GetNotificationTypes()"
-                       @bind-Value=_workingRule.Trigger />
-
-        <MudTextField @bind-Value=@_workingRule.Name
-                      Label="@AppLocalization[Lang.Name]" />
-
+        </MudGrid>
         <MudSwitch Color="Color.Success"
                    UncheckedColor="Color.Error"
                    @bind-Value=_workingRule.Enabled
@@ -31,7 +41,7 @@
 
             <AppTooltip Text="This feature is still under construction">
                 <MudSelectList T=ScheduleInterval?
-                               Values="_scheduleTypes"
+                               Options="_scheduleTypes"
                                @bind-Value=Rule.ScheduleInterval
                                Disabled="true" />
             </AppTooltip>
@@ -47,51 +57,11 @@
 
         <MudText Typo="Typo.h6">Filters</MudText>
 
-        <MudStack Row="true">
-
-            <MudStack Class="mud-width-full">
-                @{
-                    bool first = true;
-                }
-                @if (_workingRule.Filters.Count == 0)
-                {
-                    <MudText>
-                        @AppHelpLocalization[HelpLang.Rule_No_Filter_Warning, AppLocalization[Rule.ActiveDirectoryObjectType.ToString()], AppLocalization[Rule.Trigger.ToString()]]
-                    </MudText>
-                }
-                @foreach (var orFilter in _workingRule.Filters)
-                {
-                    @if (!first)
-                    {
-                        <MudStack Row="true" Class="my-4">
-                            <MudSpacer />
-                            <MudText Typo="Typo.h6">@AppLocalization[Lang.or]</MudText>
-                                <MudSpacer />
-                            </MudStack>
-                    }
-                    else
-                    {
-                        first = false;
-                    }
-                    <EditRuleOrFilter Filter="orFilter"
-                                      RemoveClicked="@(()=>{RemoveOrFilter(orFilter);})" />
-
-
-                }
-                <MudSpacer />
-
-            </MudStack>
-
-        </MudStack>
-        <MudStack Row="true">
-
-            <MudSpacer />
-            <MudButton OnClick="AddOrFilter"
-                       Color="Color.Success"
-                       StartIcon="@Icons.Material.Filled.Add">Add Or Filter</MudButton>
-            <MudSpacer />
-
-        </MudStack>
+        <AdvancedFilterEditor Filters="_workingRule.Filters"
+                              NoFiltersWarning=@(AppHelpLocalization[HelpLang.Rule_No_Filter_Warning,
+                              AppLocalization[Rule.ActiveDirectoryObjectType.ToString()],
+                              AppLocalization[Rule.Trigger.ToString()]
+                              ]) />
 
         <MudDivider />
 
@@ -102,7 +72,7 @@
 
                 @foreach (var action in _workingRule.Actions)
                 {
-                    <EditRuleAction RemovedClicked="@(()=>{RemoveAction(action);})" Action=action />
+                    <EditRuleAction RemovedClicked="@(() => { RemoveAction(action); })" Action=action />
                     <MudSpacer />
                 }
             </MudStack>
@@ -117,11 +87,10 @@
             <MudSwitch Color="Color.Error"
                        UncheckedColor="Color.Success"
                        @bind-Value=_workingRule.StopOnThisRule
-                       Label=@(AppHelpLocalization[_workingRule.StopOnThisRule?HelpLang.Stop_On_Rule:HelpLang.Continue_Processing_Rules]) />
+                       Label=@(AppHelpLocalization[_workingRule.StopOnThisRule ? HelpLang.Stop_On_Rule : HelpLang.Continue_Processing_Rules]) />
         </MudField>
     }
-</MudStack>
-
+</MudForm>
 @code {
     [Parameter]
     public EventCallback<AutomationRule> RuleChanged { get; set; }
@@ -175,6 +144,17 @@
             _adObjectTypes.Add(enu);
         }
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            Form?.Validate();
+        }
+    }
+
+
     private async Task DeleteRule()
     {
         if (await MessageService.Confirm(AppLocalization[Lang.Confirm_deletion]))
@@ -216,7 +196,7 @@
         if (result > 0)
         {
             SnackBarService.Success(AppLocalization[newRule ? Lang.Created : Lang.Changed]);
-            RuleChanged.InvokeAsync(Rule);
+            await RuleChanged.InvokeAsync(Rule);
             await Modal.CloseAsync();
         }
         else
@@ -270,12 +250,7 @@
 
         _workingRule.Actions.Remove(action);
     }
-    private void AddAndFilter(AutomationRuleOrFilter orFilter)
-    {
-        var newFilter = new AutomationRuleAndFilter();
-        newFilter.FilterGuid = Guid.NewGuid();
-        orFilter.AndFilters.Add(newFilter);
-    }
+
     private void AddAction()
     {
         var newAction = new AutomationRuleAction();
@@ -286,23 +261,5 @@
 
 
 
-    private void AddOrFilter()
-    {
-        if (_workingRule != null)
-        {
-            var newFilter = new AutomationRuleOrFilter();
 
-            newFilter.FilterGuid = Guid.NewGuid();
-            AddAndFilter(newFilter);
-            _workingRule.Filters.Add(newFilter);
-        }
-    }
-
-    private void RemoveOrFilter(AutomationRuleOrFilter orFilter)
-    {
-        if (_workingRule != null)
-        {
-            _workingRule.Filters.Remove(orFilter);
-        }
-    }
 }

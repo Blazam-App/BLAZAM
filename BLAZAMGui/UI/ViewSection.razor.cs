@@ -1,6 +1,5 @@
-using System.Text;
-using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using System.Text;
 
 namespace BLAZAM.Gui.UI
 {
@@ -30,9 +29,9 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public string Style { get; set; } = string.Empty;
 
-        private bool IsHeaderAtTop => SectionHeaderPosition is HeaderPosition.TopLeft or HeaderPosition.TopRight or HeaderPosition.TopCenter;
+        private bool isHeaderAtTop => SectionHeaderPosition is HeaderPosition.TopLeft or HeaderPosition.TopRight or HeaderPosition.TopCenter;
 
-        private string PaperClass
+        private string paperClass
         {
             get
             {
@@ -45,7 +44,7 @@ namespace BLAZAM.Gui.UI
             }
         }
 
-        private string CombinedStyle
+        private string combinedStyle
         {
             get
             {
@@ -58,12 +57,12 @@ namespace BLAZAM.Gui.UI
             }
         }
 
-        private string HeaderWrapperClass
+        private string headerWrapperClass
         {
             get
             {
                 var sb = new StringBuilder("section-title-wrapper");
-                if (IsHeaderAtTop)
+                if (isHeaderAtTop)
                 {
                     sb.Append(" pos-top");
                 }
@@ -75,7 +74,7 @@ namespace BLAZAM.Gui.UI
             }
         }
 
-        private string HeaderClass
+        private string headerClass
         {
             get
             {

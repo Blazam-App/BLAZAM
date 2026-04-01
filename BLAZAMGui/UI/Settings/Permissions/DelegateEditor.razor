@@ -23,14 +23,13 @@
 @if (AllDelegates.Count > 0)
 {
     var delegates = AllDelegates.Where(l => l.DeletedAt == null);
-    @foreach (var pl in delegates)
+    @foreach (var deleg in delegates)
     {
-        <DelegateListItem Delegate="pl" 
-            Context="Context" 
+        <DelegateListItem Delegate="deleg" 
             DelegateDeleted="DelegatesChanged" />
     }
 }
-
+<LoadingData Loading=LoadingData/>
 <MudButton Color=Color.Success 
 OnClick="@(()=>{addGroupModal?.ShowAsync();})">
     @AppLocalization[Lang.Create_New_Delegation_Target]
@@ -40,7 +39,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
     Title="Deleted Delegates">
     @foreach (var deleg in AllDelegates.Where(l => l.DeletedAt != null))
     {
-        var model = Directory.FindEntryBySID(deleg.DelegateSid);
+        var model = Directory.FindGlobalEntryBySid(deleg.DelegateSid);
         <MudContainer>
             <b>@model?.ObjectType</b><br />
             <MudText>@model?.CanonicalName</MudText>
@@ -64,7 +63,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
 
 }
 @code {
-#nullable disable warnings
+
     string _DelegateFilter = "";
     string DelegateFilter
     {
@@ -72,7 +71,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
         {
             if (_DelegateFilter == value) return;
             _DelegateFilter = value;
-            InvokeAsync(StateHasChanged);
+            _ = StateHasChangedAsync();
         }
     }
     AppModal? trashModal;
@@ -86,8 +85,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
 
         settings = Context.PermissionDelegate;
         await RefreshDelegates();
-
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
     }
 
@@ -117,8 +115,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
     {
 
         await RefreshDelegates();
-
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
     }
 

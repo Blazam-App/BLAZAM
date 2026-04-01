@@ -1,9 +1,5 @@
-﻿
-using System.Runtime.Serialization;
-
-namespace BLAZAM.Pages.API.v1
+﻿namespace BLAZAM.Pages.API.v1
 {
-    [Serializable]
     public class DirectorySearchUniquenessException : AppException
     {
         public string SearchTerm;
@@ -22,8 +18,6 @@ namespace BLAZAM.Pages.API.v1
             SearchTerm = searchTerm;
         }
 
-        protected DirectorySearchUniquenessException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+
     }
 }

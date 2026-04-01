@@ -59,6 +59,7 @@ a, .btn-link {
     bottom: 0;
     box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
     display: none;
+    max-height: min-content;
     left: 0;
     padding: 0.6rem 1.25rem 0.7rem 1.25rem;
     position: fixed;
@@ -241,8 +242,6 @@ a, .btn-link {
 
 .section-title {
     max-width: fit-content;
-    /* Use MudBlazor's theme variable for the background to "cut out" the border line */
-    /*padding: 0 8px;*/
     display:flex;
 }
 
@@ -253,7 +252,6 @@ a, .btn-link {
 }
 
 .section-title.align-left {
-    /*margin-left: 20px;*/
     float: left;
 }
 
@@ -265,7 +263,6 @@ a, .btn-link {
 
 
 .section-title.align-right {
-    /*margin-right: 20px;*/
     float: right;
 }
 
@@ -276,8 +273,6 @@ a, .btn-link {
     clear: both;
 }
 
-#blazor-error-ui{
-    max-height:min-content;
-}
+
 
 

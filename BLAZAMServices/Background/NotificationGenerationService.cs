@@ -1,12 +1,11 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
+using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.EmailMessage.Email.Base;
-using BLAZAM.EmailMessage.Email.Notifications;
+using BLAZAM.EmailMessage.Email.Messages;
 using BLAZAM.Helpers;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
@@ -34,7 +33,7 @@ namespace BLAZAM.Services.Background
             _appLocalization = appLocalization;
             _emailService = emailService;
             _webHookPublisher = webHookPublisher;
-            ApplicationEvents.DirectoryEntryChanged.Delegate += ProcessDirectoryEntryChangedEvent;
+            ApplicationEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChangedEvent;
 
         }
         protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
@@ -42,10 +41,14 @@ namespace BLAZAM.Services.Background
             lock (_notificationLock)
             {
                 if (!IsSupportedObjectType(args.ObjectType))
+                {
                     return;
+                }
 
                 if (!IsSupportedEventType(args.EventType))
+                {
                     return;
+                }
 
                 var isSQLite = _databaseFactory.DatabaseType == DatabaseType.SQLite;
                 switch (args.EventType)
@@ -54,8 +57,10 @@ namespace BLAZAM.Services.Background
                         PostNotification(args, NotificationType.Delete, isSQLite);
                         break;
                     case ApplicationEventType.Create:
-                    case ApplicationEventType.PasswordChange:
                         PostNotification(args, NotificationType.Create, isSQLite);
+                        break;
+                    case ApplicationEventType.PasswordChange:
+                        PostNotification(args, NotificationType.PasswordChange, isSQLite);
                         break;
                     case ApplicationEventType.Assign:
                         PostNotification(args, NotificationType.Assign, isSQLite, args.Target);
@@ -176,7 +181,9 @@ namespace BLAZAM.Services.Background
                                             NotificationTemplateComponent? emailMessage)
         {
             if (user.Id == actor?.Id)
+            {
                 return;
+            }
 
             var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
             var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
@@ -205,7 +212,9 @@ namespace BLAZAM.Services.Background
             NotificationSubscription? effectiveEmailSubscriptions)
         {
             if (effectiveEmailSubscriptions?.NotificationTypes.Any(x => x.NotificationType == notificationType) != true)
+            {
                 return;
+            }
 
             if (emailMessage == null)
             {
@@ -327,7 +336,11 @@ namespace BLAZAM.Services.Background
                     break;
                 case NotificationType.LockedOut:
                     var sourceUser = source as IADUser;
-                    if (sourceUser == null) return;
+                    if (sourceUser == null)
+                    {
+                        return;
+                    }
+
                     notificationTitle += _appLocalization[Lang.Locked_Out];
                     notificationBody += _appLocalization["has been locked out at "] + sourceUser.LockoutTime?.ToLocalTime();
                     var lockedOutMessage = NotificationType.LockedOut.ToNotification<LockedOutEmailMessage>();
@@ -355,54 +368,89 @@ namespace BLAZAM.Services.Background
                 CreatorId = actor?.Preferences.Id,
                 Level = NotificationLevel.Info,
                 TargetDN = target.DN,
-                MessageType = MessageType.AccessRequest,
+                MessageType = MessageType.EditAccessRequest,
                 Title = _appLocalization["Request to"] + " " + _appLocalization[action.ToString()]
             };
 
             notification.Level = NotificationLevel.Info;
         }
 
+        public void PackageRequest(IDirectoryEntryAdapter target, IActiveDirectoryField field, FieldAccessLevel accessRequested, IApplicationUserState? actor, out NotificationMessage notification)
+        {
+            if (accessRequested.Id == FieldAccessLevels.Deny.Id)
+            {
+                throw new ArgumentException("Access requested cannot be Deny", nameof(accessRequested));
+            }
+            notification = new NotificationMessage()
+            {
+                //FieldId = (field as ActiveDirectoryField)?.Id,
+                //CustomFieldId = (field as CustomActiveDirectoryField)?.Id,
+                CreatorId = actor?.Preferences.Id,
+                Level = NotificationLevel.Info,
+                TargetDN = target.DN,
+                MessageType = accessRequested.Id == FieldAccessLevels.Edit.Id ? MessageType.EditAccessRequest : accessRequested.Id == FieldAccessLevels.Read.Id ? MessageType.ReadAccessRequest : MessageType.Notification,
+                Title = _appLocalization["Request for"] + " " + _appLocalization[field.DisplayName]
+            };
+
+            notification.Level = NotificationLevel.Info;
+        }
+
+        private void HandleBlockedEmailSubscriptions(NotificationSubscription effectiveSubscription, NotificationSubscription subscription)
+        {
+            foreach (var type in subscription.NotificationTypes)
+            {
+                effectiveSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
+            }
+        }
+
+        private void HandleAllowedEmailSubscriptions(NotificationSubscription effectiveSubscription, NotificationSubscription subscription)
+        {
+            var newTypes = subscription.NotificationTypes
+                .Where(type => !effectiveSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType))
+                .Select(type => new SubscriptionNotificationType { NotificationType = type.NotificationType });
+
+            effectiveSubscription.NotificationTypes.AddRange(newTypes);
+        }
         public NotificationSubscription CalculateEffectiveEmailSubscriptions(AppUser user, IDirectoryEntryAdapter ou)
         {
             if (ou is not IADOrganizationalUnit)
+            {
                 ou = ou.GetParent();
-            if (ou is not IADOrganizationalUnit)
-                return default;
-            using var context = Context;
-            NotificationSubscription effectiveByEmailSubscription = new();
+            }
 
-            effectiveByEmailSubscription = new();
-            effectiveByEmailSubscription.OU = ou.DN;
-            effectiveByEmailSubscription.User = user;
-            effectiveByEmailSubscription.ByEmail = true;
+            if (ou is not IADOrganizationalUnit)
+            {
+                return default;
+            }
+
+            using var context = Context;
+            var effectiveByEmailSubscription = new NotificationSubscription
+            {
+                OU = ou.DN,
+                User = user,
+                ByEmail = true
+            };
+
             var userSubscriptions = context.NotificationSubscriptions
                 .Where(x => x.DeletedAt == null && x.UserId == user.Id && ou.DN.Contains(x.OU))
                 .OrderBy(x => x.OU)
                 .ToList();
+
             foreach (var sub in userSubscriptions)
             {
-
-                if (sub.Block && sub.ByEmail)
+                if (!sub.ByEmail)
                 {
-                    foreach (var type in sub.NotificationTypes)
-                    {
-                        effectiveByEmailSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
-                    }
+                    continue;
+                }
 
+                if (sub.Block)
+                {
+                    HandleBlockedEmailSubscriptions(effectiveByEmailSubscription, sub);
                 }
                 else
                 {
-
-                    if (sub.ByEmail)
-                    {
-                        effectiveByEmailSubscription.NotificationTypes.AddRange(from type in sub.NotificationTypes
-                                                                                where !effectiveByEmailSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType)
-                                                                                select new SubscriptionNotificationType() { NotificationType = type.NotificationType });
-                    }
-
-
+                    HandleAllowedEmailSubscriptions(effectiveByEmailSubscription, sub);
                 }
-
             }
             return effectiveByEmailSubscription;
         }
@@ -410,15 +458,23 @@ namespace BLAZAM.Services.Background
         public NotificationSubscription CalculateEffectiveInAppSubscriptions(AppUser user, IDirectoryEntryAdapter ou)
         {
             if (ou is not IADOrganizationalUnit)
+            {
                 ou = ou.GetParent();
+            }
+
             if (ou is not IADOrganizationalUnit)
+            {
                 return default;
+            }
+
             using var context = Context;
             NotificationSubscription effectiveInAppSubscription = new();
-            effectiveInAppSubscription = new();
-            effectiveInAppSubscription.OU = ou.DN;
-            effectiveInAppSubscription.User = user;
-            effectiveInAppSubscription.InApp = true;
+            effectiveInAppSubscription = new()
+            {
+                OU = ou.DN,
+                User = user,
+                InApp = true
+            };
 
             var userSubscriptions = context.NotificationSubscriptions
                 .Where(x => x.DeletedAt == null && x.UserId == user.Id && ou.DN.Contains(x.OU))

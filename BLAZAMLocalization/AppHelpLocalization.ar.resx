@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>تستخدم {0} من التعيينات مستوى الوصول هذا وسيتم حذفها</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>والاسم الأخير يجب تقديم كل من الاسم الأول </value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>لتعديل اسم المستخدم، انقر فوق زر إعادة التسمية في شريط الأدوات/قائمة الإعدادات</value>
   </data>
@@ -222,6 +225,9 @@
   <data name="No_Request_Actions_Available" xml:space="preserve">
     <value>لا توجد إجراءات متاحة لطلبها لهذا الإدخال.</value>
   </data>
+  <data name="No_Request_Fields_Available" xml:space="preserve">
+    <value />
+  </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>إنشاء رمز مصادقة جديد سيؤدي إلى إبطال الرمز الحالي!</value>
   </data>
@@ -232,6 +238,9 @@
     <value>قام مسؤول بإعادة تسمية محطة العمل هذه. سيتم إعادة تشغيلها خلال {0} ثانية.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
+    <value>طلب إلى {0}</value>
+  </data>
+  <data name="Request_For" xml:space="preserve">
     <value>طلب إلى {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
@@ -248,6 +257,9 @@
   </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>لقد حدث خطأ غير متوقع.</value>
+  </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>لديك تغييرات غير محفوظة</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
     <value>فرع الإصدار هو الفرع الموصى به. يوصى باختيار (Nightly) فقط للتثبيتات التجريبية. وفرع (Dev) مخصص للمطورين فقط.</value>
@@ -268,5 +280,15 @@
   <data name="Update_Credential_Is_Invalid" xml:space="preserve">
     <value>لا توجد بيانات اعتماد مكونة مع إذن الكتابة إلى دليل التطبيق!
 حاول تكوين بيانات اعتماد تحديث مخصصة.</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

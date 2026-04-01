@@ -112,17 +112,18 @@ else
     [Parameter]
     public int PageSize { get; set; } = 25;
 
-    List<IGroupableDirectoryAdapter> Members{ get; set; }
+    IEnumerable<IGroupableDirectoryAdapter> Members{ get; set; }
 
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _=Task.Run(() =>
+        _=Task.Run(async() =>
         {
+            LoadingData = true;
             if (IncludeNested)
             {
-                Members = Group.NestedMembers.ToList();
+                Members = await Group.GetNestedMembersAsync();
             }
             else
             {
@@ -130,10 +131,9 @@ else
                 Members = Group.Members;
             }
             LoadingData = false;
-            InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
 
         });
-        await InvokeAsync(StateHasChanged);
 
     }
 
@@ -141,12 +141,12 @@ else
     public async Task Open()
     {
        IsOpen = true;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
       public async void Close()
     {
        IsOpen = false;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
 }

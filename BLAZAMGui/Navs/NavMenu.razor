@@ -32,8 +32,11 @@
                 Icon="@Icons.Material.Filled.Dashboard">
         @AppLocalization[Lang.Home]
     </MudNavLink>
-    <NavBrowseButton SelectedEntryChanged=@((entry) => { SelectedEntryChanged.InvokeAsync(entry); })
-                     BrowseExpandedChanged=@((value)=>{BrowseExpandedChanged.InvokeAsync(value);}) />
+    @if (CurrentUser.State != null && CurrentUser.State?.IsSelfEditOnly == false)
+    {
+        <NavBrowseButton SelectedEntryChanged=@((entry) => { SelectedEntryChanged.InvokeAsync(entry); })
+                         BrowseExpandedChanged=@((value) => { BrowseExpandedChanged.InvokeAsync(value); }) />
+    }
     <AuthorizeView Context="createContext" Roles=@createRole>
         <MudNavGroup Icon="@Icons.Material.Filled.Create"
                      Title="@AppLocalization[Lang.Create]"
@@ -110,6 +113,7 @@
 
                 </MudNavLink>
             }
+            <PluginComponents Page="@PageType.ConfigureMenu" Location="@PageLocation.MenuItem" />
         </MudNavGroup>
 
         <MudNavLink Href="/audit"
@@ -117,6 +121,7 @@
             @AppLocalization[Lang.Audit]
 
         </MudNavLink>
+        <PluginComponents Page="@PageType.MainMenu" Location="@PageLocation.MenuItem" />
     </AuthorizeView>
 
 
@@ -143,8 +148,8 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
-        await InvokeAsync(StateHasChanged);
+        Monitor.OnDirectoryConnectionChanged += ((state) => { _=StateHasChangedAsync(); });
+        await StateHasChangedAsync();
 
 
     }

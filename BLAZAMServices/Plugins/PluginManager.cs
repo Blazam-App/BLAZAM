@@ -66,11 +66,11 @@ namespace BLAZAM.Services.Plugins
         /// <summary>
         /// A set of page types that represent specific directory entry types.
         /// </summary>
-        private static readonly HashSet<PageType> IndividualEntryTypes = new HashSet<PageType>
-        {
+        private static readonly HashSet<PageType> IndividualEntryTypes =
+        [
             PageType.User, PageType.Computer, PageType.Contact,
             PageType.Printer, PageType.OU, PageType.Group
-        };
+        ];
 
         /// <summary>
         /// Determines if a page type represents a single kind of directory entry (e.g., User, Computer).

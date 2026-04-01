@@ -4,7 +4,8 @@ namespace BLAZAM.Database.Models
 {
     public interface IActiveDirectoryField
     {
-        public int Id { get; set; }
+        DateTime? DeletedAt { get; set; }
+        int Id { get; set; }
         /// <summary>
         /// The display name for this field in the application
         /// </summary>
@@ -36,6 +37,7 @@ namespace BLAZAM.Database.Models
         /// <param name="objectType">The Active Directory object type</param>
         /// <returns>True if this field should apply, otherwise false</returns>
         bool IsFieldAppropriateForObject(ActiveDirectoryObjectType objectType);
+
 
         /// <summary>
         /// 

@@ -30,11 +30,11 @@
 
 
         <SettingsField Label="@AppLocalization[Lang.MFA_Type]">
-            <MudRadioGroup Value="settings.MFAType" ValueChanged="@((MFAType type)=>{MFATypeChanged(type);})">
-                <MudRadio Value="MFAType.CiscoDuo">
+            <MudRadioGroup Value="settings.MFAType" ValueChanged="@((MfaType type)=>{MFATypeChanged(type);})">
+                <MudRadio Value="MfaType.CiscoDuo">
                     @AppLocalization[Lang.Cisco_Duo]
                 </MudRadio>
-                <MudRadio Value="MFAType.GoogleAuthenticator">
+                <MudRadio Value="MfaType.GoogleAuthenticator">
                     @AppLocalization[Lang.Google_Authenticator]
                 </MudRadio>
 
@@ -42,7 +42,7 @@
 
 
         </SettingsField>
-        @if (settings.MFAType == MFAType.CiscoDuo)
+        @if (settings.MFAType == MfaType.CiscoDuo)
         {
             <SettingsField Label="@AppLocalization[Lang.Duo_Security_MFA]">
 
@@ -60,9 +60,9 @@
             <SettingsField Label="@AppLocalization[Lang.Duo_Unreachable_Behavior]">
 
                 <MudSwitch Label=@AppLocalization[settings.DuoUnreachableBehavior.ToString()]
-                           T="DuoUnreachableBehavior"
-                           Converter=@(new BehaviorConverter())
-                           @bind-Value="@settings.DuoUnreachableBehavior"
+                           T="bool"
+                           Value="@(settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Bypass)"
+                           ValueChanged="OnDuoUnreachableBehaviorChanged"
                            UncheckedColor="Color.Error"
                            Color="Color.Success"
                            Disabled=@(duoHealthCheckResult!=true) />
@@ -85,17 +85,19 @@
             </SettingsField>
 
         }
+        else
+        {
+            <SettingsField Label="@AppLocalization[Lang.Force_MFA]">
 
+                <MudSwitch Label=@AppLocalization[Lang.Force_MFA]
+                           T="bool" @bind-Value="@settings.RequireMFA"
+                           UncheckedColor="Color.Error"
+                           Color="Color.Success" />
 
-        <SettingsField Label="@AppLocalization[Lang.Force_MFA]">
+            </SettingsField>
+        }
 
-            <MudSwitch Label=@AppLocalization[Lang.Force_MFA]
-                       T="bool" @bind-Value="@settings.RequireMFA"
-                       Disabled="settings.MFAType==MFAType.CiscoDuo && duoHealthCheckResult!=true"
-                       UncheckedColor="Color.Error"
-                       Color="Color.Success" />
-
-        </SettingsField>
+      
         <SettingsField>
 
             <MudButton Disabled="SaveDisabled"
@@ -110,11 +112,11 @@
 
 </MudForm>
 @code {
-#nullable disable warnings
-    AuthenticationSettings settings = new AuthenticationSettings();
-    string newAdminPassword;
-    string adminPasswordInDb;
-    bool? duoHealthCheckResult = null;
+
+        AuthenticationSettings settings = new AuthenticationSettings();
+        string newAdminPassword;
+        string adminPasswordInDb;
+        bool? duoHealthCheckResult = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -122,7 +124,6 @@
         _ = Task.Run(async () =>
         {
             LoadingData = true;
-            await InvokeAsync(StateHasChanged);
 
             originalSettings = await Context.AuthenticationSettings.AsNoTracking().FirstOrDefaultAsync();
 
@@ -131,18 +132,17 @@
             //Pull encrypted admin pass and store encrypted value
             adminPasswordInDb = settings?.AdminPassword;
             newAdminPassword = adminPasswordInDb;
-            LoadingData = false;
-            await InvokeAsync(StateHasChanged);
             await DoDuoHealthCheck();
+            LoadingData = false;
 
         });
 
 
     }
-    private void MFATypeChanged(MFAType type)
+    private void MFATypeChanged(MfaType type)
     {
         settings.MFAType = type;
-        if (type == MFAType.CiscoDuo && !settings.DuoSettingsValid)
+        if (type == MfaType.CiscoDuo && !settings.DuoSettingsValid)
         {
             settings.RequireMFA = false;
         }
@@ -150,7 +150,7 @@
     private async Task DoDuoHealthCheck()
     {
         duoHealthCheckResult = null;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
         try
         {
             duoHealthCheckResult = await Duo.DoHealthCheckAsync();
@@ -159,7 +159,7 @@
         {
 
         }
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
     protected override async Task Save()
@@ -168,7 +168,7 @@
         if (!newAdminPassword.Equals(adminPasswordInDb) || decryptedPass.Equals(adminPasswordInDb))
         {
 
-            settings.AdminPassword = newAdminPassword.Encrypt();
+            settings.AdminPassword = await newAdminPassword.EncryptAsync();
 
             adminPasswordInDb = settings.AdminPassword;
 
@@ -176,49 +176,13 @@
 
         await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
         await base.Save();
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
-
-    public class BehaviorConverter : BoolConverter<DuoUnreachableBehavior>
+    private void OnDuoUnreachableBehaviorChanged(bool value)
     {
-
-        public BehaviorConverter()
-        {
-            SetFunc = OnSet;
-            GetFunc = OnGet;
-        }
-
-        private DuoUnreachableBehavior OnGet(bool? value)
-        {
-            try
-            {
-                return (value == true) ? DuoUnreachableBehavior.Bypass : DuoUnreachableBehavior.Block;
-            }
-            catch (Exception e)
-            {
-                UpdateGetError("Conversion error: " + e.Message);
-                return default;
-            }
-        }
-
-        private bool? OnSet(DuoUnreachableBehavior arg)
-        {
-
-            try
-            {
-                return (int)arg == 1;
-
-            }
-            catch (FormatException e)
-            {
-                UpdateSetError("Conversion error: " + e.Message);
-                return null;
-            }
-        }
-
+        settings.DuoUnreachableBehavior = value
+            ? DuoUnreachableBehavior.Bypass
+            : DuoUnreachableBehavior.Block;
     }
-    private bool? DuoUnreachableBehaviorConverter(DuoUnreachableBehavior val)
-    {
-        return (int)val == 1;
-    }
+   
 }

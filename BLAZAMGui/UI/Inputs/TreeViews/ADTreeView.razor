@@ -4,25 +4,24 @@
 
 <MudTreeView T="IDirectoryEntryAdapter"
              ServerData="GetChildrenAsync"
-             Items="GuiOU"
+             Items="RootOU"
              Dense="true"
              Hover="true"
              Color="Color.Success"
              @bind-SelectedValue="SelectedEntry">
-     <ItemTemplate>
+    <ItemTemplate>
         <MudTreeViewItem Value="@context.Value"
-                         Items=@GetItems(context.Value)
-                         LoadingIconColor="Color.Info"
+                         @bind-Items="context.Children"
                          @bind-Expanded="@context.Expanded"
-                         @bind-Selected=context.Selected
+                         CanExpand=@(context.Value is IADOrganizationalUnit)
+                         LoadingIconColor="Color.Info"
+                         Selected="@(context.Value?.Equals(SelectedEntry) == true)"
                          Text="@context.Value?.CanonicalName"
                          Icon="@context.Value?.TypeIcon()"
-                         IconColor=@GetItemColor(context.Value)
+                         IconColor="@GetItemColor(context.Value)"
                          Class="minw-max w-100 overflow-x-auto"
-                         CanExpand=@(context.Value is IADOrganizationalUnit)
                          EndText="@EndText?.Invoke(context.Value)"
                          Context="itemContext">
-
         </MudTreeViewItem>
     </ItemTemplate>
 
@@ -33,7 +32,6 @@
     <MudProgressLinear Style="min-width:200px;" Color="Color.Secondary" Indeterminate="true" />
 
 }
-
 
 
 

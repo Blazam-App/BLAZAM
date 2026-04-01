@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Database.Models.Notifications;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Database.Models.User
 {
@@ -11,18 +12,20 @@ namespace BLAZAM.Database.Models.User
         public bool SearchDisabledUsers { get; set; }
         public bool SearchDisabledComputers { get; set; }
         public string? Username { get; set; }
-        public List<UserNotification> Notifications { get; set; } = new();
-        public List<ReadNewsItem> ReadNewsItems { get; set; } = new();
-        public List<UserFavoriteEntry> FavoriteEntries { get; set; } = new();
+        public List<UserNotification> Notifications { get; set; } = [];
+        public List<ReadNewsItem> ReadNewsItems { get; set; } = [];
+        public List<UserFavoriteEntry> FavoriteEntries { get; set; } = [];
 
-        public List<UserDashboardWidget> DashboardWidgets { get; set; } = new();
-        public List<NotificationSubscription> NotificationSubscriptions { get; set; } = new();
+        public UserPasswordResetSettings PasswordResetSettings { get; set; } = new();
+        public List<UserDashboardWidget> DashboardWidgets { get; set; } = [];
+        public List<NotificationSubscription> NotificationSubscriptions { get; set; } = [];
         public byte[]? ProfilePicture { get; set; }
         public string? Email { get; set; }
         /// <summary>
         /// The authenticator secret for this user in encrypted form
         /// </summary>
         public string? AuthenticatorSecret { get; set; }
+
         public override string? ToString()
         {
             return Username

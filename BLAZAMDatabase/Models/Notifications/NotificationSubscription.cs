@@ -6,7 +6,7 @@ namespace BLAZAM.Database.Models.Notifications
     {
         public int UserId { get; set; }
         public AppUser User { get; set; }
-        public List<SubscriptionNotificationType> NotificationTypes { get; set; } = new();
+        public List<SubscriptionNotificationType> NotificationTypes { get; set; } = [];
         public string OU { get; set; }
         public bool InApp { get; set; }
         public bool ByEmail { get; set; }

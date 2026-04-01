@@ -3,14 +3,18 @@
 using System.Diagnostics; // For checking if debugger is attached
 using System.Net; // For IP address handling
 using System.Security.Cryptography.X509Certificates; // For SSL certificate handling
+using BLAZAM.ActiveDirectory;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
-using BLAZAM.Server.Middleware;
+using BLAZAM.Middleware;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting.WindowsServices; // Required for running as a Windows Service
 using Serilog; // Logging library
+using System.Diagnostics; // For checking if debugger is attached
+using System.Net; // For IP address handling
+using System.Security.Cryptography.X509Certificates; // For SSL certificate handling
 
 namespace BLAZAM
 {
@@ -28,7 +32,7 @@ namespace BLAZAM
         /// <returns>
         /// A SystemDirectory object representing the path, e.g., C:\inetpub\blazam\writable\
         /// </returns>
-        internal static SystemDirectory WritablePath => new(ApplicationInfo.tempDirectory + @"writable\");
+        internal static SystemDirectory WritablePath => new(ApplicationInfo.tempDirectory + $"writable{Path.DirectorySeparatorChar}");
 
 
         /// <summary>
@@ -65,7 +69,9 @@ namespace BLAZAM
 
             // Ensure the configuration (e.g., appsettings.json) was loaded successfully.
             if (builder.Configuration is null)
+            {
                 throw new AppException("The appsettings.json configuration file was not loaded");
+            }
 
             // Initialize custom application properties (likely from ApplicationInfo class).
             builder.IntializeProperties(); // Note: Typo in original method name 'IntializeProperties'
@@ -91,12 +97,12 @@ namespace BLAZAM
             }
 
             // Setup local file logging and Seq logging using Serilog.
-            Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
+            Loggers.SetupLoggers(WritablePath + $"logs{Path.DirectorySeparatorChar}", ApplicationInfo.runningVersion.ToString());
             // Integrate Serilog with the ASP.NET Core host logging.
             builder.Host.UseSerilog(Log.Logger);
 
             // Log the application start event with the process name.
-            Log.Warning("Application Starting {@ProcessName}", ApplicationInfo.runningProcess.ProcessName);
+            Loggers.SystemLogger.Warning("Application Starting {@ProcessName}", ApplicationInfo.runningProcess.ProcessName);
 
             // Register application services with the dependency injection container.
             builder.InjectServices();
@@ -118,7 +124,7 @@ namespace BLAZAM
             AppInstance.PreRun();
 
             // Re-setup loggers - perhaps needed if PreRun modified paths or settings?
-            Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
+            Loggers.SetupLoggers(WritablePath + $"logs{Path.DirectorySeparatorChar}", ApplicationInfo.runningVersion.ToString());
 
             // Enable Serilog request logging to log details about incoming HTTP requests.
             AppInstance.UseSerilogRequestLogging(configureOptions => configureOptions.Logger = Loggers.RequestLogger);
@@ -143,10 +149,18 @@ namespace BLAZAM
                 AppInstance.Environment.EnvironmentName = "Development"; // Explicitly set environment name if needed
                 AppInstance.UseDeveloperExceptionPage();
             }
+            // Get the PathBase from the configuration
+            var pathBase = AppInstance.Configuration.GetValue<string>("PathBase");
+
+            // If a PathBase is configured, apply it to the request pipeline
+            if (!string.IsNullOrEmpty(pathBase))
+            {
+                // Log the PathBase being used for debugging and operational visibility
+                Log.Information("Using PathBase: {PathBase}", pathBase);
+                AppInstance.UsePathBase(pathBase);
+            }
             // Use response compression middleware
             AppInstance.UseResponseCompression();
-            // Custom middleware to manage user state.
-            AppInstance.UseMiddleware<UserStateMiddleware>();
             // Redirect HTTP requests to HTTPS.
             AppInstance.UseMiddleware<HttpsRedirectionMiddleware>();
             // Custom middleware to redirect based on application status (e.g., maintenance mode).
@@ -188,8 +202,10 @@ namespace BLAZAM
             // Block the main thread until the application is shut down (e.g., Ctrl+C or service stop).
             AppInstance.WaitForShutdown();
 
+
+
             // Log application shutdown event.
-            Log.Information("Application Shutting Down");
+            Loggers.SystemLogger.Information("Application Shutting Down");
         }
 
         /// <summary>
@@ -293,7 +309,10 @@ namespace BLAZAM
             Loggers.SystemLogger.Information("Kestrel listening for HTTP on {Address}:{Port}", ipAddress, httpPort);
 
             // Stop if no HTTPS port is defined.
-            if (httpsPort <= 0) return;
+            if (httpsPort <= 0)
+            {
+                return;
+            }
 
             // Configure HTTPS endpoint if the certificate is valid.
             if (cert?.HasPrivateKey == true)

@@ -132,8 +132,8 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await InvokeAsync(StateHasChanged);
-        ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+        await StateHasChangedAsync();
+        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
                 Entry = Printer,

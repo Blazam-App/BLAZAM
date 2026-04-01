@@ -6,7 +6,11 @@
     {
 
 
-            <MudTextField AutoFocus=true Label="@AppLocalization[Lang.Name]" @bind-Value="@OU.CanonicalName" />
+            <MudTextField AutoFocus=true 
+                Label="@AppLocalization[Lang.Name]"
+                      Value="@OU.CanonicalName"
+                      Required=true
+                      ValueChanged="((string val) => { OU.CanonicalName = val.AppTrim(); })" />
 
             
         
@@ -22,7 +26,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
         Modal.SetOnYes(SaveChanges);
         Modal.SetYesText(AppLocalization[Lang.Save_Changes]);
         Modal.Title = AppLocalization[Lang.Rename_OU];

@@ -1,9 +1,8 @@
-using BLAZAM.Database.Models;
 using BLAZAM.Gui.UI.Settings;
 
 namespace BLAZAM.Gui.UI
 {
-    public partial class DirectoryModelComponent : ValidatedForm
+    public abstract class DirectoryModelComponent : ValidatedForm
     {
         protected bool EditMode = false;
 
@@ -16,7 +15,11 @@ namespace BLAZAM.Gui.UI
         {
             get => _group; set
             {
-                if (_group == value) return;
+                if (_group == value)
+                {
+                    return;
+                }
+
                 _group = value;
 
             }
@@ -29,7 +32,11 @@ namespace BLAZAM.Gui.UI
         {
             get => _groups; set
             {
-                if (_groups == value) return;
+                if (_groups == value)
+                {
+                    return;
+                }
+
                 _groups = value;
                 if (_groups != null)
                 {
@@ -38,7 +45,7 @@ namespace BLAZAM.Gui.UI
                 }
             }
         }
-        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = new List<CustomActiveDirectoryField>();
+        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = [];
         [Parameter]
         public IADUser User
         {
@@ -64,7 +71,11 @@ namespace BLAZAM.Gui.UI
         {
             get => _entry; set
             {
-                if (_entry == value) return;
+                if (_entry == value)
+                {
+                    return;
+                }
+
                 _entry = value;
                 EntryChanged.InvokeAsync(_entry);
                 if (User != null)
@@ -76,7 +87,7 @@ namespace BLAZAM.Gui.UI
         }
         [Parameter]
         public EventCallback<IDirectoryEntryAdapter> EntryChanged { get; set; }
-        protected List<IADGroup> memberOfGroups = new();
+        protected List<IADGroup> memberOfGroups = [];
 
         [Parameter]
         public IADOrganizationalUnit OU { get; set; }
@@ -95,24 +106,54 @@ namespace BLAZAM.Gui.UI
                 LoadingData = false;
 
             }
-            if (Group != null)
-                Group.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
             if (Entry != null)
-                Entry.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
+            {
+                Entry.OnModelChanged.Delegate += InvokeStateHasChanged;
+            }
+            else if (Computer != null)
+            {
+                Computer.OnModelChanged.Delegate += InvokeStateHasChanged;
+            }
+            else if (OU != null)
+            {
+                OU.OnModelChanged.Delegate += InvokeStateHasChanged;
+            }
+            else if (Group != null)
+            {
+                Group.OnModelChanged.Delegate += InvokeStateHasChanged;
+            }
 
-            if (Computer != null)
-                Computer.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
-
-            if (OU != null)
-                OU.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
             if (Context != null)
+            {
                 CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
-            await InvokeAsync(StateHasChanged);
+            }
+            await StateHasChangedAsync();
 
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            if (Entry != null)
+            {
+                Entry.OnModelChanged.Delegate -= InvokeStateHasChanged;
+            }
+            else if (Computer != null)
+            {
+                Computer.OnModelChanged.Delegate -= InvokeStateHasChanged;
+            }
+            else if (OU != null)
+            {
+                OU.OnModelChanged.Delegate -= InvokeStateHasChanged;
+            }
+            else if (Group != null)
+            {
+                Group.OnModelChanged.Delegate -= InvokeStateHasChanged;
+            }
+        }
 
 
         protected async Task RefreshUserGroups()
@@ -122,8 +163,9 @@ namespace BLAZAM.Gui.UI
             await Task.Run(() =>
             {
                 if (GroupableEntry != null)
+                {
                     memberOfGroups = GroupableEntry.MemberOf;
-
+                }
             });
 
             LoadingData = false;
@@ -145,7 +187,9 @@ namespace BLAZAM.Gui.UI
             await Task.Run(() =>
             {
                 if (Group != null)
+                {
                     memberOfGroups = Group.MemberOf;
+                }
             });
 
             LoadingData = false;
@@ -159,7 +203,9 @@ namespace BLAZAM.Gui.UI
             await Task.Run(() =>
             {
                 if (Computer != null)
+                {
                     memberOfGroups = Computer.MemberOf;
+                }
             });
 
             LoadingData = false;

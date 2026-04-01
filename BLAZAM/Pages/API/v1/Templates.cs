@@ -1,8 +1,6 @@
-﻿using System.Security;
-using System.Text.Json;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Templates;
-using BLAZAM.EmailMessage.Email.Notifications;
+using BLAZAM.EmailMessage.Email.Messages;
 using BLAZAM.Gui.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
@@ -10,10 +8,13 @@ using BLAZAM.Pages.API.Data;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
+using System.Security;
+using System.Text.Json;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -21,36 +22,27 @@ namespace BLAZAM.Pages.API.v1
     /// Template API endpoints provide listing of templates
     /// and execution to create users.
     /// </summary>
-    [Route("api/v1/templates")]
-    public class Templates : ApiController
+    /// <remarks>
+    /// Constructs a new instance of the Templates API controller.
+    /// </remarks>
+    /// <param name="email"></param>
+    /// <param name="applicationUserStateService"></param>
+    /// <param name="localizer"></param>
+    /// <param name="audit"></param>
+    /// <param name="appDatabaseFactory"></param>
+    /// <param name="httpContextAccessor"></param>
+    /// <param name="adFactory"></param>
+    [Authorize(Roles = UserRoles.SuperAdmin)]
+    public class Templates(EmailService email,
+        IApplicationUserStateService applicationUserStateService,
+        IStringLocalizer<AppLocalization> localizer,
+        WebUserAuditLogger audit,
+        IUserDatabaseFactory appDatabaseFactory,
+        IHttpContextAccessor httpContextAccessor,
+        IActiveDirectoryContextFactory adFactory) : ApiControllerBase(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
     {
-        private readonly IStringLocalizer<AppLocalization> AppLocalization;
-        private readonly EmailService EmailService;
-
-        /// <summary>
-        /// Constructs a new instance of the Templates API controller.
-        /// </summary>
-        /// <param name="ouNotificationService"></param>
-        /// <param name="email"></param>
-        /// <param name="applicationUserStateService"></param>
-        /// <param name="localizer"></param>
-        /// <param name="audit"></param>
-        /// <param name="appDatabaseFactory"></param>
-        /// <param name="httpContextAccessor"></param>
-        /// <param name="adFactory"></param>
-        public Templates(NotificationGenerationService ouNotificationService,
-            EmailService email,
-            IApplicationUserStateService applicationUserStateService,
-            IStringLocalizer<AppLocalization> localizer,
-            WebUserAuditLogger audit,
-            IUserDatabaseFactory appDatabaseFactory,
-            IHttpContextAccessor httpContextAccessor,
-            IActiveDirectoryContextFactory adFactory)
-            : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
-        {
-            AppLocalization = localizer;
-            EmailService = email;
-        }
+        private readonly IStringLocalizer<AppLocalization> _appLocalization = localizer;
+        private readonly EmailService _emailService = email;
 
 
 
@@ -128,8 +120,11 @@ namespace BLAZAM.Pages.API.v1
                     return new BadRequestObjectResult("There was no OU provided by API call or template!");
                 }
                 //Generate IADUser
-                var newUser = template.GenerateTemplateUser(newUserName, Directory, customOU);
-
+                var newUser = await template.GenerateTemplateUserAsync(newUserName, Directory, customOU);
+                if (newUser == null)
+                {
+                    return new UnprocessableEntityObjectResult("Could not generate user from template");
+                }
                 //Override username if provided
                 if (!newUserDetails.Username.IsNullOrEmpty())
                 {
@@ -149,9 +144,10 @@ namespace BLAZAM.Pages.API.v1
                 AssignGroups(newUserDetails, newUser);
 
                 //Prepare commit job
-                Job createUserJob = new(AppLocalization[Lang.Create_User]);
-
-                createUserJob.StopOnFailedStep = true;
+                Job createUserJob = new(_appLocalization[Lang.Create_User])
+                {
+                    StopOnFailedStep = true
+                };
 
                 //Commmit
                 var result = await newUser.CommitChangesAsync(createUserJob);
@@ -181,7 +177,7 @@ namespace BLAZAM.Pages.API.v1
 
         private async Task AuditAndNotify(NewUserPayload newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
         {
-            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Create,
                 Entry = entry,
@@ -214,7 +210,11 @@ namespace BLAZAM.Pages.API.v1
                 foreach (var field in newUserDetails.Fields)
                 {
                     var json = field.FieldValue as JsonElement?;
-                    var kind = json?.ValueKind;
+                    if (json == null)
+                    {
+                        continue;
+                    }
+                    var kind = json.Value.ValueKind;
                     object? value = null;
                     switch (kind)
                     {
@@ -248,23 +248,32 @@ namespace BLAZAM.Pages.API.v1
             }
         }
 
-        private static bool ValidateInput(NewUserPayload newUserDetails, DirectoryTemplate? template)
+        private static void ValidateInput(NewUserPayload newUserDetails, DirectoryTemplate? template)
         {
             //Check if the request has the required fields for this template
+            if (newUserDetails.FirstName.AppTrim().IsNullOrEmpty())
+            {
+                throw new BadHttpRequestException("FirstName is required");
+            }
+            if (newUserDetails.LastName.AppTrim().IsNullOrEmpty())
+            {
+                throw new BadHttpRequestException("LastName is required");
+            }
             if (template?.HasRequiredFields() == true)
             {
                 var requiredFields = template.EffectiveFieldValues.Where(fv => fv.Required).ToList();
+                var providedFieldNames = newUserDetails.Fields?.Select(field => field.FieldName).ToList();
+
                 foreach (var field in requiredFields)
                 {
                     //If any are missing return an error with explanation
-                    if (!newUserDetails.Fields?.Any(f => f.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase)) == true)
+                    if (!providedFieldNames?.Any(f => f.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase)) == true)
                     {
                         throw new BadHttpRequestException(field.FieldName + " is a required field");
                     }
                 }
             }
 
-            return true;
         }
 
 
@@ -275,11 +284,10 @@ namespace BLAZAM.Pages.API.v1
         /// <response code="401">Unauthorized - The user is not authenticated.</response>
         /// <response code="403">Forbidden - The user does not have the required role.</response>
         [HttpGet]
-        [Route("list")]
-        public IActionResult List()
+        public async Task<IActionResult> Get()
         {
-            using var context = DbFactory.CreateDbContext();
-            var list = context.DirectoryTemplates.Where(t => t.DeletedAt == null && t.Visible).ToList();
+            using var context = await DbFactory.CreateDbContextAsync();
+            var list = await context.DirectoryTemplates.Where(t => t.DeletedAt == null && t.Visible).ToListAsync();
             return FormatData(list);
 
         }
@@ -288,11 +296,13 @@ namespace BLAZAM.Pages.API.v1
         {
             try
             {
-                NewUserWelcomeEmailMessage message = new();
-                message.Domain = user.Directory.ConnectionSettings?.FQDN;
-                message.Username = user.SAMAccountName;
-                message.Password = password;
-                await EmailService.SendMessage(AppLocalization["New Account Details"], message, to);
+                NewUserWelcomeEmailMessage message = new()
+                {
+                    Domain = user.Directory.ConnectionSettings?.FQDN,
+                    Username = user.SAMAccountName,
+                    Password = password
+                };
+                await _emailService.SendMessage(_appLocalization["New Account Details"], message, to);
 
             }
             catch (Exception ex)

@@ -1281,31 +1281,55 @@
   <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
     <value>Disabled users changed in the last 90 days</value>
   </data>
-  <data name="Entries_changed_in_the_last_24_hours" xml:space="preserve">
-    <value>Entries changed in the last 24 hours</value>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>Changed Entries</value>
   </data>
-  <data name="Passwords_changed_in_the_last_90_days" xml:space="preserve">
-    <value>Passwords changed in the last 90 days</value>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>Changed Passwords</value>
   </data>
-  <data name="Entries_deleted_in_the_last_14_days" xml:space="preserve">
-    <value>Entries deleted in the last 14 days</value>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>Deleted Entries</value>
   </data>
-  <data name="Computers_created_in_the_last_14_days" xml:space="preserve">
-    <value>Computers created in the last 14 days</value>
+  <data name="New_Computers" xml:space="preserve">
+    <value>New Computers</value>
   </data>
-  <data name="Contacts_created_in_the_last_14_days" xml:space="preserve">
-    <value>Contacts created in the last 14 days</value>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>New Contacts</value>
   </data>
-  <data name="Groups_created_in_the_last_14_days" xml:space="preserve">
-    <value>Groups created in the last 14 days</value>
+  <data name="New_Groups" xml:space="preserve">
+    <value>New Groups</value>
   </data>
-  <data name="OUs_created_in_the_last_14_days" xml:space="preserve">
-    <value>OU's created in the last 14 days</value>
+  <data name="New_OUs" xml:space="preserve">
+    <value>New OU's</value>
   </data>
-  <data name="Printers_created_in_the_last_14_days" xml:space="preserve">
-    <value>Printers created in the last 14 days</value>
+  <data name="New_Printers" xml:space="preserve">
+    <value>New Printers</value>
   </data>
-  <data name="Users_created_in_the_last_14_days" xml:space="preserve">
-    <value>Users created in the last 14 days</value>
+  <data name="New_Users" xml:space="preserve">
+    <value>New Users</value>
+  </data>
+  <data name="Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>Rule</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>Rules</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>Create Rule</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>Object Type</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>Trigger</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>After Action</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>Before Action</value>
   </data>
 </root>

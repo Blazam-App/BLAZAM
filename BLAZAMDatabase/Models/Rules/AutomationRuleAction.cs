@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Database.Models.Rules
+﻿using System.Text.Json.Serialization;
+
+namespace BLAZAM.Database.Models.Rules
 {
     public enum AutomationRuleActionType
     {
@@ -29,7 +31,8 @@
         /// <remarks>
         /// Although a list, the GUI currently restricts this to one item
         /// </remarks>
-        public List<AutomationRuleActionFieldValue> FieldValues { get; set; } = new();
+        [JsonIgnore]
+        public List<AutomationRuleActionFieldValue> FieldValues { get; set; } = [];
 
         /// <summary>
         /// Dynamic JSON data to hold data for actions other than field changes or direct group assignments
@@ -41,7 +44,7 @@
         /// <remarks>
         /// Although a list, the GUI currently restricts this to one item
         /// </remarks>
-        public List<AutomationRuleGroupSid> GroupSids { get; set; } = new();
+        public List<AutomationRuleGroupGuid> GroupGuids { get; set; } = new();
         public Guid ActionGuid { get; set; }
 
         public override bool Equals(object? obj)

@@ -51,8 +51,7 @@
             </TemplateColumn>
             <TemplateColumn Title=@AppLocalization[Lang.Remove_Member] Context="templateContext">
                 <CellTemplate Context="cellContext">
-                    <AppTooltip ShowOnClick=@(!Group.CanUnassign)
-                                ShowOnHover=@(!Group.CanUnassign)
+                    <AppTooltip ShowOnHover=@(!Group.CanUnassign)
                                 Text=@AppHelpLocalization[HelpLang.Lacks_Group_Member_Remove_Permission]>
                         <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
@@ -64,43 +63,16 @@
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
-    <MudText Align="Align.End">
-        @AppLocalization[Lang.Members]: @Members.Count
-    </MudText>
-    @if (Members.Any(m => m is IADGroup))
-    {
+    <MudGrid>
+        <MudItem xs="12" sm="6">
 
-        <MudText Align="Align.End">
-            @AppLocalization[Lang.Groups]: @Members.Count(m => m is IADGroup)
-        </MudText>
-    }
-    @if (Members.Any(m => m is IADUser))
-    {
+            <GroupDirectMemberCounts Members="Members" />
+        </MudItem>
+        <MudItem xs="12" sm="6">
 
-        <MudText Align="Align.End">
-            @AppLocalization[Lang.Users]: @Members.Count(m => m is IADUser)
-        </MudText>
-    }
-    @if (Members.Any(m => m is IADComputer))
-    {
-
-        <MudText Align="Align.End">
-            @AppLocalization[Lang.Computers]: @Members.Count(m => m is IADComputer)
-        </MudText>
-    }
-    @if (Members.Any(m => m is IADPrinter))
-    {
-
-        <MudText Align="Align.End">
-            @AppLocalization[Lang.Printers]: @Members.Count(m => m is IADPrinter)
-        </MudText>
-    }
-    if (Members.Count(m => !m.CanRead) > 0)
-    {
-        <MudAlert Class="mud-alert-filled-info">
-            @AppHelpLocalization[HelpLang.Lacks_Group_Member_Read_Permission]
-        </MudAlert>
-    }
+            <GroupNestedMemberCounts Group="Group" />
+        </MudItem>
+</MudGrid>
     @if (Group.CanAssign)
     {
 
@@ -108,6 +80,7 @@
                    StartIcon="@Icons.Material.Filled.GroupAdd"
                    OnClick="@(()=>{_=AssignMemberModal?.ShowAsync();})">@AppLocalization[Lang.Add_Member]</MudButton>
     }
+
     <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Add_Member] @ref=@AssignMemberModal>
         <AddMemberModalContent ModelChanged=@(() => { InvokeAsync(OnInitializedAsync); }) Group="Group" />
     </AppModal>

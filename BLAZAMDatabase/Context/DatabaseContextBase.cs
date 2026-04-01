@@ -1,5 +1,4 @@
-﻿using System.Data;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Database.Exceptions;
@@ -19,18 +18,14 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace BLAZAM.Database.Context
 {
     public class DatabaseContextBase : DbContext, IDatabaseContext
     {
         public Exception? LastSaveError { get; set; }
-        public override void Dispose()
-        {
-            ApplicationStatistics.RemoveDBContext();
 
-            base.Dispose();
-        }
 
 
 
@@ -109,7 +104,7 @@ namespace BLAZAM.Database.Context
         }
 
         //Data tables
-        public virtual DbSet<GenericSidList> LockedOutUsers { get; set; }
+        public virtual DbSet<LockedOutUser> LockedOutUsers { get; set; }
 
         //App Settings
         public virtual DbSet<AppSettings> AppSettings { get; set; }
@@ -125,7 +120,7 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<AutomationRuleActionFieldValue> AutomationRuleFieldValues { get; set; }
         public virtual DbSet<AutomationRuleOrFilter> AutomationRuleOrFilter { get; set; }
         public virtual DbSet<AutomationRuleAndFilter> AutomationRuleAndFilters { get; set; }
-        public virtual DbSet<AutomationRuleGroupSid> AutomationRuleGroupSids { get; set; }
+        public virtual DbSet<AutomationRuleGroupGuid> AutomationRuleGroupGuids { get; set; }
         public virtual DbSet<AutomationRuleAction> AutomationRuleActions { get; set; }
 
 
@@ -149,6 +144,7 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<RequestAuditLog> RequestAuditLog { get; set; }
         public virtual DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
         public virtual DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
+        public virtual DbSet<AutomationRuleAuditLog> AutomationRuleAuditLog { get; set; }
 
 
 
@@ -166,7 +162,9 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<PermissionDelegate> PermissionDelegate { get; set; }
         public virtual DbSet<PermissionMapping> PermissionMap { get; set; }
         public virtual DbSet<GlobalPermissionSettings> GlobalPermissionSettings { get; set; }
+        public virtual DbSet<GlobalAutomationRuleSettings> GlobalAutomationRuleSettings { get; set; }
         public virtual DbSet<GlobalPermissionRequestAction> GlobalPermissionRequestActions { get; set; }
+        public virtual DbSet<GlobalPermissionRequestField> GlobalPermissionRequestFields { get; set; }
 
         public virtual DbSet<ChatRoom> ChatRooms { get; set; }
         public virtual DbSet<ChatMessage> ChatMessages { get; set; }
@@ -197,8 +195,16 @@ namespace BLAZAM.Database.Context
 
         public bool EntityIsTracked<TEntry>(TEntry? entry)
         {
-            if (entry is null) return false;
-            if (EqualityComparer<TEntry>.Default.Equals(entry, default)) return false;
+            if (entry is null)
+            {
+                return false;
+            }
+
+            if (EqualityComparer<TEntry>.Default.Equals(entry, default))
+            {
+                return false;
+            }
+
             return base.Entry(entry).State != EntityState.Detached;
         }
 
@@ -214,14 +220,18 @@ namespace BLAZAM.Database.Context
         private ServiceConnectionState TestConnection()
         {
             if (ConnectionString == null)
+            {
                 return ServiceConnectionState.Down;
+            }
 
             try
             {
                 if (ConnectionString.FileBased)
+                {
                     return TestSqliteConnection();
+                }
 
-                if (!NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort))
+                if (!NetworkTools.IsPortOpen(ConnectionString.GetServerAddress(), ConnectionString.GetServerPort()))
                 {
                     DownReason = new("The database port is not open or is not reachable.");
                     Database.CloseConnection();
@@ -229,7 +239,10 @@ namespace BLAZAM.Database.Context
                 }
 
                 if (Database.CanConnect())
+                {
                     return ServiceConnectionState.Up;
+                }
+
             }
             catch (ObjectDisposedException ex)
             {
@@ -271,13 +284,16 @@ namespace BLAZAM.Database.Context
                 DownReason = new("The Sqlite database folder is not writable by the current server user.");
                 return ServiceConnectionState.Down;
             }
+
             if (ConnectionString.File.Exists)
+            {
                 return ServiceConnectionState.Up;
+            }
 
             return ServiceConnectionState.Down;
         }
 
-        private void HandleSqlException(SqlException ex)
+        private static void HandleSqlException(SqlException ex)
         {
             switch (ex.Number)
             {
@@ -308,10 +324,16 @@ namespace BLAZAM.Database.Context
 
             try
             {
-                if (AppliedMigrations.Count() > 0) return true;
+                if (AppliedMigrations.Any())
+                {
+                    return true;
+                }
 
                 if (AuthenticationSettings.FirstOrDefault() == null)
+                {
                     return false;
+                }
+
                 return true;
             }
             catch
@@ -333,7 +355,11 @@ namespace BLAZAM.Database.Context
         {
             get
             {
-                if (!IsSeeded()) return false;
+                if (!IsSeeded())
+                {
+                    return false;
+                }
+
                 var seedMismatch = false;
                 PendingMigrations.ForEach(am =>
                 {
@@ -368,23 +394,22 @@ namespace BLAZAM.Database.Context
                 var file = new SystemFile(fileName);
                 file.EnsureCreated();
                 // Write the data table to the CSV file
-                using (var writer = new StreamWriter(fileName))
-                {
-                    // Write the column names
-                    var columnNames = table.Columns.Cast<DataColumn>().Select(c => c.ColumnName);
-                    writer.WriteLine(string.Join(",", columnNames));
+                using var writer = new StreamWriter(fileName);
+                // Write the column names
+                var columnNames = table.Columns.Cast<DataColumn>().Select(c => c.ColumnName);
+                writer.WriteLine(string.Join(",", columnNames));
 
-                    // Write the rows
-                    foreach (DataRow row in table.Rows)
+                // Write the rows
+                foreach (DataRow row in table.Rows)
+                {
+                    var fields = row.ItemArray.Select(f => f?.ToString());
+                    List<string> lines = [];
+                    foreach (var field in fields)
                     {
-                        var fields = row.ItemArray.Select(f => f?.ToString());
-                        List<string> lines = new();
-                        foreach (var field in fields)
-                        {
-                            lines.Add('"' + field + '"');
-                        }
-                        writer.WriteLine(string.Join(",", lines));
+                        lines.Add('"' + field + '"');
                     }
+
+                    writer.WriteLine(string.Join(",", lines));
                 }
             }
         }
@@ -395,5 +420,16 @@ namespace BLAZAM.Database.Context
 
         }
 
+        public override void Dispose()
+        {
+            ApplicationStatistics.RemoveDBContext();
+            base.Dispose();
+        }
+
+        public override ValueTask DisposeAsync()
+        {
+            ApplicationStatistics.RemoveDBContext();
+            return base.DisposeAsync();
+        }
     }
 }

@@ -1,9 +1,12 @@
-﻿using System.Diagnostics;
+using BLAZAM.Global.Data;
+using BLAZAM.Global.Events;
+using System.Diagnostics;
 
 namespace BLAZAM.Common.Data
 {
     public static class ApplicationStatistics
     {
+        public static AppEvent<int> OnLdapCountChanged { get; }  = new ();
         public static Process Process { get; set; }
         public static int ADContextCount { get; private set; }
         public static void AddADContext()
@@ -13,9 +16,25 @@ namespace BLAZAM.Common.Data
         public static void RemoveADContext()
         {
             if (ADContextCount > 0)
+            {
                 ADContextCount--;
-
+            }
         }
+        public static int LdapConnectionCount => LdapConnections.Count;
+        private static readonly List<Guid> LdapConnections = new ();
+        public static void RemoveLdapConnection(Guid guid)
+        {
+            LdapConnections.Remove(guid);
+
+            OnLdapCountChanged.Invoke(LdapConnections.Count);
+        }
+        public static void AddLdapConnection(Guid guid)
+        {
+            LdapConnections.Add(guid);
+            OnLdapCountChanged.Invoke(LdapConnections.Count);
+        }
+
+      
 
 
         public static int DBContextCount { get; private set; }
@@ -26,8 +45,9 @@ namespace BLAZAM.Common.Data
         public static void RemoveDBContext()
         {
             if (DBContextCount > 0)
+            {
                 DBContextCount--;
-
+            }
         }
         public static RollingAverage MemoryUsage { get; private set; } = new(5);
         public static RollingAverage CPUUsage { get; private set; } = new(5);

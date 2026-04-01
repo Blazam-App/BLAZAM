@@ -69,10 +69,10 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Task.Run(() =>
+        Task.Run(async () =>
         {
             Printers = Computer.SharedPrinters;
-            InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         });
     }
 }

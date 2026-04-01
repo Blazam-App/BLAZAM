@@ -101,7 +101,7 @@ else
             sessionsErrorMessage = ex.Message;
         }
 
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
     public override void Dispose()
     {

@@ -537,6 +537,9 @@
   <data name="Last Logon" xml:space="preserve">
     <value>Letzte Anmeldung</value>
   </data>
+  <data name="LAPS_Password" xml:space="preserve">
+    <value>LAPS Passwort</value>
+  </data>
   <data name="Last Name" xml:space="preserve">
     <value>Nachname</value>
   </data>
@@ -1274,5 +1277,29 @@
   </data>
   <data name="Your session is about to expire" xml:space="preserve">
     <value>Ihre Sitzung läuft bald ab</value>
+  </data>
+  <data name="Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>Regel</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>Regeln</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>Regel erstellen</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>Objekttyp</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>Auslösen</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>Nach der Aktion</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>Vor der Aktion</value>
   </data>
 </root>

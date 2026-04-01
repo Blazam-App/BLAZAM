@@ -53,7 +53,23 @@
         /// <param name="step">The step to add.</param>
         void AddStep(IJobStep step);
 
+        /// <summary>
+        /// Run this job/step immediately
+        /// </summary>
+        /// <remarks>
+        /// Calling this overrides any schedule that may have been set
+        /// </remarks>
+        /// <returns></returns>
+        bool Run();
 
+        /// <summary>
+        /// Run this job/step immediately and asynchronously
+        /// </summary>
+        /// <remarks>
+        /// Calling this overrides any schedule that may have been set
+        /// </remarks>
+        /// <returns></returns>
+        Task<bool> RunAsync();
 
         /// <summary>
         /// Waits for the job to finish execution synchronously.

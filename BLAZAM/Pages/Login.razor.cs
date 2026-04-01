@@ -1,50 +1,84 @@
 // Import necessary namespaces for various functionalities
-using System.Security;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Global.Enums;
 using BLAZAM.Gui.UI.Modals;
 using BLAZAM.Gui.UI.Settings;
 using BLAZAM.Localization;
 using Microsoft.JSInterop;
-using Newtonsoft.Json;
+using System.Security;
 
 namespace BLAZAM.Pages
 {
+    /// <summary>
+    /// Represents the login functionality for the application, including user authentication, multi-factor
+    /// authentication (MFA), and handling of login results.
+    /// </summary>
+    /// <remarks>This class provides methods to validate user credentials, process authentication results, and
+    /// handle multi-factor authentication scenarios such as Google Authenticator. It also manages the application's
+    /// state during the login process, including redirecting users upon successful authentication.</remarks>
     public partial class Login : ValidatedForm
     {
-        GoogleAuthenticatorModal? googleAuthenticatorModal;
+        private GoogleAuthenticatorModal? googleAuthenticatorModal;
 
-        bool attemptingSignIn = false;
-        string redirectUrl;
-        bool DemoCustomLogin = false;
-        LoginRequest LoginRequest = new();
+        private bool attemptingSignIn = false;
+        private string redirectUrl;
+        private bool _demoCustomLogin = false;
+        private bool _passwordResetAvailable;
+        private LoginRequest LoginRequest = new();
 
+        private void SetPasswordResetAvailable()
+        {
+            _passwordResetAvailable = Context.PermissionDelegate.Any(d => d.AllowPasswordReset);
+        }
 
+        /// <summary>
+        /// Asynchronously initializes the component and sets up the necessary state and event handlers.
+        /// </summary>
+        /// <remarks>This method sets the redirect URL and callback base URI for the login request based
+        /// on the current navigation URI.  Additionally, it subscribes to the <see cref="ConnMonitor.OnAppReadyChanged"/>
+        /// event if the application is not in the  <see cref="ServiceConnectionState.Up"/> state.</remarks>
+        /// <returns></returns>
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
+            if (CurrentUser.State.IsAuthenticated)
+            {
+                Nav.NavigateTo("/home");
+            }
             redirectUrl = Nav.Uri;
             LoginRequest.ReturnUrl = Nav.Uri;
             var currentUri = new Uri(Nav.Uri);
             LoginRequest.CallbackBaseUri = currentUri.Scheme + "://" + currentUri.Authority;
             if (Monitor.AppReady != ServiceConnectionState.Up)
+            {
                 Monitor.OnAppReadyChanged += AppReadyChanged;
+            }
+            else
+            {
+                SetPasswordResetAvailable();
+            }
         }
 
 
-        async void AppReadyChanged(ServiceConnectionState state)
+        private async void AppReadyChanged(ServiceConnectionState state)
         {
             if (state == ServiceConnectionState.Up)
-                await InvokeAsync(StateHasChanged);
+            {
+                SetPasswordResetAvailable();
+
+                await StateHasChangedAsync();
+            }
 
 
         }
-        async Task AttemptSignIn(string? otpCode = null)
+        private async Task AttemptSignIn(string? otpCode = null)
         {
             attemptingSignIn = true;
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
             LoginRequest? authenticationResult = null;
             if (ValidateInput(LoginRequest))
+            {
                 try
                 {
                     if (!otpCode.IsNullOrEmpty())
@@ -52,39 +86,50 @@ namespace BLAZAM.Pages
                         LoginRequest.MFAToken = otpCode;
                     }
                     var response = await JSRuntime.InvokeAsync<string>("attemptSignIn", LoginRequest);
-                    authenticationResult = JsonConvert.DeserializeObject<LoginRequest>(response);
+                    authenticationResult = response.FromJson<LoginRequest>();
                 }
                 catch (Exception ex)
                 {
                     Loggers.SystemLogger.Error(ex, "Error attempting logon");
                     SnackBarService.Info(ex.Message);
                 }
+            }
 
             attemptingSignIn = false;
 
             await ProcessAuthenticationResult(authenticationResult);
 
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         }
-        bool ValidateInput(LoginRequest? validationResult)
+        private bool ValidateInput(LoginRequest? validationResult)
         {
             if (validationResult == null)
             {
                 validationResult = new();
             }
-            if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !DemoCustomLogin)) return true;
-
+            if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !_demoCustomLogin))
+            {
+                return true;
+            }
 
             if (LoginRequest.Password.IsNullOrEmpty())
+            {
                 validationResult.AuthenticationResult = LoginResultStatus.NoPassword;
+            }
+
             if (LoginRequest.Username.IsNullOrEmpty())
+            {
                 validationResult.AuthenticationResult = LoginResultStatus.NoUsername;
+            }
+
             return false;
         }
-        async Task ProcessAuthenticationResult(LoginRequest? authenticationResult = null)
+        private async Task ProcessAuthenticationResult(LoginRequest? authenticationResult = null)
         {
-            if (authenticationResult == null) return;
-
+            if (authenticationResult == null)
+            {
+                return;
+            }
 
             switch (authenticationResult.AuthenticationResult)
             {
@@ -121,21 +166,23 @@ namespace BLAZAM.Pages
                 case LoginResultStatus.DuoRequested:
                     attemptingSignIn = true;
                     if (authenticationResult.MFARedirect != null)
+                    {
                         Nav.NavigateTo(authenticationResult.MFARedirect);
+                    }
+
                     break;
                 case LoginResultStatus.GoogleAuthenticatorRequested:
-                    await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken.ToSecureString());
+                    await PerformGoogleAuthenticatorValidation(authenticationResult.MFAToken?.ToSecureString());
                     break;
                 case LoginResultStatus.OK:
                     attemptingSignIn = true;
-
                     Nav.NavigateTo(redirectUrl, true);
 
                     break;
             }
 
         }
-        async Task PerformGoogleAuthenticatorValidation(SecureString? mfaToken)
+        private async Task PerformGoogleAuthenticatorValidation(SecureString? mfaToken)
         {
             if (googleAuthenticatorModal != null)
             {

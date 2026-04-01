@@ -13,10 +13,12 @@ namespace BLAZAM.Database.Models
                 {
                     return Field;
                 }
+
                 if (CustomField != null)
                 {
                     return CustomField;
                 }
+
                 return null;
             }
             set
@@ -34,6 +36,7 @@ namespace BLAZAM.Database.Models
                     FieldId = field2.Id;
 
                 }
+
             }
         }
 
@@ -46,10 +49,12 @@ namespace BLAZAM.Database.Models
                 {
                     return FieldId;
                 }
+
                 if (CustomFieldId != null)
                 {
                     return CustomFieldId;
                 }
+
                 return null;
             }
 

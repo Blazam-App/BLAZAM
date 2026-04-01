@@ -41,8 +41,15 @@ body:
     id: blazam-version
     attributes:
       label: Blazam Version
-      description: "What version of Blazam are you running?"
-      placeholder: "e.g., 2.5.1"
+      description: |
+       **What version of Blazam are you running?**
+
+       To find your version:
+       - Click the **"Blazam"** branding text at the bottom of the side panel to open the About screen.
+       - The version number will be displayed there.
+       
+       ![Blazam Branding Location](https://raw.githubusercontent.com/Blazam-App/BLAZAM/refs/heads/v1-Dev/.github/img/versionHelp.png)
+      placeholder: "e.g., 1.4.7.2025.09.10.0026"
     validations:
       required: true
 

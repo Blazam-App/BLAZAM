@@ -4,11 +4,11 @@
     {
         <h3>@Title</h3>
     }
-    <MudBadge Icon="@Icons.Material.Filled.ShowChart" OnClick="@(() =>{ LineInterpolation = InterpolationOption.NaturalSpline;})" Overlap=true>
+    <MudBadge Icon="@Icons.Material.Filled.ShowChart" OnClick="@(() => { LineInterpolation = InterpolationOption.NaturalSpline; })" Overlap=true>
         <MudChart ChartType="ChartType.Line"
+                  T="double"
                   ChartSeries="@DataSeries"
-                  XAxisLabels="@Data.DistinctBy(ae=>ae.TimeStamp.ToLocalTime().ToShortTimeString()).Select(ae=>ae.TimeStamp.ToLocalTime().ToShortTimeString()).ToArray()"
-                   
+                  ChartLabels="@Data.DistinctBy(ae=>ae.TimeStamp.ToLocalTime().ToShortTimeString()).Select(ae=>ae.TimeStamp.ToLocalTime().ToShortTimeString()).ToArray()"
                   ChartOptions="@ChartOptions"
                   Height="250px"></MudChart>
     </MudBadge>
@@ -21,10 +21,10 @@
     protected override void PollData()
     {
         Data.Add(new()
-            {
-                TimeStamp = DateTime.Now,
-                Value = PollFunc.Invoke()
-            });
-        InvokeAsync(StateHasChanged);
+        {
+            TimeStamp = DateTime.Now,
+            Value = PollFunc.Invoke()
+        });
+        _ = StateHasChangedAsync();
     }
 }

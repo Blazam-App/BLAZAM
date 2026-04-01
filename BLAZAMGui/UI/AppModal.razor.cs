@@ -8,7 +8,6 @@ namespace BLAZAM.Gui.UI
 
     public partial class AppModal
     {
-#nullable disable warnings
         [Inject]
         protected AppSnackBarService NotificationService { get; set; }
         [Inject]
@@ -27,15 +26,17 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public bool AllowClose
         {
-            get => Options.CloseButton == true; set
+            get => Options?.CloseButton == true; set
             {
                 if (Options == null)
+                {
                     Options = new()
                     {
                         BackdropClick = value,
                         CloseButton = value,
                         CloseOnEscapeKey = value
                     };
+                }
 
                 RefreshView();
             }
@@ -124,7 +125,10 @@ namespace BLAZAM.Gui.UI
             set
             {
                 if (value == Modal.Visible)
+                {
                     return;
+                }
+
                 Modal.Visible = value;
                 IsShownChanged.InvokeAsync(value);
             }
@@ -132,6 +136,7 @@ namespace BLAZAM.Gui.UI
 
         [Parameter]
         public EventCallback<bool> IsShownChanged { get; set; }
+
         [Parameter]
         public MaxWidth? Width { get; set; }
 
@@ -192,12 +197,17 @@ namespace BLAZAM.Gui.UI
             IsShown = false;
 
         }
+
         private void YesClicked()
         {
             if (OnYes != null)
+            {
                 OnYes.Invoke();
+            }
             else
+            {
                 Close();
+            }
         }
 
     }

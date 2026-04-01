@@ -10,7 +10,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             WidgetType = DashboardWidgetType.StaleComputers;
         }
 
-        List<IADComputer> StaleComputers
+        private List<IADComputer> StaleComputers
         {
             get => CurrentUser.State.Cache.Get<List<IADComputer>>("StaleComputers");
             set => CurrentUser.State.Cache.Set("StaleComputers", value);
@@ -30,7 +30,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             LoadingData = false;
 
         }
-        void GoTo(DataGridRowClickEventArgs<IADComputer> args)
+        private void GoTo(DataGridRowClickEventArgs<IADComputer> args)
         {
             Nav.NavigateTo(args.Item.SearchUri);
         }

@@ -18,24 +18,22 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
 
 
-
-
-        protected override IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(IDirectoryEntryAdapter? parent)
+        protected override IReadOnlyCollection<ITreeItemData<IDirectoryEntryAdapter>> GetItems(ITreeItemData<IDirectoryEntryAdapter>? parent)
         {
             try
             {
-                if (parent.IsExpanded || parent.CachedChildren != null)
+                if (parent != null && (parent.Expanded == true || parent.Value?.CachedChildren != null))
                 {
-                    return GetChildren(parent).ToTreeItemData();
+                    parent.Children = GetChildren(parent.Value).ToTreeItemData();
+                    return parent.Children;
                 }
+
+                return [];
             }
             catch (Exception)
             {
-                return null;
-
+                return [];
             }
-            return null;
-
         }
         protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>> GetChildrenAsync(IDirectoryEntryAdapter parentNode)
         {
@@ -45,6 +43,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
             });
         }
+
         private Dictionary<IDirectoryEntryAdapter, IEnumerable<IDirectoryEntryAdapter>?> _childrenCache = new();
         protected IEnumerable<IDirectoryEntryAdapter> GetChildren(IDirectoryEntryAdapter parentNode)
         {

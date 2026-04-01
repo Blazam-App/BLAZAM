@@ -7,7 +7,7 @@ namespace BLAZAM.Gui.UI
         private AppModal? _requestAccessModal;
         private AppModal? _appEventModal;
         private bool _showRequestButton;
-        private IDirectoryEntryAdapter? _parentOU;
+
         [Parameter]
         public EventCallback OnDelete { get; set; }
 
@@ -62,9 +62,8 @@ namespace BLAZAM.Gui.UI
             await base.OnInitializedAsync();
             LoadingData = true;
 
-            _showRequestButton = (await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowAccessRequest == true
-            && await Context.GlobalPermissionRequestActions.CountAsync() > 0;
-            _parentOU = await DirectoryEntry.GetParentAsync();
+            _showRequestButton = ((await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowActionAccessRequest == true || (await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowFieldAccessRequest == true)
+            && (await Context.GlobalPermissionRequestActions.CountAsync() > 0 || await  Context.GlobalPermissionRequestFields.CountAsync()>0);
             LoadingData = false;
 
         }
@@ -78,7 +77,10 @@ namespace BLAZAM.Gui.UI
         {
             get
             {
-                if (DirectoryEntry.DN == null) return false;
+                if (DirectoryEntry.DN == null)
+                {
+                    return false;
+                }
 
                 UserFavoriteEntry newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
 
@@ -89,7 +91,10 @@ namespace BLAZAM.Gui.UI
         {
             try
             {
-                if (DirectoryEntry.DN == null) return;
+                if (DirectoryEntry.DN == null)
+                {
+                    return;
+                }
 
                 UserFavoriteEntry? newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
                 if (CurrentUser.State.Preferences.FavoriteEntries.Any(f => f.Equals(newFavorrite)))

@@ -1,13 +1,16 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+using BLAZAM.Helpers;
 using Newtonsoft.Json;
+using System.Security;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace BLAZAM.Common.Data
 {
     public class Encryption
     {
         private const string OldSalt = "BLAZAM_SALT";
-        public static Encryption Instance { get; set; }
+        private readonly object _cipherCacheLock=new();
+        public static Encryption Instance;
 
 
 
@@ -59,7 +62,11 @@ namespace BLAZAM.Common.Data
         {
             Instance = this;
 
-            if (keySeedString == null || keySeedString == "") return;
+            if (keySeedString == null || keySeedString == "")
+            {
+                return;
+            }
+
             KeySeedString = keySeedString;
             KeySize = keySize;
             GenerateApiKeyFromSeedString();
@@ -141,7 +148,7 @@ namespace BLAZAM.Common.Data
 
             using StreamReader streamReader = new(cryptoStream);
 
-            var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+            var decrypted = streamReader.ReadToEnd().FromJson<T>();
             return decrypted;
 
 
@@ -149,7 +156,7 @@ namespace BLAZAM.Common.Data
             throw new AppException("Unable to decrypt cipherText");
 
         }
-
+        private Dictionary<string, SecureString> _cipherCache = new();
         /// <summary>
         /// Decrypts cipher-text
         /// </summary>
@@ -160,7 +167,14 @@ namespace BLAZAM.Common.Data
         /// <exception cref="AppException"></exception>
         private T? DecryptSaltedObjectV2<T>(string? cipherText)
         {
-
+            lock (_cipherCacheLock)
+            {
+                if (_cipherCache.ContainsKey(cipherText))
+                {
+                    var decryptedCache = JsonConvert.DeserializeObject<T>(_cipherCache[cipherText].ToPlainText());
+                    return decryptedCache;
+                }
+            }
 
             var saltCipherArray = cipherText.Split(',');
             byte[] buffer = Convert.FromBase64String(saltCipherArray[1]);
@@ -179,8 +193,12 @@ namespace BLAZAM.Common.Data
             using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
 
             using StreamReader streamReader = new(cryptoStream);
-
-            var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+            var streamData = streamReader.ReadToEnd();
+            lock (_cipherCacheLock)
+            {
+                _cipherCache[cipherText] = streamData.ToSecureString();
+            }
+            var decrypted = JsonConvert.DeserializeObject<T>(streamData);
             return decrypted;
 
 
@@ -200,7 +218,11 @@ namespace BLAZAM.Common.Data
         public T? DecryptObject<T>(string? cipherText)
         {
 
-            if (cipherText == null) return default;
+            if (cipherText == null)
+            {
+                return default;
+            }
+
             try
             {
                 var newDecrypted = DecryptSaltedObjectV2<T>(cipherText);
@@ -243,7 +265,11 @@ namespace BLAZAM.Common.Data
 
         private T? DecryptOldUnsaltedObject<T>(string? cipherText)
         {
-            if (cipherText == null) return default;
+            if (cipherText == null)
+            {
+                return default;
+            }
+
             byte[] buffer = Convert.FromBase64String(cipherText);
 
             byte[] iv = buffer.Take(16).ToArray<byte>();
@@ -258,7 +284,7 @@ namespace BLAZAM.Common.Data
 
             using StreamReader streamReader = new(cryptoStream);
 
-            return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+            return streamReader.ReadToEnd().FromJson<T>();
 
 
 
@@ -296,38 +322,32 @@ namespace BLAZAM.Common.Data
             aes.Key = keyPackage.Key;
             aes.IV = iv;
             ICryptoTransform encryptor = aes.CreateEncryptor();
-            using (MemoryStream memoryStream = new())
+            using MemoryStream memoryStream = new();
+            using CryptoStream cryptoStream = new(
+                memoryStream,
+                encryptor,
+                CryptoStreamMode.Write);
+
+            byte[] data = Encoding.UTF8.GetBytes(obj.ToJson());
+            cryptoStream.Write(data, 0, data.Length);
+            cryptoStream.FlushFinalBlock();
+
+            encryptedBytes = memoryStream.ToArray();
+
+            var encryptedMessage = iv;
+
+
+            for (int i = 0; i < encryptedBytes.Length; i++)
             {
-                using (CryptoStream cryptoStream = new(
-                    memoryStream,
-                    encryptor,
-                    CryptoStreamMode.Write))
-                {
 
-                    var serialized = JsonConvert.SerializeObject(obj);
-                    byte[] data = Encoding.UTF8.GetBytes(serialized);
-                    cryptoStream.Write(data, 0, data.Length);
-                    cryptoStream.FlushFinalBlock();
-
-                    encryptedBytes = memoryStream.ToArray();
-
-                    var encryptedMessage = iv;
-
-
-                    for (int i = 0; i < encryptedBytes.Length; i++)
-                    {
-
-                        encryptedMessage = encryptedMessage.Append(encryptedBytes[i]).ToArray();
-                    }
-                    var cipherText = Convert.ToBase64String(encryptedMessage);
-                    cipherText = Convert.ToBase64String(keyPackage.Salt) + "," + cipherText;
-
-
-
-                    return cipherText;
-
-                }
+                encryptedMessage = encryptedMessage.Append(encryptedBytes[i]).ToArray();
             }
+            var cipherText = Convert.ToBase64String(encryptedMessage);
+            cipherText = Convert.ToBase64String(keyPackage.Salt) + "," + cipherText;
+
+
+
+            return cipherText;
         }
 
 

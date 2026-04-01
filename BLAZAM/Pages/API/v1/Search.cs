@@ -1,17 +1,24 @@
-﻿using System.Text.RegularExpressions;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.Pages.API.v1
 {
     /// <summary>
     /// Searches Active Directory.
     /// </summary>
-    [Produces("application/json")]
-    public partial class Search(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : ApiController(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="Search"/> class.
+    /// </remarks>
+    /// <param name="applicationUserStateService">A service that provides access to the current application user's state.</param>
+    /// <param name="audit">The logger used to record user activity for auditing purposes.</param>
+    /// <param name="appDatabaseFactory">A factory for creating instances of the user database.</param>
+    /// <param name="httpContextAccessor">Provides access to the current HTTP context.</param>
+    /// <param name="adFactory">A factory for creating Active Directory context instances.</param>
+    public partial class Search(IApplicationUserStateService applicationUserStateService, WebUserAuditLogger audit, IUserDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : ApiControllerBase(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
     {
 
 

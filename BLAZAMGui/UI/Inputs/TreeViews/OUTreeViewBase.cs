@@ -22,14 +22,18 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         /// Defaults to the App Base root
         /// </remarks>
         [Parameter]
-        public IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? RootOU { get; set; } = new List<TreeItemData<IDirectoryEntryAdapter>>();
-        protected IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GuiOU { get; set; } = new List<TreeItemData<IDirectoryEntryAdapter>>();
+        public IReadOnlyCollection<ITreeItemData<IDirectoryEntryAdapter>>? RootOU { get; set; } = [];
+
         [Parameter]
         public IADOrganizationalUnit? StartingSelectedOU
         {
             get => _startingSelectedNode; set
             {
-                if (value == _startingSelectedNode) return;
+                if (value == _startingSelectedNode)
+                {
+                    return;
+                }
+
                 _startingSelectedNode = value;
                 SelectedEntry = value;
 
@@ -50,14 +54,20 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         {
             get => _selectedEntry; set
             {
-                if (value == _selectedEntry) return;
+                if (value == _selectedEntry)
+                {
+                    return;
+                }
+
                 if (value != null)
                 {
                     var cache = _selectedEntry;
 
                     _selectedEntry = value;
-                    if (cache == null && RootOU?.Count > 0 && value == RootOU.First()) return;
-
+                    if (cache == null && RootOU?.Count > 0 && value == RootOU.First())
+                    {
+                        return;
+                    }
 
                     InvokeAsync(() => { SelectedEntryChanged.InvokeAsync(value); });
 
@@ -65,7 +75,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             }
 
         }
-        protected Color GetIconColor(TreeItemData<IDirectoryEntryAdapter> context)
+        protected Color GetIconColor(ITreeItemData<IDirectoryEntryAdapter> context)
         {
             return context.Selected == true ? Color.Primary : Color.Default;
         }
@@ -81,34 +91,51 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         {
             if (item is IAccountDirectoryAdapter account)
             {
-                if (account.Disabled) return Color.Error;
-                if (account.LockedOut) return Color.Warning;
-                if (account.Created > DateTime.Now.AddDays(-14)) return Color.Success;
+                if (account.Disabled)
+                {
+                    return Color.Error;
+                }
+
+                if (account.LockedOut)
+                {
+                    return Color.Warning;
+                }
+
+                if (account.Created > DateTime.Now.AddDays(-14))
+                {
+                    return Color.Success;
+                }
             }
             return Color.Default;
         }
 
-        public async Task RefreshViewAcync()
+        protected bool GetExpanded(ITreeItemData<IDirectoryEntryAdapter> item)
         {
-            await InvokeAsync(StateHasChanged);
+            if (item.Value.CachedChildren == null)
+            {
+                item.Children = GetChildren(item);
+            }
+            return item.Expanded;
         }
-
-        protected virtual IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(IDirectoryEntryAdapter? parent)
+        protected virtual IReadOnlyCollection<ITreeItemData<IDirectoryEntryAdapter>> GetItems(ITreeItemData<IDirectoryEntryAdapter>? parent)
         {
             try
             {
+                if (parent?.Expanded == true || parent?.Value?.CachedChildren != null)
+                {
+                    var items = parent?.Children
+                        .Where(c => c.Value.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c.Value))
+                        .Select(p => p.Value);
 
-                var items = parent?.Children
-                    .Where(c => c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c));
-
-
-                var treeBranchh = items?.ToTreeItemData();
-                return treeBranchh;
-
+                    var treeBranch = items?.ToTreeItemData();
+                    //OpenToSelected(treeBranch);
+                    return treeBranch ?? [];
+                }
+                return [];
             }
             catch (Exception)
             {
-                return new List<TreeItemData<IDirectoryEntryAdapter>>();
+                return [];
 
             }
 
@@ -117,19 +144,22 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         protected void InitializeTreeView()
         {
             LoadingData = true;
-            _ = InvokeAsync(StateHasChanged);
+            _ = StateHasChangedAsync();
             if (RootOU is null || RootOU.Count < 1)
             {
                 TopLevel = new ADOrganizationalUnit();
                 TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
                 _ = TopLevel.SubOUs;
                 var TopLevelList = new List<IDirectoryEntryAdapter>() { TopLevel };
+
                 RootOU = TopLevelList.ToTreeItemData();
+                RootOU.First().Expanded = true;
+                RootOU.First().Expandable = true;
             }
 
-            OpenToSelected();
+            OpenToSelected(RootOU);
 
-            GuiOU = new List<TreeItemData<IDirectoryEntryAdapter>>(RootOU);
+
 
             LoadingData = false;
         }
@@ -155,67 +185,73 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             });
         }
 
-        protected void OpenToSelected()
+        protected void OpenToSelected(IReadOnlyCollection<ITreeItemData<IDirectoryEntryAdapter>>? rootOU)
         {
-            RootOU.First().Children = GetChildren(RootOU.First());
-            if (StartRootExpanded && RootOU != null && RootOU.Count > 0)
+            if (rootOU == null || !rootOU.Any())
             {
-                RootOU.First().Expanded = true;
+                return;
+            }
 
-                if (SelectedEntry != null)
+            var root = rootOU.First();
+            root.Children = GetChildren(root);
+
+            if (!StartRootExpanded)
+            {
+                return;
+            }
+
+            root.Expanded = true;
+
+            if (SelectedEntry == null)
+            {
+                root.Selected = true;
+                SelectedEntry = root.Value;
+                return;
+            }
+
+            if (root.Value?.Equals(SelectedEntry) == true)
+            {
+                root.Selected = true;
+                return;
+            }
+            ITreeItemData<IDirectoryEntryAdapter>? currentNode = root;
+            while (currentNode != null)
+            {
+                currentNode.Children = GetChildren(currentNode);
+                var nextNode = currentNode.Children.FirstOrDefault(IsAncestorOfSelected);
+
+                if (nextNode != null)
                 {
-                    var firstThing = RootOU.First();
-                    if (firstThing is TreeItemData<IDirectoryEntryAdapter> openThis)
-                    {
-                        if (!SelectedEntry.Equals(RootOU.First().Value))
-                        {
-                            openThis.Expanded = true;
-                        }
-
-                        while (openThis != null)
-                        {
-
-                            openThis.Children = GetChildren(openThis);
-                            var child = openThis.Children.FirstOrDefault(
-                                c => SelectedEntry.DN?.Contains(c.Value.DN) == true
-                                                            && !SelectedEntry.DN.Equals(c.Value.DN)
-                                                            );
-                            if (child != null)
-                            {
-                                if (!SelectedEntry.Equals(RootOU.First().Value))
-                                {
-                                    child.Expanded = true;
-                                }
-                                openThis = child;
-                            }
-                            else
-                            {
-                                openThis.Children.ForEach(c =>
-                                {
-                                    if (c.Value is IADOrganizationalUnit ou)
-                                    {
-                                        c.Children = ou.SubOUs.ToTreeItemData();
-                                    }
-                                });
-
-                                var matchingOU = openThis.Children.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
-                                if (matchingOU != null)
-                                    matchingOU.Selected = true;
-                                break;
-                            }
-
-
-                        }
-                    }
+                    nextNode.Expanded = true;
+                    currentNode = nextNode;
                 }
                 else
                 {
-                    RootOU.First().Selected = true;
-                    SelectedEntry = RootOU.First().Value;
+                    SelectFinalNode(currentNode);
+                    break;
                 }
             }
+        }
+        private bool IsAncestorOfSelected(ITreeItemData<IDirectoryEntryAdapter> item)
+        {
+            return SelectedEntry?.DN?.Contains(item.Value.DN) == true && !SelectedEntry.DN.Equals(item.Value.DN);
+        }
 
+        private void SelectFinalNode(ITreeItemData<IDirectoryEntryAdapter> parent)
+        {
+            parent.Children?.ForEach(c =>
+            {
+                if (c.Value is IADOrganizationalUnit ou)
+                {
+                    c.Children = ou.SubOUs.ToTreeItemData();
+                }
+            });
 
+            var matchingOU = parent.Children?.FirstOrDefault(c => SelectedEntry.DN.Equals(c.Value.DN));
+            if (matchingOU != null)
+            {
+                matchingOU.Selected = true;
+            }
         }
         /// <summary>
         /// Defines a function to determine whether an Active Directory object should be
@@ -230,52 +266,53 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             if (entry is IADOrganizationalUnit ou)
             {
                 if (ou.CanRead)
+                {
                     return true;
+                }
+
                 if (AdditionalVisibilityFilters != null)
                 {
-                    if (AdditionalVisibilityFilters(entry)) return true;
+                    if (AdditionalVisibilityFilters(entry))
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
         }
-
-
-        protected List<TreeItemData<IDirectoryEntryAdapter>> GetChildren(TreeItemData<IDirectoryEntryAdapter> context)
+        protected bool CanExpand(ITreeItemData<IDirectoryEntryAdapter> item)
+        {
+            return (item.Value is IADOrganizationalUnit);
+        }
+        protected IReadOnlyCollection<ITreeItemData<IDirectoryEntryAdapter>> GetChildren(ITreeItemData<IDirectoryEntryAdapter> context)
         {
             if (context.Children?.Count > 0)
             {
                 return context.Children;
             }
-            if (context.Value is IADOrganizationalUnit ou)
+
+            if (context.Expanded && context.Value is IADOrganizationalUnit ou)
             {
                 return GetOUChildren(ou);
             }
-            return new List<TreeItemData<IDirectoryEntryAdapter>>();
+
+            return [];
         }
 
-        protected List<TreeItemData<IDirectoryEntryAdapter>> GetOUChildren(IDirectoryEntryAdapter ou)
+        protected IReadOnlyCollection<ITreeItemData<IDirectoryEntryAdapter>> GetOUChildren(IDirectoryEntryAdapter ou)
         {
             if (ou is IADOrganizationalUnit context)
             {
                 return context.TreeViewSubOUs.Where(o => ShouldShowOU(o)).ToTreeItemData();
             }
-            return new List<TreeItemData<IDirectoryEntryAdapter>>();
+            return [];
 
         }
-        protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>?>> GetOUChildrenAsync(IDirectoryEntryAdapter parentNode)
+        protected async Task<IReadOnlyCollection<ITreeItemData<IDirectoryEntryAdapter>>> GetOUChildrenAsync(IDirectoryEntryAdapter parentNode)
         {
             return await Task.Run(() =>
             {
                 return GetOUChildren(parentNode);
-
-
-            });
-        }
-        protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>?>> GetChildrenAsync(TreeItemData<IDirectoryEntryAdapter> parentNode)
-        {
-            return await Task.Run(() =>
-            {
-                return GetChildren(parentNode);
 
 
             });

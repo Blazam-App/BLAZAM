@@ -187,7 +187,6 @@
     public async Task GetLatestUpdate()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         try
         {
             LatestAvailableVersion = await UpdateService.GetUpdates();
@@ -197,7 +196,6 @@
             SnackBarService.Error(ex.Message);
         }
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
     }
 
 
@@ -208,11 +206,14 @@
             var output = LatestAvailableVersion.GetUpdateJob();
             if (output != null)
             {
-                _ = MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization[Lang.Update]);
+                Analytics.UpdateAttempted(LatestAvailableVersion.Version.ToString());
+
+                
+                MessageService.ShowJobDetailsDialog(output, AppLocalization[Lang.Update]);
                 await output.RunAsync();
 
             }
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         }
     }
 
@@ -220,7 +221,7 @@
     {
 
         DownladProgress = progress;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
     }
 

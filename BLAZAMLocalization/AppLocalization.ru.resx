@@ -537,6 +537,9 @@
   <data name="Last Logon" xml:space="preserve">
     <value>Последний вход в систему</value>
   </data>
+  <data name="LAPS_Password" xml:space="preserve">
+    <value>LAPS Пароль</value>
+  </data>
   <data name="Last Name" xml:space="preserve">
     <value>Фамилия</value>
   </data>
@@ -1274,5 +1277,29 @@
   </data>
   <data name="Your session is about to expire" xml:space="preserve">
     <value>Срок действия сеанса истекает</value>
+  </data>
+  <data name="Text" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>Правило</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>Правила</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>Создать правило</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>Тип объекта</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>Курок</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>После действия</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>Перед действием</value>
   </data>
 </root>

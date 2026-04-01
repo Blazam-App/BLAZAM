@@ -1,0 +1,89 @@
+﻿@page "/audit"
+@page "/audit/{ActiveTab}"
+
+
+
+
+@attribute [Authorize(Roles = UserRoles.SuperAdmin)]
+@inherits TabbedAppComponentBase
+
+
+
+
+
+
+<AppPageTitle>@AppLocalization[Lang.Audit]</AppPageTitle>
+<SetHeader>
+    <MudText>@AppLocalization[Lang.Audit]</MudText>
+</SetHeader>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Audit]</MudText>
+
+
+
+<MudTabs @bind-ActivePanelIndex="@ActiveTab">
+    <MudTabPanel>
+        <ChildContent>
+          <MainAuditContent />
+
+
+
+
+        </ChildContent>
+        <TabContent>
+            @AppLocalization[Lang.Main]
+        </TabContent>
+    </MudTabPanel>
+    <MudTabPanel>
+        <ChildContent>
+            <LoginAuditContent />
+
+
+        </ChildContent>
+        <TabContent>
+            @AppLocalization["Logins"]
+        </TabContent>
+    </MudTabPanel>
+    <MudTabPanel>
+        <ChildContent>
+        <SystemAuditContent />
+
+        </ChildContent>
+        <TabContent>
+            @AppLocalization[Lang.System]
+        </TabContent>
+
+
+    </MudTabPanel>
+    <MudTabPanel>
+        <ChildContent>
+            <EmailAuditContent />
+        </ChildContent>
+        <TabContent>
+            @AppLocalization[Lang.Email]
+        </TabContent>
+
+
+    </MudTabPanel>
+    <MudTabPanel>
+        <ChildContent>
+            <WebHookAuditContent />
+        </ChildContent>
+        <TabContent>
+            @AppLocalization[Lang.Webhooks]
+        </TabContent>
+
+
+    </MudTabPanel>
+
+</MudTabs>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+
+        await base.OnInitializedAsync();
+        BaseUri = "/audit";
+    }
+
+}

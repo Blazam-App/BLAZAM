@@ -1,6 +1,4 @@
-﻿@using BLAZAM.Common.Data.Database
-@using BLAZAM.Global.Events
-@inherits DirectoryEntryViewBase
+﻿@inherits DirectoryEntryViewBase
 
 
 <AppPageTitle>@Group?.CanonicalName</AppPageTitle>
@@ -27,23 +25,30 @@
     <CascadingValue Value="EditMode">
 
 
-        <AppModal Title=@AppLocalization[Lang.Assign_To] @ref=@AssignToModal>
-            <AssignToModalContent ModelChanged=@((change)=>{AssignToModal?.Close(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
+        <AppModal Title=@AppLocalization[Lang.Assign_To]
+                  @ref=@AssignToModal>
+            <AssignToModalContent ModelChanged=@((change) => { AssignToModal?.Close(); InvokeAsync(StateHasChanged); })
+                                  DirectoryModel="Group" />
         </AppModal>
-        <AppModal Title=@AppLocalization[Lang.Add_Members] @ref=@AssignMemberModal>
-            <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Close();InvokeAsync(StateHasChanged);}) Group="Group" />
+        <AppModal Title=@AppLocalization[Lang.Add_Members]
+                  @ref=@AssignMemberModal>
+            <AddMemberModalContent ModelChanged=@((change) => { AssignMemberModal?.Close(); InvokeAsync(StateHasChanged); })
+                                   Group="Group" />
         </AppModal>
-        <AppModal Title=@AppLocalization[Lang.Move_To] @ref=@MoveToModal>
+        <AppModal Title=@AppLocalization[Lang.Move_To]
+                  @ref=@MoveToModal>
             @if (MoveToModal?.IsShown == true)
             {
                 <MoveToOUModalContent DirectoryModel="Group" />
             }
         </AppModal>
 
-        <AppModal Title=@AppLocalization[Lang.Rename_Group] @ref=@RenameModal>
+        <AppModal Title=@AppLocalization[Lang.Rename_Group]
+                  @ref=@RenameModal>
             @if (RenameModal?.IsShown == true)
             {
-                <RenameGroupModalContent Group="Group" />
+                <RenameGroupModalContent Group="Group"
+                                         DirectoryModelRenamed=@((renamedGroup) => { Renamed(null, renamedGroup); }) />
             }
         </AppModal>
 
@@ -53,18 +58,28 @@
 
         <MudGrid>
             <MudItem xs="12" md="6">
-                <ViewSection Stack="true" Style="min-height:200px;" Title="Group Details">
+                <ViewSection Stack="true"
+                             Style="min-height:200px;"
+                             Title="Group Details">
                     <MudCard Elevation="2"
                              Style="width:fit-content;height:fit-content"
                              Class="relative mx-auto d-block p-1 mb-5">
 
-                        <MudIcon Style="height:150px;min-width:150px;" Icon="@Icons.Material.Filled.Group" />
+                        <MudIcon Style="height:150px;min-width:150px;"
+                                 Icon="@Icons.Material.Filled.Group" />
                     </MudCard>
-                    <MudTextField Label="@AppLocalization[Lang.Group_Name]" @bind-Value="@Group.CanonicalName" Disabled />
+                    <DynamicMudInput Label="@AppLocalization[Lang.Group_Name]"
+                                     @bind-Value="@Group.GroupName"
+                                     Disabled=true />
+                    @* 
+                    <DynamicMudInput Label="@AppLocalization[Lang.Account_Name]"
+                                     @bind-Value="@Group.SAMAccountName"
+                                     Disabled=true /> *@
 
-                    <MudTextField Label="@AppLocalization[Lang.Account_Name]" @bind-Value="@Group.SAMAccountName" Disabled />
-
-                    <MudTextField Label="@AppLocalization[Lang.Description]" @bind-Value="@Group.Description" Disabled=@(!EditMode || !Group.CanEdit) />
+                    <DynamicMudInput Label="@AppLocalization[Lang.Description]"
+                                     @bind-Value="@Group.Description"
+                                     Immediate=true
+                                     Disabled=@(!EditMode || !Group.CanEdit) />
 
                     @if (Group.CanReadField(ActiveDirectoryFields.Manager))
                     {
@@ -75,7 +90,13 @@
                                         Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Manager)) />
                     }
 
-                    <MudTextField Label="@AppLocalization[Lang.Email_Address]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
+                    <MudStack Row=true>
+                        <DynamicMudInput Label="@AppLocalization[Lang.Email_Address]"
+                                         @bind-Value="@Group.Email"
+                                         Immediate=true
+                                         Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
+                        <AppCopyButton TextToCopy="@Group.Email" />
+                    </MudStack>
 
                     <MudStack Row=true>
                         <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Created]:</MudText>
@@ -93,7 +114,7 @@
 
                     </MudStack>
 
-                    
+
 
                     <MudStack Row=true>
                         <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.OU]:</MudText>
@@ -112,15 +133,15 @@
                                            @bind-Value="Group.GroupScope">
                                 <MudRadio Value="GroupScope.Universal">@AppLocalization[Lang.Universal]</MudRadio>
                                 <MudRadio Value="GroupScope.Global"
-                                Disabled="@(Group.GroupScope==GroupScope.DomainLocal)">@AppLocalization[Lang.Global]</MudRadio>
-                                <MudRadio Value="GroupScope.DomainLocal" 
-                                Disabled="@(Group.GroupScope==GroupScope.Global)">@AppLocalization[Lang.Domain_Local]</MudRadio>
+                                          Disabled="@(Group.GroupScope == GroupScope.DomainLocal)">@AppLocalization[Lang.Global]</MudRadio>
+                                <MudRadio Value="GroupScope.DomainLocal"
+                                          Disabled="@(Group.GroupScope == GroupScope.Global)">@AppLocalization[Lang.Domain_Local]</MudRadio>
                             </MudRadioGroup>
                         </MudStack>
                         <MudStack Row=true>
                             <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Group_Scope]:</MudText>
                             <MudSpacer />
-                            <MudRadioGroup Disabled="@( !Group.CanEditField(ActiveDirectoryFields.GroupType))"
+                            <MudRadioGroup Disabled="@(!Group.CanEditField(ActiveDirectoryFields.GroupType))"
                                            @bind-Value="Group.IsSecurityGroup">
                                 <MudRadio Value="@true">@AppLocalization[Lang.Security]</MudRadio>
                                 <MudRadio Value="@false">@AppLocalization[Lang.Distribution]</MudRadio>
@@ -132,8 +153,10 @@
                 </ViewSection>
             </MudItem>
             <MudItem xs="12" md="6">
-                <ViewSection Style="min-height:200px;" Title=@AppLocalization[Lang.Parent_Groups]>
-                    <MemberOfList AssignToClicked=@AssignToModal.ShowAsync Model="Group" />
+                <ViewSection Style="min-height:200px;"
+                             Title=@AppLocalization[Lang.Parent_Groups]>
+                    <MemberOfList AssignToClicked=@AssignToModal.ShowAsync
+                                  Model="Group" />
 
                 </ViewSection>
             </MudItem>
@@ -141,7 +164,7 @@
 
 
             <MudItem xs="12" md="12">
-                <ViewSection Stack="true"  Title=@AppLocalization[Lang.Members]>
+                <ViewSection Stack="true" Title=@AppLocalization[Lang.Members]>
                     <GroupMembersDataGrid Group="Group" />
 
                 </ViewSection>

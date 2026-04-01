@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Chat;
@@ -10,11 +9,42 @@ using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Reflection;
 
 namespace BLAZAM.Helpers
 {
     public static class DatabaseHelpers
     {
+        /// <summary>
+        /// Checks if the given field is in the template, whether editable or not
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public static bool InTemplate(this DirectoryTemplate? template, IActiveDirectoryField field)
+        {
+            if (template == null)
+            {
+                return false;
+            }
+            return template.EffectiveFieldValues.Any(f => (f.Field != null && f.Field.FieldName == field.FieldName) || (f.CustomField != null && f.CustomField.FieldName == field.FieldName));
+
+        }
+
+        public static bool IsEditableField (this DirectoryTemplate template, IActiveDirectoryField field)
+        {
+            if (field is ActiveDirectoryField)
+                return template.EffectiveFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
+            else
+                return template.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Editable);
+        }
+
+        public static bool IsRequiredField (this DirectoryTemplate template, IActiveDirectoryField field)
+        {
+            if (field is ActiveDirectoryField)
+                return template.EffectiveFieldValues.Any(f => f.Field?.FieldName == field.FieldName && f.Required);
+            else
+                return template.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Required);
+        }
         public static long GetMembersHash(this IEnumerable<AppUser> members)
         {
             long hash = 0;
@@ -29,11 +59,7 @@ namespace BLAZAM.Helpers
         }
         public static List<NotificationType> GetNotificationTypes(this ActiveDirectoryObjectType objectType)
         {
-            List<NotificationType> _triggerTypes = new();
-            foreach (NotificationType type in Enum.GetValues(typeof(NotificationType)))
-            {
-                _triggerTypes.Add(type);
-            }
+            List<NotificationType> _triggerTypes = Enum.GetValues(typeof(NotificationType)).Cast<NotificationType>().ToList();
             _triggerTypes = _triggerTypes.OrderBy(t => t.ToString()).ToList();
             return _triggerTypes.Where(t => t.IsNotificationAppropriateForObject(objectType)).ToList();
 
@@ -140,6 +166,7 @@ namespace BLAZAM.Helpers
             AddAutomationRuleConfig(modelBuilder);
             AddAutomationRuleActionConfig(modelBuilder);
             AddAutomationRuleOrFilterConfig(modelBuilder);
+            AddGlobalAutomationRuleSettingsConfig(modelBuilder);
             AddAutomationRuleAndFilterConfig(modelBuilder);
             AddAutomationRuleActionFieldValueConfig(modelBuilder);
             AddDirectoryTemplateFieldValueConfig(modelBuilder);
@@ -156,6 +183,8 @@ namespace BLAZAM.Helpers
             AddChatRoomConfig(modelBuilder);
             AddChatMessageConfig(modelBuilder);
             AddNotificationSubscriptionConfig(modelBuilder);
+            AddGlobalPermissionRequestFieldConfig(modelBuilder);
+            AddNotificationMessageConfig(modelBuilder);
             AddUnreadChatMessageConfig(modelBuilder);
 
         }
@@ -238,7 +267,7 @@ namespace BLAZAM.Helpers
         {
             modelBuilder.Entity<AutomationRuleAction>(entity =>
             {
-                entity.Navigation(e => e.GroupSids).AutoInclude();
+                entity.Navigation(e => e.GroupGuids).AutoInclude();
                 entity.Navigation(e => e.FieldValues).AutoInclude();
             });
         }
@@ -259,8 +288,8 @@ namespace BLAZAM.Helpers
                 entity.Navigation(e => e.Field).AutoInclude();
                 entity.Property(e => e.TimeFrame)
                     .HasConversion(new ValueConverter<TimeSpan?, long?>(
-                        v => v.HasValue ? v.Value.Ticks : (long?)null,
-                        v => v.HasValue ? TimeSpan.FromTicks(v.Value) : (TimeSpan?)null
+                        v => v.HasValue ? v.Value.Ticks : null,
+                        v => v.HasValue ? TimeSpan.FromTicks(v.Value) : null
                     ));
             });
         }
@@ -311,9 +340,13 @@ namespace BLAZAM.Helpers
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                }
                 else
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                }
             });
         }
 
@@ -323,9 +356,13 @@ namespace BLAZAM.Helpers
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                }
                 else
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                }
             });
         }
 
@@ -335,9 +372,14 @@ namespace BLAZAM.Helpers
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                }
                 else
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                }
+
                 entity.HasData(new AuthenticationSettings
                 {
                     Id = 1,
@@ -352,9 +394,13 @@ namespace BLAZAM.Helpers
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                }
                 else
+                {
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                }
             });
         }
 
@@ -377,10 +423,21 @@ namespace BLAZAM.Helpers
             });
         }
 
+        internal static void AddNotificationMessageConfig(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<NotificationMessage>(entity =>
+            {
+                entity.Navigation(e => e.Field).AutoInclude();
+                entity.Navigation(e => e.CustomField).AutoInclude();
+            });
+        }
+
         internal static void AddPermissionDelegateConfig(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<PermissionDelegate>(entity =>
             {
+                entity.Property(p => p.RequireEmailOnPasswordReset).HasDefaultValue(true);
+                entity.Property(p => p.MinimumPINLength).HasDefaultValue(4);
                 entity.HasIndex(e => e.DelegateSid).IsUnique();
             });
         }
@@ -400,6 +457,25 @@ namespace BLAZAM.Helpers
             modelBuilder.Entity<ChatMessage>(entity =>
             {
                 entity.Navigation(e => e.User).AutoInclude();
+            });
+        }
+
+
+
+        internal static void AddGlobalPermissionRequestFieldConfig(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<GlobalPermissionRequestField>(entity =>
+            {
+                entity.Navigation(e => e.Field).AutoInclude();
+                entity.Navigation(e => e.CustomField).AutoInclude();
+            });
+        }
+
+        internal static void AddGlobalAutomationRuleSettingsConfig(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<GlobalAutomationRuleSettings>(entity =>
+            {
+                entity.Navigation(e => e.ExcludedGroups).AutoInclude();
             });
         }
 

@@ -10,7 +10,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             WidgetType = DashboardWidgetType.LockedOutUsers;
         }
 
-        List<IADUser> LockedUsers
+        private List<IADUser> LockedUsers
         {
             get => CurrentUser.State?.Cache.Get<List<IADUser>>(this.GetType());
             set => CurrentUser.State?.Cache.Set(this.GetType(), value);
@@ -29,7 +29,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             LoadingData = false;
         }
 
-        void GoTo(DataGridRowClickEventArgs<IADUser> args)
+        private void GoTo(DataGridRowClickEventArgs<IADUser> args)
         {
             Nav.NavigateTo(args.Item.SearchUri);
         }

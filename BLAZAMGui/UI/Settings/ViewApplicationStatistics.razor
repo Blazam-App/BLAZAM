@@ -23,7 +23,7 @@
     }
 </SettingsField>
 <SettingsField Label="@AppLocalization[Lang.AD_Connections]">
-    @ApplicationStatistics.ADContextCount
+    @ApplicationStatistics.LdapConnectionCount
 </SettingsField>
 <SettingsField Label="@AppLocalization[Lang.DB_Connections]">
     @ApplicationStatistics.DBContextCount
@@ -41,7 +41,7 @@
 
     private async Task PollData()
     {
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
     public override void Dispose()

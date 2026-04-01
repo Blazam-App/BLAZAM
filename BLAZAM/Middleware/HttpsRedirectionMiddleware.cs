@@ -1,31 +1,26 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 
-namespace BLAZAM.Server.Middleware
+namespace BLAZAM.Middleware
 {
     /// <summary>
     /// Redirects the request to HTTPS is the
     /// request is HTTP if the database has
     /// force HTTPS set to true
     /// </summary>
-    public class HttpsRedirectionMiddleware
+    /// <remarks>
+    /// Creates a new HTTPS redirect middleware to ensure users are using a secure connection
+    /// </remarks>
+    /// <param name="next">The next middleware in the pipeline.</param>
+    /// <param name="applicationInfo">Application information service.</param>
+    /// <exception cref="ArgumentNullException">Thrown if applicationInfo is null.</exception>
+    public class HttpsRedirectionMiddleware(
+        RequestDelegate next,
+        ApplicationInfo applicationInfo)
     {
-        private readonly RequestDelegate _next;
-        private readonly ApplicationInfo _applicationInfo;
-        /// <summary>
-        /// Creates a new HTTPS redirect middleware to ensure users are using a secure connection
-        /// </summary>
-        /// <param name="next">The next middleware in the pipeline.</param>
-        /// <param name="applicationInfo">Application information service.</param>
-        /// <exception cref="ArgumentNullException">Thrown if applicationInfo is null.</exception>
-        public HttpsRedirectionMiddleware(
-            RequestDelegate next,
-            ApplicationInfo applicationInfo)
-        {
-            _next = next;
-            _applicationInfo = applicationInfo;
+        private readonly RequestDelegate _next = next;
+        private readonly ApplicationInfo _applicationInfo = applicationInfo;
 
-        }
         /// <summary>
         /// Checks the database cache for a true ForceHTTPS and if so an request is HTTP redirect to HTTPS
         /// </summary>

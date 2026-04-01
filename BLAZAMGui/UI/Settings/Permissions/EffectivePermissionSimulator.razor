@@ -36,12 +36,10 @@
     private async Task onRun()
     {
         simRan = false;
-        await InvokeAsync(StateHasChanged);
-        var permissionApplicator = new PermissionApplicator(UserStateService, DbFactory, Directory);
-        var simUser = new ApplicationUserState(DbFactory);
-        await permissionApplicator.LoadPermissions(simUser, selectedUser as IADUser);
+        await StateHasChangedAsync();
+        var simUser = await selectedUser.GetApplicationUser(UserStateService, DbFactory, Directory,AppAuthenticationStateProvider);
         target.SetCurrentUser(simUser.ToActiveDirectoryUserState());
         simRan = true;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 }

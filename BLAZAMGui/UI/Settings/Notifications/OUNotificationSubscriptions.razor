@@ -353,7 +353,7 @@
 
 
             CalculateEffectiveSubscriptions();
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         }
     }
 

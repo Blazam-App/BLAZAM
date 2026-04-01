@@ -74,7 +74,7 @@
     {
         get
         {
-            if (Update.Branch == ApplicationReleaseBranches.Stable)
+            if (Update.Branch == ApplicationReleaseBranches.Net8ReleasePrefix)
                 return Update.Version.ReleaseDate?.ToLongDateString();
             else
                 return DateTime.Parse(Update.Release.ReleaseTime.ToString()).ToLongDateString();

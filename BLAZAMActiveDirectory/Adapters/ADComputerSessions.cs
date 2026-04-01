@@ -1,7 +1,7 @@
-﻿using System.ComponentModel;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Logger;
 using Cassia;
+using System.ComponentModel;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -10,18 +10,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private readonly ITerminalServicesManager manager = new TerminalServicesManager();
         private ITerminalServer server;
         private bool Polling;
-        public List<IRemoteSession> ConnectedSessions { get; set; } = new();
+        public List<IRemoteSession> ConnectedSessions { get; set; } = [];
         private readonly IADComputer Computer;
 
-        public AppDelegate ConnectedSessionsChanged { get; set; }
+        public AppEvent ConnectedSessionsChanged { get; set; } = new();
         public ADComputerSessions(IADComputer host)
         {
             Computer = host;
             if (Computer.IsOnline == true)
+            {
                 RefreshSessions();
+            }
             else
-                Computer.OnOnlineChanged += (status) => { if (status) RefreshSessions(); };
-
+            {
+                Computer.OnOnlineChanged += (status) => { if (status) { RefreshSessions(); } };
+            }
         }
 
 

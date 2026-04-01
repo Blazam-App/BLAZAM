@@ -1,4 +1,5 @@
-﻿using System.Security.Claims; // Required for ClaimsPrincipal
+﻿using BLAZAM.Database.Models;
+using System.Security.Claims; // Required for ClaimsPrincipal
 
 namespace BLAZAM.Session.Interfaces
 {
@@ -17,10 +18,6 @@ namespace BLAZAM.Session.Interfaces
         /// </summary>
         IApplicationUserState? CurrentUserState { get; }
 
-        /// <summary>
-        /// Event triggered when a new <see cref="IApplicationUserState"/> is added to the cache.
-        /// </summary>
-        AppDelegate<IApplicationUserState> UserStateAdded { get; set; }
 
         /// <summary>
         /// Gets a list of all currently cached <see cref="IApplicationUserState"/> instances.
@@ -66,7 +63,7 @@ namespace BLAZAM.Session.Interfaces
         /// <param name="mfaToken">The MFA token (e.g., Duo state).</param>
         /// <param name="state">The user state associated with this MFA attempt.</param>
         /// <param name="returnURL">The URL to return to after MFA completion. Defaults to "/".</param>
-        void SetMFAUserState(string mfaToken, IApplicationUserState state, string returnURL = "/");
+        void SetMFAUserState(MfaType mfaType, string mfaToken, IApplicationUserState state, string returnURL = "/");
 
         /// <summary>
         /// Adds or updates an <see cref="IApplicationUserState"/> in the cache.

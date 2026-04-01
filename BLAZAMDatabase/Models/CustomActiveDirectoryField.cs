@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Localization;
+using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Database.Models
 {
@@ -21,7 +21,7 @@ namespace BLAZAM.Database.Models
 
 
         [Required(ErrorMessageResourceName = "CustomActiveDirectoryField_ObjectTypes", ErrorMessageResourceType = typeof(AppValidationLocalization))]
-        public List<ActiveDirectoryFieldObjectType> ObjectTypes { get; set; } = new();
+        public List<ActiveDirectoryFieldObjectType> ObjectTypes { get; set; } = [];
 
 
 
@@ -33,23 +33,22 @@ namespace BLAZAM.Database.Models
 
         public override int GetHashCode()
         {
-            if (DisplayName == null) return Id.GetHashCode();
+            if (DisplayName == null)
+            {
+                return Id.GetHashCode();
+            }
+
             return DisplayName.GetHashCode();
         }
 
 
         public override bool Equals(object? obj)
         {
-            if (obj is CustomActiveDirectoryField)
+            if (obj is CustomActiveDirectoryField other && other.Id == Id)
             {
-                var other = obj as CustomActiveDirectoryField;
-
-                if (other.Id == Id)
-                {
-                    return true;
-                }
-
+                return true;
             }
+
             return false;
         }
 

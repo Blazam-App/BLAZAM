@@ -55,7 +55,7 @@
                     <AppModal Title=@AppLocalization[Lang.Rename_User] @ref=@RenameModal>
                         @if (RenameModal?.IsShown == true)
                         {
-                            <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Entry="Contact" />
+                            <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(null,renamedUser);}) Entry="Contact" />
                         }
                     </AppModal>
                     <AppModal Title=@AppLocalization[Lang.Reset_Password] @ref=@ChangePasswordModal>
@@ -65,6 +65,7 @@
                         }
                     </AppModal>
 
+
                     <MudGrid>
                         <MudItem xs="12" md="3">
                             <DetailsSection AssignToClicked=@(()=>{AssignToModal?.ShowAsync();})/>
@@ -73,9 +74,11 @@
                         <MudItem xs=12 md="9">
                             <MudStack>
 
+
                                 <NameSection />
 
-                                <AccountSection />
+                                <AccountSection PasswordChanged="PasswordChanged" ConfirmPasswordChanged="ConfirmPasswordChanged" />
+
 
                             </MudStack>
 
@@ -86,7 +89,10 @@
 
                     <ContactInfoSection />
 
-                    <ProfileSection />
+                    @if (User != null)
+                    {
+                        <ProfileSection />
+                    }
 
                     @if (GroupableEntry.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
                     {
@@ -97,6 +103,7 @@
                                 @if (CanReadField(field))
                                 {
                                     <CustomDirectoryField Disabled=@(!EditMode || !CanEditField(field)) Entry="GroupableEntry" Field="@field" />
+
 
                                 }
                             }
@@ -118,6 +125,8 @@
     <LoadingData Loading=SavingChanges />
 
 
+}else{
+    var lost = "lost";
 }
 
 

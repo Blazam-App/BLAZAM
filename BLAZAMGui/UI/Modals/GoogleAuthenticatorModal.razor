@@ -4,23 +4,28 @@
 
 <MudDialog @ref=dialog>
     <TitleContent>
-        <MudText Align="Align.Center">@AppLocalization[Lang.Create_Google_Authenticator_Token]</MudText>
+            <MudText Align="Align.Center">@AppLocalization[Lang.Google_Authenticator]</MudText>
     </TitleContent>
     <DialogContent>
 
         @if (!_authenticated)
         {
-            if (!registrationUri.IsNullOrEmpty())
+            if (!registrationQrCode.IsNullOrEmpty())
             {
                 <MudText Align="Align.Center">@AppHelpLocalization[HelpLang.Authenticator_Setup_One]</MudText>
-                <MudText Align="Align.Center"> <MudImage Src="@registrationUri" /></MudText>
+                <MudText Align="Align.Center"> <MudImage Src="@registrationQrCode" /></MudText>
                 <MudText Align="Align.Center">@AppHelpLocalization[HelpLang.Authenticator_Setup_Two]</MudText>
             }
             <GoogleAuthenticatorInput @ref=googleAuthInput 
                 @bind-Authenticated="_authenticated" 
                 @bind-Passcode=authToken
                                       AuthSecret="@authSecret"
-                OnAuthenticated="@(async()=>{await InvokeAsync(StateHasChanged);  await Task.Delay(1000); dialog?.CloseAsync();})" />
+                OnAuthenticated="@(async()=>{
+                                            await InvokeAsync(StateHasChanged);
+                                            OnAuthenticated?.Invoke();
+                                            await Task.Delay(1000);
+                                            dialog?.CloseAsync();
+                                            })" />
             <MudStack Row=true>
                 <MudSpacer/>
                 <MudButton Color="@Color.Primary"
@@ -47,7 +52,7 @@
 
 @code {
     GoogleAuthenticatorInput? googleAuthInput;
-    private string? registrationUri;
+    private string? registrationQrCode;
     private string? authToken;
     private MudDialog? dialog;
     private SecureString? authSecret;
@@ -68,7 +73,7 @@
         {
             authSecret = customSecret;
         }
-        registrationUri = customRegistrationUri;
+        registrationQrCode = customRegistrationUri;
         await (await dialog!.ShowAsync()).Result;
         var result = _authenticated;
 

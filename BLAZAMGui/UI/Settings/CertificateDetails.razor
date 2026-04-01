@@ -1,0 +1,115 @@
+﻿@using System.Security.Cryptography.X509Certificates
+@inherits AppComponentBase
+
+
+@if (_valid)
+{
+    <MudSimpleTable Outlined=false Style="background: transparent;" Elevation="0" Class="mb-3">
+        <tr>
+            <td>Friendly Name</td>
+            <td>@_friendlyName</td>
+        </tr>
+        <tr>
+            <td>Issuer</td>
+            <td>@_issuerName</td>
+        </tr>
+        <tr>
+            <td>Subject</td>
+            <td>@_subjectName</td>
+        </tr>
+        <tr>
+            <td>Valid From</td>
+            <td>@_notBefore?.ToString("g")<StatusCheck Status="_notBefore < DateTime.Now" /></td>
+        </tr>
+        <tr>
+            <td>Valid Until</td>
+            <td>@_notAfter?.ToString("g")<StatusCheck Status="_notAfter>DateTime.Now"/></td>
+        </tr>
+        <tr>
+            <td>Has Private Key</td>
+            <td>@_hasPrivateKey</td>
+        </tr>
+        <tr>
+            <td>Thumbprint</td>
+            <td>@_thumbprint</td>
+        </tr>
+        <tr>
+            <td>Serial Number</td>
+            <td>@_serialNumber</td>
+        </tr>
+        <tr>
+            <td>Signature Algorithm</td>
+            <td>@_signatureAlgorithm</td>
+        </tr>
+        <tr>
+            <td>@AppLocalization[Lang.Version]</td>
+            <td>@_version</td>
+        </tr>
+        <tr>
+            <td>Public Key</td>
+            <td>@_publicKey</td>
+        </tr>
+        <LoadingData Loading=@LoadingData />
+    </MudSimpleTable>
+
+}
+
+
+
+@code {
+    [Parameter]
+    public AppSettings AppSettings { get; set; }
+
+
+    string? _friendlyName;
+    string? _issuerName;
+    string? _subjectName;
+    DateTime? _notBefore;
+    DateTime? _notAfter;
+    bool _hasPrivateKey;
+    string? _thumbprint;
+    string? _serialNumber;
+    string? _signatureAlgorithm;
+    int _version;
+    string? _publicKey;
+
+    bool _valid;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _ = LoadCertDetails();
+    }
+
+    public async Task LoadCertDetails()
+    {
+        
+            LoadingData = true;
+
+            var rawcert = AppSettings.SSLCertificateCipher?.Decrypt<byte[]?>();
+            if (rawcert != null && rawcert.Length > 1000)
+            {
+                using var cert = new X509Certificate2(rawcert);
+                _valid = true;
+                _friendlyName = cert.FriendlyName;
+                _issuerName = cert.Issuer;
+                _subjectName = cert.Subject;
+                _notBefore = cert.NotBefore;
+                _notAfter = cert.NotAfter;
+                _hasPrivateKey = cert.HasPrivateKey;
+                _thumbprint = cert.Thumbprint;
+                _serialNumber = cert.SerialNumber;
+                _signatureAlgorithm = cert.SignatureAlgorithm.FriendlyName;
+                _version = cert.Version;
+                _publicKey = cert.PublicKey.Oid.FriendlyName;
+
+
+
+            }
+            LoadingData = false;
+
+            await InvokeAsync(StateHasChanged);
+
+        
+    }
+}

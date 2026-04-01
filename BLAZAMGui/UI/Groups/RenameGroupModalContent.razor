@@ -1,53 +1,97 @@
 ﻿@inherits AppModalContent
 
-        @if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
-        {
-
-
-        <MudTextField AutoFocus=true Label="@AppLocalization[Lang.Group_Name]" @bind-Value="@GroupName" />
-
-                
-            
-        }
-
-      
-
-    @if (Group.CanEditField(ActiveDirectoryFields.Mail))
+@if (_privateEntryInstance != null)
+{
+    if (_privateEntryInstance.CanEditField(ActiveDirectoryFields.SAMAccountName))
     {
-        
 
-                <MudTextField Label="@AppLocalization[Lang.Email_Address]" @bind-Value="@Group.Email" />
 
-            
-        
+        <MudTextField AutoFocus=true 
+            Label="@AppLocalization[Lang.Group_Name]" 
+            Value="@_privateEntryInstance.GroupName"
+                      Required=true
+                      ValueChanged="((string val) => { _privateEntryInstance.GroupName = val.AppTrim(); })" />
+
+
+
     }
 
-    <MudButton Color=Color.Primary OnClick="SaveChanges">@AppLocalization[Lang.Save_Changes]</MudButton>
 
+
+    if (_privateEntryInstance.CanEditField(ActiveDirectoryFields.Mail))
+    {
+
+
+        <MudTextField Label="@AppLocalization[Lang.Email_Address]" @bind-Value="@_privateEntryInstance.Email" />
+
+
+
+    }
+}
+<LoadingData Loading=@LoadingData/>
 @code {
-    #nullable disable warnings
-    string GroupName;
+
+
+    [Parameter]
+    public EventCallback<IDirectoryEntryAdapter> DirectoryModelRenamed { get; set; }
+
+    private IADGroup _privateEntryInstance;
+
+    private string _originalName = String.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        if (Group != null)
+        {
+            _privateEntryInstance = Directory.Groups.FindGroupBySID(Group.SID.ToSidString());
+            _originalName = _privateEntryInstance.GroupName;
+            await StateHasChangedAsync();
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        GroupName = Group.CanonicalName;
-        await InvokeAsync(StateHasChanged);
+        Modal.SetOnYes(SaveChanges);
+        Modal.YesEnabled = () => { return !LoadingData; };
+        await StateHasChangedAsync();
+
+
     }
 
 
-     void SaveChanges()
+    async Task SaveChanges()
     {
-        if(GroupName.IsNullOrEmpty()){
-            SnackBarService.Warning("You must provide a group name");
-            GroupName = Group.CanonicalName;
-        }
-        try{
-            Group.Rename(GroupName);
-            SnackBarService.Success("The group has been renamed.");
+        try
+        {
+
+            if (_privateEntryInstance.GroupName.IsNullOrEmpty())
+            {
+                SnackBarService.Warning("You must provide a group name");
+                return;
+            }
+
+            SaveDisabled = true;
+            LoadingData = true;
+            if (_privateEntryInstance.GroupName != _originalName)
+            {
+                _privateEntryInstance.Rename(_privateEntryInstance.GroupName);
+            }
+
+            await _privateEntryInstance.CommitChangesAsync();
+            SnackBarService.Success("Group has been renamed.");
+            Group.DirectoryEntry = null;
             
+            _=DirectoryModelRenamed.InvokeAsync(_privateEntryInstance);
             Close();
+
+            LoadingData = false;
+
+            SaveDisabled = false;
+
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Loggers.ActiveDirectoryLogger.Error(ex, "Error attempting to rename a group");
             SnackBarService.Error("The group could not be renamed.");

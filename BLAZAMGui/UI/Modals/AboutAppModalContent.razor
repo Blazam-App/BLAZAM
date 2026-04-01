@@ -3,6 +3,10 @@
 
 
     <MudText Align="Align.Center">
+        @AppLocalization[Lang.Company]: Jacobsen Productions LLC
+    </MudText>
+
+    <MudText Align="Align.Center">
         @AppLocalization[Lang.Founder]: Chris Jacobsen
     </MudText>
 
@@ -40,7 +44,7 @@
     protected override void OnInitialized()
     {
 
-        Modal.YesText = AppLocalization[Lang.Close];
+        Modal.SetYesText(AppLocalization[Lang.Close]);
         base.OnInitialized();
 
 
@@ -56,13 +60,13 @@
         if (firstRender)
         {
             // Give the browser a moment to render the thumbnail
-            await Task.Delay(1);
+            await Task.Delay(15);
 
             // Change the image source to the full-resolution version
             imageSrc = FullResolutionPath;
 
             // Notify Blazor that the state has changed to trigger a re-render
-            StateHasChanged();
+            await StateHasChangedAsync();
         }
     }
 }

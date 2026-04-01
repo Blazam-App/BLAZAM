@@ -1,7 +1,7 @@
-﻿using System.ComponentModel;
+﻿using BLAZAM.Common.Data.Validators;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BLAZAM.Common.Data.Validators;
 
 namespace BLAZAM.Database.Models
 {
@@ -88,20 +88,28 @@ namespace BLAZAM.Database.Models
                 if (AppName != null)
                 {
                     if (AppName.Length < 14)
+                    {
                         return AppName;
+                    }
+
                     if (AppName.Contains(' '))
                     {
                         var words = AppName.Split(' ');
-                        string abb = "";
+                        var abbBuilder = new System.Text.StringBuilder();
                         foreach (var word in words)
                         {
-                            abb += word.ToUpper()[0];
+                            abbBuilder.Append(char.ToUpper(word[0]));
                         }
-                        return abb;
+
+                        return abbBuilder.ToString();
                     }
                     else
-                        return AppName.Substring(0, 14);
+                    {
+                        return AppName.Length > 14 ? AppName[..14] : AppName;
+                    }
+
                 }
+
                 return "";
             }
         }

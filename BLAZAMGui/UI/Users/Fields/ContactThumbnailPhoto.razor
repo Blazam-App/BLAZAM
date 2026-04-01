@@ -1,0 +1,74 @@
+@inherits DirectoryModelComponent
+<MudCard Elevation="2"
+         Style="width:fit-content;height:fit-content"
+         Class="relative mx-auto d-block p-1 mb-5"
+         @onmouseenter=@(() => { showRemoveThumbnail = true; })
+         @onmouseleave=@(() => { showRemoveThumbnail = false; })>
+    @if (Contact?.ThumbnailPhoto == null)
+    {
+        @if (Required)
+        {
+            <MudText Style="position:absolute !important;padding:2px;top:5px;right:5px"
+                     Color=Color.Error>*</MudText>
+        }
+    }
+    @if (Contact?.ThumbnailPhoto != null)
+    {
+        <Base64Image Style="max-height:150px;max-width:150px;" Data="Contact.ThumbnailPhoto.ResizeRawImage(150)" />
+        @if (!Disabled && showRemoveThumbnail && Contact.CanEditField(ActiveDirectoryFields.Thumbnail))
+        {
+
+            <MudIconButton OnClick=RemoveThumbnail
+                           Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;left:10px"
+                           Color=Color.Error
+                           Icon="@Icons.Material.Filled.Delete" />
+        }
+        @if (Required)
+        {
+            <MudText Style="position:absolute !important;padding:2px;top:5px;left:5px">*</MudText>
+        }
+
+    }
+    else if (User != null)
+    {
+        <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Person" />
+
+    }
+    else if (Contact != null)
+    {
+        <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Contacts" />
+
+    }
+    @if (!Disabled && showRemoveThumbnail && GroupableEntry?.CanEditField(ActiveDirectoryFields.Thumbnail) == true)
+    {
+        <MudIconButton OnClick=@(() => { _uploadThumbnailModal?.ShowAsync(); })
+                       Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
+                       Color=Color.Primary
+        Icon="@Icons.Material.Filled.Upload" />
+    }
+    
+</MudCard>
+<AppModal Color="Color.Dark"
+          Title=@AppLocalization[Lang.Upload_Thumbnail_Photo]
+          @ref=@_uploadThumbnailModal>
+    <UploadThumbnailModalContent DirectoryEntry="User" />
+</AppModal>
+@code {
+    AppModal? _uploadThumbnailModal;
+    bool showRemoveThumbnail = false;
+
+    [Parameter]
+    public bool Disabled{ get; set; }
+
+    [Parameter]
+    public bool Required { get; set; }
+
+    void RemoveThumbnail()
+    {
+
+        Contact.ThumbnailPhoto = null;
+        SnackBarService.Warning(GroupableEntry.DisplayName + " will have their thumbnail deleted on save.");
+
+
+    }
+}

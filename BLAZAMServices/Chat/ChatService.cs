@@ -58,7 +58,11 @@ namespace BLAZAM.Services.Chat
 
         public ChatRoom? GetPrivateTwoWayChat(AppUser currentUser, AppUser otherUser)
         {
-            if (currentUser == null && otherUser == null) throw new AppException("GetPrivateTwoWayChat must only be supplied with two users");
+            if (currentUser == null && otherUser == null)
+            {
+                throw new AppException("GetPrivateTwoWayChat must only be supplied with two users");
+            }
+
             var context = Context;
             var localParties = new List<AppUser>
             {

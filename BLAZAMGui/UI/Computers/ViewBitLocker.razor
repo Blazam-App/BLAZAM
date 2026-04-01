@@ -22,14 +22,14 @@
     {
 
         await base.OnInitializedAsync();
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
         if (BitLocker != null)
         {
 
             _computer = (IADComputer?)(await BitLocker.GetParentAsync());
 
-            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Search,
                     Entry = BitLocker,

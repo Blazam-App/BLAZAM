@@ -7,7 +7,13 @@ namespace BLAZAM.Themes
 {
     public class ApplicationTheme
     {
-        public static readonly IReadOnlyCollection<ApplicationTheme> Themes = new List<ApplicationTheme>() { new BlueTheme(), new RedTheme(), new GreenTheme(), new OrangeTheme() };
+        public static readonly IReadOnlyCollection<ApplicationTheme> Themes = [
+            new BlueTheme(),
+            new RedTheme(),
+            new GreenTheme(),
+            new OrangeTheme(),
+            new GrayTheme()
+        ];
         protected PaletteLight lightPalette { get; set; }
         protected PaletteDark darkPalette { get; set; }
         protected string _name;

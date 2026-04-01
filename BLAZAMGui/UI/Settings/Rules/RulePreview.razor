@@ -1,32 +1,35 @@
 @inherits DatabaseComponentBase
+@using BLAZAM.Database.Models.Audit
 @using BLAZAM.Database.Models.Rules
 @using BLAZAM.Gui.UI.Dashboard.Widgets
+@using BLAZAM.Services.Helpers
+@using Serilog.Events
 <MudPaper Elevation="1" Class="pa-4 my-4">
     <MudStack>
         <MudStack Row=true>
             <MudText Typo="Typo.body2"
-            Color="Color.Tertiary"
-            Class="align-middle">@Rule.Name</MudText>
+                     Color="Color.Tertiary"
+                     Class="align-middle">@Rule.Name</MudText>
             @if (CompactView)
             {
                 <MudStack Class="my-0" Row=true>
 
                     <MudText Typo="Typo.body2"
-                    Class="align-middle">
+                             Class="align-middle">
                         Last Triggered: <DateWithTimeTooltip NullText=@AppLocalization[Lang.Never]
-                        DateTime="@Rule.LastTriggered" />
+                                                             DateTime="@Rule.LastTriggered" />
                     </MudText>
                 </MudStack>
             }
             <MudSpacer />
             <MudSwitch Label="@AppLocalization[Lang.Enabled]"
-            Color="Color.Success"
-            UncheckedColor="Color.Error"
-            Value="@Rule.Enabled"
-            ValueChanged="@(async(bool val)=>{await ChangeEnabled(Rule, val);})" />
+                       Color="Color.Success"
+                       UncheckedColor="Color.Error"
+                       Value="@Rule.Enabled"
+                       ValueChanged="@(async (bool val) => { await ChangeEnabled(Rule, val); })" />
             <AppIconButton Color="Color.Primary"
-            Icon="@Icons.Material.Filled.Edit"
-            OnClick="@(EditClicked)" />
+                           Icon="@Icons.Material.Filled.Edit"
+                           OnClick="@(EditClicked)" />
 
 
             @* <AppIconButton Icon="@Icons.Material.Filled.CopyAll"
@@ -39,23 +42,23 @@
 
                 <MudText Typo="Typo.body2">
                     Last Triggered: <DateWithTimeTooltip NullText=@AppLocalization[Lang.Never]
-                    DateTime="@Rule.LastTriggered" />
+                                                         DateTime="@Rule.LastTriggered" />
                 </MudText>
                 <MudText Typo="Typo.body2">
                     Last Executed: <DateWithTimeTooltip NullText=@AppLocalization[Lang.Never]
-                    DateTime="@Rule.LastExcecuted" />
+                                                        DateTime="@Rule.LastExcecuted" />
                 </MudText>
             </MudStack>
 
             <MudText Class="mt-1">
-                <MudIcon Style=@($"color:{Colors.Yellow.Darken2};" )
-                Icon="@Icons.Material.Outlined.ElectricBolt" />@($"Triggers on '{AppLocalization[Rule.Trigger.ToString()]}'")
+                <MudIcon Style=@($"color:{Colors.Yellow.Darken2};")
+                         Icon="@Icons.Material.Outlined.ElectricBolt" />@($"Triggers on '{AppLocalization[Rule.Trigger.ToString()]}'")
             </MudText>
             @if (Rule.Trigger == NotificationType.Scheduled)
             {
                 <MudText>
                     <MudIcon Color="Color.Info"
-                    Icon="@Icons.Material.Outlined.Schedule" /> At '@Rule.ScheduledRunTime.ToString()'
+                             Icon="@Icons.Material.Outlined.Schedule" /> At '@Rule.ScheduledRunTime.ToString()'
                 </MudText>
             }
             <MudText Class="mt-2"><MudIcon Color="Color.Warning" Icon="@Icons.Material.Outlined.FilterAlt" /> If</MudText>
@@ -79,63 +82,63 @@
                 }
                 <MudStack Row=true>
                     <MudTextField T="string"
-                    ReadOnly="true"
-                    Label="@AppLocalization[Lang.Action]"
-                    Value=@action.ActionType.ToString() />
+                                  ReadOnly="true"
+                                  Label="@AppLocalization[Lang.Action]"
+                                  Value=@action.ActionType.ToString() />
 
                     @if (action.Data != null)
                     {
                         <MudTextField T="string"
-                        ReadOnly="true"
-                        Label="@AppLocalization[Lang.Data]"
-                        Value=@action.Data?.ToString() />
+                                      ReadOnly="true"
+                                      Label="@AppLocalization[Lang.Data]"
+                                      Value=@action.Data?.ToString() />
                     }
                     @if (action.FieldValues.Count > 0)
                     {
                         <MudTextField T="string"
-                        ReadOnly="true"
-                        Label="@AppLocalization[Lang.Field]"
-                        Value=@action.FieldValues[0].CurrentField.DisplayName />
+                                      ReadOnly="true"
+                                      Label="@AppLocalization[Lang.Field]"
+                                      Value=@action.FieldValues[0].CurrentField?.DisplayName />
                         <MudTextField T="string"
-                        ReadOnly="true"
-                        Label="@AppLocalization[Lang.Value]"
-                        Value=@action.FieldValues[0].Value?.ToString() />
+                                      ReadOnly="true"
+                                      Label="@AppLocalization[Lang.Value]"
+                                      Value=@action.FieldValues[0].Value?.ToString() />
                     }
-                    @if (action.GroupSids.Count > 0)
+                    @if (action.GroupGuids.Count > 0)
                     {
                         <MudTextField T="string"
-                        ReadOnly="true"
-                        Label="@AppLocalization[Lang.Group]"
-                        Value=@action.GroupSids.FirstOrDefault()?.GroupSid.ToString() />
+                                      ReadOnly="true"
+                                      Label="@AppLocalization[Lang.Group]"
+                                      Value=@action.GroupGuids.FirstOrDefault()?.GroupGuid.ToString() />
                         <MudTextField T="string"
-                        ReadOnly="true"
-                        Label="@AppLocalization[Lang.Assign]"
-                        Value=@action.GroupSids.FirstOrDefault()?.Assigned.ToString() />
+                                      ReadOnly="true"
+                                      Label="@AppLocalization[Lang.Assign]"
+                                      Value=@action.GroupGuids.FirstOrDefault()?.Assigned.ToString() />
                     }
                 </MudStack>
             }
             <MudField Label="After Executing">
-                <StatusCheck Text="@AppHelpLocalization[Rule.StopOnThisRule?HelpLang.Stop_On_Rule:HelpLang.Continue_Processing_Rules]"
-                Status="@(!Rule.StopOnThisRule)" />
+                <StatusCheck Text="@AppHelpLocalization[Rule.StopOnThisRule ? HelpLang.Stop_On_Rule : HelpLang.Continue_Processing_Rules]"
+                             Status="@(!Rule.StopOnThisRule)" />
             </MudField>
             <MudStack Class="mud-width-full" Row="true">
                 <MudSpacer />
                 <MudButton Disabled="_loadingFilteredEntries"
-                Color="Color.Primary"
-                OnClick="@(()=>{_matchedPopoverOpen = !_matchedPopoverOpen;})">
+                           Color="Color.Primary"
+                           OnClick="@(()=>{_matchedPopoverOpen = !_matchedPopoverOpen;})">
                     Matches: @filteredEntries.Count
                 </MudButton>
                 @if (_loadingFilteredEntries)
                 {
                     <MudProgressCircular Indeterminate=true
-                    Size="Size.Small"
-                    Color="Color.Primary" />
+                                         Size="Size.Small"
+                                         Color="Color.Primary" />
                 }
                 else
                 {
                     <AppIconButton Color="Color.Primary"
-                    Icon="@Icons.Material.Filled.Refresh"
-                    OnClick="@LoadFilteredEntries" />
+                                   Icon="@Icons.Material.Filled.Refresh"
+                                   OnClick="@LoadFilteredEntries" />
                 }
                 <MudSpacer />
 
@@ -143,9 +146,9 @@
             @if (_matchedPopoverOpen)
             {
                 <MudDataGrid Elevation="0"
-                Dense="true"
-                Items="filteredEntries"
-                RowsPerPage="10">
+                             Dense="true"
+                             Items="filteredEntries"
+                             RowsPerPage="10">
                     <Columns>
                         <TemplateColumn>
                             <CellTemplate>
@@ -169,32 +172,52 @@
                 <MudStack Class="mud-width-full" Row="true">
                     <MudSpacer />
                     <MudButton Color="Color.Primary"
-                    Disabled="@(!Rule.Enabled||_ruleRunning)"
-                    OnClick="@(RunRule)">
+                               Disabled="@(!Rule.Enabled||_ruleRunning || _settings?.RulesEnabled!=true)"
+                               OnClick="@(RunRule)">
                         @AppLocalization[Lang.Run_Now]
                     </MudButton>
                     @if (_ruleRunning)
                     {
                         <MudProgressCircular Indeterminate=true
-                        Size="Size.Small"
-                        Color="Color.Primary" />
+                                             Size="Size.Small"
+                                             Color="Color.Primary" />
                     }
                     <MudSpacer />
 
                 </MudStack>
 
             }
+            <MudButton Color="@(_auditErrors.Count == 0 ? Color.Primary : Color.Error)"
+                       OnClick="@(()=>{_auditPopoverOpen = !_auditPopoverOpen;})">
+                @AppLocalization[Lang.Audit]
+            </MudButton>
+
+            @if (_auditPopoverOpen)
+            {
+                <MudDataGrid Items="_recentAudits">
+                    <Columns>
+                        <PropertyColumn Title="@AppLocalization[Lang.Timestamp]" Property="x => x.Timestamp" />
+                        <PropertyColumn Title="@AppLocalization[Lang.Type]" Property="x => x.EventType" />
+                        <PropertyColumn Title="@AppLocalization["Level"]" Property="x => x.Level" />
+                        <PropertyColumn Title="@AppLocalization[Lang.Message]" Property="x => x.Message" />
+
+                    </Columns>
+                </MudDataGrid>
+            }
         }
     </MudStack>
 </MudPaper>
-<LoadingData Loading="LoadingData"/>
+<LoadingData Loading="LoadingData" />
 @code {
     private bool _matchedPopoverOpen;
+    private bool _auditPopoverOpen;
     private bool _loadingFilteredEntries;
     private List<IDirectoryEntryAdapter> filteredEntries = new();
     [Parameter]
     public AutomationRule Rule { get; set; }
     bool _ruleRunning;
+    private List<AutomationRuleAuditLog> _auditErrors = [];
+    private List<AutomationRuleAuditLog> _recentAudits = [];
     bool _compactView;
     [Parameter]
     public bool CompactView
@@ -203,7 +226,7 @@
         {
             if (_compactView == value) return;
             _compactView = value;
-            _ = InvokeAsync(StateHasChanged);
+            _ = StateHasChangedAsync();
         }
     }
     [Inject]
@@ -213,24 +236,58 @@
     public EventCallback EditClicked { get; set; }
 
     [Parameter]
+    public AppEvent ReloadEvent { get; set; }
+
+    [Parameter]
     public EventCallback CopyClicked { get; set; }
+
+    private GlobalAutomationRuleSettings? _settings;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        LoadingData = false;
-        LoadFilteredEntries();
+        ReloadRule();
+        ReloadEvent.Delegate += TriggerReloadRule;
     }
-    private void ReloadRule()
+    public override void Dispose()
+    {
+        base.Dispose();
+        ReloadEvent.Delegate -= TriggerReloadRule;
+
+    }
+
+    private void TriggerReloadRule(object? obj, object? args)
+    {
+        ReloadRule();
+    }
+    public void ReloadRule()
     {
         _ = Task.Run(async () =>
        {
 
 
            LoadingData = true;
-           using var context = await DbFactory.CreateDbContextAsync();
-           Rule = await context.AutomationRules.FirstAsync(r => r.Id == Rule.Id);
-           filteredEntries = RulesProcessor.GetFilteredEntries(Rule);
+           try
+           {
+               using var context = await DbFactory.CreateDbContextAsync();
+               _settings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
+               Rule = await context.AutomationRules.FirstAsync(r => r.Id == Rule.Id);
+               var auditTimestampCutoff = DateTime.UtcNow.Subtract(TimeSpan.FromDays(30));
+               _auditErrors = await Context.AutomationRuleAuditLog
+                   .Where(x => x.Level == LogEventLevel.Error && x.AutomationRuleId == Rule.Id && x.Timestamp > auditTimestampCutoff)
+                   .OrderByDescending(x => x.Timestamp)
+                   .ToListAsync();
+               _recentAudits = await Context.AutomationRuleAuditLog
+                   .Where(x => x.AutomationRuleId == Rule.Id && x.Timestamp > auditTimestampCutoff)
+                   .OrderByDescending(x => x.Timestamp)
+                   .Take(100)
+                   .ToListAsync();
+           }
+           catch(Exception ex)
+           {
+               SnackBarService.Warning(AppHelpLocalization[(HelpLang.Unexpected_Error_Occurred)]);
+               Loggers.SystemLogger.Error(ex, "Error loading rule preview");
+           }
            LoadingData = false;
            LoadFilteredEntries();
 
@@ -244,12 +301,11 @@
 
 
         _loadingFilteredEntries = true;
-        await InvokeAsync(StateHasChanged);
-
-        filteredEntries = RulesProcessor.GetFilteredEntries(Rule);
+        await StateHasChangedAsync();
+        
+        filteredEntries = await Rule.Filters.GetFilteredEntries(Rule.ActiveDirectoryObjectType,DbFactory,Directory);
         _loadingFilteredEntries = false;
-
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     });
     }
     private async Task ChangeEnabled(AutomationRule rule, bool value)
@@ -271,16 +327,22 @@
     private async void RunRule()
     {
         _ruleRunning = true;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
         var job = await RulesProcessor.ProcessScheduledRule(Rule);
-        job.OnProgressUpdated += (progress)=>
+        if (job == null)
+        {
+            _ruleRunning = false;
+            await StateHasChangedAsync();
+            return;
+        }
+        job.OnProgressUpdated += (progress) =>
         {
             LoadFilteredEntries();
         };
         await job.WaitAsync();
 
         _ruleRunning = false;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
         ReloadRule();
     }
 }

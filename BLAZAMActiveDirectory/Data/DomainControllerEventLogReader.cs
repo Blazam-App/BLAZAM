@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
-using System.DirectoryServices;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
+using System.DirectoryServices;
+
 
 namespace BLAZAM.ActiveDirectory.Data
 {
@@ -21,29 +22,32 @@ namespace BLAZAM.ActiveDirectory.Data
         {
             var events = new List<EventLogEntry>();
 
-            foreach (var domainController in _directory.DomainControllers)
-            {
-                try
-                {
-                    var entry = domainController.GetDirectoryEntry();
-                    var searcher = new DirectorySearcher(entry)
-                    {
-                        Filter = "(&(objectCategory=computer)(objectClass=computer))", // Filter for computers
-                        PropertiesToLoad = { "dNSHostName" } // Load the DNS host name
-                    };
+            //foreach (var domainController in _directory.DomainControllers)
+            //{
+            //    try
+            //    {
+            //        var entry = domainController.GetDirectoryEntry();
+            //        var searcher = new DirectorySearcher(entry)
+            //        {
+            //            Filter = "(&(objectCategory=computer)(objectClass=computer))", // Filter for computers
+            //            PropertiesToLoad = { "dNSHostName" } // Load the DNS host name
+            //        };
 
-                    foreach (SearchResult result in searcher.FindAll())
-                    {
-                        var hostname = result.Properties["dNSHostName"][0].ToString();
-                        events.AddRange(GetLogonEventsForComputer(hostname, startTime, endTime));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Handle exceptions appropriately (e.g., logging)
-                    Loggers.ActiveDirectoryLogger.Information(ex, "Error reading events from {@DomainController}", domainController);
-                }
-            }
+
+            //        foreach (SearchResult result in searcher.FindAll())
+            //        {
+            //            var hostname = result.Properties["dNSHostName"][0].ToString();
+            //            events.AddRange(GetLogonEventsForComputer(hostname, startTime, endTime));
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        // Handle exceptions appropriately (e.g., logging)
+            //        Console.WriteLine($"Error reading events from {domainController}: {ex.Message}");
+            //    }
+            //}
+
+
 
             return events;
         }
@@ -51,7 +55,7 @@ namespace BLAZAM.ActiveDirectory.Data
         private List<EventLogEntry> GetLogonEventsForComputer(string computerName, DateTime startTime, DateTime endTime)
         {
             var events = new List<EventLogEntry>();
-            var eventLog = new EventLog("Security", computerName);
+            using var eventLog = new EventLog("Security", computerName);
 
             foreach (EventLogEntry entry in eventLog.Entries)
             {
@@ -70,16 +74,34 @@ namespace BLAZAM.ActiveDirectory.Data
         {
 
             var events = new List<FailedADLogonEvent>();
-            var dcNames = _directory.DomainControllers.Select(controller => controller.Name).ToList();
-            Parallel.ForEach(dcNames, domainController =>
+
+            if (user.SID == null)
             {
-                _ = _directory.Impersonation.Run(() =>
+                return events;
+            }
+
+
+            if (!OperatingSystem.IsWindows())
+            {
+                return events;
+            }
+            // Force load before impersonation
+            var _ = typeof(System.Diagnostics.EventLog);
+
+            
+            //Parallel.ForEach(_directory.DomainControllers, domainController =>
+            foreach (var domainController in _directory.DomainControllers)
+            {
+
+                var ret = _directory.Impersonation.Run(() =>
                 {
                     try
                     {
-                        EventLogSession session = new EventLogSession(domainController);
-                        var eventLogQuery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=4625 or EventID=4771 or EventID=4740)]] and *[EventData[Data[@Name='TargetUserName'] and (Data='" + user.SAMAccountName + "' or Data='" + user.UserPrincipalName + "')]]");
-                        eventLogQuery.Session = session;
+                        using EventLogSession session = new EventLogSession(domainController);
+                        var eventLogQuery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=4625 or EventID=4771 or EventID=4740)]] and *[EventData[Data[@Name='TargetUserName'] and (Data='" + user.SAMAccountName + "' or Data='" + user.UserPrincipalName + "')]]")
+                        {
+                            Session = session
+                        };
 
                         var reader = new EventLogReader(eventLogQuery);
                         for (EventRecord eventdetail = reader.ReadEvent(); eventdetail != null; eventdetail = reader.ReadEvent())
@@ -134,6 +156,8 @@ namespace BLAZAM.ActiveDirectory.Data
                         }
                         return true;
 
+
+
                     }
                     catch (Exception ex)
                     {
@@ -141,7 +165,7 @@ namespace BLAZAM.ActiveDirectory.Data
                         return false;
                     }
                 });
-            });
+            }
 
 
             return events.OrderByDescending(e => e.Timestamp).ToList();

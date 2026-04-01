@@ -1,53 +1,12 @@
-﻿@inherits Widget
+﻿@using BLAZAM.Gui.UI.DataGrids
+@inherits Widget
 @attribute [Authorize]
-
-<MudDataGrid T="IDirectoryEntryAdapter"
-             Items="FavoriteEntries"
-             RowClick="@RowClicked"
-             RowClass="cursor-pointer"
-             Dense=true
-             Filterable=true
-             RowsPerPage="@ItemsPerPage"
-             RowsPerPageChanged="@SetRowsPerPage"
-             FilterMode="DataGridFilterMode.Simple"
-             Loading=@LoadingData
-             Square=true
-             ColumnResizeMode="ResizeMode.Column"
-             Virtualize=true
-             Class="py-0"
-             SortMode="SortMode.Single">
-    <Columns>
-        <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
-            <CellTemplate>
-                <DirectoryEntryTypeIcon Entry=context.Item />
-
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization[Lang.Name]>
-            <CellTemplate>
-                <DirectoryEntryTooltipPopover Entry="@context.Item">
-                    <DirectoryEntryContextMenu Entry="@context.Item"
-                                               OnChanged="RefreshDataAsync">
-                        <MudText>@context.Item?.CanonicalName</MudText>
-                    </DirectoryEntryContextMenu>
-                </DirectoryEntryTooltipPopover>
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization[Lang.Changed]>
-            <CellTemplate>
-                @if (context.Item?.LastChanged != null)
-                {
-                    <MudText>@context.Item.LastChanged?.ToLocalTime()</MudText>
-                }
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-    <PagerContent>
-        <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="IDirectoryEntryAdapter" />
-    </PagerContent>
-    <NoRecordsContent>
-        <MudText>@AppLocalization[Lang.No_Favorites]</MudText>
-    </NoRecordsContent>
-</MudDataGrid>
+<DirectoryEntryDataGrid Entries="FavoriteEntries"
+                        RowClicked="RowClicked"
+                        IsLoadingData="LoadingData"
+                        ItemsPerPage="ItemsPerPage"
+                        ItemsPerPageChanged="SetRowsPerPage"
+                        EntryChanged="RefreshDataAsync"
+                        NoResultsMessage="@AppLocalization[Lang.No_Favorites]" />
 
 

@@ -42,7 +42,10 @@ namespace BLAZAM.Static
         {
             var defaultIconFilePath = Path.Combine(ApplicationInfo.applicationRoot.FullPath, "wwwroot", "img", "default_logo.png");
             if (File.Exists(defaultIconFilePath))
+            {
                 return File.ReadAllBytes(defaultIconFilePath);
+            }
+
             return null;
         }
     }

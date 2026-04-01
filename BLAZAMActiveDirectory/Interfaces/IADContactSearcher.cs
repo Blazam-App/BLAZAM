@@ -6,6 +6,7 @@
         Task<List<IADContact>> FindChangedContactsAsync(bool ignoreDisabledUsers = true);
         IADContact? FindContactsByContainerName(string? searchTerm, bool exactMatch = false);
         IADContact? FindContactsByGUID(byte[]? guid);
+        IADContact? FindContactsByGUID(Guid? guid);
         List<IADContact> FindContactsByString(string? searchTerm, bool exactMatch = false);
         Task<List<IADContact>> FindContactsByStringAsync(string? searchTerm, bool exactMatch = false);
         List<IADContact> FindExpiredContacts();

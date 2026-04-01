@@ -1,9 +1,9 @@
-﻿using System.Security.Claims; // Required for ClaimsPrincipal
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims; // Required for ClaimsPrincipal
 
 namespace BLAZAM.Session.Interfaces
 {
@@ -15,12 +15,12 @@ namespace BLAZAM.Session.Interfaces
         /// <summary>
         /// Gets this user's unique ID as stored in the application database (corresponds to AppUser.Id).
         /// </summary>
-        public int Id { get; }
+        int Id { get; }
 
         /// <summary>
         /// Event triggered when user-specific settings or preferences change.
         /// </summary>
-        AppDelegate OnSettingsChanged { get; set; }
+        AppEvent OnSettingsChanged { get; set; }
 
         /// <summary>
         /// Gets the username for audit logging, including impersonator information if applicable (e.g., "UserA impersonated by AdminUser").
@@ -41,6 +41,11 @@ namespace BLAZAM.Session.Interfaces
         /// Gets a value indicating whether the user has SuperAdmin privileges.
         /// </summary>
         bool IsSuperAdmin { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the user has only self-edit permissions.
+        /// </summary>
+        bool IsSelfEditOnly { get; }
 
         /// <summary>
         /// Gets or sets the timestamp of the user's last access or activity.
@@ -135,6 +140,8 @@ namespace BLAZAM.Session.Interfaces
         /// Gets or sets a value indicating whether plugin placeholders should be shown in the UI.
         /// </summary>
         bool ShowPluginPlaceholders { get; set; }
+        AppEvent OnReadNewsSaved { get; set; }
+        string? Browser { get; set; }
 
         /// <summary>
         /// Checks if the user can search for disabled objects of a specific type based on their permissions.

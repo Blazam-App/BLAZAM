@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿using BLAZAM.Logger;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
-using BLAZAM.Logger;
 using static BLAZAM.ActiveDirectory.Data.Win32;
 
 namespace BLAZAM.ActiveDirectory.Data
@@ -122,7 +122,7 @@ namespace BLAZAM.ActiveDirectory.Data
 
         }
 
-        int delegateCallback(IntPtr pvCallbackCtxt, IntPtr pbData, int cbData, [MarshalAs(UnmanagedType.Bool)] bool fFinal)
+        private int delegateCallback(IntPtr pvCallbackCtxt, IntPtr pbData, int cbData, [MarshalAs(UnmanagedType.Bool)] bool fFinal)
         {
             try
             {

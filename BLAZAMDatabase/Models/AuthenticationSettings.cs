@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BLAZAM.Common.Data.Validators;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BLAZAM.Common.Data.Validators;
 
 namespace BLAZAM.Database.Models
 {
@@ -9,7 +9,7 @@ namespace BLAZAM.Database.Models
         Block,
         Bypass
     }
-    public enum MFAType
+    public enum MfaType
     {
         CiscoDuo,
         GoogleAuthenticator
@@ -40,7 +40,7 @@ namespace BLAZAM.Database.Models
         /// If DUO is enabled this setting has no effect.
         /// </remarks>
         public bool RequireMFA { get; set; }
-        public MFAType MFAType { get; set; }
+        public MfaType MFAType { get; set; }
 
         [NotMapped]
         public bool DuoSettingsValid

@@ -4,10 +4,10 @@
     && HttpContextAccessor.HttpContext.Request.Scheme.Equals("https", StringComparison.InvariantCultureIgnoreCase)
     && !TextToCopy.IsNullOrEmpty())
 {
-    <AppTooltip @ref=_tooltip ShowOnClick=false ShowOnFocus=false ShowOnHover=false Visible=_showTooltip>
+    <AppTooltip ShowOnClick=false ShowOnFocus=false ShowOnHover=false Visible=_showTooltip>
         <TooltipContent>
-            <MudAlert Severity="Severity.Info">
-                @AppHelpLocalization[HelpLang.Text_Copied_To_Clipboard, TextToCopy]
+            <MudAlert Severity="Severity.Info" Variant="Variant.Filled">
+                @AppHelpLocalization[HelpLang.Text_Copied_To_Clipboard, TextToCopy?.Length<40?TextToCopy:AppLocalization[Lang.Text]]
             </MudAlert>
         </TooltipContent>
         <ChildContent>
@@ -23,18 +23,17 @@
     public string? TextToCopy{ get; set; }
 
     bool _showTooltip;
-    AppTooltip? _tooltip;
 
     private async Task CopyToClipboard()
     {
         if(TextToCopy.IsNullOrEmpty())
             return;
         await JS.InvokeVoidAsync("navigator.clipboard.writeText", TextToCopy);
-        _showTooltip = true;
-        await InvokeAsync(StateHasChanged);
+        _showTooltip = true; 
+        await StateHasChangedAsync();
         await Task.Delay(3000);
         _showTooltip = false;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
     }
 

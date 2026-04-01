@@ -5,8 +5,12 @@ let stuckTimerId = null; // Timer to detect a stuck modal
 
 async function attemptReload() {
     try {
-        await fetch(window.location.href, { method: 'HEAD', cache: 'no-store' });
-        window.location.reload();
+        const response = await fetch(window.location.href, { method: 'HEAD', cache: 'no-store' });
+        if (response.ok && response.status === 200) {
+            window.location.reload();
+        } else {
+            console.log('Auto-reload: Server responded but Blazor is not ready.');
+        }
     } catch (error) {
         console.log('Auto-reload: Server still unreachable.');
     }

@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using BLAZAM.Logger;
+using Serilog;
 
 namespace BLAZAM.Services.Background
 {
@@ -13,12 +14,14 @@ namespace BLAZAM.Services.Background
             this.info = info;
             this.httpClientFactory = httpClientFactory;
             if (httpClientFactory != null)
+            {
                 t = new Timer(SendRequest, null, TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
+            }
         }
 
         private async void SendRequest(object? state)
         {
-            Log.Information("Running Auto Launcher");
+            Loggers.SystemLogger.Information("Running Auto Launcher");
             using var httpClient = httpClientFactory.CreateClient();
             foreach (var address in info.ListeningAddresses)
             {

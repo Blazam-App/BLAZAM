@@ -69,14 +69,12 @@
                 }
             </MudContainer>
             <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon" Accept="image/*">
-                <ActivatorContent>
                     <MudButton HtmlTag="label"
                                Variant="Variant.Filled"
                                Color="Color.Primary"
                                StartIcon="@Icons.Material.Filled.CloudUpload">
                         @AppLocalization[Lang.Upload_Icon]
                     </MudButton>
-                </ActivatorContent>
             </MudFileUpload>
             <MudAlert Severity="Severity.Info">@AppLocalization["Changes may take up to 24 hrs to take effect"]</MudAlert>
         </SettingsField>
@@ -97,6 +95,7 @@
         @if (!ApplicationInfo.IsUnderIIS || ApplicationInfo.InDebugMode)
         {
             <SettingsField Label="@AppLocalization[Lang.SSL_Certificate]">
+                <CertificateDetails @ref=_certDetails AppSettings=@settings/>
                 <MudButton OnClick="()=>{uploadCertificateModal?.ShowAsync();}"
                            Variant="Variant.Filled"
                            Color="Color.Primary"
@@ -106,7 +105,7 @@
 
             </SettingsField>
             <AppModal @ref="uploadCertificateModal" Title=@AppLocalization[Lang.Upload_Certificate]>
-                <UploadCertificateModalContent AppSettings="settings" />
+                <UploadCertificateModalContent AppSettings="settings" OnSSLCertifcateChanged="@(() => { _certDetails?.LoadCertDetails(); })" />
             </AppModal>
         }
 
@@ -114,7 +113,6 @@
         <SettingsField>
             <MudButton Disabled="!IsValid"
                        OnClick="Save"
-                       ButtonType="ButtonType.Submit"
                        Color="Color.Success">
                 @AppLocalization[Lang.Save_Changes]
             </MudButton>
@@ -125,7 +123,7 @@
 <LoadingData Loading=LoadingData />
 @code {
     AppSettings settings = new AppSettings();
-
+    CertificateDetails? _certDetails;
     AppModal? uploadCertificateModal;
     protected override async Task OnInitializedAsync()
     {
@@ -134,7 +132,6 @@
 
         settings = await Context.AppSettings.FirstOrDefaultAsync();
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
 
     }
 
@@ -142,7 +139,7 @@
     private async void LoadIcon(IBrowserFile e)
     {
         settings.AppIcon = await e.ReadByteArrayAsync(5000000);
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
 
     }

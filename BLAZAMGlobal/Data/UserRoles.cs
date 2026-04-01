@@ -5,7 +5,7 @@
         /// <summary>
         /// All roles, except <see cref="SuperAdmin"/>
         /// </summary>
-        public static List<string> All => new(){
+        public static List<string> All => [
             Login,
             SearchComputers,
             SearchGroups,
@@ -19,7 +19,7 @@
             SearchPrinters,
             CreatePrinters,
             SearchBitLocker
-        };
+        ];
         public const string Login = "Login";
         public const string SearchUsers = "SearchUsers";
         public const string SearchContacts = "SearchContacts";

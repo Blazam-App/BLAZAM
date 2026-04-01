@@ -1,8 +1,4 @@
 ﻿
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Security;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
@@ -10,6 +6,10 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -17,14 +17,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
     {
 
         private ADComputerSessions? _sessionManager;
-        private WmiConnection? _wmiConnection;
-        private WmiConnection? wmiConnection
+        private IRemoteManagementConnection? _wmiConnection;
+        private IRemoteManagementConnection? wmiConnection
         {
             get
             {
                 if (CanonicalName == null)
                 {
-                    return null;
+                    _wmiConnection= new PSConnection(Directory, this);
                 }
 
                 _wmiConnection ??= new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
@@ -37,6 +37,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
 
         }
+
+        public override ActiveDirectoryObjectType ObjectType => ActiveDirectoryObjectType.Computer;
 
         public async Task<List<IADBitLockerRecovery>?> GetBitLockerRecoveryAsync()
         {
@@ -319,7 +321,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     try
                     {
-                        if (SearchResult != null && !_pingCancellationTokenSource.IsCancellationRequested && CanonicalName != null)
+                        if (DirectoryEntry != null && !_pingCancellationTokenSource.IsCancellationRequested && CanonicalName != null)
                         {
                             Ping(timeout);
                         }

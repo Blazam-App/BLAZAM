@@ -1,4 +1,5 @@
-﻿@using BLAZAM.Global.Data
+﻿@using BLAZAM.Database.Models.Rules
+@using BLAZAM.Global.Data
 @inherits AppComponentBase
 <MudSpacer />
 <MudMenu AnchorOrigin=Origin.BottomCenter
@@ -8,42 +9,42 @@
          Label="@AppLocalization[SearchService.SeachObjectType.ToString()]">
     <CascadingAuthenticationState>
 
-        <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.All; })>
+        <MudMenuItem OnClick=@(() => { SearchService.SeachObjectType = ActiveDirectoryObjectType.All; })>
             @AppLocalization[Lang.All]
         </MudMenuItem>
-        <AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
+        <AuthorizeView Roles="@(UserRoles.SearchUsers + "," + UserRoles.SuperAdmin)">
 
-            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.User; })>
+            <MudMenuItem OnClick=@(() => { SearchService.SeachObjectType = ActiveDirectoryObjectType.User; })>
                 @AppLocalization[Lang.User]
             </MudMenuItem>
         </AuthorizeView>
 
-        <AuthorizeView Roles="@(UserRoles.SearchGroups+","+UserRoles.SuperAdmin)">
-            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Group; })>
+        <AuthorizeView Roles="@(UserRoles.SearchGroups + "," + UserRoles.SuperAdmin)">
+            <MudMenuItem OnClick=@(() => { SearchService.SeachObjectType = ActiveDirectoryObjectType.Group; })>
                 @AppLocalization[Lang.Group]
             </MudMenuItem>
 
         </AuthorizeView>
-        <AuthorizeView Roles="@(UserRoles.SearchOUs+","+UserRoles.SuperAdmin)">
-            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.OU; })>
+        <AuthorizeView Roles="@(UserRoles.SearchOUs + "," + UserRoles.SuperAdmin)">
+            <MudMenuItem OnClick=@(() => { SearchService.SeachObjectType = ActiveDirectoryObjectType.OU; })>
                 @AppLocalization[Lang.OU]
             </MudMenuItem>
 
         </AuthorizeView>
-        <AuthorizeView Roles="@(UserRoles.SearchComputers+","+UserRoles.SuperAdmin)">
-            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Computer; })>
+        <AuthorizeView Roles="@(UserRoles.SearchComputers + "," + UserRoles.SuperAdmin)">
+            <MudMenuItem OnClick=@(() => { SearchService.SeachObjectType = ActiveDirectoryObjectType.Computer; })>
                 @AppLocalization[Lang.Computer]
             </MudMenuItem>
 
         </AuthorizeView>
-        <AuthorizeView Roles="@(UserRoles.SearchPrinters+","+UserRoles.SuperAdmin)">
-            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Printer; })>
+        <AuthorizeView Roles="@(UserRoles.SearchPrinters + "," + UserRoles.SuperAdmin)">
+            <MudMenuItem OnClick=@(() => { SearchService.SeachObjectType = ActiveDirectoryObjectType.Printer; })>
                 @AppLocalization[Lang.Printer]
             </MudMenuItem>
 
         </AuthorizeView>
         <AuthorizeView Roles="@(UserRoles.SuperAdmin)">
-            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.BitLocker; })>
+            <MudMenuItem OnClick=@(() => { SearchService.SeachObjectType = ActiveDirectoryObjectType.BitLocker; })>
                 @AppLocalization[Lang.BitLocker]
             </MudMenuItem>
 
@@ -53,29 +54,53 @@
 </MudMenu>
 
 
-@if (IsAdmin == true || CurrentUser.State?.CanSearchDisabled(ActiveDirectoryObjectType.User) == true)
+@if (IsAdmin || CurrentUser.State?.CanSearchDisabled(ActiveDirectoryObjectType.User) == true)
 {
     <MudSwitch Class="d-flex align-middle"
-        Size=Size.Small
+               Size=Size.Small
                @bind-Value=SearchService.IncludeDisabled
                UncheckedColor="Color.Error"
                Color=Color.Success>
         @AppLocalization[Lang.Include_Disabled]
     </MudSwitch>
 }
-
 <MudPaper Class=" mud-overlay-light" Style="width:100%;max-width:550px;height:min-content;">
+
     <ADAutoComplete Class="mt-0"
                     Style="max-width:550px;"
-                    AdornmentIcon="@SearchService.SeachObjectType.TypeIcon()"
+                    Adornment="@(IsAdmin?Adornment.Start:Adornment.None)"
+                    AdornmentIcon="@(IsAdmin?Icons.Material.Filled.FilterList:null)"
                     Variant="Variant.Filled"
                     Label=@AppLocalization[Lang.Search_Directory]
+                    OnAdornmentClick="@(()=>{_advancedSearchModal?.ShowAsync();})"
                     SelectedResultChanged="@((result)=>{if(result!=null)SearchService.Search(SearchService.SearchTerm);})"
                     SearchObjectType="@SearchService.SeachObjectType"
                     SearchDisabled=@SearchService.IncludeDisabled
                     @bind-SearchTerm="@SearchService.SearchTerm" />
+
+
+
 </MudPaper>
 <MudSpacer />
-@code {
+@if (IsAdmin)
+{
+    <AppModal @ref="_advancedSearchModal"
+        Options="new(){ FullWidth=true, MaxWidth=MaxWidth.Medium}"
+        Title="Advanced Search" 
+        YesText="@AppLocalization[Lang.Search]"
+    OnYes="InitiateAdvancedSearch">
+    <AdvancedFilterEditor Filters="Filters" />
+</AppModal>
+}
 
+
+@code {
+    private List<AutomationRuleOrFilter> Filters = new();
+    private AppModal? _advancedSearchModal;
+
+    private Task InitiateAdvancedSearch(){
+        _advancedSearchModal?.CloseAsync();
+        SearchService.AdvancedSearch(Filters);
+        return Task.CompletedTask;
+    }
 }

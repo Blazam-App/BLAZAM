@@ -8,13 +8,13 @@
 
         <MudSelectList T="string"
                        Label=@AppLocalization[Lang.Category]
-                       Values="TemplateCategories"
+                       Options="TemplateCategories"
                        @bind-Value="@SelectedCategory" />
 
         <MudSelectList T="DirectoryTemplate"
                        Disabled=@(Templates.Any(t=>t.DeletedAt==null))
                        Label=@AppLocalization[Lang.Template]
-                       Values="@Templates.Where(t=>t.DeletedAt==null)"
+                       Options="@Templates.Where(t=>t.DeletedAt==null)"
                        Value="@SelectedTemplate"
                        ValueChanged="@((selected)=>{
                                         SelectedTemplate = selected;
@@ -128,6 +128,9 @@
     AppModal? RestoreModal;
 
     [Parameter]
+    public EventCallback<DirectoryTemplate?> OnTemplateChanged { get; set; }
+
+    [Parameter]
     public DirectoryTemplate? TemplateSelected{ get => SelectedTemplate; set => SelectedTemplate = value; }
 
     protected override async Task OnInitializedAsync()
@@ -145,6 +148,7 @@
     {
         SelectedTemplate = (DirectoryTemplate)template.Clone(Context);
         await RefreshComponents();
+        OnTemplateChanged.InvokeAsync(SelectedTemplate);
 
 
     }
@@ -164,7 +168,6 @@
             SelectedTemplate.DeletedAt = DateTime.Now;
             await Context.SaveChangesAsync();
             SelectedTemplate = null;
-            await InvokeAsync(StateHasChanged);
             Nav.NavigateTo("/templates/");
         }
     }

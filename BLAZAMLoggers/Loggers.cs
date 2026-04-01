@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using Serilog.Events;
+using System.Diagnostics;
 
 namespace BLAZAM.Logger
 {
@@ -103,6 +104,21 @@ namespace BLAZAM.Logger
                 _systemLogger = value;
             }
         }
+        
+      
+        private static ILogger? _aspLogger;
+        public static ILogger AspNetLogger
+        {
+            get
+            {
+                EnsureLogger(ref _aspLogger);
+                return _aspLogger;
+            }
+            private set
+            {
+                _aspLogger = value;
+            }
+        }
 
         private static ILogger? _pluginManager;
         public static ILogger PluginLogger
@@ -120,6 +136,7 @@ namespace BLAZAM.Logger
 
 
 
+
         public static void SetupLoggers(string logPath, string applicationVersion = "1.0")
         {
             _logPath = logPath;
@@ -134,6 +151,9 @@ namespace BLAZAM.Logger
             var systemLoggerBuilder = CreateLogBuilder()
                     .WriteTo.File(logPath + @"system\system.txt",
                     rollingInterval: RollingInterval.Hour,
+                    retainedFileCountLimit: null,
+                    fileSizeLimitBytes: 10000000,
+                    rollOnFileSizeLimit: true,
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}",
                     retainedFileTimeLimit: TimeSpan.FromDays(30))
                     .WriteTo.Logger(lc =>
@@ -172,13 +192,26 @@ namespace BLAZAM.Logger
             var loggerBuilder = CreateLogBuilder()
                 .WriteTo.File(logFilePath,
                 rollingInterval: rollingInterval,
+                    retainedFileCountLimit: null,
+                    fileSizeLimitBytes: 10000000,
+                    rollOnFileSizeLimit: true,
          outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}",
-         retainedFileTimeLimit: TimeSpan.FromDays(30))
-
-                .WriteTo.Logger(lc =>
+         retainedFileTimeLimit: TimeSpan.FromDays(30));
+            if (!Debugger.IsAttached)
+            {
+                loggerBuilder.WriteTo.Logger(lc =>
                 {
                     lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
                 });
+            }
+            else
+            {
+                loggerBuilder.WriteTo.Logger(lc =>
+                {
+                    lc.WriteTo.Console();
+                });
+            }
+                
             if (SendToSeqServer)
             {
                 loggerBuilder.WriteTo.Seq(SeqServerUri, apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning);

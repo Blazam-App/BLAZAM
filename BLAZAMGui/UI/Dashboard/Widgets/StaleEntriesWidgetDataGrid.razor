@@ -21,12 +21,7 @@
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
 
-                <DirectoryEntryTooltipPopover Entry="@context.Item">
-                    <DirectoryEntryContextMenu Entry="@context.Item"
-                                               OnChanged="OnChanged">
-                        <MudText>@context.Item?.CanonicalName</MudText>
-                    </DirectoryEntryContextMenu>
-                </DirectoryEntryTooltipPopover>
+                <DirectoryEntryLink Entry="@context.Item" OnChanged="OnChanged" />
 
             </CellTemplate>
         </TemplateColumn>
@@ -49,7 +44,6 @@
 
 
 @code {
-#nullable disable warnings
 
     [Parameter]
     public EventCallback OnChanged { get; set; }

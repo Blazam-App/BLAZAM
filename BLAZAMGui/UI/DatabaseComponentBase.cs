@@ -1,10 +1,7 @@
-using BLAZAM.Database.Interfaces;
-
 namespace BLAZAM.Gui.UI
 {
-    public class DatabaseComponentBase : AppComponentBase
+    public abstract class DatabaseComponentBase : AppComponentBase
     {
-#nullable disable warnings
         protected IDatabaseContext Context;
         protected override async Task OnInitializedAsync()
         {
@@ -32,6 +29,12 @@ namespace BLAZAM.Gui.UI
             {
                 Loggers.DatabaseLogger.Error(ex, "Failed to connect to database");
             }
+        }
+
+        public override void Dispose()
+        {
+            Context?.Dispose();
+            base.Dispose();
         }
     }
 }

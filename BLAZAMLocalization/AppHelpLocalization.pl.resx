@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>Mapowania {0} używają tego poziomu dostępu i zostaną usunięte</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>Musisz podać zarówno imię, jak i nazwisko</value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>Aby zmodyfikować nazwę użytkownika, kliknij przycisk Zmień nazwę na pasku narzędzi/w menu koła zębatego</value>
   </data>
@@ -222,6 +225,9 @@
   <data name="No_Request_Actions_Available" xml:space="preserve">
     <value>Dla tego wpisu nie są dostępne żadne działania do żądania.</value>
   </data>
+  <data name="No_Request_Fields_Available" xml:space="preserve">
+    <value />
+  </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>Wygenerowanie nowego tokenu uwierzytelniającego unieważni istniejący!</value>
   </data>
@@ -232,6 +238,9 @@
     <value>Administrator zmienił nazwę tej stacji roboczej. Uruchomi się ponownie za {0} sekund.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
+    <value>Żądanie do {0}</value>
+  </data>
+  <data name="Request_For" xml:space="preserve">
     <value>Żądanie do {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
@@ -248,6 +257,9 @@
   </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Wystąpił nieoczekiwany błąd.</value>
+  </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>Masz niezapisane zmiany</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
     <value>Gałąź wydania jest zalecaną gałęzią. Wybór Nightly jest zalecany tylko w przypadku instalacji testowych. Dev jest przeznaczony tylko dla deweloperów.</value>
@@ -269,5 +281,15 @@ na konto o niższych uprawnieniach, aby poprawić bezpieczeństwo.</value>
   <data name="Update_Credential_Is_Invalid" xml:space="preserve">
     <value>Brak skonfigurowanych poświadczeń z uprawnieniami do zapisu w katalogu aplikacji!
 Spróbuj skonfigurować niestandardowe poświadczenia aktualizacji.</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

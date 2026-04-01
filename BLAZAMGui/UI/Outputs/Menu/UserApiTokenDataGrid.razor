@@ -1,12 +1,11 @@
 @inherits DatabaseComponentBase
-<ApiTokenDataGrid OnTokenDeleted="@(async(token)=>{await Delete(token);})"
-Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
+<ApiTokenDataGrid @ref=_apiTokenDataGrid OnTokenDeleted="@(async (token) => { await Delete(token); })" />
 
 
 <SettingsField Label="@AppLocalization[Lang.Create_new_token]">
     <MudSelect @bind-Value="_apiValidDays"
-    Class="mb-3"
-    Label="@AppLocalization[Lang.Token_Lifetime]">
+               Class="mb-3"
+               Label="@AppLocalization[Lang.Token_Lifetime]">
         @if (ApplicationInfo.InDebugMode)
         {
             <MudSelectItem Value="TimeSpan.FromSeconds(30)">30 @AppLocalization[Lang.seconds]</MudSelectItem>
@@ -16,31 +15,36 @@ Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
         <MudSelectItem Value="TimeSpan.FromDays(60)">60 @AppLocalization[Lang.days]</MudSelectItem>
         <MudSelectItem Value="TimeSpan.FromDays(90)">90 @AppLocalization[Lang.days]</MudSelectItem>
         <MudSelectItem Value="TimeSpan.FromDays(180)">180 @AppLocalization[Lang.days]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(1*365)">1 @AppLocalization[Lang.year]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(2*365)">2 @AppLocalization[Lang.years]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(5*365)">5 @AppLocalization[Lang.years]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(10*365)">10 @AppLocalization[Lang.years]</MudSelectItem>
-        <MudSelectItem Value="TimeSpan.FromDays(1000*365)">@AppLocalization[Lang.Forever]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(1 * 365)">1 @AppLocalization[Lang.year]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(2 * 365)">2 @AppLocalization[Lang.years]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(5 * 365)">5 @AppLocalization[Lang.years]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(10 * 365)">10 @AppLocalization[Lang.years]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(1000 * 365)">@AppLocalization[Lang.Forever]</MudSelectItem>
 
     </MudSelect>
     <MudButton Variant="Variant.Filled"
-    Color="Color.Success"
-    OnClick="@GenerateToken">
+               Disabled=LoadingData
+               Color="Color.Success"
+               OnClick="@GenerateToken">
         @AppLocalization[Lang.Generate_New_API_Token]
     </MudButton>
+    <LoadingData Loading=LoadingData/>
 </SettingsField>
 @code {
     List<ApiToken> _tokens = new();
     TimeSpan _apiValidDays = TimeSpan.FromDays(30);
+    ApiTokenDataGrid? _apiTokenDataGrid;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        GetTokens();
+        LoadingData = false;
     }
 
     private async Task GenerateToken()
     {
+        LoadingData = true;
+        await StateHasChangedAsync();
         var token = JwtTokenService.GenerateJwtToken(_apiValidDays);
         var decodedToken = JwtTokenService.DecodeJwtToken(token);
         var raw = decodedToken.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
@@ -50,16 +54,21 @@ Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
         var dt = DateTime.UnixEpoch.AddSeconds(lng);
 
         var newToken = new ApiToken()
-            {
-                Token = token.Encrypt(),
-                UserId = CurrentUser.State.Id,
-                ExpiresAt = dt,
-                TokenHash = token.GetAppHashCode()
-            };
+        {
+            Token = await token.EncryptAsync(),
+            UserId = CurrentUser.State.Id,
+            ExpiresAt = dt,
+            TokenHash = token.GetAppHashCode()
+        };
         Context.ApiTokens.Add(newToken);
         await Context.SaveChangesAsync();
+        Analytics.ApiTokenCreated();
         await AuditLogger.System.APITokenCreated(CurrentUser.Username);
-        GetTokens();
+        if (_apiTokenDataGrid != null)
+        {
+            await _apiTokenDataGrid.GetTokensAsync();
+        }
+        LoadingData = false;
     }
     public async Task Save()
     {
@@ -71,21 +80,17 @@ Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
     {
         if (tokenToDelete != null && await MessageService.Confirm(AppHelpLocalization[HelpLang.Delete_API_Token_Confirmation], AppLocalization[Lang.Confirm_deletion]))
         {
-                tokenToDelete.DeletedAt = DateTime.UtcNow;
-                await Context.SaveChangesAsync();
-                GetTokens();
-            
+            var matchingToken = await Context.ApiTokens.FirstAsync(t => t.Id == tokenToDelete.Id);
+            matchingToken.DeletedAt = DateTime.UtcNow;
+            var result = await Context.SaveChangesAsync();
+            Analytics.ApiTokenRevoked();
+            if (_apiTokenDataGrid != null)
+            {
+                await _apiTokenDataGrid.GetTokensAsync();
+            }
+
         }
 
-    }
-
-    private void GetTokens()
-    {
-        Task.Run(async () =>
-       {
-           _tokens = Context.ApiTokens.Where(t => t.UserId == CurrentUser.State.Id).ToList();
-           await InvokeAsync(StateHasChanged);
-       });
     }
 
 }

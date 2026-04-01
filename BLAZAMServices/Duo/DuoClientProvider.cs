@@ -1,13 +1,20 @@
-﻿using BLAZAM.Database.Context;
+﻿using BLAZAM.Logger;
+using BLAZAM.Services.Audit;
+using BLAZAM.Session;
 using DuoUniversal;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.DirectoryServices.ActiveDirectory;
+using System.Security.Claims;
 
 namespace BLAZAM.Services.Duo
 {
     public interface IDuoClientProvider
     {
-        public Client GetDuoClient(string callbackUri);
-        public Task<bool> DoHealthCheckAsync();
+        Client GetDuoClient(string callbackUri);
+        Task<bool> DoHealthCheckAsync();
+        Task<bool> VerifyCallback(string callbackUri,string username, string code);
     }
     public class DuoClientProvider : IDuoClientProvider
     {
@@ -86,6 +93,25 @@ namespace BLAZAM.Services.Duo
             }
 
             return new ClientBuilder(ClientId, ClientSecret, ApiHost, RedirectUri).Build();
+        }
+        public async Task<bool> VerifyCallback(string callbackUri, string username, string code)
+        {
+            Client duoClient = GetDuoClient(callbackUri);
+
+            // Get a summary of the authentication from Duo.  This will trigger an exception if the username does not match.
+            try
+            {
+                IdToken token = await duoClient.ExchangeAuthorizationCodeFor2faResult(code, username);
+                if (token.AuthResult.Result.Equals("allow", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Warning(ex, "Error attempting to perform Duo MFA");
+            }
+            return false;
         }
     }
 }

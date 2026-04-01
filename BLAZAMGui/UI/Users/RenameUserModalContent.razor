@@ -5,6 +5,7 @@
     {
         <MudStack Class="px-7">
             <MudTextField AutoFocus=true
+                          Required=true
                           Label="@AppLocalization[Lang.First_Name]"
                           @bind-Value="@_privateEntryInstance.GivenName" />
 
@@ -12,10 +13,12 @@
                           @bind-Value="@_privateEntryInstance.MiddleName" />
 
             <MudTextField Label="@AppLocalization[Lang.Last_Name]"
+                          Required=true
                           @bind-Value="@_privateEntryInstance.Sn" />
 
             <MudTextField T="string"
                           Label="@AppLocalization[Lang.Display_Name]"
+                          Required=true
                           Text="@_privateEntryInstance.DisplayName"
                           TextChanged="DisplayNameChanged" />
 
@@ -46,9 +49,8 @@ else
 <MudAlert Severity="Severity.Info">@AppLocalization[HelpLang.Discard_Other_Changes_Warning]</MudAlert>
 @code {
 
-#nullable disable warnings
     private IADContact _privateEntryInstance;
-
+    NewUserName _newUsername = new();
     [Parameter]
     public EventCallback<IDirectoryEntryAdapter> DirectoryModelRenamed { get; set; }
 
@@ -69,8 +71,7 @@ else
         Modal.SetOnYes(SaveChanges);
         Modal.SetYesText(AppLocalization[Lang.Rename_User]);
         Modal.Title = AppLocalization[Lang.Rename_User];
-
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
     void DisplayNameChanged(string newName)

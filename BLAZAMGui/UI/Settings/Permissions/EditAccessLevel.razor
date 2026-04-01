@@ -1,4 +1,3 @@
-
 @using BLAZAM.Global.Events
 @using BLAZAM.Gui.UI.Settings.Modals
 @inherits ValidatedForm
@@ -8,7 +7,7 @@
 <MudStack Row=true>
     @if (!Self)
     {
-        <MudTextField Disabled=@(WorkingModel.Id==1)
+        <MudTextField Disabled=@(WorkingModel.Id == 1)
                       Label="@AppLocalization[Lang.Name]"
                       @bind-Value=WorkingModel.Name />
     }
@@ -61,21 +60,21 @@
                 <MudSpacer />
                 @if (!Self)
                 {
-                    <MudSelect Disabled=@(WorkingModel.Id==1)
+                    <MudSelect Disabled=@(WorkingModel.Id == 1)
                                T="int"
                                ValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)"
                                Value="objectMap.ObjectAccessLevelId">
 
                         @foreach (ObjectAccessLevel levelValue in ObjectAccessLevels.Levels)
                         {
-                            <MudSelectItem Disabled=@(WorkingModel.Id==1)
+                            <MudSelectItem Disabled=@(WorkingModel.Id == 1)
                                            Value="levelValue.Id">@AppLocalization[levelValue.Name]</MudSelectItem>
 
                         }
                     </MudSelect>
 
 
-                    <AppCloseButton Disabled=@(WorkingModel.Id==1)
+                    <AppCloseButton Disabled=@(WorkingModel.Id == 1)
                                     Tooltip=@AppLocalization[Lang.Remove]
                                     OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
                 }
@@ -85,8 +84,8 @@
 
 
                 @if (objectMap.ObjectType == ActiveDirectoryObjectType.User
-               && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id
-               && !Self)
+                            && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id
+                            && !Self)
                 {
                     <MudSwitch T=bool
                                UncheckedColor="Color.Error"
@@ -104,7 +103,7 @@
 
 
 
-                    <MudDataGrid Items="@WorkingModel.ActionMap.Where(am=>am.ObjectType==objectMap.ObjectType)"
+                    <MudDataGrid Items="@WorkingModel.ActionMap.Where(am => am.ObjectType == objectMap.ObjectType)"
                                  Elevation="0">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">
@@ -122,7 +121,7 @@
 
 
 
-                                        <MudMenuItem OnClick="()=>AddActionAccess(action,objectMap.ObjectType)">
+                                        <MudMenuItem OnClick="() => AddActionAccess(action, objectMap.ObjectType)">
                                             @AppLocalization[@action.Name]
                                         </MudMenuItem>
                                     }
@@ -172,14 +171,14 @@
 
 
                                     var existingFieldAccess = WorkingModel.FieldMap.FirstOrDefault(
-                                        m => m.ObjectType.Equals(objectMap.ObjectType)
-                                        && (m.Field?.Equals(field) == true
-                                        || m.CustomField?.Equals(field) == true));
+                                    m => m.ObjectType.Equals(objectMap.ObjectType)
+                                    && (m.Field?.Equals(field) == true
+                                    || m.CustomField?.Equals(field) == true));
 
                                     if (existingFieldAccess == null)
                                     {
 
-                                        <MudMenuItem OnClick="()=>AddFieldAccess(field,objectMap.ObjectType)">
+                                        <MudMenuItem OnClick="() => AddFieldAccess(field, objectMap.ObjectType)">
                                             @AppLocalization[field.DisplayName]
                                         </MudMenuItem>
 
@@ -243,7 +242,7 @@
                 else
                 {
 
-                    <MudText Style="width:471px;">@AppHelpLocalization[HelpLang.Access_Level_Object_Missing_Read,[name]]</MudText>
+                    <MudText Style="width:471px;">@AppHelpLocalization[HelpLang.Access_Level_Object_Missing_Read, [name]]</MudText>
                 }
             </MudCardContent>
         </MudCard>
@@ -257,12 +256,12 @@
     if (Model.Id > 0)
         buttonLabel = AppLocalization[Lang.Update_Access_Level];
 }
-<MudButton Disabled=@(SaveDisabled || WorkingModel.Id==1)
+<MudButton Disabled=@(SaveDisabled || WorkingModel.Id == 1)
            Color=Color.Success
            OnClick="SaveAccessLevel">@buttonLabel</MudButton>
 @if (WorkingModel.Id != 0 && !Self)
 {
-    <MudButton Disabled=@(WorkingModel.Id==1)
+    <MudButton Disabled=@(WorkingModel.Id == 1)
                Color=Color.Error
                OnClick="@(async()=>{_ = _deleteModal?.ShowAsync();})">@AppLocalization[Lang.Delete_Access_Level]</MudButton>
     <AppModal Width="MaxWidth.Medium"
@@ -284,7 +283,7 @@
 
     AppModal? _deleteModal;
 
-  
+
 
     [Parameter]
     public AccessLevel Model { get; set; } = new AccessLevel();
@@ -323,10 +322,10 @@
             {
 
                 WorkingModel.ObjectMap.Add(new ObjectAccessMapping()
-                    {
-                        ObjectType = ActiveDirectoryObjectType.User,
-                        ObjectAccessLevelId = ObjectAccessLevels.Read.Id
-                    });
+                {
+                    ObjectType = ActiveDirectoryObjectType.User,
+                    ObjectAccessLevelId = ObjectAccessLevels.Read.Id
+                });
             }
 
         }
@@ -348,17 +347,22 @@
         await Context.SaveChangesAsync();
 
         if (addition)
-            SnackBarService.Success(AppHelpLocalization[HelpLang.Created,WorkingModel.Name]);
+        {
+            SnackBarService.Success(AppHelpLocalization[HelpLang.Created, WorkingModel.Name]);
+            _=Analytics.PermissionAccessLevelCreated();
+        }
         else
+        {
             SnackBarService.Success(AppHelpLocalization[HelpLang.Updated, WorkingModel.Name]);
-
+            _=Analytics.PermissionAccessLevelChanged();
+        }
 
         if (addition && !Self)
             WorkingModel = new();
         await LevelsChanged.InvokeAsync();
 
         ApplicationEvents.PermissionsChanged.Invoke();
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
 
     }
 
@@ -367,21 +371,21 @@
         var typeEnum = (ActiveDirectoryObjectType)objectTypeIndex;
 
         WorkingModel.ObjectMap.Add(new ObjectAccessMapping()
-            {
-                ObjectType = typeEnum,
-                ObjectAccessLevelId = ObjectAccessLevels.Deny.Id
-            });
+        {
+            ObjectType = typeEnum,
+            ObjectAccessLevelId = ObjectAccessLevels.Deny.Id
+        });
 
         StateHasChanged();
     }
     private void AddActionAccess(ObjectAction action, ActiveDirectoryObjectType type)
     {
         var proposedAddition = new ActionAccessMapping()
-            {
-                ObjectType = type,
-                ObjectAction = action,
-                AllowOrDeny = true
-            };
+        {
+            ObjectType = type,
+            ObjectAction = action,
+            AllowOrDeny = true
+        };
         if (WorkingModel.ActionMap == null)
             WorkingModel.ActionMap = new List<ActionAccessMapping>();
 
@@ -399,21 +403,21 @@
         if (fieldToAdd is ActiveDirectoryField adField)
         {
             WorkingModel.FieldMap.Add(new FieldAccessMapping()
-                {
-                    Field = adField,
-                    FieldAccessLevelId = FieldAccessLevels.Read.Id,
-                    ObjectType = objectType
-                });
+            {
+                Field = adField,
+                FieldAccessLevelId = FieldAccessLevels.Read.Id,
+                ObjectType = objectType
+            });
         }
         else if (fieldToAdd is CustomActiveDirectoryField customField)
         {
             WorkingModel.FieldMap.Add(new FieldAccessMapping()
-                {
-                    CustomField = customField,
-                    FieldAccessLevelId = FieldAccessLevels.Read.Id,
-                    ObjectType = objectType
+            {
+                CustomField = customField,
+                FieldAccessLevelId = FieldAccessLevels.Read.Id,
+                ObjectType = objectType
 
-                });
+            });
         }
         StateHasChanged();
     }
@@ -451,7 +455,7 @@
             SnackBarService.Success(WorkingModel.Name + " has been deleted");
             await LevelsChanged.InvokeAsync();
         }
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
     /// <summary>
     /// Fields that are either off limits or controled via action permissions

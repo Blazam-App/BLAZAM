@@ -1,0 +1,75 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <BaseOutputPath>..\BLAZAM\Plugins</BaseOutputPath>
+	  <disabletransitiveprojectreferences>true</disabletransitiveprojectreferences>
+	  <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Apis" />
+    <PackageReference Include="Google.Apis.Admin.Directory.directory_v1" />
+    <PackageReference Include="Google.Apis.Auth" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BLAZAMActiveDirectory\BLAZAMActiveDirectory.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\BLAZAMGlobal\BLAZAMGlobal.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\BLAZAMGui\BLAZAMGui.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\BLAZAMPlugins\BLAZAMPlugins.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resource1.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <Target Name="FilterPluginOutput" AfterTargets="Build">
+    <ItemGroup>
+      <!-- List only the DLLs you want to keep -->
+      <PluginAssemblies Include="$(OutputPath)BLAZAMGoogleWorkspacePlugin.dll" />
+      <PluginAssemblies Include="$(OutputPath)Google.Apis*.dll" />
+    </ItemGroup>
+    <ItemGroup>
+      <AllAssemblies Include="$(OutputPath)*.dll" />
+    </ItemGroup>
+    <Delete Files="@(AllAssemblies)" Condition="!Exists('%(PluginAssemblies.Identity)')" />
+  </Target>
+
+</Project>

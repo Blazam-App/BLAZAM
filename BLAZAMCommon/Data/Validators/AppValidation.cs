@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using BLAZAM.Localization;
+﻿using BLAZAM.Localization;
+using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Common.Data.Validators
 {

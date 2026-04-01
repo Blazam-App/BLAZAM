@@ -1,13 +1,11 @@
-﻿using System.Text.Json;
-using ApplicationNews;
-using BLAZAM.Database.Context;
+﻿using ApplicationNews;
 using BLAZAM.Database.Services;
-using BLAZAM.Global.Attributes;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.Extensions.Localization;
+using System.Text.Json;
 
 namespace BLAZAM.Services.Background
 {
@@ -27,7 +25,7 @@ namespace BLAZAM.Services.Background
                                                                         && (x.ScheduledAt == null
                                                                         || x.ScheduledAt < DateTime.Now)
                                                                         && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now));
-        public AppDelegate OnNewItemsAvailable { get; set; }
+        public AppEvent OnNewItemsAvailable { get; set; } = new();
 
         public ApplicationNewsService(IAppDatabaseFactory dbFactory, IStringLocalizer<AppLocalization> appLocalization) : base(dbFactory, appLocalization)
         {
@@ -133,7 +131,7 @@ namespace BLAZAM.Services.Background
                 if (_pollCompleted)
                 {
                     var staleItems = readNewsItems
-                        .Where(x => x.NewsItemId < 100000000000 && !activeItems.Any(a => a.Id.Equals(x.NewsItemId)))
+                        .Where(x => x.NewsItemId < 100000000000 && !activeItems.Any(a => a.Id.Equals((ulong)x.NewsItemId)))
                         .ToList();
 
                     if (staleItems.Count > 0)

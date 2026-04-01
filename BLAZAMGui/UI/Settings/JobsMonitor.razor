@@ -29,7 +29,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        JobMonitor.OnUpdate += async () => { await InvokeAsync(StateHasChanged); };
+        JobMonitor.OnUpdate += async () => { await StateHasChangedAsync(); };
     }
     private void ShowJobDetails(DataGridRowClickEventArgs<IJob> rowClickEventArgs)
     {

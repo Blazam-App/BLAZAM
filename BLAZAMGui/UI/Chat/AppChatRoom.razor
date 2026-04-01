@@ -84,7 +84,7 @@
             if (message.ChatRoomId == ChatRoom?.Id)
             {
                 await Task.Delay(100);
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
 
                 ScrollToBottom();
 
@@ -112,9 +112,8 @@
 
                 };
             Chat.PostMessage(message);
-            draftMessage = "";
-            await messageTextField!.Clear();
-            await InvokeAsync(StateHasChanged);
+            draftMessage = string.Empty;
+            await StateHasChangedAsync(); ;
             ScrollToBottom();
 
         }

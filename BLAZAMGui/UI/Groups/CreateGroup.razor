@@ -8,23 +8,30 @@
             <MudText>
 
 
-                <OUTreeView Label=@AppLocalization[Lang.Parent_Organizational_Unit]
+                <ADTreeView ShowAllEntries=false
+                            Label=@AppLocalization[Lang.Parent_Organizational_Unit]
                             SelectedEntryChanged="OUSelected">
-                </OUTreeView>
+                </ADTreeView>
 
 
 
 
 
-                <MudTextField Immediate=true Label=@AppLocalization[Lang.Group_Name] @bind-Value=@newGroupName />
+                <MudTextField Immediate=true
+                              Label=@AppLocalization[Lang.Group_Name]
+                              @bind-Value=@newGroupName />
 
-                <MudTextField Immediate=true Label=@AppLocalization[Lang.Description] @bind-Value=@newDescription />
+                <MudTextField Immediate=true
+                              Label=@AppLocalization[Lang.Description]
+                              @bind-Value=@newDescription />
 
-<MudTextField Immediate=true Label=@AppLocalization[Lang.Email] @bind-Value=@newEmail />
+                <MudTextField Immediate=true
+                              Label=@AppLocalization[Lang.Email]
+                              @bind-Value=@newEmail />
 
 
 
-                <MudButton Disabled=@(parentOU==null || newGroupName.IsNullOrEmpty())
+                <MudButton Disabled=@(parentOU == null || newGroupName.IsNullOrEmpty())
                            Color="Color.Primary"
                            OnClick="CreateNewGroup">
                     @AppLocalization[Lang.Next]
@@ -35,7 +42,7 @@
             @AppLocalization[Lang.Create]
         </TabContent>
     </MudTabPanel>
-    <MudTabPanel Disabled=@(newGroup==null || newGroupName.IsNullOrEmpty())>
+    <MudTabPanel Disabled=@(newGroup == null || newGroupName.IsNullOrEmpty())>
         <ChildContent>
             <MudText>
 
@@ -44,7 +51,7 @@
 
 
 
-                <MudButton Color="Color.Primary" OnClick="@(()=>{selectedStep=2;})">
+                <MudButton Color="Color.Primary" OnClick="@(() => { selectedStep = 2; })">
                     @AppLocalization[Lang.Next]
                 </MudButton>
             </MudText>
@@ -53,7 +60,7 @@
             @AppLocalization[Lang.Assign]
         </TabContent>
     </MudTabPanel>
-    <MudTabPanel Disabled=@(newGroup==null || newGroupName.IsNullOrEmpty())>
+    <MudTabPanel Disabled=@(newGroup == null || newGroupName.IsNullOrEmpty())>
         <ChildContent>
             <MudText>
                 <ConfirmNewGroup Group="@newGroup" />
@@ -98,7 +105,7 @@
             parentOU = ou;
 
 
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
         }
     }
 
@@ -108,10 +115,12 @@
         LoadingData = true;
         newGroup = parentOU.CreateGroup(newGroupName);
 
-        if(!newDescription.IsNullOrEmpty()){
+        if (!newDescription.IsNullOrEmpty())
+        {
             newGroup.Description = newDescription;
         }
-        if(!newEmail.IsNullOrEmpty()){
+        if (!newEmail.IsNullOrEmpty())
+        {
             newGroup.Email = newEmail;
         }
 

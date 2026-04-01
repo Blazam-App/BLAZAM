@@ -3,7 +3,7 @@
     var notifs = Notifications.Where(n => !n.IsRead);
 }
 <MudBadge Color=Color.Error
-          Visible="@(notifs.Count() > 0)"
+          Visible="@(notifs.Any())"
           Overlap=true
           BadgeClass="badge-repos cursor-pointer"
           Content="@Notifications.Count(n=>!n.IsRead)"
@@ -11,8 +11,8 @@
     <AppTooltip Text=@(AppLocalization[Lang.Notifications])>
         <AppIconButton Size="Size.Large"
                        OnClick="@ToggleNotifications"
-                       Icon="@(notifs.Count() > 0?Icons.Material.Filled.NotificationImportant:Icons.Material.Filled.Notifications)"
-                       Color="@(notifs.Count() > 0?Color.Warning:Color.Info)" />
+                       Icon="@(notifs.Any()?Icons.Material.Filled.NotificationImportant:Icons.Material.Filled.Notifications)"
+                       Color="@(notifs.Any()?Color.Warning:Color.Info)" />
     </AppTooltip>
 </MudBadge>
 
@@ -26,50 +26,58 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await InvokeAsync(StateHasChanged);
-        NotificationPublisher.OnNotificationPublished += (async (notifications) =>
-           {
+        await StateHasChangedAsync();
 
-               if (notifications != null && notifications.Select(n => n.User).Contains(UserState.Preferences))
-               {
-                   await LoadNotifications();
-
-               }
-           });
-
-        NotificationPublisher.OnNotificationDeleted += async () =>
-            {
-                await LoadNotifications();
-            };
 
         UserState = CurrentUser.State;
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
         if (UserState != null)
         {
-            UserState.OnSettingsChanged += async () =>
-                {
-                    await LoadNotifications();
-                };
+            UserState.OnSettingsChanged.Delegate += LoadNotificaions; 
             Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
 
         }
+        NotificationPublisher.OnNotificationPublished.Delegate += NotificationPublished;
 
+        NotificationPublisher.OnNotificationDeleted.Delegate += LoadNotificaions;
 
+        await StateHasChangedAsync();
+    }
 
-        await InvokeAsync(StateHasChanged);
+    public override void Dispose()
+    {
+        base.Dispose();
+        Notifications = [];
+        if (UserState != null)
+        {
+            UserState.OnSettingsChanged.Delegate -= LoadNotificaions;
+        }
+        NotificationPublisher.OnNotificationPublished.Delegate -= NotificationPublished;
 
+        NotificationPublisher.OnNotificationDeleted.Delegate -= LoadNotificaions;
+    }
+    private void LoadNotificaions(object? state, object? args)
+    {
+        _ = LoadNotificationsAsync();
+    }
+    private void NotificationPublished(object? state, List<UserNotification> notifications)
+    {
+        if (notifications != null && notifications.Select(n => n.User).Contains(UserState.Preferences))
+        {
+            _ = LoadNotificationsAsync();
 
+        }
     }
     private void ToggleNotifications()
     {
         mainLayout.NotificationsOpen = !mainLayout.NotificationsOpen;
     }
-    private async Task LoadNotifications()
+    private async Task LoadNotificationsAsync()
     {
-        var context = await DbFactory.CreateDbContextAsync();
+        using var context = await DbFactory.CreateDbContextAsync();
 
         Notifications = await context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
 
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 }

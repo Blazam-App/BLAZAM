@@ -8,12 +8,12 @@
 
 <SetSubHeader @ref=Header>
 
-    <EditDirectoryTemplateHeader TemplateSelected="SelectedTemplate"/>
+    <EditDirectoryTemplateHeader OnTemplateChanged="TemplateChanged" TemplateSelected="SelectedTemplate"/>
   
 </SetSubHeader>
 
 <MudText Typo="Typo.h4">@AppLocalization[Lang.Templates] <AppDocumentationButton Page="/admin/templates" /></MudText>
-@if (Templates.Any() == true)
+@if (Templates.Any())
 {
 
     <MudCard Elevation="2">
@@ -36,24 +36,28 @@
 
 @code {
     IReadOnlyCollection<TreeItemData<DirectoryTemplate>> TemplateTreeItemData = new List<TreeItemData<DirectoryTemplate>>();
-    
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await RefreshComponents();
 
-      
+
         if (Templates?.Any() == true)
         {
             TemplateTreeItemData = CreateTemplateTreeItemData();
         }
         await RefreshComponents();
-        await InvokeAsync(StateHasChanged);
+        await StateHasChangedAsync();
     }
 
 
-  
-   
+
+    private async Task TemplateChanged(DirectoryTemplate template)
+    {
+        SelectedTemplate = template;
+        await StateHasChangedAsync();
+    }
 
 
     private IReadOnlyCollection<TreeItemData<DirectoryTemplate>> CreateTemplateTreeItemData()
@@ -61,7 +65,7 @@
 
         List<TreeItemData<DirectoryTemplate>> treeData;
 
-        var rootTemplates = Templates.Where(t => t.ParentTemplate == null && t.DeletedAt == null).ToTreeItemData();
+        var rootTemplates = Templates.Where(t => t.ParentTemplate == null && t.DeletedAt == null).ToTreeItemData<DirectoryTemplate>();
 
         treeData = RecursiveFillTreeViewItems(rootTemplates);
         return treeData;

@@ -28,11 +28,9 @@ namespace BLAZAM.Gui.UI.Chat
                 if ((ChatRoom != null && message.ChatRoomId.Equals(ChatRoom.Id))
                 || (AppChatRoom != null && message.ChatRoomId.Equals(AppChatRoom.Id)))
                 {
-                    //ChatRoom?.Messages.Add(message);
-                    //AppChatRoom?.Messages.Add(message);
                     await Task.Delay(100);
                     await RefreshChatRooms();
-                    await InvokeAsync(StateHasChanged);
+                    await StateHasChangedAsync();
                 }
 
             };
@@ -42,7 +40,7 @@ namespace BLAZAM.Gui.UI.Chat
                 {
                     await Task.Delay(50);
 
-                    await InvokeAsync(StateHasChanged);
+                    await StateHasChangedAsync();
                 }
             };
         }
@@ -54,8 +52,16 @@ namespace BLAZAM.Gui.UI.Chat
         protected int GetUnreadMessages()
         {
 
-            if (ChatRoom is null) return 0;
-            if (CurrentUser == null || CurrentUser.State.Preferences == null) return 0;
+            if (ChatRoom is null)
+            {
+                return 0;
+            }
+
+            if (CurrentUser == null || CurrentUser.State.Preferences == null)
+            {
+                return 0;
+            }
+
             return Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count;
 
 

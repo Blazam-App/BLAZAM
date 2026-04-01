@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>{0}-Zuordnungen verwenden diese Zugriffsebene und werden gelöscht.</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>Sie müssen sowohl einen Vor- als auch einen Nachnamen angeben</value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>Um den Benutzernamen zu ändern, klicken Sie auf die Schaltfläche Umbenennen in der Symbolleiste/im Zahnradmenü.</value>
   </data>
@@ -222,6 +225,9 @@
   <data name="No_Request_Actions_Available" xml:space="preserve">
     <value>Für diesen Eintrag sind keine Aktionen zur Anforderung verfügbar.</value>
   </data>
+  <data name="No_Request_Fields_Available" xml:space="preserve">
+    <value />
+  </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>Das Generieren eines neuen Authentifizierungstokens macht das vorhandene ungültig!</value>
   </data>
@@ -232,6 +238,9 @@
     <value>Ein Administrator hat diese Workstation umbenannt. Sie wird in {0} Sekunden neu gestartet.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
+    <value>Anfrage an {0}</value>
+  </data>
+  <data name="Request_For" xml:space="preserve">
     <value>Anfrage an {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
@@ -248,6 +257,9 @@
   </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
     <value>Ein unerwarteter Fehler ist aufgetreten.</value>
+  </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>Sie haben ungespeicherte Änderungen</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
     <value>Der Release-Branch ist der empfohlene Branch. Die Auswahl von Nightly wird nur für Testinstallationen empfohlen. Dev ist nur für Entwickler.</value>
@@ -269,5 +281,15 @@ in ein Konto mit geringeren Berechtigungen, um die Sicherheit zu verbessern.</va
   <data name="Update_Credential_Is_Invalid" xml:space="preserve">
     <value>Es sind keine Anmeldeinformationen mit Schreibberechtigung für das Anwendungsverzeichnis konfiguriert!
 Versuchen Sie, benutzerdefinierte Aktualisierungsanmeldeinformationen zu konfigurieren.</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

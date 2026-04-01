@@ -1,4 +1,3 @@
-using BLAZAM.Database.Models;
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
 using BLAZAM.Services.Events;
@@ -8,17 +7,20 @@ namespace BLAZAM.Gui.UI.Users
 {
     public partial class ViewUser : DirectoryEntryViewBase
     {
-#nullable disable warnings
-        string password;
+        private string _password;
 
         [Parameter]
         public string Password
         {
-            get => password; set
+            get => _password; set
             {
-                if (password == value) return;
-                password = value;
-                PasswordChanged.InvokeAsync(password);
+                if (_password == value)
+                {
+                    return;
+                }
+
+                _password = value;
+                PasswordChanged.InvokeAsync(_password);
             }
         }
 
@@ -26,23 +28,31 @@ namespace BLAZAM.Gui.UI.Users
         public EventCallback<string> PasswordChanged { get; set; }
 
 
-        string confirmPassword;
+        private string _confirmPassword;
         [Parameter]
         public string ConfirmPassword
         {
-            get => confirmPassword; set
+            get => _confirmPassword; set
             {
-                if (confirmPassword == value) return;
-                confirmPassword = value;
-                ConfirmPasswordChanged.InvokeAsync(confirmPassword);
+                if (_confirmPassword == value)
+                {
+                    return;
+                }
+
+                _confirmPassword = value;
+                ConfirmPasswordChanged.InvokeAsync(_confirmPassword);
             }
         }
         [Parameter]
         public EventCallback<string> ConfirmPasswordChanged { get; set; }
-        IGroupableDirectoryAdapter GroupableEntry => DirectoryEntry as IGroupableDirectoryAdapter;
-        IAccountDirectoryAdapter Account => DirectoryEntry as IAccountDirectoryAdapter;
-        IADUser User => DirectoryEntry as IADUser;
-        IADContact Contact => DirectoryEntry as IADContact;
+
+        private IGroupableDirectoryAdapter GroupableEntry => DirectoryEntry as IGroupableDirectoryAdapter;
+
+        private IAccountDirectoryAdapter Account => DirectoryEntry as IAccountDirectoryAdapter;
+
+        private IADUser User => DirectoryEntry as IADUser;
+
+        private IADContact Contact => DirectoryEntry as IADContact;
 
 
 
@@ -61,25 +71,26 @@ namespace BLAZAM.Gui.UI.Users
         {
             await base.OnInitializedAsync();
 
-            await InvokeAsync(StateHasChanged);
+            await StateHasChangedAsync();
 
 
 
 
-
-            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
             {
+
                 EventType = ApplicationEventType.Search,
                 Entry = Contact,
                 Actor = CurrentUser.State
 
             });
+
             LoadingData = false;
             await RefreshEntryComponents();
 
         }
 
-        async Task SaveChanges()
+        private async Task SaveChanges()
         {
             if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_Save_Changes]))
             {
@@ -97,7 +108,7 @@ namespace BLAZAM.Gui.UI.Users
 
                         foreach (var assignment in assignTo)
                         {
-                            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Assign,
                                 Entry = assignment.Member,
@@ -111,7 +122,7 @@ namespace BLAZAM.Gui.UI.Users
 
                         foreach (var assignment in unassignFrom)
                         {
-                            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Unassign,
                                 Entry = assignment.Member,
@@ -123,7 +134,7 @@ namespace BLAZAM.Gui.UI.Users
                         }
                         if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                         {
-                            ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Modify,
                                 Entry = User,
@@ -154,7 +165,7 @@ namespace BLAZAM.Gui.UI.Users
 
         }
 
-        async Task Unlock()
+        private async Task Unlock()
         {
             if (await MessageService.Confirm("Are you sure you want to unlock " + GroupableEntry.DisplayName + "?", "Unlock User"))
             {
@@ -165,19 +176,19 @@ namespace BLAZAM.Gui.UI.Users
             }
 
         }
-        async Task DeleteUser()
+        private async Task DeleteUser()
         {
             if (await MessageService.Confirm("Are you sure you want to delete " + GroupableEntry.DisplayName + "?", "Delete User"))
             {
                 SavingChanges = true;
-                await InvokeAsync(StateHasChanged);
+                await StateHasChangedAsync();
 
                 try
                 {
                     GroupableEntry.Delete();
 
                     SnackBarService.Success(GroupableEntry.DisplayName + " has been deleted.");
-                    ApplicationEvents.DirectoryEntryChanged.Invoke(new()
+                    ApplicationEvents.DirectoryEntryEvent.Invoke(new()
                     {
                         EventType = ApplicationEventType.Delete,
                         Entry = User,
@@ -194,8 +205,36 @@ namespace BLAZAM.Gui.UI.Users
                 await RefreshEntryComponents();
             }
         }
+        private bool _disposed = false;
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                base.Dispose();
+                // Dispose managed resources here
+                // For example:
+                // - Unsubscribe from events
+                // - Dispose of disposable objects (GroupableEntry, User, Contact, etc.)
+                _confirmPassword = String.Empty;
+                _password = String.Empty;
+                if (GroupableEntry is IDisposable disposableGroupable)
+                {
+                    disposableGroupable.Dispose();
+                }
+            }
+
+            _disposed = true;
+        }
 
     }
 }

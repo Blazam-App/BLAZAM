@@ -22,11 +22,13 @@
                       BadgeClass="badge-repos cursor-pointer"
                       Content="@unreadItems.Count">
                 <AppTooltip Text=@("Blazam "+AppLocalization[Lang.News])>
-                    <AppIconButton Size="Size.Large"
+                    <AppIconButton OnClick="@(() => context.ToggleAsync())" 
+                        Size="Size.Large"
                                    Icon="@Icons.Material.TwoTone.NewReleases"
                                    Color="@color" />
                 </AppTooltip>
             </MudBadge>
+            <LoadingData Loading=@LoadingData/>
         </ActivatorContent>
 
         <ChildContent>
@@ -46,7 +48,7 @@
                 {
                     <ApplicationNewsItem Item=item
                                          Read=false
-                                         OnClick="@(()=>{ ShowNews(item); })"
+                                         OnClick="@(()=>{ _ = ShowNews(item); })"
                                          OnRead="@(()=>{
                                             RefreshItems();
                                             })" />
@@ -138,11 +140,17 @@ else
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        ApplicationNewsService.OnNewItemsAvailable += RefreshItems;
-
+        ApplicationNewsService.OnNewItemsAvailable.Delegate += RefreshItems;
+        CurrentUser.State.OnReadNewsSaved.Delegate += RefreshItems;
         RefreshItems();
 
 
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        ApplicationNewsService.OnNewItemsAvailable.Delegate -= RefreshItems;
+        CurrentUser.State.OnReadNewsSaved.Delegate -= RefreshItems;
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -185,9 +193,9 @@ else
         RefreshItems();
 
     }
-    private void RefreshItems()
+    private void RefreshItems(object? state = null,EventArgs? args=null)
     {
-
+        LoadingData = true;
         RefreshUnreadItems();
         RefreshReadItems();
         if (!ApplicationInfo.InDebugMode)
