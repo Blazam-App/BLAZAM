@@ -8,6 +8,7 @@ using BLAZAM.Database.Context;
 using BLAZAM.Global.Attributes;
 using BLAZAM.Global.Data.Strings;
 using BLAZAM.Gui.Services;
+using BLAZAM.Middleware;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Plugins;
 using BLAZAM.Services;
@@ -20,6 +21,7 @@ using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -252,6 +254,8 @@ namespace BLAZAM
                     // Show detailed error information in the browser console based on DebugMode flag
                     options.DetailedErrors = ApplicationInfo.inDebugMode;
                 });
+
+            builder.Services.AddScoped<CircuitHandler, UserStateCircuitHandler>();
 
             // --- Database Context ---
             DatabaseContextBase.Configuration = builder.Configuration; // Provide configuration to the base context (static access, consider alternatives)

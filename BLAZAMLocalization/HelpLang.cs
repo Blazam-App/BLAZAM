@@ -16,6 +16,7 @@
         public static readonly string Missing_First_Or_Last_Name = "Missing_First_Or_Last_Name";
         public static readonly string Read_Field_Access_Request_Notification_Message = "Read_Field_Access_Request_Notification_Message";
         public static readonly string Edit_Field_Access_Request_Notification_Message = "Edit_Field_Access_Request_Notification_Message";
+        public static readonly string Require_Password_Change = "Require_Password_Change";
         public static readonly string Action_Access_Request_Notification_Message = "Action_Access_Request_Notification_Message";
         public static readonly string Navigate_Away_Confirmation = "Navigate_Away_Confirmation";
         public static readonly string Duplicate_Name_Conflict = "Duplicate_Name_Conflict";
