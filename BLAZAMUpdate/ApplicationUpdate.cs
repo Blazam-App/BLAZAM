@@ -120,7 +120,7 @@ namespace BLAZAM.Update
 
         private readonly ApplicationVersion _runningVersion;
         private readonly SystemDirectory _applicationRootDirectory;
-        private WindowsImpersonation _updateIdentity;
+        private WindowsImpersonation _updateIdentity = new(null);
 
         public ApplicationUpdate(ApplicationInfo applicationInfo, UpdateService updateService, IAppDatabaseFactory dbFactory)
         {

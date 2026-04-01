@@ -481,7 +481,9 @@ namespace BLAZAM.Update.Services
         }
         private bool TestCustomCredentials()
         {
-            using var context = _dbFactory.CreateDbContext();
+            using var context = _dbFactory?.CreateDbContext();
+            if (context == null)
+                return false;
             WindowsImpersonation? impersonation = null;
 
             var appSettings = context.AppSettings.FirstOrDefault();
