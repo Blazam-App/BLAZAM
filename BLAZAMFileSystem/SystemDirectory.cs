@@ -244,7 +244,14 @@ namespace BLAZAM.FileSystem
             long totalSize = 0;
             foreach (var f in filesList)
             {
-                totalSize += new FileInfo(f).Length;
+                try
+                {
+                    totalSize += new FileInfo(f).Length;
+                }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Information(ex, "SystemDirectory.CopyTo: Failed to get size for file {FilePath} during total size calculation. Skipping this file for progress tracking.", f);
+                }
             }
 
             FileProgress progress = new FileProgress
