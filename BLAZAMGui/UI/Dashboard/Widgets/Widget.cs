@@ -89,14 +89,18 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
 
         protected async Task RowContextMenuClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
         {
-            _contextMenu?.SetEntry(args.Item);
-            _contextMenu?.OpenMenuAsync(args.MouseEventArgs);
+            if (_contextMenu == null)
+                return;
+            _contextMenu.SetEntry(args.Item);
+            await _contextMenu.OpenMenuAsync(args.MouseEventArgs);
         }
 
         protected async Task RowContextMenuClicked(DataGridRowClickEventArgs<IADUser> args)
         {
-            _contextMenu?.SetEntry(args.Item);
-            _contextMenu?.OpenMenuAsync(args.MouseEventArgs);
+            if (_contextMenu == null)
+                return;
+            _contextMenu.SetEntry(args.Item);
+            await _contextMenu.OpenMenuAsync(args.MouseEventArgs);
         }
 
     }

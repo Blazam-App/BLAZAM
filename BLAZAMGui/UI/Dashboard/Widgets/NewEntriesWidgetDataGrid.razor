@@ -52,8 +52,10 @@
 
     protected async Task RowContextMenuClicked<T>(DataGridRowClickEventArgs<T> args) where T : IDirectoryEntryAdapter
     {
-        _contextMenu?.SetEntry(args.Item);
-        _contextMenu?.OpenMenuAsync(args.MouseEventArgs);
+        if(_contextMenu == null)
+            return;
+        _contextMenu.SetEntry(args.Item);
+        await _contextMenu.OpenMenuAsync(args.MouseEventArgs);
     }
 
 }

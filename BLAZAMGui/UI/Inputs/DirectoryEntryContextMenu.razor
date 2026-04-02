@@ -9,6 +9,10 @@
 
     </ChildContent>
     <MenuContents>
+        <MudMenuItem Target="_blank" Href="@Entry.SearchUri"
+                     Icon="@Icons.Material.Outlined.OpenInNew">
+            @AppLocalization[Lang.Open_In_New_Tab]
+        </MudMenuItem>
         @if (Entry is IAccountDirectoryAdapter account && !Disabled)
         {
             @if (account.CanUnlock && account.LockedOut)
@@ -19,14 +23,14 @@
                 </MudMenuItem>
 
             }
-            @if (account.Enabled)
+            @if (account.CanDisable && account.Enabled)
             {
                 <MudMenuItem OnClick="(async () => { await DisableAccount(account); })"
                              Icon="@Icons.Material.Outlined.Cancel">
                     @AppLocalization[Lang.Disable] @AppLocalization[account.ObjectType.ToString()]
                 </MudMenuItem>
             }
-            @if (account.Disabled)
+            @if (account.CanEnable && account.Disabled)
             {
                 <MudMenuItem OnClick="(async () => { await EnableAccount(account); })"
                              Icon="@Icons.Material.Outlined.Check">
