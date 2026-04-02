@@ -1,11 +1,8 @@
 ﻿@inherits AppComponentBase
 <DirectoryEntryTooltipPopover Entry="@Entry">
-    <DirectoryEntryContextMenu Entry="@Entry"
-                               OnChanged="OnChanged">
 
             <MudText Class="@Class" Align="@Align" Style="@Style" Color="@Color">@(Entry!=null?Entry.CanonicalName:Sid)</MudText>
         
-    </DirectoryEntryContextMenu>
 </DirectoryEntryTooltipPopover>
 
 @code {

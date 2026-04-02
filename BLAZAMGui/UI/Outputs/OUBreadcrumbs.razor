@@ -20,6 +20,8 @@
 
 
 @code {
+    private object _lock = new();
+
     [Parameter]
     public IDirectoryEntryAdapter? Entry { get; set; }
     private List<BreadcrumbItem> _items = new();
@@ -37,19 +39,23 @@
                 if (ou is not null)
                 {
                     IADOrganizationalUnit? ouCursor = ou;
-                    do
+                    lock (_lock)
                     {
-                        if (ouCursor.Name is not null)
+                        do
                         {
-                            items.Add(new BreadcrumbItem(ouCursor.Name, ouCursor.SearchUri));
-                        }
-                        else
-                        {
-                            Loggers.ActiveDirectoryLogger.Information("OU with null name found in breadcrumb generation for {@Entry}", Entry.DN);
-                        }
-                        ouCursor = await ouCursor.GetParentAsync() as IADOrganizationalUnit;
+                            if (ouCursor.Name is not null)
+                            {
+                                items.Add(new BreadcrumbItem(ouCursor.Name, ouCursor.SearchUri));
+                            }
+                            else
+                            {
+                                Loggers.ActiveDirectoryLogger.Information("OU with null name found in breadcrumb generation for {@Entry}", Entry.DN);
+                            }
+                            ouCursor = ouCursor.GetParent() as IADOrganizationalUnit;
 
-                    } while (ouCursor != null);
+                        } while (ouCursor != null);
+                    }
+               
                 }
                 items.Reverse();
                 _items = items;

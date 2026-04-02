@@ -133,6 +133,7 @@
         public static readonly string Home_Directory = "Home Directory";
         public static readonly string Home_Drive = "Home Drive";
         public static readonly string Script_Path = "Script Path";
+        public static readonly string Open_In_New_Tab = "Open In New Tab";
         public static readonly string Profile_Path = "Profile Path";
         public static readonly string Telephone_Number = "Telephone Number";
         public static readonly string System_Settings = "System Settings";

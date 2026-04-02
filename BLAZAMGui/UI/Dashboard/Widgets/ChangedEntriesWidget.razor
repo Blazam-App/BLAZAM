@@ -18,6 +18,7 @@
              ColumnResizeMode="ResizeMode.Column"
              Virtualize=true
              Class="py-0"
+             RowContextMenuClick="@RowContextMenuClicked"
              SortMode="SortMode.Single">
     <Columns>
         <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
@@ -48,5 +49,5 @@
         <MudText>@AppLocalization[Lang.No_matching_results]</MudText>
     </NoRecordsContent>
 </MudDataGrid>
-
+<DirectoryEntryContextMenu @ref="_contextMenu" OnChanged="@(()=>{InvokeStateHasChanged();})" />
 
