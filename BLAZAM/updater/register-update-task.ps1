@@ -82,16 +82,16 @@ try {
     }
 
     # Register the task
-
     if ($useCustomCreds -eq "y") {
         Register-ScheduledTask `
-            -TaskName   $taskName `
+            -TaskName    $taskName `
             -Description $taskDesc `
-            -Action     $action `
-            -Trigger    $trigger `
-            -Settings   $settings `
-            -Principal  $principal `
-            -Password   $plainPassword `
+            -Action      $action `
+            -Trigger     $trigger `
+            -Settings    $settings `
+            -User        $taskUser `
+            -Password    $plainPassword `
+            -RunLevel    $runLevel `
             -Force | Out-Null
     } else {
         Register-ScheduledTask `
