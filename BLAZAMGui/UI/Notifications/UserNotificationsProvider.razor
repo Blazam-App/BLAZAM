@@ -47,6 +47,7 @@
     public override void Dispose()
     {
         base.Dispose();
+        Notifications = [];
         if (UserState != null)
         {
             UserState.OnSettingsChanged.Delegate -= LoadNotificaions;
@@ -73,7 +74,7 @@
     }
     private async Task LoadNotificationsAsync()
     {
-        var context = await DbFactory.CreateDbContextAsync();
+        using var context = await DbFactory.CreateDbContextAsync();
 
         Notifications = await context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
 

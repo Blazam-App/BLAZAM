@@ -8,7 +8,7 @@
     <ActivatorContent>
 
         <AppTooltip Text="@CurrentUser.Username">
-            <CurrentUserAvatarIcon UserState="@_userState" />
+            <CurrentUserAvatarIcon OnClick="@(() => context.ToggleAsync())" UserState="@_userState" />
         </AppTooltip>
     </ActivatorContent>
     <ChildContent>

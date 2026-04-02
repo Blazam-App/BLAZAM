@@ -8,38 +8,36 @@
     }
     <MudFileUpload T="IBrowserFile"
     FilesChanged="UploadProfilePicture">
-        <ActivatorContent>
-
+        <CustomContent>
             <MudButton HtmlTag="label"
             Variant="Variant.Filled"
             Color="Color.Primary"
+                       OnClick="@context.OpenFilePickerAsync"
             StartIcon="@Icons.Material.Filled.CloudUpload">
                 @if (CurrentUser.State.Preferences.ProfilePicture == null)
                 {
                     <MudText>Upload Profile Icon</MudText>
-
                 }
                 else
                 {
                     <MudText>Change Profile Icon</MudText>
                 }
             </MudButton>
-            @if (CurrentUser.State.Preferences.ProfilePicture != null)
-            {
-                <MudButton OnClick="@(async ()=>{
-                                    CurrentUser.State.Preferences.ProfilePicture=null;
-
-                                    })"
-                Variant="Variant.Filled"
-                Color="Color.Error"
-                StartIcon="@Icons.Material.Filled.Remove">
-                    Remove
-                </MudButton>
-
-            }
-
-        </ActivatorContent>
+        </CustomContent>
     </MudFileUpload>
+
+    @if (CurrentUser.State.Preferences.ProfilePicture != null)
+    {
+        <MudButton OnClick="@(async ()=>{
+                                CurrentUser.State.Preferences.ProfilePicture=null;
+
+                                })"
+        Variant="Variant.Filled"
+        Color="Color.Error"
+        StartIcon="@Icons.Material.Filled.Remove">
+            Remove
+        </MudButton>
+    }
 
     <MudTextField T="string" @bind-Text=@CurrentUser.State.Preferences.Email Label=@AppLocalization[Lang.Email] />
     

@@ -18,23 +18,22 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
 
 
-
-        protected override IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(TreeItemData<IDirectoryEntryAdapter>? parent)
+        protected override IReadOnlyCollection<ITreeItemData<IDirectoryEntryAdapter>> GetItems(ITreeItemData<IDirectoryEntryAdapter>? parent)
         {
             try
             {
-                if (parent.Expanded || parent.Value.CachedChildren != null)
+                if (parent != null && (parent.Expanded == true || parent.Value?.CachedChildren != null))
                 {
-                    return GetChildren(parent.Value).ToTreeItemData();
+                    parent.Children = GetChildren(parent.Value).ToTreeItemData();
+                    return parent.Children;
                 }
+
+                return [];
             }
             catch (Exception)
             {
-                return null;
-
+                return [];
             }
-            return null;
-
         }
         protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>> GetChildrenAsync(IDirectoryEntryAdapter parentNode)
         {
@@ -44,7 +43,8 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
             });
         }
-        private Dictionary<IDirectoryEntryAdapter, IEnumerable<IDirectoryEntryAdapter>?> _childrenCache = [];
+
+        private Dictionary<IDirectoryEntryAdapter, IEnumerable<IDirectoryEntryAdapter>?> _childrenCache = new();
         protected IEnumerable<IDirectoryEntryAdapter> GetChildren(IDirectoryEntryAdapter parentNode)
         {
 
@@ -69,10 +69,10 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 }
                 else
                 {
-                    _childrenCache[parentNode] = [];
+                    _childrenCache[parentNode] = new List<IDirectoryEntryAdapter>();
                 }
             }
-            return _childrenCache[parentNode] ?? [];
+            return _childrenCache[parentNode] ?? new List<IDirectoryEntryAdapter>();
 
         }
     }

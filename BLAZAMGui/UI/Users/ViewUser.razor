@@ -89,7 +89,10 @@
 
                     <ContactInfoSection />
 
-                    <ProfileSection />
+                    @if (User != null)
+                    {
+                        <ProfileSection />
+                    }
 
                     @if (GroupableEntry.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
                     {

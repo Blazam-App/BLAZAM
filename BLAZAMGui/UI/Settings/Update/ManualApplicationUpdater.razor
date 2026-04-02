@@ -208,7 +208,8 @@
             {
                 Analytics.UpdateAttempted(LatestAvailableVersion.Version.ToString());
 
-                _ = MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization[Lang.Update]);
+                
+                MessageService.ShowJobDetailsDialog(output, AppLocalization[Lang.Stage_Update]);
                 await output.RunAsync();
 
             }

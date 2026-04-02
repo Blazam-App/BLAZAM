@@ -27,6 +27,8 @@ namespace BLAZAM.Tests.Mocks
 
         public bool IsSuperAdmin => throw new NotImplementedException();
 
+        public bool IsSelfEditOnly => throw new NotImplementedException();
+
         public DateTime LastAccessed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public ClaimsPrincipal User { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

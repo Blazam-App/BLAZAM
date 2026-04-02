@@ -261,7 +261,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 existingCache = new(new());
             }
             if (_isNew) return null;
-            Loggers.ActiveDirectoryLogger.Information("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}", Directory != null && Directory.ConnectionSettings != null);
+            Loggers.ActiveDirectoryLogger.Debug("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}", Directory != null && Directory.ConnectionSettings != null);
 
             GetAllAttributes(existingCache);
 
@@ -420,10 +420,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     SearchRequest schemaSearchRequest = new SearchRequest(
                        _namingContextCache,
-                       $"(objectClass=attributeSchema)",
+                       $"(&(objectClass=attributeSchema)(cn={propertyName}))", // Filter by specific property name
                        SearchScope.Subtree,
-                       "attributeSyntax", "oMSyntax", "isSingleValued", "oMObjectClass", "cn" // "cn" can be useful for debugging
-                   );
+                       "attributeSyntax", "oMSyntax", "isSingleValued", "oMObjectClass", "cn"
+                    );
 
                     try
                     {

@@ -5,15 +5,15 @@
 <MudTabs @bind-ActivePanelIndex=_tabIndex>
     <MudTabPanel Text="PFX">
         <MudStack Class="py-5 align-center">
-            <MudFileUpload T="IBrowserFile" FilesChanged="LoadPFX" Accept=".pfx">
-                <ActivatorContent>
+            <MudFileUpload T="IBrowserFile" FilesChanged="LoadPFX" Accept=".pfx"  >
+                <CustomContent>
                     <MudButton HtmlTag="label"
                                Variant="Variant.Filled"
                                Color="Color.Primary"
                                StartIcon="@Icons.Material.Filled.CloudUpload">
                         @AppLocalization[Lang.Upload] PFX
                     </MudButton>
-                </ActivatorContent>
+                </CustomContent>
                 <SelectedTemplate>
                     @if (context != null)
                     {
@@ -39,14 +39,14 @@
             <MudFileUpload T="IBrowserFile"
                            FilesChanged="LoadCert"
                            Accept=".pem, .crt">
-                <ActivatorContent>
+                <CustomContent>
                     <MudButton HtmlTag="label"
                                Variant="Variant.Filled"
                                Color="Color.Primary"
                                StartIcon="@Icons.Material.Filled.CloudUpload">
                         @AppLocalization[Lang.Upload_Certificate]
                     </MudButton>
-                </ActivatorContent>
+                </CustomContent>
                 <SelectedTemplate>
                     @if (context != null)
                     {
@@ -60,14 +60,14 @@
             </MudFileUpload>
 
             <MudFileUpload T="IBrowserFile" FilesChanged="LoadKey" Accept=".pem, .key">
-                <ActivatorContent>
+                <CustomContent>
                     <MudButton HtmlTag="label"
                                Variant="Variant.Filled"
                                Color="Color.Primary"
                                StartIcon="@Icons.Material.Filled.CloudUpload">
                         @AppLocalization[Lang.Upload_Key]
                     </MudButton>
-                </ActivatorContent>
+                </CustomContent>
                 <SelectedTemplate>
                     @if (context != null)
                     {

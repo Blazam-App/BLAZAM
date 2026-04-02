@@ -57,13 +57,7 @@ namespace BLAZAM.Tests.Updates
             Assert.Empty(latest.UpdateStagingDirectory.Files);
         }
 
-        [Fact]
-        public void UpdateService_HasWritePermission_ReturnsExpected()
-        {
-            // Should reflect the underlying credential state
-            var hasPermission = _updateService.HasWritePermission;
-            Assert.IsType<bool>(hasPermission);
-        }
+      
 
         [Fact]
         public void UpdateService_UpdateCredential_ReturnsEnum()
@@ -75,7 +69,7 @@ namespace BLAZAM.Tests.Updates
         [Fact]
         public void UpdateService_GetUpdateCredentials_ReturnsExpectedType()
         {
-            var creds = _updateService.GetUpdateCredentials();
+            var creds = _updateService.GetUpdateIdentity();
             // Should be null or WindowsImpersonation depending on credential
             Assert.True(creds == null || creds.GetType().Name == "WindowsImpersonation");
         }

@@ -19,7 +19,6 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         protected override async Task RefreshDataAsync()
         {
             LoadingData = true;
-            LoadSettings();
 
             NewGroups = (await Directory.Groups.FindNewGroupsAsync((int)_timeFrame!.Value.TotalDays)).Where(u => u.CanRead).ToList();
 
