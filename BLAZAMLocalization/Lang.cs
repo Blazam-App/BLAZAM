@@ -505,6 +505,7 @@
         public static readonly string Current_Version = "Current Version";
         public static readonly string Available_Update = "Available Update";
         public static readonly string Apply_Update = "Apply Update";
+        public static readonly string Stage_Update = "Stage Update";
         public static readonly string Add_Category = "Add Category";
         public static readonly string Template_Category = "Template Category";
         public static readonly string Template_Name = "Template Name";
