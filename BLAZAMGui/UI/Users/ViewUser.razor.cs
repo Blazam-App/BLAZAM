@@ -207,9 +207,10 @@ namespace BLAZAM.Gui.UI.Users
         }
         private bool _disposed = false;
 
-        public void Dispose()
+        public override void Dispose()
         {
             Dispose(true);
+
             GC.SuppressFinalize(this);
         }
 
