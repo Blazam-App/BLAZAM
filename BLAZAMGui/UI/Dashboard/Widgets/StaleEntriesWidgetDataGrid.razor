@@ -14,6 +14,7 @@
              Virtualize=true
              RowClass="cursor-pointer"
              RowClick=@RowClick
+             RowContextMenuClick="@RowContextMenuClicked"
              RowsPerPageChanged="@RowsPerPageChanged"
              Class="py-0"
              SortMode="SortMode.Single">
@@ -41,10 +42,11 @@
         <MudText>@AppLocalization[Lang.No_matching_results]</MudText>
     </NoRecordsContent>
 </MudDataGrid>
+<DirectoryEntryContextMenu @ref="_contextMenu" />
 
 
 @code {
-
+    private DirectoryEntryContextMenu? _contextMenu;
     [Parameter]
     public EventCallback OnChanged { get; set; }
 
@@ -55,4 +57,10 @@
             return item.LastLogonTime?.ToLocalTime().ToString();
         });
     }
+    protected async Task RowContextMenuClicked<T>(DataGridRowClickEventArgs<T> args) where  T : IDirectoryEntryAdapter
+    {
+        _contextMenu?.SetEntry(args.Item);
+        _contextMenu?.OpenMenuAsync(args.MouseEventArgs);
+    }
+
 }

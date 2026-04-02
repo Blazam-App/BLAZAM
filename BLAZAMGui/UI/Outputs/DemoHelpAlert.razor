@@ -57,9 +57,10 @@
                     await Task.Delay(100);
                 }
                 randomUsers = foundResults;
-                LoadingData = false;
-                await StateHasChangedAsync();
+                
             }
+            LoadingData = false;
+            await StateHasChangedAsync();
         });
        
     }

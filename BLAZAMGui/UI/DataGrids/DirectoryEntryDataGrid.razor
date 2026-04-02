@@ -12,6 +12,7 @@
              Square=true
              ColumnResizeMode="ResizeMode.Column"
              Virtualize=true
+             RowContextMenuClick="@RowContextMenuClicked"
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
@@ -42,8 +43,10 @@
         <MudText>@NoResultsMessage</MudText>
     </NoRecordsContent>
 </MudDataGrid>
-
+<DirectoryEntryContextMenu @ref="_contextMenu" />
 @code {
+    private DirectoryEntryContextMenu? _contextMenu;
+
     [Parameter] 
     public EventCallback<DataGridRowClickEventArgs<IDirectoryEntryAdapter>> RowClicked { get; set; }
 
@@ -64,4 +67,11 @@
 
     [Parameter]
     public EventCallback EntryChanged{ get; set; }
+
+    protected async Task RowContextMenuClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
+    {
+        _contextMenu?.SetEntry(args.Item);
+        _contextMenu?.OpenMenuAsync(args.MouseEventArgs);
+    }
+
 }
