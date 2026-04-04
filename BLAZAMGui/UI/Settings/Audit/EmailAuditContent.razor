@@ -1,6 +1,6 @@
 @using BLAZAM.Database.Models.Audit
 @using BLAZAM.Gui.UI.Shared
-@inherits DatabaseComponentBase
+@inherits AuditContentBase<EmailAuditLog>
 <TimeframeSelector OnTimeframeChanged="TimeframeChanged" />
 <MudDataGrid ColumnResizeMode="ResizeMode.Container"
              FixedHeader=true
@@ -8,7 +8,7 @@
              Hideable=true
              RowClass="cursor-pointer"
              RowClick="@(async (DataGridRowClickEventArgs<EmailAuditLog> args)=>{emailToPreview = args.Item;await bodyModal.ShowAsync();})"
-             Items="@_attempts"
+             Items="@auditEntries"
              Filterable="true"
              SortMode="@SortMode.Multiple"
              Groupable="false">
@@ -82,27 +82,13 @@
     </AppModal>
 
 @code {
-    private DateTime? StartDate = DateTime.Today.AddDays(-7);
-    private DateTime? EndDate = DateTime.Today;
     AppModal bodyModal;
     EmailAuditLog? emailToPreview = null;
-    private List<EmailAuditLog> _attempts = new();
-    protected override async Task OnInitializedAsync()
+    protected override async Task FetchData()
     {
-        await base.OnInitializedAsync();
-        await GetAttempts(StartDate,EndDate);
-    }
-    private async Task TimeframeChanged((DateTime? start, DateTime? end) dates)
-    {
-        StartDate = dates.start;
-        EndDate = dates.end;
-        await GetAttempts(StartDate, EndDate);
-    }
-    private async Task GetAttempts(DateTime? startDate, DateTime? endDate)
-    {
-        if (startDate == null || endDate == null) return;
-        _attempts = await Context.EmailAuditLog.Where(e=>e.LastAttemptTimestamp>=startDate && e.LastAttemptTimestamp<endDate.Value.AddDays(1)).OrderByDescending(e => e.LastAttemptTimestamp).ToListAsync();
-        await StateHasChangedAsync();
+        if (StartDate == null || EndDate == null) return;
+        auditEntries = await Context.EmailAuditLog.Where(e => e.LastAttemptTimestamp >= StartDate && e.LastAttemptTimestamp < EndDate.Value.AddDays(1)).OrderByDescending(e => e.LastAttemptTimestamp).ToListAsync();
+        await InvokeAsync(StateHasChanged);
     }
 }
 

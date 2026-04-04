@@ -1,6 +1,6 @@
 ﻿@using BLAZAM.Database.Models.Audit
 @using BLAZAM.Gui.UI.Shared
-@inherits DatabaseComponentBase
+@inherits AuditContentBase<DirectoryEntryAuditLog>
 <TimeframeSelector OnTimeframeChanged="TimeframeChanged" />
 
 <MudDataGrid Height="600px"
@@ -68,24 +68,10 @@
     </Columns>
 </MudDataGrid>
 @code {
-    private List<DirectoryEntryAuditLog> auditEntries = new();
-    private DateTime? StartDate = DateTime.Today.AddDays(-7);
-    private DateTime? EndDate = DateTime.Today;
-
-    protected override async Task OnInitializedAsync()
+    protected override async Task FetchData()
     {
-        await base.OnInitializedAsync();
-        await GetAttempts(StartDate, EndDate);
-    }
-    private async Task TimeframeChanged((DateTime? start, DateTime? end) dates)
-    {
- 
-        await GetAttempts(dates.start, dates.end);
-    }
-    private async Task GetAttempts(DateTime? startDate, DateTime? endDate)
-    {
-        if (startDate == null || endDate == null) return;
-        auditEntries = await Context.DirectoryEntryAuditLogs.Where(e => e.Timestamp >= startDate && e.Timestamp < endDate.Value.AddDays(1)).OrderByDescending(e => e.Timestamp).ToListAsync();
-        await StateHasChangedAsync();
+        if (StartDate == null || EndDate == null) return;
+        auditEntries = await Context.DirectoryEntryAuditLogs.Where(e => e.Timestamp >= StartDate && e.Timestamp < EndDate.Value.AddDays(1)).OrderByDescending(e => e.Timestamp).ToListAsync();
+        await InvokeAsync(StateHasChanged);
     }
 }
