@@ -23,26 +23,36 @@ namespace BLAZAM.Gui.UI.Chat
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            Chat.OnMessagePosted += async (message) =>
+            Chat.OnMessagePosted += MessagePosted;
+            Chat.OnMessageRead += MessageRead;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            Chat.OnMessagePosted -= MessagePosted;
+            Chat.OnMessageRead -= MessageRead;
+        }
+
+        private async void MessageRead(AppUser user)
+        {
+            if (CurrentUser.State.Id == user.Id)
             {
-                if ((ChatRoom != null && message.ChatRoomId.Equals(ChatRoom.Id))
+                await Task.Delay(50);
+
+                await StateHasChangedAsync();
+            }
+        }
+
+        private async void MessagePosted(ChatMessage message)
+        {
+            if ((ChatRoom != null && message.ChatRoomId.Equals(ChatRoom.Id))
                 || (AppChatRoom != null && message.ChatRoomId.Equals(AppChatRoom.Id)))
-                {
-                    await Task.Delay(100);
-                    await RefreshChatRooms();
-                    await StateHasChangedAsync();
-                }
-
-            };
-            Chat.OnMessageRead += async (user) =>
             {
-                if (CurrentUser.State.Id == user.Id)
-                {
-                    await Task.Delay(50);
-
-                    await StateHasChangedAsync();
-                }
-            };
+                await Task.Delay(100);
+                await RefreshChatRooms();
+                await StateHasChangedAsync();
+            }
         }
 
 

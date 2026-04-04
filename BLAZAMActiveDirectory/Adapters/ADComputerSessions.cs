@@ -23,7 +23,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             else
             {
-                Computer.OnOnlineChanged += (status) => { if (status) { RefreshSessions(); } };
+                Computer.OnOnlineChanged += OnOnlineChanged;
+            }
+        }
+
+        private void OnOnlineChanged(bool status)
+        {
+            if (status)
+            {
+                RefreshSessions();
             }
         }
 
@@ -121,8 +129,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public void Dispose()
         {
+            Computer.OnOnlineChanged -= OnOnlineChanged;
             foreach (var session in ConnectedSessions)
             {
+                session.OnSessionDown -= SessionDownEvent;
                 session.Dispose();
             }
             ConnectedSessions.Clear();

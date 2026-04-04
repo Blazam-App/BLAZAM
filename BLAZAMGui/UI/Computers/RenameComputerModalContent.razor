@@ -46,12 +46,26 @@ else
         await base.OnInitializedAsync();
 
         _privateComputerInstance = Directory.FindGlobalEntryBySid(Computer.SID.ToSidString()) as IADComputer;
-        _privateComputerInstance.OnOnlineChanged += (async (state) => { await StateHasChangedAsync(); });
+        _privateComputerInstance.OnOnlineChanged += OnlineChanged;
         SaveDisabled = false;
         Modal.SetOnYes(SaveChanges);
         Modal.SetYesText(AppLocalization[Lang.Rename_Computer]);
         Modal.SetTitle(AppLocalization[Lang.Rename_Computer]);
 
+        await StateHasChangedAsync();
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        if (_privateComputerInstance != null)
+        {
+            _privateComputerInstance.OnOnlineChanged -= OnlineChanged;
+        }
+    }
+
+    private async void OnlineChanged(bool state)
+    {
         await StateHasChangedAsync();
     }
 

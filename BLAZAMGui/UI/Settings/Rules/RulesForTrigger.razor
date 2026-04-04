@@ -74,9 +74,27 @@
     {
         await base.OnInitializedAsync();
         _ = GetRulesAsync();
-        ViewFilter.ObjectTypeChanged += () => GetRulesAsync();
-        ViewFilter.TriggerChanged += () => GetRulesAsync();
-        RulesSettings.CreateRule += () => CreateNewRule();
+        ViewFilter.ObjectTypeChanged += ReloadRules;
+        ViewFilter.TriggerChanged += ReloadRules;
+        RulesSettings.CreateRule += OnCreateNewRule;
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        ViewFilter.ObjectTypeChanged -= ReloadRules;
+        ViewFilter.TriggerChanged -= ReloadRules;
+        RulesSettings.CreateRule -= OnCreateNewRule;
+    }
+
+    private void ReloadRules()
+    {
+        _ = GetRulesAsync();
+    }
+
+    private void OnCreateNewRule()
+    {
+        CreateNewRule();
     }
     private void CreateNewRule()
     {

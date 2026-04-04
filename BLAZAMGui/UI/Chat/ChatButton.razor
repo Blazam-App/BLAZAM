@@ -21,16 +21,24 @@ else
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-      
-        Chat.OnMessageRead += async (user) =>
-          {
-              if (CurrentUser.State.Id == user.Id)
-              {
-                  await Task.Delay(50);
 
-                  GetUnreadMessages();
-                  await StateHasChangedAsync();
-              }
-          };
+        Chat.OnMessageRead += RefreshUnread;
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        Chat.OnMessageRead -= RefreshUnread;
+    }
+
+    private async void RefreshUnread(AppUser user)
+    {
+        if (CurrentUser.State.Id == user.Id)
+        {
+            await Task.Delay(50);
+
+            GetUnreadMessages();
+            await StateHasChangedAsync();
+        }
     }
 }

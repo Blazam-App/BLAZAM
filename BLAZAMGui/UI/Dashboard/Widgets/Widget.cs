@@ -28,21 +28,31 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
 
             if (CurrentUserDashboardWidgets?.OnRefreshWidget != null)
             {
-                CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
-                {
-                    if (widget.WidgetType.Equals(WidgetType))
-                    {
-                        _ = RefreshDataAsync();
-
-                    }
-
-                };
+                CurrentUserDashboardWidgets.OnRefreshWidget += RefreshWidget;
             }
             _ = Task.Run(() =>
             {
                 _ = RefreshDataAsync();
 
             });
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            if (CurrentUserDashboardWidgets != null)
+            {
+                CurrentUserDashboardWidgets.OnRefreshWidget -= RefreshWidget;
+            }
+        }
+
+        private void RefreshWidget(Widget widget)
+        {
+            if (widget.WidgetType.Equals(WidgetType))
+            {
+                _ = RefreshDataAsync();
+
+            }
         }
 
 

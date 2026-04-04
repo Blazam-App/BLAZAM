@@ -94,12 +94,7 @@ namespace BLAZAM.Gui.UI.Inputs
         public override void Dispose()
         {
             base.Dispose();
-            Task.Run(async () =>
-            {
-
-                await CancelExistingTokens();
-                _cancellationList.Clear();
-            });
+            _ = CancelExistingTokens();
         }
 
         [Parameter]
@@ -214,15 +209,17 @@ namespace BLAZAM.Gui.UI.Inputs
             foreach (var source in _cancellationList)
             {
                 await source.CancelAsync();
+                source.Dispose();
             }
+            _cancellationList.Clear();
         }
 
 
         private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText, CancellationToken token)
         {
-            var newSource = new CancellationTokenSource();
-            token = newSource.Token;
             await CancelExistingTokens();
+            var newSource = CancellationTokenSource.CreateLinkedTokenSource(token);
+            var newToken = newSource.Token;
             _cancellationList.Add(newSource);
 
 
@@ -231,7 +228,7 @@ namespace BLAZAM.Gui.UI.Inputs
                 return Enumerable.Empty<IDirectoryEntryAdapter>();
             }
 
-            if (token.IsCancellationRequested || string.IsNullOrEmpty(searchText))
+            if (newToken.IsCancellationRequested || string.IsNullOrEmpty(searchText))
             {
                 return Enumerable.Empty<IDirectoryEntryAdapter>();
             }
@@ -246,10 +243,10 @@ namespace BLAZAM.Gui.UI.Inputs
             };
 
 
-            var tempResults = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token))
+            var tempResults = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>(newToken))
                 .Where(r => r.CanRead);
 
-            if (token.IsCancellationRequested)
+            if (newToken.IsCancellationRequested)
             {
                 return Enumerable.Empty<IDirectoryEntryAdapter>();
             }
@@ -260,7 +257,7 @@ namespace BLAZAM.Gui.UI.Inputs
                 filteredResults = tempResults.Where(result => CustomResultsFilter.Invoke(result));
             }
 
-            if (token.IsCancellationRequested)
+            if (newToken.IsCancellationRequested)
             {
                 return Enumerable.Empty<IDirectoryEntryAdapter>();
             }

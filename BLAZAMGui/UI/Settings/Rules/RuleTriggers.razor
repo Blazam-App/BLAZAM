@@ -18,10 +18,17 @@
     {
         base.OnInitialized();
 
-        ViewFilter.ObjectTypeChanged += async () =>
-        {
-            await StateHasChangedAsync();
-        };
+        ViewFilter.ObjectTypeChanged += Refresh;
     }
-    
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        ViewFilter.ObjectTypeChanged -= Refresh;
+    }
+
+    private async void Refresh()
+    {
+        await StateHasChangedAsync();
+    }
 }

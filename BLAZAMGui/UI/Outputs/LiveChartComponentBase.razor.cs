@@ -82,7 +82,13 @@ namespace BLAZAM.Gui.UI.Outputs
         }
         private void StopPolling()
         {
-            _pollingTimer.Dispose();
+            _pollingTimer?.Dispose();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            _pollingTimer?.Dispose();
         }
 
         protected virtual void PollData()

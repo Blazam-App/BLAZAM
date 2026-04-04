@@ -19,16 +19,6 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets.Admin
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-
-            CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
-            {
-                if (widget.WidgetType.Equals(WidgetType))
-                {
-                    _ = RefreshDataAsync();
-
-                }
-
-            };
         }
 
         protected override async Task RefreshDataAsync()

@@ -62,11 +62,25 @@
     {
         await base.OnInitializedAsync();
         Searcher = new(Directory);
-        Searcher.ResultsCollected += (async (batch) => { await StateHasChangedAsync(); });
-        Searcher.OnSearchCompleted += (async () =>
+        Searcher.ResultsCollected += Refresh;
+        Searcher.OnSearchCompleted += Refresh;
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        if (Searcher != null)
         {
-            await StateHasChangedAsync();
-        });
+            Searcher.ResultsCollected -= Refresh;
+            Searcher.OnSearchCompleted -= Refresh;
+        }
+    }
+
+    private async void Refresh(IEnumerable<IDirectoryEntryAdapter> batch) => await Refresh();
+
+    private async Task Refresh()
+    {
+        await StateHasChangedAsync();
     }
 
 

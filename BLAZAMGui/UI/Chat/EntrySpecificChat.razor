@@ -61,19 +61,14 @@
         try
         {
 
-            if (ChatUri.IsNullOrEmpty() && Entry?.DN!=null)
+            if (ChatUri.IsNullOrEmpty() && Entry?.DN != null)
             {
 
 
                 ChatUri = Entry.DN;
-                Nav.LocationChanged += ((state, args) =>
-              {
-                  if (Nav.ToBaseRelativePath(args.Location) != ChatUri)
-                  {
-                      RemoveThisViewer();
-                  }
-              });
+
             }
+            Nav.LocationChanged += LocationChanged;
 
             var chatRoom = await Context.ChatRooms.Where(cr => cr.Name.Equals(ChatUri)).FirstOrDefaultAsync();
             if (chatRoom is null)
@@ -98,36 +93,48 @@
 
             //Setup chat message listeners
 
-            Chat.OnMessagePosted += (async (ChatMessage message) =>
-           {
-               if (message.User != currentUserState.Preferences)
-               {
-                   if (_chatOpen && !playingPop)
-                   {
-                       playingPop = true;
-
-                   }
-                   else if (!_chatOpen && !playingBell)
-                   {
-                       playingBell = true;
-                   }
-
-                   await StateHasChangedAsync();
-               }
-           });
+            Chat.OnMessagePosted += OnMessagePosted;
 
 
         }
         catch (Exception ex)
         {
-            Loggers.SystemLogger.Error(ex,"Error trying to get page chat");
+            Loggers.SystemLogger.Error(ex, "Error trying to get page chat");
         }
     }
+
+    private async void OnMessagePosted(ChatMessage message)
+    {
+        if (message.User != currentUserState.Preferences)
+        {
+            if (_chatOpen && !playingPop)
+            {
+                playingPop = true;
+
+            }
+            else if (!_chatOpen && !playingBell)
+            {
+                playingBell = true;
+            }
+
+            await StateHasChangedAsync();
+        }
+    }
+
+    private void LocationChanged(object? state, LocationChangedEventArgs args)
+    {
+        if (Nav.ToBaseRelativePath(args.Location) != ChatUri)
+        {
+            RemoveThisViewer();
+        }
+    }
+
     public override void Dispose()
     {
         base.Dispose();
-
+        Nav.LocationChanged -= LocationChanged;
         ViewersChanged.Delegate -= Refresh;
+        Chat.OnMessagePosted -= OnMessagePosted;
     }
     private void AddThisViewer()
     {

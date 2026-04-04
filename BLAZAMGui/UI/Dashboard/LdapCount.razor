@@ -1,10 +1,21 @@
+@implements IDisposable
 <MudText>Ldap Count: @_count</MudText>
 @code{
     int _count = 0;
     protected override void OnInitialized()
     {
-        base.OnInitialized();
         _count = ApplicationStatistics.LdapConnectionCount;
-        ApplicationStatistics.OnLdapCountChanged.Delegate+= (c,count) => { _count = count; InvokeAsync(StateHasChanged); };
+        ApplicationStatistics.OnLdapCountChanged.Delegate += Refresh;
+    }
+
+    private void Refresh(object sender, int count)
+    {
+        _count = count;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ApplicationStatistics.OnLdapCountChanged.Delegate -= Refresh;
     }
 }

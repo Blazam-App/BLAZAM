@@ -79,17 +79,25 @@
     {
         await base.OnInitializedAsync();
 
-        Chat.OnMessagePosted += async (ChatMessage message) =>
+        Chat.OnMessagePosted += OnMessagePosted;
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        Chat.OnMessagePosted -= OnMessagePosted;
+    }
+
+    private async void OnMessagePosted(ChatMessage message)
+    {
+        if (message.ChatRoomId == ChatRoom?.Id)
         {
-            if (message.ChatRoomId == ChatRoom?.Id)
-            {
-                await Task.Delay(100);
-                await StateHasChangedAsync();
+            await Task.Delay(100);
+            await StateHasChangedAsync();
 
-                ScrollToBottom();
+            ScrollToBottom();
 
-            }
-        };
+        }
     }
     private void ScrollToBottom()
     {

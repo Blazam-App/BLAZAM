@@ -13,6 +13,17 @@
         SnackbarBroadcastService.OnWarningBroadcast += WarningBroadcast;
     }
 
+    public override void Dispose()
+    {
+        base.Dispose();
+        ApplicationUpdate.OnUpdateStarted -= UpdateStarted;
+        ApplicationUpdate.OnUpdateFailed -= UpdateFailed;
+        SnackbarBroadcastService.OnInfoBroadcast -= InfoBroadcast;
+        SnackbarBroadcastService.OnErrorBroadcast -= ErrorBroadcast;
+        SnackbarBroadcastService.OnSuccessBroadcast -= SuccessBroadcast;
+        SnackbarBroadcastService.OnWarningBroadcast -= WarningBroadcast;
+    }
+
     void UpdateStarted()
     {
         SnackBarService.Info("An update has been started. The application may reboot shortly.");

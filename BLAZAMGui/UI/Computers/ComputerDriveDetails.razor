@@ -48,20 +48,24 @@ else
         {
             GetDriveData();
         }
-        Computer.OnOnlineChanged += (async (status) =>
-        {
-            if (status == true)
-            {
-                GetDriveData();
-            }
-            await StateHasChangedAsync();
-
-        });
-
+        Computer.OnOnlineChanged += OnlineChanged;
 
         base.OnInitialized();
+    }
 
+    public override void Dispose()
+    {
+        base.Dispose();
+        Computer.OnOnlineChanged -= OnlineChanged;
+    }
 
+    private async void OnlineChanged(bool status)
+    {
+        if (status == true)
+        {
+            GetDriveData();
+        }
+        await StateHasChangedAsync();
     }
     private void GetDriveData()
     {

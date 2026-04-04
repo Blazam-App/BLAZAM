@@ -212,37 +212,48 @@
             PrivateChatRooms = Chat.GetPrivateChats(CurrentUser.State.Preferences);
     }
 
+    public override void Dispose()
+    {
+        base.Dispose();
+        Chat.OnMessagePosted -= OnMessagePosted;
+        Chat.OnChatRoomCreated -= OnChatRoomCreated;
+    }
+
     private void SetupChatMessageListeners()
     {
-        Chat.OnMessagePosted += (async (ChatMessage message) =>
-        {
-            if (currentUserState != null && message.User != currentUserState.Preferences
+        Chat.OnMessagePosted += OnMessagePosted;
+    }
+
+    private async void OnMessagePosted(ChatMessage message)
+    {
+        if (currentUserState != null && message.User != currentUserState.Preferences
                 && (message.ChatRoomId == AppChatRoom?.Id
                     || PrivateChatRooms.Any(pcr => pcr.Id == message.ChatRoomId)))
+        {
+            if (_chatOpen && !playingPop)
             {
-                if (_chatOpen && !playingPop)
-                {
-                    playingPop = true;
-                }
-                else if (!_chatOpen && !playingBell)
-                {
-                    playingBell = true;
-                }
+                playingPop = true;
             }
-            await StateHasChangedAsync();
-        });
+            else if (!_chatOpen && !playingBell)
+            {
+                playingBell = true;
+            }
+        }
+        await StateHasChangedAsync();
     }
 
     private void SetupChatRoomCreatedListener()
     {
-        Chat.OnChatRoomCreated += (async (room) =>
+        Chat.OnChatRoomCreated += OnChatRoomCreated;
+    }
+
+    private async void OnChatRoomCreated(ChatRoom room)
+    {
+        if (currentUserState != null && room.Members.Any(m => m.Id == currentUserState.Id))
         {
-            if (currentUserState != null && room.Members.Any(m => m.Id == currentUserState.Id))
-            {
-                await RefreshChatRooms();
-                await StateHasChangedAsync();
-            }
-        });
+            await RefreshChatRooms();
+            await StateHasChangedAsync();
+        }
     }
 
     void SwitchTo(ChatRoom? room)

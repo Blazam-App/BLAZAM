@@ -94,8 +94,20 @@
             triggerTypes.Add(type);
         }
         triggerTypes = triggerTypes.OrderBy(t => t.ToString()).ToList();
-        ViewFilter.ObjectTypeChanged += () => InvokeAsync(StateHasChanged);
-        ViewFilter.TriggerChanged += () => InvokeAsync(StateHasChanged);
+        ViewFilter.ObjectTypeChanged += Refresh;
+        ViewFilter.TriggerChanged += Refresh;
         _settings = DbFactory.CreateDbContext()?.GlobalAutomationRuleSettings.FirstOrDefault();
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        ViewFilter.ObjectTypeChanged -= Refresh;
+        ViewFilter.TriggerChanged -= Refresh;
+    }
+
+    private void Refresh()
+    {
+        InvokeAsync(StateHasChanged);
     }
 }

@@ -29,8 +29,20 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        JobMonitor.OnUpdate += async () => { await StateHasChangedAsync(); };
+        JobMonitor.OnUpdate += Refresh;
     }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        JobMonitor.OnUpdate -= Refresh;
+    }
+
+    private async void Refresh()
+    {
+        await StateHasChangedAsync();
+    }
+
     private void ShowJobDetails(DataGridRowClickEventArgs<IJob> rowClickEventArgs)
     {
         var job = rowClickEventArgs.Item;

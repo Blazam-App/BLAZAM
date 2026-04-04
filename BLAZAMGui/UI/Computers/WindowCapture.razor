@@ -4,6 +4,7 @@
 <h3>Window Capture</h3>
 
 <Base64Image Data=@LastCapture></Base64Image>
+@implements IDisposable
 @code {
     Process? _process;
     // Define a RECT structure for window coordinates
@@ -36,7 +37,7 @@
             if (_process == value) return;
             _process = value;
             if (_process == null)
-                _timer.Dispose();
+                _timer?.Dispose();
             else if (_timer == null)
                 _timer = new Timer(GetWindowCapture, Process?.MainWindowHandle, 500, 5000);
 
@@ -44,7 +45,12 @@
         }
     }
 
-    private Timer _timer;
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+    private Timer? _timer;
     public byte[]? LastCapture;
 
     void GetWindowCapture(object? processId)
