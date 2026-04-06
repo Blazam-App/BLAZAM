@@ -37,7 +37,7 @@ namespace BLAZAM.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            var context = await _factory.CreateDbContextAsync();
+            using var context = await _factory.CreateDbContextAsync();
             var manifest = new PWAManifest();
             var icon = new ManifestIcon
             {

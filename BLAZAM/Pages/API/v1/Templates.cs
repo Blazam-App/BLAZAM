@@ -85,7 +85,7 @@ namespace BLAZAM.Pages.API.v1
         public async Task<IActionResult> Execute(int templateId, [FromBody] NewUserPayload newUserDetails)
         {
 
-            var context = await DbFactory.CreateDbContextAsync();
+            using var context = await DbFactory.CreateDbContextAsync();
             var template = await context.DirectoryTemplates.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id == templateId);
 
             if (template == null)
