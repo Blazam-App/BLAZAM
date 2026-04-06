@@ -62,15 +62,15 @@ namespace BLAZAM.Services.Background
 
             }
 
-            ScheduleRules();
+            _ = ScheduleRulesAsync();
         }
 
         /// <summary>
         /// Schedules enabled automation rules that are due to run soon.
         /// </summary>
-        private void ScheduleRules()
+        private async Task ScheduleRulesAsync()
         {
-            if (dbFactory.CreateDbContext().GlobalAutomationRuleSettings.FirstOrDefault()?.RulesEnabled != true)
+            if (!await RulesAreEnabledAsync())
             {
                 return;
             }
@@ -137,10 +137,11 @@ namespace BLAZAM.Services.Background
             {
                 return;
             }
-            if (!(await (await dbFactory.CreateDbContextAsync())!.GlobalAutomationRuleSettings.FirstOrDefaultAsync())!.RulesEnabled)
+            if (!await RulesAreEnabledAsync())
             {
                 return;
             }
+
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
             if (await args.Entry.ShouldSkipEntry(dbFactory,directory))
             {
@@ -174,6 +175,36 @@ namespace BLAZAM.Services.Background
             _ = batchRuleProcessingJob.RunAsync();
 
 
+        }
+
+        private async Task<bool> RulesAreEnabledAsync()
+        {
+            if (dbFactory == null)
+            {
+                Loggers.DatabaseLogger.Error("Database factory not available during directory entry changed rule processing.");
+                return false;
+            }
+
+            var context = await dbFactory.CreateDbContextAsync();
+
+            if (context == null)
+            {
+                Loggers.DatabaseLogger.Error("Database connection could not be established during directory entry changed rule processing.");
+                return false;
+            }
+
+            var ruleSettings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
+            if (ruleSettings == null)
+            {
+                Loggers.DatabaseLogger.Information("Global rule settings could not be retrieved during directory entry changed rule processing. It's possible the settings have not be saved yet.");
+                return false;
+            }
+
+            if (!ruleSettings.RulesEnabled)
+            {
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
