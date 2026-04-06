@@ -26,29 +26,7 @@ namespace BLAZAM.Common.Data
             ref STARTUPINFO lpStartupInfo,
             out PROCESS_INFORMATION lpProcessInformation);
 
-        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern bool LogonUser(
-            string lpszUsername,
-            string lpszDomain,
-            IntPtr lpszPassword,
-            int dwLogonType,
-            int dwLogonProvider,
-            out IntPtr phToken);
-
-        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern bool CreateProcessAsUser(
-            IntPtr hToken,
-            string? lpApplicationName,
-            string? lpCommandLine,
-            IntPtr lpProcessAttributes,
-            IntPtr lpThreadAttributes,
-            bool bInheritHandles,
-            int dwCreationFlags,
-            IntPtr lpEnvironment,
-            string? lpCurrentDirectory,
-            ref STARTUPINFO lpStartupInfo,
-            out PROCESS_INFORMATION lpProcessInformation);
-
+       
  
     
 
