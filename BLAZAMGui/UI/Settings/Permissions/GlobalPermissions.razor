@@ -179,7 +179,7 @@
                 var requestAction = new GlobalPermissionRequestAction() { ObjectAction = action };
                 if (requestAction != null)
                 {
-                    var ctx = await DbFactory.CreateDbContextAsync();
+                    using var ctx = await DbFactory.CreateDbContextAsync();
                     globalPermissionRequestActions.Add(requestAction);
                     await ctx.GlobalPermissionRequestActions.AddAsync(requestAction);
                     await ctx.SaveChangesAsync();
@@ -192,7 +192,7 @@
                 if (requestAction != null)
                 {
 
-                    var ctx = await DbFactory.CreateDbContextAsync();
+                    using var ctx = await DbFactory.CreateDbContextAsync();
 
                     ctx.GlobalPermissionRequestActions.Remove(requestAction);
                     globalPermissionRequestActions.Remove(requestAction);

@@ -50,7 +50,7 @@ namespace BLAZAM.Server.Pages.Download
                 Job exportJob = new Job(_appLocalization["Export Database"], User.Identity?.Name);
                 JobStep exportData = new JobStep(_appLocalization["Export Data"], (step) =>
                 {
-                    var context = _factory.CreateDbContext();
+                    using var context = _factory.CreateDbContext();
                     context.Export(tempPath);
                     return true;
 

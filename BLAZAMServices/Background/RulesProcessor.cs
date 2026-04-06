@@ -185,7 +185,7 @@ namespace BLAZAM.Services.Background
                 return false;
             }
 
-            var context = await dbFactory.CreateDbContextAsync();
+            using var context = await dbFactory.CreateDbContextAsync();
 
             if (context == null)
             {
@@ -214,7 +214,7 @@ namespace BLAZAM.Services.Background
         /// <returns>The job representing the rule execution.</returns>
         public async Task<IJob?> ProcessScheduledRule(AutomationRule rule)
         {
-            var settings = await dbFactory.CreateDbContextAsync();
+            using var settings = await dbFactory.CreateDbContextAsync();
             rule = await settings.AutomationRules.FirstAsync(x => x.Id == rule.Id);
             var globalRuleSettings = await settings.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
             if (globalRuleSettings?.RulesEnabled != true)
