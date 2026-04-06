@@ -137,10 +137,32 @@ namespace BLAZAM.Services.Background
             {
                 return;
             }
-            if (!(await (await dbFactory.CreateDbContextAsync())!.GlobalAutomationRuleSettings.FirstOrDefaultAsync())!.RulesEnabled)
+            if (dbFactory == null)
+            {
+                Loggers.DatabaseLogger.Error("Database factory not available during directory entry changed rule processing.");
+                return;
+            }
+
+            var context = await dbFactory.CreateDbContextAsync();
+
+            if (context == null)
+            {
+                Loggers.DatabaseLogger.Error("Database connection could not be established during directory entry changed rule processing.");
+                return;
+            }
+
+            var ruleSettings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
+            if (ruleSettings == null)
+            {
+                Loggers.DatabaseLogger.Information("Global rule settings could not be retrieved during directory entry changed rule processing. It's possible the settings have not be saved yet.");
+                return;
+            }
+
+            if (!ruleSettings.RulesEnabled)
             {
                 return;
             }
+
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
             if (await args.Entry.ShouldSkipEntry(dbFactory,directory))
             {
