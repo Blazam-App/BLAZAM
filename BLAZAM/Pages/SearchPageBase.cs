@@ -101,10 +101,6 @@ namespace BLAZAM.Pages
             SearchService.SearchTerm = _searchTermParameter;
             Searcher.GeneralSearchTerm = _searchTermParameter;
 
-            await base.OnInitializedAsync();
-
-
-
             Searcher.OnSearchStarted += OnSearchUpdated;
             Searcher.OnSearchCompleted += OnSearchUpdated;
             Searcher.ResultsCollected += AddResults;
