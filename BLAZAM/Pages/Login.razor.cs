@@ -60,6 +60,11 @@ namespace BLAZAM.Pages
             }
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+            Monitor.OnAppReadyChanged -= AppReadyChanged;
+        }
 
         private async void AppReadyChanged(ServiceConnectionState state)
         {
