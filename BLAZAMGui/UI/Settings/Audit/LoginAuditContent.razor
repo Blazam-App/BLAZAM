@@ -1,4 +1,5 @@
-﻿@inherits DatabaseComponentBase
+﻿@using BLAZAM.Database.Models.Audit
+@inherits AuditContentBase<LogonAuditLog>
 
 <TimeframeSelector OnTimeframeChanged="TimeframeChanged" 
     StartDate="StartDate" 
@@ -13,7 +14,7 @@
                  FixedHeader=true
                  ColumnResizeMode="ResizeMode.Container"
                  Hideable=true
-                 Items="@logonEntries.OrderByDescending(ae => ae.Timestamp)"
+                 Items="@auditEntries.OrderByDescending(ae => ae.Timestamp)"
                  Filterable="false"
                  SortMode="@SortMode.Multiple"
                  Groupable="false">
@@ -48,29 +49,28 @@
 
 @code {
     private LoginHistoryChart? _loginHistoryChart;
-    private List<LogonAuditLog> logonEntries = new();
-    private DateTime? StartDate = DateTime.Today.AddDays(-14);
-    private DateTime? EndDate = DateTime.Today;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await base.OnInitializedAsync();
-        await GetAttempts(StartDate, EndDate);
+        base.OnInitialized();
+        StartDate = DateTime.Today.AddDays(-14);
     }
-    private async Task TimeframeChanged((DateTime? start, DateTime? end) dates)
+
+    protected override async Task TimeframeChanged((DateTime? start, DateTime? end) dates)
     {
         if (_loginHistoryChart != null)
         {
-            _loginHistoryChart.StartDate = dates.start; 
+            _loginHistoryChart.StartDate = dates.start;
             _loginHistoryChart.EndDate = dates.end;
             await _loginHistoryChart.GenerateLoginSeries();
         }
-        await GetAttempts(dates.start, dates.end);
+        await base.TimeframeChanged(dates);
     }
-    private async Task GetAttempts(DateTime? startDate, DateTime? endDate)
+
+    protected override async Task FetchData()
     {
-        if (startDate == null || endDate == null) return;
-        logonEntries = await Context.LogonAuditLog.Where(e => e.Timestamp >= startDate && e.Timestamp < endDate.Value.AddDays(1)).OrderByDescending(e => e.Timestamp).ToListAsync();
-        await StateHasChangedAsync();
+        if (StartDate == null || EndDate == null) return;
+        auditEntries = await Context.LogonAuditLog.Where(e => e.Timestamp >= StartDate && e.Timestamp < EndDate.Value.AddDays(1)).OrderByDescending(e => e.Timestamp).ToListAsync();
+        await InvokeAsync(StateHasChanged);
     }
 }

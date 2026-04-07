@@ -1,3 +1,4 @@
+using BLAZAM.Gui.UI.Inputs;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
@@ -19,6 +20,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         [CascadingParameter]
         public CurrentUserDashboardWidgets CurrentUserDashboardWidgets { get; set; }
 
+        protected DirectoryEntryContextMenu? _contextMenu;
 
         protected override async Task OnInitializedAsync()
         {
@@ -26,15 +28,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
 
             if (CurrentUserDashboardWidgets?.OnRefreshWidget != null)
             {
-                CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
-                {
-                    if (widget.WidgetType.Equals(WidgetType))
-                    {
-                        _ = RefreshDataAsync();
-
-                    }
-
-                };
+                CurrentUserDashboardWidgets.OnRefreshWidget += RefreshWidget;
             }
             _ = Task.Run(() =>
             {
@@ -43,7 +37,23 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             });
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+            if (CurrentUserDashboardWidgets != null)
+            {
+                CurrentUserDashboardWidgets.OnRefreshWidget -= RefreshWidget;
+            }
+        }
 
+        private void RefreshWidget(Widget widget)
+        {
+            if (widget.WidgetType.Equals(WidgetType))
+            {
+                _ = RefreshDataAsync();
+
+            }
+        }
 
         protected abstract Task RefreshDataAsync();
 
@@ -83,6 +93,22 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             {
                 Loggers.SystemLogger.Error(ex,"Error attempting to set a widgets rows per page preference.");
             }
+        }
+
+        protected async Task RowContextMenuClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
+        {
+            if (_contextMenu == null)
+                return;
+            _contextMenu.SetEntry(args.Item);
+            await _contextMenu.OpenMenuAsync(args.MouseEventArgs);
+        }
+
+        protected async Task RowContextMenuClicked(DataGridRowClickEventArgs<IADUser> args)
+        {
+            if (_contextMenu == null)
+                return;
+            _contextMenu.SetEntry(args.Item);
+            await _contextMenu.OpenMenuAsync(args.MouseEventArgs);
         }
 
     }

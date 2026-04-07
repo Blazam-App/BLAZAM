@@ -1,4 +1,5 @@
-﻿@inherits DatabaseComponentBase
+﻿@using BLAZAM.Database.Models.Audit
+@inherits AuditContentBase<SystemAuditLog>
 
 @if (ApplicationInfo.InDemoMode && CurrentUser.Username == "Demo")
 {
@@ -12,7 +13,7 @@ else
                  ColumnResizeMode="ResizeMode.Container"
                  FixedHeader=true
                  Hideable=true
-                 Items="@systemAuditEntries.OrderByDescending(ae => ae.Timestamp)"
+                 Items="@auditEntries.OrderByDescending(ae => ae.Timestamp)"
                  Filterable="false"
                  SortMode="@SortMode.Multiple"
                  Groupable="false">
@@ -37,24 +38,10 @@ else
 
 
 @code {
-    private List<SystemAuditLog> systemAuditEntries = new();
-    private DateTime? StartDate = DateTime.Today.AddDays(-7);
-    private DateTime? EndDate = DateTime.Today;
-
-    protected override async Task OnInitializedAsync()
+    protected override async Task FetchData()
     {
-        await base.OnInitializedAsync();
-        await GetAttempts(StartDate, EndDate);
-    }
-    private async Task TimeframeChanged((DateTime? start, DateTime? end) dates)
-    {
-
-        await GetAttempts(dates.start, dates.end);
-    }
-    private async Task GetAttempts(DateTime? startDate, DateTime? endDate)
-    {
-        if (startDate == null || endDate == null) return;
-        systemAuditEntries = await Context.SystemAuditLog.Where(e => e.Timestamp >= startDate && e.Timestamp < endDate.Value.AddDays(1)).OrderByDescending(e => e.Timestamp).ToListAsync();
-        await StateHasChangedAsync();
+        if (StartDate == null || EndDate == null) return;
+        auditEntries = await Context.SystemAuditLog.Where(e => e.Timestamp >= StartDate && e.Timestamp < EndDate.Value.AddDays(1)).OrderByDescending(e => e.Timestamp).ToListAsync();
+        await InvokeAsync(StateHasChanged);
     }
 }

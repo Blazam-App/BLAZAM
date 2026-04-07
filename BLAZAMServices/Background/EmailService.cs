@@ -152,7 +152,7 @@ namespace BLAZAM.Services.Background
                     if (settings.UseSMTPAuth)
                     {
                         // Authenticate with the server
-                        await client.AuthenticateAsync(settings.SMTPUsername, settings.SMTPPassword);
+                        await client.AuthenticateAsync(settings.SMTPUsername, settings.SMTPPassword?.Decrypt());
                     }
 
                     return client;
