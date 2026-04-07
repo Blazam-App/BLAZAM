@@ -188,7 +188,7 @@
     {
         if (newPassword == null || newPassword.IsNullOrEmpty())
         {
-            settings.SMTPPassword = string.Empty;
+            settings.SMTPPassword = null;
             return;
         }
 
