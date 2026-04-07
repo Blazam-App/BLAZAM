@@ -481,6 +481,10 @@ namespace BLAZAM.Update.Services
         }
         private bool TestCustomCredentials()
         {
+            if (!OperatingSystem.IsWindows())
+            {
+                return false;
+            }
             using var context = _dbFactory?.CreateDbContext();
             if (context == null)
                 return false;
@@ -537,6 +541,10 @@ namespace BLAZAM.Update.Services
 
         private bool TestDirectoryCredentials()
         {
+            if (!OperatingSystem.IsWindows())
+            {
+                return false;
+            }
             if (_dbFactory == null)
             {
                 return false;

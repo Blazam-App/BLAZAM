@@ -122,8 +122,8 @@ namespace BLAZAM.Database.Models
         /// <summary>
         /// The time of day the administrator wants the application to perform the <see cref="AutoUpdate"/>, if enabled.
         /// </summary>
-        public TimeSpan? AutoUpdateTime { get; set; } = TimeSpan.FromHours(2);
-
+        public TimeSpan? AutoUpdateTime { get; set; } = TimeSpan.FromHours(1.75);
+        
 
         /// <summary>
         /// The release branch to get updates from

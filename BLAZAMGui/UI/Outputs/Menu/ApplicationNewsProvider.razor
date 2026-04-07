@@ -149,8 +149,13 @@ else
     public override void Dispose()
     {
         base.Dispose();
-        ApplicationNewsService.OnNewItemsAvailable.Delegate -= RefreshItems;
-        CurrentUser.State.OnReadNewsSaved.Delegate -= RefreshItems;
+        if(ApplicationNewsService.OnNewItemsAvailable != null){
+            ApplicationNewsService.OnNewItemsAvailable.Delegate -= RefreshItems;
+        }
+        if (CurrentUser.State.OnReadNewsSaved != null)
+        {
+            CurrentUser.State.OnReadNewsSaved.Delegate -= RefreshItems;
+        }
     }
 
     protected override void OnAfterRender(bool firstRender)

@@ -123,6 +123,7 @@
     public override void Dispose()
     {
         base.Dispose();
+        Monitor.OnAppReadyChanged -= AppReady;
         waitingForLoadToComplete = false;
     }
 }
