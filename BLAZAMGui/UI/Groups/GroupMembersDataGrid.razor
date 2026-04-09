@@ -21,22 +21,7 @@
             <TemplateColumn Title=@AppLocalization[Lang.Name] Sortable=true Filterable=true Context="templateContext">
 
                 <CellTemplate Context="cellContext">
-                    <DirectoryEntryTooltipPopover Entry="@cellContext.Item">
-                        <DirectoryEntryContextMenu Entry="cellContext.Item" OnChanged="RefreshData">
-                            <MudLink Href="@cellContext.Item.SearchUri">
-                                @if (cellContext.Item is IADGroup group)
-                                {
-                                    <GroupWithDescriptionTooltip Group="group" />
-                                }
-                                else
-                                {
-                                    <MudElement>
-                                        @cellContext.Item.CanonicalName
-                                    </MudElement>
-                                }
-                            </MudLink>
-                        </DirectoryEntryContextMenu>
-                    </DirectoryEntryTooltipPopover>
+                   <DirectoryEntryLink Entry="cellContext.Item"/>
                 </CellTemplate>
             </TemplateColumn>
             <TemplateColumn Sortable=true Filterable=true Context="templateContext">
