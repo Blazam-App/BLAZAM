@@ -1,4 +1,5 @@
-﻿@inherits AppComponentBase
+﻿@using BLAZAM.Gui.UI.Dashboard.Widgets
+@inherits AppComponentBase
 <MudDataGrid T="IDirectoryEntryAdapter"
              Items="Entries"
              RowClick="@RowClicked"
@@ -29,10 +30,8 @@
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Changed]>
             <CellTemplate>
-                @if (context.Item?.LastChanged != null)
-                {
-                    <MudText>@context.Item.LastChanged?.ToLocalTime()</MudText>
-                }
+                <WidgetTimestamp Timestamp="context.Item?.LastChanged" />
+
             </CellTemplate>
         </TemplateColumn>
     </Columns>
@@ -47,7 +46,7 @@
 @code {
     private DirectoryEntryContextMenu? _contextMenu;
 
-    [Parameter] 
+    [Parameter]
     public EventCallback<DataGridRowClickEventArgs<IDirectoryEntryAdapter>> RowClicked { get; set; }
 
     [Parameter]
@@ -57,16 +56,16 @@
     public int ItemsPerPage { get; set; } = 5;
 
     [Parameter]
-    public string NoResultsMessage { get; set; }="No Results Found";
+    public string NoResultsMessage { get; set; } = "No Results Found";
 
     [Parameter]
-    public bool IsLoadingData { get=>LoadingData; set=>LoadingData=value; }
+    public bool IsLoadingData { get => LoadingData; set => LoadingData = value; }
 
     [Parameter]
     public EventCallback<int> ItemsPerPageChanged { get; set; }
 
     [Parameter]
-    public EventCallback EntryChanged{ get; set; }
+    public EventCallback EntryChanged { get; set; }
 
     protected async Task RowContextMenuClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
     {

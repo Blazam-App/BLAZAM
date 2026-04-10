@@ -313,7 +313,9 @@ namespace BLAZAM.Helpers
                 {
                     thisObject = new ADBitLockerRecovery();
                 }
-                else if (sr.PropertyContains(OBJECT_CLASS, "organizationalUnit") || sr.PropertyContains(OBJECT_CLASS, "container"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "organizationalUnit") 
+                    || sr.PropertyContains(OBJECT_CLASS, "builtinDomain")
+                    || sr.PropertyContains(OBJECT_CLASS, "container"))
                 {
                     thisObject = new ADOrganizationalUnit();
                 }

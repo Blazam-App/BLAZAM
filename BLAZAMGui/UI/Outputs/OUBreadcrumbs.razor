@@ -34,7 +34,8 @@
         {
             try
             {
-                var ou = await Entry.GetParentAsync() as IADOrganizationalUnit;
+                var parent = await Entry.GetParentAsync();
+                var ou = parent as IADOrganizationalUnit;
                 var items = new List<BreadcrumbItem>();
                 if (ou is not null)
                 {

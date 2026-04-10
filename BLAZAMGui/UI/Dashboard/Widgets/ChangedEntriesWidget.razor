@@ -34,10 +34,8 @@
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Changed]>
             <CellTemplate>
-                @if (context.Item?.LastChanged != null)
-                {
-                    <MudText>@context.Item.LastChanged?.ToLocalTime()</MudText>
-                }
+                <WidgetTimestamp Timestamp="context.Item?.LastChanged"/>
+               
             </CellTemplate>
         </TemplateColumn>
 
