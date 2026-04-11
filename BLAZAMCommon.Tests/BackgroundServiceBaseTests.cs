@@ -125,9 +125,9 @@ namespace BLAZAMCommon.Tests
             Assert.NotNull(_service.InspectTimer);
             Assert.False(_service.ExecuteCalled); // Should not be called immediately
 
-            // Wait a very short period to ensure it wasn't called due to a zero-like delay
-            Thread.Sleep(100); // Shorter than the SUT's minimum 15-45ms bug for Task.Delay, but for Timer this is fine.
-            Assert.False(_service.ExecuteCalled);
+            // Wait a short period to ensure it wasn't called immediately
+            bool wasCalled = _service.WaitForExecute(100); // Use existing WaitForExecute instead of Thread.Sleep
+            Assert.False(wasCalled, "Execute should not be called immediately when starting with immediate=false");
 
             // Clean up the timer explicitly if the service might not be disposed by test runner quickly enough
             // This is important as the timer will keep firing.

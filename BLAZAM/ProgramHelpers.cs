@@ -438,7 +438,7 @@ namespace BLAZAM
             var pluginDir = ApplicationInfo.pluginDirectory;
             if (!pluginDir.Exists)
             {
-                Loggers.PluginLogger.Warning("Plugin directory {@PluginPath} does not exist. Skipping plugin loading.", pluginDir.FullPath);
+                Loggers.PluginLogger.Information("Plugin directory {@PluginPath} does not exist. Skipping plugin loading.", pluginDir.FullPath);
                 return;
             }
 
@@ -678,7 +678,7 @@ namespace BLAZAM
                 }
                 else
                 {
-                    Loggers.SystemLogger.Warning("Installation not marked as complete. Skipping startup of most background services.");
+                    Loggers.SystemLogger.Information("Installation not marked as complete. Skipping startup of most background services.");
                 }
             }
             catch (Exception ex)

@@ -19,13 +19,13 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization[Lang.User]>
             <CellTemplate>
-                <MudText>@context.Item?.Username</MudText>
+                <MudText Style="font-size:14px;">@context.Item?.Username</MudText>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.IP_Address] Sortable="true">
             <CellTemplate>
           
-                    <IPAddress>
+                    <IPAddress Style="font-size:14px;">
                         @context.Item.IpAddress
                     </IPAddress>
                 
@@ -34,7 +34,7 @@
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Timestamp]>
             <CellTemplate>
-                <MudText>@context.Item?.Timestamp.ToLocalTime()</MudText>
+                <WidgetTimestamp Timestamp="@context.Item?.Timestamp" />
             </CellTemplate>
         </TemplateColumn>
 
