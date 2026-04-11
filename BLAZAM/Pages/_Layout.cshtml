@@ -51,7 +51,7 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.server.js"></script>
-    @if (DatabaseCache.ApplicationSettings?.SendDeveloperAnalytics == true)
+    @if (DatabaseCache.ApplicationSettings?.SendDeveloperAnalytics == true || !ApplicationInfo.InstallationCompleted)
     {
         if (!ApplicationInfo.InDemoMode && !ApplicationInfo.InDebugMode && !Debugger.IsAttached)
         {
