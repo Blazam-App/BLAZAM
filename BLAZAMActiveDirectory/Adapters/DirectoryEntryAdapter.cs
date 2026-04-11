@@ -434,9 +434,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var bytes = GetAttribute<byte[]>("objectGUID");
-                var guid = bytes.ToGuid();
-                return guid;
+                var str = GetStringAttribute("objectGUID");
+                if (System.Guid.TryParse(str, out var guid))
+                {
+                    return guid;
+                }
+
+                return null;
             }
             set
             {
