@@ -442,10 +442,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 return null;
             }
-            set
-            {
-                SetAttribute("objectGUID", value?.ToByteArray());
-            }
 
         }
 
