@@ -894,9 +894,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                                 }
                             }
-
-
-                            //DirectoryEntry.CommitChanges();
                             return true;
                         });
                         propertyJob.AddStep(propertyStep);
@@ -906,15 +903,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         commitJob.AddStep(propertyJob);
                     }
-                    //commitJob.AddStep(commitStep);
-
                 }
                 else
                 {
 
                     var ou = GetParent();
                     var ouEntry = ou.DirectoryEntry;
-                    //var newUser = ouEntry.Children.Add(this.Rdn(), "user");
                     if (DirectoryEntry == null)
                     {
                         Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"), "The directory entry for new entry is somehow missing on commit. {@DN}", DN);
@@ -951,6 +945,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 }
+                
                 if (!NewEntry
                     && PostCommitSteps.Count > 0)
                 {
@@ -961,8 +956,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 }
-                //commitJob.AddStep(commitStep);
-                //commitJob.AddStep(commitStep);
+                
                 if (NewEntry
                     && PostCommitSteps.Count > 0)
                 {
@@ -970,11 +964,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         commitJob.AddStep(step);
                     }
-                    //commitJob.AddStep(commitStep);
-
-
                 }
+
                 var result = false;
+                
                 if (commitJob.Result != JobResult.Running && commitJob.Result != JobResult.Cancelled)
                 {
                     result = commitJob.Run();
@@ -1065,8 +1058,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual void DiscardChanges()
         {
-
-            //DirectoryEntry = null;
             HasUnsavedChanges = false;
             NewEntryProperties = [];
             CommitSteps.Clear();
@@ -1122,6 +1113,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
         {
             var list = new List<T?>();
+           
             //var dcs = new List<DomainController>(Directory.DomainControllers);
 
             //Parallel.ForEach(dcs, dc =>
