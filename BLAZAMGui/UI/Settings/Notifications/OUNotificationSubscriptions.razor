@@ -1,63 +1,59 @@
 @inherits DatabaseComponentBase
 @inject NotificationGenerationService ouNotificationService
 <MudSimpleTable>
-
     <tr>
-        <th colspan="10" class="mb-6">
+        <th colspan="12" class="mb-6">
             <MudText Typo="Typo.h5" Class="pb-6">@(AppLocalization["Notification Settings for "] + _ou?.CanonicalName)</MudText>
-
-        </th>
-
-    </tr>
-    <tr>
-
-        <th style="border-left:solid;border-right:solid;" colspan="6">
-            @AppLocalization[Lang.Events]
-        </th>
-        <th style="border-right:solid;" colspan="2">
-            @AppLocalization[Lang.Delivery]
-        </th>
-        <th style="border-right:solid;">
-            @AppLocalization[" "]
-        </th>
-        <th colpan="2">
-            @AppLocalization[" "]
         </th>
     </tr>
     <tr>
-        <th style="border-left:solid;" class="align-self-center">
+        <th colspan="7" style="border: 1px solid; text-align: center;">
+            @AppLocalization[Lang.Events]<sup>*</sup>
+        </th>
+        <th colspan="2" style="border: 1px solid; text-align: center;">
+            @AppLocalization[Lang.Delivery]<sup>*</sup>
+        </th>
+        <th colspan="3" style="border: 1px solid;">@AppLocalization[Lang.Actions]</th>
+    </tr>
+    <tr>
+        <th style="border: 1px solid;" class="align-self-center">
             @AppLocalization[Lang.Group_Membership_Changes]
         </th>
-
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
-
             var originalEnum = (NotificationType)type;
             if (originalEnum == NotificationType.Unassign || originalEnum == NotificationType.Assign)
             {
                 continue;
             }
-            <th class="align-self-center">
+            <th style="border: 1px solid;" class="align-self-center">
                 @originalEnum.ToString()
             </th>
-
         }
-        <th style="border-left:solid;">
+        <th style="border: 1px solid;">
             @AppLocalization[Lang.In_App]
         </th>
-        <th>
+        <th style="border: 1px solid;">
             @AppLocalization[Lang.To_Email]
         </th>
-        <th style="border-left:solid;">
+        <th style="border: 1px solid;">
             @AppLocalization[Lang.Block]
         </th>
-        <th style="border-left:solid;">
+        <th style="border: 1px solid;">
             @AppLocalization[Lang.Save]
         </th>
-        <th>
+        <th style="border: 1px solid;">
             @AppLocalization[Lang.Delete]
         </th>
     </tr>
+    <EditNotificationSubscriptionRow @bind-Subscription="newSubscription"
+                                     Context="Context"
+                                     OnAdded="AddSubscription" />
+    <tr>
+        <td colspan="12">
+            <MudDivider Class="my-3" />
+        </td>
+    </tr> 
     @if (subscriptions != null && subscriptions.Count > 0)
     {
         foreach (var sub in subscriptions)
@@ -66,47 +62,40 @@
                                              Context="Context"
                                              OnSaved="SaveExisting"
                                              OnDeleted="DeleteExisting" />
-
         }
     }
     else
     {
-
         <tr>
-            <td colspan="10">
+            <td colspan="12">
                 <MudText Align="Align.Center" Class="py-5">@AppLocalization["No subscriptions are set for this OU"]</MudText>
             </td>
         </tr>
     }
-    <tr>
-        <td colspan="10">
-            <MudDivider Class="my-3" />
-        </td>
-    </tr>
-    <EditNotificationSubscriptionRow @bind-Subscription="newSubscription"
-                                     Context="Context"
-                                     OnAdded="AddSubscription" />
-
-
-
+   
 </MudSimpleTable>
 
 <MudSimpleTable>
     <tr>
-        <th colspan="10">
+        <th colspan="9">
             <MudDivider Class="my-10" />
         </th>
-
     </tr>
     <tr>
-        <th colspan="10" class="mb-6">
+        <th colspan="9" class="mb-6">
             <MudText Typo="Typo.h5" Class="pb-6">@(AppLocalization["Effective Notification Settings for "] + _ou?.CanonicalName)</MudText>
-
         </th>
-
     </tr>
     <tr>
-        <th style="border-left:solid;" class="align-self-center">
+        <th colspan="7" style="border: 1px solid; text-align: center;">
+            @AppLocalization[Lang.Events]
+        </th>
+        <th colspan="2" style="border: 1px solid; text-align: center;">
+            @AppLocalization[Lang.Delivery]
+        </th>
+    </tr>
+    <tr>
+        <th style="border: 1px solid;" class="align-self-center">
             @AppLocalization[Lang.Group_Membership_Changes]
         </th>
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
@@ -116,77 +105,52 @@
             {
                 continue;
             }
-            <th>
+            <th style="border: 1px solid;">
                 @originalEnum.ToString()
             </th>
         }
-        <th>
+        <th style="border: 1px solid;">
             @AppLocalization[Lang.In_App]
         </th>
-        <th>
+        <th style="border: 1px solid;">
             @AppLocalization[Lang.To_Email]
         </th>
-        <th>&nbsp;</th>
-        <th>&nbsp;</th>
-        <th>&nbsp;</th>
-
     </tr>
-
     <tr>
-        <td>
+        <td style="border: 1px solid;">
             <MudCheckBox Style="align-items:center;"
+                         Disabled=true
                          Value="@(effectiveInAppSubscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==NotificationType.Assign)!=null)" />
-
         </td>
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
-
             var originalEnum = (NotificationType)type;
             if (originalEnum == NotificationType.Unassign || originalEnum == NotificationType.Assign)
             {
                 continue;
             }
-            <td>
-                @{
-
-                }
+            <td style="border: 1px solid;">
                 <MudCheckBox Style="align-items:center;"
                              Disabled=true
-                             Value="@(effectiveInAppSubscription.NotificationTypes.Any(x=>x.NotificationType==originalEnum)==true)" />
-
-
+                             Value="@(effectiveInAppSubscription.NotificationTypes.Any(x=>x.NotificationType==originalEnum))" />
             </td>
         }
-
-        <td>
-            @{
-
-            }
+        <td style="border: 1px solid;">
             <MudCheckBox Style="align-items:center;"
                          Disabled=true
                          Value="@(effectiveInAppSubscription.InApp)" />
-
-
         </td>
-        <td>
-            @{
-
-            }
+        <td style="border: 1px solid;">
             <MudCheckBox Style="align-items:center;"
                          Disabled=true
                          Value="@(effectiveInAppSubscription.ByEmail)" />
-
-
         </td>
-
     </tr>
-
-
     <tr>
-        <td>
+        <td style="border: 1px solid;">
             <MudCheckBox Style="align-items:center;"
+                         Disabled=true
                          Value="@(effectiveByEmailSubscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==NotificationType.Assign)!=null)" />
-
         </td>
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
@@ -195,40 +159,23 @@
             {
                 continue;
             }
-            <td>
-                @{
-
-                }
+            <td style="border: 1px solid;">
                 <MudCheckBox Style="align-items:center;"
                              Disabled=true
                              Value="@(effectiveByEmailSubscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)" />
-
-
             </td>
         }
-
-        <td>
-            @{
-
-            }
+        <td style="border: 1px solid;">
             <MudCheckBox Style="align-items:center;"
                          Disabled=true
                          Value="@(effectiveByEmailSubscription.InApp)" />
-
-
         </td>
-        <td>
-            @{
-
-            }
+        <td style="border: 1px solid;">
             <MudCheckBox Style="align-items:center;"
                          Disabled=true
                          Value="@(effectiveByEmailSubscription.ByEmail)" />
-
-
         </td>
     </tr>
-
 </MudSimpleTable>
 
 @code
