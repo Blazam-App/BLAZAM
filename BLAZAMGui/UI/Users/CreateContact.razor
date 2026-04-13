@@ -190,8 +190,7 @@
                 @AppLocalization[Lang.Groups]
             </TabContent>
             <ChildContent>
-                <MemberOfList Target="_blank"
-                              AssignToClicked="@(async()=>{await _assignToModal!.ShowAsync();})"
+                <MemberOfList AssignToClicked="@(async()=>{await _assignToModal!.ShowAsync();})"
                               Disabled="@(SelectedTemplate?.EffectiveAllowCustomGroups!=true  && !CurrentUser.State.IsSuperAdmin)"
                               Model="@newContact" />
                 <AppModal @ref=_assignToModal>
