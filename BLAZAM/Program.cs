@@ -278,7 +278,10 @@ namespace BLAZAM
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex, "Error collecting or loading SSL information from database.");
+                if (ApplicationInfo.installationCompleted)
+                {
+                    Loggers.SystemLogger.Error(ex, "Error collecting or loading SSL information from database.");
+                }
                 return null;
             }
         }

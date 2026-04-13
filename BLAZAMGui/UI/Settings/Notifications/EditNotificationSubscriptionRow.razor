@@ -2,7 +2,7 @@
 @inject IStringLocalizer<AppLocalization> AppLocalization
 <tr>
 
-    <td>
+    <td style="border: 1px solid;">
         <MudCheckBox Style="align-items:center;"
                      ValueChanged=@((bool val)=>{ToggleType(NotificationType.Assign,val);ToggleType(NotificationType.Unassign,val);})
                      Value="@(Subscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==NotificationType.Assign)!=null)" />
@@ -15,28 +15,28 @@
         if(originalEnum== NotificationType.Unassign || originalEnum == NotificationType.Assign){
             continue;
         }
-        <td>
+        <td style="border: 1px solid;">
             <MudCheckBox Style="align-items:center;"
                          ValueChanged=@((bool val)=>{ToggleType(originalEnum,val);})
                          Value="@(Subscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)" />
 
         </td>
     }
-    <td>
+    <td style="border: 1px solid;">
         <MudCheckBox Style="align-items:center;" @bind-Value="@(Subscription.InApp)" />
 
     </td>
-    <td>
+    <td style="border: 1px solid;">
         <MudCheckBox Style="align-items:center;" @bind-Value="@(Subscription.ByEmail)" />
 
     </td>
-    <td>
+    <td style="border: 1px solid;">
         <MudCheckBox Style="align-items:center;" @bind-Value="@(Subscription.Block)" />
 
     </td>
     @if (Subscription.Id == 0)
     {
-        <td colspan="2">
+        <td style="border: 1px solid;" colspan="2">
             <MudButton Color=@Color.Tertiary
                        Disabled=@((!Subscription.ByEmail&&!Subscription.InApp)||Subscription.NotificationTypes.Count==0)
                        Style="align-items:center;"
@@ -49,13 +49,13 @@
     else
     {
 
-        <td>
+        <td style="border: 1px solid;">
             <MudFab Color=@Color.Success
                     OnClick="@(OnSaved)"
                     Size="Size.Small"
                     StartIcon="@Icons.Material.Filled.Save" />
         </td>
-        <td>
+        <td style="border: 1px solid;">
             <MudFab Color=@Color.Error
                     Size="Size.Small"
                     OnClick="@(()=>{OnDeleted.InvokeAsync(Subscription);})"
