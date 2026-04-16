@@ -31,6 +31,15 @@ namespace BLAZAM.Notifications.Services
 
             _databaseFactory = databaseFactory;
         }
+        /// <summary>Publishes a notification to all users currently in the UserSettings table.</summary> 
+        /// <param name="notificationMessage">The notification message to publish. If its Id is 0, it will be added to the database.</param> 
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public Task PublishNotification(NotificationMessage notificationMessage)
+        {
+            using var context = _databaseFactory.CreateDbContext();
+            var allUsers = context.UserSettings.ToList(); // Materialize the list
+            return PublishNotification(allUsers, notificationMessage); // Return the task
+        }
 
         /// <summary>Publishes a notification to a single user.</summary> 
         /// <param name="user">The user to receive the notification.</param> 
@@ -137,15 +146,7 @@ namespace BLAZAM.Notifications.Services
             return sentNotifications;
         }
 
-        /// <summary>Publishes a notification to all users currently in the UserSettings table.</summary> 
-        /// <param name="notificationMessage">The notification message to publish. If its Id is 0, it will be added to the database.</param> 
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public Task PublishNotification(NotificationMessage notificationMessage)
-        {
-            using var context = _databaseFactory.CreateDbContext();
-            var allUsers = context.UserSettings.ToList(); // Materialize the list
-            return PublishNotification(allUsers, notificationMessage); // Return the task
-        }
+     
 
         /// <summary>Deletes a specific notification message. </summary> 
         /// <param name="notificationMessage">The notification message to delete. Must not be null.</param> 

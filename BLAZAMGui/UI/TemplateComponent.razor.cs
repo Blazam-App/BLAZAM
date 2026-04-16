@@ -1,6 +1,7 @@
 ﻿
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Gui.UI.Settings;
+using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI
@@ -72,7 +73,7 @@ namespace BLAZAM.Gui.UI
                 selectedTemplate = value;
 
                 _templateIdParameter = value?.Id;
-                Header?.OnRefreshRequested?.Invoke();
+                FetchTemplates(true);
 
             }
 
@@ -125,13 +126,18 @@ namespace BLAZAM.Gui.UI
         }
 
 
-        protected async Task FetchTemplates()
+        protected async Task FetchTemplates(bool selected=false)
         {
             try
             {
-                var temp = await Context.DirectoryTemplates.Include(t => t.ParentTemplate).OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
+                if (!selected) { 
+                var temp = await Context.DirectoryTemplates.OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
                 if (temp != null)
                 {
+                    for (int x = 0; x < temp.Count; x++)
+                    {
+                        temp[x] = await LoadTemplateWithParents(temp[x].Id);
+                    }
                     Templates = temp;
                 }
 
@@ -142,9 +148,10 @@ namespace BLAZAM.Gui.UI
                     TemplateCategories = TemplateCategories.Prepend("All");
                     SelectedCategory = TemplateCategories.FirstOrDefault();
                 }
-                if (TemplateIdParameter != 0)
+            }
+                if (TemplateIdParameter!=null && TemplateIdParameter != 0)
                 {
-                    SelectedTemplate = Templates.FirstOrDefault(t => t.Id == TemplateIdParameter);
+                    SelectedTemplate = await LoadTemplateWithParents(TemplateIdParameter);
                 }
                 await StateHasChangedAsync();
                 Header?.OnRefreshRequested?.Invoke();
@@ -155,5 +162,24 @@ namespace BLAZAM.Gui.UI
             }
         }
 
+
+        private async Task<DirectoryTemplate?> LoadTemplateWithParents(int? templateId)
+        {
+            if (templateId == null)
+            {
+                return null;
+            }
+            var template = await Context.DirectoryTemplates.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t=>t.Id.Equals(templateId));
+            if (template?.ParentTemplate != null)
+            {
+                var parentTemplate = await Context.DirectoryTemplates.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id.Equals(template.ParentTemplate.Id));
+                if (parentTemplate != null&& parentTemplate.ParentTemplate!=null)
+                {
+                   parentTemplate.ParentTemplate = await LoadTemplateWithParents(parentTemplate.ParentTemplate.Id);
+                }
+                template.ParentTemplate = parentTemplate;
+            }
+            return template;
+        }
     }
 }

@@ -20,14 +20,17 @@
         <MudExpansionPanel Text="@AppLocalization[Lang.Inheritance_Tree]" Expanded=true>
             <TemplateInheritanceTreeView RootTemplate="TemplateTreeItemData"
                                          SelectedTemplate="SelectedTemplate"
-                                         OnTemplateSelected="@((template)=>{SelectedTemplate=template; Nav.NavigateTo("/templates/"+template.Id);})" />
+                                         OnTemplateSelected="@((template)=>{
+SelectedTemplate=template; 
+Nav.NavigateTo("/templates/"+template.Id);
+})" />
         </MudExpansionPanel>
     </MudCard>
 }
 @if (SelectedTemplate != null)
 {
     <EditDirectoryTemplate Header="Header"
-                           @bind-DirectoryTemplate=@SelectedTemplate
+                           DirectoryTemplate=@SelectedTemplate
                            ClearSelectedTemplate="()=>{SelectedTemplate = null; InvokeAsync(StateHasChanged);}" />
 
 }
