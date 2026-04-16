@@ -88,10 +88,10 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                     return;
                 }
 
-                if (Context != null && value.Id > 0)
-                {
-                    value = Context.DirectoryTemplates.First(dt => dt.Id == value.Id);
-                }
+                //if (Context != null && value.Id > 0)
+                //{
+                //    value = Context.DirectoryTemplates.First(dt => dt.Id == value.Id);
+                //}
 
                 _template = value;
                 originalTemplate = value;
@@ -160,20 +160,20 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 }
 
                 await LoadCategories();
-                if (DirectoryTemplate.ParentTemplate is null && DirectoryTemplate.ParentTemplateId > 0)
-                {
-                    using var parentContext = await DbFactory.CreateDbContextAsync();
-                    DirectoryTemplate.ParentTemplate = await parentContext.DirectoryTemplates.FirstOrDefaultAsync(t => t.ParentTemplateId.Equals(DirectoryTemplate.ParentTemplateId) && t.DeletedAt == null);
-                }
+                //if (DirectoryTemplate.ParentTemplate is null && DirectoryTemplate.ParentTemplateId > 0)
+                //{
+                //    using var parentContext = await DbFactory.CreateDbContextAsync();
+                //    DirectoryTemplate.ParentTemplate = await parentContext.DirectoryTemplates.FirstOrDefaultAsync(t => t.ParentTemplateId.Equals(DirectoryTemplate.ParentTemplateId) && t.DeletedAt == null);
+                //}
 
 
                 if (DirectoryTemplate != null && Context != null && !Context.EntityIsTracked(DirectoryTemplate) == true)
                 {
-                    var matching = await Context.DirectoryTemplates.Include(dt => dt.ParentTemplate).Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
-                    if (matching != null)
-                    {
-                        _template = matching;
-                    }
+                    //var matching = await Context.DirectoryTemplates.Include(dt => dt.ParentTemplate).Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
+                    //if (matching != null)
+                    //{
+                    //    _template = matching;
+                    //}
 
                     await LoadParentOU();
                 }
