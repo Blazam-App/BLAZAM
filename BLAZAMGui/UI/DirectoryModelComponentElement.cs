@@ -63,7 +63,7 @@
             }
             else
             {
-                return !IsAdmin && !Template.IsRequiredField(field);
+                return Template.IsRequiredField(field);
             }
         }
         protected bool DisableField(IActiveDirectoryField field)
