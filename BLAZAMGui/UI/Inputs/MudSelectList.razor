@@ -20,6 +20,7 @@
              PopoverClass="minw-max">
         <ActivatorContent>
             <MudField Disabled="@Disabled"
+                      HelperText="@HelperText"
                       Label="@Label"
                       @onclick="@(() => context.ToggleAsync())">
                 <MudStack Row=true>
@@ -104,6 +105,9 @@
 
     [Parameter]
     public string? Label { get; set; }
+
+    [Parameter]
+    public string? HelperText { get; set; }
 
     [Parameter]
     public string? AdornmentIcon { get; set; }

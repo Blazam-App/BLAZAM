@@ -8,15 +8,8 @@
                 <MudStack>
                     <MudText Class="mt-5" Typo="Typo.h6">@AppLocalization[Lang.Current_Template]: @originalTemplate.Name</MudText>
                         <MudSelectList T="DirectoryTemplate"
-                                       AnchorOrigin="Origin.BottomCenter"
-                                       TransformOrigin="Origin.TopCenter"
-                                       FullWidth=true
                                        HelperText="@(dropdownTemplates.IsNullOrEmpty()?"There are no other templates":null)"
                                        Disabled=@(dropdownTemplates.IsNullOrEmpty())
-                                       Clearable=true
-                                       OnClearButtonClick="@(async()=>{
-                                                        await ParentTemplateChanged(null);
-                                                        })"
                                        Label=@AppLocalization[Lang.Parent_Template]
                                        Options="@dropdownTemplates.OrderBy(t=>t.Name)"
                                        Value="@DirectoryTemplate.ParentTemplate"
@@ -31,9 +24,6 @@
 
 
                         <MudSelectList T="string"
-                                       AnchorOrigin="Origin.BottomCenter"
-                                       TransformOrigin="Origin.TopCenter"
-                                       Clearable=true
                                        Adornment="Adornment.End"
                                        AdornmentIcon="@Icons.Material.Filled.Add"
                                        AdornmentColor="@Color.Success"
