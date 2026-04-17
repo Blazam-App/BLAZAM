@@ -24,7 +24,7 @@
                       Label="@Label"
                       @onclick="@(() => context.ToggleAsync())">
                 <MudStack Row=true>
-                    @if (Selected.Count() > 0 || !EqualityComparer<T>.Default.Equals(Value, default(T)))
+                    @if (Selected !=null && (Selected.Count() > 0 || !EqualityComparer<T>.Default.Equals(Value, default(T))))
                     {
                         <MudText>
                             @Text
@@ -57,7 +57,7 @@
                             {
                                 <MudCheckBox T=bool
                                              ValueChanged="@(async ()=> await ToggleSelected(val))"
-                                             Value="Selected.Contains(val)" />
+                                             Value="Selected?.Contains(val)==true" />
                             }
                             @if (ToStringFunc != null)
                             {
@@ -91,7 +91,7 @@
     }
 </MudStack>
 
-@code {
+    @code {
     private MudMenu? _selectMenu;
 
     [Parameter]
@@ -193,6 +193,10 @@
 
     private async Task ToggleSelected(T item)
     {
+        if (Selected == null)
+        {
+            Selected = [];
+        }
         if (Selected.Contains(item))
         {
             if (MultiSelection)
