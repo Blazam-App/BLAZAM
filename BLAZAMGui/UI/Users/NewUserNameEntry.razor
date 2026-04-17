@@ -62,18 +62,6 @@
         _newUserName = NewUserName;
         NewUserNameChanged.InvokeAsync(_newUserName);
     }
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-        if (firstRender)
-        {
-            if (Form != null)
-            {
-                await Form.ValidateAsync();
-            }
-            await StateHasChangedAsync();
-        }
-    }
     [Parameter]
     public EventCallback<NewUserName> NewUserNameChanged { get; set; }
     [Parameter]

@@ -23,10 +23,10 @@ namespace BLAZAM.Gui.UI
             Modal.YesEnabled = (() => {return IsValid; });
         }
 
-        protected override void OnAfterRender(bool firstRender)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            base.OnAfterRender(firstRender);
-            _ = ValidateModalAsync();
+            await base.OnAfterRenderAsync(firstRender);
+            await ValidateModalAsync();
         }
 
         protected new MudForm? Form { get; set; }

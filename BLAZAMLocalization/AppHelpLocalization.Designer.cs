@@ -458,7 +458,7 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This request originated from : {0}.
+        ///   Looks up a localized string similar to This request originated from: {0}.
         /// </summary>
         public static string Password_Reset_Origin_Text {
             get {
