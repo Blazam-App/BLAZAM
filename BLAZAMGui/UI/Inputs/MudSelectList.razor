@@ -24,7 +24,7 @@
                       Label="@Label"
                       @onclick="@(() => context.ToggleAsync())">
                 <MudStack Row=true>
-                    @if (Selected.Count() > 0 || !EqualityComparer<T>.Default.Equals(Value, default(T)))
+                    @if (Selected !=null && (Selected.Count() > 0 || !EqualityComparer<T>.Default.Equals(Value, default(T))))
                     {
                         <MudText>
                             @Text
