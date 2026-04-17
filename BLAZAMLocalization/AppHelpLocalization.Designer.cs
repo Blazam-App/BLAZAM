@@ -422,6 +422,60 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A password reset has been requested for your account..
+        /// </summary>
+        public static string Password_Reset_Body {
+            get {
+                return ResourceManager.GetString("Password_Reset_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  Your reset link will expire {0}.
+        /// </summary>
+        public static string Password_Reset_Expiration_Text {
+            get {
+                return ResourceManager.GetString("Password_Reset_Expiration_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you did not request this reset, you can safely ignore it..
+        /// </summary>
+        public static string Password_Reset_Ignore_Text {
+            get {
+                return ResourceManager.GetString("Password_Reset_Ignore_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click here to reset your password.
+        /// </summary>
+        public static string Password_Reset_Link_Text {
+            get {
+                return ResourceManager.GetString("Password_Reset_Link_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This request originated from : {0}.
+        /// </summary>
+        public static string Password_Reset_Origin_Text {
+            get {
+                return ResourceManager.GetString("Password_Reset_Origin_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If the link above does not work copy the following into the address bar..
+        /// </summary>
+        public static string Password_Reset_URL_Text {
+            get {
+                return ResourceManager.GetString("Password_Reset_URL_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  is requesting read access for {0} on .
         /// </summary>
         public static string Read_Field_Access_Request_Notification_Message {
