@@ -217,7 +217,7 @@ namespace BLAZAM.Update.Services
                 if (release != null)
                 {
                     //Get the release filename to check that the release zip exists
-                    var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
+                    var fn = Path.GetFileNameWithoutExtension(release.Assets.FirstOrDefault()?.Name);
                     //Create that update object
                     if (fn == null)
                     {
@@ -230,7 +230,7 @@ namespace BLAZAM.Update.Services
                     }
                     catch (Exception ex)
                     {
-                        Loggers.UpdateLogger.Error(ex, "Error trying to get v1 releases {@Release}", release?.Name);
+                        Loggers.UpdateLogger.Error(ex, "Error trying to get v1 releases {@Release}", release.Name);
                     }
                 }
             }
@@ -243,7 +243,7 @@ namespace BLAZAM.Update.Services
                 if (release != null)
                 {
                     //Get the release filename to prepare a version object
-                    var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
+                    var fn = Path.GetFileNameWithoutExtension(release.Assets.FirstOrDefault()?.Name);
                     if (fn == null)
                     {
                         continue;
@@ -256,7 +256,7 @@ namespace BLAZAM.Update.Services
                     }
                     catch (Exception ex)
                     {
-                        Loggers.UpdateLogger.Error(ex, "Error trying to get beta releases {@Release}", release?.Name);
+                        Loggers.UpdateLogger.Error(ex, "Error trying to get beta releases {@Release}", release.Name);
                     }
                 }
             }
@@ -498,7 +498,7 @@ namespace BLAZAM.Update.Services
                     return false;
                 }
 
-                impersonation = appSettings?.CreateUpdateImpersonator();
+                impersonation = appSettings.CreateUpdateImpersonator();
 
                 if (impersonation != null)
                 {

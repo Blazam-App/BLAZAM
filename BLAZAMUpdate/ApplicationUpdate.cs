@@ -95,21 +95,6 @@ namespace BLAZAM.Update
                 return "Powershell";
             }
         }
-      
-        private SystemFile CommandProcessPath
-        {
-            get
-            {
-                var testPath = new SystemFile(_applicationRootDirectory + $"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}net8.0{Path.DirectorySeparatorChar}updater{Path.DirectorySeparatorChar}update.ps1");
-
-
-                if (!testPath.Exists)
-                {
-                    testPath = new SystemFile(_applicationRootDirectory + $"updater{Path.DirectorySeparatorChar}update.ps1");
-                }
-                return testPath;
-            }
-        }
        
 
         /// <summary>
@@ -195,8 +180,6 @@ namespace BLAZAM.Update
             updateJob.AddStep(stagingCheckStep);
             updateJob.AddStep(bakupStep);
             updateJob.AddStep(updateUpdaterStep);
-            //updateJob.AddStep(updateStep);
-            //updateJob.AddStep(waitForRestart);
 
             Loggers.UpdateLogger?.Debug("Update job created with {StepCount} steps", updateJob.Steps.Count);
             return updateJob;
