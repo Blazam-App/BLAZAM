@@ -226,7 +226,7 @@
     <value>Für diesen Eintrag sind keine Aktionen zur Anforderung verfügbar.</value>
   </data>
   <data name="No_Request_Fields_Available" xml:space="preserve">
-    <value />
+    <value>Für diesen Eintrag sind keine Felder zur Anforderung verfügbar</value>
   </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>Das Generieren eines neuen Authentifizierungstokens macht das vorhandene ungültig!</value>
@@ -282,14 +282,34 @@ in ein Konto mit geringeren Berechtigungen, um die Sicherheit zu verbessern.</va
     <value>Es sind keine Anmeldeinformationen mit Schreibberechtigung für das Anwendungsverzeichnis konfiguriert!
 Versuchen Sie, benutzerdefinierte Aktualisierungsanmeldeinformationen zu konfigurieren.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> fordert Lesezugriff für {0} an auf </value>
   </data>
-  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> fordert {0}-Zugriff an auf </value>
   </data>
-  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> fordert Bearbeitungszugriff für {0} an auf </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>Benutzer muss das Passwort bei der nächsten Anmeldung ändern</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>Für Ihr Konto wurde eine Passwortzurücksetzung angefordert.</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>Klicken Sie hier, um Ihr Passwort zurückzusetzen</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> Ihr Zurücksetzungslink läuft ab {0}</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>Wenn Sie diese Zurücksetzung nicht angefordert haben, können Sie sie sicher ignorieren.</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>Diese Anfrage stammt von: {0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>Wenn der obige Link nicht funktioniert, kopieren Sie Folgendes in die Adressleiste.</value>
   </data>
 </root>

@@ -226,7 +226,7 @@
     <value>此項目沒有可請求的動作。</value>
   </data>
   <data name="No_Request_Fields_Available" xml:space="preserve">
-    <value />
+    <value>此項目沒有可請求的欄位</value>
   </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>產生新的驗證器權杖將使現有權杖失效！</value>
@@ -282,14 +282,34 @@
     <value>沒有設定具有應用程式目錄寫入權限的認證！
 嘗試設定自訂更新認證。</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> 正在請求 {0} 的讀取權限於 </value>
   </data>
-  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> 正在請求 {0} 權限於 </value>
   </data>
-  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> 正在請求 {0} 的編輯權限於 </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>要求使用者在下次登入時變更密碼</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>已為您的帳戶請求密碼重設。</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>點擊此處重設您的密碼</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> 您的重設連結將於 {0} 過期</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>如果您未請求此重設，可以安全地忽略它。</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>此請求來自：{0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>如果上面的連結無法使用，請將以下內容複製到網址列。</value>
   </data>
 </root>
