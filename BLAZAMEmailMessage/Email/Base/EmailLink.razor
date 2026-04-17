@@ -35,5 +35,5 @@ else
     [Parameter]
     public string Style { get; set; } = "color:#2261d3;";
 
-    protected virtual string HrefUri => _forceHttps ? "https://" : "http://" + _appFQDN + Href;
+    protected virtual string HrefUri => (_forceHttps ? "https://" : "http://") + _appFQDN + Href;
 }
