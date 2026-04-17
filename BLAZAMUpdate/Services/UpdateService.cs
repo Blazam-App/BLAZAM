@@ -330,7 +330,7 @@ namespace BLAZAM.Update.Services
                 Version = releaseVersion,
             };
 
-            var update = new ApplicationUpdate(_applicationInfo, this, _dbFactory) { Release = release };
+            var update = new ApplicationUpdate(_applicationInfo, this) { Release = release };
 
             if (releaseVersion.NewerThan(new ApplicationVersion("1.5.99")))
             {
