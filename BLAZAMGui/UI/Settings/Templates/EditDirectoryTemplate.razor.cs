@@ -146,10 +146,10 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             {
                 usernameFromTemplate = GetParentOfValue<string?>(DirectoryTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
                 displayNameFromTemplate = GetParentOfValue<string?>(DirectoryTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
-                passwordFromTemplateName = GetParentOfValue<string?>(DirectoryTemplate.EffectivePasswordFormula, template => template.PasswordFormula); ;
-                requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange); ;
-                sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail); ;
-                askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); ;
+                passwordFromTemplateName = GetParentOfValue<string?>(DirectoryTemplate.EffectivePasswordFormula, template => template.PasswordFormula);
+                requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange);
+                sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail);
+                askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); 
 
                 fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
                 fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
@@ -160,21 +160,10 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 }
 
                 await LoadCategories();
-                //if (DirectoryTemplate.ParentTemplate is null && DirectoryTemplate.ParentTemplateId > 0)
-                //{
-                //    using var parentContext = await DbFactory.CreateDbContextAsync();
-                //    DirectoryTemplate.ParentTemplate = await parentContext.DirectoryTemplates.FirstOrDefaultAsync(t => t.ParentTemplateId.Equals(DirectoryTemplate.ParentTemplateId) && t.DeletedAt == null);
-                //}
 
 
-                if (DirectoryTemplate != null && Context != null && !Context.EntityIsTracked(DirectoryTemplate) == true)
+                if (DirectoryTemplate != null && Context != null && !Context.EntityIsTracked(DirectoryTemplate))
                 {
-                    //var matching = await Context.DirectoryTemplates.Include(dt => dt.ParentTemplate).Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
-                    //if (matching != null)
-                    //{
-                    //    _template = matching;
-                    //}
-
                     await LoadParentOU();
                 }
                 using (var dropdownContext = await DbFactory.CreateDbContextAsync())
@@ -184,7 +173,10 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 
                 RefreshGroups();
                 await StateHasChangedAsync();
-                Form?.Validate();
+                if (Form != null)
+                {
+                    await Form.ValidateAsync();
+                }
             }
 
         }
@@ -264,7 +256,10 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             }
 
             await LoadParentOU();
-            Form?.Validate();
+            if (Form != null)
+            {
+                await Form.ValidateAsync();
+            }
         }
 
         protected IADOrganizationalUnit? SelectedOU;
