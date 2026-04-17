@@ -39,6 +39,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         IPHostEntry? IPHostEntry { get; set; }
 
+        List<IPAddress> IPAddresses { get; }
+
         /// <summary>
         /// Called when this computers <see cref="IsOnline"/> status changes
         /// </summary>
