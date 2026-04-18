@@ -15,7 +15,6 @@ namespace BLAZAM.Services
     public class SearchService
     {
         private readonly IApplicationUserStateService _userStateService;
-        private readonly IActiveDirectoryContext _directory;
         private readonly NavigationManager _nav;
         private bool includeDisabled = false;
         private string? searchTerm;
@@ -58,14 +57,13 @@ namespace BLAZAM.Services
         /// <param name="userStateService">Service for accessing current user state and preferences.</param>
         /// <param name="nav">Navigation manager for redirecting to search pages.</param>
         /// <exception cref="ArgumentNullException">Thrown if userStateService or nav is null.</exception>
-        public SearchService(IApplicationUserStateService userStateService, NavigationManager nav, IActiveDirectoryContext directory)
+        public SearchService(IApplicationUserStateService userStateService, NavigationManager nav)
         {
             ArgumentNullException.ThrowIfNull(userStateService);
 
             ArgumentNullException.ThrowIfNull(nav);
 
 
-            _directory = directory;
             _userStateService = userStateService;
             _nav = nav;
             includeDisabled = _userStateService.CurrentUserState?.Preferences?.SearchDisabledUsers == true;

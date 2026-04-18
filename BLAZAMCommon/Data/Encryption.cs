@@ -156,7 +156,7 @@ namespace BLAZAM.Common.Data
             throw new AppException("Unable to decrypt cipherText");
 
         }
-        private Dictionary<string, SecureString> _cipherCache = new();
+        private readonly Dictionary<string, SecureString> _cipherCache = new();
         /// <summary>
         /// Decrypts cipher-text
         /// </summary>
@@ -167,6 +167,10 @@ namespace BLAZAM.Common.Data
         /// <exception cref="AppException"></exception>
         private T? DecryptSaltedObjectV2<T>(string? cipherText)
         {
+            if (cipherText == null)
+            {
+                return default;
+            }
             lock (_cipherCacheLock)
             {
                 if (_cipherCache.ContainsKey(cipherText))
@@ -200,11 +204,6 @@ namespace BLAZAM.Common.Data
             }
             var decrypted = JsonConvert.DeserializeObject<T>(streamData);
             return decrypted;
-
-
-
-
-            throw new AppException("Unable to decrypt cipherText");
 
         }
         /// <summary>
