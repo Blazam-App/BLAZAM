@@ -226,7 +226,7 @@
     <value>이 항목에 대해 요청할 수 있는 작업이 없습니다.</value>
   </data>
   <data name="No_Request_Fields_Available" xml:space="preserve">
-    <value />
+    <value>이 항목에 대해 요청할 수 있는 필드가 없습니다</value>
   </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>새 인증 토큰을 생성하면 기존 토큰이 무효화됩니다!</value>
@@ -282,14 +282,34 @@
     <value>애플리케이션 디렉터리에 대한 쓰기 권한이 있는 자격 증명이 구성되어 있지 않습니다!
 사용자 지정 업데이트 자격 증명을 구성해 보십시오.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> 이(가) {0}에 대한 읽기 액세스를 요청하고 있습니다 </value>
   </data>
-  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> 이(가) {0} 액세스를 요청하고 있습니다 </value>
   </data>
-  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> 이(가) {0}에 대한 편집 액세스를 요청하고 있습니다 </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>다음 로그온 시 사용자가 비밀번호를 변경하도록 요구</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>귀하의 계정에 대한 비밀번호 재설정이 요청되었습니다.</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>비밀번호를 재설정하려면 여기를 클릭하십시오</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> 재설정 링크는 {0}에 만료됩니다</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>이 재설정을 요청하지 않았다면 안전하게 무시할 수 있습니다.</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>이 요청은 다음에서 시작되었습니다: {0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>위의 링크가 작동하지 않으면 다음을 주소 표시줄에 복사하십시오.</value>
   </data>
 </root>

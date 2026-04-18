@@ -226,7 +226,7 @@
     <value>Dla tego wpisu nie są dostępne żadne działania do żądania.</value>
   </data>
   <data name="No_Request_Fields_Available" xml:space="preserve">
-    <value />
+    <value>Brak dostępnych pól do żądania dla tego wpisu</value>
   </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>Wygenerowanie nowego tokenu uwierzytelniającego unieważni istniejący!</value>
@@ -282,14 +282,34 @@ na konto o niższych uprawnieniach, aby poprawić bezpieczeństwo.</value>
     <value>Brak skonfigurowanych poświadczeń z uprawnieniami do zapisu w katalogu aplikacji!
 Spróbuj skonfigurować niestandardowe poświadczenia aktualizacji.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> żąda dostępu do odczytu dla {0} na </value>
   </data>
-  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> żąda dostępu {0} na </value>
   </data>
-  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> żąda dostępu do edycji dla {0} na </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>Wymagaj od użytkownika zmiany hasła przy następnym logowaniu</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>Zażądano resetowania hasła dla Twojego konta.</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>Kliknij tutaj, aby zresetować hasło</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> Twój link resetujący wygaśnie {0}</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>Jeśli nie zażądałeś tego resetu, możesz go bezpiecznie zignorować.</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>To żądanie pochodzi z: {0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>Jeśli powyższy link nie działa, skopiuj poniższe do paska adresu.</value>
   </data>
 </root>

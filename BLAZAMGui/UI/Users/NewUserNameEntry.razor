@@ -41,34 +41,26 @@
 </MudButton>
 <MudButton Color="Color.Success"
            OnClick="OnNext"
-           Disabled=@(newUserName is null || (newUserName.Surname.AppTrim().IsNullOrEmpty() || newUserName.GivenName.AppTrim().IsNullOrEmpty()))>
+           Disabled=@(NewUserName is null || (NewUserName.Surname?.AppTrim().IsNullOrEmpty()==true || NewUserName.GivenName.AppTrim().IsNullOrEmpty()))>
     @AppLocalization[Lang.Next]
 </MudButton>
 
 
 @code {
 
-    NewUserName newUserName;
+    NewUserName _newUserName;
 
     [Parameter]
     public NewUserName NewUserName
     {
-        get => newUserName; set
-        {
-            if (value == newUserName) return;
-            newUserName = value;
-            NewUserNameChanged.InvokeAsync(newUserName);
-
-        }
+        get;set;
     }
-    protected override void OnAfterRender(bool firstRender)
+    protected override void OnParametersSet()
     {
-        base.OnAfterRender(firstRender);
-        if (firstRender)
-        {
-            Form?.Validate();
-            StateHasChanged();
-        }
+        base.OnParametersSet();
+        if (NewUserName == _newUserName) return;
+        _newUserName = NewUserName;
+        NewUserNameChanged.InvokeAsync(_newUserName);
     }
     [Parameter]
     public EventCallback<NewUserName> NewUserNameChanged { get; set; }

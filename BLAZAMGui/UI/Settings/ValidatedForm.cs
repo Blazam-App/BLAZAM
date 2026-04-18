@@ -15,10 +15,12 @@ namespace BLAZAM.Gui.UI.Settings
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-            if (firstRender)
+            if (firstRender
+                && Form != null)
             {
-                Form?.Validate();
+                await Form.ValidateAsync();
             }
+
         }
 
         protected virtual async Task Save()

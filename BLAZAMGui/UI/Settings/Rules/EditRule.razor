@@ -150,7 +150,10 @@
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            Form?.Validate();
+            if (Form != null)
+            {
+                await Form.ValidateAsync();
+            }
         }
     }
 
