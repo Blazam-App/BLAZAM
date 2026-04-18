@@ -104,8 +104,8 @@ namespace BLAZAM.Logger
                 _systemLogger = value;
             }
         }
-        
-      
+
+
         private static ILogger? _aspLogger;
         public static ILogger AspNetLogger
         {
@@ -172,16 +172,16 @@ namespace BLAZAM.Logger
         internal static LoggerConfiguration CreateLogBuilder()
         {
             var config = new LoggerConfiguration()
-                                 .Enrich.FromLogContext()
+                                .Enrich.FromLogContext()
                                 .Enrich.WithMachineName()
                                 .Enrich.WithEnvironmentName()
                                 .Enrich.WithEnvironmentUserName()
-                              .Enrich.WithProperty("Application Name", "Blazam")
-                              .Enrich.WithProperty("Installation Type", InstallationType)
-                              .Enrich.WithProperty("Installation Id", InstallationId)
-                              .Enrich.WithProperty("OS", OperatingSystem.IsWindows() ? "Windows" : OperatingSystem.IsLinux() ? "Linux" : "Unknown")
-                              .Enrich.WithProperty("Installation Completed", InstallationCompleted)
-                              .Enrich.WithProperty("Database Type", DatabaseType)
+                                .Enrich.WithProperty("Application Name", "Blazam")
+                                .Enrich.WithProperty("Installation Type", InstallationType)
+                                .Enrich.WithProperty("Installation Id", InstallationId)
+                                .Enrich.WithProperty("OS", OperatingSystem.IsWindows() ? "Windows" : OperatingSystem.IsLinux() ? "Linux" : "Unknown")
+                                .Enrich.WithProperty("Installation Completed", InstallationCompleted)
+                                .Enrich.WithProperty("Database Type", DatabaseType)
                                 .Enrich.WithProperty("Application Version", _applicationVersion);
 
             return config;
@@ -211,7 +211,7 @@ namespace BLAZAM.Logger
                     lc.WriteTo.Console();
                 });
             }
-                
+
             if (SendToSeqServer)
             {
                 loggerBuilder.WriteTo.Seq(SeqServerUri, apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning);
