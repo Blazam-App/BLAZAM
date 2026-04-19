@@ -9,7 +9,7 @@ namespace BLAZAM.Session
             var identity = new ClaimsIdentity();
             identity.AddClaim(new Claim(ClaimTypes.Name, "Active Directory"));
             identity.AddClaim(new Claim(ClaimTypes.WindowsAccountName, "Active Directory"));
-            this.User = new System.Security.Claims.ClaimsPrincipal();
+            this.User = new ClaimsPrincipal();
             this.User.AddIdentity(identity);
         }
     }

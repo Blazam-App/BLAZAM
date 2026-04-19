@@ -4,6 +4,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="BlazorTemplater" Version="1.5.1" />
+    <PackageVersion Include="bunit" Version="2.7.2" />
+    <PackageVersion Include="bunit.web" Version="1.40.0" />
     <PackageVersion Include="Cassia" Version="2.0.0.60" />
     <PackageVersion Include="coverlet.collector" Version="8.0.1" />
     <PackageVersion Include="coverlet.msbuild" Version="8.0.1" />
