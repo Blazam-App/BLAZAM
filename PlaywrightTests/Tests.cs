@@ -2,10 +2,9 @@ using Microsoft.Playwright;
 
 namespace PlaywrightTests
 {
-
-    [TestFixture]
-    public class Tests : PageTest
+    public abstract class Tests : PageTest
     {
+        protected virtual string BaseUrl { get { return "https://demo.blazam.org"; } }
         [Test]
         public async Task LandingPageHasDemoLoginButtonAndLogsIntoHome()
         {
@@ -71,8 +70,8 @@ namespace PlaywrightTests
         {
             await LogIn();
             await Page.GetByRole(AriaRole.Link, new() { Name = "Audit" }).ClickAsync();
-            //await Expect(Page.GetByText("BeforeAction")).ToBeVisibleAsync();
-            //await Expect(Page.GetByText("AfterAction")).ToBeVisibleAsync();
+            await Expect(Page.GetByText("Before Action")).ToBeVisibleAsync(new() { Timeout = 30000 });
+            await Expect(Page.GetByText("After Action")).ToBeVisibleAsync();
             //await Page.GetByText("Logins").ClickAsync();
             ////await Expect(Page.GetByText("Daily Logins")).ToBeVisibleAsync();
             //await Expect(Page.GetByText("Action", new() { Exact = true })).ToBeVisibleAsync();
@@ -116,25 +115,25 @@ namespace PlaywrightTests
 
 
 
-        //[Test]
-        //public async Task SearchFilterTest()
-        //{
-        //    await LogIn();
-        //    await Page.GetByRole(AriaRole.Button, new() { Name = "All" }).ClickAsync();
-        //    await Page.Locator("p").Filter(new() { HasTextRegex = new Regex("^User$") }).ClickAsync();
-        //    await Page.GetByRole(AriaRole.Button, new() { Name = "User" }).ClickAsync();
-        //    await Page.GetByText("Group", new() { Exact = true }).ClickAsync();
-        //    await Page.GetByRole(AriaRole.Button, new() { Name = "Group" }).ClickAsync();
-        //    await Page.GetByText("OU", new() { Exact = true }).ClickAsync();
-        //    await Page.GetByRole(AriaRole.Button, new() { Name = "OU" }).ClickAsync();
-        //    await Page.GetByText("Computer").ClickAsync();
-        //    await Page.GetByRole(AriaRole.Button, new() { Name = "Computer" }).ClickAsync();
-        //    await Page.GetByText("Printer", new() { Exact = true }).ClickAsync();
-        //    await Page.GetByRole(AriaRole.Button, new() { Name = "Printer" }).ClickAsync();
-        //    await Page.GetByText("BitLocker").ClickAsync();
-        //    // Expects the URL to contain intro.
-        //    //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
-        //}
+        [Test]
+        public async Task SearchFilterTest()
+        {
+            await LogIn();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "All" }).ClickAsync();
+            await Page.Locator("p").Filter(new() { HasTextRegex = new Regex("^User$") }).ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "User" }).ClickAsync();
+            await Page.GetByText("Group", new() { Exact = true }).ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Group" }).ClickAsync();
+            await Page.GetByText("OU", new() { Exact = true }).ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "OU" }).ClickAsync();
+            await Page.GetByText("Computer").ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Computer" }).ClickAsync();
+            await Page.GetByText("Printer", new() { Exact = true }).ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Printer" }).ClickAsync();
+            await Page.GetByText("BitLocker").ClickAsync();
+            // Expects the URL to contain intro.
+            //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
+        }
 
 
 
@@ -475,7 +474,7 @@ namespace PlaywrightTests
                 IsMobile = false,
                 ViewportSize = new ViewportSize() { Width = 1280, Height = 1024 }
             });
-            await Page.GotoAsync("https://demo.blazam.org/home");
+            await Page.GotoAsync($"{BaseUrl}/home");
             await Page.GetByRole(AriaRole.Button, new() { Name = "Log In To Demo" }).ClickAsync();
 
             try

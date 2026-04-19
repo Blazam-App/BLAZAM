@@ -427,15 +427,7 @@ namespace BLAZAM.ActiveDirectory
             if (OperatingSystem.IsWindows()) throw new AppException("Windows should use the signing and sealing options, not directly call StartTLS");
             lock (_tlsLock)
             {
-                var tlsStarted = false;
-
-                currentConnection.SessionOptions.StartTransportLayerSecurity(null);
-
-
-                tlsStarted = true;
-
-
-
+              currentConnection.SessionOptions.StartTransportLayerSecurity(null);
                 return true;
             }
         }
