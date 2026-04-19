@@ -88,11 +88,6 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                     return;
                 }
 
-                //if (Context != null && value.Id > 0)
-                //{
-                //    value = Context.DirectoryTemplates.First(dt => dt.Id == value.Id);
-                //}
-
                 _template = value;
                 originalTemplate = value;
                 SelectedOU = Directory?.OUs.FindOuByDN(value.EffectiveParentOU);
@@ -330,11 +325,6 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         private async Task CancelNewTemplate()
         {
             await ClearSelectedTemplate.InvokeAsync();
-        }
-        private async Task DiscardChanges()
-        {
-            _template = originalTemplate;
-            await StateHasChangedAsync();
         }
         protected async Task SaveTemplate()
         {

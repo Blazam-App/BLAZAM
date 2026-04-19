@@ -157,19 +157,9 @@ namespace BLAZAM.Common.Data.Database
                             return serverFragment.Split("\\")[1];
                         }
                     }
-
-
-                    return null;
-
-
-
-
                 }
-                throw new DatabaseConnectionStringException("Error getting server address from appconfig");
-
+                return null;
             }
-
-
         }
 
         /// <summary>
