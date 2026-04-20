@@ -295,4 +295,22 @@ Try configuring custom update credentials.</value>
   <data name="Require_Password_Change" xml:space="preserve">
     <value>Require the user to change their password at next logon</value>
   </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>A password reset has been requested for your account.</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>Click here to reset your password</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> Your reset link will expire {0}</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>If you did not request this reset, you can safely ignore it.</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>This request originated from: {0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>If the link above does not work copy the following into the address bar.</value>
+  </data>
 </root>

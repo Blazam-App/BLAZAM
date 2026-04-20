@@ -1,6 +1,6 @@
 ﻿@using BLAZAM.Helpers
 @using System.Security
-@inherits NotificationTemplateComponent
+@inherits EmailNotificationTemplateComponent
 
     <EmailTemplateHeader>
     <strong>@AppLocalization[Lang.Entry_modified]</strong>
@@ -12,16 +12,20 @@
    
    
     </EmailTemplateBody>
-
+@if (ShouldRenderLinks)
+{
+    <br />
+    <EmailLink Href="@EntryLink" />
+}
 
 @code{
-    [Parameter]
-    public string? EntryName { get; set; }
  
     public override string Render() => new ComponentRenderer<EntryEditedEmailMessage>()
             .UseLayout<DefaultEmailLayout>()
             .AddServiceProvider(ApplicationInfo.services)
-            .Set(c => c.EntryName, EntryName).Render();
+            .Set(c => c.EntryName, EntryName)
+            .Set(c => c.EntryLink, EntryLink)
+            .Render();
 }
 
 

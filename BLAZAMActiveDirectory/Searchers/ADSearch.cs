@@ -603,10 +603,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
             set
             {
-                if (value is CustomActiveDirectoryField field)
+                if (value is CustomActiveDirectoryField @field)
                 {
                     DefaultField = null;
-                    CustomField = field;
+                    CustomField = @field;
                 }
                 else if (value is ActiveDirectoryField field2)
                 {

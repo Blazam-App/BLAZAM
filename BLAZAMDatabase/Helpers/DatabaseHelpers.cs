@@ -15,6 +15,10 @@ namespace BLAZAM.Helpers
 {
     public static class DatabaseHelpers
     {
+        private const string CK_TABLE_COLUMN = "CK_Table_Column";
+        private const string MYSQL_ID_1 = "Id = 1";
+        private const string SQL_ID_1 = "[Id] = 1";
+
         /// <summary>
         /// Checks if the given field is in the template, whether editable or not
         /// </summary>
@@ -341,11 +345,11 @@ namespace BLAZAM.Helpers
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, MYSQL_ID_1));
                 }
                 else
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, SQL_ID_1));
                 }
             });
         }
@@ -357,11 +361,11 @@ namespace BLAZAM.Helpers
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, MYSQL_ID_1));
                 }
                 else
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, SQL_ID_1));
                 }
             });
         }
@@ -373,11 +377,11 @@ namespace BLAZAM.Helpers
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, MYSQL_ID_1));
                 }
                 else
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, SQL_ID_1));
                 }
 
                 entity.HasData(new AuthenticationSettings
@@ -395,11 +399,11 @@ namespace BLAZAM.Helpers
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, MYSQL_ID_1));
                 }
                 else
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, SQL_ID_1));
                 }
             });
         }
@@ -494,5 +498,26 @@ namespace BLAZAM.Helpers
                 entity.Navigation(e => e.ChatMessage).AutoInclude();
             });
         }
+
+        public static async Task<DirectoryTemplate?> LoadTemplateWithParents(this DbSet<DirectoryTemplate> dbSet,int? templateId)
+        {
+           
+            if (templateId == null)
+            {
+                return null;
+            }
+            var template = await dbSet.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id.Equals(templateId));
+            if (template?.ParentTemplate != null)
+            {
+                var parentTemplate = await dbSet.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id.Equals(template.ParentTemplate.Id));
+                if (parentTemplate != null && parentTemplate.ParentTemplate != null)
+                {
+                    parentTemplate.ParentTemplate = await dbSet.LoadTemplateWithParents(parentTemplate.ParentTemplate.Id);
+                }
+                template.ParentTemplate = parentTemplate;
+            }
+            return template;
+        
+    }
     }
 }

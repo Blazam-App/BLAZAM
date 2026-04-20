@@ -2,10 +2,9 @@ using Microsoft.Playwright;
 
 namespace PlaywrightTests
 {
-
-    [TestFixture]
-    public class Tests : PageTest
+    public abstract class Tests : PageTest
     {
+        protected virtual string BaseUrl { get { return "https://demo.blazam.org"; } }
         [Test]
         public async Task LandingPageHasDemoLoginButtonAndLogsIntoHome()
         {
@@ -71,8 +70,8 @@ namespace PlaywrightTests
         {
             await LogIn();
             await Page.GetByRole(AriaRole.Link, new() { Name = "Audit" }).ClickAsync();
-            //await Expect(Page.GetByText("BeforeAction")).ToBeVisibleAsync();
-            //await Expect(Page.GetByText("AfterAction")).ToBeVisibleAsync();
+            await Expect(Page.GetByText("Before Action")).ToBeVisibleAsync(new() { Timeout = 30000 });
+            await Expect(Page.GetByText("After Action")).ToBeVisibleAsync();
             //await Page.GetByText("Logins").ClickAsync();
             ////await Expect(Page.GetByText("Daily Logins")).ToBeVisibleAsync();
             //await Expect(Page.GetByText("Action", new() { Exact = true })).ToBeVisibleAsync();
@@ -475,7 +474,7 @@ namespace PlaywrightTests
                 IsMobile = false,
                 ViewportSize = new ViewportSize() { Width = 1280, Height = 1024 }
             });
-            await Page.GotoAsync("https://demo.blazam.org/home");
+            await Page.GotoAsync($"{BaseUrl}/home");
             await Page.GetByRole(AriaRole.Button, new() { Name = "Log In To Demo" }).ClickAsync();
 
             try

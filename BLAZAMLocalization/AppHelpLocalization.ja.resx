@@ -226,7 +226,7 @@
     <value>このエントリに対してリクエストできるアクションはありません。</value>
   </data>
   <data name="No_Request_Fields_Available" xml:space="preserve">
-    <value />
+    <value>このエントリにリクエスト可能なフィールドはありません</value>
   </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>新しい認証トークンを生成すると、既存のトークンが無効になります！</value>
@@ -282,14 +282,34 @@
     <value>アプリケーションディレクトリへの書き込み権限を持つ資格情報が設定されていません！
 カスタム更新資格情報を設定してみてください。</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> が {0} の読み取りアクセスをリクエストしています </value>
   </data>
-  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> が {0} アクセスをリクエストしています </value>
   </data>
-  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> が {0} の編集アクセスをリクエストしています </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>次回ログオン時にユーザーにパスワードの変更を要求する</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>アカウントのパスワードリセットがリクエストされました。</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>パスワードをリセットするにはここをクリックしてください</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> リセットリンクは {0} に期限切れになります</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>このリセットをリクエストしていない場合は、無視しても問題ありません。</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>このリクエストの送信元: {0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>上記のリンクが機能しない場合は、以下をアドレスバーにコピーしてください。</value>
   </data>
 </root>

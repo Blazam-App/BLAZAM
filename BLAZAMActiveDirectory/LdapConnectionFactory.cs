@@ -16,7 +16,7 @@ namespace BLAZAM.ActiveDirectory
         private Timer? _disposerTimer = null;
         private static readonly object _poolLock = new object();
         private static ADSettings? _connectionSettingsCache = null;
-        private List<AppLdapConnection> _connectionPool = new();
+        private readonly List<AppLdapConnection> _connectionPool = new();
         private static Random _random;
         private bool disposedValue;
         private static readonly object _tlsLock = new();
@@ -38,10 +38,6 @@ namespace BLAZAM.ActiveDirectory
                     return _connectionPool.Count;
                 }
             }
-        }
-        public static void SetConnectedUsers(int connectedUsers)
-        {
-
         }
         public static AppEvent? OnCountChanged { get; set; } = new();
 
@@ -111,7 +107,7 @@ namespace BLAZAM.ActiveDirectory
                 AppLdapConnection? conn = null;
                 try
                 {
-                    conn = _connectionPool.First(c => c.IsDisposed == false && c.Expires != null);
+                    conn = _connectionPool.First(c => !c.IsDisposed && c.Expires != null);
                     if (conn != null && conn.LdapConnection != null)
                     {
                         var whoAmIRequest = new SearchRequest("", "(objectClass=*)", SearchScope.Base, settings.ApplicationBaseDN);
@@ -124,7 +120,7 @@ namespace BLAZAM.ActiveDirectory
                 {
                     //Ignore no sequence elements error after filtering pool
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // The connection is dead. Dispose of it permanently and try the next one.
                     if (conn != null)
@@ -431,15 +427,7 @@ namespace BLAZAM.ActiveDirectory
             if (OperatingSystem.IsWindows()) throw new AppException("Windows should use the signing and sealing options, not directly call StartTLS");
             lock (_tlsLock)
             {
-                var tlsStarted = false;
-
-                currentConnection.SessionOptions.StartTransportLayerSecurity(null);
-
-
-                tlsStarted = true;
-
-
-
+              currentConnection.SessionOptions.StartTransportLayerSecurity(null);
                 return true;
             }
         }

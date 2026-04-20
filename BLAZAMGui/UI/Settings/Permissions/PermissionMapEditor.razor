@@ -63,12 +63,15 @@
 @code {
     const string SELECTION_DELIMITER = ", ";
 
+    private PermissionMapping? _mapping;
 
     [Parameter]
     public PermissionMapping? Mapping { get; set; }
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
+        if (_mapping == Mapping) return;
+        _mapping = Mapping;
         await RefreshData();
     }
 
@@ -106,12 +109,12 @@
         }
         if (!LoadingData)
         {
-           
-                LoadingData = true;
+
+            LoadingData = true;
             try
             {
 
-         
+
                 if (Mapping == null) return;
 
 

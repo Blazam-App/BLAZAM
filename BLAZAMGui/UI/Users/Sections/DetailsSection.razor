@@ -7,62 +7,40 @@
 
 <ViewSection Title="@AppLocalization["User Details"]" Stack=true FullWidth=false>
 
-   <ContactThumbnailPhoto Contact=Contact/>
-
-    <MudStack Row=true>
-        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Created]:</MudText>
-        <MudSpacer />
+    <ContactThumbnailPhoto Contact=Contact />
+    
+    <DetailsField Label="@AppLocalization[Lang.Created]">
         <DateWithTimeTooltip DateTime="GroupableEntry?.Created" />
+    </DetailsField>
 
-    </MudStack>
-
-    <MudStack Row=true>
-
-        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Change]:</MudText>
-        <MudSpacer />
-
+    <DetailsField Label="@AppLocalization[Lang.Last_Change]">
         <DateWithTimeTooltip DateTime="GroupableEntry?.LastChanged" />
-
-    </MudStack>
+    </DetailsField>
+    
+   
     @if (User != null)
     {
-        <MudStack Row=true>
-
-            <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Pass_Change]:</MudText>
-            <MudSpacer />
+        
+        <DetailsField Label="@AppLocalization[Lang.Pass_Change]">
             <DateWithTimeTooltip DateTime="User?.PasswordLastSet" />
-
-
-        </MudStack>
-
-        <MudStack Row=true>
-
-            <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
-            <MudSpacer />
+        </DetailsField>
+        
+        <DetailsField Label="@AppLocalization[Lang.Last_Logon]">
             <LastLogonTime Typo=Typo.caption DirectoryEntry="Account" />
-        </MudStack>
+        </DetailsField>
+
+       
         @if (Account?.LockedOut == true)
         {
-            <MudStack Row=true>
-                <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Lockout_Time]:</MudText>
-                <MudSpacer />
+            <DetailsField Label="@AppLocalization[Lang.Lockout_Time]">
                 <DateWithTimeTooltip DateTime="Account?.LockoutTime" />
-            </MudStack>
+            </DetailsField>
         }
     }
-    <MudStack Row=true>
-        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.OU]:</MudText>
-        <MudSpacer />
+    
+    <DetailsField Label="@AppLocalization[Lang.OU]" Value="@Entry?.OU.ToPrettyOu()" />
 
-        <MudText Style="text-align:end;"
-                 Typo="Typo.caption">@GroupableEntry?.OU.ToPrettyOu()</MudText>
-    </MudStack>
-
-
-
-
-
-    <MudStack>
+       <MudStack>
         <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Groups]:</MudText>
         <MemberOfList AssignToClicked=@AssignToClicked Model="GroupableEntry" />
     </MudStack>

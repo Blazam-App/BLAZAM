@@ -1,8 +1,15 @@
 ﻿@inherits AppComponentBase
 <DirectoryEntryTooltipPopover Entry="@Entry">
-
-            <MudText Class="@Class" Align="@Align" Style="@Style" Color="@Color">@(Entry!=null?Entry.CanonicalName:Sid)</MudText>
-        
+    <MudLink Color="@Color"
+             Underline="Underline.None"
+             Typo="@Typo"
+             Class="@Class"
+             Style="@Style"
+             Href="@Entry?.SearchUri">
+        @(Entry != null ? Entry.CanonicalName : Sid)
+    </MudLink>
+  @*   <MudText Class="@Class" Align="@Align" Style="@Style" Color="@Color">@(Entry != null ? Entry.CanonicalName : Sid)</MudText>
+      *@   
 </DirectoryEntryTooltipPopover>
 
 @code {
@@ -11,17 +18,21 @@
     [Parameter]
     public string Class { get; set; }
     [Parameter]
-    public string Style{ get; set; }
+    public string Style { get; set; }
 
     [Parameter]
-    public Color Color{ get; set; }
+    public Color Color { get; set; }
 
     [Parameter]
-    public Align Align{ get; set; }
+    public Align Align { get; set; }
 
 
     [Parameter]
     public string? Sid { get; set; }
+
+
+    [Parameter]
+    public Typo Typo { get; set; }
 
 
     [Parameter]
@@ -44,7 +55,8 @@
                 LoadingData = true;
                 Entry = Directory.FindGlobalEntryBySid(Sid);
                 LoadingData = false;
-            }else if(Guid!=null && Guid != System.Guid.Empty)
+            }
+            else if (Guid != null && Guid != System.Guid.Empty)
             {
                 LoadingData = true;
                 Entry = Directory.FindGlobalEntryByGuid(Guid.Value);

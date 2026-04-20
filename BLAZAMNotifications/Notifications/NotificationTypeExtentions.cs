@@ -11,12 +11,12 @@ namespace BLAZAM.Notifications.Notifications
         /// <summary>
         /// Converts a <see cref="BLAZAM.Database.Models.Notifications.NotificationType"/> enum to its corresponding notification template component.
         /// </summary>
-        /// <typeparam name="T">The expected base type of the notification component (should be <see cref="BLAZAM.EmailMessage.Email.Base.NotificationTemplateComponent"/> or a class derived from it).</typeparam>
+        /// <typeparam name="T">The expected base type of the notification component (should be <see cref="BLAZAM.EmailMessage.Email.Base.EmailNotificationTemplateComponent"/> or a class derived from it).</typeparam>
         /// <param name="type">The notification type to convert.</param>
         /// <returns>An instance of the corresponding notification component cast to type T, or default(T) if no mapping exists for the given type or if an error occurs.</returns>
-        public static T? ToNotification<T>(this NotificationType type) where T : NotificationTemplateComponent
+        public static T? ToNotification<T>(this NotificationType type) where T : EmailNotificationTemplateComponent
         {
-            NotificationTemplateComponent? notificationTemplate = null;
+            EmailNotificationTemplateComponent? notificationTemplate = null;
             switch (type)
             {
                 case NotificationType.PasswordChange:

@@ -17,25 +17,28 @@ namespace BLAZAM.Gui.UI
             _ = StateHasChangedAsync();
         }
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            base.OnInitialized();
-            Modal.YesEnabled = ValidateModal;
+            await base.OnInitializedAsync();
+            Modal.YesEnabled = (() => {return IsValid; });
         }
 
-        protected override void OnAfterRender(bool firstRender)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            base.OnAfterRender(firstRender);
-            ValidateModal();
+            await base.OnAfterRenderAsync(firstRender);
+            await ValidateModalAsync();
         }
 
         protected new MudForm? Form { get; set; }
 
         protected new virtual bool IsValid { get; set; } = true;
         private bool _lastIsValid;
-        private bool ValidateModal()
+        private async Task<bool> ValidateModalAsync()
         {
-            Form?.Validate();
+            if (Form != null)
+            {
+                await Form.ValidateAsync();
+            }
 
             if (_lastIsValid != IsValid)
             {

@@ -1,51 +1,41 @@
 ﻿@inherits ValidatedForm
 @attribute [Authorize]
-@if (DirectoryTemplate != null)
+@if (_workingTemplate != null)
 {
-    <CascadingValue Value="DirectoryTemplate">
+    <CascadingValue Value="_workingTemplate">
         <MudForm @ref=Form IsValidChanged="@((val)=>{SaveDisabled = !val;})">
-            <CascadingValue Value="DirectoryTemplate">
+            <CascadingValue Value="_workingTemplate">
                 <MudStack>
-                    <MudText Class="mt-5" Typo="Typo.h6">@AppLocalization[Lang.Current_Template]: @originalTemplate.Name</MudText>
+                    <MudText Class="mt-5" Typo="Typo.h6">@AppLocalization[Lang.Current_Template]: @_workingTemplate.Name</MudText>
                         <MudSelectList T="DirectoryTemplate"
-                                       AnchorOrigin="Origin.BottomCenter"
-                                       TransformOrigin="Origin.TopCenter"
-                                       FullWidth=true
                                        HelperText="@(dropdownTemplates.IsNullOrEmpty()?"There are no other templates":null)"
                                        Disabled=@(dropdownTemplates.IsNullOrEmpty())
-                                       Clearable=true
-                                       OnClearButtonClick="@(async()=>{
-                                                        await ParentTemplateChanged(null);
-                                                        })"
                                        Label=@AppLocalization[Lang.Parent_Template]
                                        Options="@dropdownTemplates.OrderBy(t=>t.Name)"
-                                       Value="@DirectoryTemplate.ParentTemplate"
+                                       Value="@_workingTemplate.ParentTemplate"
                                        ValueChanged="@ParentTemplateChanged" />
 
                         <MudTextField Label="@AppLocalization["Template Id"]"
                                       ReadOnly=true
-                                      @bind-Value=DirectoryTemplate.Id />
+                                      @bind-Value=_workingTemplate.Id />
 
                         <MudTextField Label="@AppLocalization[Lang.Template_Name]"
-                                      @bind-Value=DirectoryTemplate.Name />
+                                      @bind-Value=_workingTemplate.Name />
 
 
                         <MudSelectList T="string"
-                                       AnchorOrigin="Origin.BottomCenter"
-                                       TransformOrigin="Origin.TopCenter"
-                                       Clearable=true
                                        Adornment="Adornment.End"
                                        AdornmentIcon="@Icons.Material.Filled.Add"
                                        AdornmentColor="@Color.Success"
                                        OnAdornmentClick="@(()=>{_=categoryModal?.ShowAsync();})"
                                        Options="@(categories.Count>0?categories:new List<string>())"
-                                       ValueChanged="@((value)=>{DirectoryTemplate.Category=value;})"
-                                       @bind-Text=DirectoryTemplate.Category
+                                       ValueChanged="@((value)=>{_workingTemplate.Category=value;})"
+                                       @bind-Text=_workingTemplate.Category
                                        Label="@AppLocalization[Lang.Template_Category]" />
                         <AppModal @ref=categoryModal Title=@AppLocalization[Lang.Add_Category]>
                             <AddTemplateCategoryModalContent Categories="@categories"
                                                              CategoryAdded="@(async(newCategory)=>{
-                                    DirectoryTemplate.Category=newCategory;
+                                    _workingTemplate.Category=newCategory;
                                     categories.Add(newCategory);
                                     await StateHasChangedAsync();
                                                                                             })" />
@@ -53,7 +43,7 @@
                         <MudSwitch Label="@AppLocalization[Lang.Visible]"
                                    UncheckedColor="Color.Warning"
                                    Color="Color.Success"
-                                   @bind-Value=@DirectoryTemplate.Visible />
+                                   @bind-Value=@_workingTemplate.Visible />
                         <MudExpansionPanel Text=@AppLocalization[Lang.Variables]>
                             <MudStack>
                                 <MudText Typo="Typo.h6">
@@ -85,11 +75,11 @@
                                         <MudTextField Required="true"
                                                       RequiredError=@AppLocalization["This field is required"]
                                                       Label=@AppLocalization[Lang.Username_Format]
-                                                      @bind-Value=DirectoryTemplate.EffectiveUsernameFormula />
+                                                      @bind-Value=_workingTemplate.EffectiveUsernameFormula />
                                     </TemplateOverride>
-                                    @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveUsernameFormula != DirectoryTemplate.EffectiveUsernameFormula)
+                                    @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveUsernameFormula != _workingTemplate.EffectiveUsernameFormula)
                                     {
-                                        <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.UsernameFormula=null;}) />
+                                        <RevertTemplateValueButton OnClick=@(()=>{ _workingTemplate.UsernameFormula=null;}) />
                                     }
                                 </MudStack>
                                 <MudStack Row=true>
@@ -97,11 +87,11 @@
                                         <MudTextField Required="true"
                                                       RequiredError=@AppLocalization["This field is required"]
                                                       Label=@AppLocalization[Lang.Display_Name_Format]
-                                                      @bind-Value=DirectoryTemplate.EffectiveDisplayNameFormula />
+                                                      @bind-Value=_workingTemplate.EffectiveDisplayNameFormula />
                                     </TemplateOverride>
-                                    @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveDisplayNameFormula != DirectoryTemplate.EffectiveDisplayNameFormula)
+                                    @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveDisplayNameFormula != _workingTemplate.EffectiveDisplayNameFormula)
                                     {
-                                        <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.DisplayNameFormula=null;}) />
+                                        <RevertTemplateValueButton OnClick=@(()=>{ _workingTemplate.DisplayNameFormula=null;}) />
                                     }
                                 </MudStack>
 
@@ -116,11 +106,11 @@
                                                   RequiredError=@AppLocalization["This field is required"]
                                                   FullWidth=true
                                                   Label=@AppLocalization[Lang.Password]
-                                                  @bind-Value=DirectoryTemplate.EffectivePasswordFormula />
+                                                  @bind-Value=_workingTemplate.EffectivePasswordFormula />
                                 </TemplateOverride>
-                                @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectivePasswordFormula != DirectoryTemplate.EffectivePasswordFormula)
+                                @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectivePasswordFormula != _workingTemplate.EffectivePasswordFormula)
                                 {
-                                    <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.PasswordFormula=null;}) />
+                                    <RevertTemplateValueButton OnClick=@(()=>{ _workingTemplate.PasswordFormula=null;}) />
                                 }
                             </MudStack>
                             <MudStack Row=true>
@@ -129,11 +119,11 @@
                                     <MudSwitch Label=@AppLocalization[Lang.Allow_Username_Override]
                                                UncheckedColor="Color.Error"
                                                Color="Color.Success"
-                                               @bind-Value=DirectoryTemplate.EffectiveAllowUsernameOverride />
+                                               @bind-Value=_workingTemplate.EffectiveAllowUsernameOverride />
                                 </TemplateOverride>
-                                @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveAllowUsernameOverride != DirectoryTemplate.EffectiveAllowUsernameOverride)
+                                @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveAllowUsernameOverride != _workingTemplate.EffectiveAllowUsernameOverride)
                                 {
-                                    <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.AllowUsernameOverride=null;}) />
+                                    <RevertTemplateValueButton OnClick=@(()=>{ _workingTemplate.AllowUsernameOverride=null;}) />
                                 }
                             </MudStack>
                             <MudStack Row=true>
@@ -142,11 +132,11 @@
                                     <MudSwitch Label=@AppLocalization[Lang.Require_Password_Change]
                                                UncheckedColor="Color.Warning"
                                                Color="Color.Success"
-                                               @bind-Value=DirectoryTemplate.EffectiveRequirePasswordChange />
+                                               @bind-Value=_workingTemplate.EffectiveRequirePasswordChange />
                                 </TemplateOverride>
-                                @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveRequirePasswordChange != DirectoryTemplate.EffectiveRequirePasswordChange)
+                                @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveRequirePasswordChange != _workingTemplate.EffectiveRequirePasswordChange)
                                 {
-                                    <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.RequirePasswordChange=null;}) />
+                                    <RevertTemplateValueButton OnClick=@(()=>{ _workingTemplate.RequirePasswordChange=null;}) />
                                 }
                             </MudStack>
                             <TemplateOverride Class="mud-width-full"
@@ -156,13 +146,13 @@
                                 <MudSwitch Label="@AppLocalization[Lang.Send_Welcome_Email]"
                                            UncheckedColor="Color.Error"
                                            Color="Color.Success"
-                                           @bind-Value=@DirectoryTemplate.EffectiveSendWelcomeEmail />
-                                @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveSendWelcomeEmail != DirectoryTemplate.EffectiveSendWelcomeEmail)
+                                           @bind-Value=@_workingTemplate.EffectiveSendWelcomeEmail />
+                                @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveSendWelcomeEmail != _workingTemplate.EffectiveSendWelcomeEmail)
                                 {
-                                    <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.SendWelcomeEmail=null;}) />
+                                    <RevertTemplateValueButton OnClick=@(()=>{ _workingTemplate.SendWelcomeEmail=null;}) />
                                 }
-                                @if (DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true &&
-                            (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id) && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
+                                @if (_workingTemplate.EffectiveSendWelcomeEmail == true && _workingTemplate.EffectiveAskForAlternateEmail != true &&
+                            (_workingTemplate.EffectiveFieldValues.Any(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id) && !_workingTemplate.EffectiveFieldValues.First(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
                                 {
                                     <MudAlert Severity="Severity.Warning">
                                         @AppLocalization["Send Email is true while ask for email is false, you have also set an email value. Welcome Emails will be sent to the email generated by Blazam! This is likely unintended behavior!"]
@@ -177,11 +167,11 @@
                                 <MudSwitch Label="@AppLocalization[Lang.Ask_For_Alternate_Email]"
                                            UncheckedColor="Color.Error"
                                            Color="Color.Success"
-                                           @bind-Value=@DirectoryTemplate.EffectiveAskForAlternateEmail />
+                                           @bind-Value=@_workingTemplate.EffectiveAskForAlternateEmail />
                             </TemplateOverride>
-                            @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveAskForAlternateEmail != DirectoryTemplate.EffectiveAskForAlternateEmail)
+                            @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveAskForAlternateEmail != _workingTemplate.EffectiveAskForAlternateEmail)
                             {
-                                <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.AskForAlternateEmail=null;}) />
+                                <RevertTemplateValueButton OnClick=@(()=>{ _workingTemplate.AskForAlternateEmail=null;}) />
                             }
                             <MudExpansionPanel Text="@AppLocalization[Lang.Formula_sim]">
                                 <MudGrid>
@@ -214,13 +204,13 @@
                                             }
                                             <MudTextField T="string"
                                                           Label="@AppLocalization[Lang.Username]"
-                                                          Value="@(DirectoryTemplate.EffectiveUsernameFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveUsernameFormula,testName):null)" />
+                                                          Value="@(_workingTemplate.EffectiveUsernameFormula.IsNullOrEmpty()==false?_workingTemplate.ReplaceVariables(_workingTemplate.EffectiveUsernameFormula,testName):null)" />
                                             <MudTextField T="string"
                                                           Label="@AppLocalization[Lang.Display_Name]"
-                                                          Value="@(DirectoryTemplate.EffectiveDisplayNameFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveDisplayNameFormula,testName):null)" />
+                                                          Value="@(_workingTemplate.EffectiveDisplayNameFormula.IsNullOrEmpty()==false?_workingTemplate.ReplaceVariables(_workingTemplate.EffectiveDisplayNameFormula,testName):null)" />
                                             <MudTextField T="string"
                                                           Label="@AppLocalization[Lang.Password]"
-                                                          Value="@(DirectoryTemplate.EffectivePasswordFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectivePasswordFormula,testName):null)" />
+                                                          Value="@(_workingTemplate.EffectivePasswordFormula.IsNullOrEmpty()==false?_workingTemplate.ReplaceVariables(_workingTemplate.EffectivePasswordFormula,testName):null)" />
                                         </MudStack>
                                     </MudItem>
                                 </MudGrid>
@@ -265,9 +255,9 @@
                                    field.FieldName != ActiveDirectoryFields.DistinguishedName.FieldName &&
                                    field.FieldName != ActiveDirectoryFields.MemberOf.FieldName &&
                                    field.FieldName != ActiveDirectoryFields.ObjectSID.FieldName &&
-                                   !DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field?.Equals(field) == true) &&
-                                   !DirectoryTemplate.EffectiveFieldValues.Any(f => f.CustomField?.Equals(field) == true) &&
-                                   field.IsFieldAppropriateForObject(DirectoryTemplate.ObjectType))
+                                   !_workingTemplate.EffectiveFieldValues.Any(f => f.Field?.Equals(field) == true) &&
+                                   !_workingTemplate.EffectiveFieldValues.Any(f => f.CustomField?.Equals(field) == true) &&
+                                   field.IsFieldAppropriateForObject(_workingTemplate.ObjectType))
                                         {
                                             <MudButton Class=" my-0" OnClick=@(() => { AddField(field);})>
                                                 <MudText Color="Color.Tertiary">@field.DisplayName</MudText>
@@ -283,7 +273,7 @@
 
 
                             <MudStack Class="d-flex justify-center align-center mud-height-full">
-                                <MudDataGrid Items="@DirectoryTemplate.EffectiveFieldValues.Where(fv=>fv.DeletedAt==null).OrderBy(fv => fv.FieldDisplayName)"
+                                <MudDataGrid Items="@_workingTemplate.EffectiveFieldValues.Where(fv=>fv.DeletedAt==null).OrderBy(fv => fv.FieldDisplayName)"
                                              Dense=true
                                              Striped=true
                                              Bordered=true
@@ -338,14 +328,14 @@
                                             </TemplateColumn>
                                             <TemplateColumn>
                                                 <CellTemplate Context="cellContext">
-                                                    @if (DirectoryTemplate.IsValueOverriden(cellContext.Item))
+                                                    @if (_workingTemplate.IsValueOverriden(cellContext.Item))
                                                 {
                                                     <RevertTemplateValueButton OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
                                                 }
                                                 else
                                                 {
                                                     <AppTooltip Text="@AppLocalization[Lang.Remove_field]">
-                                                        <AppCloseButton Disabled=@(!DirectoryTemplate.FieldValues.Contains(cellContext.Item))
+                                                        <AppCloseButton Disabled=@(!_workingTemplate.FieldValues.Contains(cellContext.Item))
                                                                         Tooltip=@AppLocalization[Lang.Remove]
                                                                         OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
                                                     </AppTooltip>
@@ -365,7 +355,7 @@
                     <ViewSection Title=@AppLocalization[Lang.OU]>
                         @if (SelectedOU != null)
                         {
-                            var ouTemplateSource = GetParentOfValue(DirectoryTemplate.EffectiveParentOU, template => template.ParentOU);
+                            var ouTemplateSource = GetParentOfValue(_workingTemplate.EffectiveParentOU, template => template.ParentOU);
                             <MudText Class="mud-width-full" Align="Align.Center">
                                 <MudStack>
                                     <MudText Align="Align.Center">
@@ -382,11 +372,11 @@
                                     {
                                             <ADTreeView ShowAllEntries=false
                                                 SelectedEntry=@SelectedOU
-                                                SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
+                                                SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(_workingTemplate.EffectiveParentOU!=ou.DN)_workingTemplate.ParentOU = ou.DN;})"
                                                 StartingSelectedOU=@SelectedOU />
-                                            @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty() && DirectoryTemplate.ParentTemplateId != null && !DirectoryTemplate.ParentOU.IsNullOrEmpty())
+                                            @if (!_workingTemplate.ParentOU.IsNullOrEmpty() && _workingTemplate.ParentTemplateId != null && !_workingTemplate.ParentOU.IsNullOrEmpty())
                                             {
-                                                <RevertTemplateValueButton OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;await LoadData();}) />
+                                                <RevertTemplateValueButton OnClick=@(async()=>{_workingTemplate.ParentOU=null;await LoadData();}) />
 
                                             }
                                     }
@@ -401,7 +391,7 @@
 
                         <MudStack>
 
-                            @foreach (var group in DirectoryTemplate.EffectiveAssignedGroupSids)
+                            @foreach (var group in _workingTemplate.EffectiveAssignedGroupSids)
                             {
 
                                 //TODO Find a way to identify a single group sid's source template
@@ -434,7 +424,7 @@
 
                 @{
                     string buttonText = "";
-                    @if (DirectoryTemplate.Id == 0)
+                    @if (_workingTemplate.Id == 0)
                     {
                         buttonText = "Add this template";
                     }
@@ -445,7 +435,7 @@
                 }
                 <MudStack Row=true>
 
-                    @if (DirectoryTemplate.Id == 0)
+                    @if (_workingTemplate.Id == 0)
                     {
                         <MudButton Color="Color.Warning"
                                    OnClick="@CancelNewTemplate">Cancel</MudButton>
@@ -460,7 +450,7 @@
 
                 </CascadingValue>
             </MudForm>
-            @*     @if(DirectoryTemplate.GetChanges(originalTemplate).Count>0){
+            @*     @if(_workingTemplate.GetChanges(originalTemplate).Count>0){
     <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges"/>
     } *@
         </CascadingValue>

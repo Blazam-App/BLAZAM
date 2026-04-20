@@ -1,0 +1,24 @@
+﻿
+<MudStack Row=true>
+
+    <MudText Typo="Typo.subtitle2">@Label:</MudText>
+    <MudSpacer />
+    @if (Value == null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        <MudText Typo="Typo.caption">@Value</MudText>
+    }
+
+</MudStack>
+
+@code {
+    [Parameter]
+    public string? Label { get; set; }
+    [Parameter]
+    public string? Value { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

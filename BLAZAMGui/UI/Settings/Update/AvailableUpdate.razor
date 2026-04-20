@@ -16,16 +16,34 @@
                 <MudChip Size=Size.Small T="string" Color="@Color.Tertiary">@Update.Branch</MudChip>
             </MudStack>
 
-            <UpdateReleaseNotesExpansionPanel Update=@Update/>
+            <UpdateReleaseNotesExpansionPanel Update=@Update />
 
             @if ((Update.Newer || ApplicationInfo.InDebugMode) && Update.PassesPrerequisiteChecks)
             {
-                <MudButton Class="mx-6" 
-                Variant=Variant.Filled
-                Color=Color.Success 
-                OnClick="(()=>{OnApply.InvokeAsync();})">
-                @AppLocalization[Lang.Stage_Update]
-            </MudButton>
+                <MudButtonGroup Class="mx-auto" OverrideStyles="false">
+                    <MudButton Class=""
+                               Variant=Variant.Filled
+                               Color=Color.Success
+                               OnClick="(()=>{OnApply.InvokeAsync();})">
+                        @AppLocalization[Lang.Stage_Update]
+                    </MudButton>
+
+                    <MudButton Class=""
+                               Variant=Variant.Filled
+                               Color=Color.Info
+                               Target="_blank"
+                               Href="@Update.Release?.ReleaseURL">
+                        GitHub Release Page
+                    </MudButton>
+
+                    <MudButton Class=""
+                               Variant=Variant.Filled
+                               Color=Color.Tertiary
+                               Target="_blank"
+                               Href="@Update.Release?.DownloadURL">
+                        Download
+                    </MudButton>
+                </MudButtonGroup>
                 @if (ApplicationInfo.InDebugMode)
                 {
                     <MudButton Class="mx-6"

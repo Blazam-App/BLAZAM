@@ -47,7 +47,6 @@ namespace BLAZAM.Services
             IApplicationUserStateService userStateService,
             IHttpContextAccessor ca,
             IDuoClientProvider dcp,
-            IEncryptionService enc,
             WebUserAuditLogger audit,
             ApplicationInfo applicationInfo,
             GoogleAuthenticatorService googleAuthenticatorService)
@@ -58,13 +57,11 @@ namespace BLAZAM.Services
             if (userStateService == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(userStateService)); throw new ArgumentNullException(nameof(userStateService)); }
             if (ca == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(ca)); throw new ArgumentNullException(nameof(ca)); }
             if (dcp == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(dcp)); throw new ArgumentNullException(nameof(dcp)); }
-            if (enc == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(enc)); throw new ArgumentNullException(nameof(enc)); }
             if (audit == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(audit)); throw new ArgumentNullException(nameof(audit)); }
             if (applicationInfo == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(applicationInfo)); throw new ArgumentNullException(nameof(applicationInfo)); }
             if (googleAuthenticatorService == null) { Loggers.SystemLogger.Error("Dependency {DependencyName} is null in AppAuthenticationStateProvider constructor.", nameof(googleAuthenticatorService)); throw new ArgumentNullException(nameof(googleAuthenticatorService)); }
 
             _applicationInfo = applicationInfo;
-            this._encryption = enc;
             this._googleAuthenticatorService = googleAuthenticatorService;
             this._directory = directory; // Corrected typo: directoy -> directory
             this._factory = factory;
@@ -81,7 +78,6 @@ namespace BLAZAM.Services
         private readonly IDuoClientProvider _duoClientProvider;
         private readonly WebUserAuditLogger _audit;
         private readonly ApplicationInfo _applicationInfo;
-        private readonly IEncryptionService _encryption;
         private readonly GoogleAuthenticatorService _googleAuthenticatorService;
         private readonly IActiveDirectoryContext _directory; // Corrected typo: directoy -> directory
         private readonly IUserDatabaseFactory _factory;
@@ -291,7 +287,11 @@ namespace BLAZAM.Services
 
         private async Task<AuthenticationState?> HandleLocalAdminLogin(LoginRequest loginReq, AuthenticationSettings settings)
         {
-            var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
+            var adminPass =settings.AdminPassword?.Decrypt();
+            if(adminPass is null)
+            {
+                return null;
+            }
             if (loginReq.Password == adminPass)
             {
                 loginReq.AuthenticationResult = LoginResultStatus.OK;

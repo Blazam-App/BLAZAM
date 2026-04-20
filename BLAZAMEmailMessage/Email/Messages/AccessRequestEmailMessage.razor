@@ -1,7 +1,7 @@
 ﻿@using BLAZAM.Database.Models.User
 @using BLAZAM.Helpers
 @using System.Security
-@inherits NotificationTemplateComponent
+@inherits EmailNotificationTemplateComponent
 @if (Notification != null && Notification.Action!=null)
 {
 
@@ -19,7 +19,12 @@
         
     </MudText>
     <br />
-    
+        @if (ShouldRenderLinks)
+        {
+            <br />
+
+            <EmailLink Href="/" />
+        }
 
 </EmailTemplateBody>
 }
