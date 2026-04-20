@@ -119,7 +119,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                         };
                     }
 
-                    DirectoryTemplate.AssignedGroupSids.Add(existing);
+                    _workingTemplate?.AssignedGroupSids.Add(existing);
                     SelectedGroup = null;
                 }
 
@@ -138,7 +138,14 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         {
             if (Context != null)
             {
-                _workingTemplate = await Context.DirectoryTemplates.LoadTemplateWithParents(DirectoryTemplate?.Id);
+                if (DirectoryTemplate.Id > 0)
+                {
+                    _workingTemplate = await Context.DirectoryTemplates.LoadTemplateWithParents(DirectoryTemplate?.Id);
+                }
+                else
+                {
+                    _workingTemplate = DirectoryTemplate;
+                }
                 usernameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
                 displayNameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
                 passwordFromTemplateName = GetParentOfValue<string?>(_workingTemplate.EffectivePasswordFormula, template => template.PasswordFormula);
@@ -161,11 +168,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 {
                     await LoadParentOU();
                 }
-                using (var dropdownContext = await DbFactory.CreateDbContextAsync())
-                {
-                    dropdownTemplates = await dropdownContext.DirectoryTemplates.Where(t => !t.Equals(_workingTemplate) && t.DeletedAt == null).ToListAsync();
-                }
-
+                
                 RefreshGroups();
                 await StateHasChangedAsync();
                 if (Form != null)
