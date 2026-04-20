@@ -3,9 +3,11 @@
 
 }
 <AppTooltip Text="@Entry.ObjectType.ToString()">
-    <MudIcon Color=@(account!=null&&account.Disabled?Color.Error:Color.Default) Icon="@Entry.TypeIcon()" />
+    <MudIcon Size="@Size" Color=@(account!=null&&account.Disabled?Color.Error:Color.Default) Icon="@Entry.TypeIcon()" />
 </AppTooltip>
 @code{
     [Parameter]
     public IDirectoryEntryAdapter Entry{ get; set; }
+    [Parameter]
+    public Size Size{ get; set; }
 }

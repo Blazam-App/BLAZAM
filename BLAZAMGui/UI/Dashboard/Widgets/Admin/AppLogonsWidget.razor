@@ -19,13 +19,13 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization[Lang.User]>
             <CellTemplate>
-                <MudText Style="font-size:14px;">@context.Item?.Username</MudText>
+                <MudText Typo="Typo.caption">@context.Item?.Username</MudText>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.IP_Address] Sortable="true">
             <CellTemplate>
           
-                    <IPAddress Style="font-size:14px;">
+                    <IPAddress Typo="Typo.caption">
                         @context.Item.IpAddress
                     </IPAddress>
                 

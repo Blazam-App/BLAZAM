@@ -19,18 +19,20 @@
     <Columns>
         <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
             <CellTemplate>
-                <DirectoryEntryTypeIcon Entry=context.Item />
+                <DirectoryEntryTypeIcon Size="Size.Small" Entry=context.Item />
 
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <DirectoryEntryLink Entry="@context.Item" OnChanged="EntryChanged" />
+                <DirectoryEntryLink Typo="Typo.caption"
+                                    Entry="@context.Item"
+                                    OnChanged="EntryChanged" />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Changed]>
             <CellTemplate>
-                <WidgetTimestamp Timestamp="context.Item?.LastChanged" />
+                <DateWithTimeTooltip DateTime="@context.Item?.LastChanged" />
 
             </CellTemplate>
         </TemplateColumn>

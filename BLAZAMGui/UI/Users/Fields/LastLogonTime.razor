@@ -15,7 +15,7 @@ else
     [Parameter]
     public IAccountDirectoryAdapter DirectoryEntry { get; set; }
     [Parameter]
-    public Typo Typo { get; set; }
+    public Typo Typo { get; set; } = Typo.caption;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

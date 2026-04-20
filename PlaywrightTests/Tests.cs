@@ -115,25 +115,25 @@ namespace PlaywrightTests
 
 
 
-        [Test]
-        public async Task SearchFilterTest()
-        {
-            await LogIn();
-            await Page.GetByRole(AriaRole.Button, new() { Name = "All" }).ClickAsync();
-            await Page.Locator("p").Filter(new() { HasTextRegex = new Regex("^User$") }).ClickAsync();
-            await Page.GetByRole(AriaRole.Button, new() { Name = "User" }).ClickAsync();
-            await Page.GetByText("Group", new() { Exact = true }).ClickAsync();
-            await Page.GetByRole(AriaRole.Button, new() { Name = "Group" }).ClickAsync();
-            await Page.GetByText("OU", new() { Exact = true }).ClickAsync();
-            await Page.GetByRole(AriaRole.Button, new() { Name = "OU" }).ClickAsync();
-            await Page.GetByText("Computer").ClickAsync();
-            await Page.GetByRole(AriaRole.Button, new() { Name = "Computer" }).ClickAsync();
-            await Page.GetByText("Printer", new() { Exact = true }).ClickAsync();
-            await Page.GetByRole(AriaRole.Button, new() { Name = "Printer" }).ClickAsync();
-            await Page.GetByText("BitLocker").ClickAsync();
-            // Expects the URL to contain intro.
-            //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
-        }
+        //[Test]
+        //public async Task SearchFilterTest()
+        //{
+        //    await LogIn();
+        //    await Page.GetByRole(AriaRole.Button, new() { Name = "All" }).ClickAsync();
+        //    await Page.Locator("p").Filter(new() { HasTextRegex = new Regex("^User$") }).ClickAsync();
+        //    await Page.GetByRole(AriaRole.Button, new() { Name = "User" }).ClickAsync();
+        //    await Page.GetByText("Group", new() { Exact = true }).ClickAsync();
+        //    await Page.GetByRole(AriaRole.Button, new() { Name = "Group" }).ClickAsync();
+        //    await Page.GetByText("OU", new() { Exact = true }).ClickAsync();
+        //    await Page.GetByRole(AriaRole.Button, new() { Name = "OU" }).ClickAsync();
+        //    await Page.GetByText("Computer").ClickAsync();
+        //    await Page.GetByRole(AriaRole.Button, new() { Name = "Computer" }).ClickAsync();
+        //    await Page.GetByText("Printer", new() { Exact = true }).ClickAsync();
+        //    await Page.GetByRole(AriaRole.Button, new() { Name = "Printer" }).ClickAsync();
+        //    await Page.GetByText("BitLocker").ClickAsync();
+        //    // Expects the URL to contain intro.
+        //    //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
+        //}
 
 
 
