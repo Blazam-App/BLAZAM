@@ -21,12 +21,14 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <DirectoryEntryLink Entry="@context.Item" OnChanged="OnChanged"/>
+                <DirectoryEntryLink Typo="Typo.caption"
+                                    Entry="@context.Item"
+                                    OnChanged="OnChanged" />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Created]>
             <CellTemplate>
-                <WidgetTimestamp Timestamp="context.Item?.LastChanged" />
+                <DateWithTimeTooltip DateTime="@context.Item?.Created" />
             </CellTemplate>
         </TemplateColumn>
     </Columns>

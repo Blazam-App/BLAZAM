@@ -2,6 +2,7 @@
 <DirectoryEntryTooltipPopover Entry="@Entry">
     <MudLink Color="@Color"
              Underline="Underline.None"
+             Typo="@Typo"
              Class="@Class"
              Style="@Style"
              Href="@Entry?.SearchUri">
@@ -28,6 +29,10 @@
 
     [Parameter]
     public string? Sid { get; set; }
+
+
+    [Parameter]
+    public Typo Typo { get; set; }
 
 
     [Parameter]

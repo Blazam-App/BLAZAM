@@ -22,18 +22,18 @@
     <Columns>
         <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
             <CellTemplate>
-                <DirectoryEntryTypeIcon Entry="context.Item" />
+                <DirectoryEntryTypeIcon Size="Size.Small" Entry="context.Item" />
 
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                        <MudText Style="font-size:14px;">@context.Item?.CanonicalName</MudText>
+                <MudText Typo="Typo.caption">@context.Item?.CanonicalName</MudText>
                 </CellTemplate>
             </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Deleted]>
             <CellTemplate>
-                <WidgetTimestamp Timestamp="context.Item?.LastChanged" />
+                <DateWithTimeTooltip DateTime="@context.Item?.LastChanged" />
 
                 </CellTemplate>
             </TemplateColumn>

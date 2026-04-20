@@ -20,14 +20,16 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <DirectoryEntryLink Entry="@context.Item" OnChanged="RefreshDataAsync" />
+                <DirectoryEntryLink Typo="Typo.caption"
+                                    Entry="@context.Item"
+                                    OnChanged="RefreshDataAsync" />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Locked_Out]>
             <CellTemplate>
                 @if (context.Item?.LockoutTime != null)
                 {
-                    <MudText>@context.Item.LockoutTime.Value.ToLocalTime()</MudText>
+                    <DateWithTimeTooltip DateTime="@context.Item.LockoutTime.Value" />
                 }
             </CellTemplate>
         </TemplateColumn>

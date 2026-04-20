@@ -23,18 +23,20 @@
     <Columns>
         <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
             <CellTemplate>
-                <DirectoryEntryTypeIcon Entry=context.Item />
+                <DirectoryEntryTypeIcon Size="Size.Small" Entry=context.Item />
 
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <DirectoryEntryLink Entry="@context.Item" OnChanged="RefreshDataAsync" />
+                <DirectoryEntryLink Typo="Typo.caption"
+                                    Entry="@context.Item"
+                                    OnChanged="RefreshDataAsync" />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Changed]>
             <CellTemplate>
-                <WidgetTimestamp Timestamp="context.Item?.LastChanged"/>
+                <WidgetTimestamp Timestamp="context.Item?.LastChanged" />
                
             </CellTemplate>
         </TemplateColumn>
@@ -47,5 +49,5 @@
         <MudText>@AppLocalization[Lang.No_matching_results]</MudText>
     </NoRecordsContent>
 </MudDataGrid>
-<DirectoryEntryContextMenu @ref="_contextMenu" OnChanged="@(()=>{InvokeStateHasChanged();})" />
+<DirectoryEntryContextMenu @ref="_contextMenu" OnChanged="@(() => { InvokeStateHasChanged(); })" />
 

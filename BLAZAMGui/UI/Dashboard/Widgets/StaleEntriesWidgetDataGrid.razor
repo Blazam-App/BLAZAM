@@ -22,13 +22,15 @@
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
 
-                <DirectoryEntryLink Entry="@context.Item" OnChanged="OnChanged" />
+                <DirectoryEntryLink Typo="Typo.caption"
+                                    Entry="@context.Item" 
+                                    OnChanged="OnChanged" />
 
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Last_Logon]>
             <CellTemplate>
-                @if (context.Item?.Created != null)
+                @if (context.Item?.LastLogonTimestamp != null)
                 {
                     <LastLogonTime DirectoryEntry="@context.Item" />
                 }
