@@ -171,9 +171,6 @@
   <data name="Additional Fields" xml:space="preserve">
     <value>其他字段</value>
   </data>
-  <data name="Additonal Fields" xml:space="preserve">
-    <value>附加字段</value>
-  </data>
   <data name="Admin bcc" xml:space="preserve">
     <value>管理员密件抄送</value>
   </data>

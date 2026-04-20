@@ -171,9 +171,6 @@
   <data name="Additional Fields" xml:space="preserve">
     <value>حقول إضافية</value>
   </data>
-  <data name="Additonal Fields" xml:space="preserve">
-    <value>حقول إضافية</value>
-  </data>
   <data name="Admin bcc" xml:space="preserve">
     <value>نسخة مخفية للمسؤول</value>
   </data>
@@ -1281,6 +1278,30 @@
   <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
     <value>المستخدمون المعطلون الذين تم تغييرهم في آخر 90 يومًا</value>
   </data>
+  <data name="Text" xml:space="preserve">
+    <value>نص</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>قاعدة</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>قواعد</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>إنشاء القاعدة</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>نوع الكائن</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>مشغل</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>بعد العمل</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>قبل العمل</value>
+  </data>
   <data name="Entries_changed_in_the_last_24_hours" xml:space="preserve">
     <value>الإدخالات التي تم تغييرها في آخر 24 ساعة</value>
   </data>
@@ -1307,29 +1328,5 @@
   </data>
   <data name="Users_created_in_the_last_14_days" xml:space="preserve">
     <value>المستخدمون الذين تم إنشاؤهم في آخر 14 يومًا</value>
-  </data>
-  <data name="Text" xml:space="preserve">
-    <value>نص</value>
-  </data>
-  <data name="Rule" xml:space="preserve">
-    <value>قاعدة</value>
-  </data>
-  <data name="Rules" xml:space="preserve">
-    <value>قواعد</value>
-  </data>
-  <data name="Create Rule" xml:space="preserve">
-    <value>إنشاء القاعدة</value>
-  </data>
-  <data name="Object Type" xml:space="preserve">
-    <value>نوع الكائن</value>
-  </data>
-  <data name="Trigger" xml:space="preserve">
-    <value>مشغل</value>
-  </data>
-  <data name="After Action" xml:space="preserve">
-    <value>بعد العمل</value>
-  </data>
-  <data name="Before Action" xml:space="preserve">
-    <value>قبل العمل</value>
   </data>
 </root>

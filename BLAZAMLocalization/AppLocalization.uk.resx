@@ -26,7 +26,7 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-            
+                
     There are any number of "resheader" rows that contain simple 
     name/value pairs.
     
@@ -169,9 +169,6 @@
     <value>Додаткове поле</value>
   </data>
   <data name="Additional Fields" xml:space="preserve">
-    <value>Додаткові поля</value>
-  </data>
-  <data name="Additonal Fields" xml:space="preserve">
     <value>Додаткові поля</value>
   </data>
   <data name="Admin bcc" xml:space="preserve">
