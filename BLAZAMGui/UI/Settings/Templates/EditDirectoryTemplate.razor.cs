@@ -58,7 +58,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 
         private List<DirectoryTemplate> dropdownTemplates = [];
         private DirectoryTemplate _template;
-        private DirectoryTemplate? _workingTemplate;
+        private DirectoryTemplate _workingTemplate = new();
 
         private DirectoryTemplate usernameFromTemplate;
         private DirectoryTemplate displayNameFromTemplate;
@@ -237,7 +237,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 while (templateCursor.ParentTemplate != null)
                 {
                     templateCursor = templateCursor.ParentTemplate;
-                    if (templateCursor.Equals(DirectoryTemplate))
+                    if (templateCursor.Id.Equals(_workingTemplate.Id))
                     {
                         SnackBarService.Warning("Circular inheritance detected!");
                         return;
@@ -396,7 +396,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             }
             catch (SqlException ex)
             {
-                Loggers.DatabaseLogger.Error(ex, "Error attempting to save creation template {@Template}", DirectoryTemplate.Name);
+                Loggers.DatabaseLogger.Error(ex, "Error attempting to save creation template {@Template}", _workingTemplate.Name);
             }
         }
 
