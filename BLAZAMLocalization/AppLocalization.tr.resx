@@ -118,946 +118,946 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Access Levels" xml:space="preserve">
-    <value>Access Levels</value>
+    <value>Erişim Seviyeleri</value>
   </data>
   <data name="Account" xml:space="preserve">
-    <value>Account</value>
+    <value>Hesap</value>
   </data>
   <data name="Account and Name" xml:space="preserve">
-    <value>Account and Name</value>
+    <value>Hesap ve Ad</value>
   </data>
   <data name="Account Expiration" xml:space="preserve">
-    <value>Account Expiration</value>
+    <value>Hesap Sona Erme</value>
   </data>
   <data name="Account is disabled." xml:space="preserve">
-    <value>Account is disabled.</value>
+    <value>Hesap devre dışı.</value>
   </data>
   <data name="Account is enabled." xml:space="preserve">
-    <value>Account is enabled.</value>
+    <value>Hesap etkin.</value>
   </data>
   <data name="Account is locked out." xml:space="preserve">
-    <value>Account is locked out.</value>
+    <value>Hesap kilitli.</value>
   </data>
   <data name="Account is not locked out." xml:space="preserve">
-    <value>Account is not locked out.</value>
+    <value>Hesap kilitli değil.</value>
   </data>
   <data name="Account Name" xml:space="preserve">
-    <value>Account Name</value>
+    <value>Hesap Adı</value>
   </data>
   <data name="Active Directory" xml:space="preserve">
     <value>Active Directory</value>
   </data>
   <data name="Active Directory is not available!" xml:space="preserve">
-    <value>Active Directory is not available!</value>
+    <value>Active Directory kullanılamıyor!</value>
   </data>
   <data name="Active Directory Settings" xml:space="preserve">
-    <value>Active Directory Settings</value>
+    <value>Active Directory Ayarları</value>
   </data>
   <data name="Add" xml:space="preserve">
-    <value>Add</value>
+    <value>Ekle</value>
   </data>
   <data name="Add Members" xml:space="preserve">
-    <value>Add Members</value>
+    <value>Üye Ekle</value>
   </data>
   <data name="Add New Access Level" xml:space="preserve">
-    <value>Add New Access Level</value>
+    <value>Yeni Erişim Seviyesi Ekle</value>
   </data>
   <data name="Add to favorites" xml:space="preserve">
-    <value>Add to favorites</value>
+    <value>Favorilere ekle</value>
   </data>
   <data name="Additional Field" xml:space="preserve">
-    <value>Additional Field</value>
+    <value>Ek Alan</value>
   </data>
   <data name="Additional Fields" xml:space="preserve">
-    <value>Additional Fields</value>
+    <value>Ek Alanlar</value>
   </data>
   <data name="Admin bcc" xml:space="preserve">
-    <value>Admin bcc</value>
+    <value>Yönetici gizli kopya</value>
   </data>
   <data name="Admin Password" xml:space="preserve">
-    <value>Admin Password</value>
+    <value>Yönetici Parolası</value>
   </data>
   <data name="All" xml:space="preserve">
-    <value>All</value>
+    <value>Tümü</value>
   </data>
   <data name="Allow" xml:space="preserve">
-    <value>Allow</value>
+    <value>İzin Ver</value>
   </data>
   <data name="Allow Auto Update" xml:space="preserve">
-    <value>Allow Auto Update</value>
+    <value>Otomatik Güncellemeye İzin Ver</value>
   </data>
   <data name="Allow Disabled User Access" xml:space="preserve">
-    <value>Allow Disabled User Access</value>
+    <value>Devre Dışı Kullanıcı Erişimine İzin Ver</value>
   </data>
   <data name="An error has occurred while trying to create the template user" xml:space="preserve">
-    <value>An error has occurred while trying to create the template user</value>
+    <value>Şablon kullanıcısı oluşturulmaya çalışılırken bir hata oluştu</value>
   </data>
   <data name="App Chat" xml:space="preserve">
-    <value>App Chat</value>
+    <value>Uygulama Sohbeti</value>
   </data>
   <data name="Application" xml:space="preserve">
-    <value>Application</value>
+    <value>Uygulama</value>
   </data>
   <data name="Application Credentials" xml:space="preserve">
-    <value>Application Credentials</value>
+    <value>Uygulama Kimlik Bilgileri</value>
   </data>
   <data name="Application Name" xml:space="preserve">
-    <value>Application Name</value>
+    <value>Uygulama Adı</value>
   </data>
   <data name="Application Settings" xml:space="preserve">
-    <value>Application Settings</value>
+    <value>Uygulama Ayarları</value>
   </data>
   <data name="ApplicationStarting" xml:space="preserve">
-    <value>Application is starting up... please wait...</value>
+    <value>Uygulama başlatılıyor... lütfen bekleyin...</value>
   </data>
   <data name="Are you sure you want to navigate away?" xml:space="preserve">
-    <value>Are you sure you want to navigate away?</value>
+    <value>Ayrılmak istediğinizden emin misiniz?</value>
   </data>
   <data name="Assign" xml:space="preserve">
-    <value>Assign</value>
+    <value>Ata</value>
   </data>
   <data name="Assign Objects" xml:space="preserve">
-    <value>Assign Objects</value>
+    <value>Nesneleri Ata</value>
   </data>
   <data name="Assign To" xml:space="preserve">
-    <value>Assign To</value>
+    <value>Şuna Ata</value>
   </data>
   <data name="Assigned Groups" xml:space="preserve">
-    <value>Assigned Groups</value>
+    <value>Atanan Gruplar</value>
   </data>
   <data name="Attempting to connect to Active Directory." xml:space="preserve">
-    <value>Attempting to connect to Active Directory.</value>
+    <value>Active Directory'ye bağlanılmaya çalışılıyor.</value>
   </data>
   <data name="Audit" xml:space="preserve">
-    <value>Audit</value>
+    <value>Denetim</value>
   </data>
   <data name="Authentication" xml:space="preserve">
-    <value>Authentication</value>
+    <value>Kimlik Doğrulama</value>
   </data>
   <data name="Authentication Settings" xml:space="preserve">
-    <value>Authentication Settings</value>
+    <value>Kimlik Doğrulama Ayarları</value>
   </data>
   <data name="Auto Update Time" xml:space="preserve">
-    <value>Auto Update Time</value>
+    <value>Otomatik Güncelleme Zamanı</value>
   </data>
   <data name="Available Update" xml:space="preserve">
-    <value>Available Update</value>
+    <value>Mevcut Güncelleme</value>
   </data>
   <data name="Base DN" xml:space="preserve">
-    <value>Base DN</value>
+    <value>Temel DN</value>
   </data>
   <data name="BaseDN" xml:space="preserve">
-    <value>Base DN</value>
+    <value>Temel DN</value>
   </data>
   <data name="Branch" xml:space="preserve">
-    <value>Branch</value>
+    <value>Dal</value>
   </data>
   <data name="Branding Icon" xml:space="preserve">
-    <value>Branding Icon</value>
+    <value>Marka Simgesi</value>
   </data>
   <data name="Browse" xml:space="preserve">
-    <value>Browse</value>
+    <value>Gözat</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>İptal</value>
   </data>
   <data name="Cancelled" xml:space="preserve">
-    <value>Cancelled</value>
+    <value>İptal Edildi</value>
   </data>
   <data name="Certificate Type" xml:space="preserve">
-    <value>Certificate Type</value>
+    <value>Sertifika Türü</value>
   </data>
   <data name="Change History" xml:space="preserve">
-    <value>Change History</value>
+    <value>Değişiklik Geçmişi</value>
   </data>
   <data name="Change Password" xml:space="preserve">
-    <value>Change Password</value>
+    <value>Parolayı Değiştir</value>
   </data>
   <data name="Chat" xml:space="preserve">
-    <value>Chat</value>
+    <value>Sohbet</value>
   </data>
   <data name="Choose or Search..." xml:space="preserve">
-    <value>Choose or Search...</value>
+    <value>Seç veya Ara...</value>
   </data>
   <data name="City" xml:space="preserve">
-    <value>City</value>
+    <value>Şehir</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>Close</value>
+    <value>Kapat</value>
   </data>
   <data name="Company" xml:space="preserve">
-    <value>Company</value>
+    <value>Şirket</value>
   </data>
   <data name="Completed Successfully" xml:space="preserve">
-    <value>Completed Successfully</value>
+    <value>Başarıyla Tamamlandı</value>
   </data>
   <data name="Computer" xml:space="preserve">
-    <value>Computer</value>
+    <value>Bilgisayar</value>
   </data>
   <data name="Computer is not reachable." xml:space="preserve">
-    <value>Computer is not reachable.</value>
+    <value>Bilgisayara erişilemiyor.</value>
   </data>
   <data name="Configure" xml:space="preserve">
-    <value>Configure</value>
+    <value>Yapılandır</value>
   </data>
   <data name="Confirm" xml:space="preserve">
-    <value>Confirm</value>
+    <value>Onayla</value>
   </data>
   <data name="Confirm New Password" xml:space="preserve">
-    <value>Confirm New Password</value>
+    <value>Yeni Parolayı Onayla</value>
   </data>
   <data name="Confirm Password" xml:space="preserve">
-    <value>Confirm Password</value>
+    <value>Parolayı Onayla</value>
   </data>
   <data name="Contact Info" xml:space="preserve">
-    <value>Contact Info</value>
+    <value>İletişim Bilgisi</value>
   </data>
   <data name="Copy Template" xml:space="preserve">
-    <value>Copy template</value>
+    <value>Şablonu Kopyala</value>
   </data>
   <data name="CPU" xml:space="preserve">
     <value>CPU</value>
   </data>
   <data name="CPU Chart" xml:space="preserve">
-    <value>CPU Chart</value>
+    <value>CPU Grafiği</value>
   </data>
   <data name="Create" xml:space="preserve">
-    <value>Create</value>
+    <value>Oluştur</value>
   </data>
   <data name="Create Access Level" xml:space="preserve">
-    <value>Create Access Level</value>
+    <value>Erişim Seviyesi Oluştur</value>
   </data>
   <data name="Create Group" xml:space="preserve">
-    <value>Create Group</value>
+    <value>Grup Oluştur</value>
   </data>
   <data name="Create New Delegation Target" xml:space="preserve">
-    <value>Create New Delegation Target</value>
+    <value>Yeni Delegasyon Hedefi Oluştur</value>
   </data>
   <data name="Create OU" xml:space="preserve">
-    <value>Create OU</value>
+    <value>OU Oluştur</value>
   </data>
   <data name="Create User" xml:space="preserve">
-    <value>Create User</value>
+    <value>Kullanıcı Oluştur</value>
   </data>
   <data name="Created" xml:space="preserve">
-    <value>Created</value>
+    <value>Oluşturuldu</value>
   </data>
   <data name="Current OU" xml:space="preserve">
-    <value>Current OU</value>
+    <value>Mevcut OU</value>
   </data>
   <data name="Current Template:" xml:space="preserve">
-    <value>Current Template:</value>
+    <value>Mevcut Şablon:</value>
   </data>
   <data name="Current Version" xml:space="preserve">
-    <value>Current Version</value>
+    <value>Mevcut Sürüm</value>
   </data>
   <data name="Custom Login" xml:space="preserve">
-    <value>Custom Login</value>
+    <value>Özel Giriş</value>
   </data>
   <data name="Database" xml:space="preserve">
-    <value>Database</value>
+    <value>Veritabanı</value>
   </data>
   <data name="Database server is not reachable!" xml:space="preserve">
-    <value>Database server is not reachable!</value>
+    <value>Veritabanı sunucusuna erişilemiyor!</value>
   </data>
   <data name="Database Status" xml:space="preserve">
-    <value>Database Status</value>
+    <value>Veritabanı Durumu</value>
   </data>
   <data name="DB Type" xml:space="preserve">
-    <value>DB Type</value>
+    <value>VT Türü</value>
   </data>
   <data name="Delegates" xml:space="preserve">
-    <value>Delegates</value>
+    <value>Delegeler</value>
   </data>
   <data name="Delete" xml:space="preserve">
-    <value>Delete</value>
+    <value>Sil</value>
   </data>
   <data name="Delete Access Level" xml:space="preserve">
-    <value>Delete Access Level</value>
+    <value>Erişim Seviyesini Sil</value>
   </data>
   <data name="Delgate Name" xml:space="preserve">
-    <value>Delgate Name</value>
+    <value>Delege Adı</value>
   </data>
   <data name="Deny" xml:space="preserve">
-    <value>Deny</value>
+    <value>Reddet</value>
   </data>
   <data name="Department" xml:space="preserve">
-    <value>Department</value>
+    <value>Departman</value>
   </data>
   <data name="Description" xml:space="preserve">
-    <value>Description</value>
+    <value>Açıklama</value>
   </data>
   <data name="Details" xml:space="preserve">
-    <value>Details</value>
+    <value>Ayrıntılar</value>
   </data>
   <data name="Discard Changes" xml:space="preserve">
-    <value>Discard Changes</value>
+    <value>Değişiklikleri İptal Et</value>
   </data>
   <data name="Display Name" xml:space="preserve">
-    <value>Display Name</value>
+    <value>Görünen Ad</value>
   </data>
   <data name="Documentation" xml:space="preserve">
-    <value>Documentation</value>
+    <value>Belgeler</value>
   </data>
   <data name="Domain" xml:space="preserve">
-    <value>Domain</value>
+    <value>Etki Alanı</value>
   </data>
   <data name="Drive Details" xml:space="preserve">
-    <value>Drive Details</value>
+    <value>Sürücü Ayrıntıları</value>
   </data>
   <data name="Driver" xml:space="preserve">
-    <value>Driver</value>
+    <value>Sürücü</value>
   </data>
   <data name="Driver Version" xml:space="preserve">
-    <value>Driver Version</value>
+    <value>Sürücü Sürümü</value>
   </data>
   <data name="Edit" xml:space="preserve">
-    <value>Edit</value>
+    <value>Düzenle</value>
   </data>
   <data name="Editable" xml:space="preserve">
-    <value>Editable</value>
+    <value>Düzenlenebilir</value>
   </data>
   <data name="Elapsed Time" xml:space="preserve">
-    <value>Elapsed Time</value>
+    <value>Geçen Süre</value>
   </data>
   <data name="Email" xml:space="preserve">
-    <value>Email</value>
+    <value>E-posta</value>
   </data>
   <data name="Email Address" xml:space="preserve">
-    <value>Email Address</value>
+    <value>E-posta Adresi</value>
   </data>
   <data name="Email Enabled" xml:space="preserve">
-    <value>Email Enabled</value>
+    <value>E-posta Etkin</value>
   </data>
   <data name="Email Settings" xml:space="preserve">
-    <value>Email Settings</value>
+    <value>E-posta Ayarları</value>
   </data>
   <data name="Employee Id" xml:space="preserve">
-    <value>Employee Id</value>
+    <value>Çalışan Kimliği</value>
   </data>
   <data name="Enable Auto Update" xml:space="preserve">
-    <value>Enable Auto Update</value>
+    <value>Otomatik Güncellemeyi Etkinleştir</value>
   </data>
   <data name="Enabled" xml:space="preserve">
-    <value>Enabled</value>
+    <value>Etkin</value>
   </data>
   <data name="Encryption Seed String" xml:space="preserve">
-    <value>Encryption Seed String</value>
+    <value>Şifreleme Tohum Dizesi</value>
   </data>
   <data name="Export Data" xml:space="preserve">
-    <value>Export Data</value>
+    <value>Veriyi Dışa Aktar</value>
   </data>
   <data name="Export Database" xml:space="preserve">
-    <value>Export Database</value>
+    <value>Veritabanını Dışa Aktar</value>
   </data>
   <data name="Failed" xml:space="preserve">
-    <value>Failed</value>
+    <value>Başarısız</value>
   </data>
   <data name="Field Name" xml:space="preserve">
-    <value>Field Name</value>
+    <value>Alan Adı</value>
   </data>
   <data name="Field Type" xml:space="preserve">
-    <value>Field Type</value>
+    <value>Alan Türü</value>
   </data>
   <data name="Fields" xml:space="preserve">
-    <value>Fields</value>
+    <value>Alanlar</value>
   </data>
   <data name="First Initial" xml:space="preserve">
-    <value>First Initial</value>
+    <value>İlk Harf</value>
   </data>
   <data name="First Name" xml:space="preserve">
-    <value>First Name</value>
+    <value>Ad</value>
   </data>
   <data name="Force Https" xml:space="preserve">
-    <value>Force Https</value>
+    <value>HTTPS'yi Zorla</value>
   </data>
   <data name="FQDN" xml:space="preserve">
     <value>FQDN</value>
   </data>
   <data name="From Address" xml:space="preserve">
-    <value>From Address</value>
+    <value>Gönderen Adresi</value>
   </data>
   <data name="From Display Name" xml:space="preserve">
-    <value>From Display Name</value>
+    <value>Gönderen Görünen Adı</value>
   </data>
   <data name="Google Analytics ID" xml:space="preserve">
-    <value>Google Analytics ID</value>
+    <value>Google Analytics Kimliği</value>
   </data>
   <data name="Group" xml:space="preserve">
-    <value>Group</value>
+    <value>Grup</value>
   </data>
   <data name="Group Name" xml:space="preserve">
-    <value>Group Name</value>
+    <value>Grup Adı</value>
   </data>
   <data name="Groups" xml:space="preserve">
-    <value>Groups</value>
+    <value>Gruplar</value>
   </data>
   <data name="Home" xml:space="preserve">
-    <value>Home</value>
+    <value>Ana Sayfa</value>
   </data>
   <data name="Home Directory" xml:space="preserve">
-    <value>Home Directory</value>
+    <value>Ana Dizin</value>
   </data>
   <data name="Home Drive" xml:space="preserve">
-    <value>Home Drive</value>
+    <value>Ana Sürücü</value>
   </data>
   <data name="Home Phone" xml:space="preserve">
-    <value>Home Phone</value>
+    <value>Ev Telefonu</value>
   </data>
   <data name="Homepage Message" xml:space="preserve">
-    <value>Homepage Message</value>
+    <value>Ana Sayfa Mesajı</value>
   </data>
   <data name="Impersonate User" xml:space="preserve">
-    <value>Impersonate User</value>
+    <value>Kullanıcıyı Taklit Et</value>
   </data>
   <data name="Info" xml:space="preserve">
-    <value>Info</value>
+    <value>Bilgi</value>
   </data>
   <data name="Inheritance Tree" xml:space="preserve">
-    <value>Inheritance Tree</value>
+    <value>Kalıtım Ağacı</value>
   </data>
   <data name="Inherited from" xml:space="preserve">
-    <value>Inherited from</value>
+    <value>Kaynaktan Devralındı</value>
   </data>
   <data name="Inherited Permissions" xml:space="preserve">
-    <value>Inherited Permissions</value>
+    <value>Devralınan İzinler</value>
   </data>
   <data name="Job Title" xml:space="preserve">
-    <value>Job Title</value>
+    <value>İş Unvanı</value>
   </data>
   <data name="Last Change" xml:space="preserve">
-    <value>Last Change</value>
+    <value>Son Değişiklik</value>
   </data>
   <data name="Last Initial" xml:space="preserve">
-    <value>Last Initial</value>
+    <value>Son Harf</value>
   </data>
   <data name="Last Logon" xml:space="preserve">
-    <value>Last Logon</value>
+    <value>Son Oturum Açma</value>
   </data>
   <data name="LAPS_Password" xml:space="preserve">
-    <value>LAPS Password</value>
+    <value>LAPS Parolası</value>
   </data>
   <data name="Last Name" xml:space="preserve">
-    <value>Last Name</value>
+    <value>Soyadı</value>
   </data>
   <data name="Live Stats" xml:space="preserve">
-    <value>Live Stats</value>
+    <value>Canlı İstatistikler</value>
   </data>
   <data name="Loading" xml:space="preserve">
-    <value>Loading</value>
+    <value>Yükleniyor</value>
   </data>
   <data name="Location" xml:space="preserve">
-    <value>Location</value>
+    <value>Konum</value>
   </data>
   <data name="Lockout Time" xml:space="preserve">
-    <value>Lockout Time</value>
+    <value>Kilitleme Süresi</value>
   </data>
   <data name="Log In" xml:space="preserve">
-    <value>Log In</value>
+    <value>Oturum Aç</value>
   </data>
   <data name="Log In To Demo" xml:space="preserve">
-    <value>Log In To Demo</value>
+    <value>Demo'ya Giriş Yap</value>
   </data>
   <data name="Logins" xml:space="preserve">
-    <value>Logins</value>
+    <value>Oturum Açmalar</value>
   </data>
   <data name="Logs" xml:space="preserve">
-    <value>Logs</value>
+    <value>Günlükler</value>
   </data>
   <data name="Main" xml:space="preserve">
-    <value>Main</value>
+    <value>Ana</value>
   </data>
   <data name="Manage Web Application" xml:space="preserve">
-    <value>Manage Web Application</value>
+    <value>Web Uygulamasını Yönet</value>
   </data>
   <data name="Mappings" xml:space="preserve">
-    <value>Mappings</value>
+    <value>Eşlemeler</value>
   </data>
   <data name="Member Of" xml:space="preserve">
-    <value>Member Of</value>
+    <value>Üyesi Olduğu Gruplar</value>
   </data>
   <data name="Members" xml:space="preserve">
-    <value>Members</value>
+    <value>Üyeler</value>
   </data>
   <data name="Memory" xml:space="preserve">
-    <value>Memory</value>
+    <value>Bellek</value>
   </data>
   <data name="Middle Initial" xml:space="preserve">
-    <value>Middle Initial</value>
+    <value>Orta İsim Harfi</value>
   </data>
   <data name="Middle Name" xml:space="preserve">
-    <value>Middle Name</value>
+    <value>Orta Ad</value>
   </data>
   <data name="Move" xml:space="preserve">
-    <value>Move</value>
+    <value>Taşı</value>
   </data>
   <data name="Move To" xml:space="preserve">
-    <value>Move To</value>
+    <value>Şuraya Taşı</value>
   </data>
   <data name="Myrtille Web Adress" xml:space="preserve">
-    <value>Myrtille Web Adress</value>
+    <value>Myrtille Web Adresi</value>
   </data>
   <data name="Name" xml:space="preserve">
-    <value>Name</value>
+    <value>Ad</value>
   </data>
   <data name="New Password" xml:space="preserve">
-    <value>New Password</value>
+    <value>Yeni Parola</value>
   </data>
   <data name="New Template" xml:space="preserve">
-    <value>New template</value>
+    <value>Yeni Şablon</value>
   </data>
   <data name="Next" xml:space="preserve">
-    <value>Next</value>
+    <value>Sonraki</value>
   </data>
   <data name="Not a member of any groups" xml:space="preserve">
-    <value>Not a member of any groups</value>
+    <value>Herhangi bir grubun üyesi değil</value>
   </data>
   <data name="Not a valid certificate type." xml:space="preserve">
-    <value>Not a valid certificate type.</value>
+    <value>Geçerli bir sertifika türü değil.</value>
   </data>
   <data name="Not finished" xml:space="preserve">
-    <value>Not finished</value>
+    <value>Bitmedi</value>
   </data>
   <data name="Not started" xml:space="preserve">
-    <value>Not started</value>
+    <value>Başlamadı</value>
   </data>
   <data name="Office" xml:space="preserve">
-    <value>Office</value>
+    <value>Ofis</value>
   </data>
   <data name="Ok" xml:space="preserve">
-    <value>Ok</value>
+    <value>Tamam</value>
   </data>
   <data name="Online" xml:space="preserve">
-    <value>Online</value>
+    <value>Çevrimiçi</value>
   </data>
   <data name="Oops" xml:space="preserve">
-    <value>Oops</value>
+    <value>Hata</value>
   </data>
   <data name="Operating System" xml:space="preserve">
-    <value>Operating System</value>
+    <value>İşletim Sistemi</value>
   </data>
   <data name="or" xml:space="preserve">
-    <value>or</value>
+    <value>veya</value>
   </data>
   <data name="Organization" xml:space="preserve">
-    <value>Organization</value>
+    <value>Kuruluş</value>
   </data>
   <data name="Organizational Unit" xml:space="preserve">
-    <value>Organizational Unit</value>
+    <value>Organizasyon Birimi</value>
   </data>
   <data name="OU" xml:space="preserve">
     <value>OU</value>
   </data>
   <data name="Pass Change" xml:space="preserve">
-    <value>Pass Change</value>
+    <value>Parola Değişimi</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>Password</value>
+    <value>Parola</value>
   </data>
   <data name="Permissions" xml:space="preserve">
-    <value>Permissions</value>
+    <value>İzinler</value>
   </data>
   <data name="Please report to" xml:space="preserve">
-    <value>Please report to</value>
+    <value>Lütfen şuna bildirin</value>
   </data>
   <data name="PO Box" xml:space="preserve">
-    <value>PO Box</value>
+    <value>Posta Kutusu</value>
   </data>
   <data name="Port" xml:space="preserve">
-    <value>Port</value>
+    <value>Bağlantı Noktası</value>
   </data>
   <data name="Preferences" xml:space="preserve">
-    <value>Preferences</value>
+    <value>Tercihler</value>
   </data>
   <data name="Prepare Files" xml:space="preserve">
-    <value>Prepare Files</value>
+    <value>Dosyaları Hazırla</value>
   </data>
   <data name="Previous Versions" xml:space="preserve">
-    <value>Previous Versions</value>
+    <value>Önceki Sürümler</value>
   </data>
   <data name="Printer" xml:space="preserve">
-    <value>Printer</value>
+    <value>Yazıcı</value>
   </data>
   <data name="Printer(s) registered to Active Directory" xml:space="preserve">
-    <value>Printer(s) registered to Active Directory</value>
+    <value>Active Directory'ye kayıtlı yazıcı(lar)</value>
   </data>
   <data name="Printers" xml:space="preserve">
-    <value>Printers</value>
+    <value>Yazıcılar</value>
   </data>
   <data name="Profile" xml:space="preserve">
-    <value>Profile</value>
+    <value>Profil</value>
   </data>
   <data name="Profile Path" xml:space="preserve">
-    <value>Profile Path</value>
+    <value>Profil Yolu</value>
   </data>
   <data name="Profile Settings" xml:space="preserve">
-    <value>Profile Settings</value>
+    <value>Profil Ayarları</value>
   </data>
   <data name="Queued" xml:space="preserve">
-    <value>Queued</value>
+    <value>Sıraya Alındı</value>
   </data>
   <data name="Ran by" xml:space="preserve">
-    <value>Ran by</value>
+    <value>Çalıştıran</value>
   </data>
   <data name="Recycle Bin" xml:space="preserve">
-    <value>Recycle Bin</value>
+    <value>Geri Dönüşüm Kutusu</value>
   </data>
   <data name="Register" xml:space="preserve">
-    <value>Register</value>
+    <value>Kaydet</value>
   </data>
   <data name="Register Printers" xml:space="preserve">
-    <value>Register Printers</value>
+    <value>Yazıcıları Kaydet</value>
   </data>
   <data name="Register printers with Active Directory" xml:space="preserve">
-    <value>Register printers with Active Directory</value>
+    <value>Yazıcıları Active Directory'ye kaydet</value>
   </data>
   <data name="Release Notes" xml:space="preserve">
-    <value>Release Notes</value>
+    <value>Sürüm Notları</value>
   </data>
   <data name="Remove field" xml:space="preserve">
-    <value>Remove field</value>
+    <value>Alanı Kaldır</value>
   </data>
   <data name="Remove from favorites" xml:space="preserve">
-    <value>Remove from favorites</value>
+    <value>Favorilerden Kaldır</value>
   </data>
   <data name="Remove Group" xml:space="preserve">
-    <value>Remove Group</value>
+    <value>Grubu Kaldır</value>
   </data>
   <data name="Remove template" xml:space="preserve">
-    <value>Remove template</value>
+    <value>Şablonu Kaldır</value>
   </data>
   <data name="Rename" xml:space="preserve">
-    <value>Rename</value>
+    <value>Yeniden Adlandır</value>
   </data>
   <data name="Rename Category" xml:space="preserve">
-    <value>Rename Category</value>
+    <value>Kategoriyi Yeniden Adlandır</value>
   </data>
   <data name="Rename Group" xml:space="preserve">
-    <value>Rename Group</value>
+    <value>Grubu Yeniden Adlandır</value>
   </data>
   <data name="Rename OU" xml:space="preserve">
-    <value>Rename OU</value>
+    <value>OU'yu Yeniden Adlandır</value>
   </data>
   <data name="Rename User" xml:space="preserve">
-    <value>Rename User</value>
+    <value>Kullanıcıyı Yeniden Adlandır</value>
   </data>
   <data name="Reply-To Address" xml:space="preserve">
-    <value>Reply-To Address</value>
+    <value>Yanıt Adresi</value>
   </data>
   <data name="Reply-To Display Name" xml:space="preserve">
-    <value>Reply-To Display Name</value>
+    <value>Yanıt Görünen Adı</value>
   </data>
   <data name="Require change" xml:space="preserve">
-    <value>Require change</value>
+    <value>Değişiklik Gerektir</value>
   </data>
   <data name="Require the user to change their password at next logon" xml:space="preserve">
-    <value>Require the user to change their password at next logon</value>
+    <value>Kullanıcının bir sonraki oturum açmada parolasını değiştirmesini zorunlu kıl</value>
   </data>
   <data name="Required" xml:space="preserve">
-    <value>Required</value>
+    <value>Gerekli</value>
   </data>
   <data name="Reset Password" xml:space="preserve">
-    <value>Reset Password</value>
+    <value>Parolayı Sıfırla</value>
   </data>
   <data name="Restore" xml:space="preserve">
-    <value>Restore</value>
+    <value>Geri Yükle</value>
   </data>
   <data name="Restore Template" xml:space="preserve">
-    <value>Restore Template</value>
+    <value>Şablonu Geri Yükle</value>
   </data>
   <data name="Restore templates" xml:space="preserve">
-    <value>Restore templates</value>
+    <value>Şablonları Geri Yükle</value>
   </data>
   <data name="Restore:" xml:space="preserve">
-    <value>Restore:</value>
+    <value>Geri Yükle:</value>
   </data>
   <data name="Results" xml:space="preserve">
-    <value>Results</value>
+    <value>Sonuçlar</value>
   </data>
   <data name="Revert to inherited value" xml:space="preserve">
-    <value>Revert to inherited value</value>
+    <value>Devralınan değere geri dön</value>
   </data>
   <data name="Running" xml:space="preserve">
-    <value>Running</value>
+    <value>Çalışıyor</value>
   </data>
   <data name="Save" xml:space="preserve">
-    <value>Save</value>
+    <value>Kaydet</value>
   </data>
   <data name="Save Changes" xml:space="preserve">
-    <value>Save Changes</value>
+    <value>Değişiklikleri Kaydet</value>
   </data>
   <data name="Save Photo" xml:space="preserve">
-    <value>Save Photo</value>
+    <value>Fotoğrafı Kaydet</value>
   </data>
   <data name="Script Path" xml:space="preserve">
-    <value>Script Path</value>
+    <value>Komut Dosyası Yolu</value>
   </data>
   <data name="Server" xml:space="preserve">
-    <value>Server</value>
+    <value>Sunucu</value>
   </data>
   <data name="Services" xml:space="preserve">
-    <value>Services</value>
+    <value>Hizmetler</value>
   </data>
   <data name="Session Timeout" xml:space="preserve">
-    <value>Session Timeout</value>
+    <value>Oturum Zaman Aşımı</value>
   </data>
   <data name="Sessions" xml:space="preserve">
-    <value>Sessions</value>
+    <value>Oturumlar</value>
   </data>
   <data name="Settings" xml:space="preserve">
-    <value>Settings</value>
+    <value>Ayarlar</value>
   </data>
   <data name="Show more" xml:space="preserve">
-    <value>Show more</value>
+    <value>Daha Fazla Göster</value>
   </data>
   <data name="Sign Out" xml:space="preserve">
-    <value>Sign Out</value>
+    <value>Çıkış Yap</value>
   </data>
   <data name="Site" xml:space="preserve">
     <value>Site</value>
   </data>
   <data name="SMTP Password" xml:space="preserve">
-    <value>SMTP Password</value>
+    <value>SMTP Parolası</value>
   </data>
   <data name="SMTP Port" xml:space="preserve">
-    <value>SMTP Port</value>
+    <value>SMTP Bağlantı Noktası</value>
   </data>
   <data name="SMTP Server" xml:space="preserve">
-    <value>SMTP Server</value>
+    <value>SMTP Sunucusu</value>
   </data>
   <data name="SMTP Username" xml:space="preserve">
-    <value>SMTP Username</value>
+    <value>SMTP Kullanıcı Adı</value>
   </data>
   <data name="SSL Certificate" xml:space="preserve">
-    <value>SSL Certificate</value>
+    <value>SSL Sertifikası</value>
   </data>
   <data name="Start Time" xml:space="preserve">
-    <value>Start Time</value>
+    <value>Başlangıç Zamanı</value>
   </data>
   <data name="State" xml:space="preserve">
-    <value>State</value>
+    <value>Eyalet/İl</value>
   </data>
   <data name="Stop It" xml:space="preserve">
-    <value>Stop It</value>
+    <value>Durdur</value>
   </data>
   <data name="Street" xml:space="preserve">
-    <value>Street</value>
+    <value>Sokak</value>
   </data>
   <data name="Street Address" xml:space="preserve">
-    <value>Street Address</value>
+    <value>Sokak Adresi</value>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Success</value>
+    <value>Başarılı</value>
   </data>
   <data name="System" xml:space="preserve">
-    <value>System</value>
+    <value>Sistem</value>
   </data>
   <data name="System Settings" xml:space="preserve">
-    <value>System Settings</value>
+    <value>Sistem Ayarları</value>
   </data>
   <data name="Template Category" xml:space="preserve">
-    <value>Template Category</value>
+    <value>Şablon Kategorisi</value>
   </data>
   <data name="Template Name" xml:space="preserve">
-    <value>Template Name</value>
+    <value>Şablon Adı</value>
   </data>
   <data name="Template(s) restored" xml:space="preserve">
-    <value>Template(s) restored</value>
+    <value>Şablon(lar) geri yüklendi</value>
   </data>
   <data name="Templates" xml:space="preserve">
-    <value>Templates</value>
+    <value>Şablonlar</value>
   </data>
   <data name="Test Recipient" xml:space="preserve">
-    <value>Test Recipient</value>
+    <value>Test Alıcısı</value>
   </data>
   <data name="There are no templates available" xml:space="preserve">
-    <value>There are no templates available</value>
+    <value>Kullanılabilir şablon yok</value>
   </data>
   <data name="Type" xml:space="preserve">
-    <value>Type</value>
+    <value>Tür</value>
   </data>
   <data name="Unable to read" xml:space="preserve">
-    <value>Unable to read</value>
+    <value>Okunamıyor</value>
   </data>
   <data name="UNC Path" xml:space="preserve">
-    <value>UNC Path</value>
+    <value>UNC Yolu</value>
   </data>
   <data name="Unknown delegate" xml:space="preserve">
-    <value>Unknown delegate</value>
+    <value>Bilinmeyen delege</value>
   </data>
   <data name="Unlock" xml:space="preserve">
-    <value>Unlock</value>
+    <value>Kilidi Aç</value>
   </data>
   <data name="Up to date" xml:space="preserve">
-    <value>Up to date</value>
+    <value>Güncel</value>
   </data>
   <data name="Update" xml:space="preserve">
-    <value>Update</value>
+    <value>Güncelle</value>
   </data>
   <data name="Update Access Level" xml:space="preserve">
-    <value>Update Access Level</value>
+    <value>Erişim Seviyesini Güncelle</value>
   </data>
   <data name="Update Branch" xml:space="preserve">
-    <value>Update Branch</value>
+    <value>Güncelleme Dalı</value>
   </data>
   <data name="Update Credential Source" xml:space="preserve">
-    <value>Update Credential Source</value>
+    <value>Güncelleme Kimlik Bilgisi Kaynağı</value>
   </data>
   <data name="Update Credentials" xml:space="preserve">
-    <value>Update Credentials</value>
+    <value>Güncelleme Kimlik Bilgileri</value>
   </data>
   <data name="Update Scheduled" xml:space="preserve">
-    <value>Update Scheduled</value>
+    <value>Güncelleme Zamanlandı</value>
   </data>
   <data name="Update Settings" xml:space="preserve">
-    <value>Update Settings</value>
+    <value>Güncelleme Ayarları</value>
   </data>
   <data name="Upload" xml:space="preserve">
-    <value>Upload</value>
+    <value>Yükle</value>
   </data>
   <data name="Upload SSL Certificate" xml:space="preserve">
-    <value>Upload SSL Certificate</value>
+    <value>SSL Sertifikası Yükle</value>
   </data>
   <data name="Upload Thumbnail" xml:space="preserve">
-    <value>Upload Thumbnail</value>
+    <value>Küçük Resim Yükle</value>
   </data>
   <data name="Upload Thumbnail Photo" xml:space="preserve">
-    <value>Upload Thumbnail Photo</value>
+    <value>Küçük Resim Fotoğrafı Yükle</value>
   </data>
   <data name="Use Custom Credentials" xml:space="preserve">
-    <value>Use Custom Credentials</value>
+    <value>Özel Kimlik Bilgilerini Kullan</value>
   </data>
   <data name="Use SMTP Authentication" xml:space="preserve">
-    <value>Use SMTP Authentication</value>
+    <value>SMTP Kimlik Doğrulamasını Kullan</value>
   </data>
   <data name="Use SSL" xml:space="preserve">
-    <value>Use SSL</value>
+    <value>SSL Kullan</value>
   </data>
   <data name="Use TLS" xml:space="preserve">
-    <value>Use TLS</value>
+    <value>TLS Kullan</value>
   </data>
   <data name="User" xml:space="preserve">
-    <value>User</value>
+    <value>Kullanıcı</value>
   </data>
   <data name="User Helpdesk URL" xml:space="preserve">
-    <value>User Helpdesk URL</value>
+    <value>Kullanıcı Yardım Masası URL'si</value>
   </data>
   <data name="Username" xml:space="preserve">
-    <value>Username</value>
+    <value>Kullanıcı Adı</value>
   </data>
   <data name="Users" xml:space="preserve">
-    <value>Users</value>
+    <value>Kullanıcılar</value>
   </data>
   <data name="UseTLS" xml:space="preserve">
     <value>UseTLS</value>
   </data>
   <data name="Visible" xml:space="preserve">
-    <value>Visible</value>
+    <value>Görünür</value>
   </data>
   <data name="Website FQDN" xml:space="preserve">
-    <value>Website FQDN</value>
+    <value>Web Sitesi FQDN</value>
   </data>
   <data name="Website Name" xml:space="preserve">
-    <value>Website Name</value>
+    <value>Web Sitesi Adı</value>
   </data>
   <data name="You have unsaved changes" xml:space="preserve">
-    <value>You have unsaved changes</value>
+    <value>Kaydedilmemiş değişiklikleriniz var</value>
   </data>
   <data name="Zip Code" xml:space="preserve">
-    <value>Zip Code</value>
+    <value>Posta Kodu</value>
   </data>
   <data name="Application logons" xml:space="preserve">
-    <value>Application logons</value>
+    <value>Uygulama Oturumları</value>
   </data>
   <data name="Block" xml:space="preserve">
-    <value>Block</value>
+    <value>Engelle</value>
   </data>
   <data name="Bypass" xml:space="preserve">
-    <value>Bypass</value>
+    <value>Atla</value>
   </data>
   <data name="Click to view help documentation" xml:space="preserve">
-    <value>Click to view help documentation</value>
+    <value>Yardım belgelerini görüntülemek için tıklayın</value>
   </data>
   <data name="Data Collection Settings" xml:space="preserve">
-    <value>Data Collection Settings</value>
+    <value>Veri Toplama Ayarları</value>
   </data>
   <data name="Developer Analytics" xml:space="preserve">
-    <value>Developer Analytics</value>
+    <value>Geliştirici Analitiği</value>
   </data>
   <data name="Download Logs" xml:space="preserve">
-    <value>Download Logs</value>
+    <value>Günlükleri İndir</value>
   </data>
   <data name="Duo Enabled" xml:space="preserve">
-    <value>Duo Enabled</value>
+    <value>Duo Etkin</value>
   </data>
   <data name="Duo Health Check" xml:space="preserve">
-    <value>Duo Health Check</value>
+    <value>Duo Sağlık Kontrolü</value>
   </data>
   <data name="Duo Security MFA (optional)" xml:space="preserve">
-    <value>Duo Security MFA (optional)</value>
+    <value>Duo Security MFA (isteğe bağlı)</value>
   </data>
   <data name="Duo Unreachable Behavior" xml:space="preserve">
-    <value>Duo Unreachable Behavior</value>
+    <value>Duo Erişilemeyen Davranış</value>
   </data>
   <data name="Favorites" xml:space="preserve">
-    <value>Favorites</value>
+    <value>Favoriler</value>
   </data>
   <data name="Installation Id" xml:space="preserve">
-    <value>Installation Id</value>
+    <value>Kurulum Kimliği</value>
   </data>
   <data name="Jobs Monitor" xml:space="preserve">
-    <value>Jobs Monitor</value>
+    <value>İş Monitörü</value>
   </data>
   <data name="Locked Out Users" xml:space="preserve">
-    <value>Locked Out Users</value>
+    <value>Kilitli Kullanıcılar</value>
   </data>
   <data name="Logging" xml:space="preserve">
-    <value>Logging</value>
+    <value>Günlük Kaydı</value>
   </data>
   <data name="Notifications" xml:space="preserve">
-    <value>Notifications</value>
+    <value>Bildirimler</value>
   </data>
   <data name="Resource Usage" xml:space="preserve">
-    <value>Resource Usage</value>
+    <value>Kaynak Kullanımı</value>
   </data>
   <data name="Send logs to developer" xml:space="preserve">
-    <value>Send logs to developer</value>
+    <value>Günlükleri geliştiriciye gönder</value>
   </data>
   <data name="Time in minutes" xml:space="preserve">
-    <value>Time in minutes</value>
+    <value>Dakika cinsinden süre</value>
   </data>
   <data name="Upload Certificate" xml:space="preserve">
-    <value>Upload Certificate</value>
+    <value>Sertifika Yükle</value>
   </data>
   <data name="Upload Icon" xml:space="preserve">
-    <value>Upload Icon</value>
+    <value>Simge Yükle</value>
   </data>
   <data name="About" xml:space="preserve">
-    <value>About</value>
+    <value>Hakkında</value>
   </data>
   <data name="Add Category" xml:space="preserve">
-    <value>Add Category</value>
+    <value>Kategori Ekle</value>
   </data>
   <data name="Allow Username Override" xml:space="preserve">
-    <value>Allow Username Override</value>
+    <value>Kullanıcı Adı Geçersiz Kılmaya İzin Ver</value>
   </data>
   <data name="API Tokens" xml:space="preserve">
-    <value>API Tokens</value>
+    <value>API Belirteçleri</value>
   </data>
   <data name="Apply Update" xml:space="preserve">
-    <value>Apply Update</value>
+    <value>Güncellemeyi Uygula</value>
   </data>
   <data name="Ask For Alternate Email" xml:space="preserve">
-    <value>Ask For Alternate Email</value>
+    <value>Alternatif E-posta İste</value>
   </data>
   <data name="Authorization Token" xml:space="preserve">
-    <value>Authorization Token</value>
+    <value>Yetkilendirme Belirteci</value>
   </data>
   <data name="Authorization Type" xml:space="preserve">
-    <value>Authorization Type</value>
+    <value>Yetkilendirme Türü</value>
   </data>
   <data name="Basic" xml:space="preserve">
-    <value>Basic</value>
+    <value>Temel</value>
   </data>
   <data name="Bearer" xml:space="preserve">
     <value>Bearer</value>
@@ -1066,267 +1066,267 @@
     <value>BitLocker</value>
   </data>
   <data name="Changed" xml:space="preserve">
-    <value>Changed</value>
+    <value>Değiştirildi</value>
   </data>
   <data name="Changes have been saved" xml:space="preserve">
-    <value>Changes have been saved</value>
+    <value>Değişiklikler kaydedildi</value>
   </data>
   <data name="Create new token" xml:space="preserve">
-    <value>Create new token</value>
+    <value>Yeni belirteç oluştur</value>
   </data>
   <data name="days" xml:space="preserve">
-    <value>days</value>
+    <value>gün</value>
   </data>
   <data name="Dedicated To" xml:space="preserve">
-    <value>Dedicated To</value>
+    <value>Adanmış</value>
   </data>
   <data name="Deleted" xml:space="preserve">
-    <value>Deleted</value>
+    <value>Silindi</value>
   </data>
   <data name="Delivered" xml:space="preserve">
-    <value>Delivered</value>
+    <value>Teslim Edildi</value>
   </data>
   <data name="Disable" xml:space="preserve">
-    <value>Disable</value>
+    <value>Devre Dışı Bırak</value>
   </data>
   <data name="Display Name Format" xml:space="preserve">
-    <value>Display Name Format</value>
+    <value>Görünen Ad Biçimi</value>
   </data>
   <data name="Effective Permissions" xml:space="preserve">
-    <value>Effective Permissions</value>
+    <value>Etkin İzinler</value>
   </data>
   <data name="Enable" xml:space="preserve">
-    <value>Enable</value>
+    <value>Etkinleştir</value>
   </data>
   <data name="Error Message" xml:space="preserve">
-    <value>Error Message</value>
+    <value>Hata Mesajı</value>
   </data>
   <data name="Event Timestamp" xml:space="preserve">
-    <value>Event Timestamp</value>
+    <value>Olay Zaman Damgası</value>
   </data>
   <data name="Expires" xml:space="preserve">
-    <value>Expires</value>
+    <value>Sona Eriyor</value>
   </data>
   <data name="Formula sim" xml:space="preserve">
-    <value>Formula sim</value>
+    <value>Formül simülasyonu</value>
   </data>
   <data name="Founded" xml:space="preserve">
-    <value>Founded</value>
+    <value>Kuruldu</value>
   </data>
   <data name="Founder" xml:space="preserve">
-    <value>Founder</value>
+    <value>Kurucu</value>
   </data>
   <data name="Generate New API Token" xml:space="preserve">
-    <value>Generate New API Token</value>
+    <value>Yeni API Belirteci Oluştur</value>
   </data>
   <data name="Group Member Added" xml:space="preserve">
-    <value>Group Member Added</value>
+    <value>Grup Üyesi Eklendi</value>
   </data>
   <data name="Group Member Removed" xml:space="preserve">
-    <value>Group Member Removed</value>
+    <value>Grup Üyesi Kaldırıldı</value>
   </data>
   <data name="Group Searched" xml:space="preserve">
-    <value>Group Searched</value>
+    <value>Grup Arandı</value>
   </data>
   <data name="Hide Previous Updates" xml:space="preserve">
-    <value>Hide Previous Updates</value>
+    <value>Önceki Güncellemeleri Gizle</value>
   </data>
   <data name="HTTP Method" xml:space="preserve">
-    <value>HTTP Method</value>
+    <value>HTTP Yöntemi</value>
   </data>
   <data name="Ignore SSL Verification" xml:space="preserve">
-    <value>Ignore SSL Verification</value>
+    <value>SSL Doğrulamasını Yoksay</value>
   </data>
   <data name="In Loving Memory" xml:space="preserve">
-    <value>In Loving Memory</value>
+    <value>Sevgi ile Hatırlanarak</value>
   </data>
   <data name="Include Disabled" xml:space="preserve">
-    <value>Include Disabled</value>
+    <value>Devre Dışıları Dahil Et</value>
   </data>
   <data name="IP Address" xml:space="preserve">
-    <value>IP Address</value>
+    <value>IP Adresi</value>
   </data>
   <data name="Is Revoked" xml:space="preserve">
-    <value>Is Revoked</value>
+    <value>İptal Edildi mi</value>
   </data>
   <data name="Last Attempt Timestamp" xml:space="preserve">
-    <value>Last Attempt Timestamp</value>
+    <value>Son Deneme Zaman Damgası</value>
   </data>
   <data name="Last Message Status" xml:space="preserve">
-    <value>Last Message Status</value>
+    <value>Son Mesaj Durumu</value>
   </data>
   <data name="Last Used" xml:space="preserve">
-    <value>Last Used</value>
+    <value>Son Kullanım</value>
   </data>
   <data name="Locked Out" xml:space="preserve">
-    <value>Locked Out</value>
+    <value>Kilitlendi</value>
   </data>
   <data name="Message Id" xml:space="preserve">
-    <value>Message Id</value>
+    <value>Mesaj Kimliği</value>
   </data>
   <data name="Modify" xml:space="preserve">
-    <value>Modify</value>
+    <value>Değiştir</value>
   </data>
   <data name="None" xml:space="preserve">
-    <value>None</value>
+    <value>Hiçbiri</value>
   </data>
   <data name="Notification Settings" xml:space="preserve">
-    <value>Notification Settings</value>
+    <value>Bildirim Ayarları</value>
   </data>
   <data name="OU Searched" xml:space="preserve">
-    <value>OU Searched</value>
+    <value>OU Arandı</value>
   </data>
   <data name="Parent Template" xml:space="preserve">
-    <value>Parent Template</value>
+    <value>Üst Şablon</value>
   </data>
   <data name="PasswordChange" xml:space="preserve">
-    <value>Password Change</value>
+    <value>Parola Değişimi</value>
   </data>
   <data name="Refresh" xml:space="preserve">
-    <value>Refresh</value>
+    <value>Yenile</value>
   </data>
   <data name="Refresh Session" xml:space="preserve">
-    <value>Refresh Session</value>
+    <value>Oturumu Yenile</value>
   </data>
   <data name="Remove" xml:space="preserve">
-    <value>Remove</value>
+    <value>Kaldır</value>
   </data>
   <data name="Request Access" xml:space="preserve">
-    <value>Request Access</value>
+    <value>Erişim İste</value>
   </data>
   <data name="Require Password Change" xml:space="preserve">
-    <value>Require Password Change</value>
+    <value>Parola Değişikliği Gerektir</value>
   </data>
   <data name="Response Code" xml:space="preserve">
-    <value>Response Code</value>
+    <value>Yanıt Kodu</value>
   </data>
   <data name="Retry Count" xml:space="preserve">
-    <value>Retry Count</value>
+    <value>Yeniden Deneme Sayısı</value>
   </data>
   <data name="Send  Welcome Email" xml:space="preserve">
-    <value>Send  Welcome Email</value>
+    <value>Hoş Geldiniz E-postası Gönder</value>
   </data>
   <data name="Session Expired" xml:space="preserve">
-    <value>Session Expired</value>
+    <value>Oturum Süresi Doldu</value>
   </data>
   <data name="Session expires in" xml:space="preserve">
-    <value>Session expires in</value>
+    <value>Oturum süresi dolacak</value>
   </data>
   <data name="Show Previous Updates" xml:space="preserve">
-    <value>Show Previous Updates</value>
+    <value>Önceki Güncellemeleri Göster</value>
   </data>
   <data name="Source Code" xml:space="preserve">
-    <value>Source Code</value>
+    <value>Kaynak Kod</value>
   </data>
   <data name="Stale computers" xml:space="preserve">
-    <value>Stale computers</value>
+    <value>Eski bilgisayarlar</value>
   </data>
   <data name="Stale users" xml:space="preserve">
-    <value>Stale users</value>
+    <value>Eski kullanıcılar</value>
   </data>
   <data name="Template Id" xml:space="preserve">
-    <value>Template Id</value>
+    <value>Şablon Kimliği</value>
   </data>
   <data name="Timestamp" xml:space="preserve">
-    <value>Timestamp</value>
+    <value>Zaman Damgası</value>
   </data>
   <data name="Toggle Fields" xml:space="preserve">
-    <value>Toggle Fields</value>
+    <value>Alanları Değiştir</value>
   </data>
   <data name="Token" xml:space="preserve">
-    <value>Token</value>
+    <value>Belirteç</value>
   </data>
   <data name="Token Lifetime" xml:space="preserve">
-    <value>Token Lifetime</value>
+    <value>Belirteç Ömrü</value>
   </data>
   <data name="Unassign" xml:space="preserve">
-    <value>Unassign</value>
+    <value>Atamayı Kaldır</value>
   </data>
   <data name="URL" xml:space="preserve">
     <value>URL</value>
   </data>
   <data name="User Activity" xml:space="preserve">
-    <value>User Activity</value>
+    <value>Kullanıcı Etkinliği</value>
   </data>
   <data name="User Assigned" xml:space="preserve">
-    <value>User Assigned</value>
+    <value>Kullanıcı Atandı</value>
   </data>
   <data name="User Searched" xml:space="preserve">
-    <value>User Searched</value>
+    <value>Kullanıcı Arandı</value>
   </data>
   <data name="User Unassigned" xml:space="preserve">
-    <value>User Unassigned</value>
+    <value>Kullanıcı Ataması Kaldırıldı</value>
   </data>
   <data name="Username Format" xml:space="preserve">
-    <value>Username Format</value>
+    <value>Kullanıcı Adı Biçimi</value>
   </data>
   <data name="Value" xml:space="preserve">
-    <value>Value</value>
+    <value>Değer</value>
   </data>
   <data name="Variables" xml:space="preserve">
-    <value>Variables</value>
+    <value>Değişkenler</value>
   </data>
   <data name="Webhooks" xml:space="preserve">
-    <value>Webhooks</value>
+    <value>Webhooklar</value>
   </data>
   <data name="Your session has expired." xml:space="preserve">
-    <value>Your session has expired.</value>
+    <value>Oturumunuzun süresi doldu.</value>
   </data>
   <data name="Your session is about to expire" xml:space="preserve">
-    <value>Your session is about to expire</value>
+    <value>Oturumunuzun süresi dolmak üzere</value>
   </data>
   <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
-    <value>Disabled users changed in the last 90 days</value>
+    <value>Son 90 günde değiştirilen devre dışı kullanıcılar</value>
   </data>
   <data name="Changed_Entries" xml:space="preserve">
-    <value>Changed Entries</value>
+    <value>Değiştirilen Kayıtlar</value>
   </data>
   <data name="Changed_Passwords" xml:space="preserve">
-    <value>Changed Passwords</value>
+    <value>Değiştirilen Parolalar</value>
   </data>
   <data name="Deleted_Entries" xml:space="preserve">
-    <value>Deleted Entries</value>
+    <value>Silinen Kayıtlar</value>
   </data>
   <data name="New_Computers" xml:space="preserve">
-    <value>New Computers</value>
+    <value>Yeni Bilgisayarlar</value>
   </data>
   <data name="New_Contacts" xml:space="preserve">
-    <value>New Contacts</value>
+    <value>Yeni Kişiler</value>
   </data>
   <data name="New_Groups" xml:space="preserve">
-    <value>New Groups</value>
+    <value>Yeni Gruplar</value>
   </data>
   <data name="New_OUs" xml:space="preserve">
-    <value>New OU's</value>
+    <value>Yeni OU'lar</value>
   </data>
   <data name="New_Printers" xml:space="preserve">
-    <value>New Printers</value>
+    <value>Yeni Yazıcılar</value>
   </data>
   <data name="New_Users" xml:space="preserve">
-    <value>New Users</value>
+    <value>Yeni Kullanıcılar</value>
   </data>
   <data name="Text" xml:space="preserve">
-    <value>Text</value>
+    <value>Metin</value>
   </data>
   <data name="Rule" xml:space="preserve">
-    <value>Rule</value>
+    <value>Kural</value>
   </data>
   <data name="Rules" xml:space="preserve">
-    <value>Rules</value>
+    <value>Kurallar</value>
   </data>
   <data name="Create Rule" xml:space="preserve">
-    <value>Create Rule</value>
+    <value>Kural Oluştur</value>
   </data>
   <data name="Object Type" xml:space="preserve">
-    <value>Object Type</value>
+    <value>Nesne Türü</value>
   </data>
   <data name="Trigger" xml:space="preserve">
-    <value>Trigger</value>
+    <value>Tetikleyici</value>
   </data>
   <data name="After Action" xml:space="preserve">
-    <value>After Action</value>
+    <value>Sonra Eylem</value>
   </data>
   <data name="Before Action" xml:space="preserve">
-    <value>Before Action</value>
+    <value>Önce Eylem</value>
   </data>
 </root>
