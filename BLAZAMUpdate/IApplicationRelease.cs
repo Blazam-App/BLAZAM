@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Update
+﻿using Octokit;
+
+namespace BLAZAM.Update
 {
     public interface IApplicationRelease
     {
@@ -9,5 +11,7 @@
         string? ReleaseNotes { get; }
         bool? PreviewRelease { get; }
         DateTimeOffset? ReleaseTime { get; }
+
+        string? ReleaseURL { get; }
     }
 }
