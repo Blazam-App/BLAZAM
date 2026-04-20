@@ -201,7 +201,7 @@
 
     async Task ApplyUpdate()
     {
-        if (await MessageService.Confirm("Would you like to apply the update?"))
+        if (await MessageService.Confirm("Would you like to stage the update?"))
         {
             var output = LatestAvailableVersion.GetUpdateJob();
             if (output != null)
