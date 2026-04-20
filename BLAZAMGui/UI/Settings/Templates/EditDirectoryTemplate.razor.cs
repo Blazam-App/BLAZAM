@@ -11,7 +11,6 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 
         [Parameter]
         public SetSubHeader? Header { get; set; }
-        protected DirectoryTemplate originalTemplate;
 
 
         private AppModal? categoryModal;
@@ -59,6 +58,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 
         private List<DirectoryTemplate> dropdownTemplates = [];
         private DirectoryTemplate _template;
+        private DirectoryTemplate _workingTemplate = new();
 
         private DirectoryTemplate usernameFromTemplate;
         private DirectoryTemplate displayNameFromTemplate;
@@ -89,7 +89,6 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 }
 
                 _template = value;
-                originalTemplate = value;
                 SelectedOU = Directory?.OUs.FindOuByDN(value.EffectiveParentOU);
 
                 DirectoryTemplateChanged.InvokeAsync(value);
@@ -120,7 +119,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                         };
                     }
 
-                    DirectoryTemplate.AssignedGroupSids.Add(existing);
+                    _workingTemplate?.AssignedGroupSids.Add(existing);
                     SelectedGroup = null;
                 }
 
@@ -139,33 +138,37 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         {
             if (Context != null)
             {
-                usernameFromTemplate = GetParentOfValue<string?>(DirectoryTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
-                displayNameFromTemplate = GetParentOfValue<string?>(DirectoryTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
-                passwordFromTemplateName = GetParentOfValue<string?>(DirectoryTemplate.EffectivePasswordFormula, template => template.PasswordFormula);
-                requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange);
-                sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail);
-                askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); 
+                if (DirectoryTemplate.Id > 0)
+                {
+                    _workingTemplate = await Context.DirectoryTemplates.LoadTemplateWithParents(DirectoryTemplate?.Id);
+                }
+                else
+                {
+                    _workingTemplate = DirectoryTemplate;
+                }
+                usernameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
+                displayNameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
+                passwordFromTemplateName = GetParentOfValue<string?>(_workingTemplate.EffectivePasswordFormula, template => template.PasswordFormula);
+                requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange);
+                sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail);
+                askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); 
 
                 fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
                 fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
 
                 using (var dropdownContext = await DbFactory.CreateDbContextAsync())
                 {
-                    dropdownTemplates = await dropdownContext.DirectoryTemplates.Where(t => !t.Equals(DirectoryTemplate) && t.DeletedAt == null).ToListAsync();
+                    dropdownTemplates = await dropdownContext.DirectoryTemplates.Where(t => !t.Equals(_workingTemplate) && t.DeletedAt == null).ToListAsync();
                 }
 
                 await LoadCategories();
 
 
-                if (DirectoryTemplate != null && Context != null && !Context.EntityIsTracked(DirectoryTemplate))
+                if (_workingTemplate != null && Context != null && !Context.EntityIsTracked(_workingTemplate))
                 {
                     await LoadParentOU();
                 }
-                using (var dropdownContext = await DbFactory.CreateDbContextAsync())
-                {
-                    dropdownTemplates = await dropdownContext.DirectoryTemplates.Where(t => !t.Equals(DirectoryTemplate) && t.DeletedAt == null).ToListAsync();
-                }
-
+                
                 RefreshGroups();
                 await StateHasChangedAsync();
                 if (Form != null)
@@ -184,7 +187,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         ///  template, otherwise the source template</returns>
         private DirectoryTemplate? GetParentOfValue<T>(T? value, Func<DirectoryTemplate, T?> valueSelector)
         {
-            var templateCursor = DirectoryTemplate;
+            var templateCursor = _workingTemplate;
             var templateValue = valueSelector.Invoke(templateCursor);
             if (!EqualityComparer<T>.Default.Equals(templateValue, default(T)) && templateValue.Equals(value))
             {
@@ -213,9 +216,9 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         }
         private async Task LoadParentOU()
         {
-            if (!DirectoryTemplate.EffectiveParentOU.IsNullOrEmpty())
+            if (!_workingTemplate.EffectiveParentOU.IsNullOrEmpty())
             {
-                SelectedOU = (await Directory.OUs.FindOuByStringAsync(DirectoryTemplate.EffectiveParentOU)).FirstOrDefault();
+                SelectedOU = (await Directory.OUs.FindOuByStringAsync(_workingTemplate.EffectiveParentOU)).FirstOrDefault();
             }
 
             if (SelectedOU == null)
@@ -234,20 +237,20 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 while (templateCursor.ParentTemplate != null)
                 {
                     templateCursor = templateCursor.ParentTemplate;
-                    if (templateCursor.Equals(DirectoryTemplate))
+                    if (templateCursor.Id.Equals(_workingTemplate.Id))
                     {
                         SnackBarService.Warning("Circular inheritance detected!");
                         return;
                     }
                 }
 
-                DirectoryTemplate.ParentTemplate = parent;
-                DirectoryTemplate.ParentTemplateId = parent.Id;
+                _workingTemplate.ParentTemplate = parent;
+                _workingTemplate.ParentTemplateId = parent.Id;
             }
             else
             {
-                DirectoryTemplate.ParentTemplateId = null;
-                DirectoryTemplate.ParentTemplate = null;
+                _workingTemplate.ParentTemplateId = null;
+                _workingTemplate.ParentTemplate = null;
             }
 
             await LoadParentOU();
@@ -272,9 +275,9 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         protected void RefreshGroups()
         {
             TemplateGroups.Clear();
-            if (DirectoryTemplate != null)
+            if (_workingTemplate != null)
             {
-                foreach (var sid in DirectoryTemplate.AssignedGroupSids)
+                foreach (var sid in _workingTemplate.AssignedGroupSids)
                 {
                     var temp = Directory.Groups.FindGroupBySID(sid.GroupSid);
                     if (temp != null)
@@ -288,12 +291,12 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 
         private DirectoryTemplateFieldValue GetFieldToEdit(DirectoryTemplateFieldValue fieldValue)
         {
-            if (!DirectoryTemplate.FieldValues.Contains(fieldValue))
+            if (!_workingTemplate.FieldValues.Contains(fieldValue))
             {
-                DirectoryTemplate.FieldValues.Add((DirectoryTemplateFieldValue)fieldValue.Clone(Context));
+                _workingTemplate.FieldValues.Add((DirectoryTemplateFieldValue)fieldValue.Clone(Context));
             }
 
-            var fieldToModify = DirectoryTemplate.FieldValues.FirstOrDefault(fv => (fv.Field != null && fv.Field.Equals(fieldValue.Field)) || (fv.CustomField != null && fv.CustomField.Equals(fieldValue.CustomField)));
+            var fieldToModify = _workingTemplate.FieldValues.FirstOrDefault(fv => (fv.Field != null && fv.Field.Equals(fieldValue.Field)) || (fv.CustomField != null && fv.CustomField.Equals(fieldValue.CustomField)));
             return fieldToModify;
         }
 
@@ -318,7 +321,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         }
         protected async Task RemoveField(DirectoryTemplateFieldValue field)
         {
-            DirectoryTemplate.FieldValues.Remove(field);
+            _workingTemplate.FieldValues.Remove(field);
             await StateHasChangedAsync();
         }
 
@@ -333,15 +336,15 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 throw new AppException("Database not available");
             }
 
-            DirectoryTemplate.ParentOU = SelectedOU?.DN;
+            _workingTemplate.ParentOU = SelectedOU?.DN;
 
-            if (DirectoryTemplate.ParentTemplate != null)
+            if (_workingTemplate.ParentTemplate != null)
             {
-                DirectoryTemplate.ParentTemplate = await Context.DirectoryTemplates
-                    .FirstOrDefaultAsync(x => x.Id == DirectoryTemplate.ParentTemplate.Id);
+                _workingTemplate.ParentTemplate = await Context.DirectoryTemplates
+                    .FirstOrDefaultAsync(x => x.Id == _workingTemplate.ParentTemplate.Id);
             }
 
-            if (DirectoryTemplate.Id == 0)
+            if (_workingTemplate.Id == 0)
             {
                 await AddNewTemplate();
             }
@@ -356,12 +359,12 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             try
             {
                 var trackedGroups = new List<DirectoryTemplateGroup>();
-                foreach (var group in DirectoryTemplate.AssignedGroupSids)
+                foreach (var group in _workingTemplate.AssignedGroupSids)
                 {
                     trackedGroups.Add(group.Clone(Context));
                 }
 
-                foreach (var field in DirectoryTemplate.FieldValues)
+                foreach (var field in _workingTemplate.FieldValues)
                 {
                     if (field.Field != null)
                     {
@@ -373,15 +376,15 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                     }
                 }
 
-                DirectoryTemplate.AssignedGroupSids = trackedGroups;
-                await Context.DirectoryTemplates.AddAsync(DirectoryTemplate);
+                _workingTemplate.AssignedGroupSids = trackedGroups;
+                await Context.DirectoryTemplates.AddAsync(_workingTemplate);
                 var result = await Context.SaveChangesAsync();
-                Analytics.DirectoryTemplateCreated(DirectoryTemplate.Name);
+                Analytics.DirectoryTemplateCreated(_workingTemplate.Name);
                 Header?.OnRefreshRequested?.Invoke();
                 if (result > 0)
                 {
-                    SnackBarService.Success(DirectoryTemplate.Name + " was added.");
-                    Nav.NavigateTo($"/templates/{DirectoryTemplate.Id}");
+                    SnackBarService.Success(_workingTemplate.Name + " was added.");
+                    Nav.NavigateTo($"/templates/{_workingTemplate.Id}");
                 }
             }
             catch (DbUpdateException ex)
@@ -393,16 +396,20 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             }
             catch (SqlException ex)
             {
-                Loggers.DatabaseLogger.Error(ex, "Error attempting to save creation template {@Template}", DirectoryTemplate.Name);
+                Loggers.DatabaseLogger.Error(ex, "Error attempting to save creation template {@Template}", _workingTemplate.Name);
             }
         }
 
         private async Task UpdateExistingTemplate()
         {
+            if (Context.EntityIsTracked(_workingTemplate))
+            {
+                Loggers.SystemLogger.Debug("Directory Template is tracked for updating");
+            }
             var result = await Context.SaveChangesAsync();
             if (result > 0)
             {
-                Analytics.DirectoryTemplateEdited(DirectoryTemplate.Name);
+                Analytics.DirectoryTemplateEdited(_workingTemplate.Name);
                 SnackBarService.Success("Template changes saved");
             }
             else
@@ -420,11 +427,11 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         {
             if (field is ActiveDirectoryField adField)
             {
-                DirectoryTemplate.FieldValues.Add(new DirectoryTemplateFieldValue { Field = adField });
+                _workingTemplate.FieldValues.Add(new DirectoryTemplateFieldValue { Field = adField });
             }
             else if (field is CustomActiveDirectoryField customField)
             {
-                DirectoryTemplate.FieldValues.Add(new DirectoryTemplateFieldValue { CustomField = customField });
+                _workingTemplate.FieldValues.Add(new DirectoryTemplateFieldValue { CustomField = customField });
             }
         }
     }

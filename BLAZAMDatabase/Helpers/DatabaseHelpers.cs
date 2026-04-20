@@ -498,5 +498,26 @@ namespace BLAZAM.Helpers
                 entity.Navigation(e => e.ChatMessage).AutoInclude();
             });
         }
+
+        public static async Task<DirectoryTemplate?> LoadTemplateWithParents(this DbSet<DirectoryTemplate> dbSet,int? templateId)
+        {
+           
+            if (templateId == null)
+            {
+                return null;
+            }
+            var template = await dbSet.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id.Equals(templateId));
+            if (template?.ParentTemplate != null)
+            {
+                var parentTemplate = await dbSet.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id.Equals(template.ParentTemplate.Id));
+                if (parentTemplate != null && parentTemplate.ParentTemplate != null)
+                {
+                    parentTemplate.ParentTemplate = await dbSet.LoadTemplateWithParents(parentTemplate.ParentTemplate.Id);
+                }
+                template.ParentTemplate = parentTemplate;
+            }
+            return template;
+        
+    }
     }
 }
