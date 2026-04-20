@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+            
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Access_Level_Definition" xml:space="preserve">
+    <value>Рівні доступу — це шаблон дозволів, які можуть бути застосовані до певних OU для конкретних делегатів.</value>
+  </data>
+  <data name="Access_Level_Object_Missing_Read" xml:space="preserve">
+    <value>Змініть доступ {0} на Читання для встановлення дозволів</value>
+  </data>
+  <data name="Authenticator_Setup_One" xml:space="preserve">
+    <value>Відскануйте код нижче за допомогою вашого додатку автентифікатора</value>
+  </data>
+  <data name="Authenticator_Setup_Two" xml:space="preserve">
+    <value>Потім введіть пароль для активації</value>
+  </data>
+  <data name="Auto_Update_Time_Definition" xml:space="preserve">
+    <value>Час кожного дня для автоматичного застосування оновлення.</value>
+  </data>
+  <data name="Confirm_Group_Creation" xml:space="preserve">
+    <value>Ви впевнені, що хочете створити цю групу?</value>
+  </data>
+  <data name="Confirm_OU_Creation" xml:space="preserve">
+    <value>Ви впевнені, що хочете створити цей OU?</value>
+  </data>
+  <data name="Confirm_Save_Changes" xml:space="preserve">
+    <value>Ви впевнені, що хочете зберегти зміни?</value>
+  </data>
+  <data name="Continue_Processing_Rules" xml:space="preserve">
+    <value>Продовжити обробку інших правил</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>{0} створено</value>
+  </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value>Режим налагодження увімкнено. Якщо це виробничий сервер, вимкніть у appsettings.json для запобігання розкриттю конфіденційних даних.</value>
+  </data>
+  <data name="Delegate_Definition" xml:space="preserve">
+    <value>Делегати — це ваші затверджені користувачі додатку. Лише користувачі, яких ви визначаєте тут, або користувачі в наступних групах Active Directory (або вкладених групах) з призначеними дозволами або включеним самостійним редагуванням.</value>
+  </data>
+  <data name="Delegate_Function" xml:space="preserve">
+    <value>Доступ, наданий кожному делегату, контролюється призначеним рівнем доступу.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>{0} видалено</value>
+  </data>
+  <data name="Delete_API_Token_Confirmation" xml:space="preserve">
+    <value>Ви впевнені, що хочете видалити цей API-токен?</value>
+  </data>
+  <data name="Delete_Auth_Token_Confirmation" xml:space="preserve">
+    <value>Ви впевнені, що хочете вимкнути Google Authenticator MFA?</value>
+  </data>
+  <data name="Deny_Request_Confirmation" xml:space="preserve">
+    <value>Ви впевнені, що хочете відхилити цей запит?</value>
+  </data>
+  <data name="Developer_Analytics_Suggestion" xml:space="preserve">
+    <value>Просимо дозволити аналітику розробника, щоб ми могли зрозуміти, як використовується наш додаток, і сфокусувати наші зусилля на тому, що наші користувачі вважають найважливішим.</value>
+  </data>
+  <data name="Developer_Logs_Suggestion" xml:space="preserve">
+    <value>Просимо дозволити журналювання розробника, щоб ми могли швидко та прозоро вдосконалювати Blazam і підтримувати наші зусилля з розробки.</value>
+  </data>
+  <data name="Duplicate_Delegate" xml:space="preserve">
+    <value>Цей делегат вже існує.</value>
+  </data>
+  <data name="Duplicate_Deleted_Delegate" xml:space="preserve">
+    <value>Цей делегат вже існує. Його було видалено. Відновіть його з кошика.</value>
+  </data>
+  <data name="Duplicate_Name_Conflict" xml:space="preserve">
+    <value>Ця назва вже існує. Будь ласка, виберіть іншу назву.</value>
+  </data>
+  <data name="GA4_Instructions" xml:space="preserve">
+    <value>Налаштуйте обліковий запис GA4 і введіть свій ідентифікатор відстеження тут для збору даних про використання вашої установки.</value>
+  </data>
+  <data name="Invalid_Cert_Type" xml:space="preserve">
+    <value>Не є дійсним типом сертифіката.</value>
+  </data>
+  <data name="Invalid_Token_Entered" xml:space="preserve">
+    <value>Введений токен не є дійсним.</value>
+  </data>
+  <data name="Lacks_Group_Member_Read_Permission" xml:space="preserve">
+    <value>Група має більше учасників, до яких ви не маєте доступу.</value>
+  </data>
+  <data name="Lacks_Group_Member_Remove_Permission" xml:space="preserve">
+    <value>У вас немає дозволу для видалення цього члена групи.</value>
+  </data>
+  <data name="Locked_Out" xml:space="preserve">
+    <value>{0} заблоковано</value>
+  </data>
+  <data name="Mapping_Use_Access_Level" xml:space="preserve">
+    <value>{0} зіставлення використовують цей рівень доступу і будуть видалені.</value>
+  </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>Ви повинні вказати як ім'я, так і прізвище.</value>
+  </data>
+  <data name="Modify_Name_Redirect" xml:space="preserve">
+    <value>Щоб змінити ім'я користувача, натисніть кнопку перейменування на панелі інструментів/у меню шестерінки.</value>
+  </data>
+  <data name="Navigate_Away_Confirmation" xml:space="preserve">
+    <value>Ви впевнені, що хочете перейти?</value>
+  </data>
+  <data name="News_Provider_Description" xml:space="preserve">
+    <value>Важливі оновлення та зміни публікуються тут.</value>
+  </data>
+  <data name="No_More_Widgets" xml:space="preserve">
+    <value>Більше немає віджетів для додавання.</value>
+  </data>
+  <data name="No_News" xml:space="preserve">
+    <value>Тут немає нічого нового.</value>
+  </data>
+  <data name="No_Request_Actions_Available" xml:space="preserve">
+    <value>Немає дій, доступних для запиту для цього запису.</value>
+  </data>
+  <data name="No_Request_Fields_Available" xml:space="preserve">
+    <value>Немає полів, доступних для запиту для цього запису.</value>
+  </data>
+  <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
+    <value>Генерування нового токена автентифікатора зробить існуючий недійсним!</value>
+  </data>
+  <data name="Rearrange_Dashboard_Help" xml:space="preserve">
+    <value>Перегрупуйте віджети панелі інструментів, перетягуючи елементи на нове місце.</value>
+  </data>
+  <data name="Rename_Reboot_Message" xml:space="preserve">
+    <value>Адміністратор перейменував цю робочу станцію. Вона перезавантажиться через {0} секунд.</value>
+  </data>
+  <data name="Request_To" xml:space="preserve">
+    <value>Запит для {0}</value>
+  </data>
+  <data name="Request_For" xml:space="preserve">
+    <value>Запит до {0}</value>
+  </data>
+  <data name="Rule_No_Filter_Warning" xml:space="preserve">
+    <value>Це правило спрацьовуватиме кожен раз, коли {0} є {1}.</value>
+  </data>
+  <data name="Stop_On_Rule" xml:space="preserve">
+    <value>Не обробляти більше правил.</value>
+  </data>
+  <data name="Super_User_Definition" xml:space="preserve">
+    <value>Матиме повний і необмежений доступ до додатку, якщо увімкнено.</value>
+  </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" скопійовано до буфера обміну.</value>
+  </data>
+  <data name="Unexpected_Error_Occurred" xml:space="preserve">
+    <value>Сталася несподівана помилка.</value>
+  </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>У вас є незбережені зміни.</value>
+  </data>
+  <data name="Upate_Branch_Definition" xml:space="preserve">
+    <value>Гілка випуску є рекомендованою гілкою. Вибір Nightly рекомендується лише для тестових установок. Dev призначений лише для розробників.</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>{0} оновлено</value>
+  </data>
+  <data name="Update_Credential_Is_AD" xml:space="preserve">
+    <value>Облікові дані Active Directory підтверджені для оновлення.</value>
+  </data>
+  <data name="Update_Credential_Is_Application" xml:space="preserve">
+    <value>Обліковий запис, під яким запущено Blazam, може записувати до каталогу додатку.
+ Це піддає хост-машину непотрібному ризику. Змініть ідентифікацію додатку
+ на обліковий запис з меншими привілеями для підвищення безпеки.</value>
+  </data>
+  <data name="Update_Credential_Is_Custom" xml:space="preserve">
+    <value>Власні облікові дані для оновлення підтверджені.</value>
+  </data>
+  <data name="Update_Credential_Is_Invalid" xml:space="preserve">
+    <value>Не налаштовано облікових даних з правами запису до каталогу додатку!
+Спробуйте налаштувати власні облікові дані для оновлення.</value>
+  </data>
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> запитує доступ для читання {0} на </value>
+  </data>
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> запитує доступ {0} на </value>
+  </data>
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> запитує доступ для редагування {0} на </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>Вимагати від користувача змінити пароль при наступному вході</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>Для вашого облікового запису запитано скидання пароля.</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>Натисніть тут, щоб скинути пароль</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> Ваше посилання для скидання закінчиться {0}</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>Якщо ви не запитували це скидання, ви можете сміливо ігнорувати його.</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>Цей запит надійшов з: {0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>Якщо посилання вище не працює, скопіюйте наступне в адресний рядок.</value>
+  </data>
+</root>
