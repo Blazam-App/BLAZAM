@@ -614,7 +614,7 @@ namespace BLAZAM
                     }
                     else
                     {
-                        Loggers.SystemLogger.Warning("AppSettings record not found in database. Cannot determine Seq logging preference or installation status.");
+                        Loggers.SystemLogger.Information("AppSettings record not found in database. Cannot determine Seq logging preference or installation status.");
                         ApplicationInfo.installationCompleted = false; // Assume not completed if settings are missing
                     }
                 }
