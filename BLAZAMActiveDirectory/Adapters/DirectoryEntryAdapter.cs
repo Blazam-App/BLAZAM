@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
@@ -1112,41 +1113,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
         {
-            var list = new List<T?>();
-           
-            //var dcs = new List<DomainController>(Directory.DomainControllers);
 
-            //Parallel.ForEach(dcs, dc =>
-            //{
-            //    try
-            //    {
-            //        if (dc.IsPingable())
-            //        {
-            //            var searcher = dc.GetDirectorySearcher();
-            //            searcher.Filter = "(distinguishedName=" + this.DN + ")";
-            //            searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
-            //            searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
-            //            var searchResult = searcher.FindOne();
-            //            if (searchResult != null)
-            //            {
-            //                var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
-            //                lock (list)
-            //                {
-            //                    list.Add((T)value);
-            //                }
-            //            }
-            //        }
-            //    }
-            //    catch
-            //    {
-            //        lock (list)
-            //        {
-            //            list.Add(default);
-            //        }
-            //    }
-            //});
+            var list = new List<T?>();
+
+         
 
             return list;
+
+            //var values = DirectoryEntry.GetNonReplicatedPropertyValue(propertyName);
+            //return values.Cast<T>().ToList();
         }
 
 

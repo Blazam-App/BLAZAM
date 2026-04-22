@@ -1,17 +1,18 @@
 ﻿
 
-using System.DirectoryServices.Protocols;
-using System.Security.Authentication;
-using System.Text;
-using System.Text.RegularExpressions;
 using AngleSharp.Dom;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using System.DirectoryServices.Protocols;
+using System.Security.Authentication;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -75,7 +76,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             _isNew = isNew;
             // Immediately place a new attribute dictionary into the static DirectoryCache for this proposed DN.
             var initialAttributes = new Dictionary<string, object?> { { "distinguishedname", proposedDn } };
-            
+
             DirectoryCache.SetEntryCache(proposedDn, initialAttributes);
         }
         /// <summary>
@@ -224,6 +225,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return Search(propertyName);
         }
 
+        public List<object?> GetNonReplicatedPropertyValue(string propertyName)
+        {
+            // This avoids a pointless LDAP search for an object that doesn't exist yet.
+            if (_isNew)
+            {
+                var cacheEntry = DirectoryCache.GetEntryCache(this.DN);
+                cacheEntry.Attributes.TryGetValue(propertyName.ToLower(), out var value);
+                return [value];
+            }
+            var results = SearchNonReplicated(propertyName);
+            return [];
+        }
+
         public string? DN
         {
             get;
@@ -247,7 +261,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
                     {
-                        GetSingleAttribute(attributeName, existingCache);
+                        GetAttribute(attributeName, existingCache);
                         if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
                         {
                             existingCache.Attributes[attributeName.ToLower()] = null;
@@ -271,7 +285,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
             {
-                GetSingleAttribute(attributeName, existingCache);
+                GetAttribute(attributeName, existingCache);
                 if (!existingCache.Attributes.ContainsKey(attributeName.ToLower()))
                 {
                     existingCache.Attributes[attributeName.ToLower()] = null;
@@ -285,10 +299,71 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         }
-        private void GetSingleAttribute(string attributeName, EntryCache? existingCache)
+
+
+        public virtual List<object?> SearchNonReplicated(string attributeName)
+        {
+            var existingCache = DirectoryCache.GetEntryCache(DN);
+
+            if (existingCache == null)
+            {
+                existingCache = new(new());
+            }
+
+            var list = new List<object?>();
+
+            var dcs = new List<string>(Directory.DomainControllers);
+
+            Parallel.ForEach(dcs, dc =>
+            {
+                try
+                {
+
+                    // Search request to get ALL user attributes for the specified DN
+                    SearchRequest attributesSearchRequest = new SearchRequest(
+                        DN,                                 // The DN of the object
+                        "(objectClass=*)",                  // Filter to match the object
+                        SearchScope.Base, // Target a specific object
+                        attributeName                                // Request all user attributes
+                    );
+
+
+                    var searchResponse = SendRequestAndGetResponse<SearchResponse>(attributesSearchRequest, dc);
+
+
+
+                    SearchResultEntry entry = searchResponse.Entries[0];
+
+                    var convertedValue = ConvertSingleValue(entry.Attributes[attributeName], attributeName);
+                    if (convertedValue != null)
+                    {
+                        list.Add(convertedValue);
+                    }
+
+
+
+                }
+                catch
+                {
+
+                }
+            });
+
+            return list;
+        }
+        /// <summary>
+        /// Retrieves the specified attribute for the current distinguished name (DN) and processes it using the
+        /// provided cache.
+        /// </summary>
+        /// <remarks>This method performs a base-level directory search for the specified DN and processes
+        /// the resulting attributes. If an existing cache is provided, it is updated with the retrieved
+        /// values.</remarks>
+        /// <param name="attributeName">The name of the attribute to retrieve. If null, all attributes are requested.</param>
+        /// <param name="existingCache">An optional cache to store or update the retrieved attribute values. Can be null if no caching is required.</param>
+        private void GetAttribute(string? attributeName, EntryCache? existingCache)
         {
             // Search request to get ALL user attributes for the specified DN
-            SearchRequest allAttributesSearchRequest = new SearchRequest(
+            SearchRequest attributesSearchRequest = new SearchRequest(
                 DN,                                 // The DN of the object
                 "(objectClass=*)",                  // Filter to match the object
                 SearchScope.Base, // Target a specific object
@@ -296,7 +371,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             );
 
 
-            var searchResponse = SendRequestAndGetResponse<SearchResponse>(allAttributesSearchRequest);
+            var searchResponse = SendRequestAndGetResponse<SearchResponse>(attributesSearchRequest);
 
 
 
@@ -304,27 +379,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             ProcessAttributes(existingCache, entry);
         }
+
+
         private void GetAllAttributes(EntryCache? existingCache)
         {
-
-            // Search request to get ALL user attributes for the specified DN
-            SearchRequest allAttributesSearchRequest = new SearchRequest(
-                DN,                                 // The DN of the object
-                "(objectClass=*)",                  // Filter to match the object
-                SearchScope.Base, // Target a specific object
-                null                                // Request all user attributes
-            );
-
-
-            var searchResponse = SendRequestAndGetResponse<SearchResponse>(allAttributesSearchRequest);
-
-
-
-            SearchResultEntry entry = searchResponse.Entries[0];
-
-            ProcessAttributes(existingCache, entry);
-
-
+            GetAttribute(null, existingCache);
         }
         /// <summary>
         ///  
@@ -360,7 +419,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     else if (_schemaCache[currentAttributeLdapName].IsSingleValued)
                     {
-                        // Assuming ConvertSingleValue is accessible
                         var attrName = currentAttributeLdapName.ToLower();
                         var attEnum = directoryAttribute.GetEnumerator();
                         attEnum.MoveNext();
@@ -399,14 +457,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if (_namingContextCache.IsNullOrEmpty())
                     {
                         // First, find the schema naming context
-                        var rootDseRequest = new SearchRequest("", "(objectClass=*)",SearchScope.Base, "schemaNamingContext");
+                        var rootDseRequest = new SearchRequest("", "(objectClass=*)", SearchScope.Base, "schemaNamingContext");
                         var rootDseResponse = SendRequestAndGetResponse<SearchResponse>(rootDseRequest);
-                        if (rootDseResponse==null || rootDseResponse.Entries.Count == 0)
+                        if (rootDseResponse == null || rootDseResponse.Entries.Count == 0)
                         {
                             throw new AppException("Could not read RootDSE to find schema naming context.");
                         }
 
-                        _namingContextCache = rootDseResponse.Entries[0].Attributes["schemaNamingContext"][0].ToString()??String.Empty;
+                        _namingContextCache = rootDseResponse.Entries[0].Attributes["schemaNamingContext"][0].ToString() ?? String.Empty;
                     }
                 }
             }
@@ -483,7 +541,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Warning(ex,"Error fetching schema for attribute {propertyName}. Schema will be considered not found.",propertyName);
+                    Loggers.ActiveDirectoryLogger.Warning(ex, "Error fetching schema for attribute {propertyName}. Schema will be considered not found.", propertyName);
                 }
             }
         }
@@ -628,7 +686,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if (rawValue is byte[] bytesSD)
                     {
                         // For simplicity, returning as string representation or bytes
-                        return Convert.ToBase64String(bytesSD); 
+                        return Convert.ToBase64String(bytesSD);
                     }
                     return rawValue;
 
@@ -696,7 +754,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public bool UsePropertyCache { get; set; }
 
-  
+
 
         public void CommitChanges()
         {
@@ -964,9 +1022,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <typeparam name="T">The expected DirectoryResponse type.</typeparam>
         /// <param name="request">The DirectoryRequest to be sent.</param>
         /// <returns>The resulting DirectoryResponse, cast to the specified type.</returns>
-        private T? SendRequestAndGetResponse<T>(DirectoryRequest request) where T : DirectoryResponse
+        private T? SendRequestAndGetResponse<T>(DirectoryRequest request, string? serverHostname = null) where T : DirectoryResponse
         {
-            using var connection = Directory.GetConnection();
+            using var connection = Directory.GetConnection(serverHostname);
             return (T?)connection?.SendRequest(request);
         }
 
