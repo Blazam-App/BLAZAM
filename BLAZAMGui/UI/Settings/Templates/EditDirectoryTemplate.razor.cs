@@ -80,25 +80,21 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         [Parameter]
         public DirectoryTemplate DirectoryTemplate
         {
-            get => _template;
-            set
-            {
-                if (_template == value)
-                {
-                    return;
-                }
-
-                _template = value;
-                SelectedOU = Directory?.OUs.FindOuByDN(value.EffectiveParentOU);
-
-                DirectoryTemplateChanged.InvokeAsync(value);
-
-
-            }
+            get;
+            set;
         }
 
-        [Parameter]
-        public EventCallback<DirectoryTemplate> DirectoryTemplateChanged { get; set; }
+        protected override async Task OnParametersSetAsync()
+        {
+            await base.OnParametersSetAsync();
+            if (_template == DirectoryTemplate)
+            {
+                return;
+            }
+
+            _template = DirectoryTemplate;
+            await LoadData();
+        }
 
         [Parameter]
         public EventCallback ClearSelectedTemplate { get; set; }
@@ -146,6 +142,9 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 {
                     _workingTemplate = DirectoryTemplate;
                 }
+
+                SelectedOU = Directory?.OUs.FindOuByDN(_workingTemplate.EffectiveParentOU);
+
                 usernameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
                 displayNameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
                 passwordFromTemplateName = GetParentOfValue<string?>(_workingTemplate.EffectivePasswordFormula, template => template.PasswordFormula);
