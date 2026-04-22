@@ -9,7 +9,7 @@
             <MudElement Class="pa-1">
                 
                 <MudText Align=Align.Center><MudLink Href="@Entry?.SearchUri">@Entry?.CanonicalName</MudLink></MudText>
-                @if (!GroupableEntry.Description.IsNullOrEmpty())
+                @if (GroupableEntry?.Description.IsNullOrEmpty()==false)
                 {
                     <MudText Align=Align.Center>
                         <MudText Typo=Typo.caption Align=Align.Center>@GroupableEntry.Description</MudText>
@@ -62,12 +62,12 @@
                         <MudSpacer />
                         <LastLogonTime Typo=Typo.caption DirectoryEntry="User" />
                     </MudStack>
-                    @if (User?.LockedOut == true)
+                    @if (User.LockedOut == true)
                     {
                         <MudStack Row=true>
                             <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Lockout_Time]:</MudText>
                             <MudSpacer />
-                            <DateWithTimeTooltip DateTime="User?.LockoutTime" />
+                            <DateWithTimeTooltip DateTime="User.LockoutTime" />
                         </MudStack>
                     }
                 }
@@ -93,5 +93,5 @@ else
 
 @code {
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 }
