@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+            
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Access_Level_Definition" xml:space="preserve">
+    <value>Erişim seviyeleri, belirli OU'lara belirli delegeler için uygulanabilecek izinlerin bir şablonudur.</value>
+  </data>
+  <data name="Access_Level_Object_Missing_Read" xml:space="preserve">
+    <value>İzinleri ayarlamak için {0} erişimini Okumaya değiştirin</value>
+  </data>
+  <data name="Authenticator_Setup_One" xml:space="preserve">
+    <value>Kimlik doğrulama uygulamanızdan aşağıdaki kodu tarayın</value>
+  </data>
+  <data name="Authenticator_Setup_Two" xml:space="preserve">
+    <value>Ardından etkinleştirmek için parolayı girin</value>
+  </data>
+  <data name="Auto_Update_Time_Definition" xml:space="preserve">
+    <value>Bir güncellemenin otomatik olarak uygulanacağı günün saati.</value>
+  </data>
+  <data name="Confirm_Group_Creation" xml:space="preserve">
+    <value>Bu grubu oluşturmak istediğinizden emin misiniz?</value>
+  </data>
+  <data name="Confirm_OU_Creation" xml:space="preserve">
+    <value>Bu OU'yu oluşturmak istediğinizden emin misiniz?</value>
+  </data>
+  <data name="Confirm_Save_Changes" xml:space="preserve">
+    <value>Değişiklikleri kaydetmek istediğinizden emin misiniz?</value>
+  </data>
+  <data name="Continue_Processing_Rules" xml:space="preserve">
+    <value>Diğer kuralları işlemeye devam et</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>{0} oluşturuldu</value>
+  </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value>Hata ayıklama modu etkin. Bu bir üretim sunucusuysa, hassas verilerin açığa çıkmasını önlemek için appsettings.json dosyasında devre dışı bırakın.</value>
+  </data>
+  <data name="Delegate_Definition" xml:space="preserve">
+    <value>Delegeler, onaylı uygulama kullanıcılarınızdır. Yalnızca burada tanımladığınız kullanıcılar veya aşağıdaki Active Directory gruplarındaki (veya iç içe gruplardaki) izinleri eşlenmiş veya öz düzenleme etkinleştirilmiş kullanıcılar.</value>
+  </data>
+  <data name="Delegate_Function" xml:space="preserve">
+    <value>Her delegeye izin verilen erişim, eşlenen erişim seviyesiyle kontrol edilir.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>{0} silindi</value>
+  </data>
+  <data name="Delete_API_Token_Confirmation" xml:space="preserve">
+    <value>Bu API belirtecini silmek istediğinizden emin misiniz?</value>
+  </data>
+  <data name="Delete_Auth_Token_Confirmation" xml:space="preserve">
+    <value>Google Authenticator MFA'yı devre dışı bırakmak istediğinizden emin misiniz?</value>
+  </data>
+  <data name="Deny_Request_Confirmation" xml:space="preserve">
+    <value>Bu isteği reddetmek istediğinizden emin misiniz?</value>
+  </data>
+  <data name="Developer_Analytics_Suggestion" xml:space="preserve">
+    <value>Uygulamamızın nasıl kullanıldığını anlamak ve çabalarımızı kullanıcılarımızın en önemli bulduğu şeylere odaklamak için geliştirici analitiğine izin vermenizi istiyoruz.</value>
+  </data>
+  <data name="Developer_Logs_Suggestion" xml:space="preserve">
+    <value>Blazam'ı hızlı ve şeffaf bir şekilde geliştirmek ve geliştirme çalışmalarımıza yardımcı olmak için geliştirici günlük kaydına izin vermenizi istiyoruz.</value>
+  </data>
+  <data name="Duplicate_Delegate" xml:space="preserve">
+    <value>Bu delege zaten mevcut.</value>
+  </data>
+  <data name="Duplicate_Deleted_Delegate" xml:space="preserve">
+    <value>Bu delege zaten mevcut. Silinmiş. Çöp kutusundan geri yükleyin.</value>
+  </data>
+  <data name="Duplicate_Name_Conflict" xml:space="preserve">
+    <value>Bu ad zaten mevcut. Lütfen farklı bir ad seçin.</value>
+  </data>
+  <data name="GA4_Instructions" xml:space="preserve">
+    <value>Bir GA4 hesabı kurun ve kurulumunuzun kullanımına ilişkin veri toplamak için izleme kimliğinizi buraya girin.</value>
+  </data>
+  <data name="Invalid_Cert_Type" xml:space="preserve">
+    <value>Geçerli bir sertifika türü değil.</value>
+  </data>
+  <data name="Invalid_Token_Entered" xml:space="preserve">
+    <value>Girilen belirteç geçerli değil.</value>
+  </data>
+  <data name="Lacks_Group_Member_Read_Permission" xml:space="preserve">
+    <value>Grubun erişiminiz olmayan daha fazla üyesi var.</value>
+  </data>
+  <data name="Lacks_Group_Member_Remove_Permission" xml:space="preserve">
+    <value>Bu grup üyesini kaldırma izniniz yok.</value>
+  </data>
+  <data name="Locked_Out" xml:space="preserve">
+    <value>{0} kilitlendi</value>
+  </data>
+  <data name="Mapping_Use_Access_Level" xml:space="preserve">
+    <value>{0} eşlemeleri bu Erişim Seviyesini kullanıyor ve silinecek.</value>
+  </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>Hem ad hem de soyadı girmelisiniz.</value>
+  </data>
+  <data name="Modify_Name_Redirect" xml:space="preserve">
+    <value>Kullanıcının adını değiştirmek için araç çubuğundaki/dişli menüsündeki yeniden adlandır düğmesine tıklayın.</value>
+  </data>
+  <data name="Navigate_Away_Confirmation" xml:space="preserve">
+    <value>Ayrılmak istediğinizden emin misiniz?</value>
+  </data>
+  <data name="News_Provider_Description" xml:space="preserve">
+    <value>Önemli güncellemeler ve değişiklikler burada yayınlanır.</value>
+  </data>
+  <data name="No_More_Widgets" xml:space="preserve">
+    <value>Eklenecek başka widget yok.</value>
+  </data>
+  <data name="No_News" xml:space="preserve">
+    <value>Burada görülecek yeni bir şey yok.</value>
+  </data>
+  <data name="No_Request_Actions_Available" xml:space="preserve">
+    <value>Bu giriş için talep edilecek işlem yok.</value>
+  </data>
+  <data name="No_Request_Fields_Available" xml:space="preserve">
+    <value>Bu giriş için talep edilecek alan yok.</value>
+  </data>
+  <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
+    <value>Yeni bir kimlik doğrulama belirteci oluşturmak mevcut olanı geçersiz kılacak!</value>
+  </data>
+  <data name="Rearrange_Dashboard_Help" xml:space="preserve">
+    <value>Öğeleri yeni bir konuma sürükleyerek gösterge paneli widget'larını yeniden düzenleyin.</value>
+  </data>
+  <data name="Rename_Reboot_Message" xml:space="preserve">
+    <value>Bir yönetici bu iş istasyonunu yeniden adlandırdı. {0} saniye içinde yeniden başlatılacak.</value>
+  </data>
+  <data name="Request_To" xml:space="preserve">
+    <value>{0} için istek</value>
+  </data>
+  <data name="Request_For" xml:space="preserve">
+    <value>{0}'a istek</value>
+  </data>
+  <data name="Rule_No_Filter_Warning" xml:space="preserve">
+    <value>Bu kural, bir {0} her {1} olduğunda tetiklenecek.</value>
+  </data>
+  <data name="Stop_On_Rule" xml:space="preserve">
+    <value>Artık kural işleme.</value>
+  </data>
+  <data name="Super_User_Definition" xml:space="preserve">
+    <value>Etkinleştirilirse uygulamaya tam ve sınırsız erişime sahip olacak.</value>
+  </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" panoya kopyalandı.</value>
+  </data>
+  <data name="Unexpected_Error_Occurred" xml:space="preserve">
+    <value>Beklenmedik bir hata oluştu.</value>
+  </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>Kaydedilmemiş değişiklikleriniz var.</value>
+  </data>
+  <data name="Upate_Branch_Definition" xml:space="preserve">
+    <value>Yayın dalı önerilen daldır. Nightly seçmek yalnızca test kurulumları için önerilir. Dev yalnızca geliştiriciler içindir.</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>{0} güncellendi</value>
+  </data>
+  <data name="Update_Credential_Is_AD" xml:space="preserve">
+    <value>Active Directory kimlik bilgileri güncelleme için doğrulandı.</value>
+  </data>
+  <data name="Update_Credential_Is_Application" xml:space="preserve">
+    <value>Blazam'ı çalıştıran hesap uygulama dizinine yazabilir.
+ Bu, ana makineyi gereksiz riske maruz bırakır. Güvenliği artırmak için uygulama kimliğini
+ daha düşük ayrıcalıklı bir hesapla değiştirin.</value>
+  </data>
+  <data name="Update_Credential_Is_Custom" xml:space="preserve">
+    <value>Özel Güncelleme Kimlik Bilgileri güncelleme için doğrulandı.</value>
+  </data>
+  <data name="Update_Credential_Is_Invalid" xml:space="preserve">
+    <value>Uygulama dizinine yazma izni olan kimlik bilgileri yapılandırılmamış!
+Özel güncelleme kimlik bilgilerini yapılandırmayı deneyin.</value>
+  </data>
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> {0} için okuma erişimi talep ediyor </value>
+  </data>
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> {0} erişimi talep ediyor </value>
+  </data>
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> {0} için düzenleme erişimi talep ediyor </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>Kullanıcının bir sonraki oturum açmada parolasını değiştirmesini zorunlu kıl</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>Hesabınız için bir parola sıfırlama talep edildi.</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>Parolanızı sıfırlamak için buraya tıklayın</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> Sıfırlama bağlantınız {0} tarihinde sona erecek</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>Bu sıfırlamayı siz talep etmediyseniz, güvenle yok sayabilirsiniz.</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>Bu istek şuradan geldi: {0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>Yukarıdaki bağlantı çalışmıyorsa aşağıdakini adres çubuğuna kopyalayın.</value>
+  </data>
+</root>
