@@ -8,10 +8,10 @@
                 <MudStack>
                     <MudText Class="mt-5" Typo="Typo.h6">@AppLocalization[Lang.Current_Template]: @_workingTemplate.Name</MudText>
                         <MudSelectList T="DirectoryTemplate"
-                                       HelperText="@(dropdownTemplates.IsNullOrEmpty()?"There are no other templates":null)"
-                                       Disabled=@(dropdownTemplates.IsNullOrEmpty())
+                                       HelperText="@(_dropdownTemplates.IsNullOrEmpty()?"There are no other templates":null)"
+                                       Disabled=@(_dropdownTemplates.IsNullOrEmpty())
                                        Label=@AppLocalization[Lang.Parent_Template]
-                                       Options="@dropdownTemplates.OrderBy(t=>t.Name)"
+                                       Options="@_dropdownTemplates.OrderBy(t=>t.Name)"
                                        Value="@_workingTemplate.ParentTemplate"
                                        ValueChanged="@ParentTemplateChanged" />
 
@@ -27,12 +27,12 @@
                                        Adornment="Adornment.End"
                                        AdornmentIcon="@Icons.Material.Filled.Add"
                                        AdornmentColor="@Color.Success"
-                                       OnAdornmentClick="@(()=>{_=categoryModal?.ShowAsync();})"
+                                       OnAdornmentClick="@(()=>{_=_categoryModal?.ShowAsync();})"
                                        Options="@(categories.Count>0?categories:new List<string>())"
                                        ValueChanged="@((value)=>{_workingTemplate.Category=value;})"
                                        @bind-Text=_workingTemplate.Category
                                        Label="@AppLocalization[Lang.Template_Category]" />
-                        <AppModal @ref=categoryModal Title=@AppLocalization[Lang.Add_Category]>
+                        <AppModal @ref=_categoryModal Title=@AppLocalization[Lang.Add_Category]>
                             <AddTemplateCategoryModalContent Categories="@categories"
                                                              CategoryAdded="@(async(newCategory)=>{
                                     _workingTemplate.Category=newCategory;
@@ -71,7 +71,7 @@
 
                             <MudStack Row=true>
                                 <MudStack Row=true>
-                                    <TemplateOverride SourceTemplate="@usernameFromTemplate">
+                                    <TemplateOverride SourceTemplate="@_usernameFromTemplate">
                                         <MudTextField Required="true"
                                                       RequiredError=@AppLocalization["This field is required"]
                                                       Label=@AppLocalization[Lang.Username_Format]
@@ -83,7 +83,7 @@
                                     }
                                 </MudStack>
                                 <MudStack Row=true>
-                                    <TemplateOverride SourceTemplate="@displayNameFromTemplate">
+                                    <TemplateOverride SourceTemplate="@_displayNameFromTemplate">
                                         <MudTextField Required="true"
                                                       RequiredError=@AppLocalization["This field is required"]
                                                       Label=@AppLocalization[Lang.Display_Name_Format]
@@ -101,7 +101,7 @@
                             </MudStack>
                             <MudStack Row=true>
 
-                                <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@passwordFromTemplateName">
+                                <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@_passwordFromTemplateName">
                                     <MudTextField Required="true"
                                                   RequiredError=@AppLocalization["This field is required"]
                                                   FullWidth=true
@@ -115,7 +115,7 @@
                             </MudStack>
                             <MudStack Row=true>
 
-                                <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@requirePasswordChangeFromTemplate">
+                                <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@_requirePasswordChangeFromTemplate">
                                     <MudSwitch Label=@AppLocalization[Lang.Allow_Username_Override]
                                                UncheckedColor="Color.Error"
                                                Color="Color.Success"
@@ -128,7 +128,7 @@
                             </MudStack>
                             <MudStack Row=true>
 
-                                <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@requirePasswordChangeFromTemplate">
+                                <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@_requirePasswordChangeFromTemplate">
                                     <MudSwitch Label=@AppLocalization[Lang.Require_Password_Change]
                                                UncheckedColor="Color.Warning"
                                                Color="Color.Success"
@@ -141,7 +141,7 @@
                             </MudStack>
                             <TemplateOverride Class="mud-width-full"
                                               BadgeClass="mud-width-full"
-                                              SourceTemplate="@sendWelcomeEmailFromTemplate">
+                                              SourceTemplate="@_sendWelcomeEmailFromTemplate">
 
                                 <MudSwitch Label="@AppLocalization[Lang.Send_Welcome_Email]"
                                            UncheckedColor="Color.Error"
@@ -162,7 +162,7 @@
 
                             <TemplateOverride Class="mud-width-full"
                                               BadgeClass="mud-width-full"
-                                              SourceTemplate="@askForAlternateEmailFromTemplate">
+                                              SourceTemplate="@_askForAlternateEmailFromTemplate">
 
                                 <MudSwitch Label="@AppLocalization[Lang.Ask_For_Alternate_Email]"
                                            UncheckedColor="Color.Error"
@@ -289,7 +289,7 @@
                                             <TemplateColumn StickyLeft=true Title=@AppLocalization[Lang.Name]>
                                                 <CellTemplate Context="cellContext">
                                                     @{
-                                                    var fromTemplateName = dropdownTemplates.FirstOrDefault(ot => ot.FieldValues.Contains(cellContext.Item));
+                                                    var fromTemplateName = _dropdownTemplates.FirstOrDefault(ot => ot.FieldValues.Contains(cellContext.Item));
                                                 }
                                                 <TemplateOverride SourceTemplate="@fromTemplateName">
                                                     <AppTooltip Text="@cellContext.Item.FieldName">
