@@ -168,6 +168,8 @@ namespace BLAZAM
                     new CultureInfo("ja"),    // Japanese
                     new CultureInfo("ko"),    // Korean
                     new CultureInfo("pl"),    // Polish
+                    new CultureInfo("pt"),    // Portuguese
+                    new CultureInfo("ro"),    // Romanian
                     new CultureInfo("ru"),    // Russian
                     new CultureInfo("zh-Hans") // Chinese (Simplified)
                  };
