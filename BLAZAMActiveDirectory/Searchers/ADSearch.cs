@@ -396,6 +396,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 Loggers.ActiveDirectoryLogger.Information(ex, "Directory Entry failed to connect");
             }
+            catch(CriticalActiveDirectoryException ex)
+            {
+                Loggers.ActiveDirectoryLogger.Information(ex, "Directory Entry failed to connect with a critical active directory exception");
+            }
             catch (Exception ex)
             {
                 Loggers.ActiveDirectoryLogger.Error(ex, "Directory Entry failed to connect");

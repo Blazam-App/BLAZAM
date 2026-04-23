@@ -37,9 +37,9 @@ namespace BLAZAM.Helpers
         public static bool IsEditableField (this DirectoryTemplate template, IActiveDirectoryField field)
         {
             if (field is ActiveDirectoryField)
-                return template.EffectiveFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
+                return template.EffectiveFieldValues.Any(f => f.Field?.FieldName == field.FieldName && f.Editable);
             else
-                return template.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Editable);
+                return template.EffectiveFieldValues.Any(f => f.CustomField?.FieldName == field.FieldName && f.Editable);
         }
 
         public static bool IsRequiredField (this DirectoryTemplate template, IActiveDirectoryField field)
@@ -47,7 +47,7 @@ namespace BLAZAM.Helpers
             if (field is ActiveDirectoryField)
                 return template.EffectiveFieldValues.Any(f => f.Field?.FieldName == field.FieldName && f.Required);
             else
-                return template.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Required);
+                return template.EffectiveFieldValues.Any(f => f.CustomField?.FieldName == field.FieldName && f.Required);
         }
         public static long GetMembersHash(this IEnumerable<AppUser> members)
         {
@@ -138,18 +138,15 @@ namespace BLAZAM.Helpers
         {
             return state.Username?.Equals("admin", StringComparison.InvariantCultureIgnoreCase) == true || state.Username?.Equals("demo", StringComparison.InvariantCultureIgnoreCase) == true;
         }
-        public static List<TProperty> GetStaticProperties<TProperty>(this Type staticCollectionType)
+        public static List<TProperty?> GetStaticProperties<TProperty>(this Type staticCollectionType)
         {
 
-            // 2. Specify BindingFlags to get PUBLIC and STATIC members
             BindingFlags flags = BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly;
-            // DeclaredOnly prevents getting members from base classes (like object), though less relevant for static classes.
 
-            // 3. Get all public static fields declared in this type
+
             FieldInfo[] fields = staticCollectionType.GetFields(flags);
 
-            // 4. Filter fields to get only those of type ActiveDirectoryField
-            //    and select their values.
+
             return fields
                 .Where(fi => fi.FieldType == typeof(TProperty)) // Ensure the field is the correct type
                 .Select(fi => (TProperty?)fi.GetValue(null)) // Get the static value (pass null for static fields)

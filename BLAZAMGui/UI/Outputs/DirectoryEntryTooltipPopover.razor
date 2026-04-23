@@ -1,4 +1,4 @@
-@inherits AppComponentBase
+@inherits DirectoryModelComponent
 @if (Entry != null && !Entry.IsDeleted)
 {
     <AppTooltipPopover>
@@ -7,22 +7,28 @@
         </ActivatorContent>
         <PopoverContent>
             <MudElement Class="pa-1">
-                @{
-                    var User = Entry as IADUser;
-                }
+                
                 <MudText Align=Align.Center><MudLink Href="@Entry?.SearchUri">@Entry?.CanonicalName</MudLink></MudText>
-                <MudCard Elevation="2"
-                         Style="width:fit-content;height:fit-content"
-                         Class="relative mx-auto d-block p-1 mb-5">
+                @if (GroupableEntry?.Description.IsNullOrEmpty()==false)
+                {
+                    <MudText Align=Align.Center>
+                        <MudText Typo=Typo.caption Align=Align.Center>@GroupableEntry.Description</MudText>
+                    </MudText>
+                }
 
-                    @if (User?.ThumbnailPhoto != null)
-                    {
-                        <Base64Image Style="max-height:100px;max-width:100px;" Data="User.ThumbnailPhoto.ResizeRawImage(150)" />
+                
+              
+                @if (User?.ThumbnailPhoto != null)
+                {
+                    <MudCard Elevation="2"
+                             Style="width:fit-content;height:fit-content"
+                             Class="relative mx-auto d-block p-1 mb-5">
+                        <Base64Image Style="max-height:100px;max-width:100px;" Data="User.ThumbnailPhoto.ResizeRawImage(100)" />
+                    </MudCard>
 
 
-                    }
+                }
 
-                </MudCard>
 
                 <MudStack Row=true>
                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Created]:</MudText>
@@ -56,12 +62,12 @@
                         <MudSpacer />
                         <LastLogonTime Typo=Typo.caption DirectoryEntry="User" />
                     </MudStack>
-                    @if (User?.LockedOut == true)
+                    @if (User.LockedOut == true)
                     {
                         <MudStack Row=true>
                             <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Lockout_Time]:</MudText>
                             <MudSpacer />
-                            <DateWithTimeTooltip DateTime="User?.LockoutTime" />
+                            <DateWithTimeTooltip DateTime="User.LockoutTime" />
                         </MudStack>
                     }
                 }
@@ -71,10 +77,10 @@
 
                     <OUBreadcrumbs Entry="Entry" />
                 </MudStack>
+
                
             
         
-
             </MudElement>
         </PopoverContent>
     </AppTooltipPopover>
@@ -87,7 +93,5 @@ else
 
 @code {
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
-    [Parameter]
-    public IDirectoryEntryAdapter? Entry { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 }

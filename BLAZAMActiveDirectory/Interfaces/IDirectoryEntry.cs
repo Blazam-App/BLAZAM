@@ -44,6 +44,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         void RemovePropertyValue(string propertyName, object? value);
         void AddPropertyValue(string propertyName, object? value);
         bool PropertyContains(string propertyName, object value);
+        List<object?> GetNonReplicatedPropertyValue(string propertyName);
 
         AuthType AuthenticationType { get; }
         CipherAlgorithmType EncryptionType { get; }

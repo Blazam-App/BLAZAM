@@ -8,15 +8,26 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         private string? _testMiddleName;
         private string? _testLastName;
         private bool _showOuTree;
+        private AppModal? _categoryModal;
+        private List<DirectoryTemplate> _dropdownTemplates = [];
+        private DirectoryTemplate _template;
+        private DirectoryTemplate _workingTemplate = new();
+
+        private DirectoryTemplate _usernameFromTemplate;
+        private DirectoryTemplate _displayNameFromTemplate;
+        private DirectoryTemplate _passwordFromTemplateName;
+        private DirectoryTemplate _requirePasswordChangeFromTemplate;
+        private DirectoryTemplate _sendWelcomeEmailFromTemplate;
+        private DirectoryTemplate _askForAlternateEmailFromTemplate;
+
 
         [Parameter]
         public SetSubHeader? Header { get; set; }
 
 
-        private AppModal? categoryModal;
         protected string groupText;
         protected List<string> categories = [];
-        protected List<TemplateVariable> usernameVariables
+        protected List<TemplateVariable> UsernameVariables
         {
             get
             {
@@ -56,16 +67,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             }
         }
 
-        private List<DirectoryTemplate> dropdownTemplates = [];
-        private DirectoryTemplate _template;
-        private DirectoryTemplate _workingTemplate = new();
-
-        private DirectoryTemplate usernameFromTemplate;
-        private DirectoryTemplate displayNameFromTemplate;
-        private DirectoryTemplate passwordFromTemplateName;
-        private DirectoryTemplate requirePasswordChangeFromTemplate;
-        private DirectoryTemplate sendWelcomeEmailFromTemplate;
-        private DirectoryTemplate askForAlternateEmailFromTemplate;
+       
 
 
         protected bool fieldDrawerOpen;
@@ -75,30 +77,25 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            await LoadData();
         }
         [Parameter]
         public DirectoryTemplate DirectoryTemplate
         {
-            get => _template;
-            set
-            {
-                if (_template == value)
-                {
-                    return;
-                }
-
-                _template = value;
-                SelectedOU = Directory?.OUs.FindOuByDN(value.EffectiveParentOU);
-
-                DirectoryTemplateChanged.InvokeAsync(value);
-
-
-            }
+            get;
+            set;
         }
 
-        [Parameter]
-        public EventCallback<DirectoryTemplate> DirectoryTemplateChanged { get; set; }
+        protected override async Task OnParametersSetAsync()
+        {
+            await base.OnParametersSetAsync();
+            if (_template == DirectoryTemplate)
+            {
+                return;
+            }
+
+            _template = DirectoryTemplate;
+            await LoadData();
+        }
 
         [Parameter]
         public EventCallback ClearSelectedTemplate { get; set; }
@@ -146,19 +143,22 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 {
                     _workingTemplate = DirectoryTemplate;
                 }
-                usernameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
-                displayNameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
-                passwordFromTemplateName = GetParentOfValue<string?>(_workingTemplate.EffectivePasswordFormula, template => template.PasswordFormula);
-                requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange);
-                sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail);
-                askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); 
+
+                SelectedOU = Directory?.OUs.FindOuByDN(_workingTemplate.EffectiveParentOU);
+
+                _usernameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
+                _displayNameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
+                _passwordFromTemplateName = GetParentOfValue<string?>(_workingTemplate.EffectivePasswordFormula, template => template.PasswordFormula);
+                _requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange);
+                _sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail);
+                _askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); 
 
                 fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
                 fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
-
+                
                 using (var dropdownContext = await DbFactory.CreateDbContextAsync())
                 {
-                    dropdownTemplates = await dropdownContext.DirectoryTemplates.Where(t => !t.Equals(_workingTemplate) && t.DeletedAt == null).ToListAsync();
+                    _dropdownTemplates = await dropdownContext.DirectoryTemplates.Where(t => !t.Equals(_workingTemplate) && t.DeletedAt == null).ToListAsync();
                 }
 
                 await LoadCategories();
@@ -268,6 +268,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 
             using var categoryContext = await DbFactory.CreateDbContextAsync();
             categories = await categoryContext.DirectoryTemplates.Select(t => t.Category).Distinct().ToListAsync();
+            categories.Sort();
 
         }
 

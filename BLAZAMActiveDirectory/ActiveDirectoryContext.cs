@@ -281,13 +281,13 @@ namespace BLAZAM.ActiveDirectory
             }
             return await LdapConnectionFactory.ConnectAsync(ConnectionSettings);
         }
-        public AppLdapConnection GetConnection()
+        public AppLdapConnection GetConnection(string? serverHostname=null)
         {
             if (ConnectionSettings == null)
             {
                 throw new InvalidOperationException("Active Directory Connection Settings are not configured.");
             }
-            return LdapConnectionFactory.Connect(ConnectionSettings);
+            return LdapConnectionFactory.Connect(ConnectionSettings,serverHostname);
         }
 
 
