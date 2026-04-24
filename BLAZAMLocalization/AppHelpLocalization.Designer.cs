@@ -242,6 +242,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This will discard any other changes made.
+        /// </summary>
+        public static string Discard_Other_Changes_Warning {
+            get {
+                return ResourceManager.GetString("Discard_Other_Changes_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to That delegate already exists..
         /// </summary>
         public static string Duplicate_Delegate {
