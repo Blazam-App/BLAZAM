@@ -313,4 +313,7 @@ Try configuring custom update credentials.</value>
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>If the link above does not work copy the following into the address bar.</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>This will discard any other changes made</value>
+  </data>
 </root>
