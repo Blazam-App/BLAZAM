@@ -160,6 +160,7 @@ namespace BLAZAM
                 {
                     new CultureInfo("ar"),    // Arabic
                     new CultureInfo("en-US"), // English (United States) - Often the default
+                    new CultureInfo("fi"),    // Finnish
                     new CultureInfo("fr-FR"), // French (France)
                     new CultureInfo("de"),    // German (Default)
                     new CultureInfo("es"),    // Spanish (Default)
@@ -167,10 +168,13 @@ namespace BLAZAM
                     new CultureInfo("it"),    // Italian
                     new CultureInfo("ja"),    // Japanese
                     new CultureInfo("ko"),    // Korean
+                    new CultureInfo("nl"),    // Dutch
                     new CultureInfo("pl"),    // Polish
                     new CultureInfo("pt"),    // Portuguese
                     new CultureInfo("ro"),    // Romanian
                     new CultureInfo("ru"),    // Russian
+                    new CultureInfo("tr"),    // Turkish
+                    new CultureInfo("uk"),    // Ukrainian
                     new CultureInfo("zh-Hans") // Chinese (Simplified)
                  };
 
