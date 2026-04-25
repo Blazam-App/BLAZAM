@@ -1300,33 +1300,33 @@
     <value>Vor der Aktion</value>
   </data>
   <data name="Changed_Entries" xml:space="preserve">
-    <value>Changed Entries</value>
+    <value>Geänderte Einträge</value>
   </data>
   <data name="Changed_Passwords" xml:space="preserve">
-    <value>Changed Passwords</value>
+    <value>Geänderte Passwörter</value>
   </data>
   <data name="Deleted_Entries" xml:space="preserve">
-    <value>Deleted Entries</value>
+    <value>Gelöschte Einträge</value>
   </data>
   <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
-    <value>Disabled users changed in the last 90 days</value>
+    <value>Deaktivierte Benutzer, die in den letzten 90 Tagen geändert wurden</value>
   </data>
   <data name="New_Computers" xml:space="preserve">
-    <value>New Computers</value>
+    <value>Neue Computer</value>
   </data>
   <data name="New_Contacts" xml:space="preserve">
-    <value>New Contacts</value>
+    <value>Neue Kontakte</value>
   </data>
   <data name="New_Groups" xml:space="preserve">
-    <value>New Groups</value>
+    <value>Neue Gruppen</value>
   </data>
   <data name="New_OUs" xml:space="preserve">
-    <value>New OU's</value>
+    <value>Neue OUs</value>
   </data>
   <data name="New_Printers" xml:space="preserve">
-    <value>New Printers</value>
+    <value>Neue Drucker</value>
   </data>
   <data name="New_Users" xml:space="preserve">
-    <value>New Users</value>
+    <value>Neue Benutzer</value>
   </data>
 </root>

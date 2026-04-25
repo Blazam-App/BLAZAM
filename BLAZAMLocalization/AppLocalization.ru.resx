@@ -1300,33 +1300,33 @@
     <value>Перед действием</value>
   </data>
   <data name="Changed_Entries" xml:space="preserve">
-    <value>Changed Entries</value>
+    <value>Изменённые записи</value>
   </data>
   <data name="Changed_Passwords" xml:space="preserve">
-    <value>Changed Passwords</value>
+    <value>Изменённые пароли</value>
   </data>
   <data name="Deleted_Entries" xml:space="preserve">
-    <value>Deleted Entries</value>
+    <value>Удалённые записи</value>
   </data>
   <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
-    <value>Disabled users changed in the last 90 days</value>
+    <value>Отключённые пользователи, изменённые за последние 90 дней</value>
   </data>
   <data name="New_Computers" xml:space="preserve">
-    <value>New Computers</value>
+    <value>Новые компьютеры</value>
   </data>
   <data name="New_Contacts" xml:space="preserve">
-    <value>New Contacts</value>
+    <value>Новые контакты</value>
   </data>
   <data name="New_Groups" xml:space="preserve">
-    <value>New Groups</value>
+    <value>Новые группы</value>
   </data>
   <data name="New_OUs" xml:space="preserve">
-    <value>New OU's</value>
+    <value>Новые ОП</value>
   </data>
   <data name="New_Printers" xml:space="preserve">
-    <value>New Printers</value>
+    <value>Новые принтеры</value>
   </data>
   <data name="New_Users" xml:space="preserve">
-    <value>New Users</value>
+    <value>Новые пользователи</value>
   </data>
 </root>

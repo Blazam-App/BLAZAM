@@ -1300,33 +1300,33 @@
     <value>行動の前に</value>
   </data>
   <data name="Changed_Entries" xml:space="preserve">
-    <value>Changed Entries</value>
+    <value>変更されたエントリ</value>
   </data>
   <data name="Changed_Passwords" xml:space="preserve">
-    <value>Changed Passwords</value>
+    <value>変更されたパスワード</value>
   </data>
   <data name="Deleted_Entries" xml:space="preserve">
-    <value>Deleted Entries</value>
+    <value>削除されたエントリ</value>
   </data>
   <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
-    <value>Disabled users changed in the last 90 days</value>
+    <value>過去90日間に変更された無効ユーザー</value>
   </data>
   <data name="New_Computers" xml:space="preserve">
-    <value>New Computers</value>
+    <value>新しいコンピューター</value>
   </data>
   <data name="New_Contacts" xml:space="preserve">
-    <value>New Contacts</value>
+    <value>新しい連絡先</value>
   </data>
   <data name="New_Groups" xml:space="preserve">
-    <value>New Groups</value>
+    <value>新しいグループ</value>
   </data>
   <data name="New_OUs" xml:space="preserve">
-    <value>New OU's</value>
+    <value>新しいOU</value>
   </data>
   <data name="New_Printers" xml:space="preserve">
-    <value>New Printers</value>
+    <value>新しいプリンター</value>
   </data>
   <data name="New_Users" xml:space="preserve">
-    <value>New Users</value>
+    <value>新しいユーザー</value>
   </data>
 </root>

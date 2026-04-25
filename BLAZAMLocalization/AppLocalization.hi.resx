@@ -1300,33 +1300,33 @@
     <value>कार्रवाई से पहले</value>
   </data>
   <data name="Changed_Entries" xml:space="preserve">
-    <value>Changed Entries</value>
+    <value>बदली गई प्रविष्टियाँ</value>
   </data>
   <data name="Changed_Passwords" xml:space="preserve">
-    <value>Changed Passwords</value>
+    <value>बदले गए पासवर्ड</value>
   </data>
   <data name="Deleted_Entries" xml:space="preserve">
-    <value>Deleted Entries</value>
+    <value>हटाई गई प्रविष्टियाँ</value>
   </data>
   <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
-    <value>Disabled users changed in the last 90 days</value>
+    <value>पिछले 90 दिनों में बदले गए अक्षम उपयोगकर्ता</value>
   </data>
   <data name="New_Computers" xml:space="preserve">
-    <value>New Computers</value>
+    <value>नए कंप्यूटर</value>
   </data>
   <data name="New_Contacts" xml:space="preserve">
-    <value>New Contacts</value>
+    <value>नए संपर्क</value>
   </data>
   <data name="New_Groups" xml:space="preserve">
-    <value>New Groups</value>
+    <value>नए समूह</value>
   </data>
   <data name="New_OUs" xml:space="preserve">
-    <value>New OU's</value>
+    <value>नई OU's</value>
   </data>
   <data name="New_Printers" xml:space="preserve">
-    <value>New Printers</value>
+    <value>नए प्रिंटर</value>
   </data>
   <data name="New_Users" xml:space="preserve">
-    <value>New Users</value>
+    <value>नए उपयोगकर्ता</value>
   </data>
 </root>
