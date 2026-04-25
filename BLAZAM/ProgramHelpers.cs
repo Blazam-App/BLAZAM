@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -75,7 +76,7 @@ namespace BLAZAM
                 ApplicationInfo.installationId = Environment.MachineName.ToGuid();
             }
 
-          
+
             // Store the configuration manager instance globally for easy access (use with caution).
             Program.Configuration = builder.Configuration;
 
@@ -160,6 +161,7 @@ namespace BLAZAM
                 {
                     new CultureInfo("ar"),    // Arabic
                     new CultureInfo("en-US"), // English (United States) - Often the default
+                    new CultureInfo("en-GB"), // English (United Kingdom)
                     new CultureInfo("fi"),    // Finnish
                     new CultureInfo("fr-FR"), // French (France)
                     new CultureInfo("de"),    // German (Default)
@@ -330,7 +332,7 @@ namespace BLAZAM
             builder.Services.AddMudMarkdownServices(); // Add services for rendering Markdown using MudBlazor components
             builder.Services.AddScoped<AppSnackBarService>(); // Custom wrapper/service for MudBlazor Snackbar
             builder.Services.AddScoped<AppDialogService>(); // Custom wrapper/service for MudBlazor Dialog
-            builder.Services.AddSingleton<PasswordResetService>(); 
+            builder.Services.AddSingleton<PasswordResetService>();
 
             // --- Notification Generation ---
             builder.Services.AddSingleton<NotificationGenerationService>(); // Service responsible for generating notifications
