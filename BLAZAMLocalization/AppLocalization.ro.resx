@@ -1,0 +1,1332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Access Levels" xml:space="preserve">
+    <value>Niveluri de Acces</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Cont</value>
+  </data>
+  <data name="Account and Name" xml:space="preserve">
+    <value>Cont și Nume</value>
+  </data>
+  <data name="Account Expiration" xml:space="preserve">
+    <value>Expirare Cont</value>
+  </data>
+  <data name="Account is disabled." xml:space="preserve">
+    <value>Contul este dezactivat.</value>
+  </data>
+  <data name="Account is enabled." xml:space="preserve">
+    <value>Contul este activat.</value>
+  </data>
+  <data name="Account is locked out." xml:space="preserve">
+    <value>Contul este blocat.</value>
+  </data>
+  <data name="Account is not locked out." xml:space="preserve">
+    <value>Contul nu este blocat.</value>
+  </data>
+  <data name="Account Name" xml:space="preserve">
+    <value>Numele Contului</value>
+  </data>
+  <data name="Active Directory" xml:space="preserve">
+    <value>Active Directory</value>
+  </data>
+  <data name="Active Directory is not available!" xml:space="preserve">
+    <value>Active Directory nu este disponibil!</value>
+  </data>
+  <data name="Active Directory Settings" xml:space="preserve">
+    <value>Setări Active Directory</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Adăugare</value>
+  </data>
+  <data name="Add Members" xml:space="preserve">
+    <value>Adăugare Membri</value>
+  </data>
+  <data name="Add New Access Level" xml:space="preserve">
+    <value>Adăugare Nivel de Acces Nou</value>
+  </data>
+  <data name="Add to favorites" xml:space="preserve">
+    <value>Adăugare la favorite</value>
+  </data>
+  <data name="Additional Field" xml:space="preserve">
+    <value>Câmp Suplimentar</value>
+  </data>
+  <data name="Additional Fields" xml:space="preserve">
+    <value>Câmpuri Suplimentare</value>
+  </data>
+  <data name="Admin bcc" xml:space="preserve">
+    <value>Admin bcc</value>
+  </data>
+  <data name="Admin Password" xml:space="preserve">
+    <value>Parolă Admin</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Toate</value>
+  </data>
+  <data name="Allow" xml:space="preserve">
+    <value>Permite</value>
+  </data>
+  <data name="Allow Auto Update" xml:space="preserve">
+    <value>Permite Actualizare Automată</value>
+  </data>
+  <data name="Allow Disabled User Access" xml:space="preserve">
+    <value>Permite Accesul Utilizatorilor Dezactivați</value>
+  </data>
+  <data name="An error has occurred while trying to create the template user" xml:space="preserve">
+    <value>A apărut o eroare la crearea utilizatorului model</value>
+  </data>
+  <data name="App Chat" xml:space="preserve">
+    <value>Chat Aplicație</value>
+  </data>
+  <data name="Application" xml:space="preserve">
+    <value>Aplicație</value>
+  </data>
+  <data name="Application Credentials" xml:space="preserve">
+    <value>Credențiale Aplicație</value>
+  </data>
+  <data name="Application Name" xml:space="preserve">
+    <value>Numele Aplicației</value>
+  </data>
+  <data name="Application Settings" xml:space="preserve">
+    <value>Setări Aplicație</value>
+  </data>
+  <data name="ApplicationStarting" xml:space="preserve">
+    <value>Aplicația pornește... vă rugăm așteptați...</value>
+  </data>
+  <data name="Are you sure you want to navigate away?" xml:space="preserve">
+    <value>Sigur doriți să navigați în altă parte?</value>
+  </data>
+  <data name="Assign" xml:space="preserve">
+    <value>Atribuire</value>
+  </data>
+  <data name="Assign Objects" xml:space="preserve">
+    <value>Atribuire Obiecte</value>
+  </data>
+  <data name="Assign To" xml:space="preserve">
+    <value>Atribuire La</value>
+  </data>
+  <data name="Assigned Groups" xml:space="preserve">
+    <value>Grupuri Atribuite</value>
+  </data>
+  <data name="Attempting to connect to Active Directory." xml:space="preserve">
+    <value>Se încearcă conectarea la Active Directory.</value>
+  </data>
+  <data name="Audit" xml:space="preserve">
+    <value>Audit</value>
+  </data>
+  <data name="Authentication" xml:space="preserve">
+    <value>Autentificare</value>
+  </data>
+  <data name="Authentication Settings" xml:space="preserve">
+    <value>Setări Autentificare</value>
+  </data>
+  <data name="Auto Update Time" xml:space="preserve">
+    <value>Oră Actualizare Automată</value>
+  </data>
+  <data name="Available Update" xml:space="preserve">
+    <value>Actualizare Disponibilă</value>
+  </data>
+  <data name="Base DN" xml:space="preserve">
+    <value>DN de Bază</value>
+  </data>
+  <data name="BaseDN" xml:space="preserve">
+    <value>DN de Bază</value>
+  </data>
+  <data name="Branch" xml:space="preserve">
+    <value>Ramură</value>
+  </data>
+  <data name="Branding Icon" xml:space="preserve">
+    <value>Pictogramă Marcă</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Răsfoire</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Anulare</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Anulat</value>
+  </data>
+  <data name="Certificate Type" xml:space="preserve">
+    <value>Tip Certificat</value>
+  </data>
+  <data name="Change History" xml:space="preserve">
+    <value>Istoric Modificări</value>
+  </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>Schimbare Parolă</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="Choose or Search..." xml:space="preserve">
+    <value>Alegeți sau Căutați...</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Oraș</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Închidere</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Companie</value>
+  </data>
+  <data name="Completed Successfully" xml:space="preserve">
+    <value>Finalizat cu Succes</value>
+  </data>
+  <data name="Computer" xml:space="preserve">
+    <value>Calculator</value>
+  </data>
+  <data name="Computer is not reachable." xml:space="preserve">
+    <value>Calculatorul nu este accesibil.</value>
+  </data>
+  <data name="Configure" xml:space="preserve">
+    <value>Configurare</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirmare</value>
+  </data>
+  <data name="Confirm New Password" xml:space="preserve">
+    <value>Confirmare Parolă Nouă</value>
+  </data>
+  <data name="Confirm Password" xml:space="preserve">
+    <value>Confirmare Parolă</value>
+  </data>
+  <data name="Contact Info" xml:space="preserve">
+    <value>Informații Contact</value>
+  </data>
+  <data name="Copy Template" xml:space="preserve">
+    <value>Copiere Model</value>
+  </data>
+  <data name="CPU" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="CPU Chart" xml:space="preserve">
+    <value>Grafic CPU</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Creare</value>
+  </data>
+  <data name="Create Access Level" xml:space="preserve">
+    <value>Creare Nivel de Acces</value>
+  </data>
+  <data name="Create Group" xml:space="preserve">
+    <value>Creare Grup</value>
+  </data>
+  <data name="Create New Delegation Target" xml:space="preserve">
+    <value>Creare Nou Țintă Delegare</value>
+  </data>
+  <data name="Create OU" xml:space="preserve">
+    <value>Creare OU</value>
+  </data>
+  <data name="Create User" xml:space="preserve">
+    <value>Creare Utilizator</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>Creat</value>
+  </data>
+  <data name="Current OU" xml:space="preserve">
+    <value>OU Curent</value>
+  </data>
+  <data name="Current Template:" xml:space="preserve">
+    <value>Model Curent:</value>
+  </data>
+  <data name="Current Version" xml:space="preserve">
+    <value>Versiunea Curentă</value>
+  </data>
+  <data name="Custom Login" xml:space="preserve">
+    <value>Autentificare Personalizată</value>
+  </data>
+  <data name="Database" xml:space="preserve">
+    <value>Bază de Date</value>
+  </data>
+  <data name="Database server is not reachable!" xml:space="preserve">
+    <value>Serverul bazei de date nu este accesibil!</value>
+  </data>
+  <data name="Database Status" xml:space="preserve">
+    <value>Stare Bază de Date</value>
+  </data>
+  <data name="DB Type" xml:space="preserve">
+    <value>Tip BD</value>
+  </data>
+  <data name="Delegates" xml:space="preserve">
+    <value>Delegați</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Ștergere</value>
+  </data>
+  <data name="Delete Access Level" xml:space="preserve">
+    <value>Ștergere Nivel de Acces</value>
+  </data>
+  <data name="Delgate Name" xml:space="preserve">
+    <value>Numele Delegatului</value>
+  </data>
+  <data name="Deny" xml:space="preserve">
+    <value>Refuzare</value>
+  </data>
+  <data name="Department" xml:space="preserve">
+    <value>Departament</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descriere</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detalii</value>
+  </data>
+  <data name="Discard Changes" xml:space="preserve">
+    <value>Renunțare la Modificări</value>
+  </data>
+  <data name="Display Name" xml:space="preserve">
+    <value>Nume Afișat</value>
+  </data>
+  <data name="Documentation" xml:space="preserve">
+    <value>Documentație</value>
+  </data>
+  <data name="Domain" xml:space="preserve">
+    <value>Domeniu</value>
+  </data>
+  <data name="Drive Details" xml:space="preserve">
+    <value>Detalii Unitate</value>
+  </data>
+  <data name="Driver" xml:space="preserve">
+    <value>Driver</value>
+  </data>
+  <data name="Driver Version" xml:space="preserve">
+    <value>Versiune Driver</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editare</value>
+  </data>
+  <data name="Editable" xml:space="preserve">
+    <value>Editabil</value>
+  </data>
+  <data name="Elapsed Time" xml:space="preserve">
+    <value>Timp Scurs</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="Email Address" xml:space="preserve">
+    <value>Adresă E-mail</value>
+  </data>
+  <data name="Email Enabled" xml:space="preserve">
+    <value>E-mail Activat</value>
+  </data>
+  <data name="Email Settings" xml:space="preserve">
+    <value>Setări E-mail</value>
+  </data>
+  <data name="Employee Id" xml:space="preserve">
+    <value>ID Angajat</value>
+  </data>
+  <data name="Enable Auto Update" xml:space="preserve">
+    <value>Activare Actualizare Automată</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Activat</value>
+  </data>
+  <data name="Encryption Seed String" xml:space="preserve">
+    <value>Șir Sămânță Criptare</value>
+  </data>
+  <data name="Export Data" xml:space="preserve">
+    <value>Export Date</value>
+  </data>
+  <data name="Export Database" xml:space="preserve">
+    <value>Export Bază de Date</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Eșuat</value>
+  </data>
+  <data name="Field Name" xml:space="preserve">
+    <value>Nume Câmp</value>
+  </data>
+  <data name="Field Type" xml:space="preserve">
+    <value>Tip Câmp</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Câmpuri</value>
+  </data>
+  <data name="First Initial" xml:space="preserve">
+    <value>Inițiala Prenumelui</value>
+  </data>
+  <data name="First Name" xml:space="preserve">
+    <value>Prenume</value>
+  </data>
+  <data name="Force Https" xml:space="preserve">
+    <value>Forțare Https</value>
+  </data>
+  <data name="FQDN" xml:space="preserve">
+    <value>FQDN</value>
+  </data>
+  <data name="From Address" xml:space="preserve">
+    <value>Adresă Expeditor</value>
+  </data>
+  <data name="From Display Name" xml:space="preserve">
+    <value>Nume Afișat Expeditor</value>
+  </data>
+  <data name="Google Analytics ID" xml:space="preserve">
+    <value>ID Google Analytics</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Grup</value>
+  </data>
+  <data name="Group Name" xml:space="preserve">
+    <value>Nume Grup</value>
+  </data>
+  <data name="Groups" xml:space="preserve">
+    <value>Grupuri</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Acasă</value>
+  </data>
+  <data name="Home Directory" xml:space="preserve">
+    <value>Director Principal</value>
+  </data>
+  <data name="Home Drive" xml:space="preserve">
+    <value>Unitate Principală</value>
+  </data>
+  <data name="Home Phone" xml:space="preserve">
+    <value>Telefon Acasă</value>
+  </data>
+  <data name="Homepage Message" xml:space="preserve">
+    <value>Mesaj Pagină Principală</value>
+  </data>
+  <data name="Impersonate User" xml:space="preserve">
+    <value>Impersonare Utilizator</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Informații</value>
+  </data>
+  <data name="Inheritance Tree" xml:space="preserve">
+    <value>Arbore de Moștenire</value>
+  </data>
+  <data name="Inherited from" xml:space="preserve">
+    <value>Moștenit din</value>
+  </data>
+  <data name="Inherited Permissions" xml:space="preserve">
+    <value>Permisiuni Moștenite</value>
+  </data>
+  <data name="Job Title" xml:space="preserve">
+    <value>Funcție</value>
+  </data>
+  <data name="Last Change" xml:space="preserve">
+    <value>Ultima Modificare</value>
+  </data>
+  <data name="Last Initial" xml:space="preserve">
+    <value>Inițiala Numelui de Familie</value>
+  </data>
+  <data name="Last Logon" xml:space="preserve">
+    <value>Ultima Autentificare</value>
+  </data>
+  <data name="LAPS_Password" xml:space="preserve">
+    <value>Parolă LAPS</value>
+  </data>
+  <data name="Last Name" xml:space="preserve">
+    <value>Nume de Familie</value>
+  </data>
+  <data name="Live Stats" xml:space="preserve">
+    <value>Statistici în Direct</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Se încarcă</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Locație</value>
+  </data>
+  <data name="Lockout Time" xml:space="preserve">
+    <value>Durata Blocării</value>
+  </data>
+  <data name="Log In" xml:space="preserve">
+    <value>Autentificare</value>
+  </data>
+  <data name="Log In To Demo" xml:space="preserve">
+    <value>Autentificare la Demo</value>
+  </data>
+  <data name="Logins" xml:space="preserve">
+    <value>Autentificări</value>
+  </data>
+  <data name="Logs" xml:space="preserve">
+    <value>Jurnale</value>
+  </data>
+  <data name="Main" xml:space="preserve">
+    <value>Principal</value>
+  </data>
+  <data name="Manage Web Application" xml:space="preserve">
+    <value>Gestionare Aplicație Web</value>
+  </data>
+  <data name="Mappings" xml:space="preserve">
+    <value>Mapări</value>
+  </data>
+  <data name="Member Of" xml:space="preserve">
+    <value>Membru al</value>
+  </data>
+  <data name="Members" xml:space="preserve">
+    <value>Membri</value>
+  </data>
+  <data name="Memory" xml:space="preserve">
+    <value>Memorie</value>
+  </data>
+  <data name="Middle Initial" xml:space="preserve">
+    <value>Inițiala Numelui Mijlociu</value>
+  </data>
+  <data name="Middle Name" xml:space="preserve">
+    <value>Numele Mijlociu</value>
+  </data>
+  <data name="Move" xml:space="preserve">
+    <value>Mutare</value>
+  </data>
+  <data name="Move To" xml:space="preserve">
+    <value>Mutare La</value>
+  </data>
+  <data name="Myrtille Web Adress" xml:space="preserve">
+    <value>Adresă Web Myrtille</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nume</value>
+  </data>
+  <data name="New Password" xml:space="preserve">
+    <value>Parolă Nouă</value>
+  </data>
+  <data name="New Template" xml:space="preserve">
+    <value>Model Nou</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Următor</value>
+  </data>
+  <data name="Not a member of any groups" xml:space="preserve">
+    <value>Nu este membru al niciunui grup</value>
+  </data>
+  <data name="Not a valid certificate type." xml:space="preserve">
+    <value>Tip de certificat invalid.</value>
+  </data>
+  <data name="Not finished" xml:space="preserve">
+    <value>Nefinalizat</value>
+  </data>
+  <data name="Not started" xml:space="preserve">
+    <value>Neînceput</value>
+  </data>
+  <data name="Office" xml:space="preserve">
+    <value>Birou</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Oops" xml:space="preserve">
+    <value>Ups</value>
+  </data>
+  <data name="Operating System" xml:space="preserve">
+    <value>Sistem de Operare</value>
+  </data>
+  <data name="or" xml:space="preserve">
+    <value>sau</value>
+  </data>
+  <data name="Organization" xml:space="preserve">
+    <value>Organizație</value>
+  </data>
+  <data name="Organizational Unit" xml:space="preserve">
+    <value>Unitate Organizatorică</value>
+  </data>
+  <data name="OU" xml:space="preserve">
+    <value>UO</value>
+  </data>
+  <data name="Pass Change" xml:space="preserve">
+    <value>Schimbare Parolă</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Parolă</value>
+  </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>Permisiuni</value>
+  </data>
+  <data name="Please report to" xml:space="preserve">
+    <value>Vă rugăm raportați la</value>
+  </data>
+  <data name="PO Box" xml:space="preserve">
+    <value>Căsuță Poștală</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="Preferences" xml:space="preserve">
+    <value>Preferințe</value>
+  </data>
+  <data name="Prepare Files" xml:space="preserve">
+    <value>Pregătire Fișiere</value>
+  </data>
+  <data name="Previous Versions" xml:space="preserve">
+    <value>Versiuni Anterioare</value>
+  </data>
+  <data name="Printer" xml:space="preserve">
+    <value>Imprimantă</value>
+  </data>
+  <data name="Printer(s) registered to Active Directory" xml:space="preserve">
+    <value>Imprimantă(e) înregistrată(e) la Active Directory</value>
+  </data>
+  <data name="Printers" xml:space="preserve">
+    <value>Imprimante</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="Profile Path" xml:space="preserve">
+    <value>Calea Profilului</value>
+  </data>
+  <data name="Profile Settings" xml:space="preserve">
+    <value>Setări Profil</value>
+  </data>
+  <data name="Queued" xml:space="preserve">
+    <value>În Așteptare</value>
+  </data>
+  <data name="Ran by" xml:space="preserve">
+    <value>Rulat de</value>
+  </data>
+  <data name="Recycle Bin" xml:space="preserve">
+    <value>Coș de Gunoi</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Înregistrare</value>
+  </data>
+  <data name="Register Printers" xml:space="preserve">
+    <value>Înregistrare Imprimante</value>
+  </data>
+  <data name="Register printers with Active Directory" xml:space="preserve">
+    <value>Înregistrare imprimante la Active Directory</value>
+  </data>
+  <data name="Release Notes" xml:space="preserve">
+    <value>Note de Lansare</value>
+  </data>
+  <data name="Remove field" xml:space="preserve">
+    <value>Eliminare câmp</value>
+  </data>
+  <data name="Remove from favorites" xml:space="preserve">
+    <value>Eliminare din favorite</value>
+  </data>
+  <data name="Remove Group" xml:space="preserve">
+    <value>Eliminare Grup</value>
+  </data>
+  <data name="Remove template" xml:space="preserve">
+    <value>Eliminare model</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Redenumire</value>
+  </data>
+  <data name="Rename Category" xml:space="preserve">
+    <value>Redenumire Categorie</value>
+  </data>
+  <data name="Rename Group" xml:space="preserve">
+    <value>Redenumire Grup</value>
+  </data>
+  <data name="Rename OU" xml:space="preserve">
+    <value>Redenumire UO</value>
+  </data>
+  <data name="Rename User" xml:space="preserve">
+    <value>Redenumire Utilizator</value>
+  </data>
+  <data name="Reply-To Address" xml:space="preserve">
+    <value>Adresă de Răspuns</value>
+  </data>
+  <data name="Reply-To Display Name" xml:space="preserve">
+    <value>Nume Afișat Răspuns</value>
+  </data>
+  <data name="Require change" xml:space="preserve">
+    <value>Modificare obligatorie</value>
+  </data>
+  <data name="Require the user to change their password at next logon" xml:space="preserve">
+    <value>Impune utilizatorului să schimbe parola la următoarea autentificare</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Obligatoriu</value>
+  </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>Resetare Parolă</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Restaurare</value>
+  </data>
+  <data name="Restore Template" xml:space="preserve">
+    <value>Restaurare Model</value>
+  </data>
+  <data name="Restore templates" xml:space="preserve">
+    <value>Restaurare modele</value>
+  </data>
+  <data name="Restore:" xml:space="preserve">
+    <value>Restaurare:</value>
+  </data>
+  <data name="Results" xml:space="preserve">
+    <value>Rezultate</value>
+  </data>
+  <data name="Revert to inherited value" xml:space="preserve">
+    <value>Revenire la valoarea moștenită</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>Rulând</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Salvare</value>
+  </data>
+  <data name="Save Changes" xml:space="preserve">
+    <value>Salvare Modificări</value>
+  </data>
+  <data name="Save Photo" xml:space="preserve">
+    <value>Salvare Fotografie</value>
+  </data>
+  <data name="Script Path" xml:space="preserve">
+    <value>Calea Scriptului</value>
+  </data>
+  <data name="Server" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="Services" xml:space="preserve">
+    <value>Servicii</value>
+  </data>
+  <data name="Session Timeout" xml:space="preserve">
+    <value>Timeout Sesiune</value>
+  </data>
+  <data name="Sessions" xml:space="preserve">
+    <value>Sesiuni</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Setări</value>
+  </data>
+  <data name="Show more" xml:space="preserve">
+    <value>Afișare mai mult</value>
+  </data>
+  <data name="Sign Out" xml:space="preserve">
+    <value>Deconectare</value>
+  </data>
+  <data name="Site" xml:space="preserve">
+    <value>Site</value>
+  </data>
+  <data name="SMTP Password" xml:space="preserve">
+    <value>Parolă SMTP</value>
+  </data>
+  <data name="SMTP Port" xml:space="preserve">
+    <value>Port SMTP</value>
+  </data>
+  <data name="SMTP Server" xml:space="preserve">
+    <value>Server SMTP</value>
+  </data>
+  <data name="SMTP Username" xml:space="preserve">
+    <value>Utilizator SMTP</value>
+  </data>
+  <data name="SSL Certificate" xml:space="preserve">
+    <value>Certificat SSL</value>
+  </data>
+  <data name="Start Time" xml:space="preserve">
+    <value>Oră Start</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>Județ</value>
+  </data>
+  <data name="Stop It" xml:space="preserve">
+    <value>Oprire</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>Stradă</value>
+  </data>
+  <data name="Street Address" xml:space="preserve">
+    <value>Adresă Stradă</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Succes</value>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>Sistem</value>
+  </data>
+  <data name="System Settings" xml:space="preserve">
+    <value>Setări Sistem</value>
+  </data>
+  <data name="Template Category" xml:space="preserve">
+    <value>Categorie Model</value>
+  </data>
+  <data name="Template Name" xml:space="preserve">
+    <value>Nume Model</value>
+  </data>
+  <data name="Template(s) restored" xml:space="preserve">
+    <value>Model(e) restaurat(e)</value>
+  </data>
+  <data name="Templates" xml:space="preserve">
+    <value>Modele</value>
+  </data>
+  <data name="Test Recipient" xml:space="preserve">
+    <value>Destinatar Test</value>
+  </data>
+  <data name="There are no templates available" xml:space="preserve">
+    <value>Nu există modele disponibile</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Tip</value>
+  </data>
+  <data name="Unable to read" xml:space="preserve">
+    <value>Imposibil de citit</value>
+  </data>
+  <data name="UNC Path" xml:space="preserve">
+    <value>Cale UNC</value>
+  </data>
+  <data name="Unknown delegate" xml:space="preserve">
+    <value>Delegat necunoscut</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Deblocare</value>
+  </data>
+  <data name="Up to date" xml:space="preserve">
+    <value>Actualizat</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Actualizare</value>
+  </data>
+  <data name="Update Access Level" xml:space="preserve">
+    <value>Actualizare Nivel de Acces</value>
+  </data>
+  <data name="Update Branch" xml:space="preserve">
+    <value>Ramură Actualizare</value>
+  </data>
+  <data name="Update Credential Source" xml:space="preserve">
+    <value>Sursă Credențiale Actualizare</value>
+  </data>
+  <data name="Update Credentials" xml:space="preserve">
+    <value>Credențiale Actualizare</value>
+  </data>
+  <data name="Update Scheduled" xml:space="preserve">
+    <value>Actualizare Programată</value>
+  </data>
+  <data name="Update Settings" xml:space="preserve">
+    <value>Setări Actualizare</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Încărcare</value>
+  </data>
+  <data name="Upload SSL Certificate" xml:space="preserve">
+    <value>Încărcare Certificat SSL</value>
+  </data>
+  <data name="Upload Thumbnail" xml:space="preserve">
+    <value>Încărcare Miniatură</value>
+  </data>
+  <data name="Upload Thumbnail Photo" xml:space="preserve">
+    <value>Încărcare Fotografie Miniatură</value>
+  </data>
+  <data name="Use Custom Credentials" xml:space="preserve">
+    <value>Utilizare Credențiale Personalizate</value>
+  </data>
+  <data name="Use SMTP Authentication" xml:space="preserve">
+    <value>Utilizare Autentificare SMTP</value>
+  </data>
+  <data name="Use SSL" xml:space="preserve">
+    <value>Utilizare SSL</value>
+  </data>
+  <data name="Use TLS" xml:space="preserve">
+    <value>Utilizare TLS</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Utilizator</value>
+  </data>
+  <data name="User Helpdesk URL" xml:space="preserve">
+    <value>URL Helpdesk Utilizator</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nume Utilizator</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Utilizatori</value>
+  </data>
+  <data name="UseTLS" xml:space="preserve">
+    <value>FolositeTLS</value>
+  </data>
+  <data name="Visible" xml:space="preserve">
+    <value>Vizibil</value>
+  </data>
+  <data name="Website FQDN" xml:space="preserve">
+    <value>FQDN Website</value>
+  </data>
+  <data name="Website Name" xml:space="preserve">
+    <value>Nume Website</value>
+  </data>
+  <data name="You have unsaved changes" xml:space="preserve">
+    <value>Aveți modificări nesalvate</value>
+  </data>
+  <data name="Zip Code" xml:space="preserve">
+    <value>Cod Poștal</value>
+  </data>
+  <data name="Application logons" xml:space="preserve">
+    <value>Autentificări Aplicație</value>
+  </data>
+  <data name="Block" xml:space="preserve">
+    <value>Blocare</value>
+  </data>
+  <data name="Bypass" xml:space="preserve">
+    <value>Ocolire</value>
+  </data>
+  <data name="Click to view help documentation" xml:space="preserve">
+    <value>Click pentru a vizualiza documentația de ajutor</value>
+  </data>
+  <data name="Data Collection Settings" xml:space="preserve">
+    <value>Setări Colectare Date</value>
+  </data>
+  <data name="Developer Analytics" xml:space="preserve">
+    <value>Analize Dezvoltator</value>
+  </data>
+  <data name="Download Logs" xml:space="preserve">
+    <value>Descărcare Jurnale</value>
+  </data>
+  <data name="Duo Enabled" xml:space="preserve">
+    <value>Duo Activat</value>
+  </data>
+  <data name="Duo Health Check" xml:space="preserve">
+    <value>Verificare Stare Duo</value>
+  </data>
+  <data name="Duo Security MFA (optional)" xml:space="preserve">
+    <value>Duo Security MFA (opțional)</value>
+  </data>
+  <data name="Duo Unreachable Behavior" xml:space="preserve">
+    <value>Comportament Duo Inaccesibil</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Favorite</value>
+  </data>
+  <data name="Installation Id" xml:space="preserve">
+    <value>ID Instalare</value>
+  </data>
+  <data name="Jobs Monitor" xml:space="preserve">
+    <value>Monitor Sarcini</value>
+  </data>
+  <data name="Locked Out Users" xml:space="preserve">
+    <value>Utilizatori Blocați</value>
+  </data>
+  <data name="Logging" xml:space="preserve">
+    <value>Jurnalizare</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notificări</value>
+  </data>
+  <data name="Resource Usage" xml:space="preserve">
+    <value>Utilizare Resurse</value>
+  </data>
+  <data name="Send logs to developer" xml:space="preserve">
+    <value>Trimitere jurnale la dezvoltator</value>
+  </data>
+  <data name="Time in minutes" xml:space="preserve">
+    <value>Timp în minute</value>
+  </data>
+  <data name="Upload Certificate" xml:space="preserve">
+    <value>Încărcare Certificat</value>
+  </data>
+  <data name="Upload Icon" xml:space="preserve">
+    <value>Încărcare Pictogramă</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>Despre</value>
+  </data>
+  <data name="Add Category" xml:space="preserve">
+    <value>Adăugare Categorie</value>
+  </data>
+  <data name="Allow Username Override" xml:space="preserve">
+    <value>Permite Suprascrierea Numelui de Utilizator</value>
+  </data>
+  <data name="API Tokens" xml:space="preserve">
+    <value>Token-uri API</value>
+  </data>
+  <data name="Apply Update" xml:space="preserve">
+    <value>Aplicare Actualizare</value>
+  </data>
+  <data name="Ask For Alternate Email" xml:space="preserve">
+    <value>Solicitare E-mail Alternativ</value>
+  </data>
+  <data name="Authorization Token" xml:space="preserve">
+    <value>Token Autorizare</value>
+  </data>
+  <data name="Authorization Type" xml:space="preserve">
+    <value>Tip Autorizare</value>
+  </data>
+  <data name="Basic" xml:space="preserve">
+    <value>De Bază</value>
+  </data>
+  <data name="Bearer" xml:space="preserve">
+    <value>Purtător</value>
+  </data>
+  <data name="BitLocker" xml:space="preserve">
+    <value>BitLocker</value>
+  </data>
+  <data name="Changed" xml:space="preserve">
+    <value>Modificat</value>
+  </data>
+  <data name="Changes have been saved" xml:space="preserve">
+    <value>Modificările au fost salvate</value>
+  </data>
+  <data name="Create new token" xml:space="preserve">
+    <value>Creare token nou</value>
+  </data>
+  <data name="days" xml:space="preserve">
+    <value>zile</value>
+  </data>
+  <data name="Dedicated To" xml:space="preserve">
+    <value>Dedicat</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Șters</value>
+  </data>
+  <data name="Delivered" xml:space="preserve">
+    <value>Livrat</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>Dezactivare</value>
+  </data>
+  <data name="Display Name Format" xml:space="preserve">
+    <value>Format Nume Afișat</value>
+  </data>
+  <data name="Effective Permissions" xml:space="preserve">
+    <value>Permisiuni Efective</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Activare</value>
+  </data>
+  <data name="Error Message" xml:space="preserve">
+    <value>Mesaj de Eroare</value>
+  </data>
+  <data name="Event Timestamp" xml:space="preserve">
+    <value>Timestamp Eveniment</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>Expiră</value>
+  </data>
+  <data name="Formula sim" xml:space="preserve">
+    <value>Formulă sim</value>
+  </data>
+  <data name="Founded" xml:space="preserve">
+    <value>Fondată</value>
+  </data>
+  <data name="Founder" xml:space="preserve">
+    <value>Fondator</value>
+  </data>
+  <data name="Generate New API Token" xml:space="preserve">
+    <value>Generare Token API Nou</value>
+  </data>
+  <data name="Group Member Added" xml:space="preserve">
+    <value>Membru Grup Adăugat</value>
+  </data>
+  <data name="Group Member Removed" xml:space="preserve">
+    <value>Membru Grup Eliminat</value>
+  </data>
+  <data name="Group Searched" xml:space="preserve">
+    <value>Grup Căutat</value>
+  </data>
+  <data name="Hide Previous Updates" xml:space="preserve">
+    <value>Ascundere Actualizări Anterioare</value>
+  </data>
+  <data name="HTTP Method" xml:space="preserve">
+    <value>Metodă HTTP</value>
+  </data>
+  <data name="Ignore SSL Verification" xml:space="preserve">
+    <value>Ignorare Verificare SSL</value>
+  </data>
+  <data name="In Loving Memory" xml:space="preserve">
+    <value>În Amintire Plină de Dragoste</value>
+  </data>
+  <data name="Include Disabled" xml:space="preserve">
+    <value>Includere Dezactivați</value>
+  </data>
+  <data name="IP Address" xml:space="preserve">
+    <value>Adresă IP</value>
+  </data>
+  <data name="Is Revoked" xml:space="preserve">
+    <value>Este Revocat</value>
+  </data>
+  <data name="Last Attempt Timestamp" xml:space="preserve">
+    <value>Timestamp Ultima Tentativă</value>
+  </data>
+  <data name="Last Message Status" xml:space="preserve">
+    <value>Starea Ultimului Mesaj</value>
+  </data>
+  <data name="Last Used" xml:space="preserve">
+    <value>Ultima Utilizare</value>
+  </data>
+  <data name="Locked Out" xml:space="preserve">
+    <value>Blocat</value>
+  </data>
+  <data name="Message Id" xml:space="preserve">
+    <value>ID Mesaj</value>
+  </data>
+  <data name="Modify" xml:space="preserve">
+    <value>Modificare</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Niciunul</value>
+  </data>
+  <data name="Notification Settings" xml:space="preserve">
+    <value>Setări Notificări</value>
+  </data>
+  <data name="OU Searched" xml:space="preserve">
+    <value>UO Căutată</value>
+  </data>
+  <data name="Parent Template" xml:space="preserve">
+    <value>Model Părinte</value>
+  </data>
+  <data name="PasswordChange" xml:space="preserve">
+    <value>Schimbare Parolă</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Reîmprospătare</value>
+  </data>
+  <data name="Refresh Session" xml:space="preserve">
+    <value>Reîmprospătare Sesiune</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Eliminare</value>
+  </data>
+  <data name="Request Access" xml:space="preserve">
+    <value>Solicitare Acces</value>
+  </data>
+  <data name="Require Password Change" xml:space="preserve">
+    <value>Impunere Schimbare Parolă</value>
+  </data>
+  <data name="Response Code" xml:space="preserve">
+    <value>Cod Răspuns</value>
+  </data>
+  <data name="Retry Count" xml:space="preserve">
+    <value>Număr Reîncercări</value>
+  </data>
+  <data name="Send  Welcome Email" xml:space="preserve">
+    <value>Trimitere E-mail de Bun Venit</value>
+  </data>
+  <data name="Session Expired" xml:space="preserve">
+    <value>Sesiune Expirată</value>
+  </data>
+  <data name="Session expires in" xml:space="preserve">
+    <value>Sesiunea expiră în</value>
+  </data>
+  <data name="Show Previous Updates" xml:space="preserve">
+    <value>Afișare Actualizări Anterioare</value>
+  </data>
+  <data name="Source Code" xml:space="preserve">
+    <value>Cod Sursă</value>
+  </data>
+  <data name="Stale computers" xml:space="preserve">
+    <value>Calculatoare Inactive</value>
+  </data>
+  <data name="Stale users" xml:space="preserve">
+    <value>Utilizatori Inactivi</value>
+  </data>
+  <data name="Template Id" xml:space="preserve">
+    <value>ID Model</value>
+  </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>Timestamp</value>
+  </data>
+  <data name="Toggle Fields" xml:space="preserve">
+    <value>Comutare Câmpuri</value>
+  </data>
+  <data name="Token" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="Token Lifetime" xml:space="preserve">
+    <value>Durată de Viață Token</value>
+  </data>
+  <data name="Unassign" xml:space="preserve">
+    <value>Dezatribuire</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="User Activity" xml:space="preserve">
+    <value>Activitate Utilizator</value>
+  </data>
+  <data name="User Assigned" xml:space="preserve">
+    <value>Utilizator Atribuit</value>
+  </data>
+  <data name="User Searched" xml:space="preserve">
+    <value>Utilizator Căutat</value>
+  </data>
+  <data name="User Unassigned" xml:space="preserve">
+    <value>Utilizator Dezatribuit</value>
+  </data>
+  <data name="Username Format" xml:space="preserve">
+    <value>Format Nume Utilizator</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Valoare</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variabile</value>
+  </data>
+  <data name="Webhooks" xml:space="preserve">
+    <value>Webhooks</value>
+  </data>
+  <data name="Your session has expired." xml:space="preserve">
+    <value>Sesiunea dvs. a expirat.</value>
+  </data>
+  <data name="Your session is about to expire" xml:space="preserve">
+    <value>Sesiunea dvs. este pe cale să expire</value>
+  </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>Utilizatori dezactivați modificați în ultimele 90 de zile</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>Înregistrări Modificate</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>Parole Modificate</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>Înregistrări Șterse</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>Calculatoare Noi</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>Contacte Noi</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>Grupuri Noi</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>UO-uri Noi</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>Imprimante Noi</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>Utilizatori Noi</value>
+  </data>
+  <data name="Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>Regulă</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>Reguli</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>Creare Regulă</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>Tip Obiect</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>Declanșator</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>Acțiune Post</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>Acțiune Pre</value>
+  </data>
+</root>
