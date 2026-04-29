@@ -177,14 +177,20 @@ namespace BLAZAM.Pages.API.v1
 
         private async Task AuditAndNotify(NewUserPayload newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
         {
-            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+            if (CurrentUserState != null)
             {
-                EventType = ApplicationEventType.Create,
-                Entry = entry,
-                Actor = CurrentUserState
+                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                {
+                    EventType = ApplicationEventType.Create,
+                    Entry = entry,
+                    Actor = CurrentUserState
 
-            });
-
+                });
+            }
+            else
+            {
+                Loggers.SystemLogger.Error("CurrentUserState was null during template execution, could not log event");
+            }
 
 
             if (template?.EffectiveSendWelcomeEmail == true)

@@ -33,7 +33,7 @@ namespace BLAZAM.Pages
         private static readonly object _resetLock = new();
 
 
-        private AuthenticationSettings authSettings;
+        private AuthenticationSettings? authSettings;
 
         private AppModal? _resetModel;
         private IApplicationUserState? _appUser;
@@ -71,7 +71,7 @@ namespace BLAZAM.Pages
         private string _submittedAnswer2;
         private string _submittedAnswer3;
         private string _errorMessage;
-        private IADUser _userToReset;
+        private IADUser? _userToReset;
         private const string Not_Allowed_Message = "Either the user does not exist or can not reset their password";
         private GoogleAuthenticatorModal? googleAuthenticatorModal;
         private string _duoAuthUri;

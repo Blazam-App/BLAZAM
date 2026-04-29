@@ -25,12 +25,15 @@
 
     [Parameter]
     public EventCallback StepCompleted { get; set; }
-    AppSettings settings;
+    AppSettings settings = new();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        settings = await Context.AppSettings.FirstOrDefaultAsync();
+        var dbSettings = await Context.AppSettings.FirstOrDefaultAsync();
+        if(dbSettings != null){
+            settings = dbSettings; 
+        }
         await StateHasChangedAsync();
     }
 
