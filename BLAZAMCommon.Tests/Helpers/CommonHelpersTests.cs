@@ -4,6 +4,7 @@ using SixLabors.ImageSharp; // For Image
 using SixLabors.ImageSharp.Formats.Png; // For PngEncoder
 using System.Collections;
 using System.Diagnostics.Eventing.Reader; // For EventRecord
+using System.Globalization;
 using System.IO.Compression;
 using System.Reflection;
 using System.Security.Principal; // For SecurityIdentifier
@@ -602,10 +603,7 @@ namespace BLAZAMCommon.Tests.Helpers
             Assert.NotEmpty(resizedImageBytes);
 
             using var image = Image.Load(resizedImageBytes);
-            // Height should be maxDimension (25)
-            // Width should be scaled: 50 * (25/100) = 12.5. ImageSharp might round to 12 or 13.
-            // Helper: if (image.Height > image.Width) -> image.Mutate(x => x.Resize(0, maxDimension));
-            // This means height becomes maxDimension, width is scaled.
+            
             Assert.Equal(maxDimension, image.Height);
             Assert.InRange(image.Width, 12, 13); // Original aspect ratio 0.5. New width should be 25 * 0.5 = 12.5
         }
@@ -620,10 +618,7 @@ namespace BLAZAMCommon.Tests.Helpers
             Assert.NotEmpty(resizedImageBytes);
 
             using var image = Image.Load(resizedImageBytes);
-            // Width should be maxDimension (25)
-            // Height should be scaled: 50 * (25/100) = 12.5.
-            // Helper: else (width >= height) -> image.Mutate(x => x.Resize(maxDimension, 0));
-            // This means width becomes maxDimension, height is scaled.
+           
             Assert.Equal(maxDimension, image.Width);
             Assert.InRange(image.Height, 12, 13); // Original aspect ratio 2.0. New height should be 25 / 2.0 = 12.5
         }
@@ -638,9 +633,7 @@ namespace BLAZAMCommon.Tests.Helpers
             Assert.NotEmpty(resizedImageBytes);
 
             using var image = Image.Load(resizedImageBytes);
-            // Helper: if (image.Height > image.Width) -> crop(image.Width, image.Width) -> crop(50,50)
-            // Then resize(0, maxDimension) -> resize(0,25) on the 50x50 image.
-            // This should result in 25x25.
+           
             Assert.Equal(maxDimension, image.Width);
             Assert.Equal(maxDimension, image.Height);
         }
@@ -691,7 +684,7 @@ namespace BLAZAMCommon.Tests.Helpers
         public void DateTimeToAdsValue_FileTimeMinValue_ReturnsCorrectFileTime()
         {
             var min = DateTime.FromFileTimeUtc(0).ToUniversalTime();
-            var minFileTime = DateTime.Parse("1/1/1601 12:00:00 AM Z");
+            var minFileTime = DateTime.Parse("1/1/1601 12:00:00 AM Z", CultureInfo.InvariantCulture);
             long expectedFileTime = 0; // This is a valid FileTime
             Assert.Equal(expectedFileTime, minFileTime.ToFileTimeUtc());
         }

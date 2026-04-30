@@ -21,14 +21,7 @@ namespace BLAZAM.ActiveDirectory
         private bool disposedValue;
         private static readonly object _tlsLock = new();
 
-        public LdapConnectionFactory()
-        {
-            ActiveDirectoryEvents.LoggedOnUserCountChanged.Delegate += (state, count) =>
-            {
-                _connectedUsers = count;
-            };
-        }
-
+ 
         public int Count
         {
             get
