@@ -1,8 +1,10 @@
+using BLAZAM.FileSystem;
 using BLAZAM.Helpers; // For CommonHelpers extension methods
 using SixLabors.ImageSharp; // For Image
 using SixLabors.ImageSharp.Formats.Png; // For PngEncoder
 using System.Collections;
 using System.Diagnostics.Eventing.Reader; // For EventRecord
+using System.IO.Compression;
 using System.Reflection;
 using System.Security.Principal; // For SecurityIdentifier
 
@@ -118,7 +120,7 @@ namespace BLAZAMCommon.Tests.Helpers
                 new AuditChangeLog { Field = "Categories", NewValue = new List<object> { "Item3", 100 } }
             };
             Func<AuditChangeLog, object?> selector = c => c.NewValue;
-            // Expected: "Tags=Item1,Item2,;Status=Value3;Categories=Item3,100,;"
+            // Expected: "Tags=Item1,Item2,;Status=Value3;Categories=Item3,100,"
             // The trailing comma after collection items is per implementation.
             var expected = "Tags=Item1,Item2,;Status=Value3;Categories=Item3,100,;";
             Assert.Equal(expected, changes.GetValueChangesString(selector));
@@ -818,5 +820,381 @@ namespace BLAZAMCommon.Tests.Helpers
         }
 
         #endregion DateTimeToAdsValue and AdsValueToDateTime Tests
+
+        #region SaveTo Tests
+
+        [Fact]
+        public void SaveTo_ValidMemoryStreamAndFile_WritesContentToFile()
+        {
+            // Arrange
+            var testData = "Test file content"u8.ToArray();
+            using var memoryStream = new MemoryStream(testData);
+            var tempFilePath = Path.Combine(Path.GetTempPath(), $"test_saveto_{Guid.NewGuid()}.txt");
+            var destinationFile = new SystemFile(tempFilePath);
+
+            try
+            {
+                // Act
+                memoryStream.SaveTo(destinationFile);
+
+                // Assert
+                Assert.True(destinationFile.Exists);
+                var writtenData = destinationFile.ReadAllBytes();
+                Assert.Equal(testData, writtenData);
+            }
+            finally
+            {
+                // Cleanup
+                if (destinationFile.Exists)
+                {
+                    destinationFile.Delete();
+                }
+            }
+        }
+
+        [Fact]
+        public void SaveTo_MemoryStreamWithPosition_WritesFromBeginning()
+        {
+            // Arrange
+            var testData = "Test file content"u8.ToArray();
+            using var memoryStream = new MemoryStream(testData);
+            memoryStream.Position = 5; // Move position away from start
+            var tempFilePath = Path.Combine(Path.GetTempPath(), $"test_saveto_position_{Guid.NewGuid()}.txt");
+            var destinationFile = new SystemFile(tempFilePath);
+
+            try
+            {
+                // Act
+                memoryStream.SaveTo(destinationFile);
+
+                // Assert - Should write entire content, not from position 5
+                Assert.True(destinationFile.Exists);
+                var writtenData = destinationFile.ReadAllBytes();
+                Assert.Equal(testData, writtenData);
+            }
+            finally
+            {
+                // Cleanup
+                if (destinationFile.Exists)
+                {
+                    destinationFile.Delete();
+                }
+            }
+        }
+
+        [Fact]
+        public void SaveTo_ExistingFile_OverwritesFile()
+        {
+            // Arrange
+            var originalData = "Original content"u8.ToArray();
+            var newData = "New content"u8.ToArray();
+            var tempFilePath = Path.Combine(Path.GetTempPath(), $"test_saveto_overwrite_{Guid.NewGuid()}.txt");
+            var destinationFile = new SystemFile(tempFilePath);
+
+            try
+            {
+                // Create initial file
+                using (var initialStream = new MemoryStream(originalData))
+                {
+                    initialStream.SaveTo(destinationFile);
+                }
+                Assert.Equal(originalData, destinationFile.ReadAllBytes());
+
+                // Act - Overwrite with new content
+                using (var newStream = new MemoryStream(newData))
+                {
+                    newStream.SaveTo(destinationFile);
+                }
+
+                // Assert
+                var writtenData = destinationFile.ReadAllBytes();
+                Assert.Equal(newData, writtenData);
+            }
+            finally
+            {
+                // Cleanup
+                if (destinationFile.Exists)
+                {
+                    destinationFile.Delete();
+                }
+            }
+        }
+
+        [Fact]
+        public void SaveTo_EmptyMemoryStream_CreatesEmptyFile()
+        {
+            // Arrange
+            using var memoryStream = new MemoryStream();
+            var tempFilePath = Path.Combine(Path.GetTempPath(), $"test_saveto_empty_{Guid.NewGuid()}.txt");
+            var destinationFile = new SystemFile(tempFilePath);
+
+            try
+            {
+                // Act
+                memoryStream.SaveTo(destinationFile);
+
+                // Assert
+                Assert.True(destinationFile.Exists);
+                Assert.Empty(destinationFile.ReadAllBytes());
+            }
+            finally
+            {
+                // Cleanup
+                if (destinationFile.Exists)
+                {
+                    destinationFile.Delete();
+                }
+            }
+        }
+
+        [Fact]
+        public void SaveTo_NullMemoryStream_DoesNothing()
+        {
+            // Arrange
+            MemoryStream? memoryStream = null;
+            var tempFilePath = Path.Combine(Path.GetTempPath(), $"test_saveto_null_{Guid.NewGuid()}.txt");
+            var destinationFile = new SystemFile(tempFilePath);
+
+            try
+            {
+                // Act
+                memoryStream.SaveTo(destinationFile);
+
+                // Assert - File should not be created
+                Assert.False(destinationFile.Exists);
+            }
+            finally
+            {
+                // Cleanup
+                if (destinationFile.Exists)
+                {
+                    destinationFile.Delete();
+                }
+            }
+        }
+
+        [Fact]
+        public void SaveTo_NullDestinationFile_DoesNothing()
+        {
+            // Arrange
+            var testData = "Test content"u8.ToArray();
+            using var memoryStream = new MemoryStream(testData);
+            SystemFile? destinationFile = null;
+
+            // Act - Should not throw
+            memoryStream.SaveTo(destinationFile);
+
+            // Assert - Method completes without exception
+            Assert.True(true);
+        }
+
+        #endregion SaveTo Tests
+
+        #region AddToZip Tests
+
+        [Fact]
+        public void AddToZip_ValidDirectoryWithFiles_AddsFilesToArchive()
+        {
+            // Arrange
+            var tempDir = Path.Combine(Path.GetTempPath(), $"test_addtozip_{Guid.NewGuid()}");
+            var directory = new SystemDirectory(tempDir);
+            directory.EnsureCreated();
+
+            try
+            {
+                // Create test files
+                var file1 = new SystemFile(Path.Combine(tempDir, "test1.txt"));
+                var file2 = new SystemFile(Path.Combine(tempDir, "test2.txt"));
+                file1.WriteAllText("Content of file 1");
+                file2.WriteAllText("Content of file 2");
+
+                using var memoryStream = new MemoryStream();
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
+                {
+                    // Act
+                    archive.AddToZip(directory, tempDir);
+                }
+
+                // Assert
+                memoryStream.Position = 0;
+                using var readArchive = new ZipArchive(memoryStream, ZipArchiveMode.Read);
+                Assert.Equal(2, readArchive.Entries.Count);
+                Assert.Contains(readArchive.Entries, e => e.Name == "test1.txt");
+                Assert.Contains(readArchive.Entries, e => e.Name == "test2.txt");
+            }
+            finally
+            {
+                // Cleanup
+                if (directory.Exists)
+                {
+                    directory.Delete(recursive: true);
+                }
+            }
+        }
+
+        [Fact]
+        public void AddToZip_DirectoryWithSubdirectories_AddsAllFilesRecursively()
+        {
+            // Arrange
+            var tempDir = Path.Combine(Path.GetTempPath(), $"test_addtozip_recursive_{Guid.NewGuid()}");
+            var directory = new SystemDirectory(tempDir);
+            directory.EnsureCreated();
+
+            try
+            {
+                // Create subdirectory and files
+                var subDir = new SystemDirectory(Path.Combine(tempDir, "subdir"));
+                subDir.EnsureCreated();
+
+                var rootFile = new SystemFile(Path.Combine(tempDir, "root.txt"));
+                var subFile = new SystemFile(Path.Combine(subDir.FullPath, "sub.txt"));
+                rootFile.WriteAllText("Root content");
+                subFile.WriteAllText("Sub content");
+
+                using var memoryStream = new MemoryStream();
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
+                {
+                    // Act
+                    archive.AddToZip(directory, tempDir);
+                }
+
+                // Assert
+                memoryStream.Position = 0;
+                using var readArchive = new ZipArchive(memoryStream, ZipArchiveMode.Read);
+                Assert.Equal(2, readArchive.Entries.Count);
+                Assert.Contains(readArchive.Entries, e => e.Name == "root.txt");
+                Assert.Contains(readArchive.Entries, e => e.FullName.Contains("subdir") && e.Name == "sub.txt");
+            }
+            finally
+            {
+                // Cleanup
+                if (directory.Exists)
+                {
+                    directory.Delete(recursive: true);
+                }
+            }
+        }
+
+        [Fact]
+        public void AddToZip_EmptyDirectory_AddsNoEntries()
+        {
+            // Arrange
+            var tempDir = Path.Combine(Path.GetTempPath(), $"test_addtozip_empty_{Guid.NewGuid()}");
+            var directory = new SystemDirectory(tempDir);
+            directory.EnsureCreated();
+
+            try
+            {
+                using var memoryStream = new MemoryStream();
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
+                {
+                    // Act
+                    archive.AddToZip(directory, tempDir);
+                }
+
+                // Assert
+                memoryStream.Position = 0;
+                using var readArchive = new ZipArchive(memoryStream, ZipArchiveMode.Read);
+                Assert.Empty(readArchive.Entries);
+            }
+            finally
+            {
+                // Cleanup
+                if (directory.Exists)
+                {
+                    directory.Delete(recursive: true);
+                }
+            }
+        }
+
+        [Fact]
+        public void AddToZip_NullArchive_DoesNothing()
+        {
+            // Arrange
+            ZipArchive? archive = null;
+            var tempDir = Path.Combine(Path.GetTempPath(), $"test_addtozip_nullarchive_{Guid.NewGuid()}");
+            var directory = new SystemDirectory(tempDir);
+            directory.EnsureCreated();
+
+            try
+            {
+                // Act - Should not throw
+                archive.AddToZip(directory, tempDir);
+
+                // Assert - Method completes without exception
+                Assert.True(true);
+            }
+            finally
+            {
+                // Cleanup
+                if (directory.Exists)
+                {
+                    directory.Delete(recursive: true);
+                }
+            }
+        }
+
+        [Fact]
+        public void AddToZip_NullDirectory_DoesNothing()
+        {
+            // Arrange
+            SystemDirectory? directory = null;
+            var basePath = Path.GetTempPath();
+
+            using var memoryStream = new MemoryStream();
+            using var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true);
+
+            // Act - Should not throw
+            archive.AddToZip(directory, basePath);
+
+            // Assert
+            memoryStream.Position = 0;
+            Assert.Throws<InvalidDataException>(() => { _ = new ZipArchive(memoryStream, ZipArchiveMode.Read); });
+         
+        }
+
+        [Fact]
+        public void AddToZip_PreservesRelativePathStructure()
+        {
+            // Arrange
+            var tempDir = Path.Combine(Path.GetTempPath(), $"test_addtozip_paths_{Guid.NewGuid()}");
+            var directory = new SystemDirectory(tempDir);
+            directory.EnsureCreated();
+
+            try
+            {
+                var subDir = new SystemDirectory(Path.Combine(tempDir, "level1", "level2"));
+                subDir.EnsureCreated();
+
+                var file = new SystemFile(Path.Combine(subDir.FullPath, "deep.txt"));
+                file.WriteAllText("Deep file");
+
+                using var memoryStream = new MemoryStream();
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
+                {
+                    // Act
+                    archive.AddToZip(directory, tempDir);
+                }
+
+                // Assert
+                memoryStream.Position = 0;
+                using var readArchive = new ZipArchive(memoryStream, ZipArchiveMode.Read);
+                var entry = Assert.Single(readArchive.Entries);
+                // The entry path should contain the subdirectory structure
+                Assert.Contains("level1", entry.FullName);
+                Assert.Contains("level2", entry.FullName);
+                Assert.Equal("deep.txt", entry.Name);
+            }
+            finally
+            {
+                // Cleanup
+                if (directory.Exists)
+                {
+                    directory.Delete(recursive: true);
+                }
+            }
+        }
+
+        #endregion AddToZip Tests
     }
 }

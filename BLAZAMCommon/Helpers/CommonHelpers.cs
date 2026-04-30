@@ -44,25 +44,25 @@ namespace BLAZAM.Helpers
                 return string.Empty;
             }
 
-            var values = "";
+            var valuesSB = new StringBuilder();
             foreach (var c in changes)
             {
-                string? value = "";
+                var valueSB = new StringBuilder();
 
                 if (valueSelector.Invoke(c) is IEnumerable<object> enumerable)
                 {
                     foreach (var obj in enumerable)
                     {
-                        value += obj.ToString() + ",";
+                        valueSB.Append(obj.ToString() + ",");
                     }
                 }
                 else
                 {
-                    value = valueSelector.Invoke(c)?.ToString();
+                    valueSB.Append(valueSelector.Invoke(c)?.ToString());
                 }
-                values += c.Field + "=" + value + ";";
+                valuesSB.Append(c.Field + "=" + valueSB.ToString() + ";");
             }
-            return values;
+            return valuesSB.ToString();
         }
 
         /// <summary>
@@ -430,7 +430,7 @@ namespace BLAZAM.Helpers
 
             try
             {
-                var maxFileTime = DateTime.Parse("Sunday, November 16, 4769 9:46:40 AM Z");
+                var maxFileTime = DateTime.Parse("Sunday, November 16, 4769 9:46:40 AM Z", CultureInfo.InvariantCulture);
                 if (value > maxFileTime)
                 {
                     return null;
