@@ -56,7 +56,7 @@ namespace BLAZAM.Services.Background
         {
             if (!_initialized)
             {
-                ApplicationEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChanged;
+                ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChanged;
 
                 _initialized = true;
 
@@ -570,7 +570,7 @@ namespace BLAZAM.Services.Background
             if (result.FailedSteps.Count == 0)
             {
 
-                ApplicationEvents.DirectoryEntryEvent.Invoke(this, new()
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(this, new()
                 {
                     Actor = new RulesUserState(dbFactory, rule.Name),
                     Changes = changes,

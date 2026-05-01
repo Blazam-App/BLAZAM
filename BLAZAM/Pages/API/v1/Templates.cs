@@ -179,7 +179,7 @@ namespace BLAZAM.Pages.API.v1
         {
             if (CurrentUserState != null)
             {
-                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Create,
                     Entry = entry,

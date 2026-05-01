@@ -4,6 +4,7 @@ using System.Net;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Database.Models;
+using BLAZAM.Global;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 
@@ -21,7 +22,14 @@ namespace BLAZAM.ActiveDirectory
         private bool disposedValue;
         private static readonly object _tlsLock = new();
 
- 
+        public LdapConnectionFactory()
+        {
+            ApplicationEvents.LoggedOnUserCountChanged.Delegate += LoggedOnUserCountChanged;
+        }
+        private void LoggedOnUserCountChanged(object? sender, int count)
+        {
+            _connectedUsers = count;
+        }
         public int Count
         {
             get
@@ -484,6 +492,8 @@ namespace BLAZAM.ActiveDirectory
             if (!disposedValue)
             {
                 ClearPool();
+                ApplicationEvents.LoggedOnUserCountChanged.Delegate -= LoggedOnUserCountChanged;
+
                 disposedValue = true;
             }
         }

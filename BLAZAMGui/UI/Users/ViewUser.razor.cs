@@ -76,7 +76,7 @@ namespace BLAZAM.Gui.UI.Users
 
             if (Contact != null)
             {
-                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                 {
 
                     EventType = ApplicationEventType.Search,
@@ -113,7 +113,7 @@ namespace BLAZAM.Gui.UI.Users
 
                         foreach (var assignment in assignTo)
                         {
-                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Assign,
                                 Entry = assignment.Member,
@@ -127,7 +127,7 @@ namespace BLAZAM.Gui.UI.Users
 
                         foreach (var assignment in unassignFrom)
                         {
-                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Unassign,
                                 Entry = assignment.Member,
@@ -140,7 +140,7 @@ namespace BLAZAM.Gui.UI.Users
                         if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName)
                             && User != null)
                         {
-                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Modify,
                                 Entry = User,
@@ -195,7 +195,7 @@ namespace BLAZAM.Gui.UI.Users
                     SnackBarService.Success(GroupableEntry?.DisplayName + " has been deleted.");
                     if (User != null)
                     {
-                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.Delete,
                             Entry = User,

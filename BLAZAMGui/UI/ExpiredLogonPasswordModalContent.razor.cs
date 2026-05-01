@@ -38,7 +38,7 @@ namespace BLAZAM.Gui.UI
 
 
                         SnackBarService.Success("Your password has been updated");
-                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.PasswordChange,
                             Entry = User,

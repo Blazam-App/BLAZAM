@@ -2,7 +2,6 @@
 @using BLAZAM.Common.Data.Database
 @using BLAZAM.EmailMessage.Email
 @using BLAZAM.EmailMessage.Email.Messages
-@using BLAZAM.Global.Events
 @inherits DirectoryModelComponent
 @inject IJSRuntime JSRuntime
 @inject NotificationGenerationService NotificationGenerationService
@@ -163,7 +162,7 @@ else
                 Confirmed = true;
                 await OnConfirmed.InvokeAsync();
                 User = (IADUser?)Directory.GetDirectoryEntryByDN(User.DN)!;
-                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Create,
                     Entry = User,
