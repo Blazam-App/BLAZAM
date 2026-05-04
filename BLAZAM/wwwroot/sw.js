@@ -1,11 +1,22 @@
-﻿const cacheName = 'site-cache-v1'
+const cacheName = 'site-cache-v1';
 const assetsToCache = [
     '/'
-]
+];
+
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(cacheName).then((cache) => {
             return cache.addAll(assetsToCache);
         })
     );
+});
+
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'show-notification') {
+        const notification = event.data.notification;
+        self.registration.showNotification(notification.title, {
+            body: notification.message,
+            icon: '/icon-192.png'
+        });
+    }
 });

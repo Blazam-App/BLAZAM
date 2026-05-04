@@ -180,7 +180,7 @@ namespace BLAZAM.Services.Background
                                             string notificationTitle,
                                             EmailNotificationTemplateComponent? emailMessage)
         {
-            if (user.Id == actor?.Id)
+            if (user.Id == actor?.Id && !user.IsDemo())
             {
                 return;
             }
