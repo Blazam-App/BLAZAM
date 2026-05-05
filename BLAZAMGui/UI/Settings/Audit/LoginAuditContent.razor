@@ -1,0 +1,76 @@
+﻿@using BLAZAM.Database.Models.Audit
+@inherits AuditContentBase<LogonAuditLog>
+
+<TimeframeSelector OnTimeframeChanged="TimeframeChanged" 
+    StartDate="StartDate" 
+    EndDate="EndDate"/>
+
+    <LoginHistoryChart @ref=_loginHistoryChart 
+        StartDate="@StartDate" 
+        EndDate="@EndDate" />
+
+
+    <MudDataGrid Height="600px"
+                 FixedHeader=true
+                 ColumnResizeMode="ResizeMode.Container"
+                 Hideable=true
+                 Items="@auditEntries.OrderByDescending(ae => ae.Timestamp)"
+                 Filterable="false"
+                 SortMode="@SortMode.Multiple"
+                 Groupable="false">
+        <Columns>
+            <TemplateColumn Title=@AppLocalization[Lang.Timestamp] Sortable="true">
+                <CellTemplate>
+                    <MudText>
+                        @context.Item.Timestamp.ToLocalTime()
+                    </MudText>
+                </CellTemplate>
+            </TemplateColumn>
+
+            <PropertyColumn Property="x => x.Username" Title="@AppLocalization[Lang.Username]" />
+
+            <TemplateColumn Title=@AppLocalization[Lang.IP_Address] Filterable="true">
+                <CellTemplate>
+                    <IPAddress>
+                        @context.Item.IpAddress
+                    </IPAddress>
+                </CellTemplate>
+            </TemplateColumn>
+
+            <PropertyColumn Property="x => x.Action" Title="@AppLocalization[Lang.Action]" />
+
+        </Columns>
+    </MudDataGrid>
+
+
+
+
+
+
+@code {
+    private LoginHistoryChart? _loginHistoryChart;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        StartDate = DateTime.Today.AddDays(-14);
+    }
+
+    protected override async Task TimeframeChanged((DateTime? start, DateTime? end) dates)
+    {
+        if (_loginHistoryChart != null)
+        {
+            _loginHistoryChart.StartDate = dates.start;
+            _loginHistoryChart.EndDate = dates.end;
+            await _loginHistoryChart.GenerateLoginSeries();
+        }
+        await base.TimeframeChanged(dates);
+    }
+
+    protected override async Task FetchData()
+    {
+        if (StartDate == null || EndDate == null) return;
+        auditEntries = await Context.LogonAuditLog.Where(e => e.Timestamp >= StartDate && e.Timestamp < EndDate.Value.AddDays(1)).OrderByDescending(e => e.Timestamp).ToListAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+}

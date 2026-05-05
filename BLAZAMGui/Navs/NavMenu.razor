@@ -1,5 +1,4 @@
-﻿@using BLAZAM.Global.Data
-@using BLAZAM.Gui.Navs.Buttons
+﻿@using BLAZAM.Gui.Navs.Buttons
 @using Microsoft.Extensions.Localization;
 @inherits AppComponentBase
 @{
@@ -32,8 +31,11 @@
                 Icon="@Icons.Material.Filled.Dashboard">
         @AppLocalization[Lang.Home]
     </MudNavLink>
-    <NavBrowseButton SelectedEntryChanged=@((entry) => { SelectedEntryChanged.InvokeAsync(entry); })
-                     BrowseExpandedChanged=@((value)=>{BrowseExpandedChanged.InvokeAsync(value);}) />
+    @if (CurrentUser.State != null && CurrentUser.State?.IsSelfEditOnly == false)
+    {
+        <NavBrowseButton SelectedEntryChanged=@((entry) => { SelectedEntryChanged.InvokeAsync(entry); })
+                         BrowseExpandedChanged=@((value) => { BrowseExpandedChanged.InvokeAsync(value); }) />
+    }
     <AuthorizeView Context="createContext" Roles=@createRole>
         <MudNavGroup Icon="@Icons.Material.Filled.Create"
                      Title="@AppLocalization[Lang.Create]"

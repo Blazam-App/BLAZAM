@@ -1,352 +1,138 @@
 ﻿@using BLAZAM.Database.Models.Templates;
-@using BLAZAM.Global.Data
 @inherits DirectoryModelComponent
 @if (_initialized)
 {
     <MudElement Class="mx-auto">
         <MudForm Model="@Entry" @bind-IsValid=IsValid>
+            <CascadingValue Value="GroupableEntry">
+                <CascadingValue Value="Entry">
+                    <CascadingValue Value="DirectoryTemplate">
 
 
-
-            @{
-                if (IsAdmin)
-                {
-                    <MudAlert Class="mud-alert-info">
-                        All fields are editable because you are an admin.
-                    </MudAlert>
-                }
-            }
-
-            @if (InDirectoryTemplate(ActiveDirectoryFields.Description) ||
-           InDirectoryTemplate(ActiveDirectoryFields.Mail) ||
-           InDirectoryTemplate(ActiveDirectoryFields.EmployeeId) ||
-           InDirectoryTemplate(ActiveDirectoryFields.Department) ||
-           InDirectoryTemplate(ActiveDirectoryFields.Company) ||
-           InDirectoryTemplate(ActiveDirectoryFields.Title) ||
-           InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
-           )
-            {
-                <ViewSection Title=@AppLocalization[Lang.Organization]>
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Description]"
-                                      @bind-Value=@Contact.Description
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.Description))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.Description)) />
-
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.Mail))
-                    {
-                        @if (DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true &&
-                       (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field?.Id == ActiveDirectoryFields.Mail.Id) 
-                       && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field?.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
+                        @{
+                            if (IsAdmin)
+                            {
+                                <MudAlert Class="mud-alert-info">
+                                    All fields are editable because you are an admin.
+                                </MudAlert>
+                            }
+                        }
+                        @if (InDirectoryTemplate(ActiveDirectoryFields.Thumbnail)){
+                            <ContactThumbnailPhoto Contact=Contact
+                                                   Required=@(DirectoryTemplate.IsRequiredField(ActiveDirectoryFields.Thumbnail))
+                                Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(ActiveDirectoryFields.Thumbnail)) />
+                         }
+                        @if (InDirectoryTemplate(ActiveDirectoryFields.LogonHours) ||
+                                            InDirectoryTemplate(ActiveDirectoryFields.LogOnTo) ||
+                                            InDirectoryTemplate(ActiveDirectoryFields.AccountExpires)
+                                            )
                         {
 
+                            <ViewSection Title=@AppLocalization[Lang.Account]>
+                                @if (InDirectoryTemplate(ActiveDirectoryFields.AccountExpires))
+                                {
+                                    <DynamicMudInput T=DateTime?
+                                                     Clearable=true
+                                                     Label="@AppLocalization[Lang.Account_Expiration]"
+                                                     Value="@User.ExpireTime?.ToLocalTime()"
+                                                     ValueChanged="@((value)=>{User.ExpireTime=value;})"
+                                                     Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(ActiveDirectoryFields.AccountExpires)) />
+                                }
+                                <MudStack Row=true>
+                                    @if (InDirectoryTemplate(ActiveDirectoryFields.LogOnTo))
+                                    {
+                                        <MudButton Variant="Variant.Filled"
+                                                   Color="@(User.LogOnTo == null || User.LogOnTo == String.Empty?Color.Primary:Color.Warning)"
+                                                   OnClick="@(()=>{_logOnToModal?.ShowAsync();})"
+                                                   Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(ActiveDirectoryFields.LogOnTo))>
+                                            @AppLocalization[Lang.Log_On_To]
+                                        </MudButton>
+
+                                        <AppModal Title=@AppLocalization[Lang.Log_On_To] @ref=@_logOnToModal>
+                                            @if (_logOnToModal?.IsShown == true)
+                                            {
+                                                <LogOnToModalContent Entry="User" />
+                                            }
+                                        </AppModal>
+
+
+
+                                    }
+                                    @if (InDirectoryTemplate(ActiveDirectoryFields.LogonHours))
+                                    {
+                                        <MudButton Variant="Variant.Filled"
+                                                   Color="@(Color.Primary)"
+                                                   OnClick="@(()=>{_logonHoursModal?.ShowAsync();})"
+                                                   Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(ActiveDirectoryFields.LogonHours))>
+                                            @AppLocalization[Lang.Logon_Hours]
+                                        </MudButton>
+
+                                        <AppModal Title=@AppLocalization[Lang.Logon_Hours]
+                                                  @ref=@_logonHoursModal
+                                                  Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
+                                            @if (_logonHoursModal?.IsShown == true)
+                                            {
+                                                <LogonHoursModalContent Entry="User" />
+                                            }
+                                        </AppModal>
+                                    }
+
+                                </MudStack>
+
+
+                            </ViewSection>
                         }
 
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Email_Address]"
-                                      @bind-Value="Contact.Email"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.Mail))
-                                      Required=@((DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true)||
-                          IsRequiredTemplateField(ActiveDirectoryFields.Mail)) />
+                        <OrganizationSection />
 
+                        <ContactInfoSection />
 
 
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.EmployeeId))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Employee_Id]"
-                                      @bind-Value="@Contact.EmployeeId"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.EmployeeId))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.EmployeeId)) />
-
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.Department))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Department]"
-                                      @bind-Value="@Contact.Department"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.Department))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.Department)) />
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.Company))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Company]"
-                                      @bind-Value="@Contact.Company"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.Company))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.Company)) />
-
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.Title))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Job_Title]"
-                                      @bind-Value="@Contact.Title"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.Title))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.Title)) />
-
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Office]"
-                                      @bind-Value="@Contact.PhysicalDeliveryOfficeName"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.PhysicalDeliveryOffice))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
-
-
-
-
-                    }
-                </ViewSection>
-            }
-
-            @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone) ||
-           InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
-           InDirectoryTemplate(ActiveDirectoryFields.POBox) ||
-           InDirectoryTemplate(ActiveDirectoryFields.City) ||
-           InDirectoryTemplate(ActiveDirectoryFields.State) ||
-           InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
-           )
-            {
-                <ViewSection Title=@AppLocalization[Lang.Contact_Info]>
-
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Home_Phone]"
-                                      @bind-Value="@Contact.HomePhone"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.HomePhone))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.HomePhone)) />
-
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.StreetAddress))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Street_Address]"
-                                      @bind-Value="@Contact.StreetAddress"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.StreetAddress))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.StreetAddress)) />
-
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.POBox))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Street]"
-                                      @bind-Value="@Contact.POBox"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.POBox))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.POBox)) />
-
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.City))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.City]"
-                                      @bind-Value="@Contact.City"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.City))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.City)) />
-
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.State))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.State]"
-                                      @bind-Value="@Contact.State"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.State))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.State)) />
-
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.PostalCode))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Zip_Code]"
-                                      @bind-Value="@Contact.Zip"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.PostalCode))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.PostalCode)) />
-
-
-
-
-                    }
-                </ViewSection>
-            }
-
-            @if (InDirectoryTemplate(ActiveDirectoryFields.Site))
-            {
-
-                <MudTextField Immediate=true
-                              Label="@AppLocalization[Lang.Site]"
-                              @bind-Value="@Contact.Site"
-                              Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.Site))
-                              Required=@(IsRequiredTemplateField(ActiveDirectoryFields.Site)) />
-
-
-
-
-            }
-            @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory) ||
-           InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
-           InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
-           InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
-           )
-            {
-                <ViewSection Title=@AppLocalization[Lang.Profile]>
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Home_Directory]"
-                                      @bind-Value="@User.HomeDirectory"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.HomeDirectory))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.HomeDirectory)) />
-
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDrive))
-                    {
-
-
-
-                        <HomeDriveSelect Label="@AppLocalization[Lang.Home_Drive]"
-                                         @bind-DriveLetter="@User.HomeDrive"
-                                         Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.HomeDrive))
-                                         Required=@(IsRequiredTemplateField(ActiveDirectoryFields.HomeDrive)) />
-
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.ScriptPath))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Script_Path]"
-                                      @bind-Value="@User.ScriptPath"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.ScriptPath))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.ScriptPath)) />
-
-
-
-
-                    }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.ProfilePath))
-                    {
-
-
-                        <MudTextField Immediate=true
-                                      Label="@AppLocalization[Lang.Profile_Path]"
-                                      @bind-Value="@User.ProfilePath"
-                                      Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.ProfilePath))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.Description)) />
-
-
-
-
-                    }
-                </ViewSection>
-            }
-            @if (Entry.CanReadAnyCustomFields)
-            {
-                <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
-                    @foreach (var field in DirectoryTemplate.EffectiveFieldValues.Where(f => f.CustomField != null && f.DeletedAt==null))
-                    {
-                        @if (field.CustomField != null)
+                        @if (InDirectoryTemplate(ActiveDirectoryFields.Site))
                         {
+
                             <MudTextField Immediate=true
-                                          Validation=@(()=>{
-                                                          if(field.Required && Entry.NewEntryProperties[field.CustomField.FieldName]!=null
-                                                          && Entry.NewEntryProperties[field.CustomField.FieldName].ToString()!="")
-                                                          {
-                                                          return true;
-                                                          }
-                                                          else
-                                                          {
-                                                              return false;
-                                                          }
-                                                     })
-                                          Label="@field.FieldDisplayName"
-                                          @bind-Value="@Entry.NewEntryProperties[field.CustomField.FieldName]"
-                                          Disabled=@(!IsAdmin && !IsEditableTemplateField(field.CustomField)) />
+                                          Label="@AppLocalization[Lang.Site]"
+                                          @bind-Value="@Contact.Site"
+                                          Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(ActiveDirectoryFields.Site))
+                                          Required=@(DirectoryTemplate.IsRequiredField(ActiveDirectoryFields.Site)) />
+
                         }
-                    }
-                </ViewSection>
-            }
+
+                        <ProfileSection />
+
+                        @if (Entry.CanReadAnyCustomFields)
+                        {
+                            <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
+                                @foreach (var field in DirectoryTemplate.EffectiveFieldValues.Where(f => f.CustomField != null && f.DeletedAt == null))
+                                {
+                                    @if (field.CustomField != null)
+                                    {
+                                        <DynamicMudInput Immediate=true
+                                                         Required=@(field.Required)
+                                                         Label="@field.FieldDisplayName"
+                                                         Value="@Entry.NewEntryProperties[field.CustomField.FieldName].ToString()"
+                                                         ValueChanged="@((string val) => { Entry.NewEntryProperties[field.CustomField.FieldName] = val; })"
+                                                         Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(field.CustomField)) />
+                                    }
+                                }
+                            </ViewSection>
+                        }
 
 
 
 
-            <MudButton Color=Color.Success
-                       Disabled=@(!IsValid)
-                       OnClick="@(()=>{OnValidSubmit.InvokeAsync();})">
-                @AppLocalization[Lang.Next]
-            </MudButton>
+                        <MudButton Color=Color.Success
+                                   Disabled=@(!IsValid)
+                                   OnClick="@(()=>{OnValidSubmit.InvokeAsync();})">
+                            @AppLocalization[Lang.Next]
+                        </MudButton>
 
 
 
-
+                    </CascadingValue>
+                </CascadingValue>
+            </CascadingValue>
         </MudForm>
     </MudElement>
 }
@@ -356,8 +142,8 @@
 
 
 @code {
-
-
+    private AppModal? _logOnToModal;
+    private AppModal? _logonHoursModal;
 
     [Parameter]
     public EventCallback OnValidSubmit { get; set; }
@@ -384,27 +170,23 @@
     {
         return DirectoryTemplate.EffectiveFieldValues.Any(f => (f.Field != null && f.Field.FieldName == field.FieldName) || (f.CustomField != null && f.CustomField.FieldName == field.FieldName));
     }
-    bool IsEditableTemplateField(IActiveDirectoryField field)
+
+
+
+    bool ValidateCustomField(DirectoryTemplateFieldValue field)
     {
 
-
-        if (field is ActiveDirectoryField)
-            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
+        if (field.Required && Entry.NewEntryProperties[field.CustomField.FieldName] != null
+        && Entry.NewEntryProperties[field.CustomField.FieldName].ToString() != "")
+        {
+            return true;
+        }
         else
-            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Editable);
+        {
+            return false;
+        }
 
     }
-    bool IsRequiredTemplateField(IActiveDirectoryField field)
-    {
-
-
-        if (field is ActiveDirectoryField)
-            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field?.FieldName == field.FieldName && f.Required);
-        else
-            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Required);
-    }
-
-
 
 
 }

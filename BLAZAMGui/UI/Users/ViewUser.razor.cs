@@ -7,16 +7,20 @@ namespace BLAZAM.Gui.UI.Users
 {
     public partial class ViewUser : DirectoryEntryViewBase
     {
-        private string password;
+        private string _password;
 
         [Parameter]
         public string Password
         {
-            get => password; set
+            get => _password; set
             {
-                if (password == value) return;
-                password = value;
-                PasswordChanged.InvokeAsync(password);
+                if (_password == value)
+                {
+                    return;
+                }
+
+                _password = value;
+                PasswordChanged.InvokeAsync(_password);
             }
         }
 
@@ -24,35 +28,38 @@ namespace BLAZAM.Gui.UI.Users
         public EventCallback<string> PasswordChanged { get; set; }
 
 
-        private string confirmPassword;
+        private string _confirmPassword;
         [Parameter]
         public string ConfirmPassword
         {
-            get => confirmPassword; set
+            get => _confirmPassword; set
             {
-                if (confirmPassword == value) return;
-                confirmPassword = value;
-                ConfirmPasswordChanged.InvokeAsync(confirmPassword);
+                if (_confirmPassword == value)
+                {
+                    return;
+                }
+
+                _confirmPassword = value;
+                ConfirmPasswordChanged.InvokeAsync(_confirmPassword);
             }
         }
         [Parameter]
         public EventCallback<string> ConfirmPasswordChanged { get; set; }
 
-        private IGroupableDirectoryAdapter GroupableEntry => DirectoryEntry as IGroupableDirectoryAdapter;
+        private IGroupableDirectoryAdapter? GroupableEntry => DirectoryEntry as IGroupableDirectoryAdapter;
 
-        private IAccountDirectoryAdapter Account => DirectoryEntry as IAccountDirectoryAdapter;
+        private IAccountDirectoryAdapter? Account => DirectoryEntry as IAccountDirectoryAdapter;
 
-        private IADUser User => DirectoryEntry as IADUser;
+        private IADUser? User => DirectoryEntry as IADUser;
 
-        private IADContact Contact => DirectoryEntry as IADContact;
-
-
-
-        private bool CanReadField(IActiveDirectoryField field) => GroupableEntry.CanReadField(field);
+        private IADContact? Contact => DirectoryEntry as IADContact;
 
 
-        private bool CanEditField(IActiveDirectoryField field) => GroupableEntry.CanEditField(field);
 
+        private bool CanReadField(IActiveDirectoryField field) => GroupableEntry?.CanReadField(field) ?? false;
+
+
+        private bool CanEditField(IActiveDirectoryField field) => GroupableEntry?.CanEditField(field) ?? false;
 
 
 
@@ -67,15 +74,18 @@ namespace BLAZAM.Gui.UI.Users
 
 
 
-
-
-            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+            if (Contact != null)
             {
-                EventType = ApplicationEventType.Search,
-                Entry = Contact,
-                Actor = CurrentUser.State
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                {
 
-            });
+                    EventType = ApplicationEventType.Search,
+                    Entry = Contact,
+                    Actor = CurrentUser.State
+
+                });
+            }
+
             LoadingData = false;
             await RefreshEntryComponents();
 
@@ -89,7 +99,11 @@ namespace BLAZAM.Gui.UI.Users
                 await RefreshEntryComponents();
                 try
                 {
-
+                    if (GroupableEntry == null)
+                    {
+                        SnackBarService.Error("Unable to save changes. No entry loaded.");
+                        return;
+                    }
                     var changes = GroupableEntry.Changes;
                     var assignTo = GroupableEntry.ToAssignTo;
                     var unassignFrom = GroupableEntry.ToUnassignFrom;
@@ -99,7 +113,7 @@ namespace BLAZAM.Gui.UI.Users
 
                         foreach (var assignment in assignTo)
                         {
-                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Assign,
                                 Entry = assignment.Member,
@@ -113,7 +127,7 @@ namespace BLAZAM.Gui.UI.Users
 
                         foreach (var assignment in unassignFrom)
                         {
-                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Unassign,
                                 Entry = assignment.Member,
@@ -123,9 +137,10 @@ namespace BLAZAM.Gui.UI.Users
                             });
 
                         }
-                        if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
+                        if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName)
+                            && User != null)
                         {
-                            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                             {
                                 EventType = ApplicationEventType.Modify,
                                 Entry = User,
@@ -133,7 +148,6 @@ namespace BLAZAM.Gui.UI.Users
                                 Actor = CurrentUser.State
 
                             });
-
                         }
                         EditMode = false;
                         SnackBarService.Success("The changes made to this user have been saved.");
@@ -158,10 +172,10 @@ namespace BLAZAM.Gui.UI.Users
 
         private async Task Unlock()
         {
-            if (await MessageService.Confirm("Are you sure you want to unlock " + GroupableEntry.DisplayName + "?", "Unlock User"))
+            if (await MessageService.Confirm("Are you sure you want to unlock " + GroupableEntry?.DisplayName + "?", "Unlock User"))
             {
-                Account.LockedOut = false;
-                SnackBarService.Warning(GroupableEntry.DisplayName + " will be unlocked when changes are saved.");
+                Account!.LockedOut = false;
+                SnackBarService.Warning(GroupableEntry?.DisplayName + " will be unlocked when changes are saved.");
                 await RefreshEntryComponents();
 
             }
@@ -169,23 +183,26 @@ namespace BLAZAM.Gui.UI.Users
         }
         private async Task DeleteUser()
         {
-            if (await MessageService.Confirm("Are you sure you want to delete " + GroupableEntry.DisplayName + "?", "Delete User"))
+            if (await MessageService.Confirm("Are you sure you want to delete " + GroupableEntry?.DisplayName + "?", "Delete User"))
             {
                 SavingChanges = true;
                 await StateHasChangedAsync();
 
                 try
                 {
-                    GroupableEntry.Delete();
+                    GroupableEntry?.Delete();
 
-                    SnackBarService.Success(GroupableEntry.DisplayName + " has been deleted.");
-                    ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                    SnackBarService.Success(GroupableEntry?.DisplayName + " has been deleted.");
+                    if (User != null)
                     {
-                        EventType = ApplicationEventType.Delete,
-                        Entry = User,
-                        Actor = CurrentUser.State
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.Delete,
+                            Entry = User,
+                            Actor = CurrentUser.State
 
-                    });
+                        });
+                    }
                 }
                 catch (AppException ex)
                 {
@@ -196,8 +213,23 @@ namespace BLAZAM.Gui.UI.Users
                 await RefreshEntryComponents();
             }
         }
+        private bool _disposed = false;
 
+        public override void Dispose()
+        {
+            if (_disposed)
+                return;
 
+            // Dispose managed resources here
+            _confirmPassword = String.Empty;
+            _password = String.Empty;
+            if (GroupableEntry is IDisposable disposableGroupable)
+            {
+                disposableGroupable.Dispose();
+            }
 
+            base.Dispose();
+            _disposed = true;
+        }
     }
 }

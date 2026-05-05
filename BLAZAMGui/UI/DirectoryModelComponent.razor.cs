@@ -15,7 +15,11 @@ namespace BLAZAM.Gui.UI
         {
             get => _group; set
             {
-                if (_group == value) return;
+                if (_group == value)
+                {
+                    return;
+                }
+
                 _group = value;
 
             }
@@ -28,7 +32,11 @@ namespace BLAZAM.Gui.UI
         {
             get => _groups; set
             {
-                if (_groups == value) return;
+                if (_groups == value)
+                {
+                    return;
+                }
+
                 _groups = value;
                 if (_groups != null)
                 {
@@ -37,33 +45,37 @@ namespace BLAZAM.Gui.UI
                 }
             }
         }
-        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = new List<CustomActiveDirectoryField>();
+        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = [];
         [Parameter]
-        public IADUser User
+        public IADUser? User
         {
             get => Entry as IADUser; set => Entry = value;
         }
         [Parameter]
-        public IADContact Contact
+        public IADContact? Contact
         {
             get => Entry as IADContact; set => Entry = value;
         }
         [Parameter]
-        public IADComputer Computer
+        public IADComputer? Computer
         {
             get => Entry as IADComputer; set => Entry = value;
         }
         [Parameter]
-        public IGroupableDirectoryAdapter GroupableEntry
+        public IGroupableDirectoryAdapter? GroupableEntry
         {
             get => Entry as IGroupableDirectoryAdapter; set => Entry = value;
         }
         [Parameter]
-        public virtual IDirectoryEntryAdapter Entry
+        public virtual IDirectoryEntryAdapter? Entry
         {
             get => _entry; set
             {
-                if (_entry == value) return;
+                if (_entry == value)
+                {
+                    return;
+                }
+
                 _entry = value;
                 EntryChanged.InvokeAsync(_entry);
                 if (User != null)
@@ -75,7 +87,7 @@ namespace BLAZAM.Gui.UI
         }
         [Parameter]
         public EventCallback<IDirectoryEntryAdapter> EntryChanged { get; set; }
-        protected List<IADGroup> memberOfGroups = new();
+        protected List<IADGroup> memberOfGroups = [];
 
         [Parameter]
         public IADOrganizationalUnit OU { get; set; }
@@ -151,8 +163,9 @@ namespace BLAZAM.Gui.UI
             await Task.Run(() =>
             {
                 if (GroupableEntry != null)
+                {
                     memberOfGroups = GroupableEntry.MemberOf;
-
+                }
             });
 
             LoadingData = false;
@@ -174,7 +187,9 @@ namespace BLAZAM.Gui.UI
             await Task.Run(() =>
             {
                 if (Group != null)
+                {
                     memberOfGroups = Group.MemberOf;
+                }
             });
 
             LoadingData = false;
@@ -188,7 +203,9 @@ namespace BLAZAM.Gui.UI
             await Task.Run(() =>
             {
                 if (Computer != null)
+                {
                     memberOfGroups = Computer.MemberOf;
+                }
             });
 
             LoadingData = false;

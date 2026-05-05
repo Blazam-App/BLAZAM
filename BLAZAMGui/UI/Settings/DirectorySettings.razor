@@ -156,7 +156,7 @@
 
     [Parameter]
     public bool ShowStatusPanel { get; set; } = true;
-    string passwordInDb;
+    string? passwordInDb;
 
     protected override async Task OnInitializedAsync()
     {
@@ -183,7 +183,7 @@
 
         if (!settings.Password.Equals(passwordInDb))
         {
-            settings.Password = settings.Password.Encrypt();
+            settings.Password = await settings.Password.EncryptAsync();
             passwordInDb = settings.Password;
         }
         if (_insert)

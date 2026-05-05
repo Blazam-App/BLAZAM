@@ -1,9 +1,4 @@
 // Import necessary namespaces for various functionalities
-using System.Diagnostics;
-using System.Globalization;
-using System.Management;
-using System.Reflection;
-using System.Text.Json.Serialization;
 using BLAZAM.Common.Conventions;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
@@ -13,6 +8,7 @@ using BLAZAM.Database.Context;
 using BLAZAM.Global.Attributes;
 using BLAZAM.Global.Data.Strings;
 using BLAZAM.Gui.Services;
+using BLAZAM.Middleware;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Plugins;
 using BLAZAM.Services;
@@ -25,14 +21,21 @@ using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
+using System.Diagnostics;
+using System.Globalization;
+using System.Management;
+using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM
 {
@@ -72,6 +75,7 @@ namespace BLAZAM
                 // Fallback: Generate a GUID based on the machine name. Less unique but better than nothing.
                 ApplicationInfo.installationId = Environment.MachineName.ToGuid();
             }
+
 
             // Store the configuration manager instance globally for easy access (use with caution).
             Program.Configuration = builder.Configuration;
@@ -157,6 +161,8 @@ namespace BLAZAM
                 {
                     new CultureInfo("ar"),    // Arabic
                     new CultureInfo("en-US"), // English (United States) - Often the default
+                    new CultureInfo("en-GB"), // English (United Kingdom)
+                    new CultureInfo("fi"),    // Finnish
                     new CultureInfo("fr-FR"), // French (France)
                     new CultureInfo("de"),    // German (Default)
                     new CultureInfo("es"),    // Spanish (Default)
@@ -164,8 +170,13 @@ namespace BLAZAM
                     new CultureInfo("it"),    // Italian
                     new CultureInfo("ja"),    // Japanese
                     new CultureInfo("ko"),    // Korean
+                    new CultureInfo("nl"),    // Dutch
                     new CultureInfo("pl"),    // Polish
+                    new CultureInfo("pt"),    // Portuguese
+                    new CultureInfo("ro"),    // Romanian
                     new CultureInfo("ru"),    // Russian
+                    new CultureInfo("tr"),    // Turkish
+                    new CultureInfo("uk"),    // Ukrainian
                     new CultureInfo("zh-Hans") // Chinese (Simplified)
                  };
 
@@ -252,6 +263,8 @@ namespace BLAZAM
                     options.DetailedErrors = ApplicationInfo.inDebugMode;
                 });
 
+            builder.Services.AddScoped<CircuitHandler, UserStateCircuitHandler>();
+
             // --- Database Context ---
             DatabaseContextBase.Configuration = builder.Configuration; // Provide configuration to the base context (static access, consider alternatives)
             // Register database context factories
@@ -319,6 +332,7 @@ namespace BLAZAM
             builder.Services.AddMudMarkdownServices(); // Add services for rendering Markdown using MudBlazor components
             builder.Services.AddScoped<AppSnackBarService>(); // Custom wrapper/service for MudBlazor Snackbar
             builder.Services.AddScoped<AppDialogService>(); // Custom wrapper/service for MudBlazor Dialog
+            builder.Services.AddSingleton<PasswordResetService>();
 
             // --- Notification Generation ---
             builder.Services.AddSingleton<NotificationGenerationService>(); // Service responsible for generating notifications
@@ -370,19 +384,23 @@ namespace BLAZAM
                     In = ParameterLocation.Header, // Location of the token
                     Type = SecuritySchemeType.Http, // Type of scheme
                     Scheme = JwtBearerDefaults.AuthenticationScheme, // Authentication scheme name ("Bearer")
-                    BearerFormat = "JWT", // Format hint
-                    Reference = new OpenApiReference // Reference for linking security requirements
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
+                    BearerFormat = "JWT"
+                    // REMOVED: The 'Reference' property has been removed in Microsoft.OpenApi v2.x
                 };
+
                 c.SchemaFilter<EnumSchemaFilter>();
+
+                // Define the scheme ID we want to use (e.g., "Bearer")
+                string schemeId = JwtBearerDefaults.AuthenticationScheme;
+
                 // Add the security definition to Swagger
-                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+                c.AddSecurityDefinition(schemeId, jwtSecurityScheme);
+
                 // Add a security requirement globally (forces auth for all endpoints shown in Swagger UI)
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
-                    { jwtSecurityScheme, Array.Empty<string>() } // Link the requirement to the definition
+                // UPDATED: Now requires a delegate and uses OpenApiSecuritySchemeReference
+                c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+                {
+                    [new OpenApiSecuritySchemeReference(schemeId, document)] = Array.Empty<string>().ToList()
                 });
             });
 
@@ -428,7 +446,7 @@ namespace BLAZAM
             var pluginDir = ApplicationInfo.pluginDirectory;
             if (!pluginDir.Exists)
             {
-                Loggers.PluginLogger.Warning("Plugin directory {@PluginPath} does not exist. Skipping plugin loading.", pluginDir.FullPath);
+                Loggers.PluginLogger.Information("Plugin directory {@PluginPath} does not exist. Skipping plugin loading.", pluginDir.FullPath);
                 return;
             }
 
@@ -604,7 +622,7 @@ namespace BLAZAM
                     }
                     else
                     {
-                        Loggers.SystemLogger.Warning("AppSettings record not found in database. Cannot determine Seq logging preference or installation status.");
+                        Loggers.SystemLogger.Information("AppSettings record not found in database. Cannot determine Seq logging preference or installation status.");
                         ApplicationInfo.installationCompleted = false; // Assume not completed if settings are missing
                     }
                 }
@@ -668,7 +686,7 @@ namespace BLAZAM
                 }
                 else
                 {
-                    Loggers.SystemLogger.Warning("Installation not marked as complete. Skipping startup of most background services.");
+                    Loggers.SystemLogger.Information("Installation not marked as complete. Skipping startup of most background services.");
                 }
             }
             catch (Exception ex)

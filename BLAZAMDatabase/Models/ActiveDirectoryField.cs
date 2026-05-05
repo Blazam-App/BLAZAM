@@ -1,7 +1,7 @@
 ﻿
+using BLAZAM.Common.Data;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BLAZAM.Common.Data;
 
 namespace BLAZAM.Database.Models
 {
@@ -97,7 +97,6 @@ namespace BLAZAM.Database.Models
                         case "department":
                         case _desription:
                         case "employeeId":
-                        case "givenname":
                         case "homeDirectory":
                         case "homeDrive":
                         case "homePhone":
@@ -105,14 +104,11 @@ namespace BLAZAM.Database.Models
                         case "manager":
                         case "mail":
                         case _memberOf:
-                        case "middleName":
                         case "pager":
                         case "physicalDeliveryOffice":
                         case "postalCode":
                         case "profilePath":
                         case "scriptPath":
-                        case "site":
-                        case "sn":
                         case "st":
                         case "streetAddress":
                         case "telephoneNumber":
@@ -128,24 +124,20 @@ namespace BLAZAM.Database.Models
                     switch (FieldName)
                     {
                         case "l":
-                        case "cn":
                         case "company":
                         case "department":
-                        case "description":
+                        case _desription:
                         case "displayName":
                         case "distinguishedName":
                         case "employeeId":
-                        case "givenname":
                         case "homePhone":
                         case "manager":
                         case "mail":
-                        case "memberOf":
-                        case "middleName":
+                        case _memberOf:
                         case "objectSID":
                         case "pager":
                         case "physicalDeliveryOffice":
                         case "postalCode":
-                        case "sn":
                         case "st":
                         case "streetAddress":
                         case "telephoneNumber":
@@ -159,11 +151,10 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.Computer:
                     switch (FieldName)
                     {
-                        case "memberOf":
-                        case "description":
+                        case _memberOf:
+                        case _desription:
                         case "operatingSystemVersion":
                         case "msLAPS-Password":
-                        case "site":
                             return true;
                     }
 
@@ -172,10 +163,9 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.Group:
                     switch (FieldName)
                     {
-                        case "description":
+                        case _desription:
                         case "mail":
-                        case "memberOf":
-                        case "site":
+                        case _memberOf:
                         case "groupType":
                             return true;
                     }
@@ -183,21 +173,12 @@ namespace BLAZAM.Database.Models
                     break;
 
                 case ActiveDirectoryObjectType.OU:
-                    switch (FieldName)
-                    {
-                        case "site":
-                            return true;
-                    }
 
                     break;
                 default:
                     switch (FieldName)
                     {
-                        case "cn":
-                        case "description":
-                        case "displayName":
-                        case "distinguishedName":
-                        case "objectSID":
+                        case _desription:
                             return true;
                     }
 
@@ -208,7 +189,7 @@ namespace BLAZAM.Database.Models
             return false;
         }
 
-
     }
+
 
 }

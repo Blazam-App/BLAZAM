@@ -1,7 +1,7 @@
-﻿using System.Net;
+﻿using BLAZAM.ActiveDirectory.Adapters;
+using System.Net;
 using System.Security;
 using System.Text.Json.Serialization;
-using BLAZAM.ActiveDirectory.Adapters;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -38,6 +38,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Otherwise, this is null
         /// </summary>
         IPHostEntry? IPHostEntry { get; set; }
+
+        List<IPAddress> IPAddresses { get; }
 
         /// <summary>
         /// Called when this computers <see cref="IsOnline"/> status changes

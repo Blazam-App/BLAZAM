@@ -1,11 +1,11 @@
-﻿using System.Security.Claims;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Global.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace BLAZAM.Tests.Mocks
 {
@@ -26,6 +26,8 @@ namespace BLAZAM.Tests.Mocks
         public ClaimsPrincipal? Impersonator { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public bool IsSuperAdmin => throw new NotImplementedException();
+
+        public bool IsSelfEditOnly => throw new NotImplementedException();
 
         public DateTime LastAccessed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public ClaimsPrincipal User { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -70,6 +72,8 @@ namespace BLAZAM.Tests.Mocks
         public bool ShowPluginPlaceholders { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public AppEvent OnSettingsChanged { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public AppEvent OnReadNewsSaved { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string? _browser="Google Chrome";
+        public string? Browser { get => _browser; set => _browser=value; }
 
         public bool CanSearchDisabled(ActiveDirectoryObjectType objectType)
         {

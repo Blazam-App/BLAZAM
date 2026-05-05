@@ -1,13 +1,17 @@
-﻿namespace BLAZAM.Update
+﻿using Octokit;
+
+namespace BLAZAM.Update
 {
     public interface IApplicationRelease
     {
-        public string? DownloadURL { get; }
-        public long? ExpectedSize { get; }
-        public string Branch { get; set; }
-        public ApplicationVersion Version { get; set; }
+        string? DownloadURL { get; }
+        long? ExpectedSize { get; }
+        string Branch { get; set; }
+        ApplicationVersion Version { get; set; }
         string? ReleaseNotes { get; }
         bool? PreviewRelease { get; }
         DateTimeOffset? ReleaseTime { get; }
+
+        string? ReleaseURL { get; }
     }
 }

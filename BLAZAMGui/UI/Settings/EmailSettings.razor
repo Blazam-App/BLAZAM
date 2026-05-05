@@ -71,7 +71,9 @@
 
                 <MudTextField Label="@AppLocalization[Lang.SMTP_Password]"
                               For=@(() => settings.SMTPPassword)
-                              @bind-Value="settings.SMTPPassword" />
+                              InputType="InputType.Password"
+                              Value="@settings.SMTPPassword"
+                              ValueChanged="@(async (string val)=>{await SetPassword(val);})" />
 
             </SettingsField>
         }
@@ -162,7 +164,7 @@
                     emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
                 await StateHasChangedAsync();
             });
-      
+
         LoadingData = false;
         await StateHasChangedAsync();
     }
@@ -181,6 +183,18 @@
         }
         LoadingData = false;
     }
+
+    private async Task SetPassword(string? newPassword)
+    {
+        if (newPassword == null || newPassword.IsNullOrEmpty())
+        {
+            settings.SMTPPassword = null;
+            return;
+        }
+
+        settings.SMTPPassword = await newPassword.EncryptAsync();
+    }
+
     protected override async Task Save()
     {
         if (settings.Id == 0 && Context != null)

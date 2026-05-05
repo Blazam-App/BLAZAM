@@ -19,9 +19,7 @@
                             <NotAuthorized>
                                 @if (context.User.Identity?.IsAuthenticated != true)
                                 {
-                                    <LayoutView Layout="@typeof(LoginLayout)">
                                         <Login />
-                                    </LayoutView>
                                 }
                                 else
                                 {

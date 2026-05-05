@@ -1,7 +1,7 @@
-﻿using System.ComponentModel;
+﻿using BLAZAM.Common.Data.Validators;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BLAZAM.Common.Data.Validators;
 
 namespace BLAZAM.Database.Models
 {
@@ -105,7 +105,7 @@ namespace BLAZAM.Database.Models
                     }
                     else
                     {
-                        return AppName[..14];
+                        return AppName.Length > 14 ? AppName[..14] : AppName;
                     }
 
                 }
@@ -122,8 +122,8 @@ namespace BLAZAM.Database.Models
         /// <summary>
         /// The time of day the administrator wants the application to perform the <see cref="AutoUpdate"/>, if enabled.
         /// </summary>
-        public TimeSpan? AutoUpdateTime { get; set; } = TimeSpan.FromHours(2);
-
+        public TimeSpan? AutoUpdateTime { get; set; } = TimeSpan.FromHours(1.75);
+        
 
         /// <summary>
         /// The release branch to get updates from

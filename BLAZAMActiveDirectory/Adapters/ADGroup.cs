@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Jobs;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -19,13 +20,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected const int ADS_GROUP_TYPE_DOMAIN_LOCAL_GROUP = 0x4;
         protected const int ADS_GROUP_TYPE_UNIVERSAL_GROUP = 0x8;
         protected const int ADS_GROUP_TYPE_SECURITY_ENABLED = unchecked((int)0x80000000);
+        public override ActiveDirectoryObjectType ObjectType => ActiveDirectoryObjectType.Group;
 
         public GroupScope GroupScope
         {
             get
             {
-                if (IsDomainLocalGroup) return GroupScope.DomainLocal;
-                if (IsGlobalGroup) return GroupScope.Global;
+                if (IsDomainLocalGroup)
+                {
+                    return GroupScope.DomainLocal;
+                }
+
+                if (IsGlobalGroup)
+                {
+                    return GroupScope.Global;
+                }
+
                 return GroupScope.Universal;
             }
             set
@@ -115,8 +125,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public List<GroupMembership> MembersToRemove { get; private set; } = new List<GroupMembership>();
-        public List<GroupMembership> MembersToAdd { get; private set; } = new List<GroupMembership>();
+        public List<GroupMembership> MembersToRemove { get; private set; } = [];
+        public List<GroupMembership> MembersToAdd { get; private set; } = [];
         public override string? DisplayName { get => base.CanonicalName; set => base.CanonicalName = value; }
         public string? GroupName
         {
@@ -163,29 +173,29 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (MembersToAdd.Count > 0)
             {
-                PostCommitSteps.Add(new JobStep("Add group members", (JobStep? step) =>
-                {
-                    MembersToAdd.ForEach(g =>
+                MembersToAdd.ForEach(g =>
                     {
-                        g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
+                        PostCommitSteps.Add(new JobStep($"Add {g.Member} to {g.Group}", (JobStep? step) =>
+                        {
+                            g.Group.Invoke("Add", new object[] { g.Member.DN });
+                            return true;
+                        }));
 
                     });
-                    return true;
-                }));
 
-
+                MembersToAdd.Clear();
             }
             if (MembersToRemove.Count > 0)
             {
-                PostCommitSteps.Add(new JobStep("Remove group members", (JobStep? step) =>
-                {
                     MembersToRemove.ForEach(g =>
                     {
-                        g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
+                        PostCommitSteps.Add(new JobStep($"Remove {g.Member}. from {g.Group}", (JobStep? step) =>
+                        {
+                            g.Group.Invoke("Remove", new object[] { g.Member.DN });
+                            return true;
+                        }));
                     });
-                    return true;
-                }));
-
+                MembersToRemove.Clear();
             }
 
             commitJob = base.CommitChanges(commitJob);
@@ -195,18 +205,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override void DiscardChanges()
         {
-            MembersToRemove = new();
-            MembersToAdd = new();
+            MembersToRemove = [];
+            MembersToAdd = [];
             //CachedChildren = new List<IDirectoryEntryAdapter>();
-            _groupMembersCache = new List<IADGroup>();
-            _userMembersCache = new();
             base.DiscardChanges();
             OnModelChanged?.Invoke();
 
         }
         public bool HasMembers => UserMembers.Count > 0 || GroupMembers.Count > 0;
 
-        private List<IADUser> _userMembersCache;
 
         /// <summary>
         /// The members of this group, that are users themselves
@@ -216,26 +223,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (_userMembersCache == null)
-                {
-                    _userMembersCache = Directory.Groups.GetDirectUserMembers(this);
-                }
-                var temp = new List<IADUser>(_userMembersCache);
-                temp.AddRange(MembersToAdd.Where(m => m.Member is IADUser).Select(m => m.Member).Cast<IADUser>());
-
-                MembersToRemove.ForEach(u =>
-                {
-                    if (u.Member is IADUser user)
-                    {
-                        temp.Remove(user);
-                    }
-                });
-                temp = temp.OrderBy(u => u.CanonicalName).ToList();
-                return temp;
+                return Members.Where(m => m is IADUser).Cast<IADUser>().ToList();
             }
         }
 
-        private List<IADGroup> _groupMembersCache;
         /// <summary>
         /// The members of this group, that are groups themselves
         /// </summary>
@@ -244,23 +235,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (_groupMembersCache == null)
-                {
-                    _groupMembersCache = Directory.Groups.GetGroupMembers(this);
-                }
-                var temp = new List<IADGroup>(_groupMembersCache);
-                temp.AddRange(MembersToAdd.Where(m => m.Member is IADGroup).Select(m => m.Member).Cast<IADGroup>());
-
-                MembersToRemove.ForEach(u =>
-                {
-                    if (u.Member is IADGroup group)
-                    {
-                        temp.Remove(group);
-                    }
-                });
-
-                temp = temp.OrderBy(u => u.CanonicalName).ToList();
-                return temp;
+                return Members.Where(m => m is IADGroup).Cast<IADGroup>().ToList();
             }
         }
         public List<string>? MembersAsStrings
@@ -284,21 +259,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute("groupType", value);
             }
         }
-        /// <summary>
-        /// Gathers group and sub-group members in realtime
-        /// </summary>
-        [JsonIgnore]
-        public IEnumerable<IGroupableDirectoryAdapter> NestedMembers
-        {
-            get
-            {
-                ADSearch search = new(Directory);
-                search.Fields.NestedMemberOf = this;
-                var result = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
-                return result;
-            }
-        }
 
+        public async Task<IEnumerable<IGroupableDirectoryAdapter>> GetNestedMembersAsync()
+        {
+
+            ADSearch search = new(Directory);
+            search.Fields.NestedMemberOf = this;
+            search.EnabledOnly = false;
+            var result = await search.SearchAsync<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
+            return result;
+
+        }
+        private readonly static object _membersLock = new();
         /// <summary>
         /// Gathers current group members in realtime
         /// </summary>
@@ -308,33 +280,69 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 var temp = MembersAsStrings;
-                ADSearch search = new(Directory);
 
-                List<IGroupableDirectoryAdapter> members = new();
+                List<IGroupableDirectoryAdapter> members = [];
                 temp?.ForEach(t =>
                 {
-                    search.Results.Clear();
+                     ADSearch search = new(Directory);
+                    
                     search.Fields.DN = t;
+                    search.EnabledOnly = false;
                     var member = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>()?.FirstOrDefault();
                     if (member != null)
                     {
-                        members.Add(member);
+                        lock (_membersLock)
+                        {
+                            members.Add(member);
+                        }
+                    }
+                });
+
+                //temp?.ForEach(t =>
+                //{
+                //    search.Results.Clear();
+                //    search.Fields.DN = t;
+                //    var member = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>()?.FirstOrDefault();
+                //    if (member != null)
+                //    {
+                //        members.Add(member);
+                //    }
+
+                //});
+                var tempRemoval = new List<IGroupableDirectoryAdapter>(members);
+                Parallel.ForEach(MembersToRemove, m =>
+                {
+
+                    lock (_membersLock)
+                    {
+                        if (members.Contains(m.Member))
+                        {
+                            members.Remove(m.Member);
+                        }
                     }
 
                 });
-                var tempRemoval = new List<IGroupableDirectoryAdapter>(members);
-                tempRemoval.ForEach(m =>
-                {
-                    if (MembersToRemove.Select(gm => gm.Member).Contains(m))
+                //tempRemoval.ForEach(m =>
+                //{
+                //    if (MembersToRemove.Select(gm => gm.Member).Contains(m))
+                //    {
+                //        members.Remove(m);
+                //    }
+                //});
+                Parallel.ForEach(MembersToRemove, m => {
+                    lock (_membersLock)
                     {
-                        members.Remove(m);
+                        if (!members.Contains(m.Member))
+                        {
+                            members.Add(m.Member);
+                        }
                     }
                 });
-                MembersToAdd.ForEach(m =>
-                {
-                    if (!members.Contains(m.Member))
-                        members.Add(m.Member);
-                });
+                //MembersToAdd.ForEach(m =>
+                //{
+                //    if (!members.Contains(m.Member))
+                //        members.Add(m.Member);
+                //});
                 return members;
             }
         }
@@ -361,7 +369,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public int CompareTo(object? obj)
         {
             if (obj is ADGroup g)
+            {
                 return CanonicalName.CompareTo(g.CanonicalName);
+            }
+
             return 0;
         }
 

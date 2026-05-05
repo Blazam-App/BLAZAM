@@ -171,9 +171,6 @@
   <data name="Additional Fields" xml:space="preserve">
     <value>추가 필드</value>
   </data>
-  <data name="Additonal Fields" xml:space="preserve">
-    <value>Additonal 필드</value>
-  </data>
   <data name="Admin bcc" xml:space="preserve">
     <value>관리자 숨은 참조</value>
   </data>
@@ -536,6 +533,9 @@
   </data>
   <data name="Last Logon" xml:space="preserve">
     <value>마지막 로그온</value>
+  </data>
+  <data name="LAPS_Password" xml:space="preserve">
+    <value>LAPS 비밀번호</value>
   </data>
   <data name="Last Name" xml:space="preserve">
     <value>성</value>
@@ -1277,5 +1277,56 @@
   </data>
   <data name="Text" xml:space="preserve">
     <value>텍스트</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>규칙</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>규칙</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>규칙 생성</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>객체 유형</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>방아쇠</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>조치 후</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>행동 전</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>변경된 항목</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>변경된 비밀번호</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>삭제된 항목</value>
+  </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>지난 90일 동안 변경된 비활성화된 사용자</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>새 컴퓨터</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>새 연락처</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>새 그룹</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>새 OU</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>새 프린터</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>새 사용자</value>
   </data>
 </root>

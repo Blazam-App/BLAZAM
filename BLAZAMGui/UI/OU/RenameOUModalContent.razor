@@ -6,7 +6,11 @@
     {
 
 
-            <MudTextField AutoFocus=true Label="@AppLocalization[Lang.Name]" @bind-Value="@OU.CanonicalName" />
+            <MudTextField AutoFocus=true 
+                Label="@AppLocalization[Lang.Name]"
+                      Value="@OU.CanonicalName"
+                      Required=true
+                      ValueChanged="((string val) => { OU.CanonicalName = val.AppTrim(); })" />
 
             
         

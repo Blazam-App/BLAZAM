@@ -1,5 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using BLAZAM.ActiveDirectory.Adapters;
+﻿using BLAZAM.ActiveDirectory.Adapters;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -70,7 +70,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         /// <param name="group">The group to check membership for.</param>
         /// <returns>True if this object is a member of the group; otherwise, false.</returns>
-        bool IsAMemberOf(IADGroup? group);
+        bool IsANestedMemberOf(IADGroup? group);
 
         /// <summary>
         /// Removes this object from the specified group.

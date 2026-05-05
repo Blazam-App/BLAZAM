@@ -152,7 +152,9 @@ namespace BLAZAM.Database.Models
             FieldType = ActiveDirectoryFieldType.RawData, // SID is binary data,
             PropertyName = "SID"
         };
-
+        /// <summary>
+        /// Email Address
+        /// </summary>
         public static readonly ActiveDirectoryField Mail = new()
         {
             Id = 17,
@@ -225,7 +227,9 @@ namespace BLAZAM.Database.Models
             FieldType = ActiveDirectoryFieldType.Text,
             PropertyName = "UserPrincipalName"
         };
-
+        /// <summary>
+        /// Telephone Number (Not Home Phone)
+        /// </summary>
         public static readonly ActiveDirectoryField TelephoneNumber = new()
         {
             Id = 25,

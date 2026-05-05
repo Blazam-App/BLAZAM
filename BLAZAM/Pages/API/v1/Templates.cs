@@ -1,6 +1,4 @@
-﻿using System.Security;
-using System.Text.Json;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.EmailMessage.Email.Messages;
 using BLAZAM.Gui.Helpers;
@@ -15,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
+using System.Security;
+using System.Text.Json;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -85,7 +85,7 @@ namespace BLAZAM.Pages.API.v1
         public async Task<IActionResult> Execute(int templateId, [FromBody] NewUserPayload newUserDetails)
         {
 
-            var context = await DbFactory.CreateDbContextAsync();
+            using var context = await DbFactory.CreateDbContextAsync();
             var template = await context.DirectoryTemplates.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id == templateId);
 
             if (template == null)
@@ -121,7 +121,10 @@ namespace BLAZAM.Pages.API.v1
                 }
                 //Generate IADUser
                 var newUser = await template.GenerateTemplateUserAsync(newUserName, Directory, customOU);
-
+                if (newUser == null)
+                {
+                    return new UnprocessableEntityObjectResult("Could not generate user from template");
+                }
                 //Override username if provided
                 if (!newUserDetails.Username.IsNullOrEmpty())
                 {
@@ -174,14 +177,20 @@ namespace BLAZAM.Pages.API.v1
 
         private async Task AuditAndNotify(NewUserPayload newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
         {
-            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+            if (CurrentUserState != null)
             {
-                EventType = ApplicationEventType.Create,
-                Entry = entry,
-                Actor = CurrentUserState
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                {
+                    EventType = ApplicationEventType.Create,
+                    Entry = entry,
+                    Actor = CurrentUserState
 
-            });
-
+                });
+            }
+            else
+            {
+                Loggers.SystemLogger.Error("CurrentUserState was null during template execution, could not log event");
+            }
 
 
             if (template?.EffectiveSendWelcomeEmail == true)
@@ -207,7 +216,11 @@ namespace BLAZAM.Pages.API.v1
                 foreach (var field in newUserDetails.Fields)
                 {
                     var json = field.FieldValue as JsonElement?;
-                    var kind = json?.ValueKind;
+                    if (json == null)
+                    {
+                        continue;
+                    }
+                    var kind = json.Value.ValueKind;
                     object? value = null;
                     switch (kind)
                     {
@@ -244,6 +257,14 @@ namespace BLAZAM.Pages.API.v1
         private static void ValidateInput(NewUserPayload newUserDetails, DirectoryTemplate? template)
         {
             //Check if the request has the required fields for this template
+            if (newUserDetails.FirstName.AppTrim().IsNullOrEmpty())
+            {
+                throw new BadHttpRequestException("FirstName is required");
+            }
+            if (newUserDetails.LastName.AppTrim().IsNullOrEmpty())
+            {
+                throw new BadHttpRequestException("LastName is required");
+            }
             if (template?.HasRequiredFields() == true)
             {
                 var requiredFields = template.EffectiveFieldValues.Where(fv => fv.Required).ToList();

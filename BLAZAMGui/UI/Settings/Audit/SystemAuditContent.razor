@@ -1,0 +1,47 @@
+﻿@using BLAZAM.Database.Models.Audit
+@inherits AuditContentBase<SystemAuditLog>
+
+@if (ApplicationInfo.InDemoMode && CurrentUser.Username == "Demo")
+{
+    <MudText>Disabled in demo</MudText>
+}
+else
+{
+<TimeframeSelector OnTimeframeChanged="TimeframeChanged" />
+
+    <MudDataGrid Height="600px"
+                 ColumnResizeMode="ResizeMode.Container"
+                 FixedHeader=true
+                 Hideable=true
+                 Items="@auditEntries.OrderByDescending(ae => ae.Timestamp)"
+                 Filterable="false"
+                 SortMode="@SortMode.Multiple"
+                 Groupable="false">
+        <Columns>
+            <TemplateColumn Title=@AppLocalization[Lang.Timestamp] Sortable="true">
+                <CellTemplate>
+                    <MudText>
+                        @context.Item.Timestamp.ToLocalTime()
+                    </MudText>
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.Username" Title="@AppLocalization[Lang.Username]" />
+            <PropertyColumn Property="x => x.IpAddress" Title="@AppLocalization[Lang.IP_Address]" />
+            <PropertyColumn Property="x => x.Target" Title="@AppLocalization[Lang.Target]" />
+            <PropertyColumn Property="x => x.BeforeAction" Title="@AppLocalization[Lang.Before_Action]" />
+            <PropertyColumn Property="x => x.AfterAction" Title="@AppLocalization[Lang.After_Action]" />
+
+        </Columns>
+    </MudDataGrid>
+}
+
+
+
+@code {
+    protected override async Task FetchData()
+    {
+        if (StartDate == null || EndDate == null) return;
+        auditEntries = await Context.SystemAuditLog.Where(e => e.Timestamp >= StartDate && e.Timestamp < EndDate.Value.AddDays(1)).OrderByDescending(e => e.Timestamp).ToListAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+}

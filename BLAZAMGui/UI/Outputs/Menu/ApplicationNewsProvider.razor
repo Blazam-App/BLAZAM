@@ -22,7 +22,8 @@
                       BadgeClass="badge-repos cursor-pointer"
                       Content="@unreadItems.Count">
                 <AppTooltip Text=@("Blazam "+AppLocalization[Lang.News])>
-                    <AppIconButton Size="Size.Large"
+                    <AppIconButton OnClick="@(() => context.ToggleAsync())" 
+                        Size="Size.Large"
                                    Icon="@Icons.Material.TwoTone.NewReleases"
                                    Color="@color" />
                 </AppTooltip>
@@ -148,8 +149,13 @@ else
     public override void Dispose()
     {
         base.Dispose();
-        ApplicationNewsService.OnNewItemsAvailable.Delegate -= RefreshItems;
-        CurrentUser.State.OnReadNewsSaved.Delegate -= RefreshItems;
+        if(ApplicationNewsService.OnNewItemsAvailable != null){
+            ApplicationNewsService.OnNewItemsAvailable.Delegate -= RefreshItems;
+        }
+        if (CurrentUser.State.OnReadNewsSaved != null)
+        {
+            CurrentUser.State.OnReadNewsSaved.Delegate -= RefreshItems;
+        }
     }
 
     protected override void OnAfterRender(bool firstRender)

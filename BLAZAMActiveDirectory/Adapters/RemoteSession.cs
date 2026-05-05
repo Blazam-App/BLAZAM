@@ -1,9 +1,16 @@
-﻿using System.ComponentModel;
+using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Logger;
+using Cassia;
+using Serilog;
+using System.ComponentModel;
 using System.Net;
 using System.Security.Principal;
 using BLAZAM.ActiveDirectory.Interfaces;
 using Cassia;
 using Serilog;
+using System.ComponentModel;
+using System.Net;
+using System.Security.Principal;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -15,14 +22,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get => _session; set
             {
-                if (_session == value) return;
+                if (_session == value)
+                {
+                    return;
+                }
+
                 _session = value;
                 if (_session != null)
                 {
                     Host.Directory.Impersonation.Run(() =>
                     {
                         if (!_session.Server.IsOpen)
+                        {
                             _session.Server.Open();
+                        }
+
                         try
                         {
 
@@ -57,7 +71,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public AppDelegate<IRemoteSession> OnSessionDown { get; set; }
         public AppDelegate<IRemoteSession> OnSessionUpdated { get; set; }
 
-        private Timer t;
+        private readonly Timer t;
         public RemoteSession(ITerminalServicesSession session, IADComputer host)
         {
             Host = host;
@@ -152,7 +166,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Host.Directory.Impersonation.Run(() =>
             {
                 if (_session?.Server.IsOpen == false)
+                {
                     _session.Server.Open();
+                }
+
                 _session?.Logoff(synchronous);
                 _session?.Server.Close();
                 return true;
@@ -166,7 +183,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Host.Directory.Impersonation.Run(() =>
             {
                 if (_session?.Server.IsOpen == false)
+                {
                     _session.Server.Open();
+                }
+
                 _session?.Disconnect(synchronous);
                 _session?.Server.Close();
                 return true;
@@ -181,7 +201,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             Host.Directory.Impersonation.Run(() =>
             {
                 if (_session?.Server.IsOpen == false)
+                {
                     _session.Server.Open();
+                }
+
                 _session?.MessageBox(message, "Administrator Message");
                 _session?.Server.Close();
                 return true;
@@ -200,15 +223,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 Host.Directory.Impersonation.Run(() =>
                 {
                     if (_session?.Server.IsOpen == false)
+                    {
                         _session.Server.Open();
+                    }
+
                     if (_session?.Server.IsOpen == true)
                     {
                         int id = _session.SessionId;
                         ITerminalServicesSession updated = _session.Server.GetSession(id);
                         if (updated != null)
-
+                        {
                             Task.Run(() => { Session = updated; OnSessionUpdated?.Invoke(this); });
-
+                        }
                     }
                     return true;
                 });
@@ -226,19 +252,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "An error occurred while refreshing a computer session state.");
+                Loggers.ActiveDirectoryLogger.Error(ex,"An error occurred while refreshing a computer session state.");
                 this.Dispose();
             }
         }
 
         public override bool Equals(object? obj)
         {
-            if (obj is IRemoteSession other && other.Server != null)
+            if (obj is IRemoteSession other && other.Server != null
+                && (other.SessionId.Equals(SessionId) && other.Server.ServerName.Equals(Server?.ServerName)))
             {
-                if (other.SessionId.Equals(SessionId) && other.Server.ServerName.Equals(Server?.ServerName))
-                {
-                    return true;
-                }
+                return true;
+
             }
             return false;
         }
@@ -248,12 +273,37 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return (SessionId + Server?.ServerName).GetHashCode();
         }
 
+        private bool _disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    // Dispose managed resources
+                    t?.Dispose();
+                    if (Session != null && Session.Server != null)
+                    {
+                        Session.Server.Close();
+                    }
+                    Session = null;
+                }
+                // Free unmanaged resources (if any) here
+
+                _disposed = true;
+            }
+        }
+
         public void Dispose()
         {
-            t?.Dispose();
-            if (Session != null && Session.Server != null)
-                Session.Server.Close();
-            Session = null;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~RemoteSession()
+        {
+            Dispose(false);
         }
     }
 }

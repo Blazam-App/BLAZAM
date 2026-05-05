@@ -13,7 +13,11 @@ namespace BLAZAM.Gui.UI.Outputs
         {
             get => enabled; set
             {
-                if (enabled == value) return;
+                if (enabled == value)
+                {
+                    return;
+                }
+
                 enabled = value;
                 if (enabled)
                 {
@@ -32,7 +36,7 @@ namespace BLAZAM.Gui.UI.Outputs
         [Parameter]
         public int YAxisTicks { get; set; } = 20;
 
-        public ChartOptions ChartOptions => new()
+        public LineChartOptions ChartOptions => new()
         {
             InterpolationOption = Data.Count > 3 ? InterpolationOption.NaturalSpline : InterpolationOption.Straight,
             YAxisTicks = YAxisTicks,
@@ -48,15 +52,21 @@ namespace BLAZAM.Gui.UI.Outputs
         [Parameter]
         public int History { get; set; } = 120;
         private Timer _pollingTimer;
-        protected List<DataPoint> Data = new();
+        protected List<DataPoint> Data = [];
         private bool enabled;
 
-        protected List<ChartSeries> DataSeries
+        protected List<ChartSeries<double>> DataSeries
         {
             get
             {
-                var series = new List<ChartSeries>();
-                series.Add(new ChartSeries { Data = Data.OrderBy(d => d.TimeStamp).Select(g => g.Value).ToArray(), Name = "CPU Usage" });
+                List<ChartSeries<double>> series =
+                [
+                    new ChartSeries<double>
+            {
+                Data = Data.OrderBy(d => d.TimeStamp).Select(g => g.Value).ToArray(),
+                Name = SeriesName ?? "CPU Usage"
+            }
+                ];
                 return series;
             }
         }
@@ -85,7 +95,10 @@ namespace BLAZAM.Gui.UI.Outputs
         protected void Tick(object state)
         {
             if (Data.Count >= History)
-                Data.Remove(Data.First());
+            {
+                Data.RemoveAt(0);
+            }
+
             Task.Run(() =>
             {
                 PollData();

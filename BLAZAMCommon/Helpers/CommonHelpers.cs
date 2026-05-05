@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using System.Collections;
 using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO.Compression;
@@ -6,8 +8,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 
 namespace BLAZAM.Helpers
 {
@@ -44,25 +44,25 @@ namespace BLAZAM.Helpers
                 return string.Empty;
             }
 
-            var values = "";
+            var valuesSB = new StringBuilder();
             foreach (var c in changes)
             {
-                string? value = "";
+                var valueSB = new StringBuilder();
 
                 if (valueSelector.Invoke(c) is IEnumerable<object> enumerable)
                 {
                     foreach (var obj in enumerable)
                     {
-                        value += obj.ToString() + ",";
+                        valueSB.Append(obj.ToString() + ",");
                     }
                 }
                 else
                 {
-                    value = valueSelector.Invoke(c)?.ToString();
+                    valueSB.Append(valueSelector.Invoke(c)?.ToString());
                 }
-                values += c.Field + "=" + value + ";";
+                valuesSB.Append(c.Field + "=" + valueSB.ToString() + ";");
             }
-            return values;
+            return valuesSB.ToString();
         }
 
         /// <summary>
@@ -105,11 +105,15 @@ namespace BLAZAM.Helpers
 
             // Check if both objects are null or same reference
             if (ReferenceEquals(changed, original))
-                return new List<AuditChangeLog>();
+            {
+                return [];
+            }
 
             // Check if both objects are of the same type if both were provided
             if (changed is not null && original is not null && changed.GetType() != original.GetType())
+            {
                 throw new ArgumentException("Objects must be of the same type");
+            }
 
             var changes = BuildAuditChangeLog(changed, original);
 
@@ -194,15 +198,21 @@ namespace BLAZAM.Helpers
         /// <returns>A list of <see cref="AuditChangeLog"/> detailing the differences.</returns>
         private static List<AuditChangeLog> BuildAuditChangeLog(object? changed, object? original = null)
         {
-            List<AuditChangeLog> changes = new();
+            List<AuditChangeLog> changes = [];
             PropertyInfo[]? properties = null;
 
             if (changed != null)
+            {
                 properties = changed.GetType().GetProperties();
+            }
             else if (original != null)
+            {
                 properties = original.GetType().GetProperties();
+            }
             else
+            {
                 return changes; // Both are null, no properties to compare
+            }
 
             foreach (var property in properties)
             {
@@ -224,8 +234,16 @@ namespace BLAZAM.Helpers
 
         private static bool IsChanged(object? oldValue, object? newValue)
         {
-            if (oldValue == null && newValue == null) return false;
-            if (oldValue == null || newValue == null) return true;
+            if (oldValue == null && newValue == null)
+            {
+                return false;
+            }
+
+            if (oldValue == null || newValue == null)
+            {
+                return true;
+            }
+
             return !oldValue.Equals(newValue);
         }
 
@@ -258,10 +276,8 @@ namespace BLAZAM.Helpers
                     continue;
                 }
                 ZipArchiveEntry entry = archive.CreateEntry(directory.FullPath.Replace(basePath, "") + file.Name + file.Extension);
-                using (Stream es = entry.Open())
-                {
-                    fs.CopyTo(es);
-                }
+                using Stream es = entry.Open();
+                fs.CopyTo(es);
 
             }
 
@@ -288,7 +304,9 @@ namespace BLAZAM.Helpers
             }
 
             if (destinationFile.Exists)
+            {
                 destinationFile.Delete();
+            }
 
             using var outStream = destinationFile.OpenWriteStream();
             memoryStream.Seek(0, SeekOrigin.Begin);
@@ -320,26 +338,28 @@ namespace BLAZAM.Helpers
             {
                 return Array.Empty<byte>();
             }
-            using (var image = Image.Load(rawImage))
+            using var image = Image.Load(rawImage);
+            if (image.Height > image.Width)
             {
-                if (image.Height > image.Width)
+                if (cropToSquare)
                 {
-                    if (cropToSquare)
-                        image.Mutate(x => x.Crop(image.Width, image.Width));
-                    image.Mutate(x => x.Resize(0, maxDimension));
+                    image.Mutate(x => x.Crop(image.Width, image.Width));
                 }
-                else
-                {
-                    if (cropToSquare)
-                        image.Mutate(x => x.Crop(image.Height, image.Height));
-                    image.Mutate(x => x.Resize(maxDimension, 0));
-                }
-                using (var ms = new MemoryStream())
-                {
-                    image.SaveAsPng(ms);
-                    return ms.ToArray();
-                }
+
+                image.Mutate(x => x.Resize(0, maxDimension));
             }
+            else
+            {
+                if (cropToSquare)
+                {
+                    image.Mutate(x => x.Crop(image.Height, image.Height));
+                }
+
+                image.Mutate(x => x.Resize(maxDimension, 0));
+            }
+            using var ms = new MemoryStream();
+            image.SaveAsPng(ms);
+            return ms.ToArray();
         }
 
         /// <summary>
@@ -403,10 +423,14 @@ namespace BLAZAM.Helpers
         /// <returns>A long representing the FILETIME UTC, or null.</returns>
         public static long? DateTimeToAdsValue(this DateTime? value)
         {
-            if (value == null) return null;
+            if (value == null)
+            {
+                return null;
+            }
+
             try
             {
-                var maxFileTime = DateTime.Parse("Sunday, November 16, 4769 9:46:40 AM Z");
+                var maxFileTime = DateTime.Parse("Sunday, November 16, 4769 9:46:40 AM Z", CultureInfo.InvariantCulture);
                 if (value > maxFileTime)
                 {
                     return null;
@@ -427,8 +451,15 @@ namespace BLAZAM.Helpers
         /// <returns>A nullable DateTime in UTC, or null if conversion fails or the ADSI value represents a null/zero time.</returns>
         public static DateTime? AdsValueToDateTime(this object? value)
         {
-            if (value == null) return null;
-            if (value is DateTime dtValue) return dtValue;
+            if (value == null)
+            {
+                return null;
+            }
+
+            if (value is DateTime dtValue)
+            {
+                return dtValue;
+            }
 
             long? fileTime = value switch
             {
@@ -438,13 +469,19 @@ namespace BLAZAM.Helpers
                 _ => null
             };
 
-            if (fileTime is null or 0) return null;
+            if (fileTime is null or 0)
+            {
+                return null;
+            }
 
             try
             {
                 var dateTime = DateTime.FromFileTimeUtc(fileTime.Value);
                 if (dateTime.Equals(ADS_NULL_TIME) || dateTime.Equals(DateTime.MinValue))
+                {
                     return null;
+                }
+
                 return dateTime;
             }
             catch
@@ -473,7 +510,11 @@ namespace BLAZAM.Helpers
         /// <returns>A nullable Guid. Returns null if guidBytes is null.</returns>
         public static Guid? ToGuid(this byte[]? guidBytes)
         {
-            if (null == guidBytes) return null;
+            if (null == guidBytes)
+            {
+                return null;
+            }
+
             try
             {
                 return new Guid(guidBytes);
@@ -491,7 +532,11 @@ namespace BLAZAM.Helpers
         /// <returns>An LDAP-compatible hex string, or null if byteArray is null.</returns>
         public static string? ToHexADString(this byte[]? byteArray)
         {
-            if (null == byteArray) return null;
+            if (null == byteArray)
+            {
+                return null;
+            }
+
             var hexString = Convert.ToHexString(byteArray);
             return ToLdapHexString(hexString);
         }
@@ -524,46 +569,109 @@ namespace BLAZAM.Helpers
             }
             return ldapHex.ToString();
         }
-
         /// <summary>
-        /// Converts a byte array representing a Security Identifier (SID) to its string format.
+        /// Converts a Security Identifier (SID) from a byte array to its string format (e.g., "S-1-5-21-...").
+        /// This method is cross-platform and does not rely on the Windows-specific SecurityIdentifier class.
         /// </summary>
-        /// <param name="sid">The byte array SID. Can be null.</param>
-        /// <returns>The string representation of the SID, or an empty string if sid is null.</returns>
+        /// <param name="sid">The byte array representing the SID.</param>
+        /// <returns>The string representation of the SID, or an empty string if the input is null or invalid.</returns>
         public static string ToSidString(this byte[]? sid)
         {
-            if (null == sid) return "";
+            if (sid == null || sid.Length < 8)
+            {
+                return "";
+            }
+
+            var builder = new StringBuilder("S-");
+
+            // Revision Level (1 byte)
+            builder.Append(sid[0]);
+
+            // Sub-Authority Count (1 byte)
+            var subAuthorityCount = sid[1];
+
+            // Identifier Authority (6 bytes, big-endian)
+            long identifierAuthority = 0;
+            for (var i = 2; i <= 7; i++)
+            {
+                identifierAuthority = (identifierAuthority << 8) + sid[i];
+            }
+            builder.Append('-').Append(identifierAuthority);
+
+            // Sub-Authorities (4 bytes each, little-endian)
+            var offset = 8;
+            for (var i = 0; i < subAuthorityCount; i++)
+            {
+                // BitConverter handles the little-endian conversion correctly on most architectures.
+                uint subAuthority = BitConverter.ToUInt32(sid, offset);
+                builder.Append('-').Append(subAuthority);
+                offset += 4;
+            }
+
+            return builder.ToString();
+        }
+        /// <summary>
+        /// Converts a Security Identifier (SID) from its string format (e.g., "S-1-5-21-...") to a byte array.
+        /// This method is cross-platform and does not rely on the Windows-specific SecurityIdentifier class.
+        /// </summary>
+        /// <param name="sidString">The string representation of the SID.</param>
+        /// <returns>The byte array representing the SID.</returns>
+        /// <exception cref="FormatException">Thrown if the SID string is not in a valid format.</exception>
+        public static byte[] ToSidByteArray(this string? sidString)
+        {
+            if (string.IsNullOrEmpty(sidString))
+            {
+                return Array.Empty<byte>();
+            }
+
             try
             {
-                var securityIdentifier = new SecurityIdentifier(sid, 0);
-                return securityIdentifier.Value;
+                string[] parts = sidString.Split('-');
+
+                // A valid SID string must start with 'S-' and have at least three parts (S, Rev, IdentifierAuthority)
+                if (parts.Length < 3 || !parts[0].Equals("S", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new FormatException("Invalid SID string format.");
+                }
+
+                int subAuthorityCount = parts.Length - 3;
+                // Calculate the required byte array size: 8 bytes for the header + 4 bytes for each sub-authority
+                byte[] sidBytes = new byte[8 + subAuthorityCount * 4];
+
+                // 1. Write Revision Level (1 byte)
+                sidBytes[0] = byte.Parse(parts[1]);
+
+                // 2. Write Sub-Authority Count (1 byte)
+                sidBytes[1] = (byte)subAuthorityCount;
+
+                // 3. Write Identifier Authority (6 bytes, big-endian)
+                long identifierAuthority = long.Parse(parts[2]);
+                for (int i = 5; i >= 0; i--)
+                {
+                    // Place the bytes from right to left
+                    sidBytes[2 + i] = (byte)(identifierAuthority & 0xFF);
+                    identifierAuthority >>= 8;
+                }
+
+                // 4. Write Sub-Authorities (4 bytes each, little-endian)
+                for (int i = 0; i < subAuthorityCount; i++)
+                {
+                    uint subAuthority = uint.Parse(parts[3 + i]);
+                    // BitConverter correctly handles little-endian conversion on most architectures
+                    byte[] subAuthorityBytes = BitConverter.GetBytes(subAuthority);
+                    // Copy the 4 bytes into the correct position in the main byte array
+                    Array.Copy(subAuthorityBytes, 0, sidBytes, 8 + i * 4, 4);
+                }
+
+                return sidBytes;
             }
-            catch (ArgumentException) // Handles invalid SID byte arrays
+            catch (Exception ex) when (ex is not FormatException)
             {
-                return ""; // Or throw, depending on desired error handling
+                // Catch parsing errors or other exceptions and wrap them in a FormatException
+                throw new FormatException("The SID string could not be parsed.", ex);
             }
         }
 
-        /// <summary>
-        /// Converts a string representation of a Security Identifier (SID) to its byte array format.
-        /// </summary>
-        /// <param name="sidString">The SID string. Can be null or empty.</param>
-        /// <returns>The byte array representation of the SID, or an empty array if sidString is null or empty.</returns>
-        public static byte[] ToSidByteArray(this string sidString)
-        {
-            if (string.IsNullOrEmpty(sidString)) return Array.Empty<byte>();
-            try
-            {
-                var securityIdentifier = new SecurityIdentifier(sidString);
-                byte[] sidBytes = new byte[securityIdentifier.BinaryLength];
-                securityIdentifier.GetBinaryForm(sidBytes, 0);
-                return sidBytes;
-            }
-            catch (ArgumentException) // Handles invalid SID string formats
-            {
-                return Array.Empty<byte>(); // Or throw
-            }
-        }
         #endregion
     }
 }

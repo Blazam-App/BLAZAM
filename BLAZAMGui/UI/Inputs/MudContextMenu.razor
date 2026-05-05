@@ -1,8 +1,12 @@
 ﻿
-<MudMenu Dense=true
+<MudMenu @ref="_menu" FullWidth=true
+    PositionAtCursor="true"
+         Dense=true
          ActivationEvent=MouseEvent.RightClick>
     <ActivatorContent>
-        <div class="pa-0 ma-0 " >
+        <div @onclick="@(() => {
+context.ToggleAsync();
+})" class="pa-0 ma-0 ">
             @if (Text != null)
             {
                 @Text
@@ -15,11 +19,24 @@
 
     </ChildContent>
 </MudMenu>
-@code { [Parameter]
+@code {
+
+
+    [Parameter]
     public RenderFragment ChildContent { get; set; }
     [Parameter]
     public string? Text { get; set; } = null;
     [Parameter]
     public RenderFragment MenuContents { get; set; }
+
+    private MudMenu? _menu;
+
+    public async Task OpenMenuAsync(MouseEventArgs args)
+    {
+        if (_menu != null)
+        {
+            await _menu.OpenMenuAsync(args);
+        }
+    }
 }
 

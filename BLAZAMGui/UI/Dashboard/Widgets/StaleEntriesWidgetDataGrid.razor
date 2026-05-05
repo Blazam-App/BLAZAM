@@ -14,6 +14,7 @@
              Virtualize=true
              RowClass="cursor-pointer"
              RowClick=@RowClick
+             RowContextMenuClick="@RowContextMenuClicked"
              RowsPerPageChanged="@RowsPerPageChanged"
              Class="py-0"
              SortMode="SortMode.Single">
@@ -21,18 +22,15 @@
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
 
-                <DirectoryEntryTooltipPopover Entry="@context.Item">
-                    <DirectoryEntryContextMenu Entry="@context.Item"
-                                               OnChanged="OnChanged">
-                        <MudText>@context.Item?.CanonicalName</MudText>
-                    </DirectoryEntryContextMenu>
-                </DirectoryEntryTooltipPopover>
+                <DirectoryEntryLink Typo="Typo.caption"
+                                    Entry="@context.Item" 
+                                    OnChanged="OnChanged" />
 
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Last_Logon]>
             <CellTemplate>
-                @if (context.Item?.Created != null)
+                @if (context.Item?.LastLogonTimestamp != null)
                 {
                     <LastLogonTime DirectoryEntry="@context.Item" />
                 }
@@ -46,10 +44,11 @@
         <MudText>@AppLocalization[Lang.No_matching_results]</MudText>
     </NoRecordsContent>
 </MudDataGrid>
+<DirectoryEntryContextMenu @ref="_contextMenu" OnChanged="OnChanged" />
 
 
 @code {
-
+    private DirectoryEntryContextMenu? _contextMenu;
     [Parameter]
     public EventCallback OnChanged { get; set; }
 
@@ -60,4 +59,12 @@
             return item.LastLogonTime?.ToLocalTime().ToString();
         });
     }
+    protected async Task RowContextMenuClicked<T>(DataGridRowClickEventArgs<T> args) where  T : IDirectoryEntryAdapter
+    {
+        if (_contextMenu == null)
+            return;
+        _contextMenu.SetEntry(args.Item);
+        await _contextMenu.OpenMenuAsync(args.MouseEventArgs);
+    }
+
 }

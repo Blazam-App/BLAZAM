@@ -1,9 +1,9 @@
-﻿using System.Text.RegularExpressions;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -52,8 +52,7 @@ namespace BLAZAM.Pages.API.v1
             };
             var data = search.Search();
             var data2 = data.Where(de => de.CanRead).ToList();
-            var data3 = data2.ToList();
-            return FormatData(data3);
+            return FormatData(data2);
         }
 
         [GeneratedRegex(@"^[\w\s\-.]+$")]

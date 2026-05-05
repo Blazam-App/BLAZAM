@@ -1,4 +1,4 @@
-﻿@using System.Text.Json
+﻿
 @using System.Net
 @using System.Diagnostics
 @using BLAZAM.Common.Data.Validators
@@ -73,7 +73,11 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
+        var dbSettings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
+        if(dbSettings != null)
+        {
+            settings = dbSettings;
+        }
 
         if (settings != null && !settings.AdminPassword.IsNullOrEmpty())
         {
@@ -96,7 +100,7 @@
             if (settings.Id == 0)
                 Context.AuthenticationSettings.Add(settings);
 
-            settings.AdminPassword = settings.AdminPasswordConfirmed.Encrypt();
+            settings.AdminPassword = await settings.AdminPasswordConfirmed.EncryptAsync();
             await Context.SaveChangesAsync();
             settings = await Context.AuthenticationSettings.FirstAsync();
             await StepCompleted.InvokeAsync();

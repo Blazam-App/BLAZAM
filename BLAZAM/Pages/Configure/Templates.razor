@@ -8,7 +8,7 @@
 
 <SetSubHeader @ref=Header>
 
-    <EditDirectoryTemplateHeader TemplateSelected="SelectedTemplate"/>
+    <EditDirectoryTemplateHeader OnTemplateChanged="TemplateChanged" TemplateSelected="SelectedTemplate"/>
   
 </SetSubHeader>
 
@@ -20,14 +20,17 @@
         <MudExpansionPanel Text="@AppLocalization[Lang.Inheritance_Tree]" Expanded=true>
             <TemplateInheritanceTreeView RootTemplate="TemplateTreeItemData"
                                          SelectedTemplate="SelectedTemplate"
-                                         OnTemplateSelected="@((template)=>{SelectedTemplate=template; Nav.NavigateTo("/templates/"+template.Id);})" />
+                                         OnTemplateSelected="@((template)=>{
+SelectedTemplate=template; 
+Nav.NavigateTo("/templates/"+template.Id);
+})" />
         </MudExpansionPanel>
     </MudCard>
 }
 @if (SelectedTemplate != null)
 {
     <EditDirectoryTemplate Header="Header"
-                           @bind-DirectoryTemplate=@SelectedTemplate
+                           DirectoryTemplate=@SelectedTemplate
                            ClearSelectedTemplate="()=>{SelectedTemplate = null; InvokeAsync(StateHasChanged);}" />
 
 }
@@ -36,13 +39,13 @@
 
 @code {
     IReadOnlyCollection<TreeItemData<DirectoryTemplate>> TemplateTreeItemData = new List<TreeItemData<DirectoryTemplate>>();
-    
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await RefreshComponents();
 
-      
+
         if (Templates?.Any() == true)
         {
             TemplateTreeItemData = CreateTemplateTreeItemData();
@@ -52,8 +55,12 @@
     }
 
 
-  
-   
+
+    private async Task TemplateChanged(DirectoryTemplate template)
+    {
+        SelectedTemplate = template;
+        await StateHasChangedAsync();
+    }
 
 
     private IReadOnlyCollection<TreeItemData<DirectoryTemplate>> CreateTemplateTreeItemData()

@@ -1,10 +1,9 @@
-﻿using BLAZAM.Database.Interfaces;
-
-namespace BLAZAM.Database.Models.Templates
+﻿namespace BLAZAM.Database.Models.Templates
 {
     public class DirectoryTemplateGroup : AppDbSetBase
     {
         public string GroupSid { get; set; }
+        public List<DirectoryTemplate> Templates { get; set; } = new();
 
         public DirectoryTemplateGroup Clone(IDatabaseContext context)
         {

@@ -1,6 +1,7 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Services;
 using BLAZAM.Services.Audit;
+using BLAZAM.Services.Exceptions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -63,6 +64,7 @@ namespace BLAZAM.Server.Pages
 
                     await HttpContext.SignInAsync(result.AuthenticationState.User);
                     if (result.AuthenticationState.User.Identity?.IsAuthenticated == true)
+                    {
                         if (result.Impersonation)
                         {
 
@@ -75,11 +77,17 @@ namespace BLAZAM.Server.Pages
                             await _auditLogger.Logon.Login(result.AuthenticationState.User, req.IPAddress);
 
                         }
+                    }
+
                     req.AuthenticationState = null;
                     req.ImpersonatorClaims = null;
                 }
                 return new JsonResult(req);
 
+            }
+            catch (GoogleMFARequestedException ex)
+            {
+                return new JsonResult(ex.LoginRequest);
             }
             catch (Exception ex)
             {

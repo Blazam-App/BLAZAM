@@ -1,8 +1,8 @@
-﻿using System.Security.Claims;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Helpers;
 using Microsoft.AspNetCore.Components.Authorization;
 using Moq;
+using System.Security.Claims;
 
 namespace BLAZAMCommon.Tests.Data
 {
@@ -60,10 +60,11 @@ namespace BLAZAMCommon.Tests.Data
         public void Password_SetAndGet_ShouldHandleDifferentValues(string testPassword)
         {
             // Arrange
-            var loginRequest = new LoginRequest();
-
-            // Act
-            loginRequest.Password = testPassword;
+            var loginRequest = new LoginRequest
+            {
+                // Act
+                Password = testPassword
+            };
             var retrievedPassword = loginRequest.Password;
             var securePassword = loginRequest.SecurePassword;
 
@@ -102,10 +103,11 @@ namespace BLAZAMCommon.Tests.Data
         public void SecurePassword_WhenPasswordSetToNull_ShouldBeNull()
         {
             // Arrange
-            var loginRequest = new LoginRequest();
-
-            // Act
-            loginRequest.Password = null;
+            var loginRequest = new LoginRequest
+            {
+                // Act
+                Password = null
+            };
 
             // Assert
             Assert.Null(loginRequest.SecurePassword);
@@ -168,10 +170,11 @@ namespace BLAZAMCommon.Tests.Data
         public void Impersonation_SetAndGet_ShouldWork()
         {
             // Arrange
-            var loginRequest = new LoginRequest();
-
-            // Act
-            loginRequest.Impersonation = true;
+            var loginRequest = new LoginRequest
+            {
+                // Act
+                Impersonation = true
+            };
 
             // Assert
             Assert.True(loginRequest.Impersonation);
@@ -267,7 +270,7 @@ namespace BLAZAMCommon.Tests.Data
 
 
             // Act
-            var result = loginRequest.DuoRequested(mockAuthState.Object);
+            var result = loginRequest.DuoRequested(mockAuthState.Object, null);
 
             // Assert
             Assert.Equal(LoginResultStatus.DuoRequested, loginRequest.AuthenticationResult);

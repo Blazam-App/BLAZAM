@@ -6,10 +6,10 @@ namespace BLAZAM.Session
     /// <summary>
     /// Provides a simple in-memory, per-user-session cache for storing arbitrary data, keyed by Type or string.
     /// </summary>
-    public class ApplicationUserSessionCache : IApplicationUserSessionCache, IDisposable
+    public class ApplicationUserSessionCache : IApplicationUserSessionCache
     {
-        private readonly Dictionary<Type, object> _typeCache = new();
-        private readonly Dictionary<string, object> _stringCache = new();
+        private readonly Dictionary<Type, object> _typeCache = [];
+        private readonly Dictionary<string, object> _stringCache = [];
         private bool _disposedValue;
 
         /// <summary>

@@ -1,11 +1,11 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
 using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
+using Octokit;
 
 namespace BLAZAM.Services.Audit
 {
-    public class BaseAuditLogger
+    public class BaseAuditLogger: IDisposable
     {
         public SystemAudit System { get; set; }
         public UserAudit User { get; set; }
@@ -21,7 +21,7 @@ namespace BLAZAM.Services.Audit
         public BaseAuditLogger(IAppDatabaseFactory factory, IApplicationUserState userState)
         {
             _factory = factory;
-            ApplicationEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
+            ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
             System = new SystemAudit(factory);
             User = new UserAudit(factory, userState);
             Group = new GroupAudit(factory, userState);
@@ -30,9 +30,10 @@ namespace BLAZAM.Services.Audit
             Printer = new PrinterAudit(factory, userState);
             Logon = new LogonAudit(factory, userState);
             BitLocker = new BitLockerAudit(factory, userState);
+            Email = new EmailAudit(factory);
         }
 
-        protected static List<Guid> HandledEvents { get; set; } = new();
+        protected static List<Guid> HandledEvents { get; set; } = [];
 
         public void ProcessDirectoryEntryChangedEvent(DirectoryEntryChangedArgs args)
         {
@@ -46,7 +47,7 @@ namespace BLAZAM.Services.Audit
 
                 // If an actor is associated with the event, initialize the audit services
                 // that will log the changes.
-                if (args.Actor != null)
+                if (args.Actor != null && args.Actor.AuditUsername!=null)
                 {
                     InitializeAuditServices(args.Actor);
                 }
@@ -288,20 +289,42 @@ namespace BLAZAM.Services.Audit
         public async Task Searched(IDirectoryEntryAdapter searchedEntry)
         {
             if (searchedEntry is IADUser)
+            {
                 await User.Searched(searchedEntry);
+            }
             else if (searchedEntry is IADGroup)
+            {
                 await Group.Searched(searchedEntry);
+            }
             else if (searchedEntry is IADComputer)
+            {
                 await Computer.Searched(searchedEntry);
+            }
             else if (searchedEntry is IADOrganizationalUnit)
+            {
                 await OU.Searched(searchedEntry);
+            }
             else if (searchedEntry is IADPrinter)
+            {
                 await Printer.Searched(searchedEntry);
+            }
             else if (searchedEntry is IADBitLockerRecovery)
+            {
                 await BitLocker.Searched(searchedEntry);
+            }
         }
 
-
-
+        public void Dispose()
+        {
+            ActiveDirectoryEvents.DirectoryEntryEvent.Delegate -= TriggerDirectoryEntryChangedEvent;
+            System = null;
+            User = null;
+            Group = null;
+            Computer = null;
+            OU = null;
+            Printer = null;
+            Logon = null;
+            BitLocker = null;
+        }
     }
 }

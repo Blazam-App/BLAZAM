@@ -1,20 +1,20 @@
-﻿using System.Data;
-using System.Text.Json.Serialization;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
+using System.Data;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class GroupableDirectoryAdapter : DirectoryEntryAdapter, IGroupableDirectoryAdapter
     {
         [JsonIgnore]
-        public List<GroupMembership> ToAssignTo { get; protected set; } = new List<GroupMembership>();
+        public List<GroupMembership> ToAssignTo { get; protected set; } = [];
 
         [JsonIgnore]
-        public List<GroupMembership> ToUnassignFrom { get; protected set; } = new List<GroupMembership>();
+        public List<GroupMembership> ToUnassignFrom { get; protected set; } = [];
 
         public virtual bool CanAssign => HasActionPermission(ObjectActions.Assign);
 
@@ -35,13 +35,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public virtual bool IsAMemberOf(IADGroup? group)
+        public virtual bool IsANestedMemberOf(IADGroup? group)
         {
             if (group is null)
             {
                 return false;
             }
-            return Directory.Groups.IsAMemberOf(group, this, true);
+            return Directory.Groups.IsANestedMemberOf(group, this, true);
 
         }
 
@@ -100,7 +100,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringAttribute(ActiveDirectoryFields.Description.FieldName);
+                var raw = GetStringListAttribute(ActiveDirectoryFields.Description.FieldName);
+                return raw?.FirstOrDefault();
             }
             set
             {
@@ -141,7 +142,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     ToAssignTo.ForEach(g =>
                     {
-                        g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
+                        g.Group.Invoke("Add", new object[] { g.Member.DN });
 
                     });
                     return true;
@@ -153,7 +154,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     ToUnassignFrom.ForEach(g =>
                     {
-                        g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
+                        g.Group.Invoke("Remove", new object[] { g.Member.DN });
                     });
                     return true;
                 }));
@@ -167,8 +168,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public override void DiscardChanges()
         {
             base.DiscardChanges();
-            ToAssignTo = new();
-            ToUnassignFrom = new();
+            ToAssignTo = [];
+            ToUnassignFrom = [];
         }
 
 

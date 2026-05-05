@@ -5,7 +5,7 @@ namespace BLAZAM.Gui.UI.Users
 {
     public partial class UserFailedLogons : DatabaseComponentBase
     {
-        private List<FailedADLogonEvent> _events = new();
+        private List<FailedADLogonEvent> _events = [];
 
         private IADUser? _user;
         [CascadingParameter]
@@ -14,7 +14,11 @@ namespace BLAZAM.Gui.UI.Users
             get => _user; set
 
             {
-                if (_user != null && _user.Equals(value)) return;
+                if (_user != null && _user.Equals(value))
+                {
+                    return;
+                }
+
                 if (value is IADUser adUser)
                 {
                     _user = adUser;
@@ -26,14 +30,18 @@ namespace BLAZAM.Gui.UI.Users
         }
         private void LoadFailedLogons()
         {
-            _ = Task.Run(() =>
+            _ = Task.Run(async () =>
             {
                 if (_user != null)
                 {
                     LoadingData = true;
+                    _events = [.. Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID))];
+                    _events = [.. _events.OrderByDescending(e => e.Timestamp)];
+
+                    await StateHasChangedAsync();
 
                     LockedOutUserMonitor.RecordLogonEvents(_user);
-
+                    _events = [];
                     _events = [.. Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID))];
                     _events = [.. _events.OrderByDescending(e => e.Timestamp)];
                     LoadingData = false;

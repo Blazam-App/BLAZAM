@@ -50,7 +50,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public IADUser? FindUserByDN(string? dn, bool ignoreDisabledUsers = true)
         {
-            if (dn.IsNullOrEmpty()) return null;
+            if (dn.IsNullOrEmpty())
+            {
+                return null;
+            }
+
             return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
@@ -93,14 +97,14 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
-                FieldValues = new()
-                {
+                FieldValues =
+                [
                     new()
                     {
                         Field=ActiveDirectoryFields.LockedOut,
                          Operator = ActiveDirectoryFieldOperator.BeforeNow
                     }
-                },
+                ],
 
 
             }.Search<ADUser, IADUser>();
@@ -135,17 +139,17 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         }
 
-        public async Task<List<IADUser>> FindChangedPasswordUsersAsync(bool ignoreDisabledUsers = true)
+        public async Task<List<IADUser>> FindChangedPasswordUsersAsync(int maxAgeInDays = 90, bool ignoreDisabledUsers = true)
         {
             return await Task.Run(() =>
             {
-                return FindChangedPasswordUsers(ignoreDisabledUsers);
+                return FindChangedPasswordUsers(maxAgeInDays, ignoreDisabledUsers);
             });
         }
 
-        public List<IADUser> FindChangedPasswordUsers(bool ignoreDisabledUsers = true)
+        public List<IADUser> FindChangedPasswordUsers(int maxAgeInDays = 90, bool ignoreDisabledUsers = true)
         {
-            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
+            var timeframe = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
 
             var results = new ADSearch(Directory)
             {
@@ -153,7 +157,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 EnabledOnly = ignoreDisabledUsers,
                 Fields = new()
                 {
-                    PasswordLastSet = threeMonthsAgo
+                    PasswordLastSet = timeframe
                 }
 
             }.Search<ADUser, IADUser>();
@@ -182,7 +186,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
         }
         public IADUser? FindUserBySID(string? sid)
         {
-            if (sid == null) return null;
+            if (sid == null)
+            {
+                return null;
+            }
+
             return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,

@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models.Templates;
+﻿using BLAZAM.Database.Models.Templates;
 using BLAZAM.Global.Data;
 
 namespace BLAZAM.Tests.Gui
@@ -240,6 +239,31 @@ namespace BLAZAM.Tests.Gui
             var result = _template.ReplaceVariables("{fn[100]}", _testUser);
             // Current implementation returns full string if length is greater than value length
             Assert.Equal("John", result);
+        }
+        [Fact]
+        public void ShouldRemoveDiacritics()
+        {
+            var userWithDiacritics = new NewUserName
+            {
+                GivenName = "Jöhn",
+                Surname = "Döe"
+            };
+
+            var result = _template.ReplaceVariables("{fn:d}{ln:d}", userWithDiacritics);
+            Assert.Equal("JohnDoe", result);
+        }
+
+        [Fact]
+        public void ShouldChainModifiers()
+        {
+            var userWithDiacritics = new NewUserName
+            {
+                GivenName = "Jöhn",
+                Surname = "Döe"
+            };
+
+            var result = _template.ReplaceVariables("{fn:du}", userWithDiacritics);
+            Assert.Equal("JOHN", result);
         }
     }
 

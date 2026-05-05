@@ -31,13 +31,22 @@ namespace BLAZAM.Notifications.Services
 
             _databaseFactory = databaseFactory;
         }
+        /// <summary>Publishes a notification to all users currently in the UserSettings table.</summary> 
+        /// <param name="notificationMessage">The notification message to publish. If its Id is 0, it will be added to the database.</param> 
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public Task PublishNotification(NotificationMessage notificationMessage)
+        {
+            using var context = _databaseFactory.CreateDbContext();
+            var allUsers = context.UserSettings.ToList(); // Materialize the list
+            return PublishNotification(allUsers, notificationMessage); // Return the task
+        }
 
         /// <summary>Publishes a notification to a single user.</summary> 
         /// <param name="user">The user to receive the notification.</param> 
         /// <param name="notificationMessage">The notification message to publish. If its Id is 0, it will be added to the database.</param> 
         /// <returns>A task representing the asynchronous operation.</returns>
         public Task PublishNotification(AppUser user, NotificationMessage notificationMessage)
-            => PublishNotification(new List<AppUser> { user }, notificationMessage);
+            => PublishNotification([user], notificationMessage);
 
         /// <summary>Publishes a notification to a list of users.</summary> 
         /// <param name="users">The list of users to receive the notification. Null users or users not found in DB will be skipped.</param> 
@@ -112,7 +121,7 @@ namespace BLAZAM.Notifications.Services
 
         private List<UserNotification> CreateUserNotifications(IDatabaseContext context, List<AppUser> users, NotificationMessage notificationMessage)
         {
-            List<UserNotification> sentNotifications = new();
+            List<UserNotification> sentNotifications = [];
             foreach (var user in users)
             {
                 if (user == null)
@@ -137,42 +146,30 @@ namespace BLAZAM.Notifications.Services
             return sentNotifications;
         }
 
-        /// <summary>Publishes a notification to all users currently in the UserSettings table.</summary> 
-        /// <param name="notificationMessage">The notification message to publish. If its Id is 0, it will be added to the database.</param> 
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public Task PublishNotification(NotificationMessage notificationMessage)
-        {
-            using var context = _databaseFactory.CreateDbContext();
-            var allUsers = context.UserSettings.ToList(); // Materialize the list
-            return PublishNotification(allUsers, notificationMessage); // Return the task
-        }
+     
 
-        /// <summary>Deletes a specific notification message. In the current implementation, this removes the root message, affecting all users who received it.</summary> 
+        /// <summary>Deletes a specific notification message. </summary> 
         /// <param name="notificationMessage">The notification message to delete. Must not be null.</param> 
         /// <param name="user">The user initiating the delete (currently unused in logic but good for context or future permissions). Must not be null.</param> 
         /// <returns>True if deletion was successful, false otherwise.</returns>
-        public async Task<bool> DeleteNotification(NotificationMessage notificationMessage, AppUser user)
+        public async Task<bool> DeleteNotification(UserNotification notificationMessage)
         {
             if (notificationMessage == null)
             {
-                Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: 'notificationMessage' is null. Cannot delete notification.");
+                Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: 'notification' is null. Cannot delete notification.");
                 return await Task.FromResult(false); // Corrected to await Task.FromResult
             }
-            if (user == null)
-            {
-                Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: 'user' is null. Cannot delete notification for unspecified user.");
-                return await Task.FromResult(false); // Corrected to await Task.FromResult
-            }
+           
             try
             {
                 using var context = await _databaseFactory.CreateDbContextAsync();
-                var dbNotification = await context.NotificationMessages.FirstOrDefaultAsync(x => x.Id == notificationMessage.Id);
+                var dbNotification = await context.UserNotifications.FirstOrDefaultAsync(x => x.Id == notificationMessage.Id);
                 if (dbNotification == null)
                 {
-                    Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: NotificationMessage with ID {NotificationId} not found in database. Cannot delete.", notificationMessage.Id);
+                    Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: UserNotification with ID {NotificationId} not found in database. Cannot delete.", notificationMessage.Id);
                     return false;
                 }
-                context.NotificationMessages.Remove(dbNotification);
+                context.UserNotifications.Remove(dbNotification);
                 await context.SaveChangesAsync();
                 this.OnNotificationDeleted?.Invoke();
                 return true;

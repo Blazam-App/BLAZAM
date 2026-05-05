@@ -6,17 +6,10 @@ namespace BLAZAM.Services.Audit
 {
     public class RulesAuditLogger : BaseAuditLogger
     {
-        public RulesAuditLogger(IAppDatabaseFactory factory, IApplicationUserState ruleUserState) : base(factory, null)
+        public RulesAuditLogger(IAppDatabaseFactory factory) : base(factory, null)
         {
-            System = new SystemAudit(factory);
-            User = new UserAudit(factory, ruleUserState);
-            Group = new GroupAudit(factory, ruleUserState);
-            Computer = new ComputerAudit(factory, ruleUserState);
-            OU = new OUAudit(factory, ruleUserState);
-            Printer = new PrinterAudit(factory, ruleUserState);
-            BitLocker = new BitLockerAudit(factory, ruleUserState);
-            Email = new EmailAudit(factory);
-            ApplicationEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
+            
+            ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
 
         }
 

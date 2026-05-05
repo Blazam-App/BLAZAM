@@ -92,7 +92,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public IADContact? FindContactsByGUID(byte[]? guid)
         {
-            return Directory.FindEntryByGuid(guid) as IADContact;
+            return Directory.FindGlobalEntryByGuid(guid) as IADContact;
+        }
+        public IADContact? FindContactsByGUID(Guid? guid)
+        {
+            return Directory.FindGlobalEntryByGuid(guid?.ToByteArray()) as IADContact;
         }
 
         public IADContact? FindContactsByContainerName(string? searchTerm, bool exactMatch = false)

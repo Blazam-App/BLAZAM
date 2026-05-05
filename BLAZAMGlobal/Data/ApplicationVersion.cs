@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
+﻿using BLAZAM.Global.Exceptions;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
-using BLAZAM.Global.Exceptions;
 
 namespace BLAZAM.Global.Data
 {
@@ -93,7 +93,9 @@ namespace BLAZAM.Global.Data
                 {
                     buildNumber += versionFragments[x];
                     if (x + 1 != versionFragments.Length)
+                    {
                         buildNumber += ".";
+                    }
                 }
                 BuildNumber = buildNumber;
             }
@@ -237,9 +239,13 @@ namespace BLAZAM.Global.Data
                 else
                 {
                     if (BuildNumber != null && other.BuildNumber != null)
+                    {
                         return BuildNumber.CompareTo(other.BuildNumber);
+                    }
                     else
+                    {
                         return 0;
+                    }
                 }
             }
             return 1;

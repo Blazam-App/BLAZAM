@@ -4,7 +4,7 @@
 
 
 
-<MudText Typo="Typo.h4">@AppLocalization[Lang.Update_Settings] <AppDocumentationButton Page="/update/self/" /></MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Update_Settings] <AppDocumentationButton Page="/update/auto/" /></MudText>
 <MudForm @onsubmit="Save">
     <MudStack Spacing="5">
 
@@ -56,12 +56,18 @@
             }
             <SettingsField Label="@AppLocalization[Lang.Application_Credentials]">
 
-                <MudTextField T="string" Label="@AppLocalization[Lang.Application_Credentials]" Disabled=true Value="@WindowsIdentity.GetCurrent().Name.ToString().Replace('_',' ')" />
+                <MudTextField T="string"
+                              Label="@AppLocalization[Lang.Application_Credentials]"
+                              Disabled=true
+                              Value="@Environment.UserName" />
             </SettingsField>
 
             <SettingsField Label="@AppLocalization[Lang.Update_Credential_Source]">
 
-                <MudTextField T="string" Label="@AppLocalization[Lang.Update_Credential_Source]" Disabled=true Value="@updateCredential?.ToString().Replace('_',' ')" />
+                <MudTextField T="string"
+                              Label="@AppLocalization[Lang.Update_Credential_Source]"
+                              Disabled=true
+                              Value="@updateCredential?.ToString().Replace('_',' ')" />
             </SettingsField>
 
             <SettingsField Label="@AppLocalization[Lang.Update_Credentials]">
@@ -147,7 +153,7 @@
             </SettingsField>
 
 
-            @if (settings?.AutoUpdate == true)
+            @if (settings.AutoUpdate)
             {
                 <SettingsField Label="@AppLocalization[Lang.Auto_Update_Time]">
 
@@ -180,7 +186,7 @@
     UpdateCredential? updateCredential = null;
     ManualApplicationUpdater? appUpdateComponent;
     AppSettings? settings = new AppSettings();
-    List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev, ApplicationReleaseBranches.BetaDev };
+    readonly List<string> updateBranches = new() { ApplicationReleaseBranches.Net8ReleasePrefix, ApplicationReleaseBranches.NightlyPrefix, ApplicationReleaseBranches.DevPrefix, ApplicationReleaseBranches.Net10ReleasePrefix };
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -215,7 +221,7 @@
         {
             if (newUpdatePassword != null && !newUpdatePassword.Equals(updatePasswordInDb))
             {
-                settings.UpdatePassword = newUpdatePassword.Encrypt();
+                settings.UpdatePassword = await newUpdatePassword.EncryptAsync();
 
                 updatePasswordInDb = settings.UpdatePassword;
             }

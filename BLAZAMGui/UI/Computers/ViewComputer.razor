@@ -1,6 +1,4 @@
 ﻿@using BLAZAM.Common.Data.Database
-@using BLAZAM.Global.Events
-
 @inherits DirectoryEntryViewBase
 @{
     string _fieldMudStackClasses = "flex-wrap gap-10";
@@ -51,7 +49,7 @@
                     <AppModal Title=@AppLocalization[Lang.Rename] @ref=@RenameModal>
                         @if (RenameModal?.IsShown == true)
                         {
-                            <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser) => { Renamed(null,renamedUser); }) Computer="Computer" />
+                            <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser) => { Renamed(null, renamedUser); }) Computer="Computer" />
                         }
                     </AppModal>
 
@@ -65,12 +63,9 @@
                                     <MudIcon Style="min-width:150px;" Icon="@Icons.Material.Filled.Computer" />
                                 </MudCard>
 
-                                <MudStack Row=true>
-                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Name]:</MudText>
-                                    <MudSpacer />
-                                    <MudText>@Computer.CanonicalName</MudText>
+                                <DetailsField Label="@AppLocalization[Lang.Name]" Value="@Computer.CanonicalName" />
 
-                                </MudStack>
+                                
 
                                 @if (Computer.CanReadField(ActiveDirectoryFields.Manager))
                                 {
@@ -82,28 +77,35 @@
                                 }
                                 @if (Computer.CanReadField(ActiveDirectoryFields.OperatingSystem))
                                 {
-                                    <MudStack Row=true>
-                                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Operating_System]:</MudText>
-                                        <MudSpacer />
-                                        <MudText>@Computer.OperatingSystem</MudText>
-
-                                    </MudStack>
+                                    <DetailsField Label="@AppLocalization[Lang.Operating_System]" Value="@Computer.OperatingSystem" />
                                 }
+                                <DetailsField Label="@AppLocalization[Lang.Online]">
+                                    
+                                    <StatusCheck Status="@(Computer.IsOnline == true)" />
+                                </DetailsField>
 
-                                <MudStack Row=true>
-                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Online]:</MudText>
-                                    <MudSpacer />
-                                    <MudText>
-                                        <StatusCheck Status="@(Computer.IsOnline == true)" />
-                                    </MudText>
-                                </MudStack>
+                                <DetailsField Label="@AppLocalization[Lang.IP_Address]">
+                                    <MudStack>
+                                        @if (Computer.IPAddresses != null && Computer.IPAddresses.Count > 0)
+                                        {
+                                            @foreach (var ip in Computer.IPAddresses)
+                                            {
+                                                <MudText Typo="Typo.caption">@ip</MudText>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <MudText>@AppLocalization[Lang.None]</MudText>
+                                        }
+                                    </MudStack>
+                                </DetailsField>
 
-                                <MudStack Row=true>
-                                    <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
-                                    <MudSpacer />
+                                <DetailsField Label="@AppLocalization[Lang.Last_Logon]">
                                     <LastLogonTime Typo=Typo.caption DirectoryEntry="Computer" />
 
-                                </MudStack>
+                                </DetailsField>
+
+                                
 
                                 <MudStack>
                                     <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Groups]:</MudText>
@@ -283,9 +285,6 @@
 
                         </ViewSection>
                     }
-
-
-
                     <PluginComponents Page="@PageType.Computer" Location="@PageLocation.NewSection" />
 
                 </FlexContainer>

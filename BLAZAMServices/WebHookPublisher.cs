@@ -1,17 +1,14 @@
-﻿using System.Net;
-using System.Security.Cryptography;
-using System.Text;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Database.Context;
-using BLAZAM.Database.Interfaces;
 using BLAZAM.Database.Models.Notifications;
-using BLAZAM.Global.Data.Strings;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 
 
 namespace BLAZAM.Services
@@ -185,11 +182,14 @@ namespace BLAZAM.Services
                     data.Add("targetType", target.ObjectType.ToString());
                 }
                 payload.Add("data", data);
-                var payloadString = System.Text.Json.JsonSerializer.Serialize(payload);
+                var payloadString = payload.ToJson();
                 if (subscription.WebHookSignature == WebHookSignature.HMAC)
                 {
                     if (subscription.HmacKey is null || subscription.HmacKey.IsNullOrEmpty())
+                    {
                         throw new AppException("HMAC Key not supplied to subscription set to use it.");
+                    }
+
                     var key = subscription.HmacKey.Decrypt<string>();
                     if (key != null && key.StartsWith(prefix))
                     {
@@ -367,12 +367,10 @@ namespace BLAZAM.Services
         {
             var toSign = $"{msgId}.{timestamp.ToUnixTimeSeconds().ToString()}.{payload}";
             var toSignBytes = SafeUTF8Encoding.GetBytes(toSign);
-            using (var hmac = new HMACSHA256(key))
-            {
-                var hash = hmac.ComputeHash(toSignBytes);
-                var signature = Convert.ToBase64String(hash);
-                return $"v1,{signature}";
-            }
+            using var hmac = new HMACSHA256(key);
+            var hash = hmac.ComputeHash(toSignBytes);
+            var signature = Convert.ToBase64String(hash);
+            return $"v1,{signature}";
         }
 
         /// <summary>

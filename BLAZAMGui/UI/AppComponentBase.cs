@@ -26,9 +26,14 @@ namespace BLAZAM.Gui.UI
 
         [Inject]
         protected ConnMonitor Monitor { get; set; }
+        [Inject]
+        protected AppAuthenticationStateProvider AppAuthenticationStateProvider { get; set; }
 
         [Inject]
         protected ApplicationInfo ApplicationInfo { get; set; }
+
+        [Inject]
+        protected PasswordResetService PasswordResetService { get; set; }
 
         [Inject]
         protected IActiveDirectoryContextFactory DirectoryFactory { get; set; }
@@ -96,7 +101,11 @@ namespace BLAZAM.Gui.UI
         {
             get => _loadingData; set
             {
-                if (_loadingData == value) return;
+                if (_loadingData == value)
+                {
+                    return;
+                }
+
                 _loadingData = value;
                 _ = InvokeAsync(StateHasChanged);
 

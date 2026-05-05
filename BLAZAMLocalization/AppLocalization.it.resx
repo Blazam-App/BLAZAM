@@ -171,9 +171,6 @@
   <data name="Additional Fields" xml:space="preserve">
     <value>Campi aggiuntivi</value>
   </data>
-  <data name="Additonal Fields" xml:space="preserve">
-    <value>Campi aggiuntivi</value>
-  </data>
   <data name="Admin bcc" xml:space="preserve">
     <value>Admin bcc</value>
   </data>
@@ -536,6 +533,9 @@
   </data>
   <data name="Last Logon" xml:space="preserve">
     <value>Ultimo accesso</value>
+  </data>
+  <data name="LAPS_Password" xml:space="preserve">
+    <value>LAPS Password</value>
   </data>
   <data name="Last Name" xml:space="preserve">
     <value>Cognome</value>
@@ -1277,5 +1277,56 @@
   </data>
   <data name="Text" xml:space="preserve">
     <value>Testo</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>Regola</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>Regole</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>Crea regola</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>Tipo di oggetto</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>Grilletto</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>Dopo l'azione</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>Prima dell'azione</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>Voci modificate</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>Password modificate</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>Voci eliminate</value>
+  </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>Utenti disabilitati modificati negli ultimi 90 giorni</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>Nuovi computer</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>Nuovi contatti</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>Nuovi gruppi</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>Nuove OU</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>Nuove stampanti</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>Nuovi utenti</value>
   </data>
 </root>

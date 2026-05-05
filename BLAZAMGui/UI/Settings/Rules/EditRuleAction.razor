@@ -3,12 +3,12 @@
 <MudStack Row=true>
 
         <MudSelectList T="AutomationRuleActionType"
-                       Values="_actionTypes"
+                       Options="_actionTypes"
                        @bind-Value=Action.ActionType />
         @switch (Action.ActionType)
         {
             case AutomationRuleActionType.ModifyField:
-                <MudSelectList T="IActiveDirectoryField" Values="_fields"
+                <MudSelectList T="IActiveDirectoryField" Options="_fields"
                                Value=_selectedField
                                ValueChanged="@((IActiveDirectoryField field)=>{FieldChanged(field);})" />
                 @if (_selectedField != null)
@@ -47,8 +47,8 @@
                 break;
             case AutomationRuleActionType.Assign:
                 <ADAutoComplete MinCharacters="1"
-                                SelectedSid="@Action.GroupSids.FirstOrDefault()?.GroupSid"
-                                SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=true});})"
+                                SelectedGuid="@Action.GroupGuids.FirstOrDefault()?.GroupGuid"
+                            SelectedResultChanged="@((result)=>{Action.GroupGuids.Add(new(){GroupGuid= result.Guid.Value,Assigned=true});})"
                                 SearchObjectType="ActiveDirectoryObjectType.Group" />
 
                 break;
@@ -74,7 +74,7 @@
             break;
             case AutomationRuleActionType.Unassign:
                 <ADAutoComplete MinCharacters="1"
-                                SelectedResultChanged="@((result)=>{Action.GroupSids.Add(new(){GroupSid= result.SID.ToSidString(),Assigned=false});})"
+                                SelectedResultChanged="@((result)=>{Action.GroupGuids.Add(new(){GroupGuid= result.Guid.Value,Assigned=false});})"
                                 SearchObjectType="ActiveDirectoryObjectType.Group" />
 
                 break;

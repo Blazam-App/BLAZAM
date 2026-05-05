@@ -1,4 +1,5 @@
-﻿using BLAZAM.Session;
+﻿using BLAZAM.Database.Models;
+using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Moq; // Added Moq namespace
 
@@ -192,12 +193,12 @@ namespace BLAZAM.Tests.Session
 
             // Act
             // Use mockUser.Object to pass the mocked instance
-            var mfaRequest = new MFARequest(expectedToken, expectedRedirectUrl, mockUser.Object);
+            var mfaRequest = new MFARequest(MfaType.CiscoDuo, expectedToken, expectedRedirectUrl, mockUser.Object);
 
             // Assert
-            Assert.Equal(expectedToken, mfaRequest.mfaToken);
-            Assert.Equal(expectedRedirectUrl, mfaRequest.redirectUrl);
-            Assert.Same(mockUser.Object, mfaRequest.user); // Check reference equality for the user object
+            Assert.Equal(expectedToken, mfaRequest.MfaToken);
+            Assert.Equal(expectedRedirectUrl, mfaRequest.RedirectUrl);
+            Assert.Same(mockUser.Object, mfaRequest.User); // Check reference equality for the user object
         }
 
         [Theory]
@@ -211,8 +212,8 @@ namespace BLAZAM.Tests.Session
             // Replaced hard-coded mocks with Moq
             var userA = new Mock<IApplicationUserState>().Object;
             var userB = new Mock<IApplicationUserState>().Object;
-            var requestA = new MFARequest(tokenA, urlA, userA);
-            var requestB = new MFARequest(tokenB, urlB, userB);
+            var requestA = new MFARequest(MfaType.CiscoDuo, tokenA, urlA, userA);
+            var requestB = new MFARequest(MfaType.CiscoDuo, tokenB, urlB, userB);
 
             // Act
             bool actualEquality = requestA.Equals((object)requestB);
@@ -225,7 +226,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_Equals_Object_WithNull_ShouldReturnFalse()
         {
             // Arrange
-            var requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
+            var requestA = new MFARequest(MfaType.CiscoDuo, "token", "/url", new Mock<IApplicationUserState>().Object);
 
             // Act
             bool actualEquality = requestA.Equals((object?)null);
@@ -238,7 +239,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_Equals_Object_WithDifferentType_ShouldReturnFalse()
         {
             // Arrange
-            var requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
+            var requestA = new MFARequest(MfaType.CiscoDuo, "token", "/url", new Mock<IApplicationUserState>().Object);
             var differentObject = new object();
 
             // Act
@@ -258,8 +259,8 @@ namespace BLAZAM.Tests.Session
             // Arrange
             var userA = new Mock<IApplicationUserState>().Object;
             var userB = new Mock<IApplicationUserState>().Object;
-            var requestA = new MFARequest(tokenA, urlA, userA);
-            var requestB = new MFARequest(tokenB, urlB, userB);
+            var requestA = new MFARequest(MfaType.CiscoDuo, tokenA, urlA, userA);
+            var requestB = new MFARequest(MfaType.CiscoDuo, tokenB, urlB, userB);
 
             // Act
             bool actualEquality = requestA.Equals(requestB);
@@ -272,7 +273,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_Equals_MFARequest_WithNull_ShouldReturnFalse()
         {
             // Arrange
-            var requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
+            var requestA = new MFARequest(MfaType.CiscoDuo, "token", "/url", new Mock<IApplicationUserState>().Object);
 
             // Act
             bool actualEquality = requestA.Equals(null);
@@ -286,8 +287,8 @@ namespace BLAZAM.Tests.Session
         {
             // Arrange
             var user = new Mock<IApplicationUserState>().Object;
-            var requestA = new MFARequest("same-token", "/urlA", user);
-            var requestB = new MFARequest("same-token", "/urlB", user); // Different URL, but same token
+            var requestA = new MFARequest(MfaType.CiscoDuo, "same-token", "/urlA", user);
+            var requestB = new MFARequest(MfaType.CiscoDuo, "same-token", "/urlB", user); // Different URL, but same token
 
             // Act & Assert
             Assert.Equal(requestA.GetHashCode(), requestB.GetHashCode());
@@ -298,13 +299,13 @@ namespace BLAZAM.Tests.Session
         {
             // Arrange
             var user = new Mock<IApplicationUserState>().Object;
-            var requestA = new MFARequest("token-A", "/url", user);
-            var requestB = new MFARequest("token-B", "/url", user);
+            var requestA = new MFARequest(MfaType.CiscoDuo, "token-A", "/url", user);
+            var requestB = new MFARequest(MfaType.CiscoDuo, "token-B", "/url", user);
 
             // Act & Assert
             // Note: Hash code collisions are possible but unlikely for simple string differences.
             // This test primarily checks that the hash code isn't a constant.
-            if (requestA.mfaToken != requestB.mfaToken) // Ensure tokens are actually different
+            if (requestA.MfaToken != requestB.MfaToken) // Ensure tokens are actually different
             {
                 Assert.NotEqual(requestA.GetHashCode(), requestB.GetHashCode());
             }
@@ -318,8 +319,8 @@ namespace BLAZAM.Tests.Session
         {
             // Arrange
             var user = new Mock<IApplicationUserState>().Object;
-            var requestA = new MFARequest(tokenA, "/url", user);
-            var requestB = new MFARequest(tokenB, "/url", user);
+            var requestA = new MFARequest(MfaType.CiscoDuo, tokenA, "/url", user);
+            var requestB = new MFARequest(MfaType.CiscoDuo, tokenB, "/url", user);
 
             // Act
             bool actualEquality = (requestA == requestB);
@@ -343,7 +344,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_EqualityOperator_OneNull_ShouldReturnFalse()
         {
             // Arrange
-            MFARequest? requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
+            MFARequest? requestA = new MFARequest(MfaType.CiscoDuo, "token", "/url", new Mock<IApplicationUserState>().Object);
             MFARequest? requestB = null;
 
             // Act & Assert
@@ -360,8 +361,8 @@ namespace BLAZAM.Tests.Session
         {
             // Arrange
             var user = new Mock<IApplicationUserState>().Object;
-            var requestA = new MFARequest(tokenA, "/url", user);
-            var requestB = new MFARequest(tokenB, "/url", user);
+            var requestA = new MFARequest(MfaType.CiscoDuo, tokenA, "/url", user);
+            var requestB = new MFARequest(MfaType.CiscoDuo, tokenB, "/url", user);
 
             // Act
             bool actualInequality = (requestA != requestB);
@@ -386,7 +387,7 @@ namespace BLAZAM.Tests.Session
         public void MFARequest_InequalityOperator_OneNull_ShouldReturnTrue()
         {
             // Arrange
-            MFARequest? requestA = new MFARequest("token", "/url", new Mock<IApplicationUserState>().Object);
+            MFARequest? requestA = new MFARequest(MfaType.CiscoDuo, "token", "/url", new Mock<IApplicationUserState>().Object);
             MFARequest? requestB = null;
 
             // Act & Assert

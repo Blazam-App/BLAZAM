@@ -79,10 +79,14 @@ namespace BLAZAM.Common.Data.Database
         public string GetDatabase()
         {
             if (Value == null)
+            {
                 throw new AppException("Connection String missing a Database or Initial Catalog parameter");
+            }
 
             if (FileBased)
+            {
                 return "File Based";
+            }
 
             string[] keys = { "initial catalog=", "database=" };
             string lowerValue = Value.ToLower();
@@ -117,7 +121,10 @@ namespace BLAZAM.Common.Data.Database
                 {
                     string serverFragment = dataSourceParts[0];
                     if (serverFragment.StartsWith("tcp:"))
+                    {
                         serverFragment = serverFragment.Substring(4);
+                    }
+
                     if (serverFragment.Contains("\\") && !serverFragment.Contains(":\\"))
                     {
                         serverFragment = serverFragment.Split("\\")[0];
@@ -150,19 +157,9 @@ namespace BLAZAM.Common.Data.Database
                             return serverFragment.Split("\\")[1];
                         }
                     }
-
-
-                    return null;
-
-
-
-
                 }
-                throw new DatabaseConnectionStringException("Error getting server address from appconfig");
-
+                return null;
             }
-
-
         }
 
         /// <summary>

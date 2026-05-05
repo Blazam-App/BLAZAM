@@ -1,0 +1,20 @@
+﻿@inherits AppComponentBase
+@if (_timestampString != null)
+{
+    <MudText Typo="Typo.caption">@_timestampString</MudText>
+}
+@code {
+
+    private string? _timestampString;
+    [Parameter]
+    public DateTime? Timestamp {get;set;}
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        var localtimestamp = Timestamp?.ToLocalTime();
+        _timestampString = localtimestamp.ToString();
+        await StateHasChangedAsync();
+
+    }
+}

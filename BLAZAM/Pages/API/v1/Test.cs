@@ -62,6 +62,11 @@ namespace BLAZAM.Pages.API.v1
         private void AddDateTime(dynamic data, string title, string key)
         {
             var raw = User.Claims.FirstOrDefault(x => x.Type == key)?.Value;
+            if (raw == null)
+            {
+                return;
+            }
+
             var lng = long.Parse(raw);
 
 

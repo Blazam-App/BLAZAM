@@ -19,10 +19,10 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'zulu' # Alternative distribution options are available.
+          distribution: 'zulu'
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
       - name: Cache SonarQube Cloud packages
         uses: actions/cache@v4
         with:
@@ -42,19 +42,15 @@ jobs:
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-      - name: Install Coverlet
-        shell: powershell
-        run: |
-          dotnet tool install --global coverlet.console
       - name: Build and analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Blazam-App_BLAZAM" /o:"blazam-app" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.scanner.scanAll=false /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=".\coverage\coverage1.opencover.xml,.\coverage\coverage2.opencover.xml,.\coverage\coverage3.opencover.xml" /d:sonar.coverage.exclusions="**/*.razor.cs,**/*.razor.g.cs,**/_Imports.razor.g.cs"
-          dotnet build 
-           coverlet .\BLAZAM.Tests\bin\Debug\net8.0\BLAZAM.Tests.dll -t "dotnet" -a "test --filter FullyQualifiedName~BLAZAM.Tests --no-build" -f=opencover  -o=".\coverage\coverage1.opencover.xml"
-          coverlet .\BLAZAMCommon.Tests\bin\Debug\net8.0\BLAZAMCommon.Tests.dll -t "dotnet" -a "test --filter FullyQualifiedName~BLAZAMCommon.Tests --no-build" -f=opencover -o=".\coverage\coverage2.opencover.xml"
-          coverlet .\BLAZAMDatabase.Tests\bin\Debug\net8.0\BLAZAMDatabase.Tests.dll -t "dotnet" -a "test --filter FullyQualifiedName~BLAZAMDatabase.Tests --no-build" -f=opencover -o=".\coverage\coverage3.opencover.xml"
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}" 
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Blazam-App_BLAZAM" /o:"blazam-app" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.scanner.scanAll=false /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.coverage.exclusions="**/*.razor.cs,**/*.razor.g.cs,**/_Imports.razor.g.cs"
+          dotnet build
+          dotnet test .\BLAZAM.Tests\BLAZAM.Tests.csproj --no-build --collect:"XPlat Code Coverage" --results-directory ./TestResults/BLAZAM.Tests/ -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+          dotnet test .\BLAZAMCommon.Tests\BLAZAMCommon.Tests.csproj --no-build --collect:"XPlat Code Coverage" --results-directory ./TestResults/BLAZAMCommon.Tests/ -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+          dotnet test .\BLAZAMDatabase.Tests\BLAZAMDatabase.Tests.csproj --no-build --collect:"XPlat Code Coverage" --results-directory ./TestResults/BLAZAMDatabase.Tests/ -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

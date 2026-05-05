@@ -171,9 +171,6 @@
   <data name="Additional Fields" xml:space="preserve">
     <value>अतिरिक्त फ़ील्ड</value>
   </data>
-  <data name="Additonal Fields" xml:space="preserve">
-    <value>आडिटोनल फील्ड</value>
-  </data>
   <data name="Admin bcc" xml:space="preserve">
     <value>एडमिन बीसीसी</value>
   </data>
@@ -536,6 +533,9 @@
   </data>
   <data name="Last Logon" xml:space="preserve">
     <value>अंतिम लॉगऑन</value>
+  </data>
+  <data name="LAPS_Password" xml:space="preserve">
+    <value>LAPS पासवर्ड</value>
   </data>
   <data name="Last Name" xml:space="preserve">
     <value>अंतिम नाम</value>
@@ -1277,5 +1277,56 @@
   </data>
   <data name="Text" xml:space="preserve">
     <value>पाठ</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>नियम</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>नियम</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>नियम बनाएं</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>वस्तु प्रकार</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>चालू कर देना</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>कार्रवाई के बाद</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>कार्रवाई से पहले</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>बदली गई प्रविष्टियाँ</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>बदले गए पासवर्ड</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>हटाई गई प्रविष्टियाँ</value>
+  </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>पिछले 90 दिनों में बदले गए अक्षम उपयोगकर्ता</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>नए कंप्यूटर</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>नए संपर्क</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>नए समूह</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>नई OU's</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>नए प्रिंटर</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>नए उपयोगकर्ता</value>
   </data>
 </root>

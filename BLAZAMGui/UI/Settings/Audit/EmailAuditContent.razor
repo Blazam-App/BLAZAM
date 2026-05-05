@@ -1,0 +1,94 @@
+@using BLAZAM.Database.Models.Audit
+@using BLAZAM.Gui.UI.Shared
+@inherits AuditContentBase<EmailAuditLog>
+<TimeframeSelector OnTimeframeChanged="TimeframeChanged" />
+<MudDataGrid ColumnResizeMode="ResizeMode.Container"
+             FixedHeader=true
+             Dense=true
+             Hideable=true
+             RowClass="cursor-pointer"
+             RowClick="@(async (DataGridRowClickEventArgs<EmailAuditLog> args)=>{emailToPreview = args.Item;await bodyModal.ShowAsync();})"
+             Items="@auditEntries"
+             Filterable="true"
+             SortMode="@SortMode.Multiple"
+             Groupable="false">
+    <Columns>
+        <TemplateColumn Title=@AppLocalization[Lang.To]
+                        Filterable="true"
+                        Sortable="true"
+                        SortBy="x=>x.To">
+            <CellTemplate>
+                <MudText>
+                    @AppLocalization[Lang.To]: @context.Item.To
+                </MudText>
+
+                <MudText>
+                    @AppLocalization[Lang.CC]: @context.Item.Cc
+                </MudText>
+
+                <MudText>
+                    @AppLocalization[Lang.BCC]: @context.Item.Bcc
+                </MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.Subject" Title=@AppLocalization[Lang.Subject] />
+
+        <TemplateColumn Title=@AppLocalization[Lang.Success]
+                        Filterable="true"
+                        Sortable="true"
+                        SortBy="x=>x.To">
+            <CellTemplate>
+               <StatusCheck Status="@context.Item.Delivered"/>
+            </CellTemplate>
+        </TemplateColumn>
+       
+        <PropertyColumn Title=@AppLocalization[Lang.Retry_Count]
+                        Property="x => x.Retries"
+                        Sortable="true" />
+        <TemplateColumn Title=@AppLocalization[Lang.Last_Attempt_Timestamp]
+                        Filterable="true"
+                        Sortable="true"
+                        SortBy="x=>x.LastAttemptTimestamp">
+            <CellTemplate>
+                <MudText>
+                    @context.Item.LastAttemptTimestamp.ToLocalTime()
+                </MudText>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+<AppModal Title="@AppLocalization[Lang.Email_Body]" @ref=bodyModal>
+    @if (emailToPreview!=null)
+    {
+        <MudText>
+            @AppLocalization[Lang.To]: @emailToPreview.To
+        </MudText>
+
+        <MudText>
+            @AppLocalization[Lang.CC]: @emailToPreview.Cc
+        </MudText>
+
+        <MudText>
+            @AppLocalization[Lang.BCC]: @emailToPreview.Bcc
+        </MudText>
+        <MudContainer MaxWidth="MaxWidth.Large" Style="min-height:500px;">
+            @((MarkupString)emailToPreview.HtmlBody)
+        </MudContainer>
+        <MudText>
+            @AppLocalization[Lang.Server_Response]: @emailToPreview.ServerResponse
+        </MudText>
+    }
+   
+    </AppModal>
+
+@code {
+    AppModal bodyModal;
+    EmailAuditLog? emailToPreview = null;
+    protected override async Task FetchData()
+    {
+        if (StartDate == null || EndDate == null) return;
+        auditEntries = await Context.EmailAuditLog.Where(e => e.LastAttemptTimestamp >= StartDate && e.LastAttemptTimestamp < EndDate.Value.AddDays(1)).OrderByDescending(e => e.LastAttemptTimestamp).ToListAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+}
+

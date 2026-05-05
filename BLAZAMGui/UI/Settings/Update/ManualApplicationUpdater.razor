@@ -201,12 +201,15 @@
 
     async Task ApplyUpdate()
     {
-        if (await MessageService.Confirm("Would you like to apply the update?"))
+        if (await MessageService.Confirm("Would you like to stage the update?"))
         {
             var output = LatestAvailableVersion.GetUpdateJob();
             if (output != null)
             {
-                _ = MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization[Lang.Update]);
+                Analytics.UpdateAttempted(LatestAvailableVersion.Version.ToString());
+
+                
+                MessageService.ShowJobDetailsDialog(output, AppLocalization[Lang.Stage_Update]);
                 await output.RunAsync();
 
             }

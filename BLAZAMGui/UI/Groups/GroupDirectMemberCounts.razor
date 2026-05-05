@@ -1,0 +1,55 @@
+@inherits AppComponentBase
+<MudText Align="Align.End">
+    @AppLocalization[Lang.Direct_Members]
+</MudText>
+<MudText Align="Align.End" Typo="Typo.body2">
+    @AppLocalization[Lang.Members]: @Members.Count
+</MudText>
+@if (Members.Any(m => m is IADGroup))
+{
+
+    <MudText Align="Align.End" Typo="Typo.body2">
+        @AppLocalization[Lang.Groups]: @Members.Count(m => m is IADGroup)
+    </MudText>
+}
+@if (Members.Any(m => m is IADUser))
+{
+
+    <MudText Align="Align.End" Typo="Typo.body2">
+        @AppLocalization[Lang.Users]: @Members.Count(m => m is IADUser)
+    </MudText>
+}
+@if (Members.Any(m => m is IADComputer))
+{
+
+    <MudText Align="Align.End" Typo="Typo.body2">
+        @AppLocalization[Lang.Computers]: @Members.Count(m => m is IADComputer)
+    </MudText>
+}
+@if (Members.Any(m => m is IADPrinter))
+{
+
+    <MudText Align="Align.End" Typo="Typo.body2">
+        @AppLocalization[Lang.Printers]: @Members.Count(m => m is IADPrinter)
+    </MudText>
+}
+@if (Members.Any(m => m is IADContact && m is not IADUser))
+{
+
+    <MudText Align="Align.End" Typo="Typo.body2">
+        @AppLocalization[Lang.Contacts]: @Members.Count(m => m is IADContact && m is not IADUser)
+    </MudText>
+}
+@if (Members.Count(m => !m.CanRead) > 0)
+{
+    <MudAlert Class="mud-alert-filled-info">
+        @AppHelpLocalization[HelpLang.Lacks_Group_Member_Read_Permission]
+    </MudAlert>
+}
+
+@code {
+    [Parameter]
+    public List<IGroupableDirectoryAdapter> Members { get; set; }
+
+
+}

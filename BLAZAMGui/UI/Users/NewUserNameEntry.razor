@@ -1,61 +1,79 @@
-﻿@using BLAZAM.Global.Data
-@inherits AppComponentBase
-<EditForm Model="NewUserName">
+﻿@inherits ValidatedForm
+<MudForm @ref=Form Model="NewUserName">
 
     <ViewSection Title=@AppLocalization[Lang.Name]>
 
 
 
-        <MudTextField AutoFocus=true Label="@AppLocalization[Lang.First_Name]" @bind-Value="@NewUserName.GivenName" />
+        <MudTextField AutoFocus=true
+                      Validation=IsValid
+                      Required=true
+                      Immediate=true
+                      Label="@AppLocalization[Lang.First_Name]"
+                      @bind-Value="@NewUserName.GivenName" />
 
 
 
 
 
-        <MudTextField Label="@AppLocalization[Lang.Middle_Name]" @bind-Value="@NewUserName.MiddleName" />
+        <MudTextField Label="@AppLocalization[Lang.Middle_Name]"
+                      @bind-Value="@NewUserName.MiddleName" />
 
 
 
 
 
-        <MudTextField Label="@AppLocalization[Lang.Last_Name]" @bind-Value="@NewUserName.Surname" />
+        <MudTextField Label="@AppLocalization[Lang.Last_Name]"
+                      Validation=IsValid
+                      Required=true
+                      Immediate=true
+                      @bind-Value="@NewUserName.Surname" />
 
 
 
 
     </ViewSection>
-</EditForm>
+</MudForm>
 <MudButton Color=Color.Primary
            OnClick="OnBack">
     @AppLocalization[Lang.Back]
 </MudButton>
 <MudButton Color="Color.Success"
            OnClick="OnNext"
-           Disabled=@(newUserName is null || (newUserName.Surname.IsNullOrEmpty() && newUserName.GivenName.IsNullOrEmpty()))>
+           Disabled=@(NewUserName is null || (NewUserName.Surname?.AppTrim().IsNullOrEmpty()==true || NewUserName.GivenName.AppTrim().IsNullOrEmpty()))>
     @AppLocalization[Lang.Next]
 </MudButton>
 
 
 @code {
 
-    NewUserName newUserName;
+    NewUserName _newUserName;
 
     [Parameter]
     public NewUserName NewUserName
     {
-        get => newUserName; set
-        {
-            if (value == newUserName) return;
-            newUserName = value;
-            NewUserNameChanged.InvokeAsync(newUserName);
-
-        }
+        get;set;
     }
-
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (NewUserName == _newUserName) return;
+        _newUserName = NewUserName;
+        NewUserNameChanged.InvokeAsync(_newUserName);
+    }
     [Parameter]
     public EventCallback<NewUserName> NewUserNameChanged { get; set; }
     [Parameter]
     public EventCallback OnNext { get; set; }
     [Parameter]
     public EventCallback OnBack { get; set; }
+
+    private string? IsValid(string field)
+    {
+        if (field.AppTrim().IsNullOrEmpty())
+        {
+            return AppHelpLocalization[HelpLang.Missing_First_Or_Last_Name];
+        }
+        return null;
+    }
 }

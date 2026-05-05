@@ -106,8 +106,10 @@
         public void Invoke_WithSenderAndArgs_ShouldNotThrowException_WhenDelegateIsNull()
         {
             // Arrange
-            var appEvent = new AppEvent<TestEventArgs>();
-            appEvent.Delegate = null; // Ensure delegate is null
+            var appEvent = new AppEvent<TestEventArgs>
+            {
+                Delegate = null // Ensure delegate is null
+            };
             object sender = new object();
             var args = new TestEventArgs { Message = "Test" };
 
@@ -122,8 +124,10 @@
         public void Invoke_WithArgsOnly_ShouldNotThrowException_WhenDelegateIsNull()
         {
             // Arrange
-            var appEvent = new AppEvent<TestEventArgs>();
-            appEvent.Delegate = null; // Ensure delegate is null
+            var appEvent = new AppEvent<TestEventArgs>
+            {
+                Delegate = null // Ensure delegate is null
+            };
             var args = new TestEventArgs { Message = "Test" };
 
             // Act

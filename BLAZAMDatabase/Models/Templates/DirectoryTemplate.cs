@@ -1,10 +1,13 @@
-﻿using System.ComponentModel;
+﻿using BLAZAM.Common.Data;
+using BLAZAM.Global.Data;
+using BLAZAM.Helpers;
+using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
-using BLAZAM.Common.Data;
-using BLAZAM.Global.Data;
-using Microsoft.IdentityModel.Tokens;
 using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
 
 namespace BLAZAM.Database.Models.Templates
@@ -17,6 +20,7 @@ namespace BLAZAM.Database.Models.Templates
     [Index(nameof(Name), IsUnique = true)]
     public class DirectoryTemplate : RecoverableAppDbSetBase
     {
+        private readonly Regex variableSearch = new Regex(@"\{(?<var>[\w#\.\- ]+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
 
         public DirectoryTemplate? ParentTemplate { get; set; } = null;
         public int? ParentTemplateId { get; set; } = null;
@@ -99,17 +103,23 @@ namespace BLAZAM.Database.Models.Templates
             var localValue = localSelector.Invoke(this);
             if (EqualityComparer<T>.Default.Equals(localValue, default))
             {
-                if (ParentTemplate == null) return default;
+                if (ParentTemplate == null)
+                {
+                    return default;
+                }
+
                 var effectiveValue = effectiveSelector.Invoke(ParentTemplate);
                 return effectiveValue;
             }
             else
+            {
                 return localValue;
+            }
         }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-        public List<DirectoryTemplateGroup> AssignedGroupSids { get; set; } = new();
+        public List<DirectoryTemplateGroup> AssignedGroupSids { get; set; } = [];
         [NotMapped]
         public List<DirectoryTemplateGroup> EffectiveAssignedGroupSids
         {
@@ -125,7 +135,7 @@ namespace BLAZAM.Database.Models.Templates
             }
         }
 
-        public List<DirectoryTemplateFieldValue> FieldValues { get; set; } = new();
+        public List<DirectoryTemplateFieldValue> FieldValues { get; set; } = [];
         [NotMapped]
 
         public List<DirectoryTemplateFieldValue> EffectiveFieldValues
@@ -212,9 +222,20 @@ namespace BLAZAM.Database.Models.Templates
         [NotMapped]
         public HashSet<DirectoryTemplate> ChildTemplates { get; set; }
 
-        public string GenerateUsername(NewUserName newUser)
+        [NotMapped]
+        public bool HasIncrementorVariable
         {
-            return ReplaceVariables(EffectiveUsernameFormula, newUser);
+            get
+            {
+
+                return variableSearch.Matches(EffectiveUsernameFormula)
+                    .Any(match => match.Groups["var"].Value == "#");
+            }
+        }
+        public string GenerateUsername(NewUserName newUser, int? incrementedNumber = null)
+        {
+            return ReplaceVariables(EffectiveUsernameFormula, newUser, incrementedNumber: incrementedNumber);
+
 
         }
         public string ReplaceVariablesOld(string toParse, NewUserName newUser)
@@ -247,12 +268,19 @@ namespace BLAZAM.Database.Models.Templates
             return toParse;
 
         }
-        public string ReplaceVariables(string? toParse, NewUserName? newUser = null, string? username = null)
+        public string ReplaceVariables(string? toParse, NewUserName? newUser = null, string? username = null, int? incrementedNumber = null)
         {
-            if (toParse.IsNullOrEmpty()) return "";
-            var regex = new Regex(@"\{(?<var>\w+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
-            if (!regex.IsMatch(toParse)) return toParse;
-            return regex.Replace(toParse, match =>
+            if (toParse.IsNullOrEmpty())
+            {
+                return "";
+            }
+
+            if (!variableSearch.IsMatch(toParse))
+            {
+                return toParse;
+            }
+
+            return variableSearch.Replace(toParse, match =>
             {
                 var variable = match.Groups["var"].Value.ToLower();
                 var modifier = match.Groups["mod"].Value;
@@ -260,6 +288,11 @@ namespace BLAZAM.Database.Models.Templates
 
                 switch (variable)
                 {
+                    case "#": return incrementedNumber?.ToString() ?? "";
+                    case ".": return incrementedNumber != null ? "." : "";
+                    case "_": return incrementedNumber != null ? "_" : "";
+                    case "-": return incrementedNumber != null ? "-" : "";
+                    case " ": return incrementedNumber != null ? " " : "";
                     case "fn": return ProcessVariable(newUser?.GivenName, modifier, arg);
                     case "fi": return ProcessVariable(Substring(newUser?.GivenName, 0, 1), modifier, arg);
                     case "mn": return ProcessVariable(newUser?.MiddleName, modifier, arg);
@@ -267,23 +300,64 @@ namespace BLAZAM.Database.Models.Templates
                     case "ln": return ProcessVariable(newUser?.Surname, modifier, arg);
                     case "li": return ProcessVariable(Substring(newUser?.Surname, 0, 1), modifier, arg);
                     case "username": return username ?? ReplaceVariables(EffectiveUsernameFormula, newUser).Replace(" ", "");
+                    case "alphanumsym":
+                        var ch = RandomLetterDigitOrSymbol();
+                        if (modifier == "u")
+                        {
+                            return ch.ToUpper();
+                        }
+                        else if (modifier == "l")
+                        {
+                            return ch.ToLower();
+                        }
+                        else
+                        {
+                            return ch;
+                        }
                     case "alphanum":
-                        var ch = RandomLetterOrDigit();
-                        return modifier == "u" ? ch.ToUpper() : ch.ToLower();
+                        var ch2 = RandomLetterOrDigit();
+                        if (modifier == "u")
+                        {
+                            return ch2.ToUpper();
+                        }
+                        else if (modifier == "l")
+                        {
+                            return ch2.ToLower();
+                        }
+                        else
+                        {
+                            return ch2;
+                        }
                     case "alpha":
                         var letter = RandomLetter();
-                        return modifier == "u" ? letter.ToUpper() : letter.ToLower();
+                        if (modifier == "u")
+                        {
+                            return letter.ToUpper();
+                        }
+                        else if (modifier == "l")
+                        {
+                            return letter.ToLower();
+                        }
+                        else
+                        {
+                            return letter;
+                        }
                     case "num":
                         return RandomNumber().ToString();
+                    case "sym":
+                        return RandomSymbol().ToString();
                     default:
                         return match.Value; // preserve unknown variables
                 }
             });
         }
-        private string ProcessVariable(string? value, string? modifier, string? argument)
+        private static string ProcessVariable(string? value, string? modifier, string? argument)
         {
             // Return empty string for null/empty input for consistency and safety.
-            if (string.IsNullOrEmpty(value)) return string.Empty;
+            if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
+            }
 
             // The "regex" modifier is special because it uses the argument for its pattern,
             // so we handle it as a distinct case.
@@ -299,49 +373,105 @@ namespace BLAZAM.Database.Models.Templates
             }
 
             // First, apply the length constraint from the argument.
-            if (!string.IsNullOrEmpty(argument))
+            if (!string.IsNullOrEmpty(argument) 
+                && int.TryParse(argument, out int number) 
+                && number > 0 
+                && number <= value.Length)
             {
-                if (int.TryParse(argument, out int number) && number > 0)
-                {
-                    // Add a safety check to prevent an ArgumentOutOfRangeException
-                    if (number <= value.Length)
-                    {
-                        value = value.Substring(0, number);
-                    }
-                }
+                value = value.Substring(0, number);
             }
 
             // Second, apply the case modifier to the (now possibly truncated) value.
-            switch (modifier)
+            if (!string.IsNullOrEmpty(modifier))
             {
-                case "u":
-                    value = value.ToUpper();
-                    break;
-                case "l":
-                    value = value.ToLower();
-                    break;
+                foreach (var mod in modifier)
+                {
+                    switch (mod)
+                    {
+                        case 'd':
+                            value = value.RemoveDiacritics();
+                            break;
+                        case 'u':
+                            value = value.ToUpper();
+                            break;
+                        case 'l':
+                            value = value.ToLower();
+                            break;
+                    }
+                }
             }
 
             // Return the final processed value.
             return value;
         }
-        private string Substring(string? str, int start, int count)
+        private static string Substring(string? str, int start, int count)
         {
-            if (str == null || str.IsNullOrEmpty()) return "";
+            if (str == null || str.IsNullOrEmpty())
+            {
+                return "";
+            }
+
             return str.Substring(start, count);
         }
         private static readonly Random _random = new();
-
-        private static string RandomLetterOrDigit()
+        private static string RandomLetterDigitOrSymbol(int? index = null)
         {
-            var index = _random.Next(36);
-            return index < 10 ? ((char)('0' + index)).ToString() : ((char)('a' + index - 10)).ToString();
+            if (index == null)
+            {
+                index = _random.Next(62);
+            }
+            if (index < 10)
+            {
+                // digits 0-9
+                return ((char)('0' + index)).ToString();
+            }
+            else if (index < 36)
+            {
+                // letters a-z
+                return RandomLetter(index - 10);
+            }
+            else
+            {
+                // symbols
+                return RandomSymbol(index - 36);
+            }
+        }
+        private static string RandomLetterOrDigit(int? index = null)
+        {
+            if (index == null)
+            {
+                index = _random.Next(36);
+            }
+            if (index < 10)
+            {
+                // digits 0-9
+                return ((char)('0' + index)).ToString();
+            }
+
+            return RandomLetter(index - 10);
         }
 
-        private static string RandomLetter()
+        private static string RandomLetter(int? index = null)
         {
-            var index = _random.Next(26);
-            return ((char)('a' + index)).ToString();
+            if (index == null)
+            {
+                index = _random.Next(26);
+            }
+            var letter = (char)('a' + index);
+            // 50/50 chance to return uppercase or lowercase
+            return (_random.Next(2) == 0) ? char.ToUpperInvariant(letter).ToString() : letter.ToString();
+
+        }
+        private static string RandomSymbol(int? index = null)
+        {
+            if (index == null)
+            {
+                index = _random.Next(26);
+            }
+            // symbols
+            var symbols = "!@#$%^&*()-_=+[]{}|;:,.<>?";
+            return symbols[(index.Value) % symbols.Length].ToString();
+
         }
 
         private static int RandomNumber()

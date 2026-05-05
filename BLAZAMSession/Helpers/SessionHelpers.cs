@@ -20,7 +20,10 @@ namespace BLAZAM.Helpers
         /// <returns>True if the username is 'admin' or 'demo' (case-insensitive); otherwise, false. Returns false if state or username is null.</returns>
         public static bool IsAdminOrDemo(this IApplicationUserState? state)
         {
-            if (state == null) return false;
+            if (state == null)
+            {
+                return false;
+            }
             // state?.Username handles null state, ?.Equals handles null Username
             return state.Username?.Equals("admin", StringComparison.InvariantCultureIgnoreCase) == true ||
                    state.Username?.Equals("demo", StringComparison.InvariantCultureIgnoreCase) == true;
@@ -41,11 +44,15 @@ namespace BLAZAM.Helpers
 
             double? dbTimeoutValue = DatabaseCache.AuthenticationSettings?.SessionTimeout;
             if (dbTimeoutValue == null)
+            {
                 return;
+            }
 
             string? cookie = httpContext.Request.Cookies[CookieAuthenticationDefaults.CookiePrefix + CookieAuthenticationDefaults.AuthenticationScheme];
             if (cookie == null)
+            {
                 return;
+            }
 
             try
             {
@@ -55,11 +62,15 @@ namespace BLAZAM.Helpers
                     .TicketDataFormat;
                 var ticket = ticketDataFormat.Unprotect(cookie);
                 if (ticket == null)
+                {
                     return;
+                }
 
                 var currentUtc = DateTimeOffset.UtcNow;
                 if (!ticket.Properties.IssuedUtc.HasValue)
+                {
                     return;
+                }
 
                 var newExpiryTime = currentUtc.AddMinutes((double)dbTimeoutValue);
                 if (ticket.Properties.IssuedUtc.Value.AddMinutes((double)dbTimeoutValue) > currentUtc)
@@ -83,7 +94,9 @@ namespace BLAZAM.Helpers
                             Expires = ticket.Properties.ExpiresUtc
                         });
                     if (userState != null)
+                    {
                         userState.Ticket = ticket;
+                    }
                 }
             }
             catch (Exception ex)

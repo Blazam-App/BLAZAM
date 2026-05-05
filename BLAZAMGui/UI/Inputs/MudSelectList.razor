@@ -1,4 +1,5 @@
-@inherits MudSelect<T>
+@using System.Text
+@inherits MudElement
 @typeparam T
 
 <MudStack Row=true>
@@ -7,7 +8,7 @@
 
     }
     <MudMenu Dense=true
-        Disabled="@Disabled"
+             Disabled="@Disabled"
              Style="@(Style+" min-width:100px;")"
              FullWidth=true
              @ref=_selectMenu
@@ -18,9 +19,12 @@
              TransformOrigin="Origin.TopCenter"
              PopoverClass="minw-max">
         <ActivatorContent>
-            <MudField Disabled="@Disabled" Label="@Label">
+            <MudField Disabled="@Disabled"
+                      HelperText="@HelperText"
+                      Label="@Label"
+                      @onclick="@(() => context.ToggleAsync())">
                 <MudStack Row=true>
-                    @if (SelectedValues.Count() > 0 || Value!=null)
+                    @if (Selected !=null && (Selected.Count() > 0 || !EqualityComparer<T>.Default.Equals(Value, default(T))))
                     {
                         <MudText>
                             @Text
@@ -33,18 +37,18 @@
                         </MudElement>
                     }
                     <MudSpacer />
-                    <MudIcon Class="align-end" Icon="@(_selectMenu?.Open==true?Icons.Material.Filled.ArrowDropUp:Icons.Material.Filled.ArrowDropDown)" />
+                    <MudIcon Class="align-end" Icon="@(_selectMenu?.Open == true ? Icons.Material.Filled.ArrowDropUp : Icons.Material.Filled.ArrowDropDown)" />
                 </MudStack>
             </MudField>
         </ActivatorContent>
         <ChildContent>
-            @if (Values != null && Values.Count() > 0)
+            @if (Options != null && Options.Count() > 0)
             {
-                @foreach (var val in Values)
+                @foreach (var val in Options)
                 {
                     <MudMenuItem Style="min-width:max-content;"
                                  Class="py-0 px-3 ma-0"
-                                 OnClick="@(()=>{ToggleSelected(val);})"
+                                 OnClick="@(async ()=> await ToggleSelected(val))"
                                  AutoClose=@(!MultiSelection)>
                         <MudStack Class="pa-0 ma-0"
                                   Row=true
@@ -52,8 +56,8 @@
                             @if (MultiSelection)
                             {
                                 <MudCheckBox T=bool
-                                             ValueChanged="@(()=>{ToggleSelected(val);})"
-                                             Value="SelectedValues.Contains(val)" />
+                                             ValueChanged="@(async ()=> await ToggleSelected(val))"
+                                             Value="Selected?.Contains(val)==true" />
                             }
                             @if (ToStringFunc != null)
                             {
@@ -78,7 +82,7 @@
     {
         if (!AdornmentIcon.IsNullOrEmpty())
         {
-            <MudIconButton Ripple=@(OnAdornmentClick.HasDelegate?true:false)
+            <MudIconButton Ripple=@(OnAdornmentClick.HasDelegate ? true : false)
                            Icon="@AdornmentIcon"
                            Color="@AdornmentColor"
                            OnClick="@OnAdornmentClick"
@@ -87,70 +91,134 @@
     }
 </MudStack>
 
-@code {
+    @code {
     private MudMenu? _selectMenu;
+
     [Parameter]
     public Color Color { get; set; }
-    private IEnumerable<T> _values;
-    [Parameter]
-    public IEnumerable<T> Values
-    {
-        get => _values; set
-        {
-            _values = value;
-            Text = "";
-            if (_values != null && _values.Count() > 0)
-            {
-                foreach (var item in _values)
-                {
-                    if (item!=null)
-                    {
-                        Text += ToStringFunc?.Invoke(item) + ", ";
-                    }
-                }
-                if (Text != "")
-                {
-                    Text = Text.Substring(0, Text.Length - 2);
-                }
-            }
 
+    [Parameter]
+    public Color AdornmentColor { get; set; }
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? HelperText { get; set; }
+
+    [Parameter]
+    public string? AdornmentIcon { get; set; }
+
+    [Parameter]
+    public string? AdornmentAriaLabel { get; set; }
+
+    [Parameter]
+    public Adornment Adornment { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnAdornmentClick { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public bool MultiSelection { get; set; }
+
+    [Parameter]
+    public Func<T, string> ToStringFunc { get; set; }
+
+    private T _value;
+
+    [Parameter]
+    public T Value
+    {
+        get => _value;
+        set
+        {
+            _value = value;
+            Selected = [_value];
         }
     }
 
+    [Parameter]
+    public EventCallback<T> ValueChanged { get; set; }
 
-    private void ToggleSelected(T item)
+
+    private string? Text
     {
-        if (SelectedValues.Contains(item))
+        get
         {
-            @if (MultiSelection)
+            var sb = new StringBuilder();
+            if (Selected.Count() > 0)
             {
-                SelectedValues = SelectedValues.Where(x => !x.Equals(item));
-                SelectedValuesChanged.InvokeAsync(SelectedValues);
+                int i = 0;
+                foreach (var item in Selected)
+                {
+                    if (item != null)
+                    {
+                        if (i > 0)
+                        {
+                            sb.Append(", ");
+                        }
+                        if (ToStringFunc != null)
+                        {
+                            sb.Append(ToStringFunc?.Invoke(item));
+                        }
+                        else
+                        {
+                            sb.Append(item.ToString());
 
+                        }
+                        i++;
+
+                    }
+                }
             }
+            return sb.ToString();
+        }
+    }
 
+    [Parameter]
+    public IEnumerable<T> Options { get; set; }
+
+
+    [Parameter]
+    public IEnumerable<T> Selected { get; set; } = Enumerable.Empty<T>();
+
+    [Parameter]
+    public EventCallback<IEnumerable<T>> SelectedChanged { get; set; }
+
+    private async Task ToggleSelected(T item)
+    {
+        if (Selected == null)
+        {
+            Selected = [];
+        }
+        if (Selected.Contains(item))
+        {
+            if (MultiSelection)
+            {
+                Selected = Selected.Where(x => !x!.Equals(item)).ToList();
+                await SelectedChanged.InvokeAsync(Selected);
+            }
         }
         else
         {
-            @if (MultiSelection)
+            if (MultiSelection)
             {
-                SelectedValues = SelectedValues.Append(item);
-                SelectedValuesChanged.InvokeAsync(SelectedValues);
-
+                Selected = Selected.Append(item).ToList();
+                await SelectedChanged.InvokeAsync(Selected);
             }
             else
             {
-                SelectedValues = new List<T>() { item };
+                Selected = new List<T>() { item };
                 Value = item;
-                ValueChanged.InvokeAsync(item);
-
+                await ValueChanged.InvokeAsync(item);
             }
         }
-
-
-
-
-
     }
 }
 

@@ -5,9 +5,9 @@
     /// </summary>
     public static class ApplicationReleaseBranches
     {
-        public const string Stable = "Release";
-        public const string Nightly = "Nightly1";
-        public const string Dev = "Dev1";
-        public const string BetaDev = "BetaDev";
+        public const string Net10ReleasePrefix = "Net10";
+        public const string Net8ReleasePrefix = "Release";
+        public const string NightlyPrefix = "Nightly1";
+        public const string DevPrefix = "Dev1";
     }
 }

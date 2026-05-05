@@ -1,6 +1,6 @@
-﻿using System.ComponentModel;
+﻿using BLAZAM.Common.Data.Validators;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using BLAZAM.Common.Data.Validators;
 
 namespace BLAZAM.Database.Models
 {
@@ -27,7 +27,10 @@ namespace BLAZAM.Database.Models
         public bool UseSMTPAuth { get; set; } = false;
 
         public string? SMTPUsername { get; set; }
-
+ 
+        /// <summary>
+        /// The password for authentication, in encrypted form.
+        /// </summary>
         public string? SMTPPassword { get; set; }
 
         [Required]
@@ -38,11 +41,11 @@ namespace BLAZAM.Database.Models
         public int SMTPPort { get; set; } = 25;
 
         public bool UseTLS { get; set; } = false;
-
+       
         public bool Valid()
         {
             if (SMTPServer != null
-                && (!UseSMTPAuth && FromAddress != null) || (UseSMTPAuth && SMTPUsername != null && SMTPPassword != null))
+               && ((!UseSMTPAuth && FromAddress != null) || (UseSMTPAuth && SMTPUsername != null && SMTPPassword != null)))
             {
                 return true;
             }

@@ -1,11 +1,14 @@
-﻿@using BLAZAM.Global.Data
-<MudStack Row=true>
+﻿<MudStack Row=true Class="@Class">
+    <MudSpacer/>
     <MudNumericField T="int"
+        Style="max-width:100px;"
+                    Disabled=@Disabled
                      @bind-Value="count" />
     <MudSelectList T="TimeUnit"
+                   Disabled=@Disabled
                    @bind-Value=selectedTimeUnit
-                   Values="_timeUnits" />
-
+                   Options="_timeUnits" />
+    <MudSpacer />
 </MudStack>
 @code {
     private TimeSpan? _timeFrame;
@@ -36,6 +39,15 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+      
+        foreach (TimeUnit val in Enum.GetValues(typeof(TimeUnit)))
+        {
+            _timeUnits.Add(val);
+        }
+    }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
         if (TimeFrame != null)
         {
             if (TimeFrame.Value.TotalDays > 364)
@@ -69,10 +81,6 @@
                 _count = (int)TimeFrame.Value.TotalMinutes;
             }
         }
-        foreach (TimeUnit val in Enum.GetValues(typeof(TimeUnit)))
-        {
-            _timeUnits.Add(val);
-        }
     }
     private void SetTimeFrame()
     {
@@ -98,6 +106,16 @@
                 break;
         }
     }
+
+
+    [Parameter]
+    public bool Disabled{ get; set;}
+
+
+    [Parameter]
+    public string? Class{ get; set;}
+
+
     [Parameter]
     public TimeSpan? TimeFrame
     {

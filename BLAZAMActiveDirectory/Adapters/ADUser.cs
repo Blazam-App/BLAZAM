@@ -1,17 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Security.AccessControl;
-using BLAZAM.ActiveDirectory.Data;
+﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
+using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
+using System.Security.AccessControl;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADUser : AccountDirectoryAdapter, IADUser
     {
+        public override ActiveDirectoryObjectType ObjectType => ActiveDirectoryObjectType.User;
 
         public string? LogOnTo
         {
@@ -37,6 +40,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute(ActiveDirectoryFields.LogonHours.FieldName, value?.EncodeLogonHours());
             }
         }
+        public virtual async Task<IJob> CommitChangesAsync(IJob? commitJob = null)
+        {
+            return await Task.Run(() =>
+            {
+                return CommitChanges(commitJob);
+            });
+        }
+       
 
         [Required]
         public override string? DisplayName { get => base.DisplayName; set => base.DisplayName = value; }
@@ -53,20 +64,32 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 SetAttribute(ActiveDirectoryFields.HomeDirectory.FieldName, value);
-                if (value == null || value == "") return;
-
+                if (value == null || value == "")
+                {
+                    return;
+                }
 
                 PostCommitSteps.Add(new JobStep("Create home directory", (JobStep step) =>
                 {
                     return Directory.Impersonation.Run(() =>
                     {
-                        if (HomeDirectory == null || HomeDirectory.IsNullOrEmpty()) return true;
+                        if (HomeDirectory == null || HomeDirectory.IsNullOrEmpty())
+                        {
+                            return true;
+                        }
+
                         var homeDirectory = new SystemDirectory(HomeDirectory);
                         if (!homeDirectory.Exists)
+                        {
                             homeDirectory.EnsureCreated();
+                        }
+
                         SetHomeDirectoryPermissions();
                         if (homeDirectory.Exists)
+                        {
                             return true;
+                        }
+
                         return false;
 
                     });
@@ -80,8 +103,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <remarks>Must be called under an identity context that has permission to make these changes</remarks>
         public void SetHomeDirectoryPermissions()
         {
-            if (SAMAccountName == null) throw new AppException("Samaccount name is null while setting home directory");
-            if (HomeDirectory == null) throw new AppException("HomeDirectory is null while setting home directory");
+            if (SAMAccountName == null)
+            {
+                throw new AppException("Samaccount name is null while setting home directory");
+            }
+
+            if (HomeDirectory == null)
+            {
+                throw new AppException("HomeDirectory is null while setting home directory");
+            }
+
             FileSystemRights Rights;
 
             //What rights are we setting?
@@ -125,10 +156,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 base.SAMAccountName = value;
                 if (UserPrincipalName.IsNullOrEmpty())
-                    UserPrincipalName = value + "@" + DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.FQDN;
-
+                {
+                    UserPrincipalName = value + "@" + DatabaseCache.ActiveDirectorySettings?.FQDN;
+                }
                 else
+                {
                     UserPrincipalName = value + "@" + UserPrincipalName?.Split("@")[1];
+                }
             }
 
         }

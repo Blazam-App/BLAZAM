@@ -20,6 +20,8 @@
 
 
 @code {
+    private readonly object _lock = new();
+
     [Parameter]
     public IDirectoryEntryAdapter? Entry { get; set; }
     private List<BreadcrumbItem> _items = new();
@@ -32,24 +34,29 @@
         {
             try
             {
-                var ou = await Entry.GetParentAsync() as IADOrganizationalUnit;
+                var parent = await Entry.GetParentAsync();
+                var ou = parent as IADOrganizationalUnit;
                 var items = new List<BreadcrumbItem>();
                 if (ou is not null)
                 {
                     IADOrganizationalUnit? ouCursor = ou;
-                    do
-                    {
-                        if (ouCursor.Name is not null)
+                    // lock (_lock)
+                    // {
+                        do
                         {
-                            items.Add(new BreadcrumbItem(ouCursor.Name, ouCursor.SearchUri));
-                        }
-                        else
-                        {
-                            Loggers.ActiveDirectoryLogger.Information("OU with null name found in breadcrumb generation for {@Entry}", Entry.DN);
-                        }
-                        ouCursor = await ouCursor.GetParentAsync() as IADOrganizationalUnit;
+                            if (ouCursor.Name is not null)
+                            {
+                                items.Add(new BreadcrumbItem(ouCursor.Name, ouCursor.SearchUri));
+                            }
+                            else
+                            {
+                                Loggers.ActiveDirectoryLogger.Information("OU with null name found in breadcrumb generation for {@Entry}", Entry.DN);
+                            }
+                            ouCursor = (await ouCursor.GetParentAsync()) as IADOrganizationalUnit;
 
-                    } while (ouCursor != null);
+                        } while (ouCursor != null);
+                    //}
+               
                 }
                 items.Reverse();
                 _items = items;

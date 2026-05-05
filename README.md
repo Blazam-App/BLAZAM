@@ -12,14 +12,6 @@
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
 
-## A demo of the Linux beta has been published. 
-
-It's running on Ubuntu Server 2024 with 2 cores of a very weak CPU and 2GB of memory and sits at 4.7GB storage for OS and app... 
-
-The windows demo is Windows Server 2022 with 4 cores of the same CPU and 3GB of memory and sits at 34GB storage for OS and app...
-
-Find the Linux demo at https://blazam.org/demo
-
 ## Screenshots
 ![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)
 ![image](https://github.com/user-attachments/assets/cfa35e1f-facb-4c64-8ad4-1a48de5f4a82)
@@ -92,9 +84,12 @@ Blazam's Web Installer is the recommended installation method.
 
 [Manual Installation](https://docs.blazam.org/install/manual)
 
+## Remarks
+We have users in Ukraine... we support Ukraine in the current conflict with Russia. Slava Ukraine!
+
 ## Star History
 If you like the project, please give it a star! It helps with visibility and motivates us to keep improving it.
-[![Star History Chart](https://api.star-history.com/svg?repos=Blazam-App/BLAZAM&type=Date)](https://www.star-history.com/#Blazam-App/BLAZAM&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=Blazam-App/BLAZAM&type=date&legend=top-left)](https://www.star-history.com/#Blazam-App/BLAZAM&type=date&legend=top-left)
 
 ## Get Paid to Contribute
 If you are interested in contributing to Blazam and receiving compensation for your work, please reach out

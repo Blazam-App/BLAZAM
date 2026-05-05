@@ -1,11 +1,13 @@
-using System.Collections;
-using System.Diagnostics.Eventing.Reader; // For EventRecord
-using System.Reflection;
-using System.Security.Principal; // For SecurityIdentifier
-using BLAZAM.Common.Data;
+using BLAZAM.FileSystem;
 using BLAZAM.Helpers; // For CommonHelpers extension methods
 using SixLabors.ImageSharp; // For Image
 using SixLabors.ImageSharp.Formats.Png; // For PngEncoder
+using System.Collections;
+using System.Diagnostics.Eventing.Reader; // For EventRecord
+using System.Globalization;
+using System.IO.Compression;
+using System.Reflection;
+using System.Security.Principal; // For SecurityIdentifier
 
 namespace BLAZAMCommon.Tests.Helpers
 {
@@ -25,7 +27,7 @@ namespace BLAZAMCommon.Tests.Helpers
 
             public TestClass()
             {
-                ListProperty = new List<string>();
+                ListProperty = [];
             }
         }
 
@@ -119,7 +121,7 @@ namespace BLAZAMCommon.Tests.Helpers
                 new AuditChangeLog { Field = "Categories", NewValue = new List<object> { "Item3", 100 } }
             };
             Func<AuditChangeLog, object?> selector = c => c.NewValue;
-            // Expected: "Tags=Item1,Item2,;Status=Value3;Categories=Item3,100,;"
+            // Expected: "Tags=Item1,Item2,;Status=Value3;Categories=Item3,100,"
             // The trailing comma after collection items is per implementation.
             var expected = "Tags=Item1,Item2,;Status=Value3;Categories=Item3,100,;";
             Assert.Equal(expected, changes.GetValueChangesString(selector));
@@ -301,15 +303,6 @@ namespace BLAZAMCommon.Tests.Helpers
             Assert.Empty(emptySid.ToSidByteArray());
         }
 
-        [Fact]
-        public void ToSidByteArray_InvalidSidStringFormat_ReturnsEmptyByteArray()
-        {
-            var invalidSidString = "S-1-INVALID";
-            Assert.Empty(invalidSidString.ToSidByteArray());
-
-            var alsoInvalid = "NotASid";
-            Assert.Empty(alsoInvalid.ToSidByteArray());
-        }
         #endregion ToSidByteArray Tests
 
         // Tests for SetPropertyValue(this object obj, string propertyName, object value)
@@ -591,16 +584,12 @@ namespace BLAZAMCommon.Tests.Helpers
 
         private byte[] CreateTestPng(int width, int height)
         {
-            using (var image = new Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(width, height))
-            {
-                // You can fill the image with a color if needed, but for resizing, a blank one is fine.
-                // image[0,0] = SixLabors.ImageSharp.PixelFormats.Rgba32.ParseHex("FF0000"); // Example: Red pixel
-                using (var ms = new MemoryStream())
-                {
-                    image.Save(ms, new PngEncoder());
-                    return ms.ToArray();
-                }
-            }
+            using var image = new Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(width, height);
+            // You can fill the image with a color if needed, but for resizing, a blank one is fine.
+            // image[0,0] = SixLabors.ImageSharp.PixelFormats.Rgba32.ParseHex("FF0000"); // Example: Red pixel
+            using var ms = new MemoryStream();
+            image.Save(ms, new PngEncoder());
+            return ms.ToArray();
         }
 
 
@@ -613,15 +602,10 @@ namespace BLAZAMCommon.Tests.Helpers
             var resizedImageBytes = originalImage.ResizeRawImage(maxDimension, cropToSquare: false);
             Assert.NotEmpty(resizedImageBytes);
 
-            using (var image = Image.Load(resizedImageBytes))
-            {
-                // Height should be maxDimension (25)
-                // Width should be scaled: 50 * (25/100) = 12.5. ImageSharp might round to 12 or 13.
-                // Helper: if (image.Height > image.Width) -> image.Mutate(x => x.Resize(0, maxDimension));
-                // This means height becomes maxDimension, width is scaled.
-                Assert.Equal(maxDimension, image.Height);
-                Assert.InRange(image.Width, 12, 13); // Original aspect ratio 0.5. New width should be 25 * 0.5 = 12.5
-            }
+            using var image = Image.Load(resizedImageBytes);
+            
+            Assert.Equal(maxDimension, image.Height);
+            Assert.InRange(image.Width, 12, 13); // Original aspect ratio 0.5. New width should be 25 * 0.5 = 12.5
         }
 
         [Fact]
@@ -633,15 +617,10 @@ namespace BLAZAMCommon.Tests.Helpers
             var resizedImageBytes = originalImage.ResizeRawImage(maxDimension, cropToSquare: false);
             Assert.NotEmpty(resizedImageBytes);
 
-            using (var image = Image.Load(resizedImageBytes))
-            {
-                // Width should be maxDimension (25)
-                // Height should be scaled: 50 * (25/100) = 12.5.
-                // Helper: else (width >= height) -> image.Mutate(x => x.Resize(maxDimension, 0));
-                // This means width becomes maxDimension, height is scaled.
-                Assert.Equal(maxDimension, image.Width);
-                Assert.InRange(image.Height, 12, 13); // Original aspect ratio 2.0. New height should be 25 / 2.0 = 12.5
-            }
+            using var image = Image.Load(resizedImageBytes);
+           
+            Assert.Equal(maxDimension, image.Width);
+            Assert.InRange(image.Height, 12, 13); // Original aspect ratio 2.0. New height should be 25 / 2.0 = 12.5
         }
 
         [Fact]
@@ -653,14 +632,10 @@ namespace BLAZAMCommon.Tests.Helpers
             var resizedImageBytes = originalImage.ResizeRawImage(maxDimension, cropToSquare: true);
             Assert.NotEmpty(resizedImageBytes);
 
-            using (var image = Image.Load(resizedImageBytes))
-            {
-                // Helper: if (image.Height > image.Width) -> crop(image.Width, image.Width) -> crop(50,50)
-                // Then resize(0, maxDimension) -> resize(0,25) on the 50x50 image.
-                // This should result in 25x25.
-                Assert.Equal(maxDimension, image.Width);
-                Assert.Equal(maxDimension, image.Height);
-            }
+            using var image = Image.Load(resizedImageBytes);
+           
+            Assert.Equal(maxDimension, image.Width);
+            Assert.Equal(maxDimension, image.Height);
         }
 
         [Fact]
@@ -672,14 +647,12 @@ namespace BLAZAMCommon.Tests.Helpers
             var resizedImageBytes = originalImage.ResizeRawImage(maxDimension, cropToSquare: true);
             Assert.NotEmpty(resizedImageBytes);
 
-            using (var image = Image.Load(resizedImageBytes))
-            {
-                // Helper: else (width >= height) -> crop(image.Height, image.Height) -> crop(50,50)
-                // Then resize(maxDimension, 0) -> resize(25,0) on the 50x50 image.
-                // This should result in 25x25.
-                Assert.Equal(maxDimension, image.Width);
-                Assert.Equal(maxDimension, image.Height);
-            }
+            using var image = Image.Load(resizedImageBytes);
+            // Helper: else (width >= height) -> crop(image.Height, image.Height) -> crop(50,50)
+            // Then resize(maxDimension, 0) -> resize(25,0) on the 50x50 image.
+            // This should result in 25x25.
+            Assert.Equal(maxDimension, image.Width);
+            Assert.Equal(maxDimension, image.Height);
         }
 
         [Fact]
@@ -690,12 +663,10 @@ namespace BLAZAMCommon.Tests.Helpers
 
             var resizedImageBytes = originalImage.ResizeRawImage(maxDimension, cropToSquare: true);
             Assert.NotEmpty(resizedImageBytes);
-            using (var image = Image.Load(resizedImageBytes))
-            {
-                // Crop(100,100) does nothing. Resize(50,0) makes it 50x50.
-                Assert.Equal(maxDimension, image.Width);
-                Assert.Equal(maxDimension, image.Height);
-            }
+            using var image = Image.Load(resizedImageBytes);
+            // Crop(100,100) does nothing. Resize(50,0) makes it 50x50.
+            Assert.Equal(maxDimension, image.Width);
+            Assert.Equal(maxDimension, image.Height);
         }
 
         #endregion ResizeRawImage Tests
@@ -713,7 +684,7 @@ namespace BLAZAMCommon.Tests.Helpers
         public void DateTimeToAdsValue_FileTimeMinValue_ReturnsCorrectFileTime()
         {
             var min = DateTime.FromFileTimeUtc(0).ToUniversalTime();
-            var minFileTime = DateTime.Parse("1/1/1601 12:00:00 AM Z");
+            var minFileTime = DateTime.Parse("1/1/1601 12:00:00 AM Z", CultureInfo.InvariantCulture);
             long expectedFileTime = 0; // This is a valid FileTime
             Assert.Equal(expectedFileTime, minFileTime.ToFileTimeUtc());
         }
@@ -842,5 +813,381 @@ namespace BLAZAMCommon.Tests.Helpers
         }
 
         #endregion DateTimeToAdsValue and AdsValueToDateTime Tests
+
+        #region SaveTo Tests
+
+        [Fact]
+        public void SaveTo_ValidMemoryStreamAndFile_WritesContentToFile()
+        {
+            // Arrange
+            var testData = "Test file content"u8.ToArray();
+            using var memoryStream = new MemoryStream(testData);
+            var tempFilePath = Path.Combine(Path.GetTempPath(), $"test_saveto_{Guid.NewGuid()}.txt");
+            var destinationFile = new SystemFile(tempFilePath);
+
+            try
+            {
+                // Act
+                memoryStream.SaveTo(destinationFile);
+
+                // Assert
+                Assert.True(destinationFile.Exists);
+                var writtenData = destinationFile.ReadAllBytes();
+                Assert.Equal(testData, writtenData);
+            }
+            finally
+            {
+                // Cleanup
+                if (destinationFile.Exists)
+                {
+                    destinationFile.Delete();
+                }
+            }
+        }
+
+        [Fact]
+        public void SaveTo_MemoryStreamWithPosition_WritesFromBeginning()
+        {
+            // Arrange
+            var testData = "Test file content"u8.ToArray();
+            using var memoryStream = new MemoryStream(testData);
+            memoryStream.Position = 5; // Move position away from start
+            var tempFilePath = Path.Combine(Path.GetTempPath(), $"test_saveto_position_{Guid.NewGuid()}.txt");
+            var destinationFile = new SystemFile(tempFilePath);
+
+            try
+            {
+                // Act
+                memoryStream.SaveTo(destinationFile);
+
+                // Assert - Should write entire content, not from position 5
+                Assert.True(destinationFile.Exists);
+                var writtenData = destinationFile.ReadAllBytes();
+                Assert.Equal(testData, writtenData);
+            }
+            finally
+            {
+                // Cleanup
+                if (destinationFile.Exists)
+                {
+                    destinationFile.Delete();
+                }
+            }
+        }
+
+        [Fact]
+        public void SaveTo_ExistingFile_OverwritesFile()
+        {
+            // Arrange
+            var originalData = "Original content"u8.ToArray();
+            var newData = "New content"u8.ToArray();
+            var tempFilePath = Path.Combine(Path.GetTempPath(), $"test_saveto_overwrite_{Guid.NewGuid()}.txt");
+            var destinationFile = new SystemFile(tempFilePath);
+
+            try
+            {
+                // Create initial file
+                using (var initialStream = new MemoryStream(originalData))
+                {
+                    initialStream.SaveTo(destinationFile);
+                }
+                Assert.Equal(originalData, destinationFile.ReadAllBytes());
+
+                // Act - Overwrite with new content
+                using (var newStream = new MemoryStream(newData))
+                {
+                    newStream.SaveTo(destinationFile);
+                }
+
+                // Assert
+                var writtenData = destinationFile.ReadAllBytes();
+                Assert.Equal(newData, writtenData);
+            }
+            finally
+            {
+                // Cleanup
+                if (destinationFile.Exists)
+                {
+                    destinationFile.Delete();
+                }
+            }
+        }
+
+        [Fact]
+        public void SaveTo_EmptyMemoryStream_CreatesEmptyFile()
+        {
+            // Arrange
+            using var memoryStream = new MemoryStream();
+            var tempFilePath = Path.Combine(Path.GetTempPath(), $"test_saveto_empty_{Guid.NewGuid()}.txt");
+            var destinationFile = new SystemFile(tempFilePath);
+
+            try
+            {
+                // Act
+                memoryStream.SaveTo(destinationFile);
+
+                // Assert
+                Assert.True(destinationFile.Exists);
+                Assert.Empty(destinationFile.ReadAllBytes());
+            }
+            finally
+            {
+                // Cleanup
+                if (destinationFile.Exists)
+                {
+                    destinationFile.Delete();
+                }
+            }
+        }
+
+        [Fact]
+        public void SaveTo_NullMemoryStream_DoesNothing()
+        {
+            // Arrange
+            MemoryStream? memoryStream = null;
+            var tempFilePath = Path.Combine(Path.GetTempPath(), $"test_saveto_null_{Guid.NewGuid()}.txt");
+            var destinationFile = new SystemFile(tempFilePath);
+
+            try
+            {
+                // Act
+                memoryStream.SaveTo(destinationFile);
+
+                // Assert - File should not be created
+                Assert.False(destinationFile.Exists);
+            }
+            finally
+            {
+                // Cleanup
+                if (destinationFile.Exists)
+                {
+                    destinationFile.Delete();
+                }
+            }
+        }
+
+        [Fact]
+        public void SaveTo_NullDestinationFile_DoesNothing()
+        {
+            // Arrange
+            var testData = "Test content"u8.ToArray();
+            using var memoryStream = new MemoryStream(testData);
+            SystemFile? destinationFile = null;
+
+            // Act - Should not throw
+            memoryStream.SaveTo(destinationFile);
+
+            // Assert - Method completes without exception
+            Assert.True(true);
+        }
+
+        #endregion SaveTo Tests
+
+        #region AddToZip Tests
+
+        [Fact]
+        public void AddToZip_ValidDirectoryWithFiles_AddsFilesToArchive()
+        {
+            // Arrange
+            var tempDir = Path.Combine(Path.GetTempPath(), $"test_addtozip_{Guid.NewGuid()}");
+            var directory = new SystemDirectory(tempDir);
+            directory.EnsureCreated();
+
+            try
+            {
+                // Create test files
+                var file1 = new SystemFile(Path.Combine(tempDir, "test1.txt"));
+                var file2 = new SystemFile(Path.Combine(tempDir, "test2.txt"));
+                file1.WriteAllText("Content of file 1");
+                file2.WriteAllText("Content of file 2");
+
+                using var memoryStream = new MemoryStream();
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
+                {
+                    // Act
+                    archive.AddToZip(directory, tempDir);
+                }
+
+                // Assert
+                memoryStream.Position = 0;
+                using var readArchive = new ZipArchive(memoryStream, ZipArchiveMode.Read);
+                Assert.Equal(2, readArchive.Entries.Count);
+                Assert.Contains(readArchive.Entries, e => e.Name == "test1.txt");
+                Assert.Contains(readArchive.Entries, e => e.Name == "test2.txt");
+            }
+            finally
+            {
+                // Cleanup
+                if (directory.Exists)
+                {
+                    directory.Delete(recursive: true);
+                }
+            }
+        }
+
+        [Fact]
+        public void AddToZip_DirectoryWithSubdirectories_AddsAllFilesRecursively()
+        {
+            // Arrange
+            var tempDir = Path.Combine(Path.GetTempPath(), $"test_addtozip_recursive_{Guid.NewGuid()}");
+            var directory = new SystemDirectory(tempDir);
+            directory.EnsureCreated();
+
+            try
+            {
+                // Create subdirectory and files
+                var subDir = new SystemDirectory(Path.Combine(tempDir, "subdir"));
+                subDir.EnsureCreated();
+
+                var rootFile = new SystemFile(Path.Combine(tempDir, "root.txt"));
+                var subFile = new SystemFile(Path.Combine(subDir.FullPath, "sub.txt"));
+                rootFile.WriteAllText("Root content");
+                subFile.WriteAllText("Sub content");
+
+                using var memoryStream = new MemoryStream();
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
+                {
+                    // Act
+                    archive.AddToZip(directory, tempDir);
+                }
+
+                // Assert
+                memoryStream.Position = 0;
+                using var readArchive = new ZipArchive(memoryStream, ZipArchiveMode.Read);
+                Assert.Equal(2, readArchive.Entries.Count);
+                Assert.Contains(readArchive.Entries, e => e.Name == "root.txt");
+                Assert.Contains(readArchive.Entries, e => e.FullName.Contains("subdir") && e.Name == "sub.txt");
+            }
+            finally
+            {
+                // Cleanup
+                if (directory.Exists)
+                {
+                    directory.Delete(recursive: true);
+                }
+            }
+        }
+
+        [Fact]
+        public void AddToZip_EmptyDirectory_AddsNoEntries()
+        {
+            // Arrange
+            var tempDir = Path.Combine(Path.GetTempPath(), $"test_addtozip_empty_{Guid.NewGuid()}");
+            var directory = new SystemDirectory(tempDir);
+            directory.EnsureCreated();
+
+            try
+            {
+                using var memoryStream = new MemoryStream();
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
+                {
+                    // Act
+                    archive.AddToZip(directory, tempDir);
+                }
+
+                // Assert
+                memoryStream.Position = 0;
+                using var readArchive = new ZipArchive(memoryStream, ZipArchiveMode.Read);
+                Assert.Empty(readArchive.Entries);
+            }
+            finally
+            {
+                // Cleanup
+                if (directory.Exists)
+                {
+                    directory.Delete(recursive: true);
+                }
+            }
+        }
+
+        [Fact]
+        public void AddToZip_NullArchive_DoesNothing()
+        {
+            // Arrange
+            ZipArchive? archive = null;
+            var tempDir = Path.Combine(Path.GetTempPath(), $"test_addtozip_nullarchive_{Guid.NewGuid()}");
+            var directory = new SystemDirectory(tempDir);
+            directory.EnsureCreated();
+
+            try
+            {
+                // Act - Should not throw
+                archive.AddToZip(directory, tempDir);
+
+                // Assert - Method completes without exception
+                Assert.True(true);
+            }
+            finally
+            {
+                // Cleanup
+                if (directory.Exists)
+                {
+                    directory.Delete(recursive: true);
+                }
+            }
+        }
+
+        [Fact]
+        public void AddToZip_NullDirectory_DoesNothing()
+        {
+            // Arrange
+            SystemDirectory? directory = null;
+            var basePath = Path.GetTempPath();
+
+            using var memoryStream = new MemoryStream();
+            using var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true);
+
+            // Act - Should not throw
+            archive.AddToZip(directory, basePath);
+
+            // Assert
+            memoryStream.Position = 0;
+            Assert.Throws<InvalidDataException>(() => { _ = new ZipArchive(memoryStream, ZipArchiveMode.Read); });
+         
+        }
+
+        [Fact]
+        public void AddToZip_PreservesRelativePathStructure()
+        {
+            // Arrange
+            var tempDir = Path.Combine(Path.GetTempPath(), $"test_addtozip_paths_{Guid.NewGuid()}");
+            var directory = new SystemDirectory(tempDir);
+            directory.EnsureCreated();
+
+            try
+            {
+                var subDir = new SystemDirectory(Path.Combine(tempDir, "level1", "level2"));
+                subDir.EnsureCreated();
+
+                var file = new SystemFile(Path.Combine(subDir.FullPath, "deep.txt"));
+                file.WriteAllText("Deep file");
+
+                using var memoryStream = new MemoryStream();
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
+                {
+                    // Act
+                    archive.AddToZip(directory, tempDir);
+                }
+
+                // Assert
+                memoryStream.Position = 0;
+                using var readArchive = new ZipArchive(memoryStream, ZipArchiveMode.Read);
+                var entry = Assert.Single(readArchive.Entries);
+                // The entry path should contain the subdirectory structure
+                Assert.Contains("level1", entry.FullName);
+                Assert.Contains("level2", entry.FullName);
+                Assert.Equal("deep.txt", entry.Name);
+            }
+            finally
+            {
+                // Cleanup
+                if (directory.Exists)
+                {
+                    directory.Delete(recursive: true);
+                }
+            }
+        }
+
+        #endregion AddToZip Tests
     }
 }

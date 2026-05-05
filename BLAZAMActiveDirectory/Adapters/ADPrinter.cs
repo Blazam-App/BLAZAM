@@ -1,9 +1,12 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADPrinter : DirectoryEntryAdapter, IADPrinter
     {
+        public override ActiveDirectoryObjectType ObjectType => ActiveDirectoryObjectType.Printer;
+
         public string? DriverName
         {
 

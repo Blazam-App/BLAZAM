@@ -1,5 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
@@ -80,6 +79,7 @@ namespace BLAZAM.Services.Audit
         }
         public override async Task<bool> Changed(IDirectoryEntryAdapter changedEntry, List<AuditChangeLog> changes)
         {
+            Analytics?.ObjectModified(ActiveDirectoryObjectType.Group);
 
             await Log(c => c.DirectoryEntryAuditLogs,
                 AuditActions.Group_Edited,

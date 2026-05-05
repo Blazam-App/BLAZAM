@@ -46,14 +46,16 @@ namespace BLAZAM.Middleware
                             SendTo(context, "/");
                             break;
                         case ServiceConnectionState.Up:
-                            var dbcontext = await factory.CreateDbContextAsync();
-                            if (dbcontext.SeedMismatch)
                             {
-                                RedirectToOops(context,
-                                    "The application database is incompatible with this version of the application",
-                                    "The database seed is different from the current version of the application",
-                                    "Either install an older version of the application. Or create a new database to use with the new version.",
-                                    "Database seed mismatch");
+                                using var dbcontext = await factory.CreateDbContextAsync();
+                                if (dbcontext.SeedMismatch)
+                                {
+                                    RedirectToOops(context,
+                                        "The application database is incompatible with this version of the application",
+                                        "The database seed is different from the current version of the application",
+                                        "Either install an older version of the application. Or create a new database to use with the new version.",
+                                        "Database seed mismatch");
+                                }
                             }
 
                             break;

@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>{0} 對應使用此存取層級並將被刪除</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>您必須同時提供名字和姓氏</value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>要修改使用者名稱，請按一下工具列/齒輪功能表中的重新命名按鈕</value>
   </data>
@@ -222,6 +225,9 @@
   <data name="No_Request_Actions_Available" xml:space="preserve">
     <value>此項目沒有可請求的動作。</value>
   </data>
+  <data name="No_Request_Fields_Available" xml:space="preserve">
+    <value>此項目沒有可請求的欄位</value>
+  </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>產生新的驗證器權杖將使現有權杖失效！</value>
   </data>
@@ -232,6 +238,9 @@
     <value>管理員已重新命名此工作站。它將在 {0} 秒後重新啟動。</value>
   </data>
   <data name="Request_To" xml:space="preserve">
+    <value>請求 {0}</value>
+  </data>
+  <data name="Request_For" xml:space="preserve">
     <value>請求 {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
@@ -272,5 +281,35 @@
   <data name="Update_Credential_Is_Invalid" xml:space="preserve">
     <value>沒有設定具有應用程式目錄寫入權限的認證！
 嘗試設定自訂更新認證。</value>
+  </data>
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> 正在請求 {0} 的讀取權限於 </value>
+  </data>
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> 正在請求 {0} 權限於 </value>
+  </data>
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> 正在請求 {0} 的編輯權限於 </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>要求使用者在下次登入時變更密碼</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>已為您的帳戶請求密碼重設。</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>點擊此處重設您的密碼</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> 您的重設連結將於 {0} 過期</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>如果您未請求此重設，可以安全地忽略它。</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>此請求來自：{0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>如果上面的連結無法使用，請將以下內容複製到網址列。</value>
   </data>
 </root>

@@ -178,6 +178,156 @@ namespace BLAZAM.Tests.FileSystem
             // Clean up
             File.Delete(path);
         }
+
+        [Fact]
+        public void FilePercentage_WhenExpectedSizeIsZero_ReturnsZero()
+        {
+            // Arrange
+            var fileProgress = new FileProgress
+            {
+                ExpectedSize = 0,
+                CompletedBytes = 100
+            };
+
+            // Act
+            var percentage = fileProgress.FilePercentage;
+
+            // Assert
+            Assert.Equal(0, percentage);
+        }
+
+        [Fact]
+        public void FilePercentage_WhenNoProgress_ReturnsZero()
+        {
+            // Arrange
+            var fileProgress = new FileProgress
+            {
+                ExpectedSize = 1000,
+                CompletedBytes = 0
+            };
+
+            // Act
+            var percentage = fileProgress.FilePercentage;
+
+            // Assert
+            Assert.Equal(0, percentage);
+        }
+
+        [Fact]
+        public void FilePercentage_WhenHalfComplete_ReturnsFiftyPercent()
+        {
+            // Arrange
+            var fileProgress = new FileProgress
+            {
+                ExpectedSize = 1000,
+                CompletedBytes = 500
+            };
+
+            // Act
+            var percentage = fileProgress.FilePercentage;
+
+            // Assert
+            Assert.Equal(50, percentage);
+        }
+
+        [Fact]
+        public void FilePercentage_WhenFullyComplete_ReturnsOneHundredPercent()
+        {
+            // Arrange
+            var fileProgress = new FileProgress
+            {
+                ExpectedSize = 1000,
+                CompletedBytes = 1000
+            };
+
+            // Act
+            var percentage = fileProgress.FilePercentage;
+
+            // Assert
+            Assert.Equal(100, percentage);
+        }
+
+        [Fact]
+        public void FilePercentage_WithLargeFileSize_CalculatesCorrectly()
+        {
+            // Arrange
+            var fileProgress = new FileProgress
+            {
+                ExpectedSize = 5_000_000_000, // 5 GB
+                CompletedBytes = 1_250_000_000 // 1.25 GB
+            };
+
+            // Act
+            var percentage = fileProgress.FilePercentage;
+
+            // Assert
+            Assert.Equal(25, percentage);
+        }
+
+        [Fact]
+        public void FilePercentage_WithSmallProgress_RoundsDown()
+        {
+            // Arrange
+            var fileProgress = new FileProgress
+            {
+                ExpectedSize = 1000,
+                CompletedBytes = 1
+            };
+
+            // Act
+            var percentage = fileProgress.FilePercentage;
+
+            // Assert
+            Assert.Equal(0, percentage); // 0.1% rounds down to 0
+        }
+
+        [Theory]
+        [InlineData(1000, 250, 25)]
+        [InlineData(1000, 750, 75)]
+        [InlineData(100, 33, 33)]
+        [InlineData(100, 99, 99)]
+        [InlineData(10000, 9999, 99)]
+        public void FilePercentage_WithVariousValues_CalculatesCorrectly(long expectedSize, long completedBytes, int expectedPercentage)
+        {
+            // Arrange
+            var fileProgress = new FileProgress
+            {
+                ExpectedSize = expectedSize,
+                CompletedBytes = completedBytes
+            };
+
+            // Act
+            var percentage = fileProgress.FilePercentage;
+
+            // Assert
+            Assert.Equal(expectedPercentage, percentage);
+        }
+
+        [Fact]
+        public void ExpectedSize_CanBeSet()
+        {
+            // Arrange
+            var fileProgress = new FileProgress();
+
+            // Act
+            fileProgress.ExpectedSize = 2048;
+
+            // Assert
+            Assert.Equal(2048, fileProgress.ExpectedSize);
+        }
+
+        [Fact]
+        public void CompletedBytes_CanBeSet()
+        {
+            // Arrange
+            var fileProgress = new FileProgress();
+
+            // Act
+            fileProgress.CompletedBytes = 1024;
+
+            // Assert
+            Assert.Equal(1024, fileProgress.CompletedBytes);
+        }
     }
 
 }

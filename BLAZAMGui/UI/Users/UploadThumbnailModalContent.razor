@@ -9,7 +9,6 @@
         @AppLocalization[Lang.Upload_Thumbnail_Photo]
     </MudText>
     <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
-        <ActivatorContent>
             <MudButton HtmlTag="label"
             Variant="Variant.Filled"
             Color="Color.Primary"
@@ -18,7 +17,6 @@
             Disabled=LoadingData>
                 @AppLocalization[Lang.Upload_File]
             </MudButton>
-        </ActivatorContent>
     </MudFileUpload>
 @code {
     byte[]? newThumbnail;

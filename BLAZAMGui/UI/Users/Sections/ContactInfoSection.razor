@@ -1,57 +1,65 @@
 ﻿@inherits DirectoryModelComponentElement
 
-@if (Contact.CanReadField(ActiveDirectoryFields.HomePhone) ||
-          Contact.CanReadField(ActiveDirectoryFields.StreetAddress) ||
-          Contact.CanReadField(ActiveDirectoryFields.POBox) ||
-          Contact.CanReadField(ActiveDirectoryFields.City) ||
-          Contact.CanReadField(ActiveDirectoryFields.State) ||
-          Contact.CanReadField(ActiveDirectoryFields.PostalCode)
-          )
+@if (ShowSection)
 {
     <ViewSection Title=@AppLocalization[Lang.Contact_Info]>
+        @if (ShowField(ActiveDirectoryFields.TelephoneNumber))
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Telephone_Number]"
+                             @bind-Value="@Contact.TelephoneNumber"
+                             Required=@(RequireField(ActiveDirectoryFields.TelephoneNumber))
+                             Disabled=@(DisableField(ActiveDirectoryFields.TelephoneNumber)) />
 
-        @if (Contact.CanReadField(ActiveDirectoryFields.HomePhone))
+        }
+        @if (ShowField(ActiveDirectoryFields.HomePhone))
         {
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.Home_Phone]"
                              @bind-Value="@Contact.HomePhone"
-                             Disabled=@(!EditMode || !Contact.CanEditField(ActiveDirectoryFields.HomePhone)) />
+                             Required=@(RequireField(ActiveDirectoryFields.HomePhone))
+                             Disabled=@(DisableField(ActiveDirectoryFields.HomePhone)) />
 
         }
-        @if (Contact.CanReadField(ActiveDirectoryFields.StreetAddress))
+        @if (ShowField(ActiveDirectoryFields.StreetAddress))
         {
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.Street_Address]"
                              @bind-Value="@Contact.StreetAddress"
-                             Disabled=@(!EditMode || !Contact.CanEditField(ActiveDirectoryFields.StreetAddress)) />
+                             Required=@(RequireField(ActiveDirectoryFields.StreetAddress))
+                             Disabled=@(DisableField(ActiveDirectoryFields.StreetAddress)) />
         }
-        @if (Contact.CanReadField(ActiveDirectoryFields.POBox))
+        @if (ShowField(ActiveDirectoryFields.POBox))
         {
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.PO_Box]"
                              @bind-Value="@Contact.POBox"
-                             Disabled=@(!EditMode || !Contact.CanEditField(ActiveDirectoryFields.POBox)) />
+                             Required=@(RequireField(ActiveDirectoryFields.POBox))
+                             Disabled=@(DisableField(ActiveDirectoryFields.POBox)) />
         }
-        @if (Contact.CanReadField(ActiveDirectoryFields.City))
+        @if (ShowField(ActiveDirectoryFields.City))
         {
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.City]"
                              @bind-Value="@Contact.City"
-                             Disabled=@(!EditMode || !Contact.CanEditField(ActiveDirectoryFields.City)) />
+                             Required=@(RequireField(ActiveDirectoryFields.City))
+                             Disabled=@(DisableField(ActiveDirectoryFields.City)) />
         }
-        @if (Contact.CanReadField(ActiveDirectoryFields.State))
+        @if (ShowField(ActiveDirectoryFields.State))
         {
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.State]"
                              @bind-Value="@Contact.State"
-                             Disabled=@(!EditMode || !Contact.CanEditField(ActiveDirectoryFields.State)) />
+                             Required=@(RequireField(ActiveDirectoryFields.State))
+                             Disabled=@(DisableField(ActiveDirectoryFields.State)) />
         }
-        @if (Contact.CanReadField(ActiveDirectoryFields.PostalCode))
+        @if (ShowField(ActiveDirectoryFields.PostalCode))
         {
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.Zip_Code]"
                              @bind-Value="@Contact.Zip"
-                             Disabled=@(!EditMode || !Contact.CanEditField(ActiveDirectoryFields.PostalCode)) />
+                             Required=@(RequireField(ActiveDirectoryFields.PostalCode))
+                             Disabled=@(DisableField(ActiveDirectoryFields.PostalCode)) />
         }
 
         <PluginComponents Page="@PageType.User" Location="@PageLocation.ContactInfo" />
@@ -60,5 +68,11 @@
 }
 
 @code {
-
+    bool ShowSection => ShowField(ActiveDirectoryFields.HomePhone) ||
+          ShowField(ActiveDirectoryFields.StreetAddress) ||
+          ShowField(ActiveDirectoryFields.TelephoneNumber) ||
+          ShowField(ActiveDirectoryFields.POBox) ||
+          ShowField(ActiveDirectoryFields.City) ||
+          ShowField(ActiveDirectoryFields.State) ||
+          ShowField(ActiveDirectoryFields.PostalCode);
 }

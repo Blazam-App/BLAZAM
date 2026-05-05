@@ -1,6 +1,5 @@
 @using System.Diagnostics;
 @using BLAZAM.Common.Exceptions;
-@using BLAZAM.Global.Exceptions
 @inherits ComputerViewBase
 
 @implements IDisposable
@@ -79,12 +78,6 @@ else
     IRemoteSession? sessionToMessage;
     AppModal? sessionMessageModal;
 
-
-
-
-
-
-
     string? sessionsErrorMessage;
     Timer? t;
     List<IRemoteSession> Sessions {get; set;}
@@ -124,17 +117,17 @@ else
         {
             if (Computer != null && Computer.IsOnline == true)
             {
-                Sessions = await Computer.GetRemoteSessionsAsync();
+                var newSessions = await Computer.GetRemoteSessionsAsync();
+                Sessions?.ForEach(s =>
+                {
+                    s.OnSessionDown -= OnSessionDown;
+                    s.OnSessionUpdated -= OnSessionUpdated; 
+                });
+                Sessions = newSessions;
                 Sessions.ForEach(s =>
                 {
-                    s.OnSessionDown += ((s) =>
-                    {
-                        Sessions.Remove(s);
-                    });
-                    s.OnSessionUpdated += (async (s) =>
-                    {
-                        await StateHasChangedAsync();
-                    });
+                    s.OnSessionDown += OnSessionDown;
+                    s.OnSessionUpdated += OnSessionUpdated;
 
                 });
                 sessionsErrorMessage = null;
@@ -148,11 +141,25 @@ else
 
         await StateHasChangedAsync();
     }
+    private void OnSessionDown(IRemoteSession s)
+    {
+        Sessions.Remove(s);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async void OnSessionUpdated(IRemoteSession s)
+    {
+        await StateHasChangedAsync();
+    }
+
     public override void Dispose()
     {
         base.Dispose();
         t?.Dispose();
-        Sessions?.ForEach(s => {
+        Sessions?.ForEach(s =>
+        {
+            s.OnSessionDown -= OnSessionDown;
+            s.OnSessionUpdated -= OnSessionUpdated;
             s?.Dispose();
         });
     }

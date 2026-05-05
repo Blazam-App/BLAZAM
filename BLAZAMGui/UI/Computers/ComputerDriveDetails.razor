@@ -23,12 +23,12 @@
                         @(
                                         context.Item.Capacity.Round(0).ToString() + "GB"
                                         )
-                </CellTemplate>
-            </TemplateColumn>
-            <PropertyColumn Title="@AppLocalization[Lang.Memory]" Property="x => x.FileSystem" />
-            <PropertyColumn Title=@AppLocalization[Lang.Serial] Property="x => x.Serial" />
-        </Columns>
-    </MudDataGrid>
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Title="@AppLocalization[Lang.Memory]" Property="x => x.FileSystem" />
+                <PropertyColumn Title=@AppLocalization[Lang.Serial] Property="x => x.Serial" />
+            </Columns>
+        </MudDataGrid>
 
     }
 
@@ -48,20 +48,24 @@ else
         {
             GetDriveData();
         }
-        Computer.OnOnlineChanged += (async (status) =>
-        {
-            if (status == true)
-            {
-                GetDriveData();
-            }
-            await StateHasChangedAsync();
-
-        });
-
+        Computer.OnOnlineChanged += OnlineChanged;
 
         base.OnInitialized();
+    }
 
+    public override void Dispose()
+    {
+        base.Dispose();
+        Computer.OnOnlineChanged -= OnlineChanged;
+    }
 
+    private async void OnlineChanged(bool status)
+    {
+        if (status == true)
+        {
+            GetDriveData();
+        }
+        await StateHasChangedAsync();
     }
     private void GetDriveData()
     {

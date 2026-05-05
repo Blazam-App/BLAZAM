@@ -3,15 +3,15 @@ namespace BLAZAMDatabase.Tests
 {
     public class ConnectionStringTests
     {
-        const string Valid_SQLite_Connection_String = "Data Source=C:\\ProgramData\\Blazam\\database.db;";
-        const string Valid_SQLite_Connection_String2 = "data source=C:\\ProgramData\\Blazam\\database.db;";
-        const string Valid_SQLite_Connection_String3 = "Data Source=C:\\ProgramData\\Blazam\\database.db";
-        const string Valid_SQL_Connection_String = "Data Source=sql-blazam-org;Database=BlazamTest;User Id=sa;Password=blazam;";
-        const string Valid_SQL_Connection_String2 = "data source=sql-blazam-org;database=BlazamTest;user id=sa;password=blazam;";
-        const string Valid_SQL_Connection_String3 = "Data Source=sql-blazam-org;Database=BlazamTest;User Id=sa;Password=blazam";
-        const string Valid_SQLExpress_Connection_String = "Data Source=sql-blazam-org\\SQLEXPRESS,1433;Database=BlazamTest;User Id=sa;Password=blazam;";
-        const string Valid_SQLExpress_Connection_String2 = "data source=sql-blazam-org\\SQLEXPRESS,1433;database=BlazamTest;user id=sa;password=blazam;";
-        const string Valid_SQLExpress_Connection_String3 = "Data Source=sql-blazam-org\\SQLEXPRESS,1433;Database=BlazamTest;User Id=sa;Password=blazam";
+        private const string Valid_SQLite_Connection_String = "Data Source=C:\\ProgramData\\Blazam\\database.db;";
+        private const string Valid_SQLite_Connection_String2 = "data source=C:\\ProgramData\\Blazam\\database.db;";
+        private const string Valid_SQLite_Connection_String3 = "Data Source=C:\\ProgramData\\Blazam\\database.db";
+        private const string Valid_SQL_Connection_String = "Data Source=sql-blazam-org;Database=BlazamTest;User Id=sa;Password=blazam;";
+        private const string Valid_SQL_Connection_String2 = "data source=sql-blazam-org;database=BlazamTest;user id=sa;password=blazam;";
+        private const string Valid_SQL_Connection_String3 = "Data Source=sql-blazam-org;Database=BlazamTest;User Id=sa;Password=blazam";
+        private const string Valid_SQLExpress_Connection_String = "Data Source=sql-blazam-org\\SQLEXPRESS,1433;Database=BlazamTest;User Id=sa;Password=blazam;";
+        private const string Valid_SQLExpress_Connection_String2 = "data source=sql-blazam-org\\SQLEXPRESS,1433;database=BlazamTest;user id=sa;password=blazam;";
+        private const string Valid_SQLExpress_Connection_String3 = "Data Source=sql-blazam-org\\SQLEXPRESS,1433;Database=BlazamTest;User Id=sa;Password=blazam";
 
         [Theory]
         [InlineData(Valid_SQLite_Connection_String)]

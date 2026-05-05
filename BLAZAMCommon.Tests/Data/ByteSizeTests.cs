@@ -1,6 +1,4 @@
-﻿using BLAZAM.Common.Data;
-
-namespace BLAZAMCommon.Tests.Data
+﻿namespace BLAZAMCommon.Tests.Data
 {
     public class ByteSizeTests
     {

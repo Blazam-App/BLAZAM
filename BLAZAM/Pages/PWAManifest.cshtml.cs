@@ -2,7 +2,6 @@ using BLAZAM.Static;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace BLAZAM.Pages
 {
@@ -18,7 +17,7 @@ namespace BLAZAM.Pages
     {
         public string short_name { get; set; } = "Blazam";
         public string name { get; set; } = "Blazam";
-        public List<ManifestIcon> icons { get; set; } = new();
+        public List<ManifestIcon> icons { get; set; } = [];
         public string start_url { get; set; } = ".";
         public string display { get; set; } = "minimal-ui";
         public string theme_color { get; set; } = "#000000";
@@ -43,12 +42,14 @@ namespace BLAZAM.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            var context = await _factory.CreateDbContextAsync();
+            using var context = await _factory.CreateDbContextAsync();
             var manifest = new PWAManifest();
-            var icon = new ManifestIcon();
-            icon.src = @StaticAssets.ApplicationIconUri;
-            icon.sizes = "250x250";
-            icon.type = "image/png";
+            var icon = new ManifestIcon
+            {
+                src = @StaticAssets.ApplicationIconUri,
+                sizes = "250x250",
+                type = "image/png"
+            };
             manifest.icons.Add(icon);
             manifest.serviceworker.src = "/sw.js";
             try
@@ -64,7 +65,7 @@ namespace BLAZAM.Pages
             {
                 // ignore
             }
-            return Content(JsonConvert.SerializeObject(manifest, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore }));
+            return Content(manifest.ToJson());
 
 
         }

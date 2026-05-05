@@ -2,90 +2,71 @@
 
 namespace BLAZAM.Common.Data
 {
+    /// <summary>
+    /// Represents the various possible outcomes of a login attempt.
+    /// </summary>
     public enum LoginResultStatus
     {
-        OK, BadCredentials, UnauthorizedImpersonation, NoData, NoUsername, NoPassword, UnknownFailure,
-        DeniedLogin, DuoRequested, GoogleAuthenticatorRequested,
+        /// <summary>
+        /// Login was successful.
+        /// </summary>
+        OK,
+        
+        /// <summary>
+        /// Invalid username or password was provided.
+        /// </summary>
+        BadCredentials,
+        
+        /// <summary>
+        /// User attempted to impersonate another user without proper authorization.
+        /// </summary>
+        UnauthorizedImpersonation,
+        
+        /// <summary>
+        /// No data was received in the login request.
+        /// </summary>
+        NoData,
+        
+        /// <summary>
+        /// Username was not provided in the login request.
+        /// </summary>
+        NoUsername,
+        
+        /// <summary>
+        /// Password was not provided in the login request.
+        /// </summary>
+        NoPassword,
+        
+        /// <summary>
+        /// Login failed for an unknown or unexpected reason.
+        /// </summary>
+        UnknownFailure,
+        
+        /// <summary>
+        /// User's login attempt was denied due to insufficient permissions.
+        /// </summary>
+        DeniedLogin,
+        
+        /// <summary>
+        /// Duo two-factor authentication is required to complete the login.
+        /// </summary>
+        DuoRequested,
+        
+        /// <summary>
+        /// Google Authenticator verification is required to complete the login.
+        /// </summary>
+        GoogleAuthenticatorRequested,
+        
+        /// <summary>
+        /// User needs to register their Google Authenticator device.
+        /// </summary>
         GoogleAuthenticatorRegistrationRequested,
+        
+        /// <summary>
+        /// User account is locked out due to too many failed login attempts.
+        /// </summary>
         LockedOut
     }
-    public class LoginResult
-    {
-
-
-
-        public LoginResult UnauthorizedImpersonation()
-        {
-            Status = LoginResultStatus.UnauthorizedImpersonation;
-
-            return this;
-        }
-        public LoginResult DuoRequested(AuthenticationState state)
-        {
-            AuthenticationState = state;
-            Status = LoginResultStatus.DuoRequested;
-
-            return this;
-        }
-        public LoginResult GoogleAuthenticatorRequested(AuthenticationState state)
-        {
-            AuthenticationState = state;
-            Status = LoginResultStatus.GoogleAuthenticatorRequested;
-
-            return this;
-        }
-        public LoginResult BadCredentials()
-        {
-            Status = LoginResultStatus.BadCredentials;
-
-            return this;
-        }
-        public LoginResult NoData()
-        {
-            Status = LoginResultStatus.NoData;
-
-            return this;
-        }
-        public LoginResult NoUsername()
-        {
-            Status = LoginResultStatus.NoUsername;
-
-            return this;
-        }
-        public LoginResult NoPassword()
-        {
-            Status = LoginResultStatus.NoPassword;
-
-            return this;
-        }
-
-
-
-        public LoginResult UnknownFailure()
-        {
-            Status = LoginResultStatus.UnknownFailure;
-
-            return this;
-        }
-
-        public AuthenticationState AuthenticationState { get; set; }
-        public LoginResult Success(AuthenticationState result)
-        {
-            Status = LoginResultStatus.OK;
-            AuthenticationState = result;
-            return this;
-        }
-
-        public LoginResult DeniedLogin()
-        {
-            Status = LoginResultStatus.DeniedLogin;
-
-            return this;
-        }
-
-        public LoginResultStatus Status
-        {
-            get; internal set;
-        }
-    }
+    
+   
 }

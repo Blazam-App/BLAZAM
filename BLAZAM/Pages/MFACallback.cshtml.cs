@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using BLAZAM.Services;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Duo;
@@ -8,6 +7,7 @@ using DuoUniversal;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 
 namespace BLAZAM.Pages
 {
@@ -41,11 +41,6 @@ namespace BLAZAM.Pages
             _duoClientProvider = duoClientProvider;
             _userStateService = userStateService;
         }
-
-        /// <summary>
-        /// Gets the authentication response message from the Duo callback.
-        /// </summary>
-        public string AuthResponse { get; private set; }
 
         /// <summary>
         /// Handles the GET request from Duo's MFA callback, validates the state and code,
@@ -94,27 +89,14 @@ namespace BLAZAM.Pages
         /// <returns>An <see cref="IActionResult"/> indicating success or failure of authentication.</returns>
         private async Task<IActionResult> ProcessCallback(string? code, MFARequest? mFARequest)
         {
-            // Get the Duo client again.  This can be either be cached in the session or newly built.
-            // The only stateful information in the Client is your configuration, so you could even use the same client for multiple
-            // user authentications if desired.
-            Client duoClient = _duoClientProvider.GetDuoClient(Request.Scheme + "://" + Request.Host + "/mfacallback");
-            var username = mFARequest.user.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value;
-            // Get a summary of the authentication from Duo.  This will trigger an exception if the username does not match.
-            try
+            if (await _duoClientProvider.VerifyCallback(Request.Scheme + "://" + Request.Host + "/mfacallback", mFARequest.User.Username, code))
             {
-                IdToken token = await duoClient.ExchangeAuthorizationCodeFor2faResult(code, username);
-                if (token.AuthResult.Result.Equals("allow", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    var authenticatedState = await _auth.SetUser(mFARequest.user.User);
-                    await HttpContext.SignInAsync(mFARequest.user.User);
-                    await _audit.Logon.Login(mFARequest.user.User, HttpContext.Connection.RemoteIpAddress?.ToString());
-                    return new RedirectResult(mFARequest.redirectUrl);
-                }
+                var authenticatedState = await _auth.SetUser(mFARequest.User.User);
+                await HttpContext.SignInAsync(mFARequest.User.User);
+                await _audit.Logon.Login(mFARequest.User.User, HttpContext.Connection.RemoteIpAddress?.ToString());
+                return new RedirectResult(mFARequest.RedirectUrl);
             }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Warning(ex, "Error attempting to perform Duo MFA");
-            }
+
             return new RedirectResult("/");
 
         }

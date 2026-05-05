@@ -52,8 +52,16 @@ namespace BLAZAM.Gui.UI.Chat
         protected int GetUnreadMessages()
         {
 
-            if (ChatRoom is null) return 0;
-            if (CurrentUser == null || CurrentUser.State.Preferences == null) return 0;
+            if (ChatRoom is null)
+            {
+                return 0;
+            }
+
+            if (CurrentUser == null || CurrentUser.State.Preferences == null)
+            {
+                return 0;
+            }
+
             return Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count;
 
 

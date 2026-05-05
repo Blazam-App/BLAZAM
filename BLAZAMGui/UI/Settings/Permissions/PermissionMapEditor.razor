@@ -1,4 +1,4 @@
-@using BLAZAM.Global.Events
+
 @inherits ValidatedForm
 @if (Mapping != null)
 {
@@ -9,26 +9,26 @@
             @if (!ReadOnly && _permissionDelegates != null)
             {
                 <MudSelectList Validation="@(_permissionDelegates.Count > 0)"
-                               Values=@_permissionDelegates
+                               Options=@_permissionDelegates
                                Placeholder=@AppLocalization["Choose or Search..."]
                                T="PermissionDelegate"
                                ToStringFunc=DelegateToString
                                Label="@AppLocalization[Lang.Delegates]"
                                MultiSelection=true
                                @bind-Text=@selectedPermissionDelegateNames
-                               @bind-SelectedValues=@Mapping.PermissionDelegates />
+                               @bind-Selected=@Mapping.PermissionDelegates />
 
 
 
                 <MudSelectList Validation="@(_permissionDelegates.Count > 0)"
-                               Values=@_accessLevels
+                               Options=@_accessLevels
                                Placeholder=@AppLocalization["Choose or Search..."]
                                T="AccessLevel"
                                ToStringFunc="item=>item?.Name"
                                Label="@AppLocalization[Lang.Access_Levels]"
                                @bind-Text=@selectedAccessLevelNames
                                MultiSelection="true"
-                               @bind-SelectedValues=@Mapping.AccessLevels />
+                               @bind-Selected=@Mapping.AccessLevels />
 
                 <MudButton Color=Color.Success
                            Disabled=SaveDisabled
@@ -63,12 +63,15 @@
 @code {
     const string SELECTION_DELIMITER = ", ";
 
+    private PermissionMapping? _mapping;
 
     [Parameter]
     public PermissionMapping? Mapping { get; set; }
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
+        if (_mapping == Mapping) return;
+        _mapping = Mapping;
         await RefreshData();
     }
 
@@ -95,20 +98,25 @@
     public override void Dispose()
     {
         base.Dispose();
-        _semaphore.Dispose();
     }
-    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1); // Limits to 1 concurrent access
+    private readonly object _refreshLock = new object(); // Limits to 1 concurrent access
 
     async Task RefreshData()
     {
+        lock (_refreshLock)
+        {
+            Loggers.SystemLogger.Debug("Refresh lock available.");
+        }
         if (!LoadingData)
         {
-            await _semaphore.WaitAsync();
+
+            LoadingData = true;
             try
             {
+
+
                 if (Mapping == null) return;
 
-                LoadingData = true;
 
                 if (Context != null)
                 {
@@ -124,13 +132,12 @@
                     }
                 }
 
-         
+
             }
             finally
-            {     
+            {
                 LoadingData = false;
-                _semaphore.Release();
-            
+
             }
 
         }
@@ -159,7 +166,7 @@
             {
                 try
                 {
-                    concatenated += Directory.FindEntryBySID(sid)?.CanonicalName + SELECTION_DELIMITER;
+                    concatenated += Directory.FindGlobalEntryBySid(sid)?.CanonicalName + SELECTION_DELIMITER;
                 }
                 catch (Exception)
                 {
@@ -196,6 +203,7 @@
             await StateHasChangedAsync();
             SnackBarService.Success("Mapping deleted");
             await MappingsChanged.InvokeAsync();
+            _ = Analytics.PermissionMappingDeleted();
             ApplicationEvents.PermissionsChanged.Invoke();
         }
     }
@@ -205,15 +213,19 @@
         return deleg?.DelegateName;
 
     }
-    new async Task Save()
+    protected override async Task Save()
     {
         if (Mapping?.Id == 0)
+        {
             Context.PermissionMap.Add(Mapping);
-        var result = await Context.SaveChangesAsync();
+            _ = Analytics.PermissionMappingCreated(Mapping.PermissionDelegates.Count());
+        }
+
+        _ = await Context.SaveChangesAsync();
         await StateHasChangedAsync();
         SnackBarService.Success("Mapping saved");
         await MappingsChanged.InvokeAsync();
+        _ = Analytics.PermissionMappingChanged(Mapping?.PermissionDelegates.Count() ?? -1);
         ApplicationEvents.PermissionsChanged.Invoke();
-
     }
 }

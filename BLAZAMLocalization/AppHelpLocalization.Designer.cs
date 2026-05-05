@@ -19,7 +19,7 @@ namespace BLAZAM.Localization {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppHelpLocalization {
@@ -75,6 +75,15 @@ namespace BLAZAM.Localization {
         public static string Access_Level_Object_Missing_Read {
             get {
                 return ResourceManager.GetString("Access_Level_Object_Missing_Read", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  is requesting {0} access on .
+        /// </summary>
+        public static string Action_Access_Request_Notification_Message {
+            get {
+                return ResourceManager.GetString("Action_Access_Request_Notification_Message", resourceCulture);
             }
         }
         
@@ -233,6 +242,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This will discard any other changes made.
+        /// </summary>
+        public static string Discard_Other_Changes_Warning {
+            get {
+                return ResourceManager.GetString("Discard_Other_Changes_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to That delegate already exists..
         /// </summary>
         public static string Duplicate_Delegate {
@@ -256,6 +274,15 @@ namespace BLAZAM.Localization {
         public static string Duplicate_Name_Conflict {
             get {
                 return ResourceManager.GetString("Duplicate_Name_Conflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  is requesting edit access for {0} on .
+        /// </summary>
+        public static string Edit_Field_Access_Request_Notification_Message {
+            get {
+                return ResourceManager.GetString("Edit_Field_Access_Request_Notification_Message", resourceCulture);
             }
         }
         
@@ -323,6 +350,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You must provide both a first and last name.
+        /// </summary>
+        public static string Missing_First_Or_Last_Name {
+            get {
+                return ResourceManager.GetString("Missing_First_Or_Last_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To modify the user&apos;s name click the rename button in the toolbar/gear menu.
         /// </summary>
         public static string Modify_Name_Redirect {
@@ -377,11 +413,83 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are no fields available to request for this entry.
+        /// </summary>
+        public static string No_Request_Fields_Available {
+            get {
+                return ResourceManager.GetString("No_Request_Fields_Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generating a new authenticator token will invalidate the existing one!.
         /// </summary>
         public static string Overwrite_Auth_Token_Confirmation {
             get {
                 return ResourceManager.GetString("Overwrite_Auth_Token_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A password reset has been requested for your account..
+        /// </summary>
+        public static string Password_Reset_Body {
+            get {
+                return ResourceManager.GetString("Password_Reset_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  Your reset link will expire {0}.
+        /// </summary>
+        public static string Password_Reset_Expiration_Text {
+            get {
+                return ResourceManager.GetString("Password_Reset_Expiration_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you did not request this reset, you can safely ignore it..
+        /// </summary>
+        public static string Password_Reset_Ignore_Text {
+            get {
+                return ResourceManager.GetString("Password_Reset_Ignore_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click here to reset your password.
+        /// </summary>
+        public static string Password_Reset_Link_Text {
+            get {
+                return ResourceManager.GetString("Password_Reset_Link_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This request originated from: {0}.
+        /// </summary>
+        public static string Password_Reset_Origin_Text {
+            get {
+                return ResourceManager.GetString("Password_Reset_Origin_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If the link above does not work copy the following into the address bar..
+        /// </summary>
+        public static string Password_Reset_URL_Text {
+            get {
+                return ResourceManager.GetString("Password_Reset_URL_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  is requesting read access for {0} on .
+        /// </summary>
+        public static string Read_Field_Access_Request_Notification_Message {
+            get {
+                return ResourceManager.GetString("Read_Field_Access_Request_Notification_Message", resourceCulture);
             }
         }
         
@@ -406,9 +514,27 @@ namespace BLAZAM.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Request to {0}.
         /// </summary>
+        public static string Request_For {
+            get {
+                return ResourceManager.GetString("Request_For", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request for {0}.
+        /// </summary>
         public static string Request_To {
             get {
                 return ResourceManager.GetString("Request_To", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Require the user to change their password at next logon.
+        /// </summary>
+        public static string Require_Password_Change {
+            get {
+                return ResourceManager.GetString("Require_Password_Change", resourceCulture);
             }
         }
         

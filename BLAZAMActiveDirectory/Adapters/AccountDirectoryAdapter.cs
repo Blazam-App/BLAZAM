@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.Protocols;
 using System.Security;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
@@ -10,6 +11,11 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
+using System.Data;
+using System.Diagnostics;
+using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
+using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -51,7 +57,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (CurrentUser?.IsSuperAdmin == true) return true;
+                if (CurrentUser?.IsSuperAdmin == true)
+                {
+                    return true;
+                }
+
                 return CurrentUser?.PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == ObjectType && om.AllowDisabled))) == true;
 
             }
@@ -100,7 +110,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 var coms = GetNonReplicatedProperty<object>("lastLogon");
-                List<DateTime?> times = new();
+                List<DateTime?> times = [];
                 foreach (var c in coms)
                 {
                     if (c is DateTime dt)
@@ -200,23 +210,23 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 var uacRaw = Convert.ToInt32(GetAttribute<object>("userAccountControl"));
                 if (uacRaw == 0)
                 {
-                    UAC = ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
+                    //UAC = ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
                     return ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
                 }
                 return uacRaw;
             }
             set
             {
-                SetAttribute("userAccountControl", value);
+                SetAttribute("userAccountControl", value.ToString());
             }
         }
 
         protected DomainControllerEventLogReader? DomainControllerEventLogs;
 
 
-        public override void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
+        public override void Parse(IActiveDirectoryContext directory, IDirectoryEntry? directoryEntry = null, SearchResult? searchResult = null, SearchResultEntry? searchResultEntry = null)
         {
-            base.Parse(directory, directoryEntry, searchResult);
+            base.Parse(directory, directoryEntry, searchResult, searchResultEntry);
             DomainControllerEventLogs = new DomainControllerEventLogReader(directory);
         }
 
@@ -298,7 +308,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (PasswordLastSet == null) return true;
+                if (PasswordLastSet == null)
+                {
+                    return true;
+                }
+
                 return PasswordLastSet == DateTime.MinValue;
             }
             set
@@ -356,10 +370,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 if (value == null)
+                {
                     SetAttribute(pwdLastSet, 0);
+                }
                 else
+                {
                     SetAttribute(pwdLastSet, -1);
-
+                }
             }
 
         }
@@ -371,31 +388,65 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public bool SetPassword(SecureString password, bool requireChange = false)
         {
-            if (SAMAccountName == null) throw new AppException("samaccount name not found!");
-            if (DirectorySettings == null) throw new AppException("Directory settings not found when trying to change directory user password");
+            if (SAMAccountName == null)
+            {
+                throw new AppException("samaccount name not found!");
+            }
+
+            if (DirectorySettings == null)
+            {
+                throw new AppException("Directory settings not found when trying to change directory user password");
+            }
 
             var directoryPassword = DirectorySettings.Password.Decrypt().ToSecureString();
-            if (directoryPassword == null) return false;
+            if (directoryPassword == null)
+            {
+                return false;
+            }
 
             try
             {
                 if (TryInvokeSetPassword(password))
+                {
                     return true;
+                }
+
                 if (OperatingSystem.IsWindows())
                 {
                     // If we are on Windows, we can use the PrincipalContext to set the password
                     return TryPrincipalContextSetPassword(password, requireChange, directoryPassword);
                 }
+            }
+            catch (DirectoryOperationException ex)
+            {
+                // Check for the password complexity error
+                if (ex.Response.ResultCode == ResultCode.UnwillingToPerform &&
+                    ex.Response.ErrorMessage.Contains("0000052D"))
+                {
+                    throw new PasswordPolicyViolationException();
+                }
+                else if (ex.Response.ResultCode == ResultCode.ConstraintViolation &&
+ ex.Response.ErrorMessage.Contains("0000052F"))
+                {
+                    throw new AccountDisabledConstraintViolationException();
+                }
+                else
+                {
+                    Loggers.ActiveDirectoryLogger.Error(ex, "An unexpected directory operation error occurred setting entry password");
+                }
 
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not AppException)
             {
                 Loggers.ActiveDirectoryLogger.Error(ex, "Error setting entry password");
                 if (!Debugger.IsAttached)
+                {
                     throw new AppException("Unable to set password", ex);
+                }
             }
             return false;
         }
+
 
         private bool TryInvokeSetPassword(SecureString password)
         {
@@ -414,26 +465,48 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private bool TryPrincipalContextSetPassword(SecureString password, bool requireChange, SecureString directoryPassword)
         {
             if (DirectorySettings == null)
+            {
                 throw new AppException("Directory settings not found when trying to change directory user password");
-            using (PrincipalContext pContext = new(
+            }
+
+            using PrincipalContext pContext = new(
                 ContextType.Domain,
                 DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
                 DirectorySettings.Username + "@" + DirectorySettings.FQDN,
                 directoryPassword.ToPlainText()
-            ))
+            );
+            UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
+            if (up != null)
             {
-                UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
-                if (up != null)
+                up.SetPassword(password.ToPlainText());
+                if (requireChange)
                 {
-                    up.SetPassword(password.ToPlainText());
-                    if (requireChange)
-                        up.ExpirePasswordNow();
-                    if (NewEntry)
-                        up.PasswordNotRequired = false;
-                    up.Save();
+                    up.ExpirePasswordNow();
                 }
+
+                if (NewEntry)
+                {
+                    up.PasswordNotRequired = false;
+                }
+
+                up.Save();
             }
             return true;
+        }
+        public void StageEnable()
+        {
+
+            PostCommitSteps.Add(new JobStep("Enable", (JobStep? step) =>
+            {
+                Enabled = true;
+                DirectoryEntry.SetPropertyValue("userAccountControl", UAC);
+                return true;
+
+                Enabled = true;
+                return true;
+            }));
+
+
         }
 
         public void StagePasswordChange(SecureString newPassword, bool requireChange = false)

@@ -1,5 +1,6 @@
 ﻿using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
 using System.Text;
 using System.Text.RegularExpressions;
 using BLAZAM.ActiveDirectory;
@@ -12,6 +13,10 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Logger;
 using Microsoft.Extensions.DependencyInjection;
+using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.Helpers
 {
@@ -46,8 +51,12 @@ namespace BLAZAM.Helpers
         public static IEnumerable<IDirectoryEntryAdapter> MoveToTop(this IEnumerable<IDirectoryEntryAdapter> enumerable, Func<IDirectoryEntryAdapter, bool> matchingPredicate)
         {
             var list = enumerable.ToList();
-            if (list.Count < 1) return list;
-            List<IDirectoryEntryAdapter> mathingItems = new();
+            if (list.Count < 1)
+            {
+                return list;
+            }
+
+            List<IDirectoryEntryAdapter> mathingItems = [];
             for (int x = 0; x < list.Count; x++)
             {
 
@@ -109,12 +118,20 @@ namespace BLAZAM.Helpers
                 try
                 {
                     if (fieldValue.Field != null && fieldValue.Value != null)
+                    {
                         if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
+                        {
                             user.HomeDirectory = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
+                        }
                         else
+                        {
                             user.NewEntryProperties[fieldValue.Field.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
+                        }
+                    }
                     else if (fieldValue.CustomField != null && fieldValue.Value != null)
+                    {
                         user.NewEntryProperties[fieldValue.CustomField.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SAMAccountName);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -125,7 +142,11 @@ namespace BLAZAM.Helpers
         }
         public static string? DnToOu(this string? dN)
         {
-            if (dN == null) return null;
+            if (dN == null)
+            {
+                return null;
+            }
+
             var ouComponents = Regex.Matches(dN, @"OU=([^,]+)")
                             .Select(m => m.Value)
                             .ToList();
@@ -135,7 +156,11 @@ namespace BLAZAM.Helpers
 
         public static string? ToPrettyOu(this IADOrganizationalUnit? ou)
         {
-            if (ou == null) return null;
+            if (ou == null)
+            {
+                return null;
+            }
+
             var ouComponents = Regex.Matches(ou.DN, @"OU=([^,]*)")
                 .Select(m => m.Groups[1].Value)
                 .ToList();
@@ -155,7 +180,11 @@ namespace BLAZAM.Helpers
         /// <returns></returns>
         public static string? PrettifyOu(string? ou)
         {
-            if (ou == null) return null;
+            if (ou == null)
+            {
+                return null;
+            }
+
             var ouComponents = Regex.Matches(ou, @"OU=([^,]*)")
                 .Select(m => m.Groups[1].Value)
                 .ToList();
@@ -169,7 +198,7 @@ namespace BLAZAM.Helpers
         /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
         public static List<IDirectoryEntryAdapter> Encapsulate(this SearchResultCollection r, IActiveDirectoryContext context)
         {
-            List<IDirectoryEntryAdapter> objects = new();
+            List<IDirectoryEntryAdapter> objects = [];
 
 
             if (r != null && r.Count > 0)
@@ -233,6 +262,11 @@ namespace BLAZAM.Helpers
 
 
                 }
+                else
+                {
+                    Loggers.ActiveDirectoryLogger.Information("Unable to match ad object type. {Object}", sr.Path);
+
+                }
             }
             return thisObject;
         }
@@ -243,39 +277,45 @@ namespace BLAZAM.Helpers
         /// <param name="r"></param>
         /// <returns>A <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
 
-        public static IDirectoryEntryAdapter? Encapsulate(this DirectoryEntry? sr, IActiveDirectoryContext context)
+        public static IDirectoryEntryAdapter? Encapsulate(this IDirectoryEntry? sr, IActiveDirectoryContext context)
         {
-            if (sr == null) return null;
+            if (sr == null)
+            {
+                return null;
+            }
+
             IDirectoryEntryAdapter? thisObject = null;
 
-            if (sr.Properties[OBJECT_CLASS].Contains("top"))
+            if (sr.PropertyContains(OBJECT_CLASS, "top"))
             {
-                if (sr.Properties[OBJECT_CLASS].Contains("computer"))
+                if (sr.PropertyContains(OBJECT_CLASS, "computer"))
                 {
                     thisObject = new ADComputer();
                 }
-                else if (sr.Properties[OBJECT_CLASS].Contains("user"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "user"))
                 {
                     thisObject = new ADUser();
                 }
-                else if (sr.Properties[OBJECT_CLASS].Contains("contact"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "contact"))
                 {
                     thisObject = new ADContact();
                 }
 
-                else if (sr.Properties[OBJECT_CLASS].Contains("group"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "group"))
                 {
                     thisObject = new ADGroup();
                 }
-                else if (sr.Properties[OBJECT_CLASS].Contains("printQueue"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "printQueue"))
                 {
                     thisObject = new ADPrinter();
                 }
-                else if (sr.Properties[OBJECT_CLASS].Contains("msFVE-RecoveryInformation"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "msFVE-RecoveryInformation"))
                 {
                     thisObject = new ADBitLockerRecovery();
                 }
-                else if (sr.Properties[OBJECT_CLASS].Contains("organizationalUnit") || sr.Properties[OBJECT_CLASS].Contains("container"))
+                else if (sr.PropertyContains(OBJECT_CLASS, "organizationalUnit") 
+                    || sr.PropertyContains(OBJECT_CLASS, "builtinDomain")
+                    || sr.PropertyContains(OBJECT_CLASS, "container"))
                 {
                     thisObject = new ADOrganizationalUnit();
                 }
@@ -288,7 +328,7 @@ namespace BLAZAM.Helpers
                 }
                 else
                 {
-                    Loggers.ActiveDirectoryLogger.Warning(new AppException("Unable to match ad object type"), "Unable to match ad object type. {Object}", sr);
+                    Loggers.ActiveDirectoryLogger.Information("Unable to match ad object type. {Object}", sr.Path);
 
                 }
             }
@@ -304,26 +344,35 @@ namespace BLAZAM.Helpers
         /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
         public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r, IActiveDirectoryContext context)
         {
-            List<IDirectoryEntryAdapter> objects = new();
+            List<IDirectoryEntryAdapter> objects = [];
 
 
             if (r != null)
             {
 
-                foreach (DirectoryEntry sr in r)
+                foreach (IDirectoryEntry sr in r)
                 {
                     var encapsulated = Encapsulate(sr, context);
                     if (encapsulated != null)
+                    {
                         objects.Add(encapsulated);
-
+                    }
                 }
             }
             return objects;
         }
-
+        /// <summary>
+        /// Escapes special characters in a string for use in an LDAP search filter, following RFC 4515 guidelines. The characters that are escaped include: \, *, (, ), /, and the null character.
+        /// </summary>
+        /// <param name="input">The input string to escape.</param>
+        /// <returns>The escaped string suitable for LDAP search filters.</returns>
         public static string? EscapeLdapSearchFilter(this string? input)
         {
-            if (input.IsNullOrEmpty()) return null;
+            if (input.IsNullOrEmpty())
+            {
+                return null;
+            }
+
             StringBuilder sb = new();
             foreach (char c in input)
             {
@@ -341,6 +390,9 @@ namespace BLAZAM.Helpers
                     case ')':
                         sb.Append("\\29");
                         break;
+                    case '/':
+                        sb.Append("\\2f");
+                        break;
                     case '\0': // Null character
                         sb.Append("\\00");
                         break;
@@ -353,10 +405,37 @@ namespace BLAZAM.Helpers
         }
 
 
+        /// <summary>
+        /// Converts the directory entries to a list.
+        /// </summary>
+        /// <returns>A <see cref="List{T}"/> containing all directory entries as <see cref="IDirectoryEntry"/> objects.</returns>
+        public static List<IDirectoryEntry> ToList(this IDirectoryEntries directoryEntries)
+        {
+            var list = new List<IDirectoryEntry>();
+            var cursor = directoryEntries.GetEnumerator();
+            while (cursor.MoveNext())
+            {
+                if (cursor.Current is IDirectoryEntry entry)
+                {
+                    list.Add(entry);
+                }
+            }
+            return list;
+
+        }
+        /// <summary>
+        /// Returns a list of applicable <see cref="ActiveDirectoryFieldOperator"/> for a given <see cref="IActiveDirectoryField"/>'s <see cref="ActiveDirectoryFieldType"/>.
+        /// </summary>
+        /// <param name="field">The field for which to retrieve applicable operators.</param>
+        /// <returns>A list of <see cref="ActiveDirectoryFieldOperator"/> that can be used with the specified field type.</returns>
         public static List<ActiveDirectoryFieldOperator> GetOperators(this IActiveDirectoryField field)
         {
-            List<ActiveDirectoryFieldOperator> applicableOperators = new List<ActiveDirectoryFieldOperator>();
-            if (field == null || field.FieldType == null) return applicableOperators;
+            List<ActiveDirectoryFieldOperator> applicableOperators = [];
+            if (field == null || field.FieldType == null)
+            {
+                return applicableOperators;
+            }
+
             var fieldType = field.FieldType;
 
             switch (fieldType)
@@ -386,7 +465,12 @@ namespace BLAZAM.Helpers
             return applicableOperators;
 
         }
-
+        /// <summary>
+        /// Determines if a given <see cref="ActiveDirectoryObjectAction"/> is appropriate for a specified <see cref="ActiveDirectoryObjectType"/>. This method checks the compatibility of actions such as Move, Delete, Create, etc., with object types like User, Group, Computer, etc., based on typical Active Directory operations and constraints.
+        /// </summary>
+        /// <param name="action">The action to check for compatibility.</param>
+        /// <param name="type">The object type to check against.</param>
+        /// <returns>True if the action is appropriate for the object type; otherwise, false.</returns>
         public static bool IsActionAppropriateForObject(this ActiveDirectoryObjectAction action, ActiveDirectoryObjectType type)
         {
 
@@ -457,10 +541,212 @@ namespace BLAZAM.Helpers
                     return false;
             }
         }
-
+        /// <summary>
+        /// Determines if a given <see cref="ObjectAction"/> is appropriate for a specified <see cref="ActiveDirectoryObjectType"/> by evaluating the action's associated <see cref="ActiveDirectoryObjectAction"/> against the object type. This method serves as an extension to directly assess the suitability of an <see cref="ObjectAction"/> instance for a particular Active Directory object type, facilitating permission checks and action validations in the context of Active Directory management.
+        /// </summary>
+        /// <param name="action">The <see cref="ObjectAction"/> to check for compatibility.</param>
+        /// <param name="type">The <see cref="ActiveDirectoryObjectType"/> to check against.</param>
+        /// <returns>True if the action is appropriate for the object type; otherwise, false.</returns>
         public static bool IsActionAppropriateForObject(this ObjectAction action, ActiveDirectoryObjectType type) => IsActionAppropriateForObject(action.Action, type);
 
+        /// <summary>
+        /// Extracts the parent Distinguished Name (DN) from a given DN string.
+        /// </summary>
+        /// <param name="dn">The DN string to parse.</param>
+        /// <returns>The parent DN string, or null if no parent exists.</returns>
+        /// <example>
+        /// <code>
+        /// string userDn = "CN=John Doe,CN=Users,DC=example,DC=com";
+        /// string parentDn = userDn.GetParentDn();
+        /// // parentDn is now "CN=Users,DC=example,DC=com"
+        ///
+        /// string escapedDn = @"CN=Smith\, John,OU=Accounting,DC=example,DC=com";
+        /// string escapedParent = escapedDn.GetParentDn();
+        /// // escapedParent is now "OU=Accounting,DC=example,DC=com"
+        /// </code>
+        /// </example>
+        public static string? GetParentDn(this string dn)
+        {
+            if (string.IsNullOrWhiteSpace(dn))
+            {
+                return null;
+            }
 
+            // This regex uses a negative lookbehind to find the first comma
+            // that is not preceded by a backslash. It will split the DN
+            // into a maximum of two parts at that first valid delimiter.
+            var match = Regex.Match(dn, @"(?<!\\),");
+
+            // If no match is found, there is no parent DN.
+            if (!match.Success)
+            {
+                return null;
+            }
+
+            // The parent DN is the substring starting right after the matched comma.
+            return dn.Substring(match.Index + 1);
+        }
+
+
+        public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry)
+        {
+            return null;
+        }
+        public static IDirectoryEntry ToIDirectoryEntry(this DirectoryEntry entry, IActiveDirectoryContext directory)
+        {
+            return new LdapDirectoryEntry(entry.Properties["distinuishedName"].Value?.ToString(), directory);
+        }
+
+
+
+        /// <summary>
+        /// Encapsulates a <see cref="System.DirectoryServices.Protocols.SearchResultEntryCollection"/> within a list of <see cref="IDirectoryEntryAdapter"/> of the appropriate entry type.
+        /// </summary>
+        /// <param name="searchResultEntries">The collection of search result entries from System.DirectoryServices.Protocols.</param>
+        /// <param name="context">The Active Directory context.</param>
+        /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond to the directory object type they encapsulate.</returns>
+        public static List<IDirectoryEntryAdapter> Encapsulate(this System.DirectoryServices.Protocols.SearchResultEntryCollection searchResultEntries, IActiveDirectoryContext context)
+        {
+            List<IDirectoryEntryAdapter> objects = new List<IDirectoryEntryAdapter>();
+
+            if (searchResultEntries == null || context == null)
+            {
+                Loggers.ActiveDirectoryLogger.Warning("Encapsulate called with null searchResultEntries or context.");
+                return objects;
+            }
+
+            try
+            {
+                foreach (System.DirectoryServices.Protocols.SearchResultEntry sre in searchResultEntries)
+                {
+                    objects.Add(sre.Encapsulate(context));
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Error(ex,"Error encapsulating SearchResultEntryCollection");
+                // Depending on desired behavior, might clear objects or throw
+            }
+            return objects;
+        }
+
+        private static IDirectoryEntryAdapter? Encapsulate(this SearchResultEntry sre, IActiveDirectoryContext context)
+        {
+            if (sre == null || sre.Attributes == null) return default;
+
+            IDirectoryEntryAdapter? thisObject = null;
+            List<string> objectClasses = new List<string>();
+
+            if (sre.Attributes.Contains("objectClass"))
+            {
+                foreach (var val in sre.Attributes["objectClass"].GetValues(typeof(byte[])))
+                {
+                    if (val is byte[] bytes)
+                    {
+                        objectClasses.Add(Encoding.UTF8.GetString(bytes).ToLowerInvariant());
+                    }
+                }
+            }
+            else
+            {
+                Loggers.ActiveDirectoryLogger.Warning("SearchResultEntry {DN} does not contain objectClass attribute.", sre.DistinguishedName);
+                return default;
+            }
+
+            // Determine object type based on objectClass values
+            if (objectClasses.Contains("top")) // Basic check
+            {
+                if (objectClasses.Contains("computer"))
+                {
+                    thisObject = new ADComputer();
+                }
+                else if (objectClasses.Contains("user"))
+                {
+                    thisObject = new ADUser();
+                }
+                else if (objectClasses.Contains("contact"))
+                {
+                    thisObject = new ADContact();
+                }
+                else if (objectClasses.Contains("group"))
+                {
+                    thisObject = new ADGroup();
+                }
+                else if (objectClasses.Contains("printqueue")) // Note: printQueue is often lowercase from S.DS.P
+                {
+                    thisObject = new ADPrinter();
+                }
+                else if (objectClasses.Contains("msfve-recoveryinformation")) // Note: msFVE-RecoveryInformation is often lowercase
+                {
+                    thisObject = new ADBitLockerRecovery();
+                }
+                else if (objectClasses.Contains("organizationalunit") || objectClasses.Contains("container"))
+                {
+                    thisObject = new ADOrganizationalUnit();
+                }
+                // Add more types if necessary, e.g. "container" could be a generic DirectoryEntryAdapter if no specific OU logic needed
+
+                if (thisObject != null)
+                {
+                    // This Parse method signature needs to be created in DirectoryEntryAdapter and its children
+                    thisObject.Parse(context, searchResultEntry: sre);
+                    return thisObject;
+                }
+                else
+                {
+                    Loggers.ActiveDirectoryLogger.Debug("Unrecognized or unhandled object type for DN: {DN}, ObjectClasses: {ObjectClasses}", sre.DistinguishedName, string.Join(", ", objectClasses));
+                }
+            }
+            else
+            {
+                Loggers.ActiveDirectoryLogger.Debug("Object {DN} does not contain 'top' in objectClass, skipping.", sre.DistinguishedName);
+            }
+            return default;
+        }
+
+
+
+
+        /// <summary>
+        /// Extracts the parent distinguished name from a given DN.
+        /// </summary>
+        /// <param name="dn">The distinguished name.</param>
+        /// <returns>The parent DN, or null if no parent exists (e.g., for a domain root) or if the DN is invalid.</returns>
+        public static string? GetParentDN(string? dn)
+        {
+            if (string.IsNullOrEmpty(dn))
+            {
+                return null;
+            }
+
+            int commaIndex = dn.IndexOf(',');
+            if (commaIndex > 0 && commaIndex < dn.Length - 1)
+            {
+                return dn.Substring(commaIndex + 1);
+            }
+            return null; // No parent DN found (could be a domain root or malformed DN)
+        }
+        public static string Rdn(this IDirectoryEntryAdapter entry)
+        {
+            var dn = entry.DN;
+            return DnToRdn(dn);
+        }
+        public static string Rdn(this LdapDirectoryEntry entry)
+        {
+            var dn = entry.DN;
+            return DnToRdn(dn);
+        }
+
+        private static string DnToRdn(string? dn)
+        {
+            var match = Regex.Match(dn, @"(?<!\\),");
+            if (!match.Success)
+            {
+                throw new InvalidOperationException("Cannot move a top-level entry.");
+            }
+            string rdn = dn.Substring(0, match.Index);
+            return rdn;
+        }
 
 
     }

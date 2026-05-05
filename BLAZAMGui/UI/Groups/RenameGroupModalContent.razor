@@ -1,28 +1,34 @@
 ﻿@inherits AppModalContent
 
-@if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
+@if (_privateEntryInstance != null)
 {
+    if (_privateEntryInstance.CanEditField(ActiveDirectoryFields.SAMAccountName))
+    {
 
 
-    <MudTextField AutoFocus=true Label="@AppLocalization[Lang.Group_Name]" @bind-Value="@_privateEntryInstance.GroupName" />
+        <MudTextField AutoFocus=true 
+            Label="@AppLocalization[Lang.Group_Name]" 
+            Value="@_privateEntryInstance.GroupName"
+                      Required=true
+                      ValueChanged="((string val) => { _privateEntryInstance.GroupName = val.AppTrim(); })" />
 
 
 
+    }
+
+
+
+    if (_privateEntryInstance.CanEditField(ActiveDirectoryFields.Mail))
+    {
+
+
+        <MudTextField Label="@AppLocalization[Lang.Email_Address]" @bind-Value="@_privateEntryInstance.Email" />
+
+
+
+    }
 }
-
-
-
-@if (Group.CanEditField(ActiveDirectoryFields.Mail))
-{
-
-
-    <MudTextField Label="@AppLocalization[Lang.Email_Address]" @bind-Value="@_privateEntryInstance.Email" />
-
-
-
-}
-
-
+<LoadingData Loading=@LoadingData/>
 @code {
 
 
@@ -33,16 +39,24 @@
 
     private string _originalName = String.Empty;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        await base.OnInitializedAsync();
-        Modal.SetOnYes(SaveChanges);
+        await base.OnParametersSetAsync();
         if (Group != null)
         {
             _privateEntryInstance = Directory.Groups.FindGroupBySID(Group.SID.ToSidString());
             _originalName = _privateEntryInstance.GroupName;
+            await StateHasChangedAsync();
         }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Modal.SetOnYes(SaveChanges);
+        Modal.YesEnabled = () => { return !LoadingData; };
         await StateHasChangedAsync();
+
 
     }
 
@@ -60,15 +74,16 @@
 
             SaveDisabled = true;
             LoadingData = true;
-            if (_privateEntryInstance.GroupName != _originalName) {
+            if (_privateEntryInstance.GroupName != _originalName)
+            {
                 _privateEntryInstance.Rename(_privateEntryInstance.GroupName);
             }
 
             await _privateEntryInstance.CommitChangesAsync();
             SnackBarService.Success("Group has been renamed.");
             Group.DirectoryEntry = null;
-
-            await DirectoryModelRenamed.InvokeAsync(_privateEntryInstance);
+            
+            _=DirectoryModelRenamed.InvokeAsync(_privateEntryInstance);
             Close();
 
             LoadingData = false;

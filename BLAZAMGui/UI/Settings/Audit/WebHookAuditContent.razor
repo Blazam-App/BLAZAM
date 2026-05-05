@@ -1,0 +1,74 @@
+@using BLAZAM.Database.Models.Audit
+@using BLAZAM.Gui.UI.Shared
+@inherits AuditContentBase<WebHookAttempt>
+<TimeframeSelector OnTimeframeChanged="TimeframeChanged" />
+<MudDataGrid ColumnResizeMode="ResizeMode.Container"
+             FixedHeader=true
+             Hideable=true
+             Items="@auditEntries"
+             Filterable="true"
+             SortMode="@SortMode.Multiple"
+             Groupable="false">
+    <Columns>
+        <TemplateColumn Title=@AppLocalization[Lang.Message_Id]
+                        Filterable="true"
+                        Sortable="true"
+                        SortBy="x=>x.MessageGuid">
+            <CellTemplate>
+                <MudText>
+                    @context.Item.MessageGuid.ToString()
+                </MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title=@AppLocalization[Lang.Last_Attempt_Timestamp]
+                        Filterable="true"
+                        Sortable="true"
+                        SortBy="x=>x.LastAttemptTimestamp">
+            <CellTemplate>
+                <MudText>
+                    @context.Item.LastAttemptTimestamp.ToLocalTime()
+                </MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.Uri" />
+        <TemplateColumn Title=@AppLocalization[Lang.Delivered]
+                        Filterable="true"
+                        Sortable="true"
+                        SortBy="x=>x.Delivered">
+            <CellTemplate>
+                <StatusCheck Status="context.Item.Delivered" />
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title=@AppLocalization[Lang.Event_Timestamp]
+                        Filterable="true"
+                        Sortable="true"
+                        SortBy="x=>x.EventTimestamp">
+            <CellTemplate>
+                <MudText>
+                    @context.Item.EventTimestamp.ToLocalTime()
+                </MudText>
+            </CellTemplate>
+        </TemplateColumn>
+
+        <PropertyColumn Title=@AppLocalization[Lang.Response_Code]
+                        Property="x => x.ResponseCode"
+                        Sortable="true" />
+        <PropertyColumn Title=@AppLocalization[Lang.Error_Message]
+                        Property="x => x.ResponseMessage" />
+        <PropertyColumn Title=@AppLocalization[Lang.Retry_Count]
+                        Property="x => x.RetryCount"
+                        Sortable="true" />
+
+    </Columns>
+</MudDataGrid>
+
+@code {
+    protected override async Task FetchData()
+    {
+        if (StartDate == null || EndDate == null) return;
+
+        auditEntries = await Context.WebHookAttempts.Where(e => e.LastAttemptTimestamp >= StartDate && e.LastAttemptTimestamp < EndDate.Value.AddDays(1)).OrderByDescending(e => e.LastAttemptTimestamp).ToListAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+}
+

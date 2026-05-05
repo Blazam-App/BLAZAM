@@ -204,6 +204,9 @@
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
     <value>Les mappages {0} utilisent ce niveau d'accès et seront supprimés</value>
   </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>Vous devez fournir à la fois un prénom et un nom de famille</value>
+  </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
     <value>Pour modifier le nom de l'utilisateur, cliquez sur le bouton Renommer dans la barre d'outils/le menu engrenage</value>
   </data>
@@ -222,6 +225,9 @@
   <data name="No_Request_Actions_Available" xml:space="preserve">
     <value>Aucune action n'est disponible à demander pour cette entrée.</value>
   </data>
+  <data name="No_Request_Fields_Available" xml:space="preserve">
+    <value>Il n'y a aucun champ disponible à demander pour cette entrée</value>
+  </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>La génération d'un nouveau jeton d'authentification invalidera celui existant !</value>
   </data>
@@ -232,6 +238,9 @@
     <value>Un administrateur a renommé ce poste de travail. Il redémarrera dans {0} secondes.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
+    <value>Demande à {0}</value>
+  </data>
+  <data name="Request_For" xml:space="preserve">
     <value>Demande à {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
@@ -272,5 +281,35 @@ en un compte aux privilèges inférieurs pour améliorer la sécurité.</value>
   <data name="Update_Credential_Is_Invalid" xml:space="preserve">
     <value>Aucune information d'identification n'est configurée avec une autorisation d'écriture sur le répertoire de l'application !
 Essayez de configurer des informations d'identification de mise à jour personnalisées.</value>
+  </data>
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> demande un accès en lecture pour {0} sur </value>
+  </data>
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> demande un accès {0} sur </value>
+  </data>
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> demande un accès en modification pour {0} sur </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>Exiger que l'utilisateur change son mot de passe lors de sa prochaine connexion</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>Une réinitialisation de mot de passe a été demandée pour votre compte.</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>Cliquez ici pour réinitialiser votre mot de passe</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> Votre lien de réinitialisation expirera {0}</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>Si vous n'avez pas demandé cette réinitialisation, vous pouvez l'ignorer en toute sécurité.</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>Cette demande provient de : {0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>Si le lien ci-dessus ne fonctionne pas, copiez ce qui suit dans la barre d'adresse.</value>
   </data>
 </root>

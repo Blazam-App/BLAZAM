@@ -1,6 +1,6 @@
 ﻿@using BLAZAM.Helpers
 @using System.Security
-@inherits NotificationTemplateComponent
+@inherits EmailNotificationTemplateComponent
 
 <EmailTemplateHeader>
     <strong>@AppLocalization[Lang.Object_deleted]</strong>
@@ -13,19 +13,22 @@
     }
 
     <br />
-
+    @if (ShouldRenderLinks)
+    {
+        <br />
+        <EmailLink Href="/recyclebin" />
+    }
 
 </EmailTemplateBody>
 
 
 @code {
-    [Parameter]
-    public string? EntryName { get; set; }
 
     public override string Render() => new ComponentRenderer<EntryDeletedEmailMessage>()
             .UseLayout<DefaultEmailLayout>()
             .AddServiceProvider(ApplicationInfo.services)
-            .Set(c => c.EntryName, EntryName).Render();
+            .Set(c => c.EntryName, EntryName)
+            .Render();
 }
 
 
