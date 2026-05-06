@@ -238,36 +238,7 @@ namespace BLAZAM.Database.Models.Templates
 
 
         }
-        public string ReplaceVariablesOld(string toParse, NewUserName newUser)
-        {
-            if (!newUser.GivenName.IsNullOrEmpty())
-            {
-                toParse = toParse
-               .Replace("{fn}", newUser.GivenName)
-                .Replace("{fi}", newUser.GivenName[0].ToString());
-            }
-            if (!newUser.MiddleName.IsNullOrEmpty())
-            {
-                toParse = toParse
-            .Replace("{mn}", newUser.MiddleName)
-                 .Replace("{mi}", newUser.MiddleName?[0].ToString());
-            }
-            if (!newUser.Surname.IsNullOrEmpty())
-            {
-                toParse = toParse
-               .Replace("{ln}", newUser.Surname)
-                 .Replace("{li}", newUser.Surname[0].ToString());
-            }
-
-            if (toParse.Contains("{username}"))
-            {
-                var username = ReplaceVariables(EffectiveUsernameFormula, newUser);
-                toParse = toParse.Replace("{username}", username);
-            }
-
-            return toParse;
-
-        }
+     
         public string ReplaceVariables(string? toParse, NewUserName? newUser = null, string? username = null, int? incrementedNumber = null)
         {
             if (toParse.IsNullOrEmpty())
@@ -280,7 +251,7 @@ namespace BLAZAM.Database.Models.Templates
                 return toParse;
             }
 
-            return variableSearch.Replace(toParse, match =>
+            var result = variableSearch.Replace(toParse, match =>
             {
                 var variable = match.Groups["var"].Value.ToLower();
                 var modifier = match.Groups["mod"].Value;
@@ -350,6 +321,7 @@ namespace BLAZAM.Database.Models.Templates
                         return match.Value; // preserve unknown variables
                 }
             });
+            return Regex.Replace(result, @"\s+", " ").Trim();
         }
         private static string ProcessVariable(string? value, string? modifier, string? argument)
         {
