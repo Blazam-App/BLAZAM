@@ -118,198 +118,198 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Access_Level_Definition" xml:space="preserve">
-    <value>Toegangsniveaus zijn een sjabloon van machtigingen die kunnen worden toegepast op specifieke OU's voor specifieke gedelegeerden.</value>
+    <value>Níveis de acesso são um modelo de permissões que podem ser aplicados a UOs específicas para delegados específicos.</value>
   </data>
   <data name="Access_Level_Object_Missing_Read" xml:space="preserve">
-    <value>Wijzig {0} toegang naar Lezen om machtigingen in te stellen</value>
+    <value>Altere o acesso {0} para Leitura para definir permissões</value>
   </data>
   <data name="Authenticator_Setup_One" xml:space="preserve">
-    <value>Scan de onderstaande code vanuit uw authenticator-app</value>
+    <value>Escaneie o código abaixo pelo seu aplicativo autenticador</value>
   </data>
   <data name="Authenticator_Setup_Two" xml:space="preserve">
-    <value>Voer vervolgens de toegangscode in om te activeren</value>
+    <value>Em seguida, insira a senha para ativar</value>
   </data>
   <data name="Auto_Update_Time_Definition" xml:space="preserve">
-    <value>Het tijdstip van elke dag om automatisch een update toe te passen.</value>
+    <value>O horário de cada dia para aplicar automaticamente uma atualização.</value>
   </data>
   <data name="Confirm_Group_Creation" xml:space="preserve">
-    <value>Weet u zeker dat u deze groep wilt aanmaken?</value>
+    <value>Tem certeza que deseja criar este grupo?</value>
   </data>
   <data name="Confirm_OU_Creation" xml:space="preserve">
-    <value>Weet u zeker dat u deze OU wilt aanmaken?</value>
+    <value>Tem certeza que deseja criar esta UO?</value>
   </data>
   <data name="Confirm_Save_Changes" xml:space="preserve">
-    <value>Weet u zeker dat u de wijzigingen wilt opslaan?</value>
+    <value>Tem certeza que deseja salvar as alterações?</value>
   </data>
   <data name="Continue_Processing_Rules" xml:space="preserve">
-    <value>Ga door met het verwerken van andere regels</value>
+    <value>Continuar processando outras regras</value>
   </data>
   <data name="Created" xml:space="preserve">
-    <value>{0} is aangemaakt</value>
+    <value>{0} foi criado</value>
   </data>
   <data name="Debug_Enabled_Warning" xml:space="preserve">
-    <value>Debugmodus is ingeschakeld. Als dit een productieserver is, schakel dit uit in appsettings.json om openbaarmaking van gevoelige gegevens te voorkomen.</value>
+    <value>O modo de depuração está ativado. Se este for um servidor de produção, desative em appsettings.json para evitar a divulgação de dados sensíveis.</value>
   </data>
   <data name="Delegate_Definition" xml:space="preserve">
-    <value>Gedelegeerden zijn uw goedgekeurde applicatiegebruikers. Alleen de gebruikers die u hier definieert, of gebruikers in de volgende Active Directory-groepen (of geneste groepen) met toegewezen machtigingen of zelfbewerking ingeschakeld.</value>
+    <value>Delegados são seus usuários de aplicativo aprovados. Apenas os usuários que você definir aqui, ou usuários nos seguintes grupos do Active Directory (ou grupos aninhados) com permissões mapeadas ou autoedição habilitada.</value>
   </data>
   <data name="Delegate_Function" xml:space="preserve">
-    <value>De toegang die aan elke gedelegeerde is toegestaan, wordt beheerd door het gekoppelde toegangsniveau.</value>
+    <value>O acesso permitido a cada delegado é controlado pelo nível de acesso mapeado.</value>
   </data>
   <data name="Deleted" xml:space="preserve">
-    <value>{0} is verwijderd</value>
+    <value>{0} foi excluído</value>
   </data>
   <data name="Delete_API_Token_Confirmation" xml:space="preserve">
-    <value>Weet u zeker dat u dit API-token wilt verwijderen?</value>
+    <value>Tem certeza que deseja excluir este token de API?</value>
   </data>
   <data name="Delete_Auth_Token_Confirmation" xml:space="preserve">
-    <value>Weet u zeker dat u Google Authenticator MFA wilt uitschakelen?</value>
+    <value>Tem certeza que deseja desativar o MFA do Google Authenticator?</value>
   </data>
   <data name="Deny_Request_Confirmation" xml:space="preserve">
-    <value>Weet u zeker dat u dit verzoek wilt weigeren?</value>
+    <value>Tem certeza que deseja negar esta solicitação?</value>
   </data>
   <data name="Developer_Analytics_Suggestion" xml:space="preserve">
-    <value>We vragen u om ontwikkelaarsanalyse toe te staan zodat we kunnen begrijpen hoe onze app wordt gebruikt om onze inspanningen te richten op wat onze gebruikers het belangrijkst vinden.</value>
+    <value>Solicitamos que você permita análises de desenvolvedor para que possamos entender como nosso aplicativo é usado e concentrar nossos esforços no que nossos usuários consideram mais importante.</value>
   </data>
   <data name="Developer_Logs_Suggestion" xml:space="preserve">
-    <value>We vragen u om ontwikkelaarslogboekregistratie toe te staan zodat we Blazam snel en transparant kunnen verbeteren en onze ontwikkelingsinspanningen kunnen ondersteunen.</value>
+    <value>Solicitamos que você permita o registro de desenvolvedor para que possamos melhorar o Blazam de forma rápida e transparente e auxiliar nossos esforços de desenvolvimento.</value>
   </data>
   <data name="Duplicate_Delegate" xml:space="preserve">
-    <value>Die gedelegeerde bestaat al.</value>
+    <value>Esse delegado já existe.</value>
   </data>
   <data name="Duplicate_Deleted_Delegate" xml:space="preserve">
-    <value>Die gedelegeerde bestaat al. Deze is verwijderd. Herstel deze vanuit de prullenbak.</value>
+    <value>Esse delegado já existe. Ele foi excluído. Restaure-o da lixeira.</value>
   </data>
   <data name="Duplicate_Name_Conflict" xml:space="preserve">
-    <value>Die naam bestaat al. Kies een andere naam.</value>
+    <value>Esse nome já existe. Por favor, escolha um nome diferente</value>
   </data>
   <data name="GA4_Instructions" xml:space="preserve">
-    <value>Stel een GA4-account in en voer hier uw tracking-ID in om gegevens over het gebruik van uw installatie te verzamelen.</value>
+    <value>Configure uma conta GA4 e insira seu ID de rastreamento aqui para coletar dados sobre o uso da sua instalação.</value>
   </data>
   <data name="Invalid_Cert_Type" xml:space="preserve">
-    <value>Geen geldig certificaattype.</value>
+    <value>Não é um tipo de certificado válido.</value>
   </data>
   <data name="Invalid_Token_Entered" xml:space="preserve">
-    <value>Het ingevoerde token is niet geldig.</value>
+    <value>O token inserido não é válido</value>
   </data>
   <data name="Lacks_Group_Member_Read_Permission" xml:space="preserve">
-    <value>De groep heeft meer leden waartoe u geen toegang heeft.</value>
+    <value>O grupo tem mais membros aos quais você não tem acesso</value>
   </data>
   <data name="Lacks_Group_Member_Remove_Permission" xml:space="preserve">
-    <value>U heeft geen toestemming om dit groepslid te verwijderen.</value>
+    <value>Você não tem permissão para remover este membro do grupo</value>
   </data>
   <data name="Locked_Out" xml:space="preserve">
-    <value>{0} is vergrendeld</value>
+    <value>{0} foi bloqueado</value>
   </data>
   <data name="Mapping_Use_Access_Level" xml:space="preserve">
-    <value>{0} koppelingen gebruiken dit toegangsniveau en worden verwijderd.</value>
+    <value>{0} mapeamentos usam este Nível de Acesso e serão excluídos</value>
   </data>
   <data name="Missing_First_Or_Last_Name" xml:space="preserve">
-    <value>U moet zowel een voor- als achternaam opgeven.</value>
+    <value>Você deve fornecer tanto um primeiro nome quanto um sobrenome</value>
   </data>
   <data name="Modify_Name_Redirect" xml:space="preserve">
-    <value>Om de naam van de gebruiker te wijzigen, klik op de knop hernoemen in de werkbalk/tandwielmenu.</value>
+    <value>Para modificar o nome do usuário, clique no botão renomear na barra de ferramentas/menu de engrenagem</value>
   </data>
   <data name="Navigate_Away_Confirmation" xml:space="preserve">
-    <value>Weet u zeker dat u wilt navigeren?</value>
+    <value>Tem certeza que deseja sair da página?</value>
   </data>
   <data name="News_Provider_Description" xml:space="preserve">
-    <value>Belangrijke updates en wijzigingen worden hier geplaatst.</value>
+    <value>Atualizações e alterações importantes são publicadas aqui.</value>
   </data>
   <data name="No_More_Widgets" xml:space="preserve">
-    <value>Geen widgets meer om toe te voegen.</value>
+    <value>Não há mais widgets para adicionar</value>
   </data>
   <data name="No_News" xml:space="preserve">
-    <value>Er is hier niets nieuws te zien.</value>
+    <value>Não há nada de novo para ver aqui</value>
   </data>
   <data name="No_Request_Actions_Available" xml:space="preserve">
-    <value>Er zijn geen acties beschikbaar om aan te vragen voor deze invoer.</value>
+    <value>Não há ações disponíveis para solicitar para esta entrada.</value>
   </data>
   <data name="No_Request_Fields_Available" xml:space="preserve">
-    <value>Er zijn geen velden beschikbaar om aan te vragen voor deze invoer.</value>
+    <value>Não há campos disponíveis para solicitar para esta entrada</value>
   </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
-    <value>Het genereren van een nieuw authenticatietoken maakt het bestaande ongeldig!</value>
+    <value>Gerar um novo token de autenticador invalidará o existente!</value>
   </data>
   <data name="Rearrange_Dashboard_Help" xml:space="preserve">
-    <value>Herschikte dashboardwidgets door items naar een nieuwe positie te slepen.</value>
+    <value>Reorganize os widgets do painel arrastando itens para uma nova posição</value>
   </data>
   <data name="Rename_Reboot_Message" xml:space="preserve">
-    <value>Een beheerder heeft dit werkstation hernoemd. Het wordt over {0} seconden opnieuw opgestart.</value>
+    <value>Um administrador renomeou esta estação de trabalho. Ela será reiniciada em {0} segundos.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>Verzoek voor {0}</value>
+    <value>Solicitação para {0}</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>Verzoek aan {0}</value>
+    <value>Solicitação a {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
-    <value>Deze regel wordt elke keer geactiveerd als een {0} {1} is.</value>
+    <value>Esta regra será disparada toda vez que um {0} for {1}</value>
   </data>
   <data name="Stop_On_Rule" xml:space="preserve">
-    <value>Geen verdere regels verwerken.</value>
+    <value>Não processar mais regras</value>
   </data>
   <data name="Super_User_Definition" xml:space="preserve">
-    <value>Heeft volledige en onbeperkte toegang tot de applicatie indien ingeschakeld.</value>
+    <value>Terá acesso completo e total ao aplicativo se habilitado</value>
   </data>
   <data name="Text_Copied_To_Clipboard" xml:space="preserve">
-    <value>"{0}" gekopieerd naar klembord.</value>
+    <value>"{0}" copiado para a área de transferência.</value>
   </data>
   <data name="Unexpected_Error_Occurred" xml:space="preserve">
-    <value>Er is een onverwachte fout opgetreden.</value>
+    <value>Ocorreu um erro inesperado.</value>
   </data>
   <data name="Unsaved_Navigation_Warning" xml:space="preserve">
-    <value>U heeft niet-opgeslagen wijzigingen.</value>
+    <value>Você tem alterações não salvas</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>De releasetak is de aanbevolen tak. Het kiezen van Nightly wordt alleen aanbevolen voor testinstallaties. Dev is alleen voor ontwikkelaars.</value>
+    <value>A ramificação de lançamento é a ramificação recomendada. Escolher Nightly é recomendado apenas para instalações de teste. Dev é apenas para desenvolvedores.</value>
   </data>
   <data name="Updated" xml:space="preserve">
-    <value>{0} is bijgewerkt</value>
+    <value>{0} foi atualizado</value>
   </data>
   <data name="Update_Credential_Is_AD" xml:space="preserve">
-    <value>De Active Directory-referenties zijn gevalideerd voor bijwerken.</value>
+    <value>As Credenciais do Active Directory estão validadas para atualização.</value>
   </data>
   <data name="Update_Credential_Is_Application" xml:space="preserve">
-    <value>Het account waaronder Blazam wordt uitgevoerd, kan schrijven naar de toepassingsmap.
- Dit stelt de hostmachine bloot aan onnodig risico. Verander de toepassingsidentiteit
- naar een account met minder rechten om de beveiliging te verbeteren.</value>
+    <value>A conta que executa o Blazam pode gravar no diretório do aplicativo.
+ Isso expõe a máquina host a riscos desnecessários. Altere a identidade do aplicativo
+ para uma conta com menos privilégios para melhorar a segurança.</value>
   </data>
   <data name="Update_Credential_Is_Custom" xml:space="preserve">
-    <value>De aangepaste updatereferenties zijn gevalideerd voor bijwerken.</value>
+    <value>As Credenciais de Atualização Personalizadas estão validadas para atualização.</value>
   </data>
   <data name="Update_Credential_Is_Invalid" xml:space="preserve">
-    <value>Er zijn geen referenties geconfigureerd met schrijfmachtiging voor de toepassingsmap!
-Probeer aangepaste updatereferenties te configureren.</value>
+    <value>Não há credenciais configuradas com permissão de gravação no diretório do aplicativo!
+Tente configurar credenciais de atualização personalizadas.</value>
   </data>
   <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
-    <value> vraagt leestoegang voor {0} op </value>
+    <value> está solicitando acesso de leitura para {0} em </value>
   </data>
   <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
-    <value> vraagt {0}-toegang op </value>
+    <value> está solicitando acesso {0} em </value>
   </data>
   <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
-    <value> vraagt bewerkingstoegang voor {0} op </value>
+    <value> está solicitando acesso de edição para {0} em </value>
   </data>
   <data name="Require_Password_Change" xml:space="preserve">
-    <value>Vereist dat de gebruiker hun wachtwoord wijzigt bij de volgende aanmelding</value>
+    <value>Exigir que o usuário altere sua senha no próximo logon</value>
   </data>
   <data name="Password_Reset_Body" xml:space="preserve">
-    <value>Er is een wachtwoordreset aangevraagd voor uw account.</value>
+    <value>Uma redefinição de senha foi solicitada para sua conta.</value>
   </data>
   <data name="Password_Reset_Link_Text" xml:space="preserve">
-    <value>Klik hier om uw wachtwoord opnieuw in te stellen</value>
+    <value>Clique aqui para redefinir sua senha</value>
   </data>
   <data name="Password_Reset_Expiration_Text" xml:space="preserve">
-    <value> Uw resetlink verloopt {0}</value>
+    <value> Seu link de redefinição expirará {0}</value>
   </data>
   <data name="Password_Reset_Ignore_Text" xml:space="preserve">
-    <value>Als u deze reset niet heeft aangevraagd, kunt u deze veilig negeren.</value>
+    <value>Se você não solicitou esta redefinição, pode ignorá-la com segurança.</value>
   </data>
   <data name="Password_Reset_Origin_Text" xml:space="preserve">
-    <value>Dit verzoek is afkomstig van: {0}</value>
+    <value>Esta solicitação se originou de: {0}</value>
   </data>
   <data name="Password_Reset_URL_Text" xml:space="preserve">
-    <value>Als de bovenstaande link niet werkt, kopieer dan het volgende in de adresbalk.</value>
+    <value>Se o link acima não funcionar, copie o seguinte para a barra de endereço.</value>
   </data>
 </root>

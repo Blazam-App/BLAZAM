@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Database.Models;
+using BLAZAM.Global;
 using BLAZAM.Helpers; // Added for GetAppHashCode
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
@@ -167,6 +168,7 @@ namespace BLAZAM.Session
             lock (_userStatesLock)
             {
                 UserStates.Add(state);
+                ApplicationEvents.LoggedOnUserCountChanged.Invoke(UserStates.Count);
             }
 
             UserStateAdded?.Invoke(state); // Invoke event after adding

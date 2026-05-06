@@ -1,5 +1,4 @@
-﻿@using BLAZAM.Global.Events
-@using BLAZAM.Gui.UI.Printers
+﻿@using BLAZAM.Gui.UI.Printers
 @inherits DirectoryEntryViewBase
 @{
     string _fieldMudStackClasses = "flex-wrap gap-10";
@@ -133,7 +132,7 @@
     {
         await base.OnInitializedAsync();
         await StateHasChangedAsync();
-        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
                 Entry = Printer,

@@ -28,8 +28,7 @@ namespace BLAZAM.Database.Models.User
 
         public override string? ToString()
         {
-            return Username
-                ;
+            return Username;
         }
     }
 

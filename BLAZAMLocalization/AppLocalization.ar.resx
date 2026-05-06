@@ -1276,7 +1276,7 @@
     <value>جلستك على وشك الانتهاء</value>
   </data>
   <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
-    <value>المستخدمون المعطلون الذين تم تغييرهم في آخر 90 يومًا</value>
+    <value>المستخدمون المعطّلون المعدَّلون في آخر 90 يومًا</value>
   </data>
   <data name="Text" xml:space="preserve">
     <value>نص</value>
@@ -1302,31 +1302,31 @@
   <data name="Before Action" xml:space="preserve">
     <value>قبل العمل</value>
   </data>
-  <data name="Entries_changed_in_the_last_24_hours" xml:space="preserve">
-    <value>الإدخالات التي تم تغييرها في آخر 24 ساعة</value>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>إدخالات معدّلة</value>
   </data>
-  <data name="Passwords_changed_in_the_last_90_days" xml:space="preserve">
-    <value>كلمات المرور التي تم تغييرها في آخر 90 يومًا</value>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>كلمات مرور معدّلة</value>
   </data>
-  <data name="Entries_deleted_in_the_last_14_days" xml:space="preserve">
-    <value>الإدخالات المحذوفة في آخر 14 يومًا</value>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>إدخالات محذوفة</value>
   </data>
-  <data name="Computers_created_in_the_last_14_days" xml:space="preserve">
-    <value>أجهزة الكمبيوتر التي تم إنشاؤها في آخر 14 يومًا</value>
+  <data name="New_Computers" xml:space="preserve">
+    <value>أجهزة كمبيوتر جديدة</value>
   </data>
-  <data name="Contacts_created_in_the_last_14_days" xml:space="preserve">
-    <value>جهات الاتصال التي تم إنشاؤها في آخر 14 يومًا</value>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>جهات اتصال جديدة</value>
   </data>
-  <data name="Groups_created_in_the_last_14_days" xml:space="preserve">
-    <value>المجموعات التي تم إنشاؤها في آخر 14 يومًا</value>
+  <data name="New_Groups" xml:space="preserve">
+    <value>مجموعات جديدة</value>
   </data>
-  <data name="OUs_created_in_the_last_14_days" xml:space="preserve">
-    <value>الوحدات التنظيمية التي تم إنشاؤها في آخر 14 يومًا</value>
+  <data name="New_OUs" xml:space="preserve">
+    <value>وحدات تنظيمية جديدة</value>
   </data>
-  <data name="Printers_created_in_the_last_14_days" xml:space="preserve">
-    <value>الطابعات التي تم إنشاؤها في آخر 14 يومًا</value>
+  <data name="New_Printers" xml:space="preserve">
+    <value>طابعات جديدة</value>
   </data>
-  <data name="Users_created_in_the_last_14_days" xml:space="preserve">
-    <value>المستخدمون الذين تم إنشاؤهم في آخر 14 يومًا</value>
+  <data name="New_Users" xml:space="preserve">
+    <value>مستخدمون جدد</value>
   </data>
 </root>

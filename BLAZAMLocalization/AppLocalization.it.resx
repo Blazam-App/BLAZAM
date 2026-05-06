@@ -1299,4 +1299,34 @@
   <data name="Before Action" xml:space="preserve">
     <value>Prima dell'azione</value>
   </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>Voci modificate</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>Password modificate</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>Voci eliminate</value>
+  </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>Utenti disabilitati modificati negli ultimi 90 giorni</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>Nuovi computer</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>Nuovi contatti</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>Nuovi gruppi</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>Nuove OU</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>Nuove stampanti</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>Nuovi utenti</value>
+  </data>
 </root>

@@ -115,7 +115,7 @@ namespace BLAZAM.Pages
         public override void Dispose()
         {
             base.Dispose();
-            if (Searcher?.OnSearchStarted != null)
+            if (Searcher!=null && Searcher.OnSearchStarted != null)
             {
                 Searcher.OnSearchStarted -= OnSearchUpdated;
             }

@@ -1,5 +1,4 @@
 @using BLAZAM.Common.Data.Database
-@using BLAZAM.Global.Events
 @inherits AppComponentBase
 @inject NotificationGenerationService NotificationGenerationService
 
@@ -30,7 +29,7 @@
             {
                 OU = Directory.OUs.FindOuByDN(OU.DN);
                 SnackBarService.Success(AppLocalization[Lang.OU_created]);
-                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                     {
                         EventType = ApplicationEventType.Create,
                         Entry = OU,

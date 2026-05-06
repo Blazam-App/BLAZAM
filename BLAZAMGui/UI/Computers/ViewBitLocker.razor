@@ -1,5 +1,4 @@
-﻿@using BLAZAM.Global.Events
-@using BLAZAM.Gui.UI.Computers
+﻿@using BLAZAM.Gui.UI.Computers
 @inherits DirectoryEntryViewBase
 
 
@@ -29,7 +28,7 @@
 
             _computer = (IADComputer?)(await BitLocker.GetParentAsync());
 
-            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Search,
                     Entry = BitLocker,
