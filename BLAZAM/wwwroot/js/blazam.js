@@ -109,7 +109,7 @@ window.blazam = {
             const permission = await Notification.requestPermission();
             if (permission === 'granted') {
                 console.log('Notification permission granted.');
-                await navigator.serviceWorker.register('/sw.js');
+                await navigator.serviceWorker.register('/js/sw.js');
                 localStorage.setItem('pwaNotificationsEnabled', 'true');
                 window.blazam.startPolling();
                 return true;
@@ -126,7 +126,7 @@ window.blazam = {
 
     unsubscribeFromPushNotifications: async () => {
         if ('serviceWorker' in navigator) {
-            const registration = await navigator.serviceWorker.getRegistration('/sw.js');
+            const registration = await navigator.serviceWorker.getRegistration('/js/sw.js');
             if (registration) {
                 await registration.unregister();
                 console.log('Service worker unregistered.');
