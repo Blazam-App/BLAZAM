@@ -15,6 +15,7 @@
                    Tooltip="@AppLocalization[Lang.Notification_Settings]"
                    Color="Color.Info"
                    OnClick="@(()=>{notificationsModal?.ShowAsync();})" />
+    
     <AppIconButton Size="Size.Large"
                    Icon="@Icons.Material.Filled.ClearAll"
                    Tooltip="@AppLocalization[Lang.Dismiss_all]"
@@ -91,19 +92,5 @@
         await _notificationList!.StateHasChangedAsync();
         await StateHasChangedAsync();
     }
-    private async Task OnSubscriptionSwitchChanged(bool isSubscribed)
-    {
-        if (isSubscribed)
-        {
-            var subscribed = await JSRuntime.InvokeAsync<bool>("blazam.subscribeToPushNotifications");
-            if (!subscribed)
-            {
-                pwaNotificationsEnabled = false;
-            }
-        }
-        else
-        {
-            await JSRuntime.InvokeVoidAsync("blazam.unsubscribeFromPushNotifications");
-        }
-    }
+   
 }

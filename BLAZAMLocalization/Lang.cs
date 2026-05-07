@@ -138,6 +138,7 @@
         public static readonly string Telephone_Number = "Telephone Number";
         public static readonly string System_Settings = "System Settings";
         public static readonly string Impersonate_User = "Impersonate User";
+        public static readonly string Browser_Notifications = "Browser Notifications";
         public static readonly string Group_Membership_Changes = "Group Membership Changes";
         public static readonly string Allow_Edit_Request = "Allow Edit Request";
         public static readonly string In_App = "In App";
