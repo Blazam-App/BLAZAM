@@ -749,7 +749,7 @@ namespace BLAZAMCommon.Tests.Helpers
         [Fact]
         public void AdsValueToDateTime_ADsNullTimeEquivalentLong_ReturnsNull()
         {
-            long adsNullFileTime = CommonHelpers.ADS_NULL_TIME.ToFileTimeUtc();
+            long adsNullFileTime = ADsLargeInteger.ADS_NULL_TIME.ToFileTimeUtc();
             // This will convert to ADS_NULL_TIME, which the helper then converts to null.
             Assert.Null(adsNullFileTime.AdsValueToDateTime());
         }
@@ -762,7 +762,7 @@ namespace BLAZAMCommon.Tests.Helpers
             DateTime now = new DateTime(2025, 5, 15, 10, 0, 0, DateTimeKind.Utc);
             long fileTime = now.ToFileTimeUtc();
 
-            var adsLargeInt = new CommonHelpers.ADsLargeInteger
+            var adsLargeInt = new ADsLargeInteger
             {
                 HighPart = (int)(fileTime >> 32),
                 LowPart = (int)(fileTime & 0xFFFFFFFF)
@@ -779,15 +779,15 @@ namespace BLAZAMCommon.Tests.Helpers
         [Fact]
         public void AdsValueToDateTime_IADsLargeInteger_ZeroDate_ReturnsNull()
         {
-            var adsLargeInt = new CommonHelpers.ADsLargeInteger { HighPart = 0, LowPart = 0 };
+            var adsLargeInt = new ADsLargeInteger { HighPart = 0, LowPart = 0 };
             Assert.Null(adsLargeInt.AdsValueToDateTime());
         }
 
         [Fact]
         public void AdsValueToDateTime_IADsLargeInteger_ADsNullTimeDate_ReturnsNull()
         {
-            long adsNullFileTime = CommonHelpers.ADS_NULL_TIME.ToFileTimeUtc();
-            var adsLargeInt = new CommonHelpers.ADsLargeInteger
+            long adsNullFileTime = ADsLargeInteger.ADS_NULL_TIME.ToFileTimeUtc();
+            var adsLargeInt = new ADsLargeInteger
             {
                 HighPart = (int)(adsNullFileTime >> 32),
                 LowPart = (int)(adsNullFileTime & 0xFFFFFFFF)

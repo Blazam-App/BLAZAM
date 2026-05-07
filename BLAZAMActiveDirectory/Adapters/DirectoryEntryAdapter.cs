@@ -1324,7 +1324,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (value == null)
             {
-                value = CommonHelpers.ADS_NULL_TIME;
+                value = ADsLargeInteger.ADS_NULL_TIME;
             }
 
             var dateTime = value.Value;
