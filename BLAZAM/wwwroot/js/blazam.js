@@ -142,10 +142,10 @@ window.blazam = {
 
     startPolling: () => {
         if (window.blazam.getPushNotificationSubscriptionState() && !window.blazam.pollingInterval) {
-            lastNotificationId = localStorage.getItem('lastNotificationId');
+            window.blazam.lastNotificationId = localStorage.getItem('lastNotificationId');
             if (lastNotificationId > 0 == false) {
                 localStorage.setItem('lastNotificationId', '0');
-                lastNotificationId = 0;
+                window.blazam.lastNotificationId = 0;
             }
             window.blazam.pollingInterval = setInterval(window.blazam.pollForNotifications, 30000);
         }
