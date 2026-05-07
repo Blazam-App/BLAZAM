@@ -12,6 +12,12 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('message', event => {
+    // Verify the message origin matches the service worker's origin
+    if (event.origin !== self.location.origin) {
+        console.warn('Message received from unauthorized origin:', event.origin);
+        return;
+    }
+
     if (event.data && event.data.type === 'show-notification') {
         const notification = event.data.notification;
         self.registration.showNotification(notification.title, {

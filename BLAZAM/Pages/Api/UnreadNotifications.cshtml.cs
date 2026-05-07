@@ -30,10 +30,6 @@ namespace BLAZAM.Pages.Api
             }
 
             var context = await _dbFactory.CreateDbContextAsync();
-            var messages = await context.UserNotifications
-            .Where(un => un.User.Id == _currentUser.Id && !un.IsRead)
-            .OrderByDescending(un => un.Notification.Created)
-            .ToListAsync();
 
             var notifications = await context.UserNotifications
                 .Include(n => n.Notification)

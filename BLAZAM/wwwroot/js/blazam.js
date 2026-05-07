@@ -4,7 +4,7 @@ window.updateCookieExpiration = async () => {
     //Only update at least 500ms intervals
     if (currentTime - lastRequestTime > 500) {
         let xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
+        xhr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 // Check for expiration
                 let response = JSON.parse(xhr.response);
@@ -28,7 +28,7 @@ window.attemptSignIn = async (loginReq) => {
 
     let xhr = new XMLHttpRequest();
     let response = await new Promise((resolve, reject) => {
-        xhr.onreadystatechange = function () {
+        xhr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 resolve(xhr.response);
             } else if (this.readyState == 4 && this.status != 200) {
@@ -61,12 +61,12 @@ window.createGauge = async (id, maxValue) => {
     dialGauges[id] = Gauge(document.getElementById(id), {
         max: maxValue,
         // custom label renderer
-        label: function (value) {
+        label: function(value) {
             return Math.round(value) + "/" + this.max;
         },
         value: 0,
         // Custom dial colors (Optional)
-        color: function (value) {
+        color: function(value) {
             if (value < 20) {
                 return "#5ee432"; // green
             } else if (value < 40) {
@@ -90,6 +90,16 @@ window.customAnalyticsEvent = async (eventName, jsonData) => {
     });
 };
 
+window.blazam_stripHtml = (html) => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+};
+
+window.pwaNotificationsEnabled = async () => {
+    return localStorage.getItem('pwaNotificationsEnabled') === 'true';
+}
+
 window.blazam = {
     pollingInterval: null,
     lastNotificationId: 0,
@@ -99,7 +109,7 @@ window.blazam = {
             const permission = await Notification.requestPermission();
             if (permission === 'granted') {
                 console.log('Notification permission granted.');
-                await navigator.serviceWorker.register('/sw.js');
+                await navigator.serviceWorker.register('/js/sw.js');
                 localStorage.setItem('pwaNotificationsEnabled', 'true');
                 window.blazam.startPolling();
                 return true;
@@ -116,7 +126,7 @@ window.blazam = {
 
     unsubscribeFromPushNotifications: async () => {
         if ('serviceWorker' in navigator) {
-            const registration = await navigator.serviceWorker.getRegistration('/sw.js');
+            const registration = await navigator.serviceWorker.getRegistration('/js/sw.js');
             if (registration) {
                 await registration.unregister();
                 console.log('Service worker unregistered.');
@@ -132,6 +142,11 @@ window.blazam = {
 
     startPolling: () => {
         if (window.blazam.getPushNotificationSubscriptionState() && !window.blazam.pollingInterval) {
+            window.blazam.lastNotificationId = localStorage.getItem('lastNotificationId');
+            if (window.blazam.lastNotificationId > 0 == false) {
+                localStorage.setItem('lastNotificationId', '0');
+                window.blazam.lastNotificationId = 0;
+            }
             window.blazam.pollingInterval = setInterval(window.blazam.pollForNotifications, 30000);
         }
     },
@@ -151,14 +166,16 @@ window.blazam = {
                 const latestNotification = notifications[0];
                 if (latestNotification.id > window.blazam.lastNotificationId) {
                     navigator.serviceWorker.ready.then((registration) => {
-                        registration.showNotification(latestNotification.title || "Notification", {
-                            body: latestNotification.message || "",
+                        registration.showNotification(latestNotification.notification.title || "Notification", {
+                            body: window.blazam_stripHtml(latestNotification.notification.message || ""),
                             icon: latestNotification.icon || "/icon-192.png",
                             tag: latestNotification.tag || "blazam-notification",
                         });
                     });
                 }
                 window.blazam.lastNotificationId = latestNotification.id;
+                localStorage.setItem('lastNotificationId', latestNotification.id);
+
             }
         }
     }

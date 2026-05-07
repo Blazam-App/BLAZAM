@@ -51,7 +51,7 @@ namespace BLAZAM.Pages
                 type = "image/png"
             };
             manifest.icons.Add(icon);
-            manifest.serviceworker.src = "/sw.js";
+            manifest.serviceworker.src = "/js/sw.js";
             try
             {
                 var appSettings = await context.AppSettings.FirstOrDefaultAsync();

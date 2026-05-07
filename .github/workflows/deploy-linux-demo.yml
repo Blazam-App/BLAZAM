@@ -1,4 +1,4 @@
-name: Deploy Linux Demo
+name: Build and deploy Linux Demo
 on:
   workflow_dispatch:
   push:
