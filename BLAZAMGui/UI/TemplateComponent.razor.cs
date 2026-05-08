@@ -56,7 +56,7 @@ namespace BLAZAM.Gui.UI
         {
             get
             {
-                var cats = TemplatesUserCanUse.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().ToList();
+                var cats = TemplatesUserCanUse.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().OrderBy(x=>x).ToList();
                 return cats;
             }
         }
@@ -141,7 +141,7 @@ namespace BLAZAM.Gui.UI
                     Templates = temp;
                 }
 
-                var cats = await Context.DirectoryTemplates.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().ToListAsync();
+                var cats = await Context.DirectoryTemplates.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().OrderBy(x=>x).ToListAsync();
                 if (cats != null)
                 {
                     TemplateCategories = cats;
