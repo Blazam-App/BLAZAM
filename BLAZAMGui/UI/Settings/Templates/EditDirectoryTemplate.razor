@@ -30,7 +30,7 @@
                                        OnAdornmentClick="@(()=>{_=_categoryModal?.ShowAsync();})"
                                        Options="@(categories.Count>0?categories:new List<string>())"
                                        ValueChanged="@((value)=>{_workingTemplate.Category=value;})"
-                                       @bind-Text=_workingTemplate.Category
+                                       Value="@_workingTemplate.Category"
                                        Label="@AppLocalization[Lang.Template_Category]" />
                         <AppModal @ref=_categoryModal Title=@AppLocalization[Lang.Add_Category]>
                             <AddTemplateCategoryModalContent Categories="@categories"
