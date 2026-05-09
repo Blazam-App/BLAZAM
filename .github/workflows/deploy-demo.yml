@@ -36,4 +36,5 @@ jobs:
       - name: Restart Demo Website
         shell: pwsh
         run: |
+          Start-Sleep -Seconds 5
           Remove-Item -Path "C:\inetpub\demo.blazam.org\app_offline.htm" -Force

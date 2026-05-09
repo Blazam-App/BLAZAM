@@ -8,7 +8,7 @@ namespace BLAZAM.Pages.Api
     public class UnreadNotificationsModel : PageModel
     {
         private readonly IAppDatabaseFactory _dbFactory;
-        private IApplicationUserState _currentUser;
+        private IApplicationUserState? _currentUser;
         private readonly IApplicationUserStateService _userStateService;
 
         public UnreadNotificationsModel(IAppDatabaseFactory dbFactory, IApplicationUserStateService userStateService)
@@ -29,7 +29,7 @@ namespace BLAZAM.Pages.Api
                 return new UnauthorizedResult();
             }
 
-            var context = await _dbFactory.CreateDbContextAsync();
+            using var context = await _dbFactory.CreateDbContextAsync();
 
             var notifications = await context.UserNotifications
                 .Include(n => n.Notification)
