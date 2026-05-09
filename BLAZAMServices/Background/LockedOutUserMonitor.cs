@@ -73,7 +73,7 @@ namespace BLAZAM.Services.Background
 
                     if (user.LockoutTime > DateTime.UtcNow.AddDays(-1))
                     {
-                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.LockedOut,
                             Entry = user,

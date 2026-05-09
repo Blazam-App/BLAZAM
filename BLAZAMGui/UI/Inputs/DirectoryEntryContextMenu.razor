@@ -1,5 +1,4 @@
-﻿@using BLAZAM.Global.Events
-@inherits AppComponentBase
+﻿@inherits AppComponentBase
 
 <MudContextMenu @ref="_menu">
 
@@ -62,7 +61,7 @@
             var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
-            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Modify,
                 Entry = userToUnlock,
@@ -92,7 +91,7 @@
             var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
-            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Modify,
                 Entry = userToUnlock,
@@ -123,7 +122,7 @@
             var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
-            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Modify,
                 Entry = userToUnlock,

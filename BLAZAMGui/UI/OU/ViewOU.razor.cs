@@ -11,7 +11,7 @@ namespace BLAZAM.Gui.UI.OU
         {
             await base.OnInitializedAsync();
             await StateHasChangedAsync();
-            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
                 Entry = OU,
@@ -41,7 +41,7 @@ namespace BLAZAM.Gui.UI.OU
             var changes = OU.Changes;
             await OU.CommitChangesAsync();
             EditMode = false;
-            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Modify,
                 Entry = OU,
@@ -89,7 +89,7 @@ namespace BLAZAM.Gui.UI.OU
                 {
                     SnackBarService.Success(AppHelpLocalization[HelpLang.Deleted, ouName]);
                 }
-                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Delete,
                     Entry = OU,

@@ -17,7 +17,7 @@ namespace BLAZAM.Gui.UI.Groups
         {
             await base.OnInitializedAsync();
             await StateHasChangedAsync();
-            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
                 Entry = Group,
@@ -43,7 +43,7 @@ namespace BLAZAM.Gui.UI.Groups
                 {
                     foreach (var assignment in assignTo)
                     {
-                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.Assign,
                             Entry = assignment.Member,
@@ -56,7 +56,7 @@ namespace BLAZAM.Gui.UI.Groups
 
                     foreach (var assignment in unassignFrom)
                     {
-                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.Unassign,
                             Entry = assignment.Member,
@@ -68,7 +68,7 @@ namespace BLAZAM.Gui.UI.Groups
                     }
                     if (changes.Any(c => c.Field != "member"))
                     {
-                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.Modify,
                             Entry = Group,
@@ -103,7 +103,7 @@ namespace BLAZAM.Gui.UI.Groups
                 {
                     Group.Delete();
                     SnackBarService.Success(Group.CanonicalName + " has been deleted.");
-                    ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                    ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                     {
                         EventType = ApplicationEventType.Delete,
                         Entry = Group,

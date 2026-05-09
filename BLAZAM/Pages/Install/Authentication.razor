@@ -73,7 +73,11 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
+        var dbSettings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
+        if(dbSettings != null)
+        {
+            settings = dbSettings;
+        }
 
         if (settings != null && !settings.AdminPassword.IsNullOrEmpty())
         {

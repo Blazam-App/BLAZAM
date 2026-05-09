@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Access_Level_Definition" xml:space="preserve">
+    <value>Nivelurile de acces sunt un șablon de permisiuni care pot fi aplicate anumitor UO-uri pentru anumiți delegați.</value>
+  </data>
+  <data name="Access_Level_Object_Missing_Read" xml:space="preserve">
+    <value>Schimbați accesul {0} la Citire pentru a seta permisiunile</value>
+  </data>
+  <data name="Authenticator_Setup_One" xml:space="preserve">
+    <value>Scanați codul de mai jos din aplicația dvs. de autentificare</value>
+  </data>
+  <data name="Authenticator_Setup_Two" xml:space="preserve">
+    <value>Apoi introduceți parola de acces pentru a activa</value>
+  </data>
+  <data name="Auto_Update_Time_Definition" xml:space="preserve">
+    <value>Ora din fiecare zi pentru aplicarea automată a unei actualizări.</value>
+  </data>
+  <data name="Confirm_Group_Creation" xml:space="preserve">
+    <value>Sigur doriți să creați acest grup?</value>
+  </data>
+  <data name="Confirm_OU_Creation" xml:space="preserve">
+    <value>Sigur doriți să creați această UO?</value>
+  </data>
+  <data name="Confirm_Save_Changes" xml:space="preserve">
+    <value>Sigur doriți să salvați modificările?</value>
+  </data>
+  <data name="Continue_Processing_Rules" xml:space="preserve">
+    <value>Continuare procesare alte reguli</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>{0} a fost creat</value>
+  </data>
+  <data name="Debug_Enabled_Warning" xml:space="preserve">
+    <value>Modul de depanare este activat. Dacă acesta este un server de producție, dezactivați în appsettings.json pentru a preveni divulgarea datelor sensibile.</value>
+  </data>
+  <data name="Delegate_Definition" xml:space="preserve">
+    <value>Delegații sunt utilizatorii aplicației dvs. aprobați. Doar utilizatorii pe care îi definiți aici, sau utilizatorii din următoarele grupuri Active Directory (sau grupuri imbricate) cu permisiuni mapate sau auto-editare activată.</value>
+  </data>
+  <data name="Delegate_Function" xml:space="preserve">
+    <value>Accesul permis fiecărui delegat este controlat de nivelul de acces mapat.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>{0} a fost șters</value>
+  </data>
+  <data name="Delete_API_Token_Confirmation" xml:space="preserve">
+    <value>Sigur doriți să ștergeți acest token API?</value>
+  </data>
+  <data name="Delete_Auth_Token_Confirmation" xml:space="preserve">
+    <value>Sigur doriți să dezactivați MFA Google Authenticator?</value>
+  </data>
+  <data name="Deny_Request_Confirmation" xml:space="preserve">
+    <value>Sigur doriți să refuzați această solicitare?</value>
+  </data>
+  <data name="Developer_Analytics_Suggestion" xml:space="preserve">
+    <value>Vă rugăm să permiteți analiza dezvoltatorului pentru a înțelege cum este utilizată aplicația noastră și pentru a ne concentra eforturile pe ceea ce utilizatorii noștri consideră cel mai important.</value>
+  </data>
+  <data name="Developer_Logs_Suggestion" xml:space="preserve">
+    <value>Vă rugăm să permiteți jurnalizarea dezvoltatorului pentru a îmbunătăți Blazam rapid și transparent și pentru a sprijini eforturile noastre de dezvoltare.</value>
+  </data>
+  <data name="Duplicate_Delegate" xml:space="preserve">
+    <value>Acel delegat există deja.</value>
+  </data>
+  <data name="Duplicate_Deleted_Delegate" xml:space="preserve">
+    <value>Acel delegat există deja. A fost șters. Restaurați-l din coșul de gunoi.</value>
+  </data>
+  <data name="Duplicate_Name_Conflict" xml:space="preserve">
+    <value>Acel nume există deja. Vă rugăm alegeți un alt nume</value>
+  </data>
+  <data name="GA4_Instructions" xml:space="preserve">
+    <value>Configurați un cont GA4 și introduceți ID-ul de urmărire pentru a colecta date despre utilizarea instalării dvs.</value>
+  </data>
+  <data name="Invalid_Cert_Type" xml:space="preserve">
+    <value>Nu este un tip de certificat valid.</value>
+  </data>
+  <data name="Invalid_Token_Entered" xml:space="preserve">
+    <value>Token-ul introdus nu este valid</value>
+  </data>
+  <data name="Lacks_Group_Member_Read_Permission" xml:space="preserve">
+    <value>Grupul are mai mulți membri la care nu aveți acces</value>
+  </data>
+  <data name="Lacks_Group_Member_Remove_Permission" xml:space="preserve">
+    <value>Nu aveți permisiunea de a elimina acest membru din grup</value>
+  </data>
+  <data name="Locked_Out" xml:space="preserve">
+    <value>{0} a fost blocat</value>
+  </data>
+  <data name="Mapping_Use_Access_Level" xml:space="preserve">
+    <value>{0} mapări utilizează acest Nivel de Acces și vor fi șterse</value>
+  </data>
+  <data name="Missing_First_Or_Last_Name" xml:space="preserve">
+    <value>Trebuie să furnizați atât un prenume cât și un nume de familie</value>
+  </data>
+  <data name="Modify_Name_Redirect" xml:space="preserve">
+    <value>Pentru a modifica numele utilizatorului, faceți clic pe butonul redenumire din bara de instrumente/meniu</value>
+  </data>
+  <data name="Navigate_Away_Confirmation" xml:space="preserve">
+    <value>Sigur doriți să navigați în altă parte?</value>
+  </data>
+  <data name="News_Provider_Description" xml:space="preserve">
+    <value>Actualizările și modificările importante sunt postate aici.</value>
+  </data>
+  <data name="No_More_Widgets" xml:space="preserve">
+    <value>Nu mai există widget-uri de adăugat</value>
+  </data>
+  <data name="No_News" xml:space="preserve">
+    <value>Nu există nimic nou de văzut aici</value>
+  </data>
+  <data name="No_Request_Actions_Available" xml:space="preserve">
+    <value>Nu există acțiuni disponibile pentru a solicita pentru această intrare.</value>
+  </data>
+  <data name="No_Request_Fields_Available" xml:space="preserve">
+    <value>Nu există câmpuri disponibile pentru a solicita pentru această intrare</value>
+  </data>
+  <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
+    <value>Generarea unui nou token de autentificare va invalida cel existent!</value>
+  </data>
+  <data name="Rearrange_Dashboard_Help" xml:space="preserve">
+    <value>Rearanjați widget-urile din tabloul de bord trăgând elementele într-o nouă poziție</value>
+  </data>
+  <data name="Rename_Reboot_Message" xml:space="preserve">
+    <value>Un administrator a redenumit această stație de lucru. Va reporni în {0} secunde.</value>
+  </data>
+  <data name="Request_To" xml:space="preserve">
+    <value>Solicitare pentru {0}</value>
+  </data>
+  <data name="Request_For" xml:space="preserve">
+    <value>Solicitare la {0}</value>
+  </data>
+  <data name="Rule_No_Filter_Warning" xml:space="preserve">
+    <value>Această regulă va fi declanșată de fiecare dată când un {0} este {1}</value>
+  </data>
+  <data name="Stop_On_Rule" xml:space="preserve">
+    <value>Nu mai procesa alte reguli</value>
+  </data>
+  <data name="Super_User_Definition" xml:space="preserve">
+    <value>Va avea acces complet și total la aplicație dacă este activat</value>
+  </data>
+  <data name="Text_Copied_To_Clipboard" xml:space="preserve">
+    <value>"{0}" copiat în clipboard.</value>
+  </data>
+  <data name="Unexpected_Error_Occurred" xml:space="preserve">
+    <value>A apărut o eroare neașteptată.</value>
+  </data>
+  <data name="Unsaved_Navigation_Warning" xml:space="preserve">
+    <value>Aveți modificări nesalvate</value>
+  </data>
+  <data name="Upate_Branch_Definition" xml:space="preserve">
+    <value>Ramura de lansare este ramura recomandată. Alegerea Nightly este recomandată doar pentru instalările de test. Dev este doar pentru dezvoltatori.</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>{0} a fost actualizat</value>
+  </data>
+  <data name="Update_Credential_Is_AD" xml:space="preserve">
+    <value>Credențialele Active Directory sunt validate pentru actualizare.</value>
+  </data>
+  <data name="Update_Credential_Is_Application" xml:space="preserve">
+    <value>Contul care rulează Blazam poate scrie în directorul aplicației.
+ Acest lucru expune mașina gazdă la riscuri inutile. Schimbați identitatea aplicației
+ la un cont cu mai puține privilegii pentru a îmbunătăți securitatea.</value>
+  </data>
+  <data name="Update_Credential_Is_Custom" xml:space="preserve">
+    <value>Credențialele de Actualizare Personalizate sunt validate pentru actualizare.</value>
+  </data>
+  <data name="Update_Credential_Is_Invalid" xml:space="preserve">
+    <value>Nu există credențiale configurate cu permisiune de scriere în directorul aplicației!
+Încercați configurarea credențialelor de actualizare personalizate.</value>
+  </data>
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> solicită acces de citire pentru {0} pe </value>
+  </data>
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> solicită acces {0} pe </value>
+  </data>
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> solicită acces de editare pentru {0} pe </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>Impune utilizatorului să schimbe parola la următoarea autentificare</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>A fost solicitată o resetare a parolei pentru contul dvs.</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>Faceți clic aici pentru a reseta parola</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> Link-ul dvs. de resetare va expira {0}</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>Dacă nu ați solicitat această resetare, o puteți ignora în siguranță.</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>Această solicitare a provenit din: {0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>Dacă link-ul de mai sus nu funcționează, copiați următoarele în bara de adrese.</value>
+  </data>
+</root>
