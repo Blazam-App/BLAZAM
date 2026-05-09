@@ -109,7 +109,7 @@ window.blazam = {
             const permission = await Notification.requestPermission();
             if (permission === 'granted') {
                 console.log('Notification permission granted.');
-                await navigator.serviceWorker.register('/js/sw.js');
+                await navigator.serviceWorker.register('/');
                 localStorage.setItem('pwaNotificationsEnabled', 'true');
                 window.blazam.startPolling();
                 return true;
@@ -142,9 +142,9 @@ window.blazam = {
 
     startPolling: () => {
         if (window.blazam.getPushNotificationSubscriptionState() && !window.blazam.pollingInterval) {
-            window.blazam.lastNotificationId = localStorage.getItem('lastNotificationId');
+            window.blazam.lastNotificationId = Number(localStorage.getItem('lastNotificationId'));
             if (window.blazam.lastNotificationId > 0 == false) {
-                localStorage.setItem('lastNotificationId', '0');
+                localStorage.setItem('lastNotificationId', 0);
                 window.blazam.lastNotificationId = 0;
             }
             window.blazam.pollingInterval = setInterval(window.blazam.pollForNotifications, 30000);
