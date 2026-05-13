@@ -152,7 +152,7 @@ namespace BLAZAM.Services.Background
                     if (settings.UseSMTPAuth)
                     {
                         // Authenticate with the server
-                        await client.AuthenticateAsync(settings.SMTPUsername, settings.SMTPPassword);
+                        await client.AuthenticateAsync(settings.SMTPUsername, settings.SMTPPassword?.Decrypt());
                     }
 
                     return client;
@@ -391,14 +391,14 @@ namespace BLAZAM.Services.Background
         /// <remarks>This method uses an SMTP client to send the email. Ensure that the SMTP client is
         /// properly configured before calling this method.</remarks>
         /// <param name="subject">The subject line of the email message. Cannot be null or empty.</param>
-        /// <param name="body">The body content of the email message, represented as a <see cref="NotificationTemplateComponent"/>. Cannot
+        /// <param name="body">The body content of the email message, represented as a <see cref="EmailNotificationTemplateComponent"/>. Cannot
         /// be null.</param>
         /// <param name="to">The primary recipient's email address. Cannot be null or empty.</param>
         /// <param name="cc">An optional email address for the carbon copy (CC) recipient. Can be null.</param>
         /// <param name="bcc">An optional email address for the blind carbon copy (BCC) recipient. Can be null.</param>
         /// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if the email
         /// was sent successfully; otherwise, <see langword="false"/>.</returns>
-        public async Task<bool> SendMessage(string subject, NotificationTemplateComponent body, string to, string? cc = null, string? bcc = null)
+        public async Task<bool> SendMessage(string subject, EmailNotificationTemplateComponent body, string to, string? cc = null, string? bcc = null)
         {
             try
             {

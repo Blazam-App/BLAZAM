@@ -171,9 +171,6 @@
   <data name="Additional Fields" xml:space="preserve">
     <value>추가 필드</value>
   </data>
-  <data name="Additonal Fields" xml:space="preserve">
-    <value>Additonal 필드</value>
-  </data>
   <data name="Admin bcc" xml:space="preserve">
     <value>관리자 숨은 참조</value>
   </data>
@@ -1301,5 +1298,35 @@
   </data>
   <data name="Before Action" xml:space="preserve">
     <value>행동 전</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>변경된 항목</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>변경된 비밀번호</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>삭제된 항목</value>
+  </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>지난 90일 동안 변경된 비활성화된 사용자</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>새 컴퓨터</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>새 연락처</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>새 그룹</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>새 OU</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>새 프린터</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>새 사용자</value>
   </data>
 </root>

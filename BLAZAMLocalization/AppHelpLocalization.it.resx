@@ -226,7 +226,7 @@
     <value>Non ci sono azioni disponibili da richiedere per questa voce.</value>
   </data>
   <data name="No_Request_Fields_Available" xml:space="preserve">
-    <value />
+    <value>Non ci sono campi disponibili da richiedere per questa voce</value>
   </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>La generazione di un nuovo token di autenticazione invaliderà quello esistente!</value>
@@ -282,14 +282,34 @@ a un account con privilegi inferiori per migliorare la sicurezza.</value>
     <value>Non ci sono credenziali configurate con il permesso di scrittura nella directory dell'applicazione!
 Prova a configurare credenziali di aggiornamento personalizzate.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> sta richiedendo l'accesso in lettura per {0} su </value>
   </data>
-  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> sta richiedendo l'accesso {0} su </value>
   </data>
-  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> sta richiedendo l'accesso in modifica per {0} su </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>Richiedi all'utente di cambiare la password al prossimo accesso</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>È stato richiesto un ripristino della password per il tuo account.</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>Fai clic qui per reimpostare la tua password</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> Il tuo link di ripristino scadrà {0}</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>Se non hai richiesto questo ripristino, puoi ignorarlo in sicurezza.</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>Questa richiesta ha avuto origine da: {0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>Se il link sopra non funziona, copia quanto segue nella barra degli indirizzi.</value>
   </data>
 </root>

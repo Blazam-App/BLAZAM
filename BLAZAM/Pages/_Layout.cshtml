@@ -51,7 +51,7 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.server.js"></script>
-    @if (DatabaseCache.ApplicationSettings?.SendDeveloperAnalytics == true)
+    @if (DatabaseCache.ApplicationSettings?.SendDeveloperAnalytics == true || !ApplicationInfo.InstallationCompleted)
     {
         if (!ApplicationInfo.InDemoMode && !ApplicationInfo.InDebugMode && !Debugger.IsAttached)
         {
@@ -102,6 +102,7 @@
     }
 
     <script src="~/js/blazam.js" asp-append-version="true"></script>
+    <script src="~/js/pwa.js" asp-append-version="true"></script>
     <script src="~/lib/svg-gauge/dist/gauge.min.js" asp-append-version="true"></script>
 
 
@@ -112,7 +113,7 @@
     <script src="~/js/reconnect.js" asp-append-version="true"></script>
     <script>
         if('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js', {scope: '/'})
+            navigator.serviceWorker.register('/js/sw.js', {scope: '/'})
         .then((reg) => {
            // registration worked
                console.log('Registration succeeded. Scope is ' + reg.scope);

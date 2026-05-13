@@ -30,5 +30,11 @@ namespace BLAZAM.Gui.UI
                 Loggers.DatabaseLogger.Error(ex, "Failed to connect to database");
             }
         }
+
+        public override void Dispose()
+        {
+            Context?.Dispose();
+            base.Dispose();
+        }
     }
 }

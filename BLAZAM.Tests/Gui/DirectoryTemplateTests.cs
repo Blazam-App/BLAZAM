@@ -265,6 +265,91 @@ namespace BLAZAM.Tests.Gui
             var result = _template.ReplaceVariables("{fn:du}", userWithDiacritics);
             Assert.Equal("JOHN", result);
         }
+
+        [Fact]
+        public void ShouldCollapseMultipleSpacesToSingleSpace()
+        {
+            var result = _template.ReplaceVariables("{fn}    {ln}", _testUser);
+            Assert.Equal("John Doe", result);
+        }
+
+        [Fact]
+        public void ShouldTrimLeadingWhitespace()
+        {
+            var result = _template.ReplaceVariables("   {fn} {ln}", _testUser);
+            Assert.Equal("John Doe", result);
+        }
+
+        [Fact]
+        public void ShouldTrimTrailingWhitespace()
+        {
+            var result = _template.ReplaceVariables("{fn} {ln}   ", _testUser);
+            Assert.Equal("John Doe", result);
+        }
+
+        [Fact]
+        public void ShouldTrimLeadingAndTrailingWhitespace()
+        {
+            var result = _template.ReplaceVariables("   {fn} {ln}   ", _testUser);
+            Assert.Equal("John Doe", result);
+        }
+
+        [Fact]
+        public void ShouldCollapseMultipleWhitespaceTypes()
+        {
+            // Test with spaces, tabs, and newlines
+            var result = _template.ReplaceVariables("{fn}  \t\n  {ln}", _testUser);
+            Assert.Equal("John Doe", result);
+        }
+
+        [Fact]
+        public void ShouldHandleWhitespaceInComplexFormula()
+        {
+            var result = _template.ReplaceVariables("{fn}   {mi}   {ln}", _testUser);
+            Assert.Equal("John M Doe", result);
+        }
+
+        [Fact]
+        public void ShouldPreserveNoSpacesBetweenVariablesWhenNoWhitespace()
+        {
+            var result = _template.ReplaceVariables("{fi}{ln}", _testUser);
+            Assert.Equal("JDoe", result);
+        }
+
+        [Fact]
+        public void ShouldNotTrimResultWithOnlyWhitespace()
+        {
+            var result = _template.ReplaceVariables("   ", _testUser);
+            Assert.Equal("   ", result);
+        }
+
+        [Fact]
+        public void ShouldCollapseWhitespaceAroundTextLiterals()
+        {
+            var result = _template.ReplaceVariables("  {fn}   -   {ln}  ", _testUser);
+            Assert.Equal("John - Doe", result);
+        }
+
+        [Fact]
+        public void ShouldHandleWhitespaceWithModifiers()
+        {
+            var result = _template.ReplaceVariables("  {fn:u}    {ln:l}  ", _testUser);
+            Assert.Equal("JOHN doe", result);
+        }
+
+        [Fact]
+        public void ShouldHandleWhitespaceWithLengthArguments()
+        {
+            var result = _template.ReplaceVariables("  {fn[2]}   {ln[2]}  ", _testUser);
+            Assert.Equal("Jo Do", result);
+        }
+
+        [Fact]
+        public void ShouldHandleConsecutiveTabsAndNewlines()
+        {
+            var result = _template.ReplaceVariables("{fn}\t\t\n\n{ln}", _testUser);
+            Assert.Equal("John Doe", result);
+        }
     }
 
 

@@ -9,11 +9,13 @@
         @AppLocalization[Lang.Notifications]
     </MudText>
     <MudSpacer />
+   
     <AppIconButton Size="Size.Large"
                    Icon="@Icons.Material.Filled.Settings"
                    Tooltip="@AppLocalization[Lang.Notification_Settings]"
                    Color="Color.Info"
                    OnClick="@(()=>{notificationsModal?.ShowAsync();})" />
+    
     <AppIconButton Size="Size.Large"
                    Icon="@Icons.Material.Filled.ClearAll"
                    Tooltip="@AppLocalization[Lang.Dismiss_all]"
@@ -36,8 +38,9 @@
 
 
 
+@inject IJSRuntime JSRuntime
 @code {
-
+    private bool pwaNotificationsEnabled;
     AppModal? notificationsModal;
     private bool _open;
     private NotificationList? _notificationList;
@@ -61,6 +64,15 @@
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            pwaNotificationsEnabled = await JSRuntime.InvokeAsync<bool>("blazam.getPushNotificationSubscriptionState");
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
     async Task MarkAllRead()
     {
 
@@ -80,5 +92,5 @@
         await _notificationList!.StateHasChangedAsync();
         await StateHasChangedAsync();
     }
-
+   
 }

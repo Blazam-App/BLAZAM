@@ -1,10 +1,10 @@
 ﻿let lastRequestTime = 0;
 window.updateCookieExpiration = async () => {
     const currentTime = Date.now();
-    //Only upadte at least 500ms intervals
+    //Only update at least 500ms intervals
     if (currentTime - lastRequestTime > 500) {
         let xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
+        xhr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 // Check for expiration
                 let response = JSON.parse(xhr.response);
@@ -28,7 +28,7 @@ window.attemptSignIn = async (loginReq) => {
 
     let xhr = new XMLHttpRequest();
     let response = await new Promise((resolve, reject) => {
-        xhr.onreadystatechange = function () {
+        xhr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 resolve(xhr.response);
             } else if (this.readyState == 4 && this.status != 200) {
@@ -44,13 +44,12 @@ window.attemptSignIn = async (loginReq) => {
 window.playAudio = async (path) => {
     let audio = new Audio(path);
     audio.play();
-
 };
 
 window.printPage = async () => {
     window.print();
-
 };
+
 window.scrollToBottom = async (id) => {
     const element = document.getElementById(id);
     element.scrollTop = element.scrollHeight;
@@ -62,12 +61,12 @@ window.createGauge = async (id, maxValue) => {
     dialGauges[id] = Gauge(document.getElementById(id), {
         max: maxValue,
         // custom label renderer
-        label: function (value) {
+        label: function(value) {
             return Math.round(value) + "/" + this.max;
         },
         value: 0,
         // Custom dial colors (Optional)
-        color: function (value) {
+        color: function(value) {
             if (value < 20) {
                 return "#5ee432"; // green
             } else if (value < 40) {
@@ -87,8 +86,56 @@ window.setGaugeValue = async (id, val, time) => {
 
 window.customAnalyticsEvent = async (eventName, jsonData) => {
     gtag('event', eventName, {
-       jsonData
+        jsonData
     });
+};
+
+// Generic localStorage helpers
+window.localStorageHelper = {
+    setItem: (key, value) => {
+        try {
+            const stringValue = typeof value === 'object'
+                ? JSON.stringify(value)
+                : String(value);
+            localStorage.setItem(key, stringValue);
+        } catch (error) {
+            console.error('Error setting localStorage item:', error);
+        }
+    },
+
+    getItem: (key, defaultValue = null) => {
+        try {
+            return localStorage.getItem(key) ?? defaultValue;
+        } catch (error) {
+            console.error('Error getting localStorage item:', error);
+            return defaultValue;
+        }
+    },
+
+    getBoolean: (key, defaultValue = false) => {
+        const value = localStorage.getItem(key);
+        return value === 'true' ? true : value === 'false' ? false : defaultValue;
+    },
+
+    getNumber: (key, defaultValue = 0) => {
+        const value = localStorage.getItem(key);
+        const parsed = Number(value);
+        return isNaN(parsed) ? defaultValue : parsed;
+    },
+
+    getObject: (key, defaultValue = null) => {
+        try {
+            const value = localStorage.getItem(key);
+            return value ? JSON.parse(value) : defaultValue;
+        } catch (error) {
+            console.error('Error parsing localStorage object:', error);
+            return defaultValue;
+        }
+    },
+
+    removeItem: (key) => {
+        localStorage.removeItem(key);
+    }
 };
 
 

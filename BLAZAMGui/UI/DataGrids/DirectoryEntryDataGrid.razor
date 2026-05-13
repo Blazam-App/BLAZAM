@@ -1,4 +1,5 @@
-﻿@inherits AppComponentBase
+﻿@using BLAZAM.Gui.UI.Dashboard.Widgets
+@inherits AppComponentBase
 <MudDataGrid T="IDirectoryEntryAdapter"
              Items="Entries"
              RowClick="@RowClicked"
@@ -12,26 +13,27 @@
              Square=true
              ColumnResizeMode="ResizeMode.Column"
              Virtualize=true
+             RowContextMenuClick="@RowContextMenuClicked"
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
         <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
             <CellTemplate>
-                <DirectoryEntryTypeIcon Entry=context.Item />
+                <DirectoryEntryTypeIcon Size="Size.Small" Entry=context.Item />
 
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <DirectoryEntryLink Entry="@context.Item" OnChanged="EntryChanged" />
+                <DirectoryEntryLink Typo="Typo.caption"
+                                    Entry="@context.Item"
+                                    OnChanged="EntryChanged" />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Changed]>
             <CellTemplate>
-                @if (context.Item?.LastChanged != null)
-                {
-                    <MudText>@context.Item.LastChanged?.ToLocalTime()</MudText>
-                }
+                <DateWithTimeTooltip DateTime="@context.Item?.LastChanged" />
+
             </CellTemplate>
         </TemplateColumn>
     </Columns>
@@ -39,12 +41,14 @@
         <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="IDirectoryEntryAdapter" />
     </PagerContent>
     <NoRecordsContent>
-        <MudText>@AppLocalization[Lang.No_Favorites]</MudText>
+        <MudText>@NoResultsMessage</MudText>
     </NoRecordsContent>
 </MudDataGrid>
-
+<DirectoryEntryContextMenu @ref="_contextMenu" OnChanged="@(() => { InvokeStateHasChanged(); })" />
 @code {
-    [Parameter] 
+    private DirectoryEntryContextMenu? _contextMenu;
+
+    [Parameter]
     public EventCallback<DataGridRowClickEventArgs<IDirectoryEntryAdapter>> RowClicked { get; set; }
 
     [Parameter]
@@ -54,14 +58,23 @@
     public int ItemsPerPage { get; set; } = 5;
 
     [Parameter]
-    public string NoResultsMessage { get; set; }="No Results Found";
+    public string NoResultsMessage { get; set; } = "No Results Found";
 
     [Parameter]
-    public bool IsLoadingData { get=>LoadingData; set=>LoadingData=value; }
+    public bool IsLoadingData { get => LoadingData; set => LoadingData = value; }
 
     [Parameter]
     public EventCallback<int> ItemsPerPageChanged { get; set; }
 
     [Parameter]
-    public EventCallback EntryChanged{ get; set; }
+    public EventCallback EntryChanged { get; set; }
+
+    protected async Task RowContextMenuClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
+    {
+        if (_contextMenu == null)
+            return;
+        _contextMenu.SetEntry(args.Item);
+        await _contextMenu.OpenMenuAsync(args.MouseEventArgs);
+    }
+
 }

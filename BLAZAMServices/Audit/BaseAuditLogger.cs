@@ -21,7 +21,7 @@ namespace BLAZAM.Services.Audit
         public BaseAuditLogger(IAppDatabaseFactory factory, IApplicationUserState userState)
         {
             _factory = factory;
-            ApplicationEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
+            ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
             System = new SystemAudit(factory);
             User = new UserAudit(factory, userState);
             Group = new GroupAudit(factory, userState);
@@ -316,7 +316,7 @@ namespace BLAZAM.Services.Audit
 
         public void Dispose()
         {
-            ApplicationEvents.DirectoryEntryEvent.Delegate -= TriggerDirectoryEntryChangedEvent;
+            ActiveDirectoryEvents.DirectoryEntryEvent.Delegate -= TriggerDirectoryEntryChangedEvent;
             System = null;
             User = null;
             Group = null;

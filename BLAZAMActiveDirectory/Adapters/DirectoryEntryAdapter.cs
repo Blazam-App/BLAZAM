@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
@@ -27,7 +28,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return "/view/" + Uri.EscapeDataString(CanonicalName ?? String.Empty);
+                return "/view/" + Uri.EscapeDataString(DN ?? String.Empty);
             }
         }
         [JsonIgnore]
@@ -434,13 +435,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var bytes = GetAttribute<byte[]>("objectGUID");
-                var guid = bytes.ToGuid();
-                return guid;
-            }
-            set
-            {
-                SetAttribute("objectGUID", value?.ToByteArray());
+                var str = GetStringAttribute("objectGUID");
+                if (System.Guid.TryParse(str, out var guid))
+                {
+                    return guid;
+                }
+
+                return null;
             }
 
         }
@@ -894,9 +895,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                                 }
                             }
-
-
-                            //DirectoryEntry.CommitChanges();
                             return true;
                         });
                         propertyJob.AddStep(propertyStep);
@@ -906,15 +904,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         commitJob.AddStep(propertyJob);
                     }
-                    //commitJob.AddStep(commitStep);
-
                 }
                 else
                 {
 
                     var ou = GetParent();
                     var ouEntry = ou.DirectoryEntry;
-                    //var newUser = ouEntry.Children.Add(this.Rdn(), "user");
                     if (DirectoryEntry == null)
                     {
                         Loggers.ActiveDirectoryLogger.Error(new AppException("DirectoryEntry is null"), "The directory entry for new entry is somehow missing on commit. {@DN}", DN);
@@ -951,6 +946,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 }
+                
                 if (!NewEntry
                     && PostCommitSteps.Count > 0)
                 {
@@ -961,8 +957,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 }
-                //commitJob.AddStep(commitStep);
-                //commitJob.AddStep(commitStep);
+                
                 if (NewEntry
                     && PostCommitSteps.Count > 0)
                 {
@@ -970,11 +965,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         commitJob.AddStep(step);
                     }
-                    //commitJob.AddStep(commitStep);
-
-
                 }
+
                 var result = false;
+                
                 if (commitJob.Result != JobResult.Running && commitJob.Result != JobResult.Cancelled)
                 {
                     result = commitJob.Run();
@@ -1065,8 +1059,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual void DiscardChanges()
         {
-
-            //DirectoryEntry = null;
             HasUnsavedChanges = false;
             NewEntryProperties = [];
             CommitSteps.Clear();
@@ -1121,40 +1113,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
         {
-            var list = new List<T?>();
-            //var dcs = new List<DomainController>(Directory.DomainControllers);
 
-            //Parallel.ForEach(dcs, dc =>
-            //{
-            //    try
-            //    {
-            //        if (dc.IsPingable())
-            //        {
-            //            var searcher = dc.GetDirectorySearcher();
-            //            searcher.Filter = "(distinguishedName=" + this.DN + ")";
-            //            searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
-            //            searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
-            //            var searchResult = searcher.FindOne();
-            //            if (searchResult != null)
-            //            {
-            //                var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
-            //                lock (list)
-            //                {
-            //                    list.Add((T)value);
-            //                }
-            //            }
-            //        }
-            //    }
-            //    catch
-            //    {
-            //        lock (list)
-            //        {
-            //            list.Add(default);
-            //        }
-            //    }
-            //});
+            var list = new List<T?>();
+
+         
 
             return list;
+
+            //var values = DirectoryEntry.GetNonReplicatedPropertyValue(propertyName);
+            //return values.Cast<T>().ToList();
         }
 
 
@@ -1357,7 +1324,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (value == null)
             {
-                value = CommonHelpers.ADS_NULL_TIME;
+                value = ADsLargeInteger.ADS_NULL_TIME;
             }
 
             var dateTime = value.Value;

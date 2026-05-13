@@ -33,6 +33,7 @@
 		<PackageReference Include="System.Drawing.Common" />
 		<PackageReference Include="System.Management" />
 		<PackageReference Include="System.Security.Permissions" />
+		<PackageReference Include="TaskScheduler" />
 	</ItemGroup>
 
 	<ItemGroup>

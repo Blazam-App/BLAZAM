@@ -1,5 +1,4 @@
-﻿@using BLAZAM.Global.Events
-@inherits AppModalContent
+﻿@inherits AppModalContent
 @inject NotificationGenerationService OUNotificationService
 
 <MudText>Choose OU</MudText>
@@ -44,7 +43,7 @@
             DirectoryModel.MoveTo(ouToMoveTo);
 
             SnackBarService.Warning(DirectoryModel.CanonicalName + " has been moved to " + ouToMoveTo.CanonicalName + ", but changes need to be saved.");
-            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Move,
                     Entry = DirectoryModel,

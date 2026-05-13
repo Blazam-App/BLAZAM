@@ -171,9 +171,6 @@
   <data name="Additional Fields" xml:space="preserve">
     <value>其他字段</value>
   </data>
-  <data name="Additonal Fields" xml:space="preserve">
-    <value>附加字段</value>
-  </data>
   <data name="Admin bcc" xml:space="preserve">
     <value>管理员密件抄送</value>
   </data>
@@ -1301,5 +1298,35 @@
   </data>
   <data name="Before Action" xml:space="preserve">
     <value>行动前</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>已更改的条目</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>已更改的密码</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>已删除的条目</value>
+  </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>过去90天内更改的已禁用用户</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>新电脑</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>新联系人</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>新组</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>新OU</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>新打印机</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>新用户</value>
   </data>
 </root>

@@ -64,5 +64,17 @@ namespace BLAZAM.Gui.Helper
             MessageService.ShowMessage<JobResultDialog>(job.ToDialogParameters(), job.Name);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
+        /// <summary>
+        /// Opens a <see cref="JobResultDialog"/> for this <see cref="IJob"/>
+        /// </summary>
+        /// <param name="job"></param>
+        /// <param name="MessageService"></param>
+        /// <returns></returns>
+        public static void ShowJobDetailsDialog(this AppDialogService MessageService, IJob job, string title)
+        {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+           _ = MessageService.ShowMessage<JobResultDialog>(job.ToDialogParameters(), title);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        }
     }
 }

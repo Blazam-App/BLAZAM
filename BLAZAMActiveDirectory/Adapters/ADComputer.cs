@@ -188,6 +188,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         public IPHostEntry? IPHostEntry { get; set; }
+        public List<IPAddress> IPAddresses { get { 
+                if(IPHostEntry == null)
+                {
+                    return [];
+                }
+                List<IPAddress> result = new List<IPAddress>();
+                foreach (IPAddress ip in IPHostEntry.AddressList)
+                {
+                    if(ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6)
+                    {
+                        result.Add(ip);
+                    }
+                }
+                return result;
+            } }
 
         /// <summary>
         /// The online status of this computer right now.

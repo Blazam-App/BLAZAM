@@ -26,7 +26,7 @@ namespace BLAZAM.Database.Models
         [NotMapped]
         [Required]
         [Compare(nameof(AdminPassword))]
-        public string AdminPasswordConfirmed { get; set; }
+        public string? AdminPasswordConfirmed { get; set; }
         public bool DuoEnabled { get; set; }
         public string? DuoClientId { get; set; }
         public string? DuoClientSecret { get; set; }

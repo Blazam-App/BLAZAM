@@ -3,12 +3,13 @@
     public class AppEvent
     {
         /// <summary>
-        /// Called when permission are changed by an admin
+        /// Listen to this for triggers of this event
         /// </summary>
         public event EventHandler Delegate;
 
+
         /// <summary>
-        /// Send event so each user can update permissions
+        /// Trigger this event
         /// </summary>
         public void Invoke(object? sender = null)
         {

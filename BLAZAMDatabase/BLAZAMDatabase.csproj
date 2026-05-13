@@ -31,6 +31,8 @@
 	  <PackageReference Include="Serilog" />
 	  <PackageReference Include="Serilog.Extensions.Logging" />
 	  <PackageReference Include="SixLabors.ImageSharp" />
+	  <PackageReference Include="Swashbuckle.AspNetCore" />
+	  <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
 	  <PackageReference Include="System.Data.SQLite" />
 	  <PackageReference Include="System.DirectoryServices.Protocols" />
 	  <PackageReference Include="System.Management" />

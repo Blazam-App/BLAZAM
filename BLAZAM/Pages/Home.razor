@@ -23,7 +23,10 @@
     </MudAlert>
 }
 
-<DemoHelpAlert />
+@if (ApplicationInfo.InDemoMode)
+{
+    <DemoHelpAlert />
+}
 
 @if (CurrentUser.State.IsSuperAdmin && ApplicationInfo.InDebugMode)
 {

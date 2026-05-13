@@ -46,9 +46,9 @@
     // This method checks the session expiration and shows a warning modal if the session is about to expire
     private async void CheckExpiration(object? obj)
     {
-        if (CurrentUser.State?.Ticket != null)
+        if (UserStateService.CurrentUserState?.Ticket != null)
         {
-            _ticket = CurrentUser.State?.Ticket;
+            _ticket = UserStateService.CurrentUserState?.Ticket;
             var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
             if (timeLeft > TimeSpan.FromSeconds(1) && timeLeft < TimeSpan.FromMinutes(2) && ExpirationWarningModal?.IsShown == false)
             {
@@ -64,9 +64,9 @@
     // This method is called by the fast expiration checker timer to check if the session has expired
     private async void WaitForExpiration(object? obj)
     {
-        if (CurrentUser.State?.Ticket != null)
+        if (UserStateService.CurrentUserState?.Ticket != null)
         {
-            _ticket = CurrentUser.State?.Ticket;
+            _ticket = UserStateService.CurrentUserState?.Ticket;
             var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
 
             // If the time left is less than 1 second, we can consider the session expired

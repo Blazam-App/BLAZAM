@@ -5,6 +5,11 @@
 
 <MudText Typo="Typo.h6">Dev Tools</MudText>
 <MudText>Debugger Attached: @Debugger.IsAttached</MudText>
+
+<MudButton Color="Color.Primary"
+           OnClick="ForceGarbageCollection">
+    Run Garbage Collection
+</MudButton>
 <MudButton Color="Color.Primary"
            Style="height:35px;"
            OnClick=SendTestNoification>
@@ -176,6 +181,19 @@
     {
         SnackbarBroadcastService.Success("Test Broadcast " + Guid.NewGuid(), "Test");
 
+    }
+
+    private void ForceGarbageCollection()
+    {
+        var memoryBefore = GC.GetTotalMemory(false) / 1024 / 1024;
+    
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+        GC.WaitForPendingFinalizers();
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+    
+        var memoryAfter = GC.GetTotalMemory(true) / 1024 / 1024;
+    
+        SnackBarService.Info($"GC: {memoryBefore}MB → {memoryAfter}MB (Freed: {memoryBefore - memoryAfter}MB)");
     }
     async Task RunTestJob()
     {

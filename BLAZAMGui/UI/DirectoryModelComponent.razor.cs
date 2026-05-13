@@ -47,27 +47,27 @@ namespace BLAZAM.Gui.UI
         }
         protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = [];
         [Parameter]
-        public IADUser User
+        public IADUser? User
         {
             get => Entry as IADUser; set => Entry = value;
         }
         [Parameter]
-        public IADContact Contact
+        public IADContact? Contact
         {
             get => Entry as IADContact; set => Entry = value;
         }
         [Parameter]
-        public IADComputer Computer
+        public IADComputer? Computer
         {
             get => Entry as IADComputer; set => Entry = value;
         }
         [Parameter]
-        public IGroupableDirectoryAdapter GroupableEntry
+        public IGroupableDirectoryAdapter? GroupableEntry
         {
             get => Entry as IGroupableDirectoryAdapter; set => Entry = value;
         }
         [Parameter]
-        public virtual IDirectoryEntryAdapter Entry
+        public virtual IDirectoryEntryAdapter? Entry
         {
             get => _entry; set
             {

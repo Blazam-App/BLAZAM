@@ -1,5 +1,4 @@
 ﻿@using BLAZAM.Database.Models.Rules
-@using BLAZAM.Global.Events
 @inherits AppComponentBase
 <MudStack Row="true">
     <MudText Typo="Typo.h4">
@@ -96,6 +95,8 @@
         triggerTypes = triggerTypes.OrderBy(t => t.ToString()).ToList();
         ViewFilter.ObjectTypeChanged += () => InvokeAsync(StateHasChanged);
         ViewFilter.TriggerChanged += () => InvokeAsync(StateHasChanged);
-        _settings = DbFactory.CreateDbContext()?.GlobalAutomationRuleSettings.FirstOrDefault();
+
+        using var context = DbFactory.CreateDbContext();
+        _settings = context?.GlobalAutomationRuleSettings?.FirstOrDefault();
     }
 }

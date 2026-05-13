@@ -96,7 +96,7 @@ namespace BLAZAM.Gui.UI.Outputs
         {
             if (Data.Count >= History)
             {
-                Data.Remove(Data.First());
+                Data.RemoveAt(0);
             }
 
             Task.Run(() =>

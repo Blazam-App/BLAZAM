@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
@@ -156,7 +157,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 base.SAMAccountName = value;
                 if (UserPrincipalName.IsNullOrEmpty())
                 {
-                    UserPrincipalName = value + "@" + DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.FQDN;
+                    UserPrincipalName = value + "@" + DatabaseCache.ActiveDirectorySettings?.FQDN;
                 }
                 else
                 {

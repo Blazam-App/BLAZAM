@@ -65,6 +65,7 @@ namespace BLAZAM.Session
         /// </summary>
         public AppUser? userSettings { get; set; }
 
+        private const string UNKNOWN = "Unknown";
         private readonly IAppDatabaseFactory _dbFactory;
         private bool _disposedValue;
 
@@ -120,12 +121,12 @@ namespace BLAZAM.Session
                 }
                 else
                 {
-                    Loggers.SystemLogger.Warning("ApplicationUserState.MarkRead: UserNotification with ID {NotificationId} not found in database for user {UserGuid}.", notification.Id, userSettings?.UserGUID ?? "Unknown");
+                    Loggers.SystemLogger.Warning("ApplicationUserState.MarkRead: UserNotification with ID {NotificationId} not found in database for user {UserGuid}.", notification.Id, userSettings?.UserGUID ?? UNKNOWN);
                 }
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.MarkRead: Error trying to mark notification ID {NotificationId} read for user {UserGuid}.", notification?.Id, userSettings?.UserGUID ?? "Unknown");
+                Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.MarkRead: Error trying to mark notification ID {NotificationId} read for user {UserGuid}.", notification?.Id, userSettings?.UserGUID ?? UNKNOWN);
             }
             return false;
         }
@@ -161,7 +162,7 @@ namespace BLAZAM.Session
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.MarkAllRead: Error trying to mark all notifications read for user {UserGuid}.", userSettings?.UserGUID ?? "Unknown");
+                Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.MarkAllRead: Error trying to mark all notifications read for user {UserGuid}.", userSettings?.UserGUID ?? UNKNOWN);
             }
             return false;
         }
@@ -211,7 +212,7 @@ namespace BLAZAM.Session
             }
             catch (Exception ex) // Catch specific Exception ex
             {
-                Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.GetUserSettingFromDB: Failed to get or create user settings for UserGUID {UserGuid}.", User?.FindFirstValue(ClaimTypes.Sid) ?? "Unknown");
+                Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.GetUserSettingFromDB: Failed to get or create user settings for UserGUID {UserGuid}.", User?.FindFirstValue(ClaimTypes.Sid) ?? UNKNOWN);
             }
         }
 
@@ -266,7 +267,7 @@ namespace BLAZAM.Session
                 }
                 catch (Exception ex) // Catch specific Exception ex
                 {
-                    Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.SaveBasicUserPreferences: Failed to save basic preferences for UserGUID {UserGuid}.", User?.FindFirstValue(ClaimTypes.Sid) ?? "Unknown");
+                    Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.SaveBasicUserPreferences: Failed to save basic preferences for UserGUID {UserGuid}.", User?.FindFirstValue(ClaimTypes.Sid) ?? UNKNOWN);
                 }
             }
         }
@@ -297,7 +298,7 @@ namespace BLAZAM.Session
                 }
                 catch (Exception ex) // Catch specific Exception ex
                 {
-                    Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.SaveReadNewsItems: Failed to save read news items for UserGUID {UserGuid}.", User?.FindFirstValue(ClaimTypes.Sid) ?? "Unknown");
+                    Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.SaveReadNewsItems: Failed to save read news items for UserGUID {UserGuid}.", User?.FindFirstValue(ClaimTypes.Sid) ?? UNKNOWN);
                 }
             }
         }
@@ -354,7 +355,7 @@ namespace BLAZAM.Session
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.SaveDashboardWidgets: Failed to save dashboard widgets for UserGUID {UserGuid}.", User?.FindFirstValue(ClaimTypes.Sid) ?? "Unknown");
+                Loggers.DatabaseLogger.Error(ex, "ApplicationUserState.SaveDashboardWidgets: Failed to save dashboard widgets for UserGUID {UserGuid}.", User?.FindFirstValue(ClaimTypes.Sid) ?? UNKNOWN);
             }
         }
 
@@ -527,12 +528,12 @@ namespace BLAZAM.Session
 
         public bool CanSearchDisabled(ActiveDirectoryObjectType objectType)
         {
-            if (IsSuperAdmin == true)
+            if (IsSuperAdmin)
             {
                 return true;
             }
 
-            return PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == objectType && om.AllowDisabled))) == true;
+            return PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == objectType && om.AllowDisabled)));
         }
 
         /// <summary>Checks if the user has read permissions for a specific object type.
@@ -541,7 +542,7 @@ namespace BLAZAM.Session
 
             try
             {
-                if (IsSuperAdmin == true)
+                if (IsSuperAdmin)
                 {
                     return true;
                 }
@@ -572,7 +573,7 @@ namespace BLAZAM.Session
         /// <summary>Checks if the user has create permissions for a specific object type.</summary>
         private bool HasObjectCreatePermissions(ActiveDirectoryObjectType objectType)
         {
-            if (IsSuperAdmin == true)
+            if (IsSuperAdmin)
             {
                 return true;
             }
@@ -587,7 +588,7 @@ namespace BLAZAM.Session
                         );
         }
 
-        private bool CheckDenyPermissions(List<PermissionMapping> possibleAllows, List<PermissionMapping> possibleDenies)
+        private static bool CheckDenyPermissions(List<PermissionMapping> possibleAllows, List<PermissionMapping> possibleDenies)
         {
             if (!possibleAllows.Any())
             {
@@ -709,12 +710,6 @@ namespace BLAZAM.Session
                 _disposedValue = true;
             }
         }
-
-
-        //~ApplicationUserState()
-        //{
-        //    Dispose(disposing: false);
-        //}
 
         public void Dispose()
         {

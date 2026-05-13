@@ -8,6 +8,7 @@ using BLAZAM.Database.Context;
 using BLAZAM.Global.Attributes;
 using BLAZAM.Global.Data.Strings;
 using BLAZAM.Gui.Services;
+using BLAZAM.Middleware;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Plugins;
 using BLAZAM.Services;
@@ -20,6 +21,8 @@ using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -73,7 +76,7 @@ namespace BLAZAM
                 ApplicationInfo.installationId = Environment.MachineName.ToGuid();
             }
 
-          
+
             // Store the configuration manager instance globally for easy access (use with caution).
             Program.Configuration = builder.Configuration;
 
@@ -158,6 +161,8 @@ namespace BLAZAM
                 {
                     new CultureInfo("ar"),    // Arabic
                     new CultureInfo("en-US"), // English (United States) - Often the default
+                    new CultureInfo("en-GB"), // English (United Kingdom)
+                    new CultureInfo("fi"),    // Finnish
                     new CultureInfo("fr-FR"), // French (France)
                     new CultureInfo("de"),    // German (Default)
                     new CultureInfo("es"),    // Spanish (Default)
@@ -165,8 +170,13 @@ namespace BLAZAM
                     new CultureInfo("it"),    // Italian
                     new CultureInfo("ja"),    // Japanese
                     new CultureInfo("ko"),    // Korean
+                    new CultureInfo("nl"),    // Dutch
                     new CultureInfo("pl"),    // Polish
+                    new CultureInfo("pt"),    // Portuguese
+                    new CultureInfo("ro"),    // Romanian
                     new CultureInfo("ru"),    // Russian
+                    new CultureInfo("tr"),    // Turkish
+                    new CultureInfo("uk"),    // Ukrainian
                     new CultureInfo("zh-Hans") // Chinese (Simplified)
                  };
 
@@ -253,6 +263,8 @@ namespace BLAZAM
                     options.DetailedErrors = ApplicationInfo.inDebugMode;
                 });
 
+            builder.Services.AddScoped<CircuitHandler, UserStateCircuitHandler>();
+
             // --- Database Context ---
             DatabaseContextBase.Configuration = builder.Configuration; // Provide configuration to the base context (static access, consider alternatives)
             // Register database context factories
@@ -320,7 +332,7 @@ namespace BLAZAM
             builder.Services.AddMudMarkdownServices(); // Add services for rendering Markdown using MudBlazor components
             builder.Services.AddScoped<AppSnackBarService>(); // Custom wrapper/service for MudBlazor Snackbar
             builder.Services.AddScoped<AppDialogService>(); // Custom wrapper/service for MudBlazor Dialog
-            builder.Services.AddSingleton<PasswordResetService>(); 
+            builder.Services.AddSingleton<PasswordResetService>();
 
             // --- Notification Generation ---
             builder.Services.AddSingleton<NotificationGenerationService>(); // Service responsible for generating notifications
@@ -434,7 +446,7 @@ namespace BLAZAM
             var pluginDir = ApplicationInfo.pluginDirectory;
             if (!pluginDir.Exists)
             {
-                Loggers.PluginLogger.Warning("Plugin directory {@PluginPath} does not exist. Skipping plugin loading.", pluginDir.FullPath);
+                Loggers.PluginLogger.Information("Plugin directory {@PluginPath} does not exist. Skipping plugin loading.", pluginDir.FullPath);
                 return;
             }
 
@@ -610,7 +622,7 @@ namespace BLAZAM
                     }
                     else
                     {
-                        Loggers.SystemLogger.Warning("AppSettings record not found in database. Cannot determine Seq logging preference or installation status.");
+                        Loggers.SystemLogger.Information("AppSettings record not found in database. Cannot determine Seq logging preference or installation status.");
                         ApplicationInfo.installationCompleted = false; // Assume not completed if settings are missing
                     }
                 }
@@ -674,7 +686,7 @@ namespace BLAZAM
                 }
                 else
                 {
-                    Loggers.SystemLogger.Warning("Installation not marked as complete. Skipping startup of most background services.");
+                    Loggers.SystemLogger.Information("Installation not marked as complete. Skipping startup of most background services.");
                 }
             }
             catch (Exception ex)

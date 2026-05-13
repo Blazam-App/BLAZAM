@@ -171,9 +171,6 @@
   <data name="Additional Fields" xml:space="preserve">
     <value>Zusätzliche Felder</value>
   </data>
-  <data name="Additonal Fields" xml:space="preserve">
-    <value>Zusätzliche Felder</value>
-  </data>
   <data name="Admin bcc" xml:space="preserve">
     <value>Admin bcc</value>
   </data>
@@ -1301,5 +1298,35 @@
   </data>
   <data name="Before Action" xml:space="preserve">
     <value>Vor der Aktion</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>Geänderte Einträge</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>Geänderte Passwörter</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>Gelöschte Einträge</value>
+  </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>Deaktivierte Benutzer, die in den letzten 90 Tagen geändert wurden</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>Neue Computer</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>Neue Kontakte</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>Neue Gruppen</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>Neue OUs</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>Neue Drucker</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>Neue Benutzer</value>
   </data>
 </root>

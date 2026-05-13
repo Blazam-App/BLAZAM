@@ -85,7 +85,7 @@ namespace BLAZAM.Pages.API.v1
         public async Task<IActionResult> Execute(int templateId, [FromBody] NewUserPayload newUserDetails)
         {
 
-            var context = await DbFactory.CreateDbContextAsync();
+            using var context = await DbFactory.CreateDbContextAsync();
             var template = await context.DirectoryTemplates.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id == templateId);
 
             if (template == null)
@@ -177,14 +177,20 @@ namespace BLAZAM.Pages.API.v1
 
         private async Task AuditAndNotify(NewUserPayload newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
         {
-            ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+            if (CurrentUserState != null)
             {
-                EventType = ApplicationEventType.Create,
-                Entry = entry,
-                Actor = CurrentUserState
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                {
+                    EventType = ApplicationEventType.Create,
+                    Entry = entry,
+                    Actor = CurrentUserState
 
-            });
-
+                });
+            }
+            else
+            {
+                Loggers.SystemLogger.Error("CurrentUserState was null during template execution, could not log event");
+            }
 
 
             if (template?.EffectiveSendWelcomeEmail == true)

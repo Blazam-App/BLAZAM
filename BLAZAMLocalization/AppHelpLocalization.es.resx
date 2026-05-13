@@ -226,7 +226,7 @@
     <value>No hay acciones disponibles para solicitar para esta entrada.</value>
   </data>
   <data name="No_Request_Fields_Available" xml:space="preserve">
-    <value />
+    <value>No hay campos disponibles para solicitar para esta entrada</value>
   </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>¡Generar un nuevo token de autenticación invalidará el existente!</value>
@@ -282,14 +282,34 @@ a una cuenta con privilegios inferiores para mejorar la seguridad.</value>
     <value>¡No hay credenciales configuradas con permiso de escritura en el directorio de la aplicación!
 Intente configurar credenciales de actualización personalizadas.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> está solicitando acceso de lectura para {0} en </value>
   </data>
-  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> está solicitando acceso de {0} en </value>
   </data>
-  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> está solicitando acceso de edición para {0} en </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>Requerir que el usuario cambie su contraseña en el próximo inicio de sesión</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>Se ha solicitado un restablecimiento de contraseña para su cuenta.</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>Haga clic aquí para restablecer su contraseña</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> Su enlace de restablecimiento expirará {0}</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>Si no solicitó este restablecimiento, puede ignorarlo de forma segura.</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>Esta solicitud se originó desde: {0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>Si el enlace anterior no funciona, copie lo siguiente en la barra de direcciones.</value>
   </data>
 </root>

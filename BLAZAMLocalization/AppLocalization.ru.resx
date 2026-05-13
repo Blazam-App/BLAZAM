@@ -171,9 +171,6 @@
   <data name="Additional Fields" xml:space="preserve">
     <value>Дополнительные поля</value>
   </data>
-  <data name="Additonal Fields" xml:space="preserve">
-    <value>Дополнительные поля</value>
-  </data>
   <data name="Admin bcc" xml:space="preserve">
     <value>Администратор скрытой копии</value>
   </data>
@@ -1301,5 +1298,35 @@
   </data>
   <data name="Before Action" xml:space="preserve">
     <value>Перед действием</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>Изменённые записи</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>Изменённые пароли</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>Удалённые записи</value>
+  </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>Отключённые пользователи, изменённые за последние 90 дней</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>Новые компьютеры</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>Новые контакты</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>Новые группы</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>Новые ОП</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>Новые принтеры</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>Новые пользователи</value>
   </data>
 </root>

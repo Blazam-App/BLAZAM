@@ -33,7 +33,7 @@ namespace BLAZAM.Services.Background
             _appLocalization = appLocalization;
             _emailService = emailService;
             _webHookPublisher = webHookPublisher;
-            ApplicationEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChangedEvent;
+            ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChangedEvent;
 
         }
         protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
@@ -147,7 +147,7 @@ namespace BLAZAM.Services.Background
 
             NotificationMessage notification;
             string notificationTitle;
-            NotificationTemplateComponent? emailMessage;
+            EmailNotificationTemplateComponent? emailMessage;
             PackageNotification(source, notificationType, actor, target, out notification, out notificationTitle, out emailMessage);
             using var context = Context;
             var users = context.UserSettings.Include(us => us.NotificationSubscriptions).ToList();
@@ -178,9 +178,9 @@ namespace BLAZAM.Services.Background
                                             AppUser user,
                                             NotificationMessage notification,
                                             string notificationTitle,
-                                            NotificationTemplateComponent? emailMessage)
+                                            EmailNotificationTemplateComponent? emailMessage)
         {
-            if (user.Id == actor?.Id)
+            if (user.Id == actor?.Id && !user.IsDemo())
             {
                 return;
             }
@@ -208,7 +208,7 @@ namespace BLAZAM.Services.Background
             AppUser user,
             NotificationType notificationType,
             string notificationTitle,
-            NotificationTemplateComponent? emailMessage,
+            EmailNotificationTemplateComponent? emailMessage,
             NotificationSubscription? effectiveEmailSubscriptions)
         {
             if (effectiveEmailSubscriptions?.NotificationTypes.Any(x => x.NotificationType == notificationType) != true)
@@ -265,7 +265,7 @@ namespace BLAZAM.Services.Background
         /// <param name="notification"></param>
         /// <param name="notificationTitle"></param>
         /// <param name="emailMessage"></param>
-        public void PackageNotification(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor, IDirectoryEntryAdapter? target, out NotificationMessage notification, out string notificationTitle, out NotificationTemplateComponent? emailMessage)
+        public void PackageNotification(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor, IDirectoryEntryAdapter? target, out NotificationMessage notification, out string notificationTitle, out EmailNotificationTemplateComponent? emailMessage)
         {
             notification = new NotificationMessage();
             notificationTitle = _appLocalization[source.ObjectType.ToString()] + " ";
@@ -283,6 +283,7 @@ namespace BLAZAM.Services.Background
                     notificationBody += _appLocalization["was created at "] + time;
                     var createdMessage = NotificationType.Create.ToNotification<EntryCreatedEmailMessage>();
                     createdMessage.EntryName = source.CanonicalName;
+                    createdMessage.EntryLink = source.SearchUri;
                     emailMessage = createdMessage;
                     break;
                 case NotificationType.Delete:
@@ -300,6 +301,8 @@ namespace BLAZAM.Services.Background
 
                     var editedMessage = NotificationType.Modify.ToNotification<EntryEditedEmailMessage>();
                     editedMessage.EntryName = source.CanonicalName;
+                    editedMessage.EntryLink = source.SearchUri;
+
                     emailMessage = editedMessage;
                     break;
                 case NotificationType.Unassign:
@@ -309,7 +312,8 @@ namespace BLAZAM.Services.Background
                     notificationBody += _appLocalization["was removed from"] + " <a href=\"" + target.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
 
                     var groupMemberRemovedMessage = NotificationType.Unassign.ToNotification<EntryUnassignedEmailMessage>();
-                    groupMemberRemovedMessage.EntryName = source?.CanonicalName;
+                    groupMemberRemovedMessage.EntryName = source.CanonicalName;
+                    groupMemberRemovedMessage.EntryLink = source.SearchUri;
                     groupMemberRemovedMessage.GroupName = target?.CanonicalName;
                     emailMessage = groupMemberRemovedMessage;
                     break;
@@ -320,7 +324,9 @@ namespace BLAZAM.Services.Background
                     notificationBody += _appLocalization["was assigned to"] + " <a href=\"" + target.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
 
                     var groupMemberAssignedMessage = NotificationType.Assign.ToNotification<EntryAssignedEmailMessage>();
-                    groupMemberAssignedMessage.EntryName = source?.CanonicalName;
+                    groupMemberAssignedMessage.EntryName = source.CanonicalName;
+                    groupMemberAssignedMessage.EntryLink = source.SearchUri;
+
                     groupMemberAssignedMessage.GroupName = target?.CanonicalName;
 
                     emailMessage = groupMemberAssignedMessage;
@@ -332,6 +338,8 @@ namespace BLAZAM.Services.Background
                     notificationBody += _appLocalization["had a password reset at "] + time;
                     var passwordChangeMessage = NotificationType.PasswordChange.ToNotification<PasswordChangedEmailMessage>();
                     passwordChangeMessage.EntryName = source.CanonicalName;
+                    passwordChangeMessage.EntryLink = source.SearchUri;
+
                     emailMessage = passwordChangeMessage;
                     break;
                 case NotificationType.LockedOut:
@@ -342,9 +350,10 @@ namespace BLAZAM.Services.Background
                     }
 
                     notificationTitle += _appLocalization[Lang.Locked_Out];
-                    notificationBody += _appLocalization["has been locked out at "] + sourceUser.LockoutTime?.ToLocalTime();
+                    notificationBody += _appLocalization["has been locked out at "] + (sourceUser.LockoutTime!=null?sourceUser.LockoutTime?.ToLocalTime():DateTime.Now);
                     var lockedOutMessage = NotificationType.LockedOut.ToNotification<LockedOutEmailMessage>();
                     lockedOutMessage.EntryName = source.CanonicalName;
+                    lockedOutMessage.EntryLink = source.SearchUri;
                     emailMessage = lockedOutMessage;
                     break;
 

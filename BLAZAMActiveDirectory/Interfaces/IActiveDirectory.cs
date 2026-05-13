@@ -192,7 +192,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <returns>The matching entry, otherwise null</returns>
         IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn);
         Task CancelCheckConnection();
-        AppLdapConnection GetConnection();
+        AppLdapConnection GetConnection(string? serverHostname=null);
         Task<AppLdapConnection> GetConnectionAsync();
     }
 }

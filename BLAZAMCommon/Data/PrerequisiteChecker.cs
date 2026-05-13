@@ -2,7 +2,25 @@
 {
     public static class PrerequisiteChecker
     {
-        public static bool CheckForAspCore()
+        public static bool CheckForAspCore8()
+        {
+            return CheckForAspCore();
+        }
+
+        public static bool CheckForAspCoreHosting8()
+        {
+            return CheckForAspCoreHosting();
+        }
+        public static bool CheckForAspCore10()
+        {
+            return CheckForAspCore("10");
+        }
+
+        public static bool CheckForAspCoreHosting10()
+        {
+            return CheckForAspCoreHosting("10");
+        }
+        private static bool CheckForAspCore(string version="8")
         {
             try
             {
@@ -23,7 +41,7 @@
                     return false;
                 }
 
-                return dirs.Any(dir => dir.Contains("8."));
+                return dirs.Any(dir => dir.Contains(version+"."));
             }
             catch (Exception ex)
             {
@@ -54,7 +72,8 @@
             return null;
         }
 
-        public static bool CheckForAspCoreHosting()
+
+        private static bool CheckForAspCoreHosting(string version = "8")
         {
             try
             {
@@ -66,7 +85,7 @@
                     {
                         foreach (var possibleKey in possibleAspKeys)
                         {
-                            if (possibleKey.Contains("Microsoft .NET 8") && possibleKey.Contains("Hosting"))
+                            if (possibleKey.Contains("Microsoft .NET "+version) && possibleKey.Contains("Hosting"))
                             {
                                 return true;
                             }

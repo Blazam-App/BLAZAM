@@ -23,7 +23,7 @@ namespace BLAZAM.Database.Models
             }
             set
             {
-                if (value is CustomActiveDirectoryField field)
+                if (value is CustomActiveDirectoryField @field)
                 {
                     Field = null;
                     CustomField = @field;

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - v1-Dev-Beta
+      - v1-Dev
     
 
 jobs:

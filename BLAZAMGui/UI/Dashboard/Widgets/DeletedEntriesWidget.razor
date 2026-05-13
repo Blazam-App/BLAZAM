@@ -22,20 +22,21 @@
     <Columns>
         <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
             <CellTemplate>
-                <DirectoryEntryTypeIcon Entry="context.Item" />
+                <DirectoryEntryTypeIcon Size="Size.Small" Entry="context.Item" />
 
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <DirectoryEntryTooltipPopover Entry="@context.Item">
-                    <DirectoryEntryContextMenu Entry="context.Item">
-                        <MudText>@context.Item?.CanonicalName</MudText>
-                    </DirectoryEntryContextMenu>
-                </DirectoryEntryTooltipPopover>
+                <MudText Typo="Typo.caption">@context.Item?.CanonicalName</MudText>
                 </CellTemplate>
             </TemplateColumn>
-            <PropertyColumn Property="x=>x.LastChanged" Title=@AppLocalization[Lang.Deleted] />
+        <TemplateColumn Title=@AppLocalization[Lang.Deleted]>
+            <CellTemplate>
+                <DateWithTimeTooltip DateTime="@context.Item?.LastChanged" />
+
+                </CellTemplate>
+            </TemplateColumn>
 
         </Columns>
         <PagerContent>

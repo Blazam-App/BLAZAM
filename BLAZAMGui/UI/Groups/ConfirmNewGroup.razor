@@ -1,4 +1,3 @@
-@using BLAZAM.Global.Events
 @inherits AppComponentBase
 @inject NotificationGenerationService NotificationGenerationService
 
@@ -43,7 +42,7 @@
             {
                 foreach (var assignment in assignTo)
                 {
-                    ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                    ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.Assign,
                             Entry = assignment.Member,
@@ -59,7 +58,7 @@
                 Group = (IADGroup)Directory.GetDirectoryEntryByDN(Group.DN);
 
                 SnackBarService.Success(AppLocalization[Lang.Group_created]);
-                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                     {
                         EventType = ApplicationEventType.Create,
                         Entry = Group,

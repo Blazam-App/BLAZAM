@@ -17,7 +17,7 @@ namespace BLAZAM.Tests.Mocks
         }, null)
         {
 
-            SelectedBranch = ApplicationReleaseBranches.Stable;
+            SelectedBranch = ApplicationReleaseBranches.Net8ReleasePrefix;
         }
     }
 }

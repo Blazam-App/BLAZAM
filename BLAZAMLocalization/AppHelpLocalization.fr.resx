@@ -226,7 +226,7 @@
     <value>Aucune action n'est disponible à demander pour cette entrée.</value>
   </data>
   <data name="No_Request_Fields_Available" xml:space="preserve">
-    <value />
+    <value>Il n'y a aucun champ disponible à demander pour cette entrée</value>
   </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>La génération d'un nouveau jeton d'authentification invalidera celui existant !</value>
@@ -282,14 +282,34 @@ en un compte aux privilèges inférieurs pour améliorer la sécurité.</value>
     <value>Aucune information d'identification n'est configurée avec une autorisation d'écriture sur le répertoire de l'application !
 Essayez de configurer des informations d'identification de mise à jour personnalisées.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> demande un accès en lecture pour {0} sur </value>
   </data>
-  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> demande un accès {0} sur </value>
   </data>
-  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> demande un accès en modification pour {0} sur </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>Exiger que l'utilisateur change son mot de passe lors de sa prochaine connexion</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>Une réinitialisation de mot de passe a été demandée pour votre compte.</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>Cliquez ici pour réinitialiser votre mot de passe</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> Votre lien de réinitialisation expirera {0}</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>Si vous n'avez pas demandé cette réinitialisation, vous pouvez l'ignorer en toute sécurité.</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>Cette demande provient de : {0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>Si le lien ci-dessus ne fonctionne pas, copiez ce qui suit dans la barre d'adresse.</value>
   </data>
 </root>

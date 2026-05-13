@@ -133,10 +133,12 @@
         public static readonly string Home_Directory = "Home Directory";
         public static readonly string Home_Drive = "Home Drive";
         public static readonly string Script_Path = "Script Path";
+        public static readonly string Open_In_New_Tab = "Open In New Tab";
         public static readonly string Profile_Path = "Profile Path";
         public static readonly string Telephone_Number = "Telephone Number";
         public static readonly string System_Settings = "System Settings";
         public static readonly string Impersonate_User = "Impersonate User";
+        public static readonly string Browser_Notifications = "Browser Notifications";
         public static readonly string Group_Membership_Changes = "Group Membership Changes";
         public static readonly string Allow_Edit_Request = "Allow Edit Request";
         public static readonly string In_App = "In App";
@@ -505,6 +507,7 @@
         public static readonly string Current_Version = "Current Version";
         public static readonly string Available_Update = "Available Update";
         public static readonly string Apply_Update = "Apply Update";
+        public static readonly string Stage_Update = "Stage Update";
         public static readonly string Add_Category = "Add Category";
         public static readonly string Template_Category = "Template Category";
         public static readonly string Template_Name = "Template Name";

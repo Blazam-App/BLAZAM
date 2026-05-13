@@ -16,16 +16,7 @@ namespace BLAZAM.Helpers
     /// </summary>
     public static class CommonHelpers
     {
-        /// <summary>
-        /// Rounds a double-precision floating-point number to a specified number of fractional digits.
-        /// </summary>
-        /// <param name="number">The number to round.</param>
-        /// <param name="decimalPlaces">The number of decimal places in the return value. Defaults to 0.</param>
-        /// <returns>The number rounded to the specified number of decimal places.</returns>
-        public static double Round(this double number, int decimalPlaces = 0)
-        {
-            return Math.Round(number, decimalPlaces);
-        }
+  
 
         /// <summary>
         /// Formats a list of audit changes into a string, extracting values using a selector.
@@ -44,25 +35,25 @@ namespace BLAZAM.Helpers
                 return string.Empty;
             }
 
-            var values = "";
+            var valuesSB = new StringBuilder();
             foreach (var c in changes)
             {
-                string? value = "";
+                var valueSB = new StringBuilder();
 
                 if (valueSelector.Invoke(c) is IEnumerable<object> enumerable)
                 {
                     foreach (var obj in enumerable)
                     {
-                        value += obj.ToString() + ",";
+                        valueSB.Append(obj.ToString() + ",");
                     }
                 }
                 else
                 {
-                    value = valueSelector.Invoke(c)?.ToString();
+                    valueSB.Append(valueSelector.Invoke(c)?.ToString());
                 }
-                values += c.Field + "=" + value + ";";
+                valuesSB.Append(c.Field + "=" + valueSB.ToString() + ";");
             }
-            return values;
+            return valuesSB.ToString();
         }
 
         /// <summary>
@@ -386,35 +377,7 @@ namespace BLAZAM.Helpers
             }
         }
 
-        #region ADSI Extension Methods
-
-        /// <summary>
-        /// Represents the ADSI LargeInteger structure, used for date/time and other large integer values in Active Directory.
-        /// This interface is used for COM interop with ADSI.
-        /// </summary>
-        [
-            ComImport,
-            Guid("9068270b-0939-11d1-8be1-00c04fd8d503"),
-            InterfaceType(ComInterfaceType.InterfaceIsIDispatch)
-        ]
-        public interface IADsLargeInteger
-        {
-            /// <summary>Gets or sets the high part of the large integer.</summary>
-            [DispId(2)] int HighPart { get; set; }
-            /// <summary>Gets or sets the low part of the large integer.</summary>
-            [DispId(3)] int LowPart { get; set; }
-        }
-
-        /// <summary>
-        /// A managed representation of the ADSI IADsLargeInteger, primarily for testing or scenarios where COM interop is not directly available.
-        /// </summary>
-        public class ADsLargeInteger : IADsLargeInteger
-        {
-            /// <summary>Gets or sets the high part of the large integer.</summary>
-            public int HighPart { get; set; }
-            /// <summary>Gets or sets the low part of the large integer.</summary>
-            public int LowPart { get; set; }
-        }
+      
 
         /// <summary>
         /// Converts a .NET DateTime? to an ADSI LargeInteger compatible long value (FILETIME UTC).
@@ -430,7 +393,7 @@ namespace BLAZAM.Helpers
 
             try
             {
-                var maxFileTime = DateTime.Parse("Sunday, November 16, 4769 9:46:40 AM Z");
+                var maxFileTime = DateTime.Parse("Sunday, November 16, 4769 9:46:40 AM Z", CultureInfo.InvariantCulture);
                 if (value > maxFileTime)
                 {
                     return null;
@@ -477,7 +440,7 @@ namespace BLAZAM.Helpers
             try
             {
                 var dateTime = DateTime.FromFileTimeUtc(fileTime.Value);
-                if (dateTime.Equals(ADS_NULL_TIME) || dateTime.Equals(DateTime.MinValue))
+                if (dateTime.Equals(ADsLargeInteger.ADS_NULL_TIME) || dateTime.Equals(DateTime.MinValue))
                 {
                     return null;
                 }
@@ -490,18 +453,7 @@ namespace BLAZAM.Helpers
             }
         }
 
-        /// <summary>
-        /// Represents the "null" or earliest possible date in ADSI time (January 1, 1601, 12:00:00 AM UTC).
-        /// </summary>
-        public static DateTime ADS_NULL_TIME
-        {
-            get
-            {
-                // Use TryParseExact for robustness if needed, but this format is standard.
-                var ads_null_time = DateTime.ParseExact("01/01/1601 12:00:00 AM", "MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
-                return DateTime.SpecifyKind(ads_null_time, DateTimeKind.Utc);
-            }
-        }
+
 
         /// <summary>
         /// Converts a byte array representing a GUID to a <see cref="Guid"/> object.
@@ -672,6 +624,5 @@ namespace BLAZAM.Helpers
             }
         }
 
-        #endregion
     }
 }

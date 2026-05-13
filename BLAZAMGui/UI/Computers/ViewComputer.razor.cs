@@ -2,6 +2,7 @@ using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
 using BLAZAM.Services.Events;
 using MudBlazor;
+using System.Runtime.CompilerServices;
 
 namespace BLAZAM.Gui.UI.Computers
 {
@@ -16,14 +17,11 @@ namespace BLAZAM.Gui.UI.Computers
             await StateHasChangedAsync();
             if (Computer != null)
             {
-                Computer.OnOnlineChanged += (async (online) =>
-                {
-                    await RefreshEntryComponents();
-                });
+                Computer.OnOnlineChanged += OnlineChanged;
             }
             if (Computer != null)
             {
-                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Search,
                     Entry = Computer,
@@ -35,7 +33,10 @@ namespace BLAZAM.Gui.UI.Computers
             await RefreshEntryComponents();
         }
 
-
+        private async void OnlineChanged(bool online)
+        {
+            await RefreshEntryComponents();
+        }
         private async Task Unlock()
         {
             if (Computer != null && await MessageService.Confirm("Are you sure you want to unlock " + Computer?.CanonicalName + "?", "Unlock Computer"))
@@ -64,7 +65,7 @@ namespace BLAZAM.Gui.UI.Computers
 
                     Computer.Delete(true);
                     SnackBarService.Success(Computer.CanonicalName + " has been deleted.");
-                    ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                    ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                     {
                         EventType = ApplicationEventType.Delete,
                         Entry = Computer,
@@ -107,7 +108,7 @@ namespace BLAZAM.Gui.UI.Computers
                     var nonMemberOfChanges = changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList();
                     if (nonMemberOfChanges.Any())
                     {
-                        ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                         {
                             EventType = ApplicationEventType.Modify,
                             Entry = Computer,
@@ -140,7 +141,7 @@ namespace BLAZAM.Gui.UI.Computers
         {
             foreach (var assignment in assignments)
             {
-                ApplicationEvents.DirectoryEntryEvent.Invoke(new()
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = eventType,
                     Entry = assignment.Member,
@@ -153,7 +154,14 @@ namespace BLAZAM.Gui.UI.Computers
         public override void Dispose()
         {
             base.Dispose();
-            Computer?.Dispose();
+            if (Computer != null)
+            {
+                if (Computer.OnOnlineChanged != null)
+                {
+                    Computer.OnOnlineChanged -= OnlineChanged;
+                }
+                Computer.Dispose();
+            }
         }
     }
 }

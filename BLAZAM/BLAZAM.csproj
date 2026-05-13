@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.6.0</AssemblyVersion>
-		<Version>2026.04.11.1703</Version>
+		<Version>2026.05.11.2117</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -15,17 +15,17 @@
 
 	<ItemGroup>
 		<Compile Remove="Exceptions\**" />
+		<Compile Remove="static\**" />
 		<Content Remove="Exceptions\**" />
+		<Content Remove="static\**" />
 		<EmbeddedResource Remove="Exceptions\**" />
+		<EmbeddedResource Remove="static\**" />
 		<None Remove="Exceptions\**" />
+		<None Remove="static\**" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Remove="nssm.exe" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Include="..\BLAZAMGui\UI\Inputs\ADAutoComplete.razor.cs" Link="ADAutoComplete.razor.cs" />
 	</ItemGroup>
 
 
@@ -38,10 +38,6 @@
 	<ItemGroup>
 		<Content Include="nssm.exe">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="static\img\maggie.png">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
 	</ItemGroup>
 
@@ -141,6 +137,9 @@
 	<ItemGroup>
 		<None Update="license.rtf">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="updater\register-update-task.ps1">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 		<None Update="updater\update.ps1">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

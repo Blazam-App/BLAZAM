@@ -6,20 +6,22 @@
 
 @inherits SearchPageBase
 @attribute [Authorize(Roles = (UserRoles.SearchOUs + "," + UserRoles.SearchComputers + "," + UserRoles.SearchGroups + "," + UserRoles.SearchUsers + "," + UserRoles.SuperAdmin))]
-<AuthorizeView Roles="@(UserRoles.SearchOUs + ","+UserRoles.SearchComputers + ","+UserRoles.SearchGroups + "," +UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
+<AuthorizeView Roles="@(UserRoles.SearchOUs + "," + UserRoles.SearchComputers + "," + UserRoles.SearchGroups + "," + UserRoles.SearchUsers + "," + UserRoles.SuperAdmin)">
 
-
-<DemoHelpAlert />
+    @if (ApplicationInfo.InDemoMode)
+    {
+        <DemoHelpAlert />
+    }
 
 
 
     @if (Searcher?.Results.Count > 1)
     {
         <DirectoryEntryDataGrid IsLoadingData=LoadingData
-            Entries="Searcher.Results"
-            ItemsPerPage="50"
+                                Entries="Searcher.Results"
+                                ItemsPerPage="50"
                                 NoResultsMessage="@AppLocalization[Lang.No_matching_results]"
-            RowClicked="@((u)=>{ Nav.NavigateTo(u.Item.SearchUri);})"/>
+                                RowClicked="@((u)=>{ Nav.NavigateTo(u.Item.SearchUri);})" />
         <MudStack Row=true>
             Results found: @Searcher.Results.Count
         </MudStack>

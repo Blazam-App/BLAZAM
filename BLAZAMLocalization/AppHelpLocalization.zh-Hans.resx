@@ -226,7 +226,7 @@
     <value>此条目没有可请求的操作。</value>
   </data>
   <data name="No_Request_Fields_Available" xml:space="preserve">
-    <value />
+    <value>此条目没有可请求的字段</value>
   </data>
   <data name="Overwrite_Auth_Token_Confirmation" xml:space="preserve">
     <value>生成新的身份验证器令牌将使现有令牌无效！</value>
@@ -282,14 +282,34 @@
     <value>没有配置具有应用程序目录写入权限的凭据！
 尝试配置自定义更新凭据。</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Read_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Read_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> 正在请求 {0} 的读取权限于 </value>
   </data>
-  <data name="Action_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Action_Access_Request_Notification_Message" xml:space="preserve">
+    <value> 正在请求 {0} 权限于 </value>
   </data>
-  <data name="Edit_Field_Access_Request_Notification_Message" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Edit_Field_Access_Request_Notification_Message" xml:space="preserve">
+    <value> 正在请求 {0} 的编辑权限于 </value>
+  </data>
+  <data name="Require_Password_Change" xml:space="preserve">
+    <value>要求用户在下次登录时更改密码</value>
+  </data>
+  <data name="Password_Reset_Body" xml:space="preserve">
+    <value>已为您的帐户请求密码重置。</value>
+  </data>
+  <data name="Password_Reset_Link_Text" xml:space="preserve">
+    <value>点击此处重置您的密码</value>
+  </data>
+  <data name="Password_Reset_Expiration_Text" xml:space="preserve">
+    <value> 您的重置链接将于 {0} 过期</value>
+  </data>
+  <data name="Password_Reset_Ignore_Text" xml:space="preserve">
+    <value>如果您未请求此重置，可以安全地忽略它。</value>
+  </data>
+  <data name="Password_Reset_Origin_Text" xml:space="preserve">
+    <value>此请求来自：{0}</value>
+  </data>
+  <data name="Password_Reset_URL_Text" xml:space="preserve">
+    <value>如果上面的链接无法使用，请将以下内容复制到地址栏。</value>
   </data>
 </root>

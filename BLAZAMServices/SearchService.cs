@@ -15,7 +15,6 @@ namespace BLAZAM.Services
     public class SearchService
     {
         private readonly IApplicationUserStateService _userStateService;
-        private readonly IActiveDirectoryContext _directory;
         private readonly NavigationManager _nav;
         private bool includeDisabled = false;
         private string? searchTerm;
@@ -50,7 +49,7 @@ namespace BLAZAM.Services
         /// Gets or sets the type of Active Directory object to filter searches by. Defaults to All.
         /// </summary>
         public ActiveDirectoryObjectType SeachObjectType { get; set; } = ActiveDirectoryObjectType.All;
-        public List<AutomationRuleOrFilter> Filters { get; private set; }
+        public List<AutomationRuleOrFilter> Filters { get; private set; } = [];
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchService"/> class.
@@ -58,14 +57,13 @@ namespace BLAZAM.Services
         /// <param name="userStateService">Service for accessing current user state and preferences.</param>
         /// <param name="nav">Navigation manager for redirecting to search pages.</param>
         /// <exception cref="ArgumentNullException">Thrown if userStateService or nav is null.</exception>
-        public SearchService(IApplicationUserStateService userStateService, NavigationManager nav, IActiveDirectoryContext directory)
+        public SearchService(IApplicationUserStateService userStateService, NavigationManager nav)
         {
             ArgumentNullException.ThrowIfNull(userStateService);
 
             ArgumentNullException.ThrowIfNull(nav);
 
 
-            _directory = directory;
             _userStateService = userStateService;
             _nav = nav;
             includeDisabled = _userStateService.CurrentUserState?.Preferences?.SearchDisabledUsers == true;
@@ -117,17 +115,19 @@ namespace BLAZAM.Services
         }
 
         /// <summary>
-        /// Performs a search. If a searchTerm parameter is provided, it updates the current <see cref="SearchTerm"/>. Navigates to the search page.
+        /// Performs an advanced search using the specified collection of automation rules or filters.
         /// </summary>
-        /// <param name="filter">Filter to apply for the advanced search.</param>
+        /// <remarks>This method updates the current search filters and navigates to the advanced search
+        /// page. The search results are determined by the provided filters. If no filters are specified, the previous
+        /// filter settings remain unchanged.</remarks>
+        /// <param name="filters">A list of automation rules or filters to apply to the search. If null, the existing filters are retained.</param>
         public void AdvancedSearch(List<AutomationRuleOrFilter> filters)
         {
-            Loggers.SystemLogger.Debug("SearchService.Search: Search called. Current SearchTerm: '{CurrentSearchTerm}', Provided searchTerm parameter: '{ProvidedSearchTerm}'", SearchTerm, searchTerm);
-            if (filters != null)
+            Loggers.SystemLogger.Debug("Advanced search: {@Filters}",filters);
             {
                 Filters = filters;
             }
-
+            //The following is a fake navigation to trick the navigation manager into allowing go back a page
             Loggers.SystemLogger.Debug("SearchService.Search: Navigating to /advsearch");
             _nav.NavigateTo("/advsearch/"+Guid.NewGuid());
 

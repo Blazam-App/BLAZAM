@@ -1,5 +1,4 @@
 ﻿@using System.Security.Claims;
-@using BLAZAM.Global.Data
 @using BLAZAM.Gui.Navs
 @using BLAZAM.Gui.UI.Notifications
 @inherits LayoutComponentBase
@@ -139,7 +138,8 @@
                         <ForceCreateGoogleAuthenticatorTokenModal />
                         <AppUserPageTracker />
                         <DirectoryConnectingIndicator />
-                        <ExpiredLogonPasswordModalProvider/>
+                        <PWANotificationSubscriptionProvider />
+                        <ExpiredLogonPasswordModalProvider />
                     </MudContainer>
 
                 </MudMainContent>

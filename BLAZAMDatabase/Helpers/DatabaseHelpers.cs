@@ -15,6 +15,10 @@ namespace BLAZAM.Helpers
 {
     public static class DatabaseHelpers
     {
+        private const string CK_TABLE_COLUMN = "CK_Table_Column";
+        private const string MYSQL_ID_1 = "Id = 1";
+        private const string SQL_ID_1 = "[Id] = 1";
+
         /// <summary>
         /// Checks if the given field is in the template, whether editable or not
         /// </summary>
@@ -33,9 +37,9 @@ namespace BLAZAM.Helpers
         public static bool IsEditableField (this DirectoryTemplate template, IActiveDirectoryField field)
         {
             if (field is ActiveDirectoryField)
-                return template.EffectiveFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
+                return template.EffectiveFieldValues.Any(f => f.Field?.FieldName == field.FieldName && f.Editable);
             else
-                return template.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Editable);
+                return template.EffectiveFieldValues.Any(f => f.CustomField?.FieldName == field.FieldName && f.Editable);
         }
 
         public static bool IsRequiredField (this DirectoryTemplate template, IActiveDirectoryField field)
@@ -43,7 +47,7 @@ namespace BLAZAM.Helpers
             if (field is ActiveDirectoryField)
                 return template.EffectiveFieldValues.Any(f => f.Field?.FieldName == field.FieldName && f.Required);
             else
-                return template.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Required);
+                return template.EffectiveFieldValues.Any(f => f.CustomField?.FieldName == field.FieldName && f.Required);
         }
         public static long GetMembersHash(this IEnumerable<AppUser> members)
         {
@@ -134,18 +138,21 @@ namespace BLAZAM.Helpers
         {
             return state.Username?.Equals("admin", StringComparison.InvariantCultureIgnoreCase) == true || state.Username?.Equals("demo", StringComparison.InvariantCultureIgnoreCase) == true;
         }
-        public static List<TProperty> GetStaticProperties<TProperty>(this Type staticCollectionType)
+      
+        public static bool IsDemo(this AppUser state)
+        {
+            return state.Username?.Equals("demo", StringComparison.InvariantCultureIgnoreCase) == true;
+        }
+      
+        public static List<TProperty?> GetStaticProperties<TProperty>(this Type staticCollectionType)
         {
 
-            // 2. Specify BindingFlags to get PUBLIC and STATIC members
             BindingFlags flags = BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly;
-            // DeclaredOnly prevents getting members from base classes (like object), though less relevant for static classes.
 
-            // 3. Get all public static fields declared in this type
+
             FieldInfo[] fields = staticCollectionType.GetFields(flags);
 
-            // 4. Filter fields to get only those of type ActiveDirectoryField
-            //    and select their values.
+
             return fields
                 .Where(fi => fi.FieldType == typeof(TProperty)) // Ensure the field is the correct type
                 .Select(fi => (TProperty?)fi.GetValue(null)) // Get the static value (pass null for static fields)
@@ -341,11 +348,11 @@ namespace BLAZAM.Helpers
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, MYSQL_ID_1));
                 }
                 else
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, SQL_ID_1));
                 }
             });
         }
@@ -357,11 +364,11 @@ namespace BLAZAM.Helpers
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, MYSQL_ID_1));
                 }
                 else
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, SQL_ID_1));
                 }
             });
         }
@@ -373,11 +380,11 @@ namespace BLAZAM.Helpers
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, MYSQL_ID_1));
                 }
                 else
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, SQL_ID_1));
                 }
 
                 entity.HasData(new AuthenticationSettings
@@ -395,11 +402,11 @@ namespace BLAZAM.Helpers
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 if (context.Database.IsMySql())
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, MYSQL_ID_1));
                 }
                 else
                 {
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, SQL_ID_1));
                 }
             });
         }
@@ -494,5 +501,26 @@ namespace BLAZAM.Helpers
                 entity.Navigation(e => e.ChatMessage).AutoInclude();
             });
         }
+
+        public static async Task<DirectoryTemplate?> LoadTemplateWithParents(this DbSet<DirectoryTemplate> dbSet,int? templateId)
+        {
+           
+            if (templateId == null)
+            {
+                return null;
+            }
+            var template = await dbSet.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id.Equals(templateId));
+            if (template?.ParentTemplate != null)
+            {
+                var parentTemplate = await dbSet.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id.Equals(template.ParentTemplate.Id));
+                if (parentTemplate != null && parentTemplate.ParentTemplate != null)
+                {
+                    parentTemplate.ParentTemplate = await dbSet.LoadTemplateWithParents(parentTemplate.ParentTemplate.Id);
+                }
+                template.ParentTemplate = parentTemplate;
+            }
+            return template;
+        
+    }
     }
 }

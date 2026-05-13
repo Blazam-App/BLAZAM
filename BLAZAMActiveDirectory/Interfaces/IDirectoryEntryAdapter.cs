@@ -6,8 +6,6 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Jobs;
-using System.DirectoryServices;
-using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -210,7 +208,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Called when this entry is renamed
         /// </summary>
         [JsonIgnore]
-        AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+        AppEvent<IDirectoryEntryAdapter> OnDirectoryModelRenamed { get; set; }
 
         /// <summary>
         /// Called when this entry is deleted
@@ -286,7 +284,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         [JsonIgnore]
         AppEvent OnChangesDiscarded { get; set; }
-        Guid? Guid { get; set; }
+        Guid? Guid { get; }
         IADUser? Manager { get; set; }
         IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
 

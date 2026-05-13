@@ -30,14 +30,18 @@ namespace BLAZAM.Gui.UI.Users
         }
         private void LoadFailedLogons()
         {
-            _ = Task.Run(() =>
+            _ = Task.Run(async () =>
             {
                 if (_user != null)
                 {
                     LoadingData = true;
+                    _events = [.. Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID))];
+                    _events = [.. _events.OrderByDescending(e => e.Timestamp)];
+
+                    await StateHasChangedAsync();
 
                     LockedOutUserMonitor.RecordLogonEvents(_user);
-
+                    _events = [];
                     _events = [.. Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID))];
                     _events = [.. _events.OrderByDescending(e => e.Timestamp)];
                     LoadingData = false;

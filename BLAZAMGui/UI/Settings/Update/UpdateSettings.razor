@@ -4,7 +4,7 @@
 
 
 
-<MudText Typo="Typo.h4">@AppLocalization[Lang.Update_Settings] <AppDocumentationButton Page="/update/self/" /></MudText>
+<MudText Typo="Typo.h4">@AppLocalization[Lang.Update_Settings] <AppDocumentationButton Page="/update/auto/" /></MudText>
 <MudForm @onsubmit="Save">
     <MudStack Spacing="5">
 
@@ -186,7 +186,7 @@
     UpdateCredential? updateCredential = null;
     ManualApplicationUpdater? appUpdateComponent;
     AppSettings? settings = new AppSettings();
-    readonly List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev, ApplicationReleaseBranches.BetaDev };
+    readonly List<string> updateBranches = new() { ApplicationReleaseBranches.Net8ReleasePrefix, ApplicationReleaseBranches.NightlyPrefix, ApplicationReleaseBranches.DevPrefix, ApplicationReleaseBranches.Net10ReleasePrefix };
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
 
-name: Build and deploy ASP.Net Core app to Azure Web App - blazam
+name: Build and deploy Windows Demo
 
 on:
   push:
@@ -24,12 +24,11 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
-     
-
       - name: Shutdown Demo Website
         shell: pwsh
         run: |
-          New-Item -Path C:\inetpub\wwwroot -Name "app_offline.htm" -ItemType "file" -ErrorAction Continue
+          New-Item -Path "C:\inetpub\demo.blazam.org" -Name "app_offline.htm" -ItemType "file" -Force
+          Start-Sleep -Seconds 5
 
       - name: dotnet publish
         run: dotnet publish -c Release -o C:\inetpub\demo.blazam.org BLAZAM/BLAZAM.csproj
@@ -37,8 +36,5 @@ jobs:
       - name: Restart Demo Website
         shell: pwsh
         run: |
-          Remove-Item -Path C:\inetpub\wwwroot\app_offline.htm
-
-     
-
- 
+          Start-Sleep -Seconds 5
+          Remove-Item -Path "C:\inetpub\demo.blazam.org\app_offline.htm" -Force

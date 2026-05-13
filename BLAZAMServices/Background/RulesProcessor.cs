@@ -56,21 +56,21 @@ namespace BLAZAM.Services.Background
         {
             if (!_initialized)
             {
-                ApplicationEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChanged;
+                ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChanged;
 
                 _initialized = true;
 
             }
 
-            ScheduleRules();
+            _ = ScheduleRulesAsync();
         }
 
         /// <summary>
         /// Schedules enabled automation rules that are due to run soon.
         /// </summary>
-        private void ScheduleRules()
+        private async Task ScheduleRulesAsync()
         {
-            if (dbFactory.CreateDbContext().GlobalAutomationRuleSettings.FirstOrDefault()?.RulesEnabled != true)
+            if (!await RulesAreEnabledAsync())
             {
                 return;
             }
@@ -137,10 +137,11 @@ namespace BLAZAM.Services.Background
             {
                 return;
             }
-            if (!(await (await dbFactory.CreateDbContextAsync())!.GlobalAutomationRuleSettings.FirstOrDefaultAsync())!.RulesEnabled)
+            if (!await RulesAreEnabledAsync())
             {
                 return;
             }
+
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
             if (await args.Entry.ShouldSkipEntry(dbFactory,directory))
             {
@@ -176,6 +177,36 @@ namespace BLAZAM.Services.Background
 
         }
 
+        private async Task<bool> RulesAreEnabledAsync()
+        {
+            if (dbFactory == null)
+            {
+                Loggers.DatabaseLogger.Error("Database factory not available during directory entry changed rule processing.");
+                return false;
+            }
+
+            using var context = await dbFactory.CreateDbContextAsync();
+
+            if (context == null)
+            {
+                Loggers.DatabaseLogger.Error("Database connection could not be established during directory entry changed rule processing.");
+                return false;
+            }
+
+            var ruleSettings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
+            if (ruleSettings == null)
+            {
+                Loggers.DatabaseLogger.Information("Global rule settings could not be retrieved during directory entry changed rule processing. It's possible the settings have not be saved yet.");
+                return false;
+            }
+
+            if (!ruleSettings.RulesEnabled)
+            {
+                return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Executes a scheduled automation rule on all matching directory entries.
         /// </summary>
@@ -183,7 +214,7 @@ namespace BLAZAM.Services.Background
         /// <returns>The job representing the rule execution.</returns>
         public async Task<IJob?> ProcessScheduledRule(AutomationRule rule)
         {
-            var settings = await dbFactory.CreateDbContextAsync();
+            using var settings = await dbFactory.CreateDbContextAsync();
             rule = await settings.AutomationRules.FirstAsync(x => x.Id == rule.Id);
             var globalRuleSettings = await settings.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
             if (globalRuleSettings?.RulesEnabled != true)
@@ -539,7 +570,7 @@ namespace BLAZAM.Services.Background
             if (result.FailedSteps.Count == 0)
             {
 
-                ApplicationEvents.DirectoryEntryEvent.Invoke(this, new()
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(this, new()
                 {
                     Actor = new RulesUserState(dbFactory, rule.Name),
                     Changes = changes,

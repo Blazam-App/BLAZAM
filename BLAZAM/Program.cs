@@ -161,8 +161,6 @@ namespace BLAZAM
             }
             // Use response compression middleware
             AppInstance.UseResponseCompression();
-            // Custom middleware to manage user state.
-            AppInstance.UseMiddleware<UserStateMiddleware>();
             // Redirect HTTP requests to HTTPS.
             AppInstance.UseMiddleware<HttpsRedirectionMiddleware>();
             // Custom middleware to redirect based on application status (e.g., maintenance mode).
@@ -280,7 +278,10 @@ namespace BLAZAM
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex, "Error collecting or loading SSL information from database.");
+                if (ApplicationInfo.installationCompleted)
+                {
+                    Loggers.SystemLogger.Information(ex, "Error collecting or loading SSL information from database.");
+                }
                 return null;
             }
         }

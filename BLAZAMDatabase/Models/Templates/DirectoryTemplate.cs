@@ -20,7 +20,7 @@ namespace BLAZAM.Database.Models.Templates
     [Index(nameof(Name), IsUnique = true)]
     public class DirectoryTemplate : RecoverableAppDbSetBase
     {
-        private Regex variableSearch = new Regex(@"\{(?<var>[\w#\.\- ]+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
+        private readonly Regex variableSearch = new Regex(@"\{(?<var>[\w#\.\- ]+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
 
         public DirectoryTemplate? ParentTemplate { get; set; } = null;
         public int? ParentTemplateId { get; set; } = null;
@@ -234,40 +234,11 @@ namespace BLAZAM.Database.Models.Templates
         }
         public string GenerateUsername(NewUserName newUser, int? incrementedNumber = null)
         {
-            return ReplaceVariables(EffectiveUsernameFormula, newUser,incrementedNumber:incrementedNumber);
-            
+            return ReplaceVariables(EffectiveUsernameFormula, newUser, incrementedNumber: incrementedNumber);
+
 
         }
-        public string ReplaceVariablesOld(string toParse, NewUserName newUser)
-        {
-            if (!newUser.GivenName.IsNullOrEmpty())
-            {
-                toParse = toParse
-               .Replace("{fn}", newUser.GivenName)
-                .Replace("{fi}", newUser.GivenName[0].ToString());
-            }
-            if (!newUser.MiddleName.IsNullOrEmpty())
-            {
-                toParse = toParse
-            .Replace("{mn}", newUser.MiddleName)
-                 .Replace("{mi}", newUser.MiddleName?[0].ToString());
-            }
-            if (!newUser.Surname.IsNullOrEmpty())
-            {
-                toParse = toParse
-               .Replace("{ln}", newUser.Surname)
-                 .Replace("{li}", newUser.Surname[0].ToString());
-            }
-
-            if (toParse.Contains("{username}"))
-            {
-                var username = ReplaceVariables(EffectiveUsernameFormula, newUser);
-                toParse = toParse.Replace("{username}", username);
-            }
-
-            return toParse;
-
-        }
+     
         public string ReplaceVariables(string? toParse, NewUserName? newUser = null, string? username = null, int? incrementedNumber = null)
         {
             if (toParse.IsNullOrEmpty())
@@ -280,7 +251,7 @@ namespace BLAZAM.Database.Models.Templates
                 return toParse;
             }
 
-            return variableSearch.Replace(toParse, match =>
+            var result = variableSearch.Replace(toParse, match =>
             {
                 var variable = match.Groups["var"].Value.ToLower();
                 var modifier = match.Groups["mod"].Value;
@@ -350,8 +321,9 @@ namespace BLAZAM.Database.Models.Templates
                         return match.Value; // preserve unknown variables
                 }
             });
+            return Regex.Replace(result, @"\s+", " ").Trim();
         }
-        private string ProcessVariable(string? value, string? modifier, string? argument)
+        private static string ProcessVariable(string? value, string? modifier, string? argument)
         {
             // Return empty string for null/empty input for consistency and safety.
             if (string.IsNullOrEmpty(value))
@@ -373,16 +345,12 @@ namespace BLAZAM.Database.Models.Templates
             }
 
             // First, apply the length constraint from the argument.
-            if (!string.IsNullOrEmpty(argument))
+            if (!string.IsNullOrEmpty(argument) 
+                && int.TryParse(argument, out int number) 
+                && number > 0 
+                && number <= value.Length)
             {
-                if (int.TryParse(argument, out int number) && number > 0)
-                {
-                    // Add a safety check to prevent an ArgumentOutOfRangeException
-                    if (number <= value.Length)
-                    {
-                        value = value.Substring(0, number);
-                    }
-                }
+                value = value.Substring(0, number);
             }
 
             // Second, apply the case modifier to the (now possibly truncated) value.
@@ -408,7 +376,7 @@ namespace BLAZAM.Database.Models.Templates
             // Return the final processed value.
             return value;
         }
-        private string Substring(string? str, int start, int count)
+        private static string Substring(string? str, int start, int count)
         {
             if (str == null || str.IsNullOrEmpty())
             {

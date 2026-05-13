@@ -298,7 +298,7 @@ namespace BLAZAM.Database.Context
                     if (!context.SeedMismatch)
                     {
                         var pendingMigrations = context.Database.GetPendingMigrations();
-                        if (pendingMigrations.Count() > 0)
+                        if (pendingMigrations.Any())
                         {
                             Migrate(context);
                         }

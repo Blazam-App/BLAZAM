@@ -6,8 +6,15 @@
 else
 {
 
-    <a style="@Style" href="@(_forceHttps ? "https://" : "http://" + _appFQDN + Href)">
-        @ChildContent
+    <a style="@Style" href="@HrefUri">
+        @if (ChildContent == null)
+        {
+            @HrefUri
+        }
+        else
+        {
+            @ChildContent    
+        }
     </a>
 }
 
@@ -26,5 +33,7 @@ else
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
     [Parameter]
-    public string Style { get; set; }
+    public string Style { get; set; } = "color:#2261d3;";
+
+    protected virtual string HrefUri => (_forceHttps ? "https://" : "http://") + _appFQDN + Href;
 }
