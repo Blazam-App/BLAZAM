@@ -172,7 +172,7 @@ install_dependencies() {
         web_server_package="apache2"
     fi
 
-    apt-get install -y aspnetcore-runtime-8.0 "${web_server_package}" openssl jq libldap2 curl wget unzip
+    apt-get install -y aspnetcore-runtime-10.0 "${web_server_package}" openssl jq libldap2 curl wget unzip
 
     if ! command -v $DOTNET_EXECUTABLE &> /dev/null; then
         log_error "dotnet executable not found. ASP.NET Core runtime installation may have failed."
