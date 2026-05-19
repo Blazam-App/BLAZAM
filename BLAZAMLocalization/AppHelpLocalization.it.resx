@@ -262,7 +262,7 @@
     <value>Hai modifiche non salvate</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>Il ramo di rilascio è il ramo consigliato. La scelta di Nightly è consigliata solo per le installazioni di prova. Dev è solo per sviluppatori.</value>
+    <value>Il ramo NET10 è il ramo consigliato. Scegliere Nightly è consigliato solo per installazioni di test. Dev è solo per sviluppatori.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} è stato aggiornato</value>

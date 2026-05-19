@@ -263,7 +263,7 @@ efforts on what our users think matters most.</value>
     <value>You have unsaved changes</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>The release branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.</value>
+    <value>The NET10 branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} has been updated</value>
