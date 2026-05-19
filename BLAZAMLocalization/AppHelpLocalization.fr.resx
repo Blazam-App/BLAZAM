@@ -262,7 +262,7 @@
     <value>Vous avez des modifications non enregistrées</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>La branche de publication est la branche recommandée. Choisir Nightly n'est recommandé que pour les installations de test. Dev est réservé aux développeurs.</value>
+    <value>La branche NET10 est la branche recommandée. Choisir Nightly n'est recommandé que pour les installations de test. Dev est réservé aux développeurs.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} a été mis à jour</value>

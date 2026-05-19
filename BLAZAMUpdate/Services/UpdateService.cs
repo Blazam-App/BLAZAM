@@ -49,7 +49,7 @@ namespace BLAZAM.Update.Services
         /// <summary>
         /// The branch configured in the database
         /// </summary>
-        public string SelectedBranch { get; set; } = ApplicationReleaseBranches.Net8ReleasePrefix;
+        public string SelectedBranch { get; set; } = ApplicationReleaseBranches.Net10ReleasePrefix;
 
         private const string Publisher_Name = "BLAZAM-APP";
         private const string Repository_Name = "Blazam";
@@ -279,8 +279,12 @@ namespace BLAZAM.Update.Services
                     SelectedBranch = settings.UpdateBranch;
                     if (SelectedBranch.Equals(ApplicationReleaseBranches.Net8ReleasePrefix, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        return;
+                        SelectedBranch = ApplicationReleaseBranches.Net10ReleasePrefix;
+
+                        settings.UpdateBranch = SelectedBranch;
+                        await context.SaveChangesAsync();
                     }
+
                     if (SelectedBranch.Equals("Stable", StringComparison.InvariantCultureIgnoreCase))
                     {
                         SelectedBranch = ApplicationReleaseBranches.Net8ReleasePrefix;
@@ -298,7 +302,7 @@ namespace BLAZAM.Update.Services
 
             if (SelectedBranch == null)
             {
-                SelectedBranch = ApplicationReleaseBranches.Net8ReleasePrefix;
+                SelectedBranch = ApplicationReleaseBranches.Net10ReleasePrefix;
             }
         }
 

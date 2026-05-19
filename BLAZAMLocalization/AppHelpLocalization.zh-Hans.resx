@@ -262,7 +262,7 @@
     <value>您有未保存的更改</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>发布分支是推荐的分支。仅建议测试安装选择 Nightly。Dev 仅供开发人员使用。</value>
+    <value>NET10分支是推荐的分支。选择Nightly仅建议用于测试安装。Dev仅供开发人员使用。</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>已更新 {0}</value>

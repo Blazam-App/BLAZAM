@@ -186,7 +186,7 @@
     UpdateCredential? updateCredential = null;
     ManualApplicationUpdater? appUpdateComponent;
     AppSettings? settings = new AppSettings();
-    readonly List<string> updateBranches = new() { ApplicationReleaseBranches.Net8ReleasePrefix, ApplicationReleaseBranches.NightlyPrefix, ApplicationReleaseBranches.DevPrefix, ApplicationReleaseBranches.Net10ReleasePrefix };
+    readonly List<string> updateBranches = new() { ApplicationReleaseBranches.Net10ReleasePrefix, ApplicationReleaseBranches.NightlyPrefix, ApplicationReleaseBranches.DevPrefix };
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

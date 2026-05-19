@@ -1,0 +1,27 @@
+﻿@inherits AppComponentBase
+
+
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (CurrentUser.State.NotificationSubscriptions.Any(ns => ns.DeletedAt == null && ns.InApp))
+        {
+            try
+            {
+                await SubscribeToPWANotifications();
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Information(ex, "Unable to subscribe to PWA notifications");
+            }
+        }
+    }
+
+    private async Task SubscribeToPWANotifications()
+    {
+        await JS.InvokeAsync<bool>("blazam.subscribeToPushNotifications");
+    }
+}

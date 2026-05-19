@@ -2,13 +2,7 @@
 @inject IJSRuntime JSRuntime
 <MudCard Elevation="0">
     <MudText Class="pb-4" Align="Align.Center">
-        <MudButton Class="ma-0"
-                   Variant="Variant.Filled"
-                   StartIcon="@Icons.Material.Filled.Feed"
-                   Color="@(pwaNotificationsEnabled?Color.Success:Color.Error)"
-                   OnClick="@(async()=>{await OnSubscriptionSwitchChanged(!pwaNotificationsEnabled);})">
-            @AppLocalization[Lang.Browser_Notifications]
-        </MudButton>
+        
     </MudText>
     <MudStack Breakpoint="Breakpoint.MdAndDown" Row=true>
         <ADTreeView ShowAllEntries=false
@@ -32,15 +26,9 @@
     [Parameter]
     public AppUser User { get; set; }
 
-    bool pwaNotificationsEnabled = false;
-
     IDirectoryEntryAdapter? _selectedOU = null;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        pwaNotificationsEnabled = await JS.InvokeAsync<bool>("window.pwaNotificationsEnabled");
-    }
+
 
     private async void ouChanged(IDirectoryEntryAdapter entry)
     {
@@ -51,16 +39,5 @@
             await InvokeAsync(StateHasChanged);
         }
     }
-    private async Task OnSubscriptionSwitchChanged(bool isSubscribed)
-    {
-        if (isSubscribed)
-        {
-            pwaNotificationsEnabled = await JSRuntime.InvokeAsync<bool>("blazam.subscribeToPushNotifications");
-        }
-        else
-        {
-            await JSRuntime.InvokeVoidAsync("blazam.unsubscribeFromPushNotifications");
-            pwaNotificationsEnabled = false;
-        }
-    }
+    
 }
