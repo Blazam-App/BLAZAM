@@ -593,7 +593,7 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The release branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers..
+        ///   Looks up a localized string similar to The NET10 branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers..
         /// </summary>
         public static string Upate_Branch_Definition {
             get {
