@@ -14,10 +14,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Setup .NET Core SDK 8
+      - name: Setup .NET Core SDK 10
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 8.x
+          dotnet-version: 10.x
       - name: Restore dependencies
         run: dotnet restore
       - name: Build application (Debug)
@@ -36,10 +36,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Setup .NET Core SDK 8
+      - name: Setup .NET Core SDK 10
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 8.x
+          dotnet-version: 10.x
       - name: Restore dependencies
         run: dotnet restore
    
