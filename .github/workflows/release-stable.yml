@@ -66,8 +66,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
         with:
-          tag_name: Release-v${{ env.ASSEMBLY_VERSION }}
-          release_name: Release - v${{ env.ASSEMBLY_VERSION }}
+          tag_name: Net10-v${{ env.ASSEMBLY_VERSION }}
+          release_name: Net10 - v${{ env.ASSEMBLY_VERSION }}
           body: ""
           draft: true
           prerelease: true
