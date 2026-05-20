@@ -67,7 +67,9 @@ namespace BLAZAM.Helpers
                 }
 
                 var currentUtc = DateTimeOffset.UtcNow;
-                if (!ticket.Properties.IssuedUtc.HasValue)
+                if (!ticket.Properties.IssuedUtc.HasValue ||
+                    (ticket.Properties.ExpiresUtc.HasValue &&
+                    ticket.Properties.ExpiresUtc < DateTime.UtcNow))
                 {
                     return;
                 }

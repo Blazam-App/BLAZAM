@@ -103,11 +103,10 @@ namespace BLAZAM.Services
 
                 options.Events.OnValidatePrincipal = async (context) =>
                 {
-                    if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                    if (context.Properties.ExpiresUtc.HasValue &&
+                        context.Properties.ExpiresUtc.Value < DateTimeOffset.UtcNow)
                     {
-                        var currentUtc = DateTimeOffset.UtcNow;
-                        context.Properties.IssuedUtc = currentUtc;
-                        context.Properties.ExpiresUtc = currentUtc.AddMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
+                        context.RejectPrincipal();
                     }
                 };
                 options.LoginPath = new PathString("/login");
@@ -121,7 +120,7 @@ namespace BLAZAM.Services
                     options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
                 }
 
-                options.SlidingExpiration = true;
+                options.SlidingExpiration = false;
             };
         }
 
@@ -287,8 +286,8 @@ namespace BLAZAM.Services
 
         private async Task<AuthenticationState?> HandleLocalAdminLogin(LoginRequest loginReq, AuthenticationSettings settings)
         {
-            var adminPass =settings.AdminPassword?.Decrypt();
-            if(adminPass is null)
+            var adminPass = settings.AdminPassword?.Decrypt();
+            if (adminPass is null)
             {
                 return null;
             }
@@ -376,7 +375,7 @@ namespace BLAZAM.Services
 
                 if (userClaim.Identity?.IsAuthenticated == true)
                 {
-                    loginReq.AuthenticationResult = LoginResultStatus.OK;   
+                    loginReq.AuthenticationResult = LoginResultStatus.OK;
                     return await SetUser(userClaim);
                 }
             }
@@ -398,7 +397,7 @@ namespace BLAZAM.Services
 
         public bool ShouldPerformGoogleAuthenticatorMFA(AppUser? userSettings, LoginRequest loginReq, AuthenticationSettings? settings)
         {
-            if(userSettings!=null && userSettings.AuthenticatorSecret?.Decrypt().IsNullOrEmpty()==false)
+            if (userSettings != null && userSettings.AuthenticatorSecret?.Decrypt().IsNullOrEmpty() == false)
             {
                 return true;
             }
@@ -454,7 +453,7 @@ namespace BLAZAM.Services
             return await CreateDirectoryPrincipal(loginUser, user, loginReq);
         }
 
-        public async Task<string> PerformDuoAuthentication(LoginRequest loginReq,string callbackUri="/mfacallback")
+        public async Task<string> PerformDuoAuthentication(LoginRequest loginReq, string callbackUri = "/mfacallback")
         {
             using var context = await _factory.CreateDbContextAsync();
 
