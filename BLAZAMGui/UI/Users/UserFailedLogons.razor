@@ -3,16 +3,31 @@
 <MudStack Class="mx-auto">
     <MudDataGrid Elevation=0 Loading=LoadingData Items="_events">
         <Header>
-            <MudText Typo=Typo.subtitle2 Align="Align.Center" Class="mud-width-full">@AppLocalization["Failed Logons"]</MudText>
-
-            </Header>
-            <Columns>
-                <PropertyColumn Title=@AppLocalization[Lang.Timestamp] Property="x=>x.Timestamp" />
-                <PropertyColumn Title=@AppLocalization["Workstation Name"] Property="x=>x.WorkstationName" />
-                <PropertyColumn Title=@AppLocalization["Workstation IP"] Property="x=>x.WorkstationIp" />
-            </Columns>
-            <NoRecordsContent>
-                @AppLocalization["There are no recent failed attempts"]
+            <MudText Style="mud-width-full" Typo=Typo.subtitle2 Align="Align.Center" Class="mud-width-full">@AppLocalization["Failed Logons"]</MudText>
+            @if (pollingJob != null && pollingJob.Progress < 100)
+            {
+                <MudProgressLinear Indeterminate="@(pollingJob == null && pollingJob?.Progress != 0)" Value="@(pollingJob?.Progress ?? 0)" />
+            }
+            @if (pollingJob != null && pollingJob.Steps.Any(s => s.Result == JobResult.Running))
+            {
+                <MudText>
+                    @pollingJob.Steps.FirstOrDefault(s => s.Result == JobResult.Running)?.Name
+                </MudText>
+            }
+            @if (pollingJob != null && pollingJob.Steps.Any(s => s.Exception != null))
+            {
+                <MudText>
+                    @pollingJob.Steps.FirstOrDefault(s => s.Exception != null)?.Exception?.Message
+                </MudText>
+            }
+        </Header>
+        <Columns>
+            <PropertyColumn Title=@AppLocalization[Lang.Timestamp] Property="x => x.Timestamp" />
+            <PropertyColumn Title=@AppLocalization["Workstation Name"] Property="x => x.WorkstationName" />
+            <PropertyColumn Title=@AppLocalization["Workstation IP"] Property="x => x.WorkstationIp" />
+        </Columns>
+        <NoRecordsContent>
+            @AppLocalization["There are no recent failed attempts"]
         </NoRecordsContent>
     </MudDataGrid>
 </MudStack>

@@ -81,9 +81,6 @@ namespace BLAZAM.Gui.UI
         protected INotificationPublisher NotificationPublisher { get; set; }
 
         [Inject]
-        protected IEncryptionService EncryptionService { get; set; }
-
-        [Inject]
         protected JwtTokenService JwtTokenService { get; set; }
 
         [Inject]
@@ -111,8 +108,11 @@ namespace BLAZAM.Gui.UI
 
             }
         }
+        /// <summary>
+        /// Gets the factory for creating user database instances.
+        /// </summary>
         [Inject]
-        protected IUserDatabaseFactory DbFactory { get; set; }
+        protected IUserDatabaseFactory DbFactory { get; private set; }
 
 
         protected override void OnInitialized()
@@ -150,11 +150,20 @@ namespace BLAZAM.Gui.UI
         {
             Nav.NavigateTo(Nav.Uri, forceReload);
         }
-        protected void Refresh(object? state = null, object? args = null)
-        {
-            Nav.NavigateTo(Nav.Uri, false);
-        }
+        /// <summary>
+        /// Refreshes the current page by navigating to the current URI.
+        /// </summary>
+        /// <param name="state">Not used.</param>
+        /// <param name="args">Not used.</param>
+        protected void Refresh(object? state = null, object? args = null) => Refresh(false);
+    
 
+
+        /// <summary>
+        /// Invokes a state change notification without awaiting the result.
+        /// </summary>
+        /// <param name="state">Optional state parameter (unused in this implementation).</param>
+        /// <param name="args">Optional arguments parameter (unused in this implementation).</param>
         protected void InvokeStateHasChanged(object? state = null, object? args = null)
         {
             _ = StateHasChangedAsync();

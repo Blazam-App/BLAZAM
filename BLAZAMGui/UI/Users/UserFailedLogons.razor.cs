@@ -1,4 +1,5 @@
 
+using BLAZAM.Jobs;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Users
@@ -6,7 +7,7 @@ namespace BLAZAM.Gui.UI.Users
     public partial class UserFailedLogons : DatabaseComponentBase
     {
         private List<FailedADLogonEvent> _events = [];
-
+        private IJob? pollingJob = null;
         private IADUser? _user;
         [CascadingParameter]
         public IGroupableDirectoryAdapter User
@@ -28,6 +29,10 @@ namespace BLAZAM.Gui.UI.Users
             }
 
         }
+        private void OnProgressUpdated(double? progress)
+        {
+            InvokeStateHasChanged();
+        }
         private async Task LoadFailedLogons()
         {
             await Task.Run(() => {
@@ -38,8 +43,9 @@ namespace BLAZAM.Gui.UI.Users
                     _events = existing;
 
                     InvokeStateHasChanged();
-
-                    LockedOutUserMonitor.RecordLogonEvents(_user);
+                    pollingJob = new Job("Polling");
+                    pollingJob.OnProgressUpdated += OnProgressUpdated;
+                    LockedOutUserMonitor.RecordLogonEvents(_user, pollingJob);
 
                     existing = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
                     _events = existing;

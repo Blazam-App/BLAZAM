@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
+using BLAZAM.Jobs;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -50,6 +51,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Gets a list of failed logon events for the user.
         /// </summary>
-        List<FailedADLogonEvent> FailedLogonEvents { get; }
+        List<FailedADLogonEvent> GetFailedLogonEvents(IJob? job=null);
     }
 }
