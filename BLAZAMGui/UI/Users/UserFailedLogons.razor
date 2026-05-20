@@ -3,7 +3,7 @@
 <MudStack Class="mx-auto">
     <MudDataGrid Elevation=0 Loading=LoadingData Items="_events">
         <Header>
-            <MudText Style="mud-width-full" Typo=Typo.subtitle2 Align="Align.Center" Class="mud-width-full">@AppLocalization["Failed Logons"]</MudText>
+            <MudText Typo=Typo.subtitle2 Align="Align.Center">@AppLocalization["Failed Logons"]</MudText>
             @if (pollingJob != null && pollingJob.Progress < 100)
             {
                 <MudProgressLinear Indeterminate="@(pollingJob == null && pollingJob?.Progress != 0)" Value="@(pollingJob?.Progress ?? 0)" />
