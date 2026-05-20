@@ -20,7 +20,7 @@ namespace BLAZAM.Pages.API.Auth
             if (HttpContext.User.Identity?.IsAuthenticated == true)
             {
                 HttpContext.SlideCookieExpiration(ApplicationUserStateService.Instance.GetUserState(HttpContext.User));
-
+                //HttpContext.UpdateUserTicket(ApplicationUserStateService.Instance.GetUserState(HttpContext.User));
             }
             else
             {

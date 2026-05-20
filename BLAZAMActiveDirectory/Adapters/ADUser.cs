@@ -53,7 +53,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public override string? DisplayName { get => base.DisplayName; set => base.DisplayName = value; }
 
 
-        public List<FailedADLogonEvent> FailedLogonEvents => this.DomainControllerEventLogs.GetFailedLogonEvents(this, DateTime.UtcNow - TimeSpan.FromDays(5), DateTime.UtcNow);
+        public List<FailedADLogonEvent> GetFailedLogonEvents(IJob? job=null) => this.DomainControllerEventLogs?.GetFailedLogonEvents(this, DateTime.UtcNow - TimeSpan.FromDays(5), DateTime.UtcNow, job) ?? [];
 
         public string? HomeDirectory
         {

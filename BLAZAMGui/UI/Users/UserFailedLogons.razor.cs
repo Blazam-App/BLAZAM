@@ -1,4 +1,5 @@
 
+using BLAZAM.Jobs;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Users
@@ -6,48 +7,53 @@ namespace BLAZAM.Gui.UI.Users
     public partial class UserFailedLogons : DatabaseComponentBase
     {
         private List<FailedADLogonEvent> _events = [];
-
+        private IJob? pollingJob = null;
         private IADUser? _user;
         [CascadingParameter]
         public IGroupableDirectoryAdapter User
         {
-            get => _user; set
-
-            {
-                if (_user != null && _user.Equals(value))
-                {
-                    return;
-                }
-
-                if (value is IADUser adUser)
-                {
-                    _user = adUser;
-                    LoadFailedLogons();
-                }
-
-
-            }
+            get; set;
         }
-        private void LoadFailedLogons()
+        protected override async Task OnInitializedAsync()
         {
-            _ = Task.Run(async () =>
+            await base.OnInitializedAsync();
+
+            if (_user == User)
             {
+                return;
+            }
+            if (User is IADUser adUser)
+            {
+                _user = adUser;
+                await LoadFailedLogons();
+            }
+
+        }
+        private void OnProgressUpdated(double? progress)
+        {
+            InvokeStateHasChanged();
+        }
+        private async Task LoadFailedLogons()
+        {
+            await Task.Run(() => {
                 if (_user != null)
                 {
                     LoadingData = true;
-                    _events = [.. Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID))];
-                    _events = [.. _events.OrderByDescending(e => e.Timestamp)];
+                    var existing = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(_user.SID)).OrderByDescending(e => e.Timestamp).ToList();
+                    _events = existing;
 
-                    await StateHasChangedAsync();
+                    InvokeStateHasChanged();
+                    pollingJob = new Job("Polling");
+                    pollingJob.OnProgressUpdated += OnProgressUpdated;
+                    LockedOutUserMonitor.RecordLogonEvents(_user, pollingJob);
 
-                    LockedOutUserMonitor.RecordLogonEvents(_user);
-                    _events = [];
-                    _events = [.. Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID))];
-                    _events = [.. _events.OrderByDescending(e => e.Timestamp)];
+                    existing = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
+                    _events = existing;
                     LoadingData = false;
                 }
-
             });
+          
+
         }
 
     }

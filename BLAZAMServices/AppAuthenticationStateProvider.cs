@@ -108,6 +108,7 @@ namespace BLAZAM.Services
                     {
                         context.RejectPrincipal();
                     }
+                    context.ShouldRenew = context.Request.Path.StartsWithSegments("/api/auth/keepAlive");
                 };
                 options.LoginPath = new PathString("/login");
                 options.LogoutPath = new PathString("/logout");

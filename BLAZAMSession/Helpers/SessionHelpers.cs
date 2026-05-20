@@ -108,7 +108,51 @@ namespace BLAZAM.Helpers
                     userState?.User?.Identity?.Name ?? httpContext.User?.Identity?.Name ?? "Unknown");
             }
         }
+        public static void UpdateUserTicket(this HttpContext? httpContext, IApplicationUserState? userState = null)
+        {
+            if (httpContext == null)
+            {
+                Loggers.SystemLogger.Warning("SessionHelpers.SlideCookieExpiration: httpContext parameter is null. Cannot slide cookie expiration.");
+                return;
+            }
 
+            double? dbTimeoutValue = DatabaseCache.AuthenticationSettings?.SessionTimeout;
+            if (dbTimeoutValue == null)
+            {
+                return;
+            }
+
+            string? cookie = httpContext.Request.Cookies[CookieAuthenticationDefaults.CookiePrefix + CookieAuthenticationDefaults.AuthenticationScheme];
+            if (cookie == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var ticketDataFormat = httpContext.RequestServices
+                    .GetRequiredService<IOptionsMonitor<CookieAuthenticationOptions>>()
+                    .Get(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .TicketDataFormat;
+                var ticket = ticketDataFormat.Unprotect(cookie);
+                if (ticket == null)
+                {
+                    return;
+                }
+
+                    if (userState != null)
+                    {
+                        userState.Ticket = ticket;
+                    }
+                
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Warning(ex,
+                    "SessionHelpers.SlideCookieExpiration: Failed to slide cookie expiration for user {UserIdentifier}.",
+                    userState?.User?.Identity?.Name ?? httpContext.User?.Identity?.Name ?? "Unknown");
+            }
+        }
         /// <summary>
         /// Retrieves the configured session timeout duration from the authentication cookie, if available. Logs warnings on failure.
         /// </summary>
