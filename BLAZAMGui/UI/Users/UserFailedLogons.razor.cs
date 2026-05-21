@@ -47,6 +47,7 @@ namespace BLAZAM.Gui.UI.Users
                     pollingJob.OnProgressUpdated += OnProgressUpdated;
                     LockedOutUserMonitor.RecordLogonEvents(_user, pollingJob);
 
+                    pollingJob.OnProgressUpdated -= OnProgressUpdated;
                     existing = Context.FailedADLogonEvents.Where(e => e.Sid.Equals(User.SID)).OrderByDescending(e => e.Timestamp).ToList();
                     _events = existing;
                     LoadingData = false;
