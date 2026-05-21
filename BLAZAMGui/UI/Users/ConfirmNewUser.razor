@@ -10,10 +10,13 @@
 <AppPageTitle>@AppLocalization[Lang.Confirm_User_Creation]</AppPageTitle>
 
 
-@if (DirectoryTemplate.InTemplate(ActiveDirectoryFields.Thumbnail))
+@if (DirectoryTemplate != null)
 {
-    <ContactThumbnailPhoto Contact=Contact
-                           Disabled=true/>
+    if (DirectoryTemplate.InTemplate(ActiveDirectoryFields.Thumbnail))
+    {
+        <ContactThumbnailPhoto Contact=Contact
+                               Disabled=true />
+    }
 }
 
 <MudTextField Label="@AppLocalization[Lang.OU]"
@@ -29,21 +32,21 @@
               Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Last_Name]"
-              Value="@User.Sn"
+              Value="@Contact.Sn"
               Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Display_Name]"
-              Value="@User.DisplayName"
+              Value="@Contact.DisplayName"
               Disabled=true />
 
 <MudTextField Label="@AppLocalization[Lang.Username]"
-              Value="@User.SAMAccountName"
+              Value="@User?.SAMAccountName"
               Disabled=true />
 
 
 
 <MudTextField Label="@AppLocalization[Lang.Password]"
-              Value="@User.NewPassword.ToPlainText()"
+              Value="@User?.NewPassword.ToPlainText()"
               Disabled=true />
 
 <CascadingValue Value="GroupableEntry">
@@ -52,13 +55,13 @@
             <OrganizationSection Disabled=true />
             
             <ContactInfoSection Disabled=true />
+
            
-           
-            <ProfileSection Disabled=true />  
+            <ProfileSection Disabled=true />
 
 
             <ViewSection Title=@AppLocalization[Lang.Groups]>
-                @if (User.IsAGroupMember)
+                @if (User?.IsAGroupMember==true)
                 {
                     <MudText Class="mud-width-full" Align="Align.Center">
                         <MemberOfList AllowNavigation="false" Model="@User" Disabled=true />
@@ -68,13 +71,13 @@
 
             </ViewSection>
 
-            @if (GroupableEntry.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
+            @if (GroupableEntry?.CanReadAnyCustomFields == true && CustomFields != null && CustomFields.Count > 0)
             {
                 <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
 
                     @foreach (var field in CustomFields)
                     {
-                        @if (DirectoryTemplate.InTemplate(field))
+                        @if (DirectoryTemplate?.InTemplate(field) == true)
                         {
                             <CustomDirectoryField Disabled=@(true) Entry="GroupableEntry" Field="@field" />
 
@@ -98,9 +101,9 @@
 else
 {
     <MudButton Color="Color.Primary"
-               OnClick="@(()=>{Nav.NavigateTo(User.SearchUri);})">@AppLocalization[Lang.Go_To_User]</MudButton>
+               OnClick="@(()=>{Nav.NavigateTo(Contact.SearchUri);})">@AppLocalization[Lang.Go_To_User]</MudButton>
     <MudButton Color="Color.Success"
-               OnClick="@(()=>{Nav.NavigateTo("/create/user",true);})">@AppLocalization[Lang.Create_Another]</MudButton>
+               OnClick="@(()=>{Nav.NavigateTo(Nav.Uri,true);})">@AppLocalization[Lang.Create_Another]</MudButton>
 
 }
 <MudButton StartIcon="@Icons.Material.Filled.Print"
@@ -133,62 +136,99 @@ else
     /// <returns></returns>
     async Task ConfirmUser()
     {
-
         try
         {
-            disableCreateUserButton = true;
-            await StateHasChangedAsync();
-
-            var createUserJob = new Job(AppLocalization[Lang.Create_User]);
-            createUserJob.StopOnFailedStep = false;
-
-            _username = User.SAMAccountName;
-            _userPassword = User.NewPassword;
-
-
-            await createUserJob.ShowJobDetailsDialogAsync(MessageService);
-
-
-            var result = await User.CommitChangesAsync(createUserJob);
-
-            disableCreateUserButton = false;
-            await StateHasChangedAsync();
-
-            if (result.FailedSteps.Count == 0)
+            if (User is null && Contact is not null)
             {
-                User = (IADUser?)Directory.GetDirectoryEntryByDN(User.DN)!;
-                User.NewPassword = _userPassword;
-                SnackBarService.Success(AppHelpLocalization[HelpLang.Created,AppLocalization[Lang.User]]);
-                Confirmed = true;
-                await OnConfirmed.InvokeAsync();
-                User = (IADUser?)Directory.GetDirectoryEntryByDN(User.DN)!;
-                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                {
-                    EventType = ApplicationEventType.Create,
-                    Entry = User,
-                    Actor = CurrentUser.State
+                disableCreateUserButton = true;
+                await StateHasChangedAsync();
 
-                });
-                try
+                var createContactJob = new Job(AppLocalization[Lang.Create_Contact]);
+                createContactJob.StopOnFailedStep = false;
+
+
+
+                await createContactJob.ShowJobDetailsDialogAsync(MessageService);
+
+
+                var result = await Contact.CommitChangesAsync(createContactJob);
+
+                disableCreateUserButton = false;
+                await StateHasChangedAsync();
+
+                if (result.FailedSteps.Count == 0)
                 {
-                    if (DirectoryTemplate?.EffectiveSendWelcomeEmail == true)
+                    Contact = (IADContact?)Directory.GetDirectoryEntryByDN(Contact.DN)!;
+                    SnackBarService.Success(AppHelpLocalization[HelpLang.Created, AppLocalization[Lang.Contact]]);
+                    Confirmed = true;
+                    await OnConfirmed.InvokeAsync();
+                    Contact = (IADContact?)Directory.GetDirectoryEntryByDN(Contact.DN)!;
+                    ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                     {
-                        if (DirectoryTemplate.EffectiveAskForAlternateEmail == true || User.Email.IsNullOrEmpty())
+                        EventType = ApplicationEventType.Create,
+                        Entry = Contact,
+                        Actor = CurrentUser.State
+
+                    });
+                    
+                }
+             
+            }
+            else if(User is not null)
+            {
+                disableCreateUserButton = true;
+                await StateHasChangedAsync();
+
+                var createUserJob = new Job(AppLocalization[Lang.Create_User]);
+                createUserJob.StopOnFailedStep = false;
+
+                _username = User.SAMAccountName;
+                _userPassword = User.NewPassword;
+
+
+                await createUserJob.ShowJobDetailsDialogAsync(MessageService);
+
+
+                var result = await User.CommitChangesAsync(createUserJob);
+
+                disableCreateUserButton = false;
+                await StateHasChangedAsync();
+
+                if (result.FailedSteps.Count == 0)
+                {
+                    User = (IADUser?)Directory.GetDirectoryEntryByDN(User.DN)!;
+                    User.NewPassword = _userPassword;
+                    SnackBarService.Success(AppHelpLocalization[HelpLang.Created, AppLocalization[Lang.User]]);
+                    Confirmed = true;
+                    await OnConfirmed.InvokeAsync();
+                    User = (IADUser?)Directory.GetDirectoryEntryByDN(User.DN)!;
+                    ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.Create,
+                        Entry = User,
+                        Actor = CurrentUser.State
+
+                    });
+                    try
+                    {
+                        if (DirectoryTemplate?.EffectiveSendWelcomeEmail == true)
                         {
-                            await SendWelcomeModal!.ShowAsync();
-                        }
-                        else
-                        {
-                            await SendWelcomeEmail(User.Email!);
+                            if (DirectoryTemplate.EffectiveAskForAlternateEmail == true || User.Email.IsNullOrEmpty())
+                            {
+                                await SendWelcomeModal!.ShowAsync();
+                            }
+                            else
+                            {
+                                await SendWelcomeEmail(User.Email!);
+                            }
                         }
                     }
-                }
-                catch
-                {
+                    catch
+                    {
 
+                    }
                 }
             }
-
         }
         catch (AppException ex)
         {
