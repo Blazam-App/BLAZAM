@@ -115,10 +115,8 @@ namespace BLAZAM.Services.Background
             {
 
                 foreach (var evt in failedLogonEvents.Where(e => existing == null || existing.Count == 0 || e.Timestamp > existing.LastOrDefault()?.Timestamp))
-                //foreach (var evt in failedLogonEvents)
                 {
-                    var matching = context.FailedADLogonEvents.FirstOrDefault(e => e.Timestamp.Equals(evt.Timestamp));
-                    if (matching == null)
+                    if (!context.FailedADLogonEvents.Any(e => e.Timestamp.Equals(evt.Timestamp)))
                     {
 
                         if (existing.Count > 9)
