@@ -74,13 +74,6 @@ namespace BLAZAM.Tests.Updates
             Assert.True(creds == null || creds.GetType().Name == "WindowsImpersonation");
         }
 
-        [Fact]
-        public void UpdateService_Initialize_DoesNotThrow()
-        {
-            var service = new Mock_UpdateService();
-            var exception = Record.Exception(() => service.Initialize());
-            Assert.Null(exception);
-        }
 
         // Example for RemoveIncompatibleReleases (indirectly)
         [Fact]

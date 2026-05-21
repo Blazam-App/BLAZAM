@@ -695,7 +695,6 @@ namespace BLAZAM
             }
 
             PreloadNotificationGenerationService(application);
-            InitializeUpdateService(application);
             PreloadWebHookPublisher(application);
             StartApplicationStatisticsPolling();
 
@@ -770,23 +769,7 @@ namespace BLAZAM
             }
         }
 
-        private static void InitializeUpdateService(WebApplication application)
-        {
-            try
-            {
-                if (ApplicationInfo.installationCompleted)
-                {
-                    Loggers.SystemLogger.Debug("Initializing UpdateService...");
-                    var updateService = application.Services.GetRequiredService<UpdateService>();
-                    updateService.Initialize();
-                    Loggers.SystemLogger.Debug("UpdateService initialized.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error(ex, "Error initializing UpdateService.");
-            }
-        }
+     
 
         private static void PreloadWebHookPublisher(WebApplication application)
         {

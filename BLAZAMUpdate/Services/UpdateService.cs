@@ -114,11 +114,6 @@ namespace BLAZAM.Update.Services
             _applicationInfo = applicationInfo;
             AppLocalization = appLocalization;
         }
-        public void Initialize()
-        {
-            _updateCheckTimer = new Timer(CheckForUpdate, null, TimeSpan.FromSeconds(20), TimeSpan.FromHours(1));
-
-        }
         /// <summary>
         /// Polls GitHub for the latest release in the selected branch
         /// </summary>
@@ -158,28 +153,33 @@ namespace BLAZAM.Update.Services
 
             //Get the releases from the repo
             var releases = await client.Repository.Release.GetAll(Publisher_Name, Repository_Name);
+           
             //Filter the releases to the selected branch
             var branchReleases = releases
                 .Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
+
+            //Get releases prior to v1.0
+            var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
+
+            //Get releaes from v1.0 to v1.6
             var net8Releases = releases
-                .Where(r => r.TagName.Contains(ApplicationReleaseBranches.Net8ReleasePrefix, StringComparison.OrdinalIgnoreCase));
+               .Where(r => r.TagName.Contains(ApplicationReleaseBranches.Net8ReleasePrefix, StringComparison.OrdinalIgnoreCase));
+
+            //Get releases from v1.6 to present
             var net10Releases = releases
                 .Where(r => r.TagName.Contains(ApplicationReleaseBranches.Net10ReleasePrefix, StringComparison.OrdinalIgnoreCase));
+           
             //Get the first release,which should be the most recent
             latestBranchRelease = branchReleases.FirstOrDefault();
+           
             //Store all other releases for use later
             lock (_updateCheckLock)
             {
                 AvailableUpdates.Clear();
-            }
 
-            var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
-            lock (_updateCheckLock)
-            {
-
-                EncapsulateBetaReleases(betaStableReleases);
-                EncapsulateStableReleases(net8Releases);
-                EncapsulateStableReleases(net10Releases, ApplicationReleaseBranches.Net10ReleasePrefix);
+                EncapsulateReleases(betaStableReleases, "Stable");
+                EncapsulateReleases(net8Releases, ApplicationReleaseBranches.Net8ReleasePrefix);
+                EncapsulateReleases(net10Releases, ApplicationReleaseBranches.Net10ReleasePrefix);
                 EncapsulateLatestRelease(latestBranchRelease);
                 RemoveIncompatibleReleases();
             }
@@ -210,7 +210,7 @@ namespace BLAZAM.Update.Services
             }
         }
 
-        private void EncapsulateStableReleases(IEnumerable<Release> stableReleases, string applicationReleaseBranch = ApplicationReleaseBranches.Net8ReleasePrefix)
+        private void EncapsulateReleases(IEnumerable<Release> stableReleases, string applicationReleaseBranch = ApplicationReleaseBranches.Net10ReleasePrefix)
         {
             foreach (var release in stableReleases)
             {
@@ -230,37 +230,12 @@ namespace BLAZAM.Update.Services
                     }
                     catch (Exception ex)
                     {
-                        Loggers.UpdateLogger.Error(ex, "Error trying to get v1 releases {@Release}", release.Name);
+                        Loggers.UpdateLogger.Error(ex, "Error trying to get releases {@Release}", release.Name);
                     }
                 }
             }
         }
-
-        private void EncapsulateBetaReleases(IEnumerable<Release> betaStableReleases)
-        {
-            foreach (var release in betaStableReleases)
-            {
-                if (release != null)
-                {
-                    //Get the release filename to prepare a version object
-                    var fn = Path.GetFileNameWithoutExtension(release.Assets.FirstOrDefault()?.Name);
-                    if (fn == null)
-                    {
-                        continue;
-                    }
-                    //Create that update object
-                    try
-                    {
-                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Net8ReleasePrefix));
-
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.UpdateLogger.Error(ex, "Error trying to get beta releases {@Release}", release.Name);
-                    }
-                }
-            }
-        }
+        
 
         /// <summary>
         /// Sets the branch based on the value in the database
