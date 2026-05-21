@@ -14,6 +14,7 @@
     public static class Lang
     {
         public static readonly string About = "About";
+        public static readonly string Contact = "Contact";
         public static readonly string Username = "Username";
         public static readonly string Founder = "Founder";
         public static readonly string Founded = "Founded";

@@ -1,12 +1,14 @@
 @using System.Diagnostics.Eventing.Reader
 @inherits DatabaseComponentBase
 <MudStack Class="mx-auto">
-    <MudDataGrid Elevation=0 Loading=LoadingData Items="_events">
+    <MudDataGrid Elevation=0 Items="_events">
         <Header>
             <MudText Typo=Typo.subtitle2 Align="Align.Center">@AppLocalization["Failed Logons"]</MudText>
             @if (pollingJob != null && pollingJob.Progress < 100)
             {
-                <MudProgressLinear Indeterminate="@(pollingJob == null && pollingJob?.Progress != 0)" Value="@(pollingJob?.Progress ?? 0)" />
+                <MudProgressLinear Color="Color.Primary"
+                                   Indeterminate="@(pollingJob == null || pollingJob.Progress < 1)"
+                                   Value="@(pollingJob?.Progress ?? 0)" />
             }
             @if (pollingJob != null && pollingJob.Steps.Any(s => s.Result == JobResult.Running))
             {
