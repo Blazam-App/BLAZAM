@@ -1,7 +1,7 @@
 # BLAZAM
 [![Downloads](https://img.shields.io/github/downloads/Blazam-App/BLAZAM/total)](https://img.shields.io/github/downloads/Blazam-App/BLAZAM/total)
 [![Release Date](https://img.shields.io/github/release-date/Blazam-App/BLAZAM)](https://img.shields.io/github/release-date/Blazam-App/BLAZAM)
-[![Build](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-stable.yml)](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-stable.yml)
+[![Build](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-net10.yml)](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-net10.yml)
 [![Last Commit](https://img.shields.io/github/last-commit/Blazam-App/Blazam/v1-Dev)](https://img.shields.io/github/last-commit/Blazam-App/Blazam/v1-Stable)
 [![first-timers-only](https://img.shields.io/badge/first--timers--only-friendly-blue.svg?style=flat-square)](https://www.firsttimersonly.com/)
 
