@@ -370,18 +370,6 @@ namespace BLAZAM.Update.Services
             return false;
         }
 
-        private async void CheckForUpdate(object? state)
-        {
-            try
-            {
-                await GetUpdates();
-            }
-            catch (Exception ex)
-            {
-                Loggers.UpdateLogger.Error(ex, "Error while checking for latest update");
-
-            }
-        }
 
         /// <summary>
         /// The type of credential validated to be able to write to the app directory
