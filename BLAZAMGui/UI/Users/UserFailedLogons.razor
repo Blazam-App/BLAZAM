@@ -6,7 +6,7 @@
             <MudText Typo=Typo.subtitle2 Align="Align.Center">@AppLocalization["Failed Logons"]</MudText>
             @if (pollingJob != null && pollingJob.Progress < 100)
             {
-                <MudProgressLinear Indeterminate="@(pollingJob == null && pollingJob?.Progress != 0)" Value="@(pollingJob?.Progress ?? 0)" />
+                <MudProgressLinear Indeterminate="@(pollingJob == null || pollingJob.Progress < 1)" Value="@(pollingJob?.Progress ?? 0)" />
             }
             @if (pollingJob != null && pollingJob.Steps.Any(s => s.Result == JobResult.Running))
             {

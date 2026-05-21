@@ -120,7 +120,7 @@ window.localStorageHelper = {
     getNumber: (key, defaultValue = 0) => {
         const value = localStorage.getItem(key);
         const parsed = Number(value);
-        return isNaN(parsed) ? defaultValue : parsed;
+        return Number.isNaN(parsed) ? defaultValue : parsed;
     },
 
     getObject: (key, defaultValue = null) => {
