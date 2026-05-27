@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - net-10
+      - v1-Stable
     
 
 jobs:
