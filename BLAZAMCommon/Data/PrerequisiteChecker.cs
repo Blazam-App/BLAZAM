@@ -1,4 +1,7 @@
-﻿namespace BLAZAM.Common.Data
+﻿using Microsoft.Win32;
+using SixLabors.ImageSharp.ColorProfiles;
+
+namespace BLAZAM.Common.Data
 {
     public static class PrerequisiteChecker
     {
@@ -75,9 +78,10 @@
 
         private static bool CheckForAspCoreHosting(string version = "8")
         {
+            RegistryKey? key=null;
             try
             {
-                var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\Updates\\.NET\\");
+                key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\Updates\\.NET\\");
                 if (key != null)
                 {
                     var possibleAspKeys = key.GetSubKeyNames();
@@ -96,6 +100,10 @@
             catch (Exception ex)
             {
                 Loggers.SystemLogger.Error(ex, "Error checking for ASP.NET Core Hosting prerequisites.");
+            }
+            finally
+            {
+                key?.Dispose();
             }
             return false;
         }

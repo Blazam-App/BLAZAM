@@ -14,6 +14,7 @@
     public static class Lang
     {
         public static readonly string About = "About";
+        public static readonly string Contact = "Contact";
         public static readonly string Username = "Username";
         public static readonly string Founder = "Founder";
         public static readonly string Founded = "Founded";
@@ -317,6 +318,7 @@
         public static readonly string Lockout_Time = "Lockout Time";
         public static readonly string Last_Logon = "Last Logon";
         public static readonly string LAPS_Password = "LAPS Password";
+        public static readonly string Password_Never_Expires = "Password Never Expires";
         public static readonly string API = "API";
         public static readonly string Sign_Out = "Sign Out";
         public static readonly string Documentation = "Documentation";

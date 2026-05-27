@@ -262,7 +262,7 @@
     <value>Sie haben ungespeicherte Änderungen</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>Der Release-Branch ist der empfohlene Branch. Die Auswahl von Nightly wird nur für Testinstallationen empfohlen. Dev ist nur für Entwickler.</value>
+    <value>Der NET10-Zweig ist der empfohlene Zweig. Die Wahl von Nightly wird nur für Testinstallationen empfohlen. Dev ist nur für Entwickler.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} wurde aktualisiert</value>

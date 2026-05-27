@@ -262,7 +262,7 @@
     <value>Você tem alterações não salvas</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>A ramificação de lançamento é a ramificação recomendada. Escolher Nightly é recomendado apenas para instalações de teste. Dev é apenas para desenvolvedores.</value>
+    <value>O ramo NET10 é o ramo recomendado. Escolher Nightly é recomendado apenas para instalações de teste. Dev é apenas para desenvolvedores.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} foi atualizado</value>

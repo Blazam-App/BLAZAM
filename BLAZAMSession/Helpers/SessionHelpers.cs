@@ -67,7 +67,9 @@ namespace BLAZAM.Helpers
                 }
 
                 var currentUtc = DateTimeOffset.UtcNow;
-                if (!ticket.Properties.IssuedUtc.HasValue)
+                if (!ticket.Properties.IssuedUtc.HasValue ||
+                    (ticket.Properties.ExpiresUtc.HasValue &&
+                    ticket.Properties.ExpiresUtc < DateTimeOffset.UtcNow))
                 {
                     return;
                 }
@@ -106,7 +108,7 @@ namespace BLAZAM.Helpers
                     userState?.User?.Identity?.Name ?? httpContext.User?.Identity?.Name ?? "Unknown");
             }
         }
-
+      
         /// <summary>
         /// Retrieves the configured session timeout duration from the authentication cookie, if available. Logs warnings on failure.
         /// </summary>

@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Database.Models;
+using BLAZAM.Global.Interfaces;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
@@ -105,20 +106,17 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        public void RecordLogonEvents(IADUser user)
+        public void RecordLogonEvents(IADUser user, IJob? job = null)
         {
             using var context = dbFactory.CreateDbContext();
             var existing = context.FailedADLogonEvents.Where(e => e.Sid.Equals(user.SID)).OrderBy(e => e.Timestamp).ToList();
-
-            var failedLogonEvents = user.FailedLogonEvents.OrderBy(e => e.Timestamp).ToList();
+            var failedLogonEvents = user.GetFailedLogonEvents(job).OrderBy(e => e.Timestamp).ToList();
             if (failedLogonEvents.Count > 0)
             {
 
                 foreach (var evt in failedLogonEvents.Where(e => existing == null || existing.Count == 0 || e.Timestamp > existing.LastOrDefault()?.Timestamp))
-                //foreach (var evt in failedLogonEvents)
                 {
-                    var matching = context.FailedADLogonEvents.FirstOrDefault(e => e.Timestamp.Equals(evt.Timestamp));
-                    if (matching == null)
+                    if (!context.FailedADLogonEvents.Any(e => e.Timestamp.Equals(evt.Timestamp)))
                     {
 
                         if (existing.Count > 9)

@@ -90,97 +90,52 @@ window.customAnalyticsEvent = async (eventName, jsonData) => {
     });
 };
 
-window.blazam_stripHtml = (html) => {
-    const tmp = document.createElement('div');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
-};
-
-window.pwaNotificationsEnabled = async () => {
-    return localStorage.getItem('pwaNotificationsEnabled') === 'true';
-}
-
-window.blazam = {
-    pollingInterval: null,
-    lastNotificationId: 0,
-
-    subscribeToPushNotifications: async () => {
-        if ('serviceWorker' in navigator) {
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                console.log('Notification permission granted.');
-                await navigator.serviceWorker.register('/');
-                localStorage.setItem('pwaNotificationsEnabled', 'true');
-                window.blazam.startPolling();
-                return true;
-            } else {
-                console.error('Notification permission denied.');
-                localStorage.setItem('pwaNotificationsEnabled', 'false');
-                return false;
-            }
-        } else {
-            console.error('Service workers are not supported.');
-            return false;
+// Generic localStorage helpers
+window.localStorageHelper = {
+    setItem: (key, value) => {
+        try {
+            const stringValue = typeof value === 'object'
+                ? JSON.stringify(value)
+                : String(value);
+            localStorage.setItem(key, stringValue);
+        } catch (error) {
+            console.error('Error setting localStorage item:', error);
         }
     },
 
-    unsubscribeFromPushNotifications: async () => {
-        if ('serviceWorker' in navigator) {
-            const registration = await navigator.serviceWorker.getRegistration('/js/sw.js');
-            if (registration) {
-                await registration.unregister();
-                console.log('Service worker unregistered.');
-            }
-        }
-        localStorage.setItem('pwaNotificationsEnabled', 'false');
-        window.blazam.stopPolling();
-    },
-
-    getPushNotificationSubscriptionState: () => {
-        return localStorage.getItem('pwaNotificationsEnabled') === 'true';
-    },
-
-    startPolling: () => {
-        if (window.blazam.getPushNotificationSubscriptionState() && !window.blazam.pollingInterval) {
-            window.blazam.lastNotificationId = Number(localStorage.getItem('lastNotificationId'));
-            if (window.blazam.lastNotificationId > 0 == false) {
-                localStorage.setItem('lastNotificationId', 0);
-                window.blazam.lastNotificationId = 0;
-            }
-            window.blazam.pollingInterval = setInterval(window.blazam.pollForNotifications, 30000);
+    getItem: (key, defaultValue = null) => {
+        try {
+            return localStorage.getItem(key) ?? defaultValue;
+        } catch (error) {
+            console.error('Error getting localStorage item:', error);
+            return defaultValue;
         }
     },
 
-    stopPolling: () => {
-        if (window.blazam.pollingInterval) {
-            clearInterval(window.blazam.pollingInterval);
-            window.blazam.pollingInterval = null;
+    getBoolean: (key, defaultValue = false) => {
+        const value = localStorage.getItem(key);
+        return value === 'true' ? true : value === 'false' ? false : defaultValue;
+    },
+
+    getNumber: (key, defaultValue = 0) => {
+        const value = localStorage.getItem(key);
+        const parsed = Number(value);
+        return Number.isNaN(parsed) ? defaultValue : parsed;
+    },
+
+    getObject: (key, defaultValue = null) => {
+        try {
+            const value = localStorage.getItem(key);
+            return value ? JSON.parse(value) : defaultValue;
+        } catch (error) {
+            console.error('Error parsing localStorage object:', error);
+            return defaultValue;
         }
     },
 
-    pollForNotifications: async () => {
-        const response = await fetch('/api/unread-notifications');
-        if (response.ok) {
-            const notifications = await response.json();
-            if (notifications && notifications.length > 0) {
-                const latestNotification = notifications[0];
-                if (latestNotification.id > window.blazam.lastNotificationId) {
-                    navigator.serviceWorker.ready.then((registration) => {
-                        registration.showNotification(latestNotification.notification.title || "Notification", {
-                            body: window.blazam_stripHtml(latestNotification.notification.message || ""),
-                            icon: latestNotification.icon || "/icon-192.png",
-                            tag: latestNotification.tag || "blazam-notification",
-                        });
-                    });
-                }
-                window.blazam.lastNotificationId = latestNotification.id;
-                localStorage.setItem('lastNotificationId', latestNotification.id);
-
-            }
-        }
+    removeItem: (key) => {
+        localStorage.removeItem(key);
     }
 };
 
-// Start polling if the user is already subscribed
-window.blazam.startPolling();
 

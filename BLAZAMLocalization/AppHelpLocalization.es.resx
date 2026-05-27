@@ -262,7 +262,7 @@
     <value>Tiene cambios no guardados</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>La rama de lanzamiento es la rama recomendada. Elegir Nightly solo se recomienda para instalaciones de prueba. Dev es solo para desarrolladores.</value>
+    <value>La rama NET10 es la rama recomendada. Elegir Nightly solo se recomienda para instalaciones de prueba. Dev es solo para desarrolladores.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} ha sido actualizado</value>
