@@ -24,7 +24,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.6.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.6.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.18" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="9.0.18" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="10.0.10" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.18" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.18" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.18" />
