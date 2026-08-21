@@ -175,12 +175,13 @@ namespace BLAZAM.Session
 
                 using var context = _dbFactory.CreateDbContext();
                 userSettings = context.UserSettings
-                    .Include(x => x.NotificationSubscriptions)
-                    .Include(x => x.FavoriteEntries) // Eager load other related entities if needed
-                    .Include(x => x.ReadNewsItems)
-                    .Include(x => x.DashboardWidgets)
-                    .Include(x => x.PasswordResetSettings)
-                    .FirstOrDefault(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid));
+                  .AsSplitQuery()
+                  .Include(x => x.NotificationSubscriptions)
+                  .Include(x => x.FavoriteEntries) // Eager load other related entities if needed
+                  .Include(x => x.ReadNewsItems)
+                  .Include(x => x.DashboardWidgets)
+                  .Include(x => x.PasswordResetSettings)
+                  .FirstOrDefault(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid));
 
                 if (userSettings == null)
                 {
