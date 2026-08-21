@@ -1,4 +1,5 @@
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Pages.API.Data;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
@@ -55,7 +56,7 @@ namespace BLAZAM.Pages.API.v1
                 {
                     return NotFound("OU not found");
                 }
-                if (!ou.CanCreateUser)
+                if (!ou.CanCreateType(ActiveDirectoryObjectType.Group))
                 {
                     return Forbid("You do not have permission to create groups in this OU");
                 }
@@ -86,6 +87,7 @@ namespace BLAZAM.Pages.API.v1
 
         private void AssignToGroups(NewGroupDetails newGroupDetails, IADGroup newGroup)
         {
+            
             if (newGroupDetails.Groups != null)
             {
                 foreach (var groupIdentifier in newGroupDetails.Groups)
