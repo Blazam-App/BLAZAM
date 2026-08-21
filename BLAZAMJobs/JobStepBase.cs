@@ -89,7 +89,7 @@ namespace BLAZAM.Jobs
                 thread.Start();
                 while (Result != JobResult.Passed && Result != JobResult.Failed && Result != JobResult.Cancelled)
                 {
-                    await Task.Delay(500, cancellationTokenSource.Token);
+                    await Task.Delay(500, CancellationToken.None);
                 }
                 return Result == JobResult.Passed;
             }

@@ -458,7 +458,7 @@ namespace BLAZAM.Update
                         else
                         {
                             Loggers.UpdateLogger?.Warning(ex, "Download failed, {RemainingRetries} retries remaining. Waiting 3 seconds before retry", retries);
-                            await Task.Delay(3000, _cancellationTokenSource.Token);
+                            await Task.Delay(3000, CancellationToken.None);
                         }
                     }
                 }

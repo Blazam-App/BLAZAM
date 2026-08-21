@@ -34,7 +34,7 @@ namespace BLAZAM.Database.Context
             {
                 if (ex.InnerException?.HResult == -2147467259)
                 {
-                    await Task.Delay(500, cancellationToken);
+                    await Task.Delay(500, CancellationToken.None);
                     return await RetrySaveChangesAsync(cancellationToken);
                 }
                 return -1;
@@ -56,7 +56,7 @@ namespace BLAZAM.Database.Context
             {
                 if (retries < 15 && ex.InnerException?.HResult == -2147467259)
                 {
-                    await Task.Delay(500, cancellationToken);
+                    await Task.Delay(500, CancellationToken.None);
                     return await RetrySaveChangesAsync(cancellationToken, retries + 1);
                 }
                 return -1;
