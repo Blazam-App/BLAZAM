@@ -162,7 +162,9 @@ namespace BLAZAM.Logger
                     });
             if (SendToSeqServer)
             {
-                systemLoggerBuilder.WriteTo.Seq(SeqServerUri, apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning);
+                systemLoggerBuilder.WriteTo.Seq(SeqServerUri,
+                    apiKey: SeqAPIKey,
+                    restrictedToMinimumLevel: LogEventLevel.Warning);
             }
             Log.Logger = systemLoggerBuilder.CreateLogger();
             SystemLogger = Log.Logger;
@@ -191,12 +193,12 @@ namespace BLAZAM.Logger
         {
             var loggerBuilder = CreateLogBuilder()
                 .WriteTo.File(logFilePath,
-                rollingInterval: rollingInterval,
+                    rollingInterval: rollingInterval,
                     retainedFileCountLimit: null,
                     fileSizeLimitBytes: 10000000,
                     rollOnFileSizeLimit: true,
-         outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}",
-         retainedFileTimeLimit: TimeSpan.FromDays(30));
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}",
+                    retainedFileTimeLimit: TimeSpan.FromDays(30));
             if (!Debugger.IsAttached)
             {
                 loggerBuilder.WriteTo.Logger(lc =>
@@ -214,7 +216,9 @@ namespace BLAZAM.Logger
 
             if (SendToSeqServer)
             {
-                loggerBuilder.WriteTo.Seq(SeqServerUri, apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning);
+                loggerBuilder.WriteTo.Seq(SeqServerUri,
+                    apiKey: SeqAPIKey,
+                    restrictedToMinimumLevel: LogEventLevel.Warning);
             }
 
             return loggerBuilder.CreateLogger();

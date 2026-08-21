@@ -91,7 +91,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             return await Task.Run(() =>
             {
                 return Search<T, I>(token);
-            });
+            }, token ?? CancellationToken.None);
         }
 
         public async Task<List<IDirectoryEntryAdapter>> SearchAsync()

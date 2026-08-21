@@ -39,7 +39,7 @@ namespace BLAZAM.ActiveDirectory
             }
             set => _currentUser = value;
         }
-        private CancellationTokenSource? _connectionCTS = new();
+        private CancellationTokenSource _connectionCTS = new();
 
         public string DomainSid
         {
@@ -138,7 +138,7 @@ namespace BLAZAM.ActiveDirectory
                 {
                     TryGetDomainControllers();
                 }
-            });
+            },this._connectionCTS.Token);
 
             Users = new ADUserSearcher(this);
             Contacts = new ADContactSearcher(this);
@@ -298,7 +298,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 return CheckConnect();
 
-            });
+            }, this._connectionCTS.Token);
 
         }
         public async Task CancelCheckConnection()
@@ -457,9 +457,9 @@ namespace BLAZAM.ActiveDirectory
                     FailedConnectionAttempts++;
                 }
             }
-            if (IsCancelRequested == false && Status != DirectoryConnectionStatus.OK)
+            if (!IsCancelRequested && Status != DirectoryConnectionStatus.OK)
             {
-                Task.Delay(5000).Wait();
+                Task.Delay(5000, this._connectionCTS.Token).Wait();
                 return CheckConnect();
             }
 

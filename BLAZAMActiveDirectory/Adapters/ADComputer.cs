@@ -248,7 +248,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return await Task.Run(() =>
             {
                 return wmiConnection.Drives;
-            });
+            },this._pingCancellationTokenSource.Token);
         }
         public async Task<List<IRemoteSession>> GetRemoteSessionsAsync()
         {
@@ -261,7 +261,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 _sessionManager ??= new ADComputerSessions(this);
                 return _sessionManager.ConnectedSessions;
-            });
+            }, this._pingCancellationTokenSource.Token);
         }
         public AppDelegate<bool> OnOnlineChanged { get; set; }
 
@@ -347,7 +347,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     }
 
-                    Task.Delay(1000).Wait();
+                    Task.Delay(1000, _pingCancellationTokenSource.Token).Wait();
                 }
 
                 _pingCancellationTokenSource.Dispose();
@@ -361,10 +361,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (IPHostEntry == null && !_pingCancellationTokenSource.IsCancellationRequested && CanonicalName != null)
                 {
                     IPHostEntry = Dns.GetHostEntry(CanonicalName);
-                    Task.Delay(60000).ContinueWith((s) =>
+                    Task.Delay(60000, _pingCancellationTokenSource.Token).ContinueWith((s) =>
                     {
                         IPHostEntry = null;
-                    });
+                    }, _pingCancellationTokenSource.Token);
                 }
 
                 PerformPing(timeout);

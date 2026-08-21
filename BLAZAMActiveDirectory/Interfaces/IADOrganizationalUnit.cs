@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -31,6 +32,11 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Gets a value indicating whether the current user has permission to create users in this OU.
         /// </summary>
         bool CanCreateUser { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the current user has permission to create users in this OU.
+        /// </summary>
+        bool CanCreateType(ActiveDirectoryObjectType type);
 
         /// <summary>
         /// Gets a value indicating whether the current user has permission to create users in sub-organizational units.

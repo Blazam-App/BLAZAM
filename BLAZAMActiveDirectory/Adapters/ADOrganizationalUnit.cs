@@ -196,14 +196,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
-        public virtual bool CanCreateUser
-        {
-            get
-            {
-                return HasActionPermission(ObjectActions.Create, ActiveDirectoryObjectType.User);
-            }
-
+        public virtual bool CanCreateType(ActiveDirectoryObjectType objectType)
+        {          
+                return HasActionPermission(ObjectActions.Create, objectType);
         }
+        public virtual bool CanCreateUser=>CanCreateType(ActiveDirectoryObjectType.User);
+       
         public virtual bool CanCreateUserInSubOUs
         {
             get

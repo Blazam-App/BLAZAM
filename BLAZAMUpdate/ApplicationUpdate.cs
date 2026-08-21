@@ -418,7 +418,7 @@ namespace BLAZAM.Update
                         LogDownloadAttempt();
 
                         using (var client = new HttpClient())
-                        using (var response = await client.GetAsync(Release.DownloadURL, HttpCompletionOption.ResponseHeadersRead))
+                        using (var response = await client.GetAsync(Release.DownloadURL, HttpCompletionOption.ResponseHeadersRead, _cancellationTokenSource.Token))
                         {
                             if (!response.IsSuccessStatusCode)
                             {
@@ -433,7 +433,7 @@ namespace BLAZAM.Update
                                 UpdateFile.Delete();
                             }
 
-                            using var streamToReadFrom = await response.Content.ReadAsStreamAsync();
+                            using var streamToReadFrom = await response.Content.ReadAsStreamAsync(_cancellationTokenSource.Token);
                             using var streamToWriteTo = UpdateFile.OpenWriteStream();
                             progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
                             bool result = await WriteStreamWithProgress(streamToReadFrom, streamToWriteTo, progress, step);
@@ -458,7 +458,7 @@ namespace BLAZAM.Update
                         else
                         {
                             Loggers.UpdateLogger?.Warning(ex, "Download failed, {RemainingRetries} retries remaining. Waiting 3 seconds before retry", retries);
-                            await Task.Delay(3000);
+                            await Task.Delay(3000, CancellationToken.None);
                         }
                     }
                 }
