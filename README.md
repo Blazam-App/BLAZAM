@@ -33,18 +33,10 @@
   * Apply these Access Levels to groups or individual users, controlling their access to specific OUs and objects within those OUs.
   * Impersonate users to test and verify permissions
 * Automation Engine:
-  * Rule-Based Automation: Define rules to automate AD tasks based on specific triggers and conditions.
-  * Event Triggers: Initiate automation rules based on directory entry changes (e.g., creation, modification, deletion of users, groups, computers).
-  * Scheduled Triggers: Configure rules to run at predefined times or intervals.
-  * Advanced Filtering: Target specific AD objects for automation using detailed filters, including OU, object type, and attribute values (e.g., account enabled/disabled status).
-  * Automated Actions: Perform actions such as:
-    * Assigning or unassigning users/computers from groups.
-    * Enabling or disabling accounts.
-    * Unlocking or locking out accounts.
-    * Moving AD objects between OUs.
-    * Modifying specific Active Directory attributes.
-  * Rule Prioritization: Control the order of rule execution.
-  * Conditional Processing: Stop further rule processing if a specific rule's conditions are met and actions are performed.
+  * Create rule-based tasks triggered by directory changes (create, edit, delete) or schedules.
+  * Filter targets by OU, object type, or specific attribute values.
+  * Automate actions including group assignments, enabling/disabling, lockouts, OU moves, and attribute updates.
+  * Control rule priority and conditional execution stops.
 * User Creation and Management:
   * Configure user creation templates to streamline onboarding and ensure data consistency.
   * Manage user thumbnail photos.
