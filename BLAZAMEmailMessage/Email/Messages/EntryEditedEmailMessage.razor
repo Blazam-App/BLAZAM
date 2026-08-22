@@ -8,14 +8,7 @@
 
 <EmailTemplateBody>
     @(EntryName + AppLocalization[" has been modified."])
-    @if (ActorName.IsNullOrEmpty())
-    {
-        @AppLocalization[" by"]@ActorName
-    }
-    @if (Timestamp.IsNullOrEmpty())
-    {
-        @AppLocalization[" at"]@Timestamp
-    }
+    
     
     <br />
 
