@@ -10,11 +10,15 @@
                  @bind-Value="SelectedResult"
                  @bind-Text=@SearchTerm
                  @ref=AutoComplete
+                 OnKeyUp="@((KeyboardEventArgs kea) => {
+if(kea.Key== "Enter") 
+SearchService.Search(SearchService.SearchTerm); 
+})"
                  AutoFocus=@AutoFocus
                  SearchFunc="@GetResults"
                  DebounceInterval=500
                  ResetValueOnEmptyText="true"
-                 MinCharacters=@MinCharacters
+                 MinCharacters=1
                  Validation="@Validation"
                  CoerceText="@(!AllowCustomInput)"
                  CoerceValue="false"
@@ -54,9 +58,18 @@
         }
         else
         {
-            <MudText>
-                @AppLocalization[Lang.Sorry_no_result_were_found]
-            </MudText>
+            if (SearchTerm.Length < MinCharacters)
+            {
+                <MudText>
+                    @AppLocalization[Lang.Sorry_try_typing_more]
+                </MudText>
+            }
+            else
+            {
+                <MudText>
+                    @AppLocalization[Lang.Sorry_no_result_were_found]
+                </MudText>
+            }
 
         }
 
@@ -67,7 +80,7 @@
             More results than shown...
         </MudText>
     </MoreItemsTemplate>
-</MudAutocomplete> 
+</MudAutocomplete>
 
 
 
