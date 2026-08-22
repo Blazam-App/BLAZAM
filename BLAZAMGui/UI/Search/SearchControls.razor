@@ -66,6 +66,7 @@
 <MudPaper Class=" mud-overlay-light" Style="width:100%;max-width:550px;height:min-content;">
 
     <ADAutoComplete Class="mt-0"
+                    AutoFocus="true"
                     Style="max-width:550px;"
                     AllowCustomInput="true"
                     Adornment="@(IsAdmin?Adornment.Start:Adornment.None)"
@@ -107,7 +108,8 @@
 
     private void SelectedResultChanged(IDirectoryEntryAdapter? entry)
     {
-        if (entry != null) {
+        if (entry != null)
+        {
             Nav.NavigateTo(entry.SearchUri);
         }
         else
@@ -115,5 +117,5 @@
             SearchService.Search(SearchService.SearchTerm);
         }
 
-}
+    }
 }
