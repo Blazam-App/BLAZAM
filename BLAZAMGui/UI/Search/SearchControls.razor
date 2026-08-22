@@ -67,12 +67,13 @@
 
     <ADAutoComplete Class="mt-0"
                     Style="max-width:550px;"
+                    AllowCustomInput="true"
                     Adornment="@(IsAdmin?Adornment.Start:Adornment.None)"
                     AdornmentIcon="@(IsAdmin?Icons.Material.Filled.FilterList:null)"
                     Variant="Variant.Filled"
                     Label=@AppLocalization[Lang.Search_Directory]
                     OnAdornmentClick="@(()=>{_advancedSearchModal?.ShowAsync();})"
-                    SelectedResultChanged="@((result)=>{if(result!=null)SearchService.Search(SearchService.SearchTerm);})"
+                    SelectedResultChanged="@((IDirectoryEntryAdapter result)=>{SelectedResultChanged(result);})"
                     SearchObjectType="@SearchService.SeachObjectType"
                     SearchDisabled=@SearchService.IncludeDisabled
                     @bind-SearchTerm="@SearchService.SearchTerm" />
@@ -84,12 +85,12 @@
 @if (IsAdmin)
 {
     <AppModal @ref="_advancedSearchModal"
-        Options="new(){ FullWidth=true, MaxWidth=MaxWidth.Medium}"
-        Title="Advanced Search" 
-        YesText="@AppLocalization[Lang.Search]"
-    OnYes="InitiateAdvancedSearch">
-    <AdvancedFilterEditor Filters="Filters" />
-</AppModal>
+              Options="new(){ FullWidth=true, MaxWidth=MaxWidth.Medium}"
+              Title="Advanced Search"
+              YesText="@AppLocalization[Lang.Search]"
+              OnYes="InitiateAdvancedSearch">
+        <AdvancedFilterEditor Filters="Filters" />
+    </AppModal>
 }
 
 
@@ -97,9 +98,22 @@
     private List<AutomationRuleOrFilter> Filters = new();
     private AppModal? _advancedSearchModal;
 
-    private Task InitiateAdvancedSearch(){
+    private Task InitiateAdvancedSearch()
+    {
         _advancedSearchModal?.CloseAsync();
         SearchService.AdvancedSearch(Filters);
         return Task.CompletedTask;
     }
+
+    private void SelectedResultChanged(IDirectoryEntryAdapter? entry)
+    {
+        if (entry != null) {
+            Nav.NavigateTo(entry.SearchUri);
+        }
+        else
+        {
+            SearchService.Search(SearchService.SearchTerm);
+        }
+
+}
 }

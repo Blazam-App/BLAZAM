@@ -89,7 +89,7 @@ We have users in Ukraine... we support Ukraine in the current conflict with Russ
 
 ## Star History
 If you like the project, please give it a star! It helps with visibility and motivates us to keep improving it.
-[![Star History Chart](https://api.star-history.com/chart?repos=Blazam-App/BLAZAM&type=date&legend=top-left&sealed_token=f1GmIRjgrlXqf10vhgbF7BiMH0quvfy7HMCcE-lhRlpJ8ADbf2ISaLIoJiJAuU3n_ug6SWLR9wtzC1FL_U2uBiBd9tl_CfzFpZcKmOkVa1XZGcmgk7bsPaEok4apoXa1J7dDtPpqXaRfDSgMAgZXdw2yPwa2nW19OaxKm6jw3rgSVmV0UMvBzdPeD74A)](https://www.star-history.com/?type=date&legend=top-left&repos=Blazam-App%2FBLAZAM)
+[![Star History Chart](https://api.star-history.com/chart?repos=Blazam-App/BLAZAM&type=date&legend=top-left&sealed_token=z0-ShDcXsqYDXY-ETy1FB64CQSCB7OaV-r8AKZ3c4Ra3SoGIuC5hRG-zNURkb-ybEWTwip2dlwWBEsbsP-jECu_aIhPJ0I-IXXE6WCvQx3GMTKAliM8u6enXajWdFmoqHVb_lp0dyJb3DTIrWBtdRWXvhCim0W3eE2G3NNdRgglufxc0O4QnzIA0F6TA)](https://www.star-history.com/?repos=Blazam-App%2FBLAZAM&type=date&legend=top-left)
 
 ## Get Paid to Contribute
 If you are interested in contributing to Blazam and receiving compensation for your work, please reach out

@@ -143,7 +143,7 @@ namespace BLAZAM.Gui.UI.Inputs
                 };
                 _selectedResult = value;
 
-                SearchService.SearchTerm = _selectedResult != null ? _selectedResult.CanonicalName : "";
+                SearchService.SearchTerm = _selectedResult != null ? _selectedResult.CanonicalName : SearchTerm;
                 _ = CancelExistingTokens();
                 SelectedResultChanged.InvokeAsync(value);
             }
@@ -241,6 +241,7 @@ namespace BLAZAM.Gui.UI.Inputs
             {
                 ObjectTypeFilter = SearchObjectType,
                 GeneralSearchTerm = searchText,
+                ExactMatch = searchText.Length<MinCharacters,
                 MaxResults = MaxResults,
                 EnabledOnly = !SearchDisabled
             };
