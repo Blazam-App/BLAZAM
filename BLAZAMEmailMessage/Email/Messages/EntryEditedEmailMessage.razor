@@ -2,30 +2,41 @@
 @using System.Security
 @inherits EmailNotificationTemplateComponent
 
-    <EmailTemplateHeader>
+<EmailTemplateHeader>
     <strong>@AppLocalization[Lang.Entry_modified]</strong>
-    </EmailTemplateHeader>
-   
-    <EmailTemplateBody>
+</EmailTemplateHeader>
+
+<EmailTemplateBody>
     @(EntryName + AppLocalization[" has been modified."])
-    <br/>
+    @if (ActorName.IsNullOrEmpty())
+    {
+        @AppLocalization[" by"]@ActorName
+    }
+    @if (Timestamp.IsNullOrEmpty())
+    {
+        @AppLocalization[" at"]@Timestamp
+    }
+    
+    <br />
+
    
-   
-    </EmailTemplateBody>
+</EmailTemplateBody>
 @if (ShouldRenderLinks)
 {
     <br />
     <EmailLink Href="@EntryLink" />
 }
 
-@code{
- 
+@code {
+
     public override string Render() => new ComponentRenderer<EntryEditedEmailMessage>()
-            .UseLayout<DefaultEmailLayout>()
-            .AddServiceProvider(ApplicationInfo.services)
-            .Set(c => c.EntryName, EntryName)
-            .Set(c => c.EntryLink, EntryLink)
-            .Render();
+                .UseLayout<DefaultEmailLayout>()
+                .AddServiceProvider(ApplicationInfo.services)
+                .Set(c => c.EntryName, EntryName)
+                    .Set(c => c.EntryLink, EntryLink)
+                    .Set(c => c.ActorName, ActorName)
+                    .Set(c => c.Timestamp, Timestamp)
+                .Render();
 }
 
 
