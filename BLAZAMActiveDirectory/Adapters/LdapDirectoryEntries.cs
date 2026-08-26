@@ -34,14 +34,31 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 _parentDn,
                 "(objectClass=*)", // Filter to find all objects
                 System.DirectoryServices.Protocols.SearchScope.OneLevel, // Search only the immediate children
-                null // Request all attributes
+                "*" // Only the DN is needed to construct LdapDirectoryEntry
             );
 
-            var response = (SearchResponse)connection.SendRequest(request);
+            var pageRequestControl = new PageResultRequestControl(1000);
+            request.Controls.Add(pageRequestControl);
 
-            foreach (SearchResultEntry entry in response.Entries)
+            while (true)
             {
-                yield return new LdapDirectoryEntry(entry.DistinguishedName, _directory);
+                var response = (SearchResponse)connection.SendRequest(request);
+
+                foreach (SearchResultEntry entry in response.Entries)
+                {
+                    yield return new LdapDirectoryEntry(entry, _directory);
+                }
+
+                var pageResponseControl = response.Controls
+                    .OfType<PageResultResponseControl>()
+                    .FirstOrDefault();
+
+                if (pageResponseControl == null || pageResponseControl.Cookie.Length == 0)
+                {
+                    break;
+                }
+
+                pageRequestControl.Cookie = pageResponseControl.Cookie;
             }
         }
 
