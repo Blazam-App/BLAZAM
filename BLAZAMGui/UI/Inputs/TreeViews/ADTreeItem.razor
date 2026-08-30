@@ -24,7 +24,7 @@
     /// </summary>
     [Parameter]
     public Func<IDirectoryEntryAdapter?, string>? EndText { get; set; }
-    private static SemaphoreSlim semaphore = new SemaphoreSlim(25, 25);
+    private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(25, 25);
     protected override async Task OnParametersSetAsync()
     {
 
