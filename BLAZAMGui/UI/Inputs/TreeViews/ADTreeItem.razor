@@ -17,7 +17,7 @@
     private string? _endText = null;
 
     [Parameter]
-    public MudTreeViewItem<IDirectoryEntryAdapter> Item { get; set; }
+    public MudTreeViewItem<IDirectoryEntryAdapter>? Item { get; set; } = default;
 
     /// <summary>
     /// Text to show at the end of the TreeView item
@@ -38,6 +38,10 @@
                 try
                 {
                     _endText = EndText.Invoke(Item.Value);
+                }
+                catch
+                {
+                    //  Do nothings
                 }
                 finally
                 {

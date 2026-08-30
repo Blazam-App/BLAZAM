@@ -34,7 +34,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 _parentDn,
                 "(objectClass=*)", // Filter to find all objects
                 System.DirectoryServices.Protocols.SearchScope.OneLevel, // Search only the immediate children
-                "*" // Only the DN is needed to construct LdapDirectoryEntry
+                "*" // Request all attributes
             );
 
             var pageRequestControl = new PageResultRequestControl(1000);
