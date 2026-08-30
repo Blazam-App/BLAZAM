@@ -175,9 +175,7 @@ namespace BLAZAM.Logger
         {
             var config = new LoggerConfiguration()
                                 .Enrich.FromLogContext()
-                                .Enrich.WithMachineName()
                                 .Enrich.WithEnvironmentName()
-                                .Enrich.WithEnvironmentUserName()
                                 .Enrich.WithProperty("Application Name", "Blazam")
                                 .Enrich.WithProperty("Installation Type", InstallationType)
                                 .Enrich.WithProperty("Installation Id", InstallationId)
