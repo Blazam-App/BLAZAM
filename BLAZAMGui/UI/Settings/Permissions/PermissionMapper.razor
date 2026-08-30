@@ -8,6 +8,7 @@
 
     <MudGrid>
         <MudItem xs="12" sm="3" md="4">
+            <ADAutoComplete Label="@AppLocalization[Lang.Search]" @bind-SelectedResult="SelectedNode"/>
             <ADTreeView @ref=@OUTree 
             StartRootExpanded=false
             EndText="@(x=>x.DirectPermissionMappings.Count>0?x.DirectPermissionMappings.Count.ToString():"")"
