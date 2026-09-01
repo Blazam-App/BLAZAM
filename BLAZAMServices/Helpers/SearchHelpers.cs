@@ -69,8 +69,8 @@ namespace BLAZAM.Services.Helpers
                 search.ObjectTypeFilter = searchObjectType;
             }
             search.AddAndFilters(filter);
-
-            matchedEntries.AddRange(search.Search().Where(e=>e.CanRead));
+            var rawResults = search.Search();
+            matchedEntries.AddRange(rawResults.Where(e=>e.CanRead));
             return true;
         }
 
