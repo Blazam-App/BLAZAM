@@ -27,6 +27,13 @@
         IADOrganizationalUnit? FindOuByDN(string searchTerm);
 
         /// <summary>
+        /// Finds a specific organizational unit by its distinguished name asynchronously.
+        /// </summary>
+        /// <param name="searchTerm">The distinguished name (DN) of the organizational unit to find.</param>
+        /// <returns>The <see cref="IADOrganizationalUnit"/>A Task whose result has a matching DN, or null if not found.</returns>
+        Task<IADOrganizationalUnit?> FindOuByDNAsync(string searchTerm);
+
+        /// <summary>
         /// Gets the root organizational unit configured for the application.
         /// </summary>
         /// <returns>The application's root <see cref="IADOrganizationalUnit"/>.</returns>

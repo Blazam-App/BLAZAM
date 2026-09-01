@@ -47,6 +47,12 @@ namespace BLAZAM.ActiveDirectory.Searchers
             return FindOuByString(searchTerm).OrderBy(x => x.DN).FirstOrDefault();
         }
 
+        public async Task<IADOrganizationalUnit?> FindOuByDNAsync(string searchTerm)
+        {
+
+            return (await FindOuByStringAsync(searchTerm)).OrderBy(x => x.DN).FirstOrDefault();
+        }
+
         public List<IADOrganizationalUnit> FindSubOusByDN(string? searchTerm) => SearchObjects(searchTerm, "", ActiveDirectoryObjectType.OU, 3000, true, System.DirectoryServices.Protocols.SearchScope.OneLevel).Cast<IADOrganizationalUnit>().ToList();
 
         public List<IADUser> FindSubUsersByDN(string searchTerm) => SearchObjects(searchTerm, "", ActiveDirectoryObjectType.User, 3000, true, System.DirectoryServices.Protocols.SearchScope.OneLevel).Cast<IADUser>().ToList();
