@@ -1,7 +1,12 @@
 @inherits AppComponentBase
 <MudText>@Item.Value?.CanonicalName</MudText>
 <MudSpacer />
-<LoadingData Loading="LoadingData" />
+@if (LoadingData)
+{
+    <MudProgressCircular Color="Color.Primary"
+                         Size="Size.Small"
+                         Indeterminate=true />
+}
 @if (!_endText.IsNullOrEmpty())
 {
     <MudText>@_endText</MudText>
@@ -28,9 +33,10 @@
     {
 
         await base.OnParametersSetAsync();
-        await semaphore.WaitAsync();
-        _ = Task.Run(() =>
+        _ = Task.Run(async () =>
         {
+            await semaphore.WaitAsync();
+
             if (EndText != null)
             {
                 LoadingData = true;
@@ -49,9 +55,10 @@
             }
             semaphore.Release();
             LoadingData = false;
-           
+
         });
 
-       
+     
+
     }
 }
