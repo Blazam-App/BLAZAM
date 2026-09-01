@@ -14,6 +14,7 @@
                          CanExpand=@(context.Value is IADOrganizationalUnit)
                          Items="@context.Children"
                          Icon="@context.Value?.TypeIcon()"
+                         OnClick="@(() => {SelectedEntry=context.Value;})"
                          Selected="@(context.Value?.Equals(SelectedEntry) == true)"
                          LoadingIconColor="Color.Info"
                          Value="@context.Value">

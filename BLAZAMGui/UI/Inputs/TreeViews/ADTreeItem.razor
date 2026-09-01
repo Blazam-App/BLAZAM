@@ -1,5 +1,4 @@
 @inherits AppComponentBase
-
 <MudText>@Item.Value?.CanonicalName</MudText>
 <MudSpacer />
 <LoadingData Loading="LoadingData" />
@@ -8,13 +7,13 @@
     <MudText>@_endText</MudText>
 }
 
-
                  
                  
 
 @code {
 
     private string? _endText = null;
+
 
     [Parameter]
     public MudTreeViewItem<IDirectoryEntryAdapter>? Item { get; set; } = default;
