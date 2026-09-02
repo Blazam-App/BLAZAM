@@ -47,9 +47,15 @@ namespace BLAZAM.ActiveDirectory.Searchers
             return FindOuByString(searchTerm).OrderBy(x => x.DN).FirstOrDefault();
         }
 
-        public List<IADOrganizationalUnit> FindSubOusByDN(string? searchTerm) => SearchObjects(searchTerm, "", ActiveDirectoryObjectType.OU, 1000, true, System.DirectoryServices.Protocols.SearchScope.OneLevel).Cast<IADOrganizationalUnit>().ToList();
+        public async Task<IADOrganizationalUnit?> FindOuByDNAsync(string searchTerm)
+        {
 
-        public List<IADUser> FindSubUsersByDN(string searchTerm) => SearchObjects(searchTerm, "", ActiveDirectoryObjectType.User, 1000, true, System.DirectoryServices.Protocols.SearchScope.OneLevel).Cast<IADUser>().ToList();
+            return (await FindOuByStringAsync(searchTerm)).OrderBy(x => x.DN).FirstOrDefault();
+        }
+
+        public List<IADOrganizationalUnit> FindSubOusByDN(string? searchTerm) => SearchObjects(searchTerm, "", ActiveDirectoryObjectType.OU, 3000, true, System.DirectoryServices.Protocols.SearchScope.OneLevel).Cast<IADOrganizationalUnit>().ToList();
+
+        public List<IADUser> FindSubUsersByDN(string searchTerm) => SearchObjects(searchTerm, "", ActiveDirectoryObjectType.User, 3000, true, System.DirectoryServices.Protocols.SearchScope.OneLevel).Cast<IADUser>().ToList();
 
         public List<IADComputer> FindSubComputerByDN(string searchTerm)
         {
@@ -59,7 +65,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             return temp;
         }
 
-        public List<IADGroup> FindSubGroupsByDN(string searchTerm) => SearchObjects(searchTerm, "", ActiveDirectoryObjectType.Group, 1000, true, System.DirectoryServices.Protocols.SearchScope.OneLevel).Cast<IADGroup>().ToList();
+        public List<IADGroup> FindSubGroupsByDN(string searchTerm) => SearchObjects(searchTerm, "", ActiveDirectoryObjectType.Group, 3000, true, System.DirectoryServices.Protocols.SearchScope.OneLevel).Cast<IADGroup>().ToList();
 
 
 

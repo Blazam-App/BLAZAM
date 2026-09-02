@@ -10,18 +10,17 @@
              Color="Color.Success"
              @bind-SelectedValue="SelectedEntry">
     <ItemTemplate>
-        <MudTreeViewItem Value="@context.Value"
-                         @bind-Items="context.Children"
-                         @bind-Expanded="@context.Expanded"
+        <MudTreeViewItem @bind-Expanded="@context.Expanded"
                          CanExpand=@(context.Value is IADOrganizationalUnit)
-                         LoadingIconColor="Color.Info"
-                         Selected="@(context.Value?.Equals(SelectedEntry) == true)"
-                         Text="@context.Value?.CanonicalName"
+                         Items="@context.Children"
                          Icon="@context.Value?.TypeIcon()"
-                         IconColor="@GetItemColor(context.Value)"
-                         Class="minw-max w-100 overflow-x-auto"
-                         EndText="@EndText?.Invoke(context.Value)"
-                         Context="itemContext">
+                         OnClick="@(() => {SelectedEntry=context.Value;})"
+                         Selected="@(context.Value?.Equals(SelectedEntry) == true)"
+                         LoadingIconColor="Color.Info"
+                         Value="@context.Value">
+            <BodyContent Context="itemContext">
+                <ADTreeItem Item="@itemContext" EndText="EndText"/>
+            </BodyContent>
         </MudTreeViewItem>
     </ItemTemplate>
 

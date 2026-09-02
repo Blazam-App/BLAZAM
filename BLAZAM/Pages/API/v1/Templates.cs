@@ -115,12 +115,19 @@ namespace BLAZAM.Pages.API.v1
             try
             {
                 var customOU = Directory.OUs.FindOuByDN(newUserDetails.OU);
-                if (customOU == null && template.EffectiveParentOU == null)
+                IADOrganizationalUnit? templateOU = null;
+                if (template.EffectiveParentOU != null)
+                {
+                    templateOU = Directory.OUs.FindOuByDN(template.EffectiveParentOU);
+
+                }
+                if (customOU == null && templateOU == null)
                 {
                     return new BadRequestObjectResult("There was no OU provided by API call or template!");
                 }
+                var newUserOU = customOU ?? templateOU;
                 //Generate IADUser
-                var newUser = await template.GenerateTemplateUserAsync(newUserName, Directory, customOU);
+                var newUser = await template.GenerateTemplateUserAsync(newUserName, Directory, newUserOU);
                 if (newUser == null)
                 {
                     return new UnprocessableEntityObjectResult("Could not generate user from template");

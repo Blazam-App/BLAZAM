@@ -33,18 +33,10 @@
   * Apply these Access Levels to groups or individual users, controlling their access to specific OUs and objects within those OUs.
   * Impersonate users to test and verify permissions
 * Automation Engine:
-  * Rule-Based Automation: Define rules to automate AD tasks based on specific triggers and conditions.
-  * Event Triggers: Initiate automation rules based on directory entry changes (e.g., creation, modification, deletion of users, groups, computers).
-  * Scheduled Triggers: Configure rules to run at predefined times or intervals.
-  * Advanced Filtering: Target specific AD objects for automation using detailed filters, including OU, object type, and attribute values (e.g., account enabled/disabled status).
-  * Automated Actions: Perform actions such as:
-    * Assigning or unassigning users/computers from groups.
-    * Enabling or disabling accounts.
-    * Unlocking or locking out accounts.
-    * Moving AD objects between OUs.
-    * Modifying specific Active Directory attributes.
-  * Rule Prioritization: Control the order of rule execution.
-  * Conditional Processing: Stop further rule processing if a specific rule's conditions are met and actions are performed.
+  * Create rule-based tasks triggered by directory changes (create, edit, delete) or schedules.
+  * Filter targets by OU, object type, or specific attribute values.
+  * Automate actions including group assignments, enabling/disabling, lockouts, OU moves, and attribute updates.
+  * Control rule priority and conditional execution stops.
 * User Creation and Management:
   * Configure user creation templates to streamline onboarding and ensure data consistency.
   * Manage user thumbnail photos.
@@ -89,7 +81,7 @@ We have users in Ukraine... we support Ukraine in the current conflict with Russ
 
 ## Star History
 If you like the project, please give it a star! It helps with visibility and motivates us to keep improving it.
-[![Star History Chart](https://api.star-history.com/chart?repos=Blazam-App/BLAZAM&type=date&legend=top-left&sealed_token=f1GmIRjgrlXqf10vhgbF7BiMH0quvfy7HMCcE-lhRlpJ8ADbf2ISaLIoJiJAuU3n_ug6SWLR9wtzC1FL_U2uBiBd9tl_CfzFpZcKmOkVa1XZGcmgk7bsPaEok4apoXa1J7dDtPpqXaRfDSgMAgZXdw2yPwa2nW19OaxKm6jw3rgSVmV0UMvBzdPeD74A)](https://www.star-history.com/?type=date&legend=top-left&repos=Blazam-App%2FBLAZAM)
+[![Star History Chart](https://api.star-history.com/chart?repos=Blazam-App/BLAZAM&type=date&legend=top-left&sealed_token=z0-ShDcXsqYDXY-ETy1FB64CQSCB7OaV-r8AKZ3c4Ra3SoGIuC5hRG-zNURkb-ybEWTwip2dlwWBEsbsP-jECu_aIhPJ0I-IXXE6WCvQx3GMTKAliM8u6enXajWdFmoqHVb_lp0dyJb3DTIrWBtdRWXvhCim0W3eE2G3NNdRgglufxc0O4QnzIA0F6TA)](https://www.star-history.com/?repos=Blazam-App%2FBLAZAM&type=date&legend=top-left)
 
 ## Get Paid to Contribute
 If you are interested in contributing to Blazam and receiving compensation for your work, please reach out

@@ -1,0 +1,57 @@
+@inherits AppComponentBase
+<MudText>@Item.Value?.CanonicalName</MudText>
+<MudSpacer />
+@if (LoadingData)
+{
+    <MudProgressCircular Color="Color.Primary"
+                         Size="Size.Small"
+                         Indeterminate=true />
+}
+@if (!_endText.IsNullOrEmpty())
+{
+    <MudText>@_endText</MudText>
+}
+
+                 
+                 
+
+@code {
+
+    private string? _endText = null;
+
+
+    [Parameter]
+    public MudTreeViewItem<IDirectoryEntryAdapter>? Item { get; set; } = default;
+
+    /// <summary>
+    /// Text to show at the end of the TreeView item
+    /// </summary>
+    [Parameter]
+    public Func<IDirectoryEntryAdapter?, string>? EndText { get; set; }
+    private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(25, 25);
+    protected override async Task OnParametersSetAsync()
+    {
+
+        await base.OnParametersSetAsync();
+        _ = Task.Run(async () =>
+        {
+            await semaphore.WaitAsync();
+            try
+            {
+                if (EndText != null)
+                {
+                    LoadingData = true; 
+                    _endText = EndText.Invoke(Item?.Value);
+                }
+            }
+            finally
+            {
+                semaphore.Release();
+                LoadingData = false;
+            }
+        });
+
+     
+
+    }
+}

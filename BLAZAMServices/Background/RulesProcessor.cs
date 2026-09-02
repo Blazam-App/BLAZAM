@@ -12,8 +12,8 @@ using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Events;
-using BLAZAM.Services.Helpers;
 using BLAZAM.Session;
+using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System;
@@ -232,8 +232,8 @@ namespace BLAZAM.Services.Background
                 ThreadPriority = ThreadPriority.Lowest
             };
             List<IDirectoryEntryAdapter> filteredEntries;
-
-            using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
+            IApplicationUserState rulesUserState = new RulesUserState(dbFactory);
+            using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext(rulesUserState.ToActiveDirectoryUserState());
             filteredEntries = await rule.Filters.GetFilteredEntries(rule.ActiveDirectoryObjectType, dbFactory,directory);
             _ = _audit.RuleFilterEvaluated(rule, rule.Filters.ToJson());
             // Execute actions for each matched entry

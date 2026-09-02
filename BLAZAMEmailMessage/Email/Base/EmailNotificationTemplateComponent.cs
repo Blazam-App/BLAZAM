@@ -35,6 +35,12 @@ namespace BLAZAM.EmailMessage.Email.Base
         [Parameter]
         public string? EntryLink { get; set; }
 
+        [Parameter]
+        public string? ActorName { get; set; }
+
+        [Parameter]
+        public string? Timestamp { get; set; }
+
 
         protected virtual bool ShouldRenderLinks
         {

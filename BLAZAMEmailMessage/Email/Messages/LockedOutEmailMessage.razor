@@ -30,6 +30,8 @@
             .AddServiceProvider(ApplicationInfo.services)
             .Set(c => c.EntryName, EntryName)
             .Set(c => c.EntryLink, EntryLink)
+            .Set(c => c.ActorName, ActorName)
+            .Set(c => c.Timestamp, Timestamp)
             .Render();
 }
 

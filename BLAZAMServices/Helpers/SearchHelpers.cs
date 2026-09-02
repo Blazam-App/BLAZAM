@@ -5,14 +5,8 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Rules;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Data.Odbc;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BLAZAM.Services.Helpers
+namespace BLAZAM.Helpers
 {
     public static class SearchHelpers
     {
@@ -69,8 +63,8 @@ namespace BLAZAM.Services.Helpers
                 search.ObjectTypeFilter = searchObjectType;
             }
             search.AddAndFilters(filter);
-
-            matchedEntries.AddRange(search.Search().Where(e=>e.CanRead));
+            var rawResults = search.Search();
+            matchedEntries.AddRange(rawResults.Where(e=>e.CanRead));
             return true;
         }
 

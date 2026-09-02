@@ -76,6 +76,7 @@
         public static readonly string Start_typing_to_search = "Start typing to search...";
         public static readonly string Not_a_member_of_any_groups = "Not a member of any groups";
         public static readonly string Sorry_no_result_were_found = "Sorry no result were found 😒";
+        public static readonly string Sorry_try_typing_more = "Sorry no exact matches were found, try adding more characters";
         public static readonly string Click_for_details = "Click for details";
         public static readonly string Click_to_view_API_documentation = "Click to view API documentation";
         public static readonly string An_automatic_update_is_scheduled = "An automatic update is scheduled.";
