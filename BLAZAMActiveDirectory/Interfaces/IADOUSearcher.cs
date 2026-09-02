@@ -30,7 +30,7 @@
         /// Finds a specific organizational unit by its distinguished name asynchronously.
         /// </summary>
         /// <param name="searchTerm">The distinguished name (DN) of the organizational unit to find.</param>
-        /// <returns>The <see cref="IADOrganizationalUnit"/>A Task whose result has a matching DN, or null if not found.</returns>
+        /// <returns>A <see cref="Task"/> that returns a <see cref="IADOrganizationalUnit"/> that has a matching DN, or null if not found.</returns>
         Task<IADOrganizationalUnit?> FindOuByDNAsync(string searchTerm);
 
         /// <summary>
