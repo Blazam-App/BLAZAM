@@ -36,26 +36,19 @@
         _ = Task.Run(async () =>
         {
             await semaphore.WaitAsync();
-
-            if (EndText != null)
+            try
             {
-                LoadingData = true;
-                try
+                if (EndText != null)
                 {
-                    _endText = EndText.Invoke(Item.Value);
-                }
-                catch
-                {
-                    //  Do nothings
-                }
-                finally
-                {
-                    //  Do nothing
+                    LoadingData = true; 
+                    _endText = EndText.Invoke(Item?.Value);
                 }
             }
-            semaphore.Release();
-            LoadingData = false;
-
+            finally
+            {
+                semaphore.Release();
+                LoadingData = false;
+            }
         });
 
      
