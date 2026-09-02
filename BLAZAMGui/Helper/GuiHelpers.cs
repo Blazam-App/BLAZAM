@@ -20,17 +20,6 @@ namespace BLAZAM.Helpers
             }
             return fileBytes;
         }
-        public static ActiveDirectoryUserState ToActiveDirectoryUserState(this IApplicationUserState userState)
-        {
-            return new ActiveDirectoryUserState()
-            {
-                Username = userState.AuditUsername,
-                PermissionMappings = userState.PermissionMappings,
-                IsSuperAdmin = userState.IsSuperAdmin
-
-            };
-
-        }
         public static async Task<IDialogReference> ShowNewsItemDialog(this NewsItem item, AppDialogService dialogService)
         {
             var dialogParams = new DialogParameters

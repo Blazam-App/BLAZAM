@@ -12,7 +12,6 @@ using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Events;
-using BLAZAM.Services.Helpers;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;

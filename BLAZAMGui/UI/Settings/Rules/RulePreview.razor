@@ -1,8 +1,6 @@
 @inherits DatabaseComponentBase
 @using BLAZAM.Database.Models.Audit
 @using BLAZAM.Database.Models.Rules
-@using BLAZAM.Gui.UI.Dashboard.Widgets
-@using BLAZAM.Services.Helpers
 @using Serilog.Events
 <MudPaper Elevation="1" Class="pa-4 my-4">
     <MudStack>
@@ -273,11 +271,11 @@
                _settings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
                Rule = await context.AutomationRules.FirstAsync(r => r.Id == Rule.Id);
                var auditTimestampCutoff = DateTime.UtcNow.Subtract(TimeSpan.FromDays(30));
-               _auditErrors = await Context.AutomationRuleAuditLog
+               _auditErrors = await context.AutomationRuleAuditLog
                    .Where(x => x.Level == LogEventLevel.Error && x.AutomationRuleId == Rule.Id && x.Timestamp > auditTimestampCutoff)
                    .OrderByDescending(x => x.Timestamp)
                    .ToListAsync();
-               _recentAudits = await Context.AutomationRuleAuditLog
+               _recentAudits = await context.AutomationRuleAuditLog
                    .Where(x => x.AutomationRuleId == Rule.Id && x.Timestamp > auditTimestampCutoff)
                    .OrderByDescending(x => x.Timestamp)
                    .Take(100)

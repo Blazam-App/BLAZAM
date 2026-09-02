@@ -18,7 +18,7 @@ namespace BLAZAM.Gui.Helpers
             if (parentOU == null)
             {
                 Loggers.ActiveDirectoryLogger.Debug("No parent OU specified, searching for template effective parent OU {@EffectiveParentOU}", template.EffectiveParentOU);
-                parentOU = (await directory.OUs.FindOuByStringAsync(template.EffectiveParentOU)).FirstOrDefault();
+                parentOU = (await directory.OUs.FindOuByDNAsync(template.EffectiveParentOU));
             }
             if (parentOU == null)
             {
