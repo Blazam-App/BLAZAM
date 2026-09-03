@@ -217,13 +217,14 @@ namespace BLAZAMCommon.Tests
         {
             // Arrange
             _service = new TestableBackgroundService(_mockStringLocalizer.Object);
-            _service.SetInterval(TimeSpan.FromMilliseconds(10));
+            _service.SetInterval(TimeSpan.Zero);
 
             // Act
-            _service.Start(true); // "Immediate", delay is 10ms
+            _service.Start(true); // Immediate, delay is 0
 
             // Assert
             Assert.True(_service.IsServiceStarted);
+            Assert.Null(_service.InspectTimer); // Timer should not be created for Zero interval
             Assert.True(_service.WaitForExecute(TimeSpan.FromSeconds(1)), "Execute was not called for ZeroInterval immediate start.");
 
             // Check it only executes once (Task.Delay().ContinueWith() runs once)
@@ -241,13 +242,14 @@ namespace BLAZAMCommon.Tests
         {
             // Arrange
             _service = new TestableBackgroundService(_mockStringLocalizer.Object);
-            _service.SetInterval(TimeSpan.FromMilliseconds(10));
+            _service.SetInterval(TimeSpan.Zero);
 
             // Act
-            _service.Start(false);
+            _service.Start(false); // Not immediate. SUT uses Task.Delay(15-45ms) due to bug.
 
             // Assert
             Assert.True(_service.IsServiceStarted);
+            Assert.Null(_service.InspectTimer);
             Assert.False(_service.ExecuteCalled); // Should not be called *absolutely* immediately
 
             // SUT's delay will be rand.Next(-15,15) + 30 = 15ms to 45ms
