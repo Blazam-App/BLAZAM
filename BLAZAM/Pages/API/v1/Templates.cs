@@ -114,11 +114,11 @@ namespace BLAZAM.Pages.API.v1
             };
             try
             {
-                var customOU = Directory.OUs.FindOuByDN(newUserDetails.OU);
+                var customOU = await Directory.OUs.FindOuByDNAsync(newUserDetails.OU);
                 IADOrganizationalUnit? templateOU = null;
                 if (template.EffectiveParentOU != null)
                 {
-                    templateOU = Directory.OUs.FindOuByDN(template.EffectiveParentOU);
+                    templateOU = await Directory.OUs.FindOuByDNAsync(template.EffectiveParentOU);
 
                 }
                 if (customOU == null && templateOU == null)
