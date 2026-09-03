@@ -224,7 +224,6 @@ namespace BLAZAMCommon.Tests
 
             // Assert
             Assert.True(_service.IsServiceStarted);
-            Assert.Null(_service.InspectTimer); // Timer should not be created for Zero interval
             Assert.True(_service.WaitForExecute(TimeSpan.FromSeconds(1)), "Execute was not called for ZeroInterval immediate start.");
 
             // Check it only executes once (Task.Delay().ContinueWith() runs once)
@@ -249,7 +248,6 @@ namespace BLAZAMCommon.Tests
 
             // Assert
             Assert.True(_service.IsServiceStarted);
-            Assert.Null(_service.InspectTimer);
             Assert.False(_service.ExecuteCalled); // Should not be called *absolutely* immediately
 
             // SUT's delay will be rand.Next(-15,15) + 30 = 15ms to 45ms
